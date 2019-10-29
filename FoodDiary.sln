@@ -7,6 +7,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{8D097EA1-B4F
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoodDiary.API", "src\FoodDiary.API\FoodDiary.API.csproj", "{832FD3E1-EE34-4CB7-A195-1CE85FEE4C4E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoodDiary.Domain", "src\FoodDiary.Domain\FoodDiary.Domain.csproj", "{1370E08C-F00A-4F5E-B8B9-873C4351A8D2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,8 +34,21 @@ Global
 		{832FD3E1-EE34-4CB7-A195-1CE85FEE4C4E}.Release|x64.Build.0 = Release|Any CPU
 		{832FD3E1-EE34-4CB7-A195-1CE85FEE4C4E}.Release|x86.ActiveCfg = Release|Any CPU
 		{832FD3E1-EE34-4CB7-A195-1CE85FEE4C4E}.Release|x86.Build.0 = Release|Any CPU
+		{1370E08C-F00A-4F5E-B8B9-873C4351A8D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1370E08C-F00A-4F5E-B8B9-873C4351A8D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1370E08C-F00A-4F5E-B8B9-873C4351A8D2}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1370E08C-F00A-4F5E-B8B9-873C4351A8D2}.Debug|x64.Build.0 = Debug|Any CPU
+		{1370E08C-F00A-4F5E-B8B9-873C4351A8D2}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1370E08C-F00A-4F5E-B8B9-873C4351A8D2}.Debug|x86.Build.0 = Debug|Any CPU
+		{1370E08C-F00A-4F5E-B8B9-873C4351A8D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1370E08C-F00A-4F5E-B8B9-873C4351A8D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1370E08C-F00A-4F5E-B8B9-873C4351A8D2}.Release|x64.ActiveCfg = Release|Any CPU
+		{1370E08C-F00A-4F5E-B8B9-873C4351A8D2}.Release|x64.Build.0 = Release|Any CPU
+		{1370E08C-F00A-4F5E-B8B9-873C4351A8D2}.Release|x86.ActiveCfg = Release|Any CPU
+		{1370E08C-F00A-4F5E-B8B9-873C4351A8D2}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{832FD3E1-EE34-4CB7-A195-1CE85FEE4C4E} = {8D097EA1-B4F0-42EC-8914-37C308AC9700}
+		{1370E08C-F00A-4F5E-B8B9-873C4351A8D2} = {8D097EA1-B4F0-42EC-8914-37C308AC9700}
 	EndGlobalSection
 EndGlobal
