@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoodDiary.API", "src\FoodDi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoodDiary.Domain", "src\FoodDiary.Domain\FoodDiary.Domain.csproj", "{1370E08C-F00A-4F5E-B8B9-873C4351A8D2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoodDiary.Infrastructure", "src\FoodDiary.Infrastructure\FoodDiary.Infrastructure.csproj", "{E0B86E79-9EAD-474D-B8D4-3F8042DF748E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,9 +48,22 @@ Global
 		{1370E08C-F00A-4F5E-B8B9-873C4351A8D2}.Release|x64.Build.0 = Release|Any CPU
 		{1370E08C-F00A-4F5E-B8B9-873C4351A8D2}.Release|x86.ActiveCfg = Release|Any CPU
 		{1370E08C-F00A-4F5E-B8B9-873C4351A8D2}.Release|x86.Build.0 = Release|Any CPU
+		{E0B86E79-9EAD-474D-B8D4-3F8042DF748E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0B86E79-9EAD-474D-B8D4-3F8042DF748E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0B86E79-9EAD-474D-B8D4-3F8042DF748E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E0B86E79-9EAD-474D-B8D4-3F8042DF748E}.Debug|x64.Build.0 = Debug|Any CPU
+		{E0B86E79-9EAD-474D-B8D4-3F8042DF748E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E0B86E79-9EAD-474D-B8D4-3F8042DF748E}.Debug|x86.Build.0 = Debug|Any CPU
+		{E0B86E79-9EAD-474D-B8D4-3F8042DF748E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0B86E79-9EAD-474D-B8D4-3F8042DF748E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E0B86E79-9EAD-474D-B8D4-3F8042DF748E}.Release|x64.ActiveCfg = Release|Any CPU
+		{E0B86E79-9EAD-474D-B8D4-3F8042DF748E}.Release|x64.Build.0 = Release|Any CPU
+		{E0B86E79-9EAD-474D-B8D4-3F8042DF748E}.Release|x86.ActiveCfg = Release|Any CPU
+		{E0B86E79-9EAD-474D-B8D4-3F8042DF748E}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{832FD3E1-EE34-4CB7-A195-1CE85FEE4C4E} = {8D097EA1-B4F0-42EC-8914-37C308AC9700}
 		{1370E08C-F00A-4F5E-B8B9-873C4351A8D2} = {8D097EA1-B4F0-42EC-8914-37C308AC9700}
+		{E0B86E79-9EAD-474D-B8D4-3F8042DF748E} = {8D097EA1-B4F0-42EC-8914-37C308AC9700}
 	EndGlobalSection
 EndGlobal
