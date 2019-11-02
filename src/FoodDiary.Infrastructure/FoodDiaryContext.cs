@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using FoodDiary.Domain.Entities;
+﻿using FoodDiary.Domain.Entities;
 using FoodDiary.Infrastructure.EntityConfigurations;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,7 +6,7 @@ namespace FoodDiary.Infrastructure
 {
     public class FoodDiaryContext : DbContext
     {
-        public FoodDiaryContext([NotNull] DbContextOptions options) : base(options)
+        public FoodDiaryContext(DbContextOptions options) : base(options)
         {
         }
 
