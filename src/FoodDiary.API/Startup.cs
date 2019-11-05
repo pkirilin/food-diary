@@ -32,6 +32,9 @@ namespace FoodDiary.API
                 options.UseNpgsql(Configuration.GetConnectionString("FoodDiaryContext"));
                 options.UseLoggerFactory(LoggerFactory.Create(builder => builder.AddConsole()));
             });
+
+            services.AddRepositories();
+
             services.AddControllers();
         }
 
