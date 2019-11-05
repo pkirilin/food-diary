@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using AutoMapper;
 using FoodDiary.Domain.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -13,10 +14,12 @@ namespace FoodDiary.API.Controllers.v1
     public class PagesController : ControllerBase
     {
         private readonly ILogger<PagesController> _logger;
+        private readonly IMapper _mapper;
 
-        public PagesController(ILogger<PagesController> logger)
+        public PagesController(ILogger<PagesController> logger, IMapper mapper)
         {
             _logger = logger;
+            _mapper = mapper;
         }
 
         [HttpGet]
