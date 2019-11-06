@@ -1,6 +1,7 @@
 using System.Reflection;
 using AutoMapper;
 using FoodDiary.API.Extensions;
+using FoodDiary.API.Middlewares;
 using FoodDiary.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -49,6 +50,8 @@ namespace FoodDiary.API
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseMiddleware<ExceptionHandlerMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {
