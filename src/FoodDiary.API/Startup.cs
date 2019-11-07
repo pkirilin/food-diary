@@ -31,6 +31,7 @@ namespace FoodDiary.API
             });
 
             services.AddRepositories();
+            services.AddDomainServices();
 
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
