@@ -8,6 +8,8 @@ namespace FoodDiary.Infrastructure.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<Category> builder)
         {
+            builder.ToTable("Categories");
+
             builder.HasKey(p => p.Id);
 
             builder.HasIndex(c => c.Name).IsUnique();

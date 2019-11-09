@@ -8,6 +8,8 @@ namespace FoodDiary.Infrastructure.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<Note> builder)
         {
+            builder.ToTable("Notes");
+
             builder.HasKey(n => n.Id);
 
             builder.HasOne(n => n.Product)
