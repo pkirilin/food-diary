@@ -11,9 +11,9 @@ namespace FoodDiary.Domain.Entities
 
         public virtual ICollection<Note> Notes { get; set; }
 
-        public bool HasChanges(Page originalPage)
+        public bool HasChanges(DateTime pageDate)
         {
-            return Date != originalPage.Date;
+            return Date != pageDate;
         }
     }
 }

@@ -1,9 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace FoodDiary.Infrastructure.Repositories
 {
@@ -18,12 +20,12 @@ namespace FoodDiary.Infrastructure.Repositories
 
         public IQueryable<Page> Get()
         {
-            return _context.Pages;
+            return _context.Pages.AsQueryable();
         }
 
         public async Task<Page> GetByIdAsync(int id, CancellationToken cancellationToken)
         {
-            return await _context.Pages.FindAsync(id, cancellationToken);
+            return await _context.Pages.FindAsync(new object[] { id }, cancellationToken);
         }
 
         public async Task<int> CreateAsync(Page page, CancellationToken cancellationToken)
@@ -45,10 +47,18 @@ namespace FoodDiary.Infrastructure.Repositories
             await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task DeleteRangeAsync(IEnumerable<Page> pages, CancellationToken cancellationToken)
+        public async Task DeleteRangeAsync(ICollection<Page> pages, CancellationToken cancellationToken)
         {
-            _context.RemoveRange(pages, cancellationToken);
+            _context.RemoveRange(pages);
             await _context.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task<bool> IsDuplicate(DateTime pageDate, CancellationToken cancellationToken)
+        {
+            var pagesWithTheSameDate = await _context.Pages.Where(p => p.Date == pageDate)
+                .AsNoTracking()
+                .ToListAsync();
+            return pagesWithTheSameDate.Any();
         }
     }
 }

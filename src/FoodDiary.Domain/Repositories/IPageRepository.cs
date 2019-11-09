@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -18,6 +19,8 @@ namespace FoodDiary.Domain.Repositories
 
         Task DeleteAsync(Page page, CancellationToken cancellationToken);
 
-        Task DeleteRangeAsync(IEnumerable<Page> pages, CancellationToken cancellationToken);
+        Task DeleteRangeAsync(ICollection<Page> pages, CancellationToken cancellationToken);
+
+        Task<bool> IsDuplicate(DateTime pageDate, CancellationToken cancellationToken);
     }
 }

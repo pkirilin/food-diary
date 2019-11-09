@@ -12,17 +12,15 @@ namespace FoodDiary.Domain.Services
 
         Task<Page> GetPageByIdAsync(int pageId, CancellationToken cancellationToken = default);
 
-        Task<Page> GetPageByIdWithMealsAndNotesAsync(int pageId, CancellationToken cancellationToken = default);
-
         Task<ICollection<Page>> GetPagesByIdsAsync(ICollection<int> ids, CancellationToken cancellationToken = default);
 
         Task<int> CreatePageAsync(Page page, CancellationToken cancellationToken = default);
 
-        Task<bool> PageCanBeCreatedAsync(Page page, CancellationToken cancellationToken = default);
+        Task<bool> PageCanBeCreatedAsync(PageCreateDto createPageInfo, CancellationToken cancellationToken = default);
 
         Task EditPageAsync(Page page, CancellationToken cancellationToken = default);
 
-        Task<bool> PageCanBeUpdatedAsync(Page page, CancellationToken cancellationToken = default);
+        Task<bool> PageCanBeUpdatedAsync(PageEditDto updatedPageInfo, Page originalPage, CancellationToken cancellationToken = default);
 
         Task DeletePageAsync(Page page, CancellationToken cancellationToken = default);
 

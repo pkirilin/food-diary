@@ -6,7 +6,7 @@ namespace FoodDiary.Domain.Dtos
     {
         public int Id { get; set; }
 
-        public DateTime Date { get; set; }
+        public string Date { get; set; }
 
         public int CountNotes { get; set; }
 

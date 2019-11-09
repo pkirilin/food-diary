@@ -21,11 +21,11 @@ namespace FoodDiary.API.Controllers.v1
         private readonly IPageService _pageService;
 
         public PagesController(
-            ILogger<PagesController> logger,
+            ILoggerFactory loggerFactory,
             IMapper mapper,
             IPageService pageService)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _logger = loggerFactory?.CreateLogger<PagesController>() ?? throw new ArgumentNullException(nameof(loggerFactory));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _pageService = pageService ?? throw new ArgumentNullException(nameof(pageService));
         }
@@ -39,19 +39,10 @@ namespace FoodDiary.API.Controllers.v1
             return Ok(pagesListResponse);
         }
 
-        [HttpGet("{id}")]
-        [ProducesResponseType(typeof(PageContentDto), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetPage([FromRoute] int id, CancellationToken cancellationToken = default)
-        {
-            var page = await _pageService.GetPageByIdWithMealsAndNotesAsync(id, cancellationToken);
-            var pageResponse = _mapper.Map<PageContentDto>(page);
-            return Ok(pageResponse);
-        }
-
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> CreatePage([FromBody] PageEditDto request, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> CreatePage([FromBody] PageCreateDto request, CancellationToken cancellationToken = default)
         {
             if (!ModelState.IsValid)
             {
@@ -60,7 +51,7 @@ namespace FoodDiary.API.Controllers.v1
 
             var page = _mapper.Map<Page>(request);
 
-            if (!await _pageService.PageCanBeCreatedAsync(page, cancellationToken))
+            if (!await _pageService.PageCanBeCreatedAsync(request, cancellationToken))
             {
                 return BadRequest($"Page with the date '{page.Date.ToString("yyyy-MM-dd")}' already exists");
             }
@@ -79,25 +70,25 @@ namespace FoodDiary.API.Controllers.v1
                 return BadRequest(ModelState);
             }
 
-            var originalPage = await _pageService.GetPageByIdAsync(request.Id.GetValueOrDefault(), cancellationToken);
+            var originalPage = await _pageService.GetPageByIdAsync(request.Id, cancellationToken);
             if (originalPage == null)
             {
                 return NotFound();
             }
 
-            var updatedPage = _mapper.Map<Page>(request);
-            if (!await _pageService.PageCanBeUpdatedAsync(updatedPage, cancellationToken))
+            if (!await _pageService.PageCanBeUpdatedAsync(request, originalPage, cancellationToken))
             {
-                return BadRequest($"Page with the date '{updatedPage.Date.ToString("yyyy-MM-dd")}' already exists");
+                return BadRequest($"Page with the date '{request.Date.ToString("yyyy-MM-dd")}' already exists");
             }
 
-            await _pageService.EditPageAsync(updatedPage, cancellationToken);
+            originalPage = _mapper.Map(request, originalPage);
+            await _pageService.EditPageAsync(originalPage, cancellationToken);
             return Ok();
         }
 
         [HttpDelete("{id}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
-        public async Task<IActionResult> DeletePage([FromQuery] int id, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> DeletePage([FromRoute] int id, CancellationToken cancellationToken = default)
         {
             var pageForDelete = await _pageService.GetPageByIdAsync(id, cancellationToken);
             if (pageForDelete == null)
