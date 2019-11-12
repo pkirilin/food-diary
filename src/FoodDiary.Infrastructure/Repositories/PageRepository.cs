@@ -53,7 +53,7 @@ namespace FoodDiary.Infrastructure.Repositories
             await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<bool> IsDuplicate(DateTime pageDate, CancellationToken cancellationToken)
+        public async Task<bool> IsDuplicateAsync(DateTime pageDate, CancellationToken cancellationToken)
         {
             var pagesWithTheSameDate = await _context.Pages.Where(p => p.Date == pageDate)
                 .AsNoTracking()

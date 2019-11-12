@@ -68,7 +68,7 @@ namespace FoodDiary.UnitTests.Controllers
 
             var controller = PagesController;
 
-            var result = await controller.GetPagesList(pageFilter);
+            var result = await controller.GetPagesList(pageFilter, default);
 
             _pageServiceMock.Verify(s => s.SearchPagesAsync(pageFilter, default), Times.Once);
 
@@ -85,7 +85,7 @@ namespace FoodDiary.UnitTests.Controllers
 
             var controller = PagesController;
 
-            var result = await controller.CreatePage(createPageInfo);
+            var result = await controller.CreatePage(createPageInfo, default);
 
             _pageServiceMock.Verify(s => s.PageCanBeCreatedAsync(createPageInfo, default), Times.Once);
             _pageServiceMock.Verify(s => s.CreatePageAsync(It.IsNotNull<Page>(), default), Times.Once);
@@ -100,7 +100,7 @@ namespace FoodDiary.UnitTests.Controllers
             var controller = PagesController;
             controller.ModelState.AddModelError("some", "error");
 
-            var result = await controller.CreatePage(createPageInfo);
+            var result = await controller.CreatePage(createPageInfo, default);
 
             _pageServiceMock.Verify(s => s.PageCanBeCreatedAsync(createPageInfo, default), Times.Never);
             _pageServiceMock.Verify(s => s.CreatePageAsync(It.IsNotNull<Page>(), default), Times.Never);
@@ -118,7 +118,7 @@ namespace FoodDiary.UnitTests.Controllers
 
             var controller = PagesController;
 
-            var result = await controller.CreatePage(createPageInfo);
+            var result = await controller.CreatePage(createPageInfo, default);
 
             _pageServiceMock.Verify(s => s.PageCanBeCreatedAsync(createPageInfo, default), Times.Once);
             _pageServiceMock.Verify(s => s.CreatePageAsync(It.IsNotNull<Page>(), default), Times.Never);

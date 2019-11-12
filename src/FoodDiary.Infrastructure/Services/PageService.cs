@@ -20,7 +20,7 @@ namespace FoodDiary.Infrastructure.Services
             _pageRepository = pageRepository;
         }
 
-        public async Task<ICollection<Page>> SearchPagesAsync(PageFilterDto pageFilter, CancellationToken cancellationToken = default)
+        public async Task<ICollection<Page>> SearchPagesAsync(PageFilterDto pageFilter, CancellationToken cancellationToken)
         {
             var searchPagesQuery = _pageRepository.Get()
                 .AsNoTracking();
@@ -41,38 +41,38 @@ namespace FoodDiary.Infrastructure.Services
             return await searchPagesQuery.ToListAsync(cancellationToken);
         }
 
-        public async Task<Page> GetPageByIdAsync(int pageId, CancellationToken cancellationToken = default)
+        public async Task<Page> GetPageByIdAsync(int pageId, CancellationToken cancellationToken)
         {
             return await _pageRepository.GetByIdAsync(pageId, cancellationToken);
         }
 
-        public async Task<ICollection<Page>> GetPagesByIdsAsync(ICollection<int> ids, CancellationToken cancellationToken = default)
+        public async Task<ICollection<Page>> GetPagesByIdsAsync(ICollection<int> ids, CancellationToken cancellationToken)
         {
             return await _pageRepository.Get()
                 .Where(p => ids.Contains(p.Id))
                 .ToListAsync(cancellationToken);
         }
 
-        public async Task<int> CreatePageAsync(Page page, CancellationToken cancellationToken = default)
+        public async Task<int> CreatePageAsync(Page page, CancellationToken cancellationToken)
         {
             var createdPageId = await _pageRepository.CreateAsync(page, cancellationToken);
             return createdPageId;
         }
 
-        public async Task<bool> PageCanBeCreatedAsync(PageCreateDto createPageInfo, CancellationToken cancellationToken = default)
+        public async Task<bool> PageCanBeCreatedAsync(PageCreateDto createPageInfo, CancellationToken cancellationToken)
         {
-            return !await _pageRepository.IsDuplicate(createPageInfo.Date, cancellationToken);
+            return !await _pageRepository.IsDuplicateAsync(createPageInfo.Date, cancellationToken);
         }
 
-        public async Task EditPageAsync(Page page, CancellationToken cancellationToken = default)
+        public async Task EditPageAsync(Page page, CancellationToken cancellationToken)
         {
             await _pageRepository.UpdateAsync(page, cancellationToken);
         }
 
-        public async Task<bool> PageCanBeUpdatedAsync(PageEditDto updatedPageInfo, Page originalPage, CancellationToken cancellationToken = default)
+        public async Task<bool> PageCanBeUpdatedAsync(PageEditDto updatedPageInfo, Page originalPage, CancellationToken cancellationToken)
         {
             if (!originalPage.HasChanges(updatedPageInfo.Date)
-                || (originalPage.HasChanges(updatedPageInfo.Date) && !await _pageRepository.IsDuplicate(updatedPageInfo.Date, cancellationToken)))
+                || (originalPage.HasChanges(updatedPageInfo.Date) && !await _pageRepository.IsDuplicateAsync(updatedPageInfo.Date, cancellationToken)))
             {
                 return true;
             }
@@ -80,12 +80,12 @@ namespace FoodDiary.Infrastructure.Services
             return false;
         }
 
-        public async Task DeletePageAsync(Page page, CancellationToken cancellationToken = default)
+        public async Task DeletePageAsync(Page page, CancellationToken cancellationToken)
         {
             await _pageRepository.DeleteAsync(page, cancellationToken);
         }
 
-        public async Task BatchDeletePagesAsync(ICollection<Page> pages, CancellationToken cancellationToken = default)
+        public async Task BatchDeletePagesAsync(ICollection<Page> pages, CancellationToken cancellationToken)
         {
             await _pageRepository.DeleteRangeAsync(pages, cancellationToken);
         }
