@@ -125,47 +125,53 @@ namespace FoodDiary.UnitTests.Services
         [Fact]
         public async void CreatePage_CreatesPageWithoutErrors()
         {
-            var pageForCreate = _fixture.Build<Page>()
-                .With(p => p.Id, default(int))
-                .Create();
-            var expectedCreatedPageId = _fixture.Create<int>();
+            var pageForCreate = _fixture.Create<Page>();
             _pageRepositoryMock.Setup(r => r.CreateAsync(pageForCreate, default))
-                .ReturnsAsync(expectedCreatedPageId);
+                .ReturnsAsync(pageForCreate);
 
             var result = await PageService.CreatePageAsync(pageForCreate, default);
 
             _pageRepositoryMock.Verify(r => r.CreateAsync(pageForCreate, default), Times.Once);
-            result.Should().Be(expectedCreatedPageId);
+            result.Should().Be(pageForCreate);
         }
 
         [Fact]
         public async void EditPage_UpdatesPageWithoutErrors()
         {
             var pageForEdit = _fixture.Create<Page>();
+            _pageRepositoryMock.Setup(r => r.UpdateAsync(pageForEdit, default))
+                .ReturnsAsync(pageForEdit);
 
-            await PageService.EditPageAsync(pageForEdit, default);
+            var result = await PageService.EditPageAsync(pageForEdit, default);
 
             _pageRepositoryMock.Verify(r => r.UpdateAsync(pageForEdit, default), Times.Once);
+            result.Should().Be(pageForEdit);
         }
 
         [Fact]
         public async void DeletePage_DeletesPageWithoutErrors()
         {
             var pageForDelete = _fixture.Create<Page>();
+            _pageRepositoryMock.Setup(r => r.DeleteAsync(pageForDelete, default))
+                .ReturnsAsync(pageForDelete);
 
-            await PageService.DeletePageAsync(pageForDelete, default);
+            var result = await PageService.DeletePageAsync(pageForDelete, default);
 
             _pageRepositoryMock.Verify(r => r.DeleteAsync(pageForDelete, default), Times.Once);
+            result.Should().Be(pageForDelete);
         }
 
         [Fact]
         public async void BatchDeletePages_DeletesPagesWithoutErrors()
         {
             var pagesForBatchDelete = _fixture.CreateMany<Page>().ToList();
+            _pageRepositoryMock.Setup(r => r.DeleteRangeAsync(pagesForBatchDelete, default))
+                .ReturnsAsync(pagesForBatchDelete);
 
-            await PageService.BatchDeletePagesAsync(pagesForBatchDelete, default);
+            var result = await PageService.BatchDeletePagesAsync(pagesForBatchDelete, default);
 
             _pageRepositoryMock.Verify(r => r.DeleteRangeAsync(pagesForBatchDelete, default), Times.Once);
+            result.Should().Contain(pagesForBatchDelete);
         }
 
         [Fact]

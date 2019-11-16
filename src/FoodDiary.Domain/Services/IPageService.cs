@@ -14,16 +14,16 @@ namespace FoodDiary.Domain.Services
 
         Task<ICollection<Page>> GetPagesByIdsAsync(ICollection<int> ids, CancellationToken cancellationToken);
 
-        Task<int> CreatePageAsync(Page page, CancellationToken cancellationToken);
+        Task<Page> CreatePageAsync(Page page, CancellationToken cancellationToken);
 
         Task<bool> PageCanBeCreatedAsync(PageCreateDto createPageInfo, CancellationToken cancellationToken);
 
-        Task EditPageAsync(Page page, CancellationToken cancellationToken);
+        Task<Page> EditPageAsync(Page page, CancellationToken cancellationToken);
 
         Task<bool> PageCanBeUpdatedAsync(PageEditDto updatedPageInfo, Page originalPage, CancellationToken cancellationToken);
 
-        Task DeletePageAsync(Page page, CancellationToken cancellationToken);
+        Task<Page> DeletePageAsync(Page page, CancellationToken cancellationToken);
 
-        Task BatchDeletePagesAsync(ICollection<Page> pages, CancellationToken cancellationToken);
+        Task<ICollection<Page>> BatchDeletePagesAsync(ICollection<Page> pages, CancellationToken cancellationToken);
     }
 }

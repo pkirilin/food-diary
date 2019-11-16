@@ -51,10 +51,9 @@ namespace FoodDiary.Infrastructure.Services
             return await _pageRepository.GetListFromQuery(pagesByIdsQuery, cancellationToken);
         }
 
-        public async Task<int> CreatePageAsync(Page page, CancellationToken cancellationToken)
+        public async Task<Page> CreatePageAsync(Page page, CancellationToken cancellationToken)
         {
-            var createdPageId = await _pageRepository.CreateAsync(page, cancellationToken);
-            return createdPageId;
+            return await _pageRepository.CreateAsync(page, cancellationToken);
         }
 
         public async Task<bool> PageCanBeCreatedAsync(PageCreateDto createPageInfo, CancellationToken cancellationToken)
@@ -62,30 +61,25 @@ namespace FoodDiary.Infrastructure.Services
             return !await _pageRepository.IsDuplicateAsync(createPageInfo.Date, cancellationToken);
         }
 
-        public async Task EditPageAsync(Page page, CancellationToken cancellationToken)
+        public async Task<Page> EditPageAsync(Page page, CancellationToken cancellationToken)
         {
-            await _pageRepository.UpdateAsync(page, cancellationToken);
+            return await _pageRepository.UpdateAsync(page, cancellationToken);
         }
 
         public async Task<bool> PageCanBeUpdatedAsync(PageEditDto updatedPageInfo, Page originalPage, CancellationToken cancellationToken)
         {
-            if (!originalPage.HasChanges(updatedPageInfo.Date)
-                || (originalPage.HasChanges(updatedPageInfo.Date) && !await _pageRepository.IsDuplicateAsync(updatedPageInfo.Date, cancellationToken)))
-            {
-                return true;
-            }
-
-            return false;
+            return !originalPage.HasChanges(updatedPageInfo.Date)
+                || (originalPage.HasChanges(updatedPageInfo.Date) && !await _pageRepository.IsDuplicateAsync(updatedPageInfo.Date, cancellationToken));
         }
 
-        public async Task DeletePageAsync(Page page, CancellationToken cancellationToken)
+        public async Task<Page> DeletePageAsync(Page page, CancellationToken cancellationToken)
         {
-            await _pageRepository.DeleteAsync(page, cancellationToken);
+            return await _pageRepository.DeleteAsync(page, cancellationToken);
         }
 
-        public async Task BatchDeletePagesAsync(ICollection<Page> pages, CancellationToken cancellationToken)
+        public async Task<ICollection<Page>> BatchDeletePagesAsync(ICollection<Page> pages, CancellationToken cancellationToken)
         {
-            await _pageRepository.DeleteRangeAsync(pages, cancellationToken);
+            return await _pageRepository.DeleteRangeAsync(pages, cancellationToken);
         }
     }
 }

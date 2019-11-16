@@ -38,29 +38,32 @@ namespace FoodDiary.Infrastructure.Repositories
             return await _context.Pages.FindAsync(new object[] { id }, cancellationToken);
         }
 
-        public async Task<int> CreateAsync(Page page, CancellationToken cancellationToken)
+        public async Task<Page> CreateAsync(Page page, CancellationToken cancellationToken)
         {
             var entry = _context.Add(page);
             await _context.SaveChangesAsync(cancellationToken);
-            return entry.Entity.Id;
+            return entry.Entity;
         }
 
-        public async Task UpdateAsync(Page page, CancellationToken cancellationToken)
+        public async Task<Page> UpdateAsync(Page page, CancellationToken cancellationToken)
         {
-            _context.Update(page);
+            var entry = _context.Update(page);
             await _context.SaveChangesAsync(cancellationToken);
+            return entry.Entity;
         }
 
-        public async Task DeleteAsync(Page page, CancellationToken cancellationToken)
+        public async Task<Page> DeleteAsync(Page page, CancellationToken cancellationToken)
         {
-            _context.Remove(page);
+            var entry = _context.Remove(page);
             await _context.SaveChangesAsync(cancellationToken);
+            return entry.Entity;
         }
 
-        public async Task DeleteRangeAsync(ICollection<Page> pages, CancellationToken cancellationToken)
+        public async Task<ICollection<Page>> DeleteRangeAsync(ICollection<Page> pages, CancellationToken cancellationToken)
         {
             _context.RemoveRange(pages);
             await _context.SaveChangesAsync(cancellationToken);
+            return pages;
         }
 
         public async Task<bool> IsDuplicateAsync(DateTime pageDate, CancellationToken cancellationToken)
