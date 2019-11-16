@@ -18,9 +18,19 @@ namespace FoodDiary.Infrastructure.Repositories
             _context = context;
         }
 
-        public IQueryable<Page> Get()
+        public IQueryable<Page> GetQuery()
         {
             return _context.Pages.AsQueryable();
+        }
+
+        public IQueryable<Page> GetQueryWithoutTracking()
+        {
+            return GetQuery().AsNoTracking();
+        }
+
+        public async Task<List<Page>> GetListFromQuery(IQueryable<Page> pagesQuery, CancellationToken cancellationToken)
+        {
+            return await pagesQuery.ToListAsync(cancellationToken);
         }
 
         public async Task<Page> GetByIdAsync(int id, CancellationToken cancellationToken)

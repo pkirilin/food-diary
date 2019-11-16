@@ -9,7 +9,11 @@ namespace FoodDiary.Domain.Repositories
 {
     public interface IPageRepository
     {
-        IQueryable<Page> Get();
+        IQueryable<Page> GetQuery();
+
+        IQueryable<Page> GetQueryWithoutTracking();
+
+        Task<List<Page>> GetListFromQuery(IQueryable<Page> pagesQuery, CancellationToken cancellationToken);
 
         Task<Page> GetByIdAsync(int id, CancellationToken cancellationToken);
 
