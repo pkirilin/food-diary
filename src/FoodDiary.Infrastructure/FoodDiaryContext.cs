@@ -12,11 +12,11 @@ namespace FoodDiary.Infrastructure
 
         public DbSet<Page> Pages { get; set; }
 
-        public DbSet<Page> Notes { get; set; }
+        public DbSet<Note> Notes { get; set; }
 
-        public DbSet<Page> Products { get; set; }
+        public DbSet<Product> Products { get; set; }
 
-        public DbSet<Page> Categories { get; set; }
+        public DbSet<Category> Categories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
