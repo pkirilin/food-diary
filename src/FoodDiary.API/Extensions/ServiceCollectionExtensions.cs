@@ -11,11 +11,13 @@ namespace FoodDiary.API.Extensions
         public static void AddRepositories(this IServiceCollection services)
         {
             services.AddTransient<IPageRepository, PageRepository>();
+            services.AddTransient<INoteRepository, NoteRepository>();
         }
 
         public static void AddDomainServices(this IServiceCollection services)
         {
             services.AddTransient<IPageService, PageService>();
+            services.AddTransient<INoteService, NoteService>();
         }
     }
 }
