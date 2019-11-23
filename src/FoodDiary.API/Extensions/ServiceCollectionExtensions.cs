@@ -18,6 +18,7 @@ namespace FoodDiary.API.Extensions
         {
             services.AddTransient<IPageService, PageService>();
             services.AddTransient<INoteService, NoteService>();
+            services.AddTransient<INotesOrderService, NotesOrderService>();
         }
     }
 }

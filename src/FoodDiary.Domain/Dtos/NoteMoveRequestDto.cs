@@ -6,8 +6,8 @@ namespace FoodDiary.Domain.Dtos
     {
         public int NoteId { get; set; }
 
-        public MealType NewMeal { get; set; }
+        public MealType DestMeal { get; set; }
 
-        public int DisplayOrder { get; set; }
+        public int Position { get; set; }
     }
 }

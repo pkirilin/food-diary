@@ -14,18 +14,22 @@ namespace FoodDiary.Domain.Repositories
 
         Task<List<Note>> GetListFromQueryAsync(IQueryable<Note> notesQuery, CancellationToken cancellationToken);
 
+        Task<int> GetMaxDisplayOrderFromQueryAsync(IQueryable<Note> notesQuery, CancellationToken cancellationToken);
+
         Task<Note> GetByIdAsync(int id, CancellationToken cancellationToken);
 
         Task<IEnumerable<Note>> GetByPageIdAsync(int pageId, CancellationToken cancellationToken);
 
-        Task<Note> CreateAsync(Note note, CancellationToken cancellationToken);
+        Note Create(Note note);
 
-        Task<Note> UpdateAsync(Note note, CancellationToken cancellationToken);
+        Note Update(Note note);
 
-        Task UpdateRangeAsync(IEnumerable<Note> notes, CancellationToken cancellationToken);
+        Note Delete(Note note);
 
-        Task<Note> DeleteAsync(Note note, CancellationToken cancellationToken);
+        void UpdateRange(IEnumerable<Note> notes);
 
-        Task DeleteRangeAsync(IEnumerable<Note> notes, CancellationToken cancellationToken);
+        void DeleteRange(IEnumerable<Note> notes);
+
+        Task SaveChangesAsync(CancellationToken cancellationToken);
     }
 }

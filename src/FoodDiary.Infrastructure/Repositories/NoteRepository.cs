@@ -32,6 +32,13 @@ namespace FoodDiary.Infrastructure.Repositories
             return await notesQuery.ToListAsync(cancellationToken);
         }
 
+        public async Task<int> GetMaxDisplayOrderFromQueryAsync(IQueryable<Note> notesQuery, CancellationToken cancellationToken)
+        {
+            if (await notesQuery.AnyAsync())
+                return await notesQuery.MaxAsync(n => n.DisplayOrder, cancellationToken);
+            return -1;
+        }
+
         public async Task<Note> GetByIdAsync(int id, CancellationToken cancellationToken)
         {
             return await _context.Notes.FindAsync(new object[] { id }, cancellationToken);
@@ -46,36 +53,36 @@ namespace FoodDiary.Infrastructure.Repositories
                 .ToListAsync(cancellationToken);
         }
 
-        public async Task<Note> CreateAsync(Note note, CancellationToken cancellationToken)
+        public Note Create(Note note)
         {
             var entry = _context.Add(note);
-            await _context.SaveChangesAsync(cancellationToken);
             return entry.Entity;
         }
 
-        public async Task<Note> UpdateAsync(Note note, CancellationToken cancellationToken)
+        public Note Update(Note note)
         {
             var entry = _context.Update(note);
-            await _context.SaveChangesAsync(cancellationToken);
             return entry.Entity;
         }
 
-        public async Task UpdateRangeAsync(IEnumerable<Note> notes, CancellationToken cancellationToken)
-        {
-            _context.UpdateRange(notes);
-            await _context.SaveChangesAsync(cancellationToken);
-        }
-
-        public async Task<Note> DeleteAsync(Note note, CancellationToken cancellationToken)
+        public Note Delete(Note note)
         {
             var entry = _context.Remove(note);
-            await _context.SaveChangesAsync(cancellationToken);
             return entry.Entity;
         }
 
-        public async Task DeleteRangeAsync(IEnumerable<Note> notes, CancellationToken cancellationToken)
+        public void UpdateRange(IEnumerable<Note> notes)
+        {
+            _context.UpdateRange(notes);
+        }
+
+        public void DeleteRange(IEnumerable<Note> notes)
         {
             _context.RemoveRange(notes);
+        }
+
+        public async Task SaveChangesAsync(CancellationToken cancellationToken)
+        {
             await _context.SaveChangesAsync(cancellationToken);
         }
     }

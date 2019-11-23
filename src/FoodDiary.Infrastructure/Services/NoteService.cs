@@ -12,10 +12,12 @@ namespace FoodDiary.Infrastructure.Services
     public class NoteService : INoteService
     {
         private readonly INoteRepository _noteRepository;
+        private readonly INotesOrderService _notesOrderService;
 
-        public NoteService(INoteRepository noteRepository)
+        public NoteService(INoteRepository noteRepository, INotesOrderService notesOrderService)
         {
             _noteRepository = noteRepository;
+            _notesOrderService = notesOrderService;
         }
 
         public async Task<Note> GetNoteByIdAsync(int id, CancellationToken cancellationToken)
@@ -44,17 +46,25 @@ namespace FoodDiary.Infrastructure.Services
 
         public async Task<Note> CreateNoteAsync(Note note, CancellationToken cancellationToken)
         {
-            return await _noteRepository.CreateAsync(note, cancellationToken);
+            note.DisplayOrder = await _notesOrderService.GetOrderForNewNoteAsync(note, cancellationToken);
+            var addedNote = _noteRepository.Create(note);
+            await _noteRepository.SaveChangesAsync(cancellationToken);
+            return addedNote;
         }
 
         public async Task<Note> EditNoteAsync(Note note, CancellationToken cancellationToken)
         {
-            return await _noteRepository.UpdateAsync(note, cancellationToken);
+            var updatedNote = _noteRepository.Update(note);
+            await _noteRepository.SaveChangesAsync(cancellationToken);
+            return updatedNote;
         }
 
         public async Task<Note> DeleteNoteAsync(Note note, CancellationToken cancellationToken)
         {
-            return await _noteRepository.DeleteAsync(note, cancellationToken);
+            await _notesOrderService.ReorderNotesOnDeleteAsync(note, cancellationToken);
+            var deletedNote = _noteRepository.Delete(note);
+            await _noteRepository.SaveChangesAsync(cancellationToken);
+            return deletedNote;
         }
 
         public bool AllNotesFetched(IEnumerable<int> requestedIds, IEnumerable<Note> fetchedNotes)
@@ -64,12 +74,22 @@ namespace FoodDiary.Infrastructure.Services
 
         public async Task DeleteNotesAsync(IEnumerable<Note> notes, CancellationToken cancellationToken)
         {
-            await _noteRepository.DeleteRangeAsync(notes, cancellationToken);
+            await _notesOrderService.ReorderNotesOnDeleteRangeAsync(notes, cancellationToken);
+            _noteRepository.DeleteRange(notes);
+            await _noteRepository.SaveChangesAsync(cancellationToken);
         }
 
         public async Task<Note> MoveNoteAsync(NoteMoveRequestDto moveRequest, CancellationToken cancellationToken)
         {
-            throw new System.NotImplementedException();
+            var noteForMove = await _noteRepository.GetByIdAsync(moveRequest.NoteId, cancellationToken);
+            await _notesOrderService.ReorderNotesOnMoveAsync(noteForMove, moveRequest, cancellationToken);
+
+            noteForMove.MealType = moveRequest.DestMeal;
+            noteForMove.DisplayOrder = moveRequest.Position;
+
+            var movedNote = _noteRepository.Update(noteForMove);
+            await _noteRepository.SaveChangesAsync(cancellationToken);
+            return movedNote;
         }
     }
 }

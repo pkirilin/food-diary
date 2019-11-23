@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using FoodDiary.Domain.Enums;
 
 namespace FoodDiary.Domain.Dtos
@@ -8,8 +7,6 @@ namespace FoodDiary.Domain.Dtos
         public int Id { get; set; }
 
         public MealType MealType { get; set; }
-
-        public int DisplayOrder { get; set; }
 
         public int ProductId { get; set; }
 
