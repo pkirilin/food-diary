@@ -79,9 +79,16 @@ namespace FoodDiary.Infrastructure.Services
             await _noteRepository.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<Note> MoveNoteAsync(NoteMoveRequestDto moveRequest, CancellationToken cancellationToken)
+        public async Task<bool> NoteCanBeMoved(Note noteForMove, NoteMoveRequestDto moveRequest, CancellationToken cancellationToken)
         {
-            var noteForMove = await _noteRepository.GetByIdAsync(moveRequest.NoteId, cancellationToken);
+            var q = _noteRepository.GetQueryWithoutTracking()
+                .Where(n => n.PageId == noteForMove.PageId && n.MealType == moveRequest.DestMeal);
+            var maxDisplayOrder = await _noteRepository.GetMaxDisplayOrderFromQueryAsync(q, cancellationToken);
+            return moveRequest.Position >= 0 && moveRequest.Position <= maxDisplayOrder + 1;
+        }
+
+        public async Task<Note> MoveNoteAsync(Note noteForMove, NoteMoveRequestDto moveRequest, CancellationToken cancellationToken)
+        {
             await _notesOrderService.ReorderNotesOnMoveAsync(noteForMove, moveRequest, cancellationToken);
 
             noteForMove.MealType = moveRequest.DestMeal;

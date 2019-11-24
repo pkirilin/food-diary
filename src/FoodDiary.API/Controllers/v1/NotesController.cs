@@ -135,6 +135,7 @@ namespace FoodDiary.API.Controllers.v1
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> MoveNote([FromBody] NoteMoveRequestDto moveRequest, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
@@ -148,7 +149,12 @@ namespace FoodDiary.API.Controllers.v1
                 return NotFound();
             }
 
-            await _noteService.MoveNoteAsync(moveRequest, cancellationToken);
+            if (!await _noteService.NoteCanBeMoved(noteForMove, moveRequest, cancellationToken))
+            {
+                return BadRequest("Note cannot be moved on target meal group to the specified position");
+            }
+
+            await _noteService.MoveNoteAsync(noteForMove, moveRequest, cancellationToken);
             return Ok();
         }
     }
