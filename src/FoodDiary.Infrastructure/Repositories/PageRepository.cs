@@ -59,7 +59,7 @@ namespace FoodDiary.Infrastructure.Repositories
             return entry.Entity;
         }
 
-        public async Task<ICollection<Page>> DeleteRangeAsync(ICollection<Page> pages, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Page>> DeleteRangeAsync(IEnumerable<Page> pages, CancellationToken cancellationToken)
         {
             _context.RemoveRange(pages);
             await _context.SaveChangesAsync(cancellationToken);

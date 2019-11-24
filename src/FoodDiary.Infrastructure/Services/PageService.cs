@@ -19,7 +19,7 @@ namespace FoodDiary.Infrastructure.Services
             _pageRepository = pageRepository;
         }
 
-        public async Task<ICollection<Page>> SearchPagesAsync(PageFilterDto pageFilter, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Page>> SearchPagesAsync(PageFilterDto pageFilter, CancellationToken cancellationToken)
         {
             var searchPagesQuery = _pageRepository.GetQueryWithoutTracking();
 
@@ -44,7 +44,7 @@ namespace FoodDiary.Infrastructure.Services
             return await _pageRepository.GetByIdAsync(pageId, cancellationToken);
         }
 
-        public async Task<ICollection<Page>> GetPagesByIdsAsync(ICollection<int> ids, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Page>> GetPagesByIdsAsync(IEnumerable<int> ids, CancellationToken cancellationToken)
         {
             var pagesByIdsQuery = _pageRepository.GetQuery()
                 .Where(p => ids.Contains(p.Id));
@@ -77,7 +77,7 @@ namespace FoodDiary.Infrastructure.Services
             return await _pageRepository.DeleteAsync(page, cancellationToken);
         }
 
-        public async Task<ICollection<Page>> BatchDeletePagesAsync(ICollection<Page> pages, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Page>> BatchDeletePagesAsync(IEnumerable<Page> pages, CancellationToken cancellationToken)
         {
             return await _pageRepository.DeleteRangeAsync(pages, cancellationToken);
         }

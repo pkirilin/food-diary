@@ -23,7 +23,7 @@ namespace FoodDiary.Domain.Repositories
 
         Task<Page> DeleteAsync(Page page, CancellationToken cancellationToken);
 
-        Task<ICollection<Page>> DeleteRangeAsync(ICollection<Page> pages, CancellationToken cancellationToken);
+        Task<IEnumerable<Page>> DeleteRangeAsync(IEnumerable<Page> pages, CancellationToken cancellationToken);
 
         Task<bool> IsDuplicateAsync(DateTime pageDate, CancellationToken cancellationToken);
     }

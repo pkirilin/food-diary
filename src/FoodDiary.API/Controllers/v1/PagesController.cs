@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -110,13 +111,13 @@ namespace FoodDiary.API.Controllers.v1
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> DeletePages([FromBody] List<int> ids, CancellationToken cancellationToken)
         {
-            var pageCollectionForDelete = await _pageService.GetPagesByIdsAsync(ids, cancellationToken);
-            if (pageCollectionForDelete.Count != ids.Count)
+            var pagesForDelete = await _pageService.GetPagesByIdsAsync(ids, cancellationToken);
+            if (pagesForDelete.Count() != ids.Count)
             {
                 return BadRequest();
             }
 
-            await _pageService.BatchDeletePagesAsync(pageCollectionForDelete, cancellationToken);
+            await _pageService.BatchDeletePagesAsync(pagesForDelete, cancellationToken);
             return Ok();
         }
     }

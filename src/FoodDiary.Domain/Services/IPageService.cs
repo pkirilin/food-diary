@@ -8,11 +8,11 @@ namespace FoodDiary.Domain.Services
 {
     public interface IPageService
     {
-        Task<ICollection<Page>> SearchPagesAsync(PageFilterDto pageFilter, CancellationToken cancellationToken);
+        Task<IEnumerable<Page>> SearchPagesAsync(PageFilterDto pageFilter, CancellationToken cancellationToken);
 
         Task<Page> GetPageByIdAsync(int pageId, CancellationToken cancellationToken);
 
-        Task<ICollection<Page>> GetPagesByIdsAsync(ICollection<int> ids, CancellationToken cancellationToken);
+        Task<IEnumerable<Page>> GetPagesByIdsAsync(IEnumerable<int> ids, CancellationToken cancellationToken);
 
         Task<Page> CreatePageAsync(Page page, CancellationToken cancellationToken);
 
@@ -24,6 +24,6 @@ namespace FoodDiary.Domain.Services
 
         Task<Page> DeletePageAsync(Page page, CancellationToken cancellationToken);
 
-        Task<ICollection<Page>> BatchDeletePagesAsync(ICollection<Page> pages, CancellationToken cancellationToken);
+        Task<IEnumerable<Page>> BatchDeletePagesAsync(IEnumerable<Page> pages, CancellationToken cancellationToken);
     }
 }
