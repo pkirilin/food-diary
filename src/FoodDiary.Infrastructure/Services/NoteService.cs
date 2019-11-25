@@ -38,7 +38,7 @@ namespace FoodDiary.Infrastructure.Services
             );
         }
 
-        public async Task<bool> IsNoteDataValidAsync(NoteCreateEditDto noteData)
+        public async Task<bool> IsNoteDataValidAsync(NoteCreateEditDto noteData, CancellationToken cancellationToken)
         {
             // TODO: add checking product
             return true;

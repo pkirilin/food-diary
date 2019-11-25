@@ -14,7 +14,7 @@ namespace FoodDiary.Domain.Services
 
         Task<IEnumerable<Note>> GetNotesByIdsAsync(IEnumerable<int> ids, CancellationToken cancellationToken);
 
-        Task<bool> IsNoteDataValidAsync(NoteCreateEditDto noteData);
+        Task<bool> IsNoteDataValidAsync(NoteCreateEditDto noteData, CancellationToken cancellationToken);
 
         Task<Note> CreateNoteAsync(Note note, CancellationToken cancellationToken);
 

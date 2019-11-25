@@ -62,7 +62,7 @@ namespace FoodDiary.API.Controllers.v1
                 return BadRequest(ModelState);
             }
 
-            if (!await _noteService.IsNoteDataValidAsync(newNote))
+            if (!await _noteService.IsNoteDataValidAsync(newNote, cancellationToken))
             {
                 return BadRequest();
             }
@@ -85,7 +85,7 @@ namespace FoodDiary.API.Controllers.v1
                 return BadRequest(ModelState);
             }
 
-            if (!await _noteService.IsNoteDataValidAsync(updatedNote))
+            if (!await _noteService.IsNoteDataValidAsync(updatedNote, cancellationToken))
             {
                 return BadRequest();
             }
