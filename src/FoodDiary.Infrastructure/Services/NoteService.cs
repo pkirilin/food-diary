@@ -79,7 +79,7 @@ namespace FoodDiary.Infrastructure.Services
             await _noteRepository.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<bool> NoteCanBeMoved(Note noteForMove, NoteMoveRequestDto moveRequest, CancellationToken cancellationToken)
+        public async Task<bool> NoteCanBeMovedAsync(Note noteForMove, NoteMoveRequestDto moveRequest, CancellationToken cancellationToken)
         {
             var q = _noteRepository.GetQueryWithoutTracking()
                 .Where(n => n.PageId == noteForMove.PageId && n.MealType == moveRequest.DestMeal);

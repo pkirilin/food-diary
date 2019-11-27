@@ -26,7 +26,7 @@ namespace FoodDiary.Domain.Services
 
         Task DeleteNotesAsync(IEnumerable<Note> notes, CancellationToken cancellationToken);
 
-        Task<bool> NoteCanBeMoved(Note noteForMove, NoteMoveRequestDto moveRequest, CancellationToken cancellationToken);
+        Task<bool> NoteCanBeMovedAsync(Note noteForMove, NoteMoveRequestDto moveRequest, CancellationToken cancellationToken);
 
         Task<Note> MoveNoteAsync(Note noteForMove, NoteMoveRequestDto moveRequest, CancellationToken cancellationToken);
     }

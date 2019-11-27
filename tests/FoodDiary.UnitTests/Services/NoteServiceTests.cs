@@ -173,7 +173,7 @@ namespace FoodDiary.UnitTests.Services
             _noteRepositoryMock.Setup(r => r.GetMaxDisplayOrderFromQueryAsync(It.IsAny<IQueryable<Note>>(), default))
                 .ReturnsAsync(expectedMaxDisplayOrder);
 
-            var result = await NoteService.NoteCanBeMoved(noteForMove, moveRequest, default);
+            var result = await NoteService.NoteCanBeMovedAsync(noteForMove, moveRequest, default);
 
             _noteRepositoryMock.Verify(r => r.GetQueryWithoutTracking(), Times.Once);
             _noteRepositoryMock.Verify(r => r.GetMaxDisplayOrderFromQueryAsync(It.IsAny<IQueryable<Note>>(), default), Times.Once);

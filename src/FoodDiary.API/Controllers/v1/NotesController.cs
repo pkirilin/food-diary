@@ -149,7 +149,7 @@ namespace FoodDiary.API.Controllers.v1
                 return NotFound();
             }
 
-            if (!await _noteService.NoteCanBeMoved(noteForMove, moveRequest, cancellationToken))
+            if (!await _noteService.NoteCanBeMovedAsync(noteForMove, moveRequest, cancellationToken))
             {
                 return BadRequest("Note cannot be moved on target meal group to the specified position");
             }
