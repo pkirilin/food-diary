@@ -26,6 +26,9 @@ namespace FoodDiary.API
 
             CreateMap<IEnumerable<Note>, NotesForPageResponseDto>()
                 .ConvertUsing<NoteEntitiesToNotesForPageConverter>();
+
+            CreateMap<Category, CategoryItemDto>();
+            CreateMap<CategoryCreateEditDto, Category>();
         }
     }
 }
