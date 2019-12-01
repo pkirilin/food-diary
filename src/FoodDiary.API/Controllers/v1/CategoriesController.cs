@@ -93,7 +93,7 @@ namespace FoodDiary.API.Controllers.v1
         [HttpDelete("{id}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> DeleteCategory(int id, CancellationToken cancellationToken)
+        public async Task<IActionResult> DeleteCategory([FromRoute] int id, CancellationToken cancellationToken)
         {
             var categoryForDelete = await _categoryService.GetCategoryByIdAsync(id, cancellationToken);
             if (categoryForDelete == null)
