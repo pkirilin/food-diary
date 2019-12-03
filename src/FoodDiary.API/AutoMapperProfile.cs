@@ -29,6 +29,9 @@ namespace FoodDiary.API
 
             CreateMap<Category, CategoryItemDto>();
             CreateMap<CategoryCreateEditDto, Category>();
+
+            CreateMap<Product, ProductItemDto>();
+            CreateMap<ProductCreateEditDto, Product>();
         }
     }
 }
