@@ -59,7 +59,7 @@ namespace FoodDiary.Infrastructure.Services
 
         public async Task<ValidationResultDto> ValidateProductAsync(ProductCreateEditDto productData, CancellationToken cancellationToken)
         {
-            if (!await _productRepository.IsDuplicateAsync(productData.Name, cancellationToken))
+            if (await _productRepository.IsDuplicateAsync(productData.Name, cancellationToken))
             {
                 return new ValidationResultDto(false, $"Product with the name '{productData.Name}' already exists");
             }
