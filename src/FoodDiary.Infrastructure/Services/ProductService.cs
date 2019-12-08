@@ -77,7 +77,7 @@ namespace FoodDiary.Infrastructure.Services
         public ValidationResultDto AllProductsFetched(IEnumerable<Product> fetchedProducts, IEnumerable<int> requestedIds)
         {
             var fetchedProductsIds = fetchedProducts.Select(p => p.Id);
-            if (fetchedProductsIds.Except(requestedIds).Any())
+            if (requestedIds.Except(fetchedProductsIds).Any())
             {
                 return new ValidationResultDto(false, "Products cannot be deleted: fetched product ids mismatch requested ids");
             }
