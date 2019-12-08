@@ -13,6 +13,7 @@ namespace FoodDiary.API.Extensions
             services.AddTransient<IPageRepository, PageRepository>();
             services.AddTransient<INoteRepository, NoteRepository>();
             services.AddTransient<ICategoryRepository, CategoryRepository>();
+            services.AddTransient<IProductRepository, ProductRepository>();
         }
 
         public static void AddDomainServices(this IServiceCollection services)
@@ -21,6 +22,7 @@ namespace FoodDiary.API.Extensions
             services.AddTransient<INoteService, NoteService>();
             services.AddTransient<INotesOrderService, NotesOrderService>();
             services.AddTransient<ICategoryService, CategoryService>();
+            services.AddTransient<IProductService, ProductService>();
         }
     }
 }

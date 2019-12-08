@@ -77,6 +77,10 @@ namespace FoodDiary.API.Controllers.v1
         }
 
         [HttpPut]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> EditProduct([FromBody] ProductCreateEditDto productData, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
@@ -102,6 +106,8 @@ namespace FoodDiary.API.Controllers.v1
         }
 
         [HttpDelete("{id}")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> DeleteProduct([FromRoute] int id, CancellationToken cancellationToken)
         {
             var productForDelete = await _productService.GetProductByIdAsync(id, cancellationToken);
@@ -115,6 +121,8 @@ namespace FoodDiary.API.Controllers.v1
         }
 
         [HttpDelete("batch")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> DeleteProducts([FromBody] IEnumerable<int> ids, CancellationToken cancellationToken)
         {
             var productsForDelete = await _productService.GetProductsByIdsAsync(ids, cancellationToken);
