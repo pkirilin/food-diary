@@ -15,7 +15,7 @@ namespace FoodDiary.Infrastructure.Repositories
 
         public PageRepository(FoodDiaryContext context)
         {
-            _context = context;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         public IQueryable<Page> GetQuery()

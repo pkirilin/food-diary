@@ -7,6 +7,7 @@ using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Repositories;
 using FoodDiary.Domain.Services;
 using FoodDiary.Domain.Enums;
+using System;
 
 namespace FoodDiary.Infrastructure.Services
 {
@@ -16,7 +17,7 @@ namespace FoodDiary.Infrastructure.Services
 
         public PageService(IPageRepository pageRepository)
         {
-            _pageRepository = pageRepository;
+            _pageRepository = pageRepository ?? throw new ArgumentNullException(nameof(pageRepository));
         }
 
         public async Task<IEnumerable<Page>> SearchPagesAsync(PageFilterDto pageFilter, CancellationToken cancellationToken)

@@ -16,7 +16,7 @@ namespace FoodDiary.Infrastructure.Services
 
         public ProductService(IProductRepository productRepository)
         {
-            _productRepository = productRepository;
+            _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
         }
 
         public async Task<int> CountAllProductsAsync(CancellationToken cancellationToken)

@@ -17,7 +17,7 @@ namespace FoodDiary.Infrastructure.Services
 
         public NotesOrderService(INoteRepository noteRepository)
         {
-            _noteRepository = noteRepository;
+            _noteRepository = noteRepository ?? throw new ArgumentNullException(nameof(noteRepository));
         }
 
         public async Task<int> GetOrderForNewNoteAsync(Note note, CancellationToken cancellationToken)

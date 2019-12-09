@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -20,9 +21,9 @@ namespace FoodDiary.Infrastructure.Services
             IProductRepository productRepository,
             INotesOrderService notesOrderService)
         {
-            _noteRepository = noteRepository;
-            _productRepository = productRepository;
-            _notesOrderService = notesOrderService;
+            _noteRepository = noteRepository ?? throw new ArgumentNullException(nameof(noteRepository));
+            _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
+            _notesOrderService = notesOrderService ?? throw new ArgumentNullException(nameof(notesOrderService));
         }
 
         public async Task<Note> GetNoteByIdAsync(int id, CancellationToken cancellationToken)
