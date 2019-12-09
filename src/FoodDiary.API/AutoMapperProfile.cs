@@ -11,8 +11,7 @@ namespace FoodDiary.API
     {
         public AutoMapperProfile()
         {
-            CreateMap<PageCreateDto, Page>();
-            CreateMap<PageEditDto, Page>();
+            CreateMap<PageCreateEditDto, Page>();
 
             CreateMap<Page, PageItemDto>().ForMember(
                 dest => dest.Date,

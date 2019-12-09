@@ -56,7 +56,7 @@ namespace FoodDiary.Infrastructure.Services
             return await _pageRepository.CreateAsync(page, cancellationToken);
         }
 
-        public async Task<bool> PageCanBeCreatedAsync(PageCreateDto createPageInfo, CancellationToken cancellationToken)
+        public async Task<bool> PageCanBeCreatedAsync(PageCreateEditDto createPageInfo, CancellationToken cancellationToken)
         {
             return !await _pageRepository.IsDuplicateAsync(createPageInfo.Date, cancellationToken);
         }
@@ -66,7 +66,7 @@ namespace FoodDiary.Infrastructure.Services
             return await _pageRepository.UpdateAsync(page, cancellationToken);
         }
 
-        public async Task<bool> PageCanBeUpdatedAsync(PageEditDto updatedPageInfo, Page originalPage, CancellationToken cancellationToken)
+        public async Task<bool> PageCanBeUpdatedAsync(PageCreateEditDto updatedPageInfo, Page originalPage, CancellationToken cancellationToken)
         {
             return !originalPage.HasChanges(updatedPageInfo.Date)
                 || (originalPage.HasChanges(updatedPageInfo.Date) && !await _pageRepository.IsDuplicateAsync(updatedPageInfo.Date, cancellationToken));

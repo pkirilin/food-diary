@@ -1,10 +1,12 @@
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace FoodDiary.Domain.Dtos
 {
-    public class PageEditDto : PageCreateDto
+    public class PageCreateEditDto
     {
-        [Required]
         public int Id { get; set; }
+
+        public DateTime Date { get; set; }
     }
 }

@@ -78,7 +78,7 @@ namespace FoodDiary.UnitTests.Controllers
         [Fact]
         public async void CreatePage_CreatesPageSuccessfully_WhenPageCanBeCreated()
         {
-            var createPageInfo = _fixture.Create<PageCreateDto>();
+            var createPageInfo = _fixture.Create<PageCreateEditDto>();
 
             _pageServiceMock.Setup(s => s.PageCanBeCreatedAsync(createPageInfo, default))
                 .ReturnsAsync(true);
@@ -96,7 +96,7 @@ namespace FoodDiary.UnitTests.Controllers
         [Fact]
         public async void CreatePage_ReturnsBadRequest_WhenModelStateIsInvalid()
         {
-            var createPageInfo = _fixture.Create<PageCreateDto>();
+            var createPageInfo = _fixture.Create<PageCreateEditDto>();
             var controller = PagesController;
             controller.ModelState.AddModelError("some", "error");
 
@@ -111,7 +111,7 @@ namespace FoodDiary.UnitTests.Controllers
         [Fact]
         public async void CreatePage_ReturnsBadRequest_WhenPageCannotBeCreated()
         {
-            var createPageInfo = _fixture.Create<PageCreateDto>();
+            var createPageInfo = _fixture.Create<PageCreateEditDto>();
 
             _pageServiceMock.Setup(s => s.PageCanBeCreatedAsync(createPageInfo, default))
                 .ReturnsAsync(false);
@@ -129,7 +129,7 @@ namespace FoodDiary.UnitTests.Controllers
         [Fact]
         public async void EditPage_EditsPageSuccessfully_WhenPageCanBeUpdated()
         {
-            var updatedPageInfo = _fixture.Create<PageEditDto>();
+            var updatedPageInfo = _fixture.Create<PageCreateEditDto>();
             var originalPage = _fixture.Create<Page>();
 
             _pageServiceMock.Setup(s => s.GetPageByIdAsync(updatedPageInfo.Id, default))
@@ -151,7 +151,7 @@ namespace FoodDiary.UnitTests.Controllers
         [Fact]
         public async void EditPage_ReturnsBadRequest_WhenModelStateIsInvalid()
         {
-            var updatedPageInfo = _fixture.Create<PageEditDto>();
+            var updatedPageInfo = _fixture.Create<PageCreateEditDto>();
             var originalPage = _fixture.Create<Page>();
             var controller = PagesController;
             controller.ModelState.AddModelError("some", "error");
@@ -168,7 +168,7 @@ namespace FoodDiary.UnitTests.Controllers
         [Fact]
         public async void EditPage_ReturnsBadRequest_WhenPageCannotBeEdited()
         {
-            var updatedPageInfo = _fixture.Create<PageEditDto>();
+            var updatedPageInfo = _fixture.Create<PageCreateEditDto>();
             var originalPage = _fixture.Create<Page>();
 
             _pageServiceMock.Setup(s => s.GetPageByIdAsync(updatedPageInfo.Id, default))
@@ -190,7 +190,7 @@ namespace FoodDiary.UnitTests.Controllers
         [Fact]
         public async void EditPage_ReturnsNotFound_WhenRequestedPageNotFound()
         {
-            var updatedPageInfo = _fixture.Create<PageEditDto>();
+            var updatedPageInfo = _fixture.Create<PageCreateEditDto>();
             var originalPage = _fixture.Create<Page>();
 
             _pageServiceMock.Setup(s => s.GetPageByIdAsync(updatedPageInfo.Id, default))

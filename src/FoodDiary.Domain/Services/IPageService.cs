@@ -16,11 +16,11 @@ namespace FoodDiary.Domain.Services
 
         Task<Page> CreatePageAsync(Page page, CancellationToken cancellationToken);
 
-        Task<bool> PageCanBeCreatedAsync(PageCreateDto createPageInfo, CancellationToken cancellationToken);
+        Task<bool> PageCanBeCreatedAsync(PageCreateEditDto createPageInfo, CancellationToken cancellationToken);
 
         Task<Page> EditPageAsync(Page page, CancellationToken cancellationToken);
 
-        Task<bool> PageCanBeUpdatedAsync(PageEditDto updatedPageInfo, Page originalPage, CancellationToken cancellationToken);
+        Task<bool> PageCanBeUpdatedAsync(PageCreateEditDto updatedPageInfo, Page originalPage, CancellationToken cancellationToken);
 
         Task<Page> DeletePageAsync(Page page, CancellationToken cancellationToken);
 

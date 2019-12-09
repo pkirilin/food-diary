@@ -177,7 +177,7 @@ namespace FoodDiary.UnitTests.Services
         [Fact]
         public async void PageCanBeCreated_ReturnsFalse_WhenPageHasDuplicateDate()
         {
-            var createPageInfo = _fixture.Create<PageCreateDto>();
+            var createPageInfo = _fixture.Create<PageCreateEditDto>();
 
             _pageRepositoryMock.Setup(r => r.IsDuplicateAsync(createPageInfo.Date, default))
                 .ReturnsAsync(true);
@@ -192,7 +192,7 @@ namespace FoodDiary.UnitTests.Services
         public async void PageCanBeUpdated_ReturnsFalse_WhenPageHasChangedAndHasDuplicateDate()
         {
             var originalPage = _fixture.Create<Page>();
-            var editPageInfo = _fixture.Build<PageEditDto>()
+            var editPageInfo = _fixture.Build<PageCreateEditDto>()
                 .With(p => p.Id, originalPage.Id)
                 .With(p => p.Date, originalPage.Date.AddDays(1))
                 .Create();

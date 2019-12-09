@@ -45,7 +45,7 @@ namespace FoodDiary.API.Controllers.v1
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> CreatePage([FromBody] PageCreateDto request, CancellationToken cancellationToken)
+        public async Task<IActionResult> CreatePage([FromBody] PageCreateEditDto request, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
             {
@@ -68,7 +68,7 @@ namespace FoodDiary.API.Controllers.v1
         [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> EditPage([FromBody] PageEditDto request, CancellationToken cancellationToken)
+        public async Task<IActionResult> EditPage([FromBody] PageCreateEditDto request, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
             {
