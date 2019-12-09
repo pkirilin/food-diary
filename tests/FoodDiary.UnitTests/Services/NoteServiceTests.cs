@@ -15,12 +15,14 @@ namespace FoodDiary.UnitTests.Services
     public class NoteServiceTests
     {
         private readonly Mock<INoteRepository> _noteRepositoryMock;
+        private readonly Mock<IProductRepository> _productRepositoryMock;
         private readonly Mock<INotesOrderService> _notesOrderServiceMock;
         private readonly IFixture _fixture;
 
         public NoteServiceTests()
         {
             _noteRepositoryMock = new Mock<INoteRepository>();
+            _productRepositoryMock = new Mock<IProductRepository>();
             _notesOrderServiceMock = new Mock<INotesOrderService>();
             _fixture = SetupFixture();
         }
@@ -32,7 +34,7 @@ namespace FoodDiary.UnitTests.Services
             return _fixture;
         }
 
-        public INoteService NoteService => new NoteService(_noteRepositoryMock.Object, _notesOrderServiceMock.Object);
+        public INoteService NoteService => new NoteService(_noteRepositoryMock.Object, _productRepositoryMock.Object, _notesOrderServiceMock.Object);
 
         [Fact]
         public async void GetNoteByIdAsync_ReturnsNoteWithRequestedId()
@@ -84,9 +86,13 @@ namespace FoodDiary.UnitTests.Services
         public async void IsNoteDataValidAsync_ReturnsTrue_WhenNoteDataIsValid()
         {
             var noteData = _fixture.Create<NoteCreateEditDto>();
+            var productForNote = _fixture.Create<Product>();
+            _productRepositoryMock.Setup(r => r.GetByIdAsync(noteData.ProductId, default))
+                .ReturnsAsync(productForNote);
 
             var result = await NoteService.IsNoteDataValidAsync(noteData, default);
 
+            _productRepositoryMock.Verify(r => r.GetByIdAsync(noteData.ProductId, default), Times.Once);
             result.Should().BeTrue();
         }
 

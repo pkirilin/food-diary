@@ -12,11 +12,16 @@ namespace FoodDiary.Infrastructure.Services
     public class NoteService : INoteService
     {
         private readonly INoteRepository _noteRepository;
+        private readonly IProductRepository _productRepository;
         private readonly INotesOrderService _notesOrderService;
 
-        public NoteService(INoteRepository noteRepository, INotesOrderService notesOrderService)
+        public NoteService(
+            INoteRepository noteRepository,
+            IProductRepository productRepository,
+            INotesOrderService notesOrderService)
         {
             _noteRepository = noteRepository;
+            _productRepository = productRepository;
             _notesOrderService = notesOrderService;
         }
 
@@ -40,7 +45,12 @@ namespace FoodDiary.Infrastructure.Services
 
         public async Task<bool> IsNoteDataValidAsync(NoteCreateEditDto noteData, CancellationToken cancellationToken)
         {
-            // TODO: add checking product
+            var productForNote = await _productRepository.GetByIdAsync(noteData.ProductId, cancellationToken);
+            if (productForNote == null)
+            {
+                return false;
+            }
+
             return true;
         }
 
