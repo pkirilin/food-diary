@@ -12,9 +12,9 @@ namespace FoodDiary.Domain.Services
 
         Task<Category> GetCategoryByIdAsync(int id, CancellationToken cancellationToken);
 
-        Task<bool> CategoryCanBeCreatedAsync(CategoryCreateEditDto newCategoryInfo, CancellationToken cancellationToken);
+        Task<ValidationResultDto> ValidateCategoryAsync(CategoryCreateEditDto newCategoryInfo, CancellationToken cancellationToken);
 
-        Task<bool> CategoryCanBeUpdatedAsync(CategoryCreateEditDto updatedCategoryInfo, Category originalCategory, CancellationToken cancellationToken);
+        bool IsEditedCategoryValid(CategoryCreateEditDto updatedCategoryInfo, Category originalCategory, ValidationResultDto editedCategoryValidationResult);
 
         Task<Category> CreateCategoryAsync(Category category, CancellationToken cancellationToken);
 

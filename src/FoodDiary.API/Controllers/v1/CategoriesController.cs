@@ -43,7 +43,6 @@ namespace FoodDiary.API.Controllers.v1
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
-        [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> CreateCategory([FromBody] CategoryCreateEditDto newCateroryInfo, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
@@ -53,9 +52,11 @@ namespace FoodDiary.API.Controllers.v1
 
             var category = _mapper.Map<Category>(newCateroryInfo);
 
-            if (!await _categoryService.CategoryCanBeCreatedAsync(newCateroryInfo, cancellationToken))
+            var categoryValidationResult = await _categoryService.ValidateCategoryAsync(newCateroryInfo, cancellationToken);
+            if (!categoryValidationResult.IsValid)
             {
-                return BadRequest($"Category with the name '{newCateroryInfo.Name}' already exists");
+                ModelState.AddModelError(categoryValidationResult.ErrorKey, categoryValidationResult.ErrorMessage);
+                return BadRequest(ModelState);
             }
 
             await _categoryService.CreateCategoryAsync(category, cancellationToken);
@@ -66,7 +67,6 @@ namespace FoodDiary.API.Controllers.v1
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> EditCategory([FromBody] CategoryCreateEditDto updatedCategoryInfo, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
@@ -79,10 +79,11 @@ namespace FoodDiary.API.Controllers.v1
             {
                 return NotFound();
             }
-
-            if (!await _categoryService.CategoryCanBeUpdatedAsync(updatedCategoryInfo, originalCategory, cancellationToken))
+            var categoryValidationResult = await _categoryService.ValidateCategoryAsync(updatedCategoryInfo, cancellationToken);
+            if (!_categoryService.IsEditedCategoryValid(updatedCategoryInfo, originalCategory, categoryValidationResult))
             {
-                return BadRequest($"Category with the name '{updatedCategoryInfo.Name}' already exists");
+                ModelState.AddModelError(categoryValidationResult.ErrorKey, categoryValidationResult.ErrorMessage);
+                return BadRequest(ModelState);
             }
 
             originalCategory = _mapper.Map(updatedCategoryInfo, originalCategory);

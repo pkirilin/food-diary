@@ -103,12 +103,15 @@ namespace FoodDiary.UnitTests.Controllers
         public async void CreateNote_CreatesNoteSuccessfully_WhenNoteDataIsValid()
         {
             var note = _fixture.Create<NoteCreateEditDto>();
-            _noteServiceMock.Setup(s => s.IsNoteDataValidAsync(note, default))
-                .ReturnsAsync(true);
+            var validationResult = _fixture.Build<ValidationResultDto>()
+                .With(r => r.IsValid, true)
+                .Create();
+            _noteServiceMock.Setup(s => s.ValidateNoteDataAsync(note, default))
+                .ReturnsAsync(validationResult);
 
             var result = await NotesController.CreateNote(note, default);
 
-            _noteServiceMock.Verify(s => s.IsNoteDataValidAsync(note, default), Times.Once);
+            _noteServiceMock.Verify(s => s.ValidateNoteDataAsync(note, default), Times.Once);
             _noteServiceMock.Verify(s => s.CreateNoteAsync(It.IsNotNull<Note>(), default), Times.Once);
             result.Should().BeOfType<OkResult>();
         }
@@ -122,7 +125,7 @@ namespace FoodDiary.UnitTests.Controllers
 
             var result = await controller.CreateNote(note, default);
 
-            _noteServiceMock.Verify(s => s.IsNoteDataValidAsync(note, default), Times.Never);
+            _noteServiceMock.Verify(s => s.ValidateNoteDataAsync(note, default), Times.Never);
             _noteServiceMock.Verify(s => s.CreateNoteAsync(It.IsNotNull<Note>(), default), Times.Never);
             result.Should().BeOfType<BadRequestObjectResult>();
         }
@@ -131,14 +134,17 @@ namespace FoodDiary.UnitTests.Controllers
         public async void CreateNote_ReturnsBadRequest_WhenNoteDataIsInvalid()
         {
             var note = _fixture.Create<NoteCreateEditDto>();
-            _noteServiceMock.Setup(s => s.IsNoteDataValidAsync(note, default))
-                .ReturnsAsync(false);
+            var validationResult = _fixture.Build<ValidationResultDto>()
+               .With(r => r.IsValid, false)
+               .Create();
+            _noteServiceMock.Setup(s => s.ValidateNoteDataAsync(note, default))
+                .ReturnsAsync(validationResult);
 
             var result = await NotesController.CreateNote(note, default);
 
-            _noteServiceMock.Verify(s => s.IsNoteDataValidAsync(note, default), Times.Once);
+            _noteServiceMock.Verify(s => s.ValidateNoteDataAsync(note, default), Times.Once);
             _noteServiceMock.Verify(s => s.CreateNoteAsync(It.IsNotNull<Note>(), default), Times.Never);
-            result.Should().BeOfType<BadRequestResult>();
+            result.Should().BeOfType<BadRequestObjectResult>();
         }
 
         [Fact]
@@ -146,14 +152,17 @@ namespace FoodDiary.UnitTests.Controllers
         {
             var noteData = _fixture.Create<NoteCreateEditDto>();
             var noteForUpdate = _fixture.Create<Note>();
-            _noteServiceMock.Setup(s => s.IsNoteDataValidAsync(noteData, default))
-                .ReturnsAsync(true);
+            var validationResult = _fixture.Build<ValidationResultDto>()
+               .With(r => r.IsValid, true)
+               .Create();
+            _noteServiceMock.Setup(s => s.ValidateNoteDataAsync(noteData, default))
+                .ReturnsAsync(validationResult);
             _noteServiceMock.Setup(s => s.GetNoteByIdAsync(noteData.Id, default))
                 .ReturnsAsync(noteForUpdate);
 
             var result = await NotesController.EditNote(noteData, default);
 
-            _noteServiceMock.Verify(s => s.IsNoteDataValidAsync(noteData, default), Times.Once);
+            _noteServiceMock.Verify(s => s.ValidateNoteDataAsync(noteData, default), Times.Once);
             _noteServiceMock.Verify(s => s.GetNoteByIdAsync(noteData.Id, default), Times.Once);
             _noteServiceMock.Verify(s => s.EditNoteAsync(noteForUpdate, default), Times.Once);
             result.Should().BeOfType<OkResult>();
@@ -168,7 +177,7 @@ namespace FoodDiary.UnitTests.Controllers
 
             var result = await controller.EditNote(noteData, default);
 
-            _noteServiceMock.Verify(s => s.IsNoteDataValidAsync(noteData, default), Times.Never);
+            _noteServiceMock.Verify(s => s.ValidateNoteDataAsync(noteData, default), Times.Never);
             _noteServiceMock.Verify(s => s.GetNoteByIdAsync(noteData.Id, default), Times.Never);
             _noteServiceMock.Verify(s => s.EditNoteAsync(It.IsAny<Note>(), default), Times.Never);
             result.Should().BeOfType<BadRequestObjectResult>();
@@ -178,29 +187,35 @@ namespace FoodDiary.UnitTests.Controllers
         public async void EditNote_ReturnsBadRequest_WhenNoteDataIsInvalid()
         {
             var noteData = _fixture.Create<NoteCreateEditDto>();
-            _noteServiceMock.Setup(s => s.IsNoteDataValidAsync(noteData, default))
-                .ReturnsAsync(false);
+            var validationResult = _fixture.Build<ValidationResultDto>()
+               .With(r => r.IsValid, false)
+               .Create();
+            _noteServiceMock.Setup(s => s.ValidateNoteDataAsync(noteData, default))
+                .ReturnsAsync(validationResult);
 
             var result = await NotesController.EditNote(noteData, default);
 
-            _noteServiceMock.Verify(s => s.IsNoteDataValidAsync(noteData, default), Times.Once);
+            _noteServiceMock.Verify(s => s.ValidateNoteDataAsync(noteData, default), Times.Once);
             _noteServiceMock.Verify(s => s.GetNoteByIdAsync(noteData.Id, default), Times.Never);
             _noteServiceMock.Verify(s => s.EditNoteAsync(It.IsAny<Note>(), default), Times.Never);
-            result.Should().BeOfType<BadRequestResult>();
+            result.Should().BeOfType<BadRequestObjectResult>();
         }
 
         [Fact]
         public async void EditNote_ReturnsNotFound_WhenRequestedNoteDoesNotExist()
         {
             var noteData = _fixture.Create<NoteCreateEditDto>();
-            _noteServiceMock.Setup(s => s.IsNoteDataValidAsync(noteData, default))
-                .ReturnsAsync(true);
+            var validationResult = _fixture.Build<ValidationResultDto>()
+              .With(r => r.IsValid, true)
+              .Create();
+            _noteServiceMock.Setup(s => s.ValidateNoteDataAsync(noteData, default))
+                .ReturnsAsync(validationResult);
             _noteServiceMock.Setup(s => s.GetNoteByIdAsync(noteData.Id, default))
                 .ReturnsAsync(null as Note);
 
             var result = await NotesController.EditNote(noteData, default);
 
-            _noteServiceMock.Verify(s => s.IsNoteDataValidAsync(noteData, default), Times.Once);
+            _noteServiceMock.Verify(s => s.ValidateNoteDataAsync(noteData, default), Times.Once);
             _noteServiceMock.Verify(s => s.GetNoteByIdAsync(noteData.Id, default), Times.Once);
             _noteServiceMock.Verify(s => s.EditNoteAsync(It.IsAny<Note>(), default), Times.Never);
             result.Should().BeOfType<NotFoundResult>();
@@ -269,7 +284,7 @@ namespace FoodDiary.UnitTests.Controllers
             _noteServiceMock.Verify(s => s.GetNotesByIdsAsync(notesForDeleteIds, default), Times.Once);
             _noteServiceMock.Verify(s => s.AllNotesFetched(notesForDeleteIds, notesForDelete), Times.Once);
             _noteServiceMock.Verify(s => s.DeleteNotesAsync(notesForDelete, default), Times.Never);
-            result.Should().BeOfType<BadRequestResult>();
+            result.Should().BeOfType<BadRequestObjectResult>();
         }
 
         [Fact]

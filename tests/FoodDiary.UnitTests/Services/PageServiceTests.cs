@@ -11,6 +11,7 @@ using Xunit;
 using FoodDiary.Domain.Enums;
 using AutoFixture.Xunit2;
 using FoodDiary.Domain.Dtos;
+using System;
 
 namespace FoodDiary.UnitTests.Services
 {
@@ -175,35 +176,40 @@ namespace FoodDiary.UnitTests.Services
         }
 
         [Fact]
-        public async void PageCanBeCreated_ReturnsFalse_WhenPageHasDuplicateDate()
+        public async void ValidatePageAsync_ReturnsFalse_WhenPageHasDuplicateDate()
         {
             var createPageInfo = _fixture.Create<PageCreateEditDto>();
 
             _pageRepositoryMock.Setup(r => r.IsDuplicateAsync(createPageInfo.Date, default))
                 .ReturnsAsync(true);
 
-            var result = await PageService.PageCanBeCreatedAsync(createPageInfo, default);
+            var result = await PageService.ValidatePageAsync(createPageInfo, default);
 
             _pageRepositoryMock.Verify(r => r.IsDuplicateAsync(createPageInfo.Date, default), Times.Once);
-            result.Should().BeFalse();
+            result.IsValid.Should().BeFalse();
         }
 
-        [Fact]
-        public async void PageCanBeUpdated_ReturnsFalse_WhenPageHasChangedAndHasDuplicateDate()
+        [Theory]
+        [InlineData("2019-12-11", "2019-12-12", true)]
+        [InlineData("2019-12-11", "2019-12-11", true)]
+        public void IsEditedPageValid_ReturnsTrue_WhenPageIsValidAfterItWasEdited(
+            string oldPageDateStr,
+            string newPageDateStr,
+            bool isValid)
         {
-            var originalPage = _fixture.Create<Page>();
-            var editPageInfo = _fixture.Build<PageCreateEditDto>()
-                .With(p => p.Id, originalPage.Id)
-                .With(p => p.Date, originalPage.Date.AddDays(1))
+            var originalPage = _fixture.Build<Page>()
+                .With(p => p.Date, DateTime.Parse(oldPageDateStr))
+                .Create();
+            var editedPageData = _fixture.Build<PageCreateEditDto>()
+                .With(p => p.Date, DateTime.Parse(newPageDateStr))
+                .Create();
+            var validationResult = _fixture.Build<ValidationResultDto>()
+                .With(r => r.IsValid, isValid)
                 .Create();
 
-            _pageRepositoryMock.Setup(r => r.IsDuplicateAsync(editPageInfo.Date, default))
-               .ReturnsAsync(true);
+            var result = PageService.IsEditedPageValid(editedPageData, originalPage, validationResult);
 
-            var result = await PageService.PageCanBeUpdatedAsync(editPageInfo, originalPage, default);
-
-            _pageRepositoryMock.Verify(r => r.IsDuplicateAsync(editPageInfo.Date, default), Times.Once);
-            result.Should().BeFalse();
+            result.Should().BeTrue();
         }
     }
 }

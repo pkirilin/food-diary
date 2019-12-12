@@ -44,7 +44,6 @@ namespace FoodDiary.API.Controllers.v1
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
-        [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> CreatePage([FromBody] PageCreateEditDto request, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
@@ -54,9 +53,11 @@ namespace FoodDiary.API.Controllers.v1
 
             var page = _mapper.Map<Page>(request);
 
-            if (!await _pageService.PageCanBeCreatedAsync(request, cancellationToken))
+            var pageValidationResult = await _pageService.ValidatePageAsync(request, cancellationToken);
+            if (!pageValidationResult.IsValid)
             {
-                return BadRequest($"Page with the date '{page.Date.ToString("yyyy-MM-dd")}' already exists");
+                ModelState.AddModelError(pageValidationResult.ErrorKey, pageValidationResult.ErrorMessage);
+                return BadRequest(ModelState);
             }
 
             await _pageService.CreatePageAsync(page, cancellationToken);
@@ -67,7 +68,6 @@ namespace FoodDiary.API.Controllers.v1
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> EditPage([FromBody] PageCreateEditDto request, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
@@ -81,9 +81,11 @@ namespace FoodDiary.API.Controllers.v1
                 return NotFound();
             }
 
-            if (!await _pageService.PageCanBeUpdatedAsync(request, originalPage, cancellationToken))
+            var pageValidationResult = await _pageService.ValidatePageAsync(request, cancellationToken);
+            if (!_pageService.IsEditedPageValid(request, originalPage, pageValidationResult))
             {
-                return BadRequest($"Page with the date '{request.Date.ToString("yyyy-MM-dd")}' already exists");
+                ModelState.AddModelError(pageValidationResult.ErrorKey, pageValidationResult.ErrorMessage);
+                return BadRequest(ModelState);
             }
 
             originalPage = _mapper.Map(request, originalPage);
@@ -108,13 +110,14 @@ namespace FoodDiary.API.Controllers.v1
 
         [HttpDelete("batch")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
-        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> DeletePages([FromBody] List<int> ids, CancellationToken cancellationToken)
         {
             var pagesForDelete = await _pageService.GetPagesByIdsAsync(ids, cancellationToken);
             if (pagesForDelete.Count() != ids.Count)
             {
-                return BadRequest();
+                ModelState.AddModelError(String.Empty, "Pages cannot be deleted: wrong ids specified");
+                return BadRequest(ModelState);
             }
 
             await _pageService.BatchDeletePagesAsync(pagesForDelete, cancellationToken);

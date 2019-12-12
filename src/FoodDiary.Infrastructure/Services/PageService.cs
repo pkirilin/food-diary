@@ -57,9 +57,14 @@ namespace FoodDiary.Infrastructure.Services
             return await _pageRepository.CreateAsync(page, cancellationToken);
         }
 
-        public async Task<bool> PageCanBeCreatedAsync(PageCreateEditDto createPageInfo, CancellationToken cancellationToken)
+        public async Task<ValidationResultDto> ValidatePageAsync(PageCreateEditDto createPageInfo, CancellationToken cancellationToken)
         {
-            return !await _pageRepository.IsDuplicateAsync(createPageInfo.Date, cancellationToken);
+            if (await _pageRepository.IsDuplicateAsync(createPageInfo.Date, cancellationToken))
+            {
+                return new ValidationResultDto(false, $"{nameof(createPageInfo.Date)}", $"Page with the date '{createPageInfo.Date.ToString("yyyy-MM-dd")}' already exists");
+            }
+
+            return new ValidationResultDto(true);
         }
 
         public async Task<Page> EditPageAsync(Page page, CancellationToken cancellationToken)
@@ -67,10 +72,10 @@ namespace FoodDiary.Infrastructure.Services
             return await _pageRepository.UpdateAsync(page, cancellationToken);
         }
 
-        public async Task<bool> PageCanBeUpdatedAsync(PageCreateEditDto updatedPageInfo, Page originalPage, CancellationToken cancellationToken)
+        public bool IsEditedPageValid(PageCreateEditDto updatedPageInfo, Page originalPage, ValidationResultDto editedPageValidationResult)
         {
-            return !originalPage.HasChanges(updatedPageInfo.Date)
-                || (originalPage.HasChanges(updatedPageInfo.Date) && !await _pageRepository.IsDuplicateAsync(updatedPageInfo.Date, cancellationToken));
+            bool pageHasChanges = originalPage.Date != updatedPageInfo.Date;
+            return !pageHasChanges || (pageHasChanges && editedPageValidationResult.IsValid);
         }
 
         public async Task<Page> DeletePageAsync(Page page, CancellationToken cancellationToken)

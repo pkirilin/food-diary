@@ -57,7 +57,6 @@ namespace FoodDiary.API.Controllers.v1
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
-        [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> CreateProduct([FromBody] ProductCreateEditDto productData, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
@@ -68,7 +67,8 @@ namespace FoodDiary.API.Controllers.v1
             var productValidationResult = await _productService.ValidateProductAsync(productData, cancellationToken);
             if (!productValidationResult.IsValid)
             {
-                return BadRequest(productValidationResult.ErrorMessage);
+                ModelState.AddModelError(productValidationResult.ErrorKey, productValidationResult.ErrorMessage);
+                return BadRequest(ModelState);
             }
 
             var product = _mapper.Map<Product>(productData);
@@ -80,7 +80,6 @@ namespace FoodDiary.API.Controllers.v1
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> EditProduct([FromBody] ProductCreateEditDto productData, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
@@ -97,7 +96,8 @@ namespace FoodDiary.API.Controllers.v1
             var productValidationResult = await _productService.ValidateProductAsync(productData, cancellationToken);
             if (!_productService.IsEditedProductValid(productData, originalProduct, productValidationResult))
             {
-                return BadRequest(productValidationResult.ErrorMessage);
+                ModelState.AddModelError(productValidationResult.ErrorKey, productValidationResult.ErrorMessage);
+                return BadRequest(ModelState);
             }
 
             originalProduct = _mapper.Map(productData, originalProduct);
@@ -122,14 +122,15 @@ namespace FoodDiary.API.Controllers.v1
 
         [HttpDelete("batch")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> DeleteProducts([FromBody] IEnumerable<int> ids, CancellationToken cancellationToken)
         {
             var productsForDelete = await _productService.GetProductsByIdsAsync(ids, cancellationToken);
             var validationResult = _productService.AllProductsFetched(productsForDelete, ids);
             if (!validationResult.IsValid)
             {
-                return BadRequest(validationResult.ErrorMessage);
+                ModelState.AddModelError(validationResult.ErrorKey, validationResult.ErrorMessage);
+                return BadRequest(ModelState);
             }
 
             await _productService.DeleteProductsRangeAsync(productsForDelete, cancellationToken);

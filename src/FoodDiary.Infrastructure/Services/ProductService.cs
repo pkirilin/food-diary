@@ -61,7 +61,7 @@ namespace FoodDiary.Infrastructure.Services
         {
             if (await _productRepository.IsDuplicateAsync(productData.Name, cancellationToken))
             {
-                return new ValidationResultDto(false, $"Product with the name '{productData.Name}' already exists");
+                return new ValidationResultDto(false, $"{nameof(productData.Name)}", $"Product with the name '{productData.Name}' already exists");
             }
 
             return new ValidationResultDto(true);
@@ -79,7 +79,7 @@ namespace FoodDiary.Infrastructure.Services
             var fetchedProductsIds = fetchedProducts.Select(p => p.Id);
             if (requestedIds.Except(fetchedProductsIds).Any())
             {
-                return new ValidationResultDto(false, "Products cannot be deleted: fetched product ids mismatch requested ids");
+                return new ValidationResultDto(false, "Products cannot be deleted: wrong ids specified");
             }
 
             return new ValidationResultDto(true);

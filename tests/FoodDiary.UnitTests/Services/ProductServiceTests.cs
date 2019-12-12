@@ -182,7 +182,9 @@ namespace FoodDiary.UnitTests.Services
             var editedProductData = _fixture.Build<ProductCreateEditDto>()
                 .With(p => p.Name, newProductName)
                 .Create();
-            var validationResult = new ValidationResultDto() { IsValid = isValid };
+            var validationResult = _fixture.Build<ValidationResultDto>()
+                .With(r => r.IsValid, isValid)
+                .Create();
 
             var result = ProductService.IsEditedProductValid(editedProductData, originalProduct, validationResult);
 

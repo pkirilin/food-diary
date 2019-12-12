@@ -44,15 +44,15 @@ namespace FoodDiary.Infrastructure.Services
             );
         }
 
-        public async Task<bool> IsNoteDataValidAsync(NoteCreateEditDto noteData, CancellationToken cancellationToken)
+        public async Task<ValidationResultDto> ValidateNoteDataAsync(NoteCreateEditDto noteData, CancellationToken cancellationToken)
         {
             var productForNote = await _productRepository.GetByIdAsync(noteData.ProductId, cancellationToken);
             if (productForNote == null)
             {
-                return false;
+                return new ValidationResultDto(false, $"{nameof(noteData.ProductId)}", "Selected product not found");
             }
 
-            return true;
+            return new ValidationResultDto(true);
         }
 
         public async Task<Note> CreateNoteAsync(Note note, CancellationToken cancellationToken)

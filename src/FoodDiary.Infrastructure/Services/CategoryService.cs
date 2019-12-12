@@ -28,15 +28,20 @@ namespace FoodDiary.Infrastructure.Services
             return await _categoryRepository.GetByIdAsync(id, cancellationToken);
         }
 
-        public async Task<bool> CategoryCanBeCreatedAsync(CategoryCreateEditDto newCategoryInfo, CancellationToken cancellationToken)
+        public async Task<ValidationResultDto> ValidateCategoryAsync(CategoryCreateEditDto newCategoryInfo, CancellationToken cancellationToken)
         {
-            return !await _categoryRepository.IsDuplicateAsync(newCategoryInfo.Name, cancellationToken);
+            if (await _categoryRepository.IsDuplicateAsync(newCategoryInfo.Name, cancellationToken))
+            {
+                return new ValidationResultDto(false, $"{nameof(newCategoryInfo.Name)}", $"Category with the name '{newCategoryInfo.Name}' already exists");
+            }
+
+            return new ValidationResultDto(true);
         }
 
-        public async Task<bool> CategoryCanBeUpdatedAsync(CategoryCreateEditDto updatedCategoryInfo, Category originalCategory, CancellationToken cancellationToken)
+        public bool IsEditedCategoryValid(CategoryCreateEditDto updatedCategoryInfo, Category originalCategory, ValidationResultDto editedCategoryValidationResult)
         {
-            return !originalCategory.HasChanges(updatedCategoryInfo.Name)
-                || (originalCategory.HasChanges(updatedCategoryInfo.Name) && !await _categoryRepository.IsDuplicateAsync(updatedCategoryInfo.Name, cancellationToken));
+            bool categoryHasChanges = originalCategory.Name != updatedCategoryInfo.Name;
+            return !categoryHasChanges || (categoryHasChanges && editedCategoryValidationResult.IsValid);
         }
 
         public async Task<Category> CreateCategoryAsync(Category category, CancellationToken cancellationToken)

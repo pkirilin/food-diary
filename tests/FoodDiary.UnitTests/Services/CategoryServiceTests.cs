@@ -102,33 +102,40 @@ namespace FoodDiary.UnitTests.Services
         }
 
         [Fact]
-        public async void CategoryCanBeCreated_ReturnsFalse_WhenCategoryHasDuplicateName()
+        public async void ValidateCategory_ReturnsFalse_WhenCategoryHasDuplicateName()
         {
             var categoryInfo = _fixture.Create<CategoryCreateEditDto>();
             _categoryRepositoryMock.Setup(r => r.IsDuplicateAsync(categoryInfo.Name, default))
                 .ReturnsAsync(true);
 
-            var result = await CategoryService.CategoryCanBeCreatedAsync(categoryInfo, default);
+            var result = await CategoryService.ValidateCategoryAsync(categoryInfo, default);
 
             _categoryRepositoryMock.Verify(r => r.IsDuplicateAsync(categoryInfo.Name, default), Times.Once);
-            result.Should().BeFalse();
+            result.IsValid.Should().BeFalse();
         }
 
 
-        [Fact]
-        public async void CategoryCanBeUpdated_ReturnsFalse_WhenCategoryHasDuplicateName()
+        [Theory]
+        [InlineData("Some name", "Some new name", true)]
+        [InlineData("Some name", "Some name", true)]
+        public void IsEditedCategoryValid_ReturnsTrue_WhenCategoryIsValidAfterItWasEdited(
+            string oldCategoryName,
+            string newCategoryName,
+            bool isValid)
         {
-            var categoryInfo = _fixture.Create<CategoryCreateEditDto>();
             var originalCategory = _fixture.Build<Category>()
-                .With(c => c.Name, String.Concat(categoryInfo.Name, Guid.NewGuid()))
+                .With(c => c.Name, oldCategoryName)
                 .Create();
-            _categoryRepositoryMock.Setup(r => r.IsDuplicateAsync(categoryInfo.Name, default))
-                .ReturnsAsync(true);
+            var editedCategoryData = _fixture.Build<CategoryCreateEditDto>()
+                .With(c => c.Name, newCategoryName)
+                .Create();
+            var validationResult = _fixture.Build<ValidationResultDto>()
+                .With(r => r.IsValid, isValid)
+                .Create();
 
-            var result = await CategoryService.CategoryCanBeUpdatedAsync(categoryInfo, originalCategory, default);
+            var result = CategoryService.IsEditedCategoryValid(editedCategoryData, originalCategory, validationResult);
 
-            _categoryRepositoryMock.Verify(r => r.IsDuplicateAsync(categoryInfo.Name, default), Times.Once);
-            result.Should().BeFalse();
+            result.Should().BeTrue();
         }
     }
 }
