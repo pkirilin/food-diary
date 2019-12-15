@@ -33,6 +33,11 @@ namespace FoodDiary.Infrastructure.Repositories
             return await pagesQuery.ToListAsync(cancellationToken);
         }
 
+        public IQueryable<Page> LoadNotesWithProducts(IQueryable<Page> pagesQuery)
+        {
+            return pagesQuery.Include(p => p.Notes).ThenInclude(n => n.Product);
+        }
+
         public async Task<Page> GetByIdAsync(int id, CancellationToken cancellationToken)
         {
             return await _context.Pages.FindAsync(new object[] { id }, cancellationToken);

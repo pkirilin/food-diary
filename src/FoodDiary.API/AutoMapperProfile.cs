@@ -13,14 +13,24 @@ namespace FoodDiary.API
         {
             CreateMap<PageCreateEditDto, Page>();
 
-            CreateMap<Page, PageItemDto>().ForMember(
-                dest => dest.Date,
-                o => o.MapFrom(src => src.Date.ToString("yyyy-MM-dd")));
+            CreateMap<Page, PageItemDto>()
+                .ForMember(
+                    dest => dest.Date,
+                    o => o.MapFrom(src => src.Date.ToString("yyyy-MM-dd")))
+                .ForMember(
+                    dest => dest.CountCalories,
+                    o => o.MapFrom<PageCountCaloriesValueResolver>())
+                .ForMember(
+                    dest => dest.CountNotes,
+                    o => o.MapFrom<PageCountNotesValueResolver>());
 
             CreateMap<MealType, string>()
                 .ConvertUsing<MealTypeToStringConverter>();
 
-            CreateMap<Note, NoteItemDto>();
+            CreateMap<Note, NoteItemDto>().ForMember(
+                dest => dest.Calories,
+                o => o.MapFrom<NoteCaloriesValueResolver>());
+
             CreateMap<NoteCreateEditDto, Note>();
 
             CreateMap<IEnumerable<Note>, NotesForPageResponseDto>()

@@ -37,6 +37,7 @@ namespace FoodDiary.Infrastructure.Services
             if (pageFilter.ShowCount.HasValue)
                 searchPagesQuery = searchPagesQuery.Take(pageFilter.ShowCount.Value);
 
+            searchPagesQuery = _pageRepository.LoadNotesWithProducts(searchPagesQuery);
             return await _pageRepository.GetListFromQuery(searchPagesQuery, cancellationToken);
         }
 

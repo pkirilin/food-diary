@@ -24,13 +24,17 @@ namespace FoodDiary.API.Helpers
             var meals = new List<MealItemDto>();
             foreach (var mealType in allSortedMealTypes)
             {
-                var notesForMealType = source.Where(n => n.MealType == mealType);
+                var noteItemsForMealType = source.Where(n => n.MealType == mealType)
+                    .Select(n => context.Mapper.Map<NoteItemDto>(n))
+                    .ToList();
+
                 meals.Add(new MealItemDto()
                 {
                     Name = context.Mapper.Map<string>(mealType),
                     Type = mealType,
-                    CountNotes = notesForMealType.Count(),
-                    Notes = notesForMealType.Select(n => context.Mapper.Map<NoteItemDto>(n)).ToList()
+                    CountNotes = noteItemsForMealType.Count(),
+                    CountCalories = noteItemsForMealType.Sum(n => n.Calories),
+                    Notes = noteItemsForMealType
                 });
             }
 

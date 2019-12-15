@@ -15,6 +15,8 @@ namespace FoodDiary.Domain.Repositories
 
         Task<List<Page>> GetListFromQuery(IQueryable<Page> pagesQuery, CancellationToken cancellationToken);
 
+        IQueryable<Page> LoadNotesWithProducts(IQueryable<Page> pagesQuery);
+
         Task<Page> GetByIdAsync(int id, CancellationToken cancellationToken);
 
         Task<Page> CreateAsync(Page page, CancellationToken cancellationToken);
