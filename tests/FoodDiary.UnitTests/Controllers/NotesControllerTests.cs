@@ -9,6 +9,7 @@ using FoodDiary.API.Controllers.v1;
 using FoodDiary.Domain.Dtos;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Services;
+using FoodDiary.Infrastructure.Services;
 using FoodDiary.UnitTests.Customizations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,10 +33,12 @@ namespace FoodDiary.UnitTests.Controllers
 
         public NotesControllerTests()
         {
-            var serviceProvider = new ServiceCollection()
+            var serviceCollection = new ServiceCollection()
                 .AddLogging()
                 .AddAutoMapper(Assembly.GetAssembly(typeof(AutoMapperProfile)))
-                .BuildServiceProvider();
+                .AddTransient<ICaloriesService, CaloriesService>();
+
+            var serviceProvider = serviceCollection.BuildServiceProvider();
 
             _loggerFactory = serviceProvider.GetService<ILoggerFactory>();
             _mapper = serviceProvider.GetService<IMapper>();

@@ -16,6 +16,7 @@ using System.Linq;
 using FoodDiary.UnitTests.Customizations;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using FoodDiary.Infrastructure.Services;
 
 namespace FoodDiary.UnitTests.Controllers
 {
@@ -31,10 +32,12 @@ namespace FoodDiary.UnitTests.Controllers
 
         public PagesControllerTests()
         {
-            var serviceProvider = new ServiceCollection()
+            var serviceCollection = new ServiceCollection()
                 .AddLogging()
                 .AddAutoMapper(Assembly.GetAssembly(typeof(AutoMapperProfile)))
-                .BuildServiceProvider();
+                .AddTransient<ICaloriesService, CaloriesService>();
+
+            var serviceProvider = serviceCollection.BuildServiceProvider();
 
             _loggerFactory = serviceProvider.GetService<ILoggerFactory>();
             _mapper = serviceProvider.GetService<IMapper>();
