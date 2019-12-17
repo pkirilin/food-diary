@@ -1,3 +1,4 @@
+using System;
 using FoodDiary.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
@@ -21,5 +22,15 @@ namespace FoodDiary.API.Extensions
             }
         }
 #pragma warning restore IDE0063
+
+        public static void UseFoodDiarySwagger(this IApplicationBuilder app)
+        {
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "FoodDiary API v1");
+                c.RoutePrefix = String.Empty;
+            });
+        }
     }
 }

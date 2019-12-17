@@ -16,6 +16,7 @@ namespace FoodDiary.API.Controllers.v1
 {
     [ApiController]
     [Route("v1/products")]
+    [ApiExplorerSettings(GroupName = "v1")]
     public class ProductsController : ControllerBase
     {
         private readonly ILogger<ProductsController> _logger;

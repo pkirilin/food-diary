@@ -3,6 +3,7 @@ using FoodDiary.Domain.Services;
 using FoodDiary.Infrastructure.Repositories;
 using FoodDiary.Infrastructure.Services;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.OpenApi.Models;
 
 namespace FoodDiary.API.Extensions
 {
@@ -24,6 +25,14 @@ namespace FoodDiary.API.Extensions
             services.AddTransient<ICategoryService, CategoryService>();
             services.AddTransient<IProductService, ProductService>();
             services.AddTransient<ICaloriesService, CaloriesService>();
+        }
+
+        public static void AddFoodDiarySwagger(this IServiceCollection services)
+        {
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "FoodDiary API", Version = "v1" });
+            });
         }
     }
 }

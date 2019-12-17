@@ -36,6 +36,7 @@ namespace FoodDiary.API
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
             services.AddControllers();
+            services.AddFoodDiarySwagger();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -54,6 +55,7 @@ namespace FoodDiary.API
 
             app.UseMiddleware<ExceptionHandlerMiddleware>();
 
+            app.UseFoodDiarySwagger();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
