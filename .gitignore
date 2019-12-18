@@ -431,3 +431,6 @@ $RECYCLE.BIN/
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+# Ignoring API XML documentation file generated at build-time
+src/FoodDiary.API/FoodDiary.API.xml

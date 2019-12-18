@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using FoodDiary.Domain.Repositories;
 using FoodDiary.Domain.Services;
 using FoodDiary.Infrastructure.Repositories;
@@ -32,6 +33,9 @@ namespace FoodDiary.API.Extensions
         {
             services.AddSwaggerGen(c =>
             {
+                var xmlCommentsFilePath = Path.Combine(System.AppContext.BaseDirectory, "FoodDiary.API.xml");
+                c.IncludeXmlComments(xmlCommentsFilePath);
+
                 var commonApiInfo = new OpenApiInfo
                 {
                     Title = "FoodDiary API",
