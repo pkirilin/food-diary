@@ -1,3 +1,4 @@
+using System;
 using FoodDiary.Domain.Repositories;
 using FoodDiary.Domain.Services;
 using FoodDiary.Infrastructure.Repositories;
@@ -31,7 +32,20 @@ namespace FoodDiary.API.Extensions
         {
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "FoodDiary API", Version = "v1" });
+                var commonApiInfo = new OpenApiInfo
+                {
+                    Title = "FoodDiary API",
+                    Description = "This document describes API for FoodDiary server-side application",
+                    Contact = new OpenApiContact()
+                    {
+                        Name = "Pavel Kirilin",
+                        Email = "kirilin.pav@gmail.com",
+                        Url = new Uri("https://github.com/pkirilin/food-diary")
+                    }
+                };
+
+                commonApiInfo.Version = "v1";
+                c.SwaggerDoc("v1", commonApiInfo);
             });
         }
     }
