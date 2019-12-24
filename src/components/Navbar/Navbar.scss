@@ -1,0 +1,14 @@
+@import '../../variables.scss';
+
+$navbar-height: 60px;
+$navbar-link-border-width: 5px;
+$navbar-link-padding: 20px;
+$navbar-links-width: 400px;
+$navbar-hover-transition: 0.5s;
+
+.navbar {
+  display: flex;
+  align-items: center;
+  height: $navbar-height;
+  background-color: $color-green-main-25;
+}

@@ -1,0 +1,23 @@
+@import '../../variables.scss';
+@import '../Navbar/Navbar.scss';
+
+.navbar__brand {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: $sidebar-width;
+
+  a {
+    font-size: 24px;
+    font-weight: bold;
+    text-decoration: none;
+    text-transform: uppercase;
+    color: $color-green-main-75;
+
+    transition: $navbar-hover-transition;
+
+    &:hover {
+      color: $color-green-main;
+    }
+  }
+}

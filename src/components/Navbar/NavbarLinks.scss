@@ -1,0 +1,32 @@
+@import '../../variables.scss';
+@import './Navbar.scss';
+
+.navbar__links {
+  display: flex;
+  flex: 1;
+  justify-content: space-around;
+  max-width: $navbar-links-width;
+
+  &,
+  & a {
+    height: 100%;
+  }
+
+  & a {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    text-decoration: none;
+    color: $color-green-main-75;
+    padding: $navbar-link-border-width $navbar-link-padding 0px $navbar-link-padding;
+    border-bottom: $navbar-link-border-width solid transparent;
+
+    transition: $navbar-hover-transition;
+
+    &:hover,
+    &.selected {
+      color: $color-green-main;
+      border-bottom: $navbar-link-border-width solid $color-green-main;
+    }
+  }
+}
