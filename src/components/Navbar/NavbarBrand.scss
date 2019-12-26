@@ -1,13 +1,30 @@
 @import '../../variables.scss';
 @import '../Navbar/Navbar.scss';
 
+$navbar-brand-logo-size: 50px;
+
 .navbar__brand {
   display: flex;
   justify-content: space-around;
   align-items: center;
   width: $sidebar-width;
 
-  a {
+  & .navbar__brand_logo {
+    display: inline-block;
+    background-size: cover;
+    width: $navbar-brand-logo-size;
+    height: $navbar-brand-logo-size;
+    mask: url('diet.svg');
+    background: $color-green-main-75;
+
+    transition: $navbar-hover-transition;
+
+    &:hover {
+      background: $color-green-main;
+    }
+  }
+
+  & a {
     font-size: 24px;
     font-weight: bold;
     text-decoration: none;
