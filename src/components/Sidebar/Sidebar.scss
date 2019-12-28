@@ -1,0 +1,12 @@
+@import '../../variables.scss';
+@import '../Navbar/Navbar.variables.scss';
+@import './Sidebar.variables.scss';
+
+.sidebar {
+  position: fixed;
+  top: $navbar-height;
+  height: 100vh - $navbar-height;
+  overflow: auto;
+  width: $sidebar-width;
+  background-color: $color-light-green;
+}

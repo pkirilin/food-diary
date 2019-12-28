@@ -1,0 +1,7 @@
+@import '../Navbar/Navbar.variables.scss';
+
+.fd-content-wrapper {
+  margin-top: $navbar-height;
+  min-height: 100vh - $navbar-height;
+  width: 100%;
+}

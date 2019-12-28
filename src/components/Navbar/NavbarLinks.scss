@@ -1,5 +1,5 @@
 @import '../../variables.scss';
-@import './Navbar.scss';
+@import './Navbar.variables.scss';
 
 .navbar__links {
   display: flex;
@@ -17,7 +17,7 @@
     align-items: center;
     font-size: 16px;
     text-decoration: none;
-    color: $color-green-main-75;
+    color: $color-middle-green;
     padding: $navbar-link-border-width $navbar-link-padding 0px $navbar-link-padding;
     border-bottom: $navbar-link-border-width solid transparent;
 
@@ -25,8 +25,8 @@
 
     &:hover,
     &.selected {
-      color: $color-green-main;
-      border-bottom: $navbar-link-border-width solid $color-green-main;
+      color: $color-dark-green;
+      border-bottom: $navbar-link-border-width solid $color-dark-green;
     }
   }
 }

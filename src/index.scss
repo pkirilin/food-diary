@@ -1,7 +1,10 @@
+@import './variables.scss';
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   font-family: 'Roboto', sans-serif;
   font-size: 14px;
+  color: $color-dark-green;
 }

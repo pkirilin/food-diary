@@ -1,7 +1,6 @@
 @import '../../variables.scss';
-@import '../Navbar/Navbar.scss';
-
-$navbar-brand-logo-size: 50px;
+@import '../Navbar/Navbar.variables.scss';
+@import '../Sidebar/Sidebar.scss';
 
 .navbar__brand {
   display: flex;
@@ -15,12 +14,12 @@ $navbar-brand-logo-size: 50px;
     width: $navbar-brand-logo-size;
     height: $navbar-brand-logo-size;
     mask: url('diet.svg');
-    background: $color-green-main-75;
+    background: $color-middle-green;
 
     transition: $navbar-hover-transition;
 
     &:hover {
-      background: $color-green-main;
+      background: $color-dark-green;
     }
   }
 
@@ -29,12 +28,12 @@ $navbar-brand-logo-size: 50px;
     font-weight: bold;
     text-decoration: none;
     text-transform: uppercase;
-    color: $color-green-main-75;
+    color: $color-middle-green;
 
     transition: $navbar-hover-transition;
 
     &:hover {
-      color: $color-green-main;
+      color: $color-dark-green;
     }
   }
 }

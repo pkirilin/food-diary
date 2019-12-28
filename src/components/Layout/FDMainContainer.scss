@@ -1,0 +1,11 @@
+@import '../../variables.scss';
+@import '../Sidebar/Sidebar.variables.scss';
+
+.fd-main-container {
+  height: 100%;
+  background-color: $color-white;
+
+  &.fd-main-container-sidebar {
+    margin-left: $sidebar-width;
+  }
+}
