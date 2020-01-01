@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "date": "22/09/2019",
+    "countNotes": 12,
+    "countCalories": 1200
+  },
+  {
+    "id": 2,
+    "date": "23/09/2019",
+    "countNotes": 8,
+    "countCalories": 1500
+  },
+  {
+    "id": 3,
+    "date": "24/09/2019",
+    "countNotes": 0,
+    "countCalories": 0
+  },
+  {
+    "id": 4,
+    "date": "25/09/2019",
+    "countNotes": 15,
+    "countCalories": 2200
+  }
+]
