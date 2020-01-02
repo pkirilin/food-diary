@@ -27,6 +27,4 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<PageItem[], null, AnyAction>
   };
 };
 
-const PagesListConnected = connect(mapStateToProps, mapDispatchToProps)(PagesList);
-
-export default PagesListConnected;
+export default connect(mapStateToProps, mapDispatchToProps)(PagesList);

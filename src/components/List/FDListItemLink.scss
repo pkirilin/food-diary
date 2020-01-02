@@ -1,0 +1,20 @@
+@import '../../variables.scss';
+
+.fd-list__item-link {
+  height: 28px;
+
+  a {
+    display: block;
+    height: 100%;
+    color: $color-dark-green;
+    font-size: 16px;
+    letter-spacing: 0.5px;
+    text-decoration: none;
+  }
+}
+
+.fd-list__item-link_selected {
+  a {
+    color: $color-white;
+  }
+}

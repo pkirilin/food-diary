@@ -1,0 +1,7 @@
+.fd-list__item-badges {
+  display: flex;
+
+  :not(:first-child) {
+    margin-left: 5px;
+  }
+}

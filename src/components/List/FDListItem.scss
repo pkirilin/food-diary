@@ -1,0 +1,27 @@
+@import '../../variables.scss';
+
+$list-item-border: 0.5px solid $color-middle-green;
+$list-item-active-border-width: 5px;
+
+.fd-list__item {
+  border-left: $list-item-active-border-width solid transparent;
+  border-bottom: $list-item-border;
+  padding: 5px 15px 5px 15px - $list-item-active-border-width;
+  transition: 0.2s;
+
+  &:first-child {
+    border-top: $list-item-border;
+  }
+
+  &:hover {
+    border-left: $list-item-active-border-width solid $color-dark-green;
+  }
+}
+
+.fd-list__item_selected {
+  background-color: $color-dark-green;
+
+  &:hover {
+    border-left: $list-item-active-border-width solid $color-white;
+  }
+}
