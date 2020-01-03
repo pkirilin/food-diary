@@ -5,12 +5,12 @@ import { PageItem } from '../../models';
 import { AnyAction } from 'redux';
 import { getPagesActionCreator } from '../../action-creators';
 import { FoodDiaryState, PagesListState } from '../../store';
-import { GetPagesListSuccessAction } from '../../action-types';
+import { GetPagesListSuccessAction, GetPagesListErrorAction } from '../../action-types';
 
 export type StateToPropsMapResult = PagesListState;
 
 export interface DispatchToPropsMapResult {
-  getPages: () => Promise<GetPagesListSuccessAction>;
+  getPages: () => Promise<GetPagesListSuccessAction | GetPagesListErrorAction>;
 }
 
 const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
@@ -18,12 +18,13 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
     visiblePages: state.pages.list.visiblePages ?? [],
     loaded: state.pages.list.loaded ?? false,
     loading: state.pages.list.loading ?? false,
+    errorMessage: state.pages.list.errorMessage,
   };
 };
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<PageItem[], null, AnyAction>): DispatchToPropsMapResult => {
   return {
-    getPages: (): Promise<GetPagesListSuccessAction> => dispatch(getPagesActionCreator()),
+    getPages: (): Promise<GetPagesListSuccessAction | GetPagesListErrorAction> => dispatch(getPagesActionCreator()),
   };
 };
 

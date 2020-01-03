@@ -1,7 +1,13 @@
 import { Dispatch, ActionCreator } from 'redux';
 import { ThunkAction } from 'redux-thunk';
 import { PageItem } from '../../models';
-import { GetPagesListSuccessAction, GetPagesListRequestAction, PagesListActionType } from '../../action-types';
+import {
+  GetPagesListSuccessAction,
+  GetPagesListRequestAction,
+  PagesListActionType,
+  GetPagesListErrorAction,
+} from '../../action-types';
+import { loadPages } from '../../services';
 
 const createRequestAction = (): GetPagesListRequestAction => {
   return {
@@ -16,17 +22,32 @@ const createSuccessAction = (pages: PageItem[]): GetPagesListSuccessAction => {
   };
 };
 
+const createErrorAction = (errorMessage: string): GetPagesListErrorAction => {
+  return {
+    type: PagesListActionType.Error,
+    errorMessage,
+  };
+};
+
 export const getPagesActionCreator: ActionCreator<ThunkAction<
-  Promise<GetPagesListSuccessAction>,
+  Promise<GetPagesListSuccessAction | GetPagesListErrorAction>,
   PageItem[],
   null,
-  GetPagesListSuccessAction
+  GetPagesListSuccessAction | GetPagesListErrorAction
 >> = () => {
-  return async (dispatch: Dispatch): Promise<GetPagesListSuccessAction> => {
+  return async (dispatch: Dispatch): Promise<GetPagesListSuccessAction | GetPagesListErrorAction> => {
     dispatch(createRequestAction());
-    const response = await fetch('pages-list-data.json');
-    const pagesPromise: Promise<PageItem[]> = await response.json();
-    const pages = await pagesPromise;
-    return dispatch(createSuccessAction(pages));
+
+    try {
+      const response = await loadPages();
+      if (!response.ok) {
+        return dispatch(createErrorAction('Response is not ok'));
+      }
+
+      const pages = await response.json();
+      return dispatch(createSuccessAction(pages));
+    } catch (error) {
+      return dispatch(createErrorAction('Could not fetch pages list'));
+    }
   };
 };

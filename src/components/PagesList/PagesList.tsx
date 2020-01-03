@@ -6,7 +6,13 @@ import { FDList } from '../List';
 
 interface PagesListProps extends StateToPropsMapResult, DispatchToPropsMapResult {}
 
-const PagesList: React.FC<PagesListProps> = ({ visiblePages, loading, loaded, getPages }: PagesListProps) => {
+const PagesList: React.FC<PagesListProps> = ({
+  visiblePages,
+  loading,
+  loaded,
+  getPages,
+  errorMessage,
+}: PagesListProps) => {
   useEffect(() => {
     getPages();
   }, [getPages]);
@@ -27,7 +33,7 @@ const PagesList: React.FC<PagesListProps> = ({ visiblePages, loading, loaded, ge
     );
   }
 
-  return <div></div>;
+  return <div>{errorMessage}</div>;
 };
 
 export default PagesList;
