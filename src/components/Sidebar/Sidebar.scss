@@ -4,8 +4,7 @@
 
 .sidebar {
   position: fixed;
-  top: $navbar-height;
-  height: 100vh - $navbar-height;
+  height: calc(100vh - #{$navbar-height});
   overflow: auto;
   width: $sidebar-width;
   background-color: $color-light-green;

@@ -1,6 +1,4 @@
-@import '../Navbar/Navbar.variables.scss';
-
 .fd-content {
   position: relative;
-  min-height: 100vh - $navbar-height;
+  min-height: 100%;
 }
