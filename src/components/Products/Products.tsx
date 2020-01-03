@@ -1,8 +1,6 @@
 import React from 'react';
 import './Products.scss';
-import FDContentWrapper from '../Layout/FDContentWrapper';
-import FDMainContainer from '../Layout/FDMainContainer';
-import FDContent from '../Layout/FDContent';
+import { FDContent, FDContentWrapper, FDMainContainer } from '../Layout';
 
 const Products: React.FC = () => {
   return (

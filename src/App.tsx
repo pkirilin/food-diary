@@ -2,10 +2,10 @@ import React from 'react';
 import './App.scss';
 import { createBrowserHistory } from 'history';
 import { Router, Switch, Route } from 'react-router-dom';
-import Navbar from './components/Navbar/Navbar';
-import Pages from './components/Pages/Pages';
-import Products from './components/Products/Products';
-import Categories from './components/Categories/Categories';
+import Navbar from './components/Navbar';
+import Pages from './components/Pages';
+import Products from './components/Products';
+import Categories from './components/Categories';
 
 const history = createBrowserHistory();
 

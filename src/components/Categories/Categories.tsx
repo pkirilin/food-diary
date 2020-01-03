@@ -1,9 +1,7 @@
 import React from 'react';
 import './Categories.scss';
-import FDContentWrapper from '../Layout/FDContentWrapper';
-import FDMainContainer from '../Layout/FDMainContainer';
-import FDContent from '../Layout/FDContent';
-import Sidebar from '../Sidebar/Sidebar';
+import { FDContent, FDContentWrapper, FDMainContainer } from '../Layout';
+import Sidebar from '../Sidebar';
 
 const Categories: React.FC = () => {
   return (

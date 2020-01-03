@@ -1,9 +1,7 @@
 import React from 'react';
 import './Pages.scss';
-import Sidebar from '../Sidebar/Sidebar';
-import FDContentWrapper from '../Layout/FDContentWrapper';
-import FDMainContainer from '../Layout/FDMainContainer';
-import FDContent from '../Layout/FDContent';
+import Sidebar from '../Sidebar';
+import { FDContent, FDContentWrapper, FDMainContainer } from '../Layout';
 import PagesListConnected from '../PagesList';
 
 const Pages: React.FC = () => {
