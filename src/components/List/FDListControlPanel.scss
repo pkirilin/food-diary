@@ -1,0 +1,10 @@
+@import '../../variables.scss';
+@import './FDList.variables.scss';
+
+.fd-list-control-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-top: $divider-border-width solid $color-middle-green;
+  height: 80px;
+}

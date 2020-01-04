@@ -1,0 +1,8 @@
+@import './FDList.variables.scss';
+
+.fd-list-control-panel__icons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px $nested-items-side-padding;
+}

@@ -1,20 +1,18 @@
 @import '../../variables.scss';
-
-$list-item-border: 0.5px solid $color-middle-green;
-$list-item-active-border-width: 5px;
+@import './FDList.variables.scss';
 
 .fd-list__item {
-  border-left: $list-item-active-border-width solid transparent;
-  border-bottom: $list-item-border;
-  padding: 5px 15px 5px 15px - $list-item-active-border-width;
+  border-left: $active-item-border-width solid transparent;
+  border-bottom: $divider-border-width solid $color-middle-green;
+  padding: 5px $nested-items-side-padding 5px $nested-items-side-padding - $active-item-border-width;
   transition: 0.2s;
 
   &:first-child {
-    border-top: $list-item-border;
+    border-top: $divider-border-width solid $color-middle-green;
   }
 
   &:hover {
-    border-left: $list-item-active-border-width solid $color-dark-green;
+    border-left: $active-item-border-width solid $color-dark-green;
   }
 }
 
@@ -22,6 +20,6 @@ $list-item-active-border-width: 5px;
   background-color: $color-dark-green;
 
   &:hover {
-    border-left: $list-item-active-border-width solid $color-white;
+    border-left: $active-item-border-width solid $color-white;
   }
 }
