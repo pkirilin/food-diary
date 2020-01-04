@@ -3,9 +3,11 @@
 @import './Sidebar.variables.scss';
 
 .sidebar {
+  display: flex;
+  flex-direction: column;
   position: fixed;
   height: calc(100vh - #{$navbar-height});
-  overflow: auto;
+  overflow: none;
   width: $sidebar-width;
   background-color: $color-light-green;
 }

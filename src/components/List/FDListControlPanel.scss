@@ -6,5 +6,6 @@
   flex-direction: column;
   justify-content: center;
   border-top: $divider-border-width solid $color-middle-green;
+  border-bottom: $divider-border-width solid $color-middle-green;
   height: 80px;
 }

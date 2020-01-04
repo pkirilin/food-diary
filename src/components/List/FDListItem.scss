@@ -7,8 +7,8 @@
   padding: 5px $nested-items-side-padding 5px $nested-items-side-padding - $active-item-border-width;
   transition: 0.2s;
 
-  &:first-child {
-    border-top: $divider-border-width solid $color-middle-green;
+  &:last-child {
+    border-bottom: none;
   }
 
   &:hover {
