@@ -1,5 +1,5 @@
 import React from 'react';
-import '../FDIcon.scss';
+import '../Icon.scss';
 import { ReactComponent as FilterReset } from './filter-reset.svg';
 import { withFdIconStyles } from '../../../hocs';
 

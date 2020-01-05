@@ -1,9 +1,9 @@
 @import '../../variables.scss';
 
 // Base styles for app icon
-.fd-icon {
-  width: 25px;
-  height: 25px;
+.icon {
+  width: 20px;
+  height: 20px;
   fill: $color-middle-green;
   transition: 0.5s;
   cursor: pointer;

@@ -1,5 +1,5 @@
 import React from 'react';
-import '../FDIcon.scss';
+import '../Icon.scss';
 import { ReactComponent as Filter } from './filter.svg';
 import { withFdIconStyles } from '../../../hocs';
 

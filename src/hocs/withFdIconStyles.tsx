@@ -4,7 +4,7 @@ const withFdIconStyles = (
   SvgComponent: React.FC<React.SVGProps<SVGSVGElement>>,
 ): React.FC<React.SVGProps<SVGSVGElement>> => {
   const result = (props: React.SVGProps<SVGSVGElement>): JSX.Element => {
-    return <SvgComponent {...props} className="fd-icon"></SvgComponent>;
+    return <SvgComponent {...props} className="icon"></SvgComponent>;
   };
   return result;
 };
