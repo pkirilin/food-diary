@@ -1,7 +1,7 @@
-@import '../../variables.scss';
-@import './FDList.variables.scss';
+@import '../../../variables.scss';
+@import '../SidebarBlocks.variables.scss';
 
-.fd-list-control-panel {
+.sidebar__control-panel {
   display: flex;
   flex-direction: column;
   justify-content: center;

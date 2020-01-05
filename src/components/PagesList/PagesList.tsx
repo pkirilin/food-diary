@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import './PagesList.scss';
 import { StateToPropsMapResult, DispatchToPropsMapResult } from './PagesListConnected';
 import PagesListItemConnected from '../PagesListItem';
-import { FDList } from '../List';
+import { SidebarList } from '../SidebarBlocks';
 
 interface PagesListProps extends StateToPropsMapResult, DispatchToPropsMapResult {}
 
@@ -23,13 +23,13 @@ const PagesList: React.FC<PagesListProps> = ({
 
   if (loaded) {
     return (
-      <FDList>
+      <SidebarList>
         {visiblePages.length > 0 ? (
           visiblePages.map(p => <PagesListItemConnected key={p.id} data={p}></PagesListItemConnected>)
         ) : (
           <div>No pages found</div>
         )}
-      </FDList>
+      </SidebarList>
     );
   }
 

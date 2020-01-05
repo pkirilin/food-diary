@@ -1,6 +1,6 @@
-@import '../../variables.scss';
+@import '../../../variables.scss';
 
-.fd-list__item-link {
+.sidebar__list__item__link {
   height: 28px;
 
   a {
@@ -13,7 +13,7 @@
   }
 }
 
-.fd-list__item-link_selected {
+.sidebar__list__item__link_selected {
   a {
     color: $color-white;
   }

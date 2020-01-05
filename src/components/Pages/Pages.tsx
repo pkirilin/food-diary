@@ -3,14 +3,14 @@ import './Pages.scss';
 import Sidebar from '../Sidebar';
 import { ContentWrapper, MainContainer, SectionContainer } from '../ContainerBlocks';
 import PagesListConnected from '../PagesList';
-import PagesListControlPanelConnected from '../PagesListControlPanel';
+import PagesListControlsTopConnected from '../PagesListControlsTop';
 import PagesListControlsBottomConnected from '../PagesListControlsBottom';
 
 const Pages: React.FC = () => {
   return (
     <ContentWrapper>
       <Sidebar>
-        <PagesListControlPanelConnected></PagesListControlPanelConnected>
+        <PagesListControlsTopConnected></PagesListControlsTopConnected>
         <PagesListConnected></PagesListConnected>
         <PagesListControlsBottomConnected></PagesListControlsBottomConnected>
       </Sidebar>

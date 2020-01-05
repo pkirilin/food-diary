@@ -1,9 +1,8 @@
 import React from 'react';
 import './PagesListItem.scss';
 import { PageItem } from '../../models';
-import { Link } from 'react-router-dom';
 import Badge from '../Badge';
-import { FDListItem, FDListItemLink } from '../List';
+import { SidebarListItem, SidebarListItemLink } from '../SidebarBlocks';
 import { BadgesContainer } from '../ContainerBlocks';
 
 interface PagesListItemProps {
@@ -14,15 +13,15 @@ interface PagesListItemProps {
 
 const PagesListItem: React.FC<PagesListItemProps> = ({ data: page, selected = false }: PagesListItemProps) => {
   return (
-    <FDListItem selected={selected}>
-      <FDListItemLink selected={selected}>
-        <Link to="/">{page.date}</Link>
-      </FDListItemLink>
+    <SidebarListItem selected={selected}>
+      <SidebarListItemLink to="/" selected={selected}>
+        {page.date}
+      </SidebarListItemLink>
       <BadgesContainer>
         <Badge label="12 notes" selected={selected}></Badge>
         <Badge label="1200 cal" selected={selected}></Badge>
       </BadgesContainer>
-    </FDListItem>
+    </SidebarListItem>
   );
 };
 
