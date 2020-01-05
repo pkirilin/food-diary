@@ -1,16 +1,16 @@
 import React from 'react';
 import './Categories.scss';
-import { FDContent, FDContentWrapper, FDMainContainer } from '../Layout';
+import { ContentWrapper, MainContainer, SectionContainer } from '../ContainerBlocks';
 import Sidebar from '../Sidebar';
 
 const Categories: React.FC = () => {
   return (
-    <FDContentWrapper>
+    <ContentWrapper>
       <Sidebar>Categories sidebar</Sidebar>
-      <FDMainContainer withSidebar>
-        <FDContent>Categories content</FDContent>
-      </FDMainContainer>
-    </FDContentWrapper>
+      <MainContainer withSidebar>
+        <SectionContainer>Categories content</SectionContainer>
+      </MainContainer>
+    </ContentWrapper>
   );
 };
 

@@ -3,7 +3,8 @@ import './PagesListItem.scss';
 import { PageItem } from '../../models';
 import { Link } from 'react-router-dom';
 import Badge from '../Badge';
-import { FDListItem, FDListItemLink, FDListItemBadges } from '../List';
+import { FDListItem, FDListItemLink } from '../List';
+import { BadgesContainer } from '../ContainerBlocks';
 
 interface PagesListItemProps {
   key: string | number;
@@ -17,10 +18,10 @@ const PagesListItem: React.FC<PagesListItemProps> = ({ data: page, selected = fa
       <FDListItemLink selected={selected}>
         <Link to="/">{page.date}</Link>
       </FDListItemLink>
-      <FDListItemBadges>
+      <BadgesContainer>
         <Badge label="12 notes" selected={selected}></Badge>
         <Badge label="1200 cal" selected={selected}></Badge>
-      </FDListItemBadges>
+      </BadgesContainer>
     </FDListItem>
   );
 };
