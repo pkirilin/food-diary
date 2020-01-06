@@ -6,6 +6,8 @@
   position: relative;
 
   &__toggler {
+    display: flex;
+    align-items: center;
     border: $form-control-border-width solid $color-middle-green-50;
     border-radius: $form-control-border-radius;
     background-color: $color-light-green;
@@ -16,6 +18,17 @@
     &:hover,
     &_active {
       border-color: $color-middle-green;
+    }
+
+    &__value {
+      flex: 1;
+    }
+
+    &__icon {
+      width: 10px;
+      height: 10px;
+      fill: $color-middle-green;
+      margin-left: $form-control-padding;
     }
   }
 

@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import './Dropdown.scss';
 import DropdownItem from '../DropdownItem';
 import { useOutsideClick, useHiddenBlockHeightCalculation } from '../../../hooks';
+import { ReactComponent as DropdownArrowIcon } from './drop-down-arrow.svg';
 
 interface DropdownProps {
   items: string[];
@@ -55,7 +56,8 @@ const Dropdown: React.FC<DropdownProps> = ({ items, toggleDirection = 'bottom' }
   return (
     <div ref={dropdownRef} className="dropdown">
       <div className={togglerCssClasses.join(' ')} onClick={toggle}>
-        {selectedValue}
+        <div className="dropdown__toggler__value">{selectedValue}</div>
+        <DropdownArrowIcon className="dropdown__toggler__icon"></DropdownArrowIcon>
       </div>
       <div ref={contentRef} className={contentCssClasses.join(' ')} style={contentStyle}>
         {items.map(item => (
