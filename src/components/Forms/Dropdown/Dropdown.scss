@@ -1,0 +1,35 @@
+@import '../../../variables.scss';
+@import '../FormControls.variables.scss';
+@import './Dropdown.variables.scss';
+
+.dropdown {
+  position: relative;
+
+  &__toggler {
+    border: $form-control-border-width solid $color-middle-green-50;
+    border-radius: $form-control-border-radius;
+    background-color: $color-light-green;
+    padding: $form-control-padding;
+    cursor: pointer;
+    transition: $form-control-transition;
+
+    &:hover,
+    &_active {
+      border-color: $color-middle-green;
+    }
+  }
+
+  &__content {
+    z-index: $dropdown-content-z-index;
+    display: none;
+    position: absolute;
+    max-height: 400px;
+    overflow: auto;
+    border: $form-control-border-width solid $color-middle-green-50;
+    background-color: $color-white;
+
+    &_opened {
+      display: block;
+    }
+  }
+}
