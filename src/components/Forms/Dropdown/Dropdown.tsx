@@ -1,16 +1,20 @@
 import React, { useState, useRef } from 'react';
 import './Dropdown.scss';
 import DropdownItem from '../DropdownItem';
-import { useOutsideClick } from '../../../hooks';
+import { useOutsideClick, useHiddenBlockHeightCalculation } from '../../../hooks';
 
 interface DropdownProps {
   items: string[];
+  toggleDirection?: 'top' | 'bottom';
 }
 
-const Dropdown: React.FC<DropdownProps> = ({ items }: DropdownProps) => {
+const Dropdown: React.FC<DropdownProps> = ({ items, toggleDirection = 'bottom' }: DropdownProps) => {
   const dropdownRef = useRef(null);
+  const contentRef = useRef(null);
+
   const [selectedValue, setSelectedValue] = useState('Select value');
   const [isOpen, setIsOpen] = useState(false);
+  const [contentBlockHeight, setContentBlockHeight] = useState(0);
 
   const toggle = (): void => {
     setIsOpen(!isOpen);
@@ -32,6 +36,8 @@ const Dropdown: React.FC<DropdownProps> = ({ items }: DropdownProps) => {
     }
   });
 
+  useHiddenBlockHeightCalculation(contentRef as React.RefObject<HTMLElement>, setContentBlockHeight);
+
   const togglerCssClasses = ['dropdown__toggler'];
   const contentCssClasses = ['dropdown__content'];
 
@@ -40,12 +46,18 @@ const Dropdown: React.FC<DropdownProps> = ({ items }: DropdownProps) => {
     contentCssClasses.push('dropdown__content_opened');
   }
 
+  const contentStyle: React.CSSProperties = {};
+
+  if (toggleDirection === 'top') {
+    contentStyle.top = `-${contentBlockHeight.toString()}px`;
+  }
+
   return (
     <div ref={dropdownRef} className="dropdown">
       <div className={togglerCssClasses.join(' ')} onClick={toggle}>
         {selectedValue}
       </div>
-      <div className={contentCssClasses.join(' ')}>
+      <div ref={contentRef} className={contentCssClasses.join(' ')} style={contentStyle}>
         {items.map(item => (
           <DropdownItem key={item} name={item} onClick={selectItem}></DropdownItem>
         ))}
