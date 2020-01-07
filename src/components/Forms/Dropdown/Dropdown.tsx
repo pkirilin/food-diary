@@ -6,7 +6,7 @@ import { ReactComponent as DropdownArrowIcon } from './drop-down-arrow.svg';
 export type DropdownItemsRenderer = (
   handleCloseDropdown: () => void,
   handleSaveSelectedValue: (event: React.MouseEvent) => void,
-) => JSX.Element[];
+) => JSX.Element | JSX.Element[];
 
 export interface DropdownProps {
   itemsRenderer: DropdownItemsRenderer;
@@ -68,7 +68,7 @@ const Dropdown: React.FC<DropdownProps> = ({ itemsRenderer, toggleDirection = 'b
         </div>
       )}
       <div ref={contentRef} className={contentCssClasses.join(' ')} style={contentStyle}>
-        {itemsRenderer(close, selectItem)}
+        {isOpen && itemsRenderer(close, selectItem)}
       </div>
     </div>
   );
