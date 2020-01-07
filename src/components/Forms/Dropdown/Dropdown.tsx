@@ -8,7 +8,7 @@ export type DropdownItemsRenderer = (
   handleSaveSelectedValue: (event: React.MouseEvent) => void,
 ) => JSX.Element[];
 
-interface DropdownProps {
+export interface DropdownProps {
   itemsRenderer: DropdownItemsRenderer;
   toggleDirection?: 'top' | 'bottom';
   toggler?: JSX.Element;

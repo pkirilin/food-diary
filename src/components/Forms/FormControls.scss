@@ -1,0 +1,21 @@
+// Common styles for form controls
+
+@import './FormControls.variables.scss';
+
+.labeled-container {
+  display: flex;
+  flex-direction: column;
+
+  &_inline {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  &__label {
+    padding: $form-control-padding;
+  }
+
+  &__target {
+    flex: 1;
+  }
+}
