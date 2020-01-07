@@ -1,15 +1,16 @@
 import React, { useState, useRef } from 'react';
 import './Dropdown.scss';
-import DropdownItem from '../DropdownItem';
 import { useOutsideClick, useHiddenBlockHeightCalculation } from '../../../hooks';
 import { ReactComponent as DropdownArrowIcon } from './drop-down-arrow.svg';
 
+type ItemsRenderer = (handleItemClicked: (event: React.MouseEvent) => void) => JSX.Element[];
+
 interface DropdownProps {
-  items: string[];
+  itemsRenderer: ItemsRenderer;
   toggleDirection?: 'top' | 'bottom';
 }
 
-const Dropdown: React.FC<DropdownProps> = ({ items, toggleDirection = 'bottom' }: DropdownProps) => {
+const Dropdown: React.FC<DropdownProps> = ({ itemsRenderer, toggleDirection = 'bottom' }: DropdownProps) => {
   const dropdownRef = useRef(null);
   const contentRef = useRef(null);
 
@@ -60,9 +61,7 @@ const Dropdown: React.FC<DropdownProps> = ({ items, toggleDirection = 'bottom' }
         <DropdownArrowIcon className="dropdown__toggler__icon"></DropdownArrowIcon>
       </div>
       <div ref={contentRef} className={contentCssClasses.join(' ')} style={contentStyle}>
-        {items.map(item => (
-          <DropdownItem key={item} name={item} onClick={selectItem}></DropdownItem>
-        ))}
+        {itemsRenderer(selectItem)}
       </div>
     </div>
   );
