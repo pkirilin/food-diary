@@ -12,9 +12,15 @@ export interface DropdownProps {
   itemsRenderer: DropdownItemsRenderer;
   toggleDirection?: 'top' | 'bottom';
   toggler?: JSX.Element;
+  elementBasedContentWidth?: boolean;
 }
 
-const Dropdown: React.FC<DropdownProps> = ({ itemsRenderer, toggleDirection = 'bottom', toggler }: DropdownProps) => {
+const Dropdown: React.FC<DropdownProps> = ({
+  itemsRenderer,
+  toggleDirection = 'bottom',
+  toggler,
+  elementBasedContentWidth = false,
+}: DropdownProps) => {
   const dropdownRef = useRef(null);
   const contentRef = useRef(null);
 
@@ -55,6 +61,13 @@ const Dropdown: React.FC<DropdownProps> = ({ itemsRenderer, toggleDirection = 'b
 
   if (toggleDirection === 'top') {
     contentStyle.top = `-${contentBlockHeight.toString()}px`;
+  }
+
+  if (!elementBasedContentWidth) {
+    const dropdownElem = dropdownRef as React.RefObject<HTMLElement>;
+    if (dropdownElem && dropdownElem.current) {
+      contentStyle.width = `${dropdownElem.current.clientWidth}px`;
+    }
   }
 
   return (

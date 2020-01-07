@@ -5,6 +5,8 @@
   padding: $form-control-padding;
   transition: 0.2s;
   cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
   &:hover {
     background-color: $color-light-green;
