@@ -3,14 +3,18 @@ import './Dropdown.scss';
 import { useOutsideClick, useHiddenBlockHeightCalculation } from '../../../hooks';
 import { ReactComponent as DropdownArrowIcon } from './drop-down-arrow.svg';
 
-type ItemsRenderer = (handleItemClicked: (event: React.MouseEvent) => void) => JSX.Element[];
+export type DropdownItemsRenderer = (
+  handleCloseDropdown: () => void,
+  handleSaveSelectedValue: (event: React.MouseEvent) => void,
+) => JSX.Element[];
 
 interface DropdownProps {
-  itemsRenderer: ItemsRenderer;
+  itemsRenderer: DropdownItemsRenderer;
   toggleDirection?: 'top' | 'bottom';
+  toggler?: JSX.Element;
 }
 
-const Dropdown: React.FC<DropdownProps> = ({ itemsRenderer, toggleDirection = 'bottom' }: DropdownProps) => {
+const Dropdown: React.FC<DropdownProps> = ({ itemsRenderer, toggleDirection = 'bottom', toggler }: DropdownProps) => {
   const dropdownRef = useRef(null);
   const contentRef = useRef(null);
 
@@ -29,7 +33,6 @@ const Dropdown: React.FC<DropdownProps> = ({ itemsRenderer, toggleDirection = 'b
   const selectItem = (event: React.MouseEvent): void => {
     const target = event.target as HTMLElement;
     setSelectedValue(target.innerText);
-    setIsOpen(false);
   };
 
   useOutsideClick(dropdownRef, (target: HTMLElement): void => {
@@ -56,12 +59,16 @@ const Dropdown: React.FC<DropdownProps> = ({ itemsRenderer, toggleDirection = 'b
 
   return (
     <div ref={dropdownRef} className="dropdown">
-      <div className={togglerCssClasses.join(' ')} onClick={toggle}>
-        <div className="dropdown__toggler__value">{selectedValue}</div>
-        <DropdownArrowIcon className="dropdown__toggler__icon"></DropdownArrowIcon>
-      </div>
+      {toggler ? (
+        <div onClick={toggle}>{toggler}</div>
+      ) : (
+        <div className={togglerCssClasses.join(' ')} onClick={toggle}>
+          <div className="dropdown__toggler__value">{selectedValue}</div>
+          <DropdownArrowIcon className="dropdown__toggler__icon"></DropdownArrowIcon>
+        </div>
+      )}
       <div ref={contentRef} className={contentCssClasses.join(' ')} style={contentStyle}>
-        {itemsRenderer(selectItem)}
+        {itemsRenderer(close, selectItem)}
       </div>
     </div>
   );
