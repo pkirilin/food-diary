@@ -1,24 +1,20 @@
 @import '../../../variables.scss';
 @import '../FormControls.variables.scss';
 
-.button {
+.input {
   background-color: $color-light-green;
   padding: $form-control-padding;
   border: $form-control-border-width solid $color-middle-green-50;
   border-radius: $form-control-border-radius;
-  text-align: center;
   transition: $form-control-transition;
   outline: none;
-  cursor: pointer;
-
-  &:hover {
-    background-color: $color-dark-green;
-    border-color: $color-dark-green;
-    color: $color-white;
-  }
 
   &:focus {
     border-color: $color-middle-green;
     box-shadow: $form-control-box-shadow $color-middle-green;
+  }
+
+  &::placeholder {
+    color: $color-middle-green-50;
   }
 }
