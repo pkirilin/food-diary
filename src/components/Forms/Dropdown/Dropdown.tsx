@@ -13,6 +13,7 @@ export interface DropdownProps {
   toggleDirection?: 'top' | 'bottom';
   toggler?: JSX.Element;
   elementBasedContentWidth?: boolean;
+  contentAlignment?: 'left' | 'right';
 }
 
 const Dropdown: React.FC<DropdownProps> = ({
@@ -20,6 +21,7 @@ const Dropdown: React.FC<DropdownProps> = ({
   toggleDirection = 'bottom',
   toggler,
   elementBasedContentWidth = false,
+  contentAlignment = 'left',
 }: DropdownProps) => {
   const dropdownRef = useRef(null);
   const contentRef = useRef(null);
@@ -68,6 +70,10 @@ const Dropdown: React.FC<DropdownProps> = ({
     if (dropdownElem && dropdownElem.current) {
       contentStyle.width = `${dropdownElem.current.clientWidth}px`;
     }
+  }
+
+  if (contentAlignment === 'right') {
+    contentCssClasses.push('dropdown__content_right');
   }
 
   return (
