@@ -15,9 +15,9 @@
     cursor: pointer;
     transition: $form-control-transition;
 
-    &:hover,
     &_active {
       border-color: $color-middle-green;
+      box-shadow: $form-control-box-shadow $color-middle-green;
     }
 
     &__value {
@@ -25,6 +25,10 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+
+      &_placeholder {
+        color: $color-middle-green-50;
+      }
     }
 
     &__icon {

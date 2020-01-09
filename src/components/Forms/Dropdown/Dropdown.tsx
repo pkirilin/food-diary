@@ -27,6 +27,7 @@ const Dropdown: React.FC<DropdownProps> = ({
   const contentRef = useRef(null);
 
   const [selectedValue, setSelectedValue] = useState('Select value');
+  const [selectedValueChanged, setSelectedValueChanged] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [contentBlockHeight, setContentBlockHeight] = useState(0);
 
@@ -41,6 +42,7 @@ const Dropdown: React.FC<DropdownProps> = ({
   const selectItem = (event: React.MouseEvent): void => {
     const target = event.target as HTMLElement;
     setSelectedValue(target.innerText);
+    setSelectedValueChanged(true);
   };
 
   useOutsideClick(dropdownRef, (target: HTMLElement): void => {
@@ -52,11 +54,16 @@ const Dropdown: React.FC<DropdownProps> = ({
   useHiddenBlockHeightCalculation(contentRef as React.RefObject<HTMLElement>, setContentBlockHeight);
 
   const togglerCssClasses = ['dropdown__toggler'];
+  const togglerValueCssClasses = ['dropdown__toggler__value'];
   const contentCssClasses = ['dropdown__content'];
 
   if (isOpen) {
     togglerCssClasses.push('dropdown__toggler_active');
     contentCssClasses.push('dropdown__content_opened');
+  }
+
+  if (!selectedValueChanged) {
+    togglerValueCssClasses.push('dropdown__toggler__value_placeholder');
   }
 
   const contentStyle: React.CSSProperties = {};
@@ -82,7 +89,7 @@ const Dropdown: React.FC<DropdownProps> = ({
         <div onClick={toggle}>{toggler}</div>
       ) : (
         <div className={togglerCssClasses.join(' ')} onClick={toggle}>
-          <div className="dropdown__toggler__value">{selectedValue}</div>
+          <div className={togglerValueCssClasses.join(' ')}>{selectedValue}</div>
           <DropdownArrowIcon className="dropdown__toggler__icon"></DropdownArrowIcon>
         </div>
       )}
