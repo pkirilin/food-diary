@@ -2,6 +2,7 @@
 @import '../FormControls.variables.scss';
 
 .input {
+  width: 100%;
   background-color: $color-light-green;
   padding: $form-control-padding;
   border: $form-control-border-width solid $color-middle-green-50;
