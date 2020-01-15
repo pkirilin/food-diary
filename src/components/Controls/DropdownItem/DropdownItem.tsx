@@ -1,15 +1,15 @@
 import React from 'react';
 import './DropdownItem.scss';
 
-interface DropdownItemProps {
-  name: string;
-  onClick?: React.MouseEventHandler<HTMLInputElement>;
-}
+type DropdownItemProps = React.DOMAttributes<HTMLInputElement>;
 
-const DropdownItem: React.FC<DropdownItemProps> = ({ name, ...props }: DropdownItemProps) => {
+const DropdownItem: React.FC<React.PropsWithChildren<DropdownItemProps>> = ({
+  children,
+  ...props
+}: React.PropsWithChildren<DropdownItemProps>) => {
   return (
-    <div {...props} className="dropdown-item">
-      {name}
+    <div className="dropdown-item" {...props}>
+      {children}
     </div>
   );
 };

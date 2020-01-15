@@ -1,15 +1,9 @@
 import React, { useState, useRef } from 'react';
 import './Dropdown.scss';
-import { useOutsideClick, useHiddenBlockHeightCalculation } from '../../../hooks';
+import { useOutsideClick, useHiddenBlockHeightCalculation, useInsideClick } from '../../../hooks';
 import { ReactComponent as DropdownArrowIcon } from './drop-down-arrow.svg';
 
-export type DropdownItemsRenderer = (
-  handleCloseDropdown: () => void,
-  handleSaveSelectedValue: (event: React.MouseEvent) => void,
-) => JSX.Element | JSX.Element[];
-
-export interface DropdownProps {
-  itemsRenderer: DropdownItemsRenderer;
+interface DropdownProps {
   toggleDirection?: 'top' | 'bottom';
   toggler?: JSX.Element;
   elementBasedContentWidth?: boolean;
@@ -17,12 +11,12 @@ export interface DropdownProps {
 }
 
 const Dropdown: React.FC<DropdownProps> = ({
-  itemsRenderer,
+  children,
   toggleDirection = 'bottom',
   toggler,
   elementBasedContentWidth = false,
   contentAlignment = 'left',
-}: DropdownProps) => {
+}: React.PropsWithChildren<DropdownProps>) => {
   const dropdownRef = useRef(null);
   const contentRef = useRef(null);
 
@@ -39,10 +33,11 @@ const Dropdown: React.FC<DropdownProps> = ({
     setIsOpen(false);
   };
 
-  const selectItem = (event: React.MouseEvent): void => {
+  const selectItem = (event: MouseEvent): void => {
     const target = event.target as HTMLElement;
     setSelectedValue(target.innerText);
     setSelectedValueChanged(true);
+    close();
   };
 
   useOutsideClick(dropdownRef, (target: HTMLElement): void => {
@@ -50,6 +45,8 @@ const Dropdown: React.FC<DropdownProps> = ({
       close();
     }
   });
+
+  useInsideClick(contentRef, selectItem, '.dropdown-item');
 
   useHiddenBlockHeightCalculation(contentRef as React.RefObject<HTMLElement>, setContentBlockHeight);
 
@@ -94,7 +91,7 @@ const Dropdown: React.FC<DropdownProps> = ({
         </div>
       )}
       <div ref={contentRef} className={contentCssClasses.join(' ')} style={contentStyle}>
-        {isOpen && itemsRenderer(close, selectItem)}
+        {children}
       </div>
     </div>
   );

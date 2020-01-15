@@ -14,9 +14,9 @@ const useOutsideClick = (ref: React.RefObject<HTMLInputElement>, handler: (targe
   };
 
   useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('click', handleClickOutside);
     return (): void => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('click', handleClickOutside);
     };
   });
 };
