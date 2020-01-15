@@ -1,6 +1,11 @@
 import React, { useState, useRef } from 'react';
 import './Dropdown.scss';
-import { useOutsideClick, useHiddenBlockHeightCalculation, useInsideClick } from '../../../hooks';
+import {
+  useOutsideClick,
+  useHiddenBlockHeightCalculation,
+  useInsideClick,
+  useInitialSelectedValue,
+} from '../../../hooks';
 import { ReactComponent as DropdownArrowIcon } from './drop-down-arrow.svg';
 
 interface DropdownProps {
@@ -8,6 +13,8 @@ interface DropdownProps {
   toggler?: JSX.Element;
   elementBasedContentWidth?: boolean;
   contentAlignment?: 'left' | 'right';
+  placeholder?: string;
+  initialSelectedValue?: string;
 }
 
 const Dropdown: React.FC<DropdownProps> = ({
@@ -16,11 +23,13 @@ const Dropdown: React.FC<DropdownProps> = ({
   toggler,
   elementBasedContentWidth = false,
   contentAlignment = 'left',
+  placeholder = 'Select value',
+  initialSelectedValue,
 }: React.PropsWithChildren<DropdownProps>) => {
   const dropdownRef = useRef(null);
   const contentRef = useRef(null);
 
-  const [selectedValue, setSelectedValue] = useState('Select value');
+  const [selectedValue, setSelectedValue] = useState(placeholder);
   const [selectedValueChanged, setSelectedValueChanged] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [contentBlockHeight, setContentBlockHeight] = useState(0);
@@ -33,12 +42,18 @@ const Dropdown: React.FC<DropdownProps> = ({
     setIsOpen(false);
   };
 
+  const changeSelectedValue = (newSelectedValue: string): void => {
+    setSelectedValue(newSelectedValue);
+    setSelectedValueChanged(true);
+  };
+
   const selectItem = (event: MouseEvent): void => {
     const target = event.target as HTMLElement;
-    setSelectedValue(target.innerText);
-    setSelectedValueChanged(true);
+    changeSelectedValue(target.innerText);
     close();
   };
+
+  useInitialSelectedValue(initialSelectedValue, changeSelectedValue);
 
   useOutsideClick(dropdownRef, (target: HTMLElement): void => {
     if (!target.matches('.dropdown')) {
