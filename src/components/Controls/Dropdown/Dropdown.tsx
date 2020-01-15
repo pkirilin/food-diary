@@ -42,6 +42,12 @@ const Dropdown: React.FC<DropdownProps> = ({
     setIsOpen(false);
   };
 
+  const closeIfTargetOutside = (target: HTMLElement): void => {
+    if (!target.matches('.dropdown')) {
+      close();
+    }
+  };
+
   const changeSelectedValue = (newSelectedValue: string): void => {
     setSelectedValue(newSelectedValue);
     setSelectedValueChanged(true);
@@ -55,11 +61,7 @@ const Dropdown: React.FC<DropdownProps> = ({
 
   useInitialSelectedValue(initialSelectedValue, changeSelectedValue);
 
-  useOutsideClick(dropdownRef, (target: HTMLElement): void => {
-    if (!target.matches('.dropdown')) {
-      close();
-    }
-  });
+  useOutsideClick(dropdownRef, closeIfTargetOutside);
 
   useInsideClick(contentRef, selectItem, '.dropdown-item');
 
