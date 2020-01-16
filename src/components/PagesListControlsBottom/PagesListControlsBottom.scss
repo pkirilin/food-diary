@@ -1,11 +1,15 @@
 @import '../../variables.scss';
 @import '../SidebarBlocks/SidebarBlocks.variables.scss';
 
-.fd-pages-list-controls-bottom {
+.pages-list-controls-bottom {
   display: flex;
   justify-content: space-between;
   align-items: center;
   height: 50px;
   border-top: $divider-border-width solid $color-middle-green;
   padding: 0px $nested-items-side-padding;
+
+  &__show-count-wrapper {
+    width: 120px;
+  }
 }
