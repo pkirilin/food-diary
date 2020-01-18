@@ -8,18 +8,16 @@ import { SortOrder, ShowCount } from '../../models';
 interface PagesListControlsBottomProps extends StateToPropsMapResult, DispatchToPropsMapResult {}
 
 const PagesListControlsBottom: React.FC<PagesListControlsBottomProps> = ({
-  pageFilter,
+  pagesFilter,
   toggleSortOrder,
-  getPages,
 }: PagesListControlsBottomProps) => {
-  const clickSortIcon = async (): Promise<void> => {
-    await toggleSortOrder(pageFilter);
-    await getPages();
+  const clickSortIcon = (): void => {
+    toggleSortOrder(pagesFilter);
   };
 
   return (
     <div className="pages-list-controls-bottom">
-      {pageFilter.sortOrder === SortOrder.Ascending ? (
+      {pagesFilter.sortOrder === SortOrder.Ascending ? (
         <IconSortAscending onClick={clickSortIcon}></IconSortAscending>
       ) : (
         <IconSortDescending onClick={clickSortIcon}></IconSortDescending>

@@ -12,10 +12,11 @@ const PagesList: React.FC<PagesListProps> = ({
   loaded,
   getPages,
   errorMessage,
+  pagesFilter,
 }: PagesListProps) => {
   useEffect(() => {
-    getPages();
-  }, [getPages]);
+    getPages(pagesFilter);
+  }, [getPages, pagesFilter]);
 
   if (loading) {
     return <div>Loading</div>;

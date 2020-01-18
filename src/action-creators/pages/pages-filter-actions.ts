@@ -1,18 +1,10 @@
 import { UpdatePagesFilterAction, PagesFilterActionType } from '../../action-types';
 import { PagesFilter } from '../../models';
-import { ActionCreator, Dispatch } from 'redux';
-import { ThunkAction } from 'redux-thunk';
+import { ActionCreator } from 'redux';
 
-export const updateFilterActionCreator: ActionCreator<ThunkAction<
-  Promise<UpdatePagesFilterAction>,
-  PagesFilter,
-  null,
-  UpdatePagesFilterAction
->> = (updatedFilter: PagesFilter) => {
-  return async (dispatch: Dispatch): Promise<UpdatePagesFilterAction> => {
-    return dispatch({
-      type: PagesFilterActionType.UpdateFilter,
-      updatedFilter,
-    });
+export const updateFilterActionCreator: ActionCreator<UpdatePagesFilterAction> = (updatedFilter: PagesFilter) => {
+  return {
+    type: PagesFilterActionType.UpdateFilter,
+    updatedFilter,
   };
 };

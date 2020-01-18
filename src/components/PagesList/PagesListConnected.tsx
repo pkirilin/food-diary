@@ -1,16 +1,18 @@
 import { connect } from 'react-redux';
 import PagesList from './PagesList';
 import { ThunkDispatch } from 'redux-thunk';
-import { PageItem } from '../../models';
+import { PageItem, PagesFilter } from '../../models';
 import { AnyAction } from 'redux';
 import { getPagesActionCreator } from '../../action-creators';
 import { FoodDiaryState, PagesListState } from '../../store';
 import { GetPagesListSuccessAction, GetPagesListErrorAction } from '../../action-types';
 
-export type StateToPropsMapResult = PagesListState;
+export interface StateToPropsMapResult extends PagesListState {
+  pagesFilter: PagesFilter;
+}
 
 export interface DispatchToPropsMapResult {
-  getPages: () => Promise<GetPagesListSuccessAction | GetPagesListErrorAction>;
+  getPages: (filter: PagesFilter) => Promise<GetPagesListSuccessAction | GetPagesListErrorAction>;
 }
 
 const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
@@ -19,12 +21,14 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
     loaded: state.pages.list.loaded ?? false,
     loading: state.pages.list.loading ?? false,
     errorMessage: state.pages.list.errorMessage,
+    pagesFilter: state.pages.filter,
   };
 };
 
-const mapDispatchToProps = (dispatch: ThunkDispatch<PageItem[], null, AnyAction>): DispatchToPropsMapResult => {
+const mapDispatchToProps = (dispatch: ThunkDispatch<PageItem[], PagesFilter, AnyAction>): DispatchToPropsMapResult => {
   return {
-    getPages: (): Promise<GetPagesListSuccessAction | GetPagesListErrorAction> => dispatch(getPagesActionCreator()),
+    getPages: (filter: PagesFilter): Promise<GetPagesListSuccessAction | GetPagesListErrorAction> =>
+      dispatch(getPagesActionCreator(filter)),
   };
 };
 

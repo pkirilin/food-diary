@@ -1,6 +1,6 @@
 import { Dispatch, ActionCreator } from 'redux';
 import { ThunkAction } from 'redux-thunk';
-import { PageItem } from '../../models';
+import { PageItem, PagesFilter } from '../../models';
 import {
   GetPagesListSuccessAction,
   GetPagesListRequestAction,
@@ -32,14 +32,14 @@ const createErrorAction = (errorMessage: string): GetPagesListErrorAction => {
 export const getPagesActionCreator: ActionCreator<ThunkAction<
   Promise<GetPagesListSuccessAction | GetPagesListErrorAction>,
   PageItem[],
-  null,
+  PagesFilter,
   GetPagesListSuccessAction | GetPagesListErrorAction
->> = () => {
+>> = (filter: PagesFilter) => {
   return async (dispatch: Dispatch): Promise<GetPagesListSuccessAction | GetPagesListErrorAction> => {
     dispatch(createRequestAction());
 
     try {
-      const response = await loadPages();
+      const response = await loadPages(filter);
       if (!response.ok) {
         return dispatch(createErrorAction('Response is not ok'));
       }
