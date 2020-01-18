@@ -1,6 +1,6 @@
 import { SortOrder } from './common';
 
-export interface PageFilter {
+export interface PagesFilter {
   sortOrder: SortOrder;
   showCount?: number;
 }

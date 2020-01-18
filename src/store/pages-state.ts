@@ -1,4 +1,4 @@
-import { PageItem, PageFilter } from '../models';
+import { PageItem, PagesFilter } from '../models';
 
 export interface PagesState {
   list: PagesListState;
@@ -12,4 +12,4 @@ export interface PagesListState {
   visiblePages: PageItem[];
 }
 
-export type PagesFilterState = PageFilter;
+export type PagesFilterState = PagesFilter;

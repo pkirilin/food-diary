@@ -1,14 +1,14 @@
 import { UpdatePagesFilterAction, PagesFilterActionType } from '../../action-types';
-import { PageFilter } from '../../models';
+import { PagesFilter } from '../../models';
 import { ActionCreator, Dispatch } from 'redux';
 import { ThunkAction } from 'redux-thunk';
 
 export const updateFilterActionCreator: ActionCreator<ThunkAction<
   Promise<UpdatePagesFilterAction>,
-  PageFilter,
+  PagesFilter,
   null,
   UpdatePagesFilterAction
->> = (updatedFilter: PageFilter) => {
+>> = (updatedFilter: PagesFilter) => {
   return async (dispatch: Dispatch): Promise<UpdatePagesFilterAction> => {
     return dispatch({
       type: PagesFilterActionType.UpdateFilter,

@@ -4,14 +4,14 @@ import { AnyAction } from 'redux';
 import { GetPagesListSuccessAction, GetPagesListErrorAction, UpdatePagesFilterAction } from '../../action-types';
 import { updateFilterActionCreator, getPagesActionCreator } from '../../action-creators';
 import { FoodDiaryState } from '../../store';
-import { PageFilter, PageItem, invertSortOrder } from '../../models';
+import { PagesFilter, PageItem, invertSortOrder } from '../../models';
 import { ThunkDispatch } from 'redux-thunk';
 
 export interface StateToPropsMapResult {
-  pageFilter: PageFilter;
+  pageFilter: PagesFilter;
 }
 export interface DispatchToPropsMapResult {
-  toggleSortOrder: (filter: PageFilter) => Promise<UpdatePagesFilterAction>;
+  toggleSortOrder: (filter: PagesFilter) => Promise<UpdatePagesFilterAction>;
   getPages: () => Promise<GetPagesListSuccessAction | GetPagesListErrorAction>;
 }
 
@@ -21,12 +21,12 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
   };
 };
 
-type PagesListControlsBottomDispatch = ThunkDispatch<PageFilter, null, AnyAction> &
+type PagesListControlsBottomDispatch = ThunkDispatch<PagesFilter, null, AnyAction> &
   ThunkDispatch<PageItem[], null, AnyAction>;
 
 const mapDispatchToProps = (dispatch: PagesListControlsBottomDispatch): DispatchToPropsMapResult => {
   return {
-    toggleSortOrder: (filter: PageFilter): Promise<UpdatePagesFilterAction> => {
+    toggleSortOrder: (filter: PagesFilter): Promise<UpdatePagesFilterAction> => {
       return dispatch(updateFilterActionCreator({ ...filter, sortOrder: invertSortOrder(filter.sortOrder) }));
     },
     getPages: (): Promise<GetPagesListSuccessAction | GetPagesListErrorAction> => {
