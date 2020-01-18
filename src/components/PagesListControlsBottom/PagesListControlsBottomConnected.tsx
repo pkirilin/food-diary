@@ -1,15 +1,16 @@
 import { connect } from 'react-redux';
 import PagesListControlsBottom from './PagesListControlsBottom';
-import { AnyAction, Dispatch } from 'redux';
+import { Dispatch } from 'redux';
 import { updateFilterActionCreator } from '../../action-creators';
 import { FoodDiaryState } from '../../store';
-import { PagesFilter, invertSortOrder } from '../../models';
+import { PagesFilter } from '../../models';
+import { UpdatePagesFilterAction } from '../../action-types';
 
 export interface StateToPropsMapResult {
   pagesFilter: PagesFilter;
 }
 export interface DispatchToPropsMapResult {
-  toggleSortOrder: (filter: PagesFilter) => void;
+  updatePagesFilter: (updatedFilter: PagesFilter) => void;
 }
 
 const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
@@ -18,10 +19,10 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
   };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchToPropsMapResult => {
+const mapDispatchToProps = (dispatch: Dispatch<UpdatePagesFilterAction>): DispatchToPropsMapResult => {
   return {
-    toggleSortOrder: (filter: PagesFilter): void => {
-      dispatch(updateFilterActionCreator({ ...filter, sortOrder: invertSortOrder(filter.sortOrder) }));
+    updatePagesFilter: (updatedFilter: PagesFilter): void => {
+      dispatch(updateFilterActionCreator(updatedFilter));
     },
   };
 };
