@@ -1,7 +1,8 @@
-import { PageItem } from '../models';
+import { PageItem, PageFilter } from '../models';
 
 export interface PagesState {
   list: PagesListState;
+  filter: PagesFilterState;
 }
 
 export interface PagesListState {
@@ -10,3 +11,5 @@ export interface PagesListState {
   errorMessage?: string;
   visiblePages: PageItem[];
 }
+
+export type PagesFilterState = PageFilter;

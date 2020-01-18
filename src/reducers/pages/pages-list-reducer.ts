@@ -30,11 +30,7 @@ const pagesListReducer = (state: PagesListState = initialState, action: PagesLis
       };
 
     default:
-      return {
-        loading: false,
-        loaded: false,
-        visiblePages: [...state.visiblePages],
-      };
+      return state;
   }
 };
 
