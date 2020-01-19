@@ -2,10 +2,24 @@
 @import '../SidebarBlocks.variables.scss';
 
 .sidebar__list__item {
+  min-height: 55px;
   border-left: $active-item-border-width solid transparent;
   border-bottom: $divider-border-width solid $color-middle-green;
   padding: 5px $nested-items-side-padding 5px $nested-items-side-padding - $active-item-border-width;
   transition: 0.2s;
+
+  &_selected {
+    background-color: $color-dark-green;
+
+    &:hover {
+      border-left: $active-item-border-width solid $color-white;
+    }
+  }
+
+  &_editable {
+    display: flex;
+    align-items: center;
+  }
 
   &:last-child {
     border-bottom: none;
@@ -13,13 +27,5 @@
 
   &:hover {
     border-left: $active-item-border-width solid $color-dark-green;
-  }
-}
-
-.sidebar__list__item_selected {
-  background-color: $color-dark-green;
-
-  &:hover {
-    border-left: $active-item-border-width solid $color-white;
   }
 }

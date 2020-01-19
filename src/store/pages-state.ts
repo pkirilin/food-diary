@@ -9,7 +9,11 @@ export interface PagesListState {
   loading: boolean;
   loaded: boolean;
   errorMessage?: string;
-  visiblePages: PageItem[];
+  visiblePages: PageItemState[];
+}
+
+export interface PageItemState extends PageItem {
+  editable?: boolean;
 }
 
 export type PagesFilterState = PagesFilter;

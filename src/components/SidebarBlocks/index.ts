@@ -4,6 +4,7 @@ import SidebarControlPanelSelection from './SidebarControlPanelSelection';
 import SidebarList from './SidebarList';
 import SidebarListItem from './SidebarListItem';
 import SidebarListItemLink from './SidebarListItemLink/SidebarListItemLink';
+import SidebarListItemControls from './SidebarListItemControls';
 
 export {
   SidebarControlPanel,
@@ -12,4 +13,5 @@ export {
   SidebarList,
   SidebarListItem,
   SidebarListItemLink,
+  SidebarListItemControls,
 };
