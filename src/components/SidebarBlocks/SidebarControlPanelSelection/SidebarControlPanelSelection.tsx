@@ -1,12 +1,12 @@
 import React from 'react';
 import './SidebarControlPanelSelection.scss';
-import { IconMore } from '../../Icons';
+import Icon from '../../Icon';
 
 const SidebarControlPanelSelection: React.FC = () => {
   return (
     <div className="sidebar__control-panel__selection">
       <div>Selected</div>
-      <IconMore></IconMore>
+      <Icon type="three-dots"></Icon>
     </div>
   );
 };

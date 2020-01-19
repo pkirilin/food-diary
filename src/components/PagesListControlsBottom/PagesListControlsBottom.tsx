@@ -1,9 +1,9 @@
 import React from 'react';
 import './PagesListControlsBottom.scss';
-import { IconSortDescending, IconSortAscending } from '../Icons';
 import { Label, Dropdown, DropdownItem, FormGroup } from '../Controls';
 import { DispatchToPropsMapResult, StateToPropsMapResult } from './PagesListControlsBottomConnected';
 import { SortOrder, ShowCount, invertSortOrder } from '../../models';
+import Icon from '../Icon';
 
 interface PagesListControlsBottomProps extends StateToPropsMapResult, DispatchToPropsMapResult {}
 
@@ -30,9 +30,9 @@ const PagesListControlsBottom: React.FC<PagesListControlsBottomProps> = ({
   return (
     <div className="pages-list-controls-bottom">
       {pagesFilter.sortOrder === SortOrder.Ascending ? (
-        <IconSortAscending onClick={handleSortIconClick}></IconSortAscending>
+        <Icon type="sort-ascending" onClick={handleSortIconClick}></Icon>
       ) : (
-        <IconSortDescending onClick={handleSortIconClick}></IconSortDescending>
+        <Icon type="sort-descending" onClick={handleSortIconClick}></Icon>
       )}
       <FormGroup inline>
         <Label>Show</Label>

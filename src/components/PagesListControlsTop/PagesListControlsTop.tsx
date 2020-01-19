@@ -1,7 +1,7 @@
 import React from 'react';
 import './PagesListControlsTop.scss';
 import { SidebarControlPanel, SidebarControlPanelIcons, SidebarControlPanelSelection } from '../SidebarBlocks';
-import { IconAdd, IconRefresh, IconFilter, IconFilterReset } from '../Icons';
+import Icon from '../Icon';
 
 const PagesListControlsTop: React.FC = () => {
   // TODO: take this from store when selection logic will be implemented
@@ -10,10 +10,10 @@ const PagesListControlsTop: React.FC = () => {
   return (
     <SidebarControlPanel>
       <SidebarControlPanelIcons>
-        <IconAdd></IconAdd>
-        <IconRefresh></IconRefresh>
-        <IconFilter></IconFilter>
-        <IconFilterReset></IconFilterReset>
+        <Icon type="add"></Icon>
+        <Icon type="refresh"></Icon>
+        <Icon type="filter"></Icon>
+        <Icon type="close"></Icon>
       </SidebarControlPanelIcons>
       {displaySelectionPanel && <SidebarControlPanelSelection></SidebarControlPanelSelection>}
     </SidebarControlPanel>
