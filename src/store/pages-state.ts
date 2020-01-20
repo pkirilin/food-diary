@@ -3,6 +3,7 @@ import { PageItem, PagesFilter } from '../models';
 export interface PagesState {
   list: PagesListState;
   filter: PagesFilterState;
+  operations: PagesOperationsState;
 }
 
 export interface PagesListState {
@@ -17,3 +18,9 @@ export interface PageItemState extends PageItem {
 }
 
 export type PagesFilterState = PagesFilter;
+
+export interface PagesOperationsState {
+  creating?: boolean;
+  created?: boolean;
+  createError?: boolean;
+}
