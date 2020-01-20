@@ -6,8 +6,10 @@ import {
   GetPagesListRequestAction,
   PagesListActionType,
   GetPagesListErrorAction,
+  CreateDraftPageAction,
 } from '../../action-types';
 import { loadPages } from '../../services';
+import { PageItemState } from '../../store';
 
 const createRequestAction = (): GetPagesListRequestAction => {
   return {
@@ -49,5 +51,12 @@ export const getPagesActionCreator: ActionCreator<ThunkAction<
     } catch (error) {
       return dispatch(createErrorAction('Could not fetch pages list'));
     }
+  };
+};
+
+export const createDraftPageActionCreator = (draftPage: PageItemState): CreateDraftPageAction => {
+  return {
+    type: PagesListActionType.CreateDraftPage,
+    draftPage,
   };
 };

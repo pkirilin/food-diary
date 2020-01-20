@@ -11,6 +11,7 @@ export interface PagesListState {
   loaded: boolean;
   errorMessage?: string;
   visiblePages: PageItemState[];
+  currentDraftPageId: number;
 }
 
 export interface PageItemState extends PageItem {

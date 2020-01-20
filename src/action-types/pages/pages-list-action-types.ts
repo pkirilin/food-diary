@@ -1,10 +1,11 @@
 import { Action } from 'redux';
-import { PageItem } from '../../models';
+import { PageItemState } from '../../store';
 
 export enum PagesListActionType {
   Request = 'GET_PAGES_LIST__REQUEST',
   Success = 'GET_PAGES_LIST__SUCCESS',
   Error = 'GET_PAGES_LIST__ERROR',
+  CreateDraftPage = 'PAGES_LIST__CREATE_DRAFT_PAGE',
 }
 
 export interface GetPagesListRequestAction extends Action<PagesListActionType.Request> {
@@ -13,7 +14,7 @@ export interface GetPagesListRequestAction extends Action<PagesListActionType.Re
 
 export interface GetPagesListSuccessAction extends Action<PagesListActionType.Success> {
   type: PagesListActionType.Success;
-  pages: PageItem[];
+  pages: PageItemState[];
 }
 
 export interface GetPagesListErrorAction extends Action<PagesListActionType.Error> {
@@ -21,4 +22,13 @@ export interface GetPagesListErrorAction extends Action<PagesListActionType.Erro
   errorMessage: string;
 }
 
-export type PagesListActions = GetPagesListRequestAction | GetPagesListSuccessAction | GetPagesListErrorAction;
+export interface CreateDraftPageAction extends Action<PagesListActionType.CreateDraftPage> {
+  type: PagesListActionType.CreateDraftPage;
+  draftPage: PageItemState;
+}
+
+export type PagesListActions =
+  | GetPagesListRequestAction
+  | GetPagesListSuccessAction
+  | GetPagesListErrorAction
+  | CreateDraftPageAction;

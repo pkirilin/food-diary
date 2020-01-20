@@ -22,6 +22,7 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
     loading: state.pages.list.loading ?? false,
     errorMessage: state.pages.list.errorMessage,
     pagesFilter: state.pages.filter,
+    currentDraftPageId: state.pages.list.currentDraftPageId,
   };
 };
 
