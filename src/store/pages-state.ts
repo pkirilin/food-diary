@@ -18,7 +18,9 @@ export interface PageItemState extends PageItem {
   editable?: boolean;
 }
 
-export type PagesFilterState = PagesFilter;
+export interface PagesFilterState extends PagesFilter {
+  filterChanged: boolean;
+}
 
 export interface PagesOperationsState {
   creating?: boolean;

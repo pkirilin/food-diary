@@ -5,6 +5,7 @@ import { SortOrder, ShowCount } from '../../models';
 const initialState: PagesFilterState = {
   sortOrder: SortOrder.Descending,
   showCount: ShowCount.LastMonth,
+  filterChanged: false,
 };
 
 const pagesFilterReducer = (state: PagesFilterState = initialState, action: PagesFilterActions): PagesFilterState => {
@@ -13,7 +14,10 @@ const pagesFilterReducer = (state: PagesFilterState = initialState, action: Page
       return {
         ...state,
         ...action.updatedFilter,
+        filterChanged: true,
       };
+    case PagesFilterActionType.ClearFilter:
+      return initialState;
     default:
       return state;
   }
