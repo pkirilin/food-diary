@@ -1,6 +1,6 @@
 import { Dispatch, ActionCreator } from 'redux';
 import { ThunkAction } from 'redux-thunk';
-import { PageItem, PagesFilter } from '../../models';
+import { PagesFilter } from '../../models';
 import {
   GetPagesListSuccessAction,
   GetPagesListRequestAction,
@@ -18,7 +18,7 @@ const createRequestAction = (): GetPagesListRequestAction => {
   };
 };
 
-const createSuccessAction = (pages: PageItem[]): GetPagesListSuccessAction => {
+const createSuccessAction = (pages: PageItemState[]): GetPagesListSuccessAction => {
   return {
     type: PagesListActionType.Success,
     pages,
@@ -34,7 +34,7 @@ const createErrorAction = (errorMessage: string): GetPagesListErrorAction => {
 
 export const getPagesActionCreator: ActionCreator<ThunkAction<
   Promise<GetPagesListSuccessAction | GetPagesListErrorAction>,
-  PageItem[],
+  PageItemState[],
   PagesFilter,
   GetPagesListSuccessAction | GetPagesListErrorAction
 >> = (filter: PagesFilter) => {

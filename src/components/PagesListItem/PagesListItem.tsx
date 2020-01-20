@@ -6,9 +6,9 @@ import { BadgesContainer } from '../ContainerBlocks';
 import { PageItemState } from '../../store';
 import { Input } from '../Controls';
 import Icon from '../Icon';
-import { DispatchToPropsMapResult } from './PagesListItemConnected';
+import { DispatchToPropsMapResult, StateToPropsMapResult } from './PagesListItemConnected';
 
-interface PagesListItemProps extends DispatchToPropsMapResult {
+interface PagesListItemProps extends StateToPropsMapResult, DispatchToPropsMapResult {
   data: PageItemState;
   selected?: boolean;
 }
@@ -16,7 +16,10 @@ interface PagesListItemProps extends DispatchToPropsMapResult {
 const PagesListItem: React.FC<PagesListItemProps> = ({
   data: page,
   selected = false,
+  createPage,
   deleteDraftPage,
+  getPages,
+  pagesFilter,
 }: PagesListItemProps) => {
   const [selectedDate, setSelectedDate] = useState(page.date);
 
@@ -25,6 +28,12 @@ const PagesListItem: React.FC<PagesListItemProps> = ({
     if (target) {
       setSelectedDate(target.value);
     }
+  };
+
+  const handleConfirmEditPageIconClick = async (): Promise<void> => {
+    await createPage({ id: page.id, date: page.date });
+    deleteDraftPage(page.id);
+    await getPages(pagesFilter);
   };
 
   const handleCancelEditPageIconClick = (): void => {
@@ -39,7 +48,7 @@ const PagesListItem: React.FC<PagesListItemProps> = ({
       <SidebarListItem selected={selected} editable>
         <Input type="date" placeholder="Pick date" value={selectedDate} onChange={handleSelectedDateChange}></Input>
         <SidebarListItemControls>
-          <Icon type="check" size="small"></Icon>
+          <Icon type="check" size="small" onClick={handleConfirmEditPageIconClick}></Icon>
           <Icon type="close" size="small" onClick={handleCancelEditPageIconClick}></Icon>
         </SidebarListItemControls>
       </SidebarListItem>

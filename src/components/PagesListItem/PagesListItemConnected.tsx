@@ -1,19 +1,48 @@
 import { connect } from 'react-redux';
 import PagesListItem from './PagesListItem';
-import { Dispatch } from 'redux';
-import { DeleteDraftPageAction } from '../../action-types';
-import { deleteDraftPageActionCreator } from '../../action-creators';
+import { Dispatch, AnyAction } from 'redux';
+import {
+  DeleteDraftPageAction,
+  GetPagesListSuccessAction,
+  GetPagesListErrorAction,
+  CreatePageSuccessAction,
+  CreatePageErrorAction,
+} from '../../action-types';
+import { deleteDraftPageActionCreator, createPageActionCreator, getPagesActionCreator } from '../../action-creators';
+import { PageCreateEdit, PagesFilter } from '../../models';
+import { ThunkDispatch } from 'redux-thunk';
+import { PageItemState, FoodDiaryState } from '../../store';
 
-export interface DispatchToPropsMapResult {
-  deleteDraftPage: (draftPageId: number) => void;
+export interface StateToPropsMapResult {
+  pagesFilter: PagesFilter;
 }
 
-const mapStateToProps = null;
+export interface DispatchToPropsMapResult {
+  createPage: (page: PageCreateEdit) => Promise<CreatePageSuccessAction | CreatePageErrorAction>;
+  deleteDraftPage: (draftPageId: number) => void;
+  getPages: (filter: PagesFilter) => Promise<GetPagesListSuccessAction | GetPagesListErrorAction>;
+}
 
-const mapDispatchToProps = (dispatch: Dispatch<DeleteDraftPageAction>): DispatchToPropsMapResult => {
+const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
   return {
+    pagesFilter: state.pages.filter,
+  };
+};
+
+type PagesListItemDispatchType = ThunkDispatch<void, PageCreateEdit, AnyAction> &
+  Dispatch<DeleteDraftPageAction> &
+  ThunkDispatch<PageItemState[], PagesFilter, AnyAction>;
+
+const mapDispatchToProps = (dispatch: PagesListItemDispatchType): DispatchToPropsMapResult => {
+  return {
+    createPage: (page: PageCreateEdit): Promise<CreatePageSuccessAction | CreatePageErrorAction> => {
+      return dispatch(createPageActionCreator(page));
+    },
     deleteDraftPage: (draftPageId: number): void => {
       dispatch(deleteDraftPageActionCreator(draftPageId));
+    },
+    getPages: (filter: PagesFilter): Promise<GetPagesListSuccessAction | GetPagesListErrorAction> => {
+      return dispatch(getPagesActionCreator(filter));
     },
   };
 };

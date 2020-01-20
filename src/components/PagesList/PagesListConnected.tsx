@@ -1,10 +1,10 @@
 import { connect } from 'react-redux';
 import PagesList from './PagesList';
 import { ThunkDispatch } from 'redux-thunk';
-import { PageItem, PagesFilter } from '../../models';
+import { PagesFilter } from '../../models';
 import { AnyAction } from 'redux';
 import { getPagesActionCreator } from '../../action-creators';
-import { FoodDiaryState, PagesListState } from '../../store';
+import { FoodDiaryState, PagesListState, PageItemState } from '../../store';
 import { GetPagesListSuccessAction, GetPagesListErrorAction } from '../../action-types';
 
 export interface StateToPropsMapResult extends PagesListState {
@@ -26,7 +26,9 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
   };
 };
 
-const mapDispatchToProps = (dispatch: ThunkDispatch<PageItem[], PagesFilter, AnyAction>): DispatchToPropsMapResult => {
+const mapDispatchToProps = (
+  dispatch: ThunkDispatch<PageItemState[], PagesFilter, AnyAction>,
+): DispatchToPropsMapResult => {
   return {
     getPages: (filter: PagesFilter): Promise<GetPagesListSuccessAction | GetPagesListErrorAction> =>
       dispatch(getPagesActionCreator(filter)),

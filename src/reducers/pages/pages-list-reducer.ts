@@ -15,14 +15,13 @@ const pagesListReducer = (state: PagesListState = initialState, action: PagesLis
         ...state,
         loading: true,
         loaded: false,
-        visiblePages: [...state.visiblePages],
       };
     case PagesListActionType.Success:
       return {
         ...state,
         loading: false,
         loaded: true,
-        visiblePages: action.pages,
+        visiblePages: [...state.visiblePages.filter(p => p.editable), ...action.pages],
       };
     case PagesListActionType.Error:
       return {
@@ -30,7 +29,6 @@ const pagesListReducer = (state: PagesListState = initialState, action: PagesLis
         loading: false,
         loaded: false,
         errorMessage: action.errorMessage,
-        visiblePages: [...state.visiblePages],
       };
     case PagesListActionType.CreateDraftPage:
       return {

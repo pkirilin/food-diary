@@ -1,4 +1,5 @@
 import { Action } from 'redux';
+import { PageCreateEdit } from '../../models';
 
 export enum PagesOperationsActionTypes {
   CreateRequest = 'PAGES_OPERATIONS__CREATE_REQUEST',
@@ -8,6 +9,7 @@ export enum PagesOperationsActionTypes {
 
 export interface CreatePageRequestAction extends Action<PagesOperationsActionTypes.CreateRequest> {
   type: PagesOperationsActionTypes.CreateRequest;
+  page: PageCreateEdit;
 }
 
 export interface CreatePageSuccessAction extends Action<PagesOperationsActionTypes.CreateSuccess> {
