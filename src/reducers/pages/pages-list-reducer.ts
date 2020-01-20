@@ -38,6 +38,8 @@ const pagesListReducer = (state: PagesListState = initialState, action: PagesLis
         visiblePages: [{ ...action.draftPage, id: state.currentDraftPageId }, ...state.visiblePages],
         currentDraftPageId: state.currentDraftPageId - 1,
       };
+    case PagesListActionType.DeleteDraftPage:
+      return { ...state, visiblePages: state.visiblePages.filter(p => p.id !== action.draftPageId) };
     default:
       return state;
   }

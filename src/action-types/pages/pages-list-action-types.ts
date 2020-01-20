@@ -6,6 +6,7 @@ export enum PagesListActionType {
   Success = 'GET_PAGES_LIST__SUCCESS',
   Error = 'GET_PAGES_LIST__ERROR',
   CreateDraftPage = 'PAGES_LIST__CREATE_DRAFT_PAGE',
+  DeleteDraftPage = 'PAGES_LIST__DELETE_DRAFT_PAGE',
 }
 
 export interface GetPagesListRequestAction extends Action<PagesListActionType.Request> {
@@ -27,8 +28,14 @@ export interface CreateDraftPageAction extends Action<PagesListActionType.Create
   draftPage: PageItemState;
 }
 
+export interface DeleteDraftPageAction extends Action<PagesListActionType.DeleteDraftPage> {
+  type: PagesListActionType.DeleteDraftPage;
+  draftPageId: number;
+}
+
 export type PagesListActions =
   | GetPagesListRequestAction
   | GetPagesListSuccessAction
   | GetPagesListErrorAction
-  | CreateDraftPageAction;
+  | CreateDraftPageAction
+  | DeleteDraftPageAction;

@@ -7,6 +7,7 @@ import {
   PagesListActionType,
   GetPagesListErrorAction,
   CreateDraftPageAction,
+  DeleteDraftPageAction,
 } from '../../action-types';
 import { loadPages } from '../../services';
 import { PageItemState } from '../../store';
@@ -58,5 +59,12 @@ export const createDraftPageActionCreator = (draftPage: PageItemState): CreateDr
   return {
     type: PagesListActionType.CreateDraftPage,
     draftPage,
+  };
+};
+
+export const deleteDraftPageActionCreator = (draftPageId: number): DeleteDraftPageAction => {
+  return {
+    type: PagesListActionType.DeleteDraftPage,
+    draftPageId,
   };
 };
