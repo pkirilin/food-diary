@@ -9,12 +9,13 @@ import {
   CreatePageErrorAction,
 } from '../../action-types';
 import { deleteDraftPageActionCreator, createPageActionCreator, getPagesActionCreator } from '../../action-creators';
-import { PageCreateEdit, PagesFilter } from '../../models';
+import { PageCreateEdit, PagesFilter, PageItem } from '../../models';
 import { ThunkDispatch } from 'redux-thunk';
-import { PageItemState, FoodDiaryState } from '../../store';
+import { FoodDiaryState } from '../../store';
 
 export interface StateToPropsMapResult {
   pagesFilter: PagesFilter;
+  editablePagesIds: number[];
 }
 
 export interface DispatchToPropsMapResult {
@@ -26,12 +27,13 @@ export interface DispatchToPropsMapResult {
 const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
   return {
     pagesFilter: state.pages.filter,
+    editablePagesIds: state.pages.list.editablePagesIds,
   };
 };
 
 type PagesListItemDispatchType = ThunkDispatch<void, PageCreateEdit, AnyAction> &
   Dispatch<DeleteDraftPageAction> &
-  ThunkDispatch<PageItemState[], PagesFilter, AnyAction>;
+  ThunkDispatch<PageItem[], PagesFilter, AnyAction>;
 
 const mapDispatchToProps = (dispatch: PagesListItemDispatchType): DispatchToPropsMapResult => {
   return {

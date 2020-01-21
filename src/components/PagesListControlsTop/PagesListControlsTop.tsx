@@ -22,7 +22,6 @@ const PagesListControlsTop: React.FC<PagesListControlsTopProps> = ({
       date: '',
       countNotes: 0,
       countCalories: 0,
-      editable: true,
     });
   };
 

@@ -7,9 +7,9 @@ import {
   GetPagesListSuccessAction,
   GetPagesListErrorAction,
 } from '../../action-types';
-import { PageItemState, FoodDiaryState } from '../../store';
+import { FoodDiaryState } from '../../store';
 import { createDraftPageActionCreator, clearFilterActionCreator, getPagesActionCreator } from '../../action-creators';
-import { PagesFilter } from '../../models';
+import { PagesFilter, PageItem } from '../../models';
 import { ThunkDispatch } from 'redux-thunk';
 
 export interface StateToPropsMapResult {
@@ -18,7 +18,7 @@ export interface StateToPropsMapResult {
 }
 
 export interface DispatchToPropsMapResult {
-  createDraftPage: (draftPage: PageItemState) => void;
+  createDraftPage: (draftPage: PageItem) => void;
   clearPagesFilter: () => void;
   getPages: (filter: PagesFilter) => Promise<GetPagesListSuccessAction | GetPagesListErrorAction>;
 }
@@ -32,11 +32,11 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
 
 type PagesListControlsTopDispatch = Dispatch<PagesListActions> &
   Dispatch<ClearPagesFilterAction> &
-  ThunkDispatch<PageItemState[], PagesFilter, AnyAction>;
+  ThunkDispatch<PageItem[], PagesFilter, AnyAction>;
 
 const mapDispatchToProps = (dispatch: PagesListControlsTopDispatch): DispatchToPropsMapResult => {
   return {
-    createDraftPage: (draftPage: PageItemState): void => {
+    createDraftPage: (draftPage: PageItem): void => {
       dispatch(createDraftPageActionCreator(draftPage));
     },
     clearPagesFilter: (): void => {

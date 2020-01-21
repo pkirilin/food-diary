@@ -1,5 +1,5 @@
 import { Action } from 'redux';
-import { PageItemState } from '../../store';
+import { PageItem } from '../../models';
 
 export enum PagesListActionType {
   Request = 'GET_PAGES_LIST__REQUEST',
@@ -15,7 +15,7 @@ export interface GetPagesListRequestAction extends Action<PagesListActionType.Re
 
 export interface GetPagesListSuccessAction extends Action<PagesListActionType.Success> {
   type: PagesListActionType.Success;
-  pages: PageItemState[];
+  pages: PageItem[];
 }
 
 export interface GetPagesListErrorAction extends Action<PagesListActionType.Error> {
@@ -25,7 +25,7 @@ export interface GetPagesListErrorAction extends Action<PagesListActionType.Erro
 
 export interface CreateDraftPageAction extends Action<PagesListActionType.CreateDraftPage> {
   type: PagesListActionType.CreateDraftPage;
-  draftPage: PageItemState;
+  draftPage: PageItem;
 }
 
 export interface DeleteDraftPageAction extends Action<PagesListActionType.DeleteDraftPage> {

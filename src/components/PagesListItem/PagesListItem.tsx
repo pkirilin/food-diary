@@ -3,13 +3,13 @@ import './PagesListItem.scss';
 import Badge from '../Badge';
 import { SidebarListItem, SidebarListItemLink, SidebarListItemControls } from '../SidebarBlocks';
 import { BadgesContainer } from '../ContainerBlocks';
-import { PageItemState } from '../../store';
 import { Input } from '../Controls';
 import Icon from '../Icon';
 import { DispatchToPropsMapResult, StateToPropsMapResult } from './PagesListItemConnected';
+import { PageItem } from '../../models';
 
 interface PagesListItemProps extends StateToPropsMapResult, DispatchToPropsMapResult {
-  data: PageItemState;
+  data: PageItem;
   selected?: boolean;
 }
 
@@ -20,6 +20,7 @@ const PagesListItem: React.FC<PagesListItemProps> = ({
   deleteDraftPage,
   getPages,
   pagesFilter,
+  editablePagesIds,
 }: PagesListItemProps) => {
   const [selectedDate, setSelectedDate] = useState(page.date);
 
@@ -31,7 +32,7 @@ const PagesListItem: React.FC<PagesListItemProps> = ({
   };
 
   const handleConfirmEditPageIconClick = async (): Promise<void> => {
-    await createPage({ id: page.id, date: page.date });
+    await createPage({ id: page.id, date: selectedDate });
     deleteDraftPage(page.id);
     await getPages(pagesFilter);
   };
@@ -44,7 +45,7 @@ const PagesListItem: React.FC<PagesListItemProps> = ({
   const caloriesBadgeLabel = `${page.countCalories} cal`;
 
   return {
-    ...(page.editable ? (
+    ...(editablePagesIds.some(id => page.id === id) ? (
       <SidebarListItem selected={selected} editable>
         <Input type="date" placeholder="Pick date" value={selectedDate} onChange={handleSelectedDateChange}></Input>
         <SidebarListItemControls>

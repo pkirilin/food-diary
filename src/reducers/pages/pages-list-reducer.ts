@@ -6,6 +6,7 @@ const initialState: PagesListState = {
   loaded: false,
   visiblePages: [],
   currentDraftPageId: 0,
+  editablePagesIds: [],
 };
 
 const pagesListReducer = (state: PagesListState = initialState, action: PagesListActions): PagesListState => {
@@ -21,7 +22,11 @@ const pagesListReducer = (state: PagesListState = initialState, action: PagesLis
         ...state,
         loading: false,
         loaded: true,
-        visiblePages: [...state.visiblePages.filter(p => p.editable), ...action.pages],
+        visiblePages: [
+          // Keeping pages that marked as editable
+          ...state.visiblePages.filter(p => state.editablePagesIds.some(id => p.id === id)),
+          ...action.pages,
+        ],
       };
     case PagesListActionType.Error:
       return {
@@ -34,10 +39,15 @@ const pagesListReducer = (state: PagesListState = initialState, action: PagesLis
       return {
         ...state,
         visiblePages: [{ ...action.draftPage, id: state.currentDraftPageId }, ...state.visiblePages],
+        editablePagesIds: [...state.editablePagesIds, state.currentDraftPageId],
         currentDraftPageId: state.currentDraftPageId - 1,
       };
     case PagesListActionType.DeleteDraftPage:
-      return { ...state, visiblePages: state.visiblePages.filter(p => p.id !== action.draftPageId) };
+      return {
+        ...state,
+        visiblePages: state.visiblePages.filter(p => p.id !== action.draftPageId),
+        editablePagesIds: state.editablePagesIds.filter(id => id !== action.draftPageId),
+      };
     default:
       return state;
   }

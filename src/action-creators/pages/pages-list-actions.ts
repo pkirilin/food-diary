@@ -1,6 +1,6 @@
 import { Dispatch, ActionCreator } from 'redux';
 import { ThunkAction } from 'redux-thunk';
-import { PagesFilter } from '../../models';
+import { PagesFilter, PageItem } from '../../models';
 import {
   GetPagesListSuccessAction,
   GetPagesListRequestAction,
@@ -10,7 +10,6 @@ import {
   DeleteDraftPageAction,
 } from '../../action-types';
 import { loadPages } from '../../services';
-import { PageItemState } from '../../store';
 
 const createRequestAction = (): GetPagesListRequestAction => {
   return {
@@ -18,7 +17,7 @@ const createRequestAction = (): GetPagesListRequestAction => {
   };
 };
 
-const createSuccessAction = (pages: PageItemState[]): GetPagesListSuccessAction => {
+const createSuccessAction = (pages: PageItem[]): GetPagesListSuccessAction => {
   return {
     type: PagesListActionType.Success,
     pages,
@@ -34,7 +33,7 @@ const createErrorAction = (errorMessage: string): GetPagesListErrorAction => {
 
 export const getPagesActionCreator: ActionCreator<ThunkAction<
   Promise<GetPagesListSuccessAction | GetPagesListErrorAction>,
-  PageItemState[],
+  PageItem[],
   PagesFilter,
   GetPagesListSuccessAction | GetPagesListErrorAction
 >> = (filter: PagesFilter) => {
@@ -55,7 +54,7 @@ export const getPagesActionCreator: ActionCreator<ThunkAction<
   };
 };
 
-export const createDraftPageActionCreator = (draftPage: PageItemState): CreateDraftPageAction => {
+export const createDraftPageActionCreator = (draftPage: PageItem): CreateDraftPageAction => {
   return {
     type: PagesListActionType.CreateDraftPage,
     draftPage,
