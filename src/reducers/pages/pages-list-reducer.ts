@@ -1,5 +1,5 @@
 import { PagesListState } from '../../store';
-import { PagesListActionType, PagesListActions } from '../../action-types';
+import { PagesListActionTypes, PagesListActions } from '../../action-types';
 
 const initialState: PagesListState = {
   loading: false,
@@ -11,13 +11,13 @@ const initialState: PagesListState = {
 
 const pagesListReducer = (state: PagesListState = initialState, action: PagesListActions): PagesListState => {
   switch (action.type) {
-    case PagesListActionType.Request:
+    case PagesListActionTypes.Request:
       return {
         ...state,
         loading: true,
         loaded: false,
       };
-    case PagesListActionType.Success:
+    case PagesListActionTypes.Success:
       return {
         ...state,
         loading: false,
@@ -28,21 +28,21 @@ const pagesListReducer = (state: PagesListState = initialState, action: PagesLis
           ...action.pages,
         ],
       };
-    case PagesListActionType.Error:
+    case PagesListActionTypes.Error:
       return {
         ...state,
         loading: false,
         loaded: false,
         errorMessage: action.errorMessage,
       };
-    case PagesListActionType.CreateDraftPage:
+    case PagesListActionTypes.CreateDraftPage:
       return {
         ...state,
         visiblePages: [{ ...action.draftPage, id: state.currentDraftPageId }, ...state.visiblePages],
         editablePagesIds: [...state.editablePagesIds, state.currentDraftPageId],
         currentDraftPageId: state.currentDraftPageId - 1,
       };
-    case PagesListActionType.DeleteDraftPage:
+    case PagesListActionTypes.DeleteDraftPage:
       return {
         ...state,
         visiblePages: state.visiblePages.filter(p => p.id !== action.draftPageId),

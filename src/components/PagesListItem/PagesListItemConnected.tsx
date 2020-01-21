@@ -8,7 +8,7 @@ import {
   CreatePageSuccessAction,
   CreatePageErrorAction,
 } from '../../action-types';
-import { deleteDraftPageActionCreator, createPageActionCreator, getPagesActionCreator } from '../../action-creators';
+import { deleteDraftPage, createPage, getPages } from '../../action-creators';
 import { PageCreateEdit, PagesFilter, PageItem } from '../../models';
 import { ThunkDispatch } from 'redux-thunk';
 import { FoodDiaryState } from '../../store';
@@ -38,13 +38,13 @@ type PagesListItemDispatchType = ThunkDispatch<void, PageCreateEdit, AnyAction> 
 const mapDispatchToProps = (dispatch: PagesListItemDispatchType): DispatchToPropsMapResult => {
   return {
     createPage: (page: PageCreateEdit): Promise<CreatePageSuccessAction | CreatePageErrorAction> => {
-      return dispatch(createPageActionCreator(page));
+      return dispatch(createPage(page));
     },
     deleteDraftPage: (draftPageId: number): void => {
-      dispatch(deleteDraftPageActionCreator(draftPageId));
+      dispatch(deleteDraftPage(draftPageId));
     },
     getPages: (filter: PagesFilter): Promise<GetPagesListSuccessAction | GetPagesListErrorAction> => {
-      return dispatch(getPagesActionCreator(filter));
+      return dispatch(getPages(filter));
     },
   };
 };

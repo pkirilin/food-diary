@@ -7,7 +7,7 @@ import {
   CreatePageRequestAction,
   PagesOperationsActionTypes,
 } from '../../action-types';
-import { createPage } from '../../services';
+import { createPageAsync } from '../../services';
 
 const createPageRequest = (page: PageCreateEdit): CreatePageRequestAction => {
   return {
@@ -28,7 +28,7 @@ const createPageError = (): CreatePageErrorAction => {
   };
 };
 
-export const createPageActionCreator: ActionCreator<ThunkAction<
+export const createPage: ActionCreator<ThunkAction<
   Promise<CreatePageSuccessAction | CreatePageErrorAction>,
   void,
   PageCreateEdit,
@@ -38,7 +38,7 @@ export const createPageActionCreator: ActionCreator<ThunkAction<
     dispatch(createPageRequest(page));
 
     try {
-      const response = await createPage();
+      const response = await createPageAsync();
       if (!response.ok) {
         return dispatch(createPageError());
       }

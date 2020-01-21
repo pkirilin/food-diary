@@ -1,35 +1,35 @@
 import { Action } from 'redux';
 import { PageItem } from '../../models';
 
-export enum PagesListActionType {
-  Request = 'GET_PAGES_LIST__REQUEST',
-  Success = 'GET_PAGES_LIST__SUCCESS',
-  Error = 'GET_PAGES_LIST__ERROR',
+export enum PagesListActionTypes {
+  Request = 'PAGES_LIST__REQUEST',
+  Success = 'PAGES_LIST__SUCCESS',
+  Error = 'PAGES_LIST__ERROR',
   CreateDraftPage = 'PAGES_LIST__CREATE_DRAFT_PAGE',
   DeleteDraftPage = 'PAGES_LIST__DELETE_DRAFT_PAGE',
 }
 
-export interface GetPagesListRequestAction extends Action<PagesListActionType.Request> {
-  type: PagesListActionType.Request;
+export interface GetPagesListRequestAction extends Action<PagesListActionTypes.Request> {
+  type: PagesListActionTypes.Request;
 }
 
-export interface GetPagesListSuccessAction extends Action<PagesListActionType.Success> {
-  type: PagesListActionType.Success;
+export interface GetPagesListSuccessAction extends Action<PagesListActionTypes.Success> {
+  type: PagesListActionTypes.Success;
   pages: PageItem[];
 }
 
-export interface GetPagesListErrorAction extends Action<PagesListActionType.Error> {
-  type: PagesListActionType.Error;
+export interface GetPagesListErrorAction extends Action<PagesListActionTypes.Error> {
+  type: PagesListActionTypes.Error;
   errorMessage: string;
 }
 
-export interface CreateDraftPageAction extends Action<PagesListActionType.CreateDraftPage> {
-  type: PagesListActionType.CreateDraftPage;
+export interface CreateDraftPageAction extends Action<PagesListActionTypes.CreateDraftPage> {
+  type: PagesListActionTypes.CreateDraftPage;
   draftPage: PageItem;
 }
 
-export interface DeleteDraftPageAction extends Action<PagesListActionType.DeleteDraftPage> {
-  type: PagesListActionType.DeleteDraftPage;
+export interface DeleteDraftPageAction extends Action<PagesListActionTypes.DeleteDraftPage> {
+  type: PagesListActionTypes.DeleteDraftPage;
   draftPageId: number;
 }
 

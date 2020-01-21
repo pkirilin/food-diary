@@ -3,7 +3,7 @@ import PagesList from './PagesList';
 import { ThunkDispatch } from 'redux-thunk';
 import { PagesFilter, PageItem } from '../../models';
 import { AnyAction } from 'redux';
-import { getPagesActionCreator } from '../../action-creators';
+import { getPages } from '../../action-creators';
 import { FoodDiaryState } from '../../store';
 import { GetPagesListSuccessAction, GetPagesListErrorAction } from '../../action-types';
 
@@ -33,8 +33,9 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<PageItem[], PagesFilter, AnyAction>): DispatchToPropsMapResult => {
   return {
-    getPages: (filter: PagesFilter): Promise<GetPagesListSuccessAction | GetPagesListErrorAction> =>
-      dispatch(getPagesActionCreator(filter)),
+    getPages: (filter: PagesFilter): Promise<GetPagesListSuccessAction | GetPagesListErrorAction> => {
+      return dispatch(getPages(filter));
+    },
   };
 };
 

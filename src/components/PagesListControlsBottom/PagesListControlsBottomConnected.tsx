@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import PagesListControlsBottom from './PagesListControlsBottom';
 import { Dispatch } from 'redux';
-import { updateFilterActionCreator } from '../../action-creators';
+import { updateFilter } from '../../action-creators';
 import { FoodDiaryState } from '../../store';
 import { PagesFilter } from '../../models';
 import { UpdatePagesFilterAction } from '../../action-types';
@@ -22,7 +22,7 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
 const mapDispatchToProps = (dispatch: Dispatch<UpdatePagesFilterAction>): DispatchToPropsMapResult => {
   return {
     updatePagesFilter: (updatedFilter: PagesFilter): void => {
-      dispatch(updateFilterActionCreator(updatedFilter));
+      dispatch(updateFilter(updatedFilter));
     },
   };
 };

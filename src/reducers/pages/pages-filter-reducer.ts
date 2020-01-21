@@ -1,5 +1,5 @@
 import { PagesFilterState } from '../../store';
-import { PagesFilterActions, PagesFilterActionType } from '../../action-types';
+import { PagesFilterActions, PagesFilterActionTypes } from '../../action-types';
 import { SortOrder, ShowCount } from '../../models';
 
 const initialState: PagesFilterState = {
@@ -10,13 +10,13 @@ const initialState: PagesFilterState = {
 
 const pagesFilterReducer = (state: PagesFilterState = initialState, action: PagesFilterActions): PagesFilterState => {
   switch (action.type) {
-    case PagesFilterActionType.UpdateFilter:
+    case PagesFilterActionTypes.UpdateFilter:
       return {
         ...state,
         ...action.updatedFilter,
         filterChanged: true,
       };
-    case PagesFilterActionType.ClearFilter:
+    case PagesFilterActionTypes.ClearFilter:
       return initialState;
     default:
       return state;

@@ -1,15 +1,15 @@
-import { UpdatePagesFilterAction, PagesFilterActionType, ClearPagesFilterAction } from '../../action-types';
+import { UpdatePagesFilterAction, PagesFilterActionTypes, ClearPagesFilterAction } from '../../action-types';
 import { PagesFilter } from '../../models';
 
-export const updateFilterActionCreator = (updatedFilter: PagesFilter): UpdatePagesFilterAction => {
+export const updateFilter = (updatedFilter: PagesFilter): UpdatePagesFilterAction => {
   return {
-    type: PagesFilterActionType.UpdateFilter,
+    type: PagesFilterActionTypes.UpdateFilter,
     updatedFilter,
   };
 };
 
-export const clearFilterActionCreator = (): ClearPagesFilterAction => {
+export const clearFilter = (): ClearPagesFilterAction => {
   return {
-    type: PagesFilterActionType.ClearFilter,
+    type: PagesFilterActionTypes.ClearFilter,
   };
 };

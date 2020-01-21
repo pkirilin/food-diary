@@ -8,7 +8,7 @@ import {
   GetPagesListErrorAction,
 } from '../../action-types';
 import { FoodDiaryState } from '../../store';
-import { createDraftPageActionCreator, clearFilterActionCreator, getPagesActionCreator } from '../../action-creators';
+import { createDraftPage, clearFilter, getPages } from '../../action-creators';
 import { PagesFilter, PageItem } from '../../models';
 import { ThunkDispatch } from 'redux-thunk';
 
@@ -37,13 +37,13 @@ type PagesListControlsTopDispatch = Dispatch<PagesListActions> &
 const mapDispatchToProps = (dispatch: PagesListControlsTopDispatch): DispatchToPropsMapResult => {
   return {
     createDraftPage: (draftPage: PageItem): void => {
-      dispatch(createDraftPageActionCreator(draftPage));
+      dispatch(createDraftPage(draftPage));
     },
     clearPagesFilter: (): void => {
-      dispatch(clearFilterActionCreator());
+      dispatch(clearFilter());
     },
     getPages: (filter: PagesFilter): Promise<GetPagesListSuccessAction | GetPagesListErrorAction> => {
-      return dispatch(getPagesActionCreator(filter));
+      return dispatch(getPages(filter));
     },
   };
 };

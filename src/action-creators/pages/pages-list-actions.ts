@@ -4,66 +4,66 @@ import { PagesFilter, PageItem } from '../../models';
 import {
   GetPagesListSuccessAction,
   GetPagesListRequestAction,
-  PagesListActionType,
+  PagesListActionTypes,
   GetPagesListErrorAction,
   CreateDraftPageAction,
   DeleteDraftPageAction,
 } from '../../action-types';
-import { loadPages } from '../../services';
+import { getPagesAsync } from '../../services';
 
-const createRequestAction = (): GetPagesListRequestAction => {
+const getPagesRequest = (): GetPagesListRequestAction => {
   return {
-    type: PagesListActionType.Request,
+    type: PagesListActionTypes.Request,
   };
 };
 
-const createSuccessAction = (pages: PageItem[]): GetPagesListSuccessAction => {
+const getPagesSuccess = (pages: PageItem[]): GetPagesListSuccessAction => {
   return {
-    type: PagesListActionType.Success,
+    type: PagesListActionTypes.Success,
     pages,
   };
 };
 
-const createErrorAction = (errorMessage: string): GetPagesListErrorAction => {
+const getPagesError = (errorMessage: string): GetPagesListErrorAction => {
   return {
-    type: PagesListActionType.Error,
+    type: PagesListActionTypes.Error,
     errorMessage,
   };
 };
 
-export const getPagesActionCreator: ActionCreator<ThunkAction<
+export const getPages: ActionCreator<ThunkAction<
   Promise<GetPagesListSuccessAction | GetPagesListErrorAction>,
   PageItem[],
   PagesFilter,
   GetPagesListSuccessAction | GetPagesListErrorAction
 >> = (filter: PagesFilter) => {
   return async (dispatch: Dispatch): Promise<GetPagesListSuccessAction | GetPagesListErrorAction> => {
-    dispatch(createRequestAction());
+    dispatch(getPagesRequest());
 
     try {
-      const response = await loadPages(filter);
+      const response = await getPagesAsync(filter);
       if (!response.ok) {
-        return dispatch(createErrorAction('Response is not ok'));
+        return dispatch(getPagesError('Response is not ok'));
       }
 
       const pages = await response.json();
-      return dispatch(createSuccessAction(pages));
+      return dispatch(getPagesSuccess(pages));
     } catch (error) {
-      return dispatch(createErrorAction('Could not fetch pages list'));
+      return dispatch(getPagesError('Could not fetch pages list'));
     }
   };
 };
 
-export const createDraftPageActionCreator = (draftPage: PageItem): CreateDraftPageAction => {
+export const createDraftPage = (draftPage: PageItem): CreateDraftPageAction => {
   return {
-    type: PagesListActionType.CreateDraftPage,
+    type: PagesListActionTypes.CreateDraftPage,
     draftPage,
   };
 };
 
-export const deleteDraftPageActionCreator = (draftPageId: number): DeleteDraftPageAction => {
+export const deleteDraftPage = (draftPageId: number): DeleteDraftPageAction => {
   return {
-    type: PagesListActionType.DeleteDraftPage,
+    type: PagesListActionTypes.DeleteDraftPage,
     draftPageId,
   };
 };
