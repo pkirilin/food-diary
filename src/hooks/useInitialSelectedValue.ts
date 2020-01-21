@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 /**
  * Sets initial selected value if it's specified
- * @param initialSelectedValue Valuue to set
+ * @param initialSelectedValue Value to set
  * @param changeSelectedValue Change value handler
  */
 const useInitialSelectedValue = (

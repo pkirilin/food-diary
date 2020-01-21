@@ -5,6 +5,7 @@ import {
   useHiddenBlockHeightCalculation,
   useInsideClick,
   useInitialSelectedValue,
+  useChangedSelectedValue,
 } from '../../../hooks';
 import { ReactComponent as DropdownArrowIcon } from './drop-down-arrow.svg';
 
@@ -15,6 +16,7 @@ interface DropdownProps {
   contentAlignment?: 'left' | 'right';
   placeholder?: string;
   initialSelectedValue?: string;
+  onValueChanged?: (newSelectedValue: string) => void;
 }
 
 const Dropdown: React.FC<DropdownProps> = ({
@@ -25,6 +27,7 @@ const Dropdown: React.FC<DropdownProps> = ({
   contentAlignment = 'left',
   placeholder = 'Select value',
   initialSelectedValue,
+  onValueChanged,
 }: React.PropsWithChildren<DropdownProps>) => {
   const dropdownRef = useRef(null);
   const contentRef = useRef(null);
@@ -51,6 +54,10 @@ const Dropdown: React.FC<DropdownProps> = ({
   const changeSelectedValue = (newSelectedValue: string): void => {
     setSelectedValue(newSelectedValue);
     setSelectedValueChanged(true);
+
+    if (newSelectedValue !== initialSelectedValue && onValueChanged) {
+      onValueChanged(newSelectedValue);
+    }
   };
 
   const selectItem = (event: MouseEvent): void => {
@@ -60,6 +67,8 @@ const Dropdown: React.FC<DropdownProps> = ({
   };
 
   useInitialSelectedValue(initialSelectedValue, changeSelectedValue);
+
+  useChangedSelectedValue(selectedValue, setSelectedValue, initialSelectedValue);
 
   useOutsideClick(dropdownRef, closeIfTargetOutside);
 

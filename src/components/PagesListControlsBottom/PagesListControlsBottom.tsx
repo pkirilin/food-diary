@@ -15,16 +15,15 @@ const PagesListControlsBottom: React.FC<PagesListControlsBottomProps> = ({
     updatePagesFilter({ ...pagesFilter, sortOrder: invertSortOrder(pagesFilter.sortOrder) });
   };
 
-  const handleShowCountClick = (event: React.MouseEvent): void => {
-    const target = event.target as HTMLElement;
+  const handleShowCountDropdownValueChanged = (newSelectedValue: string): void => {
     let showCount: number;
-    if (target && !isNaN((showCount = Number(target.innerText)))) {
+    if (!isNaN((showCount = Number(newSelectedValue)))) {
       updatePagesFilter({ ...pagesFilter, showCount });
     }
-  };
-
-  const handleShowCountAllClick = (): void => {
-    updatePagesFilter({ ...pagesFilter, showCount: undefined });
+    // TODO: remove hardcode
+    else if (newSelectedValue === 'All') {
+      updatePagesFilter({ ...pagesFilter, showCount: undefined });
+    }
   };
 
   return (
@@ -37,14 +36,18 @@ const PagesListControlsBottom: React.FC<PagesListControlsBottomProps> = ({
       <FormGroup inline>
         <Label>Show</Label>
         <div className="pages-list-controls-bottom__show-count-wrapper">
-          <Dropdown initialSelectedValue={ShowCount.LastMonth.toString()} toggleDirection="top">
-            <DropdownItem onClick={handleShowCountClick}>{ShowCount.LastWeek}</DropdownItem>
-            <DropdownItem onClick={handleShowCountClick}>{ShowCount.LastMonth}</DropdownItem>
-            <DropdownItem onClick={handleShowCountClick}>{ShowCount.LastTwoMonths}</DropdownItem>
-            <DropdownItem onClick={handleShowCountClick}>{ShowCount.LastThreeMonths}</DropdownItem>
-            <DropdownItem onClick={handleShowCountClick}>{ShowCount.LastHalfYear}</DropdownItem>
-            <DropdownItem onClick={handleShowCountClick}>{ShowCount.LastYear}</DropdownItem>
-            <DropdownItem onClick={handleShowCountAllClick}>All</DropdownItem>
+          <Dropdown
+            onValueChanged={handleShowCountDropdownValueChanged}
+            initialSelectedValue={pagesFilter.showCount === undefined ? 'All' : pagesFilter.showCount.toString()}
+            toggleDirection="top"
+          >
+            <DropdownItem>{ShowCount.LastWeek}</DropdownItem>
+            <DropdownItem>{ShowCount.LastMonth}</DropdownItem>
+            <DropdownItem>{ShowCount.LastTwoMonths}</DropdownItem>
+            <DropdownItem>{ShowCount.LastThreeMonths}</DropdownItem>
+            <DropdownItem>{ShowCount.LastHalfYear}</DropdownItem>
+            <DropdownItem>{ShowCount.LastYear}</DropdownItem>
+            <DropdownItem>All</DropdownItem>
           </Dropdown>
         </div>
       </FormGroup>
