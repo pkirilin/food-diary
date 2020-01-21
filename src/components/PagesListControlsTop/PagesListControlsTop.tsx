@@ -8,8 +8,10 @@ interface PagesListControlsTopProps extends StateToPropsMapResult, DispatchToPro
 
 const PagesListControlsTop: React.FC<PagesListControlsTopProps> = ({
   createDraftPage,
+  pagesFilter,
   pagesFilterChanged,
   clearPagesFilter,
+  getPages,
 }: PagesListControlsTopProps) => {
   // TODO: take this from store when selection logic will be implemented
   const displaySelectionPanel = false;
@@ -24,6 +26,10 @@ const PagesListControlsTop: React.FC<PagesListControlsTopProps> = ({
     });
   };
 
+  const handleRefreshPagesListIconClick = (): void => {
+    getPages(pagesFilter);
+  };
+
   const handleResetFilterIconClick = (): void => {
     clearPagesFilter();
   };
@@ -32,7 +38,7 @@ const PagesListControlsTop: React.FC<PagesListControlsTopProps> = ({
     <SidebarControlPanel>
       <SidebarControlPanelIcons>
         <Icon type="add" onClick={handleAddIconClick}></Icon>
-        <Icon type="refresh"></Icon>
+        <Icon type="refresh" onClick={handleRefreshPagesListIconClick}></Icon>
         <Icon type="filter" disabled></Icon>
         <Icon type="close" disabled={!pagesFilterChanged} onClick={handleResetFilterIconClick}></Icon>
       </SidebarControlPanelIcons>
