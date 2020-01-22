@@ -55,13 +55,17 @@ const PagesListItem: React.FC<PagesListItemProps> = ({
       </SidebarListItem>
     ) : (
       <SidebarListItem selected={selected}>
-        <SidebarListItemLink to="/" selected={selected}>
-          {page.date}
+        <SidebarListItemLink
+          to={`/pages/${page.id}`}
+          activeClassName="sidebar__list__item__link_active"
+          selected={selected}
+        >
+          <div>{page.date}</div>
+          <BadgesContainer>
+            <Badge label={notesBadgeLabel} selected={selected}></Badge>
+            <Badge label={caloriesBadgeLabel} selected={selected}></Badge>
+          </BadgesContainer>
         </SidebarListItemLink>
-        <BadgesContainer>
-          <Badge label={notesBadgeLabel} selected={selected}></Badge>
-          <Badge label={caloriesBadgeLabel} selected={selected}></Badge>
-        </BadgesContainer>
       </SidebarListItem>
     )),
   };

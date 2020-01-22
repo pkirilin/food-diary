@@ -7,7 +7,7 @@
   align-items: center;
   height: 50px;
   border-top: $divider-border-width solid $color-middle-green;
-  padding: 0px $nested-items-side-padding;
+  padding: 0px $nested-items-padding-left-right;
 
   &__show-count-wrapper {
     width: 120px;

@@ -1,20 +1,28 @@
 @import '../../../variables.scss';
+@import '../SidebarBlocks.variables.scss';
 
 .sidebar__list__item__link {
-  height: 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  height: 100%;
+  text-decoration: none;
+  border-left: $active-item-border-width solid transparent;
+  padding: $nested-items-padding-top-bottom $nested-items-padding-left-right $nested-items-padding-top-bottom
+    $nested-items-padding-left-right - $active-item-border-width;
 
-  a {
-    display: block;
-    height: 100%;
+  & > * {
     color: $color-dark-green;
     font-size: 16px;
     letter-spacing: 0.5px;
-    text-decoration: none;
   }
-}
 
-.sidebar__list__item__link_selected {
-  a {
+  &_selected {
     color: $color-white;
+  }
+
+  &_active,
+  &:hover {
+    border-left: $active-item-border-width solid $color-dark-green;
   }
 }

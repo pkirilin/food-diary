@@ -1,15 +1,15 @@
 import React from 'react';
 import './SidebarListItemLink.scss';
-import { LinkProps, Link } from 'react-router-dom';
+import { NavLink, NavLinkProps } from 'react-router-dom';
 
-interface SidebarListItemLinkProps extends LinkProps {
+interface SidebarListItemLinkProps extends NavLinkProps {
   selected?: boolean;
-  children: string;
 }
 
-const SidebarListItemLink: React.FC<React.PropsWithChildren<SidebarListItemLinkProps>> = ({
+const SidebarListItemLink: React.FC<SidebarListItemLinkProps> = ({
   selected = false,
   children,
+  className,
   ...linkProps
 }: React.PropsWithChildren<SidebarListItemLinkProps>) => {
   const classNames = ['sidebar__list__item__link'];
@@ -17,9 +17,9 @@ const SidebarListItemLink: React.FC<React.PropsWithChildren<SidebarListItemLinkP
     classNames.push('sidebar__list__item__link_selected');
   }
   return (
-    <div className={classNames.join(' ')}>
-      <Link {...linkProps}>{children}</Link>
-    </div>
+    <NavLink {...linkProps} className={[className, ...classNames].join(' ')}>
+      {children}
+    </NavLink>
   );
 };
 

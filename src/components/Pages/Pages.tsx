@@ -5,8 +5,12 @@ import { ContentWrapper, MainContainer, SectionContainer } from '../ContainerBlo
 import PagesListConnected from '../PagesList';
 import PagesListControlsTopConnected from '../PagesListControlsTop';
 import PagesListControlsBottomConnected from '../PagesListControlsBottom';
+import { Switch, Route, Redirect } from 'react-router-dom';
 
 const Pages: React.FC = () => {
+  // TODO: take this from store
+  const firstPageId = 1;
+
   return (
     <ContentWrapper>
       <Sidebar>
@@ -15,7 +19,14 @@ const Pages: React.FC = () => {
         <PagesListControlsBottomConnected></PagesListControlsBottomConnected>
       </Sidebar>
       <MainContainer withSidebar>
-        <SectionContainer>Pages content</SectionContainer>
+        <SectionContainer>
+          <Switch>
+            <Route exact path="/pages/:id">
+              Pages content
+            </Route>
+            <Redirect from="/pages" to={`/pages/${firstPageId}`}></Redirect>
+          </Switch>
+        </SectionContainer>
       </MainContainer>
     </ContentWrapper>
   );

@@ -4,5 +4,5 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 5px $nested-items-side-padding;
+  padding: $nested-items-padding-top-bottom $nested-items-padding-left-right;
 }

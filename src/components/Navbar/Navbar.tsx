@@ -9,7 +9,7 @@ const Navbar: React.FC = () => {
     <header className="navbar">
       <NavbarBrand></NavbarBrand>
       <NavbarLinks>
-        <NavLink exact to="/" activeClassName="selected">
+        <NavLink to="/pages" activeClassName="selected">
           Pages
         </NavLink>
         <NavLink to="/products" activeClassName="selected">
