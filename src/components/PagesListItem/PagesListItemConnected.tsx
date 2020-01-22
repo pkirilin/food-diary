@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import PagesListItem from './PagesListItem';
-import { Dispatch, AnyAction } from 'redux';
+import { Dispatch } from 'redux';
 import {
   DeleteDraftPageAction,
   GetPagesListSuccessAction,
@@ -31,9 +31,9 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
   };
 };
 
-type PagesListItemDispatchType = ThunkDispatch<void, PageCreateEdit, AnyAction> &
+type PagesListItemDispatchType = ThunkDispatch<void, PageCreateEdit, CreatePageSuccessAction | CreatePageErrorAction> &
   Dispatch<DeleteDraftPageAction> &
-  ThunkDispatch<PageItem[], PagesFilter, AnyAction>;
+  ThunkDispatch<PageItem[], PagesFilter, GetPagesListSuccessAction | GetPagesListErrorAction>;
 
 const mapDispatchToProps = (dispatch: PagesListItemDispatchType): DispatchToPropsMapResult => {
   return {

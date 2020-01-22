@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import PagesListControlsTop from './PagesListControlsTop';
-import { Dispatch, AnyAction } from 'redux';
+import { Dispatch } from 'redux';
 import {
   PagesListActions,
   ClearPagesFilterAction,
@@ -32,7 +32,7 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
 
 type PagesListControlsTopDispatch = Dispatch<PagesListActions> &
   Dispatch<ClearPagesFilterAction> &
-  ThunkDispatch<PageItem[], PagesFilter, AnyAction>;
+  ThunkDispatch<PageItem[], PagesFilter, GetPagesListSuccessAction | GetPagesListErrorAction>;
 
 const mapDispatchToProps = (dispatch: PagesListControlsTopDispatch): DispatchToPropsMapResult => {
   return {
