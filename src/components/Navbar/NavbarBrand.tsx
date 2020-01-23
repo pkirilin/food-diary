@@ -4,9 +4,9 @@ import './NavbarBrand.scss';
 
 const NavbarBrand: React.FC = () => {
   return (
-    <div className="navbar__brand">
+    <div className="navbar-brand">
       <Link to="/">
-        <span className="navbar__brand_logo"></span>
+        <span className="navbar-brand__logo"></span>
       </Link>
       <Link to="/">Food diary</Link>
     </div>

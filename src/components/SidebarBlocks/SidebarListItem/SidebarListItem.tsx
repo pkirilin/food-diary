@@ -11,12 +11,12 @@ const SidebarListItem: React.FC<SidebarListItemProps> = ({
   selected = false,
   editable = false,
 }: React.PropsWithChildren<SidebarListItemProps>) => {
-  const classNames = ['sidebar__list__item'];
+  const classNames = ['sidebar-list-item'];
   if (selected) {
-    classNames.push('sidebar__list__item_selected');
+    classNames.push('sidebar-list-item_selected');
   }
   if (editable) {
-    classNames.push('sidebar__list__item_editable');
+    classNames.push('sidebar-list-item_editable');
   }
   return <div className={classNames.join(' ')}>{children}</div>;
 };

@@ -1,7 +1,7 @@
 @import '../../../variables.scss';
 @import '../SidebarBlocks.variables.scss';
 
-.sidebar__list__item {
+.sidebar-list-item {
   min-height: $list-item-height;
   height: $list-item-height;
   transition: 0.2s;

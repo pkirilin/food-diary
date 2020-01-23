@@ -12,9 +12,9 @@ const SidebarListItemLink: React.FC<SidebarListItemLinkProps> = ({
   className,
   ...linkProps
 }: React.PropsWithChildren<SidebarListItemLinkProps>) => {
-  const classNames = ['sidebar__list__item__link'];
+  const classNames = ['sidebar-list-item-link'];
   if (selected) {
-    classNames.push('sidebar__list__item__link_selected');
+    classNames.push('sidebar-list-item-link_selected');
   }
   return (
     <NavLink {...linkProps} className={[className, ...classNames].join(' ')}>

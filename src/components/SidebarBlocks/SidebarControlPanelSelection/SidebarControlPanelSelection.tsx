@@ -4,7 +4,7 @@ import Icon from '../../Icon';
 
 const SidebarControlPanelSelection: React.FC = () => {
   return (
-    <div className="sidebar__control-panel__selection">
+    <div className="sidebar-control-panel-selection">
       <div>Selected</div>
       <Icon type="three-dots"></Icon>
     </div>

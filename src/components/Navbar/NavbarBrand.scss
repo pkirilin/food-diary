@@ -2,13 +2,13 @@
 @import '../Navbar/Navbar.variables.scss';
 @import '../Sidebar/Sidebar.scss';
 
-.navbar__brand {
+.navbar-brand {
   display: flex;
   justify-content: space-around;
   align-items: center;
   width: $sidebar-width;
 
-  & .navbar__brand_logo {
+  &__logo {
     display: inline-block;
     background-size: cover;
     width: $navbar-brand-logo-size;
@@ -23,7 +23,7 @@
     }
   }
 
-  & a {
+  & > a {
     font-size: 24px;
     font-weight: bold;
     text-decoration: none;

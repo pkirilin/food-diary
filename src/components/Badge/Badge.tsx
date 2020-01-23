@@ -7,9 +7,9 @@ interface BadgeProps {
 }
 
 const Badge: React.FC<BadgeProps> = ({ label, selected = false }: BadgeProps) => {
-  const classNames = ['fd-badge'];
+  const classNames = ['badge'];
   if (selected) {
-    classNames.push('fd-badge-selected');
+    classNames.push('badge_selected');
   }
 
   return <div className={classNames.join(' ')}>{label}</div>;

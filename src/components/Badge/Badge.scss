@@ -1,6 +1,6 @@
 @import '../../variables.scss';
 
-.fd-badge {
+.badge {
   font-size: 10px;
   font-weight: bold;
   color: $color-white;
@@ -9,7 +9,7 @@
   padding: 2px 5px;
   max-width: 100px;
 
-  &-selected {
+  &_selected {
     color: $color-dark-green;
     background-color: $color-white;
   }

@@ -9,11 +9,11 @@ const MainContainer: React.FC<React.PropsWithChildren<MainContainerProps>> = ({
   children,
   withSidebar,
 }: React.PropsWithChildren<MainContainerProps>) => {
-  const cssClasses = ['main-container'];
+  const classNames = ['main-container'];
   if (withSidebar) {
-    cssClasses.push('main-container_sidebar');
+    classNames.push('main-container_sidebar');
   }
-  return <main className={cssClasses.join(' ')}>{children}</main>;
+  return <main className={classNames.join(' ')}>{children}</main>;
 };
 
 export default MainContainer;

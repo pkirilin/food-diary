@@ -57,7 +57,7 @@ const PagesListItem: React.FC<PagesListItemProps> = ({
       <SidebarListItem selected={selected}>
         <SidebarListItemLink
           to={`/pages/${page.id}`}
-          activeClassName="sidebar__list__item__link_active"
+          activeClassName="sidebar-list-item-link_active"
           selected={selected}
         >
           <div>{page.date}</div>
