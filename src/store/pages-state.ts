@@ -1,4 +1,5 @@
 import { PageItem, PagesFilter } from '../models';
+import { DataFetchState } from './data-fetch-state';
 
 export interface PagesState {
   list: PagesListState;
@@ -7,10 +8,7 @@ export interface PagesState {
 }
 
 export interface PagesListState {
-  loading: boolean;
-  loaded: boolean;
-  errorMessage?: string;
-  visiblePages: PageItem[];
+  pageItems: DataFetchState<PageItem[], string>;
   currentDraftPageId: number;
   editablePagesIds: number[];
 }

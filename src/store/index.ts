@@ -10,4 +10,6 @@ const store = createStore(rootReducer, initialState, applyMiddleware(thunkMiddle
 export default store;
 
 export * from './state';
+export * from './data-fetch-state';
+
 export * from './pages-state';
