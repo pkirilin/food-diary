@@ -9,6 +9,7 @@ const initialState: PagesListState = {
   },
   currentDraftPageId: 0,
   editablePagesIds: [],
+  selectedPagesIds: [],
 };
 
 const pagesListReducer = (state: PagesListState = initialState, action: PagesListActions): PagesListState => {
@@ -64,6 +65,18 @@ const pagesListReducer = (state: PagesListState = initialState, action: PagesLis
           data: state.pageItems.data.filter(p => p.id !== action.draftPageId),
         },
         editablePagesIds: state.editablePagesIds.filter(id => id !== action.draftPageId),
+      };
+    case PagesListActionTypes.SetSelected:
+      return {
+        ...state,
+        selectedPagesIds: action.selected
+          ? [...state.selectedPagesIds, action.pageId]
+          : [...state.selectedPagesIds.filter(id => id !== action.pageId)],
+      };
+    case PagesListActionTypes.SetSelectedAll:
+      return {
+        ...state,
+        selectedPagesIds: action.selected ? state.pageItems.data.map(p => p.id) : [],
       };
     default:
       return state;

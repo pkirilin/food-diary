@@ -11,6 +11,7 @@ export interface PagesListState {
   pageItems: DataFetchState<PageItem[], string>;
   currentDraftPageId: number;
   editablePagesIds: number[];
+  selectedPagesIds: number[];
 }
 
 export interface PagesFilterState extends PagesFilter {

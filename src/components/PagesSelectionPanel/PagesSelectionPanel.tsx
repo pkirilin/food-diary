@@ -3,23 +3,27 @@ import './PagesSelectionPanel.scss';
 import { SidebarSelectionPanel, SidebarSelectionPanelOptions } from '../SidebarBlocks';
 import { Checkbox } from '../Controls';
 import Icon from '../Icon';
+import { StateToPropsMapResult, DispatchToPropsMapResult } from './PagesSelectionPanelConnected';
 
-type PagesSelectionPanelProps = {};
+interface PagesSelectionPanelProps extends StateToPropsMapResult, DispatchToPropsMapResult {}
 
-const PagesSelectionPanel: React.FC<PagesSelectionPanelProps> = () => {
-  const selectAllChecked = false;
-  const checkedPagesCount = 0;
+const PagesSelectionPanel: React.FC<PagesSelectionPanelProps> = ({
+  visiblePagesCount,
+  selectedPagesCount,
+  setSelectedForAllPages,
+}: PagesSelectionPanelProps) => {
+  const selectAllChecked = visiblePagesCount === selectedPagesCount;
 
   const handleCheck = (): void => {
-    return;
+    setSelectedForAllPages(!selectAllChecked);
   };
 
   return (
     <SidebarSelectionPanel>
       <Checkbox checked={selectAllChecked} onCheck={handleCheck} label="Select all"></Checkbox>
-      {checkedPagesCount > 0 ? (
+      {selectedPagesCount > 0 ? (
         <SidebarSelectionPanelOptions>
-          <div>Selected: {checkedPagesCount}</div>
+          <div>Selected: {selectedPagesCount}</div>
           <Icon type="three-dots"></Icon>
         </SidebarSelectionPanelOptions>
       ) : (

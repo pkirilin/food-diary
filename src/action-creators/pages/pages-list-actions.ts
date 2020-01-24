@@ -8,6 +8,8 @@ import {
   GetPagesListErrorAction,
   CreateDraftPageAction,
   DeleteDraftPageAction,
+  SetSelectedForPageAction,
+  SetSelectedForAllPagesAction,
 } from '../../action-types';
 import { getPagesAsync } from '../../services';
 
@@ -65,5 +67,20 @@ export const deleteDraftPage = (draftPageId: number): DeleteDraftPageAction => {
   return {
     type: PagesListActionTypes.DeleteDraftPage,
     draftPageId,
+  };
+};
+
+export const setSelectedForPage = (selected: boolean, pageId: number): SetSelectedForPageAction => {
+  return {
+    type: PagesListActionTypes.SetSelected,
+    selected,
+    pageId,
+  };
+};
+
+export const setSelectedForAllPages = (selected: boolean): SetSelectedForAllPagesAction => {
+  return {
+    type: PagesListActionTypes.SetSelectedAll,
+    selected,
   };
 };

@@ -7,6 +7,8 @@ export enum PagesListActionTypes {
   Error = 'PAGES_LIST__ERROR',
   CreateDraftPage = 'PAGES_LIST__CREATE_DRAFT_PAGE',
   DeleteDraftPage = 'PAGES_LIST__DELETE_DRAFT_PAGE',
+  SetSelected = 'PAGES_LIST__SET_SELECTED_FOR_PAGE',
+  SetSelectedAll = 'PAGES_LIST__SET_SELECTED_FOR_ALL_PAGES',
 }
 
 export interface GetPagesListRequestAction extends Action<PagesListActionTypes.Request> {
@@ -33,9 +35,22 @@ export interface DeleteDraftPageAction extends Action<PagesListActionTypes.Delet
   draftPageId: number;
 }
 
+export interface SetSelectedForPageAction extends Action<PagesListActionTypes.SetSelected> {
+  type: PagesListActionTypes.SetSelected;
+  selected: boolean;
+  pageId: number;
+}
+
+export interface SetSelectedForAllPagesAction extends Action<PagesListActionTypes.SetSelectedAll> {
+  type: PagesListActionTypes.SetSelectedAll;
+  selected: boolean;
+}
+
 export type PagesListActions =
   | GetPagesListRequestAction
   | GetPagesListSuccessAction
   | GetPagesListErrorAction
   | CreateDraftPageAction
-  | DeleteDraftPageAction;
+  | DeleteDraftPageAction
+  | SetSelectedForPageAction
+  | SetSelectedForAllPagesAction;

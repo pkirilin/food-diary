@@ -7,8 +7,9 @@ import {
   GetPagesListErrorAction,
   CreatePageSuccessAction,
   CreatePageErrorAction,
+  SetSelectedForPageAction,
 } from '../../action-types';
-import { deleteDraftPage, createPage, getPages } from '../../action-creators';
+import { deleteDraftPage, createPage, getPages, setSelectedForPage } from '../../action-creators';
 import { PageCreateEdit, PagesFilter, PageItem } from '../../models';
 import { ThunkDispatch } from 'redux-thunk';
 import { FoodDiaryState } from '../../store';
@@ -16,23 +17,26 @@ import { FoodDiaryState } from '../../store';
 export interface StateToPropsMapResult {
   pagesFilter: PagesFilter;
   editablePagesIds: number[];
+  selectedPagesIds: number[];
 }
 
 export interface DispatchToPropsMapResult {
   createPage: (page: PageCreateEdit) => Promise<CreatePageSuccessAction | CreatePageErrorAction>;
   deleteDraftPage: (draftPageId: number) => void;
   getPages: (filter: PagesFilter) => Promise<GetPagesListSuccessAction | GetPagesListErrorAction>;
+  setSelectedForPage: (selected: boolean, pageId: number) => void;
 }
 
 const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
   return {
     pagesFilter: state.pages.filter,
     editablePagesIds: state.pages.list.editablePagesIds,
+    selectedPagesIds: state.pages.list.selectedPagesIds,
   };
 };
 
-type PagesListItemDispatchType = ThunkDispatch<void, PageCreateEdit, CreatePageSuccessAction | CreatePageErrorAction> &
-  Dispatch<DeleteDraftPageAction> &
+type PagesListItemDispatchType = Dispatch<DeleteDraftPageAction | SetSelectedForPageAction> &
+  ThunkDispatch<void, PageCreateEdit, CreatePageSuccessAction | CreatePageErrorAction> &
   ThunkDispatch<PageItem[], PagesFilter, GetPagesListSuccessAction | GetPagesListErrorAction>;
 
 const mapDispatchToProps = (dispatch: PagesListItemDispatchType): DispatchToPropsMapResult => {
@@ -45,6 +49,9 @@ const mapDispatchToProps = (dispatch: PagesListItemDispatchType): DispatchToProp
     },
     getPages: (filter: PagesFilter): Promise<GetPagesListSuccessAction | GetPagesListErrorAction> => {
       return dispatch(getPages(filter));
+    },
+    setSelectedForPage: (selected: boolean, pageId: number): void => {
+      dispatch(setSelectedForPage(selected, pageId));
     },
   };
 };
