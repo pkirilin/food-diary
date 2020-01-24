@@ -1,6 +1,6 @@
 import React from 'react';
 import './PagesListControlsTop.scss';
-import { SidebarControlPanel, SidebarControlPanelIcons, SidebarControlPanelSelection } from '../SidebarBlocks';
+import { SidebarControlPanel, SidebarControlPanelIcons } from '../SidebarBlocks';
 import Icon from '../Icon';
 import { DispatchToPropsMapResult, StateToPropsMapResult } from './PagesListControlsTopConnected';
 
@@ -13,9 +13,6 @@ const PagesListControlsTop: React.FC<PagesListControlsTopProps> = ({
   clearPagesFilter,
   getPages,
 }: PagesListControlsTopProps) => {
-  // TODO: take this from store when selection logic will be implemented
-  const displaySelectionPanel = false;
-
   const handleAddIconClick = (): void => {
     createDraftPage({
       id: 0,
@@ -41,7 +38,6 @@ const PagesListControlsTop: React.FC<PagesListControlsTopProps> = ({
         <Icon type="filter" disabled></Icon>
         <Icon type="close" disabled={!pagesFilterChanged} onClick={handleResetFilterIconClick}></Icon>
       </SidebarControlPanelIcons>
-      {displaySelectionPanel && <SidebarControlPanelSelection></SidebarControlPanelSelection>}
     </SidebarControlPanel>
   );
 };

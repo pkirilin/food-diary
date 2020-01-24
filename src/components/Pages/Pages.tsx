@@ -6,6 +6,7 @@ import PagesListConnected from '../PagesList';
 import PagesListControlsTopConnected from '../PagesListControlsTop';
 import PagesListControlsBottomConnected from '../PagesListControlsBottom';
 import { Switch, Route, Redirect } from 'react-router-dom';
+import PagesSelectionPanelConnected from '../PagesSelectionPanel';
 
 const Pages: React.FC = () => {
   // TODO: take this from store
@@ -15,6 +16,7 @@ const Pages: React.FC = () => {
     <ContentWrapper>
       <Sidebar>
         <PagesListControlsTopConnected></PagesListControlsTopConnected>
+        <PagesSelectionPanelConnected></PagesSelectionPanelConnected>
         <PagesListConnected></PagesListConnected>
         <PagesListControlsBottomConnected></PagesListControlsBottomConnected>
       </Sidebar>
