@@ -5,11 +5,12 @@
   display: flex;
   flex-direction: column;
   justify-content: space-around;
+  flex: 1;
   height: 100%;
   text-decoration: none;
   border-left: $active-item-border-width solid transparent;
-  padding: $nested-items-padding-top-bottom $nested-items-padding-left-right $nested-items-padding-top-bottom
-    $nested-items-padding-left-right - $active-item-border-width;
+  padding: $nested-items-padding-top-bottom 0 $nested-items-padding-top-bottom $nested-items-padding-left-right -
+    $active-item-border-width;
 
   & > * {
     color: $color-dark-green;

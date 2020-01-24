@@ -5,6 +5,7 @@ import SidebarList from './SidebarList';
 import SidebarListItem from './SidebarListItem';
 import SidebarListItemLink from './SidebarListItemLink/SidebarListItemLink';
 import SidebarListItemControls from './SidebarListItemControls';
+import SidebarListItemCheckbox from './SidebarListItemCheckbox';
 
 export {
   SidebarControlPanel,
@@ -14,4 +15,5 @@ export {
   SidebarListItem,
   SidebarListItemLink,
   SidebarListItemControls,
+  SidebarListItemCheckbox,
 };

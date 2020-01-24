@@ -2,6 +2,7 @@
 @import '../SidebarBlocks.variables.scss';
 
 .sidebar-list-item {
+  display: flex;
   min-height: $list-item-height;
   height: $list-item-height;
   transition: 0.2s;

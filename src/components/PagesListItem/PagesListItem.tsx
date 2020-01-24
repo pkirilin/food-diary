@@ -3,10 +3,11 @@ import './PagesListItem.scss';
 import Badge from '../Badge';
 import { SidebarListItem, SidebarListItemLink, SidebarListItemControls } from '../SidebarBlocks';
 import { BadgesContainer } from '../ContainerBlocks';
-import { Input } from '../Controls';
+import { Input, Checkbox } from '../Controls';
 import Icon from '../Icon';
 import { DispatchToPropsMapResult, StateToPropsMapResult } from './PagesListItemConnected';
 import { PageItem } from '../../models';
+import SidebarListItemCheckbox from '../SidebarBlocks/SidebarListItemCheckbox';
 
 interface PagesListItemProps extends StateToPropsMapResult, DispatchToPropsMapResult {
   data: PageItem;
@@ -41,6 +42,10 @@ const PagesListItem: React.FC<PagesListItemProps> = ({
     deleteDraftPage(page.id);
   };
 
+  const handlePageCheck = (): void => {
+    return;
+  };
+
   const notesBadgeLabel = `${page.countNotes} ${page.countNotes === 1 ? 'note' : 'notes'}`;
   const caloriesBadgeLabel = `${page.countCalories} cal`;
 
@@ -66,6 +71,9 @@ const PagesListItem: React.FC<PagesListItemProps> = ({
             <Badge label={caloriesBadgeLabel} selected={selected}></Badge>
           </BadgesContainer>
         </SidebarListItemLink>
+        <SidebarListItemCheckbox>
+          <Checkbox checked={selected} onCheck={handlePageCheck}></Checkbox>
+        </SidebarListItemCheckbox>
       </SidebarListItem>
     )),
   };
