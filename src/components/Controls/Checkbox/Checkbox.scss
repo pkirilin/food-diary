@@ -1,0 +1,70 @@
+@import '../../../variables.scss';
+@import '../FormControls.variables.scss';
+
+.checkbox-container {
+  height: 20px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding-left: 30px;
+  cursor: pointer;
+  user-select: none;
+
+  &__label {
+    font-size: 14px;
+  }
+
+  &__input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+  }
+
+  // Custom checkbox icon
+  &__checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 20px;
+    width: 20px;
+    background-color: $color-light-green;
+    border: 1px solid $color-middle-green-50;
+
+    // Checkmark is hidden when not checked
+    &:after {
+      content: '';
+      position: absolute;
+      display: none;
+    }
+  }
+
+  & &__input ~ &__checkmark {
+    transition: $form-control-transition;
+  }
+
+  // Checkbox is hovered
+  &:hover &__input ~ &__checkmark {
+    border-color: $color-middle-green;
+  }
+
+  // Checkbox is checked
+  // & &__input:checked ~ &__checkmark {
+  // }
+
+  & &__input:checked ~ &__checkmark:after {
+    display: block;
+  }
+
+  // Checkmark indicator styles
+  & &__checkmark:after {
+    top: 1px;
+    left: 5px;
+    width: 5px;
+    height: 10px;
+    border: solid $color-middle-green;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+}
