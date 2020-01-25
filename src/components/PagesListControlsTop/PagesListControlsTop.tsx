@@ -12,6 +12,8 @@ const PagesListControlsTop: React.FC<PagesListControlsTopProps> = ({
   pagesFilterChanged,
   clearPagesFilter,
   getPages,
+  pagesLoading,
+  pagesLoaded,
 }: PagesListControlsTopProps) => {
   const handleAddIconClick = (): void => {
     createDraftPage({
@@ -33,10 +35,10 @@ const PagesListControlsTop: React.FC<PagesListControlsTopProps> = ({
   return (
     <SidebarControlPanel>
       <SidebarControlPanelIcons>
-        <Icon type="add" onClick={handleAddIconClick}></Icon>
-        <Icon type="refresh" onClick={handleRefreshPagesListIconClick}></Icon>
+        <Icon type="add" onClick={handleAddIconClick} disabled={!pagesLoaded}></Icon>
+        <Icon type="refresh" onClick={handleRefreshPagesListIconClick} disabled={pagesLoading}></Icon>
         <Icon type="filter" disabled></Icon>
-        <Icon type="close" disabled={!pagesFilterChanged} onClick={handleResetFilterIconClick}></Icon>
+        <Icon type="close" disabled={!pagesFilterChanged || !pagesLoaded} onClick={handleResetFilterIconClick}></Icon>
       </SidebarControlPanelIcons>
     </SidebarControlPanel>
   );

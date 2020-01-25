@@ -10,6 +10,7 @@ interface PagesListControlsBottomProps extends StateToPropsMapResult, DispatchTo
 const PagesListControlsBottom: React.FC<PagesListControlsBottomProps> = ({
   pagesFilter,
   updatePagesFilter,
+  pagesLoaded,
 }: PagesListControlsBottomProps) => {
   const handleSortIconClick = (): void => {
     updatePagesFilter({ ...pagesFilter, sortOrder: invertSortOrder(pagesFilter.sortOrder) });
@@ -29,9 +30,9 @@ const PagesListControlsBottom: React.FC<PagesListControlsBottomProps> = ({
   return (
     <div className="pages-list-controls-bottom">
       {pagesFilter.sortOrder === SortOrder.Ascending ? (
-        <Icon type="sort-ascending" onClick={handleSortIconClick}></Icon>
+        <Icon type="sort-ascending" onClick={handleSortIconClick} disabled={!pagesLoaded}></Icon>
       ) : (
-        <Icon type="sort-descending" onClick={handleSortIconClick}></Icon>
+        <Icon type="sort-descending" onClick={handleSortIconClick} disabled={!pagesLoaded}></Icon>
       )}
       <FormGroup inline>
         <Label>Show</Label>
@@ -40,6 +41,7 @@ const PagesListControlsBottom: React.FC<PagesListControlsBottomProps> = ({
             onValueChanged={handleShowCountDropdownValueChanged}
             initialSelectedValue={pagesFilter.showCount === undefined ? 'All' : pagesFilter.showCount.toString()}
             toggleDirection="top"
+            disabled={!pagesLoaded}
           >
             <DropdownItem>{ShowCount.LastWeek}</DropdownItem>
             <DropdownItem>{ShowCount.LastMonth}</DropdownItem>

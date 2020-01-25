@@ -15,6 +15,8 @@ import { ThunkDispatch } from 'redux-thunk';
 export interface StateToPropsMapResult {
   pagesFilter: PagesFilter;
   pagesFilterChanged: boolean;
+  pagesLoading: boolean;
+  pagesLoaded: boolean;
 }
 
 export interface DispatchToPropsMapResult {
@@ -27,6 +29,8 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
   return {
     pagesFilter: state.pages.filter,
     pagesFilterChanged: state.pages.filter.filterChanged,
+    pagesLoading: state.pages.list.pageItems.loading,
+    pagesLoaded: state.pages.list.pageItems.loaded,
   };
 };
 

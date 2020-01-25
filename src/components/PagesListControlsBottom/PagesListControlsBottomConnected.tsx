@@ -8,6 +8,7 @@ import { UpdatePagesFilterAction } from '../../action-types';
 
 export interface StateToPropsMapResult {
   pagesFilter: PagesFilter;
+  pagesLoaded: boolean;
 }
 export interface DispatchToPropsMapResult {
   updatePagesFilter: (updatedFilter: PagesFilter) => void;
@@ -16,6 +17,7 @@ export interface DispatchToPropsMapResult {
 const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
   return {
     pagesFilter: state.pages.filter,
+    pagesLoaded: state.pages.list.pageItems.loaded,
   };
 };
 

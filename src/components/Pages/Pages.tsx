@@ -11,12 +11,12 @@ import { StateToPropsMapResult } from './PagesConnected';
 
 type PagesProps = StateToPropsMapResult;
 
-const Pages: React.FC<PagesProps> = ({ isPagesListAvailable, firstPageId }: PagesProps) => {
+const Pages: React.FC<PagesProps> = ({ isPagesListAvailable, pagesCount, firstPageId }: PagesProps) => {
   return (
     <ContentWrapper>
       <Sidebar>
         <PagesListControlsTopConnected></PagesListControlsTopConnected>
-        <PagesSelectionPanelConnected></PagesSelectionPanelConnected>
+        {isPagesListAvailable && pagesCount > 0 && <PagesSelectionPanelConnected></PagesSelectionPanelConnected>}
         <PagesListConnected></PagesListConnected>
         <PagesListControlsBottomConnected></PagesListControlsBottomConnected>
       </Sidebar>
@@ -27,7 +27,7 @@ const Pages: React.FC<PagesProps> = ({ isPagesListAvailable, firstPageId }: Page
               <Route exact path="/pages/:id">
                 Pages content
               </Route>
-              <Redirect from="/pages" to={`/pages/${firstPageId}`}></Redirect>
+              <Redirect from="/pages" to={firstPageId === undefined ? '/pages/' : `/pages/${firstPageId}`}></Redirect>
             </Switch>
           ) : (
             // TODO: add user-friendly placeholder to display notes content if items are not loaded

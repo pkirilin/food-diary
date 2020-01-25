@@ -7,6 +7,7 @@ import SidebarListItemControls from './SidebarListItemControls';
 import SidebarListItemCheckbox from './SidebarListItemCheckbox';
 import SidebarSelectionPanel from './SidebarSelectionPanel';
 import SidebarSelectionPanelOptions from './SidebarSelectionPanelOptions';
+import SidebarListLoader from './SidebarListLoader';
 
 export {
   SidebarControlPanel,
@@ -18,4 +19,5 @@ export {
   SidebarListItemCheckbox,
   SidebarSelectionPanel,
   SidebarSelectionPanelOptions,
+  SidebarListLoader,
 };

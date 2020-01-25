@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import './PagesList.scss';
 import { StateToPropsMapResult, DispatchToPropsMapResult } from './PagesListConnected';
 import PagesListItemConnected from '../PagesListItem';
-import { SidebarList } from '../SidebarBlocks';
+import { SidebarList, SidebarListLoader } from '../SidebarBlocks';
 
 interface PagesListProps extends StateToPropsMapResult, DispatchToPropsMapResult {}
 
@@ -19,7 +19,7 @@ const PagesList: React.FC<PagesListProps> = ({
   }, [getPages, pagesFilter]);
 
   if (loading) {
-    return <div>Loading</div>;
+    return <SidebarListLoader label="Loading pages"></SidebarListLoader>;
   }
 
   if (loaded) {
