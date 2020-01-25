@@ -1,3 +1,3 @@
-import Pages from './Pages';
+import PagesConnected from './PagesConnected';
 
-export default Pages;
+export default PagesConnected;
