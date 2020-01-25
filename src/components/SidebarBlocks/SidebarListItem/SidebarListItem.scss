@@ -5,15 +5,10 @@
   display: flex;
   min-height: $list-item-height;
   height: $list-item-height;
-  transition: 0.2s;
   border-bottom: $divider-border-width solid $color-middle-green;
 
   &_selected {
     background-color: $color-dark-green;
-
-    &:hover {
-      border-left: $active-item-border-width solid $color-white;
-    }
   }
 
   &_editable {

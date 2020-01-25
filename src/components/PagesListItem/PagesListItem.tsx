@@ -52,6 +52,8 @@ const PagesListItem: React.FC<PagesListItemProps> = ({
   const notesBadgeLabel = `${page.countNotes} ${page.countNotes === 1 ? 'note' : 'notes'}`;
   const caloriesBadgeLabel = `${page.countCalories} cal`;
 
+  const activeLinkClassName = isSelected ? 'sidebar-list-item-link_active-selected' : 'sidebar-list-item-link_active';
+
   return {
     ...(isEditable ? (
       <SidebarListItem editable>
@@ -63,11 +65,7 @@ const PagesListItem: React.FC<PagesListItemProps> = ({
       </SidebarListItem>
     ) : (
       <SidebarListItem selected={isSelected}>
-        <SidebarListItemLink
-          to={`/pages/${page.id}`}
-          activeClassName="sidebar-list-item-link_active"
-          selected={isSelected}
-        >
+        <SidebarListItemLink to={`/pages/${page.id}`} activeClassName={activeLinkClassName} selected={isSelected}>
           <div>{page.date}</div>
           <BadgesContainer>
             <Badge label={notesBadgeLabel} selected={isSelected}></Badge>

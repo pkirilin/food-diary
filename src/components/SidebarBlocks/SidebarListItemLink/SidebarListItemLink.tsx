@@ -9,7 +9,6 @@ interface SidebarListItemLinkProps extends NavLinkProps {
 const SidebarListItemLink: React.FC<SidebarListItemLinkProps> = ({
   selected = false,
   children,
-  className,
   ...linkProps
 }: React.PropsWithChildren<SidebarListItemLinkProps>) => {
   const classNames = ['sidebar-list-item-link'];
@@ -17,7 +16,7 @@ const SidebarListItemLink: React.FC<SidebarListItemLinkProps> = ({
     classNames.push('sidebar-list-item-link_selected');
   }
   return (
-    <NavLink {...linkProps} className={[className, ...classNames].join(' ')}>
+    <NavLink {...linkProps} className={classNames.join(' ')}>
       {children}
     </NavLink>
   );

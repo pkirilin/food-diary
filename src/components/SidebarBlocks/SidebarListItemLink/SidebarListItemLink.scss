@@ -11,6 +11,7 @@
   border-left: $active-item-border-width solid transparent;
   padding: $nested-items-padding-top-bottom 0 $nested-items-padding-top-bottom $nested-items-padding-left-right -
     $active-item-border-width;
+  transition: 0.2s;
 
   & > * {
     color: $color-dark-green;
@@ -18,12 +19,25 @@
     letter-spacing: 0.5px;
   }
 
-  &_selected {
-    color: $color-white;
-  }
-
-  &_active,
   &:hover {
     border-left: $active-item-border-width solid $color-dark-green;
+  }
+
+  &_selected {
+    & > * {
+      color: $color-light-green;
+    }
+
+    &:hover {
+      border-left: $active-item-border-width solid $color-light-green;
+    }
+  }
+
+  &_active {
+    border-left: $active-item-border-width solid $color-dark-green;
+  }
+
+  &_active-selected {
+    border-left: $active-item-border-width solid $color-light-green;
   }
 }
