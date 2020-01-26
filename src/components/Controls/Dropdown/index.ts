@@ -1,6 +1,4 @@
-import Dropdown from './Dropdown';
+import DropdownList from './DropdownList';
 import DropdownMenu from './DropdownMenu';
 
-export { DropdownMenu };
-
-export default Dropdown;
+export { DropdownList, DropdownMenu };

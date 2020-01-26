@@ -1,6 +1,6 @@
 import React from 'react';
 import './PagesListControlsBottom.scss';
-import { Label, Dropdown, DropdownItem, FormGroup } from '../Controls';
+import { Label, DropdownList, DropdownItem, FormGroup } from '../Controls';
 import { DispatchToPropsMapResult, StateToPropsMapResult } from './PagesListControlsBottomConnected';
 import { SortOrder, ShowCount, invertSortOrder } from '../../models';
 import Icon from '../Icon';
@@ -37,7 +37,7 @@ const PagesListControlsBottom: React.FC<PagesListControlsBottomProps> = ({
       <FormGroup inline>
         <Label>Show</Label>
         <div className="pages-list-controls-bottom__show-count-wrapper">
-          <Dropdown
+          <DropdownList
             onValueChanged={handleShowCountDropdownValueChanged}
             initialSelectedValue={pagesFilter.showCount === undefined ? 'All' : pagesFilter.showCount.toString()}
             toggleDirection="top"
@@ -50,7 +50,7 @@ const PagesListControlsBottom: React.FC<PagesListControlsBottomProps> = ({
             <DropdownItem>{ShowCount.LastHalfYear}</DropdownItem>
             <DropdownItem>{ShowCount.LastYear}</DropdownItem>
             <DropdownItem>All</DropdownItem>
-          </Dropdown>
+          </DropdownList>
         </div>
       </FormGroup>
     </div>
