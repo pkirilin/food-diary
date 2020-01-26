@@ -62,7 +62,7 @@
     display: none;
     position: absolute;
     max-height: 400px;
-    overflow: auto;
+    overflow-y: auto;
     border: $form-control-border-width solid $color-middle-green-50;
     background-color: $color-white;
 

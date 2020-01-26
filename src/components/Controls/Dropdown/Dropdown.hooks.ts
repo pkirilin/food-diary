@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { DropdownToggleDirection, DropdownContentAlignment } from './dropdown-types';
+import { DropdownToggleDirection, DropdownContentAlignment, DropdownContentWidth } from './dropdown-types';
 
 export const useToggle = (
   disabled: boolean,
@@ -40,7 +40,7 @@ export const useCloseIfTargetOutside = (close: () => void): ((target: HTMLElemen
 
 export const useContentStyle = (
   toggleDirection: DropdownToggleDirection,
-  elementBasedContentWidth: boolean,
+  contentWidth: DropdownContentWidth,
   dropdownElement: React.RefObject<HTMLElement>,
   contentBlockHeight: number,
 ): React.CSSProperties => {
@@ -50,9 +50,13 @@ export const useContentStyle = (
     contentStyle.top = `-${contentBlockHeight.toString()}px`;
   }
 
-  if (!elementBasedContentWidth) {
+  if (contentWidth === 'element-based') {
     if (dropdownElement && dropdownElement.current) {
       contentStyle.width = `${dropdownElement.current.clientWidth}px`;
+    }
+  } else {
+    if (typeof contentWidth === 'number') {
+      contentStyle.width = `${contentWidth.toString()}px`;
     }
   }
 

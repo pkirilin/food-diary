@@ -28,7 +28,7 @@ interface DropdownProps extends DropdownPropsBase {
 const Dropdown: React.FC<DropdownProps> = ({
   children,
   toggleDirection = 'bottom',
-  elementBasedContentWidth = false,
+  contentWidth = 'auto',
   contentAlignment = 'left',
   disabled = false,
   placeholder = 'Select value',
@@ -51,7 +51,7 @@ const Dropdown: React.FC<DropdownProps> = ({
   const contentClassNames = useContentClassNames(isOpen, contentAlignment);
   const contentStyle = useContentStyle(
     toggleDirection,
-    elementBasedContentWidth,
+    contentWidth,
     dropdownRef as React.RefObject<HTMLElement>,
     contentBlockHeight,
   );

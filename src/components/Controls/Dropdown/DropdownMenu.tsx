@@ -12,7 +12,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
   children,
   toggler,
   toggleDirection = 'bottom',
-  elementBasedContentWidth = false,
+  contentWidth = 'auto',
   contentAlignment = 'left',
   disabled = false,
 }: React.PropsWithChildren<DropdownMenuProps>) => {
@@ -27,7 +27,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
   const closeIfTargetOutside = useCloseIfTargetOutside(close);
   const contentStyle = useContentStyle(
     toggleDirection,
-    elementBasedContentWidth,
+    contentWidth,
     dropdownRef as React.RefObject<HTMLElement>,
     contentBlockHeight,
   );
