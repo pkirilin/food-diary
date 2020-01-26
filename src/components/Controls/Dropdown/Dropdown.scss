@@ -20,14 +20,28 @@
       box-shadow: $form-control-box-shadow $color-middle-green;
     }
 
+    &_disabled {
+      border-color: $color-middle-green-25;
+      box-shadow: none;
+      cursor: default;
+    }
+
     &__value {
       flex: 1;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
 
+      &_disabled {
+        color: $color-middle-green;
+      }
+
       &_placeholder {
         color: $color-middle-green-50;
+      }
+
+      &_placeholder-disabled {
+        color: $color-middle-green-25;
       }
     }
 
@@ -36,6 +50,10 @@
       height: 10px;
       fill: $color-middle-green;
       margin-left: $form-control-padding;
+
+      &_disabled {
+        fill: $color-middle-green-50;
+      }
     }
   }
 

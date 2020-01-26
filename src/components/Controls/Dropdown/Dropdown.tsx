@@ -17,6 +17,7 @@ interface DropdownProps {
   placeholder?: string;
   initialSelectedValue?: string;
   onValueChanged?: (newSelectedValue: string) => void;
+  disabled?: boolean;
 }
 
 const Dropdown: React.FC<DropdownProps> = ({
@@ -28,6 +29,7 @@ const Dropdown: React.FC<DropdownProps> = ({
   placeholder = 'Select value',
   initialSelectedValue,
   onValueChanged,
+  disabled = false,
 }: React.PropsWithChildren<DropdownProps>) => {
   const dropdownRef = useRef(null);
   const contentRef = useRef(null);
@@ -38,7 +40,9 @@ const Dropdown: React.FC<DropdownProps> = ({
   const [contentBlockHeight, setContentBlockHeight] = useState(0);
 
   const toggle = (): void => {
-    setIsOpen(!isOpen);
+    if (!disabled) {
+      setIsOpen(!isOpen);
+    }
   };
 
   const close = (): void => {
@@ -78,6 +82,7 @@ const Dropdown: React.FC<DropdownProps> = ({
 
   const togglerCssClasses = ['dropdown__toggler'];
   const togglerValueCssClasses = ['dropdown__toggler__value'];
+  const togglerIconCssClasses = ['dropdown__toggler__icon'];
   const contentCssClasses = ['dropdown__content'];
 
   if (isOpen) {
@@ -86,7 +91,7 @@ const Dropdown: React.FC<DropdownProps> = ({
   }
 
   if (!selectedValueChanged) {
-    togglerValueCssClasses.push('dropdown__toggler__value_placeholder');
+    togglerValueCssClasses.push(`dropdown__toggler__value_${disabled ? 'placeholder-disabled' : 'placeholder'}`);
   }
 
   const contentStyle: React.CSSProperties = {};
@@ -106,6 +111,12 @@ const Dropdown: React.FC<DropdownProps> = ({
     contentCssClasses.push('dropdown__content_right');
   }
 
+  if (disabled) {
+    togglerCssClasses.push('dropdown__toggler_disabled');
+    togglerValueCssClasses.push('dropdown__toggler__value_disabled');
+    togglerIconCssClasses.push('dropdown__toggler__icon_disabled');
+  }
+
   return (
     <div ref={dropdownRef} className="dropdown">
       {toggler ? (
@@ -113,7 +124,7 @@ const Dropdown: React.FC<DropdownProps> = ({
       ) : (
         <div className={togglerCssClasses.join(' ')} onClick={toggle}>
           <div className={togglerValueCssClasses.join(' ')}>{selectedValue}</div>
-          <DropdownArrowIcon className="dropdown__toggler__icon"></DropdownArrowIcon>
+          <DropdownArrowIcon className={togglerIconCssClasses.join(' ')}></DropdownArrowIcon>
         </div>
       )}
       <div ref={contentRef} className={contentCssClasses.join(' ')} style={contentStyle}>
