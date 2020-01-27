@@ -11,5 +11,6 @@ export default store;
 
 export * from './state';
 export * from './data-fetch-state';
+export * from './data-operation-state';
 
 export * from './pages-state';

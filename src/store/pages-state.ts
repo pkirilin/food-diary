@@ -1,5 +1,6 @@
 import { PageItem, PagesFilter } from '../models';
 import { DataFetchState } from './data-fetch-state';
+import { DataOperationState } from './data-operation-state';
 
 export interface PagesState {
   list: PagesListState;
@@ -19,6 +20,8 @@ export interface PagesFilterState extends PagesFilter {
 }
 
 export interface PagesOperationsState {
+  status: DataOperationState;
+
   creating?: boolean;
   created?: boolean;
   createError?: boolean;

@@ -1,7 +1,11 @@
 import { PagesOperationsState } from '../../store';
 import { PagesOperationsActions, PagesOperationsActionTypes } from '../../action-types';
 
-const initialState: PagesOperationsState = {};
+const initialState: PagesOperationsState = {
+  status: {
+    performing: false,
+  },
+};
 
 const pagesOperationsReducer = (
   state: PagesOperationsState = initialState,
@@ -14,6 +18,29 @@ const pagesOperationsReducer = (
       return { ...state, creating: false, created: true, createError: false };
     case PagesOperationsActionTypes.CreateError:
       return { ...state, creating: false, created: false, createError: true };
+
+    case PagesOperationsActionTypes.DeleteRequest:
+      return {
+        ...state,
+        status: {
+          performing: true,
+          message: 'Deleting pages',
+        },
+      };
+    case PagesOperationsActionTypes.DeleteSuccess:
+      return {
+        ...state,
+        status: {
+          performing: false,
+        },
+      };
+    case PagesOperationsActionTypes.DeleteError:
+      return {
+        ...state,
+        status: {
+          performing: false,
+        },
+      };
     default:
       return state;
   }

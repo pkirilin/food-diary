@@ -36,6 +36,7 @@ const pagesListReducer = (state: PagesListState = initialState, action: PagesLis
             ...action.pages,
           ],
         },
+        selectedPagesIds: [],
       };
     case PagesListActionTypes.Error:
       return {

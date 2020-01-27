@@ -8,3 +8,8 @@ export const getPagesAsync = async (filter: PagesFilter): Promise<Response> => {
 export const createPageAsync = async (): Promise<Response> => {
   return await fetch('');
 };
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const deletePagesAsync = async (pagesIds: number[]): Promise<Response> => {
+  return await fetch('');
+};
