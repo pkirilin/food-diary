@@ -10,6 +10,11 @@
   transition: $form-control-transition;
   outline: none;
 
+  &_disabled {
+    border: $form-control-border-width solid $color-middle-green-25;
+    color: $color-middle-green;
+  }
+
   &:focus {
     border-color: $color-middle-green;
     box-shadow: $form-control-box-shadow $color-middle-green;
