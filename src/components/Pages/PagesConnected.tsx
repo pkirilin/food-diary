@@ -12,7 +12,7 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
   return {
     isPagesListAvailable: state.pages.list.pageItems.loaded,
     pagesCount: state.pages.list.pageItems.data.length,
-    firstPageId: state.pages.list.pageItems.data[0]?.id,
+    firstPageId: state.pages.list.pageItems.data.filter(p => p.id > 0)[0]?.id,
   };
 };
 
