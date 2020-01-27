@@ -8,8 +8,9 @@ import {
   DeletePagesErrorAction,
   GetPagesListSuccessAction,
   GetPagesListErrorAction,
+  SetEditableForPagesAction,
 } from '../../action-types';
-import { setSelectedForAllPages, deletePages, getPages } from '../../action-creators';
+import { setSelectedForAllPages, deletePages, getPages, setEditableForPages } from '../../action-creators';
 import { ThunkDispatch } from 'redux-thunk';
 import { PagesFilter, PageItem } from '../../models';
 
@@ -26,6 +27,7 @@ export interface DispatchToPropsMapResult {
   setSelectedForAllPages: (selected: boolean) => void;
   deletePages: (pagesIds: number[]) => Promise<DeletePagesSuccessAction | DeletePagesErrorAction>;
   getPages: (filter: PagesFilter) => Promise<GetPagesListSuccessAction | GetPagesListErrorAction>;
+  setEditableForPages: (pagesIds: number[], editable: boolean) => void;
 }
 
 const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
@@ -39,7 +41,7 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
   };
 };
 
-type PagesSelectionPanelConnectedDispatch = Dispatch<SetSelectedForAllPagesAction> &
+type PagesSelectionPanelConnectedDispatch = Dispatch<SetSelectedForAllPagesAction | SetEditableForPagesAction> &
   ThunkDispatch<void, number[], DeletePagesSuccessAction | DeletePagesErrorAction> &
   ThunkDispatch<PageItem[], PagesFilter, GetPagesListSuccessAction | GetPagesListErrorAction>;
 
@@ -53,6 +55,9 @@ const mapDispatchToProps = (dispatch: PagesSelectionPanelConnectedDispatch): Dis
     },
     getPages: (filter: PagesFilter): Promise<GetPagesListSuccessAction | GetPagesListErrorAction> => {
       return dispatch(getPages(filter));
+    },
+    setEditableForPages: (pagesIds: number[], editable: boolean): void => {
+      dispatch(setEditableForPages(pagesIds, editable));
     },
   };
 };

@@ -18,6 +18,7 @@ const PagesSelectionPanel: React.FC<PagesSelectionPanelProps> = ({
   deletePages,
   getPages,
   pagesFilter,
+  setEditableForPages,
 }: PagesSelectionPanelProps) => {
   const selectAllChecked = visiblePagesCount === selectedPagesCount;
 
@@ -26,7 +27,7 @@ const PagesSelectionPanel: React.FC<PagesSelectionPanelProps> = ({
   };
 
   const handleEditOptionClick = (): void => {
-    return;
+    setEditableForPages(selectedPagesIds, true);
   };
 
   const handleDeleteOptionClick = async (): Promise<void> => {
@@ -58,7 +59,9 @@ const PagesSelectionPanel: React.FC<PagesSelectionPanelProps> = ({
           )}
         </SidebarSelectionPanelOptions>
       ) : (
-        <SidebarSelectionPanelOptions withoutSelection>No pages selected</SidebarSelectionPanelOptions>
+        <SidebarSelectionPanelOptions withoutSelection>
+          {isOperationInProcess ? <Loader label={operationMessage} size="small"></Loader> : 'No pages selected'}
+        </SidebarSelectionPanelOptions>
       )}
     </SidebarSelectionPanel>
   );

@@ -16,12 +16,15 @@ interface PagesListItemProps extends StateToPropsMapResult, DispatchToPropsMapRe
 const PagesListItem: React.FC<PagesListItemProps> = ({
   data: page,
   createPage,
+  editPage,
   deleteDraftPage,
   getPages,
   pagesFilter,
   editablePagesIds,
   selectedPagesIds,
   setSelectedForPage,
+  setEditableForPages,
+  isOperationInProcess,
 }: PagesListItemProps) => {
   const [selectedDate, setSelectedDate] = useState(page.date);
 
@@ -36,13 +39,27 @@ const PagesListItem: React.FC<PagesListItemProps> = ({
   };
 
   const handleConfirmEditPageIconClick = async (): Promise<void> => {
-    await createPage({ id: page.id, date: selectedDate });
-    deleteDraftPage(page.id);
+    if (page.id < 1) {
+      // This is a draft page for create
+      await createPage({ id: page.id, date: selectedDate });
+      deleteDraftPage(page.id);
+    } else {
+      // This is existing page for edit
+      await editPage(page);
+      setEditableForPages([page.id], false);
+    }
+
     await getPages(pagesFilter);
   };
 
   const handleCancelEditPageIconClick = (): void => {
-    deleteDraftPage(page.id);
+    if (page.id < 1) {
+      // This is a draft page: cancel = delete draft
+      deleteDraftPage(page.id);
+    } else {
+      // This is existing page: cancel = make page not editable
+      setEditableForPages([page.id], false);
+    }
   };
 
   const handlePageCheck = (): void => {
@@ -57,10 +74,26 @@ const PagesListItem: React.FC<PagesListItemProps> = ({
   return {
     ...(isEditable ? (
       <SidebarListItem editable>
-        <Input type="date" placeholder="Pick date" value={selectedDate} onChange={handleSelectedDateChange}></Input>
+        <Input
+          type="date"
+          placeholder="Pick date"
+          value={selectedDate}
+          onChange={handleSelectedDateChange}
+          disabled={isOperationInProcess}
+        ></Input>
         <SidebarListItemControls>
-          <Icon type="check" size="small" onClick={handleConfirmEditPageIconClick}></Icon>
-          <Icon type="close" size="small" onClick={handleCancelEditPageIconClick}></Icon>
+          <Icon
+            type="check"
+            size="small"
+            onClick={handleConfirmEditPageIconClick}
+            disabled={isOperationInProcess}
+          ></Icon>
+          <Icon
+            type="close"
+            size="small"
+            onClick={handleCancelEditPageIconClick}
+            disabled={isOperationInProcess}
+          ></Icon>
         </SidebarListItemControls>
       </SidebarListItem>
     ) : (

@@ -10,6 +10,7 @@ import {
   DeleteDraftPageAction,
   SetSelectedForPageAction,
   SetSelectedForAllPagesAction,
+  SetEditableForPagesAction,
 } from '../../action-types';
 import { getPagesAsync } from '../../services';
 
@@ -82,5 +83,13 @@ export const setSelectedForAllPages = (selected: boolean): SetSelectedForAllPage
   return {
     type: PagesListActionTypes.SetSelectedAll,
     selected,
+  };
+};
+
+export const setEditableForPages = (pagesIds: number[], editable: boolean): SetEditableForPagesAction => {
+  return {
+    type: PagesListActionTypes.SetEditable,
+    pagesIds,
+    editable,
   };
 };

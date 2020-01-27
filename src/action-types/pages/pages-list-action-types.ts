@@ -9,6 +9,7 @@ export enum PagesListActionTypes {
   DeleteDraftPage = 'PAGES_LIST__DELETE_DRAFT_PAGE',
   SetSelected = 'PAGES_LIST__SET_SELECTED_FOR_PAGE',
   SetSelectedAll = 'PAGES_LIST__SET_SELECTED_FOR_ALL_PAGES',
+  SetEditable = 'PAGES_LIST__MARK_PAGES_AS_EDITABLE',
 }
 
 export interface GetPagesListRequestAction extends Action<PagesListActionTypes.Request> {
@@ -46,6 +47,12 @@ export interface SetSelectedForAllPagesAction extends Action<PagesListActionType
   selected: boolean;
 }
 
+export interface SetEditableForPagesAction extends Action<PagesListActionTypes.SetEditable> {
+  type: PagesListActionTypes.SetEditable;
+  pagesIds: number[];
+  editable: boolean;
+}
+
 export type PagesListActions =
   | GetPagesListRequestAction
   | GetPagesListSuccessAction
@@ -53,4 +60,5 @@ export type PagesListActions =
   | CreateDraftPageAction
   | DeleteDraftPageAction
   | SetSelectedForPageAction
-  | SetSelectedForAllPagesAction;
+  | SetSelectedForAllPagesAction
+  | SetEditableForPagesAction;

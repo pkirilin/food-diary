@@ -3,6 +3,7 @@
 
 .sidebar-list-item {
   display: flex;
+  justify-content: space-between;
   min-height: $list-item-height;
   height: $list-item-height;
   border-bottom: $divider-border-width solid $color-middle-green;
@@ -14,8 +15,7 @@
   &_editable {
     display: flex;
     align-items: center;
-    padding: $nested-items-padding-top-bottom $nested-items-padding-left-right $nested-items-padding-top-bottom
-      $nested-items-padding-left-right - $active-item-border-width;
+    padding: $nested-items-padding-top-bottom $nested-items-padding-left-right;
   }
 
   &:last-child {

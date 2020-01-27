@@ -6,11 +6,14 @@ import {
   CreatePageSuccessAction,
   CreatePageErrorAction,
   CreatePageRequestAction,
+  EditPageSuccessAction,
+  EditPageErrorAction,
+  EditPageRequestAction,
   DeletePagesSuccessAction,
   DeletePagesErrorAction,
   DeletePagesRequestAction,
 } from '../../action-types';
-import { createPageAsync, deletePagesAsync } from '../../services';
+import { createPageAsync, deletePagesAsync, editPageAsync } from '../../services';
 
 const createPageRequest = (page: PageCreateEdit): CreatePageRequestAction => {
   return {
@@ -28,6 +31,25 @@ const createPageSuccess = (): CreatePageSuccessAction => {
 const createPageError = (): CreatePageErrorAction => {
   return {
     type: PagesOperationsActionTypes.CreateError,
+  };
+};
+
+const editPageRequest = (page: PageCreateEdit): EditPageRequestAction => {
+  return {
+    type: PagesOperationsActionTypes.EditRequest,
+    page,
+  };
+};
+
+const editPageSuccess = (): EditPageSuccessAction => {
+  return {
+    type: PagesOperationsActionTypes.EditSuccess,
+  };
+};
+
+const editPageError = (): EditPageErrorAction => {
+  return {
+    type: PagesOperationsActionTypes.EditError,
   };
 };
 
@@ -66,6 +88,27 @@ export const createPage: ActionCreator<ThunkAction<
       return dispatch(createPageSuccess());
     } catch (error) {
       return dispatch(createPageError());
+    }
+  };
+};
+
+export const editPage: ActionCreator<ThunkAction<
+  Promise<EditPageSuccessAction | EditPageErrorAction>,
+  void,
+  PageCreateEdit,
+  EditPageSuccessAction | EditPageErrorAction
+>> = (page: PageCreateEdit) => {
+  return async (dispatch: Dispatch): Promise<EditPageSuccessAction | EditPageErrorAction> => {
+    dispatch(editPageRequest(page));
+
+    try {
+      const response = await editPageAsync(page);
+      if (!response.ok) {
+        return dispatch(editPageError());
+      }
+      return dispatch(editPageSuccess());
+    } catch (error) {
+      return dispatch(editPageError());
     }
   };
 };

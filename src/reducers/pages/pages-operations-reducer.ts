@@ -19,6 +19,29 @@ const pagesOperationsReducer = (
     case PagesOperationsActionTypes.CreateError:
       return { ...state, creating: false, created: false, createError: true };
 
+    case PagesOperationsActionTypes.EditRequest:
+      return {
+        ...state,
+        status: {
+          performing: true,
+          message: 'Updating page',
+        },
+      };
+    case PagesOperationsActionTypes.EditSuccess:
+      return {
+        ...state,
+        status: {
+          performing: false,
+        },
+      };
+    case PagesOperationsActionTypes.EditError:
+      return {
+        ...state,
+        status: {
+          performing: false,
+        },
+      };
+
     case PagesOperationsActionTypes.DeleteRequest:
       return {
         ...state,

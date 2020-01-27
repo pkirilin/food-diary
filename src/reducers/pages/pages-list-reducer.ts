@@ -31,8 +31,8 @@ const pagesListReducer = (state: PagesListState = initialState, action: PagesLis
           loading: false,
           loaded: true,
           data: [
-            // Keeping pages that marked as editable
-            ...state.pageItems.data.filter(p => state.editablePagesIds.some(id => p.id === id)),
+            // Keeping draft pages
+            ...state.pageItems.data.filter(p => p.id < 1),
             ...action.pages,
           ],
         },
@@ -78,6 +78,14 @@ const pagesListReducer = (state: PagesListState = initialState, action: PagesLis
       return {
         ...state,
         selectedPagesIds: action.selected ? state.pageItems.data.map(p => p.id) : [],
+      };
+    case PagesListActionTypes.SetEditable:
+      return {
+        ...state,
+        editablePagesIds: action.editable
+          ? [...state.editablePagesIds, ...action.pagesIds]
+          : [...state.editablePagesIds.filter(sId => !action.pagesIds.some(aId => aId === sId))],
+        selectedPagesIds: [],
       };
     default:
       return state;
