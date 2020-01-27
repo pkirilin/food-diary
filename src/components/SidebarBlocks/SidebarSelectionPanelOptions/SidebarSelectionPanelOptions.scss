@@ -4,10 +4,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-
-  :first-child {
-    padding: 0 10px;
-  }
+  width: 120px;
 
   &_without-selection {
     color: $color-middle-green;

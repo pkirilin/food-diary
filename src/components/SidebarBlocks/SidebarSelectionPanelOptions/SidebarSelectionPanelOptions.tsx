@@ -12,6 +12,8 @@ const SidebarSelectionPanelOptions: React.FC<SidebarSelectionPanelOptionsProps> 
   const classNames = ['sidebar-selection-panel-options'];
   if (withoutSelection) {
     classNames.push('sidebar-selection-panel-options_without-selection');
+  } else {
+    classNames.push('sidebar-selection-panel-options_with-selection');
   }
 
   return <div className={classNames.join(' ')}>{children}</div>;

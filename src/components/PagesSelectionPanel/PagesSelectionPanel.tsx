@@ -1,7 +1,7 @@
 import React from 'react';
 import './PagesSelectionPanel.scss';
 import { SidebarSelectionPanel, SidebarSelectionPanelOptions } from '../SidebarBlocks';
-import { Checkbox } from '../Controls';
+import { Checkbox, DropdownMenu, DropdownItem } from '../Controls';
 import Icon from '../Icon';
 import { StateToPropsMapResult, DispatchToPropsMapResult } from './PagesSelectionPanelConnected';
 
@@ -14,17 +14,33 @@ const PagesSelectionPanel: React.FC<PagesSelectionPanelProps> = ({
 }: PagesSelectionPanelProps) => {
   const selectAllChecked = visiblePagesCount === selectedPagesCount;
 
-  const handleCheck = (): void => {
+  const handleSelectAllClick = (): void => {
     setSelectedForAllPages(!selectAllChecked);
   };
 
+  const handleEditOptionClick = (): void => {
+    return;
+  };
+
+  const handleDeleteOptionClick = (): void => {
+    // TODO: modal
+    const isDeleteConfirmed = window.confirm('Do you want to delete all selected pages?');
+    if (isDeleteConfirmed) {
+    }
+  };
+
+  const selectionOptionsToggler = <Icon type="three-dots"></Icon>;
+
   return (
     <SidebarSelectionPanel>
-      <Checkbox checked={selectAllChecked} onCheck={handleCheck} label="Select all"></Checkbox>
+      <Checkbox checked={selectAllChecked} onCheck={handleSelectAllClick} label="Select all"></Checkbox>
       {selectedPagesCount > 0 ? (
         <SidebarSelectionPanelOptions>
           <div>Selected: {selectedPagesCount}</div>
-          <Icon type="three-dots"></Icon>
+          <DropdownMenu toggler={selectionOptionsToggler} contentWidth={150}>
+            <DropdownItem onClick={handleEditOptionClick}>Edit</DropdownItem>
+            <DropdownItem onClick={handleDeleteOptionClick}>Delete</DropdownItem>
+          </DropdownMenu>
         </SidebarSelectionPanelOptions>
       ) : (
         <SidebarSelectionPanelOptions withoutSelection>No pages selected</SidebarSelectionPanelOptions>
