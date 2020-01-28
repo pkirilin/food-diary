@@ -9,7 +9,7 @@ export enum PagesListActionTypes {
   DeleteDraftPage = 'PAGES_LIST__DELETE_DRAFT_PAGE',
   SetSelected = 'PAGES_LIST__SET_SELECTED_FOR_PAGE',
   SetSelectedAll = 'PAGES_LIST__SET_SELECTED_FOR_ALL_PAGES',
-  SetEditable = 'PAGES_LIST__MARK_PAGES_AS_EDITABLE',
+  SetEditable = 'PAGES_LIST__SET_EDITABLE_FOR_PAGES',
 }
 
 export interface GetPagesListRequestAction extends Action<PagesListActionTypes.Request> {
