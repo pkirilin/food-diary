@@ -1,0 +1,16 @@
+@import '../../../variables.scss';
+
+.sidebar-list-placeholder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+
+  &_primary {
+    color: $color-dark-green;
+  }
+
+  &_info {
+    color: $color-middle-green;
+  }
+}

@@ -2,7 +2,8 @@ import React, { useEffect } from 'react';
 import './PagesList.scss';
 import { StateToPropsMapResult, DispatchToPropsMapResult } from './PagesListConnected';
 import PagesListItemConnected from '../PagesListItem';
-import { SidebarList, SidebarListLoader } from '../SidebarBlocks';
+import { SidebarList, SidebarListPlaceholder } from '../SidebarBlocks';
+import Loader from '../Loader';
 
 interface PagesListProps extends StateToPropsMapResult, DispatchToPropsMapResult {}
 
@@ -19,22 +20,26 @@ const PagesList: React.FC<PagesListProps> = ({
   }, [getPages, pagesFilter]);
 
   if (loading) {
-    return <SidebarListLoader label="Loading pages"></SidebarListLoader>;
-  }
-
-  if (loaded) {
     return (
-      <SidebarList>
-        {visiblePages.length > 0 ? (
-          visiblePages.map(p => <PagesListItemConnected key={p.id} data={p}></PagesListItemConnected>)
-        ) : (
-          <div>No pages found</div>
-        )}
-      </SidebarList>
+      <SidebarListPlaceholder>
+        <Loader label="Loading pages"></Loader>
+      </SidebarListPlaceholder>
     );
   }
 
-  return <div>{errorMessage}</div>;
+  if (loaded) {
+    return visiblePages.length > 0 ? (
+      <SidebarList>
+        {visiblePages.map(p => (
+          <PagesListItemConnected key={p.id} data={p}></PagesListItemConnected>
+        ))}
+      </SidebarList>
+    ) : (
+      <SidebarListPlaceholder type="info">No pages found</SidebarListPlaceholder>
+    );
+  }
+
+  return <SidebarListPlaceholder type="info">{errorMessage}</SidebarListPlaceholder>;
 };
 
 export default PagesList;
