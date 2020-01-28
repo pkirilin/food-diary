@@ -9,10 +9,9 @@ import Loader from '../Loader';
 interface PagesSelectionPanelProps extends StateToPropsMapResult, DispatchToPropsMapResult {}
 
 const PagesSelectionPanel: React.FC<PagesSelectionPanelProps> = ({
-  visiblePagesCount,
-  selectedPagesCount,
-  setSelectedForAllPages,
+  visiblePagesIds,
   selectedPagesIds,
+  setSelectedForAllPages,
   isOperationInProcess,
   operationMessage,
   deletePages,
@@ -20,7 +19,8 @@ const PagesSelectionPanel: React.FC<PagesSelectionPanelProps> = ({
   pagesFilter,
   setEditableForPages,
 }: PagesSelectionPanelProps) => {
-  const selectAllChecked = visiblePagesCount === selectedPagesCount;
+  const selectAllChecked = visiblePagesIds.every(id => selectedPagesIds.includes(id));
+  const selectedPagesCount = selectedPagesIds.length;
 
   const handleSelectAllClick = (): void => {
     setSelectedForAllPages(!selectAllChecked);

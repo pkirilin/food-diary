@@ -15,8 +15,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import { PagesFilter, PageItem } from '../../models';
 
 export interface StateToPropsMapResult {
-  visiblePagesCount: number;
-  selectedPagesCount: number;
+  visiblePagesIds: number[];
   selectedPagesIds: number[];
   isOperationInProcess: boolean;
   operationMessage?: string;
@@ -32,8 +31,7 @@ export interface DispatchToPropsMapResult {
 
 const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
   return {
-    visiblePagesCount: state.pages.list.pageItems.data.length,
-    selectedPagesCount: state.pages.list.selectedPagesIds.length,
+    visiblePagesIds: state.pages.list.pageItems.data.map(p => p.id),
     selectedPagesIds: state.pages.list.selectedPagesIds,
     isOperationInProcess: state.pages.operations.status.performing,
     operationMessage: state.pages.operations.status.message,
