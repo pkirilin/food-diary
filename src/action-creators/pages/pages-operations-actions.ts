@@ -15,10 +15,11 @@ import {
 } from '../../action-types';
 import { createPageAsync, deletePagesAsync, editPageAsync } from '../../services';
 
-const createPageRequest = (page: PageCreateEdit): CreatePageRequestAction => {
+const createPageRequest = (page: PageCreateEdit, operationMessage: string): CreatePageRequestAction => {
   return {
     type: PagesOperationsActionTypes.CreateRequest,
     page,
+    operationMessage,
   };
 };
 
@@ -28,16 +29,18 @@ const createPageSuccess = (): CreatePageSuccessAction => {
   };
 };
 
-const createPageError = (): CreatePageErrorAction => {
+const createPageError = (error: string): CreatePageErrorAction => {
   return {
     type: PagesOperationsActionTypes.CreateError,
+    error,
   };
 };
 
-const editPageRequest = (page: PageCreateEdit): EditPageRequestAction => {
+const editPageRequest = (page: PageCreateEdit, operationMessage: string): EditPageRequestAction => {
   return {
     type: PagesOperationsActionTypes.EditRequest,
     page,
+    operationMessage,
   };
 };
 
@@ -47,15 +50,17 @@ const editPageSuccess = (): EditPageSuccessAction => {
   };
 };
 
-const editPageError = (): EditPageErrorAction => {
+const editPageError = (error: string): EditPageErrorAction => {
   return {
     type: PagesOperationsActionTypes.EditError,
+    error,
   };
 };
 
-const deletePagesRequest = (): DeletePagesRequestAction => {
+const deletePagesRequest = (operationMessage: string): DeletePagesRequestAction => {
   return {
     type: PagesOperationsActionTypes.DeleteRequest,
+    operationMessage,
   };
 };
 
@@ -65,9 +70,10 @@ const deletePagesSuccess = (): DeletePagesSuccessAction => {
   };
 };
 
-const deletePagesError = (): DeletePagesErrorAction => {
+const deletePagesError = (error: string): DeletePagesErrorAction => {
   return {
     type: PagesOperationsActionTypes.DeleteError,
+    error,
   };
 };
 
@@ -78,16 +84,20 @@ export const createPage: ActionCreator<ThunkAction<
   CreatePageSuccessAction | CreatePageErrorAction
 >> = (page: PageCreateEdit) => {
   return async (dispatch: Dispatch): Promise<CreatePageSuccessAction | CreatePageErrorAction> => {
-    dispatch(createPageRequest(page));
+    dispatch(createPageRequest(page, 'Creating page'));
 
     try {
       const response = await createPageAsync(page);
       if (!response.ok) {
-        return dispatch(createPageError());
+        const errorMessageForInvalidData = 'Failed to create page (invalid data)';
+        alert(errorMessageForInvalidData);
+        return dispatch(createPageError(errorMessageForInvalidData));
       }
       return dispatch(createPageSuccess());
     } catch (error) {
-      return dispatch(createPageError());
+      const errorMessageForServerError = 'Failed to create page (server error)';
+      alert(errorMessageForServerError);
+      return dispatch(createPageError(errorMessageForServerError));
     }
   };
 };
@@ -99,16 +109,19 @@ export const editPage: ActionCreator<ThunkAction<
   EditPageSuccessAction | EditPageErrorAction
 >> = (page: PageCreateEdit) => {
   return async (dispatch: Dispatch): Promise<EditPageSuccessAction | EditPageErrorAction> => {
-    dispatch(editPageRequest(page));
-
+    dispatch(editPageRequest(page, 'Updating page'));
     try {
       const response = await editPageAsync(page);
       if (!response.ok) {
-        return dispatch(editPageError());
+        const errorMessageForInvalidData = 'Failed to update page (invalid data)';
+        alert(errorMessageForInvalidData);
+        return dispatch(editPageError(errorMessageForInvalidData));
       }
       return dispatch(editPageSuccess());
     } catch (error) {
-      return dispatch(editPageError());
+      const errorMessageForServerError = 'Failed to update page (server error)';
+      alert(errorMessageForServerError);
+      return dispatch(editPageError(errorMessageForServerError));
     }
   };
 };
@@ -120,15 +133,20 @@ export const deletePages: ActionCreator<ThunkAction<
   DeletePagesSuccessAction | DeletePagesErrorAction
 >> = (pagesIds: number[]) => {
   return async (dispatch: Dispatch): Promise<DeletePagesSuccessAction | DeletePagesErrorAction> => {
-    dispatch(deletePagesRequest());
+    const messageSuffixForPage = pagesIds.length > 1 ? 'pages' : 'page';
+    dispatch(deletePagesRequest(`Deleting ${messageSuffixForPage}`));
     try {
       const response = await deletePagesAsync(pagesIds);
       if (!response.ok) {
-        return dispatch(deletePagesError());
+        const errorMessageForInvalidData = `Failed to delete selected ${messageSuffixForPage} (invalid data)`;
+        alert(errorMessageForInvalidData);
+        return dispatch(deletePagesError(errorMessageForInvalidData));
       }
       return dispatch(deletePagesSuccess());
     } catch (error) {
-      return dispatch(deletePagesError());
+      const errorMessageForServerError = `Failed to delete selected ${messageSuffixForPage} (server error)`;
+      alert(errorMessageForServerError);
+      return dispatch(deletePagesError(errorMessageForServerError));
     }
   };
 };

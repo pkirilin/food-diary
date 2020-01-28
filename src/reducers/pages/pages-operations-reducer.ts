@@ -17,7 +17,7 @@ const pagesOperationsReducer = (
         ...state,
         status: {
           performing: true,
-          message: 'Creating page',
+          message: action.operationMessage,
         },
       };
     case PagesOperationsActionTypes.CreateSuccess:
@@ -32,6 +32,7 @@ const pagesOperationsReducer = (
         ...state,
         status: {
           performing: false,
+          error: action.error,
         },
       };
 
@@ -40,7 +41,7 @@ const pagesOperationsReducer = (
         ...state,
         status: {
           performing: true,
-          message: 'Updating page',
+          message: action.operationMessage,
         },
       };
     case PagesOperationsActionTypes.EditSuccess:
@@ -55,6 +56,7 @@ const pagesOperationsReducer = (
         ...state,
         status: {
           performing: false,
+          error: action.error,
         },
       };
 
@@ -63,7 +65,7 @@ const pagesOperationsReducer = (
         ...state,
         status: {
           performing: true,
-          message: 'Deleting pages',
+          message: action.operationMessage,
         },
       };
     case PagesOperationsActionTypes.DeleteSuccess:
@@ -78,6 +80,7 @@ const pagesOperationsReducer = (
         ...state,
         status: {
           performing: false,
+          error: action.error,
         },
       };
     default:

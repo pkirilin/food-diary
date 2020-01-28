@@ -18,6 +18,7 @@ export enum PagesOperationsActionTypes {
 export interface CreatePageRequestAction extends Action<PagesOperationsActionTypes.CreateRequest> {
   type: PagesOperationsActionTypes.CreateRequest;
   page: PageCreateEdit;
+  operationMessage: string;
 }
 
 export interface CreatePageSuccessAction extends Action<PagesOperationsActionTypes.CreateSuccess> {
@@ -26,11 +27,13 @@ export interface CreatePageSuccessAction extends Action<PagesOperationsActionTyp
 
 export interface CreatePageErrorAction extends Action<PagesOperationsActionTypes.CreateError> {
   type: PagesOperationsActionTypes.CreateError;
+  error: string;
 }
 
 export interface EditPageRequestAction extends Action<PagesOperationsActionTypes.EditRequest> {
   type: PagesOperationsActionTypes.EditRequest;
   page: PageCreateEdit;
+  operationMessage: string;
 }
 
 export interface EditPageSuccessAction extends Action<PagesOperationsActionTypes.EditSuccess> {
@@ -39,10 +42,12 @@ export interface EditPageSuccessAction extends Action<PagesOperationsActionTypes
 
 export interface EditPageErrorAction extends Action<PagesOperationsActionTypes.EditError> {
   type: PagesOperationsActionTypes.EditError;
+  error: string;
 }
 
 export interface DeletePagesRequestAction extends Action<PagesOperationsActionTypes.DeleteRequest> {
   type: PagesOperationsActionTypes.DeleteRequest;
+  operationMessage: string;
 }
 
 export interface DeletePagesSuccessAction extends Action<PagesOperationsActionTypes.DeleteSuccess> {
@@ -51,6 +56,7 @@ export interface DeletePagesSuccessAction extends Action<PagesOperationsActionTy
 
 export interface DeletePagesErrorAction extends Action<PagesOperationsActionTypes.DeleteError> {
   type: PagesOperationsActionTypes.DeleteError;
+  error: string;
 }
 
 type CreatePageActions = CreatePageRequestAction | CreatePageSuccessAction | CreatePageErrorAction;

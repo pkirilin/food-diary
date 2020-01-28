@@ -25,10 +25,10 @@ interface DropdownProps extends DropdownPropsBase {
   onValueChanged?: (newSelectedValue: string) => void;
 }
 
-const Dropdown: React.FC<DropdownProps> = ({
+const DropdownList: React.FC<DropdownProps> = ({
   children,
   toggleDirection = 'bottom',
-  contentWidth = 'auto',
+  contentWidth = 'element-based',
   contentAlignment = 'left',
   disabled = false,
   placeholder = 'Select value',
@@ -91,4 +91,4 @@ const Dropdown: React.FC<DropdownProps> = ({
   );
 };
 
-export default Dropdown;
+export default DropdownList;

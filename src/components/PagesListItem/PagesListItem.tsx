@@ -8,6 +8,7 @@ import Icon from '../Icon';
 import { DispatchToPropsMapResult, StateToPropsMapResult } from './PagesListItemConnected';
 import { PageItem } from '../../models';
 import SidebarListItemCheckbox from '../SidebarBlocks/SidebarListItemCheckbox';
+import { PagesOperationsActionTypes } from '../../action-types';
 
 interface PagesListItemProps extends StateToPropsMapResult, DispatchToPropsMapResult {
   data: PageItem;
@@ -41,15 +42,19 @@ const PagesListItem: React.FC<PagesListItemProps> = ({
   const handleConfirmEditPageIconClick = async (): Promise<void> => {
     if (page.id < 1) {
       // This is a draft page for create
-      await createPage({ id: page.id, date: selectedDate });
-      deleteDraftPage(page.id);
+      const createPageAction = await createPage({ id: page.id, date: selectedDate });
+      if (createPageAction.type === PagesOperationsActionTypes.CreateSuccess) {
+        deleteDraftPage(page.id);
+        await getPages(pagesFilter);
+      }
     } else {
       // This is existing page for edit
-      await editPage(page);
-      setEditableForPages([page.id], false);
+      const editPageAction = await editPage(page);
+      if (editPageAction.type === PagesOperationsActionTypes.EditSuccess) {
+        setEditableForPages([page.id], false);
+        await getPages(pagesFilter);
+      }
     }
-
-    await getPages(pagesFilter);
   };
 
   const handleCancelEditPageIconClick = (): void => {

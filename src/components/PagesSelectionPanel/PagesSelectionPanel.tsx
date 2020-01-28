@@ -5,6 +5,7 @@ import { Checkbox, DropdownMenu, DropdownItem } from '../Controls';
 import Icon from '../Icon';
 import { StateToPropsMapResult, DispatchToPropsMapResult } from './PagesSelectionPanelConnected';
 import Loader from '../Loader';
+import { PagesOperationsActionTypes } from '../../action-types';
 
 interface PagesSelectionPanelProps extends StateToPropsMapResult, DispatchToPropsMapResult {}
 
@@ -31,11 +32,13 @@ const PagesSelectionPanel: React.FC<PagesSelectionPanelProps> = ({
   };
 
   const handleDeleteOptionClick = async (): Promise<void> => {
-    // TODO: modal
+    // TODO: create component for modal
     const isDeleteConfirmed = window.confirm('Do you want to delete all selected pages?');
     if (isDeleteConfirmed) {
-      await deletePages(selectedPagesIds);
-      await getPages(pagesFilter);
+      const deletePagesAction = await deletePages(selectedPagesIds);
+      if (deletePagesAction.type === PagesOperationsActionTypes.DeleteSuccess) {
+        await getPages(pagesFilter);
+      }
     }
   };
 
