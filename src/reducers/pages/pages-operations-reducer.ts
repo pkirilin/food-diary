@@ -13,11 +13,27 @@ const pagesOperationsReducer = (
 ): PagesOperationsState => {
   switch (action.type) {
     case PagesOperationsActionTypes.CreateRequest:
-      return { ...state, creating: true, created: false, createError: false };
+      return {
+        ...state,
+        status: {
+          performing: true,
+          message: 'Creating page',
+        },
+      };
     case PagesOperationsActionTypes.CreateSuccess:
-      return { ...state, creating: false, created: true, createError: false };
+      return {
+        ...state,
+        status: {
+          performing: false,
+        },
+      };
     case PagesOperationsActionTypes.CreateError:
-      return { ...state, creating: false, created: false, createError: true };
+      return {
+        ...state,
+        status: {
+          performing: false,
+        },
+      };
 
     case PagesOperationsActionTypes.EditRequest:
       return {

@@ -81,7 +81,7 @@ export const createPage: ActionCreator<ThunkAction<
     dispatch(createPageRequest(page));
 
     try {
-      const response = await createPageAsync();
+      const response = await createPageAsync(page);
       if (!response.ok) {
         return dispatch(createPageError());
       }

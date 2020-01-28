@@ -21,8 +21,4 @@ export interface PagesFilterState extends PagesFilter {
 
 export interface PagesOperationsState {
   status: DataOperationState;
-
-  creating?: boolean;
-  created?: boolean;
-  createError?: boolean;
 }

@@ -7,7 +7,7 @@ export const getPagesAsync = async (filter: PagesFilter): Promise<Response> => {
   return await fetch('/pages-list-data.json');
 };
 
-export const createPageAsync = async (): Promise<Response> => {
+export const createPageAsync = async (page: PageCreateEdit): Promise<Response> => {
   return await fetch('');
 };
 
