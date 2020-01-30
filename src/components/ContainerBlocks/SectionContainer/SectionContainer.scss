@@ -1,0 +1,10 @@
+@import '../../Navbar/Navbar.variables.scss';
+
+.section-container {
+  &_loading {
+    height: calc(100vh - #{$navbar-height});
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}

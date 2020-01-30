@@ -8,10 +8,16 @@ import PagesListControlsBottomConnected from '../PagesListControlsBottom';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import PagesSelectionPanelConnected from '../PagesSelectionPanel';
 import { StateToPropsMapResult } from './PagesConnected';
+import PageContentConnected from '../PageContent';
 
 type PagesProps = StateToPropsMapResult;
 
-const Pages: React.FC<PagesProps> = ({ isPagesListAvailable, pagesCount, firstPageId }: PagesProps) => {
+const Pages: React.FC<PagesProps> = ({
+  isPagesListAvailable,
+  pagesCount,
+  firstPageId,
+  isPageContentLoading,
+}: PagesProps) => {
   return (
     <ContentWrapper>
       <Sidebar>
@@ -21,11 +27,11 @@ const Pages: React.FC<PagesProps> = ({ isPagesListAvailable, pagesCount, firstPa
         <PagesListControlsBottomConnected></PagesListControlsBottomConnected>
       </Sidebar>
       <MainContainer withSidebar>
-        <SectionContainer>
+        <SectionContainer loading={isPageContentLoading}>
           {isPagesListAvailable ? (
             <Switch>
               <Route exact path="/pages/:id">
-                Pages content
+                <PageContentConnected></PageContentConnected>
               </Route>
               <Redirect from="/pages" to={firstPageId === undefined ? '/pages/' : `/pages/${firstPageId}`}></Redirect>
             </Switch>
