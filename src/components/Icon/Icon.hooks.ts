@@ -8,6 +8,7 @@ import { ReactComponent as Refresh } from './assets/refresh.svg';
 import { ReactComponent as SortAscending } from './assets/sort-ascending.svg';
 import { ReactComponent as SortDescending } from './assets/sort-descending.svg';
 import { ReactComponent as ThreeDots } from './assets/three-dots.svg';
+import { ReactComponent as NextArrow } from './assets/next-arrow.svg';
 
 export const useIconType = (type: IconType): React.ComponentType<React.SVGProps<SVGSVGElement>> => {
   switch (type) {
@@ -27,6 +28,8 @@ export const useIconType = (type: IconType): React.ComponentType<React.SVGProps<
       return SortDescending;
     case 'three-dots':
       return ThreeDots;
+    case 'next-arrow':
+      return NextArrow;
     default:
       return Add;
   }

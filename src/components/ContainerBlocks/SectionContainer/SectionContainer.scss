@@ -1,6 +1,9 @@
 @import '../../Navbar/Navbar.variables.scss';
+@import '../ContainerBlocks.variables.scss';
 
 .section-container {
+  padding: $section-container-padding;
+
   &_loading {
     height: calc(100vh - #{$navbar-height});
     display: flex;

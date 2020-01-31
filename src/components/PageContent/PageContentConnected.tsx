@@ -9,7 +9,6 @@ import { getNotes } from '../../action-creators';
 export interface StateToPropsMapResult {
   loading: boolean;
   loaded: boolean;
-  pageDate?: string;
   errorMessage?: string;
 }
 
@@ -21,7 +20,6 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
   return {
     loading: state.notes.list.notesForPage.loading,
     loaded: state.notes.list.notesForPage.loaded,
-    pageDate: state.notes.list.notesForPage.data?.date,
     errorMessage: state.notes.list.notesForPage.error,
   };
 };

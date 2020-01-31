@@ -3,16 +3,11 @@ import './PageContent.scss';
 import { useParams } from 'react-router-dom';
 import { StateToPropsMapResult, DispatchToPropsMapResult } from './PageContentConnected';
 import Loader from '../Loader';
+import PageContentHeaderConnected from '../PageContentHeader';
 
 interface PageContentProps extends StateToPropsMapResult, DispatchToPropsMapResult {}
 
-const PageContent: React.FC<PageContentProps> = ({
-  loading,
-  loaded,
-  pageDate,
-  getContent,
-  errorMessage,
-}: PageContentProps) => {
+const PageContent: React.FC<PageContentProps> = ({ loading, loaded, getContent, errorMessage }: PageContentProps) => {
   const { id: pageId } = useParams();
 
   useEffect(() => {
@@ -26,7 +21,11 @@ const PageContent: React.FC<PageContentProps> = ({
   }
 
   if (loaded) {
-    return <div>{pageDate}</div>;
+    return (
+      <div className="page-content">
+        <PageContentHeaderConnected></PageContentHeaderConnected>
+      </div>
+    );
   }
 
   return <div>{errorMessage}</div>;

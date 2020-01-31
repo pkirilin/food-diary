@@ -6,6 +6,7 @@ export type IconType =
   | 'refresh'
   | 'sort-ascending'
   | 'sort-descending'
-  | 'three-dots';
+  | 'three-dots'
+  | 'next-arrow';
 
 export type IconSize = 'normal' | 'small';
