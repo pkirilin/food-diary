@@ -10,7 +10,7 @@ const PageContentHeader: React.FC<PageContentHeaderProps> = ({ pageDate }: PageC
     <div className="page-content-header">
       <Icon
         type="next-arrow"
-        style={{
+        svgStyle={{
           transform: 'rotate(180deg)',
         }}
       ></Icon>

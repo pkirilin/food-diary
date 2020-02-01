@@ -1,28 +1,59 @@
 @import '../../variables.scss';
 
-// Base styles for app icon
-.icon {
-  width: 20px;
-  height: 20px;
-  fill: $color-middle-green;
-  transition: 0.5s;
-  cursor: pointer;
+.icon-container {
+  display: flex;
+  align-items: center;
 
-  &_small {
-    width: 15px;
-    height: 15px;
+  &__label,
+  &__icon {
+    transition: 0.5s;
   }
 
-  &.disabled {
-    cursor: default;
-    fill: $color-middle-green-50;
+  &__label {
+    color: $color-middle-green;
+    padding-right: 10px;
 
-    &:hover {
+    &_disabled {
+      color: $color-middle-green-50;
+    }
+  }
+
+  &__icon {
+    width: 20px;
+    height: 20px;
+    fill: $color-middle-green;
+
+    &_disabled {
       fill: $color-middle-green-50;
+    }
+
+    &_small {
+      width: 15px;
+      height: 15px;
     }
   }
 
   &:hover {
+    cursor: pointer;
+  }
+
+  &_disabled:hover {
+    cursor: default;
+  }
+
+  &:hover > &__label {
+    color: $color-dark-green;
+
+    &_disabled {
+      color: $color-middle-green-50;
+    }
+  }
+
+  &:hover > &__icon {
     fill: $color-dark-green;
+
+    &_disabled {
+      fill: $color-middle-green-50;
+    }
   }
 }

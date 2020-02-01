@@ -3,31 +3,40 @@ import './Icon.scss';
 import { IconType, IconSize } from './Icon.types';
 import { useIconType } from './Icon.hooks';
 
-interface IconProps extends React.SVGProps<SVGSVGElement> {
+interface IconProps extends React.DOMAttributes<HTMLElement> {
   type: IconType;
   size?: IconSize;
   disabled?: boolean;
+  label?: string;
+  svgStyle?: React.CSSProperties;
 }
 
-const Icon: React.FC<IconProps> = ({ type, size = 'normal', disabled = false, onClick, ...svgProps }: IconProps) => {
-  const classNames: string[] = ['icon'];
-  if (size && size !== 'normal') {
-    classNames.push(`icon_${size}`);
-  }
+const Icon: React.FC<IconProps> = ({
+  type,
+  size = 'normal',
+  disabled = false,
+  onClick,
+  label,
+  svgStyle = {},
+  ...props
+}: IconProps) => {
+  const iconContainerClassNames = ['icon-container'];
+  const labelClassNames = ['icon-container__label'];
+  const iconClassNames = ['icon-container__icon', `icon-container__icon_${size}`];
 
   if (disabled) {
-    classNames.push('disabled');
+    iconContainerClassNames.push('icon-container_disabled');
+    labelClassNames.push('icon-container__label_disabled');
+    iconClassNames.push('icon-container__icon_disabled');
   }
 
   const IconSvgComponent = useIconType(type);
 
   return (
-    <IconSvgComponent
-      {...svgProps}
-      // Disabled icon must not be clickable
-      onClick={disabled ? undefined : onClick}
-      className={classNames.join(' ')}
-    ></IconSvgComponent>
+    <div {...props} onClick={disabled ? undefined : onClick} className={iconContainerClassNames.join(' ')}>
+      {label && <div className={labelClassNames.join(' ')}>{label}</div>}
+      <IconSvgComponent style={svgStyle} className={iconClassNames.join(' ')}></IconSvgComponent>
+    </div>
   );
 };
 
