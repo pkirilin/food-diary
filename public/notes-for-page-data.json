@@ -3,7 +3,7 @@
   "date": "2020-01-30",
   "meals": [
     {
-      "name": "Test meal",
+      "name": "Breakfast",
       "type": 1,
       "countNotes": 0,
       "countCalories": 0,
@@ -17,6 +17,34 @@
           "calories": 0
         }
       ]
+    },
+    {
+      "name": "Second breakfast",
+      "type": 2,
+      "countNotes": 0,
+      "countCalories": 0,
+      "notes": []
+    },
+    {
+      "name": "Lunch",
+      "type": 3,
+      "countNotes": 0,
+      "countCalories": 0,
+      "notes": []
+    },
+    {
+      "name": "Afternoon snack",
+      "type": 4,
+      "countNotes": 0,
+      "countCalories": 0,
+      "notes": []
+    },
+    {
+      "name": "Dinner",
+      "type": 5,
+      "countNotes": 0,
+      "countCalories": 0,
+      "notes": []
     }
   ]
 }

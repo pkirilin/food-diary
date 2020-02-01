@@ -5,6 +5,7 @@ import { StateToPropsMapResult, DispatchToPropsMapResult } from './PageContentCo
 import Loader from '../Loader';
 import PageContentHeaderConnected from '../PageContentHeader';
 import MealsControlPanelConnected from '../MealsControlPanel/MealsControlPanelConnected';
+import MealsListConnected from '../MealsList';
 
 interface PageContentProps extends StateToPropsMapResult, DispatchToPropsMapResult {}
 
@@ -26,6 +27,7 @@ const PageContent: React.FC<PageContentProps> = ({ loading, loaded, getContent, 
       <div className="page-content">
         <PageContentHeaderConnected></PageContentHeaderConnected>
         <MealsControlPanelConnected></MealsControlPanelConnected>
+        <MealsListConnected></MealsListConnected>
       </div>
     );
   }

@@ -8,6 +8,7 @@ export type IconType =
   | 'sort-descending'
   | 'three-dots'
   | 'next-arrow'
-  | 'expand';
+  | 'expand'
+  | 'right-arrow';
 
 export type IconSize = 'normal' | 'small';

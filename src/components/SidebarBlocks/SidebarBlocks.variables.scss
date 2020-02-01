@@ -1,4 +1,6 @@
-$divider-border-width: 0.5px;
+@import '../../variables.scss';
+
+$divider-border-width: $border-width-thin;
 
 $active-item-border-width: 5px;
 

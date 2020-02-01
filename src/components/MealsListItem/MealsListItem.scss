@@ -1,0 +1,47 @@
+@import '../../variables.scss';
+
+$inner-padding: 10px;
+
+.meals-list-item {
+  &__header {
+    display: flex;
+    align-items: center;
+    background-color: $color-light-green;
+    padding: $inner-padding;
+    border: $border-width-thick solid $color-middle-green-50;
+    cursor: pointer;
+
+    :first-child {
+      margin-right: 5px;
+    }
+
+    &__name {
+      flex: 1;
+      color: $color-middle-green;
+      transition: 0.2s;
+    }
+
+    svg {
+      fill: $color-middle-green;
+      transition: 0.2s;
+    }
+
+    &:hover > &__name {
+      color: $color-dark-green;
+    }
+
+    &:hover svg {
+      fill: $color-dark-green;
+    }
+  }
+
+  &:not(:first-child) > &__header {
+    border-top: none;
+  }
+
+  &__content {
+    border: $border-width-thick solid $color-middle-green-50;
+    border-top: none;
+    padding: $inner-padding;
+  }
+}

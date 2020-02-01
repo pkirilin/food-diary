@@ -5,8 +5,8 @@ export interface NotesState {
   list: NotesListState;
 }
 
-export type NoteForPageState = NotesForPage | null;
+export type NotesForPageState = NotesForPage | null;
 
 export interface NotesListState {
-  notesForPage: DataFetchState<NoteForPageState, string>;
+  notesForPage: DataFetchState<NotesForPageState, string>;
 }
