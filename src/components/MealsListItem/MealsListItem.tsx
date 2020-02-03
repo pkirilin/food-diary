@@ -4,27 +4,35 @@ import { MealItem } from '../../models';
 import Icon from '../Icon';
 import { BadgesContainer } from '../ContainerBlocks';
 import Badge from '../Badge';
+import { StateToPropsMapResult, DispatchToPropsMapResult } from './MealsListItemConnected';
 
-interface MealsListItemProps {
+interface MealsListItemProps extends StateToPropsMapResult, DispatchToPropsMapResult {
   data: MealItem;
 }
 
-const MealsListItem: React.FC<MealsListItemProps> = ({ data: meal }: MealsListItemProps) => {
-  // TODO: take this from global state
-  const isExpanded = true;
+const MealsListItem: React.FC<MealsListItemProps> = ({
+  data: meal,
+  collapsedMeals,
+  setCollapsedForMeal,
+}: MealsListItemProps) => {
+  const isCollapsed = collapsedMeals.includes(meal.type);
+
+  const handleItemHeaderClick = (): void => {
+    setCollapsedForMeal(!isCollapsed, meal.type);
+  };
 
   return (
     <div className="meals-list-item">
-      <div className="meals-list-item__header">
+      <div className="meals-list-item__header" onClick={handleItemHeaderClick}>
         <Icon
           type="right-arrow"
           size="small"
           svgStyle={
-            isExpanded
-              ? {
+            isCollapsed
+              ? {}
+              : {
                   transform: 'rotate(90deg)',
                 }
-              : {}
           }
         ></Icon>
         <div className="meals-list-item__header__name">{meal.name}</div>
@@ -33,7 +41,7 @@ const MealsListItem: React.FC<MealsListItemProps> = ({ data: meal }: MealsListIt
           <Badge label={`${meal.countCalories} cal`}></Badge>
         </BadgesContainer>
       </div>
-      {isExpanded && <div className="meals-list-item__content">Content</div>}
+      {!isCollapsed && <div className="meals-list-item__content">Content</div>}
     </div>
   );
 };
