@@ -1,7 +1,6 @@
 .meals-control-panel {
   display: flex;
   justify-content: flex-end;
-  padding: 15px 0px;
 
   & > * {
     &:not(:first-child) {

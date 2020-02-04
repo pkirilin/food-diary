@@ -1,0 +1,20 @@
+@import '../../variables.scss';
+@import '../Navbar/Navbar.variables.scss';
+@import '../Sidebar/Sidebar.variables.scss';
+@import '../ContainerBlocks/ContainerBlocks.variables.scss';
+@import './PageContent.variables.scss';
+
+.page-content {
+  &__top-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: fixed;
+    top: $navbar-height;
+    width: calc(100% - #{$sidebar-width} - #{$section-container-padding * 2});
+    height: $top-panel-height;
+    background-color: $color-white;
+    z-index: $top-panel-z-index;
+    padding: $section-container-padding 0;
+  }
+}

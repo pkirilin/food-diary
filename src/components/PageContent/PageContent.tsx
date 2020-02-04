@@ -25,8 +25,10 @@ const PageContent: React.FC<PageContentProps> = ({ loading, loaded, getContent, 
   if (loaded) {
     return (
       <div className="page-content">
-        <PageContentHeaderConnected></PageContentHeaderConnected>
-        <MealsControlPanelConnected></MealsControlPanelConnected>
+        <div className="page-content__top-panel">
+          <PageContentHeaderConnected></PageContentHeaderConnected>
+          <MealsControlPanelConnected></MealsControlPanelConnected>
+        </div>
         <MealsListConnected></MealsListConnected>
       </div>
     );
