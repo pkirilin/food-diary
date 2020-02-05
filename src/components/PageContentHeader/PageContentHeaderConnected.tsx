@@ -4,14 +4,14 @@ import { FoodDiaryState } from '../../store';
 
 export interface StateToPropsMapResult {
   pageDate?: string;
+  visiblePagesIds: number[];
 }
 
 const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
   return {
     pageDate: state.notes.list.notesForPage.data?.date,
+    visiblePagesIds: state.pages.list.pageItems.data.map(p => p.id),
   };
 };
 
-const mapDispatchToProps = null;
-
-export default connect(mapStateToProps, mapDispatchToProps)(PageContentHeader);
+export default connect(mapStateToProps)(PageContentHeader);
