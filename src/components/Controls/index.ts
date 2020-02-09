@@ -6,5 +6,6 @@ import Input from './Input';
 import { DropdownList, DropdownMenu } from './Dropdown';
 import DropdownItem from './DropdownItem';
 import Checkbox from './Checkbox/input';
+import Table from './Table';
 
-export { Form, FormGroup, Label, Button, Input, DropdownList, DropdownMenu, DropdownItem, Checkbox };
+export { Form, FormGroup, Label, Button, Input, DropdownList, DropdownMenu, DropdownItem, Checkbox, Table };
