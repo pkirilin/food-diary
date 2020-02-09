@@ -3,12 +3,15 @@
 
 .input {
   width: 100%;
-  background-color: $color-light-green;
   padding: $form-control-padding;
   border: $form-control-border-width solid $color-middle-green-50;
   border-radius: $form-control-border-radius;
   transition: $form-control-transition;
   outline: none;
+
+  &_small {
+    height: 25px;
+  }
 
   &_disabled {
     border: $form-control-border-width solid $color-middle-green-25;

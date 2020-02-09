@@ -34,6 +34,7 @@ const DropdownList: React.FC<DropdownProps> = ({
   placeholder = 'Select value',
   initialSelectedValue,
   onValueChanged,
+  togglerSize,
 }: React.PropsWithChildren<DropdownProps>) => {
   const dropdownRef = useRef(null);
   const contentRef = useRef(null);
@@ -45,7 +46,7 @@ const DropdownList: React.FC<DropdownProps> = ({
   // Dropdown hooks
   const [isOpen, toggle, close] = useToggle(disabled);
   const closeIfTargetOutside = useCloseIfTargetOutside(close);
-  const togglerClassNames = useTogglerClassNames(isOpen, disabled);
+  const togglerClassNames = useTogglerClassNames(isOpen, disabled, togglerSize);
   const togglerValueClassNames = useTogglerValueClassNames(selectedValueChanged, disabled);
   const togglerIconClassNames = useTogglerIconClassNames(disabled);
   const contentClassNames = useContentClassNames(isOpen, contentAlignment);

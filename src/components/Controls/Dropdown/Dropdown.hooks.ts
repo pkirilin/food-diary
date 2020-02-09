@@ -1,5 +1,10 @@
 import { useState } from 'react';
-import { DropdownToggleDirection, DropdownContentAlignment, DropdownContentWidth } from './dropdown-types';
+import {
+  DropdownToggleDirection,
+  DropdownContentAlignment,
+  DropdownContentWidth,
+  DropdownTogglerSize,
+} from './dropdown-types';
 
 export const useToggle = (
   disabled: boolean,
@@ -77,7 +82,11 @@ export const useContentClassNames = (isOpen: boolean, contentAlignment: Dropdown
   return contentClassNames;
 };
 
-export const useTogglerClassNames = (isOpen: boolean, isDisabled: boolean): string[] => {
+export const useTogglerClassNames = (
+  isOpen: boolean,
+  isDisabled: boolean,
+  togglerSize?: DropdownTogglerSize,
+): string[] => {
   const togglerClassNames = ['dropdown__toggler'];
 
   if (isOpen) {
@@ -86,6 +95,10 @@ export const useTogglerClassNames = (isOpen: boolean, isDisabled: boolean): stri
 
   if (isDisabled) {
     togglerClassNames.push('dropdown__toggler_disabled');
+  }
+
+  if (togglerSize) {
+    togglerClassNames.push('dropdown__toggler_small');
   }
 
   return togglerClassNames;

@@ -10,10 +10,13 @@
     align-items: center;
     border: $form-control-border-width solid $color-middle-green-50;
     border-radius: $form-control-border-radius;
-    background-color: $color-light-green;
     padding: $form-control-padding;
     cursor: pointer;
     transition: $form-control-transition;
+
+    &_small {
+      height: 25px;
+    }
 
     &_active {
       border-color: $color-middle-green;
