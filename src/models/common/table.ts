@@ -1,12 +1,8 @@
-interface TableKey {
-  key: number | string;
-}
-
-export interface TableColumn extends TableKey {
-  data: string | JSX.Element;
+export interface TableColumn {
+  name: string;
   width?: string | number;
 }
 
-export interface TableRow extends TableKey {
-  columns: TableColumn[];
-}
+export type TableData = {
+  content: JSX.Element | string | number;
+};
