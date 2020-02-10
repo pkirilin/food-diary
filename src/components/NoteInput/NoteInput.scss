@@ -1,0 +1,20 @@
+.note-input {
+  display: flex;
+  align-items: flex-end;
+
+  & > :not(:first-child) {
+    margin-left: 10px;
+  }
+
+  &__product {
+    flex: 0.4;
+  }
+
+  &__quantity {
+    flex: 0.25;
+  }
+
+  &__add {
+    flex: 0.15;
+  }
+}

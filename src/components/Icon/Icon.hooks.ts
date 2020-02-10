@@ -11,6 +11,7 @@ import { ReactComponent as ThreeDots } from './assets/three-dots.svg';
 import { ReactComponent as NextArrow } from './assets/next-arrow.svg';
 import { ReactComponent as Expand } from './assets/expand.svg';
 import { ReactComponent as RightArrow } from './assets/right-arrow.svg';
+import { ReactComponent as Edit } from './assets/edit.svg';
 
 export const useIconType = (type: IconType): React.ComponentType<React.SVGProps<SVGSVGElement>> => {
   switch (type) {
@@ -36,6 +37,8 @@ export const useIconType = (type: IconType): React.ComponentType<React.SVGProps<
       return Expand;
     case 'right-arrow':
       return RightArrow;
+    case 'edit':
+      return Edit;
     default:
       return Add;
   }

@@ -10,6 +10,7 @@
   transition: $form-control-transition;
   outline: none;
   cursor: pointer;
+  width: 100%;
 
   &:hover {
     background-color: $color-dark-green;

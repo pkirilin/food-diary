@@ -9,6 +9,7 @@ export type IconType =
   | 'three-dots'
   | 'next-arrow'
   | 'expand'
-  | 'right-arrow';
+  | 'right-arrow'
+  | 'edit';
 
 export type IconSize = 'normal' | 'small';
