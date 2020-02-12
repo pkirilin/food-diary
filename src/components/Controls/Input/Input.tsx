@@ -6,18 +6,14 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   controlSize?: 'small';
 }
 
-const Input: React.FC<InputProps> = ({ type = 'text', disabled, controlSize, ...props }: InputProps) => {
+const Input: React.FC<InputProps> = ({ type = 'text', controlSize, ...props }: InputProps) => {
   const classNames = ['input'];
-
-  if (disabled) {
-    classNames.push('input_disabled');
-  }
 
   if (controlSize) {
     classNames.push(`input_${controlSize}`);
   }
 
-  return <input type={type} className={classNames.join(' ')} disabled={disabled} {...props} />;
+  return <input {...props} type={type} className={classNames.join(' ')} />;
 };
 
 export default Input;

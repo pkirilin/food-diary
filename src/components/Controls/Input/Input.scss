@@ -1,6 +1,10 @@
 @import '../../../variables.scss';
 @import '../FormControls.variables.scss';
 
+input:disabled.input {
+  background-color: transparent;
+}
+
 .input {
   width: 100%;
   padding: $form-control-padding;
@@ -13,9 +17,9 @@
     height: 25px;
   }
 
-  &_disabled {
+  &:disabled {
     border: $form-control-border-width solid $color-middle-green-25;
-    color: $color-middle-green;
+    color: $color-middle-green-25;
   }
 
   &:focus {

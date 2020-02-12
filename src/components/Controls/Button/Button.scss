@@ -12,14 +12,22 @@
   cursor: pointer;
   width: 100%;
 
-  &:hover {
-    background-color: $color-dark-green;
-    border-color: $color-dark-green;
-    color: $color-white;
+  &:disabled {
+    cursor: default;
+    border: $form-control-border-width solid $color-middle-green-25;
+    color: $color-middle-green-25;
   }
 
-  &:focus {
-    border-color: $color-middle-green;
-    box-shadow: $form-control-box-shadow $color-middle-green;
+  &:not(:disabled) {
+    &:hover {
+      background-color: $color-dark-green;
+      border-color: $color-dark-green;
+      color: $color-white;
+    }
+
+    &:focus {
+      border-color: $color-middle-green;
+      box-shadow: $form-control-box-shadow $color-middle-green;
+    }
   }
 }
