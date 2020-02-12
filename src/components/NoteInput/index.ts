@@ -1,3 +1,3 @@
-import NoteInput from './NoteInput';
+import NoteInputConnected from './NoteInputConnected';
 
-export default NoteInput;
+export default NoteInputConnected;

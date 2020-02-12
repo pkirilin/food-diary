@@ -8,3 +8,4 @@ export * from './meal-item';
 
 export * from './notes-for-page';
 export * from './note-item';
+export * from './note-create-edit';

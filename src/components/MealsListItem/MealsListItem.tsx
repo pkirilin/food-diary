@@ -5,7 +5,7 @@ import Icon from '../Icon';
 import { BadgesContainer } from '../ContainerBlocks';
 import Badge from '../Badge';
 import { StateToPropsMapResult, DispatchToPropsMapResult } from './MealsListItemConnected';
-import NoteInput from '../NoteInput';
+import NoteInputConnected from '../NoteInput';
 import NotesTableConnected from '../NotesTable';
 
 interface MealsListItemProps extends StateToPropsMapResult, DispatchToPropsMapResult {
@@ -45,7 +45,7 @@ const MealsListItem: React.FC<MealsListItemProps> = ({
       </div>
       {!isCollapsed && (
         <div className="meals-list-item__content">
-          <NoteInput></NoteInput>
+          <NoteInputConnected mealType={meal.type}></NoteInputConnected>
           <NotesTableConnected mealType={meal.type}></NotesTableConnected>
         </div>
       )}
