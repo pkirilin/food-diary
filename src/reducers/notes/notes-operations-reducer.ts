@@ -17,6 +17,7 @@ const notesOperationsReducer = (
         ...state,
         status: {
           performing: true,
+          message: action.operationMessage,
         },
       };
     case NotesOperationsActionTypes.CreateSuccess:

@@ -8,6 +8,7 @@ import { FoodDiaryState } from '../../store';
 
 export interface StateToPropsMapResult {
   isOperationInProcess: boolean;
+  operationMessage?: string;
 }
 
 export interface DispatchToPropsMapResult {
@@ -17,6 +18,7 @@ export interface DispatchToPropsMapResult {
 const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
   return {
     isOperationInProcess: state.notes.operations.status.performing,
+    operationMessage: state.notes.operations.status.message,
   };
 };
 

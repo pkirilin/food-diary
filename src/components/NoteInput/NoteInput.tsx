@@ -4,12 +4,18 @@ import { FormGroup, Label, Input, DropdownList, DropdownItem, Button } from '../
 import { StateToPropsMapResult, DispatchToPropsMapResult } from './NoteInputConnected';
 import { MealType } from '../../models';
 import { useParams } from 'react-router-dom';
+import Loader from '../Loader';
 
 interface NoteInputProps extends StateToPropsMapResult, DispatchToPropsMapResult {
   mealType: MealType;
 }
 
-const NoteInput: React.FC<NoteInputProps> = ({ mealType, createNote }: NoteInputProps) => {
+const NoteInput: React.FC<NoteInputProps> = ({
+  mealType,
+  createNote,
+  isOperationInProcess,
+  operationMessage = '',
+}: NoteInputProps) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [productName, setProductName] = useState('');
   const [productQuantity, setProductQuantity] = useState(100);
@@ -56,12 +62,20 @@ const NoteInput: React.FC<NoteInputProps> = ({ mealType, createNote }: NoteInput
             placeholder="Enter quantity"
             value={productQuantity}
             onChange={handleQuantityValueChange}
+            disabled={isOperationInProcess}
           ></Input>
         </FormGroup>
       </div>
       <div className="note-input__add">
-        <Button onClick={handleAddButtonClick}>Add</Button>
+        <Button onClick={handleAddButtonClick} disabled={isOperationInProcess}>
+          Add
+        </Button>
       </div>
+      {isOperationInProcess && (
+        <div className="note-input__loader">
+          <Loader size="small" label={operationMessage}></Loader>
+        </div>
+      )}
     </div>
   );
 };
