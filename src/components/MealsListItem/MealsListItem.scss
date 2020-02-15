@@ -43,5 +43,22 @@ $inner-padding: 10px;
     border: $border-width-thick solid $color-middle-green-50;
     border-top: none;
     padding: $inner-padding;
+
+    &__notes {
+      position: relative;
+      margin-top: 10px;
+
+      &__preloader {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+
+        & + * {
+          opacity: 0.25;
+          pointer-events: none;
+        }
+      }
+    }
   }
 }

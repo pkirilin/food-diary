@@ -7,6 +7,7 @@ import Badge from '../Badge';
 import { StateToPropsMapResult, DispatchToPropsMapResult } from './MealsListItemConnected';
 import NoteInputConnected from '../NoteInput';
 import NotesTableConnected from '../NotesTable';
+import Loader from '../Loader';
 
 interface MealsListItemProps extends StateToPropsMapResult, DispatchToPropsMapResult {
   data: MealItem;
@@ -46,7 +47,15 @@ const MealsListItem: React.FC<MealsListItemProps> = ({
       {!isCollapsed && (
         <div className="meals-list-item__content">
           <NoteInputConnected mealType={meal.type}></NoteInputConnected>
-          <NotesTableConnected mealType={meal.type}></NotesTableConnected>
+          <div className="meals-list-item__content__notes">
+            {/* TODO: determine from state */}
+            {false && (
+              <div className="meals-list-item__content__notes__preloader">
+                <Loader label="Loading notes"></Loader>
+              </div>
+            )}
+            <NotesTableConnected mealType={meal.type}></NotesTableConnected>
+          </div>
         </div>
       )}
     </div>
