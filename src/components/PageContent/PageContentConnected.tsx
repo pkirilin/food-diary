@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import PageContent from './PageContent';
-import { GetNotesListSuccessAction, GetNotesListErrorAction } from '../../action-types';
+import { GetNotesForPageSuccessAction, GetNotesForPageErrorAction } from '../../action-types';
 import { FoodDiaryState } from '../../store';
 import { ThunkDispatch } from 'redux-thunk';
 import { NotesForPage } from '../../models';
@@ -13,22 +13,22 @@ export interface StateToPropsMapResult {
 }
 
 export interface DispatchToPropsMapResult {
-  getContent: (pageId: number) => Promise<GetNotesListSuccessAction | GetNotesListErrorAction>;
+  getContent: (pageId: number) => Promise<GetNotesForPageSuccessAction | GetNotesForPageErrorAction>;
 }
 
 const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
   return {
-    loading: state.notes.list.notesForPage.loading,
-    loaded: state.notes.list.notesForPage.loaded,
-    errorMessage: state.notes.list.notesForPage.error,
+    loading: state.notes.list.notesForPageFetchState.loading,
+    loaded: state.notes.list.notesForPageFetchState.loaded,
+    errorMessage: state.notes.list.notesForPageFetchState.error,
   };
 };
 
 const mapDispatchToProps = (
-  dispatch: ThunkDispatch<NotesForPage, number, GetNotesListSuccessAction | GetNotesListErrorAction>,
+  dispatch: ThunkDispatch<NotesForPage, number, GetNotesForPageSuccessAction | GetNotesForPageErrorAction>,
 ): DispatchToPropsMapResult => {
   return {
-    getContent: (pageId: number): Promise<GetNotesListSuccessAction | GetNotesListErrorAction> => {
+    getContent: (pageId: number): Promise<GetNotesForPageSuccessAction | GetNotesForPageErrorAction> => {
       return dispatch(getNotes(pageId));
     },
   };

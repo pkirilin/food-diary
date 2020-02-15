@@ -2,23 +2,23 @@ import { Action } from 'redux';
 import { NotesForPage } from '../../models';
 
 export enum NotesListActionTypes {
-  Request = 'NOTES_LIST__REQUEST',
-  Success = 'NOTES_LIST__SUCCESS',
-  Error = 'NOTES_LIST__ERROR',
+  RequestForPage = 'NOTES_LIST__REQUEST_FOR_PAGE',
+  SuccessForPage = 'NOTES_LIST__SUCCESS_FOR_PAGE',
+  ErrorForPage = 'NOTES_LIST__ERROR_FOR_PAGE',
 }
 
-export interface GetNotesListRequestAction extends Action<NotesListActionTypes.Request> {
-  type: NotesListActionTypes.Request;
+export interface GetNotesForPageRequestAction extends Action<NotesListActionTypes.RequestForPage> {
+  type: NotesListActionTypes.RequestForPage;
 }
 
-export interface GetNotesListSuccessAction extends Action<NotesListActionTypes.Success> {
-  type: NotesListActionTypes.Success;
-  notes: NotesForPage;
+export interface GetNotesForPageSuccessAction extends Action<NotesListActionTypes.SuccessForPage> {
+  type: NotesListActionTypes.SuccessForPage;
+  notesForPage: NotesForPage;
 }
 
-export interface GetNotesListErrorAction extends Action<NotesListActionTypes.Error> {
-  type: NotesListActionTypes.Error;
+export interface GetNotesForPageErrorAction extends Action<NotesListActionTypes.ErrorForPage> {
+  type: NotesListActionTypes.ErrorForPage;
   errorMessage: string;
 }
 
-export type NotesListActions = GetNotesListRequestAction | GetNotesListSuccessAction | GetNotesListErrorAction;
+export type NotesListActions = GetNotesForPageRequestAction | GetNotesForPageSuccessAction | GetNotesForPageErrorAction;

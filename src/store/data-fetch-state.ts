@@ -1,6 +1,5 @@
-export interface DataFetchState<TData, TError> {
+export interface DataFetchState<T = string> {
   loading: boolean;
   loaded: boolean;
-  data: TData;
-  error?: TError;
+  error?: T;
 }

@@ -9,8 +9,8 @@ export interface StateToPropsMapResult {
 
 const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
   return {
-    pageDate: state.notes.list.notesForPage.data?.date,
-    visiblePagesIds: state.pages.list.pageItems.data.map(p => p.id),
+    pageDate: state.notes.list.notesForPage?.date,
+    visiblePagesIds: state.pages.list.pageItems.map(p => p.id),
   };
 };
 

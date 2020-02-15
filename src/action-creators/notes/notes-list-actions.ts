@@ -1,41 +1,41 @@
 import { Dispatch, ActionCreator } from 'redux';
 import { ThunkAction } from 'redux-thunk';
 import {
-  GetNotesListSuccessAction,
-  GetNotesListErrorAction,
-  GetNotesListRequestAction,
+  GetNotesForPageSuccessAction,
+  GetNotesForPageErrorAction,
+  GetNotesForPageRequestAction,
   NotesListActionTypes,
 } from '../../action-types/notes';
 import { getNotesForPageAsync } from '../../services';
 import { NotesForPage } from '../../models';
 
-const getNotesRequest = (): GetNotesListRequestAction => {
+const getNotesRequest = (): GetNotesForPageRequestAction => {
   return {
-    type: NotesListActionTypes.Request,
+    type: NotesListActionTypes.RequestForPage,
   };
 };
 
-const getNotesSuccess = (notesForPage: NotesForPage): GetNotesListSuccessAction => {
+const getNotesSuccess = (notesForPage: NotesForPage): GetNotesForPageSuccessAction => {
   return {
-    type: NotesListActionTypes.Success,
-    notes: notesForPage,
+    type: NotesListActionTypes.SuccessForPage,
+    notesForPage: notesForPage,
   };
 };
 
-const getNotesError = (errorMessage: string): GetNotesListErrorAction => {
+const getNotesError = (errorMessage: string): GetNotesForPageErrorAction => {
   return {
-    type: NotesListActionTypes.Error,
+    type: NotesListActionTypes.ErrorForPage,
     errorMessage,
   };
 };
 
 export const getNotes: ActionCreator<ThunkAction<
-  Promise<GetNotesListSuccessAction | GetNotesListErrorAction>,
+  Promise<GetNotesForPageSuccessAction | GetNotesForPageErrorAction>,
   NotesForPage,
   number,
-  GetNotesListSuccessAction | GetNotesListErrorAction
+  GetNotesForPageSuccessAction | GetNotesForPageErrorAction
 >> = (pageId: number) => {
-  return async (dispatch: Dispatch): Promise<GetNotesListSuccessAction | GetNotesListErrorAction> => {
+  return async (dispatch: Dispatch): Promise<GetNotesForPageSuccessAction | GetNotesForPageErrorAction> => {
     dispatch(getNotesRequest());
     try {
       const response = await getNotesForPageAsync(pageId);

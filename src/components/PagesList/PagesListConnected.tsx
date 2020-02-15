@@ -21,10 +21,10 @@ export interface DispatchToPropsMapResult {
 
 const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
   return {
-    visiblePages: state.pages.list.pageItems.data,
-    loaded: state.pages.list.pageItems.loaded,
-    loading: state.pages.list.pageItems.loading,
-    errorMessage: state.pages.list.pageItems.error,
+    visiblePages: state.pages.list.pageItems,
+    loaded: state.pages.list.pageItemsFetchState.loaded,
+    loading: state.pages.list.pageItemsFetchState.loading,
+    errorMessage: state.pages.list.pageItemsFetchState.error,
     pagesFilter: state.pages.filter,
     currentDraftPageId: state.pages.list.currentDraftPageId,
   };

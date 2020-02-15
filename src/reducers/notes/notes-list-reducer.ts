@@ -2,39 +2,39 @@ import { NotesListState } from '../../store';
 import { NotesListActions, NotesListActionTypes } from '../../action-types/notes';
 
 const initialState: NotesListState = {
-  notesForPage: {
+  notesForPage: null,
+  notesForPageFetchState: {
     loading: false,
     loaded: false,
-    data: null,
   },
 };
 
 const notesListReducer = (state: NotesListState = initialState, action: NotesListActions): NotesListState => {
   switch (action.type) {
-    case NotesListActionTypes.Request:
+    case NotesListActionTypes.RequestForPage:
       return {
         ...state,
-        notesForPage: {
-          ...state.notesForPage,
+        notesForPageFetchState: {
+          ...state.notesForPageFetchState,
           loading: true,
           loaded: false,
         },
       };
-    case NotesListActionTypes.Success:
+    case NotesListActionTypes.SuccessForPage:
       return {
         ...state,
-        notesForPage: {
-          ...state.notesForPage,
+        notesForPage: action.notesForPage,
+        notesForPageFetchState: {
+          ...state.notesForPageFetchState,
           loading: false,
           loaded: true,
-          data: action.notes,
         },
       };
-    case NotesListActionTypes.Error:
+    case NotesListActionTypes.ErrorForPage:
       return {
         ...state,
-        notesForPage: {
-          ...state.notesForPage,
+        notesForPageFetchState: {
+          ...state.notesForPageFetchState,
           loading: false,
           loaded: false,
           error: action.errorMessage,

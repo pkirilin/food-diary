@@ -31,7 +31,7 @@ export interface DispatchToPropsMapResult {
 
 const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
   return {
-    visiblePagesIds: state.pages.list.pageItems.data.map(p => p.id),
+    visiblePagesIds: state.pages.list.pageItems.map(p => p.id),
     selectedPagesIds: state.pages.list.selectedPagesIds,
     isOperationInProcess: state.pages.operations.status.performing,
     operationMessage: state.pages.operations.status.message,

@@ -29,8 +29,8 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
   return {
     pagesFilter: state.pages.filter,
     pagesFilterChanged: state.pages.filter.filterChanged,
-    pagesLoading: state.pages.list.pageItems.loading,
-    pagesLoaded: state.pages.list.pageItems.loaded,
+    pagesLoading: state.pages.list.pageItemsFetchState.loading,
+    pagesLoaded: state.pages.list.pageItemsFetchState.loaded,
   };
 };
 

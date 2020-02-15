@@ -2,10 +2,10 @@ import { PagesListState } from '../../store';
 import { PagesListActionTypes, PagesListActions } from '../../action-types';
 
 const initialState: PagesListState = {
-  pageItems: {
+  pageItems: [],
+  pageItemsFetchState: {
     loading: false,
     loaded: false,
-    data: [],
   },
   currentDraftPageId: 0,
   editablePagesIds: [],
@@ -17,8 +17,8 @@ const pagesListReducer = (state: PagesListState = initialState, action: PagesLis
     case PagesListActionTypes.Request:
       return {
         ...state,
-        pageItems: {
-          ...state.pageItems,
+        pageItemsFetchState: {
+          ...state.pageItemsFetchState,
           loading: true,
           loaded: false,
         },
@@ -26,23 +26,23 @@ const pagesListReducer = (state: PagesListState = initialState, action: PagesLis
     case PagesListActionTypes.Success:
       return {
         ...state,
-        pageItems: {
-          ...state.pageItems,
+        pageItems: [
+          // Keeping draft pages
+          ...state.pageItems.filter(p => p.id < 1),
+          ...action.pages,
+        ],
+        pageItemsFetchState: {
+          ...state.pageItemsFetchState,
           loading: false,
           loaded: true,
-          data: [
-            // Keeping draft pages
-            ...state.pageItems.data.filter(p => p.id < 1),
-            ...action.pages,
-          ],
         },
         selectedPagesIds: [],
       };
     case PagesListActionTypes.Error:
       return {
         ...state,
-        pageItems: {
-          ...state.pageItems,
+        pageItemsFetchState: {
+          ...state.pageItemsFetchState,
           loading: false,
           loaded: false,
           error: action.errorMessage,
@@ -51,9 +51,9 @@ const pagesListReducer = (state: PagesListState = initialState, action: PagesLis
     case PagesListActionTypes.CreateDraftPage:
       return {
         ...state,
-        pageItems: {
-          ...state.pageItems,
-          data: [{ ...action.draftPage, id: state.currentDraftPageId }, ...state.pageItems.data],
+        pageItems: [{ ...action.draftPage, id: state.currentDraftPageId }, ...state.pageItems],
+        pageItemsFetchState: {
+          ...state.pageItemsFetchState,
         },
         editablePagesIds: [...state.editablePagesIds, state.currentDraftPageId],
         currentDraftPageId: state.currentDraftPageId - 1,
@@ -62,8 +62,7 @@ const pagesListReducer = (state: PagesListState = initialState, action: PagesLis
       return {
         ...state,
         pageItems: {
-          ...state.pageItems,
-          data: state.pageItems.data.filter(p => p.id !== action.draftPageId),
+          ...state.pageItems.filter(p => p.id !== action.draftPageId),
         },
         editablePagesIds: state.editablePagesIds.filter(id => id !== action.draftPageId),
       };
@@ -77,7 +76,7 @@ const pagesListReducer = (state: PagesListState = initialState, action: PagesLis
     case PagesListActionTypes.SetSelectedAll:
       return {
         ...state,
-        selectedPagesIds: action.selected ? state.pageItems.data.map(p => p.id) : [],
+        selectedPagesIds: action.selected ? state.pageItems.map(p => p.id) : [],
       };
     case PagesListActionTypes.SetEditable:
       return {

@@ -11,10 +11,10 @@ export interface StateToPropsMapResult {
 
 const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
   return {
-    isPagesListAvailable: state.pages.list.pageItems.loaded,
-    pagesCount: state.pages.list.pageItems.data.length,
-    firstPageId: state.pages.list.pageItems.data.filter(p => p.id > 0)[0]?.id,
-    isPageContentLoading: state.notes.list.notesForPage.loading,
+    isPagesListAvailable: state.pages.list.pageItemsFetchState.loaded,
+    pagesCount: state.pages.list.pageItems.length,
+    firstPageId: state.pages.list.pageItems.filter(p => p.id > 0)[0]?.id,
+    isPageContentLoading: state.notes.list.notesForPageFetchState.loading,
   };
 };
 

@@ -16,7 +16,7 @@ export interface DispatchToPropsMapResult {
 
 const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
   return {
-    allMealTypes: state.notes.list.notesForPage.data ? state.notes.list.notesForPage.data.meals.map(m => m.type) : [],
+    allMealTypes: state.notes.list.notesForPage ? state.notes.list.notesForPage.meals.map(m => m.type) : [],
   };
 };
 
