@@ -6,7 +6,7 @@ import {
   CreateNoteRequestAction,
   NotesOperationsActionTypes,
 } from '../../action-types';
-import { NoteCreateEdit } from '../../models';
+import { NoteCreateEdit, MealType } from '../../models';
 import { createNoteAsync } from '../../services';
 
 const createNoteRequest = (note: NoteCreateEdit, operationMessage: string): CreateNoteRequestAction => {
@@ -17,16 +17,18 @@ const createNoteRequest = (note: NoteCreateEdit, operationMessage: string): Crea
   };
 };
 
-const createNoteError = (error: string): CreateNoteErrorAction => {
+const createNoteError = (mealType: MealType, error: string): CreateNoteErrorAction => {
   return {
     type: NotesOperationsActionTypes.CreateError,
+    mealType,
     error,
   };
 };
 
-const createNoteSuccess = (): CreateNoteSuccessAction => {
+const createNoteSuccess = (mealType: MealType): CreateNoteSuccessAction => {
   return {
     type: NotesOperationsActionTypes.CreateSuccess,
+    mealType,
   };
 };
 
@@ -44,13 +46,13 @@ export const createNote: ActionCreator<ThunkAction<
       if (!response.ok) {
         const errorMessageForInvalidData = 'Failed to create note (invalid data)';
         alert(errorMessageForInvalidData);
-        return dispatch(createNoteError(errorMessageForInvalidData));
+        return dispatch(createNoteError(note.mealType, errorMessageForInvalidData));
       }
-      return dispatch(createNoteSuccess());
+      return dispatch(createNoteSuccess(note.mealType));
     } catch (error) {
       const errorMessageForServerError = 'Failed to create note (server error)';
       alert(errorMessageForServerError);
-      return dispatch(createNoteError(errorMessageForServerError));
+      return dispatch(createNoteError(note.mealType, errorMessageForServerError));
     }
   };
 };

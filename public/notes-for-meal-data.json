@@ -1,0 +1,16 @@
+{
+  "name": "Breakfast",
+  "type": 1,
+  "countNotes": 0,
+  "countCalories": 0,
+  "notes": [
+    {
+      "id": 1,
+      "displayOrder": 0,
+      "productId": 1,
+      "productName": "Test product",
+      "productQuantity": 0,
+      "calories": 0
+    }
+  ]
+}

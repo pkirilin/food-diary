@@ -1,10 +1,14 @@
 import { Action } from 'redux';
-import { NotesForPage } from '../../models';
+import { NotesForPage, MealType, MealItem } from '../../models';
 
 export enum NotesListActionTypes {
   RequestForPage = 'NOTES_LIST__REQUEST_FOR_PAGE',
   SuccessForPage = 'NOTES_LIST__SUCCESS_FOR_PAGE',
   ErrorForPage = 'NOTES_LIST__ERROR_FOR_PAGE',
+
+  RequestForMeal = 'NOTES_LIST__REQUEST_FOR_MEAL',
+  SuccessForMeal = 'NOTES_LIST__SUCCESS_FOR_MEAL',
+  ErrorForMeal = 'NOTES_LIST__ERROR_FOR_MEAL',
 }
 
 export interface GetNotesForPageRequestAction extends Action<NotesListActionTypes.RequestForPage> {
@@ -21,4 +25,26 @@ export interface GetNotesForPageErrorAction extends Action<NotesListActionTypes.
   errorMessage: string;
 }
 
-export type NotesListActions = GetNotesForPageRequestAction | GetNotesForPageSuccessAction | GetNotesForPageErrorAction;
+export interface GetNotesForMealRequestAction extends Action<NotesListActionTypes.RequestForMeal> {
+  type: NotesListActionTypes.RequestForMeal;
+  mealType: MealType;
+}
+
+export interface GetNotesForMealSuccessAction extends Action<NotesListActionTypes.SuccessForMeal> {
+  type: NotesListActionTypes.SuccessForMeal;
+  mealItem: MealItem;
+}
+
+export interface GetNotesForMealErrorAction extends Action<NotesListActionTypes.ErrorForMeal> {
+  type: NotesListActionTypes.ErrorForMeal;
+  mealType: MealType;
+  errorMessage: string;
+}
+
+export type NotesListActions =
+  | GetNotesForPageRequestAction
+  | GetNotesForPageSuccessAction
+  | GetNotesForPageErrorAction
+  | GetNotesForMealRequestAction
+  | GetNotesForMealSuccessAction
+  | GetNotesForMealErrorAction;

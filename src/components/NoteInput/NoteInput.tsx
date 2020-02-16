@@ -5,6 +5,7 @@ import { StateToPropsMapResult, DispatchToPropsMapResult } from './NoteInputConn
 import { MealType } from '../../models';
 import { useParams } from 'react-router-dom';
 import Loader from '../Loader';
+import { NotesOperationsActionTypes } from '../../action-types';
 
 interface NoteInputProps extends StateToPropsMapResult, DispatchToPropsMapResult {
   mealType: MealType;
@@ -12,15 +13,25 @@ interface NoteInputProps extends StateToPropsMapResult, DispatchToPropsMapResult
 
 const NoteInput: React.FC<NoteInputProps> = ({
   mealType,
+  mealOperationStatuses,
+  notesForMealFetchStates,
   createNote,
-  isOperationInProcess,
-  operationMessage = '',
+  getNotesForMeal,
 }: NoteInputProps) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [productName, setProductName] = useState('');
   const [productQuantity, setProductQuantity] = useState(100);
 
-  const { id: pageId } = useParams();
+  const { id: pageIdFromParams } = useParams();
+
+  const currentMealOperationStatus = mealOperationStatuses.filter(s => s.mealType === mealType)[0];
+  const currentMealFetchState = notesForMealFetchStates.filter(s => s.mealType === mealType)[0];
+
+  const isOperationInProcess = currentMealOperationStatus && currentMealOperationStatus.performing;
+  const isNotesTableLoading = currentMealFetchState && currentMealFetchState.loading;
+  const isInputDisabled = isOperationInProcess || isNotesTableLoading;
+
+  const operationMessage = currentMealOperationStatus ? currentMealOperationStatus.message : '';
 
   const handleProductValueChange = (newSelectedValue: string): void => {
     setProductName(newSelectedValue);
@@ -32,15 +43,24 @@ const NoteInput: React.FC<NoteInputProps> = ({
     setProductQuantity(quantityValue);
   };
 
-  const handleAddButtonClick = (): void => {
+  const handleAddButtonClick = async (): Promise<void> => {
+    const pageId = pageIdFromParams && !isNaN(+pageIdFromParams) ? +pageIdFromParams : 0;
+
     // TODO: take product id from store
-    createNote({
+    const createNoteAction = await createNote({
       id: 0,
       mealType,
       productId: 0,
       productQuantity,
-      pageId: pageId && !isNaN(+pageId) ? +pageId : 0,
+      pageId,
     });
+
+    if (createNoteAction.type === NotesOperationsActionTypes.CreateSuccess) {
+      await getNotesForMeal({
+        pageId,
+        mealType,
+      });
+    }
   };
 
   return (
@@ -62,12 +82,12 @@ const NoteInput: React.FC<NoteInputProps> = ({
             placeholder="Enter quantity"
             value={productQuantity}
             onChange={handleQuantityValueChange}
-            disabled={isOperationInProcess}
+            disabled={isInputDisabled}
           ></Input>
         </FormGroup>
       </div>
       <div className="note-input__add">
-        <Button onClick={handleAddButtonClick} disabled={isOperationInProcess}>
+        <Button onClick={handleAddButtonClick} disabled={isInputDisabled}>
           Add
         </Button>
       </div>

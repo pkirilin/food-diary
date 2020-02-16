@@ -1,10 +1,20 @@
-import { NotesOperationsState } from '../../store';
+import { NotesOperationsState, MealOperationStatus } from '../../store';
 import { NotesOperationsActions, NotesOperationsActionTypes } from '../../action-types';
+import { availableMealTypes } from '../../models';
+
+const initMealOperationStatuses = (): MealOperationStatus[] => {
+  const result: MealOperationStatus[] = [];
+  availableMealTypes.forEach(mealType => {
+    result.push({
+      mealType,
+      performing: false,
+    });
+  });
+  return result;
+};
 
 const initialState: NotesOperationsState = {
-  status: {
-    performing: false,
-  },
+  mealOperationStatuses: initMealOperationStatuses(),
 };
 
 const notesOperationsReducer = (
@@ -15,25 +25,37 @@ const notesOperationsReducer = (
     case NotesOperationsActionTypes.CreateRequest:
       return {
         ...state,
-        status: {
-          performing: true,
-          message: action.operationMessage,
-        },
+        mealOperationStatuses: [
+          ...state.mealOperationStatuses.filter(s => s.mealType !== action.note.mealType),
+          {
+            mealType: action.note.mealType,
+            performing: true,
+            message: action.operationMessage,
+          },
+        ],
       };
     case NotesOperationsActionTypes.CreateSuccess:
       return {
         ...state,
-        status: {
-          performing: false,
-        },
+        mealOperationStatuses: [
+          ...state.mealOperationStatuses.filter(s => s.mealType !== action.mealType),
+          {
+            mealType: action.mealType,
+            performing: false,
+          },
+        ],
       };
     case NotesOperationsActionTypes.CreateError:
       return {
         ...state,
-        status: {
-          performing: false,
-          error: action.error,
-        },
+        mealOperationStatuses: [
+          ...state.mealOperationStatuses.filter(s => s.mealType !== action.mealType),
+          {
+            mealType: action.mealType,
+            performing: false,
+            error: action.error,
+          },
+        ],
       };
     default:
       return state;

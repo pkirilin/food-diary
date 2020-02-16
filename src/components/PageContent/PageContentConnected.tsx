@@ -4,7 +4,7 @@ import { GetNotesForPageSuccessAction, GetNotesForPageErrorAction } from '../../
 import { FoodDiaryState } from '../../store';
 import { ThunkDispatch } from 'redux-thunk';
 import { NotesForPage } from '../../models';
-import { getNotes } from '../../action-creators';
+import { getNotesForPage } from '../../action-creators';
 
 export interface StateToPropsMapResult {
   loading: boolean;
@@ -29,7 +29,7 @@ const mapDispatchToProps = (
 ): DispatchToPropsMapResult => {
   return {
     getContent: (pageId: number): Promise<GetNotesForPageSuccessAction | GetNotesForPageErrorAction> => {
-      return dispatch(getNotes(pageId));
+      return dispatch(getNotesForPage(pageId));
     },
   };
 };

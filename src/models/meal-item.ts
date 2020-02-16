@@ -15,3 +15,11 @@ export interface MealItem {
   countCalories: number;
   notes: NoteItem[];
 }
+
+export const availableMealTypes: MealType[] = [
+  MealType.Breakfast,
+  MealType.SecondBreakfast,
+  MealType.Lunch,
+  MealType.AfternoonSnack,
+  MealType.Dinner,
+];

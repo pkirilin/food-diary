@@ -17,8 +17,12 @@ const MealsListItem: React.FC<MealsListItemProps> = ({
   data: meal,
   collapsedMeals,
   setCollapsedForMeal,
+  notesForMealFetchStates,
 }: MealsListItemProps) => {
   const isCollapsed = collapsedMeals.includes(meal.type);
+
+  const currentMealFetchState = notesForMealFetchStates.filter(s => s.mealType === meal.type)[0];
+  const isNotesTableLoading = currentMealFetchState && currentMealFetchState.loading;
 
   const handleItemHeaderClick = (): void => {
     setCollapsedForMeal(!isCollapsed, meal.type);
@@ -48,8 +52,7 @@ const MealsListItem: React.FC<MealsListItemProps> = ({
         <div className="meals-list-item__content">
           <NoteInputConnected mealType={meal.type}></NoteInputConnected>
           <div className="meals-list-item__content__notes">
-            {/* TODO: determine from state */}
-            {false && (
+            {isNotesTableLoading && (
               <div className="meals-list-item__content__notes__preloader">
                 <Loader label="Loading notes"></Loader>
               </div>

@@ -17,7 +17,14 @@ const notesTableColumns: TableColumn[] = [
   { name: '', width: '35px' },
 ];
 
-const NotesTable: React.FC<NotesTableProps> = ({ mealType, notesForPageData }: NotesTableProps) => {
+const NotesTable: React.FC<NotesTableProps> = ({
+  mealType,
+  notesForPageData,
+  mealOperationStatuses,
+}: NotesTableProps) => {
+  const currentMealOperationStatus = mealOperationStatuses.filter(os => os.mealType === mealType)[0];
+  const isOperationInProcess = currentMealOperationStatus && currentMealOperationStatus.performing;
+
   const mapNotesToTableData = (): TableData[][] => {
     const notesTableData: TableData[][] = [];
 
@@ -30,8 +37,8 @@ const NotesTable: React.FC<NotesTableProps> = ({ mealType, notesForPageData }: N
             { content: note.productName },
             { content: note.productQuantity },
             { content: note.calories },
-            { content: <Icon type="edit" size="small"></Icon> },
-            { content: <Icon type="close" size="small"></Icon> },
+            { content: <Icon type="edit" size="small" disabled={isOperationInProcess}></Icon> },
+            { content: <Icon type="close" size="small" disabled={isOperationInProcess}></Icon> },
           ]);
         });
       }
