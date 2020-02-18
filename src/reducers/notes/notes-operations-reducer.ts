@@ -57,6 +57,78 @@ const notesOperationsReducer = (
           },
         ],
       };
+
+    case NotesOperationsActionTypes.EditRequest:
+      return {
+        ...state,
+        mealOperationStatuses: [
+          ...state.mealOperationStatuses.filter(s => s.mealType !== action.note.mealType),
+          {
+            mealType: action.note.mealType,
+            performing: true,
+            message: action.operationMessage,
+          },
+        ],
+      };
+    case NotesOperationsActionTypes.EditSuccess:
+      return {
+        ...state,
+        mealOperationStatuses: [
+          ...state.mealOperationStatuses.filter(s => s.mealType !== action.mealType),
+          {
+            mealType: action.mealType,
+            performing: false,
+          },
+        ],
+      };
+    case NotesOperationsActionTypes.EditError:
+      return {
+        ...state,
+        mealOperationStatuses: [
+          ...state.mealOperationStatuses.filter(s => s.mealType !== action.mealType),
+          {
+            mealType: action.mealType,
+            performing: false,
+            error: action.error,
+          },
+        ],
+      };
+
+    case NotesOperationsActionTypes.DeleteRequest:
+      return {
+        ...state,
+        mealOperationStatuses: [
+          ...state.mealOperationStatuses.filter(s => s.mealType !== action.mealType),
+          {
+            mealType: action.mealType,
+            performing: true,
+            message: action.operationMessage,
+          },
+        ],
+      };
+    case NotesOperationsActionTypes.DeleteSuccess:
+      return {
+        ...state,
+        mealOperationStatuses: [
+          ...state.mealOperationStatuses.filter(s => s.mealType !== action.mealType),
+          {
+            mealType: action.mealType,
+            performing: false,
+          },
+        ],
+      };
+    case NotesOperationsActionTypes.DeleteError:
+      return {
+        ...state,
+        mealOperationStatuses: [
+          ...state.mealOperationStatuses.filter(s => s.mealType !== action.mealType),
+          {
+            mealType: action.mealType,
+            performing: false,
+            error: action.error,
+          },
+        ],
+      };
     default:
       return state;
   }

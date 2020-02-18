@@ -9,6 +9,8 @@ export enum NotesListActionTypes {
   RequestForMeal = 'NOTES_LIST__REQUEST_FOR_MEAL',
   SuccessForMeal = 'NOTES_LIST__SUCCESS_FOR_MEAL',
   ErrorForMeal = 'NOTES_LIST__ERROR_FOR_MEAL',
+
+  SetEditable = 'NOTES_LIST__SET_EDITABLE_FOR_NOTE',
 }
 
 export interface GetNotesForPageRequestAction extends Action<NotesListActionTypes.RequestForPage> {
@@ -41,10 +43,17 @@ export interface GetNotesForMealErrorAction extends Action<NotesListActionTypes.
   errorMessage: string;
 }
 
+export interface SetEditableForNoteAction extends Action<NotesListActionTypes.SetEditable> {
+  type: NotesListActionTypes.SetEditable;
+  noteId: number;
+  editable: boolean;
+}
+
 export type NotesListActions =
   | GetNotesForPageRequestAction
   | GetNotesForPageSuccessAction
   | GetNotesForPageErrorAction
   | GetNotesForMealRequestAction
   | GetNotesForMealSuccessAction
-  | GetNotesForMealErrorAction;
+  | GetNotesForMealErrorAction
+  | SetEditableForNoteAction;

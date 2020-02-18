@@ -8,6 +8,7 @@ import {
   GetNotesForMealSuccessAction,
   GetNotesForMealErrorAction,
   GetNotesForMealRequestAction,
+  SetEditableForNoteAction,
 } from '../../action-types/notes';
 import { getNotesForPageAsync, getNotesForMealAsync } from '../../services';
 import { NotesForPage, MealType, NotesForMealRequest, MealItem } from '../../models';
@@ -95,5 +96,13 @@ export const getNotesForMeal: ActionCreator<ThunkAction<
     } catch (error) {
       return dispatch(getNotesForMealError(request.mealType, 'Failed to get notes for meal from server'));
     }
+  };
+};
+
+export const setEditableForNote = (noteId: number, editable: boolean): SetEditableForNoteAction => {
+  return {
+    type: NotesListActionTypes.SetEditable,
+    noteId,
+    editable,
   };
 };

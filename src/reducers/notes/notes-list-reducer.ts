@@ -21,6 +21,7 @@ const initialState: NotesListState = {
     loaded: false,
   },
   notesForMealFetchStates: initNotesForMealFetchStates(),
+  editableNotesIds: [],
 };
 
 const notesListReducer = (state: NotesListState = initialState, action: NotesListActions): NotesListState => {
@@ -102,6 +103,14 @@ const notesListReducer = (state: NotesListState = initialState, action: NotesLis
             error: action.errorMessage,
           },
         ],
+      };
+
+    case NotesListActionTypes.SetEditable:
+      return {
+        ...state,
+        editableNotesIds: action.editable
+          ? [...state.editableNotesIds, action.noteId]
+          : [...state.editableNotesIds.filter(id => id !== action.noteId)],
       };
     default:
       return state;

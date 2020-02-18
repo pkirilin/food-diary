@@ -11,6 +11,7 @@ export interface NotesListState {
   notesForPage: NotesForPageState;
   notesForPageFetchState: DataFetchState;
   notesForMealFetchStates: NotesForMealFetchState[];
+  editableNotesIds: number[];
 }
 
 export interface NotesOperationsState {

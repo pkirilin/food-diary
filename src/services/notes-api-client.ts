@@ -14,3 +14,11 @@ export const getNotesForMealAsync = async (request: NotesForMealRequest): Promis
 export const createNoteAsync = async (note: NoteCreateEdit): Promise<Response> => {
   return await fetch('');
 };
+
+export const editNoteAsync = async (note: NoteCreateEdit): Promise<Response> => {
+  return await fetch('');
+};
+
+export const deleteNoteAsync = async (noteId: number): Promise<Response> => {
+  return await fetch('');
+};
