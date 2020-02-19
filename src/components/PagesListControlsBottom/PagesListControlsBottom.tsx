@@ -1,6 +1,6 @@
 import React from 'react';
 import './PagesListControlsBottom.scss';
-import { Label, DropdownList, DropdownItem, FormGroup } from '../Controls';
+import { Label, DropdownList, FormGroup } from '../Controls';
 import { DispatchToPropsMapResult, StateToPropsMapResult } from './PagesListControlsBottomConnected';
 import { SortOrder, ShowCount, invertSortOrder } from '../../models';
 import Icon from '../Icon';
@@ -27,6 +27,16 @@ const PagesListControlsBottom: React.FC<PagesListControlsBottomProps> = ({
     }
   };
 
+  const showCountDropdownItems: string[] = [
+    ShowCount.LastWeek.toString(),
+    ShowCount.LastMonth.toString(),
+    ShowCount.LastTwoMonths.toString(),
+    ShowCount.LastThreeMonths.toString(),
+    ShowCount.LastHalfYear.toString(),
+    ShowCount.LastYear.toString(),
+    'All',
+  ];
+
   return (
     <div className="pages-list-controls-bottom">
       {pagesFilter.sortOrder === SortOrder.Ascending ? (
@@ -38,19 +48,12 @@ const PagesListControlsBottom: React.FC<PagesListControlsBottomProps> = ({
         <Label>Show</Label>
         <div className="pages-list-controls-bottom__show-count-wrapper">
           <DropdownList
+            items={showCountDropdownItems}
             onValueChanged={handleShowCountDropdownValueChanged}
-            initialSelectedValue={pagesFilter.showCount === undefined ? 'All' : pagesFilter.showCount.toString()}
+            initialSelectedIndex={showCountDropdownItems.length - 1}
             toggleDirection="top"
             disabled={!pagesLoaded}
-          >
-            <DropdownItem>{ShowCount.LastWeek}</DropdownItem>
-            <DropdownItem>{ShowCount.LastMonth}</DropdownItem>
-            <DropdownItem>{ShowCount.LastTwoMonths}</DropdownItem>
-            <DropdownItem>{ShowCount.LastThreeMonths}</DropdownItem>
-            <DropdownItem>{ShowCount.LastHalfYear}</DropdownItem>
-            <DropdownItem>{ShowCount.LastYear}</DropdownItem>
-            <DropdownItem>All</DropdownItem>
-          </DropdownList>
+          ></DropdownList>
         </div>
       </FormGroup>
     </div>

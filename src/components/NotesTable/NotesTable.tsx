@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import './NotesTable.scss';
-import { Table, Input, DropdownList, DropdownItem } from '../Controls';
-import { TableColumn, TableData, MealType } from '../../models';
+import { Table, Input, DropdownList } from '../Controls';
+import { TableColumn, TableData, MealType, ProductDropdownItem } from '../../models';
 import { StateToPropsMapResult, DispatchToPropsMapResult } from './NotesTableConnected';
 import Icon from '../Icon';
 import { useParams } from 'react-router-dom';
@@ -38,7 +38,7 @@ const NotesTable: React.FC<NotesTableProps> = ({
   const mapNotesToTableData = (): TableData[][] => {
     const notesTableData: TableData[][] = [];
 
-    const handleProductNameChange = (): void => {
+    const handleProductDropdownItemChange = (): void => {
       return;
     };
 
@@ -85,14 +85,23 @@ const NotesTable: React.FC<NotesTableProps> = ({
             setEditableForNote(note.id, false);
           };
 
+          const productDropdownItems: ProductDropdownItem[] = [
+            { id: 1, name: 'Test product' },
+            { id: 2, name: 'Another product' },
+          ];
+
+          const productDropdownItemRenderer = (item: ProductDropdownItem): ReactElement => {
+            return <React.Fragment>{item.name}</React.Fragment>;
+          };
+
           const productNameColumnContent = isNoteEditable ? (
             <DropdownList
+              items={productDropdownItems}
+              itemRenderer={productDropdownItemRenderer}
               togglerSize="small"
-              initialSelectedValue={note.productName}
-              onValueChanged={handleProductNameChange}
-            >
-              <DropdownItem>TODO: load products here</DropdownItem>
-            </DropdownList>
+              onValueChanged={handleProductDropdownItemChange}
+              initialSelectedIndex={productDropdownItems.findIndex(p => p.name === note.productName)}
+            ></DropdownList>
           ) : (
             note.productName
           );

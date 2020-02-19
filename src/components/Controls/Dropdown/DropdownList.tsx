@@ -1,12 +1,6 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, ReactElement } from 'react';
 import './Dropdown.scss';
-import {
-  useOutsideClick,
-  useHiddenBlockHeightCalculation,
-  useInsideClick,
-  useInitialSelectedValue,
-  useChangedSelectedValue,
-} from '../../../hooks';
+import { useOutsideClick, useHiddenBlockHeightCalculation } from '../../../hooks';
 import { ReactComponent as DropdownArrowIcon } from './drop-down-arrow.svg';
 import { DropdownPropsBase } from './dropdown-types';
 import {
@@ -18,36 +12,48 @@ import {
   useContentClassNames,
   useContentStyle,
 } from './Dropdown.hooks';
+import { DropdownItem } from '..';
 
-interface DropdownProps extends DropdownPropsBase {
+interface DropdownProps<T = string> extends DropdownPropsBase {
+  items?: T[];
+  itemRenderer?: (item: T) => ReactElement;
+  togglerValueRenderer?: (item: T) => ReactElement;
   placeholder?: string;
-  initialSelectedValue?: string;
-  onValueChanged?: (newSelectedValue: string) => void;
+  initialSelectedIndex?: number;
+  onValueChanged?: (newSelectedValue: T) => void;
 }
 
-const DropdownList: React.FC<DropdownProps> = ({
-  children,
+function defaultItemRenderer<T = string>(item: T): ReactElement {
+  return <React.Fragment>{item}</React.Fragment>;
+}
+
+function DropdownList<T = string>({
+  items = [],
+  itemRenderer = defaultItemRenderer,
+  togglerValueRenderer = itemRenderer,
   toggleDirection = 'bottom',
   contentWidth = 'element-based',
   contentAlignment = 'left',
   disabled = false,
   placeholder = 'Select value',
-  initialSelectedValue,
+  initialSelectedIndex = -1,
   onValueChanged,
   togglerSize,
-}: React.PropsWithChildren<DropdownProps>) => {
+}: React.PropsWithChildren<DropdownProps<T>>): ReactElement {
   const dropdownRef = useRef(null);
   const contentRef = useRef(null);
 
-  const [selectedValue, setSelectedValue] = useState(placeholder);
-  const [selectedValueChanged, setSelectedValueChanged] = useState(false);
+  const [selectedValueIndex, setSelectedValueIndex] = useState(initialSelectedIndex);
+
+  // const [selectedValue, setSelectedValue] = useState(placeholder);
+  // const [selectedValueChanged, setSelectedValueChanged] = useState(false);
   const [contentBlockHeight, setContentBlockHeight] = useState(0);
 
   // Dropdown hooks
   const [isOpen, toggle, close] = useToggle(disabled);
   const closeIfTargetOutside = useCloseIfTargetOutside(close);
   const togglerClassNames = useTogglerClassNames(isOpen, disabled, togglerSize);
-  const togglerValueClassNames = useTogglerValueClassNames(selectedValueChanged, disabled);
+  const togglerValueClassNames = useTogglerValueClassNames(selectedValueIndex >= 0, disabled);
   const togglerIconClassNames = useTogglerIconClassNames(disabled);
   const contentClassNames = useContentClassNames(isOpen, contentAlignment);
   const contentStyle = useContentStyle(
@@ -57,39 +63,38 @@ const DropdownList: React.FC<DropdownProps> = ({
     contentBlockHeight,
   );
 
-  const changeSelectedValue = (newSelectedValue: string): void => {
-    setSelectedValue(newSelectedValue);
-    setSelectedValueChanged(true);
-
-    if (newSelectedValue !== initialSelectedValue && onValueChanged) {
-      onValueChanged(newSelectedValue);
-    }
-  };
-
-  const handleListItemClick = (event: MouseEvent): void => {
-    const target = event.target as HTMLElement;
-    changeSelectedValue(target.innerText);
+  function handleListItemClick(this: number): void {
+    setSelectedValueIndex(this);
     close();
-  };
+
+    if (onValueChanged) {
+      onValueChanged(items[this]);
+    }
+  }
 
   // Common hooks
-  useInitialSelectedValue(initialSelectedValue, changeSelectedValue);
-  useChangedSelectedValue(selectedValue, setSelectedValue, initialSelectedValue);
   useOutsideClick(dropdownRef, closeIfTargetOutside);
-  useInsideClick(contentRef, handleListItemClick, '.dropdown-item');
   useHiddenBlockHeightCalculation(contentRef as React.RefObject<HTMLElement>, setContentBlockHeight);
 
   return (
     <div ref={dropdownRef} className="dropdown">
       <div className={togglerClassNames.join(' ')} onClick={toggle}>
-        <div className={togglerValueClassNames.join(' ')}>{selectedValue}</div>
+        <div className={togglerValueClassNames.join(' ')}>
+          {selectedValueIndex < 0 ? placeholder : togglerValueRenderer(items[selectedValueIndex])}
+        </div>
         <DropdownArrowIcon className={togglerIconClassNames.join(' ')}></DropdownArrowIcon>
       </div>
       <div ref={contentRef} className={contentClassNames.join(' ')} style={contentStyle}>
-        {children}
+        {items.map((item, index) => {
+          return (
+            <DropdownItem key={index} onClick={handleListItemClick.bind(index)}>
+              {itemRenderer(item)}
+            </DropdownItem>
+          );
+        })}
       </div>
     </div>
   );
-};
+}
 
 export default DropdownList;
