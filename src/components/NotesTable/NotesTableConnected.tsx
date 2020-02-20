@@ -12,13 +12,14 @@ import {
   DeleteNoteErrorAction,
 } from '../../action-types';
 import { setEditableForNote, editNote, getNotesForMeal, deleteNote } from '../../action-creators';
-import { NoteCreateEdit, NotesForMealRequest, MealItem, MealType } from '../../models';
+import { NoteCreateEdit, NotesForMealRequest, MealItem, MealType, ProductDropdownItem } from '../../models';
 import { ThunkDispatch } from 'redux-thunk';
 
 export interface StateToPropsMapResult {
   notesForPageData: NotesForPageState;
   editableNotesIds: number[];
   mealOperationStatuses: MealOperationStatus[];
+  productDropdownItems: ProductDropdownItem[];
 }
 
 export interface DispatchToPropsMapResult {
@@ -33,6 +34,7 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
     notesForPageData: state.notes.list.notesForPage,
     editableNotesIds: state.notes.list.editableNotesIds,
     mealOperationStatuses: state.notes.operations.mealOperationStatuses,
+    productDropdownItems: state.products.dropdown.productDropdownItems,
   };
 };
 

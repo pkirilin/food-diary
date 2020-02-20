@@ -16,3 +16,4 @@ export * from './data-operation-state';
 export * from './pages-state';
 export * from './notes-state';
 export * from './meals-state';
+export * from './products-state';

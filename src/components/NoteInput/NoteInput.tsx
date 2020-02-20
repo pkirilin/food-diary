@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './NoteInput.scss';
-import { FormGroup, Label, Input, DropdownList, DropdownItem, Button } from '../Controls';
+import { FormGroup, Label, Input, DropdownList, Button, productDropdownItemRenderer } from '../Controls';
 import { StateToPropsMapResult, DispatchToPropsMapResult } from './NoteInputConnected';
 import { MealType } from '../../models';
 import { useParams } from 'react-router-dom';
@@ -15,6 +15,7 @@ const NoteInput: React.FC<NoteInputProps> = ({
   mealType,
   mealOperationStatuses,
   notesForMealFetchStates,
+  productDropdownItems,
   createNote,
   getNotesForMeal,
 }: NoteInputProps) => {
@@ -33,8 +34,8 @@ const NoteInput: React.FC<NoteInputProps> = ({
 
   const operationMessage = currentMealOperationStatus ? currentMealOperationStatus.message : '';
 
-  const handleProductValueChange = (newSelectedValue: string): void => {
-    setProductName(newSelectedValue);
+  const handleProductItemChange = (): void => {
+    return;
   };
 
   const handleQuantityValueChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -68,10 +69,12 @@ const NoteInput: React.FC<NoteInputProps> = ({
       <div className="note-input__product">
         <FormGroup>
           <Label>Product</Label>
-          <DropdownList placeholder="Select product" onValueChanged={handleProductValueChange}>
-            <DropdownItem>Product 1</DropdownItem>
-            <DropdownItem>Product 2</DropdownItem>
-          </DropdownList>
+          <DropdownList
+            items={productDropdownItems}
+            itemRenderer={productDropdownItemRenderer}
+            placeholder="Select product"
+            onValueChanged={handleProductItemChange}
+          ></DropdownList>
         </FormGroup>
       </div>
       <div className="note-input__quantity">

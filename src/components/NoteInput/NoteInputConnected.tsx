@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import NoteInput from './NoteInput';
-import { NoteCreateEdit, NotesForMealRequest, MealItem } from '../../models';
+import { NoteCreateEdit, NotesForMealRequest, MealItem, ProductDropdownItem } from '../../models';
 import {
   CreateNoteSuccessAction,
   CreateNoteErrorAction,
@@ -14,6 +14,7 @@ import { FoodDiaryState, MealOperationStatus, NotesForMealFetchState } from '../
 export interface StateToPropsMapResult {
   mealOperationStatuses: MealOperationStatus[];
   notesForMealFetchStates: NotesForMealFetchState[];
+  productDropdownItems: ProductDropdownItem[];
 }
 
 export interface DispatchToPropsMapResult {
@@ -25,6 +26,7 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
   return {
     mealOperationStatuses: state.notes.operations.mealOperationStatuses,
     notesForMealFetchStates: state.notes.list.notesForMealFetchStates,
+    productDropdownItems: state.products.dropdown.productDropdownItems,
   };
 };
 
