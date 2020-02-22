@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './PagesListControlsBottom.scss';
 import { Label, DropdownList, FormGroup } from '../Controls';
 import { DispatchToPropsMapResult, StateToPropsMapResult } from './PagesListControlsBottomConnected';
@@ -7,17 +7,32 @@ import Icon from '../Icon';
 
 interface PagesListControlsBottomProps extends StateToPropsMapResult, DispatchToPropsMapResult {}
 
+const showCountDropdownItems: string[] = [
+  ShowCount.LastWeek.toString(),
+  ShowCount.LastMonth.toString(),
+  ShowCount.LastTwoMonths.toString(),
+  ShowCount.LastThreeMonths.toString(),
+  ShowCount.LastHalfYear.toString(),
+  ShowCount.LastYear.toString(),
+  'All',
+];
+
 const PagesListControlsBottom: React.FC<PagesListControlsBottomProps> = ({
   pagesFilter,
   updatePagesFilter,
   pagesLoaded,
 }: PagesListControlsBottomProps) => {
+  const [selectedShowCountIndex, setSelectedShowCountIndex] = useState(showCountDropdownItems.length - 1);
+
   const handleSortIconClick = (): void => {
     updatePagesFilter({ ...pagesFilter, sortOrder: invertSortOrder(pagesFilter.sortOrder) });
   };
 
-  const handleShowCountDropdownValueChanged = (newSelectedValue: string): void => {
+  const handleShowCountDropdownValueChanged = (newSelectedValueIndex: number): void => {
     let showCount: number;
+    const newSelectedValue = showCountDropdownItems[newSelectedValueIndex];
+    setSelectedShowCountIndex(newSelectedValueIndex);
+
     if (!isNaN((showCount = Number(newSelectedValue)))) {
       updatePagesFilter({ ...pagesFilter, showCount });
     }
@@ -26,16 +41,6 @@ const PagesListControlsBottom: React.FC<PagesListControlsBottomProps> = ({
       updatePagesFilter({ ...pagesFilter, showCount: undefined });
     }
   };
-
-  const showCountDropdownItems: string[] = [
-    ShowCount.LastWeek.toString(),
-    ShowCount.LastMonth.toString(),
-    ShowCount.LastTwoMonths.toString(),
-    ShowCount.LastThreeMonths.toString(),
-    ShowCount.LastHalfYear.toString(),
-    ShowCount.LastYear.toString(),
-    'All',
-  ];
 
   return (
     <div className="pages-list-controls-bottom">
@@ -49,8 +54,8 @@ const PagesListControlsBottom: React.FC<PagesListControlsBottomProps> = ({
         <div className="pages-list-controls-bottom__show-count-wrapper">
           <DropdownList
             items={showCountDropdownItems}
-            onValueChanged={handleShowCountDropdownValueChanged}
-            initialSelectedIndex={showCountDropdownItems.length - 1}
+            onValueChange={handleShowCountDropdownValueChanged}
+            selectedValueIndex={selectedShowCountIndex}
             toggleDirection="top"
             disabled={!pagesLoaded}
           ></DropdownList>

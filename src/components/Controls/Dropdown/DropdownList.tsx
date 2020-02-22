@@ -19,8 +19,8 @@ interface DropdownProps<T = string> extends DropdownPropsBase {
   itemRenderer?: (item: T) => ReactElement;
   togglerValueRenderer?: (item: T) => ReactElement;
   placeholder?: string;
-  initialSelectedIndex?: number;
-  onValueChanged?: (newSelectedValue: T) => void;
+  selectedValueIndex: number;
+  onValueChange: (newSelectedValueIndex: number) => void;
 }
 
 function defaultItemRenderer<T = string>(item: T): ReactElement {
@@ -36,17 +36,13 @@ function DropdownList<T = string>({
   contentAlignment = 'left',
   disabled = false,
   placeholder = 'Select value',
-  initialSelectedIndex = -1,
-  onValueChanged,
+  selectedValueIndex,
+  onValueChange,
   togglerSize,
-}: React.PropsWithChildren<DropdownProps<T>>): ReactElement {
+}: DropdownProps<T>): ReactElement {
   const dropdownRef = useRef(null);
   const contentRef = useRef(null);
 
-  const [selectedValueIndex, setSelectedValueIndex] = useState(initialSelectedIndex);
-
-  // const [selectedValue, setSelectedValue] = useState(placeholder);
-  // const [selectedValueChanged, setSelectedValueChanged] = useState(false);
   const [contentBlockHeight, setContentBlockHeight] = useState(0);
 
   // Dropdown hooks
@@ -64,12 +60,10 @@ function DropdownList<T = string>({
   );
 
   function handleListItemClick(this: number): void {
-    setSelectedValueIndex(this);
-    close();
-
-    if (onValueChanged) {
-      onValueChanged(items[this]);
+    if (onValueChange) {
+      onValueChange(this);
     }
+    close();
   }
 
   // Common hooks
