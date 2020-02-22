@@ -1,3 +1,4 @@
 import Table from './Table';
+import TableColumn from './TableColumn';
 
-export default Table;
+export { Table, TableColumn };

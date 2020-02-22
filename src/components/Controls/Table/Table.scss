@@ -10,11 +10,11 @@ $row-transition: 0.5s;
   border-collapse: collapse;
   width: 100%;
 
-  &__head {
+  thead {
     background-color: $color-dark-green;
 
-    &__row {
-      &__col {
+    tr {
+      td {
         color: $color-white;
         padding: $cell-inner-padding;
         height: $cell-height;
@@ -22,16 +22,16 @@ $row-transition: 0.5s;
     }
   }
 
-  &__body {
-    &__row {
+  tbody {
+    tr {
       border-bottom: $row-border-thickness solid $color-middle-green;
       transition: $row-transition;
 
-      &__col {
+      td {
         padding: $cell-inner-padding;
         height: $cell-height;
 
-        &_empty {
+        &.empty {
           color: $color-middle-green-50;
           text-align: center;
         }
