@@ -3,6 +3,7 @@ import './PageContentHeader.scss';
 import { StateToPropsMapResult } from './PageContentHeaderConnected';
 import Icon from '../Icon';
 import { useParams, NavLink } from 'react-router-dom';
+import MealsControlPanelConnected from '../MealsControlPanel/MealsControlPanelConnected';
 
 type PageContentHeaderProps = StateToPropsMapResult;
 
@@ -17,34 +18,35 @@ const PageContentHeader: React.FC<PageContentHeaderProps> = ({ pageDate, visible
   const previousPageId = visiblePagesIds[currentPageIndex - 1];
   const nextPageId = visiblePagesIds[currentPageIndex + 1];
 
+  const previousPageIcon = (
+    <Icon
+      type="next-arrow"
+      svgStyle={{
+        width: '25px',
+        height: '25px',
+        transform: 'rotate(180deg)',
+      }}
+      disabled={!isPreviousPageExists}
+    ></Icon>
+  );
+
+  const nextPageIcon = (
+    <Icon
+      type="next-arrow"
+      svgStyle={{
+        width: '25px',
+        height: '25px',
+      }}
+      disabled={!isNextPageExists}
+    ></Icon>
+  );
+
   return (
     <div className="page-content-header">
-      {isPreviousPageExists ? (
-        <NavLink to={`/pages/${previousPageId}`}>
-          <Icon
-            type="next-arrow"
-            svgStyle={{
-              transform: 'rotate(180deg)',
-            }}
-          ></Icon>
-        </NavLink>
-      ) : (
-        <Icon
-          type="next-arrow"
-          svgStyle={{
-            transform: 'rotate(180deg)',
-          }}
-          disabled
-        ></Icon>
-      )}
+      {isPreviousPageExists ? <NavLink to={`/pages/${previousPageId}`}>{previousPageIcon}</NavLink> : previousPageIcon}
       <div className="page-content-header__date">{pageDate}</div>
-      {isNextPageExists ? (
-        <NavLink to={`/pages/${nextPageId}`}>
-          <Icon type="next-arrow"></Icon>
-        </NavLink>
-      ) : (
-        <Icon type="next-arrow" disabled></Icon>
-      )}
+      {isNextPageExists ? <NavLink to={`/pages/${nextPageId}`}>{nextPageIcon}</NavLink> : nextPageIcon}
+      <MealsControlPanelConnected></MealsControlPanelConnected>
     </div>
   );
 };

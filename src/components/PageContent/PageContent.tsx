@@ -4,7 +4,6 @@ import { useParams } from 'react-router-dom';
 import { StateToPropsMapResult, DispatchToPropsMapResult } from './PageContentConnected';
 import Loader from '../Loader';
 import PageContentHeaderConnected from '../PageContentHeader';
-import MealsControlPanelConnected from '../MealsControlPanel/MealsControlPanelConnected';
 import MealsListConnected from '../MealsList';
 
 interface PageContentProps extends StateToPropsMapResult, DispatchToPropsMapResult {}
@@ -27,7 +26,6 @@ const PageContent: React.FC<PageContentProps> = ({ loading, loaded, getContent, 
       <div className="page-content">
         <div className="page-content__top-panel">
           <PageContentHeaderConnected></PageContentHeaderConnected>
-          <MealsControlPanelConnected></MealsControlPanelConnected>
         </div>
         <MealsListConnected></MealsListConnected>
       </div>

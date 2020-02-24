@@ -1,2 +1,4 @@
-$top-panel-height: 80px;
+@import '../SidebarBlocks/SidebarBlocks.variables.scss';
+
+$top-panel-height: $sidebar-control-panel-height;
 $top-panel-z-index: 5000;

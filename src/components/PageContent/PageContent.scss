@@ -8,13 +8,20 @@
   &__top-panel {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: center;
+
     position: fixed;
     top: $navbar-height;
-    width: calc(100% - #{$sidebar-width} - #{$section-container-padding * 2});
+    right: 0;
+    padding: 0 $section-container-padding;
+
+    background-color: $color-light-green;
+    border-top: $divider-border-width solid $color-middle-green;
+    border-bottom: $divider-border-width solid $color-middle-green;
+
+    width: calc(100% - #{$sidebar-width});
     height: $top-panel-height;
-    background-color: $color-white;
+
     z-index: $top-panel-z-index;
-    padding: $section-container-padding 0;
   }
 }

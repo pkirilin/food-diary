@@ -13,8 +13,24 @@
           "displayOrder": 0,
           "productId": 1,
           "productName": "Test product",
-          "productQuantity": 0,
-          "calories": 0
+          "productQuantity": 200,
+          "calories": 60
+        },
+        {
+          "id": 2,
+          "displayOrder": 0,
+          "productId": 2,
+          "productName": "Product 2",
+          "productQuantity": 100,
+          "calories": 320
+        },
+        {
+          "id": 3,
+          "displayOrder": 0,
+          "productId": 3,
+          "productName": "Product 3",
+          "productQuantity": 150,
+          "calories": 200
         }
       ]
     },
@@ -23,7 +39,32 @@
       "type": 2,
       "countNotes": 0,
       "countCalories": 0,
-      "notes": []
+      "notes": [
+        {
+          "id": 1,
+          "displayOrder": 0,
+          "productId": 1,
+          "productName": "Test product",
+          "productQuantity": 200,
+          "calories": 60
+        },
+        {
+          "id": 2,
+          "displayOrder": 0,
+          "productId": 2,
+          "productName": "Product 2",
+          "productQuantity": 100,
+          "calories": 320
+        },
+        {
+          "id": 3,
+          "displayOrder": 0,
+          "productId": 3,
+          "productName": "Product 3",
+          "productQuantity": 150,
+          "calories": 200
+        }
+      ]
     },
     {
       "name": "Lunch",
@@ -37,14 +78,48 @@
       "type": 4,
       "countNotes": 0,
       "countCalories": 0,
-      "notes": []
+      "notes": [
+        {
+          "id": 1,
+          "displayOrder": 0,
+          "productId": 1,
+          "productName": "Test product",
+          "productQuantity": 200,
+          "calories": 60
+        },
+        {
+          "id": 2,
+          "displayOrder": 0,
+          "productId": 2,
+          "productName": "Product 2",
+          "productQuantity": 100,
+          "calories": 320
+        },
+        {
+          "id": 3,
+          "displayOrder": 0,
+          "productId": 3,
+          "productName": "Product 3",
+          "productQuantity": 150,
+          "calories": 200
+        }
+      ]
     },
     {
       "name": "Dinner",
       "type": 5,
       "countNotes": 0,
       "countCalories": 0,
-      "notes": []
+      "notes": [
+        {
+          "id": 1,
+          "displayOrder": 0,
+          "productId": 1,
+          "productName": "Test product",
+          "productQuantity": 200,
+          "calories": 60
+        }
+      ]
     }
   ]
 }

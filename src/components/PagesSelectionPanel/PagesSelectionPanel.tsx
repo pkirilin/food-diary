@@ -54,7 +54,7 @@ const PagesSelectionPanel: React.FC<PagesSelectionPanelProps> = ({
           ) : (
             <React.Fragment>
               <div>Selected: {selectedPagesCount}</div>
-              <DropdownMenu toggler={selectionOptionsToggler} contentWidth={150}>
+              <DropdownMenu toggler={selectionOptionsToggler} contentWidth={150} contentAlignment="right">
                 <DropdownItem onClick={handleEditOptionClick}>Edit</DropdownItem>
                 <DropdownItem onClick={handleDeleteOptionClick}>Delete</DropdownItem>
               </DropdownMenu>
