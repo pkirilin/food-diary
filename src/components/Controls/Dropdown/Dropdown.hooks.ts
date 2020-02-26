@@ -118,12 +118,24 @@ export const useTogglerValueClassNames = (selectedValueChanged: boolean, isDisab
   return togglerValueClassNames;
 };
 
-export const useTogglerIconClassNames = (isDisabled: boolean): string[] => {
-  const togglerIconClassNames = ['dropdown__toggler__icon'];
+export const useDropdownArrowClassNames = (
+  isDisabled: boolean,
+  isInput: boolean,
+  size?: DropdownTogglerSize,
+): string[] => {
+  const dropdownArrowClassNames = ['dropdown-arrow'];
 
   if (isDisabled) {
-    togglerIconClassNames.push('dropdown__toggler__icon_disabled');
+    dropdownArrowClassNames.push('dropdown-arrow_disabled');
   }
 
-  return togglerIconClassNames;
+  if (isInput) {
+    dropdownArrowClassNames.push('dropdown-arrow_input');
+
+    if (size) {
+      dropdownArrowClassNames.push(`dropdown-arrow_input_${size}`);
+    }
+  }
+
+  return dropdownArrowClassNames;
 };

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './NotesTableRow.scss';
 import { MealType, NoteItem } from '../../models';
-import { DropdownList, productDropdownItemRenderer, Input } from '../Controls';
+import { productDropdownItemRenderer, Input, DropdownList } from '../Controls';
 import { StateToPropsMapResult, DispatchToPropsMapResult } from './NotesTableRowConnected';
 import Icon from '../Icon';
 import { EditNoteSuccessAction, DeleteNoteSuccessAction } from '../../action-types';
@@ -23,10 +23,10 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({
   deleteNote,
   getNotesForMeal,
 }: NotesTableRowProps) => {
-  const initialSelectedProductIndex = productDropdownItems.findIndex(p => p.id === note.productId);
+  const initialSelectedProductName = productDropdownItems.find(p => p.id === note.productId)?.name;
 
   const [productId, setProductId] = useState(note.productId);
-  const [selectedProductIndex, setSelectedProductIndex] = useState(initialSelectedProductIndex);
+  const [productNameInputValue, setProductNameInputValue] = useState(initialSelectedProductName);
   const [productQuantity, setProductQuantity] = useState(100);
 
   const { id: pageIdFromParams } = useParams();
@@ -37,9 +37,9 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({
   const isNoteEditable = editableNotesIds.find(id => id === note.id) !== undefined;
   const isOperationInProcess = currentMealOperationStatus && currentMealOperationStatus.performing;
 
-  const handleProductDropdownItemChange = (newSelectedProductIndex: number): void => {
+  const handleProductDropdownItemSelect = (newSelectedProductIndex: number): void => {
     setProductId(productDropdownItems[newSelectedProductIndex].id);
-    setSelectedProductIndex(newSelectedProductIndex);
+    setProductNameInputValue(productDropdownItems[newSelectedProductIndex].name);
   };
 
   const handleProductQuantityChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -87,9 +87,11 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({
           <DropdownList
             items={productDropdownItems}
             itemRenderer={productDropdownItemRenderer}
-            togglerSize="small"
-            onValueChange={handleProductDropdownItemChange}
-            selectedValueIndex={selectedProductIndex}
+            placeholder="Select product"
+            searchable={true}
+            controlSize="small"
+            inputValue={productNameInputValue}
+            onValueSelect={handleProductDropdownItemSelect}
           ></DropdownList>
         ) : (
           note.productName

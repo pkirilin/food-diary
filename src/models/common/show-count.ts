@@ -7,3 +7,5 @@ export enum ShowCount {
   LastYear = 365,
   AllTime = 0,
 }
+
+export const showCountAllString = 'All';

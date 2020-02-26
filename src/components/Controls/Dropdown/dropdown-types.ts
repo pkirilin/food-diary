@@ -11,5 +11,5 @@ export interface DropdownPropsBase {
   contentWidth?: DropdownContentWidth;
   contentAlignment?: DropdownContentAlignment;
   disabled?: boolean;
-  togglerSize?: DropdownTogglerSize;
+  controlSize?: DropdownTogglerSize;
 }

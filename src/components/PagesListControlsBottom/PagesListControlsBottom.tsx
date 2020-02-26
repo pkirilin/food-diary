@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './PagesListControlsBottom.scss';
-import { Label, DropdownList, FormGroup } from '../Controls';
+import { Label, FormGroup, DropdownList } from '../Controls';
 import { DispatchToPropsMapResult, StateToPropsMapResult } from './PagesListControlsBottomConnected';
-import { SortOrder, ShowCount, invertSortOrder } from '../../models';
+import { SortOrder, ShowCount, invertSortOrder, showCountAllString } from '../../models';
 import Icon from '../Icon';
 
 interface PagesListControlsBottomProps extends StateToPropsMapResult, DispatchToPropsMapResult {}
@@ -14,7 +14,7 @@ const showCountDropdownItems: string[] = [
   ShowCount.LastThreeMonths.toString(),
   ShowCount.LastHalfYear.toString(),
   ShowCount.LastYear.toString(),
-  'All',
+  showCountAllString,
 ];
 
 const PagesListControlsBottom: React.FC<PagesListControlsBottomProps> = ({
@@ -22,22 +22,23 @@ const PagesListControlsBottom: React.FC<PagesListControlsBottomProps> = ({
   updatePagesFilter,
   pagesLoaded,
 }: PagesListControlsBottomProps) => {
-  const [selectedShowCountIndex, setSelectedShowCountIndex] = useState(showCountDropdownItems.length - 1);
+  const [showCountInputValue, setShowCountInputValue] = useState(showCountAllString);
+
+  useEffect(() => {
+    setShowCountInputValue(pagesFilter.showCount === undefined ? showCountAllString : pagesFilter.showCount.toString());
+  }, [pagesFilter]);
 
   const handleSortIconClick = (): void => {
     updatePagesFilter({ ...pagesFilter, sortOrder: invertSortOrder(pagesFilter.sortOrder) });
   };
 
-  const handleShowCountDropdownValueChanged = (newSelectedValueIndex: number): void => {
+  const handleShowCountDropdownValueSelect = (newSelectedValueIndex: number): void => {
     let showCount: number;
     const newSelectedValue = showCountDropdownItems[newSelectedValueIndex];
-    setSelectedShowCountIndex(newSelectedValueIndex);
-
+    setShowCountInputValue(showCountDropdownItems[newSelectedValueIndex]);
     if (!isNaN((showCount = Number(newSelectedValue)))) {
       updatePagesFilter({ ...pagesFilter, showCount });
-    }
-    // TODO: remove hardcode
-    else if (newSelectedValue === 'All') {
+    } else if (newSelectedValue === showCountAllString) {
       updatePagesFilter({ ...pagesFilter, showCount: undefined });
     }
   };
@@ -54,10 +55,10 @@ const PagesListControlsBottom: React.FC<PagesListControlsBottomProps> = ({
         <div className="pages-list-controls-bottom__show-count-wrapper">
           <DropdownList
             items={showCountDropdownItems}
-            onValueChange={handleShowCountDropdownValueChanged}
-            selectedValueIndex={selectedShowCountIndex}
             toggleDirection="top"
             disabled={!pagesLoaded}
+            inputValue={showCountInputValue}
+            onValueSelect={handleShowCountDropdownValueSelect}
           ></DropdownList>
         </div>
       </FormGroup>

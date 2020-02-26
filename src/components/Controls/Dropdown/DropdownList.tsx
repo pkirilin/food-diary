@@ -8,38 +8,38 @@ import {
   useCloseIfTargetOutside,
   useTogglerClassNames,
   useTogglerValueClassNames,
-  useTogglerIconClassNames,
+  useDropdownArrowClassNames,
   useContentClassNames,
   useContentStyle,
 } from './Dropdown.hooks';
-import { DropdownItem } from '..';
+import { defaultItemRenderer } from './renderers';
+import Input from '../Input';
+import DropdownItem from '../DropdownItem';
 
-interface DropdownProps<T = string> extends DropdownPropsBase {
+interface DropdownListProps<T = string> extends DropdownPropsBase {
   items?: T[];
   itemRenderer?: (item: T) => ReactElement;
-  togglerValueRenderer?: (item: T) => ReactElement;
   placeholder?: string;
-  selectedValueIndex: number;
-  onValueChange: (newSelectedValueIndex: number) => void;
-}
-
-function defaultItemRenderer<T = string>(item: T): ReactElement {
-  return <React.Fragment>{item}</React.Fragment>;
+  searchable?: boolean;
+  inputValue?: string;
+  onValueSelect: (newSelectedValueIndex: number) => void;
+  onInputValueChange?: (newInputValue: string) => void;
 }
 
 function DropdownList<T = string>({
   items = [],
   itemRenderer = defaultItemRenderer,
-  togglerValueRenderer = itemRenderer,
   toggleDirection = 'bottom',
   contentWidth = 'element-based',
   contentAlignment = 'left',
   disabled = false,
   placeholder = 'Select value',
-  selectedValueIndex,
-  onValueChange,
-  togglerSize,
-}: DropdownProps<T>): ReactElement {
+  searchable = false,
+  onValueSelect,
+  controlSize,
+  inputValue = '',
+  onInputValueChange,
+}: DropdownListProps<T>): ReactElement {
   const dropdownRef = useRef(null);
   const contentRef = useRef(null);
 
@@ -48,9 +48,9 @@ function DropdownList<T = string>({
   // Dropdown hooks
   const [isOpen, toggle, close] = useToggle(disabled);
   const closeIfTargetOutside = useCloseIfTargetOutside(close);
-  const togglerClassNames = useTogglerClassNames(isOpen, disabled, togglerSize);
-  const togglerValueClassNames = useTogglerValueClassNames(selectedValueIndex >= 0, disabled);
-  const togglerIconClassNames = useTogglerIconClassNames(disabled);
+  const togglerClassNames = useTogglerClassNames(isOpen, disabled, controlSize);
+  const togglerValueClassNames = useTogglerValueClassNames(inputValue !== '', disabled);
+  const dropdownArrowClassNames = useDropdownArrowClassNames(disabled, true, controlSize);
   const contentClassNames = useContentClassNames(isOpen, contentAlignment);
   const contentStyle = useContentStyle(
     toggleDirection,
@@ -60,10 +60,17 @@ function DropdownList<T = string>({
   );
 
   function handleListItemClick(this: number): void {
-    if (onValueChange) {
-      onValueChange(this);
+    if (onValueSelect) {
+      onValueSelect(this);
     }
     close();
+  }
+
+  function handleInputValueChange(event: React.ChangeEvent<HTMLInputElement>): void {
+    const target = event.target as HTMLInputElement;
+    if (onInputValueChange) {
+      onInputValueChange(target.value);
+    }
   }
 
   // Common hooks
@@ -72,12 +79,27 @@ function DropdownList<T = string>({
 
   return (
     <div ref={dropdownRef} className="dropdown">
-      <div className={togglerClassNames.join(' ')} onClick={toggle}>
-        <div className={togglerValueClassNames.join(' ')}>
-          {selectedValueIndex < 0 ? placeholder : togglerValueRenderer(items[selectedValueIndex])}
-        </div>
-        <DropdownArrowIcon className={togglerIconClassNames.join(' ')}></DropdownArrowIcon>
-      </div>
+      {searchable ? (
+        <React.Fragment>
+          <Input
+            type="text"
+            placeholder={placeholder}
+            value={inputValue}
+            onClick={toggle}
+            onChange={handleInputValueChange}
+            controlSize={controlSize}
+          />
+          <DropdownArrowIcon className={dropdownArrowClassNames.join(' ')}></DropdownArrowIcon>
+        </React.Fragment>
+      ) : (
+        <React.Fragment>
+          <div className={togglerClassNames.join(' ')} onClick={toggle}>
+            <div className={togglerValueClassNames.join(' ')}>{inputValue === '' ? placeholder : inputValue}</div>
+            <DropdownArrowIcon className={dropdownArrowClassNames.join(' ')}></DropdownArrowIcon>
+          </div>
+        </React.Fragment>
+      )}
+
       <div ref={contentRef} className={contentClassNames.join(' ')} style={contentStyle}>
         {items.map((item, index) => {
           return (

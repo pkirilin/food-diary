@@ -47,15 +47,34 @@
         color: $color-middle-green-25;
       }
     }
+  }
 
-    &__icon {
+  &-arrow {
+    width: 10px;
+    height: 10px;
+    fill: $color-middle-green;
+    margin-left: $form-control-padding;
+
+    &_disabled {
+      fill: $color-middle-green-50;
+    }
+
+    &_input {
+      position: absolute;
+      top: 12px;
+      right: 0;
+      margin-right: $form-control-padding;
+
       width: 10px;
       height: 10px;
       fill: $color-middle-green;
-      margin-left: $form-control-padding;
 
       &_disabled {
         fill: $color-middle-green-50;
+      }
+
+      &_small {
+        top: 7px;
       }
     }
   }

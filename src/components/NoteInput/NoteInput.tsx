@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './NoteInput.scss';
-import { FormGroup, Label, Input, DropdownList, Button, productDropdownItemRenderer } from '../Controls';
+import { FormGroup, Label, Input, Button, productDropdownItemRenderer, DropdownList } from '../Controls';
 import { StateToPropsMapResult, DispatchToPropsMapResult } from './NoteInputConnected';
 import { MealType } from '../../models';
 import { useParams } from 'react-router-dom';
@@ -20,8 +20,8 @@ const NoteInput: React.FC<NoteInputProps> = ({
   getNotesForMeal,
 }: NoteInputProps) => {
   const [productId, setProductId] = useState(0);
+  const [productNameInputValue, setProductNameInputValue] = useState('');
   const [productQuantity, setProductQuantity] = useState(100);
-  const [selectedProductIndex, setSelectedProductIndex] = useState(-1);
 
   const { id: pageIdFromParams } = useParams();
 
@@ -32,11 +32,15 @@ const NoteInput: React.FC<NoteInputProps> = ({
   const isOperationInProcess = currentMealOperationStatus && currentMealOperationStatus.performing;
   const isNotesTableLoading = currentMealFetchState && currentMealFetchState.loading;
   const isInputDisabled = isOperationInProcess || isNotesTableLoading;
-  const isAddButtonDisabled = isInputDisabled || selectedProductIndex < 1;
+  const isAddButtonDisabled = isInputDisabled || productNameInputValue === '';
 
-  const handleProductDropdownItemChange = (newSelectedProductIndex: number): void => {
+  const handleProductDropdownItemSelect = (newSelectedProductIndex: number): void => {
     setProductId(productDropdownItems[newSelectedProductIndex].id);
-    setSelectedProductIndex(newSelectedProductIndex);
+    setProductNameInputValue(productDropdownItems[newSelectedProductIndex].name);
+  };
+
+  const handleProductNameDropdownInputChange = async (newProductNameInputValue: string): Promise<void> => {
+    setProductNameInputValue(newProductNameInputValue);
   };
 
   const handleQuantityValueChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -60,7 +64,7 @@ const NoteInput: React.FC<NoteInputProps> = ({
         pageId,
         mealType,
       });
-      setSelectedProductIndex(-1);
+      setProductNameInputValue('');
     }
   };
 
@@ -73,8 +77,10 @@ const NoteInput: React.FC<NoteInputProps> = ({
             items={productDropdownItems}
             itemRenderer={productDropdownItemRenderer}
             placeholder="Select product"
-            onValueChange={handleProductDropdownItemChange}
-            selectedValueIndex={selectedProductIndex}
+            searchable={true}
+            inputValue={productNameInputValue}
+            onValueSelect={handleProductDropdownItemSelect}
+            onInputValueChange={handleProductNameDropdownInputChange}
           ></DropdownList>
         </FormGroup>
       </div>
