@@ -5,9 +5,23 @@
   align-items: center;
   justify-content: space-between;
 
-  &__date {
-    font-size: 20px;
-    font-weight: bold;
-    color: $color-middle-green;
+  &__navigation-wrapper {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+  }
+
+  &__navigation {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    width: 220px;
+
+    &__date {
+      font-size: 20px;
+      font-weight: bold;
+      color: $color-middle-green;
+    }
   }
 }

@@ -43,9 +43,17 @@ const PageContentHeader: React.FC<PageContentHeaderProps> = ({ pageDate, visible
 
   return (
     <div className="page-content-header">
-      {isPreviousPageExists ? <NavLink to={`/pages/${previousPageId}`}>{previousPageIcon}</NavLink> : previousPageIcon}
-      <div className="page-content-header__date">{pageDate}</div>
-      {isNextPageExists ? <NavLink to={`/pages/${nextPageId}`}>{nextPageIcon}</NavLink> : nextPageIcon}
+      <div className="page-content-header__navigation-wrapper">
+        <div className="page-content-header__navigation">
+          {isPreviousPageExists ? (
+            <NavLink to={`/pages/${previousPageId}`}>{previousPageIcon}</NavLink>
+          ) : (
+            previousPageIcon
+          )}
+          <div className="page-content-header__navigation__date">{pageDate}</div>
+          {isNextPageExists ? <NavLink to={`/pages/${nextPageId}`}>{nextPageIcon}</NavLink> : nextPageIcon}
+        </div>
+      </div>
       <MealsControlPanelConnected></MealsControlPanelConnected>
     </div>
   );
