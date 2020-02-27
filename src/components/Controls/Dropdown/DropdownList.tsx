@@ -73,6 +73,14 @@ function DropdownList<T = string>({
     }
   }
 
+  function handleInputFieldFocus(): void {
+    toggle();
+  }
+
+  function handleInputFieldBlur(): void {
+    toggle();
+  }
+
   // Common hooks
   useOutsideClick(dropdownRef, closeIfTargetOutside);
   useHiddenBlockHeightCalculation(contentRef as React.RefObject<HTMLElement>, setContentBlockHeight);
@@ -85,9 +93,10 @@ function DropdownList<T = string>({
             type="text"
             placeholder={placeholder}
             value={inputValue}
-            onClick={toggle}
-            onChange={handleInputValueChange}
             controlSize={controlSize}
+            onChange={handleInputValueChange}
+            onFocus={handleInputFieldFocus}
+            onBlur={handleInputFieldBlur}
           />
           <DropdownArrowIcon className={dropdownArrowClassNames.join(' ')}></DropdownArrowIcon>
         </React.Fragment>
