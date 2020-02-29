@@ -8,7 +8,8 @@
   overflow: hidden;
   text-overflow: ellipsis;
 
-  &:hover {
+  &:hover,
+  &_active {
     background-color: $color-light-green;
   }
 }

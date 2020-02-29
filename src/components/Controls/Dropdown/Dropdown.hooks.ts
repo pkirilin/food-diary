@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   DropdownToggleDirection,
   DropdownContentAlignment,
@@ -138,4 +138,15 @@ export const useDropdownArrowClassNames = (
   }
 
   return dropdownArrowClassNames;
+};
+
+export const useActiveDropdownItemCleanup = (
+  isOpen: boolean,
+  setActiveItemIndex: React.Dispatch<React.SetStateAction<number>>,
+): void => {
+  useEffect(() => {
+    if (!isOpen) {
+      setActiveItemIndex(-1);
+    }
+  }, [isOpen, setActiveItemIndex]);
 };

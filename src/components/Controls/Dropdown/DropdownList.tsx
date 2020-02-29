@@ -11,6 +11,7 @@ import {
   useDropdownArrowClassNames,
   useContentClassNames,
   useContentStyle,
+  useActiveDropdownItemCleanup,
 } from './Dropdown.hooks';
 import { defaultItemRenderer } from './renderers';
 import Input from '../Input';
@@ -44,6 +45,7 @@ function DropdownList<T = string>({
   const contentRef = useRef(null);
 
   const [contentBlockHeight, setContentBlockHeight] = useState(0);
+  const [activeItemIndex, setActiveItemIndex] = useState(-1);
 
   // Dropdown hooks
   const [isOpen, toggle, close] = useToggle(disabled);
@@ -58,12 +60,17 @@ function DropdownList<T = string>({
     dropdownRef as React.RefObject<HTMLElement>,
     contentBlockHeight,
   );
+  useActiveDropdownItemCleanup(isOpen, setActiveItemIndex);
 
-  function handleListItemClick(this: number): void {
-    if (onValueSelect) {
-      onValueSelect(this);
+  function selectListItemByIndex(index: number): void {
+    if (index >= 0 && onValueSelect) {
+      onValueSelect(index);
     }
     close();
+  }
+
+  function handleListItemClick(this: number): void {
+    selectListItemByIndex(this);
   }
 
   function handleInputValueChange(event: React.ChangeEvent<HTMLInputElement>): void {
@@ -74,11 +81,64 @@ function DropdownList<T = string>({
   }
 
   function handleInputFieldFocus(): void {
-    toggle();
+    if (!isOpen) {
+      toggle();
+    }
   }
 
-  function handleInputFieldBlur(): void {
-    toggle();
+  function handleInputFieldBlur(event: React.FocusEvent<HTMLInputElement>): void {
+    if (dropdownRef) {
+      const target = event.relatedTarget as HTMLElement;
+      const ref = dropdownRef as React.RefObject<HTMLElement>;
+      if (target && ref.current && !ref.current.contains(target)) {
+        close();
+      }
+    }
+  }
+
+  function handleInputFieldClick(): void {
+    if (!isOpen) {
+      toggle();
+    } else {
+      if (activeItemIndex >= 0) {
+        setActiveItemIndex(-1);
+      }
+    }
+  }
+
+  function handleDropdownKeyup(event: React.KeyboardEvent<HTMLDivElement>): void {
+    function moveUp(): void {
+      if (activeItemIndex < 0) {
+        setActiveItemIndex(items.length - 1);
+      } else {
+        setActiveItemIndex(activeItemIndex === 0 ? items.length - 1 : activeItemIndex - 1);
+      }
+    }
+
+    function moveDown(): void {
+      if (activeItemIndex < 0) {
+        setActiveItemIndex(0);
+      } else {
+        setActiveItemIndex(activeItemIndex < items.length - 1 ? activeItemIndex + 1 : 0);
+      }
+    }
+
+    switch (event.which) {
+      case 13:
+        // Enter
+        selectListItemByIndex(activeItemIndex);
+        break;
+      case 38:
+        // Arrow up
+        moveUp();
+        break;
+      case 40:
+        // Arrow down
+        moveDown();
+        break;
+      default:
+        break;
+    }
   }
 
   // Common hooks
@@ -86,7 +146,7 @@ function DropdownList<T = string>({
   useHiddenBlockHeightCalculation(contentRef as React.RefObject<HTMLElement>, setContentBlockHeight);
 
   return (
-    <div ref={dropdownRef} className="dropdown">
+    <div ref={dropdownRef} className="dropdown" onKeyUp={handleDropdownKeyup}>
       {searchable ? (
         <React.Fragment>
           <Input
@@ -97,6 +157,7 @@ function DropdownList<T = string>({
             onChange={handleInputValueChange}
             onFocus={handleInputFieldFocus}
             onBlur={handleInputFieldBlur}
+            onClick={handleInputFieldClick}
           />
           <DropdownArrowIcon className={dropdownArrowClassNames.join(' ')}></DropdownArrowIcon>
         </React.Fragment>
@@ -111,8 +172,9 @@ function DropdownList<T = string>({
 
       <div ref={contentRef} className={contentClassNames.join(' ')} style={contentStyle}>
         {items.map((item, index) => {
+          const isActive = activeItemIndex === index;
           return (
-            <DropdownItem key={index} onClick={handleListItemClick.bind(index)}>
+            <DropdownItem key={index} onClick={handleListItemClick.bind(index)} active={isActive}>
               {itemRenderer(item)}
             </DropdownItem>
           );
