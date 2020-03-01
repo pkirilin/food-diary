@@ -8,6 +8,7 @@ interface MealsControlPanelProps extends StateToPropsMapResult, DispatchToPropsM
 const MealsControlPanel: React.FC<MealsControlPanelProps> = ({
   allMealTypes,
   setCollapsedForAllMeals,
+  isPageContentLoading,
 }: MealsControlPanelProps) => {
   const handleExpandAllClick = (): void => {
     setCollapsedForAllMeals(false, allMealTypes);
@@ -19,7 +20,7 @@ const MealsControlPanel: React.FC<MealsControlPanelProps> = ({
 
   return (
     <div className="meals-control-panel">
-      <Icon type="expand" label="Expand all" onClick={handleExpandAllClick}></Icon>
+      <Icon type="expand" label="Expand all" onClick={handleExpandAllClick} disabled={isPageContentLoading}></Icon>
       <Icon
         type="expand"
         label="Collapse all"
@@ -27,6 +28,7 @@ const MealsControlPanel: React.FC<MealsControlPanelProps> = ({
           transform: 'rotate(180deg)',
         }}
         onClick={handleCollapseAllClick}
+        disabled={isPageContentLoading}
       ></Icon>
     </div>
   );

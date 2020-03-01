@@ -1,19 +1,12 @@
 import React from 'react';
 import './SectionContainer.scss';
 
-interface SectionContainerProps {
-  loading?: boolean;
-}
+type SectionContainerProps = {};
 
 const SectionContainer: React.FC<SectionContainerProps> = ({
   children,
-  loading = false,
 }: React.PropsWithChildren<SectionContainerProps>) => {
-  const classNames = ['section-container'];
-  if (loading) {
-    classNames.push('section-container_loading');
-  }
-  return <section className={classNames.join(' ')}>{children}</section>;
+  return <section className="section-container">{children}</section>;
 };
 
 export default SectionContainer;

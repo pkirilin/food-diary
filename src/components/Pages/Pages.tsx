@@ -12,12 +12,7 @@ import PageContentConnected from '../PageContent';
 
 type PagesProps = StateToPropsMapResult;
 
-const Pages: React.FC<PagesProps> = ({
-  isPagesListAvailable,
-  pagesCount,
-  firstPageId,
-  isPageContentLoading,
-}: PagesProps) => {
+const Pages: React.FC<PagesProps> = ({ isPagesListAvailable, pagesCount, firstPageId }: PagesProps) => {
   return (
     <ContentWrapper>
       <Sidebar>
@@ -27,7 +22,7 @@ const Pages: React.FC<PagesProps> = ({
         <PagesListControlsBottomConnected></PagesListControlsBottomConnected>
       </Sidebar>
       <MainContainer withSidebar>
-        <SectionContainer loading={isPageContentLoading}>
+        <SectionContainer>
           {isPagesListAvailable ? (
             <Switch>
               <Route exact path="/pages/:id">

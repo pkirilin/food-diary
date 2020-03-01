@@ -8,6 +8,7 @@ import { FoodDiaryState } from '../../store';
 
 export interface StateToPropsMapResult {
   allMealTypes: MealType[];
+  isPageContentLoading: boolean;
 }
 
 export interface DispatchToPropsMapResult {
@@ -17,6 +18,7 @@ export interface DispatchToPropsMapResult {
 const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
   return {
     allMealTypes: state.notes.list.notesForPage ? state.notes.list.notesForPage.meals.map(m => m.type) : [],
+    isPageContentLoading: state.notes.list.notesForPageFetchState.loading,
   };
 };
 

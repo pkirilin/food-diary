@@ -8,31 +8,35 @@ import MealsListConnected from '../MealsList';
 
 interface PageContentProps extends StateToPropsMapResult, DispatchToPropsMapResult {}
 
-const PageContent: React.FC<PageContentProps> = ({ loading, loaded, getContent, errorMessage }: PageContentProps) => {
+const PageContent: React.FC<PageContentProps> = ({ loading, getContent, errorMessage }: PageContentProps) => {
   const { id: pageId } = useParams();
 
   useEffect(() => {
-    if (pageId && !isNaN(+pageId)) {
-      getContent(+pageId);
-    }
+    const getContentAsync = async (): Promise<void> => {
+      if (pageId && !isNaN(+pageId)) {
+        await getContent(+pageId);
+        window.scrollTo(0, 0);
+      }
+      return;
+    };
+
+    getContentAsync();
   }, [pageId, getContent]);
 
-  if (loading) {
-    return <Loader label="Loading page content"></Loader>;
-  }
-
-  if (loaded) {
-    return (
-      <div className="page-content">
-        <div className="page-content__top-panel">
-          <PageContentHeaderConnected></PageContentHeaderConnected>
-        </div>
-        <MealsListConnected></MealsListConnected>
+  return (
+    <div className="page-content">
+      <div className="page-content__top-panel">
+        <PageContentHeaderConnected></PageContentHeaderConnected>
       </div>
-    );
-  }
-
-  return <div>{errorMessage}</div>;
+      {loading && (
+        <div className="page-content__preloader">
+          <Loader label="Loading page content"></Loader>
+        </div>
+      )}
+      {errorMessage && <div>{errorMessage}</div>}
+      <MealsListConnected></MealsListConnected>
+    </div>
+  );
 };
 
 export default PageContent;

@@ -6,7 +6,6 @@ export interface StateToPropsMapResult {
   isPagesListAvailable: boolean;
   pagesCount: number;
   firstPageId?: number;
-  isPageContentLoading: boolean;
 }
 
 const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
@@ -14,7 +13,6 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
     isPagesListAvailable: state.pages.list.pageItemsFetchState.loaded,
     pagesCount: state.pages.list.pageItems.length,
     firstPageId: state.pages.list.pageItems.filter(p => p.id > 0)[0]?.id,
-    isPageContentLoading: state.notes.list.notesForPageFetchState.loading,
   };
 };
 
