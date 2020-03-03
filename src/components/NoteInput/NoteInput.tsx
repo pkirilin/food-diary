@@ -16,8 +16,10 @@ const NoteInput: React.FC<NoteInputProps> = ({
   mealOperationStatuses,
   notesForMealFetchStates,
   productDropdownItems,
+  isProductDropdownContentLoading,
   createNote,
   getNotesForMeal,
+  getProductDropdownItems,
 }: NoteInputProps) => {
   const [productId, setProductId] = useState(0);
   const [productNameInputValue, setProductNameInputValue] = useState('');
@@ -68,6 +70,10 @@ const NoteInput: React.FC<NoteInputProps> = ({
     }
   };
 
+  const handleProductDropdownContentOpen = (): void => {
+    getProductDropdownItems();
+  };
+
   return (
     <div className="note-input">
       <div className="note-input__product">
@@ -79,8 +85,10 @@ const NoteInput: React.FC<NoteInputProps> = ({
             placeholder="Select product"
             searchable={true}
             inputValue={productNameInputValue}
+            isContentLoading={isProductDropdownContentLoading}
             onValueSelect={handleProductDropdownItemSelect}
             onInputValueChange={handleProductNameDropdownInputChange}
+            onContentOpen={handleProductDropdownContentOpen}
           ></DropdownList>
         </FormGroup>
       </div>

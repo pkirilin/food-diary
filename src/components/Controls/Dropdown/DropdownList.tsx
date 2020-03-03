@@ -16,6 +16,7 @@ import {
 import { defaultItemRenderer } from './renderers';
 import Input from '../Input';
 import DropdownItem from '../DropdownItem';
+import Loader from '../../Loader';
 
 interface DropdownListProps<T = string> extends DropdownPropsBase {
   items?: T[];
@@ -23,8 +24,10 @@ interface DropdownListProps<T = string> extends DropdownPropsBase {
   placeholder?: string;
   searchable?: boolean;
   inputValue?: string;
+  isContentLoading?: boolean;
   onValueSelect: (newSelectedValueIndex: number) => void;
   onInputValueChange?: (newInputValue: string) => void;
+  onContentOpen?: () => void;
 }
 
 function DropdownList<T = string>({
@@ -40,6 +43,8 @@ function DropdownList<T = string>({
   controlSize,
   inputValue = '',
   onInputValueChange,
+  onContentOpen,
+  isContentLoading = false,
 }: DropdownListProps<T>): ReactElement {
   const dropdownRef = useRef(null);
   const contentRef = useRef(null);
@@ -48,7 +53,7 @@ function DropdownList<T = string>({
   const [activeItemIndex, setActiveItemIndex] = useState(-1);
 
   // Dropdown hooks
-  const [isOpen, toggle, close] = useToggle(disabled);
+  const [isOpen, toggle, close] = useToggle(disabled, onContentOpen);
   const closeIfTargetOutside = useCloseIfTargetOutside(close);
   const togglerClassNames = useTogglerClassNames(isOpen, disabled, controlSize);
   const togglerValueClassNames = useTogglerValueClassNames(inputValue !== '', disabled);
@@ -171,14 +176,20 @@ function DropdownList<T = string>({
       )}
 
       <div ref={contentRef} className={contentClassNames.join(' ')} style={contentStyle}>
-        {items.map((item, index) => {
-          const isActive = activeItemIndex === index;
-          return (
-            <DropdownItem key={index} onClick={handleListItemClick.bind(index)} active={isActive}>
-              {itemRenderer(item)}
-            </DropdownItem>
-          );
-        })}
+        {isContentLoading ? (
+          <div className="dropdown__content_loading">
+            <Loader label="Fetching products..." size="small"></Loader>
+          </div>
+        ) : (
+          items.map((item, index) => {
+            const isActive = activeItemIndex === index;
+            return (
+              <DropdownItem key={index} onClick={handleListItemClick.bind(index)} active={isActive}>
+                {itemRenderer(item)}
+              </DropdownItem>
+            );
+          })
+        )}
       </div>
     </div>
   );

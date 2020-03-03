@@ -95,5 +95,11 @@
     &_right {
       right: 0;
     }
+
+    &_loading {
+      display: flex;
+      justify-content: center;
+      padding: $form-control-padding;
+    }
   }
 }

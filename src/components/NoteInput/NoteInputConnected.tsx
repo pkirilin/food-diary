@@ -6,8 +6,10 @@ import {
   CreateNoteErrorAction,
   GetNotesForMealSuccessAction,
   GetNotesForMealErrorAction,
+  GetProductDropdownItemsSuccessAction,
+  GetProductDropdownItemsErrorAction,
 } from '../../action-types';
-import { createNote, getNotesForMeal } from '../../action-creators';
+import { createNote, getNotesForMeal, getProductDropdownItems } from '../../action-creators';
 import { ThunkDispatch } from 'redux-thunk';
 import { FoodDiaryState, MealOperationStatus, NotesForMealFetchState } from '../../store';
 
@@ -15,11 +17,13 @@ export interface StateToPropsMapResult {
   mealOperationStatuses: MealOperationStatus[];
   notesForMealFetchStates: NotesForMealFetchState[];
   productDropdownItems: ProductDropdownItem[];
+  isProductDropdownContentLoading: boolean;
 }
 
 export interface DispatchToPropsMapResult {
   createNote: (note: NoteCreateEdit) => Promise<CreateNoteSuccessAction | CreateNoteErrorAction>;
   getNotesForMeal: (request: NotesForMealRequest) => Promise<GetNotesForMealSuccessAction | GetNotesForMealErrorAction>;
+  getProductDropdownItems: () => Promise<GetProductDropdownItemsSuccessAction | GetProductDropdownItemsErrorAction>;
 }
 
 const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
@@ -27,11 +31,13 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
     mealOperationStatuses: state.notes.operations.mealOperationStatuses,
     notesForMealFetchStates: state.notes.list.notesForMealFetchStates,
     productDropdownItems: state.products.dropdown.productDropdownItems,
+    isProductDropdownContentLoading: state.products.dropdown.productDropdownItemsFetchState.loading,
   };
 };
 
 type NoteInputDispatchType = ThunkDispatch<void, NoteCreateEdit, CreateNoteSuccessAction | CreateNoteErrorAction> &
-  ThunkDispatch<MealItem, NotesForMealRequest, GetNotesForMealSuccessAction | GetNotesForMealErrorAction>;
+  ThunkDispatch<MealItem, NotesForMealRequest, GetNotesForMealSuccessAction | GetNotesForMealErrorAction> &
+  ThunkDispatch<ProductDropdownItem[], void, GetProductDropdownItemsSuccessAction | GetProductDropdownItemsErrorAction>;
 
 const mapDispatchToProps = (dispatch: NoteInputDispatchType): DispatchToPropsMapResult => {
   return {
@@ -42,6 +48,9 @@ const mapDispatchToProps = (dispatch: NoteInputDispatchType): DispatchToPropsMap
       request: NotesForMealRequest,
     ): Promise<GetNotesForMealSuccessAction | GetNotesForMealErrorAction> => {
       return dispatch(getNotesForMeal(request));
+    },
+    getProductDropdownItems: (): Promise<GetProductDropdownItemsSuccessAction | GetProductDropdownItemsErrorAction> => {
+      return dispatch(getProductDropdownItems());
     },
   };
 };

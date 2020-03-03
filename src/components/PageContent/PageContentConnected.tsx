@@ -9,7 +9,7 @@ import {
 import { FoodDiaryState } from '../../store';
 import { ThunkDispatch } from 'redux-thunk';
 import { NotesForPage, ProductDropdownItem } from '../../models';
-import { getNotesForPage, getProductDropdownItems } from '../../action-creators';
+import { getNotesForPage } from '../../action-creators';
 
 export interface StateToPropsMapResult {
   loading: boolean;
@@ -39,7 +39,6 @@ type PageContentDispatchType = ThunkDispatch<
 const mapDispatchToProps = (dispatch: PageContentDispatchType): DispatchToPropsMapResult => {
   return {
     getContent: (pageId: number): Promise<GetNotesForPageSuccessAction | GetNotesForPageErrorAction> => {
-      dispatch(getProductDropdownItems());
       return dispatch(getNotesForPage(pageId));
     },
   };
