@@ -108,6 +108,7 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({
             controlSize="small"
             inputValue={productNameInputValue}
             isContentLoading={isProductDropdownContentLoading}
+            disabled={isOperationInProcess}
             onValueSelect={handleProductDropdownItemSelect}
             onInputValueChange={handleProductNameDropdownInputChange}
             onContentOpen={handleProductDropdownContentOpen}
@@ -123,6 +124,7 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({
             controlSize="small"
             value={productQuantity}
             onChange={handleProductQuantityChange}
+            disabled={isOperationInProcess}
           ></Input>
         ) : (
           productQuantity

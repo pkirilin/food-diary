@@ -92,6 +92,7 @@ const NoteInput: React.FC<NoteInputProps> = ({
             searchable={true}
             inputValue={productNameInputValue}
             isContentLoading={isProductDropdownContentLoading}
+            disabled={isInputDisabled}
             onValueSelect={handleProductDropdownItemSelect}
             onInputValueChange={handleProductNameDropdownInputChange}
             onContentOpen={handleProductDropdownContentOpen}
