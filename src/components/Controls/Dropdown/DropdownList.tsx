@@ -159,6 +159,7 @@ function DropdownList<T = string>({
             placeholder={placeholder}
             value={inputValue}
             controlSize={controlSize}
+            disabled={disabled}
             onChange={handleInputValueChange}
             onFocus={handleInputFieldFocus}
             onBlur={handleInputFieldBlur}

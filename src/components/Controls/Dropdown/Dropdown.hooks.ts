@@ -129,15 +129,19 @@ export const useDropdownArrowClassNames = (
 ): string[] => {
   const dropdownArrowClassNames = ['dropdown-arrow'];
 
-  if (isDisabled) {
-    dropdownArrowClassNames.push('dropdown-arrow_disabled');
-  }
-
   if (isInput) {
     dropdownArrowClassNames.push('dropdown-arrow_input');
 
     if (size) {
       dropdownArrowClassNames.push(`dropdown-arrow_input_${size}`);
+    }
+
+    if (isDisabled) {
+      dropdownArrowClassNames.push('dropdown-arrow_input_disabled');
+    }
+  } else {
+    if (isDisabled) {
+      dropdownArrowClassNames.push('dropdown-arrow_disabled');
     }
   }
 
