@@ -6,6 +6,7 @@ import { StateToPropsMapResult, DispatchToPropsMapResult } from './NotesTableRow
 import Icon from '../Icon';
 import { EditNoteSuccessAction, DeleteNoteSuccessAction } from '../../action-types';
 import { useParams } from 'react-router-dom';
+import { useDebounce } from '../../hooks';
 
 interface NotesTableRowProps extends StateToPropsMapResult, DispatchToPropsMapResult {
   mealType: MealType;
@@ -18,16 +19,22 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({
   productDropdownItems,
   editableNotesIds,
   mealOperationStatuses,
+  isProductDropdownContentLoading,
   setEditableForNote,
   editNote,
   deleteNote,
   getNotesForMeal,
+  getProductDropdownItems,
 }: NotesTableRowProps) => {
   const initialSelectedProductName = productDropdownItems.find(p => p.id === note.productId)?.name;
 
   const [productId, setProductId] = useState(note.productId);
   const [productNameInputValue, setProductNameInputValue] = useState(initialSelectedProductName);
   const [productQuantity, setProductQuantity] = useState(100);
+
+  const productNameChangeDebounce = useDebounce(() => {
+    getProductDropdownItems();
+  });
 
   const { id: pageIdFromParams } = useParams();
   const pageId = pageIdFromParams && !isNaN(+pageIdFromParams) ? +pageIdFromParams : 0;
@@ -40,6 +47,11 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({
   const handleProductDropdownItemSelect = (newSelectedProductIndex: number): void => {
     setProductId(productDropdownItems[newSelectedProductIndex].id);
     setProductNameInputValue(productDropdownItems[newSelectedProductIndex].name);
+  };
+
+  const handleProductNameDropdownInputChange = (newProductNameInputValue: string): void => {
+    setProductNameInputValue(newProductNameInputValue);
+    productNameChangeDebounce();
   };
 
   const handleProductQuantityChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -80,6 +92,10 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({
     setEditableForNote(note.id, false);
   };
 
+  const handleProductDropdownContentOpen = (): void => {
+    getProductDropdownItems();
+  };
+
   return (
     <tr>
       <td>
@@ -91,7 +107,10 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({
             searchable={true}
             controlSize="small"
             inputValue={productNameInputValue}
+            isContentLoading={isProductDropdownContentLoading}
             onValueSelect={handleProductDropdownItemSelect}
+            onInputValueChange={handleProductNameDropdownInputChange}
+            onContentOpen={handleProductDropdownContentOpen}
           ></DropdownList>
         ) : (
           note.productName

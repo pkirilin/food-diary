@@ -10,15 +10,24 @@ import {
   GetNotesForMealSuccessAction,
   GetNotesForMealErrorAction,
   SetEditableForNoteAction,
+  GetProductDropdownItemsSuccessAction,
+  GetProductDropdownItemsErrorAction,
 } from '../../action-types';
 import { Dispatch } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
-import { setEditableForNote, editNote, deleteNote, getNotesForMeal } from '../../action-creators';
+import {
+  setEditableForNote,
+  editNote,
+  deleteNote,
+  getNotesForMeal,
+  getProductDropdownItems,
+} from '../../action-creators';
 
 export interface StateToPropsMapResult {
   productDropdownItems: ProductDropdownItem[];
   editableNotesIds: number[];
   mealOperationStatuses: MealOperationStatus[];
+  isProductDropdownContentLoading: boolean;
 }
 
 export interface DispatchToPropsMapResult {
@@ -26,6 +35,7 @@ export interface DispatchToPropsMapResult {
   editNote: (note: NoteCreateEdit) => Promise<EditNoteSuccessAction | EditNoteErrorAction>;
   deleteNote: (request: [number, MealType]) => Promise<DeleteNoteSuccessAction | DeleteNoteErrorAction>;
   getNotesForMeal: (request: NotesForMealRequest) => Promise<GetNotesForMealSuccessAction | GetNotesForMealErrorAction>;
+  getProductDropdownItems: () => Promise<GetProductDropdownItemsSuccessAction | GetProductDropdownItemsErrorAction>;
 }
 
 const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
@@ -33,13 +43,15 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
     productDropdownItems: state.products.dropdown.productDropdownItems,
     editableNotesIds: state.notes.list.editableNotesIds,
     mealOperationStatuses: state.notes.operations.mealOperationStatuses,
+    isProductDropdownContentLoading: state.products.dropdown.productDropdownItemsFetchState.loading,
   };
 };
 
 type NotesTableDispatchType = Dispatch<SetEditableForNoteAction> &
   ThunkDispatch<void, NoteCreateEdit, EditNoteSuccessAction | EditNoteErrorAction> &
   ThunkDispatch<void, [number, MealType], DeleteNoteSuccessAction | DeleteNoteErrorAction> &
-  ThunkDispatch<MealItem, NotesForMealRequest, GetNotesForMealSuccessAction | GetNotesForMealErrorAction>;
+  ThunkDispatch<MealItem, NotesForMealRequest, GetNotesForMealSuccessAction | GetNotesForMealErrorAction> &
+  ThunkDispatch<ProductDropdownItem[], void, GetProductDropdownItemsSuccessAction | GetProductDropdownItemsErrorAction>;
 
 const mapDispatchToProps = (dispatch: NotesTableDispatchType): DispatchToPropsMapResult => {
   return {
@@ -56,6 +68,9 @@ const mapDispatchToProps = (dispatch: NotesTableDispatchType): DispatchToPropsMa
       request: NotesForMealRequest,
     ): Promise<GetNotesForMealSuccessAction | GetNotesForMealErrorAction> => {
       return dispatch(getNotesForMeal(request));
+    },
+    getProductDropdownItems: (): Promise<GetProductDropdownItemsSuccessAction | GetProductDropdownItemsErrorAction> => {
+      return dispatch(getProductDropdownItems());
     },
   };
 };

@@ -6,6 +6,7 @@ import { MealType } from '../../models';
 import { useParams } from 'react-router-dom';
 import Loader from '../Loader';
 import { NotesOperationsActionTypes } from '../../action-types';
+import { useDebounce } from '../../hooks';
 
 interface NoteInputProps extends StateToPropsMapResult, DispatchToPropsMapResult {
   mealType: MealType;
@@ -25,6 +26,10 @@ const NoteInput: React.FC<NoteInputProps> = ({
   const [productNameInputValue, setProductNameInputValue] = useState('');
   const [productQuantity, setProductQuantity] = useState(100);
 
+  const productNameChangeDebounce = useDebounce(() => {
+    getProductDropdownItems();
+  });
+
   const { id: pageIdFromParams } = useParams();
 
   const currentMealOperationStatus = mealOperationStatuses.filter(s => s.mealType === mealType)[0];
@@ -41,8 +46,9 @@ const NoteInput: React.FC<NoteInputProps> = ({
     setProductNameInputValue(productDropdownItems[newSelectedProductIndex].name);
   };
 
-  const handleProductNameDropdownInputChange = async (newProductNameInputValue: string): Promise<void> => {
+  const handleProductNameDropdownInputChange = (newProductNameInputValue: string): void => {
     setProductNameInputValue(newProductNameInputValue);
+    productNameChangeDebounce();
   };
 
   const handleQuantityValueChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
