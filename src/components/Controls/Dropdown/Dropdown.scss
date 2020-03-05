@@ -101,5 +101,11 @@
       justify-content: center;
       padding: $form-control-padding;
     }
+
+    &_empty {
+      text-align: center;
+      color: $color-middle-green-50;
+      padding: $form-control-padding;
+    }
   }
 }
