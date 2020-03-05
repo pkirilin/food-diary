@@ -14,9 +14,12 @@ import { ThunkDispatch } from 'redux-thunk';
 
 export interface StateToPropsMapResult {
   pagesFilter: PagesFilter;
-  pagesFilterChanged: boolean;
-  pagesLoading: boolean;
-  pagesLoaded: boolean;
+  isPagesFilterChanged: boolean;
+  arePagesLoading: boolean;
+  areNotesForPageLoading: boolean;
+  areNotesForMealLoading: boolean;
+  isPageOperationInProcess: boolean;
+  isNoteOperationInProcess: boolean;
 }
 
 export interface DispatchToPropsMapResult {
@@ -28,9 +31,12 @@ export interface DispatchToPropsMapResult {
 const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
   return {
     pagesFilter: state.pages.filter,
-    pagesFilterChanged: state.pages.filter.filterChanged,
-    pagesLoading: state.pages.list.pageItemsFetchState.loading,
-    pagesLoaded: state.pages.list.pageItemsFetchState.loaded,
+    isPagesFilterChanged: state.pages.filter.filterChanged,
+    arePagesLoading: state.pages.list.pageItemsFetchState.loading,
+    areNotesForPageLoading: state.notes.list.notesForPageFetchState.loading,
+    areNotesForMealLoading: state.notes.list.notesForMealFetchStates.some(s => s.loading),
+    isPageOperationInProcess: state.pages.operations.status.performing,
+    isNoteOperationInProcess: state.notes.operations.mealOperationStatuses.some(s => s.performing),
   };
 };
 

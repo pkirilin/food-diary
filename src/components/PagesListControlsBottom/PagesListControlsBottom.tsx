@@ -20,9 +20,20 @@ const showCountDropdownItems: string[] = [
 const PagesListControlsBottom: React.FC<PagesListControlsBottomProps> = ({
   pagesFilter,
   updatePagesFilter,
-  pagesLoaded,
+  arePagesLoading,
+  areNotesForPageLoading,
+  areNotesForMealLoading,
+  isPageOperationInProcess,
+  isNoteOperationInProcess,
 }: PagesListControlsBottomProps) => {
   const [showCountInputValue, setShowCountInputValue] = useState(showCountAllString);
+
+  const isControlDisabled =
+    arePagesLoading ||
+    areNotesForMealLoading ||
+    areNotesForPageLoading ||
+    isPageOperationInProcess ||
+    isNoteOperationInProcess;
 
   useEffect(() => {
     setShowCountInputValue(pagesFilter.showCount === undefined ? showCountAllString : pagesFilter.showCount.toString());
@@ -46,9 +57,9 @@ const PagesListControlsBottom: React.FC<PagesListControlsBottomProps> = ({
   return (
     <div className="pages-list-controls-bottom">
       {pagesFilter.sortOrder === SortOrder.Ascending ? (
-        <Icon type="sort-ascending" onClick={handleSortIconClick} disabled={!pagesLoaded}></Icon>
+        <Icon type="sort-ascending" onClick={handleSortIconClick} disabled={isControlDisabled}></Icon>
       ) : (
-        <Icon type="sort-descending" onClick={handleSortIconClick} disabled={!pagesLoaded}></Icon>
+        <Icon type="sort-descending" onClick={handleSortIconClick} disabled={isControlDisabled}></Icon>
       )}
       <FormGroup inline>
         <Label>Show</Label>
@@ -56,7 +67,7 @@ const PagesListControlsBottom: React.FC<PagesListControlsBottomProps> = ({
           <DropdownList
             items={showCountDropdownItems}
             toggleDirection="top"
-            disabled={!pagesLoaded}
+            disabled={isControlDisabled}
             inputValue={showCountInputValue}
             onValueSelect={handleShowCountDropdownValueSelect}
           ></DropdownList>

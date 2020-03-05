@@ -9,12 +9,24 @@ interface PagesListControlsTopProps extends StateToPropsMapResult, DispatchToPro
 const PagesListControlsTop: React.FC<PagesListControlsTopProps> = ({
   createDraftPage,
   pagesFilter,
-  pagesFilterChanged,
+  isPagesFilterChanged,
   clearPagesFilter,
   getPages,
-  pagesLoading,
-  pagesLoaded,
+  arePagesLoading,
+  areNotesForMealLoading,
+  areNotesForPageLoading,
+  isPageOperationInProcess,
+  isNoteOperationInProcess,
 }: PagesListControlsTopProps) => {
+  const isControlDisabled =
+    arePagesLoading ||
+    areNotesForMealLoading ||
+    areNotesForPageLoading ||
+    isPageOperationInProcess ||
+    isNoteOperationInProcess;
+
+  const isClearFilterDisabled = isControlDisabled || !isPagesFilterChanged;
+
   const handleAddIconClick = (): void => {
     createDraftPage({
       id: 0,
@@ -35,10 +47,10 @@ const PagesListControlsTop: React.FC<PagesListControlsTopProps> = ({
   return (
     <SidebarControlPanel>
       <SidebarControlPanelIcons>
-        <Icon type="add" onClick={handleAddIconClick} disabled={!pagesLoaded}></Icon>
-        <Icon type="refresh" onClick={handleRefreshPagesListIconClick} disabled={pagesLoading}></Icon>
+        <Icon type="add" onClick={handleAddIconClick} disabled={isControlDisabled}></Icon>
+        <Icon type="refresh" onClick={handleRefreshPagesListIconClick} disabled={isControlDisabled}></Icon>
         <Icon type="filter" disabled></Icon>
-        <Icon type="close" disabled={!pagesFilterChanged || !pagesLoaded} onClick={handleResetFilterIconClick}></Icon>
+        <Icon type="close" disabled={isClearFilterDisabled} onClick={handleResetFilterIconClick}></Icon>
       </SidebarControlPanelIcons>
     </SidebarControlPanel>
   );

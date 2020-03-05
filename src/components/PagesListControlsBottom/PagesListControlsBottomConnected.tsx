@@ -8,7 +8,11 @@ import { UpdatePagesFilterAction } from '../../action-types';
 
 export interface StateToPropsMapResult {
   pagesFilter: PagesFilter;
-  pagesLoaded: boolean;
+  arePagesLoading: boolean;
+  areNotesForPageLoading: boolean;
+  areNotesForMealLoading: boolean;
+  isPageOperationInProcess: boolean;
+  isNoteOperationInProcess: boolean;
 }
 export interface DispatchToPropsMapResult {
   updatePagesFilter: (updatedFilter: PagesFilter) => void;
@@ -17,7 +21,11 @@ export interface DispatchToPropsMapResult {
 const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
   return {
     pagesFilter: state.pages.filter,
-    pagesLoaded: state.pages.list.pageItemsFetchState.loaded,
+    arePagesLoading: state.pages.list.pageItemsFetchState.loading,
+    areNotesForPageLoading: state.notes.list.notesForPageFetchState.loading,
+    areNotesForMealLoading: state.notes.list.notesForMealFetchStates.some(s => s.loading),
+    isPageOperationInProcess: state.pages.operations.status.performing,
+    isNoteOperationInProcess: state.notes.operations.mealOperationStatuses.some(s => s.performing),
   };
 };
 
