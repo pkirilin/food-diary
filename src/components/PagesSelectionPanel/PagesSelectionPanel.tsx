@@ -13,18 +13,23 @@ const PagesSelectionPanel: React.FC<PagesSelectionPanelProps> = ({
   visiblePagesIds,
   selectedPagesIds,
   setSelectedForAllPages,
-  isOperationInProcess,
   operationMessage,
   deletePages,
   getPages,
   pagesFilter,
   setEditableForPages,
+  isPageOperationInProcess,
+  isNoteOperationInProcess,
+  areNotesForPageFetching,
+  areNotesForMealFetching,
 }: PagesSelectionPanelProps) => {
-  const selectAllChecked = visiblePagesIds.every(id => selectedPagesIds.includes(id));
+  const isAnySideEffectHappening =
+    isPageOperationInProcess || isNoteOperationInProcess || areNotesForPageFetching || areNotesForMealFetching;
+  const isSelectAllChecked = visiblePagesIds.every(id => selectedPagesIds.includes(id));
   const selectedPagesCount = selectedPagesIds.length;
 
   const handleSelectAllClick = (): void => {
-    setSelectedForAllPages(!selectAllChecked);
+    setSelectedForAllPages(!isSelectAllChecked);
   };
 
   const handleEditOptionClick = (): void => {
@@ -42,19 +47,24 @@ const PagesSelectionPanel: React.FC<PagesSelectionPanelProps> = ({
     }
   };
 
-  const selectionOptionsToggler = <Icon type="three-dots"></Icon>;
+  const selectionOptionsToggler = <Icon type="three-dots" disabled={isAnySideEffectHappening}></Icon>;
 
   return (
     <SidebarSelectionPanel>
-      <Checkbox checked={selectAllChecked} onCheck={handleSelectAllClick} label="Select all"></Checkbox>
+      <Checkbox checked={isSelectAllChecked} onCheck={handleSelectAllClick} label="Select all"></Checkbox>
       {selectedPagesCount > 0 ? (
         <SidebarSelectionPanelOptions>
-          {isOperationInProcess ? (
+          {isPageOperationInProcess ? (
             <Loader label={operationMessage} size="small"></Loader>
           ) : (
             <React.Fragment>
               <div>Selected: {selectedPagesCount}</div>
-              <DropdownMenu toggler={selectionOptionsToggler} contentWidth={150} contentAlignment="right">
+              <DropdownMenu
+                toggler={selectionOptionsToggler}
+                contentWidth={150}
+                contentAlignment="right"
+                disabled={isAnySideEffectHappening}
+              >
                 <DropdownItem onClick={handleEditOptionClick}>Edit</DropdownItem>
                 <DropdownItem onClick={handleDeleteOptionClick}>Delete</DropdownItem>
               </DropdownMenu>
@@ -63,7 +73,7 @@ const PagesSelectionPanel: React.FC<PagesSelectionPanelProps> = ({
         </SidebarSelectionPanelOptions>
       ) : (
         <SidebarSelectionPanelOptions withoutSelection>
-          {isOperationInProcess ? <Loader label={operationMessage} size="small"></Loader> : 'No pages selected'}
+          {isPageOperationInProcess ? <Loader label={operationMessage} size="small"></Loader> : 'No pages selected'}
         </SidebarSelectionPanelOptions>
       )}
     </SidebarSelectionPanel>

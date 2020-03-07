@@ -12,16 +12,18 @@ const PageContentHeader: React.FC<PageContentHeaderProps> = ({
   pageDate,
   visiblePagesIds,
   isPageContentLoading,
+  isPageOperationInProcess,
 }: PageContentHeaderProps) => {
   const { id: currentPageIdFromRoute } = useParams();
   const currentPageId = currentPageIdFromRoute !== undefined ? +currentPageIdFromRoute : 0;
   const currentPageIndex = visiblePagesIds.findIndex(id => id === currentPageId);
+  const isAnyDraftPageExists = visiblePagesIds.some(id => id < 1);
 
-  const isPreviousPageExists = currentPageIndex > 0;
+  const isPreviousPageExists = !(currentPageIndex === 1 && isAnyDraftPageExists) && currentPageIndex > 0;
   const isNextPageExists = currentPageIndex > -1 && currentPageIndex < visiblePagesIds.length - 1;
 
-  const isPreviousPageIconActive = isPreviousPageExists && !isPageContentLoading;
-  const isNextPageIconActive = isNextPageExists && !isPageContentLoading;
+  const isPreviousPageIconActive = isPreviousPageExists && !isPageContentLoading && !isPageOperationInProcess;
+  const isNextPageIconActive = isNextPageExists && !isPageContentLoading && !isPageOperationInProcess;
 
   const previousPageId = visiblePagesIds[currentPageIndex - 1];
   const nextPageId = visiblePagesIds[currentPageIndex + 1];

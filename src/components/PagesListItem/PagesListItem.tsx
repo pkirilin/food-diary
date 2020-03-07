@@ -25,12 +25,17 @@ const PagesListItem: React.FC<PagesListItemProps> = ({
   selectedPagesIds,
   setSelectedForPage,
   setEditableForPages,
-  isOperationInProcess,
+  isPageOperationInProcess,
+  isNoteOperationInProcess,
+  areNotesForPageLoading,
+  areNotesForMealLoading,
 }: PagesListItemProps) => {
   const [selectedDate, setSelectedDate] = useState(page.date);
 
   const isEditable = editablePagesIds.some(id => page.id === id);
   const isSelected = selectedPagesIds.some(id => page.id === id);
+  const isAnySideEffectHappening =
+    isPageOperationInProcess || isNoteOperationInProcess || areNotesForMealLoading || areNotesForPageLoading;
 
   const handleSelectedDateChange = (event: React.ChangeEvent): void => {
     const target = event.target as HTMLInputElement;
@@ -76,46 +81,48 @@ const PagesListItem: React.FC<PagesListItemProps> = ({
 
   const activeLinkClassName = isSelected ? 'sidebar-list-item-link_active-selected' : 'sidebar-list-item-link_active';
 
-  return {
-    ...(isEditable ? (
-      <SidebarListItem editable>
-        <Input
-          type="date"
-          placeholder="Pick date"
-          value={selectedDate}
-          onChange={handleSelectedDateChange}
-          disabled={isOperationInProcess}
-        ></Input>
-        <SidebarListItemControls>
-          <Icon
-            type="check"
-            size="small"
-            onClick={handleConfirmEditPageIconClick}
-            disabled={isOperationInProcess}
-          ></Icon>
-          <Icon
-            type="close"
-            size="small"
-            onClick={handleCancelEditPageIconClick}
-            disabled={isOperationInProcess}
-          ></Icon>
-        </SidebarListItemControls>
-      </SidebarListItem>
-    ) : (
-      <SidebarListItem selected={isSelected}>
-        <SidebarListItemLink to={`/pages/${page.id}`} activeClassName={activeLinkClassName} selected={isSelected}>
-          <div>{page.date}</div>
-          <BadgesContainer>
-            <Badge label={notesBadgeLabel} selected={isSelected}></Badge>
-            <Badge label={caloriesBadgeLabel} selected={isSelected}></Badge>
-          </BadgesContainer>
-        </SidebarListItemLink>
-        <SidebarListItemCheckbox>
-          <Checkbox checked={isSelected} onCheck={handlePageCheck}></Checkbox>
-        </SidebarListItemCheckbox>
-      </SidebarListItem>
-    )),
-  };
+  return (
+    <React.Fragment>
+      {isEditable ? (
+        <SidebarListItem editable>
+          <Input
+            type="date"
+            placeholder="Pick date"
+            value={selectedDate}
+            onChange={handleSelectedDateChange}
+            disabled={isAnySideEffectHappening}
+          ></Input>
+          <SidebarListItemControls>
+            <Icon
+              type="check"
+              size="small"
+              onClick={handleConfirmEditPageIconClick}
+              disabled={isAnySideEffectHappening}
+            ></Icon>
+            <Icon
+              type="close"
+              size="small"
+              onClick={handleCancelEditPageIconClick}
+              disabled={isAnySideEffectHappening}
+            ></Icon>
+          </SidebarListItemControls>
+        </SidebarListItem>
+      ) : (
+        <SidebarListItem selected={isSelected}>
+          <SidebarListItemLink to={`/pages/${page.id}`} activeClassName={activeLinkClassName} selected={isSelected}>
+            <div>{page.date}</div>
+            <BadgesContainer>
+              <Badge label={notesBadgeLabel} selected={isSelected}></Badge>
+              <Badge label={caloriesBadgeLabel} selected={isSelected}></Badge>
+            </BadgesContainer>
+          </SidebarListItemLink>
+          <SidebarListItemCheckbox>
+            <Checkbox checked={isSelected} onCheck={handlePageCheck}></Checkbox>
+          </SidebarListItemCheckbox>
+        </SidebarListItem>
+      )}
+    </React.Fragment>
+  );
 };
 
 export default PagesListItem;

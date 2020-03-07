@@ -18,6 +18,7 @@ const NoteInput: React.FC<NoteInputProps> = ({
   notesForMealFetchStates,
   productDropdownItems,
   isProductDropdownContentLoading,
+  isPageOperationInProcess,
   createNote,
   getNotesForMeal,
   getProductDropdownItems,
@@ -36,10 +37,10 @@ const NoteInput: React.FC<NoteInputProps> = ({
   const currentMealFetchState = notesForMealFetchStates.filter(s => s.mealType === mealType)[0];
   const operationMessage = currentMealOperationStatus ? currentMealOperationStatus.message : '';
 
-  const isOperationInProcess = currentMealOperationStatus && currentMealOperationStatus.performing;
+  const isMealOperationInProcess = currentMealOperationStatus && currentMealOperationStatus.performing;
   const isNotesTableLoading = currentMealFetchState && currentMealFetchState.loading;
-  const isInputDisabled = isOperationInProcess || isNotesTableLoading;
-  const isAddButtonDisabled = isInputDisabled || productNameInputValue === '';
+  const isInputDisabled = isMealOperationInProcess || isNotesTableLoading || isPageOperationInProcess;
+  const isAddButtonDisabled = isInputDisabled || productNameInputValue === '' || isPageOperationInProcess;
 
   const handleProductDropdownItemSelect = (newSelectedProductIndex: number): void => {
     setProductId(productDropdownItems[newSelectedProductIndex].id);
@@ -116,7 +117,7 @@ const NoteInput: React.FC<NoteInputProps> = ({
           Add
         </Button>
       </div>
-      {isOperationInProcess && (
+      {isMealOperationInProcess && (
         <div className="note-input__loader">
           <Loader size="small" label={operationMessage}></Loader>
         </div>

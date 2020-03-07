@@ -20,6 +20,7 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({
   editableNotesIds,
   mealOperationStatuses,
   isProductDropdownContentLoading,
+  isPageOperationInProcess,
   setEditableForNote,
   editNote,
   deleteNote,
@@ -42,7 +43,8 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({
   const currentMealOperationStatus = mealOperationStatuses.find(s => s.mealType === mealType);
 
   const isNoteEditable = editableNotesIds.find(id => id === note.id) !== undefined;
-  const isOperationInProcess = currentMealOperationStatus && currentMealOperationStatus.performing;
+  const isMealOperationInProcess = currentMealOperationStatus && currentMealOperationStatus.performing;
+  const isInputDisabled = isMealOperationInProcess || isPageOperationInProcess;
 
   const handleProductDropdownItemSelect = (newSelectedProductIndex: number): void => {
     setProductId(productDropdownItems[newSelectedProductIndex].id);
@@ -108,7 +110,7 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({
             controlSize="small"
             inputValue={productNameInputValue}
             isContentLoading={isProductDropdownContentLoading}
-            disabled={isOperationInProcess}
+            disabled={isInputDisabled}
             onValueSelect={handleProductDropdownItemSelect}
             onInputValueChange={handleProductNameDropdownInputChange}
             onContentOpen={handleProductDropdownContentOpen}
@@ -124,7 +126,7 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({
             controlSize="small"
             value={productQuantity}
             onChange={handleProductQuantityChange}
-            disabled={isOperationInProcess}
+            disabled={isInputDisabled}
           ></Input>
         ) : (
           productQuantity
@@ -135,7 +137,7 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({
         <Icon
           type={isNoteEditable ? 'check' : 'edit'}
           size="small"
-          disabled={isOperationInProcess}
+          disabled={isInputDisabled}
           onClick={isNoteEditable ? handleConfirmEditIconClick : handleEditIconClick}
         ></Icon>
       </td>
@@ -143,7 +145,7 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({
         <Icon
           type="close"
           size="small"
-          disabled={isOperationInProcess}
+          disabled={isInputDisabled}
           onClick={isNoteEditable ? handleCancelEditIconClick : handleDeleteIconClick}
         ></Icon>
       </td>

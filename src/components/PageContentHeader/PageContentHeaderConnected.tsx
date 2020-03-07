@@ -6,6 +6,7 @@ export interface StateToPropsMapResult {
   pageDate?: string;
   visiblePagesIds: number[];
   isPageContentLoading: boolean;
+  isPageOperationInProcess: boolean;
 }
 
 const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
@@ -13,6 +14,7 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
     pageDate: state.notes.list.notesForPage?.date,
     visiblePagesIds: state.pages.list.pageItems.map(p => p.id),
     isPageContentLoading: state.notes.list.notesForPageFetchState.loading,
+    isPageOperationInProcess: state.pages.operations.status.performing,
   };
 };
 

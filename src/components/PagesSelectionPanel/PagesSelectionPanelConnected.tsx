@@ -17,9 +17,12 @@ import { PagesFilter, PageItem } from '../../models';
 export interface StateToPropsMapResult {
   visiblePagesIds: number[];
   selectedPagesIds: number[];
-  isOperationInProcess: boolean;
   operationMessage?: string;
   pagesFilter: PagesFilter;
+  isPageOperationInProcess: boolean;
+  isNoteOperationInProcess: boolean;
+  areNotesForPageFetching: boolean;
+  areNotesForMealFetching: boolean;
 }
 
 export interface DispatchToPropsMapResult {
@@ -33,9 +36,12 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
   return {
     visiblePagesIds: state.pages.list.pageItems.map(p => p.id),
     selectedPagesIds: state.pages.list.selectedPagesIds,
-    isOperationInProcess: state.pages.operations.status.performing,
     operationMessage: state.pages.operations.status.message,
     pagesFilter: state.pages.filter,
+    isPageOperationInProcess: state.pages.operations.status.performing,
+    isNoteOperationInProcess: state.notes.operations.mealOperationStatuses.some(s => s.performing),
+    areNotesForPageFetching: state.notes.list.notesForPageFetchState.loading,
+    areNotesForMealFetching: state.notes.list.notesForMealFetchStates.some(s => s.loading),
   };
 };
 
