@@ -10,6 +10,10 @@
   cursor: pointer;
   user-select: none;
 
+  &_disabled {
+    cursor: default;
+  }
+
   &_labeled {
     padding-left: 30px;
   }
@@ -53,14 +57,6 @@
     border-color: $color-middle-green;
   }
 
-  // Checkbox is checked
-  // & &__input:checked ~ &__checkmark {
-  // }
-
-  & &__input:checked ~ &__checkmark:after {
-    display: block;
-  }
-
   // Checkmark indicator styles
   & &__checkmark:after {
     top: 1px;
@@ -70,5 +66,17 @@
     border: solid $color-middle-green;
     border-width: 0 2px 2px 0;
     transform: rotate(45deg);
+  }
+
+  & &__input:checked ~ &__checkmark:after {
+    display: block;
+  }
+
+  & &__input:disabled ~ &__checkmark {
+    border-color: $color-middle-green-25;
+  }
+
+  & &__input:disabled ~ &__label {
+    color: $color-middle-green-50;
   }
 }
