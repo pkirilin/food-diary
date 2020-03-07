@@ -61,9 +61,7 @@ const pagesListReducer = (state: PagesListState = initialState, action: PagesLis
     case PagesListActionTypes.DeleteDraftPage:
       return {
         ...state,
-        pageItems: {
-          ...state.pageItems.filter(p => p.id !== action.draftPageId),
-        },
+        pageItems: [...state.pageItems.filter(p => p.id !== action.draftPageId)],
         editablePagesIds: state.editablePagesIds.filter(id => id !== action.draftPageId),
       };
     case PagesListActionTypes.SetSelected:
