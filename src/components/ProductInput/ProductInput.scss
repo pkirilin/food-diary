@@ -1,0 +1,22 @@
+@import '../Controls/FormControls.variables.scss';
+
+.product-input {
+  display: flex;
+  align-items: flex-end;
+  flex: 1;
+
+  & > :not(:first-child) {
+    margin-left: 10px;
+  }
+
+  &__add {
+    flex: 0.3;
+  }
+
+  &__loader {
+    display: flex;
+    justify-content: center;
+    flex: 0.25;
+    padding: $form-control-padding 0px;
+  }
+}
