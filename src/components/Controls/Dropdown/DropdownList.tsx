@@ -25,7 +25,7 @@ interface DropdownListProps<T = string> extends DropdownPropsBase {
   searchable?: boolean;
   inputValue?: string;
   isContentLoading?: boolean;
-  onValueSelect: (newSelectedValueIndex: number) => void;
+  onValueSelect?: (newSelectedValueIndex: number) => void;
   onInputValueChange?: (newInputValue: string) => void;
   onContentOpen?: () => void;
 }
@@ -39,12 +39,12 @@ function DropdownList<T = string>({
   disabled = false,
   placeholder = 'Select value',
   searchable = false,
-  onValueSelect,
   controlSize,
   inputValue = '',
+  isContentLoading = false,
+  onValueSelect,
   onInputValueChange,
   onContentOpen,
-  isContentLoading = false,
 }: DropdownListProps<T>): ReactElement {
   const dropdownRef = useRef(null);
   const contentRef = useRef(null);
