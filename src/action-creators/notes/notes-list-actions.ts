@@ -9,7 +9,7 @@ import {
   GetNotesForMealErrorAction,
   GetNotesForMealRequestAction,
   SetEditableForNoteAction,
-} from '../../action-types/notes';
+} from '../../action-types';
 import { getNotesForPageAsync, getNotesForMealAsync } from '../../services';
 import { NotesForPage, MealType, NotesForMealRequest, MealItem } from '../../models';
 
