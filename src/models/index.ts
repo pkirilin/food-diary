@@ -12,3 +12,4 @@ export * from './note-create-edit';
 export * from './notes-for-meal-request';
 
 export * from './product-dropdown-item';
+export * from './product-item';
