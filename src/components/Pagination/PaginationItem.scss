@@ -1,0 +1,38 @@
+@import '../../variables.scss';
+@import '../Controls/FormControls.variables.scss';
+
+.pagination-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  min-width: 30px;
+  height: 30px;
+
+  border: $border-width-thick solid $color-middle-green-50;
+  border-radius: 5px;
+
+  background-color: $color-light-green;
+
+  margin: 3px;
+  padding: 5px;
+
+  transition: $form-control-transition;
+
+  &:hover {
+    background-color: $color-dark-green;
+    color: $color-white;
+    cursor: pointer;
+  }
+
+  &_selected {
+    background-color: $color-dark-green;
+    color: $color-white;
+  }
+
+  &_disabled {
+    border-color: $color-middle-green-25;
+    color: $color-middle-green-50;
+    pointer-events: none;
+  }
+}

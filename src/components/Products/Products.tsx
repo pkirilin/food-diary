@@ -3,6 +3,7 @@ import './Products.scss';
 import { ContentWrapper, MainContainer, SectionContainer, SectionTitle } from '../ContainerBlocks';
 import ProductInputConnected from '../ProductInput';
 import ProductsTableConnected from '../ProductsTable';
+import Pagination from '../Pagination';
 
 const Products: React.FC = () => {
   return (
@@ -12,6 +13,7 @@ const Products: React.FC = () => {
           <SectionTitle title="Products"></SectionTitle>
           <ProductInputConnected></ProductInputConnected>
           <ProductsTableConnected></ProductsTableConnected>
+          <Pagination pagesCount={5} selectedPageNumber={1}></Pagination>
         </SectionContainer>
       </MainContainer>
     </ContentWrapper>
