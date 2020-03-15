@@ -6,6 +6,7 @@ interface PaginationItemProps {
   isSelected?: boolean;
   isDisabled?: boolean;
   style?: React.CSSProperties;
+  onClick?: React.MouseEventHandler<HTMLDivElement>;
 }
 
 const PaginationItem: React.FC<PaginationItemProps> = ({
@@ -13,6 +14,7 @@ const PaginationItem: React.FC<PaginationItemProps> = ({
   isSelected = false,
   isDisabled = false,
   style = {},
+  onClick,
 }: PaginationItemProps) => {
   const classNames = ['pagination-item'];
 
@@ -25,7 +27,7 @@ const PaginationItem: React.FC<PaginationItemProps> = ({
   }
 
   return (
-    <div className={classNames.join(' ')} style={style}>
+    <div className={classNames.join(' ')} style={style} onClick={onClick}>
       {content}
     </div>
   );
