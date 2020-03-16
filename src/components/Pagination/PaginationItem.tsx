@@ -1,20 +1,21 @@
 import React from 'react';
 import './PaginationItem.scss';
+import { Link } from 'react-router-dom';
 
 interface PaginationItemProps {
   content: string | number;
+  linkPageNumber: number;
   isSelected?: boolean;
   isDisabled?: boolean;
   style?: React.CSSProperties;
-  onClick?: React.MouseEventHandler<HTMLDivElement>;
 }
 
 const PaginationItem: React.FC<PaginationItemProps> = ({
   content,
+  linkPageNumber,
   isSelected = false,
   isDisabled = false,
   style = {},
-  onClick,
 }: PaginationItemProps) => {
   const classNames = ['pagination-item'];
 
@@ -27,9 +28,9 @@ const PaginationItem: React.FC<PaginationItemProps> = ({
   }
 
   return (
-    <div className={classNames.join(' ')} style={style} onClick={onClick}>
-      {content}
-    </div>
+    <li className={classNames.join(' ')} style={style}>
+      <Link to={`/products?pageNumber=${linkPageNumber}`}>{content}</Link>
+    </li>
   );
 };
 

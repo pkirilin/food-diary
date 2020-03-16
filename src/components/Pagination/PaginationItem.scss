@@ -2,37 +2,41 @@
 @import '../Controls/FormControls.variables.scss';
 
 .pagination-item {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
+  display: block;
   min-width: 30px;
   height: 30px;
-
   border: $border-width-thick solid $color-middle-green-50;
   border-radius: 5px;
-
   background-color: $color-light-green;
-
   margin: 3px;
-  padding: 5px;
-
   transition: $form-control-transition;
 
-  &:hover {
-    background-color: $color-dark-green;
-    color: $color-white;
-    cursor: pointer;
+  a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    text-decoration: none;
+    transition: $form-control-transition;
   }
 
+  &:hover,
   &_selected {
     background-color: $color-dark-green;
+  }
+
+  &:hover > a,
+  &_selected > a {
     color: $color-white;
   }
 
   &_disabled {
     border-color: $color-middle-green-25;
-    color: $color-middle-green-50;
     pointer-events: none;
+  }
+
+  &_disabled > a {
+    color: $color-middle-green-50;
   }
 }

@@ -13,7 +13,7 @@ const Products: React.FC = () => {
           <SectionTitle title="Products"></SectionTitle>
           <ProductInputConnected></ProductInputConnected>
           <ProductsTableConnected></ProductsTableConnected>
-          <Pagination totalItemsCount={100} selectedPage={1} pageSize={10} maxVisiblePagesCount={5}></Pagination>
+          <Pagination totalItemsCount={100} pageSize={10} maxVisiblePagesCount={5}></Pagination>
         </SectionContainer>
       </MainContainer>
     </ContentWrapper>
