@@ -1,8 +1,10 @@
 import React from 'react';
 import './ProductsTable.scss';
 import { Table, TableColumn } from '../Controls';
+import { StateToPropsMapResult } from './ProductsTableConnected';
+import ProductsTableRowConnected from '../ProductsTableRow';
 
-type ProductsTableProps = {};
+type ProductsTableProps = StateToPropsMapResult;
 
 const productsTableColumns = [
   <TableColumn key="Product name" name="Product name" width="30%"></TableColumn>,
@@ -12,9 +14,13 @@ const productsTableColumns = [
   <TableColumn key="Delete" name="" width="35px"></TableColumn>,
 ];
 
-const ProductsTable: React.FC<ProductsTableProps> = () => {
+const ProductsTable: React.FC<ProductsTableProps> = ({ productItems }: ProductsTableProps) => {
   const mapProductItemsToTableRows = (): JSX.Element[] => {
-    return [];
+    const rows: JSX.Element[] = [];
+    productItems.forEach(product => {
+      rows.push(<ProductsTableRowConnected product={product}></ProductsTableRowConnected>);
+    });
+    return rows;
   };
 
   return (

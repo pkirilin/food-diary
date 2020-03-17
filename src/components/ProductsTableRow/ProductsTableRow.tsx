@@ -1,10 +1,21 @@
 import React from 'react';
 import './ProductsTableRow.scss';
+import { ProductItem } from '../../models';
 
-type ProductsTableRowProps = {};
+interface ProductsTableRowProps {
+  product: ProductItem;
+}
 
-const ProductsTableRow: React.FC<ProductsTableRowProps> = () => {
-  return <div>ProductsTableRow</div>;
+const ProductsTableRow: React.FC<ProductsTableRowProps> = ({ product }: ProductsTableRowProps) => {
+  return (
+    <tr>
+      <td>{product.name}</td>
+      <td>{product.caloriesCost}</td>
+      <td>{product.categoryName}</td>
+      <td></td>
+      <td></td>
+    </tr>
+  );
 };
 
 export default ProductsTableRow;

@@ -2,66 +2,29 @@ import React, { useState, useEffect } from 'react';
 import './Pagination.scss';
 import PaginationItem from './PaginationItem';
 import { useQuery } from '../../hooks';
+import updatePageRanges from './pageRangesUpdater';
+import createNumericRange from './range';
 
 interface PaginationProps {
-  totalItemsCount: number;
-  pageSize?: number;
+  totalPagesCount: number;
   maxVisiblePagesCount?: number;
 }
 
-// TODO: argument checks, move to utils
-const createNumericRange = (startNumber: number, endNumber: number): number[] => {
-  const range = new Array<number>();
-  let currentNumber = startNumber - 1;
-  for (let i = 0; i < endNumber - startNumber + 1; i++) {
-    range.push(++currentNumber);
-  }
-  return range;
-};
-
-const Pagination: React.FC<PaginationProps> = ({
-  totalItemsCount,
-  pageSize = 10,
-  maxVisiblePagesCount = 10,
-}: PaginationProps) => {
-  const totalPagesCount = Math.ceil(totalItemsCount / pageSize);
-
-  const initialVisiblePageRanges: [number, number] =
-    totalPagesCount < maxVisiblePagesCount ? [1, totalPagesCount] : [1, maxVisiblePagesCount];
-
-  const [visiblePageRanges, setVisiblePageRanges] = useState<[number, number]>(initialVisiblePageRanges);
+const Pagination: React.FC<PaginationProps> = ({ totalPagesCount, maxVisiblePagesCount = 10 }: PaginationProps) => {
+  const [visiblePageRanges, setVisiblePageRanges] = useState<[number, number]>();
 
   const query = useQuery();
   const queryPageNumber = query.get('pageNumber');
-  const currentPageNumberFromQuery = queryPageNumber !== null && !isNaN(+queryPageNumber) ? +queryPageNumber : 0;
+  const currentPageNumberFromQuery = queryPageNumber !== null && !isNaN(+queryPageNumber) ? +queryPageNumber : null;
 
   useEffect(() => {
-    const getNewPageRanges = (selectedPage: number): [number, number] => {
-      const [startPage, endPage] = visiblePageRanges;
-      const middlePage = Math.floor((startPage + endPage) / 2);
-      const middlePageOffset = selectedPage - middlePage;
-      const currentVisiblePagesCount = endPage - startPage + 1;
-
-      let newStartPage = startPage + middlePageOffset;
-      let newEndPage = endPage + middlePageOffset;
-
-      if (newEndPage > totalPagesCount) {
-        newStartPage = totalPagesCount - currentVisiblePagesCount + 1;
-        newEndPage = totalPagesCount;
-      } else if (newStartPage < 1) {
-        newStartPage = 1;
-        newEndPage = currentVisiblePagesCount;
-      }
-
-      return [newStartPage, newEndPage];
-    };
-
-    const newPageRanges = getNewPageRanges(currentPageNumberFromQuery);
+    const newPageRanges = updatePageRanges(
+      currentPageNumberFromQuery === null ? 1 : currentPageNumberFromQuery,
+      totalPagesCount,
+      maxVisiblePagesCount,
+    );
     setVisiblePageRanges(newPageRanges);
-
-    // TODO: think about possible mistake with no passing `visiblePageRanges`
-    // eslint-disable-next-line
-  }, [currentPageNumberFromQuery, totalPagesCount]);
+  }, [currentPageNumberFromQuery, totalPagesCount, maxVisiblePagesCount]);
 
   const paginationItems = visiblePageRanges ? createNumericRange(visiblePageRanges[0], visiblePageRanges[1]) : [];
 
@@ -70,8 +33,8 @@ const Pagination: React.FC<PaginationProps> = ({
   };
 
   const isPageDisabled = false;
-  const isFirstPageDisabled = isPageDisabled || currentPageNumberFromQuery === visiblePageRanges[0];
-  const isLastPageDisabled = isPageDisabled || currentPageNumberFromQuery === visiblePageRanges[1];
+  const isFirstPageDisabled = isPageDisabled || currentPageNumberFromQuery === 1 || currentPageNumberFromQuery === null;
+  const isLastPageDisabled = isPageDisabled || currentPageNumberFromQuery === totalPagesCount;
   const isPrevPageDisabled = isFirstPageDisabled;
   const isNextPageDisabled = isLastPageDisabled;
 
@@ -94,7 +57,8 @@ const Pagination: React.FC<PaginationProps> = ({
         isDisabled={isPrevPageDisabled}
       ></PaginationItem>
       {paginationItems.map((pageNumber, index) => {
-        const isSelected = pageNumber === currentPageNumberFromQuery;
+        const isSelected =
+          pageNumber === currentPageNumberFromQuery || (pageNumber === 1 && currentPageNumberFromQuery === null);
         return (
           <PaginationItem
             key={index}

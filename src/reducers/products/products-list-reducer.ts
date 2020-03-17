@@ -7,6 +7,7 @@ const initialState: ProductsListState = {
     loading: false,
     loaded: false,
   },
+  pageSize: 10,
 };
 
 const productsListReducer = (

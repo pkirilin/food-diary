@@ -16,6 +16,7 @@ export interface ProductsDropdownState {
 export interface ProductsListState {
   productItems: ProductItem[];
   productItemsFetchState: DataFetchState;
+  pageSize: number;
 }
 
 export interface ProductsOperationsState {
