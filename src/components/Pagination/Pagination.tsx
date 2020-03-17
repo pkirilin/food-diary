@@ -25,6 +25,7 @@ const Pagination: React.FC<PaginationProps> = ({
   maxVisiblePagesCount = 10,
 }: PaginationProps) => {
   const totalPagesCount = Math.ceil(totalItemsCount / pageSize);
+
   const initialVisiblePageRanges: [number, number] =
     totalPagesCount < maxVisiblePagesCount ? [1, totalPagesCount] : [1, maxVisiblePagesCount];
 
@@ -73,6 +74,10 @@ const Pagination: React.FC<PaginationProps> = ({
   const isLastPageDisabled = isPageDisabled || currentPageNumberFromQuery === visiblePageRanges[1];
   const isPrevPageDisabled = isFirstPageDisabled;
   const isNextPageDisabled = isLastPageDisabled;
+
+  if (totalPagesCount < 2) {
+    return null;
+  }
 
   return (
     <ul className="pagination">
