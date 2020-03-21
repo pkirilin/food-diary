@@ -7,9 +7,9 @@ import ProductsTableRowConnected from '../ProductsTableRow';
 type ProductsTableProps = StateToPropsMapResult;
 
 const productsTableColumns = [
-  <TableColumn key="Product name" name="Product name" width="30%"></TableColumn>,
+  <TableColumn key="Product name" name="Product name" width="50%"></TableColumn>,
   <TableColumn key="Calories" name="Calories" width="20%"></TableColumn>,
-  <TableColumn key="Category" name="Category" width="30%"></TableColumn>,
+  <TableColumn key="Category" name="Category"></TableColumn>,
   <TableColumn key="Edit" name="" width="35px"></TableColumn>,
   <TableColumn key="Delete" name="" width="35px"></TableColumn>,
 ];

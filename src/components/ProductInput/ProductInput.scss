@@ -9,14 +9,30 @@
     margin-left: 10px;
   }
 
+  & > &__loader {
+    margin-left: 0px;
+  }
+
+  &__name {
+    flex: 0.25;
+  }
+
+  &__calories {
+    flex: 0.2;
+  }
+
+  &__category {
+    flex: 0.25;
+  }
+
   &__add {
-    flex: 0.3;
+    flex: 0.1;
   }
 
   &__loader {
     display: flex;
     justify-content: center;
-    flex: 0.25;
+    flex: 0.2;
     padding: $form-control-padding 0px;
   }
 }

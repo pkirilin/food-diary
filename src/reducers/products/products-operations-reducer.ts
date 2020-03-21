@@ -64,7 +64,8 @@ const productsOperationsReducer = (
       return {
         ...state,
         productOperationStatus: {
-          performing: false,
+          performing: true,
+          message: action.operationMessage,
         },
       };
     case ProductsOperationsActionTypes.DeleteSuccess:

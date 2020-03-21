@@ -1,6 +1,6 @@
 import DropdownList from './DropdownList';
 import DropdownMenu from './DropdownMenu';
-import { productDropdownItemRenderer } from './renderers';
+import { productDropdownItemRenderer, categoryDropdownItemRenderer } from './renderers';
 
 export { DropdownList, DropdownMenu };
-export { productDropdownItemRenderer };
+export { productDropdownItemRenderer, categoryDropdownItemRenderer };
