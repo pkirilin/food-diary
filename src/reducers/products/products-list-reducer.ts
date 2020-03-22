@@ -8,6 +8,7 @@ const initialState: ProductsListState = {
     loaded: false,
   },
   pageSize: 10,
+  editableProductsIds: [],
 };
 
 const productsListReducer = (
@@ -43,6 +44,14 @@ const productsListReducer = (
           loaded: false,
           error: action.errorMessage,
         },
+      };
+
+    case ProductsListActionTypes.SetEditable:
+      return {
+        ...state,
+        editableProductsIds: action.editable
+          ? [...state.editableProductsIds, action.productId]
+          : [...state.editableProductsIds.filter(id => id !== action.productId)],
       };
     default:
       return state;

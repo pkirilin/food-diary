@@ -3,6 +3,7 @@ import {
   ProductsListActionTypes,
   GetProductsListSuccessAction,
   GetProductsListErrorAction,
+  SetEditableForProductAction,
 } from '../../action-types';
 import { ProductItem } from '../../models';
 import { Dispatch, ActionCreator } from 'redux';
@@ -49,5 +50,13 @@ export const getProducts: ActionCreator<ThunkAction<
     } catch (error) {
       return dispatch(getProductsError('Could not fetch products list'));
     }
+  };
+};
+
+export const setEditableForProduct = (productId: number, editable: boolean): SetEditableForProductAction => {
+  return {
+    type: ProductsListActionTypes.SetEditable,
+    productId,
+    editable,
   };
 };

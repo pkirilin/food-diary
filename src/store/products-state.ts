@@ -17,6 +17,7 @@ export interface ProductsListState {
   productItems: ProductItem[];
   productItemsFetchState: DataFetchState;
   pageSize: number;
+  editableProductsIds: number[];
 }
 
 export interface ProductsOperationsState {
