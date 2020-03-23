@@ -46,6 +46,7 @@ const Products: React.FC<ProductsProps> = ({
             totalPagesCount={totalPagesCount}
             maxVisiblePagesCount={10}
             isDisabled={isPaginationDisabled}
+            marginTop="10px"
           ></Pagination>
         </SectionContainer>
       </MainContainer>

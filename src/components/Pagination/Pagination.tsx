@@ -9,12 +9,14 @@ interface PaginationProps {
   totalPagesCount: number;
   maxVisiblePagesCount?: number;
   isDisabled?: boolean;
+  marginTop?: string | number;
 }
 
 const Pagination: React.FC<PaginationProps> = ({
   totalPagesCount,
   maxVisiblePagesCount = 10,
   isDisabled = false,
+  marginTop = 0,
 }: PaginationProps) => {
   const [visiblePageRanges, setVisiblePageRanges] = useState<[number, number]>();
 
@@ -33,6 +35,10 @@ const Pagination: React.FC<PaginationProps> = ({
 
   const paginationItems = visiblePageRanges ? createNumericRange(visiblePageRanges[0], visiblePageRanges[1]) : [];
 
+  const paginationStyle: React.CSSProperties = {
+    marginTop,
+  };
+
   const paginationItemsStyle: React.CSSProperties = {
     minWidth: 50,
   };
@@ -47,7 +53,7 @@ const Pagination: React.FC<PaginationProps> = ({
   }
 
   return (
-    <ul className="pagination">
+    <ul className="pagination" style={paginationStyle}>
       <PaginationItem
         content="First"
         linkPageNumber={1}
