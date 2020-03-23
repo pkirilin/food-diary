@@ -33,10 +33,15 @@
 
   &_disabled {
     border-color: $color-middle-green-25;
-    pointer-events: none;
+    background-color: $color-light-green;
   }
 
   &_disabled > a {
     color: $color-middle-green-50;
+  }
+
+  &_selected,
+  &_disabled {
+    pointer-events: none;
   }
 }

@@ -12,6 +12,7 @@ interface ProductsProps extends StateToPropsMapResult, DispatchToPropsMapResult 
 
 const Products: React.FC<ProductsProps> = ({
   isProductsTableLoading,
+  isProductOperationInProcess,
   productItems,
   productItemsPageSize,
   getProducts,
@@ -24,6 +25,8 @@ const Products: React.FC<ProductsProps> = ({
   useEffect(() => {
     getProducts();
   }, [getProducts, currentPageNumberFromQuery]);
+
+  const isPaginationDisabled = isProductsTableLoading || isProductOperationInProcess;
 
   return (
     <ContentWrapper>
@@ -39,7 +42,11 @@ const Products: React.FC<ProductsProps> = ({
             )}
             <ProductsTableConnected></ProductsTableConnected>
           </div>
-          <Pagination totalPagesCount={totalPagesCount} maxVisiblePagesCount={10}></Pagination>
+          <Pagination
+            totalPagesCount={totalPagesCount}
+            maxVisiblePagesCount={10}
+            isDisabled={isPaginationDisabled}
+          ></Pagination>
         </SectionContainer>
       </MainContainer>
     </ContentWrapper>

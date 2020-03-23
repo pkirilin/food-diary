@@ -8,9 +8,14 @@ import createNumericRange from './range';
 interface PaginationProps {
   totalPagesCount: number;
   maxVisiblePagesCount?: number;
+  isDisabled?: boolean;
 }
 
-const Pagination: React.FC<PaginationProps> = ({ totalPagesCount, maxVisiblePagesCount = 10 }: PaginationProps) => {
+const Pagination: React.FC<PaginationProps> = ({
+  totalPagesCount,
+  maxVisiblePagesCount = 10,
+  isDisabled = false,
+}: PaginationProps) => {
   const [visiblePageRanges, setVisiblePageRanges] = useState<[number, number]>();
 
   const query = useQuery();
@@ -32,9 +37,8 @@ const Pagination: React.FC<PaginationProps> = ({ totalPagesCount, maxVisiblePage
     minWidth: 50,
   };
 
-  const isPageDisabled = false;
-  const isFirstPageDisabled = isPageDisabled || currentPageNumberFromQuery === 1 || currentPageNumberFromQuery === null;
-  const isLastPageDisabled = isPageDisabled || currentPageNumberFromQuery === totalPagesCount;
+  const isFirstPageDisabled = isDisabled || currentPageNumberFromQuery === 1 || currentPageNumberFromQuery === null;
+  const isLastPageDisabled = isDisabled || currentPageNumberFromQuery === totalPagesCount;
   const isPrevPageDisabled = isFirstPageDisabled;
   const isNextPageDisabled = isLastPageDisabled;
 
@@ -65,7 +69,7 @@ const Pagination: React.FC<PaginationProps> = ({ totalPagesCount, maxVisiblePage
             content={pageNumber}
             linkPageNumber={pageNumber}
             isSelected={isSelected}
-            isDisabled={isPageDisabled}
+            isDisabled={isDisabled}
           ></PaginationItem>
         );
       })}

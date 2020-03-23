@@ -8,6 +8,7 @@ import { getProducts } from '../../action-creators';
 
 export interface StateToPropsMapResult {
   isProductsTableLoading: boolean;
+  isProductOperationInProcess: boolean;
   productItems: ProductItem[];
   productItemsPageSize: number;
 }
@@ -19,6 +20,7 @@ export interface DispatchToPropsMapResult {
 const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
   return {
     isProductsTableLoading: state.products.list.productItemsFetchState.loading,
+    isProductOperationInProcess: state.products.operations.productOperationStatus.performing,
     productItems: state.products.list.productItems,
     productItemsPageSize: state.products.list.pageSize,
   };
