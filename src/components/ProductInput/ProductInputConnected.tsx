@@ -10,7 +10,7 @@ import {
   GetCategoryDropdownItemsErrorAction,
 } from '../../action-types';
 import { ThunkDispatch } from 'redux-thunk';
-import { ProductCreateEdit, ProductItem, CategoryDropdownItem } from '../../models';
+import { ProductCreateEdit, ProductItem, CategoryDropdownItem, ProductsFilter } from '../../models';
 import { createProduct, getProducts, getCategoryDropdownItems } from '../../action-creators';
 
 export interface StateToPropsMapResult {
@@ -18,6 +18,7 @@ export interface StateToPropsMapResult {
   productItemsFetchState: DataFetchState;
   categoryDropdownItems: CategoryDropdownItem[];
   isCategoryDropdownContentLoading: boolean;
+  productsFilter: ProductsFilter;
 }
 
 const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
@@ -26,12 +27,13 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
     productItemsFetchState: state.products.list.productItemsFetchState,
     categoryDropdownItems: state.categories.dropdown.categoryDropdownItems,
     isCategoryDropdownContentLoading: state.categories.dropdown.categoryDropdownItemsFetchState.loading,
+    productsFilter: state.products.filter,
   };
 };
 
 export interface DispatchToPropsMapResult {
   createProduct: (product: ProductCreateEdit) => Promise<CreateProductSuccessAction | CreateProductErrorAction>;
-  getProducts: () => Promise<GetProductsListSuccessAction | GetProductsListErrorAction>;
+  getProducts: (productsFilter: ProductsFilter) => Promise<GetProductsListSuccessAction | GetProductsListErrorAction>;
   getCategoryDropdownItems: () => Promise<GetCategoryDropdownItemsSuccessAction | GetCategoryDropdownItemsErrorAction>;
 }
 
@@ -40,7 +42,7 @@ type ProductInputDispatch = ThunkDispatch<
   ProductCreateEdit,
   CreateProductSuccessAction | CreateProductErrorAction
 > &
-  ThunkDispatch<ProductItem, void, GetProductsListSuccessAction | GetProductsListErrorAction> &
+  ThunkDispatch<ProductItem, ProductsFilter, GetProductsListSuccessAction | GetProductsListErrorAction> &
   ThunkDispatch<
     CategoryDropdownItem[],
     void,
@@ -52,8 +54,10 @@ const mapDispatchToProps = (dispatch: ProductInputDispatch): DispatchToPropsMapR
     createProduct: (product: ProductCreateEdit): Promise<CreateProductSuccessAction | CreateProductErrorAction> => {
       return dispatch(createProduct(product));
     },
-    getProducts: (): Promise<GetProductsListSuccessAction | GetProductsListErrorAction> => {
-      return dispatch(getProducts());
+    getProducts: (
+      productsFilter: ProductsFilter,
+    ): Promise<GetProductsListSuccessAction | GetProductsListErrorAction> => {
+      return dispatch(getProducts(productsFilter));
     },
     getCategoryDropdownItems: (): Promise<
       GetCategoryDropdownItemsSuccessAction | GetCategoryDropdownItemsErrorAction

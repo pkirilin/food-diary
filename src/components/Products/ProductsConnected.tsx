@@ -1,20 +1,23 @@
 import Products from './Products';
 import { connect } from 'react-redux';
-import { GetProductsListSuccessAction, GetProductsListErrorAction } from '../../action-types';
+import { GetProductsListSuccessAction, GetProductsListErrorAction, ProductsFilterActions } from '../../action-types';
 import { FoodDiaryState } from '../../store';
 import { ThunkDispatch } from 'redux-thunk';
-import { ProductItem } from '../../models';
-import { getProducts } from '../../action-creators';
+import { ProductItem, ProductsFilter } from '../../models';
+import { getProducts, updateProductsFilter } from '../../action-creators';
+import { Dispatch } from 'redux';
 
 export interface StateToPropsMapResult {
   isProductsTableLoading: boolean;
   isProductOperationInProcess: boolean;
   productItems: ProductItem[];
   productItemsPageSize: number;
+  productsFilter: ProductsFilter;
 }
 
 export interface DispatchToPropsMapResult {
-  getProducts: () => Promise<GetProductsListSuccessAction | GetProductsListErrorAction>;
+  getProducts: (productsFilter: ProductsFilter) => Promise<GetProductsListSuccessAction | GetProductsListErrorAction>;
+  updateProductsFilter: (updatedFilter: ProductsFilter) => void;
 }
 
 const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
@@ -22,16 +25,27 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
     isProductsTableLoading: state.products.list.productItemsFetchState.loading,
     isProductOperationInProcess: state.products.operations.productOperationStatus.performing,
     productItems: state.products.list.productItems,
-    productItemsPageSize: state.products.list.pageSize,
+    productItemsPageSize: state.products.filter.pageSize,
+    productsFilter: state.products.filter,
   };
 };
 
-type ProductsDispatchType = ThunkDispatch<ProductItem, void, GetProductsListSuccessAction | GetProductsListErrorAction>;
+type ProductsDispatchType = ThunkDispatch<
+  ProductItem,
+  ProductsFilter,
+  GetProductsListSuccessAction | GetProductsListErrorAction
+> &
+  Dispatch<ProductsFilterActions>;
 
 const mapDispatchToProps = (dispatch: ProductsDispatchType): DispatchToPropsMapResult => {
   return {
-    getProducts: (): Promise<GetProductsListSuccessAction | GetProductsListErrorAction> => {
-      return dispatch(getProducts());
+    getProducts: (
+      productsFilter: ProductsFilter,
+    ): Promise<GetProductsListSuccessAction | GetProductsListErrorAction> => {
+      return dispatch(getProducts(productsFilter));
+    },
+    updateProductsFilter: (updatedFilter: ProductsFilter): void => {
+      dispatch(updateProductsFilter(updatedFilter));
     },
   };
 };

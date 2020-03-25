@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { sleep } from './sleep';
-import { ProductCreateEdit } from '../models';
+import { ProductCreateEdit, ProductsFilter } from '../models';
 
 export const getProductDropdownItemsAsync = async (): Promise<Response> => {
   return await fetch('/products-dropdown-items-data.json');
 };
 
-export const getProductsAsync = async (): Promise<Response> => {
+export const getProductsAsync = async (productsFilter: ProductsFilter): Promise<Response> => {
   return await fetch('/products-list-data.json');
 };
 

@@ -6,7 +6,6 @@ import ProductsTableConnected from '../ProductsTable';
 import Pagination from '../Pagination';
 import { StateToPropsMapResult, DispatchToPropsMapResult } from './ProductsConnected';
 import Loader from '../Loader';
-import { useQuery } from '../../hooks';
 
 interface ProductsProps extends StateToPropsMapResult, DispatchToPropsMapResult {}
 
@@ -15,18 +14,26 @@ const Products: React.FC<ProductsProps> = ({
   isProductOperationInProcess,
   productItems,
   productItemsPageSize,
+  productsFilter,
   getProducts,
+  updateProductsFilter,
 }: ProductsProps) => {
-  const query = useQuery();
-  const queryPageNumber = query.get('pageNumber');
-  const currentPageNumberFromQuery = queryPageNumber !== null && !isNaN(+queryPageNumber) ? +queryPageNumber : null;
   const totalPagesCount = Math.ceil(productItems.length / productItemsPageSize);
 
   useEffect(() => {
-    getProducts();
-  }, [getProducts, currentPageNumberFromQuery]);
+    getProducts(productsFilter);
+  }, [getProducts, productsFilter]);
 
   const isPaginationDisabled = isProductsTableLoading || isProductOperationInProcess;
+
+  const handlePageNumberUpdate = (newPageNumber?: number): void => {
+    if (newPageNumber !== productsFilter.pageNumber) {
+      updateProductsFilter({
+        ...productsFilter,
+        pageNumber: newPageNumber,
+      });
+    }
+  };
 
   return (
     <ContentWrapper>
@@ -47,6 +54,7 @@ const Products: React.FC<ProductsProps> = ({
             maxVisiblePagesCount={10}
             isDisabled={isPaginationDisabled}
             marginTop="10px"
+            onPageNumberUpdate={handlePageNumberUpdate}
           ></Pagination>
         </SectionContainer>
       </MainContainer>

@@ -10,6 +10,7 @@ interface PaginationProps {
   maxVisiblePagesCount?: number;
   isDisabled?: boolean;
   marginTop?: string | number;
+  onPageNumberUpdate?: (newPageNumber?: number) => void;
 }
 
 const Pagination: React.FC<PaginationProps> = ({
@@ -17,21 +18,24 @@ const Pagination: React.FC<PaginationProps> = ({
   maxVisiblePagesCount = 10,
   isDisabled = false,
   marginTop = 0,
+  onPageNumberUpdate,
 }: PaginationProps) => {
   const [visiblePageRanges, setVisiblePageRanges] = useState<[number, number]>();
 
   const query = useQuery();
   const queryPageNumber = query.get('pageNumber');
-  const currentPageNumberFromQuery = queryPageNumber !== null && !isNaN(+queryPageNumber) ? +queryPageNumber : null;
+  const currentPageNumberFromQuery =
+    queryPageNumber !== null && !isNaN(+queryPageNumber) ? +queryPageNumber : undefined;
 
   useEffect(() => {
-    const newPageRanges = updatePageRanges(
-      currentPageNumberFromQuery === null ? 1 : currentPageNumberFromQuery,
-      totalPagesCount,
-      maxVisiblePagesCount,
-    );
+    const newPageNumber = currentPageNumberFromQuery === undefined ? 1 : currentPageNumberFromQuery;
+    const newPageRanges = updatePageRanges(newPageNumber, totalPagesCount, maxVisiblePagesCount);
     setVisiblePageRanges(newPageRanges);
-  }, [currentPageNumberFromQuery, totalPagesCount, maxVisiblePagesCount]);
+
+    if (onPageNumberUpdate) {
+      onPageNumberUpdate(newPageNumber);
+    }
+  }, [currentPageNumberFromQuery, totalPagesCount, maxVisiblePagesCount, onPageNumberUpdate]);
 
   const paginationItems = visiblePageRanges ? createNumericRange(visiblePageRanges[0], visiblePageRanges[1]) : [];
 
@@ -43,7 +47,8 @@ const Pagination: React.FC<PaginationProps> = ({
     minWidth: 50,
   };
 
-  const isFirstPageDisabled = isDisabled || currentPageNumberFromQuery === 1 || currentPageNumberFromQuery === null;
+  const isFirstPageDisabled =
+    isDisabled || currentPageNumberFromQuery === 1 || currentPageNumberFromQuery === undefined;
   const isLastPageDisabled = isDisabled || currentPageNumberFromQuery === totalPagesCount;
   const isPrevPageDisabled = isFirstPageDisabled;
   const isNextPageDisabled = isLastPageDisabled;
@@ -62,13 +67,13 @@ const Pagination: React.FC<PaginationProps> = ({
       ></PaginationItem>
       <PaginationItem
         content="Prev"
-        linkPageNumber={currentPageNumberFromQuery ? currentPageNumberFromQuery - 1 : 0}
+        linkPageNumber={currentPageNumberFromQuery ? currentPageNumberFromQuery - 1 : 1}
         style={paginationItemsStyle}
         isDisabled={isPrevPageDisabled}
       ></PaginationItem>
       {paginationItems.map((pageNumber, index) => {
         const isSelected =
-          pageNumber === currentPageNumberFromQuery || (pageNumber === 1 && currentPageNumberFromQuery === null);
+          pageNumber === currentPageNumberFromQuery || (pageNumber === 1 && currentPageNumberFromQuery === undefined);
         return (
           <PaginationItem
             key={index}
@@ -81,7 +86,7 @@ const Pagination: React.FC<PaginationProps> = ({
       })}
       <PaginationItem
         content="Next"
-        linkPageNumber={currentPageNumberFromQuery ? currentPageNumberFromQuery + 1 : 0}
+        linkPageNumber={currentPageNumberFromQuery ? currentPageNumberFromQuery + 1 : 2}
         style={paginationItemsStyle}
         isDisabled={isNextPageDisabled}
       ></PaginationItem>

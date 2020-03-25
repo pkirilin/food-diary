@@ -13,6 +13,7 @@ const ProductInput: React.FC<ProductInputProps> = ({
   productItemsFetchState,
   categoryDropdownItems,
   isCategoryDropdownContentLoading,
+  productsFilter,
   createProduct,
   getProducts,
   getCategoryDropdownItems,
@@ -68,7 +69,7 @@ const ProductInput: React.FC<ProductInputProps> = ({
     });
 
     if (createProductAction as CreateProductSuccessAction) {
-      await getProducts();
+      await getProducts(productsFilter);
       setProductNameInputValue('');
       setCaloriesCost(100);
       setCategoryId(0);

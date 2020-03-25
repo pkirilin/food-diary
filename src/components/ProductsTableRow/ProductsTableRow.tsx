@@ -17,6 +17,7 @@ const ProductsTableRow: React.FC<ProductsTableRowProps> = ({
   categoryDropdownItems,
   isProductOperationInProcess,
   isCategoryDropdownContentLoading,
+  productsFilter,
   setEditableForProduct,
   getProducts,
   getCategoryDropdownItems,
@@ -78,7 +79,7 @@ const ProductsTableRow: React.FC<ProductsTableRowProps> = ({
 
     if (editProductAction as EditProductSuccessAction) {
       setEditableForProduct(product.id, false);
-      await getProducts();
+      await getProducts(productsFilter);
     }
   };
 
@@ -91,7 +92,7 @@ const ProductsTableRow: React.FC<ProductsTableRowProps> = ({
     if (isDeleteConfirmed) {
       const deleteProductAction = await deleteProduct(product.id);
       if (deleteProductAction as DeleteProductSuccessAction) {
-        await getProducts();
+        await getProducts(productsFilter);
       }
     }
   };

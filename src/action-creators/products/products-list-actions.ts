@@ -5,7 +5,7 @@ import {
   GetProductsListErrorAction,
   SetEditableForProductAction,
 } from '../../action-types';
-import { ProductItem } from '../../models';
+import { ProductItem, ProductsFilter } from '../../models';
 import { Dispatch, ActionCreator } from 'redux';
 import { ThunkAction } from 'redux-thunk';
 import { getProductsAsync } from '../../services';
@@ -33,14 +33,14 @@ const getProductsError = (errorMessage: string): GetProductsListErrorAction => {
 export const getProducts: ActionCreator<ThunkAction<
   Promise<GetProductsListSuccessAction | GetProductsListErrorAction>,
   ProductItem,
-  void,
+  ProductsFilter,
   GetProductsListSuccessAction | GetProductsListErrorAction
->> = () => {
+>> = (productsFilter: ProductsFilter) => {
   return async (dispatch: Dispatch): Promise<GetProductsListSuccessAction | GetProductsListErrorAction> => {
     dispatch(getProductsRequest());
 
     try {
-      const response = await getProductsAsync();
+      const response = await getProductsAsync(productsFilter);
       if (!response.ok) {
         return dispatch(getProductsError('Response is not ok'));
       }

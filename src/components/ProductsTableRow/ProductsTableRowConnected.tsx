@@ -21,13 +21,14 @@ import {
   getCategoryDropdownItems,
 } from '../../action-creators';
 import { ThunkDispatch } from 'redux-thunk';
-import { ProductItem, ProductCreateEdit, CategoryDropdownItem } from '../../models';
+import { ProductItem, ProductCreateEdit, CategoryDropdownItem, ProductsFilter } from '../../models';
 
 export interface StateToPropsMapResult {
   editableProductsIds: number[];
   categoryDropdownItems: CategoryDropdownItem[];
   isProductOperationInProcess: boolean;
   isCategoryDropdownContentLoading: boolean;
+  productsFilter: ProductsFilter;
 }
 
 const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
@@ -36,19 +37,20 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
     categoryDropdownItems: state.categories.dropdown.categoryDropdownItems,
     isProductOperationInProcess: state.products.operations.productOperationStatus.performing,
     isCategoryDropdownContentLoading: state.categories.dropdown.categoryDropdownItemsFetchState.loading,
+    productsFilter: state.products.filter,
   };
 };
 
 export interface DispatchToPropsMapResult {
   setEditableForProduct: (productId: number, editable: boolean) => void;
-  getProducts: () => Promise<GetProductsListSuccessAction | GetProductsListErrorAction>;
+  getProducts: (productsFilter: ProductsFilter) => Promise<GetProductsListSuccessAction | GetProductsListErrorAction>;
   getCategoryDropdownItems: () => Promise<GetCategoryDropdownItemsSuccessAction | GetCategoryDropdownItemsErrorAction>;
   editProduct: (product: ProductCreateEdit) => Promise<EditProductSuccessAction | EditProductErrorAction>;
   deleteProduct: (productId: number) => Promise<DeleteProductSuccessAction | DeleteProductErrorAction>;
 }
 
 type ProductsTableRowDispatch = Dispatch<SetEditableForProductAction> &
-  ThunkDispatch<ProductItem, void, GetProductsListSuccessAction | GetProductsListErrorAction> &
+  ThunkDispatch<ProductItem, ProductsFilter, GetProductsListSuccessAction | GetProductsListErrorAction> &
   ThunkDispatch<void, ProductCreateEdit, EditProductSuccessAction | EditProductErrorAction> &
   ThunkDispatch<void, number, DeleteProductSuccessAction | DeleteProductErrorAction> &
   ThunkDispatch<
@@ -62,8 +64,10 @@ const mapDispatchToProps = (dispatch: ProductsTableRowDispatch): DispatchToProps
     setEditableForProduct: (productId: number, editable: boolean): void => {
       dispatch(setEditableForProduct(productId, editable));
     },
-    getProducts: (): Promise<GetProductsListSuccessAction | GetProductsListErrorAction> => {
-      return dispatch(getProducts());
+    getProducts: (
+      productsFilter: ProductsFilter,
+    ): Promise<GetProductsListSuccessAction | GetProductsListErrorAction> => {
+      return dispatch(getProducts(productsFilter));
     },
     getCategoryDropdownItems: (): Promise<
       GetCategoryDropdownItemsSuccessAction | GetCategoryDropdownItemsErrorAction
