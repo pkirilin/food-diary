@@ -69,6 +69,7 @@ const PagesListItem: React.FC<PagesListItemProps> = ({
     } else {
       // This is existing page: cancel = make page not editable
       setEditableForPages([page.id], false);
+      setSelectedDate(page.date);
     }
   };
 

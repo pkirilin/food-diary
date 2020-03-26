@@ -25,7 +25,7 @@ const ProductsTableRow: React.FC<ProductsTableRowProps> = ({
   deleteProduct,
 }: ProductsTableRowProps) => {
   const [productNameInputValue, setProductNameInputValue] = useState(product.name);
-  const [caloriesCost, setCaloriesCost] = useState(100);
+  const [caloriesCost, setCaloriesCost] = useState(product.caloriesCost);
   const [categoryId, setCategoryId] = useState(product.categoryId);
   const [categoryNameInputValue, setCategoryNameInputValue] = useState(product.categoryName);
 
@@ -85,6 +85,10 @@ const ProductsTableRow: React.FC<ProductsTableRowProps> = ({
 
   const handleCancelEditIconClick = (): void => {
     setEditableForProduct(product.id, false);
+    setProductNameInputValue(product.name);
+    setCaloriesCost(product.caloriesCost);
+    setCategoryId(product.categoryId);
+    setCategoryNameInputValue(product.categoryName);
   };
 
   const handleDeleteIconClick = async (): Promise<void> => {

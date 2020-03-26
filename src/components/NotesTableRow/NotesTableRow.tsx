@@ -27,11 +27,9 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({
   getNotesForMeal,
   getProductDropdownItems,
 }: NotesTableRowProps) => {
-  const initialSelectedProductName = productDropdownItems.find(p => p.id === note.productId)?.name;
-
   const [productId, setProductId] = useState(note.productId);
-  const [productNameInputValue, setProductNameInputValue] = useState(initialSelectedProductName);
-  const [productQuantity, setProductQuantity] = useState(100);
+  const [productNameInputValue, setProductNameInputValue] = useState(note.productName);
+  const [productQuantity, setProductQuantity] = useState(note.productQuantity);
 
   const productNameChangeDebounce = useDebounce(() => {
     getProductDropdownItems();
@@ -92,6 +90,9 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({
 
   const handleCancelEditIconClick = (): void => {
     setEditableForNote(note.id, false);
+    setProductId(note.productId);
+    setProductNameInputValue(note.productName);
+    setProductQuantity(note.productQuantity);
   };
 
   const handleProductDropdownContentOpen = (): void => {
