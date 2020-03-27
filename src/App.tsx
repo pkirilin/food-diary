@@ -5,7 +5,7 @@ import { Router, Switch, Route, Redirect } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import PagesConnected from './components/Pages';
 import ProductsConnected from './components/Products';
-import Categories from './components/Categories';
+import CategoriesConnected from './components/Categories';
 
 const history = createBrowserHistory();
 
@@ -16,7 +16,7 @@ const App: React.FC = () => {
       <Switch>
         <Route path="/pages" component={PagesConnected}></Route>
         <Route exact path="/products" component={ProductsConnected}></Route>
-        <Route exact path="/categories" component={Categories}></Route>
+        <Route exact path="/categories" component={CategoriesConnected}></Route>
         <Redirect exact from="/" to="/pages"></Redirect>
       </Switch>
     </Router>

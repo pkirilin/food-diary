@@ -1,3 +1,3 @@
-import Categories from './Categories';
+import CategoriesConnected from './CategoriesConnected';
 
-export default Categories;
+export default CategoriesConnected;
