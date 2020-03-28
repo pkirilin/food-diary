@@ -17,3 +17,5 @@ export * from './product-create-edit';
 export * from './products-filter';
 
 export * from './category-dropdown-item';
+export * from './category-item';
+export * from './categories-filter';
