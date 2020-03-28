@@ -34,8 +34,8 @@ const Icon: React.FC<IconProps> = ({
 
   return (
     <div {...props} onClick={disabled ? undefined : onClick} className={iconContainerClassNames.join(' ')}>
-      {label && <div className={labelClassNames.join(' ')}>{label}</div>}
       <IconSvgComponent style={svgStyle} className={iconClassNames.join(' ')}></IconSvgComponent>
+      {label && <div className={labelClassNames.join(' ')}>{label}</div>}
     </div>
   );
 };
