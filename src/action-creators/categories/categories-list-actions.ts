@@ -5,6 +5,9 @@ import {
   GetCategoriesListErrorAction,
   GetCategoriesListRequestAction,
   CategoriesListActionTypes,
+  CreateDraftCategoryAction,
+  DeleteDraftCategoryAction,
+  SetEditableForCategoriesAction,
 } from '../../action-types';
 import { CategoryItem, CategoriesFilter } from '../../models';
 import { getCategoriesAsync } from '../../services';
@@ -49,5 +52,30 @@ export const getCategories: ActionCreator<ThunkAction<
     } catch (error) {
       return dispatch(getCategoriesError('Could not fetch categories list'));
     }
+  };
+};
+
+export const createDraftCategory = (draftCategory: CategoryItem): CreateDraftCategoryAction => {
+  return {
+    type: CategoriesListActionTypes.CreateDraftCategory,
+    draftCategory,
+  };
+};
+
+export const deleteDraftCategory = (draftCategoryId: number): DeleteDraftCategoryAction => {
+  return {
+    type: CategoriesListActionTypes.DeleteDraftCategory,
+    draftCategoryId,
+  };
+};
+
+export const setEditableForCategories = (
+  categoriesIds: number[],
+  editable: boolean,
+): SetEditableForCategoriesAction => {
+  return {
+    type: CategoriesListActionTypes.SetEditable,
+    categoriesIds,
+    editable,
   };
 };
