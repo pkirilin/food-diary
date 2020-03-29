@@ -19,3 +19,4 @@ export * from './products-filter';
 export * from './category-dropdown-item';
 export * from './category-item';
 export * from './categories-filter';
+export * from './category-create-edit';
