@@ -3,6 +3,10 @@
 .sidebar-list-item-controls {
   display: flex;
   justify-content: space-around;
-  width: 100px;
-  padding-left: $nested-items-padding-left-right;
+  align-items: center;
+  margin: 0 $nested-items-padding-left-right;
+
+  & > :not(:first-child) {
+    margin-left: 10px;
+  }
 }

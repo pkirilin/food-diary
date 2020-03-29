@@ -7,7 +7,6 @@ import { Input, Checkbox } from '../Controls';
 import Icon from '../Icon';
 import { DispatchToPropsMapResult, StateToPropsMapResult } from './PagesListItemConnected';
 import { PageItem } from '../../models';
-import SidebarListItemCheckbox from '../SidebarBlocks/SidebarListItemCheckbox';
 import { PagesOperationsActionTypes } from '../../action-types';
 
 interface PagesListItemProps extends StateToPropsMapResult, DispatchToPropsMapResult {
@@ -117,9 +116,9 @@ const PagesListItem: React.FC<PagesListItemProps> = ({
               <Badge label={caloriesBadgeLabel} selected={isSelected}></Badge>
             </BadgesContainer>
           </SidebarListItemLink>
-          <SidebarListItemCheckbox>
+          <SidebarListItemControls>
             <Checkbox checked={isSelected} onCheck={handlePageCheck}></Checkbox>
-          </SidebarListItemCheckbox>
+          </SidebarListItemControls>
         </SidebarListItem>
       )}
     </React.Fragment>
