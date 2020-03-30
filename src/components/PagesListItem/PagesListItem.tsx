@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
 import './PagesListItem.scss';
 import Badge from '../Badge';
-import { SidebarListItem, SidebarListItemLink, SidebarListItemControls } from '../SidebarBlocks';
+import {
+  SidebarListItem,
+  SidebarListItemLink,
+  SidebarListItemControls,
+  useActiveLinkClassName,
+} from '../SidebarBlocks';
 import { BadgesContainer } from '../ContainerBlocks';
 import { Input, Checkbox } from '../Controls';
 import Icon from '../Icon';
@@ -79,7 +84,7 @@ const PagesListItem: React.FC<PagesListItemProps> = ({
   const notesBadgeLabel = `${page.countNotes} ${page.countNotes === 1 ? 'note' : 'notes'}`;
   const caloriesBadgeLabel = `${page.countCalories} cal`;
 
-  const activeLinkClassName = isSelected ? 'sidebar-list-item-link_active-selected' : 'sidebar-list-item-link_active';
+  const activeLinkClassName = useActiveLinkClassName(isSelected);
 
   return (
     <React.Fragment>

@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
 import './CategoriesListItem.scss';
-import { SidebarListItem, SidebarListItemLink, SidebarListItemControls } from '../SidebarBlocks';
+import {
+  SidebarListItem,
+  SidebarListItemLink,
+  SidebarListItemControls,
+  useActiveLinkClassName,
+} from '../SidebarBlocks';
 import { BadgesContainer } from '../ContainerBlocks';
 import Badge from '../Badge';
 import { CategoryItem, CategoryCreateEdit } from '../../models';
@@ -29,6 +34,8 @@ const CategoriesListItem: React.FC<CategoriesListItemProps> = ({
   getCategories,
 }: CategoriesListItemProps) => {
   const [categoryName, setCategoryName] = useState(category.name);
+
+  const activeLinkClassName = useActiveLinkClassName();
 
   const isEditable = editableCategoriesIds.find(id => id === category.id) !== undefined;
   const isAnySideEffectHappening = isCategoryOperationInProcess;
@@ -114,7 +121,7 @@ const CategoriesListItem: React.FC<CategoriesListItemProps> = ({
         </React.Fragment>
       ) : (
         <React.Fragment>
-          <SidebarListItemLink to={`/categories/${category.id}`} activeClassName="" selected={false}>
+          <SidebarListItemLink to={`/categories/${category.id}`} activeClassName={activeLinkClassName} selected={false}>
             <div>{category.name}</div>
             <BadgesContainer>
               <Badge label={categoryProductsBadgeLabel} selected={false}></Badge>
