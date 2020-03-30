@@ -7,6 +7,7 @@ import SidebarListItemControls from './SidebarListItemControls';
 import SidebarSelectionPanel from './SidebarSelectionPanel';
 import SidebarSelectionPanelOptions from './SidebarSelectionPanelOptions';
 import SidebarListPlaceholder from './SidebarListPlaceholder';
+import SidebarOperationsPanel from './SidebarOperationsPanel';
 
 export {
   SidebarControlPanel,
@@ -18,4 +19,5 @@ export {
   SidebarSelectionPanel,
   SidebarSelectionPanelOptions,
   SidebarListPlaceholder,
+  SidebarOperationsPanel,
 };

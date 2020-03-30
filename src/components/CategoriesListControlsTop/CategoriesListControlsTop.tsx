@@ -2,18 +2,28 @@ import React from 'react';
 import './CategoriesListControlsTop.scss';
 import { SidebarControlPanel, SidebarControlPanelIcons } from '../SidebarBlocks';
 import Icon from '../Icon';
+import { StateToPropsMapResult, DispatchToPropsMapResult } from './CategoriesListControlsTopConnected';
 
-type CategoriesListControlsTopProps = {};
+interface CategoriesListControlsTopProps extends StateToPropsMapResult, DispatchToPropsMapResult {}
 
-const CategoriesListControlsTop: React.FC<CategoriesListControlsTopProps> = () => {
-  const isControlDisabled = false;
+const CategoriesListControlsTop: React.FC<CategoriesListControlsTopProps> = ({
+  isCategoryOperationInProcess,
+  areCategoriesLoading,
+  getCategories,
+  createDraftCategory,
+}: CategoriesListControlsTopProps) => {
+  const isControlDisabled = isCategoryOperationInProcess || areCategoriesLoading;
 
   const handleAddIconClick = (): void => {
-    return;
+    createDraftCategory({
+      id: 0,
+      name: '',
+      countProducts: 0,
+    });
   };
 
   const handleRefreshIconClick = (): void => {
-    return;
+    getCategories({});
   };
 
   return (
