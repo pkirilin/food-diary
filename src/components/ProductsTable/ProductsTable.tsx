@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './ProductsTable.scss';
 import { Table, TableColumn } from '../Controls';
-import { StateToPropsMapResult } from './ProductsTableConnected';
+import { StateToPropsMapResult, DispatchToPropsMapResult } from './ProductsTableConnected';
 import ProductsTableRowConnected from '../ProductsTableRow';
+import Loader from '../Loader';
+import Pagination from '../Pagination';
 
-type ProductsTableProps = StateToPropsMapResult;
+interface ProductsTableProps extends StateToPropsMapResult, DispatchToPropsMapResult {}
 
 const productsTableColumns = [
   <TableColumn key="Product name" name="Product name" width="50%"></TableColumn>,
@@ -14,7 +16,28 @@ const productsTableColumns = [
   <TableColumn key="Delete" name="" width="35px"></TableColumn>,
 ];
 
-const ProductsTable: React.FC<ProductsTableProps> = ({ productItems }: ProductsTableProps) => {
+const ProductsTable: React.FC<ProductsTableProps> = ({
+  isProductsTableLoading,
+  isProductOperationInProcess,
+  productItems,
+  productItemsPageSize,
+  productsFilter,
+  updateProductsFilter,
+  getProducts,
+}: ProductsTableProps) => {
+  const totalPagesCount = Math.ceil(productItems.length / productItemsPageSize);
+
+  const isPaginationDisabled = isProductsTableLoading || isProductOperationInProcess;
+
+  const handlePageNumberUpdate = (newPageNumber?: number): void => {
+    if (newPageNumber !== productsFilter.pageNumber) {
+      updateProductsFilter({
+        ...productsFilter,
+        pageNumber: newPageNumber,
+      });
+    }
+  };
+
   const mapProductItemsToTableRows = (): JSX.Element[] => {
     const rows: JSX.Element[] = [];
     productItems.forEach(product => {
@@ -23,10 +46,30 @@ const ProductsTable: React.FC<ProductsTableProps> = ({ productItems }: ProductsT
     return rows;
   };
 
+  useEffect(() => {
+    getProducts(productsFilter);
+  }, [getProducts, productsFilter]);
+
   return (
-    <div className="products-table">
-      <Table columns={productsTableColumns} rows={mapProductItemsToTableRows()}></Table>
-    </div>
+    <React.Fragment>
+      <div className="products">
+        {isProductsTableLoading && (
+          <div className="products__preloader">
+            <Loader label="Loading products list"></Loader>
+          </div>
+        )}
+        <div className="products-table">
+          <Table columns={productsTableColumns} rows={mapProductItemsToTableRows()}></Table>
+        </div>
+      </div>
+      <Pagination
+        totalPagesCount={totalPagesCount}
+        maxVisiblePagesCount={10}
+        isDisabled={isPaginationDisabled}
+        marginTop="10px"
+        onPageNumberUpdate={handlePageNumberUpdate}
+      ></Pagination>
+    </React.Fragment>
   );
 };
 
