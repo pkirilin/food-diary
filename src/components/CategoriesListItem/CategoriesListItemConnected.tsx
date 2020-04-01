@@ -28,6 +28,8 @@ import { ThunkDispatch } from 'redux-thunk';
 export interface StateToPropsMapResult {
   editableCategoriesIds: number[];
   isCategoryOperationInProcess: boolean;
+  isProductOperationInProcess: boolean;
+  areProductsLoading: boolean;
 }
 
 export interface DispatchToPropsMapResult {
@@ -43,6 +45,8 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
   return {
     editableCategoriesIds: state.categories.list.editableCategoriesIds,
     isCategoryOperationInProcess: state.categories.operations.status.performing,
+    isProductOperationInProcess: state.products.operations.productOperationStatus.performing,
+    areProductsLoading: state.products.list.productItemsFetchState.loading,
   };
 };
 

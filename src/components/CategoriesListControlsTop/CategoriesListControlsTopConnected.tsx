@@ -13,13 +13,17 @@ import { FoodDiaryState } from '../../store';
 
 export interface StateToPropsMapResult {
   isCategoryOperationInProcess: boolean;
+  isProductOperationInProcess: boolean;
   areCategoriesLoading: boolean;
+  areProductsLoading: boolean;
 }
 
 const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
   return {
     isCategoryOperationInProcess: state.categories.operations.status.performing,
+    isProductOperationInProcess: state.products.operations.productOperationStatus.performing,
     areCategoriesLoading: state.categories.list.categoryItemsFetchState.loading,
+    areProductsLoading: state.products.list.productItemsFetchState.loading,
   };
 };
 

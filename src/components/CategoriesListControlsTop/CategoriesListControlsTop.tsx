@@ -8,11 +8,14 @@ interface CategoriesListControlsTopProps extends StateToPropsMapResult, Dispatch
 
 const CategoriesListControlsTop: React.FC<CategoriesListControlsTopProps> = ({
   isCategoryOperationInProcess,
+  isProductOperationInProcess,
   areCategoriesLoading,
+  areProductsLoading,
   getCategories,
   createDraftCategory,
 }: CategoriesListControlsTopProps) => {
-  const isControlDisabled = isCategoryOperationInProcess || areCategoriesLoading;
+  const isControlDisabled =
+    isCategoryOperationInProcess || isProductOperationInProcess || areCategoriesLoading || areProductsLoading;
 
   const handleAddIconClick = (): void => {
     createDraftCategory({

@@ -26,6 +26,8 @@ const CategoriesListItem: React.FC<CategoriesListItemProps> = ({
   data: category,
   editableCategoriesIds,
   isCategoryOperationInProcess,
+  isProductOperationInProcess,
+  areProductsLoading,
   setEditableForCategories,
   deleteDraftCategory,
   createCategory,
@@ -38,7 +40,7 @@ const CategoriesListItem: React.FC<CategoriesListItemProps> = ({
   const activeLinkClassName = useActiveLinkClassName();
 
   const isEditable = editableCategoriesIds.find(id => id === category.id) !== undefined;
-  const isAnySideEffectHappening = isCategoryOperationInProcess;
+  const isAnySideEffectHappening = isCategoryOperationInProcess || isProductOperationInProcess || areProductsLoading;
 
   const categoryProductsBadgeLabel = `${category.countProducts} ${
     category.countProducts === 1 ? 'product' : 'products'
@@ -128,7 +130,12 @@ const CategoriesListItem: React.FC<CategoriesListItemProps> = ({
             </BadgesContainer>
           </SidebarListItemLink>
           <SidebarListItemControls>
-            <DropdownMenu toggler={<Icon type="three-dots"></Icon>} contentAlignment="right" contentWidth={150}>
+            <DropdownMenu
+              toggler={<Icon type="three-dots"></Icon>}
+              contentAlignment="right"
+              contentWidth={150}
+              disabled={isAnySideEffectHappening}
+            >
               <DropdownItem onClick={handleEditItemClick}>Edit category</DropdownItem>
               <DropdownItem onClick={handleDeleteItemClick}>Delete category</DropdownItem>
             </DropdownMenu>
