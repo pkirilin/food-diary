@@ -67,6 +67,7 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
         maxVisiblePagesCount={10}
         isDisabled={isPaginationDisabled}
         marginTop="10px"
+        currentPageNumber={productsFilter.pageNumber}
         onPageNumberUpdate={handlePageNumberUpdate}
       ></Pagination>
     </React.Fragment>

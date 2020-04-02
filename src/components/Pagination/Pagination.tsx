@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './Pagination.scss';
 import PaginationItem from './PaginationItem';
-import { useQuery } from '../../hooks';
 import updatePageRanges from './pageRangesUpdater';
 import createNumericRange from './range';
 
@@ -10,11 +9,13 @@ interface PaginationProps {
   maxVisiblePagesCount?: number;
   isDisabled?: boolean;
   marginTop?: string | number;
+  currentPageNumber?: number;
   onPageNumberUpdate?: (newPageNumber?: number) => void;
 }
 
 const Pagination: React.FC<PaginationProps> = ({
   totalPagesCount,
+  currentPageNumber,
   maxVisiblePagesCount = 10,
   isDisabled = false,
   marginTop = 0,
@@ -22,20 +23,11 @@ const Pagination: React.FC<PaginationProps> = ({
 }: PaginationProps) => {
   const [visiblePageRanges, setVisiblePageRanges] = useState<[number, number]>();
 
-  const query = useQuery();
-  const queryPageNumber = query.get('pageNumber');
-  const currentPageNumberFromQuery =
-    queryPageNumber !== null && !isNaN(+queryPageNumber) ? +queryPageNumber : undefined;
-
   useEffect(() => {
-    const newPageNumber = currentPageNumberFromQuery === undefined ? 1 : currentPageNumberFromQuery;
+    const newPageNumber = currentPageNumber === undefined ? 1 : currentPageNumber;
     const newPageRanges = updatePageRanges(newPageNumber, totalPagesCount, maxVisiblePagesCount);
     setVisiblePageRanges(newPageRanges);
-
-    if (onPageNumberUpdate) {
-      onPageNumberUpdate(newPageNumber);
-    }
-  }, [currentPageNumberFromQuery, totalPagesCount, maxVisiblePagesCount, onPageNumberUpdate]);
+  }, [currentPageNumber, totalPagesCount, maxVisiblePagesCount]);
 
   const paginationItems = visiblePageRanges ? createNumericRange(visiblePageRanges[0], visiblePageRanges[1]) : [];
 
@@ -47,9 +39,8 @@ const Pagination: React.FC<PaginationProps> = ({
     minWidth: 50,
   };
 
-  const isFirstPageDisabled =
-    isDisabled || currentPageNumberFromQuery === 1 || currentPageNumberFromQuery === undefined;
-  const isLastPageDisabled = isDisabled || currentPageNumberFromQuery === totalPagesCount;
+  const isFirstPageDisabled = isDisabled || currentPageNumber === 1 || currentPageNumber === undefined;
+  const isLastPageDisabled = isDisabled || currentPageNumber === totalPagesCount;
   const isPrevPageDisabled = isFirstPageDisabled;
   const isNextPageDisabled = isLastPageDisabled;
 
@@ -64,16 +55,17 @@ const Pagination: React.FC<PaginationProps> = ({
         linkPageNumber={1}
         style={paginationItemsStyle}
         isDisabled={isFirstPageDisabled}
+        onPageNumberUpdate={onPageNumberUpdate}
       ></PaginationItem>
       <PaginationItem
         content="Prev"
-        linkPageNumber={currentPageNumberFromQuery ? currentPageNumberFromQuery - 1 : 1}
+        linkPageNumber={currentPageNumber ? currentPageNumber - 1 : 1}
         style={paginationItemsStyle}
         isDisabled={isPrevPageDisabled}
+        onPageNumberUpdate={onPageNumberUpdate}
       ></PaginationItem>
       {paginationItems.map((pageNumber, index) => {
-        const isSelected =
-          pageNumber === currentPageNumberFromQuery || (pageNumber === 1 && currentPageNumberFromQuery === undefined);
+        const isSelected = pageNumber === currentPageNumber || (pageNumber === 1 && currentPageNumber === undefined);
         return (
           <PaginationItem
             key={index}
@@ -81,20 +73,23 @@ const Pagination: React.FC<PaginationProps> = ({
             linkPageNumber={pageNumber}
             isSelected={isSelected}
             isDisabled={isDisabled}
+            onPageNumberUpdate={onPageNumberUpdate}
           ></PaginationItem>
         );
       })}
       <PaginationItem
         content="Next"
-        linkPageNumber={currentPageNumberFromQuery ? currentPageNumberFromQuery + 1 : 2}
+        linkPageNumber={currentPageNumber ? currentPageNumber + 1 : 2}
         style={paginationItemsStyle}
         isDisabled={isNextPageDisabled}
+        onPageNumberUpdate={onPageNumberUpdate}
       ></PaginationItem>
       <PaginationItem
         content="Last"
         linkPageNumber={totalPagesCount}
         style={paginationItemsStyle}
         isDisabled={isLastPageDisabled}
+        onPageNumberUpdate={onPageNumberUpdate}
       ></PaginationItem>
     </ul>
   );

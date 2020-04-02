@@ -1,6 +1,5 @@
 import React from 'react';
 import './PaginationItem.scss';
-import { Link } from 'react-router-dom';
 
 interface PaginationItemProps {
   content: string | number;
@@ -8,6 +7,7 @@ interface PaginationItemProps {
   isSelected?: boolean;
   isDisabled?: boolean;
   style?: React.CSSProperties;
+  onPageNumberUpdate?: (newPageNumber?: number) => void;
 }
 
 const PaginationItem: React.FC<PaginationItemProps> = ({
@@ -16,6 +16,7 @@ const PaginationItem: React.FC<PaginationItemProps> = ({
   isSelected = false,
   isDisabled = false,
   style = {},
+  onPageNumberUpdate,
 }: PaginationItemProps) => {
   const classNames = ['pagination-item'];
 
@@ -27,9 +28,15 @@ const PaginationItem: React.FC<PaginationItemProps> = ({
     classNames.push('pagination-item_disabled');
   }
 
+  const handlePaginationItemClick = (): void => {
+    if (onPageNumberUpdate) {
+      onPageNumberUpdate(linkPageNumber);
+    }
+  };
+
   return (
-    <li className={classNames.join(' ')} style={style}>
-      <Link to={`/products?pageNumber=${linkPageNumber}`}>{content}</Link>
+    <li className={classNames.join(' ')} style={style} onClick={handlePaginationItemClick}>
+      {content}
     </li>
   );
 };

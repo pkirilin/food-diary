@@ -27,6 +27,12 @@ const CategoryContent: React.FC<CategoryContentProps> = ({
     }
   }, [updateProductsFilter, productsFilter, categoryId]);
 
+  // Removes redundant request (without category filter) inside ProductsTable component
+  // by simply not allowing it to render and perform any action if category is unknown
+  if (productsFilter.categoryId === undefined) {
+    return null;
+  }
+
   return (
     <React.Fragment>
       <SectionTitle title="Products"></SectionTitle>
