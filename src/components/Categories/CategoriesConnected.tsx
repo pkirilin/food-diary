@@ -1,6 +1,9 @@
 import { connect } from 'react-redux';
 import Categories from './Categories';
 import { FoodDiaryState } from '../../store';
+import { Dispatch } from 'redux';
+import { ClearProductsFilterAction } from '../../action-types';
+import { clearProductsFilter } from '../../action-creators';
 
 export interface StateToPropsMapResult {
   isCategoriesListAvailable: boolean;
@@ -15,4 +18,18 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
   };
 };
 
-export default connect(mapStateToProps)(Categories);
+export interface DispatchToPropsMapResult {
+  clearProductsFilter: () => void;
+}
+
+type CategoriesDispatch = Dispatch<ClearProductsFilterAction>;
+
+const mapDispatchToProps = (dispatch: CategoriesDispatch): DispatchToPropsMapResult => {
+  return {
+    clearProductsFilter: (): void => {
+      dispatch(clearProductsFilter());
+    },
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Categories);

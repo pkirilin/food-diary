@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './Categories.scss';
 import { ContentWrapper, MainContainer, SectionContainer } from '../ContainerBlocks';
 import Sidebar from '../Sidebar';
@@ -6,12 +6,22 @@ import CategoriesListControlsTopConnected from '../CategoriesListControlsTop';
 import CategoriesListConnected from '../CategoriesList';
 import CategoriesOperationsPanelConnected from '../CategoriesOperationsPanel';
 import { Switch, Route, Redirect } from 'react-router-dom';
-import { StateToPropsMapResult } from './CategoriesConnected';
+import { StateToPropsMapResult, DispatchToPropsMapResult } from './CategoriesConnected';
 import CategoryContentConnected from '../CategoryContent';
 
-type CategoriesProps = StateToPropsMapResult;
+interface CategoriesProps extends StateToPropsMapResult, DispatchToPropsMapResult {}
 
-const Categories: React.FC<CategoriesProps> = ({ isCategoriesListAvailable, firstCategoryId }: CategoriesProps) => {
+const Categories: React.FC<CategoriesProps> = ({
+  isCategoriesListAvailable,
+  firstCategoryId,
+  clearProductsFilter,
+}: CategoriesProps) => {
+  useEffect(() => {
+    return (): void => {
+      clearProductsFilter();
+    };
+  }, [clearProductsFilter]);
+
   return (
     <ContentWrapper>
       <Sidebar>

@@ -22,3 +22,5 @@ const productsFilterReducer = (
 };
 
 export default productsFilterReducer;
+
+export { initialState as productsFilterInitialState };
