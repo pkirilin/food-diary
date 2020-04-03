@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './ProductInput.scss';
 import { FormGroup, Input, Label, Button, DropdownList, categoryDropdownItemRenderer } from '../Controls';
 import Loader from '../Loader';
@@ -11,6 +11,7 @@ interface ProductInputProps extends StateToPropsMapResult, DispatchToPropsMapRes
 const ProductInput: React.FC<ProductInputProps> = ({
   productOperationStatus,
   productItemsFetchState,
+  categoryItems,
   categoryDropdownItems,
   isCategoryDropdownContentLoading,
   productsFilter,
@@ -29,6 +30,36 @@ const ProductInput: React.FC<ProductInputProps> = ({
   const isAnyInputValueEmpty = productNameInputValue === '' || caloriesCost < 1 || categoryId < 1;
   const isInputDisabled = isOperationInProcess || isProductsTableLoading;
   const isAddButtonDisabled = isInputDisabled || isAnyInputValueEmpty;
+
+  const setCategoryInputByFilter = (): void => {
+    if (productsFilter.categoryId !== undefined) {
+      const currentSelectedCategory = categoryItems.find(c => c.id === productsFilter.categoryId);
+      if (currentSelectedCategory) {
+        setCategoryId(currentSelectedCategory.id);
+        setCategoryNameInputValue(currentSelectedCategory.name);
+      }
+    } else {
+      setCategoryId(0);
+      setCategoryNameInputValue('');
+    }
+  };
+
+  const setCategoryInputByFilterMemo = useCallback(setCategoryInputByFilter, [
+    productsFilter.categoryId,
+    categoryItems,
+    setCategoryId,
+    setCategoryNameInputValue,
+  ]);
+
+  useEffect(() => {
+    setCategoryInputByFilterMemo();
+  }, [
+    setCategoryInputByFilterMemo,
+    productsFilter.categoryId,
+    categoryItems,
+    setCategoryId,
+    setCategoryNameInputValue,
+  ]);
 
   const categoryNameChangeDebounce = useDebounce(() => {
     getCategoryDropdownItems();
@@ -72,8 +103,7 @@ const ProductInput: React.FC<ProductInputProps> = ({
       await getProducts(productsFilter);
       setProductNameInputValue('');
       setCaloriesCost(100);
-      setCategoryId(0);
-      setCategoryNameInputValue('');
+      setCategoryInputByFilter();
     }
   };
 

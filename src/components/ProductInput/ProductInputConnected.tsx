@@ -10,12 +10,13 @@ import {
   GetCategoryDropdownItemsErrorAction,
 } from '../../action-types';
 import { ThunkDispatch } from 'redux-thunk';
-import { ProductCreateEdit, ProductItem, CategoryDropdownItem, ProductsFilter } from '../../models';
+import { ProductCreateEdit, ProductItem, CategoryDropdownItem, ProductsFilter, CategoryItem } from '../../models';
 import { createProduct, getProducts, getCategoryDropdownItems } from '../../action-creators';
 
 export interface StateToPropsMapResult {
   productOperationStatus: DataOperationState;
   productItemsFetchState: DataFetchState;
+  categoryItems: CategoryItem[];
   categoryDropdownItems: CategoryDropdownItem[];
   isCategoryDropdownContentLoading: boolean;
   productsFilter: ProductsFilter;
@@ -25,6 +26,7 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
   return {
     productOperationStatus: state.products.operations.productOperationStatus,
     productItemsFetchState: state.products.list.productItemsFetchState,
+    categoryItems: state.categories.list.categoryItems,
     categoryDropdownItems: state.categories.dropdown.categoryDropdownItems,
     isCategoryDropdownContentLoading: state.categories.dropdown.categoryDropdownItemsFetchState.loading,
     productsFilter: state.products.filter,
