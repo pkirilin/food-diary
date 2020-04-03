@@ -6,13 +6,11 @@ import { ClearProductsFilterAction } from '../../action-types';
 import { clearProductsFilter } from '../../action-creators';
 
 export interface StateToPropsMapResult {
-  isCategoriesListAvailable: boolean;
   firstCategoryId?: number;
 }
 
 const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
   return {
-    isCategoriesListAvailable: state.categories.list.categoryItemsFetchState.loaded,
     firstCategoryId:
       state.categories.list.categoryItems.length > 0 ? state.categories.list.categoryItems[0].id : undefined,
   };

@@ -11,11 +11,7 @@ import CategoryContentConnected from '../CategoryContent';
 
 interface CategoriesProps extends StateToPropsMapResult, DispatchToPropsMapResult {}
 
-const Categories: React.FC<CategoriesProps> = ({
-  isCategoriesListAvailable,
-  firstCategoryId,
-  clearProductsFilter,
-}: CategoriesProps) => {
+const Categories: React.FC<CategoriesProps> = ({ firstCategoryId, clearProductsFilter }: CategoriesProps) => {
   useEffect(() => {
     return (): void => {
       clearProductsFilter();
@@ -31,21 +27,15 @@ const Categories: React.FC<CategoriesProps> = ({
       </Sidebar>
       <MainContainer withSidebar>
         <SectionContainer>
-          {isCategoriesListAvailable ? (
-            <Switch>
-              <Route exact path="/categories/:id">
-                <CategoryContentConnected></CategoryContentConnected>
-              </Route>
-              <Redirect
-                from="/categories"
-                to={firstCategoryId === undefined ? '/categories/' : `/categories/${firstCategoryId}`}
-              ></Redirect>
-            </Switch>
-          ) : (
-            <Switch>
-              <Redirect to="/categories/"></Redirect>
-            </Switch>
-          )}
+          <Switch>
+            <Route exact path="/categories/:id">
+              <CategoryContentConnected></CategoryContentConnected>
+            </Route>
+            <Redirect
+              from="/categories"
+              to={firstCategoryId === undefined ? '/categories/' : `/categories/${firstCategoryId}`}
+            ></Redirect>
+          </Switch>
         </SectionContainer>
       </MainContainer>
     </ContentWrapper>

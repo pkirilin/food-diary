@@ -23,19 +23,12 @@ const Pages: React.FC<PagesProps> = ({ isPagesListAvailable, pagesCount, firstPa
       </Sidebar>
       <MainContainer withSidebar>
         <SectionContainer>
-          {isPagesListAvailable ? (
-            <Switch>
-              <Route exact path="/pages/:id">
-                <PageContentConnected></PageContentConnected>
-              </Route>
-              <Redirect from="/pages" to={firstPageId === undefined ? '/pages/' : `/pages/${firstPageId}`}></Redirect>
-            </Switch>
-          ) : (
-            // TODO: add user-friendly placeholder to display notes content if items are not loaded
-            <Switch>
-              <Redirect to="/pages/"></Redirect>
-            </Switch>
-          )}
+          <Switch>
+            <Route exact path="/pages/:id">
+              <PageContentConnected></PageContentConnected>
+            </Route>
+            <Redirect from="/pages" to={firstPageId === undefined ? '/pages/' : `/pages/${firstPageId}`}></Redirect>
+          </Switch>
         </SectionContainer>
       </MainContainer>
     </ContentWrapper>
