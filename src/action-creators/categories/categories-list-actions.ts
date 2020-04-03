@@ -9,7 +9,7 @@ import {
   DeleteDraftCategoryAction,
   SetEditableForCategoriesAction,
 } from '../../action-types';
-import { CategoryItem, CategoriesFilter } from '../../models';
+import { CategoryItem } from '../../models';
 import { getCategoriesAsync } from '../../services';
 
 const getCategoriesRequest = (): GetCategoriesListRequestAction => {
@@ -35,14 +35,14 @@ const getCategoriesError = (errorMessage: string): GetCategoriesListErrorAction 
 export const getCategories: ActionCreator<ThunkAction<
   Promise<GetCategoriesListSuccessAction | GetCategoriesListErrorAction>,
   CategoryItem[],
-  CategoriesFilter,
+  void,
   GetCategoriesListSuccessAction | GetCategoriesListErrorAction
->> = (filter: CategoriesFilter) => {
+>> = () => {
   return async (dispatch: Dispatch): Promise<GetCategoriesListSuccessAction | GetCategoriesListErrorAction> => {
     dispatch(getCategoriesRequest());
 
     try {
-      const response = await getCategoriesAsync(filter);
+      const response = await getCategoriesAsync();
       if (!response.ok) {
         return dispatch(getCategoriesError('Response is not ok'));
       }

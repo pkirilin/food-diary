@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import CategoriesList from './CategoriesList';
-import { CategoryItem, CategoriesFilter } from '../../models';
+import { CategoryItem } from '../../models';
 import { GetCategoriesListSuccessAction, GetCategoriesListErrorAction } from '../../action-types';
 import { FoodDiaryState, DataFetchState } from '../../store';
 import { ThunkDispatch } from 'redux-thunk';
@@ -19,21 +19,19 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
 };
 
 export interface DispatchToPropsMapResult {
-  getCategories: (filter: CategoriesFilter) => Promise<GetCategoriesListSuccessAction | GetCategoriesListErrorAction>;
+  getCategories: () => Promise<GetCategoriesListSuccessAction | GetCategoriesListErrorAction>;
 }
 
 type CategoriesListDispatch = ThunkDispatch<
   CategoryItem[],
-  CategoriesFilter,
+  void,
   GetCategoriesListSuccessAction | GetCategoriesListErrorAction
 >;
 
 const mapDispatchToProps = (dispatch: CategoriesListDispatch): DispatchToPropsMapResult => {
   return {
-    getCategories: (
-      filter: CategoriesFilter,
-    ): Promise<GetCategoriesListSuccessAction | GetCategoriesListErrorAction> => {
-      return dispatch(getCategories(filter));
+    getCategories: (): Promise<GetCategoriesListSuccessAction | GetCategoriesListErrorAction> => {
+      return dispatch(getCategories());
     },
   };
 };

@@ -15,7 +15,7 @@ const CategoriesList: React.FC<CategoriesListProps> = ({
   const { loading, loaded, error: errorMessage } = categoryItemsFetchState;
 
   useEffect(() => {
-    getCategories({});
+    getCategories();
   }, [getCategories]);
 
   if (loading) {

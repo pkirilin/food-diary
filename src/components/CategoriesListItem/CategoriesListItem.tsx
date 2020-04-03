@@ -60,7 +60,7 @@ const CategoriesListItem: React.FC<CategoriesListItemProps> = ({
     if (isDeleteConfirmed) {
       const deleteCategoryAction = await deleteCategory(category.id);
       if (deleteCategoryAction as DeleteCategorySuccessAction) {
-        await getCategories({});
+        await getCategories();
       }
     }
   };
@@ -75,13 +75,13 @@ const CategoriesListItem: React.FC<CategoriesListItemProps> = ({
       const createCategoryAction = await createCategory(categoryForOperation);
       if (createCategoryAction as CreateCategorySuccessAction) {
         deleteDraftCategory(category.id);
-        await getCategories({});
+        await getCategories();
       }
     } else {
       const editCategoryAction = await editCategory(categoryForOperation);
       if (editCategoryAction as EditCategorySuccessAction) {
         setEditableForCategories([category.id], false);
-        await getCategories({});
+        await getCategories();
       }
     }
   };

@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import CategoriesListControlsTop from './CategoriesListControlsTop';
 import { ThunkDispatch } from 'redux-thunk';
-import { CategoryItem, CategoriesFilter } from '../../models';
+import { CategoryItem } from '../../models';
 import {
   GetCategoriesListSuccessAction,
   GetCategoriesListErrorAction,
@@ -28,23 +28,21 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
 };
 
 export interface DispatchToPropsMapResult {
-  getCategories: (filter: CategoriesFilter) => Promise<GetCategoriesListSuccessAction | GetCategoriesListErrorAction>;
+  getCategories: () => Promise<GetCategoriesListSuccessAction | GetCategoriesListErrorAction>;
   createDraftCategory: (draftCategory: CategoryItem) => void;
 }
 
 type CategoriesListControlsTopDispatch = ThunkDispatch<
   CategoryItem[],
-  CategoriesFilter,
+  void,
   GetCategoriesListSuccessAction | GetCategoriesListErrorAction
 > &
   Dispatch<CreateDraftCategoryAction>;
 
 const mapDispatchToProps = (dispatch: CategoriesListControlsTopDispatch): DispatchToPropsMapResult => {
   return {
-    getCategories: (
-      filter: CategoriesFilter,
-    ): Promise<GetCategoriesListSuccessAction | GetCategoriesListErrorAction> => {
-      return dispatch(getCategories(filter));
+    getCategories: (): Promise<GetCategoriesListSuccessAction | GetCategoriesListErrorAction> => {
+      return dispatch(getCategories());
     },
     createDraftCategory: (draftCategory: CategoryItem): void => {
       dispatch(createDraftCategory(draftCategory));

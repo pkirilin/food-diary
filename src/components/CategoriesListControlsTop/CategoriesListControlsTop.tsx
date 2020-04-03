@@ -26,7 +26,7 @@ const CategoriesListControlsTop: React.FC<CategoriesListControlsTopProps> = ({
   };
 
   const handleRefreshIconClick = (): void => {
-    getCategories({});
+    getCategories();
   };
 
   return (

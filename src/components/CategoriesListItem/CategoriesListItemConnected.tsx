@@ -22,7 +22,7 @@ import {
   deleteCategory,
   getCategories,
 } from '../../action-creators';
-import { CategoryCreateEdit, CategoriesFilter, CategoryItem } from '../../models';
+import { CategoryCreateEdit, CategoryItem } from '../../models';
 import { ThunkDispatch } from 'redux-thunk';
 
 export interface StateToPropsMapResult {
@@ -38,7 +38,7 @@ export interface DispatchToPropsMapResult {
   createCategory: (category: CategoryCreateEdit) => Promise<CreateCategorySuccessAction | CreateCategoryErrorAction>;
   editCategory: (category: CategoryCreateEdit) => Promise<EditCategorySuccessAction | EditCategoryErrorAction>;
   deleteCategory: (categoryId: number) => Promise<DeleteCategorySuccessAction | DeleteCategoryErrorAction>;
-  getCategories: (filter: CategoriesFilter) => Promise<GetCategoriesListSuccessAction | GetCategoriesListErrorAction>;
+  getCategories: () => Promise<GetCategoriesListSuccessAction | GetCategoriesListErrorAction>;
 }
 
 const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
@@ -55,7 +55,7 @@ type CategoriesListItemDispatch = Dispatch<SetEditableForCategoriesAction> &
   ThunkDispatch<void, CategoryCreateEdit, CreateCategorySuccessAction | CreateCategoryErrorAction> &
   ThunkDispatch<void, CategoryCreateEdit, EditCategorySuccessAction | EditCategoryErrorAction> &
   ThunkDispatch<void, number, DeleteCategorySuccessAction | DeleteCategoryErrorAction> &
-  ThunkDispatch<CategoryItem[], CategoriesFilter, GetCategoriesListSuccessAction | GetCategoriesListErrorAction>;
+  ThunkDispatch<CategoryItem[], void, GetCategoriesListSuccessAction | GetCategoriesListErrorAction>;
 
 const mapDispatchToProps = (dispatch: CategoriesListItemDispatch): DispatchToPropsMapResult => {
   return {
@@ -76,10 +76,8 @@ const mapDispatchToProps = (dispatch: CategoriesListItemDispatch): DispatchToPro
     deleteCategory: (categoryId: number): Promise<DeleteCategorySuccessAction | DeleteCategoryErrorAction> => {
       return dispatch(deleteCategory(categoryId));
     },
-    getCategories: (
-      filter: CategoriesFilter,
-    ): Promise<GetCategoriesListSuccessAction | GetCategoriesListErrorAction> => {
-      return dispatch(getCategories(filter));
+    getCategories: (): Promise<GetCategoriesListSuccessAction | GetCategoriesListErrorAction> => {
+      return dispatch(getCategories());
     },
   };
 };
