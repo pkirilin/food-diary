@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using FoodDiary.Domain.Repositories;
 using FoodDiary.Domain.Services;
@@ -34,7 +34,11 @@ namespace FoodDiary.API.Extensions
             services.AddSwaggerGen(c =>
             {
                 var xmlCommentsFilePath = Path.Combine(System.AppContext.BaseDirectory, "FoodDiary.API.xml");
-                c.IncludeXmlComments(xmlCommentsFilePath);
+
+                if (File.Exists(xmlCommentsFilePath))
+                {
+                    c.IncludeXmlComments(xmlCommentsFilePath);
+                }
 
                 var commonApiInfo = new OpenApiInfo
                 {
@@ -44,7 +48,7 @@ namespace FoodDiary.API.Extensions
                     {
                         Name = "Pavel Kirilin",
                         Email = "kirilin.pav@gmail.com",
-                        Url = new Uri("https://github.com/pkirilin/food-diary")
+                        Url = new Uri("https://github.com/pkirilin/food-diary-server")
                     }
                 };
 

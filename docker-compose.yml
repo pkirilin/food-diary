@@ -1,0 +1,36 @@
+version: "3.4"
+
+networks: 
+    food-diary-server-network:
+        driver: bridge
+services:
+    food-diary-server:
+        image: food-diary-server:latest
+        depends_on: 
+            - "food-diary-db"
+        build:
+            context: .
+            dockerfile: src/FoodDiary.API/Dockerfile
+        ports:
+            - "5000:80"
+            - "5001:443"     
+        networks:
+            - food-diary-server-network
+        environment: 
+            ASPNETCORE_ENVIRONMENT: "Staging"
+
+    food-diary-db:
+        image: postgres:12.2-alpine
+        ports:
+            - "5432"
+        restart: always
+        volumes:
+            - food-diary-db-volume:/var/lib/postgresql/data
+        environment:
+            POSTGRES_USER: "postgres"
+            POSTGRES_PASSWORD: "postgres"
+            POSTGRES_DB: "FoodDiaryDatabase"
+        networks:
+            - food-diary-server-network
+volumes: 
+    food-diary-db-volume:

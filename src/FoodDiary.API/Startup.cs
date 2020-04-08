@@ -44,8 +44,9 @@ namespace FoodDiary.API
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.MigrateDatabase();
             }
+
+            app.MigrateDatabase();
 
             app.UseHttpsRedirection();
 
