@@ -1,4 +1,4 @@
-using System.Reflection;
+﻿using System.Reflection;
 using AutoMapper;
 using FoodDiary.API.Extensions;
 using FoodDiary.API.Middlewares;
@@ -57,6 +57,12 @@ namespace FoodDiary.API
             app.UseMiddleware<ExceptionHandlerMiddleware>();
 
             app.UseFoodDiarySwagger();
+
+            var clientAppUrl = Configuration.GetValue<string>("ClientAppUrl");
+            app.UseCors(builder => builder.WithOrigins(clientAppUrl)
+                .AllowAnyHeader()
+                .AllowAnyMethod());
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
