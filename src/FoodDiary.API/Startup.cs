@@ -35,6 +35,12 @@ namespace FoodDiary.API
 
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
+            var clientAppUrl = Configuration.GetValue<string>("ClientAppUrl");
+            services.AddCors(options => options.AddPolicy("AllowClientApp", builder =>
+                 builder.WithOrigins(clientAppUrl)
+                     .AllowAnyHeader()
+                     .AllowAnyMethod()));
+
             services.AddControllers();
             services.AddFoodDiarySwagger();
         }
@@ -48,20 +54,13 @@ namespace FoodDiary.API
 
             app.MigrateDatabase();
 
-            app.UseHttpsRedirection();
+            app.UseCors("AllowClientApp");
 
             app.UseRouting();
-
-            app.UseAuthorization();
 
             app.UseMiddleware<ExceptionHandlerMiddleware>();
 
             app.UseFoodDiarySwagger();
-
-            var clientAppUrl = Configuration.GetValue<string>("ClientAppUrl");
-            app.UseCors(builder => builder.WithOrigins(clientAppUrl)
-                .AllowAnyHeader()
-                .AllowAnyMethod());
 
             app.UseEndpoints(endpoints =>
             {
