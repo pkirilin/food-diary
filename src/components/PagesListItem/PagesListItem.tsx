@@ -51,14 +51,22 @@ const PagesListItem: React.FC<PagesListItemProps> = ({
   const handleConfirmEditPageIconClick = async (): Promise<void> => {
     if (page.id < 1) {
       // This is a draft page for create
-      const createPageAction = await createPage({ id: page.id, date: selectedDate });
+      const createPageAction = await createPage({
+        id: 0,
+        date: selectedDate,
+      });
+
       if (createPageAction.type === PagesOperationsActionTypes.CreateSuccess) {
         deleteDraftPage(page.id);
         await getPages(pagesFilter);
       }
     } else {
       // This is existing page for edit
-      const editPageAction = await editPage(page);
+      const editPageAction = await editPage({
+        id: page.id,
+        date: selectedDate,
+      });
+
       if (editPageAction.type === PagesOperationsActionTypes.EditSuccess) {
         setEditableForPages([page.id], false);
         await getPages(pagesFilter);
