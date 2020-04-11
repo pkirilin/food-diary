@@ -9,14 +9,15 @@ import Loader from '../Loader';
 type PageContentHeaderProps = StateToPropsMapResult;
 
 const PageContentHeader: React.FC<PageContentHeaderProps> = ({
-  pageDate,
-  visiblePagesIds,
+  pageItems,
   isPageContentLoading,
   isPageOperationInProcess,
 }: PageContentHeaderProps) => {
   const { id: currentPageIdFromRoute } = useParams();
   const currentPageId = currentPageIdFromRoute !== undefined ? +currentPageIdFromRoute : 0;
-  const currentPageIndex = visiblePagesIds.findIndex(id => id === currentPageId);
+  const visiblePagesIds = pageItems.map(p => p.id);
+  const currentSelectedPage = pageItems.find(p => p.id === currentPageId);
+  const currentPageIndex = pageItems.findIndex(p => p.id === currentPageId);
   const isAnyDraftPageExists = visiblePagesIds.some(id => id < 1);
 
   const isPreviousPageExists = !(currentPageIndex === 1 && isAnyDraftPageExists) && currentPageIndex > 0;
@@ -63,7 +64,9 @@ const PageContentHeader: React.FC<PageContentHeaderProps> = ({
           {isPageContentLoading ? (
             <Loader size="small" label="Loading date"></Loader>
           ) : (
-            <div className="page-content-header__navigation__date">{pageDate}</div>
+            <div className="page-content-header__navigation__date">
+              {currentSelectedPage && currentSelectedPage.date}
+            </div>
           )}
           {isNextPageIconActive ? <NavLink to={`/pages/${nextPageId}`}>{nextPageIcon}</NavLink> : nextPageIcon}
         </div>
