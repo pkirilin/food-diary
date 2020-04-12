@@ -1,7 +1,6 @@
 name: Check food-diary-server
 on:
   push:
-    branches: '*'
   pull_request:
     branches: [master]
 
