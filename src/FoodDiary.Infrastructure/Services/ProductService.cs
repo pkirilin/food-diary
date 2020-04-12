@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -19,13 +19,6 @@ namespace FoodDiary.Infrastructure.Services
             _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
         }
 
-        public async Task<int> CountAllProductsAsync(CancellationToken cancellationToken)
-        {
-            var q = _productRepository.GetQueryWithoutTracking();
-            var count = await _productRepository.CountByQueryAsync(q, cancellationToken);
-            return count;
-        }
-
         public async Task<IEnumerable<Product>> SearchProductsAsync(ProductsSearchRequestDto searchRequest, CancellationToken cancellationToken)
         {
             var searchQuery = _productRepository.GetQueryWithoutTracking();
@@ -42,7 +35,7 @@ namespace FoodDiary.Infrastructure.Services
                 searchQuery = searchQuery.Where(p => p.CategoryId == searchRequest.CategoryId);
             }
 
-            searchQuery = searchQuery.Skip((searchRequest.PageIndex - 1) * searchRequest.PageSize)
+            searchQuery = searchQuery.Skip((searchRequest.PageNumber - 1) * searchRequest.PageSize)
                 .Take(searchRequest.PageSize);
             return await _productRepository.GetListFromQueryAsync(searchQuery, cancellationToken);
         }

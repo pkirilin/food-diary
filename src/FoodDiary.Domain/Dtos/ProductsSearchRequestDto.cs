@@ -1,12 +1,12 @@
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace FoodDiary.Domain.Dtos
 {
     public class ProductsSearchRequestDto
     {
-        [Range(1, Int32.MaxValue, ErrorMessage = "Invalid page index value specified")]
-        public int PageIndex { get; set; } = 1;
+        [Range(1, Int32.MaxValue, ErrorMessage = "Invalid page number value specified")]
+        public int PageNumber { get; set; } = 1;
 
         [Range(1, Int32.MaxValue, ErrorMessage = "Invalid page size value specified")]
         public int PageSize { get; set; } = 10;

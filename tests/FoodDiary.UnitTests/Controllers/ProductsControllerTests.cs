@@ -52,37 +52,25 @@ namespace FoodDiary.UnitTests.Controllers
         public ProductsController ProductsController => new ProductsController(_loggerFactory, _mapper, _productServiceMock.Object);
 
         [Theory]
-        [InlineData(1, 10, 100, 90)]
-        [InlineData(2, 20, 100, 30)]
+        [InlineData(1, 10, 100)]
+        [InlineData(2, 20, 100)]
         public async void SearchProducts_ReturnsFilteredProductsWithPaginationInfo_WhenModelStateIsValid(
             int pageIndex,
             int pageSize,
-            int totalProductsCount,
             int foundProductsCount)
         {
             var searchRequest = _fixture.Build<ProductsSearchRequestDto>()
-                .With(r => r.PageIndex, pageIndex)
+                .With(r => r.PageNumber, pageIndex)
                 .With(r => r.PageSize, pageSize)
                 .Create();
             var foundProducts = _fixture.CreateMany<Product>(foundProductsCount);
-            var expectedProductsResult = new ProductsPagedListDto()
-            {
-                SelectedPageIndex = searchRequest.PageIndex,
-                TotalPagesCount = PaginationHelper.GetTotalPagesCount(totalProductsCount, searchRequest.PageSize),
-                Products = _mapper.Map<IEnumerable<ProductItemDto>>(foundProducts)
-            };
-            _productServiceMock.Setup(s => s.CountAllProductsAsync(default))
-                .ReturnsAsync(totalProductsCount);
             _productServiceMock.Setup(s => s.SearchProductsAsync(searchRequest, default))
                 .ReturnsAsync(foundProducts);
 
-            var result = await ProductsController.SearchProducts(searchRequest, default);
-            var resultValue = (result as OkObjectResult)?.Value as ProductsPagedListDto;
+            var result = await ProductsController.GetProductsList(searchRequest, default);
 
-            _productServiceMock.Verify(s => s.CountAllProductsAsync(default), Times.Once);
             _productServiceMock.Verify(s => s.SearchProductsAsync(searchRequest, default), Times.Once);
             result.Should().BeOfType<OkObjectResult>();
-            resultValue.Should().BeEquivalentTo(expectedProductsResult);
         }
 
         [Fact]
@@ -92,7 +80,7 @@ namespace FoodDiary.UnitTests.Controllers
             var controller = ProductsController;
             controller.ModelState.AddModelError("error", "error");
 
-            var result = await controller.SearchProducts(searchRequest, default);
+            var result = await controller.GetProductsList(searchRequest, default);
 
             result.Should().BeOfType<BadRequestObjectResult>();
         }

@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using FoodDiary.Domain.Dtos;
@@ -9,8 +9,6 @@ namespace FoodDiary.Domain.Services
     public interface IProductService
     {
         Task<IEnumerable<Product>> SearchProductsAsync(ProductsSearchRequestDto searchRequest, CancellationToken cancellationToken);
-
-        Task<int> CountAllProductsAsync(CancellationToken cancellationToken);
 
         Task<Product> GetProductByIdAsync(int id, CancellationToken cancellationToken);
 

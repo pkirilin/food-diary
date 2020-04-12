@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using AutoFixture;
@@ -52,22 +52,9 @@ namespace FoodDiary.UnitTests.Services
                 modifiedQuery = modifiedQuery.Where(p => p.CategoryId == searchRequest.CategoryId);
             }
 
-            modifiedQuery = modifiedQuery.Skip((searchRequest.PageIndex - 1) * searchRequest.PageSize)
+            modifiedQuery = modifiedQuery.Skip((searchRequest.PageNumber - 1) * searchRequest.PageSize)
                 .Take(searchRequest.PageSize);
             return modifiedQuery;
-        }
-
-        [Theory, AutoData]
-        public async void CountAllProductsAsync_ReturnsCountOfAllProductsReturnedByQuery(int productsCountInQuery)
-        {
-            _productRepositoryMock.Setup(r => r.CountByQueryAsync(It.IsAny<IQueryable<Product>>(), default))
-                .ReturnsAsync(productsCountInQuery);
-
-            var result = await ProductService.CountAllProductsAsync(default);
-
-            _productRepositoryMock.Verify(r => r.GetQueryWithoutTracking(), Times.Once);
-            _productRepositoryMock.Verify(r => r.CountByQueryAsync(It.IsAny<IQueryable<Product>>(), default), Times.Once);
-            result.Should().Be(productsCountInQuery);
         }
 
         [Theory]
@@ -89,7 +76,7 @@ namespace FoodDiary.UnitTests.Services
             int productsWithCategoryIdCount = 0)
         {
             var searchRequest = _fixture.Build<ProductsSearchRequestDto>()
-                .With(r => r.PageIndex, pageIndex)
+                .With(r => r.PageNumber, pageIndex)
                 .With(r => r.PageSize, pageSize)
                 .With(r => r.ProductSearchName, productSearchName)
                 .With(r => r.CategoryId, categoryId)
