@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using AutoFixture;
@@ -131,21 +131,22 @@ namespace FoodDiary.UnitTests.Controllers
         [Fact]
         public async void EditProduct_UpdatesProductSuccessfully_WhenProductDataIsValid()
         {
+            var productId = _fixture.Create<int>();
             var productData = _fixture.Create<ProductCreateEditDto>();
             var originalProduct = _fixture.Create<Product>();
             var productValidationResult = _fixture.Build<ValidationResultDto>()
                 .With(v => v.IsValid, true)
                 .Create();
-            _productServiceMock.Setup(s => s.GetProductByIdAsync(productData.Id, default))
+            _productServiceMock.Setup(s => s.GetProductByIdAsync(productId, default))
                 .ReturnsAsync(originalProduct);
             _productServiceMock.Setup(s => s.ValidateProductAsync(productData, default))
                 .ReturnsAsync(productValidationResult);
             _productServiceMock.Setup(s => s.IsEditedProductValid(productData, originalProduct, productValidationResult))
                 .Returns(true);
 
-            var result = await ProductsController.EditProduct(productData, default);
+            var result = await ProductsController.EditProduct(productId, productData, default);
 
-            _productServiceMock.Verify(s => s.GetProductByIdAsync(productData.Id, default), Times.Once);
+            _productServiceMock.Verify(s => s.GetProductByIdAsync(productId, default), Times.Once);
             _productServiceMock.Verify(s => s.ValidateProductAsync(productData, default), Times.Once);
             _productServiceMock.Verify(s => s.IsEditedProductValid(productData, originalProduct, productValidationResult), Times.Once);
             _productServiceMock.Verify(s => s.EditProductAsync(It.IsNotNull<Product>(), default), Times.Once);
@@ -155,11 +156,12 @@ namespace FoodDiary.UnitTests.Controllers
         [Fact]
         public async void EditProduct_ReturnsBadRequest_WhenModelStateIsInvalid()
         {
+            var productId = _fixture.Create<int>();
             var productData = _fixture.Create<ProductCreateEditDto>();
             var controller = ProductsController;
             controller.ModelState.AddModelError("error", "error");
 
-            var result = await controller.EditProduct(productData, default);
+            var result = await controller.EditProduct(productId, productData, default);
 
             _productServiceMock.Verify(s => s.GetProductByIdAsync(It.IsAny<int>(), default), Times.Never);
             _productServiceMock.Verify(s => s.ValidateProductAsync(productData, default), Times.Never);
@@ -171,11 +173,12 @@ namespace FoodDiary.UnitTests.Controllers
         [Fact]
         public async void EditProduct_ReturnsNotFound_WhenRequestedProductDoesNotExist()
         {
+            var productId = _fixture.Create<int>();
             var productData = _fixture.Create<ProductCreateEditDto>();
             _productServiceMock.Setup(s => s.GetProductByIdAsync(It.IsAny<int>(), default))
                 .ReturnsAsync(null as Product);
 
-            var result = await ProductsController.EditProduct(productData, default);
+            var result = await ProductsController.EditProduct(productId, productData, default);
 
             _productServiceMock.Verify(s => s.GetProductByIdAsync(It.IsAny<int>(), default), Times.Once);
             _productServiceMock.Verify(s => s.ValidateProductAsync(productData, default), Times.Never);
@@ -187,21 +190,22 @@ namespace FoodDiary.UnitTests.Controllers
         [Fact]
         public async void EditProduct_ReturnsBadRequest_WhenProductDataIsInvalid()
         {
+            var productId = _fixture.Create<int>();
             var productData = _fixture.Create<ProductCreateEditDto>();
             var originalProduct = _fixture.Create<Product>();
             var productValidationResult = _fixture.Build<ValidationResultDto>()
                 .With(v => v.IsValid, false)
                 .Create();
-            _productServiceMock.Setup(s => s.GetProductByIdAsync(productData.Id, default))
+            _productServiceMock.Setup(s => s.GetProductByIdAsync(productId, default))
                 .ReturnsAsync(originalProduct);
             _productServiceMock.Setup(s => s.ValidateProductAsync(productData, default))
                 .ReturnsAsync(productValidationResult);
             _productServiceMock.Setup(s => s.IsEditedProductValid(productData, originalProduct, productValidationResult))
                 .Returns(false);
 
-            var result = await ProductsController.EditProduct(productData, default);
+            var result = await ProductsController.EditProduct(productId, productData, default);
 
-            _productServiceMock.Verify(s => s.GetProductByIdAsync(productData.Id, default), Times.Once);
+            _productServiceMock.Verify(s => s.GetProductByIdAsync(productId, default), Times.Once);
             _productServiceMock.Verify(s => s.ValidateProductAsync(productData, default), Times.Once);
             _productServiceMock.Verify(s => s.IsEditedProductValid(productData, originalProduct, productValidationResult), Times.Once);
             _productServiceMock.Verify(s => s.EditProductAsync(It.IsNotNull<Product>(), default), Times.Never);

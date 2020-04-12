@@ -136,12 +136,13 @@ namespace FoodDiary.UnitTests.Controllers
         [Fact]
         public async void EditPage_EditsPageSuccessfully_WhenPageCanBeUpdated()
         {
+            var pageId = _fixture.Create<int>();
             var updatedPageInfo = _fixture.Create<PageCreateEditDto>();
             var originalPage = _fixture.Create<Page>();
             var validationResult = _fixture.Build<ValidationResultDto>()
                .With(r => r.IsValid, true)
                .Create();
-            _pageServiceMock.Setup(s => s.GetPageByIdAsync(updatedPageInfo.Id, default))
+            _pageServiceMock.Setup(s => s.GetPageByIdAsync(pageId, default))
                 .ReturnsAsync(originalPage);
             _pageServiceMock.Setup(s => s.ValidatePageAsync(updatedPageInfo, default))
                 .ReturnsAsync(validationResult);
@@ -150,9 +151,9 @@ namespace FoodDiary.UnitTests.Controllers
 
             var controller = PagesController;
 
-            var result = await controller.EditPage(updatedPageInfo, default);
+            var result = await controller.EditPage(pageId, updatedPageInfo, default);
 
-            _pageServiceMock.Verify(s => s.GetPageByIdAsync(updatedPageInfo.Id, default), Times.Once);
+            _pageServiceMock.Verify(s => s.GetPageByIdAsync(pageId, default), Times.Once);
             _pageServiceMock.Verify(s => s.ValidatePageAsync(updatedPageInfo, default), Times.Once);
             _pageServiceMock.Verify(s => s.IsEditedPageValid(updatedPageInfo, originalPage, validationResult), Times.Once);
             _pageServiceMock.Verify(s => s.EditPageAsync(originalPage, default), Times.Once);
@@ -163,14 +164,15 @@ namespace FoodDiary.UnitTests.Controllers
         [Fact]
         public async void EditPage_ReturnsBadRequest_WhenModelStateIsInvalid()
         {
+            var pageId = _fixture.Create<int>();
             var updatedPageInfo = _fixture.Create<PageCreateEditDto>();
             var originalPage = _fixture.Create<Page>();
             var controller = PagesController;
             controller.ModelState.AddModelError("some", "error");
 
-            var result = await controller.EditPage(updatedPageInfo, default);
+            var result = await controller.EditPage(pageId, updatedPageInfo, default);
 
-            _pageServiceMock.Verify(s => s.GetPageByIdAsync(updatedPageInfo.Id, default), Times.Never);
+            _pageServiceMock.Verify(s => s.GetPageByIdAsync(pageId, default), Times.Never);
             _pageServiceMock.Verify(s => s.ValidatePageAsync(updatedPageInfo, default), Times.Never);
             _pageServiceMock.Verify(s => s.IsEditedPageValid(updatedPageInfo, originalPage, It.IsAny<ValidationResultDto>()), Times.Never);
             _pageServiceMock.Verify(s => s.EditPageAsync(originalPage, default), Times.Never);
@@ -181,12 +183,13 @@ namespace FoodDiary.UnitTests.Controllers
         [Fact]
         public async void EditPage_ReturnsBadRequest_WhenPageCannotBeEdited()
         {
+            var pageId = _fixture.Create<int>();
             var updatedPageInfo = _fixture.Create<PageCreateEditDto>();
             var originalPage = _fixture.Create<Page>();
             var validationResult = _fixture.Build<ValidationResultDto>()
                .With(r => r.IsValid, false)
                .Create();
-            _pageServiceMock.Setup(s => s.GetPageByIdAsync(updatedPageInfo.Id, default))
+            _pageServiceMock.Setup(s => s.GetPageByIdAsync(pageId, default))
                 .ReturnsAsync(originalPage);
             _pageServiceMock.Setup(s => s.ValidatePageAsync(updatedPageInfo, default))
                 .ReturnsAsync(validationResult);
@@ -194,9 +197,9 @@ namespace FoodDiary.UnitTests.Controllers
                 .Returns(false);
             var controller = PagesController;
 
-            var result = await controller.EditPage(updatedPageInfo, default);
+            var result = await controller.EditPage(pageId, updatedPageInfo, default);
 
-            _pageServiceMock.Verify(s => s.GetPageByIdAsync(updatedPageInfo.Id, default), Times.Once);
+            _pageServiceMock.Verify(s => s.GetPageByIdAsync(pageId, default), Times.Once);
             _pageServiceMock.Verify(s => s.ValidatePageAsync(updatedPageInfo, default), Times.Once);
             _pageServiceMock.Verify(s => s.IsEditedPageValid(updatedPageInfo, originalPage, validationResult), Times.Once);
             _pageServiceMock.Verify(s => s.EditPageAsync(originalPage, default), Times.Never);
@@ -207,15 +210,16 @@ namespace FoodDiary.UnitTests.Controllers
         [Fact]
         public async void EditPage_ReturnsNotFound_WhenRequestedPageNotFound()
         {
+            var pageId = _fixture.Create<int>();
             var updatedPageInfo = _fixture.Create<PageCreateEditDto>();
             var originalPage = _fixture.Create<Page>();
-            _pageServiceMock.Setup(s => s.GetPageByIdAsync(updatedPageInfo.Id, default))
+            _pageServiceMock.Setup(s => s.GetPageByIdAsync(pageId, default))
                 .ReturnsAsync(null as Page);
             var controller = PagesController;
 
-            var result = await controller.EditPage(updatedPageInfo, default);
+            var result = await controller.EditPage(pageId, updatedPageInfo, default);
 
-            _pageServiceMock.Verify(s => s.GetPageByIdAsync(updatedPageInfo.Id, default), Times.Once);
+            _pageServiceMock.Verify(s => s.GetPageByIdAsync(pageId, default), Times.Once);
             _pageServiceMock.Verify(s => s.ValidatePageAsync(updatedPageInfo, default), Times.Never);
             _pageServiceMock.Verify(s => s.IsEditedPageValid(updatedPageInfo, originalPage, It.IsAny<ValidationResultDto>()), Times.Never);
             _pageServiceMock.Verify(s => s.EditPageAsync(originalPage, default), Times.Never);

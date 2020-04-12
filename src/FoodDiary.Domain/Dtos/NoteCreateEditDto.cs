@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 using FoodDiary.Domain.Enums;
 
@@ -6,8 +6,6 @@ namespace FoodDiary.Domain.Dtos
 {
     public class NoteCreateEditDto
     {
-        public int Id { get; set; }
-
         [EnumDataType(typeof(MealType))]
         public MealType MealType { get; set; }
 

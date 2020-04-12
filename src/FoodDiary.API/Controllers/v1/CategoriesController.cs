@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading;
@@ -64,18 +64,18 @@ namespace FoodDiary.API.Controllers.v1
             return Ok();
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> EditCategory([FromBody] CategoryCreateEditDto updatedCategoryInfo, CancellationToken cancellationToken)
+        public async Task<IActionResult> EditCategory([FromRoute] int id, [FromBody] CategoryCreateEditDto updatedCategoryInfo, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var originalCategory = await _categoryService.GetCategoryByIdAsync(updatedCategoryInfo.Id, cancellationToken);
+            var originalCategory = await _categoryService.GetCategoryByIdAsync(id, cancellationToken);
             if (originalCategory == null)
             {
                 return NotFound();

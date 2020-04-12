@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading;
@@ -75,11 +75,11 @@ namespace FoodDiary.API.Controllers.v1
             return Ok();
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> EditNote([FromBody] NoteCreateEditDto updatedNote, CancellationToken cancellationToken)
+        public async Task<IActionResult> EditNote([FromRoute] int id, [FromBody] NoteCreateEditDto updatedNote, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
             {
@@ -93,7 +93,7 @@ namespace FoodDiary.API.Controllers.v1
                 return BadRequest(ModelState);
             }
 
-            var originalNote = await _noteService.GetNoteByIdAsync(updatedNote.Id, cancellationToken);
+            var originalNote = await _noteService.GetNoteByIdAsync(id, cancellationToken);
             if (originalNote == null)
             {
                 return NotFound();

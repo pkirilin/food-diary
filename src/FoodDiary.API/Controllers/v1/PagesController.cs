@@ -52,8 +52,6 @@ namespace FoodDiary.API.Controllers.v1
                 return BadRequest(ModelState);
             }
 
-            var page = _mapper.Map<Page>(request);
-
             var pageValidationResult = await _pageService.ValidatePageAsync(request, cancellationToken);
             if (!pageValidationResult.IsValid)
             {
@@ -61,22 +59,23 @@ namespace FoodDiary.API.Controllers.v1
                 return BadRequest(ModelState);
             }
 
+            var page = _mapper.Map<Page>(request);
             await _pageService.CreatePageAsync(page, cancellationToken);
             return Ok();
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> EditPage([FromBody] PageCreateEditDto request, CancellationToken cancellationToken)
+        public async Task<IActionResult> EditPage([FromRoute] int id, [FromBody] PageCreateEditDto request, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var originalPage = await _pageService.GetPageByIdAsync(request.Id, cancellationToken);
+            var originalPage = await _pageService.GetPageByIdAsync(id, cancellationToken);
             if (originalPage == null)
             {
                 return NotFound();

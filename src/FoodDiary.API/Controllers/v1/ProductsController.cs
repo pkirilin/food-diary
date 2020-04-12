@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading;
@@ -77,18 +77,18 @@ namespace FoodDiary.API.Controllers.v1
             return Ok();
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> EditProduct([FromBody] ProductCreateEditDto productData, CancellationToken cancellationToken)
+        public async Task<IActionResult> EditProduct([FromRoute] int id, [FromBody] ProductCreateEditDto productData, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var originalProduct = await _productService.GetProductByIdAsync(productData.Id, cancellationToken);
+            var originalProduct = await _productService.GetProductByIdAsync(id, cancellationToken);
             if (originalProduct == null)
             {
                 return NotFound();

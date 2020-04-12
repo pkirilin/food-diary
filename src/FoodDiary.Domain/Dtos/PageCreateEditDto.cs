@@ -5,8 +5,7 @@ namespace FoodDiary.Domain.Dtos
 {
     public class PageCreateEditDto
     {
-        public int Id { get; set; }
-
+        [Required]
         public DateTime Date { get; set; }
     }
 }
