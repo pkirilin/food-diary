@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -33,6 +33,11 @@ namespace FoodDiary.Infrastructure.Repositories
             return await query.ToListAsync(cancellationToken);
         }
 
+        public IQueryable<Product> LoadCategory(IQueryable<Product> query)
+        {
+            return query.Include(p => p.Category);
+        }
+
         public async Task<Product> GetByIdAsync(int id, CancellationToken cancellationToken)
         {
             return await _context.Products.FindAsync(new object[] { id }, cancellationToken);
@@ -42,11 +47,6 @@ namespace FoodDiary.Infrastructure.Repositories
         {
             return await _context.Products.Where(p => ids.Contains(p.Id))
                 .ToListAsync(cancellationToken);
-        }
-
-        public async Task<int> CountByQueryAsync(IQueryable<Product> productsQuery, CancellationToken cancellationToken)
-        {
-            return await productsQuery.CountAsync(cancellationToken);
         }
 
         public async Task<bool> IsDuplicateAsync(string productName, CancellationToken cancellationToken)

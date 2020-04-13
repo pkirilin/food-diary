@@ -37,6 +37,8 @@ namespace FoodDiary.Infrastructure.Services
 
             searchQuery = searchQuery.Skip((searchRequest.PageNumber - 1) * searchRequest.PageSize)
                 .Take(searchRequest.PageSize);
+            searchQuery = _productRepository.LoadCategory(searchQuery);
+
             return await _productRepository.GetListFromQueryAsync(searchQuery, cancellationToken);
         }
 

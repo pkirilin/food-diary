@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using AutoMapper;
 using FoodDiary.API.Helpers;
 using FoodDiary.Domain.Dtos;
@@ -39,7 +39,10 @@ namespace FoodDiary.API
             CreateMap<Category, CategoryItemDto>();
             CreateMap<CategoryCreateEditDto, Category>();
 
-            CreateMap<Product, ProductItemDto>();
+            CreateMap<Product, ProductItemDto>()
+                .ForMember(dest => dest.CategoryName,
+                o => o.MapFrom(src => src.Category.Name));
+
             CreateMap<ProductCreateEditDto, Product>();
         }
     }

@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,7 +14,7 @@ namespace FoodDiary.Domain.Repositories
 
         Task<List<Product>> GetListFromQueryAsync(IQueryable<Product> query, CancellationToken cancellationToken);
 
-        Task<int> CountByQueryAsync(IQueryable<Product> productsQuery, CancellationToken cancellationToken);
+        IQueryable<Product> LoadCategory(IQueryable<Product> query);
 
         Task<Product> GetByIdAsync(int id, CancellationToken cancellationToken);
 

@@ -101,12 +101,15 @@ namespace FoodDiary.UnitTests.Services
 
             _productRepositoryMock.Setup(r => r.GetQueryWithoutTracking())
                 .Returns(searchQuery);
+            _productRepositoryMock.Setup(r => r.LoadCategory(It.IsNotNull<IQueryable<Product>>()))
+                .Returns(modifiedSearchQuery);
             _productRepositoryMock.Setup(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Product>>(), default))
                 .ReturnsAsync(expectedProductsResult);
 
             var result = await ProductService.SearchProductsAsync(searchRequest, default);
 
             _productRepositoryMock.Verify(r => r.GetQueryWithoutTracking(), Times.Once);
+            _productRepositoryMock.Verify(r => r.LoadCategory(It.IsNotNull<IQueryable<Product>>()), Times.Once);
             _productRepositoryMock.Verify(r => r.GetListFromQueryAsync(modifiedSearchQuery, default), Times.Once);
 
             if (!expectedProductsResult.Any())
