@@ -1,5 +1,5 @@
-import { PagesFilter, PageCreateEdit } from '../models';
 import { API_URL } from '../config';
+import { PagesFilter, PageCreateEdit, PageEditRequest } from '../models';
 
 const pagesApiClientUrl = `${API_URL}/v1/pages`;
 
@@ -28,8 +28,8 @@ export const createPageAsync = async (page: PageCreateEdit): Promise<Response> =
   });
 };
 
-export const editPageAsync = async (page: PageCreateEdit): Promise<Response> => {
-  return await fetch(pagesApiClientUrl, {
+export const editPageAsync = async ({ id, ...page }: PageEditRequest): Promise<Response> => {
+  return await fetch(`${pagesApiClientUrl}/${id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',

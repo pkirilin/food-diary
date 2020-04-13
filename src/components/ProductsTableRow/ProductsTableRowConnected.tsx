@@ -21,7 +21,7 @@ import {
   getCategoryDropdownItems,
 } from '../../action-creators';
 import { ThunkDispatch } from 'redux-thunk';
-import { ProductItem, ProductCreateEdit, CategoryDropdownItem, ProductsFilter } from '../../models';
+import { ProductItem, CategoryDropdownItem, ProductsFilter, ProductEditRequest } from '../../models';
 
 export interface StateToPropsMapResult {
   editableProductsIds: number[];
@@ -45,13 +45,13 @@ export interface DispatchToPropsMapResult {
   setEditableForProduct: (productId: number, editable: boolean) => void;
   getProducts: (productsFilter: ProductsFilter) => Promise<GetProductsListSuccessAction | GetProductsListErrorAction>;
   getCategoryDropdownItems: () => Promise<GetCategoryDropdownItemsSuccessAction | GetCategoryDropdownItemsErrorAction>;
-  editProduct: (product: ProductCreateEdit) => Promise<EditProductSuccessAction | EditProductErrorAction>;
+  editProduct: (request: ProductEditRequest) => Promise<EditProductSuccessAction | EditProductErrorAction>;
   deleteProduct: (productId: number) => Promise<DeleteProductSuccessAction | DeleteProductErrorAction>;
 }
 
 type ProductsTableRowDispatch = Dispatch<SetEditableForProductAction> &
   ThunkDispatch<ProductItem, ProductsFilter, GetProductsListSuccessAction | GetProductsListErrorAction> &
-  ThunkDispatch<void, ProductCreateEdit, EditProductSuccessAction | EditProductErrorAction> &
+  ThunkDispatch<void, ProductEditRequest, EditProductSuccessAction | EditProductErrorAction> &
   ThunkDispatch<void, number, DeleteProductSuccessAction | DeleteProductErrorAction> &
   ThunkDispatch<
     CategoryDropdownItem[],
@@ -74,8 +74,8 @@ const mapDispatchToProps = (dispatch: ProductsTableRowDispatch): DispatchToProps
     > => {
       return dispatch(getCategoryDropdownItems());
     },
-    editProduct: (product: ProductCreateEdit): Promise<EditProductSuccessAction | EditProductErrorAction> => {
-      return dispatch(editProduct(product));
+    editProduct: (request: ProductEditRequest): Promise<EditProductSuccessAction | EditProductErrorAction> => {
+      return dispatch(editProduct(request));
     },
     deleteProduct: (productId: number): Promise<DeleteProductSuccessAction | DeleteProductErrorAction> => {
       return dispatch(deleteProduct(productId));

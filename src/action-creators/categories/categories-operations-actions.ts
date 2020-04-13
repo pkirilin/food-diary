@@ -12,7 +12,7 @@ import {
   DeleteCategorySuccessAction,
   DeleteCategoryErrorAction,
 } from '../../action-types';
-import { CategoryCreateEdit } from '../../models';
+import { CategoryCreateEdit, CategoryEditRequest } from '../../models';
 import { createCategoryAsync, editCategoryAsync, deleteCategoryAsync } from '../../services';
 
 const createCategoryRequest = (category: CategoryCreateEdit, operationMessage: string): CreateCategoryRequestAction => {
@@ -36,10 +36,10 @@ const createCategoryError = (error: string): CreateCategoryErrorAction => {
   };
 };
 
-const editCategoryRequest = (category: CategoryCreateEdit, operationMessage: string): EditCategoryRequestAction => {
+const editCategoryRequest = (request: CategoryEditRequest, operationMessage: string): EditCategoryRequestAction => {
   return {
     type: CategoriesOperationsActionTypes.EditRequest,
-    category,
+    request,
     operationMessage,
   };
 };
@@ -107,14 +107,14 @@ export const createCategory: ActionCreator<ThunkAction<
 export const editCategory: ActionCreator<ThunkAction<
   Promise<EditCategorySuccessAction | EditCategoryErrorAction>,
   void,
-  CategoryCreateEdit,
+  CategoryEditRequest,
   EditCategorySuccessAction | EditCategoryErrorAction
->> = (category: CategoryCreateEdit) => {
+>> = (request: CategoryEditRequest) => {
   return async (dispatch: Dispatch): Promise<EditCategorySuccessAction | EditCategoryErrorAction> => {
-    dispatch(editCategoryRequest(category, 'Updating category'));
+    dispatch(editCategoryRequest(request, 'Updating category'));
 
     try {
-      const response = await editCategoryAsync(category);
+      const response = await editCategoryAsync(request);
 
       if (!response.ok) {
         const errorMessageForInvalidData = 'Failed to update category (invalid data)';

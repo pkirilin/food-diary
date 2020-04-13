@@ -52,7 +52,6 @@ const PagesListItem: React.FC<PagesListItemProps> = ({
     if (page.id < 1) {
       // This is a draft page for create
       const createPageAction = await createPage({
-        id: 0,
         date: selectedDate,
       });
 

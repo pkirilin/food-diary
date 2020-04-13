@@ -1,5 +1,5 @@
 import { Action } from 'redux';
-import { CategoryCreateEdit } from '../../models';
+import { CategoryCreateEdit, CategoryEditRequest } from '../../models';
 
 export enum CategoriesOperationsActionTypes {
   CreateRequest = 'CATEGORIES_OPERATIONS__CREATE_REQUEST',
@@ -32,7 +32,7 @@ export interface CreateCategoryErrorAction extends Action<CategoriesOperationsAc
 
 export interface EditCategoryRequestAction extends Action<CategoriesOperationsActionTypes.EditRequest> {
   type: CategoriesOperationsActionTypes.EditRequest;
-  category: CategoryCreateEdit;
+  request: CategoryEditRequest;
   operationMessage: string;
 }
 

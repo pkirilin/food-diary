@@ -1,5 +1,5 @@
 import { Action } from 'redux';
-import { ProductCreateEdit } from '../../models';
+import { ProductEditRequest, ProductCreateEdit } from '../../models';
 
 export enum ProductsOperationsActionTypes {
   CreateRequest = 'PRODUCTS_OPERATIONS__CREATE_REQUEST',
@@ -32,7 +32,7 @@ export interface CreateProductErrorAction extends Action<ProductsOperationsActio
 
 export interface EditProductRequestAction extends Action<ProductsOperationsActionTypes.EditRequest> {
   type: ProductsOperationsActionTypes.EditRequest;
-  product: ProductCreateEdit;
+  request: ProductEditRequest;
   operationMessage: string;
 }
 

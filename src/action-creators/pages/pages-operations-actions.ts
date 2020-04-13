@@ -1,4 +1,4 @@
-import { PageCreateEdit } from '../../models';
+import { PageCreateEdit, PageEditRequest } from '../../models';
 import { ActionCreator, Dispatch } from 'redux';
 import { ThunkAction } from 'redux-thunk';
 import {
@@ -36,10 +36,10 @@ const createPageError = (error: string): CreatePageErrorAction => {
   };
 };
 
-const editPageRequest = (page: PageCreateEdit, operationMessage: string): EditPageRequestAction => {
+const editPageRequest = (request: PageEditRequest, operationMessage: string): EditPageRequestAction => {
   return {
     type: PagesOperationsActionTypes.EditRequest,
-    page,
+    request,
     operationMessage,
   };
 };
@@ -105,13 +105,13 @@ export const createPage: ActionCreator<ThunkAction<
 export const editPage: ActionCreator<ThunkAction<
   Promise<EditPageSuccessAction | EditPageErrorAction>,
   void,
-  PageCreateEdit,
+  PageEditRequest,
   EditPageSuccessAction | EditPageErrorAction
->> = (page: PageCreateEdit) => {
+>> = (request: PageEditRequest) => {
   return async (dispatch: Dispatch): Promise<EditPageSuccessAction | EditPageErrorAction> => {
-    dispatch(editPageRequest(page, 'Updating page'));
+    dispatch(editPageRequest(request, 'Updating page'));
     try {
-      const response = await editPageAsync(page);
+      const response = await editPageAsync(request);
       if (!response.ok) {
         const errorMessageForInvalidData = 'Failed to update page (invalid data)';
         alert(errorMessageForInvalidData);

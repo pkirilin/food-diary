@@ -10,7 +10,7 @@ import {
   DeleteProductSuccessAction,
   DeleteProductErrorAction,
 } from '../../action-types';
-import { ProductCreateEdit } from '../../models';
+import { ProductEditRequest, ProductCreateEdit } from '../../models';
 import { ActionCreator, Dispatch } from 'redux';
 import { ThunkAction } from 'redux-thunk';
 import { createProductAsync, editProductAsync, deleteProductAsync } from '../../services';
@@ -36,10 +36,10 @@ const createProductError = (error: string): CreateProductErrorAction => {
   };
 };
 
-const editProductRequest = (product: ProductCreateEdit, operationMessage: string): EditProductRequestAction => {
+const editProductRequest = (request: ProductEditRequest, operationMessage: string): EditProductRequestAction => {
   return {
     type: ProductsOperationsActionTypes.EditRequest,
-    product,
+    request,
     operationMessage,
   };
 };
@@ -105,13 +105,13 @@ export const createProduct: ActionCreator<ThunkAction<
 export const editProduct: ActionCreator<ThunkAction<
   Promise<EditProductSuccessAction | EditProductErrorAction>,
   void,
-  ProductCreateEdit,
+  ProductEditRequest,
   EditProductSuccessAction | EditProductErrorAction
->> = (product: ProductCreateEdit) => {
+>> = (request: ProductEditRequest) => {
   return async (dispatch: Dispatch): Promise<EditProductSuccessAction | EditProductErrorAction> => {
-    dispatch(editProductRequest(product, 'Updating product'));
+    dispatch(editProductRequest(request, 'Updating product'));
     try {
-      const response = await editProductAsync(product);
+      const response = await editProductAsync(request);
       if (!response.ok) {
         const errorMessageForInvalidData = 'Failed to update product (invalid data)';
         alert(errorMessageForInvalidData);

@@ -22,7 +22,7 @@ import {
   deleteCategory,
   getCategories,
 } from '../../action-creators';
-import { CategoryCreateEdit, CategoryItem } from '../../models';
+import { CategoryCreateEdit, CategoryItem, CategoryEditRequest } from '../../models';
 import { ThunkDispatch } from 'redux-thunk';
 
 export interface StateToPropsMapResult {
@@ -36,7 +36,7 @@ export interface DispatchToPropsMapResult {
   setEditableForCategories: (categoriesIds: number[], editable: boolean) => void;
   deleteDraftCategory: (draftCategoryId: number) => void;
   createCategory: (category: CategoryCreateEdit) => Promise<CreateCategorySuccessAction | CreateCategoryErrorAction>;
-  editCategory: (category: CategoryCreateEdit) => Promise<EditCategorySuccessAction | EditCategoryErrorAction>;
+  editCategory: (request: CategoryEditRequest) => Promise<EditCategorySuccessAction | EditCategoryErrorAction>;
   deleteCategory: (categoryId: number) => Promise<DeleteCategorySuccessAction | DeleteCategoryErrorAction>;
   getCategories: () => Promise<GetCategoriesListSuccessAction | GetCategoriesListErrorAction>;
 }
@@ -53,7 +53,7 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
 type CategoriesListItemDispatch = Dispatch<SetEditableForCategoriesAction> &
   Dispatch<DeleteDraftCategoryAction> &
   ThunkDispatch<void, CategoryCreateEdit, CreateCategorySuccessAction | CreateCategoryErrorAction> &
-  ThunkDispatch<void, CategoryCreateEdit, EditCategorySuccessAction | EditCategoryErrorAction> &
+  ThunkDispatch<void, CategoryEditRequest, EditCategorySuccessAction | EditCategoryErrorAction> &
   ThunkDispatch<void, number, DeleteCategorySuccessAction | DeleteCategoryErrorAction> &
   ThunkDispatch<CategoryItem[], void, GetCategoriesListSuccessAction | GetCategoriesListErrorAction>;
 
@@ -70,8 +70,8 @@ const mapDispatchToProps = (dispatch: CategoriesListItemDispatch): DispatchToPro
     ): Promise<CreateCategorySuccessAction | CreateCategoryErrorAction> => {
       return dispatch(createCategory(category));
     },
-    editCategory: (category: CategoryCreateEdit): Promise<EditCategorySuccessAction | EditCategoryErrorAction> => {
-      return dispatch(editCategory(category));
+    editCategory: (request: CategoryEditRequest): Promise<EditCategorySuccessAction | EditCategoryErrorAction> => {
+      return dispatch(editCategory(request));
     },
     deleteCategory: (categoryId: number): Promise<DeleteCategorySuccessAction | DeleteCategoryErrorAction> => {
       return dispatch(deleteCategory(categoryId));

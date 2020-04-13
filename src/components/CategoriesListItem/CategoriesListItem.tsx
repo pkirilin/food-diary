@@ -8,7 +8,7 @@ import {
 } from '../SidebarBlocks';
 import { BadgesContainer } from '../ContainerBlocks';
 import Badge from '../Badge';
-import { CategoryItem, CategoryCreateEdit } from '../../models';
+import { CategoryItem } from '../../models';
 import { StateToPropsMapResult, DispatchToPropsMapResult } from './CategoriesListItemConnected';
 import { Input, DropdownMenu, DropdownItem } from '../Controls';
 import Icon from '../Icon';
@@ -66,19 +66,19 @@ const CategoriesListItem: React.FC<CategoriesListItemProps> = ({
   };
 
   const handleConfirmEditIconClick = async (): Promise<void> => {
-    const categoryForOperation: CategoryCreateEdit = {
-      id: category.id,
-      name: categoryName,
-    };
-
     if (category.id < 1) {
-      const createCategoryAction = await createCategory(categoryForOperation);
+      const createCategoryAction = await createCategory({
+        name: categoryName,
+      });
       if (createCategoryAction as CreateCategorySuccessAction) {
         deleteDraftCategory(category.id);
         await getCategories();
       }
     } else {
-      const editCategoryAction = await editCategory(categoryForOperation);
+      const editCategoryAction = await editCategory({
+        id: category.id,
+        name: categoryName,
+      });
       if (editCategoryAction as EditCategorySuccessAction) {
         setEditableForCategories([category.id], false);
         await getCategories();

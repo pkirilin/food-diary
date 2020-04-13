@@ -20,7 +20,7 @@ import {
   setEditableForPages,
   editPage,
 } from '../../action-creators';
-import { PageCreateEdit, PagesFilter, PageItem } from '../../models';
+import { PageCreateEdit, PagesFilter, PageItem, PageEditRequest } from '../../models';
 import { ThunkDispatch } from 'redux-thunk';
 import { FoodDiaryState } from '../../store';
 
@@ -36,7 +36,7 @@ export interface StateToPropsMapResult {
 
 export interface DispatchToPropsMapResult {
   createPage: (page: PageCreateEdit) => Promise<CreatePageSuccessAction | CreatePageErrorAction>;
-  editPage: (page: PageCreateEdit) => Promise<EditPageSuccessAction | EditPageErrorAction>;
+  editPage: (request: PageEditRequest) => Promise<EditPageSuccessAction | EditPageErrorAction>;
   deleteDraftPage: (draftPageId: number) => void;
   getPages: (filter: PagesFilter) => Promise<GetPagesListSuccessAction | GetPagesListErrorAction>;
   setSelectedForPage: (selected: boolean, pageId: number) => void;
@@ -59,6 +59,7 @@ type PagesListItemDispatchType = Dispatch<
   DeleteDraftPageAction | SetSelectedForPageAction | SetEditableForPagesAction
 > &
   ThunkDispatch<void, PageCreateEdit, CreatePageSuccessAction | CreatePageErrorAction> &
+  ThunkDispatch<void, PageEditRequest, EditPageSuccessAction | EditPageErrorAction> &
   ThunkDispatch<PageItem[], PagesFilter, GetPagesListSuccessAction | GetPagesListErrorAction>;
 
 const mapDispatchToProps = (dispatch: PagesListItemDispatchType): DispatchToPropsMapResult => {
@@ -66,8 +67,8 @@ const mapDispatchToProps = (dispatch: PagesListItemDispatchType): DispatchToProp
     createPage: (page: PageCreateEdit): Promise<CreatePageSuccessAction | CreatePageErrorAction> => {
       return dispatch(createPage(page));
     },
-    editPage: (page: PageCreateEdit): Promise<EditPageSuccessAction | EditPageErrorAction> => {
-      return dispatch(editPage(page));
+    editPage: (request: PageEditRequest): Promise<EditPageSuccessAction | EditPageErrorAction> => {
+      return dispatch(editPage(request));
     },
     deleteDraftPage: (draftPageId: number): void => {
       dispatch(deleteDraftPage(draftPageId));
