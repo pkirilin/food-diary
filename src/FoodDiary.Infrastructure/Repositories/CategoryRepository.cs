@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -18,12 +18,19 @@ namespace FoodDiary.Infrastructure.Repositories
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public async Task<IEnumerable<Category>> GetAllAsync(CancellationToken cancellationToken)
+        public IQueryable<Category> GetQuery()
         {
-            return await _context.Categories.AsNoTracking()
-                .OrderBy(c => c.Name)
-                .Include(c => c.Products)
-                .ToListAsync(cancellationToken);
+            return _context.Categories.AsQueryable();
+        }
+
+        public IQueryable<Category> GetQueryWithoutTracking()
+        {
+            return GetQuery().AsNoTracking();
+        }
+
+        public async Task<IEnumerable<Category>> GetListFromQueryAsync(IQueryable<Category> query, CancellationToken cancellationToken)
+        {
+            return await query.ToListAsync(cancellationToken);
         }
 
         public async Task<Category> GetByIdAsync(int id, CancellationToken cancellationToken)
@@ -59,6 +66,11 @@ namespace FoodDiary.Infrastructure.Repositories
         public async Task SaveChangesAsync(CancellationToken cancellationToken)
         {
             await _context.SaveChangesAsync(cancellationToken);
+        }
+
+        public IQueryable<Category> LoadProducts(IQueryable<Category> query)
+        {
+            return query.Include(c => c.Products);
         }
     }
 }

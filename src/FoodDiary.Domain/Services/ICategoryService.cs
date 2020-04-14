@@ -21,5 +21,7 @@ namespace FoodDiary.Domain.Services
         Task<Category> EditCategoryAsync(Category category, CancellationToken cancellationToken);
 
         Task<Category> DeleteCategoryAsync(Category category, CancellationToken cancellationToken);
+
+        Task<IEnumerable<Category>> GetCategoriesDropdownAsync(CancellationToken cancellationToken);
     }
 }

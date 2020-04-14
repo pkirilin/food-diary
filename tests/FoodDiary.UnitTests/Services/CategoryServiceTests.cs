@@ -1,4 +1,4 @@
-using System;
+﻿using System.Linq;
 using AutoFixture;
 using FluentAssertions;
 using FoodDiary.Domain.Dtos;
@@ -37,12 +37,14 @@ namespace FoodDiary.UnitTests.Services
         public async void GetCategories_ReturnsAllCategories()
         {
             var expectedCategories = _fixture.CreateMany<Category>();
-            _categoryRepositoryMock.Setup(r => r.GetAllAsync(default))
+            _categoryRepositoryMock.Setup(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Category>>(), default))
                 .ReturnsAsync(expectedCategories);
 
             var result = await CategoryService.GetCategoriesAsync(default);
 
-            _categoryRepositoryMock.Verify(r => r.GetAllAsync(default), Times.Once);
+            _categoryRepositoryMock.Verify(r => r.GetQueryWithoutTracking(), Times.Once);
+            _categoryRepositoryMock.Verify(r => r.LoadProducts(It.IsNotNull<IQueryable<Category>>()), Times.Once);
+            _categoryRepositoryMock.Verify(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Category>>(), default), Times.Once);
             result.Should().Contain(expectedCategories);
         }
 
@@ -136,6 +138,20 @@ namespace FoodDiary.UnitTests.Services
             var result = CategoryService.IsEditedCategoryValid(editedCategoryData, originalCategory, validationResult);
 
             result.Should().BeTrue();
+        }
+
+        [Fact]
+        public async void GetCategoriesDropdown_ReturnsAllCategories()
+        {
+            var expectedCategories = _fixture.CreateMany<Category>();
+            _categoryRepositoryMock.Setup(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Category>>(), default))
+                .ReturnsAsync(expectedCategories);
+
+            var result = await CategoryService.GetCategoriesDropdownAsync(default);
+
+            _categoryRepositoryMock.Verify(r => r.GetQueryWithoutTracking(), Times.Once);
+            _categoryRepositoryMock.Verify(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Category>>(), default), Times.Once);
+            result.Should().Contain(expectedCategories);
         }
     }
 }

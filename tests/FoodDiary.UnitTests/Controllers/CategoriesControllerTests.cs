@@ -220,5 +220,18 @@ namespace FoodDiary.UnitTests.Controllers
             _categoryServiceMock.Verify(s => s.DeleteCategoryAsync(It.IsAny<Category>(), default), Times.Never);
             result.Should().BeOfType<NotFoundResult>();
         }
+
+        [Fact]
+        public async void GetCategoriesDropdown_ReturnsRequestedCategories()
+        {
+            var expectedCategories = _fixture.CreateMany<Category>();
+            _categoryServiceMock.Setup(s => s.GetCategoriesDropdownAsync(default))
+                .ReturnsAsync(expectedCategories);
+
+            var result = await CategoriesController.GetCategoriesDropdown(default);
+
+            _categoryServiceMock.Verify(s => s.GetCategoriesDropdownAsync(default), Times.Once);
+            result.Should().BeOfType<OkObjectResult>();
+        }
     }
 }

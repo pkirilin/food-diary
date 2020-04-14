@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FoodDiary.Domain.Entities;
@@ -7,7 +8,11 @@ namespace FoodDiary.Domain.Repositories
 {
     public interface ICategoryRepository
     {
-        Task<IEnumerable<Category>> GetAllAsync(CancellationToken cancellationToken);
+        IQueryable<Category> GetQuery();
+
+        IQueryable<Category> GetQueryWithoutTracking();
+
+        Task<IEnumerable<Category>> GetListFromQueryAsync(IQueryable<Category> query, CancellationToken cancellationToken);
 
         Task<Category> GetByIdAsync(int id, CancellationToken cancellationToken);
 
@@ -20,5 +25,7 @@ namespace FoodDiary.Domain.Repositories
         Category Delete(Category category);
 
         Task SaveChangesAsync(CancellationToken cancellationToken);
+
+        IQueryable<Category> LoadProducts(IQueryable<Category> query);
     }
 }

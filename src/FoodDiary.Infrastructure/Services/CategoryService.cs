@@ -1,5 +1,6 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FoodDiary.Domain.Dtos;
@@ -20,7 +21,10 @@ namespace FoodDiary.Infrastructure.Services
 
         public async Task<IEnumerable<Category>> GetCategoriesAsync(CancellationToken cancellationToken)
         {
-            return await _categoryRepository.GetAllAsync(cancellationToken);
+            var query = _categoryRepository.GetQueryWithoutTracking();
+            query = _categoryRepository.LoadProducts(query);
+            query = query.OrderBy(c => c.Name);
+            return await _categoryRepository.GetListFromQueryAsync(query, cancellationToken);
         }
 
         public async Task<Category> GetCategoryByIdAsync(int id, CancellationToken cancellationToken)
@@ -63,6 +67,13 @@ namespace FoodDiary.Infrastructure.Services
             var deletedCategory = _categoryRepository.Delete(category);
             await _categoryRepository.SaveChangesAsync(cancellationToken);
             return deletedCategory;
+        }
+
+        public async Task<IEnumerable<Category>> GetCategoriesDropdownAsync(CancellationToken cancellationToken)
+        {
+            var query = _categoryRepository.GetQueryWithoutTracking().OrderBy(c => c.Name);
+            var categories = await _categoryRepository.GetListFromQueryAsync(query, cancellationToken);
+            return categories;
         }
     }
 }
