@@ -27,5 +27,7 @@ namespace FoodDiary.Domain.Services
         bool IsEditedProductValid(ProductCreateEditDto editedProductData, Product originalProduct, ValidationResultDto editedProductValidationResult);
 
         ValidationResultDto AllProductsFetched(IEnumerable<Product> fetchedProducts, IEnumerable<int> requestedIds);
+
+        Task<IEnumerable<Product>> GetProductsDropdownListAsync(CancellationToken cancellationToken);
     }
 }

@@ -43,6 +43,7 @@ namespace FoodDiary.API
             CreateMap<Product, ProductItemDto>()
                 .ForMember(dest => dest.CategoryName,
                 o => o.MapFrom(src => src.Category.Name));
+            CreateMap<Product, ProductDropdownItemDto>();
 
             CreateMap<ProductCreateEditDto, Product>();
         }

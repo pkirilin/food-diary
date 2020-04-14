@@ -130,5 +130,14 @@ namespace FoodDiary.API.Controllers.v1
             await _productService.DeleteProductsRangeAsync(productsForDelete, cancellationToken);
             return Ok();
         }
+
+        [HttpGet("dropdown")]
+        [ProducesResponseType(typeof(IEnumerable<ProductDropdownItemDto>), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetProductsDropdownList(CancellationToken cancellationToken)
+        {
+            var products = await _productService.GetProductsDropdownListAsync(cancellationToken);
+            var productsDropdownListResponse = _mapper.Map<IEnumerable<ProductDropdownItemDto>>(products);
+            return Ok(productsDropdownListResponse);
+        }
     }
 }

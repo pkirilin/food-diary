@@ -269,5 +269,18 @@ namespace FoodDiary.UnitTests.Controllers
             _productServiceMock.Verify(s => s.DeleteProductsRangeAsync(productsForDelete, default), Times.Never);
             result.Should().BeOfType<BadRequestObjectResult>();
         }
+
+        [Fact]
+        public async void GetProductsDropdownList_ReturnsRequestedProducts()
+        {
+            var expectedProducts = _fixture.CreateMany<Product>();
+            _productServiceMock.Setup(s => s.GetProductsDropdownListAsync(default))
+                .ReturnsAsync(expectedProducts);
+
+            var result = await ProductsController.GetProductsDropdownList(default);
+
+            _productServiceMock.Verify(s => s.GetProductsDropdownListAsync(default), Times.Once);
+            result.Should().BeOfType<OkObjectResult>();
+        }
     }
 }
