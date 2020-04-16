@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,8 +17,6 @@ namespace FoodDiary.Domain.Repositories
         Task<int> GetMaxDisplayOrderFromQueryAsync(IQueryable<Note> notesQuery, CancellationToken cancellationToken);
 
         Task<Note> GetByIdAsync(int id, CancellationToken cancellationToken);
-
-        Task<IEnumerable<Note>> GetByPageIdAsync(int pageId, CancellationToken cancellationToken);
 
         Note Create(Note note);
 

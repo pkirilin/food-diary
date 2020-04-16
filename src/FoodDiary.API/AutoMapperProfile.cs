@@ -24,17 +24,15 @@ namespace FoodDiary.API
                     dest => dest.CountNotes,
                     o => o.MapFrom<PageCountNotesValueResolver>());
 
-            CreateMap<MealType, string>()
-                .ConvertUsing<MealTypeToStringConverter>();
-
-            CreateMap<Note, NoteItemDto>().ForMember(
-                dest => dest.Calories,
-                o => o.MapFrom<NoteCaloriesValueResolver>());
+            CreateMap<Note, NoteItemDto>()
+                .ForMember(
+                    dest => dest.Calories,
+                    o => o.MapFrom<NoteCaloriesValueResolver>())
+                .ForMember(
+                    dest => dest.ProductName,
+                    o => o.MapFrom<NoteProductNameValueResolver>());
 
             CreateMap<NoteCreateEditDto, Note>();
-
-            CreateMap<IEnumerable<Note>, NotesForPageResponseDto>()
-                .ConvertUsing<NoteEntitiesToNotesForPageConverter>();
 
             CreateMap<Category, CategoryItemDto>();
             CreateMap<Category, CategoryDropdownItemDto>();

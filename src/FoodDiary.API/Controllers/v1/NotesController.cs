@@ -20,36 +20,25 @@ namespace FoodDiary.API.Controllers.v1
     {
         private readonly ILogger<NotesController> _logger;
         private readonly IMapper _mapper;
-        private readonly IPageService _pageService;
         private readonly INoteService _noteService;
 
         public NotesController(
             ILoggerFactory loggerFactory,
             IMapper mapper,
-            IPageService pageService,
             INoteService noteService)
         {
             _logger = loggerFactory?.CreateLogger<NotesController>() ?? throw new ArgumentNullException(nameof(loggerFactory));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            _pageService = pageService ?? throw new ArgumentNullException(nameof(pageService));
             _noteService = noteService ?? throw new ArgumentNullException(nameof(noteService));
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(NotesForPageResponseDto), (int)HttpStatusCode.OK)]
-        [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> GetNotes([FromQuery] int pageId, CancellationToken cancellationToken)
+        [ProducesResponseType(typeof(List<NoteItemDto>), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetNotes([FromQuery] NotesSearchRequestDto request, CancellationToken cancellationToken)
         {
-            var requestedPage = await _pageService.GetPageByIdAsync(pageId, cancellationToken);
-            if (requestedPage == null)
-            {
-                return NotFound();
-            }
-
-            var noteEntities = await _noteService.GetNotesByPageIdAsync(pageId, cancellationToken);
-
-            var response = _mapper.Map<NotesForPageResponseDto>(noteEntities);
-            return Ok(response);
+            var noteEntities = await _noteService.SearchNotesAsync(request, cancellationToken);
+            var notesListResponse = _mapper.Map<List<NoteItemDto>>(noteEntities);
+            return Ok(notesListResponse);
         }
 
         [HttpPost]

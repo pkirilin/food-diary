@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -26,14 +26,26 @@ namespace FoodDiary.Infrastructure.Services
             _notesOrderService = notesOrderService ?? throw new ArgumentNullException(nameof(notesOrderService));
         }
 
+        public async Task<IEnumerable<Note>> SearchNotesAsync(NotesSearchRequestDto request, CancellationToken cancellationToken)
+        {
+            var query = _noteRepository.GetQueryWithoutTracking()
+                .Where(n => n.PageId == request.PageId);
+
+            if (request.MealType.HasValue)
+            {
+                query = query.Where(n => n.MealType == request.MealType);
+            }
+
+            query = query.OrderBy(n => n.MealType)
+                .ThenBy(n => n.DisplayOrder);
+
+            var notes = await _noteRepository.GetListFromQueryAsync(query, cancellationToken);
+            return notes;
+        }
+
         public async Task<Note> GetNoteByIdAsync(int id, CancellationToken cancellationToken)
         {
             return await _noteRepository.GetByIdAsync(id, cancellationToken);
-        }
-
-        public async Task<IEnumerable<Note>> GetNotesByPageIdAsync(int pageId, CancellationToken cancellationToken)
-        {
-            return await _noteRepository.GetByPageIdAsync(pageId, cancellationToken);
         }
 
         public async Task<IEnumerable<Note>> GetNotesByIdsAsync(IEnumerable<int> ids, CancellationToken cancellationToken)

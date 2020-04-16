@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using FoodDiary.Domain.Dtos;
@@ -10,7 +10,7 @@ namespace FoodDiary.Domain.Services
     {
         Task<Note> GetNoteByIdAsync(int id, CancellationToken cancellationToken);
 
-        Task<IEnumerable<Note>> GetNotesByPageIdAsync(int pageId, CancellationToken cancellationToken);
+        Task<IEnumerable<Note>> SearchNotesAsync(NotesSearchRequestDto request, CancellationToken cancellationToken);
 
         Task<IEnumerable<Note>> GetNotesByIdsAsync(IEnumerable<int> ids, CancellationToken cancellationToken);
 

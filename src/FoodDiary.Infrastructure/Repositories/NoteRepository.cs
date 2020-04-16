@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -43,15 +43,6 @@ namespace FoodDiary.Infrastructure.Repositories
         public async Task<Note> GetByIdAsync(int id, CancellationToken cancellationToken)
         {
             return await _context.Notes.FindAsync(new object[] { id }, cancellationToken);
-        }
-
-        public async Task<IEnumerable<Note>> GetByPageIdAsync(int pageId, CancellationToken cancellationToken)
-        {
-            return await _context.Notes.Where(n => n.PageId == pageId)
-                .Include(n => n.Page)
-                .Include(n => n.Product)
-                .OrderBy(n => n.DisplayOrder)
-                .ToListAsync(cancellationToken);
         }
 
         public Note Create(Note note)

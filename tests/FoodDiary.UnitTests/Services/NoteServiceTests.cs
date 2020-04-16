@@ -1,8 +1,10 @@
-using System.Linq;
+﻿using System.Linq;
 using AutoFixture;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using FoodDiary.Domain.Dtos;
 using FoodDiary.Domain.Entities;
+using FoodDiary.Domain.Enums;
 using FoodDiary.Domain.Repositories;
 using FoodDiary.Domain.Services;
 using FoodDiary.Infrastructure.Services;
@@ -52,17 +54,25 @@ namespace FoodDiary.UnitTests.Services
             result.Should().NotBeNull().And.Be(expectedNote);
         }
 
-        [Fact]
-        public async void GetNotesByPageIdAsync_ReturnsNotesForRequestedPageId()
+        [Theory]
+        [InlineAutoData]
+        [InlineAutoData(1)]
+        [InlineAutoData(1, null)]
+        [InlineAutoData(1, MealType.Breakfast)]
+        public async void SearchNotesAsync_ReturnsNotesForRequestedParameters(int pageId, MealType? mealType)
         {
-            var pageId = _fixture.Create<int>();
+            var request = _fixture.Build<NotesSearchRequestDto>()
+                .With(r => r.PageId, pageId)
+                .With(r => r.MealType, mealType)
+                .Create();
             var expectedNotes = _fixture.CreateMany<Note>().ToList();
-            _noteRepositoryMock.Setup(r => r.GetByPageIdAsync(pageId, default))
+            _noteRepositoryMock.Setup(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Note>>(), default))
                 .ReturnsAsync(expectedNotes);
 
-            var result = await NoteService.GetNotesByPageIdAsync(pageId, default);
+            var result = await NoteService.SearchNotesAsync(request, default);
 
-            _noteRepositoryMock.Verify(r => r.GetByPageIdAsync(pageId, default), Times.Once);
+            _noteRepositoryMock.Verify(r => r.GetQueryWithoutTracking(), Times.Once);
+            _noteRepositoryMock.Verify(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Note>>(), default), Times.Once);
             result.Should().Contain(expectedNotes);
         }
 
