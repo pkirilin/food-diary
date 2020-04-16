@@ -5,7 +5,12 @@ import { CategoryEditRequest } from '../models';
 const categoriesApiUrl = `${API_URL}/v1/categories`;
 
 export const getCategoryDropdownItemsAsync = async (): Promise<Response> => {
-  return await fetch('/categories-dropdown-items-data.json');
+  return await fetch(`${categoriesApiUrl}/dropdown`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
 };
 
 export const getCategoriesAsync = async (): Promise<Response> => {

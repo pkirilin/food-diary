@@ -4,7 +4,12 @@ import { ProductCreateEdit, ProductsFilter, ProductEditRequest } from '../models
 const productsApiUrl = `${API_URL}/v1/products`;
 
 export const getProductDropdownItemsAsync = async (): Promise<Response> => {
-  return await fetch('/products-dropdown-items-data.json');
+  return await fetch(`${productsApiUrl}/dropdown`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
 };
 
 export const getProductsAsync = async ({ pageSize, pageNumber, categoryId }: ProductsFilter): Promise<Response> => {
