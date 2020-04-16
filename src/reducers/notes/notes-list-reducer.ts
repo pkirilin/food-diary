@@ -15,7 +15,7 @@ const initNotesForMealFetchStates = (): NotesForMealFetchState[] => {
 };
 
 const initialState: NotesListState = {
-  notesForPage: null,
+  mealItemsWithNotes: [],
   notesForPageFetchState: {
     loading: false,
     loaded: false,
@@ -38,7 +38,7 @@ const notesListReducer = (state: NotesListState = initialState, action: NotesLis
     case NotesListActionTypes.SuccessForPage:
       return {
         ...state,
-        notesForPage: action.notesForPage,
+        mealItemsWithNotes: action.mealItemsWithNotes,
         notesForPageFetchState: {
           ...state.notesForPageFetchState,
           loading: false,
@@ -71,17 +71,12 @@ const notesListReducer = (state: NotesListState = initialState, action: NotesLis
     case NotesListActionTypes.SuccessForMeal:
       return {
         ...state,
-        notesForPage: state.notesForPage
-          ? {
-              ...state.notesForPage,
-              meals: [
-                // Sorting meals by type for correct display
-                ...state.notesForPage.meals.filter(m => m.type < action.mealItem.type),
-                action.mealItem,
-                ...state.notesForPage.meals.filter(m => m.type > action.mealItem.type),
-              ],
-            }
-          : null,
+        mealItemsWithNotes: [
+          // Sorting meals by type for correct display
+          ...state.mealItemsWithNotes.filter(m => m.type < action.mealItem.type),
+          action.mealItem,
+          ...state.mealItemsWithNotes.filter(m => m.type > action.mealItem.type),
+        ],
         notesForMealFetchStates: [
           ...state.notesForMealFetchStates.filter(fs => fs.mealType !== action.mealItem.type),
           {

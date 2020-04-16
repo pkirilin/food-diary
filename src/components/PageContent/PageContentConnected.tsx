@@ -8,7 +8,7 @@ import {
 } from '../../action-types';
 import { FoodDiaryState } from '../../store';
 import { ThunkDispatch } from 'redux-thunk';
-import { NotesForPage, ProductDropdownItem } from '../../models';
+import { ProductDropdownItem, MealItem } from '../../models';
 import { getNotesForPage } from '../../action-creators';
 
 export interface StateToPropsMapResult {
@@ -30,7 +30,7 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
 };
 
 type PageContentDispatchType = ThunkDispatch<
-  NotesForPage,
+  MealItem[],
   number,
   GetNotesForPageSuccessAction | GetNotesForPageErrorAction
 > &

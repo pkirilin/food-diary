@@ -11,7 +11,7 @@ import {
   SetEditableForNoteAction,
 } from '../../action-types';
 import { getNotesForPageAsync, getNotesForMealAsync } from '../../services';
-import { NotesForPage, MealType, NotesForMealRequest, MealItem } from '../../models';
+import { MealType, NotesForMealRequest, MealItem } from '../../models';
 
 const getNotesForPageRequest = (): GetNotesForPageRequestAction => {
   return {
@@ -19,10 +19,10 @@ const getNotesForPageRequest = (): GetNotesForPageRequestAction => {
   };
 };
 
-const getNotesForPageSuccess = (notesForPage: NotesForPage): GetNotesForPageSuccessAction => {
+const getNotesForPageSuccess = (mealItemsWithNotes: MealItem[]): GetNotesForPageSuccessAction => {
   return {
     type: NotesListActionTypes.SuccessForPage,
-    notesForPage: notesForPage,
+    mealItemsWithNotes,
   };
 };
 
@@ -57,7 +57,7 @@ const getNotesForMealError = (mealType: MealType, errorMessage: string): GetNote
 
 export const getNotesForPage: ActionCreator<ThunkAction<
   Promise<GetNotesForPageSuccessAction | GetNotesForPageErrorAction>,
-  NotesForPage,
+  MealItem[],
   number,
   GetNotesForPageSuccessAction | GetNotesForPageErrorAction
 >> = (pageId: number) => {

@@ -1,5 +1,5 @@
 import { DataFetchState } from './data-fetch-state';
-import { NotesForPage, MealType } from '../models';
+import { MealType, MealItem } from '../models';
 import { DataOperationState } from './data-operation-state';
 
 export interface NotesState {
@@ -8,7 +8,7 @@ export interface NotesState {
 }
 
 export interface NotesListState {
-  notesForPage: NotesForPageState;
+  mealItemsWithNotes: MealItem[];
   notesForPageFetchState: DataFetchState;
   notesForMealFetchStates: NotesForMealFetchState[];
   editableNotesIds: number[];
@@ -17,8 +17,6 @@ export interface NotesListState {
 export interface NotesOperationsState {
   mealOperationStatuses: MealOperationStatus[];
 }
-
-export type NotesForPageState = NotesForPage | null;
 
 export interface NotesForMealFetchState extends DataFetchState {
   mealType: MealType;

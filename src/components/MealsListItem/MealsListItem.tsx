@@ -23,6 +23,8 @@ const MealsListItem: React.FC<MealsListItemProps> = ({
 
   const currentMealFetchState = notesForMealFetchStates.filter(s => s.mealType === meal.type)[0];
   const isNotesTableLoading = currentMealFetchState && currentMealFetchState.loading;
+  const countNotes = meal.notes.length;
+  const countCalories = meal.notes.reduce((sum, note) => sum + note.calories, 0);
 
   const handleItemHeaderClick = (): void => {
     setCollapsedForMeal(!isCollapsed, meal.type);
@@ -44,8 +46,8 @@ const MealsListItem: React.FC<MealsListItemProps> = ({
         ></Icon>
         <div className="meals-list-item__header__name">{meal.name}</div>
         <BadgesContainer>
-          <Badge label={`${meal.countNotes} ${meal.countNotes === 1 ? 'note' : 'notes'}`}></Badge>
-          <Badge label={`${meal.countCalories} cal`}></Badge>
+          <Badge label={`${countNotes} ${countNotes === 1 ? 'note' : 'notes'}`}></Badge>
+          <Badge label={`${countCalories} cal`}></Badge>
         </BadgesContainer>
       </div>
       {!isCollapsed && (

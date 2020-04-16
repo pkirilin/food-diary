@@ -11,8 +11,6 @@ export enum MealType {
 export interface MealItem {
   name: string;
   type: MealType;
-  countNotes: number;
-  countCalories: number;
   notes: NoteItem[];
 }
 

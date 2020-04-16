@@ -1,5 +1,5 @@
 import { Action } from 'redux';
-import { NotesForPage, MealType, MealItem } from '../../models';
+import { MealType, MealItem } from '../../models';
 
 export enum NotesListActionTypes {
   RequestForPage = 'NOTES_LIST__REQUEST_FOR_PAGE',
@@ -19,7 +19,7 @@ export interface GetNotesForPageRequestAction extends Action<NotesListActionType
 
 export interface GetNotesForPageSuccessAction extends Action<NotesListActionTypes.SuccessForPage> {
   type: NotesListActionTypes.SuccessForPage;
-  notesForPage: NotesForPage;
+  mealItemsWithNotes: MealItem[];
 }
 
 export interface GetNotesForPageErrorAction extends Action<NotesListActionTypes.ErrorForPage> {

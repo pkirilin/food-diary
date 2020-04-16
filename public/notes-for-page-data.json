@@ -1,123 +1,119 @@
-{
-  "meals": [
-    {
-      "name": "Breakfast",
-      "type": 1,
-      "countNotes": 0,
-      "countCalories": 0,
-      "notes": [
-        {
-          "id": 1,
-          "displayOrder": 0,
-          "productId": 1,
-          "productName": "Test product",
-          "productQuantity": 200,
-          "calories": 60
-        },
-        {
-          "id": 2,
-          "displayOrder": 0,
-          "productId": 2,
-          "productName": "Product 2",
-          "productQuantity": 100,
-          "calories": 320
-        },
-        {
-          "id": 3,
-          "displayOrder": 0,
-          "productId": 3,
-          "productName": "Product 3",
-          "productQuantity": 150,
-          "calories": 200
-        }
-      ]
-    },
-    {
-      "name": "Second breakfast",
-      "type": 2,
-      "countNotes": 0,
-      "countCalories": 0,
-      "notes": [
-        {
-          "id": 4,
-          "displayOrder": 0,
-          "productId": 1,
-          "productName": "Test product",
-          "productQuantity": 200,
-          "calories": 60
-        },
-        {
-          "id": 5,
-          "displayOrder": 0,
-          "productId": 2,
-          "productName": "Product 2",
-          "productQuantity": 100,
-          "calories": 320
-        },
-        {
-          "id": 6,
-          "displayOrder": 0,
-          "productId": 3,
-          "productName": "Product 3",
-          "productQuantity": 150,
-          "calories": 200
-        }
-      ]
-    },
-    {
-      "name": "Lunch",
-      "type": 3,
-      "countNotes": 0,
-      "countCalories": 0,
-      "notes": []
-    },
-    {
-      "name": "Afternoon snack",
-      "type": 4,
-      "countNotes": 0,
-      "countCalories": 0,
-      "notes": [
-        {
-          "id": 7,
-          "displayOrder": 0,
-          "productId": 1,
-          "productName": "Test product",
-          "productQuantity": 200,
-          "calories": 60
-        },
-        {
-          "id": 8,
-          "displayOrder": 0,
-          "productId": 2,
-          "productName": "Product 2",
-          "productQuantity": 100,
-          "calories": 320
-        },
-        {
-          "id": 9,
-          "displayOrder": 0,
-          "productId": 3,
-          "productName": "Product 3",
-          "productQuantity": 150,
-          "calories": 200
-        }
-      ]
-    },
-    {
-      "name": "Dinner",
-      "type": 5,
-      "countNotes": 0,
-      "countCalories": 0,
-      "notes": [
-        {
-          "id": 10,
-          "displayOrder": 0,
-          "productId": 1,
-          "productName": "Test product",
-          "productQuantity": 200,
-          "calories": 60
-        }
-      ]
-    }
-  ]
-}
+[
+  {
+    "name": "Breakfast",
+    "type": 1,
+    "notes": [
+      {
+        "id": 1,
+        "displayOrder": 0,
+        "productId": 1,
+        "productName": "Test product",
+        "productQuantity": 200,
+        "calories": 60
+      },
+      {
+        "id": 2,
+        "displayOrder": 0,
+        "productId": 2,
+        "productName": "Product 2",
+        "productQuantity": 100,
+        "calories": 320
+      },
+      {
+        "id": 3,
+        "displayOrder": 0,
+        "productId": 3,
+        "productName": "Product 3",
+        "productQuantity": 150,
+        "calories": 200
+      }
+    ]
+  },
+  {
+    "name": "Second breakfast",
+    "type": 2,
+    "countNotes": 0,
+    "countCalories": 0,
+    "notes": [
+      {
+        "id": 4,
+        "displayOrder": 0,
+        "productId": 1,
+        "productName": "Test product",
+        "productQuantity": 200,
+        "calories": 60
+      },
+      {
+        "id": 5,
+        "displayOrder": 0,
+        "productId": 2,
+        "productName": "Product 2",
+        "productQuantity": 100,
+        "calories": 320
+      },
+      {
+        "id": 6,
+        "displayOrder": 0,
+        "productId": 3,
+        "productName": "Product 3",
+        "productQuantity": 150,
+        "calories": 200
+      }
+    ]
+  },
+  {
+    "name": "Lunch",
+    "type": 3,
+    "countNotes": 0,
+    "countCalories": 0,
+    "notes": []
+  },
+  {
+    "name": "Afternoon snack",
+    "type": 4,
+    "countNotes": 0,
+    "countCalories": 0,
+    "notes": [
+      {
+        "id": 7,
+        "displayOrder": 0,
+        "productId": 1,
+        "productName": "Test product",
+        "productQuantity": 200,
+        "calories": 60
+      },
+      {
+        "id": 8,
+        "displayOrder": 0,
+        "productId": 2,
+        "productName": "Product 2",
+        "productQuantity": 100,
+        "calories": 320
+      },
+      {
+        "id": 9,
+        "displayOrder": 0,
+        "productId": 3,
+        "productName": "Product 3",
+        "productQuantity": 150,
+        "calories": 200
+      }
+    ]
+  },
+  {
+    "name": "Dinner",
+    "type": 5,
+    "countNotes": 0,
+    "countCalories": 0,
+    "notes": [
+      {
+        "id": 10,
+        "displayOrder": 0,
+        "productId": 1,
+        "productName": "Test product",
+        "productQuantity": 200,
+        "calories": 60
+      }
+    ]
+  }
+]
