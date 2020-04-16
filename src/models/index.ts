@@ -10,6 +10,7 @@ export * from './meal-item';
 export * from './note-item';
 export * from './note-create-edit';
 export * from './notes-for-meal-request';
+export * from './note-edit-request';
 
 export * from './product-dropdown-item';
 export * from './product-item';

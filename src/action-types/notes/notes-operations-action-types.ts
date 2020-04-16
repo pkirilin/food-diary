@@ -1,5 +1,6 @@
 import { Action } from 'redux';
 import { NoteCreateEdit, MealType } from '../../models';
+import { NoteEditRequest } from '../../models';
 
 export enum NotesOperationsActionTypes {
   CreateRequest = 'NOTES_OPERATIONS__CREATE_REQUEST',
@@ -34,7 +35,7 @@ export interface CreateNoteErrorAction extends Action<NotesOperationsActionTypes
 
 export interface EditNoteRequestAction extends Action<NotesOperationsActionTypes.EditRequest> {
   type: NotesOperationsActionTypes.EditRequest;
-  note: NoteCreateEdit;
+  request: NoteEditRequest;
   operationMessage: string;
 }
 

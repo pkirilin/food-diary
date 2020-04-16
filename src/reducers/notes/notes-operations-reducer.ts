@@ -62,9 +62,9 @@ const notesOperationsReducer = (
       return {
         ...state,
         mealOperationStatuses: [
-          ...state.mealOperationStatuses.filter(s => s.mealType !== action.note.mealType),
+          ...state.mealOperationStatuses.filter(s => s.mealType !== action.request.mealType),
           {
-            mealType: action.note.mealType,
+            mealType: action.request.mealType,
             performing: true,
             message: action.operationMessage,
           },

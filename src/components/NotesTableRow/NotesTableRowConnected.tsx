@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import NotesTableRow from './NotesTableRow';
-import { ProductDropdownItem, NoteCreateEdit, MealType, NotesForMealRequest, MealItem } from '../../models';
+import { ProductDropdownItem, MealType, NotesForMealRequest, MealItem } from '../../models';
 import { FoodDiaryState, MealOperationStatus } from '../../store';
 import {
   EditNoteSuccessAction,
@@ -22,6 +22,7 @@ import {
   getNotesForMeal,
   getProductDropdownItems,
 } from '../../action-creators';
+import { NoteEditRequest } from '../../models';
 
 export interface StateToPropsMapResult {
   productDropdownItems: ProductDropdownItem[];
@@ -33,7 +34,7 @@ export interface StateToPropsMapResult {
 
 export interface DispatchToPropsMapResult {
   setEditableForNote: (noteId: number, editable: boolean) => void;
-  editNote: (note: NoteCreateEdit) => Promise<EditNoteSuccessAction | EditNoteErrorAction>;
+  editNote: (request: NoteEditRequest) => Promise<EditNoteSuccessAction | EditNoteErrorAction>;
   deleteNote: (request: [number, MealType]) => Promise<DeleteNoteSuccessAction | DeleteNoteErrorAction>;
   getNotesForMeal: (request: NotesForMealRequest) => Promise<GetNotesForMealSuccessAction | GetNotesForMealErrorAction>;
   getProductDropdownItems: () => Promise<GetProductDropdownItemsSuccessAction | GetProductDropdownItemsErrorAction>;
@@ -50,7 +51,7 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
 };
 
 type NotesTableDispatchType = Dispatch<SetEditableForNoteAction> &
-  ThunkDispatch<void, NoteCreateEdit, EditNoteSuccessAction | EditNoteErrorAction> &
+  ThunkDispatch<void, NoteEditRequest, EditNoteSuccessAction | EditNoteErrorAction> &
   ThunkDispatch<void, [number, MealType], DeleteNoteSuccessAction | DeleteNoteErrorAction> &
   ThunkDispatch<MealItem, NotesForMealRequest, GetNotesForMealSuccessAction | GetNotesForMealErrorAction> &
   ThunkDispatch<ProductDropdownItem[], void, GetProductDropdownItemsSuccessAction | GetProductDropdownItemsErrorAction>;
@@ -60,8 +61,8 @@ const mapDispatchToProps = (dispatch: NotesTableDispatchType): DispatchToPropsMa
     setEditableForNote: (noteId: number, editable: boolean): void => {
       dispatch(setEditableForNote(noteId, editable));
     },
-    editNote: (note: NoteCreateEdit): Promise<EditNoteSuccessAction | EditNoteErrorAction> => {
-      return dispatch(editNote(note));
+    editNote: (request: NoteEditRequest): Promise<EditNoteSuccessAction | EditNoteErrorAction> => {
+      return dispatch(editNote(request));
     },
     deleteNote: (request: [number, MealType]): Promise<DeleteNoteSuccessAction | DeleteNoteErrorAction> => {
       return dispatch(deleteNote(request));

@@ -14,6 +14,7 @@ import {
 } from '../../action-types';
 import { NoteCreateEdit, MealType } from '../../models';
 import { createNoteAsync, editNoteAsync, deleteNoteAsync } from '../../services';
+import { NoteEditRequest } from '../../models';
 
 const createNoteRequest = (note: NoteCreateEdit, operationMessage: string): CreateNoteRequestAction => {
   return {
@@ -38,10 +39,10 @@ const createNoteSuccess = (mealType: MealType): CreateNoteSuccessAction => {
   };
 };
 
-const editNoteRequest = (note: NoteCreateEdit, operationMessage: string): EditNoteRequestAction => {
+const editNoteRequest = (request: NoteEditRequest, operationMessage: string): EditNoteRequestAction => {
   return {
     type: NotesOperationsActionTypes.EditRequest,
-    note,
+    request,
     operationMessage,
   };
 };
@@ -113,24 +114,24 @@ export const createNote: ActionCreator<ThunkAction<
 export const editNote: ActionCreator<ThunkAction<
   Promise<EditNoteSuccessAction | EditNoteErrorAction>,
   void,
-  NoteCreateEdit,
+  NoteEditRequest,
   EditNoteSuccessAction | EditNoteErrorAction
->> = (note: NoteCreateEdit) => {
+>> = (request: NoteEditRequest) => {
   return async (dispatch: Dispatch): Promise<EditNoteSuccessAction | EditNoteErrorAction> => {
-    dispatch(editNoteRequest(note, 'Updating note'));
+    dispatch(editNoteRequest(request, 'Updating note'));
 
     try {
-      const response = await editNoteAsync(note);
+      const response = await editNoteAsync(request);
       if (!response.ok) {
         const errorMessageForInvalidData = 'Failed to update note (invalid data)';
         alert(errorMessageForInvalidData);
-        return dispatch(editNoteError(note.mealType, errorMessageForInvalidData));
+        return dispatch(editNoteError(request.mealType, errorMessageForInvalidData));
       }
-      return dispatch(editNoteSuccess(note.mealType));
+      return dispatch(editNoteSuccess(request.mealType));
     } catch (error) {
       const errorMessageForServerError = 'Failed to update note (server error)';
       alert(errorMessageForServerError);
-      return dispatch(editNoteError(note.mealType, errorMessageForServerError));
+      return dispatch(editNoteError(request.mealType, errorMessageForServerError));
     }
   };
 };

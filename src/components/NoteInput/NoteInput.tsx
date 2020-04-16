@@ -61,7 +61,6 @@ const NoteInput: React.FC<NoteInputProps> = ({
   const handleAddButtonClick = async (): Promise<void> => {
     const pageId = pageIdFromParams && !isNaN(+pageIdFromParams) ? +pageIdFromParams : 0;
     const createNoteAction = await createNote({
-      id: 0,
       mealType,
       productId,
       productQuantity,
