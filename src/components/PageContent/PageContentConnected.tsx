@@ -8,7 +8,7 @@ import {
 } from '../../action-types';
 import { FoodDiaryState } from '../../store';
 import { ThunkDispatch } from 'redux-thunk';
-import { ProductDropdownItem, MealItem } from '../../models';
+import { ProductDropdownItem, NotesSearchRequest, NoteItem } from '../../models';
 import { getNotesForPage } from '../../action-creators';
 
 export interface StateToPropsMapResult {
@@ -18,7 +18,7 @@ export interface StateToPropsMapResult {
 }
 
 export interface DispatchToPropsMapResult {
-  getContent: (pageId: number) => Promise<GetNotesForPageSuccessAction | GetNotesForPageErrorAction>;
+  getContent: (request: NotesSearchRequest) => Promise<GetNotesForPageSuccessAction | GetNotesForPageErrorAction>;
 }
 
 const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
@@ -30,16 +30,16 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
 };
 
 type PageContentDispatchType = ThunkDispatch<
-  MealItem[],
-  number,
+  NoteItem[],
+  NotesSearchRequest,
   GetNotesForPageSuccessAction | GetNotesForPageErrorAction
 > &
   ThunkDispatch<ProductDropdownItem[], void, GetProductDropdownItemsSuccessAction | GetProductDropdownItemsErrorAction>;
 
 const mapDispatchToProps = (dispatch: PageContentDispatchType): DispatchToPropsMapResult => {
   return {
-    getContent: (pageId: number): Promise<GetNotesForPageSuccessAction | GetNotesForPageErrorAction> => {
-      return dispatch(getNotesForPage(pageId));
+    getContent: (request: NotesSearchRequest): Promise<GetNotesForPageSuccessAction | GetNotesForPageErrorAction> => {
+      return dispatch(getNotesForPage(request));
     },
   };
 };

@@ -10,8 +10,8 @@ import {
   GetNotesForMealRequestAction,
   SetEditableForNoteAction,
 } from '../../action-types';
-import { getNotesForPageAsync, getNotesForMealAsync } from '../../services';
-import { MealType, NotesForMealRequest, MealItem } from '../../models';
+import { getNotesAsync } from '../../services';
+import { NoteItem, MealType, NotesForMealSearchRequest, NotesSearchRequest } from '../../models';
 
 const getNotesForPageRequest = (): GetNotesForPageRequestAction => {
   return {
@@ -19,10 +19,10 @@ const getNotesForPageRequest = (): GetNotesForPageRequestAction => {
   };
 };
 
-const getNotesForPageSuccess = (mealItemsWithNotes: MealItem[]): GetNotesForPageSuccessAction => {
+const getNotesForPageSuccess = (noteItems: NoteItem[]): GetNotesForPageSuccessAction => {
   return {
     type: NotesListActionTypes.SuccessForPage,
-    mealItemsWithNotes,
+    noteItems,
   };
 };
 
@@ -40,10 +40,11 @@ const getNotesForMealRequest = (mealType: MealType): GetNotesForMealRequestActio
   };
 };
 
-const getNotesForMealSuccess = (mealItem: MealItem): GetNotesForMealSuccessAction => {
+const getNotesForMealSuccess = (mealType: MealType, noteItems: NoteItem[]): GetNotesForMealSuccessAction => {
   return {
     type: NotesListActionTypes.SuccessForMeal,
-    mealItem,
+    mealType,
+    noteItems,
   };
 };
 
@@ -57,14 +58,14 @@ const getNotesForMealError = (mealType: MealType, errorMessage: string): GetNote
 
 export const getNotesForPage: ActionCreator<ThunkAction<
   Promise<GetNotesForPageSuccessAction | GetNotesForPageErrorAction>,
-  MealItem[],
-  number,
+  NoteItem[],
+  NotesSearchRequest,
   GetNotesForPageSuccessAction | GetNotesForPageErrorAction
->> = (pageId: number) => {
+>> = (request: NotesSearchRequest) => {
   return async (dispatch: Dispatch): Promise<GetNotesForPageSuccessAction | GetNotesForPageErrorAction> => {
     dispatch(getNotesForPageRequest());
     try {
-      const response = await getNotesForPageAsync(pageId);
+      const response = await getNotesAsync(request);
       if (!response.ok) {
         return dispatch(getNotesForPageError('Notes for page response error'));
       }
@@ -79,22 +80,25 @@ export const getNotesForPage: ActionCreator<ThunkAction<
 
 export const getNotesForMeal: ActionCreator<ThunkAction<
   Promise<GetNotesForMealSuccessAction | GetNotesForMealErrorAction>,
-  MealItem,
-  NotesForMealRequest,
+  NoteItem[],
+  NotesForMealSearchRequest,
   GetNotesForMealSuccessAction | GetNotesForMealErrorAction
->> = (request: NotesForMealRequest) => {
+>> = ({ pageId, mealType }: NotesForMealSearchRequest) => {
   return async (dispatch: Dispatch): Promise<GetNotesForMealSuccessAction | GetNotesForMealErrorAction> => {
-    dispatch(getNotesForMealRequest(request.mealType));
+    dispatch(getNotesForMealRequest(mealType));
     try {
-      const response = await getNotesForMealAsync(request);
+      const response = await getNotesAsync({
+        pageId,
+        mealType,
+      });
       if (!response.ok) {
-        return dispatch(getNotesForMealError(request.mealType, 'Notes for meal response error'));
+        return dispatch(getNotesForMealError(mealType, 'Notes for meal response error'));
       }
 
       const mealItem = await response.json();
-      return dispatch(getNotesForMealSuccess(mealItem));
+      return dispatch(getNotesForMealSuccess(mealType, mealItem));
     } catch (error) {
-      return dispatch(getNotesForMealError(request.mealType, 'Failed to get notes for meal from server'));
+      return dispatch(getNotesForMealError(mealType, 'Failed to get notes for meal from server'));
     }
   };
 };

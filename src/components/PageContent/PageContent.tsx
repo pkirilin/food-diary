@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import { StateToPropsMapResult, DispatchToPropsMapResult } from './PageContentConnected';
 import Loader from '../Loader';
 import PageContentHeaderConnected from '../PageContentHeader';
-import MealsListConnected from '../MealsList';
+import MealsList from '../MealsList';
 
 interface PageContentProps extends StateToPropsMapResult, DispatchToPropsMapResult {}
 
@@ -14,7 +14,7 @@ const PageContent: React.FC<PageContentProps> = ({ loading, getContent, errorMes
   useEffect(() => {
     const getContentAsync = async (): Promise<void> => {
       if (pageId && !isNaN(+pageId)) {
-        await getContent(+pageId);
+        await getContent({ pageId: +pageId });
         window.scrollTo(0, 0);
       }
       return;
@@ -34,7 +34,7 @@ const PageContent: React.FC<PageContentProps> = ({ loading, getContent, errorMes
         </div>
       )}
       {errorMessage && <div>{errorMessage}</div>}
-      <MealsListConnected></MealsListConnected>
+      <MealsList></MealsList>
     </div>
   );
 };

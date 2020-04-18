@@ -7,7 +7,6 @@ import { setCollapsedForAllMeals } from '../../action-creators';
 import { FoodDiaryState } from '../../store';
 
 export interface StateToPropsMapResult {
-  allMealTypes: MealType[];
   isPageContentLoading: boolean;
 }
 
@@ -17,7 +16,6 @@ export interface DispatchToPropsMapResult {
 
 const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
   return {
-    allMealTypes: state.notes.list.mealItemsWithNotes ? state.notes.list.mealItemsWithNotes.map(m => m.type) : [],
     isPageContentLoading: state.notes.list.notesForPageFetchState.loading,
   };
 };

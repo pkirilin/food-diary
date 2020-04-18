@@ -17,16 +17,14 @@ const notesTableColumns = [
   <TableColumn key="Delete" name="" width="35px"></TableColumn>,
 ];
 
-const NotesTable: React.FC<NotesTableProps> = ({ mealType, mealItemsWithNotes }: NotesTableProps) => {
+const NotesTable: React.FC<NotesTableProps> = ({ mealType, noteItems }: NotesTableProps) => {
   const mapNoteItemsToTableRows = (): JSX.Element[] => {
     const rows: JSX.Element[] = [];
+    const notesForMeal = noteItems.filter(n => n.mealType === mealType);
 
-    const meal = mealItemsWithNotes.find(m => m.type === mealType);
-    if (meal) {
-      meal.notes.forEach(note => {
-        rows.push(<NotesTableRowConnected mealType={mealType} note={note}></NotesTableRowConnected>);
-      });
-    }
+    notesForMeal.forEach(note => {
+      rows.push(<NotesTableRowConnected mealType={mealType} note={note}></NotesTableRowConnected>);
+    });
 
     return rows;
   };

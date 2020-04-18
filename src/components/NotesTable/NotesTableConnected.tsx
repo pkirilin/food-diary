@@ -1,15 +1,15 @@
 import { connect } from 'react-redux';
 import NotesTable from './NotesTable';
 import { FoodDiaryState } from '../../store';
-import { MealItem } from '../../models';
+import { NoteItem } from '../../models';
 
 export interface StateToPropsMapResult {
-  mealItemsWithNotes: MealItem[];
+  noteItems: NoteItem[];
 }
 
 const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
   return {
-    mealItemsWithNotes: state.notes.list.mealItemsWithNotes,
+    noteItems: state.notes.list.noteItems,
   };
 };
 

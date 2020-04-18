@@ -5,11 +5,11 @@ export * from './pages-filter';
 export * from './page-create-edit';
 export * from './page-edit-request';
 
-export * from './meal-item';
+export * from './meal-types';
 
 export * from './note-item';
 export * from './note-create-edit';
-export * from './notes-for-meal-request';
+export * from './notes-search-request';
 export * from './note-edit-request';
 
 export * from './product-dropdown-item';

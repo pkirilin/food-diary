@@ -2,20 +2,20 @@ import React from 'react';
 import './MealsControlPanel.scss';
 import Icon from '../Icon';
 import { StateToPropsMapResult, DispatchToPropsMapResult } from './MealsControlPanelConnected';
+import { availableMealTypes } from '../../models';
 
 interface MealsControlPanelProps extends StateToPropsMapResult, DispatchToPropsMapResult {}
 
 const MealsControlPanel: React.FC<MealsControlPanelProps> = ({
-  allMealTypes,
   setCollapsedForAllMeals,
   isPageContentLoading,
 }: MealsControlPanelProps) => {
   const handleExpandAllClick = (): void => {
-    setCollapsedForAllMeals(false, allMealTypes);
+    setCollapsedForAllMeals(false, availableMealTypes);
   };
 
   const handleCollapseAllClick = (): void => {
-    setCollapsedForAllMeals(true, allMealTypes);
+    setCollapsedForAllMeals(true, availableMealTypes);
   };
 
   return (

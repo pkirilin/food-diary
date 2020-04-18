@@ -1,6 +1,6 @@
 import React from 'react';
 import './MealsListItem.scss';
-import { MealItem } from '../../models';
+import { MealType, availableMeals } from '../../models';
 import Icon from '../Icon';
 import { BadgesContainer } from '../ContainerBlocks';
 import Badge from '../Badge';
@@ -10,24 +10,29 @@ import NotesTableConnected from '../NotesTable';
 import Loader from '../Loader';
 
 interface MealsListItemProps extends StateToPropsMapResult, DispatchToPropsMapResult {
-  data: MealItem;
+  mealType: MealType;
 }
 
 const MealsListItem: React.FC<MealsListItemProps> = ({
-  data: meal,
+  mealType,
   collapsedMeals,
-  setCollapsedForMeal,
   notesForMealFetchStates,
+  noteItems,
+  setCollapsedForMeal,
 }: MealsListItemProps) => {
-  const isCollapsed = collapsedMeals.includes(meal.type);
+  const isCollapsed = collapsedMeals.includes(mealType);
 
-  const currentMealFetchState = notesForMealFetchStates.filter(s => s.mealType === meal.type)[0];
+  const currentMealFetchState = notesForMealFetchStates.filter(s => s.mealType === mealType)[0];
   const isNotesTableLoading = currentMealFetchState && currentMealFetchState.loading;
-  const countNotes = meal.notes.length;
-  const countCalories = meal.notes.reduce((sum, note) => sum + note.calories, 0);
+
+  const mealName = availableMeals.has(mealType) ? availableMeals.get(mealType) : 'Unknown meal';
+  const mealNotes = noteItems.filter(n => n.mealType === mealType);
+
+  const countNotes = mealNotes.length;
+  const countCalories = mealNotes.reduce((sum, note) => sum + note.calories, 0);
 
   const handleItemHeaderClick = (): void => {
-    setCollapsedForMeal(!isCollapsed, meal.type);
+    setCollapsedForMeal(!isCollapsed, mealType);
   };
 
   return (
@@ -44,7 +49,7 @@ const MealsListItem: React.FC<MealsListItemProps> = ({
                 }
           }
         ></Icon>
-        <div className="meals-list-item__header__name">{meal.name}</div>
+        <div className="meals-list-item__header__name">{mealName}</div>
         <BadgesContainer>
           <Badge label={`${countNotes} ${countNotes === 1 ? 'note' : 'notes'}`}></Badge>
           <Badge label={`${countCalories} cal`}></Badge>
@@ -52,14 +57,14 @@ const MealsListItem: React.FC<MealsListItemProps> = ({
       </div>
       {!isCollapsed && (
         <div className="meals-list-item__content">
-          <NoteInputConnected mealType={meal.type}></NoteInputConnected>
+          <NoteInputConnected mealType={mealType}></NoteInputConnected>
           <div className="meals-list-item__content__notes">
             {isNotesTableLoading && (
               <div className="meals-list-item__content__notes__preloader">
                 <Loader label="Loading notes"></Loader>
               </div>
             )}
-            <NotesTableConnected mealType={meal.type}></NotesTableConnected>
+            <NotesTableConnected mealType={mealType}></NotesTableConnected>
           </div>
         </div>
       )}

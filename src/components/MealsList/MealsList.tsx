@@ -1,15 +1,13 @@
 import React from 'react';
 import './MealsList.scss';
-import { StateToPropsMapResult } from './MealsListConnected';
 import MealsListItemConnected from '../MealsListItem';
+import { availableMealTypes } from '../../models';
 
-type MealsListProps = StateToPropsMapResult;
-
-const MealsList: React.FC<MealsListProps> = ({ meals = [] }: MealsListProps) => {
+const MealsList: React.FC = () => {
   return (
     <div className="meals-list">
-      {meals.map(m => (
-        <MealsListItemConnected key={m.type} data={m}></MealsListItemConnected>
+      {availableMealTypes.map((mt, index) => (
+        <MealsListItemConnected key={index} mealType={mt}></MealsListItemConnected>
       ))}
     </div>
   );

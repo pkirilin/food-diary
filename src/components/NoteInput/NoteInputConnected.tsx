@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import NoteInput from './NoteInput';
-import { NoteCreateEdit, NotesForMealRequest, MealItem, ProductDropdownItem } from '../../models';
+import { NoteCreateEdit, ProductDropdownItem, NotesForMealSearchRequest, NoteItem } from '../../models';
 import {
   CreateNoteSuccessAction,
   CreateNoteErrorAction,
@@ -23,7 +23,9 @@ export interface StateToPropsMapResult {
 
 export interface DispatchToPropsMapResult {
   createNote: (note: NoteCreateEdit) => Promise<CreateNoteSuccessAction | CreateNoteErrorAction>;
-  getNotesForMeal: (request: NotesForMealRequest) => Promise<GetNotesForMealSuccessAction | GetNotesForMealErrorAction>;
+  getNotesForMeal: (
+    request: NotesForMealSearchRequest,
+  ) => Promise<GetNotesForMealSuccessAction | GetNotesForMealErrorAction>;
   getProductDropdownItems: () => Promise<GetProductDropdownItemsSuccessAction | GetProductDropdownItemsErrorAction>;
 }
 
@@ -38,7 +40,7 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
 };
 
 type NoteInputDispatchType = ThunkDispatch<void, NoteCreateEdit, CreateNoteSuccessAction | CreateNoteErrorAction> &
-  ThunkDispatch<MealItem, NotesForMealRequest, GetNotesForMealSuccessAction | GetNotesForMealErrorAction> &
+  ThunkDispatch<NoteItem[], NotesForMealSearchRequest, GetNotesForMealSuccessAction | GetNotesForMealErrorAction> &
   ThunkDispatch<ProductDropdownItem[], void, GetProductDropdownItemsSuccessAction | GetProductDropdownItemsErrorAction>;
 
 const mapDispatchToProps = (dispatch: NoteInputDispatchType): DispatchToPropsMapResult => {
@@ -47,7 +49,7 @@ const mapDispatchToProps = (dispatch: NoteInputDispatchType): DispatchToPropsMap
       return dispatch(createNote(note));
     },
     getNotesForMeal: (
-      request: NotesForMealRequest,
+      request: NotesForMealSearchRequest,
     ): Promise<GetNotesForMealSuccessAction | GetNotesForMealErrorAction> => {
       return dispatch(getNotesForMeal(request));
     },
