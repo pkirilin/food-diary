@@ -38,6 +38,7 @@ namespace FoodDiary.Infrastructure.Services
 
             query = query.OrderBy(n => n.MealType)
                 .ThenBy(n => n.DisplayOrder);
+            query = _noteRepository.LoadProduct(query);
 
             var notes = await _noteRepository.GetListFromQueryAsync(query, cancellationToken);
             return notes;

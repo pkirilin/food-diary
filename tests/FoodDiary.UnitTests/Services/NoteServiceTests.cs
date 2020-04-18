@@ -72,6 +72,7 @@ namespace FoodDiary.UnitTests.Services
             var result = await NoteService.SearchNotesAsync(request, default);
 
             _noteRepositoryMock.Verify(r => r.GetQueryWithoutTracking(), Times.Once);
+            _noteRepositoryMock.Verify(r => r.LoadProduct(It.IsNotNull<IQueryable<Note>>()), Times.Once);
             _noteRepositoryMock.Verify(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Note>>(), default), Times.Once);
             result.Should().Contain(expectedNotes);
         }

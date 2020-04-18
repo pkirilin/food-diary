@@ -77,5 +77,10 @@ namespace FoodDiary.Infrastructure.Repositories
         {
             await _context.SaveChangesAsync(cancellationToken);
         }
+
+        public IQueryable<Note> LoadProduct(IQueryable<Note> query)
+        {
+            return query.Include(n => n.Product);
+        }
     }
 }
