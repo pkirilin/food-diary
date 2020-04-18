@@ -4,9 +4,19 @@ import { NoteEditRequest } from '../models';
 
 const notesApiUrl = `${API_URL}/v1/notes`;
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const getNotesAsync = async (request: NotesSearchRequest): Promise<Response> => {
-  return await fetch('/notes-list-data.json');
+export const getNotesAsync = async ({ pageId, mealType }: NotesSearchRequest): Promise<Response> => {
+  let requestUrl = `${notesApiUrl}?pageId=${pageId}`;
+
+  if (mealType !== undefined) {
+    requestUrl += `&mealType=${mealType}`;
+  }
+
+  return await fetch(requestUrl, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
 };
 
 export const createNoteAsync = async (note: NoteCreateEdit): Promise<Response> => {
