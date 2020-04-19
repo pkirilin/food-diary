@@ -21,7 +21,13 @@ import {
   getCategoryDropdownItems,
 } from '../../action-creators';
 import { ThunkDispatch } from 'redux-thunk';
-import { ProductItem, CategoryDropdownItem, ProductsFilter, ProductEditRequest } from '../../models';
+import {
+  ProductItem,
+  CategoryDropdownItem,
+  ProductsFilter,
+  ProductEditRequest,
+  CategoryDropdownSearchRequest,
+} from '../../models';
 
 export interface StateToPropsMapResult {
   editableProductsIds: number[];
@@ -44,7 +50,9 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
 export interface DispatchToPropsMapResult {
   setEditableForProduct: (productId: number, editable: boolean) => void;
   getProducts: (productsFilter: ProductsFilter) => Promise<GetProductsListSuccessAction | GetProductsListErrorAction>;
-  getCategoryDropdownItems: () => Promise<GetCategoryDropdownItemsSuccessAction | GetCategoryDropdownItemsErrorAction>;
+  getCategoryDropdownItems: (
+    request: CategoryDropdownSearchRequest,
+  ) => Promise<GetCategoryDropdownItemsSuccessAction | GetCategoryDropdownItemsErrorAction>;
   editProduct: (request: ProductEditRequest) => Promise<EditProductSuccessAction | EditProductErrorAction>;
   deleteProduct: (productId: number) => Promise<DeleteProductSuccessAction | DeleteProductErrorAction>;
 }
@@ -55,7 +63,7 @@ type ProductsTableRowDispatch = Dispatch<SetEditableForProductAction> &
   ThunkDispatch<void, number, DeleteProductSuccessAction | DeleteProductErrorAction> &
   ThunkDispatch<
     CategoryDropdownItem[],
-    void,
+    CategoryDropdownSearchRequest,
     GetCategoryDropdownItemsSuccessAction | GetCategoryDropdownItemsErrorAction
   >;
 
@@ -69,10 +77,10 @@ const mapDispatchToProps = (dispatch: ProductsTableRowDispatch): DispatchToProps
     ): Promise<GetProductsListSuccessAction | GetProductsListErrorAction> => {
       return dispatch(getProducts(productsFilter));
     },
-    getCategoryDropdownItems: (): Promise<
-      GetCategoryDropdownItemsSuccessAction | GetCategoryDropdownItemsErrorAction
-    > => {
-      return dispatch(getCategoryDropdownItems());
+    getCategoryDropdownItems: (
+      request: CategoryDropdownSearchRequest,
+    ): Promise<GetCategoryDropdownItemsSuccessAction | GetCategoryDropdownItemsErrorAction> => {
+      return dispatch(getCategoryDropdownItems(request));
     },
     editProduct: (request: ProductEditRequest): Promise<EditProductSuccessAction | EditProductErrorAction> => {
       return dispatch(editProduct(request));

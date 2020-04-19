@@ -1,11 +1,19 @@
 import { API_URL } from '../config';
-import { CategoryCreateEdit } from '../models';
+import { CategoryCreateEdit, CategoryDropdownSearchRequest } from '../models';
 import { CategoryEditRequest } from '../models';
 
 const categoriesApiUrl = `${API_URL}/v1/categories`;
 
-export const getCategoryDropdownItemsAsync = async (): Promise<Response> => {
-  return await fetch(`${categoriesApiUrl}/dropdown`, {
+export const getCategoryDropdownItemsAsync = async ({
+  categoryNameFilter,
+}: CategoryDropdownSearchRequest): Promise<Response> => {
+  let requestUrl = `${categoriesApiUrl}/dropdown`;
+
+  if (categoryNameFilter) {
+    requestUrl += `?categoryNameFilter=${categoryNameFilter}`;
+  }
+
+  return await fetch(requestUrl, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',

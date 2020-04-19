@@ -4,7 +4,7 @@ import {
   GetCategoryDropdownItemsSuccessAction,
   GetCategoryDropdownItemsErrorAction,
 } from '../../action-types';
-import { CategoryDropdownItem } from '../../models';
+import { CategoryDropdownItem, CategoryDropdownSearchRequest } from '../../models';
 import { ActionCreator, Dispatch } from 'redux';
 import { ThunkAction } from 'redux-thunk';
 import { getCategoryDropdownItemsAsync } from '../../services';
@@ -34,15 +34,15 @@ const getCategoryDropdownItemsError = (error?: string): GetCategoryDropdownItems
 export const getCategoryDropdownItems: ActionCreator<ThunkAction<
   Promise<GetCategoryDropdownItemsSuccessAction | GetCategoryDropdownItemsErrorAction>,
   CategoryDropdownItem[],
-  void,
+  CategoryDropdownSearchRequest,
   GetCategoryDropdownItemsSuccessAction | GetCategoryDropdownItemsErrorAction
->> = () => {
+>> = (request: CategoryDropdownSearchRequest) => {
   return async (
     dispatch: Dispatch,
   ): Promise<GetCategoryDropdownItemsSuccessAction | GetCategoryDropdownItemsErrorAction> => {
     dispatch(getCategoryDropdownItemsRequest());
     try {
-      const response = await getCategoryDropdownItemsAsync();
+      const response = await getCategoryDropdownItemsAsync(request);
       if (!response.ok) {
         return dispatch(getCategoryDropdownItemsError());
       }

@@ -35,8 +35,10 @@ const ProductsTableRow: React.FC<ProductsTableRowProps> = ({
   const isInputDisabled = isProductOperationInProcess;
   const isConfirmEditIconDisabled = isInputDisabled || isAnyInputValueEmpty;
 
-  const categoryNameChangeDebounce = useDebounce(() => {
-    getCategoryDropdownItems();
+  const categoryNameChangeDebounce = useDebounce((newCategoryName?: string) => {
+    getCategoryDropdownItems({
+      categoryNameFilter: newCategoryName,
+    });
   });
 
   const handleProductNameChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -58,11 +60,13 @@ const ProductsTableRow: React.FC<ProductsTableRowProps> = ({
 
   const handleCategoryNameDropdownInputChange = (newCategoryNameInputValue: string): void => {
     setCategoryNameInputValue(newCategoryNameInputValue);
-    categoryNameChangeDebounce();
+    categoryNameChangeDebounce(newCategoryNameInputValue);
   };
 
   const handleCategoryDropdownContentOpen = (): void => {
-    getCategoryDropdownItems();
+    getCategoryDropdownItems({
+      categoryNameFilter: categoryNameInputValue,
+    });
   };
 
   const handleEditIconClick = (): void => {

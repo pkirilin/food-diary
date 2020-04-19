@@ -23,3 +23,4 @@ export * from './category-dropdown-item';
 export * from './category-item';
 export * from './category-create-edit';
 export * from './category-edit-request';
+export * from './category-dropdown-search-request';

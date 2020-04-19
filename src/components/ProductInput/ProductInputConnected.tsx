@@ -10,7 +10,14 @@ import {
   GetCategoryDropdownItemsErrorAction,
 } from '../../action-types';
 import { ThunkDispatch } from 'redux-thunk';
-import { ProductCreateEdit, ProductItem, CategoryDropdownItem, ProductsFilter, CategoryItem } from '../../models';
+import {
+  ProductCreateEdit,
+  ProductItem,
+  CategoryDropdownItem,
+  ProductsFilter,
+  CategoryItem,
+  CategoryDropdownSearchRequest,
+} from '../../models';
 import { createProduct, getProducts, getCategoryDropdownItems } from '../../action-creators';
 
 export interface StateToPropsMapResult {
@@ -36,7 +43,9 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
 export interface DispatchToPropsMapResult {
   createProduct: (product: ProductCreateEdit) => Promise<CreateProductSuccessAction | CreateProductErrorAction>;
   getProducts: (productsFilter: ProductsFilter) => Promise<GetProductsListSuccessAction | GetProductsListErrorAction>;
-  getCategoryDropdownItems: () => Promise<GetCategoryDropdownItemsSuccessAction | GetCategoryDropdownItemsErrorAction>;
+  getCategoryDropdownItems: (
+    request: CategoryDropdownSearchRequest,
+  ) => Promise<GetCategoryDropdownItemsSuccessAction | GetCategoryDropdownItemsErrorAction>;
 }
 
 type ProductInputDispatch = ThunkDispatch<
@@ -47,7 +56,7 @@ type ProductInputDispatch = ThunkDispatch<
   ThunkDispatch<ProductItem, ProductsFilter, GetProductsListSuccessAction | GetProductsListErrorAction> &
   ThunkDispatch<
     CategoryDropdownItem[],
-    void,
+    CategoryDropdownSearchRequest,
     GetCategoryDropdownItemsSuccessAction | GetCategoryDropdownItemsErrorAction
   >;
 
@@ -61,10 +70,10 @@ const mapDispatchToProps = (dispatch: ProductInputDispatch): DispatchToPropsMapR
     ): Promise<GetProductsListSuccessAction | GetProductsListErrorAction> => {
       return dispatch(getProducts(productsFilter));
     },
-    getCategoryDropdownItems: (): Promise<
-      GetCategoryDropdownItemsSuccessAction | GetCategoryDropdownItemsErrorAction
-    > => {
-      return dispatch(getCategoryDropdownItems());
+    getCategoryDropdownItems: (
+      request: CategoryDropdownSearchRequest,
+    ): Promise<GetCategoryDropdownItemsSuccessAction | GetCategoryDropdownItemsErrorAction> => {
+      return dispatch(getCategoryDropdownItems(request));
     },
   };
 };

@@ -61,8 +61,10 @@ const ProductInput: React.FC<ProductInputProps> = ({
     setCategoryNameInputValue,
   ]);
 
-  const categoryNameChangeDebounce = useDebounce(() => {
-    getCategoryDropdownItems();
+  const categoryNameChangeDebounce = useDebounce((newCategoryName?: string) => {
+    getCategoryDropdownItems({
+      categoryNameFilter: newCategoryName,
+    });
   });
 
   const handleProductNameChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -84,11 +86,13 @@ const ProductInput: React.FC<ProductInputProps> = ({
 
   const handleCategoryNameDropdownInputChange = (newCategoryNameInputValue: string): void => {
     setCategoryNameInputValue(newCategoryNameInputValue);
-    categoryNameChangeDebounce();
+    categoryNameChangeDebounce(newCategoryNameInputValue);
   };
 
   const handleCategoryDropdownContentOpen = (): void => {
-    getCategoryDropdownItems();
+    getCategoryDropdownItems({
+      categoryNameFilter: categoryNameInputValue,
+    });
   };
 
   const handleAddButtonClick = async (): Promise<void> => {
