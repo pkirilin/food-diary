@@ -17,5 +17,8 @@ namespace FoodDiary.Domain.Dtos
 
         [Range(10, 1000, ErrorMessage = "Quantity value must be between 10 and 1000 cal")]
         public int ProductQuantity { get; set; }
+
+        [Range(0, Int32.MaxValue)]
+        public int DisplayOrder { get; set; }
     }
 }
