@@ -273,13 +273,14 @@ namespace FoodDiary.UnitTests.Controllers
         [Fact]
         public async void GetProductsDropdownList_ReturnsRequestedProducts()
         {
+            var request = _fixture.Create<ProductDropdownSearchRequestDto>();
             var expectedProducts = _fixture.CreateMany<Product>();
-            _productServiceMock.Setup(s => s.GetProductsDropdownListAsync(default))
+            _productServiceMock.Setup(s => s.GetProductsDropdownListAsync(request, default))
                 .ReturnsAsync(expectedProducts);
 
-            var result = await ProductsController.GetProductsDropdownList(default);
+            var result = await ProductsController.GetProductsDropdownList(request, default);
 
-            _productServiceMock.Verify(s => s.GetProductsDropdownListAsync(default), Times.Once);
+            _productServiceMock.Verify(s => s.GetProductsDropdownListAsync(request, default), Times.Once);
             result.Should().BeOfType<OkObjectResult>();
         }
     }

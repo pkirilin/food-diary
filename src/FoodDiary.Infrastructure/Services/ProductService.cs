@@ -107,9 +107,16 @@ namespace FoodDiary.Infrastructure.Services
             await _productRepository.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<IEnumerable<Product>> GetProductsDropdownListAsync(CancellationToken cancellationToken)
+        public async Task<IEnumerable<Product>> GetProductsDropdownListAsync(ProductDropdownSearchRequestDto request, CancellationToken cancellationToken)
         {
-            var query = _productRepository.GetQueryWithoutTracking().OrderBy(p => p.Name);
+            var query = _productRepository.GetQueryWithoutTracking();
+
+            if (!String.IsNullOrWhiteSpace(request.ProductNameFilter))
+            {
+                query = query.Where(p => p.Name.Contains(request.ProductNameFilter));
+            }
+
+            query = query.OrderBy(p => p.Name);
             var products = await _productRepository.GetListFromQueryAsync(query, cancellationToken);
             return products;
         }
