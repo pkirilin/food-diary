@@ -69,9 +69,16 @@ namespace FoodDiary.Infrastructure.Services
             return deletedCategory;
         }
 
-        public async Task<IEnumerable<Category>> GetCategoriesDropdownAsync(CancellationToken cancellationToken)
+        public async Task<IEnumerable<Category>> GetCategoriesDropdownAsync(CategoryDropdownSearchRequest request, CancellationToken cancellationToken)
         {
-            var query = _categoryRepository.GetQueryWithoutTracking().OrderBy(c => c.Name);
+            var query = _categoryRepository.GetQueryWithoutTracking();
+
+            if (!String.IsNullOrWhiteSpace(request.CategoryNameFilter))
+            {
+                query = query.Where(c => c.Name.Contains(request.CategoryNameFilter));
+            }
+
+            query = query.OrderBy(c => c.Name);
             var categories = await _categoryRepository.GetListFromQueryAsync(query, cancellationToken);
             return categories;
         }

@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using AutoFixture;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using FoodDiary.Domain.Dtos;
 using FoodDiary.Domain.Entities;
@@ -140,14 +141,21 @@ namespace FoodDiary.UnitTests.Services
             result.Should().BeTrue();
         }
 
-        [Fact]
-        public async void GetCategoriesDropdown_ReturnsAllCategories()
+        [Theory]
+        [InlineAutoData(null)]
+        [InlineAutoData("")]
+        [InlineAutoData("  ")]
+        [InlineAutoData("some name")]
+        public async void GetCategoriesDropdown_ReturnsAllCategories(string categoryFilterName)
         {
+            var request = _fixture.Build<CategoryDropdownSearchRequest>()
+                .With(r => r.CategoryNameFilter, categoryFilterName)
+                .Create();
             var expectedCategories = _fixture.CreateMany<Category>();
             _categoryRepositoryMock.Setup(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Category>>(), default))
                 .ReturnsAsync(expectedCategories);
 
-            var result = await CategoryService.GetCategoriesDropdownAsync(default);
+            var result = await CategoryService.GetCategoriesDropdownAsync(request, default);
 
             _categoryRepositoryMock.Verify(r => r.GetQueryWithoutTracking(), Times.Once);
             _categoryRepositoryMock.Verify(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Category>>(), default), Times.Once);
