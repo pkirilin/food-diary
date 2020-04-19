@@ -1,6 +1,12 @@
 import { connect } from 'react-redux';
 import NotesTableRow from './NotesTableRow';
-import { ProductDropdownItem, MealType, NotesForMealSearchRequest, NoteItem } from '../../models';
+import {
+  ProductDropdownItem,
+  MealType,
+  NotesForMealSearchRequest,
+  NoteItem,
+  ProductDropdownSearchRequest,
+} from '../../models';
 import { FoodDiaryState, MealOperationStatus } from '../../store';
 import {
   EditNoteSuccessAction,
@@ -39,7 +45,9 @@ export interface DispatchToPropsMapResult {
   getNotesForMeal: (
     request: NotesForMealSearchRequest,
   ) => Promise<GetNotesForMealSuccessAction | GetNotesForMealErrorAction>;
-  getProductDropdownItems: () => Promise<GetProductDropdownItemsSuccessAction | GetProductDropdownItemsErrorAction>;
+  getProductDropdownItems: (
+    request: ProductDropdownSearchRequest,
+  ) => Promise<GetProductDropdownItemsSuccessAction | GetProductDropdownItemsErrorAction>;
 }
 
 const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
@@ -56,7 +64,11 @@ type NotesTableDispatchType = Dispatch<SetEditableForNoteAction> &
   ThunkDispatch<void, NoteEditRequest, EditNoteSuccessAction | EditNoteErrorAction> &
   ThunkDispatch<void, [number, MealType], DeleteNoteSuccessAction | DeleteNoteErrorAction> &
   ThunkDispatch<NoteItem[], NotesForMealSearchRequest, GetNotesForMealSuccessAction | GetNotesForMealErrorAction> &
-  ThunkDispatch<ProductDropdownItem[], void, GetProductDropdownItemsSuccessAction | GetProductDropdownItemsErrorAction>;
+  ThunkDispatch<
+    ProductDropdownItem[],
+    ProductDropdownSearchRequest,
+    GetProductDropdownItemsSuccessAction | GetProductDropdownItemsErrorAction
+  >;
 
 const mapDispatchToProps = (dispatch: NotesTableDispatchType): DispatchToPropsMapResult => {
   return {
@@ -74,8 +86,10 @@ const mapDispatchToProps = (dispatch: NotesTableDispatchType): DispatchToPropsMa
     ): Promise<GetNotesForMealSuccessAction | GetNotesForMealErrorAction> => {
       return dispatch(getNotesForMeal(request));
     },
-    getProductDropdownItems: (): Promise<GetProductDropdownItemsSuccessAction | GetProductDropdownItemsErrorAction> => {
-      return dispatch(getProductDropdownItems());
+    getProductDropdownItems: (
+      request: ProductDropdownSearchRequest,
+    ): Promise<GetProductDropdownItemsSuccessAction | GetProductDropdownItemsErrorAction> => {
+      return dispatch(getProductDropdownItems(request));
     },
   };
 };

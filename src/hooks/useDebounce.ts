@@ -1,19 +1,19 @@
 import { useState } from 'react';
 
-const useDebounce = (action: () => void, delay = 500): (() => void) => {
+function useDebounce<T = string>(action: (actionData?: T) => void, delay = 500): (data?: T) => void {
   const [debounceTimer, setDebounceTimer] = useState<NodeJS.Timeout>();
 
-  return (): void => {
+  return (data?: T): void => {
     if (debounceTimer) {
       clearTimeout(debounceTimer);
     }
 
     const newDebounceTimer = setTimeout(() => {
-      action();
+      action(data);
     }, delay);
 
     setDebounceTimer(newDebounceTimer);
   };
-};
+}
 
 export default useDebounce;

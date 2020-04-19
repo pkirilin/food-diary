@@ -17,6 +17,7 @@ export * from './product-item';
 export * from './product-create-edit';
 export * from './products-filter';
 export * from './product-edit-request';
+export * from './product-dropdown-search-request';
 
 export * from './category-dropdown-item';
 export * from './category-item';

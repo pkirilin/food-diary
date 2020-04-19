@@ -32,7 +32,9 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({
   const [productQuantity, setProductQuantity] = useState(note.productQuantity);
 
   const productNameChangeDebounce = useDebounce(() => {
-    getProductDropdownItems();
+    getProductDropdownItems({
+      productNameFilter: productNameInputValue,
+    });
   });
 
   const { id: pageIdFromParams } = useParams();
@@ -97,7 +99,9 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({
   };
 
   const handleProductDropdownContentOpen = (): void => {
-    getProductDropdownItems();
+    getProductDropdownItems({
+      productNameFilter: productNameInputValue,
+    });
   };
 
   return (

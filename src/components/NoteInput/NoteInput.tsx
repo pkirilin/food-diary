@@ -28,8 +28,10 @@ const NoteInput: React.FC<NoteInputProps> = ({
   const [productNameInputValue, setProductNameInputValue] = useState('');
   const [productQuantity, setProductQuantity] = useState(100);
 
-  const productNameChangeDebounce = useDebounce(() => {
-    getProductDropdownItems();
+  const productNameChangeDebounce = useDebounce((newProductName?: string) => {
+    getProductDropdownItems({
+      productNameFilter: newProductName,
+    });
   });
 
   const { id: pageIdFromParams } = useParams();
@@ -50,7 +52,7 @@ const NoteInput: React.FC<NoteInputProps> = ({
 
   const handleProductNameDropdownInputChange = (newProductNameInputValue: string): void => {
     setProductNameInputValue(newProductNameInputValue);
-    productNameChangeDebounce();
+    productNameChangeDebounce(newProductNameInputValue);
   };
 
   const handleQuantityValueChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -83,7 +85,9 @@ const NoteInput: React.FC<NoteInputProps> = ({
   };
 
   const handleProductDropdownContentOpen = (): void => {
-    getProductDropdownItems();
+    getProductDropdownItems({
+      productNameFilter: productNameInputValue,
+    });
   };
 
   return (

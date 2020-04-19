@@ -1,10 +1,18 @@
 import { API_URL } from '../config';
-import { ProductCreateEdit, ProductsFilter, ProductEditRequest } from '../models';
+import { ProductCreateEdit, ProductsFilter, ProductEditRequest, ProductDropdownSearchRequest } from '../models';
 
 const productsApiUrl = `${API_URL}/v1/products`;
 
-export const getProductDropdownItemsAsync = async (): Promise<Response> => {
-  return await fetch(`${productsApiUrl}/dropdown`, {
+export const getProductDropdownItemsAsync = async ({
+  productNameFilter,
+}: ProductDropdownSearchRequest): Promise<Response> => {
+  let requestUrl = `${productsApiUrl}/dropdown`;
+
+  if (productNameFilter) {
+    requestUrl += `?productNameFilter=${encodeURIComponent(productNameFilter)}`;
+  }
+
+  return await fetch(requestUrl, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',

@@ -1,6 +1,6 @@
 import { ActionCreator, Dispatch } from 'redux';
 import { ThunkAction } from 'redux-thunk';
-import { ProductDropdownItem } from '../../models';
+import { ProductDropdownItem, ProductDropdownSearchRequest } from '../../models';
 import {
   GetProductDropdownItemsSuccessAction,
   GetProductDropdownItemsErrorAction,
@@ -34,16 +34,16 @@ const getProductDropdownItemsError = (error?: string): GetProductDropdownItemsEr
 export const getProductDropdownItems: ActionCreator<ThunkAction<
   Promise<GetProductDropdownItemsSuccessAction | GetProductDropdownItemsErrorAction>,
   ProductDropdownItem[],
-  void,
+  ProductDropdownSearchRequest,
   GetProductDropdownItemsSuccessAction | GetProductDropdownItemsErrorAction
->> = () => {
+>> = (request: ProductDropdownSearchRequest) => {
   return async (
     dispatch: Dispatch,
   ): Promise<GetProductDropdownItemsSuccessAction | GetProductDropdownItemsErrorAction> => {
     dispatch(getProductDropdownItemsRequest());
 
     try {
-      const response = await getProductDropdownItemsAsync();
+      const response = await getProductDropdownItemsAsync(request);
       if (!response.ok) {
         return dispatch(getProductDropdownItemsError());
       }
