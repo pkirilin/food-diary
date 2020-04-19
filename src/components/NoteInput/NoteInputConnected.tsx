@@ -17,6 +17,7 @@ export interface StateToPropsMapResult {
   mealOperationStatuses: MealOperationStatus[];
   notesForMealFetchStates: NotesForMealFetchState[];
   productDropdownItems: ProductDropdownItem[];
+  noteItems: NoteItem[];
   isProductDropdownContentLoading: boolean;
   isPageOperationInProcess: boolean;
 }
@@ -34,6 +35,7 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
     mealOperationStatuses: state.notes.operations.mealOperationStatuses,
     notesForMealFetchStates: state.notes.list.notesForMealFetchStates,
     productDropdownItems: state.products.dropdown.productDropdownItems,
+    noteItems: state.notes.list.noteItems,
     isProductDropdownContentLoading: state.products.dropdown.productDropdownItemsFetchState.loading,
     isPageOperationInProcess: state.pages.operations.status.performing,
   };

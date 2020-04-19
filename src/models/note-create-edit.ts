@@ -5,4 +5,5 @@ export interface NoteCreateEdit {
   productId: number;
   pageId: number;
   productQuantity: number;
+  displayOrder: number;
 }

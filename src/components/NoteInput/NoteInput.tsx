@@ -17,6 +17,7 @@ const NoteInput: React.FC<NoteInputProps> = ({
   mealOperationStatuses,
   notesForMealFetchStates,
   productDropdownItems,
+  noteItems,
   isProductDropdownContentLoading,
   isPageOperationInProcess,
   createNote,
@@ -60,11 +61,16 @@ const NoteInput: React.FC<NoteInputProps> = ({
 
   const handleAddButtonClick = async (): Promise<void> => {
     const pageId = pageIdFromParams && !isNaN(+pageIdFromParams) ? +pageIdFromParams : 0;
+    const noteItemsForThisMeal = noteItems.filter(n => n.mealType === mealType);
+    const lastNoteDisplayOrder =
+      noteItemsForThisMeal.length > 0 ? noteItemsForThisMeal[noteItemsForThisMeal.length - 1].displayOrder : -1;
+
     const createNoteAction = await createNote({
       mealType,
       productId,
       productQuantity,
       pageId,
+      displayOrder: lastNoteDisplayOrder + 1,
     });
 
     if (createNoteAction.type === NotesOperationsActionTypes.CreateSuccess) {

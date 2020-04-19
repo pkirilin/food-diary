@@ -71,6 +71,7 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({
       productId,
       pageId,
       productQuantity,
+      displayOrder: note.displayOrder,
     });
     if (editNoteAction as EditNoteSuccessAction) {
       setEditableForNote(note.id, false);
