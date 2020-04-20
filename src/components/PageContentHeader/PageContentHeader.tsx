@@ -5,6 +5,7 @@ import Icon from '../Icon';
 import { useParams, NavLink } from 'react-router-dom';
 import MealsControlPanelConnected from '../MealsControlPanel/MealsControlPanelConnected';
 import Loader from '../Loader';
+import { getFormattedDate } from '../../utils/date-utils';
 
 type PageContentHeaderProps = StateToPropsMapResult;
 
@@ -65,7 +66,7 @@ const PageContentHeader: React.FC<PageContentHeaderProps> = ({
             <Loader size="small" label="Loading date"></Loader>
           ) : (
             <div className="page-content-header__navigation__date">
-              {currentSelectedPage && currentSelectedPage.date}
+              {currentSelectedPage && getFormattedDate(currentSelectedPage.date)}
             </div>
           )}
           {isNextPageIconActive ? <NavLink to={`/pages/${nextPageId}`}>{nextPageIcon}</NavLink> : nextPageIcon}

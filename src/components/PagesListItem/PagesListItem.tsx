@@ -13,6 +13,7 @@ import Icon from '../Icon';
 import { DispatchToPropsMapResult, StateToPropsMapResult } from './PagesListItemConnected';
 import { PageItem } from '../../models';
 import { PagesOperationsActionTypes } from '../../action-types';
+import { getFormattedDate } from '../../utils/date-utils';
 
 interface PagesListItemProps extends StateToPropsMapResult, DispatchToPropsMapResult {
   data: PageItem;
@@ -122,7 +123,7 @@ const PagesListItem: React.FC<PagesListItemProps> = ({
       ) : (
         <SidebarListItem selected={isSelected}>
           <SidebarListItemLink to={`/pages/${page.id}`} activeClassName={activeLinkClassName} selected={isSelected}>
-            <div>{page.date}</div>
+            <div>{getFormattedDate(page.date)}</div>
             <BadgesContainer>
               <Badge label={notesBadgeLabel} selected={isSelected}></Badge>
               <Badge label={caloriesBadgeLabel} selected={isSelected}></Badge>
