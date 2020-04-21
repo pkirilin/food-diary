@@ -41,18 +41,27 @@ export const getPages: ActionCreator<ThunkAction<
   GetPagesListSuccessAction | GetPagesListErrorAction
 >> = (filter: PagesFilter) => {
   return async (dispatch: Dispatch): Promise<GetPagesListSuccessAction | GetPagesListErrorAction> => {
+    const baseErrorMessage = 'Failed to get pages list';
     dispatch(getPagesRequest());
-
     try {
       const response = await getPagesAsync(filter);
-      if (!response.ok) {
-        return dispatch(getPagesError('Response is not ok'));
+
+      if (response.ok) {
+        const pages = await response.json();
+        return dispatch(getPagesSuccess(pages));
       }
 
-      const pages = await response.json();
-      return dispatch(getPagesSuccess(pages));
+      switch (response.status) {
+        case 400:
+          return dispatch(getPagesError(`${baseErrorMessage}: wrong request data`));
+        case 500:
+          return dispatch(getPagesError(`${baseErrorMessage}: server error`));
+        default:
+          return dispatch(getPagesError(`${baseErrorMessage}: unknown response code`));
+      }
     } catch (error) {
-      return dispatch(getPagesError('Could not fetch pages list'));
+      console.error(error);
+      return dispatch(getPagesError(baseErrorMessage));
     }
   };
 };

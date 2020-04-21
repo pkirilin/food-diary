@@ -24,3 +24,7 @@ export const getFormattedDate = (dateStr: string): string => {
 
   return `${dayStr}/${monthStr}/${yearStr}`;
 };
+
+export const isDateStringValid = (dateString: string): boolean => {
+  return !isNaN(Date.parse(dateString));
+};

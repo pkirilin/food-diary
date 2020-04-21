@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './PagesListItem.scss';
 import Badge from '../Badge';
 import {
@@ -13,7 +13,7 @@ import Icon from '../Icon';
 import { DispatchToPropsMapResult, StateToPropsMapResult } from './PagesListItemConnected';
 import { PageItem } from '../../models';
 import { PagesOperationsActionTypes } from '../../action-types';
-import { getFormattedDate } from '../../utils/date-utils';
+import { getFormattedDate, isDateStringValid } from '../../utils/date-utils';
 
 interface PagesListItemProps extends StateToPropsMapResult, DispatchToPropsMapResult {
   data: PageItem;
@@ -36,11 +36,16 @@ const PagesListItem: React.FC<PagesListItemProps> = ({
   areNotesForMealLoading,
 }: PagesListItemProps) => {
   const [selectedDate, setSelectedDate] = useState(page.date);
+  const [isConfirmEditDisabled, setIsConfirmEditDisabled] = useState(false);
 
   const isEditable = editablePagesIds.some(id => page.id === id);
   const isSelected = selectedPagesIds.some(id => page.id === id);
   const isAnySideEffectHappening =
     isPageOperationInProcess || isNoteOperationInProcess || areNotesForMealLoading || areNotesForPageLoading;
+
+  useEffect(() => {
+    setIsConfirmEditDisabled(!isDateStringValid(selectedDate) || isAnySideEffectHappening);
+  }, [selectedDate, isAnySideEffectHappening]);
 
   const handleSelectedDateChange = (event: React.ChangeEvent): void => {
     const target = event.target as HTMLInputElement;
@@ -110,7 +115,7 @@ const PagesListItem: React.FC<PagesListItemProps> = ({
               type="check"
               size="small"
               onClick={handleConfirmEditPageIconClick}
-              disabled={isAnySideEffectHappening}
+              disabled={isConfirmEditDisabled}
             ></Icon>
             <Icon
               type="close"
