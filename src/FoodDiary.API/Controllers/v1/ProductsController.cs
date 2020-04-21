@@ -4,7 +4,6 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
-using FoodDiary.API.Helpers;
 using FoodDiary.Domain.Dtos;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Services;
@@ -36,7 +35,7 @@ namespace FoodDiary.API.Controllers.v1
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<ProductItemDto>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> GetProductsList([FromQuery] ProductsSearchRequestDto searchRequest, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetProducts([FromQuery] ProductsSearchRequestDto searchRequest, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
             {

@@ -51,36 +51,28 @@ namespace FoodDiary.UnitTests.Controllers
 
         public ProductsController ProductsController => new ProductsController(_loggerFactory, _mapper, _productServiceMock.Object);
 
-        [Theory]
-        [InlineData(1, 10, 100)]
-        [InlineData(2, 20, 100)]
-        public async void SearchProducts_ReturnsFilteredProductsWithPaginationInfo_WhenModelStateIsValid(
-            int pageIndex,
-            int pageSize,
-            int foundProductsCount)
+        [Fact]
+        public async void GetProducts_ReturnsFilteredProductsWithPaginationInfo_WhenModelStateIsValid()
         {
-            var searchRequest = _fixture.Build<ProductsSearchRequestDto>()
-                .With(r => r.PageNumber, pageIndex)
-                .With(r => r.PageSize, pageSize)
-                .Create();
-            var foundProducts = _fixture.CreateMany<Product>(foundProductsCount);
+            var searchRequest = _fixture.Create<ProductsSearchRequestDto>();
+            var foundProducts = _fixture.CreateMany<Product>();
             _productServiceMock.Setup(s => s.SearchProductsAsync(searchRequest, default))
                 .ReturnsAsync(foundProducts);
 
-            var result = await ProductsController.GetProductsList(searchRequest, default);
+            var result = await ProductsController.GetProducts(searchRequest, default);
 
             _productServiceMock.Verify(s => s.SearchProductsAsync(searchRequest, default), Times.Once);
             result.Should().BeOfType<OkObjectResult>();
         }
 
         [Fact]
-        public async void SearchProducts_ReturnsBadRequest_WhenModelStateIsInvalid()
+        public async void GetProducts_ReturnsBadRequest_WhenModelStateIsInvalid()
         {
             var searchRequest = _fixture.Create<ProductsSearchRequestDto>();
             var controller = ProductsController;
-            controller.ModelState.AddModelError("error", "error");
+            controller.ModelState.AddModelError(_fixture.Create<string>(), _fixture.Create<string>());
 
-            var result = await controller.GetProductsList(searchRequest, default);
+            var result = await controller.GetProducts(searchRequest, default);
 
             result.Should().BeOfType<BadRequestObjectResult>();
         }

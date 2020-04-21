@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -35,8 +35,13 @@ namespace FoodDiary.API.Controllers.v1
 
         [HttpGet]
         [ProducesResponseType(typeof(List<PageItemDto>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetPagesList([FromQuery] PageFilterDto pageFilter, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetPages([FromQuery] PageFilterDto pageFilter, CancellationToken cancellationToken)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var filteredPages = await _pageService.SearchPagesAsync(pageFilter, cancellationToken);
             var pagesListResponse = _mapper.Map<List<PageItemDto>>(filteredPages);
             return Ok(pagesListResponse);

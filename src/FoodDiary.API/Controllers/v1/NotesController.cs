@@ -36,6 +36,11 @@ namespace FoodDiary.API.Controllers.v1
         [ProducesResponseType(typeof(List<NoteItemDto>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetNotes([FromQuery] NotesSearchRequestDto request, CancellationToken cancellationToken)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var noteEntities = await _noteService.SearchNotesAsync(request, cancellationToken);
             var notesListResponse = _mapper.Map<List<NoteItemDto>>(noteEntities);
             return Ok(notesListResponse);

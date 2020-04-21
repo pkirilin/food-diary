@@ -1,4 +1,4 @@
-using FoodDiary.Domain.Dtos;
+﻿using FoodDiary.Domain.Dtos;
 using Xunit;
 using AutoFixture.Xunit2;
 using FoodDiary.Domain.Enums;
@@ -54,28 +54,32 @@ namespace FoodDiary.UnitTests.Controllers
 
         public PagesController PagesController => new PagesController(_loggerFactory, _mapper, _pageServiceMock.Object);
 
-        [Theory]
-        [InlineAutoData]
-        [InlineAutoData(SortOrder.Descending, null)]
-        public async void GetPagesList_ReturnsFilteredPages_WhenModelStateIsValid(SortOrder sortOrder, int? showCount)
+        [Fact]
+        public async void GetPages_ReturnsFilteredPages_WhenModelStateIsValid()
         {
-            var pageFilter = new PageFilterDto()
-            {
-                SortOrder = sortOrder,
-                ShowCount = showCount
-            };
-            var mockPages = _fixture.CreateMany<Page>(pageFilter.ShowCount.GetValueOrDefault()).ToList();
-
+            var pageFilter = _fixture.Create<PageFilterDto>();
+            var expectedPages = _fixture.CreateMany<Page>();
             _pageServiceMock.Setup(s => s.SearchPagesAsync(pageFilter, default))
-                .ReturnsAsync(mockPages);
-
+                .ReturnsAsync(expectedPages);
             var controller = PagesController;
 
-            var result = await controller.GetPagesList(pageFilter, default);
+            var result = await controller.GetPages(pageFilter, default);
 
             _pageServiceMock.Verify(s => s.SearchPagesAsync(pageFilter, default), Times.Once);
-
             result.Should().BeOfType<OkObjectResult>();
+        }
+
+        [Fact]
+        public async void GetPages_ReturnsBadRequest_WhenModelStateIsInvalid()
+        {
+            var pageFilter = _fixture.Create<PageFilterDto>();
+            var controller = PagesController;
+            controller.ModelState.AddModelError(_fixture.Create<string>(), _fixture.Create<string>());
+
+            var result = await controller.GetPages(pageFilter, default);
+
+            _pageServiceMock.Verify(s => s.SearchPagesAsync(pageFilter, default), Times.Never);
+            result.Should().BeOfType<BadRequestObjectResult>();
         }
 
         [Fact]

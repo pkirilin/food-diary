@@ -1,14 +1,12 @@
 ﻿using System.Linq;
 using System.Reflection;
 using AutoFixture;
-using AutoFixture.Xunit2;
 using AutoMapper;
 using FluentAssertions;
 using FoodDiary.API;
 using FoodDiary.API.Controllers.v1;
 using FoodDiary.Domain.Dtos;
 using FoodDiary.Domain.Entities;
-using FoodDiary.Domain.Enums;
 using FoodDiary.Domain.Services;
 using FoodDiary.Infrastructure.Services;
 using FoodDiary.UnitTests.Customizations;
@@ -57,19 +55,11 @@ namespace FoodDiary.UnitTests.Controllers
             _mapper,
             _noteServiceMock.Object);
 
-        [Theory]
-        [InlineAutoData]
-        [InlineAutoData(1)]
-        [InlineAutoData(1, null)]
-        [InlineAutoData(1, MealType.Breakfast)]
-        public async void GetNotes_ReturnsFilteredNotes_WhenModelStateIsValid(int pageId, MealType? mealType)
+        [Fact]
+        public async void GetNotes_ReturnsFilteredNotes_WhenModelStateIsValid()
         {
-            var request = _fixture.Build<NotesSearchRequestDto>()
-                .With(r => r.PageId, pageId)
-                .With(r => r.MealType, mealType)
-                .Create();
+            var request = _fixture.Create<NotesSearchRequestDto>();
             var notes = _fixture.CreateMany<Note>();
-
             _noteServiceMock.Setup(s => s.SearchNotesAsync(request, default))
                 .ReturnsAsync(notes);
 
@@ -77,6 +67,20 @@ namespace FoodDiary.UnitTests.Controllers
 
             _noteServiceMock.Verify(s => s.SearchNotesAsync(request, default), Times.Once);
             result.Should().BeOfType<OkObjectResult>();
+        }
+
+        [Fact]
+        public async void GetNotes_ReturnsBadRequest_WhenModelStateIsInvalid()
+        {
+            var request = _fixture.Create<NotesSearchRequestDto>();
+            var notes = _fixture.CreateMany<Note>();
+            var controller = NotesController;
+            controller.ModelState.AddModelError(_fixture.Create<string>(), _fixture.Create<string>());
+
+            var result = await controller.GetNotes(request, default);
+
+            _noteServiceMock.Verify(s => s.SearchNotesAsync(request, default), Times.Never);
+            result.Should().BeOfType<BadRequestObjectResult>();
         }
 
         [Fact]
