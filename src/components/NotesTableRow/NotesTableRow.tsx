@@ -6,7 +6,7 @@ import { StateToPropsMapResult, DispatchToPropsMapResult } from './NotesTableRow
 import Icon from '../Icon';
 import { EditNoteSuccessAction, DeleteNoteSuccessAction } from '../../action-types';
 import { useParams } from 'react-router-dom';
-import { useDebounce } from '../../hooks';
+import { useDebounce, useNoteValidation } from '../../hooks';
 
 interface NotesTableRowProps extends StateToPropsMapResult, DispatchToPropsMapResult {
   mealType: MealType;
@@ -30,6 +30,7 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({
   const [productId, setProductId] = useState(note.productId);
   const [productNameInputValue, setProductNameInputValue] = useState(note.productName);
   const [productQuantity, setProductQuantity] = useState(note.productQuantity);
+  const [isProductNameValid, isProductQuantityValid] = useNoteValidation(productNameInputValue, productQuantity);
 
   const productNameChangeDebounce = useDebounce(() => {
     getProductDropdownItems({
@@ -45,6 +46,7 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({
   const isNoteEditable = editableNotesIds.find(id => id === note.id) !== undefined;
   const isMealOperationInProcess = currentMealOperationStatus && currentMealOperationStatus.performing;
   const isInputDisabled = isMealOperationInProcess || isPageOperationInProcess;
+  const isConfirmEditIconDisabled = isInputDisabled || !isProductQuantityValid || !isProductNameValid;
 
   const handleProductDropdownItemSelect = (newSelectedProductIndex: number): void => {
     setProductId(productDropdownItems[newSelectedProductIndex].id);
@@ -143,7 +145,7 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({
         <Icon
           type={isNoteEditable ? 'check' : 'edit'}
           size="small"
-          disabled={isInputDisabled}
+          disabled={isNoteEditable ? isConfirmEditIconDisabled : isInputDisabled}
           onClick={isNoteEditable ? handleConfirmEditIconClick : handleEditIconClick}
         ></Icon>
       </td>

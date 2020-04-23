@@ -6,7 +6,7 @@ import { MealType } from '../../models';
 import { useParams } from 'react-router-dom';
 import Loader from '../Loader';
 import { NotesOperationsActionTypes } from '../../action-types';
-import { useDebounce } from '../../hooks';
+import { useDebounce, useNoteValidation } from '../../hooks';
 
 interface NoteInputProps extends StateToPropsMapResult, DispatchToPropsMapResult {
   mealType: MealType;
@@ -27,6 +27,7 @@ const NoteInput: React.FC<NoteInputProps> = ({
   const [productId, setProductId] = useState(0);
   const [productNameInputValue, setProductNameInputValue] = useState('');
   const [productQuantity, setProductQuantity] = useState(100);
+  const [isProductNameValid, isProductQuantityValid] = useNoteValidation(productNameInputValue, productQuantity);
 
   const productNameChangeDebounce = useDebounce((newProductName?: string) => {
     getProductDropdownItems({
@@ -43,7 +44,7 @@ const NoteInput: React.FC<NoteInputProps> = ({
   const isMealOperationInProcess = currentMealOperationStatus && currentMealOperationStatus.performing;
   const isNotesTableLoading = currentMealFetchState && currentMealFetchState.loading;
   const isInputDisabled = isMealOperationInProcess || isNotesTableLoading || isPageOperationInProcess;
-  const isAddButtonDisabled = isInputDisabled || productNameInputValue === '' || isPageOperationInProcess;
+  const isAddButtonDisabled = isInputDisabled || !isProductNameValid || !isProductQuantityValid;
 
   const handleProductDropdownItemSelect = (newSelectedProductIndex: number): void => {
     setProductId(productDropdownItems[newSelectedProductIndex].id);

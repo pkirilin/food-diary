@@ -56,6 +56,11 @@ const getNotesForMealError = (mealType: MealType, errorMessage: string): GetNote
   };
 };
 
+enum NotesListBaseErrorMessages {
+  NotesForPage = 'Failed to get notes for page',
+  NotesForMeal = 'Failed to get notes for meal',
+}
+
 export const getNotesForPage: ActionCreator<ThunkAction<
   Promise<GetNotesForPageSuccessAction | GetNotesForPageErrorAction>,
   NoteItem[],
@@ -66,14 +71,23 @@ export const getNotesForPage: ActionCreator<ThunkAction<
     dispatch(getNotesForPageRequest());
     try {
       const response = await getNotesAsync(request);
-      if (!response.ok) {
-        return dispatch(getNotesForPageError('Notes for page response error'));
+
+      if (response.ok) {
+        const noteItems = await response.json();
+        return dispatch(getNotesForPageSuccess(noteItems));
       }
 
-      const notesForPage = await response.json();
-      return dispatch(getNotesForPageSuccess(notesForPage));
+      switch (response.status) {
+        case 400:
+          return dispatch(getNotesForPageError(`${NotesListBaseErrorMessages.NotesForPage}: wrong request data`));
+        case 500:
+          return dispatch(getNotesForPageError(`${NotesListBaseErrorMessages.NotesForPage}: server error`));
+        default:
+          return dispatch(getNotesForPageError(`${NotesListBaseErrorMessages.NotesForPage}: unknown response code`));
+      }
     } catch (error) {
-      return dispatch(getNotesForPageError('Failed to get notes for page from server'));
+      console.error(error);
+      return dispatch(getNotesForPageError(NotesListBaseErrorMessages.NotesForPage));
     }
   };
 };
@@ -91,14 +105,27 @@ export const getNotesForMeal: ActionCreator<ThunkAction<
         pageId,
         mealType,
       });
-      if (!response.ok) {
-        return dispatch(getNotesForMealError(mealType, 'Notes for meal response error'));
+
+      if (response.ok) {
+        const noteItems = await response.json();
+        return dispatch(getNotesForMealSuccess(mealType, noteItems));
       }
 
-      const mealItem = await response.json();
-      return dispatch(getNotesForMealSuccess(mealType, mealItem));
+      switch (response.status) {
+        case 400:
+          return dispatch(
+            getNotesForMealError(mealType, `${NotesListBaseErrorMessages.NotesForMeal}: wrong request data`),
+          );
+        case 500:
+          return dispatch(getNotesForMealError(mealType, `${NotesListBaseErrorMessages.NotesForMeal}: server error`));
+        default:
+          return dispatch(
+            getNotesForMealError(mealType, `${NotesListBaseErrorMessages.NotesForMeal}: unknown response code`),
+          );
+      }
     } catch (error) {
-      return dispatch(getNotesForMealError(mealType, 'Failed to get notes for meal from server'));
+      console.error(error);
+      return dispatch(getNotesForMealError(mealType, NotesListBaseErrorMessages.NotesForMeal));
     }
   };
 };

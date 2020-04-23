@@ -6,26 +6,22 @@ import {
   GetProductDropdownItemsSuccessAction,
   GetProductDropdownItemsErrorAction,
 } from '../../action-types';
-import { FoodDiaryState } from '../../store';
+import { FoodDiaryState, DataFetchState } from '../../store';
 import { ThunkDispatch } from 'redux-thunk';
 import { ProductDropdownItem, NotesSearchRequest, NoteItem } from '../../models';
 import { getNotesForPage } from '../../action-creators';
 
 export interface StateToPropsMapResult {
-  loading: boolean;
-  loaded: boolean;
-  errorMessage?: string;
+  notesForPageFetchState: DataFetchState;
 }
 
 export interface DispatchToPropsMapResult {
-  getContent: (request: NotesSearchRequest) => Promise<GetNotesForPageSuccessAction | GetNotesForPageErrorAction>;
+  getNotesForPage: (request: NotesSearchRequest) => Promise<GetNotesForPageSuccessAction | GetNotesForPageErrorAction>;
 }
 
 const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
   return {
-    loading: state.notes.list.notesForPageFetchState.loading,
-    loaded: state.notes.list.notesForPageFetchState.loaded,
-    errorMessage: state.notes.list.notesForPageFetchState.error,
+    notesForPageFetchState: state.notes.list.notesForPageFetchState,
   };
 };
 
@@ -38,7 +34,9 @@ type PageContentDispatchType = ThunkDispatch<
 
 const mapDispatchToProps = (dispatch: PageContentDispatchType): DispatchToPropsMapResult => {
   return {
-    getContent: (request: NotesSearchRequest): Promise<GetNotesForPageSuccessAction | GetNotesForPageErrorAction> => {
+    getNotesForPage: (
+      request: NotesSearchRequest,
+    ): Promise<GetNotesForPageSuccessAction | GetNotesForPageErrorAction> => {
       return dispatch(getNotesForPage(request));
     },
   };

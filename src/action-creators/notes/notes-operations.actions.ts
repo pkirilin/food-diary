@@ -15,6 +15,7 @@ import {
 import { NoteCreateEdit, MealType } from '../../models';
 import { createNoteAsync, editNoteAsync, deleteNoteAsync } from '../../services';
 import { NoteEditRequest } from '../../models';
+import { readBadRequestResponseAsync } from '../../utils/bad-request-response-reader';
 
 const createNoteRequest = (note: NoteCreateEdit, operationMessage: string): CreateNoteRequestAction => {
   return {
@@ -86,6 +87,12 @@ const deleteNoteError = (mealType: MealType, error: string): DeleteNoteErrorActi
   };
 };
 
+enum NotesOperationsBaseErrorMessages {
+  Create = 'Failed to create note',
+  Edit = 'Failed to update note',
+  Delete = 'Failed to delete note',
+}
+
 export const createNote: ActionCreator<ThunkAction<
   Promise<CreateNoteSuccessAction | CreateNoteErrorAction>,
   void,
@@ -94,19 +101,32 @@ export const createNote: ActionCreator<ThunkAction<
 >> = (note: NoteCreateEdit) => {
   return async (dispatch: Dispatch): Promise<CreateNoteSuccessAction | CreateNoteErrorAction> => {
     dispatch(createNoteRequest(note, 'Creating note'));
-
     try {
       const response = await createNoteAsync(note);
-      if (!response.ok) {
-        const errorMessageForInvalidData = 'Failed to create note (invalid data)';
-        alert(errorMessageForInvalidData);
-        return dispatch(createNoteError(note.mealType, errorMessageForInvalidData));
+
+      if (response.ok) {
+        return dispatch(createNoteSuccess(note.mealType));
       }
-      return dispatch(createNoteSuccess(note.mealType));
+
+      switch (response.status) {
+        case 400:
+          const badRequestResponse = await readBadRequestResponseAsync(response);
+          alert(`${NotesOperationsBaseErrorMessages.Create}: ${badRequestResponse}`);
+          return dispatch(
+            createNoteError(note.mealType, `${NotesOperationsBaseErrorMessages.Create}: ${badRequestResponse}`),
+          );
+        case 500:
+          alert(`${NotesOperationsBaseErrorMessages.Create}: server error`);
+          return dispatch(createNoteError(note.mealType, `${NotesOperationsBaseErrorMessages.Create}: server error`));
+        default:
+          alert(`${NotesOperationsBaseErrorMessages.Create}: unknown response code`);
+          return dispatch(
+            createNoteError(note.mealType, `${NotesOperationsBaseErrorMessages.Create}: unknown response code`),
+          );
+      }
     } catch (error) {
-      const errorMessageForServerError = 'Failed to create note (server error)';
-      alert(errorMessageForServerError);
-      return dispatch(createNoteError(note.mealType, errorMessageForServerError));
+      alert(NotesOperationsBaseErrorMessages.Create);
+      return dispatch(createNoteError(note.mealType, NotesOperationsBaseErrorMessages.Create));
     }
   };
 };
@@ -119,19 +139,32 @@ export const editNote: ActionCreator<ThunkAction<
 >> = (request: NoteEditRequest) => {
   return async (dispatch: Dispatch): Promise<EditNoteSuccessAction | EditNoteErrorAction> => {
     dispatch(editNoteRequest(request, 'Updating note'));
-
     try {
       const response = await editNoteAsync(request);
-      if (!response.ok) {
-        const errorMessageForInvalidData = 'Failed to update note (invalid data)';
-        alert(errorMessageForInvalidData);
-        return dispatch(editNoteError(request.mealType, errorMessageForInvalidData));
+
+      if (response.ok) {
+        return dispatch(editNoteSuccess(request.mealType));
       }
-      return dispatch(editNoteSuccess(request.mealType));
+
+      switch (response.status) {
+        case 400:
+          const badRequestResponse = await readBadRequestResponseAsync(response);
+          alert(`${NotesOperationsBaseErrorMessages.Edit}: ${badRequestResponse}`);
+          return dispatch(
+            editNoteError(request.mealType, `${NotesOperationsBaseErrorMessages.Edit}: ${badRequestResponse}`),
+          );
+        case 500:
+          alert(`${NotesOperationsBaseErrorMessages.Edit}: server error`);
+          return dispatch(editNoteError(request.mealType, `${NotesOperationsBaseErrorMessages.Edit}: server error`));
+        default:
+          alert(`${NotesOperationsBaseErrorMessages.Edit}: unknown response code`);
+          return dispatch(
+            editNoteError(request.mealType, `${NotesOperationsBaseErrorMessages.Edit}: unknown response code`),
+          );
+      }
     } catch (error) {
-      const errorMessageForServerError = 'Failed to update note (server error)';
-      alert(errorMessageForServerError);
-      return dispatch(editNoteError(request.mealType, errorMessageForServerError));
+      alert(NotesOperationsBaseErrorMessages.Edit);
+      return dispatch(editNoteError(request.mealType, NotesOperationsBaseErrorMessages.Edit));
     }
   };
 };
@@ -144,19 +177,32 @@ export const deleteNote: ActionCreator<ThunkAction<
 >> = ([noteId, mealType]: [number, MealType]) => {
   return async (dispatch: Dispatch): Promise<DeleteNoteSuccessAction | DeleteNoteErrorAction> => {
     dispatch(deleteNoteRequest(noteId, mealType, 'Deleting note'));
-
     try {
       const response = await deleteNoteAsync(noteId);
-      if (!response.ok) {
-        const errorMessageForInvalidData = 'Failed to delete note (invalid data)';
-        alert(errorMessageForInvalidData);
-        return dispatch(deleteNoteError(mealType, errorMessageForInvalidData));
+
+      if (response.ok) {
+        return dispatch(deleteNoteSuccess(mealType));
       }
-      return dispatch(deleteNoteSuccess(mealType));
+
+      switch (response.status) {
+        case 400:
+          const badRequestResponse = await readBadRequestResponseAsync(response);
+          alert(`${NotesOperationsBaseErrorMessages.Delete}: ${badRequestResponse}`);
+          return dispatch(
+            deleteNoteError(mealType, `${NotesOperationsBaseErrorMessages.Delete}: ${badRequestResponse}`),
+          );
+        case 500:
+          alert(`${NotesOperationsBaseErrorMessages.Delete}: server error`);
+          return dispatch(deleteNoteError(mealType, `${NotesOperationsBaseErrorMessages.Delete}: server error`));
+        default:
+          alert(`${NotesOperationsBaseErrorMessages.Delete}: unknown response code`);
+          return dispatch(
+            deleteNoteError(mealType, `${NotesOperationsBaseErrorMessages.Delete}: unknown response code`),
+          );
+      }
     } catch (error) {
-      const errorMessageForServerError = 'Failed to delete note (server error)';
-      alert(errorMessageForServerError);
-      return dispatch(deleteNoteError(mealType, errorMessageForServerError));
+      alert(NotesOperationsBaseErrorMessages.Delete);
+      return dispatch(deleteNoteError(mealType, NotesOperationsBaseErrorMessages.Delete));
     }
   };
 };
