@@ -1,14 +1,14 @@
 import { connect } from 'react-redux';
 import ProductsTable from './ProductsTable';
 import { ProductItem, ProductsFilter } from '../../models';
-import { FoodDiaryState } from '../../store';
+import { FoodDiaryState, DataFetchState } from '../../store';
 import { GetProductsListSuccessAction, GetProductsListErrorAction, ProductsFilterActions } from '../../action-types';
 import { ThunkDispatch } from 'redux-thunk';
 import { getProducts, updateProductsFilter } from '../../action-creators';
 import { Dispatch } from 'react';
 
 export interface StateToPropsMapResult {
-  isProductsTableLoading: boolean;
+  productItemsFetchState: DataFetchState;
   isProductOperationInProcess: boolean;
   productItems: ProductItem[];
   productItemsPageSize: number;
@@ -22,7 +22,7 @@ export interface DispatchToPropsMapResult {
 
 const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
   return {
-    isProductsTableLoading: state.products.list.productItemsFetchState.loading,
+    productItemsFetchState: state.products.list.productItemsFetchState,
     isProductOperationInProcess: state.products.operations.productOperationStatus.performing,
     productItems: state.products.list.productItems,
     productItemsPageSize: state.products.filter.pageSize,

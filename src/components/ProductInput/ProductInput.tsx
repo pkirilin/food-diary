@@ -4,7 +4,7 @@ import { FormGroup, Input, Label, Button, DropdownList, categoryDropdownItemRend
 import Loader from '../Loader';
 import { StateToPropsMapResult, DispatchToPropsMapResult } from './ProductInputConnected';
 import { CreateProductSuccessAction } from '../../action-types';
-import { useDebounce } from '../../hooks';
+import { useDebounce, useProductValidation } from '../../hooks';
 
 interface ProductInputProps extends StateToPropsMapResult, DispatchToPropsMapResult {}
 
@@ -13,7 +13,7 @@ const ProductInput: React.FC<ProductInputProps> = ({
   productItemsFetchState,
   categoryItems,
   categoryDropdownItems,
-  isCategoryDropdownContentLoading,
+  categoryDropdownItemsFetchState,
   productsFilter,
   createProduct,
   getProducts,
@@ -26,10 +26,19 @@ const ProductInput: React.FC<ProductInputProps> = ({
 
   const { performing: isOperationInProcess, message: operationMessage } = productOperationStatus;
   const { loading: isProductsTableLoading } = productItemsFetchState;
+  const {
+    loading: isCategoryDropdownContentLoading,
+    error: categoryDropdownContentErrorMessage,
+  } = categoryDropdownItemsFetchState;
 
-  const isAnyInputValueEmpty = productNameInputValue === '' || caloriesCost < 1 || categoryId < 1;
+  const [isProductNameValid, isCaloriesCostValid, isCategoryNameValid] = useProductValidation(
+    productNameInputValue,
+    caloriesCost,
+    categoryNameInputValue,
+  );
+
   const isInputDisabled = isOperationInProcess || isProductsTableLoading;
-  const isAddButtonDisabled = isInputDisabled || isAnyInputValueEmpty;
+  const isAddButtonDisabled = isInputDisabled || !isProductNameValid || !isCaloriesCostValid || !isCategoryNameValid;
 
   const setCategoryInputByFilter = (): void => {
     if (productsFilter.categoryId !== undefined) {
@@ -147,6 +156,7 @@ const ProductInput: React.FC<ProductInputProps> = ({
             inputValue={categoryNameInputValue}
             isContentLoading={isCategoryDropdownContentLoading}
             disabled={isInputDisabled}
+            contentErrorMessage={categoryDropdownContentErrorMessage}
             onValueSelect={handleCategoryDropdownItemSelect}
             onInputValueChange={handleCategoryNameDropdownInputChange}
             onContentOpen={handleCategoryDropdownContentOpen}

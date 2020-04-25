@@ -25,6 +25,7 @@ interface DropdownListProps<T = string> extends DropdownPropsBase {
   searchable?: boolean;
   inputValue?: string;
   isContentLoading?: boolean;
+  contentErrorMessage?: string;
   onValueSelect?: (newSelectedValueIndex: number) => void;
   onInputValueChange?: (newInputValue: string) => void;
   onContentOpen?: () => void;
@@ -42,6 +43,7 @@ function DropdownList<T = string>({
   controlSize,
   inputValue = '',
   isContentLoading = false,
+  contentErrorMessage,
   onValueSelect,
   onInputValueChange,
   onContentOpen,
@@ -177,21 +179,25 @@ function DropdownList<T = string>({
       )}
 
       <div ref={contentRef} className={contentClassNames.join(' ')} style={contentStyle}>
-        {isContentLoading ? (
-          <div className="dropdown__content_loading">
-            <Loader label="Fetching products..." size="small"></Loader>
-          </div>
-        ) : items.length === 0 ? (
-          <div className="dropdown__content_empty">No elements found</div>
+        {contentErrorMessage === undefined ? (
+          isContentLoading ? (
+            <div className="dropdown__content_loading">
+              <Loader label="Fetching products..." size="small"></Loader>
+            </div>
+          ) : items.length === 0 ? (
+            <div className="dropdown__content_empty">No elements found</div>
+          ) : (
+            items.map((item, index) => {
+              const isActive = activeItemIndex === index;
+              return (
+                <DropdownItem key={index} onClick={handleListItemClick.bind(index)} active={isActive}>
+                  {itemRenderer(item)}
+                </DropdownItem>
+              );
+            })
+          )
         ) : (
-          items.map((item, index) => {
-            const isActive = activeItemIndex === index;
-            return (
-              <DropdownItem key={index} onClick={handleListItemClick.bind(index)} active={isActive}>
-                {itemRenderer(item)}
-              </DropdownItem>
-            );
-          })
+          <div className="dropdown__content_empty">{contentErrorMessage}</div>
         )}
       </div>
     </div>

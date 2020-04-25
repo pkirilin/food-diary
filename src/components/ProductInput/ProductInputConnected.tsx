@@ -25,7 +25,7 @@ export interface StateToPropsMapResult {
   productItemsFetchState: DataFetchState;
   categoryItems: CategoryItem[];
   categoryDropdownItems: CategoryDropdownItem[];
-  isCategoryDropdownContentLoading: boolean;
+  categoryDropdownItemsFetchState: DataFetchState;
   productsFilter: ProductsFilter;
 }
 
@@ -35,7 +35,7 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
     productItemsFetchState: state.products.list.productItemsFetchState,
     categoryItems: state.categories.list.categoryItems,
     categoryDropdownItems: state.categories.dropdown.categoryDropdownItems,
-    isCategoryDropdownContentLoading: state.categories.dropdown.categoryDropdownItemsFetchState.loading,
+    categoryDropdownItemsFetchState: state.categories.dropdown.categoryDropdownItemsFetchState,
     productsFilter: state.products.filter,
   };
 };

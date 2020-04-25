@@ -5,7 +5,7 @@ import Icon from '../Icon';
 import { StateToPropsMapResult, DispatchToPropsMapResult } from './ProductsTableRowConnected';
 import { Input, DropdownList, categoryDropdownItemRenderer } from '../Controls';
 import { DeleteProductSuccessAction, EditProductSuccessAction } from '../../action-types';
-import { useDebounce } from '../../hooks';
+import { useDebounce, useProductValidation } from '../../hooks';
 
 interface ProductsTableRowProps extends StateToPropsMapResult, DispatchToPropsMapResult {
   product: ProductItem;
@@ -29,11 +29,17 @@ const ProductsTableRow: React.FC<ProductsTableRowProps> = ({
   const [categoryId, setCategoryId] = useState(product.categoryId);
   const [categoryNameInputValue, setCategoryNameInputValue] = useState(product.categoryName);
 
+  const [isProductNameValid, isCaloriesCostValid, isCategoryNameValid] = useProductValidation(
+    productNameInputValue,
+    caloriesCost,
+    categoryNameInputValue,
+  );
+
   const isProductEditable = editableProductsIds.find(id => id === product.id) !== undefined;
 
-  const isAnyInputValueEmpty = productNameInputValue === '' || caloriesCost < 1 || categoryId < 1;
   const isInputDisabled = isProductOperationInProcess;
-  const isConfirmEditIconDisabled = isInputDisabled || isAnyInputValueEmpty;
+  const isConfirmEditIconDisabled =
+    isInputDisabled || !isProductNameValid || !isCaloriesCostValid || !isCategoryNameValid;
 
   const categoryNameChangeDebounce = useDebounce((newCategoryName?: string) => {
     getCategoryDropdownItems({

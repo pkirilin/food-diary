@@ -36,7 +36,7 @@ const Products: React.FC<ProductsProps> = ({ productsFilter, clearProductsFilter
     <ContentWrapper>
       <MainContainer>
         <SectionContainer>
-          {/* Ensures that products table in this section will be initially rendered with cleared filter */}
+          {/* Ensures that products table in this section is initially rendered with cleared filter */}
           {isFilterCleared && (
             <React.Fragment>
               <SectionTitle title="Products"></SectionTitle>
