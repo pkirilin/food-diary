@@ -39,18 +39,27 @@ export const getCategories: ActionCreator<ThunkAction<
   GetCategoriesListSuccessAction | GetCategoriesListErrorAction
 >> = () => {
   return async (dispatch: Dispatch): Promise<GetCategoriesListSuccessAction | GetCategoriesListErrorAction> => {
+    const baseErrorMessage = 'Failed to get categories';
     dispatch(getCategoriesRequest());
-
     try {
       const response = await getCategoriesAsync();
-      if (!response.ok) {
-        return dispatch(getCategoriesError('Response is not ok'));
+
+      if (response.ok) {
+        const categories = await response.json();
+        return dispatch(getCategoriesSuccess(categories));
       }
 
-      const categories = await response.json();
-      return dispatch(getCategoriesSuccess(categories));
+      switch (response.status) {
+        case 400:
+          return dispatch(getCategoriesError(`${baseErrorMessage}: wrong request data`));
+        case 500:
+          return dispatch(getCategoriesError(`${baseErrorMessage}: server error`));
+        default:
+          return dispatch(getCategoriesError(`${baseErrorMessage}: unknown response code`));
+      }
     } catch (error) {
-      return dispatch(getCategoriesError('Could not fetch categories list'));
+      console.error(error);
+      return dispatch(getCategoriesError(baseErrorMessage));
     }
   };
 };

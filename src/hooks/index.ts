@@ -4,6 +4,7 @@ import useHiddenBlockHeightCalculation from './useHiddenBlockHeightCalculation';
 import useDebounce from './useDebounce';
 import useNoteValidation from './useNoteValidation';
 import useProductValidation from './useProductValidation';
+import useCategoryValidation from './useCategoryValidation';
 
 export {
   useOutsideClick,
@@ -12,4 +13,5 @@ export {
   useDebounce,
   useNoteValidation,
   useProductValidation,
+  useCategoryValidation,
 };

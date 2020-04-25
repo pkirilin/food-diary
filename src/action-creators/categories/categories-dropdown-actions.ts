@@ -40,16 +40,27 @@ export const getCategoryDropdownItems: ActionCreator<ThunkAction<
   return async (
     dispatch: Dispatch,
   ): Promise<GetCategoryDropdownItemsSuccessAction | GetCategoryDropdownItemsErrorAction> => {
+    const baseErrorMessage = 'Failed to get categories';
     dispatch(getCategoryDropdownItemsRequest());
     try {
       const response = await getCategoryDropdownItemsAsync(request);
-      if (!response.ok) {
-        return dispatch(getCategoryDropdownItemsError());
+
+      if (response.ok) {
+        const categoryDropdownItems = await response.json();
+        return dispatch(getCategoryDropdownItemsSuccess(categoryDropdownItems));
       }
-      const categoryDropdownItems = await response.json();
-      return dispatch(getCategoryDropdownItemsSuccess(categoryDropdownItems));
+
+      switch (response.status) {
+        case 400:
+          return dispatch(getCategoryDropdownItemsError(`${baseErrorMessage}: wrong request data`));
+        case 500:
+          return dispatch(getCategoryDropdownItemsError(`${baseErrorMessage}: server error`));
+        default:
+          return dispatch(getCategoryDropdownItemsError(`${baseErrorMessage}: unknown response code`));
+      }
     } catch (error) {
-      return dispatch(getCategoryDropdownItemsError());
+      console.error(error);
+      return dispatch(getCategoryDropdownItemsError(baseErrorMessage));
     }
   };
 };

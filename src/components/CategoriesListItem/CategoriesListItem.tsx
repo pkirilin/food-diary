@@ -17,6 +17,7 @@ import {
   CreateCategorySuccessAction,
   EditCategorySuccessAction,
 } from '../../action-types';
+import { useCategoryValidation } from '../../hooks';
 
 interface CategoriesListItemProps extends StateToPropsMapResult, DispatchToPropsMapResult {
   data: CategoryItem;
@@ -38,9 +39,11 @@ const CategoriesListItem: React.FC<CategoriesListItemProps> = ({
   const [categoryName, setCategoryName] = useState(category.name);
 
   const activeLinkClassName = useActiveLinkClassName();
+  const [isCategoryNameValid] = useCategoryValidation(categoryName);
 
   const isEditable = editableCategoriesIds.find(id => id === category.id) !== undefined;
   const isAnySideEffectHappening = isCategoryOperationInProcess || isProductOperationInProcess || areProductsLoading;
+  const isConfirmEditDisabled = isAnySideEffectHappening || !isCategoryNameValid;
 
   const categoryProductsBadgeLabel = `${category.countProducts} ${
     category.countProducts === 1 ? 'product' : 'products'
@@ -111,7 +114,7 @@ const CategoriesListItem: React.FC<CategoriesListItemProps> = ({
               type="check"
               size="small"
               onClick={handleConfirmEditIconClick}
-              disabled={isAnySideEffectHappening}
+              disabled={isConfirmEditDisabled}
             ></Icon>
             <Icon
               type="close"

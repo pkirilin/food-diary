@@ -14,6 +14,7 @@ import {
 } from '../../action-types';
 import { CategoryCreateEdit, CategoryEditRequest } from '../../models';
 import { createCategoryAsync, editCategoryAsync, deleteCategoryAsync } from '../../services';
+import { readBadRequestResponseAsync } from '../../utils/bad-request-response-reader';
 
 const createCategoryRequest = (category: CategoryCreateEdit, operationMessage: string): CreateCategoryRequestAction => {
   return {
@@ -77,6 +78,12 @@ const deleteCategoryError = (error: string): DeleteCategoryErrorAction => {
   };
 };
 
+enum CategoriesOperationsBaseErrorMessages {
+  Create = 'Failed to create category',
+  Edit = 'Failed to update category',
+  Delete = 'Failed to delete category',
+}
+
 export const createCategory: ActionCreator<ThunkAction<
   Promise<CreateCategorySuccessAction | CreateCategoryErrorAction>,
   void,
@@ -85,21 +92,33 @@ export const createCategory: ActionCreator<ThunkAction<
 >> = (category: CategoryCreateEdit) => {
   return async (dispatch: Dispatch): Promise<CreateCategorySuccessAction | CreateCategoryErrorAction> => {
     dispatch(createCategoryRequest(category, 'Creating category'));
-
     try {
       const response = await createCategoryAsync(category);
 
-      if (!response.ok) {
-        const errorMessageForInvalidData = 'Failed to create category (invalid data)';
-        alert(errorMessageForInvalidData);
-        return dispatch(createCategoryError(errorMessageForInvalidData));
+      if (response.ok) {
+        return dispatch(createCategorySuccess());
       }
 
-      return dispatch(createCategorySuccess());
+      switch (response.status) {
+        case 400:
+          const badRequestResponse = await readBadRequestResponseAsync(response);
+          alert(`${CategoriesOperationsBaseErrorMessages.Create}: ${badRequestResponse}`);
+          return dispatch(
+            createCategoryError(`${CategoriesOperationsBaseErrorMessages.Create}: ${badRequestResponse}`),
+          );
+        case 500:
+          alert(`${CategoriesOperationsBaseErrorMessages.Create}: server error`);
+          return dispatch(createCategoryError(`${CategoriesOperationsBaseErrorMessages.Create}: server error`));
+        default:
+          alert(`${CategoriesOperationsBaseErrorMessages.Create}: unknown response code`);
+          return dispatch(
+            createCategoryError(`${CategoriesOperationsBaseErrorMessages.Create}: unknown response code`),
+          );
+      }
     } catch (error) {
-      const errorMessageForServerError = 'Failed to create category (server error)';
-      alert(errorMessageForServerError);
-      return dispatch(createCategoryError(errorMessageForServerError));
+      console.error(error);
+      alert(CategoriesOperationsBaseErrorMessages.Create);
+      return dispatch(createCategoryError(CategoriesOperationsBaseErrorMessages.Create));
     }
   };
 };
@@ -112,21 +131,29 @@ export const editCategory: ActionCreator<ThunkAction<
 >> = (request: CategoryEditRequest) => {
   return async (dispatch: Dispatch): Promise<EditCategorySuccessAction | EditCategoryErrorAction> => {
     dispatch(editCategoryRequest(request, 'Updating category'));
-
     try {
       const response = await editCategoryAsync(request);
 
-      if (!response.ok) {
-        const errorMessageForInvalidData = 'Failed to update category (invalid data)';
-        alert(errorMessageForInvalidData);
-        return dispatch(editCategoryError(errorMessageForInvalidData));
+      if (response.ok) {
+        return dispatch(editCategorySuccess());
       }
 
-      return dispatch(editCategorySuccess());
+      switch (response.status) {
+        case 400:
+          const badRequestResponse = await readBadRequestResponseAsync(response);
+          alert(`${CategoriesOperationsBaseErrorMessages.Edit}: ${badRequestResponse}`);
+          return dispatch(editCategoryError(`${CategoriesOperationsBaseErrorMessages.Edit}: ${badRequestResponse}`));
+        case 500:
+          alert(`${CategoriesOperationsBaseErrorMessages.Edit}: server error`);
+          return dispatch(editCategoryError(`${CategoriesOperationsBaseErrorMessages.Edit}: server error`));
+        default:
+          alert(`${CategoriesOperationsBaseErrorMessages.Edit}: unknown response code`);
+          return dispatch(editCategoryError(`${CategoriesOperationsBaseErrorMessages.Edit}: unknown response code`));
+      }
     } catch (error) {
-      const errorMessageForServerError = 'Failed to update category (server error)';
-      alert(errorMessageForServerError);
-      return dispatch(editCategoryError(errorMessageForServerError));
+      console.error(error);
+      alert(CategoriesOperationsBaseErrorMessages.Edit);
+      return dispatch(editCategoryError(CategoriesOperationsBaseErrorMessages.Edit));
     }
   };
 };
@@ -139,21 +166,33 @@ export const deleteCategory: ActionCreator<ThunkAction<
 >> = (categoryId: number) => {
   return async (dispatch: Dispatch): Promise<DeleteCategorySuccessAction | DeleteCategoryErrorAction> => {
     dispatch(deleteCategoryRequest('Deleting category'));
-
     try {
       const response = await deleteCategoryAsync(categoryId);
 
-      if (!response.ok) {
-        const errorMessageForInvalidData = 'Failed to delete category (invalid data)';
-        alert(errorMessageForInvalidData);
-        return dispatch(deleteCategoryError(errorMessageForInvalidData));
+      if (response.ok) {
+        return dispatch(deleteCategorySuccess());
       }
 
-      return dispatch(deleteCategorySuccess());
+      switch (response.status) {
+        case 400:
+          const badRequestResponse = await readBadRequestResponseAsync(response);
+          alert(`${CategoriesOperationsBaseErrorMessages.Delete}: ${badRequestResponse}`);
+          return dispatch(
+            deleteCategoryError(`${CategoriesOperationsBaseErrorMessages.Delete}: ${badRequestResponse}`),
+          );
+        case 500:
+          alert(`${CategoriesOperationsBaseErrorMessages.Delete}: server error`);
+          return dispatch(deleteCategoryError(`${CategoriesOperationsBaseErrorMessages.Delete}: server error`));
+        default:
+          alert(`${CategoriesOperationsBaseErrorMessages.Delete}: unknown response code`);
+          return dispatch(
+            deleteCategoryError(`${CategoriesOperationsBaseErrorMessages.Delete}: unknown response code`),
+          );
+      }
     } catch (error) {
-      const errorMessageForServerError = 'Failed to delete category (server error)';
-      alert(errorMessageForServerError);
-      return dispatch(deleteCategoryError(errorMessageForServerError));
+      console.error(error);
+      alert(CategoriesOperationsBaseErrorMessages.Delete);
+      return dispatch(deleteCategoryError(CategoriesOperationsBaseErrorMessages.Delete));
     }
   };
 };
