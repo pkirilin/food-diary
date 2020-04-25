@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -62,7 +62,7 @@ namespace FoodDiary.Infrastructure.Services
         {
             if (await _pageRepository.IsDuplicateAsync(createPageInfo.Date, cancellationToken))
             {
-                return new ValidationResultDto(false, $"{nameof(createPageInfo.Date)}", $"Page with the date '{createPageInfo.Date.ToString("yyyy-MM-dd")}' already exists");
+                return new ValidationResultDto(false, $"{nameof(createPageInfo.Date)}", $"Page with such date already exists");
             }
 
             return new ValidationResultDto(true);
