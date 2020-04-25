@@ -5,6 +5,7 @@ import useDebounce from './useDebounce';
 import useNoteValidation from './useNoteValidation';
 import useProductValidation from './useProductValidation';
 import useCategoryValidation from './useCategoryValidation';
+import usePageValidation from './usePageValidation';
 
 export {
   useOutsideClick,
@@ -14,4 +15,5 @@ export {
   useNoteValidation,
   useProductValidation,
   useCategoryValidation,
+  usePageValidation,
 };
