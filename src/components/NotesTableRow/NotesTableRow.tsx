@@ -86,7 +86,10 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({
   const handleDeleteIconClick = async (): Promise<void> => {
     const isDeleteConfirmed = window.confirm('Do you want to delete note?');
     if (isDeleteConfirmed) {
-      const deleteNoteAction = await deleteNote([note.id, mealType]);
+      const deleteNoteAction = await deleteNote({
+        id: note.id,
+        mealType,
+      });
       if (deleteNoteAction as DeleteNoteSuccessAction) {
         await getNotesForMeal({ pageId, mealType });
       }

@@ -12,7 +12,7 @@ import {
   DeleteNoteErrorAction,
   DeleteNoteRequestAction,
 } from '../../action-types';
-import { NoteCreateEdit, MealType } from '../../models';
+import { NoteCreateEdit, MealType, NoteDeleteRequest } from '../../models';
 import { createNoteAsync, editNoteAsync, deleteNoteAsync } from '../../services';
 import { NoteEditRequest } from '../../models';
 import { readBadRequestResponseAsync } from '../../utils/bad-request-response-reader';
@@ -63,11 +63,10 @@ const editNoteError = (mealType: MealType, error: string): EditNoteErrorAction =
   };
 };
 
-const deleteNoteRequest = (noteId: number, mealType: MealType, operationMessage: string): DeleteNoteRequestAction => {
+const deleteNoteRequest = (request: NoteDeleteRequest, operationMessage: string): DeleteNoteRequestAction => {
   return {
     type: NotesOperationsActionTypes.DeleteRequest,
-    noteId,
-    mealType,
+    request,
     operationMessage,
   };
 };
@@ -172,16 +171,16 @@ export const editNote: ActionCreator<ThunkAction<
 export const deleteNote: ActionCreator<ThunkAction<
   Promise<DeleteNoteSuccessAction | DeleteNoteErrorAction>,
   void,
-  [number, MealType],
+  NoteDeleteRequest,
   DeleteNoteSuccessAction | DeleteNoteErrorAction
->> = ([noteId, mealType]: [number, MealType]) => {
+>> = (request: NoteDeleteRequest) => {
   return async (dispatch: Dispatch): Promise<DeleteNoteSuccessAction | DeleteNoteErrorAction> => {
-    dispatch(deleteNoteRequest(noteId, mealType, 'Deleting note'));
+    dispatch(deleteNoteRequest(request, 'Deleting note'));
     try {
-      const response = await deleteNoteAsync(noteId);
+      const response = await deleteNoteAsync(request.id);
 
       if (response.ok) {
-        return dispatch(deleteNoteSuccess(mealType));
+        return dispatch(deleteNoteSuccess(request.mealType));
       }
 
       switch (response.status) {
@@ -189,20 +188,22 @@ export const deleteNote: ActionCreator<ThunkAction<
           const badRequestResponse = await readBadRequestResponseAsync(response);
           alert(`${NotesOperationsBaseErrorMessages.Delete}: ${badRequestResponse}`);
           return dispatch(
-            deleteNoteError(mealType, `${NotesOperationsBaseErrorMessages.Delete}: ${badRequestResponse}`),
+            deleteNoteError(request.mealType, `${NotesOperationsBaseErrorMessages.Delete}: ${badRequestResponse}`),
           );
         case 500:
           alert(`${NotesOperationsBaseErrorMessages.Delete}: server error`);
-          return dispatch(deleteNoteError(mealType, `${NotesOperationsBaseErrorMessages.Delete}: server error`));
+          return dispatch(
+            deleteNoteError(request.mealType, `${NotesOperationsBaseErrorMessages.Delete}: server error`),
+          );
         default:
           alert(`${NotesOperationsBaseErrorMessages.Delete}: unknown response code`);
           return dispatch(
-            deleteNoteError(mealType, `${NotesOperationsBaseErrorMessages.Delete}: unknown response code`),
+            deleteNoteError(request.mealType, `${NotesOperationsBaseErrorMessages.Delete}: unknown response code`),
           );
       }
     } catch (error) {
       alert(NotesOperationsBaseErrorMessages.Delete);
-      return dispatch(deleteNoteError(mealType, NotesOperationsBaseErrorMessages.Delete));
+      return dispatch(deleteNoteError(request.mealType, NotesOperationsBaseErrorMessages.Delete));
     }
   };
 };

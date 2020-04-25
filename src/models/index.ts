@@ -11,6 +11,7 @@ export * from './note-item';
 export * from './note-create-edit';
 export * from './notes-search-request';
 export * from './note-edit-request';
+export * from './note-delete-request';
 
 export * from './product-dropdown-item';
 export * from './product-item';

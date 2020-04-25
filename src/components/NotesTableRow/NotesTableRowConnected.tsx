@@ -2,10 +2,10 @@ import { connect } from 'react-redux';
 import NotesTableRow from './NotesTableRow';
 import {
   ProductDropdownItem,
-  MealType,
   NotesForMealSearchRequest,
   NoteItem,
   ProductDropdownSearchRequest,
+  NoteDeleteRequest,
 } from '../../models';
 import { FoodDiaryState, MealOperationStatus } from '../../store';
 import {
@@ -41,7 +41,7 @@ export interface StateToPropsMapResult {
 export interface DispatchToPropsMapResult {
   setEditableForNote: (noteId: number, editable: boolean) => void;
   editNote: (request: NoteEditRequest) => Promise<EditNoteSuccessAction | EditNoteErrorAction>;
-  deleteNote: (request: [number, MealType]) => Promise<DeleteNoteSuccessAction | DeleteNoteErrorAction>;
+  deleteNote: (request: NoteDeleteRequest) => Promise<DeleteNoteSuccessAction | DeleteNoteErrorAction>;
   getNotesForMeal: (
     request: NotesForMealSearchRequest,
   ) => Promise<GetNotesForMealSuccessAction | GetNotesForMealErrorAction>;
@@ -62,7 +62,7 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
 
 type NotesTableDispatchType = Dispatch<SetEditableForNoteAction> &
   ThunkDispatch<void, NoteEditRequest, EditNoteSuccessAction | EditNoteErrorAction> &
-  ThunkDispatch<void, [number, MealType], DeleteNoteSuccessAction | DeleteNoteErrorAction> &
+  ThunkDispatch<void, NoteDeleteRequest, DeleteNoteSuccessAction | DeleteNoteErrorAction> &
   ThunkDispatch<NoteItem[], NotesForMealSearchRequest, GetNotesForMealSuccessAction | GetNotesForMealErrorAction> &
   ThunkDispatch<
     ProductDropdownItem[],
@@ -78,7 +78,7 @@ const mapDispatchToProps = (dispatch: NotesTableDispatchType): DispatchToPropsMa
     editNote: (request: NoteEditRequest): Promise<EditNoteSuccessAction | EditNoteErrorAction> => {
       return dispatch(editNote(request));
     },
-    deleteNote: (request: [number, MealType]): Promise<DeleteNoteSuccessAction | DeleteNoteErrorAction> => {
+    deleteNote: (request: NoteDeleteRequest): Promise<DeleteNoteSuccessAction | DeleteNoteErrorAction> => {
       return dispatch(deleteNote(request));
     },
     getNotesForMeal: (
