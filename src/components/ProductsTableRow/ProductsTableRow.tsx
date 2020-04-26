@@ -4,7 +4,7 @@ import { ProductItem } from '../../models';
 import Icon from '../Icon';
 import { StateToPropsMapResult, DispatchToPropsMapResult } from './ProductsTableRowConnected';
 import { Input, DropdownList, categoryDropdownItemRenderer } from '../Controls';
-import { DeleteProductSuccessAction, EditProductSuccessAction } from '../../action-types';
+import { ProductsOperationsActionTypes } from '../../action-types';
 import { useDebounce, useProductValidation } from '../../hooks';
 
 interface ProductsTableRowProps extends StateToPropsMapResult, DispatchToPropsMapResult {
@@ -80,14 +80,14 @@ const ProductsTableRow: React.FC<ProductsTableRowProps> = ({
   };
 
   const handleConfirmEditIconClick = async (): Promise<void> => {
-    const editProductAction = await editProduct({
+    const { type: editProductActionType } = await editProduct({
       id: product.id,
       name: productNameInputValue,
       caloriesCost,
       categoryId,
     });
 
-    if (editProductAction as EditProductSuccessAction) {
+    if (editProductActionType === ProductsOperationsActionTypes.EditSuccess) {
       setEditableForProduct(product.id, false);
       await getProducts(productsFilter);
     }
@@ -103,9 +103,11 @@ const ProductsTableRow: React.FC<ProductsTableRowProps> = ({
 
   const handleDeleteIconClick = async (): Promise<void> => {
     const isDeleteConfirmed = window.confirm('Do you want to delete product?');
+
     if (isDeleteConfirmed) {
-      const deleteProductAction = await deleteProduct(product.id);
-      if (deleteProductAction as DeleteProductSuccessAction) {
+      const { type: deleteProductActionType } = await deleteProduct(product.id);
+
+      if (deleteProductActionType === ProductsOperationsActionTypes.DeleteSuccess) {
         await getProducts(productsFilter);
       }
     }

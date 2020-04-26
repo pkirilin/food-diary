@@ -3,7 +3,7 @@ import './ProductInput.scss';
 import { FormGroup, Input, Label, Button, DropdownList, categoryDropdownItemRenderer } from '../Controls';
 import Loader from '../Loader';
 import { StateToPropsMapResult, DispatchToPropsMapResult } from './ProductInputConnected';
-import { CreateProductSuccessAction } from '../../action-types';
+import { ProductsOperationsActionTypes } from '../../action-types';
 import { useDebounce, useProductValidation } from '../../hooks';
 
 interface ProductInputProps extends StateToPropsMapResult, DispatchToPropsMapResult {}
@@ -105,13 +105,13 @@ const ProductInput: React.FC<ProductInputProps> = ({
   };
 
   const handleAddButtonClick = async (): Promise<void> => {
-    const createProductAction = await createProduct({
+    const { type: createProductActionType } = await createProduct({
       name: productNameInputValue,
       caloriesCost,
       categoryId,
     });
 
-    if (createProductAction as CreateProductSuccessAction) {
+    if (createProductActionType === ProductsOperationsActionTypes.CreateSuccess) {
       await getProducts(productsFilter);
       setProductNameInputValue('');
       setCaloriesCost(100);

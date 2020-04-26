@@ -4,7 +4,7 @@ import { MealType, NoteItem } from '../../models';
 import { productDropdownItemRenderer, Input, DropdownList } from '../Controls';
 import { StateToPropsMapResult, DispatchToPropsMapResult } from './NotesTableRowConnected';
 import Icon from '../Icon';
-import { EditNoteSuccessAction, DeleteNoteSuccessAction } from '../../action-types';
+import { NotesOperationsActionTypes } from '../../action-types';
 import { useParams } from 'react-router-dom';
 import { useDebounce, useNoteValidation } from '../../hooks';
 
@@ -69,7 +69,7 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({
   };
 
   const handleConfirmEditIconClick = async (): Promise<void> => {
-    const editNoteAction = await editNote({
+    const { type: editNoteActionType } = await editNote({
       id: note.id,
       mealType,
       productId,
@@ -77,7 +77,8 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({
       productQuantity,
       displayOrder: note.displayOrder,
     });
-    if (editNoteAction as EditNoteSuccessAction) {
+
+    if (editNoteActionType === NotesOperationsActionTypes.EditSuccess) {
       setEditableForNote(note.id, false);
       await getNotesForMeal({ pageId, mealType });
     }
@@ -85,12 +86,14 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({
 
   const handleDeleteIconClick = async (): Promise<void> => {
     const isDeleteConfirmed = window.confirm('Do you want to delete note?');
+
     if (isDeleteConfirmed) {
-      const deleteNoteAction = await deleteNote({
+      const { type: deleteNoteActionType } = await deleteNote({
         id: note.id,
         mealType,
       });
-      if (deleteNoteAction as DeleteNoteSuccessAction) {
+
+      if (deleteNoteActionType === NotesOperationsActionTypes.DeleteSuccess) {
         await getNotesForMeal({ pageId, mealType });
       }
     }

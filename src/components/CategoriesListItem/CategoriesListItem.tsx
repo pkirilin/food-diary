@@ -12,11 +12,7 @@ import { CategoryItem } from '../../models';
 import { StateToPropsMapResult, DispatchToPropsMapResult } from './CategoriesListItemConnected';
 import { Input, DropdownMenu, DropdownItem } from '../Controls';
 import Icon from '../Icon';
-import {
-  DeleteCategorySuccessAction,
-  CreateCategorySuccessAction,
-  EditCategorySuccessAction,
-} from '../../action-types';
+import { CategoriesOperationsActionTypes } from '../../action-types';
 import { useCategoryValidation } from '../../hooks';
 
 interface CategoriesListItemProps extends StateToPropsMapResult, DispatchToPropsMapResult {
@@ -60,9 +56,11 @@ const CategoriesListItem: React.FC<CategoriesListItemProps> = ({
 
   const handleDeleteItemClick = async (): Promise<void> => {
     const isDeleteConfirmed = window.confirm('Do you want to delete category?');
+
     if (isDeleteConfirmed) {
-      const deleteCategoryAction = await deleteCategory(category.id);
-      if (deleteCategoryAction as DeleteCategorySuccessAction) {
+      const { type: deleteCategoryActionType } = await deleteCategory(category.id);
+
+      if (deleteCategoryActionType === CategoriesOperationsActionTypes.DeleteSuccess) {
         await getCategories();
       }
     }
@@ -70,19 +68,21 @@ const CategoriesListItem: React.FC<CategoriesListItemProps> = ({
 
   const handleConfirmEditIconClick = async (): Promise<void> => {
     if (category.id < 1) {
-      const createCategoryAction = await createCategory({
+      const { type: createCategoryActionType } = await createCategory({
         name: categoryName,
       });
-      if (createCategoryAction as CreateCategorySuccessAction) {
+
+      if (createCategoryActionType === CategoriesOperationsActionTypes.CreateSuccess) {
         deleteDraftCategory(category.id);
         await getCategories();
       }
     } else {
-      const editCategoryAction = await editCategory({
+      const { type: editCategoryActionType } = await editCategory({
         id: category.id,
         name: categoryName,
       });
-      if (editCategoryAction as EditCategorySuccessAction) {
+
+      if (editCategoryActionType === CategoriesOperationsActionTypes.EditSuccess) {
         setEditableForCategories([category.id], false);
         await getCategories();
       }
