@@ -15,6 +15,7 @@ export interface GetProductsListRequestAction extends Action<ProductsListActionT
 export interface GetProductsListSuccessAction extends Action<ProductsListActionTypes.Success> {
   type: ProductsListActionTypes.Success;
   productItems: ProductItem[];
+  totalProductsCount: number;
 }
 
 export interface GetProductsListErrorAction extends Action<ProductsListActionTypes.Error> {

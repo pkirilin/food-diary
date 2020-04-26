@@ -8,6 +8,7 @@ const initialState: ProductsListState = {
     loaded: false,
   },
   editableProductsIds: [],
+  totalProductsCount: 0,
 };
 
 const productsListReducer = (
@@ -33,6 +34,7 @@ const productsListReducer = (
           loading: false,
           loaded: true,
         },
+        totalProductsCount: action.totalProductsCount,
       };
     case ProductsListActionTypes.Error:
       return {

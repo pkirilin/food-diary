@@ -22,10 +22,11 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
   productItems,
   productItemsPageSize,
   productsFilter,
+  totalProductsCount,
   updateProductsFilter,
   getProducts,
 }: ProductsTableProps) => {
-  const totalPagesCount = Math.ceil(productItems.length / productItemsPageSize);
+  const totalPagesCount = Math.ceil(totalProductsCount / productItemsPageSize);
 
   const { loading: isProductsTableLoading, error: productsListError } = productItemsFetchState;
   const isPaginationDisabled = isProductsTableLoading || isProductOperationInProcess || productsListError !== undefined;

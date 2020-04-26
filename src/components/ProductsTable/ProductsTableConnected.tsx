@@ -13,6 +13,7 @@ export interface StateToPropsMapResult {
   productItems: ProductItem[];
   productItemsPageSize: number;
   productsFilter: ProductsFilter;
+  totalProductsCount: number;
 }
 
 export interface DispatchToPropsMapResult {
@@ -27,6 +28,7 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
     productItems: state.products.list.productItems,
     productItemsPageSize: state.products.filter.pageSize,
     productsFilter: state.products.filter,
+    totalProductsCount: state.products.list.totalProductsCount,
   };
 };
 

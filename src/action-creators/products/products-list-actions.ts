@@ -16,10 +16,11 @@ const getProductsRequest = (): GetProductsListRequestAction => {
   };
 };
 
-const getProductsSuccess = (productItems: ProductItem[]): GetProductsListSuccessAction => {
+const getProductsSuccess = (productItems: ProductItem[], totalProductsCount: number): GetProductsListSuccessAction => {
   return {
     type: ProductsListActionTypes.Success,
     productItems,
+    totalProductsCount,
   };
 };
 
@@ -43,8 +44,8 @@ export const getProducts: ActionCreator<ThunkAction<
       const response = await getProductsAsync(productsFilter);
 
       if (response.ok) {
-        const products = await response.json();
-        return dispatch(getProductsSuccess(products));
+        const { productItems, totalProductsCount } = await response.json();
+        return dispatch(getProductsSuccess(productItems, totalProductsCount));
       }
 
       switch (response.status) {

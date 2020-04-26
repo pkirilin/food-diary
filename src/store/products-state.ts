@@ -18,6 +18,7 @@ export interface ProductsListState {
   productItems: ProductItem[];
   productItemsFetchState: DataFetchState;
   editableProductsIds: number[];
+  totalProductsCount: number;
 }
 
 export interface ProductsOperationsState {
