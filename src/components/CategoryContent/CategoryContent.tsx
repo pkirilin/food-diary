@@ -35,7 +35,7 @@ const CategoryContent: React.FC<CategoryContentProps> = ({
 
   return (
     <React.Fragment>
-      <SectionTitle title="Products"></SectionTitle>
+      <SectionTitle title="Categories"></SectionTitle>
       <ProductInputConnected></ProductInputConnected>
       <ProductsTableConnected></ProductsTableConnected>
     </React.Fragment>
