@@ -55,12 +55,10 @@ namespace FoodDiary.UnitTests.Controllers
         public async void GetProducts_ReturnsFilteredProductsWithPaginationInfo_WhenModelStateIsValid()
         {
             var searchRequest = _fixture.Create<ProductsSearchRequestDto>();
-            var foundProducts = _fixture.CreateMany<Product>();
-            _productServiceMock.Setup(s => s.SearchProductsAsync(searchRequest, default))
-                .ReturnsAsync(foundProducts);
 
             var result = await ProductsController.GetProducts(searchRequest, default);
 
+            _productServiceMock.Verify(s => s.CountAllProductsAsync(default), Times.Once);
             _productServiceMock.Verify(s => s.SearchProductsAsync(searchRequest, default), Times.Once);
             result.Should().BeOfType<OkObjectResult>();
         }
@@ -74,6 +72,8 @@ namespace FoodDiary.UnitTests.Controllers
 
             var result = await controller.GetProducts(searchRequest, default);
 
+            _productServiceMock.Verify(s => s.CountAllProductsAsync(default), Times.Never);
+            _productServiceMock.Verify(s => s.SearchProductsAsync(searchRequest, default), Times.Never);
             result.Should().BeOfType<BadRequestObjectResult>();
         }
 

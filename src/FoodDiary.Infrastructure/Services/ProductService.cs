@@ -120,5 +120,12 @@ namespace FoodDiary.Infrastructure.Services
             var products = await _productRepository.GetListFromQueryAsync(query, cancellationToken);
             return products;
         }
+
+        public async Task<int> CountAllProductsAsync(CancellationToken cancellationToken)
+        {
+            var query = _productRepository.GetQueryWithoutTracking();
+            var count = await _productRepository.CountByQueryAsync(query, cancellationToken);
+            return count;
+        }
     }
 }

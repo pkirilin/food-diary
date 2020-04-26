@@ -82,5 +82,10 @@ namespace FoodDiary.Infrastructure.Repositories
         {
             await _context.SaveChangesAsync(cancellationToken);
         }
+
+        public async Task<int> CountByQueryAsync(IQueryable<Product> productsQuery, CancellationToken cancellationToken)
+        {
+            return await productsQuery.CountAsync(cancellationToken);
+        }
     }
 }

@@ -29,5 +29,7 @@ namespace FoodDiary.Domain.Services
         ValidationResultDto AllProductsFetched(IEnumerable<Product> fetchedProducts, IEnumerable<int> requestedIds);
 
         Task<IEnumerable<Product>> GetProductsDropdownListAsync(ProductDropdownSearchRequestDto request, CancellationToken cancellationToken);
+
+        Task<int> CountAllProductsAsync(CancellationToken cancellationToken);
     }
 }

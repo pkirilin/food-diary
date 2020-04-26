@@ -33,7 +33,7 @@ namespace FoodDiary.API.Controllers.v1
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<ProductItemDto>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ProductsSearchResultDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> GetProducts([FromQuery] ProductsSearchRequestDto searchRequest, CancellationToken cancellationToken)
         {
@@ -42,9 +42,17 @@ namespace FoodDiary.API.Controllers.v1
                 return BadRequest(ModelState);
             }
 
+            var totalProductsCount = await _productService.CountAllProductsAsync(cancellationToken);
             var foundProducts = await _productService.SearchProductsAsync(searchRequest, cancellationToken);
-            var productsListResponse = _mapper.Map<IEnumerable<ProductItemDto>>(foundProducts);
-            return Ok(productsListResponse);
+            var productItemsResult = _mapper.Map<IEnumerable<ProductItemDto>>(foundProducts);
+
+            var productsPaginationResult = new ProductsSearchResultDto()
+            {
+                TotalProductsCount = totalProductsCount,
+                ProductItems = productItemsResult
+            };
+
+            return Ok(productsPaginationResult);
         }
 
         [HttpPost]

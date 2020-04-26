@@ -31,5 +31,7 @@ namespace FoodDiary.Domain.Repositories
         void DeleteRange(IEnumerable<Product> products);
 
         Task SaveChangesAsync(CancellationToken cancellationToken);
+
+        Task<int> CountByQueryAsync(IQueryable<Product> productsQuery, CancellationToken cancellationToken);
     }
 }

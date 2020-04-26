@@ -254,5 +254,22 @@ namespace FoodDiary.UnitTests.Services
             _productRepositoryMock.Verify(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Product>>(), default), Times.Once);
             result.Should().Contain(expectedProducts);
         }
+
+        [Fact]
+        public async void CountAllProducts_ReturnsTotalProductsCount()
+        {
+            var allProductsQuery = _fixture.CreateMany<Product>().AsQueryable();
+            var expectedTotalProductsCount = _fixture.Create<int>();
+            _productRepositoryMock.Setup(r => r.GetQueryWithoutTracking())
+                .Returns(allProductsQuery);
+            _productRepositoryMock.Setup(r => r.CountByQueryAsync(allProductsQuery, default))
+                .ReturnsAsync(expectedTotalProductsCount);
+
+            var result = await ProductService.CountAllProductsAsync(default);
+
+            _productRepositoryMock.Verify(r => r.GetQueryWithoutTracking(), Times.Once);
+            _productRepositoryMock.Verify(r => r.CountByQueryAsync(allProductsQuery, default), Times.Once);
+            result.Should().Be(expectedTotalProductsCount);
+        }
     }
 }
