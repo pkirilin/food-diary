@@ -82,6 +82,7 @@ const NoteInput: React.FC<NoteInputProps> = ({
         mealType,
       });
       setProductNameInputValue('');
+      setProductQuantity(100);
     }
   };
 
