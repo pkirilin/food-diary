@@ -65,17 +65,20 @@ namespace FoodDiary.UnitTests.Controllers
         public async void CreateCategory_CreatesCategory_WhenCategoryCanBeCreated()
         {
             var categoryInfo = _fixture.Create<CategoryCreateEditDto>();
+            var createdCategory = _fixture.Create<Category>();
             var validationResult = _fixture.Build<ValidationResultDto>()
                 .With(r => r.IsValid, true)
                 .Create();
             _categoryServiceMock.Setup(s => s.ValidateCategoryAsync(categoryInfo, default))
                 .ReturnsAsync(validationResult);
+            _categoryServiceMock.Setup(s => s.CreateCategoryAsync(It.IsNotNull<Category>(), default))
+                .ReturnsAsync(createdCategory);
 
             var result = await CategoriesController.CreateCategory(categoryInfo, default);
 
             _categoryServiceMock.Verify(s => s.ValidateCategoryAsync(categoryInfo, default), Times.Once);
             _categoryServiceMock.Verify(s => s.CreateCategoryAsync(It.IsNotNull<Category>(), default), Times.Once);
-            result.Should().BeOfType<OkResult>();
+            result.Should().BeOfType<OkObjectResult>();
         }
 
         [Fact]

@@ -86,11 +86,14 @@ namespace FoodDiary.UnitTests.Controllers
         public async void CreatePage_CreatesPageSuccessfully_WhenPageCanBeCreated()
         {
             var createPageInfo = _fixture.Create<PageCreateEditDto>();
+            var createdPage = _fixture.Create<Page>();
             var validationResult = _fixture.Build<ValidationResultDto>()
                 .With(r => r.IsValid, true)
                 .Create();
             _pageServiceMock.Setup(s => s.ValidatePageAsync(createPageInfo, default))
                 .ReturnsAsync(validationResult);
+            _pageServiceMock.Setup(s => s.CreatePageAsync(It.IsNotNull<Page>(), default))
+                .ReturnsAsync(createdPage);
 
             var controller = PagesController;
 
@@ -99,7 +102,7 @@ namespace FoodDiary.UnitTests.Controllers
             _pageServiceMock.Verify(s => s.ValidatePageAsync(createPageInfo, default), Times.Once);
             _pageServiceMock.Verify(s => s.CreatePageAsync(It.IsNotNull<Page>(), default), Times.Once);
 
-            result.Should().BeOfType<OkResult>();
+            result.Should().BeOfType<OkObjectResult>();
         }
 
         [Fact]

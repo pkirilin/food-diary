@@ -60,8 +60,8 @@ namespace FoodDiary.API.Controllers.v1
                 return BadRequest(ModelState);
             }
 
-            await _categoryService.CreateCategoryAsync(category, cancellationToken);
-            return Ok();
+            var createdCategory = await _categoryService.CreateCategoryAsync(category, cancellationToken);
+            return Ok(createdCategory.Id);
         }
 
         [HttpPut("{id}")]

@@ -65,8 +65,8 @@ namespace FoodDiary.API.Controllers.v1
             }
 
             var page = _mapper.Map<Page>(request);
-            await _pageService.CreatePageAsync(page, cancellationToken);
-            return Ok();
+            var createdPage = await _pageService.CreatePageAsync(page, cancellationToken);
+            return Ok(createdPage.Id);
         }
 
         [HttpPut("{id}")]
