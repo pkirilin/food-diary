@@ -33,7 +33,7 @@ const categoriesListReducer = (
           loading: false,
           loaded: true,
         },
-        categoryItems: action.categories,
+        categoryItems: [...state.categoryItems.filter(p => p.id < 1), ...action.categories],
       };
     case CategoriesListActionTypes.Error:
       return {

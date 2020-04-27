@@ -11,8 +11,7 @@ export interface StateToPropsMapResult {
 
 const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
   return {
-    firstCategoryId:
-      state.categories.list.categoryItems.length > 0 ? state.categories.list.categoryItems[0].id : undefined,
+    firstCategoryId: state.categories.list.categoryItems.filter(c => c.id > 0)[0]?.id,
   };
 };
 
