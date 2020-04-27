@@ -24,9 +24,10 @@ const createPageRequest = (page: PageCreateEdit, operationMessage: string): Crea
   };
 };
 
-const createPageSuccess = (): CreatePageSuccessAction => {
+const createPageSuccess = (createdPageId: number): CreatePageSuccessAction => {
   return {
     type: PagesOperationsActionTypes.CreateSuccess,
+    createdPageId,
   };
 };
 
@@ -96,7 +97,8 @@ export const createPage: ActionCreator<ThunkAction<
       const response = await createPageAsync(page);
 
       if (response.ok) {
-        return dispatch(createPageSuccess());
+        const createdPageIdStr = await response.text();
+        return dispatch(createPageSuccess(+createdPageIdStr));
       }
 
       switch (response.status) {

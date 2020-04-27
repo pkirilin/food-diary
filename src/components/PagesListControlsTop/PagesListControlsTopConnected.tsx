@@ -6,10 +6,12 @@ import {
   ClearPagesFilterAction,
   GetPagesListSuccessAction,
   GetPagesListErrorAction,
+  GetNotesForPageSuccessAction,
+  GetNotesForPageErrorAction,
 } from '../../action-types';
 import { FoodDiaryState } from '../../store';
-import { createDraftPage, clearFilter, getPages } from '../../action-creators';
-import { PagesFilter, PageItem } from '../../models';
+import { createDraftPage, clearFilter, getPages, getNotesForPage } from '../../action-creators';
+import { PagesFilter, PageItem, NotesSearchRequest, NoteItem } from '../../models';
 import { ThunkDispatch } from 'redux-thunk';
 
 export interface StateToPropsMapResult {
@@ -26,6 +28,7 @@ export interface DispatchToPropsMapResult {
   createDraftPage: (draftPage: PageItem) => void;
   clearPagesFilter: () => void;
   getPages: (filter: PagesFilter) => Promise<GetPagesListSuccessAction | GetPagesListErrorAction>;
+  getNotesForPage: (request: NotesSearchRequest) => Promise<GetNotesForPageSuccessAction | GetNotesForPageErrorAction>;
 }
 
 const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
@@ -42,7 +45,8 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
 
 type PagesListControlsTopDispatch = Dispatch<PagesListActions> &
   Dispatch<ClearPagesFilterAction> &
-  ThunkDispatch<PageItem[], PagesFilter, GetPagesListSuccessAction | GetPagesListErrorAction>;
+  ThunkDispatch<PageItem[], PagesFilter, GetPagesListSuccessAction | GetPagesListErrorAction> &
+  ThunkDispatch<NoteItem[], NotesSearchRequest, GetNotesForPageSuccessAction | GetNotesForPageErrorAction>;
 
 const mapDispatchToProps = (dispatch: PagesListControlsTopDispatch): DispatchToPropsMapResult => {
   return {
@@ -54,6 +58,11 @@ const mapDispatchToProps = (dispatch: PagesListControlsTopDispatch): DispatchToP
     },
     getPages: (filter: PagesFilter): Promise<GetPagesListSuccessAction | GetPagesListErrorAction> => {
       return dispatch(getPages(filter));
+    },
+    getNotesForPage: (
+      request: NotesSearchRequest,
+    ): Promise<GetNotesForPageSuccessAction | GetNotesForPageErrorAction> => {
+      return dispatch(getNotesForPage(request));
     },
   };
 };

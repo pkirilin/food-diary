@@ -58,7 +58,7 @@ export interface DispatchToPropsMapResult {
 }
 
 type ProductsTableRowDispatch = Dispatch<SetEditableForProductAction> &
-  ThunkDispatch<ProductItem, ProductsFilter, GetProductsListSuccessAction | GetProductsListErrorAction> &
+  ThunkDispatch<ProductItem[], ProductsFilter, GetProductsListSuccessAction | GetProductsListErrorAction> &
   ThunkDispatch<void, ProductEditRequest, EditProductSuccessAction | EditProductErrorAction> &
   ThunkDispatch<void, number, DeleteProductSuccessAction | DeleteProductErrorAction> &
   ThunkDispatch<

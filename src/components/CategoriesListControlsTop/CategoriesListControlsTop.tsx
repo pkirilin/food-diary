@@ -3,6 +3,7 @@ import './CategoriesListControlsTop.scss';
 import { SidebarControlPanel, SidebarControlPanelIcons } from '../SidebarBlocks';
 import Icon from '../Icon';
 import { StateToPropsMapResult, DispatchToPropsMapResult } from './CategoriesListControlsTopConnected';
+import { CategoriesListActionTypes } from '../../action-types';
 
 interface CategoriesListControlsTopProps extends StateToPropsMapResult, DispatchToPropsMapResult {}
 
@@ -11,7 +12,9 @@ const CategoriesListControlsTop: React.FC<CategoriesListControlsTopProps> = ({
   isProductOperationInProcess,
   areCategoriesLoading,
   areProductsLoading,
+  productsFilter,
   getCategories,
+  getProducts,
   createDraftCategory,
 }: CategoriesListControlsTopProps) => {
   const isControlDisabled =
@@ -25,8 +28,12 @@ const CategoriesListControlsTop: React.FC<CategoriesListControlsTopProps> = ({
     });
   };
 
-  const handleRefreshIconClick = (): void => {
-    getCategories();
+  const handleRefreshIconClick = async (): Promise<void> => {
+    const { type: getCategoriesActionType } = await getCategories();
+
+    if (getCategoriesActionType === CategoriesListActionTypes.Success) {
+      await getProducts(productsFilter);
+    }
   };
 
   return (

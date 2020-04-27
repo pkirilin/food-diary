@@ -33,7 +33,7 @@ const getProductsError = (errorMessage: string): GetProductsListErrorAction => {
 
 export const getProducts: ActionCreator<ThunkAction<
   Promise<GetProductsListSuccessAction | GetProductsListErrorAction>,
-  ProductItem,
+  ProductItem[],
   ProductsFilter,
   GetProductsListSuccessAction | GetProductsListErrorAction
 >> = (productsFilter: ProductsFilter) => {

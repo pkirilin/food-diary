@@ -12,8 +12,13 @@ import { CategoryItem } from '../../models';
 import { StateToPropsMapResult, DispatchToPropsMapResult } from './CategoriesListItemConnected';
 import { Input, DropdownMenu, DropdownItem } from '../Controls';
 import Icon from '../Icon';
-import { CategoriesOperationsActionTypes } from '../../action-types';
+import {
+  CategoriesOperationsActionTypes,
+  CategoriesListActionTypes,
+  CreateCategorySuccessAction,
+} from '../../action-types';
 import { useCategoryValidation } from '../../hooks';
+import { useHistory } from 'react-router-dom';
 
 interface CategoriesListItemProps extends StateToPropsMapResult, DispatchToPropsMapResult {
   data: CategoryItem;
@@ -25,6 +30,7 @@ const CategoriesListItem: React.FC<CategoriesListItemProps> = ({
   isCategoryOperationInProcess,
   isProductOperationInProcess,
   areProductsLoading,
+  categoryItems,
   setEditableForCategories,
   deleteDraftCategory,
   createCategory,
@@ -36,6 +42,7 @@ const CategoriesListItem: React.FC<CategoriesListItemProps> = ({
 
   const activeLinkClassName = useActiveLinkClassName();
   const [isCategoryNameValid] = useCategoryValidation(categoryName);
+  const history = useHistory();
 
   const isEditable = editableCategoriesIds.find(id => id === category.id) !== undefined;
   const isAnySideEffectHappening = isCategoryOperationInProcess || isProductOperationInProcess || areProductsLoading;
@@ -61,20 +68,29 @@ const CategoriesListItem: React.FC<CategoriesListItemProps> = ({
       const { type: deleteCategoryActionType } = await deleteCategory(category.id);
 
       if (deleteCategoryActionType === CategoriesOperationsActionTypes.DeleteSuccess) {
+        // TODO: Fix problem with history.push(`/categories')
+        const categoriesWithoutDeleted = categoryItems.filter(c => c.id > 0 && c.id !== category.id);
+        const categoryIdToRedirect = categoriesWithoutDeleted.length > 0 ? `/${categoriesWithoutDeleted[0].id}` : '';
         await getCategories();
+        history.push(`/categories/${categoryIdToRedirect}`);
       }
     }
   };
 
   const handleConfirmEditIconClick = async (): Promise<void> => {
     if (category.id < 1) {
-      const { type: createCategoryActionType } = await createCategory({
+      const createCategoryAction = await createCategory({
         name: categoryName,
       });
 
-      if (createCategoryActionType === CategoriesOperationsActionTypes.CreateSuccess) {
+      if (createCategoryAction.type === CategoriesOperationsActionTypes.CreateSuccess) {
         deleteDraftCategory(category.id);
-        await getCategories();
+        const { type: getCategoriesActionType } = await getCategories();
+
+        if (getCategoriesActionType === CategoriesListActionTypes.Success) {
+          const { createdCategoryId } = createCategoryAction as CreateCategorySuccessAction;
+          history.push(`/categories/${createdCategoryId}`);
+        }
       }
     } else {
       const { type: editCategoryActionType } = await editCategory({

@@ -12,9 +12,10 @@ import { Input, Checkbox } from '../Controls';
 import Icon from '../Icon';
 import { DispatchToPropsMapResult, StateToPropsMapResult } from './PagesListItemConnected';
 import { PageItem } from '../../models';
-import { PagesOperationsActionTypes } from '../../action-types';
+import { PagesOperationsActionTypes, PagesListActionTypes, CreatePageSuccessAction } from '../../action-types';
 import { getFormattedDate } from '../../utils/date-utils';
 import { usePageValidation } from '../../hooks';
+import { useHistory } from 'react-router-dom';
 
 interface PagesListItemProps extends StateToPropsMapResult, DispatchToPropsMapResult {
   data: PageItem;
@@ -38,6 +39,7 @@ const PagesListItem: React.FC<PagesListItemProps> = ({
 }: PagesListItemProps) => {
   const [selectedDate, setSelectedDate] = useState(page.date);
   const [isPageDateValid] = usePageValidation(selectedDate);
+  const history = useHistory();
 
   const isEditable = editablePagesIds.some(id => page.id === id);
   const isSelected = selectedPagesIds.some(id => page.id === id);
@@ -61,7 +63,13 @@ const PagesListItem: React.FC<PagesListItemProps> = ({
 
       if (createPageAction.type === PagesOperationsActionTypes.CreateSuccess) {
         deleteDraftPage(page.id);
-        await getPages(pagesFilter);
+
+        const { type: getPagesActionType } = await getPages(pagesFilter);
+
+        if (getPagesActionType === PagesListActionTypes.Success) {
+          const { createdPageId } = createPageAction as CreatePageSuccessAction;
+          history.push(`/pages/${createdPageId}`);
+        }
       }
     } else {
       // This is existing page for edit

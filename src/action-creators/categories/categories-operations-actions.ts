@@ -24,9 +24,10 @@ const createCategoryRequest = (category: CategoryCreateEdit, operationMessage: s
   };
 };
 
-const createCategorySuccess = (): CreateCategorySuccessAction => {
+const createCategorySuccess = (createdCategoryId: number): CreateCategorySuccessAction => {
   return {
     type: CategoriesOperationsActionTypes.CreateSuccess,
+    createdCategoryId,
   };
 };
 
@@ -96,7 +97,8 @@ export const createCategory: ActionCreator<ThunkAction<
       const response = await createCategoryAsync(category);
 
       if (response.ok) {
-        return dispatch(createCategorySuccess());
+        const createdCategoryIdStr = await response.text();
+        return dispatch(createCategorySuccess(+createdCategoryIdStr));
       }
 
       switch (response.status) {

@@ -6,6 +6,7 @@ import Icon from '../Icon';
 import { StateToPropsMapResult, DispatchToPropsMapResult } from './PagesSelectionPanelConnected';
 import Loader from '../Loader';
 import { PagesOperationsActionTypes } from '../../action-types';
+import { useHistory } from 'react-router-dom';
 
 interface PagesSelectionPanelProps extends StateToPropsMapResult, DispatchToPropsMapResult {}
 
@@ -23,6 +24,8 @@ const PagesSelectionPanel: React.FC<PagesSelectionPanelProps> = ({
   areNotesForPageFetching,
   areNotesForMealFetching,
 }: PagesSelectionPanelProps) => {
+  const history = useHistory();
+
   const isAnySideEffectHappening =
     isPageOperationInProcess || isNoteOperationInProcess || areNotesForPageFetching || areNotesForMealFetching;
   const isSelectAllChecked = visiblePagesIds.every(id => selectedPagesIds.includes(id));
@@ -39,9 +42,12 @@ const PagesSelectionPanel: React.FC<PagesSelectionPanelProps> = ({
   const handleDeleteOptionClick = async (): Promise<void> => {
     // TODO: create component for modal
     const isDeleteConfirmed = window.confirm('Do you want to delete all selected pages?');
+
     if (isDeleteConfirmed) {
       const deletePagesAction = await deletePages(selectedPagesIds);
+
       if (deletePagesAction.type === PagesOperationsActionTypes.DeleteSuccess) {
+        history.push('/pages');
         await getPages(pagesFilter);
       }
     }

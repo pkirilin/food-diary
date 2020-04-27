@@ -23,6 +23,7 @@ export interface CreateCategoryRequestAction extends Action<CategoriesOperations
 
 export interface CreateCategorySuccessAction extends Action<CategoriesOperationsActionTypes.CreateSuccess> {
   type: CategoriesOperationsActionTypes.CreateSuccess;
+  createdCategoryId: number;
 }
 
 export interface CreateCategoryErrorAction extends Action<CategoriesOperationsActionTypes.CreateError> {

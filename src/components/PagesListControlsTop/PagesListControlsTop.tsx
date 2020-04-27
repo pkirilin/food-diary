@@ -3,6 +3,8 @@ import './PagesListControlsTop.scss';
 import { SidebarControlPanel, SidebarControlPanelIcons } from '../SidebarBlocks';
 import Icon from '../Icon';
 import { DispatchToPropsMapResult, StateToPropsMapResult } from './PagesListControlsTopConnected';
+import { useRouteMatch } from 'react-router-dom';
+import { PagesListActionTypes } from '../../action-types';
 
 interface PagesListControlsTopProps extends StateToPropsMapResult, DispatchToPropsMapResult {}
 
@@ -12,12 +14,15 @@ const PagesListControlsTop: React.FC<PagesListControlsTopProps> = ({
   isPagesFilterChanged,
   clearPagesFilter,
   getPages,
+  getNotesForPage,
   arePagesLoading,
   areNotesForMealLoading,
   areNotesForPageLoading,
   isPageOperationInProcess,
   isNoteOperationInProcess,
 }: PagesListControlsTopProps) => {
+  const match = useRouteMatch<{ [key: string]: string }>('/pages/:id');
+
   const isControlDisabled =
     arePagesLoading ||
     areNotesForMealLoading ||
@@ -36,8 +41,16 @@ const PagesListControlsTop: React.FC<PagesListControlsTopProps> = ({
     });
   };
 
-  const handleRefreshPagesListIconClick = (): void => {
-    getPages(pagesFilter);
+  const handleRefreshPagesListIconClick = async (): Promise<void> => {
+    const { type: getPagesActionType } = await getPages(pagesFilter);
+
+    if (getPagesActionType === PagesListActionTypes.Success) {
+      const matchParams = match?.params;
+      const pageIdFromRoute = matchParams !== undefined ? matchParams['id'] : 0;
+      await getNotesForPage({
+        pageId: +pageIdFromRoute,
+      });
+    }
   };
 
   const handleResetFilterIconClick = (): void => {

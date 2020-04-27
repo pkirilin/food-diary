@@ -23,6 +23,7 @@ export interface CreatePageRequestAction extends Action<PagesOperationsActionTyp
 
 export interface CreatePageSuccessAction extends Action<PagesOperationsActionTypes.CreateSuccess> {
   type: PagesOperationsActionTypes.CreateSuccess;
+  createdPageId: number;
 }
 
 export interface CreatePageErrorAction extends Action<PagesOperationsActionTypes.CreateError> {

@@ -30,6 +30,7 @@ export interface StateToPropsMapResult {
   isCategoryOperationInProcess: boolean;
   isProductOperationInProcess: boolean;
   areProductsLoading: boolean;
+  categoryItems: CategoryItem[];
 }
 
 export interface DispatchToPropsMapResult {
@@ -47,6 +48,7 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
     isCategoryOperationInProcess: state.categories.operations.status.performing,
     isProductOperationInProcess: state.products.operations.productOperationStatus.performing,
     areProductsLoading: state.products.list.productItemsFetchState.loading,
+    categoryItems: state.categories.list.categoryItems,
   };
 };
 

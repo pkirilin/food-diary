@@ -33,7 +33,7 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
 };
 
 type ProductsDispatchType = ThunkDispatch<
-  ProductItem,
+  ProductItem[],
   ProductsFilter,
   GetProductsListSuccessAction | GetProductsListErrorAction
 > &

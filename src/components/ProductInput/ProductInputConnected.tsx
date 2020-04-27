@@ -53,7 +53,7 @@ type ProductInputDispatch = ThunkDispatch<
   ProductCreateEdit,
   CreateProductSuccessAction | CreateProductErrorAction
 > &
-  ThunkDispatch<ProductItem, ProductsFilter, GetProductsListSuccessAction | GetProductsListErrorAction> &
+  ThunkDispatch<ProductItem[], ProductsFilter, GetProductsListSuccessAction | GetProductsListErrorAction> &
   ThunkDispatch<
     CategoryDropdownItem[],
     CategoryDropdownSearchRequest,
