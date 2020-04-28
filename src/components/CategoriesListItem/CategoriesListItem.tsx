@@ -30,7 +30,6 @@ const CategoriesListItem: React.FC<CategoriesListItemProps> = ({
   isCategoryOperationInProcess,
   isProductOperationInProcess,
   areProductsLoading,
-  categoryItems,
   setEditableForCategories,
   deleteDraftCategory,
   createCategory,
@@ -68,11 +67,8 @@ const CategoriesListItem: React.FC<CategoriesListItemProps> = ({
       const { type: deleteCategoryActionType } = await deleteCategory(category.id);
 
       if (deleteCategoryActionType === CategoriesOperationsActionTypes.DeleteSuccess) {
-        // TODO: Fix problem with history.push(`/categories')
-        const categoriesWithoutDeleted = categoryItems.filter(c => c.id > 0 && c.id !== category.id);
-        const categoryIdToRedirect = categoriesWithoutDeleted.length > 0 ? `/${categoriesWithoutDeleted[0].id}` : '';
         await getCategories();
-        history.push(`/categories/${categoryIdToRedirect}`);
+        history.push('/categories');
       }
     }
   };

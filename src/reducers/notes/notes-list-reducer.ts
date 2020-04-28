@@ -30,7 +30,6 @@ const notesListReducer = (state: NotesListState = initialState, action: NotesLis
       return {
         ...state,
         notesForPageFetchState: {
-          ...state.notesForPageFetchState,
           loading: true,
           loaded: false,
         },
@@ -40,7 +39,6 @@ const notesListReducer = (state: NotesListState = initialState, action: NotesLis
         ...state,
         noteItems: action.noteItems,
         notesForPageFetchState: {
-          ...state.notesForPageFetchState,
           loading: false,
           loaded: true,
         },
@@ -49,7 +47,6 @@ const notesListReducer = (state: NotesListState = initialState, action: NotesLis
       return {
         ...state,
         notesForPageFetchState: {
-          ...state.notesForPageFetchState,
           loading: false,
           loaded: false,
           error: action.errorMessage,

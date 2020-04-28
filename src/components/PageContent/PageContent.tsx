@@ -5,6 +5,7 @@ import { StateToPropsMapResult, DispatchToPropsMapResult } from './PageContentCo
 import Loader from '../Loader';
 import PageContentHeaderConnected from '../PageContentHeader';
 import MealsListConnected from '../MealsList';
+import { SectionPlaceholder } from '../ContainerBlocks';
 
 interface PageContentProps extends StateToPropsMapResult, DispatchToPropsMapResult {}
 
@@ -22,14 +23,18 @@ const PageContent: React.FC<PageContentProps> = ({ notesForPageFetchState, getNo
     getContentAsync();
   }, [pageId, getNotesForPage]);
 
-  const { loading } = notesForPageFetchState;
+  const { loading: areNotesForPageLoading, error: notesForPageError } = notesForPageFetchState;
+
+  if (notesForPageError !== undefined) {
+    return <SectionPlaceholder>{notesForPageError}</SectionPlaceholder>;
+  }
 
   return (
     <div className="page-content">
       <div className="page-content__top-panel">
         <PageContentHeaderConnected></PageContentHeaderConnected>
       </div>
-      {loading && (
+      {areNotesForPageLoading && (
         <div className="page-content__preloader">
           <Loader label="Loading page content"></Loader>
         </div>

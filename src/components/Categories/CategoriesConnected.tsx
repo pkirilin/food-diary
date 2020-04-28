@@ -1,19 +1,8 @@
 import { connect } from 'react-redux';
 import Categories from './Categories';
-import { FoodDiaryState } from '../../store';
 import { Dispatch } from 'redux';
 import { ClearProductsFilterAction } from '../../action-types';
 import { clearProductsFilter } from '../../action-creators';
-
-export interface StateToPropsMapResult {
-  firstCategoryId?: number;
-}
-
-const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
-  return {
-    firstCategoryId: state.categories.list.categoryItems.filter(c => c.id > 0)[0]?.id,
-  };
-};
 
 export interface DispatchToPropsMapResult {
   clearProductsFilter: () => void;
@@ -29,4 +18,4 @@ const mapDispatchToProps = (dispatch: CategoriesDispatch): DispatchToPropsMapRes
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Categories);
+export default connect(null, mapDispatchToProps)(Categories);

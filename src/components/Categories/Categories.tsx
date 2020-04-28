@@ -1,17 +1,17 @@
 import React, { useEffect } from 'react';
 import './Categories.scss';
-import { ContentWrapper, MainContainer, SectionContainer } from '../ContainerBlocks';
+import { ContentWrapper, MainContainer, SectionContainer, SectionPlaceholder } from '../ContainerBlocks';
 import Sidebar from '../Sidebar';
 import CategoriesListControlsTopConnected from '../CategoriesListControlsTop';
 import CategoriesListConnected from '../CategoriesList';
 import CategoriesOperationsPanelConnected from '../CategoriesOperationsPanel';
-import { Switch, Route, Redirect } from 'react-router-dom';
-import { StateToPropsMapResult, DispatchToPropsMapResult } from './CategoriesConnected';
+import { Switch, Route } from 'react-router-dom';
+import { DispatchToPropsMapResult } from './CategoriesConnected';
 import CategoryContentConnected from '../CategoryContent';
 
-interface CategoriesProps extends StateToPropsMapResult, DispatchToPropsMapResult {}
+type CategoriesProps = DispatchToPropsMapResult;
 
-const Categories: React.FC<CategoriesProps> = ({ firstCategoryId, clearProductsFilter }: CategoriesProps) => {
+const Categories: React.FC<CategoriesProps> = ({ clearProductsFilter }: CategoriesProps) => {
   useEffect(() => {
     return (): void => {
       clearProductsFilter();
@@ -28,13 +28,12 @@ const Categories: React.FC<CategoriesProps> = ({ firstCategoryId, clearProductsF
       <MainContainer withSidebar>
         <SectionContainer>
           <Switch>
+            <Route exact path="/categories">
+              <SectionPlaceholder>No category selected</SectionPlaceholder>
+            </Route>
             <Route exact path="/categories/:id">
               <CategoryContentConnected></CategoryContentConnected>
             </Route>
-            <Redirect
-              from="/categories"
-              to={firstCategoryId === undefined ? '/categories/' : `/categories/${firstCategoryId}`}
-            ></Redirect>
           </Switch>
         </SectionContainer>
       </MainContainer>

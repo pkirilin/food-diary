@@ -1,0 +1,9 @@
+@import '../../../variables.scss';
+
+.section-placeholder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: $color-middle-green;
+}

@@ -51,6 +51,8 @@ export const getProducts: ActionCreator<ThunkAction<
       switch (response.status) {
         case 400:
           return dispatch(getProductsError(`${baseErrorMessage}: wrong request data`));
+        case 404:
+          return dispatch(getProductsError(`${baseErrorMessage}: category not found`));
         case 500:
           return dispatch(getProductsError(`${baseErrorMessage}: server error`));
         default:

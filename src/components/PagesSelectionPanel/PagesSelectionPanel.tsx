@@ -47,8 +47,8 @@ const PagesSelectionPanel: React.FC<PagesSelectionPanelProps> = ({
       const deletePagesAction = await deletePages(selectedPagesIds);
 
       if (deletePagesAction.type === PagesOperationsActionTypes.DeleteSuccess) {
-        history.push('/pages');
         await getPages(pagesFilter);
+        history.push('/pages');
       }
     }
   };

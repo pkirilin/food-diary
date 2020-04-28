@@ -80,6 +80,8 @@ export const getNotesForPage: ActionCreator<ThunkAction<
       switch (response.status) {
         case 400:
           return dispatch(getNotesForPageError(`${NotesListBaseErrorMessages.NotesForPage}: wrong request data`));
+        case 404:
+          return dispatch(getNotesForPageError(`${NotesListBaseErrorMessages.NotesForPage}: page not found`));
         case 500:
           return dispatch(getNotesForPageError(`${NotesListBaseErrorMessages.NotesForPage}: server error`));
         default:

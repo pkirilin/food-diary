@@ -1,18 +1,18 @@
 import React from 'react';
 import './Pages.scss';
 import Sidebar from '../Sidebar';
-import { ContentWrapper, MainContainer, SectionContainer } from '../ContainerBlocks';
+import { ContentWrapper, MainContainer, SectionContainer, SectionPlaceholder } from '../ContainerBlocks';
 import PagesListConnected from '../PagesList';
 import PagesListControlsTopConnected from '../PagesListControlsTop';
 import PagesListControlsBottomConnected from '../PagesListControlsBottom';
-import { Switch, Route, Redirect } from 'react-router-dom';
+import { Switch, Route } from 'react-router-dom';
 import PagesSelectionPanelConnected from '../PagesSelectionPanel';
 import { StateToPropsMapResult } from './PagesConnected';
 import PageContentConnected from '../PageContent';
 
 type PagesProps = StateToPropsMapResult;
 
-const Pages: React.FC<PagesProps> = ({ isPagesListAvailable, pagesCount, firstPageId }: PagesProps) => {
+const Pages: React.FC<PagesProps> = ({ isPagesListAvailable, pagesCount }: PagesProps) => {
   return (
     <ContentWrapper>
       <Sidebar>
@@ -24,10 +24,12 @@ const Pages: React.FC<PagesProps> = ({ isPagesListAvailable, pagesCount, firstPa
       <MainContainer withSidebar>
         <SectionContainer>
           <Switch>
+            <Route exact path="/pages">
+              <SectionPlaceholder>No page selected</SectionPlaceholder>
+            </Route>
             <Route exact path="/pages/:id">
               <PageContentConnected></PageContentConnected>
             </Route>
-            <Redirect from="/pages" to={firstPageId === undefined ? '/pages/' : `/pages/${firstPageId}`}></Redirect>
           </Switch>
         </SectionContainer>
       </MainContainer>
