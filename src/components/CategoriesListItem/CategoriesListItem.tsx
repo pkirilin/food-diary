@@ -30,12 +30,14 @@ const CategoriesListItem: React.FC<CategoriesListItemProps> = ({
   isCategoryOperationInProcess,
   isProductOperationInProcess,
   areProductsLoading,
+  productsFilter,
   setEditableForCategories,
   deleteDraftCategory,
   createCategory,
   editCategory,
   deleteCategory,
   getCategories,
+  getProducts,
 }: CategoriesListItemProps) => {
   const [categoryName, setCategoryName] = useState(category.name);
 
@@ -97,6 +99,7 @@ const CategoriesListItem: React.FC<CategoriesListItemProps> = ({
       if (editCategoryActionType === CategoriesOperationsActionTypes.EditSuccess) {
         setEditableForCategories([category.id], false);
         await getCategories();
+        await getProducts(productsFilter);
       }
     }
   };

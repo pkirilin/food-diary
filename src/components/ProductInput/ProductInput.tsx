@@ -18,6 +18,7 @@ const ProductInput: React.FC<ProductInputProps> = ({
   createProduct,
   getProducts,
   getCategoryDropdownItems,
+  getCategories,
 }: ProductInputProps) => {
   const [productNameInputValue, setProductNameInputValue] = useState('');
   const [caloriesCost, setCaloriesCost] = useState(100);
@@ -112,10 +113,11 @@ const ProductInput: React.FC<ProductInputProps> = ({
     });
 
     if (createProductActionType === ProductsOperationsActionTypes.CreateSuccess) {
-      await getProducts(productsFilter);
       setProductNameInputValue('');
       setCaloriesCost(100);
       setCategoryInputByFilter();
+      await getProducts(productsFilter);
+      await getCategories();
     }
   };
 

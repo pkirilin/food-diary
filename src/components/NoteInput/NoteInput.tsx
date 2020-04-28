@@ -20,9 +20,11 @@ const NoteInput: React.FC<NoteInputProps> = ({
   noteItems,
   isProductDropdownContentLoading,
   isPageOperationInProcess,
+  pagesFilter,
   createNote,
   getNotesForMeal,
   getProductDropdownItems,
+  getPages,
 }: NoteInputProps) => {
   const [productId, setProductId] = useState(0);
   const [productNameInputValue, setProductNameInputValue] = useState('');
@@ -77,12 +79,13 @@ const NoteInput: React.FC<NoteInputProps> = ({
     });
 
     if (createNoteAction.type === NotesOperationsActionTypes.CreateSuccess) {
+      setProductNameInputValue('');
+      setProductQuantity(100);
       await getNotesForMeal({
         pageId,
         mealType,
       });
-      setProductNameInputValue('');
-      setProductQuantity(100);
+      await getPages(pagesFilter);
     }
   };
 

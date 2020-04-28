@@ -21,6 +21,7 @@ const ProductsTableRow: React.FC<ProductsTableRowProps> = ({
   setEditableForProduct,
   getProducts,
   getCategoryDropdownItems,
+  getCategories,
   editProduct,
   deleteProduct,
 }: ProductsTableRowProps) => {
@@ -109,6 +110,7 @@ const ProductsTableRow: React.FC<ProductsTableRowProps> = ({
 
       if (deleteProductActionType === ProductsOperationsActionTypes.DeleteSuccess) {
         await getProducts(productsFilter);
+        await getCategories();
       }
     }
   };

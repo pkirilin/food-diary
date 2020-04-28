@@ -21,11 +21,13 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({
   mealOperationStatuses,
   isProductDropdownContentLoading,
   isPageOperationInProcess,
+  pagesFilter,
   setEditableForNote,
   editNote,
   deleteNote,
   getNotesForMeal,
   getProductDropdownItems,
+  getPages,
 }: NotesTableRowProps) => {
   const [productId, setProductId] = useState(note.productId);
   const [productNameInputValue, setProductNameInputValue] = useState(note.productName);
@@ -81,6 +83,7 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({
     if (editNoteActionType === NotesOperationsActionTypes.EditSuccess) {
       setEditableForNote(note.id, false);
       await getNotesForMeal({ pageId, mealType });
+      await getPages(pagesFilter);
     }
   };
 
@@ -95,6 +98,7 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({
 
       if (deleteNoteActionType === NotesOperationsActionTypes.DeleteSuccess) {
         await getNotesForMeal({ pageId, mealType });
+        await getPages(pagesFilter);
       }
     }
   };

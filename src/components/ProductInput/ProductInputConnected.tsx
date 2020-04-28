@@ -8,6 +8,8 @@ import {
   GetProductsListErrorAction,
   GetCategoryDropdownItemsSuccessAction,
   GetCategoryDropdownItemsErrorAction,
+  GetCategoriesListSuccessAction,
+  GetCategoriesListErrorAction,
 } from '../../action-types';
 import { ThunkDispatch } from 'redux-thunk';
 import {
@@ -18,7 +20,7 @@ import {
   CategoryItem,
   CategoryDropdownSearchRequest,
 } from '../../models';
-import { createProduct, getProducts, getCategoryDropdownItems } from '../../action-creators';
+import { createProduct, getProducts, getCategoryDropdownItems, getCategories } from '../../action-creators';
 
 export interface StateToPropsMapResult {
   productOperationStatus: DataOperationState;
@@ -46,6 +48,7 @@ export interface DispatchToPropsMapResult {
   getCategoryDropdownItems: (
     request: CategoryDropdownSearchRequest,
   ) => Promise<GetCategoryDropdownItemsSuccessAction | GetCategoryDropdownItemsErrorAction>;
+  getCategories: () => Promise<GetCategoriesListSuccessAction | GetCategoriesListErrorAction>;
 }
 
 type ProductInputDispatch = ThunkDispatch<
@@ -58,7 +61,8 @@ type ProductInputDispatch = ThunkDispatch<
     CategoryDropdownItem[],
     CategoryDropdownSearchRequest,
     GetCategoryDropdownItemsSuccessAction | GetCategoryDropdownItemsErrorAction
-  >;
+  > &
+  ThunkDispatch<CategoryItem[], void, GetCategoriesListSuccessAction | GetCategoriesListErrorAction>;
 
 const mapDispatchToProps = (dispatch: ProductInputDispatch): DispatchToPropsMapResult => {
   return {
@@ -74,6 +78,9 @@ const mapDispatchToProps = (dispatch: ProductInputDispatch): DispatchToPropsMapR
       request: CategoryDropdownSearchRequest,
     ): Promise<GetCategoryDropdownItemsSuccessAction | GetCategoryDropdownItemsErrorAction> => {
       return dispatch(getCategoryDropdownItems(request));
+    },
+    getCategories: (): Promise<GetCategoriesListSuccessAction | GetCategoriesListErrorAction> => {
+      return dispatch(getCategories());
     },
   };
 };

@@ -13,6 +13,8 @@ import {
   DeleteCategoryErrorAction,
   GetCategoriesListSuccessAction,
   GetCategoriesListErrorAction,
+  GetProductsListSuccessAction,
+  GetProductsListErrorAction,
 } from '../../action-types';
 import {
   setEditableForCategories,
@@ -21,8 +23,9 @@ import {
   editCategory,
   deleteCategory,
   getCategories,
+  getProducts,
 } from '../../action-creators';
-import { CategoryCreateEdit, CategoryItem, CategoryEditRequest } from '../../models';
+import { CategoryCreateEdit, CategoryItem, CategoryEditRequest, ProductsFilter, ProductItem } from '../../models';
 import { ThunkDispatch } from 'redux-thunk';
 
 export interface StateToPropsMapResult {
@@ -30,6 +33,7 @@ export interface StateToPropsMapResult {
   isCategoryOperationInProcess: boolean;
   isProductOperationInProcess: boolean;
   areProductsLoading: boolean;
+  productsFilter: ProductsFilter;
 }
 
 export interface DispatchToPropsMapResult {
@@ -39,6 +43,7 @@ export interface DispatchToPropsMapResult {
   editCategory: (request: CategoryEditRequest) => Promise<EditCategorySuccessAction | EditCategoryErrorAction>;
   deleteCategory: (categoryId: number) => Promise<DeleteCategorySuccessAction | DeleteCategoryErrorAction>;
   getCategories: () => Promise<GetCategoriesListSuccessAction | GetCategoriesListErrorAction>;
+  getProducts: (filter: ProductsFilter) => Promise<GetProductsListSuccessAction | GetProductsListErrorAction>;
 }
 
 const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
@@ -47,6 +52,7 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
     isCategoryOperationInProcess: state.categories.operations.status.performing,
     isProductOperationInProcess: state.products.operations.productOperationStatus.performing,
     areProductsLoading: state.products.list.productItemsFetchState.loading,
+    productsFilter: state.products.filter,
   };
 };
 
@@ -55,7 +61,8 @@ type CategoriesListItemDispatch = Dispatch<SetEditableForCategoriesAction> &
   ThunkDispatch<void, CategoryCreateEdit, CreateCategorySuccessAction | CreateCategoryErrorAction> &
   ThunkDispatch<void, CategoryEditRequest, EditCategorySuccessAction | EditCategoryErrorAction> &
   ThunkDispatch<void, number, DeleteCategorySuccessAction | DeleteCategoryErrorAction> &
-  ThunkDispatch<CategoryItem[], void, GetCategoriesListSuccessAction | GetCategoriesListErrorAction>;
+  ThunkDispatch<CategoryItem[], void, GetCategoriesListSuccessAction | GetCategoriesListErrorAction> &
+  ThunkDispatch<ProductItem[], ProductsFilter, GetProductsListSuccessAction | GetProductsListErrorAction>;
 
 const mapDispatchToProps = (dispatch: CategoriesListItemDispatch): DispatchToPropsMapResult => {
   return {
@@ -78,6 +85,9 @@ const mapDispatchToProps = (dispatch: CategoriesListItemDispatch): DispatchToPro
     },
     getCategories: (): Promise<GetCategoriesListSuccessAction | GetCategoriesListErrorAction> => {
       return dispatch(getCategories());
+    },
+    getProducts: (filter: ProductsFilter): Promise<GetProductsListSuccessAction | GetProductsListErrorAction> => {
+      return dispatch(getProducts(filter));
     },
   };
 };

@@ -6,6 +6,8 @@ import {
   NoteItem,
   ProductDropdownSearchRequest,
   NoteDeleteRequest,
+  PagesFilter,
+  PageItem,
 } from '../../models';
 import { FoodDiaryState, MealOperationStatus } from '../../store';
 import {
@@ -18,6 +20,8 @@ import {
   SetEditableForNoteAction,
   GetProductDropdownItemsSuccessAction,
   GetProductDropdownItemsErrorAction,
+  GetPagesListSuccessAction,
+  GetPagesListErrorAction,
 } from '../../action-types';
 import { Dispatch } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
@@ -27,6 +31,7 @@ import {
   deleteNote,
   getNotesForMeal,
   getProductDropdownItems,
+  getPages,
 } from '../../action-creators';
 import { NoteEditRequest } from '../../models';
 
@@ -36,6 +41,7 @@ export interface StateToPropsMapResult {
   mealOperationStatuses: MealOperationStatus[];
   isProductDropdownContentLoading: boolean;
   isPageOperationInProcess: boolean;
+  pagesFilter: PagesFilter;
 }
 
 export interface DispatchToPropsMapResult {
@@ -48,6 +54,7 @@ export interface DispatchToPropsMapResult {
   getProductDropdownItems: (
     request: ProductDropdownSearchRequest,
   ) => Promise<GetProductDropdownItemsSuccessAction | GetProductDropdownItemsErrorAction>;
+  getPages: (filter: PagesFilter) => Promise<GetPagesListSuccessAction | GetPagesListErrorAction>;
 }
 
 const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
@@ -57,6 +64,7 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
     mealOperationStatuses: state.notes.operations.mealOperationStatuses,
     isProductDropdownContentLoading: state.products.dropdown.productDropdownItemsFetchState.loading,
     isPageOperationInProcess: state.pages.operations.status.performing,
+    pagesFilter: state.pages.filter,
   };
 };
 
@@ -68,7 +76,8 @@ type NotesTableDispatchType = Dispatch<SetEditableForNoteAction> &
     ProductDropdownItem[],
     ProductDropdownSearchRequest,
     GetProductDropdownItemsSuccessAction | GetProductDropdownItemsErrorAction
-  >;
+  > &
+  ThunkDispatch<PageItem[], PagesFilter, GetPagesListSuccessAction | GetPagesListErrorAction>;
 
 const mapDispatchToProps = (dispatch: NotesTableDispatchType): DispatchToPropsMapResult => {
   return {
@@ -90,6 +99,9 @@ const mapDispatchToProps = (dispatch: NotesTableDispatchType): DispatchToPropsMa
       request: ProductDropdownSearchRequest,
     ): Promise<GetProductDropdownItemsSuccessAction | GetProductDropdownItemsErrorAction> => {
       return dispatch(getProductDropdownItems(request));
+    },
+    getPages: (filter: PagesFilter): Promise<GetPagesListSuccessAction | GetPagesListErrorAction> => {
+      return dispatch(getPages(filter));
     },
   };
 };
