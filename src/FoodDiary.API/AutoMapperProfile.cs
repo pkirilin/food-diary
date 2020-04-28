@@ -1,9 +1,7 @@
-﻿using System.Collections.Generic;
-using AutoMapper;
+﻿using AutoMapper;
 using FoodDiary.API.Helpers;
 using FoodDiary.Domain.Dtos;
 using FoodDiary.Domain.Entities;
-using FoodDiary.Domain.Enums;
 
 namespace FoodDiary.API
 {
@@ -34,7 +32,11 @@ namespace FoodDiary.API
 
             CreateMap<NoteCreateEditDto, Note>();
 
-            CreateMap<Category, CategoryItemDto>();
+            CreateMap<Category, CategoryItemDto>()
+                .ForMember(
+                    dest => dest.CountProducts,
+                    o => o.MapFrom<CategoryCountProductsValueResolver>()
+                );
             CreateMap<Category, CategoryDropdownItemDto>();
             CreateMap<CategoryCreateEditDto, Category>();
 
