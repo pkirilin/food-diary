@@ -19,7 +19,7 @@ namespace FoodDiary.Infrastructure.Services
             _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
         }
 
-        public async Task<IEnumerable<Product>> SearchProductsAsync(ProductsSearchRequestDto searchRequest, CancellationToken cancellationToken)
+        public async Task<ProductSearchMetadata> SearchProductsAsync(ProductsSearchRequestDto searchRequest, CancellationToken cancellationToken)
         {
             var searchQuery = _productRepository.GetQueryWithoutTracking();
 
@@ -35,11 +35,19 @@ namespace FoodDiary.Infrastructure.Services
                 searchQuery = searchQuery.Where(p => p.CategoryId == searchRequest.CategoryId);
             }
 
+            var totalProductsCount = await _productRepository.CountByQueryAsync(searchQuery, cancellationToken);
+
             searchQuery = searchQuery.Skip((searchRequest.PageNumber - 1) * searchRequest.PageSize)
                 .Take(searchRequest.PageSize);
             searchQuery = _productRepository.LoadCategory(searchQuery);
 
-            return await _productRepository.GetListFromQueryAsync(searchQuery, cancellationToken);
+            var products = await _productRepository.GetListFromQueryAsync(searchQuery, cancellationToken);
+
+            return new ProductSearchMetadata()
+            {
+                FoundProducts = products,
+                TotalProductsCount = totalProductsCount
+            };
         }
 
         public async Task<Product> GetProductByIdAsync(int id, CancellationToken cancellationToken)
@@ -119,13 +127,6 @@ namespace FoodDiary.Infrastructure.Services
             query = query.OrderBy(p => p.Name);
             var products = await _productRepository.GetListFromQueryAsync(query, cancellationToken);
             return products;
-        }
-
-        public async Task<int> CountAllProductsAsync(CancellationToken cancellationToken)
-        {
-            var query = _productRepository.GetQueryWithoutTracking();
-            var count = await _productRepository.CountByQueryAsync(query, cancellationToken);
-            return count;
         }
     }
 }

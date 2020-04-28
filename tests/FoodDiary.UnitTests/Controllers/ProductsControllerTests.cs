@@ -60,13 +60,15 @@ namespace FoodDiary.UnitTests.Controllers
                 .With(r => r.CategoryId, categoryId)
                 .Create();
             var requestedCategory = _fixture.Create<Category>();
+            var productSearchMeta = _fixture.Create<ProductSearchMetadata>();
             _categoryServiceMock.Setup(s => s.GetCategoryByIdAsync(categoryId, default))
                 .ReturnsAsync(requestedCategory);
+            _productServiceMock.Setup(s => s.SearchProductsAsync(searchRequest, default))
+                .ReturnsAsync(productSearchMeta);
 
             var result = await ProductsController.GetProducts(searchRequest, default);
 
             _categoryServiceMock.Verify(s => s.GetCategoryByIdAsync(categoryId, default), Times.Once);
-            _productServiceMock.Verify(s => s.CountAllProductsAsync(default), Times.Once);
             _productServiceMock.Verify(s => s.SearchProductsAsync(searchRequest, default), Times.Once);
             result.Should().BeOfType<OkObjectResult>();
         }
@@ -77,11 +79,13 @@ namespace FoodDiary.UnitTests.Controllers
             var searchRequest = _fixture.Build<ProductsSearchRequestDto>()
                 .With(r => r.CategoryId, null as int?)
                 .Create();
+            var productSearchMeta = _fixture.Create<ProductSearchMetadata>();
+            _productServiceMock.Setup(s => s.SearchProductsAsync(searchRequest, default))
+                .ReturnsAsync(productSearchMeta);
 
             var result = await ProductsController.GetProducts(searchRequest, default);
 
             _categoryServiceMock.Verify(s => s.GetCategoryByIdAsync(It.IsAny<int>(), default), Times.Never);
-            _productServiceMock.Verify(s => s.CountAllProductsAsync(default), Times.Once);
             _productServiceMock.Verify(s => s.SearchProductsAsync(searchRequest, default), Times.Once);
             result.Should().BeOfType<OkObjectResult>();
         }
@@ -96,7 +100,6 @@ namespace FoodDiary.UnitTests.Controllers
             var result = await controller.GetProducts(searchRequest, default);
 
             _categoryServiceMock.Verify(s => s.GetCategoryByIdAsync(It.IsAny<int>(), default), Times.Never);
-            _productServiceMock.Verify(s => s.CountAllProductsAsync(default), Times.Never);
             _productServiceMock.Verify(s => s.SearchProductsAsync(searchRequest, default), Times.Never);
             result.Should().BeOfType<BadRequestObjectResult>();
         }
@@ -114,7 +117,6 @@ namespace FoodDiary.UnitTests.Controllers
             var result = await ProductsController.GetProducts(searchRequest, default);
 
             _categoryServiceMock.Verify(s => s.GetCategoryByIdAsync(categoryId, default), Times.Once);
-            _productServiceMock.Verify(s => s.CountAllProductsAsync(default), Times.Never);
             _productServiceMock.Verify(s => s.SearchProductsAsync(searchRequest, default), Times.Never);
             result.Should().BeOfType<NotFoundResult>();
         }

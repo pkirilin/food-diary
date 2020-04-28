@@ -54,13 +54,12 @@ namespace FoodDiary.API.Controllers.v1
                 }
             }
 
-            var totalProductsCount = await _productService.CountAllProductsAsync(cancellationToken);
-            var foundProducts = await _productService.SearchProductsAsync(searchRequest, cancellationToken);
-            var productItemsResult = _mapper.Map<IEnumerable<ProductItemDto>>(foundProducts);
+            var productSearchMeta = await _productService.SearchProductsAsync(searchRequest, cancellationToken);
+            var productItemsResult = _mapper.Map<IEnumerable<ProductItemDto>>(productSearchMeta.FoundProducts);
 
             var productsSearchResult = new ProductsSearchResultDto()
             {
-                TotalProductsCount = totalProductsCount,
+                TotalProductsCount = productSearchMeta.TotalProductsCount,
                 ProductItems = productItemsResult
             };
 

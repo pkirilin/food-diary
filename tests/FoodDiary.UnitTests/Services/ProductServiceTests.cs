@@ -66,7 +66,7 @@ namespace FoodDiary.UnitTests.Services
         [InlineData(100, 1, 10, "Test product", null, 3, 0)]
         [InlineData(100, 1, 10, null, 1, 0, 3)]
         [InlineData(100, 1, 10, "Test product", 1, 3, 3)]
-        public async void SearchProductsAsync_ReturnsFilteredProducts(
+        public async void SearchProducts_ReturnsFilteredProducts(
             int productsCount,
             int pageIndex,
             int pageSize,
@@ -112,10 +112,12 @@ namespace FoodDiary.UnitTests.Services
             _productRepositoryMock.Verify(r => r.LoadCategory(It.IsNotNull<IQueryable<Product>>()), Times.Once);
             _productRepositoryMock.Verify(r => r.GetListFromQueryAsync(modifiedSearchQuery, default), Times.Once);
 
+            // TODO: assert TotalProductsCount
+
             if (!expectedProductsResult.Any())
-                result.Should().BeEmpty();
+                result.FoundProducts.Should().BeEmpty();
             else
-                result.Should().Contain(expectedProductsResult);
+                result.FoundProducts.Should().Contain(expectedProductsResult);
         }
 
         [Fact]
@@ -253,23 +255,6 @@ namespace FoodDiary.UnitTests.Services
             _productRepositoryMock.Verify(r => r.GetQueryWithoutTracking(), Times.Once);
             _productRepositoryMock.Verify(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Product>>(), default), Times.Once);
             result.Should().Contain(expectedProducts);
-        }
-
-        [Fact]
-        public async void CountAllProducts_ReturnsTotalProductsCount()
-        {
-            var allProductsQuery = _fixture.CreateMany<Product>().AsQueryable();
-            var expectedTotalProductsCount = _fixture.Create<int>();
-            _productRepositoryMock.Setup(r => r.GetQueryWithoutTracking())
-                .Returns(allProductsQuery);
-            _productRepositoryMock.Setup(r => r.CountByQueryAsync(allProductsQuery, default))
-                .ReturnsAsync(expectedTotalProductsCount);
-
-            var result = await ProductService.CountAllProductsAsync(default);
-
-            _productRepositoryMock.Verify(r => r.GetQueryWithoutTracking(), Times.Once);
-            _productRepositoryMock.Verify(r => r.CountByQueryAsync(allProductsQuery, default), Times.Once);
-            result.Should().Be(expectedTotalProductsCount);
         }
     }
 }

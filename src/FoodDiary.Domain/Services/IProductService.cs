@@ -8,7 +8,7 @@ namespace FoodDiary.Domain.Services
 {
     public interface IProductService
     {
-        Task<IEnumerable<Product>> SearchProductsAsync(ProductsSearchRequestDto searchRequest, CancellationToken cancellationToken);
+        Task<ProductSearchMetadata> SearchProductsAsync(ProductsSearchRequestDto searchRequest, CancellationToken cancellationToken);
 
         Task<Product> GetProductByIdAsync(int id, CancellationToken cancellationToken);
 
@@ -29,7 +29,5 @@ namespace FoodDiary.Domain.Services
         ValidationResultDto AllProductsFetched(IEnumerable<Product> fetchedProducts, IEnumerable<int> requestedIds);
 
         Task<IEnumerable<Product>> GetProductsDropdownListAsync(ProductDropdownSearchRequestDto request, CancellationToken cancellationToken);
-
-        Task<int> CountAllProductsAsync(CancellationToken cancellationToken);
     }
 }
