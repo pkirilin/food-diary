@@ -1,12 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Reflection;
 using AutoFixture;
+using AutoFixture.Xunit2;
 using AutoMapper;
 using FluentAssertions;
 using FoodDiary.API;
 using FoodDiary.API.Controllers.v1;
-using FoodDiary.API.Helpers;
 using FoodDiary.Domain.Dtos;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Services;
@@ -26,6 +25,7 @@ namespace FoodDiary.UnitTests.Controllers
         private readonly IMapper _mapper;
 
         private readonly Mock<IProductService> _productServiceMock;
+        private readonly Mock<ICategoryService> _categoryServiceMock;
 
         private readonly IFixture _fixture;
 
@@ -39,6 +39,7 @@ namespace FoodDiary.UnitTests.Controllers
             _loggerFactory = serviceProvider.GetService<ILoggerFactory>();
             _mapper = serviceProvider.GetService<IMapper>();
             _productServiceMock = new Mock<IProductService>();
+            _categoryServiceMock = new Mock<ICategoryService>();
             _fixture = SetupFixture();
         }
 
@@ -49,15 +50,37 @@ namespace FoodDiary.UnitTests.Controllers
             return _fixture;
         }
 
-        public ProductsController ProductsController => new ProductsController(_loggerFactory, _mapper, _productServiceMock.Object);
+        public ProductsController ProductsController => new ProductsController(_loggerFactory, _mapper, _productServiceMock.Object, _categoryServiceMock.Object);
 
-        [Fact]
-        public async void GetProducts_ReturnsFilteredProductsWithPaginationInfo_WhenModelStateIsValid()
+        [Theory]
+        [InlineAutoData]
+        public async void GetProducts_ReturnsFilteredProductsWithPaginationInfo_WhenModelStateIsValid_AndCategoryExists(int categoryId)
         {
-            var searchRequest = _fixture.Create<ProductsSearchRequestDto>();
+            var searchRequest = _fixture.Build<ProductsSearchRequestDto>()
+                .With(r => r.CategoryId, categoryId)
+                .Create();
+            var requestedCategory = _fixture.Create<Category>();
+            _categoryServiceMock.Setup(s => s.GetCategoryByIdAsync(categoryId, default))
+                .ReturnsAsync(requestedCategory);
 
             var result = await ProductsController.GetProducts(searchRequest, default);
 
+            _categoryServiceMock.Verify(s => s.GetCategoryByIdAsync(categoryId, default), Times.Once);
+            _productServiceMock.Verify(s => s.CountAllProductsAsync(default), Times.Once);
+            _productServiceMock.Verify(s => s.SearchProductsAsync(searchRequest, default), Times.Once);
+            result.Should().BeOfType<OkObjectResult>();
+        }
+
+        [Fact]
+        public async void GetProducts_ReturnsFilteredProductsWithPaginationInfo_WhenModelStateIsValid_AndCategoryIsEmpty()
+        {
+            var searchRequest = _fixture.Build<ProductsSearchRequestDto>()
+                .With(r => r.CategoryId, null as int?)
+                .Create();
+
+            var result = await ProductsController.GetProducts(searchRequest, default);
+
+            _categoryServiceMock.Verify(s => s.GetCategoryByIdAsync(It.IsAny<int>(), default), Times.Never);
             _productServiceMock.Verify(s => s.CountAllProductsAsync(default), Times.Once);
             _productServiceMock.Verify(s => s.SearchProductsAsync(searchRequest, default), Times.Once);
             result.Should().BeOfType<OkObjectResult>();
@@ -72,9 +95,28 @@ namespace FoodDiary.UnitTests.Controllers
 
             var result = await controller.GetProducts(searchRequest, default);
 
+            _categoryServiceMock.Verify(s => s.GetCategoryByIdAsync(It.IsAny<int>(), default), Times.Never);
             _productServiceMock.Verify(s => s.CountAllProductsAsync(default), Times.Never);
             _productServiceMock.Verify(s => s.SearchProductsAsync(searchRequest, default), Times.Never);
             result.Should().BeOfType<BadRequestObjectResult>();
+        }
+
+        [Theory]
+        [InlineAutoData]
+        public async void GetProducts_ReturnsNotFound_WhenCategoryNotFound(int categoryId)
+        {
+            var searchRequest = _fixture.Build<ProductsSearchRequestDto>()
+                .With(r => r.CategoryId, categoryId)
+                .Create();
+            _categoryServiceMock.Setup(s => s.GetCategoryByIdAsync(categoryId, default))
+                .ReturnsAsync(null as Category);
+
+            var result = await ProductsController.GetProducts(searchRequest, default);
+
+            _categoryServiceMock.Verify(s => s.GetCategoryByIdAsync(categoryId, default), Times.Once);
+            _productServiceMock.Verify(s => s.CountAllProductsAsync(default), Times.Never);
+            _productServiceMock.Verify(s => s.SearchProductsAsync(searchRequest, default), Times.Never);
+            result.Should().BeOfType<NotFoundResult>();
         }
 
         [Fact]

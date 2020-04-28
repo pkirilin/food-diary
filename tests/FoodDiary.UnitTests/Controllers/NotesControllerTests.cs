@@ -25,6 +25,7 @@ namespace FoodDiary.UnitTests.Controllers
         private readonly IMapper _mapper;
 
         private readonly Mock<INoteService> _noteServiceMock;
+        private readonly Mock<IPageService> _pageServiceMock;
 
         private readonly IFixture _fixture;
 
@@ -40,6 +41,7 @@ namespace FoodDiary.UnitTests.Controllers
             _loggerFactory = serviceProvider.GetService<ILoggerFactory>();
             _mapper = serviceProvider.GetService<IMapper>();
             _noteServiceMock = new Mock<INoteService>();
+            _pageServiceMock = new Mock<IPageService>();
             _fixture = SetupFixture();
         }
 
@@ -53,18 +55,23 @@ namespace FoodDiary.UnitTests.Controllers
         public NotesController NotesController => new NotesController(
             _loggerFactory,
             _mapper,
-            _noteServiceMock.Object);
+            _noteServiceMock.Object,
+            _pageServiceMock.Object);
 
         [Fact]
         public async void GetNotes_ReturnsFilteredNotes_WhenModelStateIsValid()
         {
             var request = _fixture.Create<NotesSearchRequestDto>();
             var notes = _fixture.CreateMany<Note>();
+            var requestedPage = _fixture.Create<Page>();
+            _pageServiceMock.Setup(s => s.GetPageByIdAsync(request.PageId, default))
+                .ReturnsAsync(requestedPage);
             _noteServiceMock.Setup(s => s.SearchNotesAsync(request, default))
                 .ReturnsAsync(notes);
 
             var result = await NotesController.GetNotes(request, default);
 
+            _pageServiceMock.Verify(s => s.GetPageByIdAsync(request.PageId, default), Times.Once);
             _noteServiceMock.Verify(s => s.SearchNotesAsync(request, default), Times.Once);
             result.Should().BeOfType<OkObjectResult>();
         }
@@ -79,8 +86,23 @@ namespace FoodDiary.UnitTests.Controllers
 
             var result = await controller.GetNotes(request, default);
 
+            _pageServiceMock.Verify(s => s.GetPageByIdAsync(request.PageId, default), Times.Never);
             _noteServiceMock.Verify(s => s.SearchNotesAsync(request, default), Times.Never);
             result.Should().BeOfType<BadRequestObjectResult>();
+        }
+
+        [Fact]
+        public async void GetNotes_ReturnsNotFound_WhenRequestedPageDoesNotExist()
+        {
+            var request = _fixture.Create<NotesSearchRequestDto>();
+            _pageServiceMock.Setup(s => s.GetPageByIdAsync(request.PageId, default))
+                .ReturnsAsync(null as Page);
+
+            var result = await NotesController.GetNotes(request, default);
+
+            _pageServiceMock.Verify(s => s.GetPageByIdAsync(request.PageId, default), Times.Once);
+            _noteServiceMock.Verify(s => s.SearchNotesAsync(request, default), Times.Never);
+            result.Should().BeOfType<NotFoundResult>();
         }
 
         [Fact]

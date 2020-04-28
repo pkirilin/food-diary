@@ -21,15 +21,18 @@ namespace FoodDiary.API.Controllers.v1
         private readonly ILogger<NotesController> _logger;
         private readonly IMapper _mapper;
         private readonly INoteService _noteService;
+        private readonly IPageService _pageService;
 
         public NotesController(
             ILoggerFactory loggerFactory,
             IMapper mapper,
-            INoteService noteService)
+            INoteService noteService,
+            IPageService pageService)
         {
             _logger = loggerFactory?.CreateLogger<NotesController>() ?? throw new ArgumentNullException(nameof(loggerFactory));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _noteService = noteService ?? throw new ArgumentNullException(nameof(noteService));
+            _pageService = pageService ?? throw new ArgumentNullException(nameof(pageService));
         }
 
         [HttpGet]
@@ -39,6 +42,12 @@ namespace FoodDiary.API.Controllers.v1
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
+            }
+
+            var requestedPage = await _pageService.GetPageByIdAsync(request.PageId, cancellationToken);
+            if (requestedPage == null)
+            {
+                return NotFound();
             }
 
             var noteEntities = await _noteService.SearchNotesAsync(request, cancellationToken);

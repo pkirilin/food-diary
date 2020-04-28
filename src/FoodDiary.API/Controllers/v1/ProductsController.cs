@@ -21,15 +21,18 @@ namespace FoodDiary.API.Controllers.v1
         private readonly ILogger<ProductsController> _logger;
         private readonly IMapper _mapper;
         private readonly IProductService _productService;
+        private readonly ICategoryService _categoryService;
 
         public ProductsController(
             ILoggerFactory loggerFactory,
             IMapper mapper,
-            IProductService productService)
+            IProductService productService,
+            ICategoryService categoryService)
         {
             _logger = loggerFactory?.CreateLogger<ProductsController>() ?? throw new ArgumentNullException(nameof(loggerFactory));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _productService = productService ?? throw new ArgumentNullException(nameof(productService));
+            _categoryService = categoryService ?? throw new ArgumentNullException(nameof(categoryService));
         }
 
         [HttpGet]
@@ -42,17 +45,26 @@ namespace FoodDiary.API.Controllers.v1
                 return BadRequest(ModelState);
             }
 
+            if (searchRequest.CategoryId.HasValue)
+            {
+                var requestedCategory = await _categoryService.GetCategoryByIdAsync(searchRequest.CategoryId.Value, cancellationToken);
+                if (requestedCategory == null)
+                {
+                    return NotFound();
+                }
+            }
+
             var totalProductsCount = await _productService.CountAllProductsAsync(cancellationToken);
             var foundProducts = await _productService.SearchProductsAsync(searchRequest, cancellationToken);
             var productItemsResult = _mapper.Map<IEnumerable<ProductItemDto>>(foundProducts);
 
-            var productsPaginationResult = new ProductsSearchResultDto()
+            var productsSearchResult = new ProductsSearchResultDto()
             {
                 TotalProductsCount = totalProductsCount,
                 ProductItems = productItemsResult
             };
 
-            return Ok(productsPaginationResult);
+            return Ok(productsSearchResult);
         }
 
         [HttpPost]
