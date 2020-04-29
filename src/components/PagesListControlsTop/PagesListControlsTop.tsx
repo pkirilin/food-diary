@@ -46,10 +46,12 @@ const PagesListControlsTop: React.FC<PagesListControlsTopProps> = ({
 
     if (getPagesActionType === PagesListActionTypes.Success) {
       const matchParams = match?.params;
-      const pageIdFromRoute = matchParams !== undefined ? matchParams['id'] : 0;
-      await getNotesForPage({
-        pageId: +pageIdFromRoute,
-      });
+      // Prevents notes request when no page selected
+      if (matchParams && !isNaN(+matchParams['id'])) {
+        await getNotesForPage({
+          pageId: +matchParams['id'],
+        });
+      }
     }
   };
 
