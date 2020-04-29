@@ -8,11 +8,9 @@ function parseBadRequestResponseObject(responseObj: BadRequestResponseObject): B
   const errors = new Map<string, Array<string>>();
 
   if (responseObj) {
-    if (responseObj) {
-      Object.keys(responseObj).forEach(errorKey => {
-        errors.set(errorKey, responseObj[errorKey]);
-      });
-    }
+    Object.keys(responseObj).forEach(errorKey => {
+      errors.set(errorKey, responseObj[errorKey]);
+    });
   }
 
   return {
@@ -32,7 +30,13 @@ function getAllBadRequestErrorMessages(badRequestErrors: Map<string, Array<strin
 
 export async function readBadRequestResponseAsync(response: Response): Promise<string> {
   const responseObj = await response.json();
-  const badRequestResponse = parseBadRequestResponseObject(responseObj);
+  let badRequestResponse: BadRequestResponse;
+
+  if (responseObj['errors']) {
+    badRequestResponse = parseBadRequestResponseObject(responseObj['errors']);
+  } else {
+    badRequestResponse = parseBadRequestResponseObject(responseObj);
+  }
 
   if (badRequestResponse.errors.size > 0) {
     const allErrorMessages = getAllBadRequestErrorMessages(badRequestResponse.errors);
