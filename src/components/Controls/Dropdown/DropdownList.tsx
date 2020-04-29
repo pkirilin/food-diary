@@ -182,7 +182,7 @@ function DropdownList<T = string>({
         {contentErrorMessage === undefined ? (
           isContentLoading ? (
             <div className="dropdown__content_loading">
-              <Loader label="Fetching products..." size="small"></Loader>
+              <Loader label="Fetching elements..." size="small"></Loader>
             </div>
           ) : items.length === 0 ? (
             <div className="dropdown__content_empty">No elements found</div>
