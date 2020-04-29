@@ -107,7 +107,7 @@ const ProductInput: React.FC<ProductInputProps> = ({
 
   const handleAddButtonClick = async (): Promise<void> => {
     const { type: createProductActionType } = await createProduct({
-      name: productNameInputValue,
+      name: productNameInputValue.trim(),
       caloriesCost,
       categoryId,
     });

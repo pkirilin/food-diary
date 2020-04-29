@@ -78,7 +78,7 @@ const CategoriesListItem: React.FC<CategoriesListItemProps> = ({
   const handleConfirmEditIconClick = async (): Promise<void> => {
     if (category.id < 1) {
       const createCategoryAction = await createCategory({
-        name: categoryName,
+        name: categoryName.trim(),
       });
 
       if (createCategoryAction.type === CategoriesOperationsActionTypes.CreateSuccess) {
@@ -93,7 +93,7 @@ const CategoriesListItem: React.FC<CategoriesListItemProps> = ({
     } else {
       const { type: editCategoryActionType } = await editCategory({
         id: category.id,
-        name: categoryName,
+        name: categoryName.trim(),
       });
 
       if (editCategoryActionType === CategoriesOperationsActionTypes.EditSuccess) {

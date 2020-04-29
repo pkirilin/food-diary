@@ -83,7 +83,7 @@ const ProductsTableRow: React.FC<ProductsTableRowProps> = ({
   const handleConfirmEditIconClick = async (): Promise<void> => {
     const { type: editProductActionType } = await editProduct({
       id: product.id,
-      name: productNameInputValue,
+      name: productNameInputValue.trim(),
       caloriesCost,
       categoryId,
     });
