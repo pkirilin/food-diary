@@ -44,6 +44,10 @@ $inner-padding: 10px;
     border-top: none;
     padding: $inner-padding;
 
+    &_collapsed {
+      display: none;
+    }
+
     &__notes {
       position: relative;
       margin-top: 10px;

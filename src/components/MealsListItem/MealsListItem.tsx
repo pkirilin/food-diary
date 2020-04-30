@@ -35,6 +35,12 @@ const MealsListItem: React.FC<MealsListItemProps> = ({
     setCollapsedForMeal(!isCollapsed, mealType);
   };
 
+  const mealsListItemContentClassNames = ['meals-list-item__content'];
+
+  if (isCollapsed) {
+    mealsListItemContentClassNames.push('meals-list-item__content_collapsed');
+  }
+
   return (
     <div className="meals-list-item">
       <div className="meals-list-item__header" onClick={handleItemHeaderClick}>
@@ -55,19 +61,17 @@ const MealsListItem: React.FC<MealsListItemProps> = ({
           <Badge label={`${countCalories} cal`}></Badge>
         </BadgesContainer>
       </div>
-      {!isCollapsed && (
-        <div className="meals-list-item__content">
-          <NoteInputConnected mealType={mealType}></NoteInputConnected>
-          <div className="meals-list-item__content__notes">
-            {isNotesTableLoading && (
-              <div className="meals-list-item__content__notes__preloader">
-                <Loader label="Loading notes"></Loader>
-              </div>
-            )}
-            <NotesTableConnected mealType={mealType}></NotesTableConnected>
-          </div>
+      <div className={mealsListItemContentClassNames.join(' ')}>
+        <NoteInputConnected mealType={mealType}></NoteInputConnected>
+        <div className="meals-list-item__content__notes">
+          {isNotesTableLoading && (
+            <div className="meals-list-item__content__notes__preloader">
+              <Loader label="Loading notes"></Loader>
+            </div>
+          )}
+          <NotesTableConnected mealType={mealType}></NotesTableConnected>
         </div>
-      )}
+      </div>
     </div>
   );
 };
