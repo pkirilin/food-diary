@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
@@ -35,8 +35,9 @@ namespace FoodDiary.API.Middlewares
             context.Response.ContentType = "text";
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
             var errorDetailsSeparator = new String('-', 50);
-            _logger.LogCritical($"Internal server error\n{errorDetailsSeparator}\nMessage: {e.Message}\n{errorDetailsSeparator}\nStack trace: {e.StackTrace}\n{errorDetailsSeparator}");
-            return context.Response.WriteAsync($"Internal server error", Encoding.UTF8);
+            var fullErrorMessage = $"Internal server error\n{errorDetailsSeparator}\nMessage: {e.Message}\n{errorDetailsSeparator}\nStack trace: {e.StackTrace}\n{errorDetailsSeparator}";
+            _logger.LogCritical(fullErrorMessage);
+            return context.Response.WriteAsync(fullErrorMessage, Encoding.UTF8);
         }
     }
 }
