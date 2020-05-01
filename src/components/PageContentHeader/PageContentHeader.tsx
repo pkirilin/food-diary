@@ -19,10 +19,9 @@ const PageContentHeader: React.FC<PageContentHeaderProps> = ({
   const visiblePagesIds = pageItems.map(p => p.id);
   const currentSelectedPage = pageItems.find(p => p.id === currentPageId);
   const currentPageIndex = pageItems.findIndex(p => p.id === currentPageId);
-  const isAnyDraftPageExists = visiblePagesIds.some(id => id < 1);
 
-  const isPreviousPageExists = !(currentPageIndex === 1 && isAnyDraftPageExists) && currentPageIndex > 0;
-  const isNextPageExists = currentPageIndex > -1 && currentPageIndex < visiblePagesIds.length - 1;
+  const isPreviousPageExists = currentPageIndex > 0;
+  const isNextPageExists = currentPageIndex >= 0 && currentPageIndex < visiblePagesIds.length - 1;
 
   const isPreviousPageIconActive = isPreviousPageExists && !isPageContentLoading && !isPageOperationInProcess;
   const isNextPageIconActive = isNextPageExists && !isPageContentLoading && !isPageOperationInProcess;

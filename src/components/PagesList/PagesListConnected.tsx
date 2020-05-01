@@ -3,14 +3,13 @@ import PagesList from './PagesList';
 import { ThunkDispatch } from 'redux-thunk';
 import { PagesFilter, PageItem } from '../../models';
 import { getPages } from '../../action-creators';
-import { FoodDiaryState } from '../../store';
+import { FoodDiaryState, DataFetchState } from '../../store';
 import { GetPagesListSuccessAction, GetPagesListErrorAction } from '../../action-types';
 
 export interface StateToPropsMapResult {
-  loading: boolean;
-  loaded: boolean;
-  errorMessage?: string;
-  visiblePages: PageItem[];
+  pageItems: PageItem[];
+  pageItemsFetchState: DataFetchState;
+  pageDraftItems: PageItem[];
   currentDraftPageId: number;
   pagesFilter: PagesFilter;
 }
@@ -21,10 +20,9 @@ export interface DispatchToPropsMapResult {
 
 const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
   return {
-    visiblePages: state.pages.list.pageItems,
-    loaded: state.pages.list.pageItemsFetchState.loaded,
-    loading: state.pages.list.pageItemsFetchState.loading,
-    errorMessage: state.pages.list.pageItemsFetchState.error,
+    pageItems: state.pages.list.pageItems,
+    pageItemsFetchState: state.pages.list.pageItemsFetchState,
+    pageDraftItems: state.pages.list.pageDraftItems,
     pagesFilter: state.pages.filter,
     currentDraftPageId: state.pages.list.currentDraftPageId,
   };

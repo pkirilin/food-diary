@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './PagesListItem.scss';
 import Badge from '../Badge';
 import {
@@ -8,93 +8,24 @@ import {
   useActiveLinkClassName,
 } from '../SidebarBlocks';
 import { BadgesContainer } from '../ContainerBlocks';
-import { Input, Checkbox } from '../Controls';
-import Icon from '../Icon';
+import { Checkbox } from '../Controls';
 import { DispatchToPropsMapResult, StateToPropsMapResult } from './PagesListItemConnected';
 import { PageItem } from '../../models';
-import { PagesOperationsActionTypes, PagesListActionTypes, CreatePageSuccessAction } from '../../action-types';
 import { getFormattedDate } from '../../utils/date-utils';
-import { usePageValidation } from '../../hooks';
-import { useHistory } from 'react-router-dom';
+import PagesListItemEditableConnected from './PagesListItemEditableConnected';
 
 interface PagesListItemProps extends StateToPropsMapResult, DispatchToPropsMapResult {
-  data: PageItem;
+  page: PageItem;
 }
 
 const PagesListItem: React.FC<PagesListItemProps> = ({
-  data: page,
-  createPage,
-  editPage,
-  deleteDraftPage,
-  getPages,
-  pagesFilter,
+  page,
   editablePagesIds,
   selectedPagesIds,
   setSelectedForPage,
-  setEditableForPages,
-  isPageOperationInProcess,
-  isNoteOperationInProcess,
-  areNotesForPageLoading,
-  areNotesForMealLoading,
 }: PagesListItemProps) => {
-  const [selectedDate, setSelectedDate] = useState(page.date);
-  const [isPageDateValid] = usePageValidation(selectedDate);
-  const history = useHistory();
-
   const isEditable = editablePagesIds.some(id => page.id === id);
   const isSelected = selectedPagesIds.some(id => page.id === id);
-  const isAnySideEffectHappening =
-    isPageOperationInProcess || isNoteOperationInProcess || areNotesForMealLoading || areNotesForPageLoading;
-  const isConfirmEditDisabled = isAnySideEffectHappening || !isPageDateValid;
-
-  const handleSelectedDateChange = (event: React.ChangeEvent): void => {
-    const target = event.target as HTMLInputElement;
-    if (target) {
-      setSelectedDate(target.value);
-    }
-  };
-
-  const handleConfirmEditPageIconClick = async (): Promise<void> => {
-    if (page.id < 1) {
-      // This is a draft page for create
-      const createPageAction = await createPage({
-        date: selectedDate,
-      });
-
-      if (createPageAction.type === PagesOperationsActionTypes.CreateSuccess) {
-        deleteDraftPage(page.id);
-
-        const { type: getPagesActionType } = await getPages(pagesFilter);
-
-        if (getPagesActionType === PagesListActionTypes.Success) {
-          const { createdPageId } = createPageAction as CreatePageSuccessAction;
-          history.push(`/pages/${createdPageId}`);
-        }
-      }
-    } else {
-      // This is existing page for edit
-      const editPageAction = await editPage({
-        id: page.id,
-        date: selectedDate,
-      });
-
-      if (editPageAction.type === PagesOperationsActionTypes.EditSuccess) {
-        setEditableForPages([page.id], false);
-        await getPages(pagesFilter);
-      }
-    }
-  };
-
-  const handleCancelEditPageIconClick = (): void => {
-    if (page.id < 1) {
-      // This is a draft page: cancel = delete draft
-      deleteDraftPage(page.id);
-    } else {
-      // This is existing page: cancel = make page not editable
-      setEditableForPages([page.id], false);
-      setSelectedDate(page.date);
-    }
-  };
 
   const handlePageCheck = (): void => {
     setSelectedForPage(!isSelected, page.id);
@@ -105,47 +36,23 @@ const PagesListItem: React.FC<PagesListItemProps> = ({
 
   const activeLinkClassName = useActiveLinkClassName(isSelected);
 
+  if (isEditable) {
+    return <PagesListItemEditableConnected page={page}></PagesListItemEditableConnected>;
+  }
+
   return (
-    <React.Fragment>
-      {isEditable ? (
-        <SidebarListItem editable>
-          <Input
-            type="date"
-            placeholder="Pick date"
-            value={selectedDate}
-            onChange={handleSelectedDateChange}
-            disabled={isAnySideEffectHappening}
-          ></Input>
-          <SidebarListItemControls>
-            <Icon
-              type="check"
-              size="small"
-              onClick={handleConfirmEditPageIconClick}
-              disabled={isConfirmEditDisabled}
-            ></Icon>
-            <Icon
-              type="close"
-              size="small"
-              onClick={handleCancelEditPageIconClick}
-              disabled={isAnySideEffectHappening}
-            ></Icon>
-          </SidebarListItemControls>
-        </SidebarListItem>
-      ) : (
-        <SidebarListItem selected={isSelected}>
-          <SidebarListItemLink to={`/pages/${page.id}`} activeClassName={activeLinkClassName} selected={isSelected}>
-            <div>{getFormattedDate(page.date)}</div>
-            <BadgesContainer>
-              <Badge label={notesBadgeLabel} selected={isSelected}></Badge>
-              <Badge label={caloriesBadgeLabel} selected={isSelected}></Badge>
-            </BadgesContainer>
-          </SidebarListItemLink>
-          <SidebarListItemControls>
-            <Checkbox checked={isSelected} onCheck={handlePageCheck}></Checkbox>
-          </SidebarListItemControls>
-        </SidebarListItem>
-      )}
-    </React.Fragment>
+    <SidebarListItem selected={isSelected}>
+      <SidebarListItemLink to={`/pages/${page.id}`} activeClassName={activeLinkClassName} selected={isSelected}>
+        <div>{getFormattedDate(page.date)}</div>
+        <BadgesContainer>
+          <Badge label={notesBadgeLabel} selected={isSelected}></Badge>
+          <Badge label={caloriesBadgeLabel} selected={isSelected}></Badge>
+        </BadgesContainer>
+      </SidebarListItemLink>
+      <SidebarListItemControls>
+        <Checkbox checked={isSelected} onCheck={handlePageCheck}></Checkbox>
+      </SidebarListItemControls>
+    </SidebarListItem>
   );
 };
 

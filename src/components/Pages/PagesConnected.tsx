@@ -14,6 +14,4 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
   };
 };
 
-const mapDispatchToProps = null;
-
-export default connect(mapStateToProps, mapDispatchToProps)(Pages);
+export default connect(mapStateToProps)(Pages);

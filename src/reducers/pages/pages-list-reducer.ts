@@ -7,7 +7,8 @@ const initialState: PagesListState = {
     loading: false,
     loaded: false,
   },
-  currentDraftPageId: 0,
+  pageDraftItems: [],
+  currentDraftPageId: 1,
   editablePagesIds: [],
   selectedPagesIds: [],
 };
@@ -26,11 +27,7 @@ const pagesListReducer = (state: PagesListState = initialState, action: PagesLis
     case PagesListActionTypes.Success:
       return {
         ...state,
-        pageItems: [
-          // Keeping draft pages
-          ...state.pageItems.filter(p => p.id < 1),
-          ...action.pages,
-        ],
+        pageItems: action.pages,
         pageItemsFetchState: {
           ...state.pageItemsFetchState,
           loading: false,
@@ -51,18 +48,19 @@ const pagesListReducer = (state: PagesListState = initialState, action: PagesLis
     case PagesListActionTypes.CreateDraftPage:
       return {
         ...state,
-        pageItems: [{ ...action.draftPage, id: state.currentDraftPageId }, ...state.pageItems],
-        pageItemsFetchState: {
-          ...state.pageItemsFetchState,
-        },
-        editablePagesIds: [...state.editablePagesIds, state.currentDraftPageId],
-        currentDraftPageId: state.currentDraftPageId - 1,
+        pageDraftItems: [
+          {
+            ...action.draftPage,
+            id: state.currentDraftPageId,
+          },
+          ...state.pageDraftItems,
+        ],
+        currentDraftPageId: state.currentDraftPageId + 1,
       };
     case PagesListActionTypes.DeleteDraftPage:
       return {
         ...state,
-        pageItems: [...state.pageItems.filter(p => p.id !== action.draftPageId)],
-        editablePagesIds: state.editablePagesIds.filter(id => id !== action.draftPageId),
+        pageDraftItems: [...state.pageDraftItems.filter(p => p.id !== action.draftPageId)],
       };
     case PagesListActionTypes.SetSelected:
       return {
