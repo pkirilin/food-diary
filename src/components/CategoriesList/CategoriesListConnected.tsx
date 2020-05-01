@@ -9,12 +9,14 @@ import { getCategories } from '../../action-creators';
 export interface StateToPropsMapResult {
   categoryItems: CategoryItem[];
   categoryItemsFetchState: DataFetchState;
+  categoryDraftItems: CategoryItem[];
 }
 
 const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
   return {
     categoryItems: state.categories.list.categoryItems,
     categoryItemsFetchState: state.categories.list.categoryItemsFetchState,
+    categoryDraftItems: state.categories.list.categoryDraftItems,
   };
 };
 

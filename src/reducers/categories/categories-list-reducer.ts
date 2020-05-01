@@ -7,7 +7,8 @@ const initialState: CategoriesListState = {
     loading: false,
     loaded: false,
   },
-  currentDraftCategoryId: 0,
+  categoryDraftItems: [],
+  currentDraftCategoryId: 1,
   editableCategoriesIds: [],
 };
 
@@ -33,7 +34,7 @@ const categoriesListReducer = (
           loading: false,
           loaded: true,
         },
-        categoryItems: [...state.categoryItems.filter(p => p.id < 1), ...action.categories],
+        categoryItems: action.categories,
       };
     case CategoriesListActionTypes.Error:
       return {
@@ -48,21 +49,19 @@ const categoriesListReducer = (
     case CategoriesListActionTypes.CreateDraftCategory:
       return {
         ...state,
-        editableCategoriesIds: [...state.editableCategoriesIds, state.currentDraftCategoryId],
-        categoryItems: [
+        categoryDraftItems: [
           {
             ...action.draftCategory,
             id: state.currentDraftCategoryId,
           },
-          ...state.categoryItems,
+          ...state.categoryDraftItems,
         ],
-        currentDraftCategoryId: state.currentDraftCategoryId - 1,
+        currentDraftCategoryId: state.currentDraftCategoryId + 1,
       };
     case CategoriesListActionTypes.DeleteDraftCategory:
       return {
         ...state,
-        categoryItems: [...state.categoryItems.filter(c => c.id !== action.draftCategoryId)],
-        editableCategoriesIds: [...state.editableCategoriesIds.filter(id => id !== action.draftCategoryId)],
+        categoryDraftItems: [...state.categoryDraftItems.filter(c => c.id !== action.draftCategoryId)],
       };
     case CategoriesListActionTypes.SetEditable:
       return {
