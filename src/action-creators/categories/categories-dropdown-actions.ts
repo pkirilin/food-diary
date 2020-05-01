@@ -3,10 +3,11 @@ import {
   CategoriesDropdownActionTypes,
   GetCategoryDropdownItemsSuccessAction,
   GetCategoryDropdownItemsErrorAction,
+  GetCategoryDropdownItemsActionCreator,
+  GetCategoryDropdownItemsActions,
 } from '../../action-types';
 import { CategoryDropdownItem, CategoryDropdownSearchRequest } from '../../models';
-import { ActionCreator, Dispatch } from 'redux';
-import { ThunkAction } from 'redux-thunk';
+import { Dispatch } from 'redux';
 import { getCategoryDropdownItemsAsync } from '../../services';
 
 const getCategoryDropdownItemsRequest = (): GetCategoryDropdownItemsRequestAction => {
@@ -31,14 +32,11 @@ const getCategoryDropdownItemsError = (error?: string): GetCategoryDropdownItems
   };
 };
 
-export const getCategoryDropdownItems: ActionCreator<ThunkAction<
-  Promise<GetCategoryDropdownItemsSuccessAction | GetCategoryDropdownItemsErrorAction>,
-  CategoryDropdownItem[],
-  CategoryDropdownSearchRequest,
-  GetCategoryDropdownItemsSuccessAction | GetCategoryDropdownItemsErrorAction
->> = (request: CategoryDropdownSearchRequest) => {
+export const getCategoryDropdownItems: GetCategoryDropdownItemsActionCreator = (
+  request: CategoryDropdownSearchRequest,
+) => {
   return async (
-    dispatch: Dispatch,
+    dispatch: Dispatch<GetCategoryDropdownItemsActions>,
   ): Promise<GetCategoryDropdownItemsSuccessAction | GetCategoryDropdownItemsErrorAction> => {
     const baseErrorMessage = 'Failed to get categories';
     dispatch(getCategoryDropdownItemsRequest());

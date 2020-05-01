@@ -1,5 +1,6 @@
-import { Action } from 'redux';
-import { PageItem } from '../../models';
+import { Action, ActionCreator } from 'redux';
+import { PageItem, PagesFilter } from '../../models';
+import { ThunkAction, ThunkDispatch } from 'redux-thunk';
 
 export enum PagesListActionTypes {
   Request = 'PAGES_LIST__REQUEST',
@@ -53,12 +54,31 @@ export interface SetEditableForPagesAction extends Action<PagesListActionTypes.S
   editable: boolean;
 }
 
+export type GetPagesListActions = GetPagesListRequestAction | GetPagesListSuccessAction | GetPagesListErrorAction;
+
 export type PagesListActions =
-  | GetPagesListRequestAction
-  | GetPagesListSuccessAction
-  | GetPagesListErrorAction
+  | GetPagesListActions
   | CreateDraftPageAction
   | DeleteDraftPageAction
   | SetSelectedForPageAction
   | SetSelectedForAllPagesAction
   | SetEditableForPagesAction;
+
+export type GetPagesListActionCreator = ActionCreator<
+  ThunkAction<
+    Promise<GetPagesListSuccessAction | GetPagesListErrorAction>,
+    PageItem[],
+    PagesFilter,
+    GetPagesListSuccessAction | GetPagesListErrorAction
+  >
+>;
+
+export type GetPagesListDispatch = ThunkDispatch<
+  PageItem[],
+  PagesFilter,
+  GetPagesListSuccessAction | GetPagesListErrorAction
+>;
+
+export type GetPagesListDispatchProp = (
+  filter: PagesFilter,
+) => Promise<GetPagesListSuccessAction | GetPagesListErrorAction>;

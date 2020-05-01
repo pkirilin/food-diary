@@ -1,13 +1,14 @@
+import { Dispatch } from 'redux';
 import {
   GetProductsListRequestAction,
   ProductsListActionTypes,
   GetProductsListSuccessAction,
   GetProductsListErrorAction,
   SetEditableForProductAction,
+  GetProductsListActionCreator,
+  GetProductsListActions,
 } from '../../action-types';
 import { ProductItem, ProductsFilter } from '../../models';
-import { Dispatch, ActionCreator } from 'redux';
-import { ThunkAction } from 'redux-thunk';
 import { getProductsAsync } from '../../services';
 
 const getProductsRequest = (): GetProductsListRequestAction => {
@@ -31,13 +32,10 @@ const getProductsError = (errorMessage: string): GetProductsListErrorAction => {
   };
 };
 
-export const getProducts: ActionCreator<ThunkAction<
-  Promise<GetProductsListSuccessAction | GetProductsListErrorAction>,
-  ProductItem[],
-  ProductsFilter,
-  GetProductsListSuccessAction | GetProductsListErrorAction
->> = (productsFilter: ProductsFilter) => {
-  return async (dispatch: Dispatch): Promise<GetProductsListSuccessAction | GetProductsListErrorAction> => {
+export const getProducts: GetProductsListActionCreator = (productsFilter: ProductsFilter) => {
+  return async (
+    dispatch: Dispatch<GetProductsListActions>,
+  ): Promise<GetProductsListSuccessAction | GetProductsListErrorAction> => {
     const baseErrorMessage = 'Failed to get products';
     dispatch(getProductsRequest());
     try {

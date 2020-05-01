@@ -1,3 +1,4 @@
+import { Dispatch } from 'redux';
 import {
   CreateProductRequestAction,
   ProductsOperationsActionTypes,
@@ -9,10 +10,14 @@ import {
   DeleteProductRequestAction,
   DeleteProductSuccessAction,
   DeleteProductErrorAction,
+  CreateProductActionCreator,
+  CreateProductActions,
+  EditProductActionCreator,
+  EditProductActions,
+  DeleteProductActionCreator,
+  DeleteProductActions,
 } from '../../action-types';
 import { ProductEditRequest, ProductCreateEdit } from '../../models';
-import { ActionCreator, Dispatch } from 'redux';
-import { ThunkAction } from 'redux-thunk';
 import { createProductAsync, editProductAsync, deleteProductAsync } from '../../services';
 import { readBadRequestResponseAsync } from '../../utils/bad-request-response-reader';
 
@@ -85,13 +90,10 @@ enum ProductsOperationsBaseErrorMessages {
   Delete = 'Failed to delete product',
 }
 
-export const createProduct: ActionCreator<ThunkAction<
-  Promise<CreateProductSuccessAction | CreateProductErrorAction>,
-  void,
-  ProductCreateEdit,
-  CreateProductSuccessAction | CreateProductErrorAction
->> = (product: ProductCreateEdit) => {
-  return async (dispatch: Dispatch): Promise<CreateProductSuccessAction | CreateProductErrorAction> => {
+export const createProduct: CreateProductActionCreator = (product: ProductCreateEdit) => {
+  return async (
+    dispatch: Dispatch<CreateProductActions>,
+  ): Promise<CreateProductSuccessAction | CreateProductErrorAction> => {
     dispatch(createProductRequest(product, 'Creating product'));
     try {
       const response = await createProductAsync(product);
@@ -120,13 +122,8 @@ export const createProduct: ActionCreator<ThunkAction<
   };
 };
 
-export const editProduct: ActionCreator<ThunkAction<
-  Promise<EditProductSuccessAction | EditProductErrorAction>,
-  void,
-  ProductEditRequest,
-  EditProductSuccessAction | EditProductErrorAction
->> = (request: ProductEditRequest) => {
-  return async (dispatch: Dispatch): Promise<EditProductSuccessAction | EditProductErrorAction> => {
+export const editProduct: EditProductActionCreator = (request: ProductEditRequest) => {
+  return async (dispatch: Dispatch<EditProductActions>): Promise<EditProductSuccessAction | EditProductErrorAction> => {
     dispatch(editProductRequest(request, 'Updating product'));
     try {
       const response = await editProductAsync(request);
@@ -155,13 +152,10 @@ export const editProduct: ActionCreator<ThunkAction<
   };
 };
 
-export const deleteProduct: ActionCreator<ThunkAction<
-  Promise<DeleteProductSuccessAction | DeleteProductErrorAction>,
-  void,
-  number,
-  DeleteProductSuccessAction | DeleteProductErrorAction
->> = (productId: number) => {
-  return async (dispatch: Dispatch): Promise<DeleteProductSuccessAction | DeleteProductErrorAction> => {
+export const deleteProduct: DeleteProductActionCreator = (productId: number) => {
+  return async (
+    dispatch: Dispatch<DeleteProductActions>,
+  ): Promise<DeleteProductSuccessAction | DeleteProductErrorAction> => {
     dispatch(deleteProductRequest(productId, 'Deleting product'));
     try {
       const response = await deleteProductAsync(productId);

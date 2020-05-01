@@ -1,6 +1,5 @@
+import { Dispatch } from 'redux';
 import { PageCreateEdit, PageEditRequest } from '../../models';
-import { ActionCreator, Dispatch } from 'redux';
-import { ThunkAction } from 'redux-thunk';
 import {
   PagesOperationsActionTypes,
   CreatePageSuccessAction,
@@ -12,6 +11,12 @@ import {
   DeletePagesSuccessAction,
   DeletePagesErrorAction,
   DeletePagesRequestAction,
+  CreatePageActionCreator,
+  CreatePageActions,
+  EditPageActionCreator,
+  EditPageActions,
+  DeletePageActionCreator,
+  DeletePagesActions,
 } from '../../action-types';
 import { createPageAsync, deletePagesAsync, editPageAsync } from '../../services';
 import { readBadRequestResponseAsync } from '../../utils/bad-request-response-reader';
@@ -85,13 +90,8 @@ enum PagesOperationsBaseErrorMessages {
   Delete = 'Failed to delete selected',
 }
 
-export const createPage: ActionCreator<ThunkAction<
-  Promise<CreatePageSuccessAction | CreatePageErrorAction>,
-  void,
-  PageCreateEdit,
-  CreatePageSuccessAction | CreatePageErrorAction
->> = (page: PageCreateEdit) => {
-  return async (dispatch: Dispatch): Promise<CreatePageSuccessAction | CreatePageErrorAction> => {
+export const createPage: CreatePageActionCreator = (page: PageCreateEdit) => {
+  return async (dispatch: Dispatch<CreatePageActions>): Promise<CreatePageSuccessAction | CreatePageErrorAction> => {
     dispatch(createPageRequest(page, 'Creating page'));
     try {
       const response = await createPageAsync(page);
@@ -121,13 +121,8 @@ export const createPage: ActionCreator<ThunkAction<
   };
 };
 
-export const editPage: ActionCreator<ThunkAction<
-  Promise<EditPageSuccessAction | EditPageErrorAction>,
-  void,
-  PageEditRequest,
-  EditPageSuccessAction | EditPageErrorAction
->> = (request: PageEditRequest) => {
-  return async (dispatch: Dispatch): Promise<EditPageSuccessAction | EditPageErrorAction> => {
+export const editPage: EditPageActionCreator = (request: PageEditRequest) => {
+  return async (dispatch: Dispatch<EditPageActions>): Promise<EditPageSuccessAction | EditPageErrorAction> => {
     dispatch(editPageRequest(request, 'Updating page'));
     try {
       const response = await editPageAsync(request);
@@ -156,13 +151,8 @@ export const editPage: ActionCreator<ThunkAction<
   };
 };
 
-export const deletePages: ActionCreator<ThunkAction<
-  Promise<DeletePagesSuccessAction | DeletePagesErrorAction>,
-  void,
-  number[],
-  DeletePagesSuccessAction | DeletePagesErrorAction
->> = (pagesIds: number[]) => {
-  return async (dispatch: Dispatch): Promise<DeletePagesSuccessAction | DeletePagesErrorAction> => {
+export const deletePages: DeletePageActionCreator = (pagesIds: number[]) => {
+  return async (dispatch: Dispatch<DeletePagesActions>): Promise<DeletePagesSuccessAction | DeletePagesErrorAction> => {
     const messageSuffixForPage = pagesIds.length > 1 ? 'pages' : 'page';
     dispatch(deletePagesRequest(`Deleting ${messageSuffixForPage}`));
     try {

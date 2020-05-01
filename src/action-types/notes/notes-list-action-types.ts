@@ -1,5 +1,6 @@
-import { Action } from 'redux';
-import { NoteItem, MealType } from '../../models';
+import { Action, ActionCreator } from 'redux';
+import { NoteItem, MealType, NotesSearchRequest, NotesForMealSearchRequest } from '../../models';
+import { ThunkAction, ThunkDispatch } from 'redux-thunk';
 
 export enum NotesListActionTypes {
   RequestForPage = 'NOTES_LIST__REQUEST_FOR_PAGE',
@@ -50,11 +51,52 @@ export interface SetEditableForNoteAction extends Action<NotesListActionTypes.Se
   editable: boolean;
 }
 
-export type NotesListActions =
+export type GetNotesForPageActions =
   | GetNotesForPageRequestAction
   | GetNotesForPageSuccessAction
-  | GetNotesForPageErrorAction
+  | GetNotesForPageErrorAction;
+
+export type GetNotesForMealActions =
   | GetNotesForMealRequestAction
   | GetNotesForMealSuccessAction
-  | GetNotesForMealErrorAction
-  | SetEditableForNoteAction;
+  | GetNotesForMealErrorAction;
+
+export type NotesListActions = GetNotesForPageActions | GetNotesForMealActions | SetEditableForNoteAction;
+
+export type GetNotesForPageActionCreator = ActionCreator<
+  ThunkAction<
+    Promise<GetNotesForPageSuccessAction | GetNotesForPageErrorAction>,
+    NoteItem[],
+    NotesSearchRequest,
+    GetNotesForPageSuccessAction | GetNotesForPageErrorAction
+  >
+>;
+
+export type GetNotesForMealActionCreator = ActionCreator<
+  ThunkAction<
+    Promise<GetNotesForMealSuccessAction | GetNotesForMealErrorAction>,
+    NoteItem[],
+    NotesForMealSearchRequest,
+    GetNotesForMealSuccessAction | GetNotesForMealErrorAction
+  >
+>;
+
+export type GetNotesForPageDispatch = ThunkDispatch<
+  NoteItem[],
+  NotesSearchRequest,
+  GetNotesForPageSuccessAction | GetNotesForPageErrorAction
+>;
+
+export type GetNotesForMealDispatch = ThunkDispatch<
+  NoteItem[],
+  NotesForMealSearchRequest,
+  GetNotesForMealSuccessAction | GetNotesForMealErrorAction
+>;
+
+export type GetNotesForPageDispatchProp = (
+  request: NotesSearchRequest,
+) => Promise<GetNotesForPageSuccessAction | GetNotesForPageErrorAction>;
+
+export type GetNotesForMealDispatchProp = (
+  request: NotesForMealSearchRequest,
+) => Promise<GetNotesForMealSuccessAction | GetNotesForMealErrorAction>;

@@ -1,5 +1,4 @@
-import { ActionCreator, Dispatch } from 'redux';
-import { ThunkAction } from 'redux-thunk';
+import { Dispatch } from 'redux';
 import {
   CreateCategorySuccessAction,
   CreateCategoryErrorAction,
@@ -11,6 +10,12 @@ import {
   DeleteCategoryRequestAction,
   DeleteCategorySuccessAction,
   DeleteCategoryErrorAction,
+  CreateCategoryActionCreator,
+  CreateCategoryActions,
+  EditCategoryActionCreator,
+  EditCategoryActions,
+  DeleteCategoryActionCreator,
+  DeleteCategoryActions,
 } from '../../action-types';
 import { CategoryCreateEdit, CategoryEditRequest } from '../../models';
 import { createCategoryAsync, editCategoryAsync, deleteCategoryAsync } from '../../services';
@@ -85,13 +90,10 @@ enum CategoriesOperationsBaseErrorMessages {
   Delete = 'Failed to delete category',
 }
 
-export const createCategory: ActionCreator<ThunkAction<
-  Promise<CreateCategorySuccessAction | CreateCategoryErrorAction>,
-  void,
-  CategoryCreateEdit,
-  CreateCategorySuccessAction | CreateCategoryErrorAction
->> = (category: CategoryCreateEdit) => {
-  return async (dispatch: Dispatch): Promise<CreateCategorySuccessAction | CreateCategoryErrorAction> => {
+export const createCategory: CreateCategoryActionCreator = (category: CategoryCreateEdit) => {
+  return async (
+    dispatch: Dispatch<CreateCategoryActions>,
+  ): Promise<CreateCategorySuccessAction | CreateCategoryErrorAction> => {
     dispatch(createCategoryRequest(category, 'Creating category'));
     try {
       const response = await createCategoryAsync(category);
@@ -125,13 +127,10 @@ export const createCategory: ActionCreator<ThunkAction<
   };
 };
 
-export const editCategory: ActionCreator<ThunkAction<
-  Promise<EditCategorySuccessAction | EditCategoryErrorAction>,
-  void,
-  CategoryEditRequest,
-  EditCategorySuccessAction | EditCategoryErrorAction
->> = (request: CategoryEditRequest) => {
-  return async (dispatch: Dispatch): Promise<EditCategorySuccessAction | EditCategoryErrorAction> => {
+export const editCategory: EditCategoryActionCreator = (request: CategoryEditRequest) => {
+  return async (
+    dispatch: Dispatch<EditCategoryActions>,
+  ): Promise<EditCategorySuccessAction | EditCategoryErrorAction> => {
     dispatch(editCategoryRequest(request, 'Updating category'));
     try {
       const response = await editCategoryAsync(request);
@@ -160,13 +159,10 @@ export const editCategory: ActionCreator<ThunkAction<
   };
 };
 
-export const deleteCategory: ActionCreator<ThunkAction<
-  Promise<DeleteCategorySuccessAction | DeleteCategoryErrorAction>,
-  void,
-  number,
-  DeleteCategorySuccessAction | DeleteCategoryErrorAction
->> = (categoryId: number) => {
-  return async (dispatch: Dispatch): Promise<DeleteCategorySuccessAction | DeleteCategoryErrorAction> => {
+export const deleteCategory: DeleteCategoryActionCreator = (categoryId: number) => {
+  return async (
+    dispatch: Dispatch<DeleteCategoryActions>,
+  ): Promise<DeleteCategorySuccessAction | DeleteCategoryErrorAction> => {
     dispatch(deleteCategoryRequest('Deleting category'));
     try {
       const response = await deleteCategoryAsync(categoryId);

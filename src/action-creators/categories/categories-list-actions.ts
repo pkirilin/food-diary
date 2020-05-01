@@ -1,5 +1,4 @@
-import { ActionCreator, Dispatch } from 'redux';
-import { ThunkAction } from 'redux-thunk';
+import { Dispatch } from 'redux';
 import {
   GetCategoriesListSuccessAction,
   GetCategoriesListErrorAction,
@@ -8,6 +7,8 @@ import {
   CreateDraftCategoryAction,
   DeleteDraftCategoryAction,
   SetEditableForCategoriesAction,
+  GetCategoriesListActionCreator,
+  GetCategoriesListActions,
 } from '../../action-types';
 import { CategoryItem } from '../../models';
 import { getCategoriesAsync } from '../../services';
@@ -32,13 +33,10 @@ const getCategoriesError = (errorMessage: string): GetCategoriesListErrorAction 
   };
 };
 
-export const getCategories: ActionCreator<ThunkAction<
-  Promise<GetCategoriesListSuccessAction | GetCategoriesListErrorAction>,
-  CategoryItem[],
-  void,
-  GetCategoriesListSuccessAction | GetCategoriesListErrorAction
->> = () => {
-  return async (dispatch: Dispatch): Promise<GetCategoriesListSuccessAction | GetCategoriesListErrorAction> => {
+export const getCategories: GetCategoriesListActionCreator = () => {
+  return async (
+    dispatch: Dispatch<GetCategoriesListActions>,
+  ): Promise<GetCategoriesListSuccessAction | GetCategoriesListErrorAction> => {
     const baseErrorMessage = 'Failed to get categories';
     dispatch(getCategoriesRequest());
     try {

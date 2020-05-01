@@ -1,5 +1,4 @@
-import { ActionCreator, Dispatch } from 'redux';
-import { ThunkAction } from 'redux-thunk';
+import { Dispatch } from 'redux';
 import {
   CreateNoteSuccessAction,
   CreateNoteErrorAction,
@@ -11,6 +10,12 @@ import {
   DeleteNoteSuccessAction,
   DeleteNoteErrorAction,
   DeleteNoteRequestAction,
+  CreateNoteActionCreator,
+  CreateNoteActions,
+  EditNoteActionCreator,
+  EditNoteActions,
+  DeleteNoteActionCreator,
+  DeleteNoteActions,
 } from '../../action-types';
 import { NoteCreateEdit, MealType, NoteDeleteRequest } from '../../models';
 import { createNoteAsync, editNoteAsync, deleteNoteAsync } from '../../services';
@@ -92,13 +97,8 @@ enum NotesOperationsBaseErrorMessages {
   Delete = 'Failed to delete note',
 }
 
-export const createNote: ActionCreator<ThunkAction<
-  Promise<CreateNoteSuccessAction | CreateNoteErrorAction>,
-  void,
-  NoteCreateEdit,
-  CreateNoteSuccessAction | CreateNoteErrorAction
->> = (note: NoteCreateEdit) => {
-  return async (dispatch: Dispatch): Promise<CreateNoteSuccessAction | CreateNoteErrorAction> => {
+export const createNote: CreateNoteActionCreator = (note: NoteCreateEdit) => {
+  return async (dispatch: Dispatch<CreateNoteActions>): Promise<CreateNoteSuccessAction | CreateNoteErrorAction> => {
     dispatch(createNoteRequest(note, 'Creating note'));
     try {
       const response = await createNoteAsync(note);
@@ -130,13 +130,8 @@ export const createNote: ActionCreator<ThunkAction<
   };
 };
 
-export const editNote: ActionCreator<ThunkAction<
-  Promise<EditNoteSuccessAction | EditNoteErrorAction>,
-  void,
-  NoteEditRequest,
-  EditNoteSuccessAction | EditNoteErrorAction
->> = (request: NoteEditRequest) => {
-  return async (dispatch: Dispatch): Promise<EditNoteSuccessAction | EditNoteErrorAction> => {
+export const editNote: EditNoteActionCreator = (request: NoteEditRequest) => {
+  return async (dispatch: Dispatch<EditNoteActions>): Promise<EditNoteSuccessAction | EditNoteErrorAction> => {
     dispatch(editNoteRequest(request, 'Updating note'));
     try {
       const response = await editNoteAsync(request);
@@ -168,13 +163,8 @@ export const editNote: ActionCreator<ThunkAction<
   };
 };
 
-export const deleteNote: ActionCreator<ThunkAction<
-  Promise<DeleteNoteSuccessAction | DeleteNoteErrorAction>,
-  void,
-  NoteDeleteRequest,
-  DeleteNoteSuccessAction | DeleteNoteErrorAction
->> = (request: NoteDeleteRequest) => {
-  return async (dispatch: Dispatch): Promise<DeleteNoteSuccessAction | DeleteNoteErrorAction> => {
+export const deleteNote: DeleteNoteActionCreator = (request: NoteDeleteRequest) => {
+  return async (dispatch: Dispatch<DeleteNoteActions>): Promise<DeleteNoteSuccessAction | DeleteNoteErrorAction> => {
     dispatch(deleteNoteRequest(request, 'Deleting note'));
     try {
       const response = await deleteNoteAsync(request.id);

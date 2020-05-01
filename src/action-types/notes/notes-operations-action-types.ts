@@ -1,6 +1,7 @@
-import { Action } from 'redux';
+import { Action, ActionCreator } from 'redux';
 import { NoteCreateEdit, MealType, NoteDeleteRequest } from '../../models';
 import { NoteEditRequest } from '../../models';
+import { ThunkAction, ThunkDispatch } from 'redux-thunk';
 
 export enum NotesOperationsActionTypes {
   CreateRequest = 'NOTES_OPERATIONS__CREATE_REQUEST',
@@ -67,10 +68,55 @@ export interface DeleteNoteErrorAction extends Action<NotesOperationsActionTypes
   error: string;
 }
 
-type CreateNoteActions = CreateNoteRequestAction | CreateNoteSuccessAction | CreateNoteErrorAction;
+export type CreateNoteActions = CreateNoteRequestAction | CreateNoteSuccessAction | CreateNoteErrorAction;
 
-type EditNoteActions = EditNoteRequestAction | EditNoteSuccessAction | EditNoteErrorAction;
+export type EditNoteActions = EditNoteRequestAction | EditNoteSuccessAction | EditNoteErrorAction;
 
-type DeleteNoteActions = DeleteNoteRequestAction | DeleteNoteSuccessAction | DeleteNoteErrorAction;
+export type DeleteNoteActions = DeleteNoteRequestAction | DeleteNoteSuccessAction | DeleteNoteErrorAction;
 
 export type NotesOperationsActions = CreateNoteActions | EditNoteActions | DeleteNoteActions;
+
+export type CreateNoteActionCreator = ActionCreator<
+  ThunkAction<
+    Promise<CreateNoteSuccessAction | CreateNoteErrorAction>,
+    void,
+    NoteCreateEdit,
+    CreateNoteSuccessAction | CreateNoteErrorAction
+  >
+>;
+
+export type EditNoteActionCreator = ActionCreator<
+  ThunkAction<
+    Promise<EditNoteSuccessAction | EditNoteErrorAction>,
+    void,
+    NoteEditRequest,
+    EditNoteSuccessAction | EditNoteErrorAction
+  >
+>;
+
+export type DeleteNoteActionCreator = ActionCreator<
+  ThunkAction<
+    Promise<DeleteNoteSuccessAction | DeleteNoteErrorAction>,
+    void,
+    NoteDeleteRequest,
+    DeleteNoteSuccessAction | DeleteNoteErrorAction
+  >
+>;
+
+export type CreateNoteDispatch = ThunkDispatch<void, NoteCreateEdit, CreateNoteSuccessAction | CreateNoteErrorAction>;
+
+export type EditNoteDispatch = ThunkDispatch<void, NoteEditRequest, EditNoteSuccessAction | EditNoteErrorAction>;
+
+export type DeleteNoteDispatch = ThunkDispatch<
+  void,
+  NoteDeleteRequest,
+  DeleteNoteSuccessAction | DeleteNoteErrorAction
+>;
+
+export type CreateNoteDispatchProp = (note: NoteCreateEdit) => Promise<CreateNoteSuccessAction | CreateNoteErrorAction>;
+
+export type EditNoteDispatchProp = (request: NoteEditRequest) => Promise<EditNoteSuccessAction | EditNoteErrorAction>;
+
+export type DeleteNoteDispatchProp = (
+  request: NoteDeleteRequest,
+) => Promise<DeleteNoteSuccessAction | DeleteNoteErrorAction>;

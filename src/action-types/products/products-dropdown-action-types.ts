@@ -1,5 +1,6 @@
-import { Action } from 'redux';
-import { ProductDropdownItem } from '../../models';
+import { Action, ActionCreator } from 'redux';
+import { ProductDropdownItem, ProductDropdownSearchRequest } from '../../models';
+import { ThunkAction, ThunkDispatch } from 'redux-thunk';
 
 export enum ProductsDropdownActionTypes {
   Request = 'PRODUCTS_DROPDOWN_ITEMS__REQUEST',
@@ -22,7 +23,28 @@ export interface GetProductDropdownItemsErrorAction extends Action<ProductsDropd
   error?: string;
 }
 
-export type ProductsDropdownActions =
+export type GetProductDropdownItemsActions =
   | GetProductDropdownItemsRequestAction
   | GetProductDropdownItemsSuccessAction
   | GetProductDropdownItemsErrorAction;
+
+export type ProductsDropdownActions = GetProductDropdownItemsActions;
+
+export type GetProductDropdownItemsActionCreator = ActionCreator<
+  ThunkAction<
+    Promise<GetProductDropdownItemsSuccessAction | GetProductDropdownItemsErrorAction>,
+    ProductDropdownItem[],
+    ProductDropdownSearchRequest,
+    GetProductDropdownItemsSuccessAction | GetProductDropdownItemsErrorAction
+  >
+>;
+
+export type GetProductDropdownItemsDispatch = ThunkDispatch<
+  ProductDropdownItem[],
+  ProductDropdownSearchRequest,
+  GetProductDropdownItemsSuccessAction | GetProductDropdownItemsErrorAction
+>;
+
+export type GetProductDropdownItemsDispatchProp = (
+  request: ProductDropdownSearchRequest,
+) => Promise<GetProductDropdownItemsSuccessAction | GetProductDropdownItemsErrorAction>;

@@ -1,11 +1,12 @@
-import { ActionCreator, Dispatch } from 'redux';
-import { ThunkAction } from 'redux-thunk';
+import { Dispatch } from 'redux';
 import { ProductDropdownItem, ProductDropdownSearchRequest } from '../../models';
 import {
   GetProductDropdownItemsSuccessAction,
   GetProductDropdownItemsErrorAction,
   GetProductDropdownItemsRequestAction,
   ProductsDropdownActionTypes,
+  GetProductDropdownItemsActionCreator,
+  GetProductDropdownItemsActions,
 } from '../../action-types';
 import { getProductDropdownItemsAsync } from '../../services';
 
@@ -31,14 +32,11 @@ const getProductDropdownItemsError = (error?: string): GetProductDropdownItemsEr
   };
 };
 
-export const getProductDropdownItems: ActionCreator<ThunkAction<
-  Promise<GetProductDropdownItemsSuccessAction | GetProductDropdownItemsErrorAction>,
-  ProductDropdownItem[],
-  ProductDropdownSearchRequest,
-  GetProductDropdownItemsSuccessAction | GetProductDropdownItemsErrorAction
->> = (request: ProductDropdownSearchRequest) => {
+export const getProductDropdownItems: GetProductDropdownItemsActionCreator = (
+  request: ProductDropdownSearchRequest,
+) => {
   return async (
-    dispatch: Dispatch,
+    dispatch: Dispatch<GetProductDropdownItemsActions>,
   ): Promise<GetProductDropdownItemsSuccessAction | GetProductDropdownItemsErrorAction> => {
     const baseErrorMessage = 'Failed to get products';
     dispatch(getProductDropdownItemsRequest());

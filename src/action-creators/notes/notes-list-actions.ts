@@ -1,5 +1,4 @@
-import { Dispatch, ActionCreator } from 'redux';
-import { ThunkAction } from 'redux-thunk';
+import { Dispatch } from 'redux';
 import {
   GetNotesForPageSuccessAction,
   GetNotesForPageErrorAction,
@@ -9,6 +8,10 @@ import {
   GetNotesForMealErrorAction,
   GetNotesForMealRequestAction,
   SetEditableForNoteAction,
+  GetNotesForPageActionCreator,
+  GetNotesForPageActions,
+  GetNotesForMealActionCreator,
+  GetNotesForMealActions,
 } from '../../action-types';
 import { getNotesAsync } from '../../services';
 import { NoteItem, MealType, NotesForMealSearchRequest, NotesSearchRequest } from '../../models';
@@ -61,13 +64,10 @@ enum NotesListBaseErrorMessages {
   NotesForMeal = 'Failed to get notes for meal',
 }
 
-export const getNotesForPage: ActionCreator<ThunkAction<
-  Promise<GetNotesForPageSuccessAction | GetNotesForPageErrorAction>,
-  NoteItem[],
-  NotesSearchRequest,
-  GetNotesForPageSuccessAction | GetNotesForPageErrorAction
->> = (request: NotesSearchRequest) => {
-  return async (dispatch: Dispatch): Promise<GetNotesForPageSuccessAction | GetNotesForPageErrorAction> => {
+export const getNotesForPage: GetNotesForPageActionCreator = (request: NotesSearchRequest) => {
+  return async (
+    dispatch: Dispatch<GetNotesForPageActions>,
+  ): Promise<GetNotesForPageSuccessAction | GetNotesForPageErrorAction> => {
     dispatch(getNotesForPageRequest());
     try {
       const response = await getNotesAsync(request);
@@ -94,13 +94,10 @@ export const getNotesForPage: ActionCreator<ThunkAction<
   };
 };
 
-export const getNotesForMeal: ActionCreator<ThunkAction<
-  Promise<GetNotesForMealSuccessAction | GetNotesForMealErrorAction>,
-  NoteItem[],
-  NotesForMealSearchRequest,
-  GetNotesForMealSuccessAction | GetNotesForMealErrorAction
->> = ({ pageId, mealType }: NotesForMealSearchRequest) => {
-  return async (dispatch: Dispatch): Promise<GetNotesForMealSuccessAction | GetNotesForMealErrorAction> => {
+export const getNotesForMeal: GetNotesForMealActionCreator = ({ pageId, mealType }: NotesForMealSearchRequest) => {
+  return async (
+    dispatch: Dispatch<GetNotesForMealActions>,
+  ): Promise<GetNotesForMealSuccessAction | GetNotesForMealErrorAction> => {
     dispatch(getNotesForMealRequest(mealType));
     try {
       const response = await getNotesAsync({

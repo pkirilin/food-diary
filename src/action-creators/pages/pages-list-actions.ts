@@ -1,5 +1,4 @@
-import { Dispatch, ActionCreator } from 'redux';
-import { ThunkAction } from 'redux-thunk';
+import { Dispatch } from 'redux';
 import { PagesFilter, PageItem } from '../../models';
 import {
   GetPagesListSuccessAction,
@@ -11,6 +10,8 @@ import {
   SetSelectedForPageAction,
   SetSelectedForAllPagesAction,
   SetEditableForPagesAction,
+  GetPagesListActionCreator,
+  GetPagesListActions,
 } from '../../action-types';
 import { getPagesAsync } from '../../services';
 
@@ -34,13 +35,10 @@ const getPagesError = (errorMessage: string): GetPagesListErrorAction => {
   };
 };
 
-export const getPages: ActionCreator<ThunkAction<
-  Promise<GetPagesListSuccessAction | GetPagesListErrorAction>,
-  PageItem[],
-  PagesFilter,
-  GetPagesListSuccessAction | GetPagesListErrorAction
->> = (filter: PagesFilter) => {
-  return async (dispatch: Dispatch): Promise<GetPagesListSuccessAction | GetPagesListErrorAction> => {
+export const getPages: GetPagesListActionCreator = (filter: PagesFilter) => {
+  return async (
+    dispatch: Dispatch<GetPagesListActions>,
+  ): Promise<GetPagesListSuccessAction | GetPagesListErrorAction> => {
     const baseErrorMessage = 'Failed to get pages list';
     dispatch(getPagesRequest());
     try {

@@ -1,5 +1,6 @@
-import { Action } from 'redux';
+import { Action, ActionCreator } from 'redux';
 import { CategoryItem } from '../../models';
+import { ThunkAction, ThunkDispatch } from 'redux-thunk';
 
 export enum CategoriesListActionTypes {
   Request = 'CATEGORIES_LIST__REQUEST',
@@ -40,10 +41,32 @@ export interface SetEditableForCategoriesAction extends Action<CategoriesListAct
   editable: boolean;
 }
 
-export type CategoriesListActions =
+export type GetCategoriesListActions =
   | GetCategoriesListRequestAction
   | GetCategoriesListSuccessAction
-  | GetCategoriesListErrorAction
+  | GetCategoriesListErrorAction;
+
+export type CategoriesListActions =
+  | GetCategoriesListActions
   | CreateDraftCategoryAction
   | DeleteDraftCategoryAction
   | SetEditableForCategoriesAction;
+
+export type GetCategoriesListActionCreator = ActionCreator<
+  ThunkAction<
+    Promise<GetCategoriesListSuccessAction | GetCategoriesListErrorAction>,
+    CategoryItem[],
+    void,
+    GetCategoriesListSuccessAction | GetCategoriesListErrorAction
+  >
+>;
+
+export type GetCategoriesListDispatch = ThunkDispatch<
+  CategoryItem[],
+  void,
+  GetCategoriesListSuccessAction | GetCategoriesListErrorAction
+>;
+
+export type GetCategoriesListDispatchProp = () => Promise<
+  GetCategoriesListSuccessAction | GetCategoriesListErrorAction
+>;

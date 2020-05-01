@@ -1,5 +1,6 @@
-import { Action } from 'redux';
-import { CategoryDropdownItem } from '../../models';
+import { Action, ActionCreator } from 'redux';
+import { ThunkAction, ThunkDispatch } from 'redux-thunk';
+import { CategoryDropdownItem, CategoryDropdownSearchRequest } from '../../models';
 
 export enum CategoriesDropdownActionTypes {
   Request = 'CATEGORIES_DROPDOWN_ITEMS__REQUEST',
@@ -22,7 +23,28 @@ export interface GetCategoryDropdownItemsErrorAction extends Action<CategoriesDr
   error?: string;
 }
 
-export type CategoriesDropdownActions =
+export type GetCategoryDropdownItemsActions =
   | GetCategoryDropdownItemsRequestAction
   | GetCategoryDropdownItemsSuccessAction
   | GetCategoryDropdownItemsErrorAction;
+
+export type CategoriesDropdownActions = GetCategoryDropdownItemsActions;
+
+export type GetCategoryDropdownItemsActionCreator = ActionCreator<
+  ThunkAction<
+    Promise<GetCategoryDropdownItemsSuccessAction | GetCategoryDropdownItemsErrorAction>,
+    CategoryDropdownItem[],
+    CategoryDropdownSearchRequest,
+    GetCategoryDropdownItemsSuccessAction | GetCategoryDropdownItemsErrorAction
+  >
+>;
+
+export type GetCategoryDropdownItemsDispatch = ThunkDispatch<
+  CategoryDropdownItem[],
+  CategoryDropdownSearchRequest,
+  GetCategoryDropdownItemsSuccessAction | GetCategoryDropdownItemsErrorAction
+>;
+
+export type GetCategoryDropdownItemsDispatchProp = (
+  request: CategoryDropdownSearchRequest,
+) => Promise<GetCategoryDropdownItemsSuccessAction | GetCategoryDropdownItemsErrorAction>;

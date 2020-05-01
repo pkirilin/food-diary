@@ -1,5 +1,6 @@
-import { Action } from 'redux';
-import { ProductItem } from '../../models';
+import { Action, ActionCreator } from 'redux';
+import { ProductItem, ProductsFilter } from '../../models';
+import { ThunkAction, ThunkDispatch } from 'redux-thunk';
 
 export enum ProductsListActionTypes {
   Request = 'PRODUCTS_LIST__REQUEST',
@@ -29,8 +30,28 @@ export interface SetEditableForProductAction extends Action<ProductsListActionTy
   editable: boolean;
 }
 
-export type ProductListActions =
+export type GetProductsListActions =
   | GetProductsListRequestAction
   | GetProductsListSuccessAction
-  | GetProductsListErrorAction
-  | SetEditableForProductAction;
+  | GetProductsListErrorAction;
+
+export type ProductListActions = GetProductsListActions | SetEditableForProductAction;
+
+export type GetProductsListActionCreator = ActionCreator<
+  ThunkAction<
+    Promise<GetProductsListSuccessAction | GetProductsListErrorAction>,
+    ProductItem[],
+    ProductsFilter,
+    GetProductsListSuccessAction | GetProductsListErrorAction
+  >
+>;
+
+export type GetProductsListDispatch = ThunkDispatch<
+  ProductItem[],
+  ProductsFilter,
+  GetProductsListSuccessAction | GetProductsListErrorAction
+>;
+
+export type GetProductsListDispatchProp = (
+  filter: ProductsFilter,
+) => Promise<GetProductsListSuccessAction | GetProductsListErrorAction>;
