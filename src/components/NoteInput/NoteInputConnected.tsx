@@ -19,7 +19,7 @@ import {
   GetPagesListDispatchProp,
 } from '../../action-types';
 import { createNote, getNotesForMeal, getProductDropdownItems, getPages } from '../../action-creators';
-import { RootState, MealOperationStatus, NotesForMealFetchState } from '../../store';
+import { RootState, MealOperationStatus, NotesForMealFetchState, DataFetchState } from '../../store';
 
 type NoteInputDispatch = CreateNoteDispatch &
   GetNotesForMealDispatch &
@@ -31,7 +31,7 @@ export interface NoteInputStateToPropsMapResult {
   notesForMealFetchStates: NotesForMealFetchState[];
   productDropdownItems: ProductDropdownItem[];
   noteItems: NoteItem[];
-  isProductDropdownContentLoading: boolean;
+  productDropdownItemsFetchState: DataFetchState;
   isPageOperationInProcess: boolean;
   pagesFilter: PagesFilter;
 }
@@ -49,7 +49,7 @@ const mapStateToProps = (state: RootState): NoteInputStateToPropsMapResult => {
     notesForMealFetchStates: state.notes.list.notesForMealFetchStates,
     productDropdownItems: state.products.dropdown.productDropdownItems,
     noteItems: state.notes.list.noteItems,
-    isProductDropdownContentLoading: state.products.dropdown.productDropdownItemsFetchState.loading,
+    productDropdownItemsFetchState: state.products.dropdown.productDropdownItemsFetchState,
     isPageOperationInProcess: state.pages.operations.status.performing,
     pagesFilter: state.pages.filter.params,
   };

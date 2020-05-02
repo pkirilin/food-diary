@@ -30,6 +30,7 @@ const ProductInput: React.FC<ProductInputProps> = ({
   const {
     loading: isCategoryDropdownContentLoading,
     error: categoryDropdownContentErrorMessage,
+    loadingMessage: categoryDropdownContentLoadingMessage,
   } = categoryDropdownItemsFetchState;
 
   const [isProductNameValid, isCaloriesCostValid, isCategoryNameValid] = useProductValidation(
@@ -157,8 +158,9 @@ const ProductInput: React.FC<ProductInputProps> = ({
             searchable={true}
             inputValue={categoryNameInputValue}
             isContentLoading={isCategoryDropdownContentLoading}
-            disabled={isInputDisabled}
+            contentLoadingMessage={categoryDropdownContentLoadingMessage}
             contentErrorMessage={categoryDropdownContentErrorMessage}
+            disabled={isInputDisabled}
             onValueSelect={handleCategoryDropdownItemSelect}
             onInputValueChange={handleCategoryNameDropdownInputChange}
             onContentOpen={handleCategoryDropdownContentOpen}

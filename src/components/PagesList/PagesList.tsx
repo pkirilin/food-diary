@@ -19,12 +19,12 @@ const PagesList: React.FC<PagesListProps> = ({
     getPages(pagesFilter);
   }, [getPages, pagesFilter]);
 
-  const { loading, loaded, error: errorMessage } = pageItemsFetchState;
+  const { loading, loaded, error: errorMessage, loadingMessage } = pageItemsFetchState;
 
   if (loading) {
     return (
       <SidebarListPlaceholder>
-        <Loader label="Loading pages"></Loader>
+        <Loader label={loadingMessage}></Loader>
       </SidebarListPlaceholder>
     );
   }

@@ -10,9 +10,10 @@ import { CategoryDropdownItem, CategoryDropdownSearchRequest } from '../../model
 import { Dispatch } from 'redux';
 import { getCategoryDropdownItemsAsync } from '../../services';
 
-const getCategoryDropdownItemsRequest = (): GetCategoryDropdownItemsRequestAction => {
+const getCategoryDropdownItemsRequest = (loadingMessage?: string): GetCategoryDropdownItemsRequestAction => {
   return {
     type: CategoriesDropdownActionTypes.Request,
+    loadingMessage,
   };
 };
 
@@ -39,7 +40,7 @@ export const getCategoryDropdownItems: GetCategoryDropdownItemsActionCreator = (
     dispatch: Dispatch<GetCategoryDropdownItemsActions>,
   ): Promise<GetCategoryDropdownItemsSuccessAction | GetCategoryDropdownItemsErrorAction> => {
     const baseErrorMessage = 'Failed to get categories';
-    dispatch(getCategoryDropdownItemsRequest());
+    dispatch(getCategoryDropdownItemsRequest('Loading categories'));
     try {
       const response = await getCategoryDropdownItemsAsync(request);
 

@@ -28,7 +28,7 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
 }: ProductsTableProps) => {
   const totalPagesCount = Math.ceil(totalProductsCount / productItemsPageSize);
 
-  const { loading: isProductsTableLoading, error: productsListError } = productItemsFetchState;
+  const { loading: isProductsTableLoading, error: productsListError, loadingMessage } = productItemsFetchState;
   const isPaginationDisabled = isProductsTableLoading || isProductOperationInProcess || productsListError !== undefined;
 
   const handlePageNumberUpdate = (newPageNumber?: number): void => {
@@ -57,7 +57,7 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
       <div className="products">
         {isProductsTableLoading && (
           <div className="products__preloader">
-            <Loader label="Loading products list"></Loader>
+            <Loader label={loadingMessage}></Loader>
           </div>
         )}
         <div className="products-table">

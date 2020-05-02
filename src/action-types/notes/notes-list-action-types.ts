@@ -16,6 +16,7 @@ export enum NotesListActionTypes {
 
 export interface GetNotesForPageRequestAction extends Action<NotesListActionTypes.RequestForPage> {
   type: NotesListActionTypes.RequestForPage;
+  loadingMessage?: string;
 }
 
 export interface GetNotesForPageSuccessAction extends Action<NotesListActionTypes.SuccessForPage> {
@@ -31,6 +32,7 @@ export interface GetNotesForPageErrorAction extends Action<NotesListActionTypes.
 export interface GetNotesForMealRequestAction extends Action<NotesListActionTypes.RequestForMeal> {
   type: NotesListActionTypes.RequestForMeal;
   mealType: MealType;
+  loadingMessage?: string;
 }
 
 export interface GetNotesForMealSuccessAction extends Action<NotesListActionTypes.SuccessForMeal> {

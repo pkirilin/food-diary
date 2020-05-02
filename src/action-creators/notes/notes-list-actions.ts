@@ -16,9 +16,10 @@ import {
 import { getNotesAsync } from '../../services';
 import { NoteItem, MealType, NotesForMealSearchRequest, NotesSearchRequest } from '../../models';
 
-const getNotesForPageRequest = (): GetNotesForPageRequestAction => {
+const getNotesForPageRequest = (loadingMessage?: string): GetNotesForPageRequestAction => {
   return {
     type: NotesListActionTypes.RequestForPage,
+    loadingMessage,
   };
 };
 
@@ -36,10 +37,11 @@ const getNotesForPageError = (errorMessage: string): GetNotesForPageErrorAction 
   };
 };
 
-const getNotesForMealRequest = (mealType: MealType): GetNotesForMealRequestAction => {
+const getNotesForMealRequest = (mealType: MealType, loadingMessage?: string): GetNotesForMealRequestAction => {
   return {
     type: NotesListActionTypes.RequestForMeal,
     mealType,
+    loadingMessage,
   };
 };
 
@@ -68,7 +70,7 @@ export const getNotesForPage: GetNotesForPageActionCreator = (request: NotesSear
   return async (
     dispatch: Dispatch<GetNotesForPageActions>,
   ): Promise<GetNotesForPageSuccessAction | GetNotesForPageErrorAction> => {
-    dispatch(getNotesForPageRequest());
+    dispatch(getNotesForPageRequest('Loading page content'));
     try {
       const response = await getNotesAsync(request);
 
@@ -98,7 +100,7 @@ export const getNotesForMeal: GetNotesForMealActionCreator = ({ pageId, mealType
   return async (
     dispatch: Dispatch<GetNotesForMealActions>,
   ): Promise<GetNotesForMealSuccessAction | GetNotesForMealErrorAction> => {
-    dispatch(getNotesForMealRequest(mealType));
+    dispatch(getNotesForMealRequest(mealType, 'Loading notes'));
     try {
       const response = await getNotesAsync({
         pageId,

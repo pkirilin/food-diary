@@ -10,7 +10,7 @@ export enum CategoriesDropdownActionTypes {
 
 export interface GetCategoryDropdownItemsRequestAction extends Action<CategoriesDropdownActionTypes.Request> {
   type: CategoriesDropdownActionTypes.Request;
-  operationMessage?: string;
+  loadingMessage?: string;
 }
 
 export interface GetCategoryDropdownItemsSuccessAction extends Action<CategoriesDropdownActionTypes.Success> {

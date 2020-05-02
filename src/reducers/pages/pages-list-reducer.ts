@@ -19,9 +19,9 @@ const pagesListReducer = (state: PagesListState = initialState, action: PagesLis
       return {
         ...state,
         pageItemsFetchState: {
-          ...state.pageItemsFetchState,
           loading: true,
           loaded: false,
+          loadingMessage: action.loadingMessage,
         },
       };
     case PagesListActionTypes.Success:
@@ -29,7 +29,6 @@ const pagesListReducer = (state: PagesListState = initialState, action: PagesLis
         ...state,
         pageItems: action.pages,
         pageItemsFetchState: {
-          ...state.pageItemsFetchState,
           loading: false,
           loaded: true,
         },
@@ -39,7 +38,6 @@ const pagesListReducer = (state: PagesListState = initialState, action: PagesLis
       return {
         ...state,
         pageItemsFetchState: {
-          ...state.pageItemsFetchState,
           loading: false,
           loaded: false,
           error: action.errorMessage,

@@ -21,7 +21,7 @@ const ProductsTableRow: React.FC<ProductsTableRowProps> = ({
   editableProductsIds,
   categoryDropdownItems,
   isProductOperationInProcess,
-  isCategoryDropdownContentLoading,
+  categoryDropdownItemsFetchState,
   productsFilter,
   setEditableForProduct,
   getProducts,
@@ -46,6 +46,12 @@ const ProductsTableRow: React.FC<ProductsTableRowProps> = ({
   const isInputDisabled = isProductOperationInProcess;
   const isConfirmEditIconDisabled =
     isInputDisabled || !isProductNameValid || !isCaloriesCostValid || !isCategoryNameValid;
+
+  const {
+    loading: isCategoryDropdownContentLoading,
+    loadingMessage: categoryDropdownItemsLoadingMessage,
+    error: categoryDropdownItemsErrorMessage,
+  } = categoryDropdownItemsFetchState;
 
   const categoryNameChangeDebounce = useDebounce((newCategoryName?: string) => {
     getCategoryDropdownItems({
@@ -161,6 +167,8 @@ const ProductsTableRow: React.FC<ProductsTableRowProps> = ({
             searchable={true}
             inputValue={categoryNameInputValue}
             isContentLoading={isCategoryDropdownContentLoading}
+            contentLoadingMessage={categoryDropdownItemsLoadingMessage}
+            contentErrorMessage={categoryDropdownItemsErrorMessage}
             disabled={isInputDisabled}
             onValueSelect={handleCategoryDropdownItemSelect}
             onInputValueChange={handleCategoryNameDropdownInputChange}

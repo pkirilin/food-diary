@@ -32,6 +32,7 @@ const notesListReducer = (state: NotesListState = initialState, action: NotesLis
         notesForPageFetchState: {
           loading: true,
           loaded: false,
+          loadingMessage: action.loadingMessage,
         },
       };
     case NotesListActionTypes.SuccessForPage:
@@ -62,6 +63,7 @@ const notesListReducer = (state: NotesListState = initialState, action: NotesLis
             mealType: action.mealType,
             loading: true,
             loaded: false,
+            loadingMessage: action.loadingMessage,
           },
         ],
       };

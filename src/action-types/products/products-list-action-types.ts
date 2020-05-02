@@ -11,6 +11,7 @@ export enum ProductsListActionTypes {
 
 export interface GetProductsListRequestAction extends Action<ProductsListActionTypes.Request> {
   type: ProductsListActionTypes.Request;
+  loadingMessage?: string;
 }
 
 export interface GetProductsListSuccessAction extends Action<ProductsListActionTypes.Success> {

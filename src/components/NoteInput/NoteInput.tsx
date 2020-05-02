@@ -18,7 +18,7 @@ const NoteInput: React.FC<NoteInputProps> = ({
   notesForMealFetchStates,
   productDropdownItems,
   noteItems,
-  isProductDropdownContentLoading,
+  productDropdownItemsFetchState,
   isPageOperationInProcess,
   pagesFilter,
   createNote,
@@ -42,6 +42,12 @@ const NoteInput: React.FC<NoteInputProps> = ({
   const currentMealOperationStatus = mealOperationStatuses.filter(s => s.mealType === mealType)[0];
   const currentMealFetchState = notesForMealFetchStates.filter(s => s.mealType === mealType)[0];
   const operationMessage = currentMealOperationStatus ? currentMealOperationStatus.message : '';
+
+  const {
+    loading: isProductDropdownContentLoading,
+    loadingMessage: productDropdownContentLoadingMessage,
+    error: productDropdownContentErrorMessage,
+  } = productDropdownItemsFetchState;
 
   const isMealOperationInProcess = currentMealOperationStatus && currentMealOperationStatus.performing;
   const isNotesTableLoading = currentMealFetchState && currentMealFetchState.loading;
@@ -107,6 +113,8 @@ const NoteInput: React.FC<NoteInputProps> = ({
             searchable={true}
             inputValue={productNameInputValue}
             isContentLoading={isProductDropdownContentLoading}
+            contentLoadingMessage={productDropdownContentLoadingMessage}
+            contentErrorMessage={productDropdownContentErrorMessage}
             disabled={isInputDisabled}
             onValueSelect={handleProductDropdownItemSelect}
             onInputValueChange={handleProductNameDropdownInputChange}

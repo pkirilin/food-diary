@@ -1,6 +1,7 @@
 export interface DataFetchState<E = string> {
   loading: boolean;
   loaded: boolean;
+  loadingMessage?: string;
   error?: E;
 }
 

@@ -18,9 +18,9 @@ const categoriesDropdownReducer = (
       return {
         ...state,
         categoryDropdownItemsFetchState: {
-          ...state.categoryDropdownItemsFetchState,
           loading: true,
           loaded: false,
+          loadingMessage: action.loadingMessage,
         },
       };
     case CategoriesDropdownActionTypes.Success:
@@ -28,7 +28,6 @@ const categoriesDropdownReducer = (
         ...state,
         categoryDropdownItems: action.categoryDropdownItems,
         categoryDropdownItemsFetchState: {
-          ...state.categoryDropdownItemsFetchState,
           loading: false,
           loaded: true,
         },
@@ -37,7 +36,6 @@ const categoriesDropdownReducer = (
       return {
         ...state,
         categoryDropdownItemsFetchState: {
-          ...state.categoryDropdownItemsFetchState,
           loading: false,
           loaded: false,
           error: action.error,

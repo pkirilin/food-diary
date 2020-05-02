@@ -23,7 +23,7 @@ const PageContent: React.FC<PageContentProps> = ({ notesForPageFetchState, getNo
     getContentAsync();
   }, [pageId, getNotesForPage]);
 
-  const { loading: areNotesForPageLoading, error: notesForPageError } = notesForPageFetchState;
+  const { loading: areNotesForPageLoading, error: notesForPageError, loadingMessage } = notesForPageFetchState;
 
   if (notesForPageError !== undefined) {
     return <SectionPlaceholder>{notesForPageError}</SectionPlaceholder>;
@@ -36,7 +36,7 @@ const PageContent: React.FC<PageContentProps> = ({ notesForPageFetchState, getNo
       </div>
       {areNotesForPageLoading && (
         <div className="page-content__preloader">
-          <Loader label="Loading page content"></Loader>
+          <Loader label={loadingMessage}></Loader>
         </div>
       )}
       <MealsList></MealsList>

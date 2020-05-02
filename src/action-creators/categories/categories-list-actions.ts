@@ -13,9 +13,10 @@ import {
 import { CategoryItem } from '../../models';
 import { getCategoriesAsync } from '../../services';
 
-const getCategoriesRequest = (): GetCategoriesListRequestAction => {
+const getCategoriesRequest = (loadingMessage?: string): GetCategoriesListRequestAction => {
   return {
     type: CategoriesListActionTypes.Request,
+    loadingMessage,
   };
 };
 
@@ -38,7 +39,7 @@ export const getCategories: GetCategoriesListActionCreator = () => {
     dispatch: Dispatch<GetCategoriesListActions>,
   ): Promise<GetCategoriesListSuccessAction | GetCategoriesListErrorAction> => {
     const baseErrorMessage = 'Failed to get categories';
-    dispatch(getCategoriesRequest());
+    dispatch(getCategoriesRequest('Loading categories'));
     try {
       const response = await getCategoriesAsync();
 

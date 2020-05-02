@@ -22,8 +22,13 @@ const MealsListItem: React.FC<MealsListItemProps> = ({
 }: MealsListItemProps) => {
   const isCollapsed = collapsedMeals.includes(mealType);
 
-  const currentMealFetchState = notesForMealFetchStates.filter(s => s.mealType === mealType)[0];
-  const isNotesTableLoading = currentMealFetchState && currentMealFetchState.loading;
+  const currentMealFetchState = notesForMealFetchStates.find(s => s.mealType === mealType);
+
+  if (!currentMealFetchState) {
+    return null;
+  }
+
+  const { loading: isNotesTableLoading, loadingMessage: notesTableLoadingMessage } = currentMealFetchState;
 
   const mealName = availableMeals.has(mealType) ? availableMeals.get(mealType) : 'Unknown meal';
   const mealNotes = noteItems.filter(n => n.mealType === mealType);
@@ -66,7 +71,7 @@ const MealsListItem: React.FC<MealsListItemProps> = ({
         <div className="meals-list-item__content__notes">
           {isNotesTableLoading && (
             <div className="meals-list-item__content__notes__preloader">
-              <Loader label="Loading notes"></Loader>
+              <Loader label={notesTableLoadingMessage}></Loader>
             </div>
           )}
           <NotesTableConnected mealType={mealType}></NotesTableConnected>

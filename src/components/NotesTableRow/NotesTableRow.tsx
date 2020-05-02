@@ -19,7 +19,7 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({
   productDropdownItems,
   editableNotesIds,
   mealOperationStatuses,
-  isProductDropdownContentLoading,
+  productDropdownItemsFetchState,
   isPageOperationInProcess,
   pagesFilter,
   setEditableForNote,
@@ -41,9 +41,16 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({
   });
 
   const { id: pageIdFromParams } = useParams();
-  const pageId = pageIdFromParams && !isNaN(+pageIdFromParams) ? +pageIdFromParams : 0;
 
   const currentMealOperationStatus = mealOperationStatuses.find(s => s.mealType === mealType);
+
+  const pageId = pageIdFromParams && !isNaN(+pageIdFromParams) ? +pageIdFromParams : 0;
+
+  const {
+    loading: isProductDropdownContentLoading,
+    loadingMessage: productDropdownContentLoadingMessage,
+    error: productDropdownContentErrorMessage,
+  } = productDropdownItemsFetchState;
 
   const isNoteEditable = editableNotesIds.find(id => id === note.id) !== undefined;
   const isMealOperationInProcess = currentMealOperationStatus && currentMealOperationStatus.performing;
@@ -130,6 +137,8 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({
             controlSize="small"
             inputValue={productNameInputValue}
             isContentLoading={isProductDropdownContentLoading}
+            contentLoadingMessage={productDropdownContentLoadingMessage}
+            contentErrorMessage={productDropdownContentErrorMessage}
             disabled={isInputDisabled}
             onValueSelect={handleProductDropdownItemSelect}
             onInputValueChange={handleProductNameDropdownInputChange}

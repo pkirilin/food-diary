@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import ProductsTableRow from './ProductsTableRow';
-import { RootState } from '../../store';
+import { RootState, DataFetchState } from '../../store';
 import {
   SetEditableForProductAction,
   GetProductsListDispatch,
@@ -36,7 +36,7 @@ export interface ProductsTableRowStateToPropsMapResult {
   editableProductsIds: number[];
   categoryDropdownItems: CategoryDropdownItem[];
   isProductOperationInProcess: boolean;
-  isCategoryDropdownContentLoading: boolean;
+  categoryDropdownItemsFetchState: DataFetchState;
   productsFilter: ProductsFilter;
 }
 
@@ -54,7 +54,7 @@ const mapStateToProps = (state: RootState): ProductsTableRowStateToPropsMapResul
     editableProductsIds: state.products.list.editableProductsIds,
     categoryDropdownItems: state.categories.dropdown.categoryDropdownItems,
     isProductOperationInProcess: state.products.operations.productOperationStatus.performing,
-    isCategoryDropdownContentLoading: state.categories.dropdown.categoryDropdownItemsFetchState.loading,
+    categoryDropdownItemsFetchState: state.categories.dropdown.categoryDropdownItemsFetchState,
     productsFilter: state.products.filter.params,
   };
 };

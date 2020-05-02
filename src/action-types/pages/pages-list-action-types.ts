@@ -15,6 +15,7 @@ export enum PagesListActionTypes {
 
 export interface GetPagesListRequestAction extends Action<PagesListActionTypes.Request> {
   type: PagesListActionTypes.Request;
+  loadingMessage?: string;
 }
 
 export interface GetPagesListSuccessAction extends Action<PagesListActionTypes.Success> {

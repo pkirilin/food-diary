@@ -10,9 +10,10 @@ import {
 } from '../../action-types';
 import { getProductDropdownItemsAsync } from '../../services';
 
-const getProductDropdownItemsRequest = (): GetProductDropdownItemsRequestAction => {
+const getProductDropdownItemsRequest = (loadingMessage?: string): GetProductDropdownItemsRequestAction => {
   return {
     type: ProductsDropdownActionTypes.Request,
+    loadingMessage,
   };
 };
 
@@ -39,7 +40,7 @@ export const getProductDropdownItems: GetProductDropdownItemsActionCreator = (
     dispatch: Dispatch<GetProductDropdownItemsActions>,
   ): Promise<GetProductDropdownItemsSuccessAction | GetProductDropdownItemsErrorAction> => {
     const baseErrorMessage = 'Failed to get products';
-    dispatch(getProductDropdownItemsRequest());
+    dispatch(getProductDropdownItemsRequest('Loading products'));
     try {
       const response = await getProductDropdownItemsAsync(request);
 

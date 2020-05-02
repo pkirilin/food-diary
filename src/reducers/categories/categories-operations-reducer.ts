@@ -16,7 +16,6 @@ const categoriesOperationsReducer = (
       return {
         ...state,
         status: {
-          ...state.status,
           performing: true,
           message: action.operationMessage,
         },
@@ -25,7 +24,6 @@ const categoriesOperationsReducer = (
       return {
         ...state,
         status: {
-          ...state.status,
           performing: false,
         },
       };
@@ -33,7 +31,6 @@ const categoriesOperationsReducer = (
       return {
         ...state,
         status: {
-          ...state.status,
           performing: false,
           error: action.error,
         },
@@ -43,7 +40,6 @@ const categoriesOperationsReducer = (
       return {
         ...state,
         status: {
-          ...state.status,
           performing: true,
           message: action.operationMessage,
         },
@@ -52,7 +48,6 @@ const categoriesOperationsReducer = (
       return {
         ...state,
         status: {
-          ...state.status,
           performing: false,
         },
       };
@@ -60,7 +55,6 @@ const categoriesOperationsReducer = (
       return {
         ...state,
         status: {
-          ...state.status,
           performing: false,
           error: action.error,
         },
@@ -70,7 +64,6 @@ const categoriesOperationsReducer = (
       return {
         ...state,
         status: {
-          ...state.status,
           performing: true,
           message: action.operationMessage,
         },
@@ -79,7 +72,6 @@ const categoriesOperationsReducer = (
       return {
         ...state,
         status: {
-          ...state.status,
           performing: false,
         },
       };
@@ -87,7 +79,6 @@ const categoriesOperationsReducer = (
       return {
         ...state,
         status: {
-          ...state.status,
           performing: false,
           error: action.error,
         },

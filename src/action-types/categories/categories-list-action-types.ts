@@ -13,6 +13,7 @@ export enum CategoriesListActionTypes {
 
 export interface GetCategoriesListRequestAction extends Action<CategoriesListActionTypes.Request> {
   type: CategoriesListActionTypes.Request;
+  loadingMessage?: string;
 }
 
 export interface GetCategoriesListSuccessAction extends Action<CategoriesListActionTypes.Success> {

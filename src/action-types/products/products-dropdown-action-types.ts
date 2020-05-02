@@ -10,7 +10,7 @@ export enum ProductsDropdownActionTypes {
 
 export interface GetProductDropdownItemsRequestAction extends Action<ProductsDropdownActionTypes.Request> {
   type: ProductsDropdownActionTypes.Request;
-  operationMessage?: string;
+  loadingMessage?: string;
 }
 
 export interface GetProductDropdownItemsSuccessAction extends Action<ProductsDropdownActionTypes.Success> {

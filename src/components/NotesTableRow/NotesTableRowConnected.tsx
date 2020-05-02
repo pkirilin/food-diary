@@ -7,7 +7,7 @@ import {
   NoteDeleteRequest,
   PagesFilter,
 } from '../../models';
-import { RootState, MealOperationStatus } from '../../store';
+import { RootState, MealOperationStatus, DataFetchState } from '../../store';
 import {
   SetEditableForNoteAction,
   EditNoteDispatch,
@@ -43,7 +43,7 @@ export interface NotesTableRowStateToPropsMapResult {
   productDropdownItems: ProductDropdownItem[];
   editableNotesIds: number[];
   mealOperationStatuses: MealOperationStatus[];
-  isProductDropdownContentLoading: boolean;
+  productDropdownItemsFetchState: DataFetchState;
   isPageOperationInProcess: boolean;
   pagesFilter: PagesFilter;
 }
@@ -62,7 +62,7 @@ const mapStateToProps = (state: RootState): NotesTableRowStateToPropsMapResult =
     productDropdownItems: state.products.dropdown.productDropdownItems,
     editableNotesIds: state.notes.list.editableNotesIds,
     mealOperationStatuses: state.notes.operations.mealOperationStatuses,
-    isProductDropdownContentLoading: state.products.dropdown.productDropdownItemsFetchState.loading,
+    productDropdownItemsFetchState: state.products.dropdown.productDropdownItemsFetchState,
     isPageOperationInProcess: state.pages.operations.status.performing,
     pagesFilter: state.pages.filter.params,
   };

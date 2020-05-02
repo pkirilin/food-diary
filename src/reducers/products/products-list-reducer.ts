@@ -22,6 +22,7 @@ const productsListReducer = (
         productItemsFetchState: {
           loading: true,
           loaded: false,
+          loadingMessage: action.loadingMessage,
         },
       };
     case ProductsListActionTypes.Success:

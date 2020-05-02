@@ -11,9 +11,10 @@ import {
 import { ProductItem, ProductsFilter } from '../../models';
 import { getProductsAsync } from '../../services';
 
-const getProductsRequest = (): GetProductsListRequestAction => {
+const getProductsRequest = (loadingMessage?: string): GetProductsListRequestAction => {
   return {
     type: ProductsListActionTypes.Request,
+    loadingMessage,
   };
 };
 
@@ -37,7 +38,7 @@ export const getProducts: GetProductsListActionCreator = (productsFilter: Produc
     dispatch: Dispatch<GetProductsListActions>,
   ): Promise<GetProductsListSuccessAction | GetProductsListErrorAction> => {
     const baseErrorMessage = 'Failed to get products';
-    dispatch(getProductsRequest());
+    dispatch(getProductsRequest('Loading products list'));
     try {
       const response = await getProductsAsync(productsFilter);
 

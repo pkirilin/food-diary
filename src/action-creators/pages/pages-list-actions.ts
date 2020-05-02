@@ -15,9 +15,10 @@ import {
 } from '../../action-types';
 import { getPagesAsync } from '../../services';
 
-const getPagesRequest = (): GetPagesListRequestAction => {
+const getPagesRequest = (loadingMessage?: string): GetPagesListRequestAction => {
   return {
     type: PagesListActionTypes.Request,
+    loadingMessage,
   };
 };
 
@@ -40,7 +41,7 @@ export const getPages: GetPagesListActionCreator = (filter: PagesFilter) => {
     dispatch: Dispatch<GetPagesListActions>,
   ): Promise<GetPagesListSuccessAction | GetPagesListErrorAction> => {
     const baseErrorMessage = 'Failed to get pages list';
-    dispatch(getPagesRequest());
+    dispatch(getPagesRequest('Loading pages'));
     try {
       const response = await getPagesAsync(filter);
 

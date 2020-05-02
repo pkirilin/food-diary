@@ -21,16 +21,15 @@ const categoriesListReducer = (
       return {
         ...state,
         categoryItemsFetchState: {
-          ...state.categoryItemsFetchState,
           loading: true,
           loaded: false,
+          loadingMessage: action.loadingMessage,
         },
       };
     case CategoriesListActionTypes.Success:
       return {
         ...state,
         categoryItemsFetchState: {
-          ...state.categoryItemsFetchState,
           loading: false,
           loaded: true,
         },
@@ -40,7 +39,6 @@ const categoriesListReducer = (
       return {
         ...state,
         categoryItemsFetchState: {
-          ...state.categoryItemsFetchState,
           loading: false,
           loaded: false,
           error: action.errorMessage,

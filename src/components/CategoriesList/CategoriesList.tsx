@@ -18,12 +18,12 @@ const CategoriesList: React.FC<CategoriesListProps> = ({
     getCategories();
   }, [getCategories]);
 
-  const { loading, loaded, error: errorMessage } = categoryItemsFetchState;
+  const { loading, loaded, error: errorMessage, loadingMessage } = categoryItemsFetchState;
 
   if (loading) {
     return (
       <SidebarListPlaceholder>
-        <Loader label="Loading categories"></Loader>
+        <Loader label={loadingMessage}></Loader>
       </SidebarListPlaceholder>
     );
   }
