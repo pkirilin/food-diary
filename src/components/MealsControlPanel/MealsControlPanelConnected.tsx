@@ -4,7 +4,7 @@ import { MealType } from '../../models';
 import { Dispatch } from 'redux';
 import { SetCollapsedForAllMealsAction } from '../../action-types';
 import { setCollapsedForAllMeals } from '../../action-creators';
-import { FoodDiaryState } from '../../store';
+import { RootState } from '../../store';
 
 type MealsControlPanelDispatch = Dispatch<SetCollapsedForAllMealsAction>;
 
@@ -16,7 +16,7 @@ export interface MealsControlPanelDispatchToPropsMapResult {
   setCollapsedForAllMeals: (collapsed: boolean, meals: MealType[]) => void;
 }
 
-const mapStateToProps = (state: FoodDiaryState): MealsControlPanelStateToProps => {
+const mapStateToProps = (state: RootState): MealsControlPanelStateToProps => {
   return {
     isPageContentLoading: state.notes.list.notesForPageFetchState.loading,
   };

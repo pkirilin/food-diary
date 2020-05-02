@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import NotesTable from './NotesTable';
-import { FoodDiaryState, NotesForMealFetchState } from '../../store';
+import { RootState, NotesForMealFetchState } from '../../store';
 import { NoteItem } from '../../models';
 
 export interface NotesTableStateToPropsMapResult {
@@ -8,7 +8,7 @@ export interface NotesTableStateToPropsMapResult {
   notesForMealFetchStates: NotesForMealFetchState[];
 }
 
-const mapStateToProps = (state: FoodDiaryState): NotesTableStateToPropsMapResult => {
+const mapStateToProps = (state: RootState): NotesTableStateToPropsMapResult => {
   return {
     noteItems: state.notes.list.noteItems,
     notesForMealFetchStates: state.notes.list.notesForMealFetchStates,

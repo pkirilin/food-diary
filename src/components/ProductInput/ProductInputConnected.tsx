@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import ProductInput from './ProductInput';
-import { FoodDiaryState, DataOperationState, DataFetchState } from '../../store';
+import { RootState, DataOperationState, DataFetchState } from '../../store';
 import {
   CreateProductDispatch,
   GetProductsListDispatch,
@@ -41,7 +41,7 @@ export interface ProductInputDispatchToPropsMapResult {
   getCategories: GetCategoriesListDispatchProp;
 }
 
-const mapStateToProps = (state: FoodDiaryState): ProductInputStateToPropsMapResult => {
+const mapStateToProps = (state: RootState): ProductInputStateToPropsMapResult => {
   return {
     productOperationStatus: state.products.operations.productOperationStatus,
     productItemsFetchState: state.products.list.productItemsFetchState,

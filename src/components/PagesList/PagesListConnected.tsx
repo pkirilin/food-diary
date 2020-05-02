@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import PagesList from './PagesList';
 import { PagesFilter, PageItem } from '../../models';
 import { getPages } from '../../action-creators';
-import { FoodDiaryState, DataFetchState } from '../../store';
+import { RootState, DataFetchState } from '../../store';
 import { GetPagesListDispatch, GetPagesListDispatchProp } from '../../action-types';
 
 type PagesListDispatch = GetPagesListDispatch;
@@ -19,7 +19,7 @@ export interface PagesListDispatchToPropsMapResult {
   getPages: GetPagesListDispatchProp;
 }
 
-const mapStateToProps = (state: FoodDiaryState): PagesListStateToPropsMapResult => {
+const mapStateToProps = (state: RootState): PagesListStateToPropsMapResult => {
   return {
     pageItems: state.pages.list.pageItems,
     pageItemsFetchState: state.pages.list.pageItemsFetchState,

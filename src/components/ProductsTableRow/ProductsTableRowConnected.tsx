@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import ProductsTableRow from './ProductsTableRow';
-import { FoodDiaryState } from '../../store';
+import { RootState } from '../../store';
 import {
   SetEditableForProductAction,
   GetProductsListDispatch,
@@ -49,7 +49,7 @@ export interface ProductsTableRowDispatchToPropsMapResult {
   deleteProduct: DeleteProductDispatchProp;
 }
 
-const mapStateToProps = (state: FoodDiaryState): ProductsTableRowStateToPropsMapResult => {
+const mapStateToProps = (state: RootState): ProductsTableRowStateToPropsMapResult => {
   return {
     editableProductsIds: state.products.list.editableProductsIds,
     categoryDropdownItems: state.categories.dropdown.categoryDropdownItems,

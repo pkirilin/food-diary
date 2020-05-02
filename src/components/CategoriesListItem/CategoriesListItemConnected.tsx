@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import CategoriesListItem from './CategoriesListItem';
-import { FoodDiaryState, DataOperationState, DataFetchState } from '../../store';
+import { RootState, DataOperationState, DataFetchState } from '../../store';
 import { Dispatch } from 'redux';
 import {
   SetEditableForCategoriesAction,
@@ -28,7 +28,7 @@ export interface CategoriesListItemDispatchToPropsMapResult {
   getCategories: GetCategoriesListDispatchProp;
 }
 
-const mapStateToProps = (state: FoodDiaryState): CategoriesListItemStateToPropsMapResult => {
+const mapStateToProps = (state: RootState): CategoriesListItemStateToPropsMapResult => {
   return {
     categoryOperationStatus: state.categories.operations.status,
     productOperationStatus: state.products.operations.productOperationStatus,

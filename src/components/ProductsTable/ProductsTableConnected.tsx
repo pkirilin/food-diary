@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import ProductsTable from './ProductsTable';
 import { ProductItem, ProductsFilter } from '../../models';
-import { FoodDiaryState, DataFetchState } from '../../store';
+import { RootState, DataFetchState } from '../../store';
 import { ProductsFilterActions, GetProductsListDispatch, GetProductsListDispatchProp } from '../../action-types';
 import { getProducts, updateProductsFilter } from '../../action-creators';
 import { Dispatch } from 'react';
@@ -22,7 +22,7 @@ export interface ProductsTableDispatchToPropsMapResult {
   getProducts: GetProductsListDispatchProp;
 }
 
-const mapStateToProps = (state: FoodDiaryState): ProductsTableStateToPropsMapResult => {
+const mapStateToProps = (state: RootState): ProductsTableStateToPropsMapResult => {
   return {
     productItemsFetchState: state.products.list.productItemsFetchState,
     isProductOperationInProcess: state.products.operations.productOperationStatus.performing,

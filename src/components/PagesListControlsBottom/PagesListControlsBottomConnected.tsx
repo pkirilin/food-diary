@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import PagesListControlsBottom from './PagesListControlsBottom';
 import { Dispatch } from 'redux';
 import { updateFilter } from '../../action-creators';
-import { FoodDiaryState } from '../../store';
+import { RootState } from '../../store';
 import { PagesFilter } from '../../models';
 import { UpdatePagesFilterAction } from '../../action-types';
 
@@ -21,7 +21,7 @@ export interface PagesListControlsBottomDispatchToPropsMapResult {
   updatePagesFilter: (updatedFilter: PagesFilter) => void;
 }
 
-const mapStateToProps = (state: FoodDiaryState): PagesListControlsBottomStateToPropsMapResult => {
+const mapStateToProps = (state: RootState): PagesListControlsBottomStateToPropsMapResult => {
   return {
     pagesFilter: state.pages.filter.params,
     arePagesLoading: state.pages.list.pageItemsFetchState.loading,

@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import PageContent from './PageContent';
 import { GetNotesForPageDispatchProp, GetNotesForPageDispatch } from '../../action-types';
-import { FoodDiaryState, DataFetchState } from '../../store';
+import { RootState, DataFetchState } from '../../store';
 import { NotesSearchRequest } from '../../models';
 import { getNotesForPage } from '../../action-creators';
 
@@ -15,7 +15,7 @@ export interface PageContentDispatchToPropsMapResult {
   getNotesForPage: GetNotesForPageDispatchProp;
 }
 
-const mapStateToProps = (state: FoodDiaryState): PageContentStateToPropsMapResult => {
+const mapStateToProps = (state: RootState): PageContentStateToPropsMapResult => {
   return {
     notesForPageFetchState: state.notes.list.notesForPageFetchState,
   };

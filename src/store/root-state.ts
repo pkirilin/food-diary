@@ -4,7 +4,7 @@ import { MealsState } from './meals-state';
 import { ProductsState } from './products-state';
 import { CategoriesState } from './categories-state';
 
-export interface FoodDiaryState {
+export interface RootState {
   pages: PagesState;
   notes: NotesState;
   meals: MealsState;

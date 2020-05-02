@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import PagesSelectionPanel from './PagesSelectionPanel';
-import { FoodDiaryState } from '../../store';
+import { RootState } from '../../store';
 import { Dispatch } from 'redux';
 import {
   SetSelectedForAllPagesAction,
@@ -35,7 +35,7 @@ export interface PagesSelectionPanelDispatchToPropsMapResult {
   getPages: GetPagesListDispatchProp;
 }
 
-const mapStateToProps = (state: FoodDiaryState): PagesSelectionPanelStateToPropsMapResult => {
+const mapStateToProps = (state: RootState): PagesSelectionPanelStateToPropsMapResult => {
   return {
     visiblePagesIds: state.pages.list.pageItems.map(p => p.id),
     selectedPagesIds: state.pages.list.selectedPagesIds,

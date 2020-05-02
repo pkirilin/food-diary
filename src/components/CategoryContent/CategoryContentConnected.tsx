@@ -4,7 +4,7 @@ import { Dispatch } from 'redux';
 import { UpdateProductsFilterAction } from '../../action-types';
 import { updateProductsFilter } from '../../action-creators';
 import { ProductsFilter } from '../../models';
-import { FoodDiaryState } from '../../store';
+import { RootState } from '../../store';
 
 type CategoryContentDispatch = Dispatch<UpdateProductsFilterAction>;
 
@@ -16,7 +16,7 @@ export interface CategoryContentDispatchToPropsMapResult {
   updateProductsFilter: (productsFilter: ProductsFilter) => void;
 }
 
-const mapStateToProps = (state: FoodDiaryState): CategoryContentStateToPropsMapResult => {
+const mapStateToProps = (state: RootState): CategoryContentStateToPropsMapResult => {
   return {
     productsFilter: state.products.filter.params,
   };

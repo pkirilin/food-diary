@@ -7,7 +7,7 @@ import {
   NoteDeleteRequest,
   PagesFilter,
 } from '../../models';
-import { FoodDiaryState, MealOperationStatus } from '../../store';
+import { RootState, MealOperationStatus } from '../../store';
 import {
   SetEditableForNoteAction,
   EditNoteDispatch,
@@ -57,7 +57,7 @@ export interface NotesTableRowDispatchToPropsMapResult {
   getPages: GetPagesListDispatchProp;
 }
 
-const mapStateToProps = (state: FoodDiaryState): NotesTableRowStateToPropsMapResult => {
+const mapStateToProps = (state: RootState): NotesTableRowStateToPropsMapResult => {
   return {
     productDropdownItems: state.products.dropdown.productDropdownItems,
     editableNotesIds: state.notes.list.editableNotesIds,

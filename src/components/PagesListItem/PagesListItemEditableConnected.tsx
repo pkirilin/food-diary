@@ -15,7 +15,7 @@ import {
 import { deleteDraftPage, createPage, getPages, setEditableForPages, editPage } from '../../action-creators';
 import { Dispatch } from 'redux';
 import {
-  FoodDiaryState,
+  RootState,
   DataOperationState,
   MealOperationStatus,
   DataFetchState,
@@ -45,7 +45,7 @@ export interface PagesListItemEditableDispatchToPropsMapResult {
   getPages: GetPagesListDispatchProp;
 }
 
-const mapStateToProps = (state: FoodDiaryState): PagesListItemEditableStateToPropsMapResult => {
+const mapStateToProps = (state: RootState): PagesListItemEditableStateToPropsMapResult => {
   return {
     pagesFilter: state.pages.filter.params,
     pageOperationStatus: state.pages.operations.status,

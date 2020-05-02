@@ -19,7 +19,7 @@ import {
   GetPagesListDispatchProp,
 } from '../../action-types';
 import { createNote, getNotesForMeal, getProductDropdownItems, getPages } from '../../action-creators';
-import { FoodDiaryState, MealOperationStatus, NotesForMealFetchState } from '../../store';
+import { RootState, MealOperationStatus, NotesForMealFetchState } from '../../store';
 
 type NoteInputDispatch = CreateNoteDispatch &
   GetNotesForMealDispatch &
@@ -43,7 +43,7 @@ export interface NoteInputDispatchToPropsMapResult {
   getPages: GetPagesListDispatchProp;
 }
 
-const mapStateToProps = (state: FoodDiaryState): NoteInputStateToPropsMapResult => {
+const mapStateToProps = (state: RootState): NoteInputStateToPropsMapResult => {
   return {
     mealOperationStatuses: state.notes.operations.mealOperationStatuses,
     notesForMealFetchStates: state.notes.list.notesForMealFetchStates,

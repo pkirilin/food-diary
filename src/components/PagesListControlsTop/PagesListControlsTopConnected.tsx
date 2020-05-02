@@ -9,7 +9,7 @@ import {
   GetPagesListDispatchProp,
   GetNotesForPageDispatchProp,
 } from '../../action-types';
-import { FoodDiaryState } from '../../store';
+import { RootState } from '../../store';
 import { createDraftPage, clearFilter, getPages, getNotesForPage } from '../../action-creators';
 import { PagesFilter, PageItem, NotesSearchRequest } from '../../models';
 
@@ -34,7 +34,7 @@ export interface PagesListControlsTopDispatchToPropsMapResult {
   getNotesForPage: GetNotesForPageDispatchProp;
 }
 
-const mapStateToProps = (state: FoodDiaryState): PagesListControlsTopStateToPropsMapResult => {
+const mapStateToProps = (state: RootState): PagesListControlsTopStateToPropsMapResult => {
   return {
     pagesFilter: state.pages.filter.params,
     isPagesFilterChanged: state.pages.filter.isChanged,

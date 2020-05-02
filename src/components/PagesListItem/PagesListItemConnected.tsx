@@ -3,7 +3,7 @@ import PagesListItem from './PagesListItem';
 import { Dispatch } from 'redux';
 import { SetSelectedForPageAction } from '../../action-types';
 import { setSelectedForPage } from '../../action-creators';
-import { FoodDiaryState } from '../../store';
+import { RootState } from '../../store';
 
 type PagesListItemDispatchType = Dispatch<SetSelectedForPageAction>;
 
@@ -16,7 +16,7 @@ export interface PagesListItemDispatchToPropsMapResult {
   setSelectedForPage: (selected: boolean, pageId: number) => void;
 }
 
-const mapStateToProps = (state: FoodDiaryState): PagesListItemStateToPropsMapResult => {
+const mapStateToProps = (state: RootState): PagesListItemStateToPropsMapResult => {
   return {
     editablePagesIds: state.pages.list.editablePagesIds,
     selectedPagesIds: state.pages.list.selectedPagesIds,

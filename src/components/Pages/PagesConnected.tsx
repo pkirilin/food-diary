@@ -1,13 +1,13 @@
 import { connect } from 'react-redux';
 import Pages from './Pages';
-import { FoodDiaryState } from '../../store';
+import { RootState } from '../../store';
 
 export interface PagesStateToPropsMapResult {
   isPagesListAvailable: boolean;
   pagesCount: number;
 }
 
-const mapStateToProps = (state: FoodDiaryState): PagesStateToPropsMapResult => {
+const mapStateToProps = (state: RootState): PagesStateToPropsMapResult => {
   return {
     isPagesListAvailable: state.pages.list.pageItemsFetchState.loaded,
     pagesCount: state.pages.list.pageItems.length,

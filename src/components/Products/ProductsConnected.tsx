@@ -4,7 +4,7 @@ import { Dispatch } from 'redux';
 import { ClearProductsFilterAction } from '../../action-types';
 import { clearProductsFilter } from '../../action-creators';
 import { ProductsFilter } from '../../models';
-import { FoodDiaryState } from '../../store';
+import { RootState } from '../../store';
 
 type ProductsDispatch = Dispatch<ClearProductsFilterAction>;
 
@@ -16,7 +16,7 @@ export interface ProductsDispatchToPropsMapResult {
   clearProductsFilter: () => void;
 }
 
-const mapStateToProps = (state: FoodDiaryState): ProductsStateToPropsMapResult => {
+const mapStateToProps = (state: RootState): ProductsStateToPropsMapResult => {
   return {
     productsFilter: state.products.filter.params,
   };
