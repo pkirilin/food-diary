@@ -55,7 +55,7 @@ const mapStateToProps = (state: FoodDiaryState): ProductsTableRowStateToPropsMap
     categoryDropdownItems: state.categories.dropdown.categoryDropdownItems,
     isProductOperationInProcess: state.products.operations.productOperationStatus.performing,
     isCategoryDropdownContentLoading: state.categories.dropdown.categoryDropdownItemsFetchState.loading,
-    productsFilter: state.products.filter,
+    productsFilter: state.products.filter.params,
   };
 };
 

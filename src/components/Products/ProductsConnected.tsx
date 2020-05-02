@@ -18,7 +18,7 @@ export interface ProductsDispatchToPropsMapResult {
 
 const mapStateToProps = (state: FoodDiaryState): ProductsStateToPropsMapResult => {
   return {
-    productsFilter: state.products.filter,
+    productsFilter: state.products.filter.params,
   };
 };
 

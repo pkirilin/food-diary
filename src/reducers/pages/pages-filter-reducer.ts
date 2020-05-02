@@ -3,9 +3,11 @@ import { PagesFilterActions, PagesFilterActionTypes } from '../../action-types';
 import { SortOrder, ShowCount } from '../../models';
 
 const initialState: PagesFilterState = {
-  sortOrder: SortOrder.Descending,
-  showCount: ShowCount.LastMonth,
-  filterChanged: false,
+  params: {
+    sortOrder: SortOrder.Descending,
+    showCount: ShowCount.LastMonth,
+  },
+  isChanged: false,
 };
 
 const pagesFilterReducer = (state: PagesFilterState = initialState, action: PagesFilterActions): PagesFilterState => {
@@ -13,8 +15,8 @@ const pagesFilterReducer = (state: PagesFilterState = initialState, action: Page
     case PagesFilterActionTypes.UpdateFilter:
       return {
         ...state,
-        ...action.updatedFilter,
-        filterChanged: true,
+        params: action.updatedFilter,
+        isChanged: true,
       };
     case PagesFilterActionTypes.ClearFilter:
       return initialState;

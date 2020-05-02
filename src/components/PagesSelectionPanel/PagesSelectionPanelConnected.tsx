@@ -40,7 +40,7 @@ const mapStateToProps = (state: FoodDiaryState): PagesSelectionPanelStateToProps
     visiblePagesIds: state.pages.list.pageItems.map(p => p.id),
     selectedPagesIds: state.pages.list.selectedPagesIds,
     operationMessage: state.pages.operations.status.message,
-    pagesFilter: state.pages.filter,
+    pagesFilter: state.pages.filter.params,
     isPageOperationInProcess: state.pages.operations.status.performing,
     isNoteOperationInProcess: state.notes.operations.mealOperationStatuses.some(s => s.performing),
     areNotesForPageFetching: state.notes.list.notesForPageFetchState.loading,

@@ -73,11 +73,13 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({
   const handleConfirmEditIconClick = async (): Promise<void> => {
     const { type: editNoteActionType } = await editNote({
       id: note.id,
-      mealType,
-      productId,
-      pageId,
-      productQuantity,
-      displayOrder: note.displayOrder,
+      note: {
+        mealType,
+        productId,
+        pageId,
+        productQuantity,
+        displayOrder: note.displayOrder,
+      },
     });
 
     if (editNoteActionType === NotesOperationsActionTypes.EditSuccess) {

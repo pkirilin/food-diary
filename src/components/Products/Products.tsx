@@ -15,9 +15,9 @@ const Products: React.FC<ProductsProps> = ({ productsFilter, clearProductsFilter
   useEffect(() => {
     const isDefaultProductsFilter = ({ pageSize, pageNumber, categoryId }: ProductsFilter): boolean => {
       return (
-        pageSize === productsFilterInitialState.pageSize &&
-        pageNumber === productsFilterInitialState.pageNumber &&
-        categoryId === productsFilterInitialState.categoryId
+        pageSize === productsFilterInitialState.params.pageSize &&
+        pageNumber === productsFilterInitialState.params.pageNumber &&
+        categoryId === productsFilterInitialState.params.categoryId
       );
     };
 

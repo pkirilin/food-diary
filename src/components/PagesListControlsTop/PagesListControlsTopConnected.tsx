@@ -36,8 +36,8 @@ export interface PagesListControlsTopDispatchToPropsMapResult {
 
 const mapStateToProps = (state: FoodDiaryState): PagesListControlsTopStateToPropsMapResult => {
   return {
-    pagesFilter: state.pages.filter,
-    isPagesFilterChanged: state.pages.filter.filterChanged,
+    pagesFilter: state.pages.filter.params,
+    isPagesFilterChanged: state.pages.filter.isChanged,
     arePagesLoading: state.pages.list.pageItemsFetchState.loading,
     areNotesForPageLoading: state.notes.list.notesForPageFetchState.loading,
     areNotesForMealLoading: state.notes.list.notesForMealFetchStates.some(s => s.loading),

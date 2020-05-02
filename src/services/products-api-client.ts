@@ -49,8 +49,8 @@ export const createProductAsync = async (product: ProductCreateEdit): Promise<Re
   });
 };
 
-export const editProductAsync = async ({ id: productId, ...product }: ProductEditRequest): Promise<Response> => {
-  return await fetch(`${productsApiUrl}/${productId}`, {
+export const editProductAsync = async ({ id, product }: ProductEditRequest): Promise<Response> => {
+  return await fetch(`${productsApiUrl}/${id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',

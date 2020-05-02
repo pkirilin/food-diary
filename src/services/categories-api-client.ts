@@ -40,7 +40,7 @@ export const createCategoryAsync = async (category: CategoryCreateEdit): Promise
   });
 };
 
-export const editCategoryAsync = async ({ id, ...category }: CategoryEditRequest): Promise<Response> => {
+export const editCategoryAsync = async ({ id, category }: CategoryEditRequest): Promise<Response> => {
   return await fetch(`${categoriesApiUrl}/${id}`, {
     method: 'PUT',
     headers: {

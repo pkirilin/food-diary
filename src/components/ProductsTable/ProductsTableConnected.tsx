@@ -27,8 +27,8 @@ const mapStateToProps = (state: FoodDiaryState): ProductsTableStateToPropsMapRes
     productItemsFetchState: state.products.list.productItemsFetchState,
     isProductOperationInProcess: state.products.operations.productOperationStatus.performing,
     productItems: state.products.list.productItems,
-    productItemsPageSize: state.products.filter.pageSize,
-    productsFilter: state.products.filter,
+    productItemsPageSize: state.products.filter.params.pageSize,
+    productsFilter: state.products.filter.params,
     totalProductsCount: state.products.list.totalProductsCount,
   };
 };

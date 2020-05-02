@@ -24,7 +24,7 @@ const mapStateToProps = (state: FoodDiaryState): PagesListStateToPropsMapResult 
     pageItems: state.pages.list.pageItems,
     pageItemsFetchState: state.pages.list.pageItemsFetchState,
     pageDraftItems: state.pages.list.pageDraftItems,
-    pagesFilter: state.pages.filter,
+    pagesFilter: state.pages.filter.params,
     currentDraftPageId: state.pages.list.currentDraftPageId,
   };
 };

@@ -137,7 +137,7 @@ export const editNote: EditNoteActionCreator = (request: NoteEditRequest) => {
       const response = await editNoteAsync(request);
 
       if (response.ok) {
-        return dispatch(editNoteSuccess(request.mealType));
+        return dispatch(editNoteSuccess(request.note.mealType));
       }
 
       switch (response.status) {
@@ -145,20 +145,22 @@ export const editNote: EditNoteActionCreator = (request: NoteEditRequest) => {
           const badRequestResponse = await readBadRequestResponseAsync(response);
           alert(`${NotesOperationsBaseErrorMessages.Edit}: ${badRequestResponse}`);
           return dispatch(
-            editNoteError(request.mealType, `${NotesOperationsBaseErrorMessages.Edit}: ${badRequestResponse}`),
+            editNoteError(request.note.mealType, `${NotesOperationsBaseErrorMessages.Edit}: ${badRequestResponse}`),
           );
         case 500:
           alert(`${NotesOperationsBaseErrorMessages.Edit}: server error`);
-          return dispatch(editNoteError(request.mealType, `${NotesOperationsBaseErrorMessages.Edit}: server error`));
+          return dispatch(
+            editNoteError(request.note.mealType, `${NotesOperationsBaseErrorMessages.Edit}: server error`),
+          );
         default:
           alert(`${NotesOperationsBaseErrorMessages.Edit}: unknown response code`);
           return dispatch(
-            editNoteError(request.mealType, `${NotesOperationsBaseErrorMessages.Edit}: unknown response code`),
+            editNoteError(request.note.mealType, `${NotesOperationsBaseErrorMessages.Edit}: unknown response code`),
           );
       }
     } catch (error) {
       alert(NotesOperationsBaseErrorMessages.Edit);
-      return dispatch(editNoteError(request.mealType, NotesOperationsBaseErrorMessages.Edit));
+      return dispatch(editNoteError(request.note.mealType, NotesOperationsBaseErrorMessages.Edit));
     }
   };
 };

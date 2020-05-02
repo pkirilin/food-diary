@@ -2,7 +2,9 @@ import { ProductsFilterState } from '../../store';
 import { ProductsFilterActions, ProductsFilterActionTypes } from '../../action-types';
 
 const initialState: ProductsFilterState = {
-  pageSize: 10,
+  params: {
+    pageSize: 10,
+  },
 };
 
 const productsFilterReducer = (
@@ -12,7 +14,8 @@ const productsFilterReducer = (
   switch (action.type) {
     case ProductsFilterActionTypes.UpdateFilter:
       return {
-        ...action.updatedFilter,
+        ...state,
+        params: action.updatedFilter,
       };
     case ProductsFilterActionTypes.ClearFilter:
       return initialState;

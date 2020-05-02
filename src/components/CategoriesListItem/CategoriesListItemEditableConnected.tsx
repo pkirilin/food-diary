@@ -51,7 +51,7 @@ const mapStateToProps = (state: FoodDiaryState): CategoriesListItemEditableState
     categoryOperationStatus: state.categories.operations.status,
     productOperationStatus: state.products.operations.productOperationStatus,
     productItemsFetchState: state.products.list.productItemsFetchState,
-    productsFilter: state.products.filter,
+    productsFilter: state.products.filter.params,
   };
 };
 

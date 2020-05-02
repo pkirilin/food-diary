@@ -1,6 +1,5 @@
 import { ProductDropdownItem, ProductItem, ProductsFilter } from '../models';
-import { DataFetchState } from './data-fetch-state';
-import { DataOperationState } from './data-operation-state';
+import { DataFetchState, DataOperationState } from './common';
 
 export interface ProductsState {
   dropdown: ProductsDropdownState;
@@ -25,4 +24,6 @@ export interface ProductsOperationsState {
   productOperationStatus: DataOperationState;
 }
 
-export type ProductsFilterState = ProductsFilter;
+export interface ProductsFilterState {
+  params: ProductsFilter;
+}

@@ -51,7 +51,7 @@ const mapStateToProps = (state: FoodDiaryState): NoteInputStateToPropsMapResult 
     noteItems: state.notes.list.noteItems,
     isProductDropdownContentLoading: state.products.dropdown.productDropdownItemsFetchState.loading,
     isPageOperationInProcess: state.pages.operations.status.performing,
-    pagesFilter: state.pages.filter,
+    pagesFilter: state.pages.filter.params,
   };
 };
 

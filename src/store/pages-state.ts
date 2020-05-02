@@ -1,6 +1,5 @@
 import { PageItem, PagesFilter } from '../models';
-import { DataFetchState } from './data-fetch-state';
-import { DataOperationState } from './data-operation-state';
+import { DataFetchState, DataOperationState } from './common';
 
 export interface PagesState {
   list: PagesListState;
@@ -17,8 +16,9 @@ export interface PagesListState {
   selectedPagesIds: number[];
 }
 
-export interface PagesFilterState extends PagesFilter {
-  filterChanged: boolean;
+export interface PagesFilterState {
+  isChanged: boolean;
+  params: PagesFilter;
 }
 
 export interface PagesOperationsState {

@@ -29,7 +29,7 @@ export const createNoteAsync = async (note: NoteCreateEdit): Promise<Response> =
   });
 };
 
-export const editNoteAsync = async ({ id, ...note }: NoteEditRequest): Promise<Response> => {
+export const editNoteAsync = async ({ id, note }: NoteEditRequest): Promise<Response> => {
   return await fetch(`${notesApiUrl}/${id}`, {
     method: 'PUT',
     headers: {

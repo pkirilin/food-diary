@@ -70,7 +70,9 @@ const CategoriesListItemEditable: React.FC<CategoriesListItemEditableProps> = ({
     } else {
       const { type: editCategoryActionType } = await editCategory({
         id: category.id,
-        name: categoryName.trim(),
+        category: {
+          name: categoryName.trim(),
+        },
       });
 
       if (editCategoryActionType === CategoriesOperationsActionTypes.EditSuccess) {

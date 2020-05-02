@@ -27,8 +27,9 @@ export interface NotesForMealSearchRequest extends NotesSearchRequest {
   mealType: MealType;
 }
 
-export interface NoteEditRequest extends NoteCreateEdit {
+export interface NoteEditRequest {
   id: number;
+  note: NoteCreateEdit;
 }
 
 export interface NoteDeleteRequest {

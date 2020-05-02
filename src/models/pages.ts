@@ -16,6 +16,7 @@ export interface PageCreateEdit {
   date: string;
 }
 
-export interface PageEditRequest extends PageCreateEdit {
+export interface PageEditRequest {
   id: number;
+  page: PageCreateEdit;
 }

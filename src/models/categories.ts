@@ -17,6 +17,7 @@ export interface CategoryDropdownSearchRequest {
   categoryNameFilter?: string;
 }
 
-export interface CategoryEditRequest extends CategoryCreateEdit {
+export interface CategoryEditRequest {
   id: number;
+  category: CategoryCreateEdit;
 }

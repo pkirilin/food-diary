@@ -36,7 +36,7 @@ const mapStateToProps = (state: FoodDiaryState): CategoriesListControlsTopStateT
     isProductOperationInProcess: state.products.operations.productOperationStatus.performing,
     areCategoriesLoading: state.categories.list.categoryItemsFetchState.loading,
     areProductsLoading: state.products.list.productItemsFetchState.loading,
-    productsFilter: state.products.filter,
+    productsFilter: state.products.filter.params,
   };
 };
 

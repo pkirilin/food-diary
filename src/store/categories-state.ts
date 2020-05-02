@@ -1,6 +1,5 @@
 import { CategoryDropdownItem, CategoryItem } from '../models';
-import { DataFetchState } from './data-fetch-state';
-import { DataOperationState } from './data-operation-state';
+import { DataFetchState, DataOperationState } from './common';
 
 export interface CategoriesState {
   dropdown: CategoriesDropdownState;

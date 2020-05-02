@@ -47,7 +47,7 @@ export interface PagesListItemEditableDispatchToPropsMapResult {
 
 const mapStateToProps = (state: FoodDiaryState): PagesListItemEditableStateToPropsMapResult => {
   return {
-    pagesFilter: state.pages.filter,
+    pagesFilter: state.pages.filter.params,
     pageOperationStatus: state.pages.operations.status,
     mealOperationStatuses: state.notes.operations.mealOperationStatuses,
     notesForPageFetchState: state.notes.list.notesForPageFetchState,

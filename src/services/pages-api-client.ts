@@ -28,7 +28,7 @@ export const createPageAsync = async (page: PageCreateEdit): Promise<Response> =
   });
 };
 
-export const editPageAsync = async ({ id, ...page }: PageEditRequest): Promise<Response> => {
+export const editPageAsync = async ({ id, page }: PageEditRequest): Promise<Response> => {
   return await fetch(`${pagesApiClientUrl}/${id}`, {
     method: 'PUT',
     headers: {

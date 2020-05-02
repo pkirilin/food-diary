@@ -1,6 +1,5 @@
-import { DataFetchState } from './data-fetch-state';
 import { MealType, NoteItem } from '../models';
-import { DataOperationState } from './data-operation-state';
+import { DataFetchState, DataOperationState } from './common';
 
 export interface NotesState {
   list: NotesListState;

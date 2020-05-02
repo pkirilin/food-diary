@@ -71,7 +71,9 @@ const PagesListItemEditable: React.FC<PagesListItemEditableProps> = ({
     } else {
       const editPageAction = await editPage({
         id: page.id,
-        date: selectedDate,
+        page: {
+          date: selectedDate,
+        },
       });
 
       if (editPageAction.type === PagesOperationsActionTypes.EditSuccess) {

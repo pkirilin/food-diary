@@ -48,7 +48,7 @@ const mapStateToProps = (state: FoodDiaryState): ProductInputStateToPropsMapResu
     categoryItems: state.categories.list.categoryItems,
     categoryDropdownItems: state.categories.dropdown.categoryDropdownItems,
     categoryDropdownItemsFetchState: state.categories.dropdown.categoryDropdownItemsFetchState,
-    productsFilter: state.products.filter,
+    productsFilter: state.products.filter.params,
   };
 };
 

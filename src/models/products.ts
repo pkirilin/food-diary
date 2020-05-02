@@ -27,6 +27,7 @@ export interface ProductDropdownSearchRequest {
   productNameFilter?: string;
 }
 
-export interface ProductEditRequest extends ProductCreateEdit {
+export interface ProductEditRequest {
   id: number;
+  product: ProductCreateEdit;
 }
