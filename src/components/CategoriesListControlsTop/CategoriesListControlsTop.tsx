@@ -2,11 +2,16 @@ import React from 'react';
 import './CategoriesListControlsTop.scss';
 import { SidebarControlPanel, SidebarControlPanelIcons } from '../SidebarBlocks';
 import Icon from '../Icon';
-import { StateToPropsMapResult, DispatchToPropsMapResult } from './CategoriesListControlsTopConnected';
+import {
+  CategoriesListControlsTopStateToPropsMapResult,
+  CategoriesListControlsTopDispatchToPropsMapResult,
+} from './CategoriesListControlsTopConnected';
 import { CategoriesListActionTypes } from '../../action-types';
 import { useRouteMatch } from 'react-router-dom';
 
-interface CategoriesListControlsTopProps extends StateToPropsMapResult, DispatchToPropsMapResult {}
+interface CategoriesListControlsTopProps
+  extends CategoriesListControlsTopStateToPropsMapResult,
+    CategoriesListControlsTopDispatchToPropsMapResult {}
 
 const CategoriesListControlsTop: React.FC<CategoriesListControlsTopProps> = ({
   isCategoryOperationInProcess,

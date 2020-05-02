@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
 import './PageContent.scss';
 import { useParams } from 'react-router-dom';
-import { StateToPropsMapResult, DispatchToPropsMapResult } from './PageContentConnected';
+import { PageContentStateToPropsMapResult, PageContentDispatchToPropsMapResult } from './PageContentConnected';
 import Loader from '../Loader';
 import PageContentHeaderConnected from '../PageContentHeader';
-import MealsListConnected from '../MealsList';
+import MealsList from '../MealsList';
 import { SectionPlaceholder } from '../ContainerBlocks';
 
-interface PageContentProps extends StateToPropsMapResult, DispatchToPropsMapResult {}
+interface PageContentProps extends PageContentStateToPropsMapResult, PageContentDispatchToPropsMapResult {}
 
 const PageContent: React.FC<PageContentProps> = ({ notesForPageFetchState, getNotesForPage }: PageContentProps) => {
   const { id: pageId } = useParams();
@@ -39,7 +39,7 @@ const PageContent: React.FC<PageContentProps> = ({ notesForPageFetchState, getNo
           <Loader label="Loading page content"></Loader>
         </div>
       )}
-      <MealsListConnected></MealsListConnected>
+      <MealsList></MealsList>
     </div>
   );
 };

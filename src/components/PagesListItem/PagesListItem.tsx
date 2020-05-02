@@ -9,12 +9,12 @@ import {
 } from '../SidebarBlocks';
 import { BadgesContainer } from '../ContainerBlocks';
 import { Checkbox } from '../Controls';
-import { DispatchToPropsMapResult, StateToPropsMapResult } from './PagesListItemConnected';
+import { PagesListItemDispatchToPropsMapResult, PagesListItemStateToPropsMapResult } from './PagesListItemConnected';
 import { PageItem } from '../../models';
 import { getFormattedDate } from '../../utils/date-utils';
 import PagesListItemEditableConnected from './PagesListItemEditableConnected';
 
-interface PagesListItemProps extends StateToPropsMapResult, DispatchToPropsMapResult {
+interface PagesListItemProps extends PagesListItemStateToPropsMapResult, PagesListItemDispatchToPropsMapResult {
   page: PageItem;
 }
 

@@ -7,23 +7,26 @@ import {
   NoteItem,
   ProductDropdownSearchRequest,
   PagesFilter,
-  PageItem,
 } from '../../models';
 import {
-  CreateNoteSuccessAction,
-  CreateNoteErrorAction,
-  GetNotesForMealSuccessAction,
-  GetNotesForMealErrorAction,
-  GetProductDropdownItemsSuccessAction,
-  GetProductDropdownItemsErrorAction,
-  GetPagesListSuccessAction,
-  GetPagesListErrorAction,
+  CreateNoteDispatch,
+  GetNotesForMealDispatch,
+  GetProductDropdownItemsDispatch,
+  GetPagesListDispatch,
+  CreateNoteDispatchProp,
+  GetNotesForMealDispatchProp,
+  GetProductDropdownItemsDispatchProp,
+  GetPagesListDispatchProp,
 } from '../../action-types';
 import { createNote, getNotesForMeal, getProductDropdownItems, getPages } from '../../action-creators';
-import { ThunkDispatch } from 'redux-thunk';
 import { FoodDiaryState, MealOperationStatus, NotesForMealFetchState } from '../../store';
 
-export interface StateToPropsMapResult {
+type NoteInputDispatch = CreateNoteDispatch &
+  GetNotesForMealDispatch &
+  GetProductDropdownItemsDispatch &
+  GetPagesListDispatch;
+
+export interface NoteInputStateToPropsMapResult {
   mealOperationStatuses: MealOperationStatus[];
   notesForMealFetchStates: NotesForMealFetchState[];
   productDropdownItems: ProductDropdownItem[];
@@ -33,18 +36,14 @@ export interface StateToPropsMapResult {
   pagesFilter: PagesFilter;
 }
 
-export interface DispatchToPropsMapResult {
-  createNote: (note: NoteCreateEdit) => Promise<CreateNoteSuccessAction | CreateNoteErrorAction>;
-  getNotesForMeal: (
-    request: NotesForMealSearchRequest,
-  ) => Promise<GetNotesForMealSuccessAction | GetNotesForMealErrorAction>;
-  getProductDropdownItems: (
-    request: ProductDropdownSearchRequest,
-  ) => Promise<GetProductDropdownItemsSuccessAction | GetProductDropdownItemsErrorAction>;
-  getPages: (filter: PagesFilter) => Promise<GetPagesListSuccessAction | GetPagesListErrorAction>;
+export interface NoteInputDispatchToPropsMapResult {
+  createNote: CreateNoteDispatchProp;
+  getNotesForMeal: GetNotesForMealDispatchProp;
+  getProductDropdownItems: GetProductDropdownItemsDispatchProp;
+  getPages: GetPagesListDispatchProp;
 }
 
-const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
+const mapStateToProps = (state: FoodDiaryState): NoteInputStateToPropsMapResult => {
   return {
     mealOperationStatuses: state.notes.operations.mealOperationStatuses,
     notesForMealFetchStates: state.notes.list.notesForMealFetchStates,
@@ -56,33 +55,28 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
   };
 };
 
-type NoteInputDispatchType = ThunkDispatch<void, NoteCreateEdit, CreateNoteSuccessAction | CreateNoteErrorAction> &
-  ThunkDispatch<NoteItem[], NotesForMealSearchRequest, GetNotesForMealSuccessAction | GetNotesForMealErrorAction> &
-  ThunkDispatch<
-    ProductDropdownItem[],
-    ProductDropdownSearchRequest,
-    GetProductDropdownItemsSuccessAction | GetProductDropdownItemsErrorAction
-  > &
-  ThunkDispatch<PageItem[], PagesFilter, GetPagesListSuccessAction | GetPagesListErrorAction>;
+const mapDispatchToProps = (dispatch: NoteInputDispatch): NoteInputDispatchToPropsMapResult => {
+  const createNoteProp: CreateNoteDispatchProp = (note: NoteCreateEdit) => {
+    return dispatch(createNote(note));
+  };
 
-const mapDispatchToProps = (dispatch: NoteInputDispatchType): DispatchToPropsMapResult => {
+  const getNotesForMealProp: GetNotesForMealDispatchProp = (request: NotesForMealSearchRequest) => {
+    return dispatch(getNotesForMeal(request));
+  };
+
+  const getProductDropdownItemsProp: GetProductDropdownItemsDispatchProp = (request: ProductDropdownSearchRequest) => {
+    return dispatch(getProductDropdownItems(request));
+  };
+
+  const getPagesProp: GetPagesListDispatchProp = (filter: PagesFilter) => {
+    return dispatch(getPages(filter));
+  };
+
   return {
-    createNote: (note: NoteCreateEdit): Promise<CreateNoteSuccessAction | CreateNoteErrorAction> => {
-      return dispatch(createNote(note));
-    },
-    getNotesForMeal: (
-      request: NotesForMealSearchRequest,
-    ): Promise<GetNotesForMealSuccessAction | GetNotesForMealErrorAction> => {
-      return dispatch(getNotesForMeal(request));
-    },
-    getProductDropdownItems: (
-      request: ProductDropdownSearchRequest,
-    ): Promise<GetProductDropdownItemsSuccessAction | GetProductDropdownItemsErrorAction> => {
-      return dispatch(getProductDropdownItems(request));
-    },
-    getPages: (filter: PagesFilter): Promise<GetPagesListSuccessAction | GetPagesListErrorAction> => {
-      return dispatch(getPages(filter));
-    },
+    createNote: createNoteProp,
+    getNotesForMeal: getNotesForMealProp,
+    getProductDropdownItems: getProductDropdownItemsProp,
+    getPages: getPagesProp,
   };
 };
 

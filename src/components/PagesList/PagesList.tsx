@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
 import './PagesList.scss';
-import { StateToPropsMapResult, DispatchToPropsMapResult } from './PagesListConnected';
+import { PagesListStateToPropsMapResult, PagesListDispatchToPropsMapResult } from './PagesListConnected';
 import PagesListItemConnected from '../PagesListItem';
 import { SidebarList, SidebarListPlaceholder } from '../SidebarBlocks';
 import Loader from '../Loader';
 import PagesListItemEditableConnected from '../PagesListItem/PagesListItemEditableConnected';
 
-interface PagesListProps extends StateToPropsMapResult, DispatchToPropsMapResult {}
+interface PagesListProps extends PagesListStateToPropsMapResult, PagesListDispatchToPropsMapResult {}
 
 const PagesList: React.FC<PagesListProps> = ({
   pageItems,

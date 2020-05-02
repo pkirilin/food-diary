@@ -2,19 +2,17 @@ import { connect } from 'react-redux';
 import ProductInput from './ProductInput';
 import { FoodDiaryState, DataOperationState, DataFetchState } from '../../store';
 import {
-  CreateProductSuccessAction,
-  CreateProductErrorAction,
-  GetProductsListSuccessAction,
-  GetProductsListErrorAction,
-  GetCategoryDropdownItemsSuccessAction,
-  GetCategoryDropdownItemsErrorAction,
-  GetCategoriesListSuccessAction,
-  GetCategoriesListErrorAction,
+  CreateProductDispatch,
+  GetProductsListDispatch,
+  GetCategoryDropdownItemsDispatch,
+  GetCategoriesListDispatch,
+  CreateProductDispatchProp,
+  GetProductsListDispatchProp,
+  GetCategoryDropdownItemsDispatchProp,
+  GetCategoriesListDispatchProp,
 } from '../../action-types';
-import { ThunkDispatch } from 'redux-thunk';
 import {
   ProductCreateEdit,
-  ProductItem,
   CategoryDropdownItem,
   ProductsFilter,
   CategoryItem,
@@ -22,7 +20,12 @@ import {
 } from '../../models';
 import { createProduct, getProducts, getCategoryDropdownItems, getCategories } from '../../action-creators';
 
-export interface StateToPropsMapResult {
+type ProductInputDispatch = CreateProductDispatch &
+  GetProductsListDispatch &
+  GetCategoryDropdownItemsDispatch &
+  GetCategoriesListDispatch;
+
+export interface ProductInputStateToPropsMapResult {
   productOperationStatus: DataOperationState;
   productItemsFetchState: DataFetchState;
   categoryItems: CategoryItem[];
@@ -31,7 +34,14 @@ export interface StateToPropsMapResult {
   productsFilter: ProductsFilter;
 }
 
-const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
+export interface ProductInputDispatchToPropsMapResult {
+  createProduct: CreateProductDispatchProp;
+  getProducts: GetProductsListDispatchProp;
+  getCategoryDropdownItems: GetCategoryDropdownItemsDispatchProp;
+  getCategories: GetCategoriesListDispatchProp;
+}
+
+const mapStateToProps = (state: FoodDiaryState): ProductInputStateToPropsMapResult => {
   return {
     productOperationStatus: state.products.operations.productOperationStatus,
     productItemsFetchState: state.products.list.productItemsFetchState,
@@ -42,46 +52,30 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
   };
 };
 
-export interface DispatchToPropsMapResult {
-  createProduct: (product: ProductCreateEdit) => Promise<CreateProductSuccessAction | CreateProductErrorAction>;
-  getProducts: (productsFilter: ProductsFilter) => Promise<GetProductsListSuccessAction | GetProductsListErrorAction>;
-  getCategoryDropdownItems: (
+const mapDispatchToProps = (dispatch: ProductInputDispatch): ProductInputDispatchToPropsMapResult => {
+  const createProductProp: CreateProductDispatchProp = (product: ProductCreateEdit) => {
+    return dispatch(createProduct(product));
+  };
+
+  const getProductsProp: GetProductsListDispatchProp = (productsFilter: ProductsFilter) => {
+    return dispatch(getProducts(productsFilter));
+  };
+
+  const getCategoryDropdownItemsProp: GetCategoryDropdownItemsDispatchProp = (
     request: CategoryDropdownSearchRequest,
-  ) => Promise<GetCategoryDropdownItemsSuccessAction | GetCategoryDropdownItemsErrorAction>;
-  getCategories: () => Promise<GetCategoriesListSuccessAction | GetCategoriesListErrorAction>;
-}
+  ) => {
+    return dispatch(getCategoryDropdownItems(request));
+  };
 
-type ProductInputDispatch = ThunkDispatch<
-  void,
-  ProductCreateEdit,
-  CreateProductSuccessAction | CreateProductErrorAction
-> &
-  ThunkDispatch<ProductItem[], ProductsFilter, GetProductsListSuccessAction | GetProductsListErrorAction> &
-  ThunkDispatch<
-    CategoryDropdownItem[],
-    CategoryDropdownSearchRequest,
-    GetCategoryDropdownItemsSuccessAction | GetCategoryDropdownItemsErrorAction
-  > &
-  ThunkDispatch<CategoryItem[], void, GetCategoriesListSuccessAction | GetCategoriesListErrorAction>;
+  const getCategoriesProp: GetCategoriesListDispatchProp = () => {
+    return dispatch(getCategories());
+  };
 
-const mapDispatchToProps = (dispatch: ProductInputDispatch): DispatchToPropsMapResult => {
   return {
-    createProduct: (product: ProductCreateEdit): Promise<CreateProductSuccessAction | CreateProductErrorAction> => {
-      return dispatch(createProduct(product));
-    },
-    getProducts: (
-      productsFilter: ProductsFilter,
-    ): Promise<GetProductsListSuccessAction | GetProductsListErrorAction> => {
-      return dispatch(getProducts(productsFilter));
-    },
-    getCategoryDropdownItems: (
-      request: CategoryDropdownSearchRequest,
-    ): Promise<GetCategoryDropdownItemsSuccessAction | GetCategoryDropdownItemsErrorAction> => {
-      return dispatch(getCategoryDropdownItems(request));
-    },
-    getCategories: (): Promise<GetCategoriesListSuccessAction | GetCategoriesListErrorAction> => {
-      return dispatch(getCategories());
-    },
+    createProduct: createProductProp,
+    getProducts: getProductsProp,
+    getCategoryDropdownItems: getCategoryDropdownItemsProp,
+    getCategories: getCategoriesProp,
   };
 };
 

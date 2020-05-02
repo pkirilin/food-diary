@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import './PagesListControlsBottom.scss';
 import { Label, FormGroup, DropdownList } from '../Controls';
-import { DispatchToPropsMapResult, StateToPropsMapResult } from './PagesListControlsBottomConnected';
+import {
+  PagesListControlsBottomDispatchToPropsMapResult,
+  PagesListControlsBottomStateToPropsMapResult,
+} from './PagesListControlsBottomConnected';
 import { SortOrder, ShowCount, invertSortOrder, showCountAllString } from '../../models';
 import Icon from '../Icon';
 
-interface PagesListControlsBottomProps extends StateToPropsMapResult, DispatchToPropsMapResult {}
+interface PagesListControlsBottomProps
+  extends PagesListControlsBottomStateToPropsMapResult,
+    PagesListControlsBottomDispatchToPropsMapResult {}
 
 const showCountDropdownItems: string[] = [
   ShowCount.LastWeek.toString(),

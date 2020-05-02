@@ -1,20 +1,19 @@
 import { connect } from 'react-redux';
 import PagesListItemEditable from './PagesListItemEditable';
-import { PagesFilter, PageCreateEdit, PageEditRequest, PageItem } from '../../models';
+import { PagesFilter, PageCreateEdit, PageEditRequest } from '../../models';
 import {
-  CreatePageSuccessAction,
-  CreatePageErrorAction,
-  EditPageSuccessAction,
-  EditPageErrorAction,
-  GetPagesListSuccessAction,
-  GetPagesListErrorAction,
   DeleteDraftPageAction,
   SetSelectedForPageAction,
   SetEditableForPagesAction,
+  CreatePageDispatchProp,
+  EditPageDispatchProp,
+  GetPagesListDispatchProp,
+  CreatePageDispatch,
+  EditPageDispatch,
+  GetPagesListDispatch,
 } from '../../action-types';
 import { deleteDraftPage, createPage, getPages, setEditableForPages, editPage } from '../../action-creators';
 import { Dispatch } from 'redux';
-import { ThunkDispatch } from 'redux-thunk';
 import {
   FoodDiaryState,
   DataOperationState,
@@ -23,7 +22,14 @@ import {
   NotesForMealFetchState,
 } from '../../store';
 
-export interface StateToPropsMapResult {
+type PagesListItemDispatchType = Dispatch<
+  DeleteDraftPageAction | SetSelectedForPageAction | SetEditableForPagesAction
+> &
+  CreatePageDispatch &
+  EditPageDispatch &
+  GetPagesListDispatch;
+
+export interface PagesListItemEditableStateToPropsMapResult {
   pagesFilter: PagesFilter;
   pageOperationStatus: DataOperationState;
   mealOperationStatuses: MealOperationStatus[];
@@ -31,15 +37,15 @@ export interface StateToPropsMapResult {
   notesForMealFetchStates: NotesForMealFetchState[];
 }
 
-export interface DispatchToPropsMapResult {
-  createPage: (page: PageCreateEdit) => Promise<CreatePageSuccessAction | CreatePageErrorAction>;
-  editPage: (request: PageEditRequest) => Promise<EditPageSuccessAction | EditPageErrorAction>;
+export interface PagesListItemEditableDispatchToPropsMapResult {
   deleteDraftPage: (draftPageId: number) => void;
-  getPages: (filter: PagesFilter) => Promise<GetPagesListSuccessAction | GetPagesListErrorAction>;
   setEditableForPages: (pagesIds: number[], editable: boolean) => void;
+  createPage: CreatePageDispatchProp;
+  editPage: EditPageDispatchProp;
+  getPages: GetPagesListDispatchProp;
 }
 
-const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
+const mapStateToProps = (state: FoodDiaryState): PagesListItemEditableStateToPropsMapResult => {
   return {
     pagesFilter: state.pages.filter,
     pageOperationStatus: state.pages.operations.status,
@@ -49,30 +55,31 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
   };
 };
 
-type PagesListItemDispatchType = Dispatch<
-  DeleteDraftPageAction | SetSelectedForPageAction | SetEditableForPagesAction
-> &
-  ThunkDispatch<void, PageCreateEdit, CreatePageSuccessAction | CreatePageErrorAction> &
-  ThunkDispatch<void, PageEditRequest, EditPageSuccessAction | EditPageErrorAction> &
-  ThunkDispatch<PageItem[], PagesFilter, GetPagesListSuccessAction | GetPagesListErrorAction>;
+const mapDispatchToProps = (dispatch: PagesListItemDispatchType): PagesListItemEditableDispatchToPropsMapResult => {
+  const createPageProp: CreatePageDispatchProp = (page: PageCreateEdit) => {
+    return dispatch(createPage(page));
+  };
 
-const mapDispatchToProps = (dispatch: PagesListItemDispatchType): DispatchToPropsMapResult => {
+  const editPageProp: EditPageDispatchProp = (request: PageEditRequest) => {
+    return dispatch(editPage(request));
+  };
+
+  const getPagesProp: GetPagesListDispatchProp = (filter: PagesFilter) => {
+    return dispatch(getPages(filter));
+  };
+
   return {
-    createPage: (page: PageCreateEdit): Promise<CreatePageSuccessAction | CreatePageErrorAction> => {
-      return dispatch(createPage(page));
-    },
-    editPage: (request: PageEditRequest): Promise<EditPageSuccessAction | EditPageErrorAction> => {
-      return dispatch(editPage(request));
-    },
     deleteDraftPage: (draftPageId: number): void => {
       dispatch(deleteDraftPage(draftPageId));
     },
-    getPages: (filter: PagesFilter): Promise<GetPagesListSuccessAction | GetPagesListErrorAction> => {
-      return dispatch(getPages(filter));
-    },
+
     setEditableForPages: (pagesIds: number[], editable: boolean): void => {
       dispatch(setEditableForPages(pagesIds, editable));
     },
+
+    createPage: createPageProp,
+    editPage: editPageProp,
+    getPages: getPagesProp,
   };
 };
 

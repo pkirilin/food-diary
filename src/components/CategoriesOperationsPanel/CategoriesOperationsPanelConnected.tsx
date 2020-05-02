@@ -2,11 +2,11 @@ import { connect } from 'react-redux';
 import CategoriesOperationsPanel from './CategoriesOperationsPanel';
 import { FoodDiaryState, DataOperationState } from '../../store';
 
-export interface StateToPropsMapResult {
+export interface CategoriesOperationsPanelStateToPropsMapResult {
   categoryOperationStatus: DataOperationState;
 }
 
-const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
+const mapStateToProps = (state: FoodDiaryState): CategoriesOperationsPanelStateToPropsMapResult => {
   return {
     categoryOperationStatus: state.categories.operations.status,
   };

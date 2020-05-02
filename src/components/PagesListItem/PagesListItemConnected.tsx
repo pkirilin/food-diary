@@ -5,25 +5,25 @@ import { SetSelectedForPageAction } from '../../action-types';
 import { setSelectedForPage } from '../../action-creators';
 import { FoodDiaryState } from '../../store';
 
-export interface StateToPropsMapResult {
+type PagesListItemDispatchType = Dispatch<SetSelectedForPageAction>;
+
+export interface PagesListItemStateToPropsMapResult {
   editablePagesIds: number[];
   selectedPagesIds: number[];
 }
 
-export interface DispatchToPropsMapResult {
+export interface PagesListItemDispatchToPropsMapResult {
   setSelectedForPage: (selected: boolean, pageId: number) => void;
 }
 
-type PagesListItemDispatchType = Dispatch<SetSelectedForPageAction>;
-
-const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
+const mapStateToProps = (state: FoodDiaryState): PagesListItemStateToPropsMapResult => {
   return {
     editablePagesIds: state.pages.list.editablePagesIds,
     selectedPagesIds: state.pages.list.selectedPagesIds,
   };
 };
 
-const mapDispatchToProps = (dispatch: PagesListItemDispatchType): DispatchToPropsMapResult => {
+const mapDispatchToProps = (dispatch: PagesListItemDispatchType): PagesListItemDispatchToPropsMapResult => {
   return {
     setSelectedForPage: (selected: boolean, pageId: number): void => {
       dispatch(setSelectedForPage(selected, pageId));

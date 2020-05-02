@@ -9,14 +9,19 @@ import {
 import { BadgesContainer } from '../ContainerBlocks';
 import Badge from '../Badge';
 import { CategoryItem } from '../../models';
-import { StateToPropsMapResult, DispatchToPropsMapResult } from './CategoriesListItemConnected';
+import {
+  CategoriesListItemStateToPropsMapResult,
+  CategoriesListItemDispatchToPropsMapResult,
+} from './CategoriesListItemConnected';
 import { DropdownMenu, DropdownItem } from '../Controls';
 import Icon from '../Icon';
 import { CategoriesOperationsActionTypes } from '../../action-types';
 import { useHistory } from 'react-router-dom';
 import CategoriesListItemEditableConnected from './CategoriesListItemEditableConnected';
 
-interface CategoriesListItemProps extends StateToPropsMapResult, DispatchToPropsMapResult {
+interface CategoriesListItemProps
+  extends CategoriesListItemStateToPropsMapResult,
+    CategoriesListItemDispatchToPropsMapResult {
   category: CategoryItem;
 }
 

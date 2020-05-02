@@ -4,12 +4,12 @@ import { MealType, availableMeals } from '../../models';
 import Icon from '../Icon';
 import { BadgesContainer } from '../ContainerBlocks';
 import Badge from '../Badge';
-import { StateToPropsMapResult, DispatchToPropsMapResult } from './MealsListItemConnected';
+import { MealsListItemStateToPropsMapResult, MealsListItemDispatchToPropsMapResult } from './MealsListItemConnected';
 import NoteInputConnected from '../NoteInput';
 import NotesTableConnected from '../NotesTable';
 import Loader from '../Loader';
 
-interface MealsListItemProps extends StateToPropsMapResult, DispatchToPropsMapResult {
+interface MealsListItemProps extends MealsListItemStateToPropsMapResult, MealsListItemDispatchToPropsMapResult {
   mealType: MealType;
 }
 

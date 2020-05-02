@@ -2,9 +2,9 @@ import React from 'react';
 import './CategoriesOperationsPanel.scss';
 import { SidebarOperationsPanel } from '../SidebarBlocks';
 import Loader from '../Loader';
-import { StateToPropsMapResult } from './CategoriesOperationsPanelConnected';
+import { CategoriesOperationsPanelStateToPropsMapResult } from './CategoriesOperationsPanelConnected';
 
-type CategoriesOperationsPanelProps = StateToPropsMapResult;
+type CategoriesOperationsPanelProps = CategoriesOperationsPanelStateToPropsMapResult;
 
 const CategoriesOperationsPanel: React.FC<CategoriesOperationsPanelProps> = ({
   categoryOperationStatus,

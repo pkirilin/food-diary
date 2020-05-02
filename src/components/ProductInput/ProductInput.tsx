@@ -2,11 +2,11 @@ import React, { useState, useEffect, useCallback } from 'react';
 import './ProductInput.scss';
 import { FormGroup, Input, Label, Button, DropdownList, categoryDropdownItemRenderer } from '../Controls';
 import Loader from '../Loader';
-import { StateToPropsMapResult, DispatchToPropsMapResult } from './ProductInputConnected';
+import { ProductInputStateToPropsMapResult, ProductInputDispatchToPropsMapResult } from './ProductInputConnected';
 import { ProductsOperationsActionTypes } from '../../action-types';
 import { useDebounce, useProductValidation } from '../../hooks';
 
-interface ProductInputProps extends StateToPropsMapResult, DispatchToPropsMapResult {}
+interface ProductInputProps extends ProductInputStateToPropsMapResult, ProductInputDispatchToPropsMapResult {}
 
 const ProductInput: React.FC<ProductInputProps> = ({
   productOperationStatus,

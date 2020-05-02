@@ -6,17 +6,17 @@ import { Dispatch } from 'redux';
 import { SetCollapsedForMealAction } from '../../action-types';
 import { setCollapsedForMeal } from '../../action-creators';
 
-export interface StateToPropsMapResult {
+export interface MealsListItemStateToPropsMapResult {
   collapsedMeals: MealType[];
   notesForMealFetchStates: NotesForMealFetchState[];
   noteItems: NoteItem[];
 }
 
-export interface DispatchToPropsMapResult {
+export interface MealsListItemDispatchToPropsMapResult {
   setCollapsedForMeal: (collapsed: boolean, meal: MealType) => void;
 }
 
-const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
+const mapStateToProps = (state: FoodDiaryState): MealsListItemStateToPropsMapResult => {
   return {
     collapsedMeals: state.meals.list.collapsedMeals,
     notesForMealFetchStates: state.notes.list.notesForMealFetchStates,
@@ -24,7 +24,7 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
   };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<SetCollapsedForMealAction>): DispatchToPropsMapResult => {
+const mapDispatchToProps = (dispatch: Dispatch<SetCollapsedForMealAction>): MealsListItemDispatchToPropsMapResult => {
   return {
     setCollapsedForMeal: (collapsed: boolean, meal: MealType): void => {
       dispatch(setCollapsedForMeal(collapsed, meal));

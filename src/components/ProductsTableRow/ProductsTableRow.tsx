@@ -2,12 +2,17 @@ import React, { useState } from 'react';
 import './ProductsTableRow.scss';
 import { ProductItem } from '../../models';
 import Icon from '../Icon';
-import { StateToPropsMapResult, DispatchToPropsMapResult } from './ProductsTableRowConnected';
+import {
+  ProductsTableRowStateToPropsMapResult,
+  ProductsTableRowDispatchToPropsMapResult,
+} from './ProductsTableRowConnected';
 import { Input, DropdownList, categoryDropdownItemRenderer } from '../Controls';
 import { ProductsOperationsActionTypes } from '../../action-types';
 import { useDebounce, useProductValidation } from '../../hooks';
 
-interface ProductsTableRowProps extends StateToPropsMapResult, DispatchToPropsMapResult {
+interface ProductsTableRowProps
+  extends ProductsTableRowStateToPropsMapResult,
+    ProductsTableRowDispatchToPropsMapResult {
   product: ProductItem;
 }
 

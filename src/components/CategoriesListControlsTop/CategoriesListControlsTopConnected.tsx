@@ -1,19 +1,22 @@
 import { connect } from 'react-redux';
 import CategoriesListControlsTop from './CategoriesListControlsTop';
-import { ThunkDispatch } from 'redux-thunk';
-import { CategoryItem, ProductsFilter, ProductItem } from '../../models';
+import { CategoryItem, ProductsFilter } from '../../models';
 import {
-  GetCategoriesListSuccessAction,
-  GetCategoriesListErrorAction,
   CreateDraftCategoryAction,
-  GetProductsListSuccessAction,
-  GetProductsListErrorAction,
+  GetCategoriesListDispatch,
+  GetProductsListDispatch,
+  GetCategoriesListDispatchProp,
+  GetProductsListDispatchProp,
 } from '../../action-types';
 import { Dispatch } from 'redux';
 import { createDraftCategory, getCategories, getProducts } from '../../action-creators';
 import { FoodDiaryState } from '../../store';
 
-export interface StateToPropsMapResult {
+type CategoriesListControlsTopDispatch = GetCategoriesListDispatch &
+  GetProductsListDispatch &
+  Dispatch<CreateDraftCategoryAction>;
+
+export interface CategoriesListControlsTopStateToPropsMapResult {
   isCategoryOperationInProcess: boolean;
   isProductOperationInProcess: boolean;
   areCategoriesLoading: boolean;
@@ -21,7 +24,13 @@ export interface StateToPropsMapResult {
   productsFilter: ProductsFilter;
 }
 
-const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
+export interface CategoriesListControlsTopDispatchToPropsMapResult {
+  getCategories: GetCategoriesListDispatchProp;
+  getProducts: GetProductsListDispatchProp;
+  createDraftCategory: (draftCategory: CategoryItem) => void;
+}
+
+const mapStateToProps = (state: FoodDiaryState): CategoriesListControlsTopStateToPropsMapResult => {
   return {
     isCategoryOperationInProcess: state.categories.operations.status.performing,
     isProductOperationInProcess: state.products.operations.productOperationStatus.performing,
@@ -31,30 +40,22 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
   };
 };
 
-export interface DispatchToPropsMapResult {
-  getCategories: () => Promise<GetCategoriesListSuccessAction | GetCategoriesListErrorAction>;
-  getProducts: (filter: ProductsFilter) => Promise<GetProductsListSuccessAction | GetProductsListErrorAction>;
-  createDraftCategory: (draftCategory: CategoryItem) => void;
-}
+const mapDispatchToProps = (
+  dispatch: CategoriesListControlsTopDispatch,
+): CategoriesListControlsTopDispatchToPropsMapResult => {
+  const getCategoriesProp: GetCategoriesListDispatchProp = () => {
+    return dispatch(getCategories());
+  };
 
-type CategoriesListControlsTopDispatch = ThunkDispatch<
-  CategoryItem[],
-  void,
-  GetCategoriesListSuccessAction | GetCategoriesListErrorAction
-> &
-  ThunkDispatch<ProductItem[], ProductsFilter, GetProductsListSuccessAction | GetProductsListErrorAction> &
-  Dispatch<CreateDraftCategoryAction>;
+  const getProductsProp: GetProductsListDispatchProp = (filter: ProductsFilter) => {
+    return dispatch(getProducts(filter));
+  };
 
-const mapDispatchToProps = (dispatch: CategoriesListControlsTopDispatch): DispatchToPropsMapResult => {
   return {
-    getCategories: (): Promise<GetCategoriesListSuccessAction | GetCategoriesListErrorAction> => {
-      return dispatch(getCategories());
-    },
+    getCategories: getCategoriesProp,
+    getProducts: getProductsProp,
     createDraftCategory: (draftCategory: CategoryItem): void => {
       dispatch(createDraftCategory(draftCategory));
-    },
-    getProducts: (filter: ProductsFilter): Promise<GetProductsListSuccessAction | GetProductsListErrorAction> => {
-      return dispatch(getProducts(filter));
     },
   };
 };

@@ -1,13 +1,13 @@
 import React from 'react';
 import './PageContentHeader.scss';
-import { StateToPropsMapResult } from './PageContentHeaderConnected';
+import { PageContentHeaderStateToPropsMapResult } from './PageContentHeaderConnected';
 import Icon from '../Icon';
 import { useParams, NavLink } from 'react-router-dom';
 import MealsControlPanelConnected from '../MealsControlPanel/MealsControlPanelConnected';
 import Loader from '../Loader';
 import { getFormattedDate } from '../../utils/date-utils';
 
-type PageContentHeaderProps = StateToPropsMapResult;
+type PageContentHeaderProps = PageContentHeaderStateToPropsMapResult;
 
 const PageContentHeader: React.FC<PageContentHeaderProps> = ({
   pageItems,

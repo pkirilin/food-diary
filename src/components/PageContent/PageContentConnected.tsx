@@ -1,47 +1,34 @@
 import { connect } from 'react-redux';
 import PageContent from './PageContent';
-import {
-  GetNotesForPageSuccessAction,
-  GetNotesForPageErrorAction,
-  GetProductDropdownItemsSuccessAction,
-  GetProductDropdownItemsErrorAction,
-} from '../../action-types';
+import { GetNotesForPageDispatchProp, GetNotesForPageDispatch } from '../../action-types';
 import { FoodDiaryState, DataFetchState } from '../../store';
-import { ThunkDispatch } from 'redux-thunk';
-import { ProductDropdownItem, NotesSearchRequest, NoteItem } from '../../models';
+import { NotesSearchRequest } from '../../models';
 import { getNotesForPage } from '../../action-creators';
 
-export interface StateToPropsMapResult {
+type PageContentDispatch = GetNotesForPageDispatch;
+
+export interface PageContentStateToPropsMapResult {
   notesForPageFetchState: DataFetchState;
 }
 
-export interface DispatchToPropsMapResult {
-  getNotesForPage: (request: NotesSearchRequest) => Promise<GetNotesForPageSuccessAction | GetNotesForPageErrorAction>;
+export interface PageContentDispatchToPropsMapResult {
+  getNotesForPage: GetNotesForPageDispatchProp;
 }
 
-const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
+const mapStateToProps = (state: FoodDiaryState): PageContentStateToPropsMapResult => {
   return {
     notesForPageFetchState: state.notes.list.notesForPageFetchState,
   };
 };
 
-type PageContentDispatchType = ThunkDispatch<
-  NoteItem[],
-  NotesSearchRequest,
-  GetNotesForPageSuccessAction | GetNotesForPageErrorAction
-> &
-  ThunkDispatch<ProductDropdownItem[], void, GetProductDropdownItemsSuccessAction | GetProductDropdownItemsErrorAction>;
+const mapDispatchToProps = (dispatch: PageContentDispatch): PageContentDispatchToPropsMapResult => {
+  const getNotesForPageProp: GetNotesForPageDispatchProp = (request: NotesSearchRequest) => {
+    return dispatch(getNotesForPage(request));
+  };
 
-const mapDispatchToProps = (dispatch: PageContentDispatchType): DispatchToPropsMapResult => {
   return {
-    getNotesForPage: (
-      request: NotesSearchRequest,
-    ): Promise<GetNotesForPageSuccessAction | GetNotesForPageErrorAction> => {
-      return dispatch(getNotesForPage(request));
-    },
+    getNotesForPage: getNotesForPageProp,
   };
 };
 
-const PageContentConnected = connect(mapStateToProps, mapDispatchToProps)(PageContent);
-
-export default PageContentConnected;
+export default connect(mapStateToProps, mapDispatchToProps)(PageContent);

@@ -2,12 +2,12 @@ import { connect } from 'react-redux';
 import Pages from './Pages';
 import { FoodDiaryState } from '../../store';
 
-export interface StateToPropsMapResult {
+export interface PagesStateToPropsMapResult {
   isPagesListAvailable: boolean;
   pagesCount: number;
 }
 
-const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
+const mapStateToProps = (state: FoodDiaryState): PagesStateToPropsMapResult => {
   return {
     isPagesListAvailable: state.pages.list.pageItemsFetchState.loaded,
     pagesCount: state.pages.list.pageItems.length,

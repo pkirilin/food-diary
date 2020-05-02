@@ -2,11 +2,16 @@ import React from 'react';
 import './PagesListControlsTop.scss';
 import { SidebarControlPanel, SidebarControlPanelIcons } from '../SidebarBlocks';
 import Icon from '../Icon';
-import { DispatchToPropsMapResult, StateToPropsMapResult } from './PagesListControlsTopConnected';
+import {
+  PagesListControlsTopDispatchToPropsMapResult,
+  PagesListControlsTopStateToPropsMapResult,
+} from './PagesListControlsTopConnected';
 import { useRouteMatch } from 'react-router-dom';
 import { PagesListActionTypes } from '../../action-types';
 
-interface PagesListControlsTopProps extends StateToPropsMapResult, DispatchToPropsMapResult {}
+interface PagesListControlsTopProps
+  extends PagesListControlsTopStateToPropsMapResult,
+    PagesListControlsTopDispatchToPropsMapResult {}
 
 const PagesListControlsTop: React.FC<PagesListControlsTopProps> = ({
   createDraftPage,

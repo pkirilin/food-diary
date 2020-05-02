@@ -3,28 +3,25 @@ import NotesTableRow from './NotesTableRow';
 import {
   ProductDropdownItem,
   NotesForMealSearchRequest,
-  NoteItem,
   ProductDropdownSearchRequest,
   NoteDeleteRequest,
   PagesFilter,
-  PageItem,
 } from '../../models';
 import { FoodDiaryState, MealOperationStatus } from '../../store';
 import {
-  EditNoteSuccessAction,
-  EditNoteErrorAction,
-  DeleteNoteSuccessAction,
-  DeleteNoteErrorAction,
-  GetNotesForMealSuccessAction,
-  GetNotesForMealErrorAction,
   SetEditableForNoteAction,
-  GetProductDropdownItemsSuccessAction,
-  GetProductDropdownItemsErrorAction,
-  GetPagesListSuccessAction,
-  GetPagesListErrorAction,
+  EditNoteDispatch,
+  DeleteNoteDispatch,
+  GetNotesForMealDispatch,
+  GetProductDropdownItemsDispatch,
+  GetPagesListDispatch,
+  EditNoteDispatchProp,
+  DeleteNoteDispatchProp,
+  GetNotesForMealDispatchProp,
+  GetProductDropdownItemsDispatchProp,
+  GetPagesListDispatchProp,
 } from '../../action-types';
 import { Dispatch } from 'redux';
-import { ThunkDispatch } from 'redux-thunk';
 import {
   setEditableForNote,
   editNote,
@@ -35,7 +32,14 @@ import {
 } from '../../action-creators';
 import { NoteEditRequest } from '../../models';
 
-export interface StateToPropsMapResult {
+type NotesTableDispatch = Dispatch<SetEditableForNoteAction> &
+  EditNoteDispatch &
+  DeleteNoteDispatch &
+  GetNotesForMealDispatch &
+  GetProductDropdownItemsDispatch &
+  GetPagesListDispatch;
+
+export interface NotesTableRowStateToPropsMapResult {
   productDropdownItems: ProductDropdownItem[];
   editableNotesIds: number[];
   mealOperationStatuses: MealOperationStatus[];
@@ -44,20 +48,16 @@ export interface StateToPropsMapResult {
   pagesFilter: PagesFilter;
 }
 
-export interface DispatchToPropsMapResult {
+export interface NotesTableRowDispatchToPropsMapResult {
   setEditableForNote: (noteId: number, editable: boolean) => void;
-  editNote: (request: NoteEditRequest) => Promise<EditNoteSuccessAction | EditNoteErrorAction>;
-  deleteNote: (request: NoteDeleteRequest) => Promise<DeleteNoteSuccessAction | DeleteNoteErrorAction>;
-  getNotesForMeal: (
-    request: NotesForMealSearchRequest,
-  ) => Promise<GetNotesForMealSuccessAction | GetNotesForMealErrorAction>;
-  getProductDropdownItems: (
-    request: ProductDropdownSearchRequest,
-  ) => Promise<GetProductDropdownItemsSuccessAction | GetProductDropdownItemsErrorAction>;
-  getPages: (filter: PagesFilter) => Promise<GetPagesListSuccessAction | GetPagesListErrorAction>;
+  editNote: EditNoteDispatchProp;
+  deleteNote: DeleteNoteDispatchProp;
+  getNotesForMeal: GetNotesForMealDispatchProp;
+  getProductDropdownItems: GetProductDropdownItemsDispatchProp;
+  getPages: GetPagesListDispatchProp;
 }
 
-const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
+const mapStateToProps = (state: FoodDiaryState): NotesTableRowStateToPropsMapResult => {
   return {
     productDropdownItems: state.products.dropdown.productDropdownItems,
     editableNotesIds: state.notes.list.editableNotesIds,
@@ -68,41 +68,37 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
   };
 };
 
-type NotesTableDispatchType = Dispatch<SetEditableForNoteAction> &
-  ThunkDispatch<void, NoteEditRequest, EditNoteSuccessAction | EditNoteErrorAction> &
-  ThunkDispatch<void, NoteDeleteRequest, DeleteNoteSuccessAction | DeleteNoteErrorAction> &
-  ThunkDispatch<NoteItem[], NotesForMealSearchRequest, GetNotesForMealSuccessAction | GetNotesForMealErrorAction> &
-  ThunkDispatch<
-    ProductDropdownItem[],
-    ProductDropdownSearchRequest,
-    GetProductDropdownItemsSuccessAction | GetProductDropdownItemsErrorAction
-  > &
-  ThunkDispatch<PageItem[], PagesFilter, GetPagesListSuccessAction | GetPagesListErrorAction>;
+const mapDispatchToProps = (dispatch: NotesTableDispatch): NotesTableRowDispatchToPropsMapResult => {
+  const editNoteProp: EditNoteDispatchProp = (request: NoteEditRequest) => {
+    return dispatch(editNote(request));
+  };
 
-const mapDispatchToProps = (dispatch: NotesTableDispatchType): DispatchToPropsMapResult => {
+  const deleteNoteProp: DeleteNoteDispatchProp = (request: NoteDeleteRequest) => {
+    return dispatch(deleteNote(request));
+  };
+
+  const getNotesForMealProp: GetNotesForMealDispatchProp = (request: NotesForMealSearchRequest) => {
+    return dispatch(getNotesForMeal(request));
+  };
+
+  const getProductDropdownItemsProp: GetProductDropdownItemsDispatchProp = (request: ProductDropdownSearchRequest) => {
+    return dispatch(getProductDropdownItems(request));
+  };
+
+  const getPagesProp: GetPagesListDispatchProp = (filter: PagesFilter) => {
+    return dispatch(getPages(filter));
+  };
+
   return {
     setEditableForNote: (noteId: number, editable: boolean): void => {
       dispatch(setEditableForNote(noteId, editable));
     },
-    editNote: (request: NoteEditRequest): Promise<EditNoteSuccessAction | EditNoteErrorAction> => {
-      return dispatch(editNote(request));
-    },
-    deleteNote: (request: NoteDeleteRequest): Promise<DeleteNoteSuccessAction | DeleteNoteErrorAction> => {
-      return dispatch(deleteNote(request));
-    },
-    getNotesForMeal: (
-      request: NotesForMealSearchRequest,
-    ): Promise<GetNotesForMealSuccessAction | GetNotesForMealErrorAction> => {
-      return dispatch(getNotesForMeal(request));
-    },
-    getProductDropdownItems: (
-      request: ProductDropdownSearchRequest,
-    ): Promise<GetProductDropdownItemsSuccessAction | GetProductDropdownItemsErrorAction> => {
-      return dispatch(getProductDropdownItems(request));
-    },
-    getPages: (filter: PagesFilter): Promise<GetPagesListSuccessAction | GetPagesListErrorAction> => {
-      return dispatch(getPages(filter));
-    },
+
+    editNote: editNoteProp,
+    deleteNote: deleteNoteProp,
+    getNotesForMeal: getNotesForMealProp,
+    getProductDropdownItems: getProductDropdownItemsProp,
+    getPages: getPagesProp,
   };
 };
 

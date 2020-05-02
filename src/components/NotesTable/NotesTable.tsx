@@ -1,11 +1,11 @@
 import React from 'react';
 import './NotesTable.scss';
 import { MealType } from '../../models';
-import { StateToPropsMapResult } from './NotesTableConnected';
+import { NotesTableStateToPropsMapResult } from './NotesTableConnected';
 import { Table, TableColumn } from '../Controls';
 import NotesTableRowConnected from '../NotesTableRow';
 
-interface NotesTableProps extends StateToPropsMapResult {
+interface NotesTableProps extends NotesTableStateToPropsMapResult {
   mealType: MealType;
 }
 

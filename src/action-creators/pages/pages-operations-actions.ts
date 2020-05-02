@@ -15,7 +15,7 @@ import {
   CreatePageActions,
   EditPageActionCreator,
   EditPageActions,
-  DeletePageActionCreator,
+  DeletePagesActionCreator,
   DeletePagesActions,
 } from '../../action-types';
 import { createPageAsync, deletePagesAsync, editPageAsync } from '../../services';
@@ -151,7 +151,7 @@ export const editPage: EditPageActionCreator = (request: PageEditRequest) => {
   };
 };
 
-export const deletePages: DeletePageActionCreator = (pagesIds: number[]) => {
+export const deletePages: DeletePagesActionCreator = (pagesIds: number[]) => {
   return async (dispatch: Dispatch<DeletePagesActions>): Promise<DeletePagesSuccessAction | DeletePagesErrorAction> => {
     const messageSuffixForPage = pagesIds.length > 1 ? 'pages' : 'page';
     dispatch(deletePagesRequest(`Deleting ${messageSuffixForPage}`));

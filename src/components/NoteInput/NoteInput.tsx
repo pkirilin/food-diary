@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import './NoteInput.scss';
 import { FormGroup, Label, Input, Button, productDropdownItemRenderer, DropdownList } from '../Controls';
-import { StateToPropsMapResult, DispatchToPropsMapResult } from './NoteInputConnected';
+import { NoteInputStateToPropsMapResult, NoteInputDispatchToPropsMapResult } from './NoteInputConnected';
 import { MealType } from '../../models';
 import { useParams } from 'react-router-dom';
 import Loader from '../Loader';
 import { NotesOperationsActionTypes } from '../../action-types';
 import { useDebounce, useNoteValidation } from '../../hooks';
 
-interface NoteInputProps extends StateToPropsMapResult, DispatchToPropsMapResult {
+interface NoteInputProps extends NoteInputStateToPropsMapResult, NoteInputDispatchToPropsMapResult {
   mealType: MealType;
 }
 

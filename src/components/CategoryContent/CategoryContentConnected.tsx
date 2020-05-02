@@ -6,23 +6,23 @@ import { updateProductsFilter } from '../../action-creators';
 import { ProductsFilter } from '../../models';
 import { FoodDiaryState } from '../../store';
 
-export interface StateToPropsMapResult {
+type CategoryContentDispatch = Dispatch<UpdateProductsFilterAction>;
+
+export interface CategoryContentStateToPropsMapResult {
   productsFilter: ProductsFilter;
 }
 
-export interface DispatchToPropsMapResult {
+export interface CategoryContentDispatchToPropsMapResult {
   updateProductsFilter: (productsFilter: ProductsFilter) => void;
 }
 
-type CategoryContentDispatch = Dispatch<UpdateProductsFilterAction>;
-
-const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
+const mapStateToProps = (state: FoodDiaryState): CategoryContentStateToPropsMapResult => {
   return {
     productsFilter: state.products.filter,
   };
 };
 
-const mapDispatchToProps = (dispatch: CategoryContentDispatch): DispatchToPropsMapResult => {
+const mapDispatchToProps = (dispatch: CategoryContentDispatch): CategoryContentDispatchToPropsMapResult => {
   return {
     updateProductsFilter: (productsFilter: ProductsFilter): void => {
       dispatch(updateProductsFilter(productsFilter));

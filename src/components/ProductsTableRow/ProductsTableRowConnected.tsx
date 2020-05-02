@@ -3,16 +3,16 @@ import ProductsTableRow from './ProductsTableRow';
 import { FoodDiaryState } from '../../store';
 import {
   SetEditableForProductAction,
-  DeleteProductSuccessAction,
-  DeleteProductErrorAction,
-  GetProductsListSuccessAction,
-  GetProductsListErrorAction,
-  EditProductSuccessAction,
-  EditProductErrorAction,
-  GetCategoryDropdownItemsSuccessAction,
-  GetCategoryDropdownItemsErrorAction,
-  GetCategoriesListSuccessAction,
-  GetCategoriesListErrorAction,
+  GetProductsListDispatch,
+  EditProductDispatch,
+  DeleteProductDispatch,
+  GetCategoryDropdownItemsDispatch,
+  GetCategoriesListDispatch,
+  GetProductsListDispatchProp,
+  GetCategoryDropdownItemsDispatchProp,
+  GetCategoriesListDispatchProp,
+  EditProductDispatchProp,
+  DeleteProductDispatchProp,
 } from '../../action-types';
 import { Dispatch } from 'redux';
 import {
@@ -23,17 +23,16 @@ import {
   getCategoryDropdownItems,
   getCategories,
 } from '../../action-creators';
-import { ThunkDispatch } from 'redux-thunk';
-import {
-  ProductItem,
-  CategoryDropdownItem,
-  ProductsFilter,
-  ProductEditRequest,
-  CategoryDropdownSearchRequest,
-  CategoryItem,
-} from '../../models';
+import { CategoryDropdownItem, ProductsFilter, ProductEditRequest, CategoryDropdownSearchRequest } from '../../models';
 
-export interface StateToPropsMapResult {
+type ProductsTableRowDispatch = Dispatch<SetEditableForProductAction> &
+  GetProductsListDispatch &
+  EditProductDispatch &
+  DeleteProductDispatch &
+  GetCategoryDropdownItemsDispatch &
+  GetCategoriesListDispatch;
+
+export interface ProductsTableRowStateToPropsMapResult {
   editableProductsIds: number[];
   categoryDropdownItems: CategoryDropdownItem[];
   isProductOperationInProcess: boolean;
@@ -41,7 +40,16 @@ export interface StateToPropsMapResult {
   productsFilter: ProductsFilter;
 }
 
-const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
+export interface ProductsTableRowDispatchToPropsMapResult {
+  setEditableForProduct: (productId: number, editable: boolean) => void;
+  getProducts: GetProductsListDispatchProp;
+  getCategoryDropdownItems: GetCategoryDropdownItemsDispatchProp;
+  getCategories: GetCategoriesListDispatchProp;
+  editProduct: EditProductDispatchProp;
+  deleteProduct: DeleteProductDispatchProp;
+}
+
+const mapStateToProps = (state: FoodDiaryState): ProductsTableRowStateToPropsMapResult => {
   return {
     editableProductsIds: state.products.list.editableProductsIds,
     categoryDropdownItems: state.categories.dropdown.categoryDropdownItems,
@@ -51,52 +59,39 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
   };
 };
 
-export interface DispatchToPropsMapResult {
-  setEditableForProduct: (productId: number, editable: boolean) => void;
-  getProducts: (productsFilter: ProductsFilter) => Promise<GetProductsListSuccessAction | GetProductsListErrorAction>;
-  getCategoryDropdownItems: (
+const mapDispatchToProps = (dispatch: ProductsTableRowDispatch): ProductsTableRowDispatchToPropsMapResult => {
+  const getProductsProp: GetProductsListDispatchProp = (productsFilter: ProductsFilter) => {
+    return dispatch(getProducts(productsFilter));
+  };
+
+  const getCategoryDropdownItemsProp: GetCategoryDropdownItemsDispatchProp = (
     request: CategoryDropdownSearchRequest,
-  ) => Promise<GetCategoryDropdownItemsSuccessAction | GetCategoryDropdownItemsErrorAction>;
-  getCategories: () => Promise<GetCategoriesListSuccessAction | GetCategoriesListErrorAction>;
-  editProduct: (request: ProductEditRequest) => Promise<EditProductSuccessAction | EditProductErrorAction>;
-  deleteProduct: (productId: number) => Promise<DeleteProductSuccessAction | DeleteProductErrorAction>;
-}
+  ) => {
+    return dispatch(getCategoryDropdownItems(request));
+  };
 
-type ProductsTableRowDispatch = Dispatch<SetEditableForProductAction> &
-  ThunkDispatch<ProductItem[], ProductsFilter, GetProductsListSuccessAction | GetProductsListErrorAction> &
-  ThunkDispatch<void, ProductEditRequest, EditProductSuccessAction | EditProductErrorAction> &
-  ThunkDispatch<void, number, DeleteProductSuccessAction | DeleteProductErrorAction> &
-  ThunkDispatch<
-    CategoryDropdownItem[],
-    CategoryDropdownSearchRequest,
-    GetCategoryDropdownItemsSuccessAction | GetCategoryDropdownItemsErrorAction
-  > &
-  ThunkDispatch<CategoryItem[], void, GetCategoriesListSuccessAction | GetCategoriesListErrorAction>;
+  const getCategoriesProp: GetCategoriesListDispatchProp = () => {
+    return dispatch(getCategories());
+  };
 
-const mapDispatchToProps = (dispatch: ProductsTableRowDispatch): DispatchToPropsMapResult => {
+  const editProductProp: EditProductDispatchProp = (request: ProductEditRequest) => {
+    return dispatch(editProduct(request));
+  };
+
+  const deleteProductProp: DeleteProductDispatchProp = (productId: number) => {
+    return dispatch(deleteProduct(productId));
+  };
+
   return {
     setEditableForProduct: (productId: number, editable: boolean): void => {
       dispatch(setEditableForProduct(productId, editable));
     },
-    getProducts: (
-      productsFilter: ProductsFilter,
-    ): Promise<GetProductsListSuccessAction | GetProductsListErrorAction> => {
-      return dispatch(getProducts(productsFilter));
-    },
-    getCategoryDropdownItems: (
-      request: CategoryDropdownSearchRequest,
-    ): Promise<GetCategoryDropdownItemsSuccessAction | GetCategoryDropdownItemsErrorAction> => {
-      return dispatch(getCategoryDropdownItems(request));
-    },
-    getCategories: (): Promise<GetCategoriesListSuccessAction | GetCategoriesListErrorAction> => {
-      return dispatch(getCategories());
-    },
-    editProduct: (request: ProductEditRequest): Promise<EditProductSuccessAction | EditProductErrorAction> => {
-      return dispatch(editProduct(request));
-    },
-    deleteProduct: (productId: number): Promise<DeleteProductSuccessAction | DeleteProductErrorAction> => {
-      return dispatch(deleteProduct(productId));
-    },
+
+    getProducts: getProductsProp,
+    getCategoryDropdownItems: getCategoryDropdownItemsProp,
+    getCategories: getCategoriesProp,
+    editProduct: editProductProp,
+    deleteProduct: deleteProductProp,
   };
 };
 

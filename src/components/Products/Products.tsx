@@ -3,11 +3,11 @@ import './Products.scss';
 import { ContentWrapper, MainContainer, SectionContainer, SectionTitle } from '../ContainerBlocks';
 import ProductInputConnected from '../ProductInput';
 import ProductsTableConnected from '../ProductsTable';
-import { StateToPropsMapResult, DispatchToPropsMapResult } from './ProductsConnected';
+import { ProductsStateToPropsMapResult, ProductsDispatchToPropsMapResult } from './ProductsConnected';
 import { ProductsFilter } from '../../models';
 import { productsFilterInitialState } from '../../reducers/products';
 
-interface ProductsProps extends StateToPropsMapResult, DispatchToPropsMapResult {}
+interface ProductsProps extends ProductsStateToPropsMapResult, ProductsDispatchToPropsMapResult {}
 
 const Products: React.FC<ProductsProps> = ({ productsFilter, clearProductsFilter }: ProductsProps) => {
   const [isFilterCleared, setIsFilterCleared] = useState(false);

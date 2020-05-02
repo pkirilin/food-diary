@@ -4,13 +4,13 @@ import { Dispatch } from 'redux';
 import { ClearProductsFilterAction } from '../../action-types';
 import { clearProductsFilter } from '../../action-creators';
 
-export interface DispatchToPropsMapResult {
+type CategoriesDispatch = Dispatch<ClearProductsFilterAction>;
+
+export interface CategoriesDispatchToPropsMapResult {
   clearProductsFilter: () => void;
 }
 
-type CategoriesDispatch = Dispatch<ClearProductsFilterAction>;
-
-const mapDispatchToProps = (dispatch: CategoriesDispatch): DispatchToPropsMapResult => {
+const mapDispatchToProps = (dispatch: CategoriesDispatch): CategoriesDispatchToPropsMapResult => {
   return {
     clearProductsFilter: (): void => {
       dispatch(clearProductsFilter());

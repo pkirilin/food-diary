@@ -5,14 +5,19 @@ import Icon from '../Icon';
 import { useCategoryValidation } from '../../hooks';
 import { useHistory } from 'react-router-dom';
 import { CategoryItem } from '../../models';
-import { StateToPropsMapResult, DispatchToPropsMapResult } from './CategoriesListItemEditableConnected';
+import {
+  CategoriesListItemEditableStateToPropsMapResult,
+  CategoriesListItemEditableDispatchToPropsMapResult,
+} from './CategoriesListItemEditableConnected';
 import {
   CategoriesOperationsActionTypes,
   CategoriesListActionTypes,
   CreateCategorySuccessAction,
 } from '../../action-types';
 
-interface CategoriesListItemEditableProps extends StateToPropsMapResult, DispatchToPropsMapResult {
+interface CategoriesListItemEditableProps
+  extends CategoriesListItemEditableStateToPropsMapResult,
+    CategoriesListItemEditableDispatchToPropsMapResult {
   category: CategoryItem;
   isDraft?: boolean;
 }

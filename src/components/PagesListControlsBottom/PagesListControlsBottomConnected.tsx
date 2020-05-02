@@ -6,7 +6,9 @@ import { FoodDiaryState } from '../../store';
 import { PagesFilter } from '../../models';
 import { UpdatePagesFilterAction } from '../../action-types';
 
-export interface StateToPropsMapResult {
+type PagesListControlsBottomDispatch = Dispatch<UpdatePagesFilterAction>;
+
+export interface PagesListControlsBottomStateToPropsMapResult {
   pagesFilter: PagesFilter;
   arePagesLoading: boolean;
   areNotesForPageLoading: boolean;
@@ -14,11 +16,12 @@ export interface StateToPropsMapResult {
   isPageOperationInProcess: boolean;
   isNoteOperationInProcess: boolean;
 }
-export interface DispatchToPropsMapResult {
+
+export interface PagesListControlsBottomDispatchToPropsMapResult {
   updatePagesFilter: (updatedFilter: PagesFilter) => void;
 }
 
-const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
+const mapStateToProps = (state: FoodDiaryState): PagesListControlsBottomStateToPropsMapResult => {
   return {
     pagesFilter: state.pages.filter,
     arePagesLoading: state.pages.list.pageItemsFetchState.loading,
@@ -29,7 +32,9 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
   };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<UpdatePagesFilterAction>): DispatchToPropsMapResult => {
+const mapDispatchToProps = (
+  dispatch: PagesListControlsBottomDispatch,
+): PagesListControlsBottomDispatchToPropsMapResult => {
   return {
     updatePagesFilter: (updatedFilter: PagesFilter): void => {
       dispatch(updateFilter(updatedFilter));

@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
 import './ProductsTable.scss';
 import { Table, TableColumn } from '../Controls';
-import { StateToPropsMapResult, DispatchToPropsMapResult } from './ProductsTableConnected';
+import { ProductsTableStateToPropsMapResult, ProductsTableDispatchToPropsMapResult } from './ProductsTableConnected';
 import ProductsTableRowConnected from '../ProductsTableRow';
 import Loader from '../Loader';
 import Pagination from '../Pagination';
 
-interface ProductsTableProps extends StateToPropsMapResult, DispatchToPropsMapResult {}
+interface ProductsTableProps extends ProductsTableStateToPropsMapResult, ProductsTableDispatchToPropsMapResult {}
 
 const productsTableColumns = [
   <TableColumn key="Product name" name="Product name" width="50%"></TableColumn>,

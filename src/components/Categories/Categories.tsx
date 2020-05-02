@@ -6,10 +6,10 @@ import CategoriesListControlsTopConnected from '../CategoriesListControlsTop';
 import CategoriesListConnected from '../CategoriesList';
 import CategoriesOperationsPanelConnected from '../CategoriesOperationsPanel';
 import { Switch, Route } from 'react-router-dom';
-import { DispatchToPropsMapResult } from './CategoriesConnected';
+import { CategoriesDispatchToPropsMapResult } from './CategoriesConnected';
 import CategoryContentConnected from '../CategoryContent';
 
-type CategoriesProps = DispatchToPropsMapResult;
+type CategoriesProps = CategoriesDispatchToPropsMapResult;
 
 const Categories: React.FC<CategoriesProps> = ({ clearProductsFilter }: CategoriesProps) => {
   useEffect(() => {

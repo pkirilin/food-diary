@@ -1,21 +1,20 @@
 import { connect } from 'react-redux';
 import CategoriesListItemEditable from './CategoriesListItemEditable';
 import { DataOperationState, DataFetchState, FoodDiaryState } from '../../store';
-import { ProductsFilter, CategoryCreateEdit, CategoryEditRequest, CategoryItem, ProductItem } from '../../models';
+import { ProductsFilter, CategoryCreateEdit, CategoryEditRequest } from '../../models';
 import {
-  CreateCategorySuccessAction,
-  CreateCategoryErrorAction,
-  EditCategorySuccessAction,
-  EditCategoryErrorAction,
-  GetCategoriesListSuccessAction,
-  GetCategoriesListErrorAction,
-  GetProductsListSuccessAction,
-  GetProductsListErrorAction,
   SetEditableForCategoriesAction,
   DeleteDraftCategoryAction,
+  CreateCategoryDispatch,
+  EditCategoryDispatch,
+  GetCategoriesListDispatch,
+  GetProductsListDispatch,
+  CreateCategoryDispatchProp,
+  EditCategoryDispatchProp,
+  GetCategoriesListDispatchProp,
+  GetProductsListDispatchProp,
 } from '../../action-types';
 import { Dispatch } from 'react';
-import { ThunkDispatch } from 'redux-thunk';
 import {
   setEditableForCategories,
   deleteDraftCategory,
@@ -25,23 +24,29 @@ import {
   getProducts,
 } from '../../action-creators';
 
-export interface StateToPropsMapResult {
+type CategoriesListItemDispatch = Dispatch<SetEditableForCategoriesAction | DeleteDraftCategoryAction> &
+  CreateCategoryDispatch &
+  EditCategoryDispatch &
+  GetCategoriesListDispatch &
+  GetProductsListDispatch;
+
+export interface CategoriesListItemEditableStateToPropsMapResult {
   categoryOperationStatus: DataOperationState;
   productOperationStatus: DataOperationState;
   productItemsFetchState: DataFetchState;
   productsFilter: ProductsFilter;
 }
 
-export interface DispatchToPropsMapResult {
-  createCategory: (category: CategoryCreateEdit) => Promise<CreateCategorySuccessAction | CreateCategoryErrorAction>;
-  editCategory: (request: CategoryEditRequest) => Promise<EditCategorySuccessAction | EditCategoryErrorAction>;
+export interface CategoriesListItemEditableDispatchToPropsMapResult {
   deleteDraftCategory: (draftCategoryId: number) => void;
-  getCategories: () => Promise<GetCategoriesListSuccessAction | GetCategoriesListErrorAction>;
-  getProducts: (filter: ProductsFilter) => Promise<GetProductsListSuccessAction | GetProductsListErrorAction>;
   setEditableForCategories: (categoriesIds: number[], editable: boolean) => void;
+  createCategory: CreateCategoryDispatchProp;
+  editCategory: EditCategoryDispatchProp;
+  getCategories: GetCategoriesListDispatchProp;
+  getProducts: GetProductsListDispatchProp;
 }
 
-const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
+const mapStateToProps = (state: FoodDiaryState): CategoriesListItemEditableStateToPropsMapResult => {
   return {
     categoryOperationStatus: state.categories.operations.status,
     productOperationStatus: state.products.operations.productOperationStatus,
@@ -50,34 +55,38 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
   };
 };
 
-type CategoriesListItemDispatch = Dispatch<SetEditableForCategoriesAction | DeleteDraftCategoryAction> &
-  ThunkDispatch<void, CategoryCreateEdit, CreateCategorySuccessAction | CreateCategoryErrorAction> &
-  ThunkDispatch<void, CategoryEditRequest, EditCategorySuccessAction | EditCategoryErrorAction> &
-  ThunkDispatch<CategoryItem[], void, GetCategoriesListSuccessAction | GetCategoriesListErrorAction> &
-  ThunkDispatch<ProductItem[], ProductsFilter, GetProductsListSuccessAction | GetProductsListErrorAction>;
+const mapDispatchToProps = (
+  dispatch: CategoriesListItemDispatch,
+): CategoriesListItemEditableDispatchToPropsMapResult => {
+  const createCategoryProp: CreateCategoryDispatchProp = (category: CategoryCreateEdit) => {
+    return dispatch(createCategory(category));
+  };
 
-const mapDispatchToProps = (dispatch: CategoriesListItemDispatch): DispatchToPropsMapResult => {
+  const editCategoryProp: EditCategoryDispatchProp = (request: CategoryEditRequest) => {
+    return dispatch(editCategory(request));
+  };
+
+  const getCategoriesProp: GetCategoriesListDispatchProp = () => {
+    return dispatch(getCategories());
+  };
+
+  const getProductsProp: GetProductsListDispatchProp = (filter: ProductsFilter) => {
+    return dispatch(getProducts(filter));
+  };
+
   return {
     setEditableForCategories: (categoriesIds: number[], editable: boolean): void => {
       dispatch(setEditableForCategories(categoriesIds, editable));
     },
+
     deleteDraftCategory: (draftCategoryId: number): void => {
       dispatch(deleteDraftCategory(draftCategoryId));
     },
-    createCategory: (
-      category: CategoryCreateEdit,
-    ): Promise<CreateCategorySuccessAction | CreateCategoryErrorAction> => {
-      return dispatch(createCategory(category));
-    },
-    editCategory: (request: CategoryEditRequest): Promise<EditCategorySuccessAction | EditCategoryErrorAction> => {
-      return dispatch(editCategory(request));
-    },
-    getCategories: (): Promise<GetCategoriesListSuccessAction | GetCategoriesListErrorAction> => {
-      return dispatch(getCategories());
-    },
-    getProducts: (filter: ProductsFilter): Promise<GetProductsListSuccessAction | GetProductsListErrorAction> => {
-      return dispatch(getProducts(filter));
-    },
+
+    createCategory: createCategoryProp,
+    editCategory: editCategoryProp,
+    getCategories: getCategoriesProp,
+    getProducts: getProductsProp,
   };
 };
 

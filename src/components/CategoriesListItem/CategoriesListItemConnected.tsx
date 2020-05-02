@@ -4,29 +4,31 @@ import { FoodDiaryState, DataOperationState, DataFetchState } from '../../store'
 import { Dispatch } from 'redux';
 import {
   SetEditableForCategoriesAction,
-  DeleteCategorySuccessAction,
-  DeleteCategoryErrorAction,
-  GetCategoriesListSuccessAction,
-  GetCategoriesListErrorAction,
+  GetCategoriesListDispatch,
+  DeleteCategoryDispatch,
+  DeleteCategoryDispatchProp,
+  GetCategoriesListDispatchProp,
 } from '../../action-types';
 import { setEditableForCategories, deleteCategory, getCategories } from '../../action-creators';
-import { CategoryItem } from '../../models';
-import { ThunkDispatch } from 'redux-thunk';
 
-export interface StateToPropsMapResult {
+type CategoriesListItemDispatch = Dispatch<SetEditableForCategoriesAction> &
+  DeleteCategoryDispatch &
+  GetCategoriesListDispatch;
+
+export interface CategoriesListItemStateToPropsMapResult {
   categoryOperationStatus: DataOperationState;
   productOperationStatus: DataOperationState;
   productItemsFetchState: DataFetchState;
   editableCategoriesIds: number[];
 }
 
-export interface DispatchToPropsMapResult {
+export interface CategoriesListItemDispatchToPropsMapResult {
   setEditableForCategories: (categoriesIds: number[], editable: boolean) => void;
-  deleteCategory: (categoryId: number) => Promise<DeleteCategorySuccessAction | DeleteCategoryErrorAction>;
-  getCategories: () => Promise<GetCategoriesListSuccessAction | GetCategoriesListErrorAction>;
+  deleteCategory: DeleteCategoryDispatchProp;
+  getCategories: GetCategoriesListDispatchProp;
 }
 
-const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
+const mapStateToProps = (state: FoodDiaryState): CategoriesListItemStateToPropsMapResult => {
   return {
     categoryOperationStatus: state.categories.operations.status,
     productOperationStatus: state.products.operations.productOperationStatus,
@@ -35,21 +37,22 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
   };
 };
 
-type CategoriesListItemDispatch = Dispatch<SetEditableForCategoriesAction> &
-  ThunkDispatch<void, number, DeleteCategorySuccessAction | DeleteCategoryErrorAction> &
-  ThunkDispatch<CategoryItem[], void, GetCategoriesListSuccessAction | GetCategoriesListErrorAction>;
+const mapDispatchToProps = (dispatch: CategoriesListItemDispatch): CategoriesListItemDispatchToPropsMapResult => {
+  const deleteCategoryProp: DeleteCategoryDispatchProp = (categoryId: number) => {
+    return dispatch(deleteCategory(categoryId));
+  };
 
-const mapDispatchToProps = (dispatch: CategoriesListItemDispatch): DispatchToPropsMapResult => {
+  const getCategoriesProp: GetCategoriesListDispatchProp = () => {
+    return dispatch(getCategories());
+  };
+
   return {
     setEditableForCategories: (categoriesIds: number[], editable: boolean): void => {
       dispatch(setEditableForCategories(categoriesIds, editable));
     },
-    deleteCategory: (categoryId: number): Promise<DeleteCategorySuccessAction | DeleteCategoryErrorAction> => {
-      return dispatch(deleteCategory(categoryId));
-    },
-    getCategories: (): Promise<GetCategoriesListSuccessAction | GetCategoriesListErrorAction> => {
-      return dispatch(getCategories());
-    },
+
+    deleteCategory: deleteCategoryProp,
+    getCategories: getCategoriesProp,
   };
 };
 

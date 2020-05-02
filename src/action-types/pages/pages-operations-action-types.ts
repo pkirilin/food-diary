@@ -87,7 +87,7 @@ export type EditPageActionCreator = ActionCreator<
   >
 >;
 
-export type DeletePageActionCreator = ActionCreator<
+export type DeletePagesActionCreator = ActionCreator<
   ThunkAction<
     Promise<DeletePagesSuccessAction | DeletePagesErrorAction>,
     void,
@@ -100,10 +100,12 @@ export type CreatePageDispatch = ThunkDispatch<void, PageCreateEdit, CreatePageS
 
 export type EditPageDispatch = ThunkDispatch<void, PageEditRequest, EditPageSuccessAction | EditPageErrorAction>;
 
-export type DeletePageDispatch = ThunkDispatch<void, number[], DeletePagesSuccessAction | DeletePagesErrorAction>;
+export type DeletePagesDispatch = ThunkDispatch<void, number[], DeletePagesSuccessAction | DeletePagesErrorAction>;
 
 export type CreatePageDispatchProp = (page: PageCreateEdit) => Promise<CreatePageSuccessAction | CreatePageErrorAction>;
 
 export type EditPageDispatchProp = (request: PageEditRequest) => Promise<EditPageSuccessAction | EditPageErrorAction>;
 
-export type DeletePageDispatchProp = (pagesIds: number[]) => Promise<DeletePagesSuccessAction | DeletePagesErrorAction>;
+export type DeletePagesDispatchProp = (
+  pagesIds: number[],
+) => Promise<DeletePagesSuccessAction | DeletePagesErrorAction>;

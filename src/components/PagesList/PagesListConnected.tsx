@@ -1,12 +1,13 @@
 import { connect } from 'react-redux';
 import PagesList from './PagesList';
-import { ThunkDispatch } from 'redux-thunk';
 import { PagesFilter, PageItem } from '../../models';
 import { getPages } from '../../action-creators';
 import { FoodDiaryState, DataFetchState } from '../../store';
-import { GetPagesListSuccessAction, GetPagesListErrorAction } from '../../action-types';
+import { GetPagesListDispatch, GetPagesListDispatchProp } from '../../action-types';
 
-export interface StateToPropsMapResult {
+type PagesListDispatch = GetPagesListDispatch;
+
+export interface PagesListStateToPropsMapResult {
   pageItems: PageItem[];
   pageItemsFetchState: DataFetchState;
   pageDraftItems: PageItem[];
@@ -14,11 +15,11 @@ export interface StateToPropsMapResult {
   pagesFilter: PagesFilter;
 }
 
-export interface DispatchToPropsMapResult {
-  getPages: (filter: PagesFilter) => Promise<GetPagesListSuccessAction | GetPagesListErrorAction>;
+export interface PagesListDispatchToPropsMapResult {
+  getPages: GetPagesListDispatchProp;
 }
 
-const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
+const mapStateToProps = (state: FoodDiaryState): PagesListStateToPropsMapResult => {
   return {
     pageItems: state.pages.list.pageItems,
     pageItemsFetchState: state.pages.list.pageItemsFetchState,
@@ -28,13 +29,13 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
   };
 };
 
-const mapDispatchToProps = (
-  dispatch: ThunkDispatch<PageItem[], PagesFilter, GetPagesListSuccessAction | GetPagesListErrorAction>,
-): DispatchToPropsMapResult => {
+const mapDispatchToProps = (dispatch: PagesListDispatch): PagesListDispatchToPropsMapResult => {
+  const getPagesProp: GetPagesListDispatchProp = (filter: PagesFilter) => {
+    return dispatch(getPages(filter));
+  };
+
   return {
-    getPages: (filter: PagesFilter): Promise<GetPagesListSuccessAction | GetPagesListErrorAction> => {
-      return dispatch(getPages(filter));
-    },
+    getPages: getPagesProp,
   };
 };
 

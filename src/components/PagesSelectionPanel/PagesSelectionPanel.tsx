@@ -3,12 +3,17 @@ import './PagesSelectionPanel.scss';
 import { SidebarSelectionPanel, SidebarSelectionPanelOptions } from '../SidebarBlocks';
 import { Checkbox, DropdownMenu, DropdownItem } from '../Controls';
 import Icon from '../Icon';
-import { StateToPropsMapResult, DispatchToPropsMapResult } from './PagesSelectionPanelConnected';
+import {
+  PagesSelectionPanelStateToPropsMapResult,
+  PagesSelectionPanelDispatchToPropsMapResult,
+} from './PagesSelectionPanelConnected';
 import Loader from '../Loader';
 import { PagesOperationsActionTypes } from '../../action-types';
 import { useHistory } from 'react-router-dom';
 
-interface PagesSelectionPanelProps extends StateToPropsMapResult, DispatchToPropsMapResult {}
+interface PagesSelectionPanelProps
+  extends PagesSelectionPanelStateToPropsMapResult,
+    PagesSelectionPanelDispatchToPropsMapResult {}
 
 const PagesSelectionPanel: React.FC<PagesSelectionPanelProps> = ({
   visiblePagesIds,

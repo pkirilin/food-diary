@@ -6,9 +6,14 @@ import { usePageValidation } from '../../hooks';
 import { useHistory } from 'react-router-dom';
 import { PagesOperationsActionTypes, PagesListActionTypes, CreatePageSuccessAction } from '../../action-types';
 import { PageItem } from '../../models';
-import { StateToPropsMapResult, DispatchToPropsMapResult } from './PagesListItemEditableConnected';
+import {
+  PagesListItemEditableStateToPropsMapResult,
+  PagesListItemEditableDispatchToPropsMapResult,
+} from './PagesListItemEditableConnected';
 
-interface PagesListItemEditableProps extends StateToPropsMapResult, DispatchToPropsMapResult {
+interface PagesListItemEditableProps
+  extends PagesListItemEditableStateToPropsMapResult,
+    PagesListItemEditableDispatchToPropsMapResult {
   page: PageItem;
   isDraft?: boolean;
 }

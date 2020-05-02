@@ -2,19 +2,22 @@ import { connect } from 'react-redux';
 import PagesListControlsTop from './PagesListControlsTop';
 import { Dispatch } from 'redux';
 import {
-  PagesListActions,
   ClearPagesFilterAction,
-  GetPagesListSuccessAction,
-  GetPagesListErrorAction,
-  GetNotesForPageSuccessAction,
-  GetNotesForPageErrorAction,
+  GetPagesListDispatch,
+  GetNotesForPageDispatch,
+  CreateDraftPageAction,
+  GetPagesListDispatchProp,
+  GetNotesForPageDispatchProp,
 } from '../../action-types';
 import { FoodDiaryState } from '../../store';
 import { createDraftPage, clearFilter, getPages, getNotesForPage } from '../../action-creators';
-import { PagesFilter, PageItem, NotesSearchRequest, NoteItem } from '../../models';
-import { ThunkDispatch } from 'redux-thunk';
+import { PagesFilter, PageItem, NotesSearchRequest } from '../../models';
 
-export interface StateToPropsMapResult {
+type PagesListControlsTopDispatch = Dispatch<CreateDraftPageAction | ClearPagesFilterAction> &
+  GetPagesListDispatch &
+  GetNotesForPageDispatch;
+
+export interface PagesListControlsTopStateToPropsMapResult {
   pagesFilter: PagesFilter;
   isPagesFilterChanged: boolean;
   arePagesLoading: boolean;
@@ -24,14 +27,14 @@ export interface StateToPropsMapResult {
   isNoteOperationInProcess: boolean;
 }
 
-export interface DispatchToPropsMapResult {
+export interface PagesListControlsTopDispatchToPropsMapResult {
   createDraftPage: (draftPage: PageItem) => void;
   clearPagesFilter: () => void;
-  getPages: (filter: PagesFilter) => Promise<GetPagesListSuccessAction | GetPagesListErrorAction>;
-  getNotesForPage: (request: NotesSearchRequest) => Promise<GetNotesForPageSuccessAction | GetNotesForPageErrorAction>;
+  getPages: GetPagesListDispatchProp;
+  getNotesForPage: GetNotesForPageDispatchProp;
 }
 
-const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
+const mapStateToProps = (state: FoodDiaryState): PagesListControlsTopStateToPropsMapResult => {
   return {
     pagesFilter: state.pages.filter,
     isPagesFilterChanged: state.pages.filter.filterChanged,
@@ -43,27 +46,26 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
   };
 };
 
-type PagesListControlsTopDispatch = Dispatch<PagesListActions> &
-  Dispatch<ClearPagesFilterAction> &
-  ThunkDispatch<PageItem[], PagesFilter, GetPagesListSuccessAction | GetPagesListErrorAction> &
-  ThunkDispatch<NoteItem[], NotesSearchRequest, GetNotesForPageSuccessAction | GetNotesForPageErrorAction>;
+const mapDispatchToProps = (dispatch: PagesListControlsTopDispatch): PagesListControlsTopDispatchToPropsMapResult => {
+  const getPagesProp: GetPagesListDispatchProp = (filter: PagesFilter) => {
+    return dispatch(getPages(filter));
+  };
 
-const mapDispatchToProps = (dispatch: PagesListControlsTopDispatch): DispatchToPropsMapResult => {
+  const getNotesForPageProp: GetNotesForPageDispatchProp = (request: NotesSearchRequest) => {
+    return dispatch(getNotesForPage(request));
+  };
+
   return {
     createDraftPage: (draftPage: PageItem): void => {
       dispatch(createDraftPage(draftPage));
     },
+
     clearPagesFilter: (): void => {
       dispatch(clearFilter());
     },
-    getPages: (filter: PagesFilter): Promise<GetPagesListSuccessAction | GetPagesListErrorAction> => {
-      return dispatch(getPages(filter));
-    },
-    getNotesForPage: (
-      request: NotesSearchRequest,
-    ): Promise<GetNotesForPageSuccessAction | GetNotesForPageErrorAction> => {
-      return dispatch(getNotesForPage(request));
-    },
+
+    getPages: getPagesProp,
+    getNotesForPage: getNotesForPageProp,
   };
 };
 

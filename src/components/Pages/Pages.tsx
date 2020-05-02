@@ -7,10 +7,10 @@ import PagesListControlsTopConnected from '../PagesListControlsTop';
 import PagesListControlsBottomConnected from '../PagesListControlsBottom';
 import { Switch, Route } from 'react-router-dom';
 import PagesSelectionPanelConnected from '../PagesSelectionPanel';
-import { StateToPropsMapResult } from './PagesConnected';
+import { PagesStateToPropsMapResult } from './PagesConnected';
 import PageContentConnected from '../PageContent';
 
-type PagesProps = StateToPropsMapResult;
+type PagesProps = PagesStateToPropsMapResult;
 
 const Pages: React.FC<PagesProps> = ({ isPagesListAvailable, pagesCount }: PagesProps) => {
   return (

@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import './NotesTableRow.scss';
 import { MealType, NoteItem } from '../../models';
 import { productDropdownItemRenderer, Input, DropdownList } from '../Controls';
-import { StateToPropsMapResult, DispatchToPropsMapResult } from './NotesTableRowConnected';
+import { NotesTableRowStateToPropsMapResult, NotesTableRowDispatchToPropsMapResult } from './NotesTableRowConnected';
 import Icon from '../Icon';
 import { NotesOperationsActionTypes } from '../../action-types';
 import { useParams } from 'react-router-dom';
 import { useDebounce, useNoteValidation } from '../../hooks';
 
-interface NotesTableRowProps extends StateToPropsMapResult, DispatchToPropsMapResult {
+interface NotesTableRowProps extends NotesTableRowStateToPropsMapResult, NotesTableRowDispatchToPropsMapResult {
   mealType: MealType;
   note: NoteItem;
 }

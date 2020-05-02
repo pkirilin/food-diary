@@ -6,21 +6,23 @@ import { SetCollapsedForAllMealsAction } from '../../action-types';
 import { setCollapsedForAllMeals } from '../../action-creators';
 import { FoodDiaryState } from '../../store';
 
-export interface StateToPropsMapResult {
+type MealsControlPanelDispatch = Dispatch<SetCollapsedForAllMealsAction>;
+
+export interface MealsControlPanelStateToProps {
   isPageContentLoading: boolean;
 }
 
-export interface DispatchToPropsMapResult {
+export interface MealsControlPanelDispatchToPropsMapResult {
   setCollapsedForAllMeals: (collapsed: boolean, meals: MealType[]) => void;
 }
 
-const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
+const mapStateToProps = (state: FoodDiaryState): MealsControlPanelStateToProps => {
   return {
     isPageContentLoading: state.notes.list.notesForPageFetchState.loading,
   };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<SetCollapsedForAllMealsAction>): DispatchToPropsMapResult => {
+const mapDispatchToProps = (dispatch: MealsControlPanelDispatch): MealsControlPanelDispatchToPropsMapResult => {
   return {
     setCollapsedForAllMeals: (collapsed: boolean, meals: MealType[]): void => {
       dispatch(setCollapsedForAllMeals(collapsed, meals));

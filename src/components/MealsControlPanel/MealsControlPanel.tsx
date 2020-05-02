@@ -1,10 +1,10 @@
 import React from 'react';
 import './MealsControlPanel.scss';
 import Icon from '../Icon';
-import { StateToPropsMapResult, DispatchToPropsMapResult } from './MealsControlPanelConnected';
+import { MealsControlPanelStateToProps, MealsControlPanelDispatchToPropsMapResult } from './MealsControlPanelConnected';
 import { availableMealTypes } from '../../models';
 
-interface MealsControlPanelProps extends StateToPropsMapResult, DispatchToPropsMapResult {}
+interface MealsControlPanelProps extends MealsControlPanelStateToProps, MealsControlPanelDispatchToPropsMapResult {}
 
 const MealsControlPanel: React.FC<MealsControlPanelProps> = ({
   setCollapsedForAllMeals,

@@ -2,12 +2,13 @@ import { connect } from 'react-redux';
 import ProductsTable from './ProductsTable';
 import { ProductItem, ProductsFilter } from '../../models';
 import { FoodDiaryState, DataFetchState } from '../../store';
-import { GetProductsListSuccessAction, GetProductsListErrorAction, ProductsFilterActions } from '../../action-types';
-import { ThunkDispatch } from 'redux-thunk';
+import { ProductsFilterActions, GetProductsListDispatch, GetProductsListDispatchProp } from '../../action-types';
 import { getProducts, updateProductsFilter } from '../../action-creators';
 import { Dispatch } from 'react';
 
-export interface StateToPropsMapResult {
+type ProductsDispatchType = GetProductsListDispatch & Dispatch<ProductsFilterActions>;
+
+export interface ProductsTableStateToPropsMapResult {
   productItemsFetchState: DataFetchState;
   isProductOperationInProcess: boolean;
   productItems: ProductItem[];
@@ -16,12 +17,12 @@ export interface StateToPropsMapResult {
   totalProductsCount: number;
 }
 
-export interface DispatchToPropsMapResult {
-  getProducts: (productsFilter: ProductsFilter) => Promise<GetProductsListSuccessAction | GetProductsListErrorAction>;
+export interface ProductsTableDispatchToPropsMapResult {
   updateProductsFilter: (updatedFilter: ProductsFilter) => void;
+  getProducts: GetProductsListDispatchProp;
 }
 
-const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
+const mapStateToProps = (state: FoodDiaryState): ProductsTableStateToPropsMapResult => {
   return {
     productItemsFetchState: state.products.list.productItemsFetchState,
     isProductOperationInProcess: state.products.operations.productOperationStatus.performing,
@@ -32,23 +33,17 @@ const mapStateToProps = (state: FoodDiaryState): StateToPropsMapResult => {
   };
 };
 
-type ProductsDispatchType = ThunkDispatch<
-  ProductItem[],
-  ProductsFilter,
-  GetProductsListSuccessAction | GetProductsListErrorAction
-> &
-  Dispatch<ProductsFilterActions>;
+const mapDispatchToProps = (dispatch: ProductsDispatchType): ProductsTableDispatchToPropsMapResult => {
+  const getProductsProp: GetProductsListDispatchProp = (productsFilter: ProductsFilter) => {
+    return dispatch(getProducts(productsFilter));
+  };
 
-const mapDispatchToProps = (dispatch: ProductsDispatchType): DispatchToPropsMapResult => {
   return {
-    getProducts: (
-      productsFilter: ProductsFilter,
-    ): Promise<GetProductsListSuccessAction | GetProductsListErrorAction> => {
-      return dispatch(getProducts(productsFilter));
-    },
     updateProductsFilter: (updatedFilter: ProductsFilter): void => {
       dispatch(updateProductsFilter(updatedFilter));
     },
+
+    getProducts: getProductsProp,
   };
 };
 

@@ -2,11 +2,11 @@ import React, { useEffect } from 'react';
 import './CategoriesList.scss';
 import { SidebarList, SidebarListPlaceholder } from '../SidebarBlocks';
 import CategoriesListItemConnected from '../CategoriesListItem';
-import { StateToPropsMapResult, DispatchToPropsMapResult } from './CategoriesListConnected';
+import { CategoriesListStateToPropsMapResult, CategoriesListDispatchToPropsMapResult } from './CategoriesListConnected';
 import Loader from '../Loader';
 import CategoriesListItemEditableConnected from '../CategoriesListItem/CategoriesListItemEditableConnected';
 
-interface CategoriesListProps extends StateToPropsMapResult, DispatchToPropsMapResult {}
+interface CategoriesListProps extends CategoriesListStateToPropsMapResult, CategoriesListDispatchToPropsMapResult {}
 
 const CategoriesList: React.FC<CategoriesListProps> = ({
   categoryItems,

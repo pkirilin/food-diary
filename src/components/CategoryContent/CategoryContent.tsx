@@ -1,11 +1,14 @@
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import ProductsTableConnected from '../ProductsTable';
-import { StateToPropsMapResult, DispatchToPropsMapResult } from './CategoryContentConnected';
+import {
+  CategoryContentStateToPropsMapResult,
+  CategoryContentDispatchToPropsMapResult,
+} from './CategoryContentConnected';
 import { SectionTitle } from '../ContainerBlocks';
 import ProductInputConnected from '../ProductInput';
 
-interface CategoryContentProps extends StateToPropsMapResult, DispatchToPropsMapResult {}
+interface CategoryContentProps extends CategoryContentStateToPropsMapResult, CategoryContentDispatchToPropsMapResult {}
 
 const CategoryContent: React.FC<CategoryContentProps> = ({
   productsFilter,
