@@ -8,4 +8,11 @@ export enum ShowCount {
   AllTime = 0,
 }
 
-export const showCountAllString = 'All';
+export enum SortOrder {
+  Ascending = 0,
+  Descending = 1,
+}
+
+export interface BadRequestResponse {
+  errors: Map<string, Array<string>>;
+}
