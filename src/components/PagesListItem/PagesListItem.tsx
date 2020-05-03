@@ -13,6 +13,7 @@ import { PagesListItemDispatchToPropsMapResult, PagesListItemStateToPropsMapResu
 import { PageItem } from '../../models';
 import { getFormattedDate } from '../../utils/date-utils';
 import PagesListItemEditableConnected from './PagesListItemEditableConnected';
+import { getWordWithCount } from '../../utils/string-utils';
 
 interface PagesListItemProps extends PagesListItemStateToPropsMapResult, PagesListItemDispatchToPropsMapResult {
   page: PageItem;
@@ -31,7 +32,7 @@ const PagesListItem: React.FC<PagesListItemProps> = ({
     setSelectedForPage(!isSelected, page.id);
   };
 
-  const notesBadgeLabel = `${page.countNotes} ${page.countNotes === 1 ? 'note' : 'notes'}`;
+  const notesBadgeLabel = getWordWithCount(page.countNotes, 'note', 'notes');
   const caloriesBadgeLabel = `${page.countCalories} cal`;
 
   const activeLinkClassName = useActiveLinkClassName(isSelected);

@@ -18,6 +18,7 @@ import Icon from '../Icon';
 import { CategoriesOperationsActionTypes } from '../../action-types';
 import { useHistory } from 'react-router-dom';
 import CategoriesListItemEditableConnected from './CategoriesListItemEditableConnected';
+import { getWordWithCount } from '../../utils/string-utils';
 
 interface CategoriesListItemProps
   extends CategoriesListItemStateToPropsMapResult,
@@ -45,9 +46,7 @@ const CategoriesListItem: React.FC<CategoriesListItemProps> = ({
   const isEditable = editableCategoriesIds.some(id => category.id === id);
   const isAnySideEffectHappening = isCategoryOperationInProcess || isProductOperationInProcess || areProductsLoading;
 
-  const categoryProductsBadgeLabel = `${category.countProducts} ${
-    category.countProducts === 1 ? 'product' : 'products'
-  }`;
+  const categoryProductsBadgeLabel = getWordWithCount(category.countProducts, 'product', 'products');
 
   const handleEditItemClick = (): void => {
     setEditableForCategories([category.id], true);
