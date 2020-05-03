@@ -7,6 +7,7 @@ import useProductValidation from './useProductValidation';
 import useCategoryValidation from './useCategoryValidation';
 import usePageValidation from './usePageValidation';
 import useIdFromRoute from './useIdFromRoute';
+import useNoteInputDisabled from './useNoteInputDisabled';
 
 export {
   useOutsideClick,
@@ -18,4 +19,5 @@ export {
   useCategoryValidation,
   usePageValidation,
   useIdFromRoute,
+  useNoteInputDisabled,
 };

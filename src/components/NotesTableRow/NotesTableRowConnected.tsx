@@ -1,13 +1,7 @@
 import { connect } from 'react-redux';
 import NotesTableRow from './NotesTableRow';
-import {
-  ProductDropdownItem,
-  NotesForMealSearchRequest,
-  ProductDropdownSearchRequest,
-  NoteDeleteRequest,
-  PagesFilter,
-} from '../../models';
-import { RootState, MealOperationStatus, DataFetchState } from '../../store';
+import { NotesForMealSearchRequest, NoteDeleteRequest, PagesFilter } from '../../models';
+import { RootState, MealOperationStatus } from '../../store';
 import {
   SetEditableForNoteAction,
   EditNoteDispatch,
@@ -15,24 +9,14 @@ import {
   GetNotesForMealDispatch,
   GetProductDropdownItemsDispatch,
   GetPagesListDispatch,
-  EditNoteDispatchProp,
   DeleteNoteDispatchProp,
   GetNotesForMealDispatchProp,
-  GetProductDropdownItemsDispatchProp,
   GetPagesListDispatchProp,
 } from '../../action-types';
 import { Dispatch } from 'redux';
-import {
-  setEditableForNote,
-  editNote,
-  deleteNote,
-  getNotesForMeal,
-  getProductDropdownItems,
-  getPages,
-} from '../../action-creators';
-import { NoteEditRequest } from '../../models';
+import { setEditableForNote, deleteNote, getNotesForMeal, getPages } from '../../action-creators';
 
-type NotesTableDispatch = Dispatch<SetEditableForNoteAction> &
+type NotesTableRowDispatch = Dispatch<SetEditableForNoteAction> &
   EditNoteDispatch &
   DeleteNoteDispatch &
   GetNotesForMealDispatch &
@@ -40,49 +24,35 @@ type NotesTableDispatch = Dispatch<SetEditableForNoteAction> &
   GetPagesListDispatch;
 
 export interface NotesTableRowStateToPropsMapResult {
-  productDropdownItems: ProductDropdownItem[];
   editableNotesIds: number[];
   mealOperationStatuses: MealOperationStatus[];
-  productDropdownItemsFetchState: DataFetchState;
   isPageOperationInProcess: boolean;
   pagesFilter: PagesFilter;
 }
 
 export interface NotesTableRowDispatchToPropsMapResult {
   setEditableForNote: (noteId: number, editable: boolean) => void;
-  editNote: EditNoteDispatchProp;
   deleteNote: DeleteNoteDispatchProp;
   getNotesForMeal: GetNotesForMealDispatchProp;
-  getProductDropdownItems: GetProductDropdownItemsDispatchProp;
   getPages: GetPagesListDispatchProp;
 }
 
 const mapStateToProps = (state: RootState): NotesTableRowStateToPropsMapResult => {
   return {
-    productDropdownItems: state.products.dropdown.productDropdownItems,
     editableNotesIds: state.notes.list.editableNotesIds,
     mealOperationStatuses: state.notes.operations.mealOperationStatuses,
-    productDropdownItemsFetchState: state.products.dropdown.productDropdownItemsFetchState,
     isPageOperationInProcess: state.pages.operations.status.performing,
     pagesFilter: state.pages.filter.params,
   };
 };
 
-const mapDispatchToProps = (dispatch: NotesTableDispatch): NotesTableRowDispatchToPropsMapResult => {
-  const editNoteProp: EditNoteDispatchProp = (request: NoteEditRequest) => {
-    return dispatch(editNote(request));
-  };
-
+const mapDispatchToProps = (dispatch: NotesTableRowDispatch): NotesTableRowDispatchToPropsMapResult => {
   const deleteNoteProp: DeleteNoteDispatchProp = (request: NoteDeleteRequest) => {
     return dispatch(deleteNote(request));
   };
 
   const getNotesForMealProp: GetNotesForMealDispatchProp = (request: NotesForMealSearchRequest) => {
     return dispatch(getNotesForMeal(request));
-  };
-
-  const getProductDropdownItemsProp: GetProductDropdownItemsDispatchProp = (request: ProductDropdownSearchRequest) => {
-    return dispatch(getProductDropdownItems(request));
   };
 
   const getPagesProp: GetPagesListDispatchProp = (filter: PagesFilter) => {
@@ -94,10 +64,8 @@ const mapDispatchToProps = (dispatch: NotesTableDispatch): NotesTableRowDispatch
       dispatch(setEditableForNote(noteId, editable));
     },
 
-    editNote: editNoteProp,
     deleteNote: deleteNoteProp,
     getNotesForMeal: getNotesForMealProp,
-    getProductDropdownItems: getProductDropdownItemsProp,
     getPages: getPagesProp,
   };
 };

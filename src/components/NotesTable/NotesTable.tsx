@@ -23,7 +23,7 @@ const NotesTable: React.FC<NotesTableProps> = ({ mealType, noteItems, notesForMe
     const notesForMeal = noteItems.filter(n => n.mealType === mealType);
 
     notesForMeal.forEach(note => {
-      rows.push(<NotesTableRowConnected mealType={mealType} note={note}></NotesTableRowConnected>);
+      rows.push(<NotesTableRowConnected note={note}></NotesTableRowConnected>);
     });
 
     return rows;
