@@ -1,60 +1,43 @@
 import { connect } from 'react-redux';
 import ProductsTableRow from './ProductsTableRow';
-import { RootState, DataFetchState } from '../../store';
+import { RootState } from '../../store';
 import {
   SetEditableForProductAction,
   GetProductsListDispatch,
-  EditProductDispatch,
   DeleteProductDispatch,
-  GetCategoryDropdownItemsDispatch,
   GetCategoriesListDispatch,
   GetProductsListDispatchProp,
-  GetCategoryDropdownItemsDispatchProp,
   GetCategoriesListDispatchProp,
-  EditProductDispatchProp,
   DeleteProductDispatchProp,
 } from '../../action-types';
 import { Dispatch } from 'redux';
-import {
-  setEditableForProduct,
-  deleteProduct,
-  getProducts,
-  editProduct,
-  getCategoryDropdownItems,
-  getCategories,
-} from '../../action-creators';
-import { CategoryDropdownItem, ProductsFilter, ProductEditRequest, CategoryDropdownSearchRequest } from '../../models';
+import { setEditableForProduct, deleteProduct, getProducts, getCategories } from '../../action-creators';
+import { ProductsFilter } from '../../models';
 
 type ProductsTableRowDispatch = Dispatch<SetEditableForProductAction> &
   GetProductsListDispatch &
-  EditProductDispatch &
-  DeleteProductDispatch &
-  GetCategoryDropdownItemsDispatch &
-  GetCategoriesListDispatch;
+  GetCategoriesListDispatch &
+  DeleteProductDispatch;
 
 export interface ProductsTableRowStateToPropsMapResult {
   editableProductsIds: number[];
-  categoryDropdownItems: CategoryDropdownItem[];
   isProductOperationInProcess: boolean;
-  categoryDropdownItemsFetchState: DataFetchState;
+  isCategoryOperationInProcess: boolean;
   productsFilter: ProductsFilter;
 }
 
 export interface ProductsTableRowDispatchToPropsMapResult {
   setEditableForProduct: (productId: number, editable: boolean) => void;
   getProducts: GetProductsListDispatchProp;
-  getCategoryDropdownItems: GetCategoryDropdownItemsDispatchProp;
   getCategories: GetCategoriesListDispatchProp;
-  editProduct: EditProductDispatchProp;
   deleteProduct: DeleteProductDispatchProp;
 }
 
 const mapStateToProps = (state: RootState): ProductsTableRowStateToPropsMapResult => {
   return {
     editableProductsIds: state.products.list.editableProductsIds,
-    categoryDropdownItems: state.categories.dropdown.categoryDropdownItems,
     isProductOperationInProcess: state.products.operations.productOperationStatus.performing,
-    categoryDropdownItemsFetchState: state.categories.dropdown.categoryDropdownItemsFetchState,
+    isCategoryOperationInProcess: state.categories.operations.status.performing,
     productsFilter: state.products.filter.params,
   };
 };
@@ -64,18 +47,8 @@ const mapDispatchToProps = (dispatch: ProductsTableRowDispatch): ProductsTableRo
     return dispatch(getProducts(productsFilter));
   };
 
-  const getCategoryDropdownItemsProp: GetCategoryDropdownItemsDispatchProp = (
-    request: CategoryDropdownSearchRequest,
-  ) => {
-    return dispatch(getCategoryDropdownItems(request));
-  };
-
   const getCategoriesProp: GetCategoriesListDispatchProp = () => {
     return dispatch(getCategories());
-  };
-
-  const editProductProp: EditProductDispatchProp = (request: ProductEditRequest) => {
-    return dispatch(editProduct(request));
   };
 
   const deleteProductProp: DeleteProductDispatchProp = (productId: number) => {
@@ -88,9 +61,7 @@ const mapDispatchToProps = (dispatch: ProductsTableRowDispatch): ProductsTableRo
     },
 
     getProducts: getProductsProp,
-    getCategoryDropdownItems: getCategoryDropdownItemsProp,
     getCategories: getCategoriesProp,
-    editProduct: editProductProp,
     deleteProduct: deleteProductProp,
   };
 };
