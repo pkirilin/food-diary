@@ -39,8 +39,9 @@ const NoteInput: React.FC<NoteInputProps> = ({
 
   const { id: pageIdFromParams } = useParams();
 
-  const currentMealOperationStatus = mealOperationStatuses.filter(s => s.mealType === mealType)[0];
-  const currentMealFetchState = notesForMealFetchStates.filter(s => s.mealType === mealType)[0];
+  const currentMealOperationStatus = mealOperationStatuses.find(s => s.mealType === mealType);
+  const currentMealFetchState = notesForMealFetchStates.find(s => s.mealType === mealType);
+
   const operationMessage = currentMealOperationStatus ? currentMealOperationStatus.message : '';
 
   const {

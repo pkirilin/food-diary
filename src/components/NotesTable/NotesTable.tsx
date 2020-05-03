@@ -29,17 +29,16 @@ const NotesTable: React.FC<NotesTableProps> = ({ mealType, noteItems, notesForMe
     return rows;
   };
 
-  const targetMealFetchState = notesForMealFetchStates.find(s => s.mealType === mealType);
-
-  if (!targetMealFetchState) {
-    return null;
-  }
-
-  const { error } = targetMealFetchState;
+  const targetNotesFetchState = notesForMealFetchStates.find(s => s.mealType === mealType);
+  const targetNotesErrorMessage = targetNotesFetchState && targetNotesFetchState.error;
 
   return (
     <div className="notes-table">
-      <Table columns={notesTableColumns} rows={mapNoteItemsToTableRows()} dataErrorMessage={error}></Table>
+      <Table
+        columns={notesTableColumns}
+        rows={mapNoteItemsToTableRows()}
+        dataErrorMessage={targetNotesErrorMessage}
+      ></Table>
     </div>
   );
 };

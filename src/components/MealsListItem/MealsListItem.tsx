@@ -24,11 +24,8 @@ const MealsListItem: React.FC<MealsListItemProps> = ({
 
   const currentMealFetchState = notesForMealFetchStates.find(s => s.mealType === mealType);
 
-  if (!currentMealFetchState) {
-    return null;
-  }
-
-  const { loading: isNotesTableLoading, loadingMessage: notesTableLoadingMessage } = currentMealFetchState;
+  const isNotesTableLoading = currentMealFetchState && currentMealFetchState.loading;
+  const notesTableLoadingMessage = currentMealFetchState && currentMealFetchState.loadingMessage;
 
   const mealName = availableMeals.has(mealType) ? availableMeals.get(mealType) : 'Unknown meal';
   const mealNotes = noteItems.filter(n => n.mealType === mealType);
