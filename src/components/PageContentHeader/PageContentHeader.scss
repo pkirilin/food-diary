@@ -23,5 +23,9 @@
       font-weight: bold;
       color: $color-middle-green;
     }
+
+    &_disabled {
+      pointer-events: none;
+    }
   }
 }
