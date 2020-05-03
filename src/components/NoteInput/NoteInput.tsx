@@ -3,10 +3,9 @@ import './NoteInput.scss';
 import { FormGroup, Label, Input, Button, productDropdownItemRenderer, DropdownList } from '../Controls';
 import { NoteInputStateToPropsMapResult, NoteInputDispatchToPropsMapResult } from './NoteInputConnected';
 import { MealType } from '../../models';
-import { useParams } from 'react-router-dom';
 import Loader from '../Loader';
 import { NotesOperationsActionTypes } from '../../action-types';
-import { useDebounce, useNoteValidation } from '../../hooks';
+import { useDebounce, useNoteValidation, useIdFromRoute } from '../../hooks';
 
 interface NoteInputProps extends NoteInputStateToPropsMapResult, NoteInputDispatchToPropsMapResult {
   mealType: MealType;
@@ -37,7 +36,7 @@ const NoteInput: React.FC<NoteInputProps> = ({
     });
   });
 
-  const { id: pageIdFromParams } = useParams();
+  const pageId = useIdFromRoute();
 
   const currentMealOperationStatus = mealOperationStatuses.find(s => s.mealType === mealType);
   const currentMealFetchState = notesForMealFetchStates.find(s => s.mealType === mealType);
@@ -72,7 +71,6 @@ const NoteInput: React.FC<NoteInputProps> = ({
   };
 
   const handleAddButtonClick = async (): Promise<void> => {
-    const pageId = pageIdFromParams && !isNaN(+pageIdFromParams) ? +pageIdFromParams : 0;
     const noteItemsForThisMeal = noteItems.filter(n => n.mealType === mealType);
     const lastNoteDisplayOrder =
       noteItemsForThisMeal.length > 0 ? noteItemsForThisMeal[noteItemsForThisMeal.length - 1].displayOrder : -1;

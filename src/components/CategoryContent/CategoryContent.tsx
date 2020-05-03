@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
 import ProductsTableConnected from '../ProductsTable';
 import {
   CategoryContentStateToPropsMapResult,
@@ -7,6 +6,7 @@ import {
 } from './CategoryContentConnected';
 import { SectionTitle } from '../ContainerBlocks';
 import ProductInputConnected from '../ProductInput';
+import { useIdFromRoute } from '../../hooks';
 
 interface CategoryContentProps extends CategoryContentStateToPropsMapResult, CategoryContentDispatchToPropsMapResult {}
 
@@ -14,12 +14,7 @@ const CategoryContent: React.FC<CategoryContentProps> = ({
   productsFilter,
   updateProductsFilter,
 }: CategoryContentProps) => {
-  const { id: categoryIdFromRoute } = useParams();
-  const categoryId: number | undefined = categoryIdFromRoute
-    ? !isNaN(+categoryIdFromRoute)
-      ? +categoryIdFromRoute
-      : undefined
-    : undefined;
+  const categoryId = useIdFromRoute();
 
   useEffect(() => {
     if (productsFilter.categoryId !== categoryId) {

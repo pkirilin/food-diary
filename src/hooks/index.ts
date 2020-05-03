@@ -6,6 +6,7 @@ import useNoteValidation from './useNoteValidation';
 import useProductValidation from './useProductValidation';
 import useCategoryValidation from './useCategoryValidation';
 import usePageValidation from './usePageValidation';
+import useIdFromRoute from './useIdFromRoute';
 
 export {
   useOutsideClick,
@@ -16,4 +17,5 @@ export {
   useProductValidation,
   useCategoryValidation,
   usePageValidation,
+  useIdFromRoute,
 };

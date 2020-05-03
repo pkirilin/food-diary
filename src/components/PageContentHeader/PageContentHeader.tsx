@@ -2,10 +2,11 @@ import React from 'react';
 import './PageContentHeader.scss';
 import { PageContentHeaderStateToPropsMapResult } from './PageContentHeaderConnected';
 import Icon from '../Icon';
-import { useParams, NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import MealsControlPanelConnected from '../MealsControlPanel/MealsControlPanelConnected';
 import Loader from '../Loader';
 import { getFormattedDate } from '../../utils/date-utils';
+import { useIdFromRoute } from '../../hooks';
 
 type PageContentHeaderProps = PageContentHeaderStateToPropsMapResult;
 
@@ -14,11 +15,11 @@ const PageContentHeader: React.FC<PageContentHeaderProps> = ({
   isPageContentLoading,
   isPageOperationInProcess,
 }: PageContentHeaderProps) => {
-  const { id: currentPageIdFromRoute } = useParams();
-  const currentPageId = currentPageIdFromRoute ? +currentPageIdFromRoute : 0;
+  const pageId = useIdFromRoute();
+
   const visiblePagesIds = pageItems.map(p => p.id);
-  const currentSelectedPage = pageItems.find(p => p.id === currentPageId);
-  const currentPageIndex = pageItems.findIndex(p => p.id === currentPageId);
+  const currentSelectedPage = pageItems.find(p => p.id === pageId);
+  const currentPageIndex = pageItems.findIndex(p => p.id === pageId);
 
   const isPreviousPageExists = currentPageIndex > 0;
   const isNextPageExists = currentPageIndex >= 0 && currentPageIndex < visiblePagesIds.length - 1;

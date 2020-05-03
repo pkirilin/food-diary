@@ -5,8 +5,7 @@ import { productDropdownItemRenderer, Input, DropdownList } from '../Controls';
 import { NotesTableRowStateToPropsMapResult, NotesTableRowDispatchToPropsMapResult } from './NotesTableRowConnected';
 import Icon from '../Icon';
 import { NotesOperationsActionTypes } from '../../action-types';
-import { useParams } from 'react-router-dom';
-import { useDebounce, useNoteValidation } from '../../hooks';
+import { useDebounce, useNoteValidation, useIdFromRoute } from '../../hooks';
 
 interface NotesTableRowProps extends NotesTableRowStateToPropsMapResult, NotesTableRowDispatchToPropsMapResult {
   mealType: MealType;
@@ -40,12 +39,9 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({
     });
   });
 
-  const { id: pageIdFromParams } = useParams();
+  const pageId = useIdFromRoute();
 
   const currentMealOperationStatus = mealOperationStatuses.find(s => s.mealType === mealType);
-
-  const pageId = pageIdFromParams && !isNaN(+pageIdFromParams) ? +pageIdFromParams : 0;
-
   const {
     loading: isProductDropdownContentLoading,
     loadingMessage: productDropdownContentLoadingMessage,
