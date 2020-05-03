@@ -14,10 +14,12 @@ interface ProductsTableRowProps
   extends ProductsTableRowStateToPropsMapResult,
     ProductsTableRowDispatchToPropsMapResult {
   product: ProductItem;
+  refreshCategoriesOnDeleteProduct?: boolean;
 }
 
 const ProductsTableRow: React.FC<ProductsTableRowProps> = ({
   product,
+  refreshCategoriesOnDeleteProduct = false,
   editableProductsIds,
   isProductOperationInProcess,
   isCategoryOperationInProcess,
@@ -42,7 +44,10 @@ const ProductsTableRow: React.FC<ProductsTableRowProps> = ({
 
       if (deleteProductActionType === ProductsOperationsActionTypes.DeleteSuccess) {
         await getProducts(productsFilter);
-        await getCategories();
+
+        if (refreshCategoriesOnDeleteProduct) {
+          await getCategories();
+        }
       }
     }
   };

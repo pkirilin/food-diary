@@ -6,7 +6,9 @@ import ProductsTableRowConnected from '../ProductsTableRow';
 import Loader from '../Loader';
 import Pagination from '../Pagination';
 
-interface ProductsTableProps extends ProductsTableStateToPropsMapResult, ProductsTableDispatchToPropsMapResult {}
+interface ProductsTableProps extends ProductsTableStateToPropsMapResult, ProductsTableDispatchToPropsMapResult {
+  refreshCategoriesOnDeleteProduct?: boolean;
+}
 
 const productsTableColumns = [
   <TableColumn key="Product name" name="Product name" width="50%"></TableColumn>,
@@ -17,6 +19,7 @@ const productsTableColumns = [
 ];
 
 const ProductsTable: React.FC<ProductsTableProps> = ({
+  refreshCategoriesOnDeleteProduct = false,
   productItemsFetchState,
   isProductOperationInProcess,
   productItems,
@@ -43,7 +46,12 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
   const mapProductItemsToTableRows = (): JSX.Element[] => {
     const rows: JSX.Element[] = [];
     productItems.forEach(product => {
-      rows.push(<ProductsTableRowConnected product={product}></ProductsTableRowConnected>);
+      rows.push(
+        <ProductsTableRowConnected
+          product={product}
+          refreshCategoriesOnDeleteProduct={refreshCategoriesOnDeleteProduct}
+        ></ProductsTableRowConnected>,
+      );
     });
     return rows;
   };

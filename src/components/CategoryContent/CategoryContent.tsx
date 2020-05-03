@@ -34,8 +34,8 @@ const CategoryContent: React.FC<CategoryContentProps> = ({
   return (
     <React.Fragment>
       <SectionTitle title="Categories"></SectionTitle>
-      <ProductInputConnected></ProductInputConnected>
-      <ProductsTableConnected></ProductsTableConnected>
+      <ProductInputConnected refreshCategoriesOnCreateProduct={true}></ProductInputConnected>
+      <ProductsTableConnected refreshCategoriesOnDeleteProduct={true}></ProductsTableConnected>
     </React.Fragment>
   );
 };

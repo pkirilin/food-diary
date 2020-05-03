@@ -6,9 +6,12 @@ import { ProductInputStateToPropsMapResult, ProductInputDispatchToPropsMapResult
 import { ProductsOperationsActionTypes } from '../../action-types';
 import { useDebounce, useProductValidation } from '../../hooks';
 
-interface ProductInputProps extends ProductInputStateToPropsMapResult, ProductInputDispatchToPropsMapResult {}
+interface ProductInputProps extends ProductInputStateToPropsMapResult, ProductInputDispatchToPropsMapResult {
+  refreshCategoriesOnCreateProduct?: boolean;
+}
 
 const ProductInput: React.FC<ProductInputProps> = ({
+  refreshCategoriesOnCreateProduct = false,
   productOperationStatus,
   productItemsFetchState,
   categoryItems,
@@ -118,7 +121,10 @@ const ProductInput: React.FC<ProductInputProps> = ({
       setCaloriesCost(100);
       setCategoryInputByFilter();
       await getProducts(productsFilter);
-      await getCategories();
+
+      if (refreshCategoriesOnCreateProduct) {
+        await getCategories();
+      }
     }
   };
 
