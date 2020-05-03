@@ -15,7 +15,7 @@ const PageContentHeader: React.FC<PageContentHeaderProps> = ({
   isPageOperationInProcess,
 }: PageContentHeaderProps) => {
   const { id: currentPageIdFromRoute } = useParams();
-  const currentPageId = currentPageIdFromRoute !== undefined ? +currentPageIdFromRoute : 0;
+  const currentPageId = currentPageIdFromRoute ? +currentPageIdFromRoute : 0;
   const visiblePagesIds = pageItems.map(p => p.id);
   const currentSelectedPage = pageItems.find(p => p.id === currentPageId);
   const currentPageIndex = pageItems.findIndex(p => p.id === currentPageId);

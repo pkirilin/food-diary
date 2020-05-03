@@ -52,7 +52,7 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({
     error: productDropdownContentErrorMessage,
   } = productDropdownItemsFetchState;
 
-  const isNoteEditable = editableNotesIds.find(id => id === note.id) !== undefined;
+  const isNoteEditable = editableNotesIds.some(id => id === note.id);
   const isMealOperationInProcess = currentMealOperationStatus && currentMealOperationStatus.performing;
   const isInputDisabled = isMealOperationInProcess || isPageOperationInProcess;
   const isConfirmEditIconDisabled = isInputDisabled || !isProductQuantityValid || !isProductNameValid;

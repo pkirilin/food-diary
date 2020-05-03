@@ -7,7 +7,7 @@ const notesApiUrl = `${API_URL}/v1/notes`;
 export const getNotesAsync = async ({ pageId, mealType }: NotesSearchRequest): Promise<Response> => {
   let requestUrl = `${notesApiUrl}?pageId=${pageId}`;
 
-  if (mealType !== undefined) {
+  if (mealType) {
     requestUrl += `&mealType=${mealType}`;
   }
 

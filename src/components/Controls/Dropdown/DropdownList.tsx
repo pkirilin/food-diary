@@ -181,7 +181,7 @@ function DropdownList<T = string>({
       )}
 
       <div ref={contentRef} className={contentClassNames.join(' ')} style={contentStyle}>
-        {contentErrorMessage === undefined ? (
+        {!contentErrorMessage ? (
           isContentLoading ? (
             <div className="dropdown__content_loading">
               <Loader label={contentLoadingMessage} size="small"></Loader>

@@ -42,7 +42,7 @@ const PagesListControlsBottom: React.FC<PagesListControlsBottomProps> = ({
     isNoteOperationInProcess;
 
   useEffect(() => {
-    setShowCountInputValue(pagesFilter.showCount === undefined ? showCountAllString : pagesFilter.showCount.toString());
+    setShowCountInputValue(pagesFilter.showCount ? pagesFilter.showCount.toString() : showCountAllString);
   }, [pagesFilter]);
 
   const handleSortIconClick = (): void => {

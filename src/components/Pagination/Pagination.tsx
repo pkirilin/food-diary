@@ -24,7 +24,7 @@ const Pagination: React.FC<PaginationProps> = ({
   const [visiblePageRanges, setVisiblePageRanges] = useState<[number, number]>();
 
   useEffect(() => {
-    const newPageNumber = currentPageNumber === undefined ? 1 : currentPageNumber;
+    const newPageNumber = currentPageNumber ? currentPageNumber : 1;
     const newPageRanges = updatePageRanges(newPageNumber, totalPagesCount, maxVisiblePagesCount);
     setVisiblePageRanges(newPageRanges);
   }, [currentPageNumber, totalPagesCount, maxVisiblePagesCount]);
@@ -39,7 +39,7 @@ const Pagination: React.FC<PaginationProps> = ({
     minWidth: 50,
   };
 
-  const isFirstPageDisabled = isDisabled || currentPageNumber === 1 || currentPageNumber === undefined;
+  const isFirstPageDisabled = isDisabled || currentPageNumber === 1 || !currentPageNumber;
   const isLastPageDisabled = isDisabled || currentPageNumber === totalPagesCount;
   const isPrevPageDisabled = isFirstPageDisabled;
   const isNextPageDisabled = isLastPageDisabled;
@@ -65,7 +65,7 @@ const Pagination: React.FC<PaginationProps> = ({
         onPageNumberUpdate={onPageNumberUpdate}
       ></PaginationItem>
       {paginationItems.map((pageNumber, index) => {
-        const isSelected = pageNumber === currentPageNumber || (pageNumber === 1 && currentPageNumber === undefined);
+        const isSelected = pageNumber === currentPageNumber || (pageNumber === 1 && !currentPageNumber);
         return (
           <PaginationItem
             key={index}

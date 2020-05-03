@@ -43,7 +43,7 @@ const ProductInput: React.FC<ProductInputProps> = ({
   const isAddButtonDisabled = isInputDisabled || !isProductNameValid || !isCaloriesCostValid || !isCategoryNameValid;
 
   const setCategoryInputByFilter = (): void => {
-    if (productsFilter.categoryId !== undefined) {
+    if (productsFilter.categoryId) {
       const currentSelectedCategory = categoryItems.find(c => c.id === productsFilter.categoryId);
       if (currentSelectedCategory) {
         setCategoryId(currentSelectedCategory.id);

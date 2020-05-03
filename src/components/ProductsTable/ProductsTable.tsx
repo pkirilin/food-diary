@@ -29,7 +29,7 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
   const totalPagesCount = Math.ceil(totalProductsCount / productItemsPageSize);
 
   const { loading: isProductsTableLoading, error: productsListError, loadingMessage } = productItemsFetchState;
-  const isPaginationDisabled = isProductsTableLoading || isProductOperationInProcess || productsListError !== undefined;
+  const isPaginationDisabled = isProductsTableLoading || isProductOperationInProcess || !!productsListError;
 
   const handlePageNumberUpdate = (newPageNumber?: number): void => {
     if (newPageNumber !== productsFilter.pageNumber) {

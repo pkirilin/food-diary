@@ -25,7 +25,7 @@ const PageContent: React.FC<PageContentProps> = ({ notesForPageFetchState, getNo
 
   const { loading: areNotesForPageLoading, error: notesForPageError, loadingMessage } = notesForPageFetchState;
 
-  if (notesForPageError !== undefined) {
+  if (notesForPageError) {
     return <SectionPlaceholder>{notesForPageError}</SectionPlaceholder>;
   }
 

@@ -23,11 +23,11 @@ export const getProductDropdownItemsAsync = async ({
 export const getProductsAsync = async ({ pageSize, pageNumber, categoryId }: ProductsFilter): Promise<Response> => {
   let requestUrl = `${productsApiUrl}?pageSize=${pageSize}`;
 
-  if (pageNumber !== undefined) {
+  if (pageNumber) {
     requestUrl += `&pageNumber=${pageNumber}`;
   }
 
-  if (categoryId !== undefined) {
+  if (categoryId) {
     requestUrl += `&categoryId=${categoryId}`;
   }
 

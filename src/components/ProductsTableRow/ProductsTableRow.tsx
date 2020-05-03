@@ -41,7 +41,7 @@ const ProductsTableRow: React.FC<ProductsTableRowProps> = ({
     categoryNameInputValue,
   );
 
-  const isProductEditable = editableProductsIds.find(id => id === product.id) !== undefined;
+  const isProductEditable = editableProductsIds.some(id => id === product.id);
 
   const isInputDisabled = isProductOperationInProcess;
   const isConfirmEditIconDisabled =
