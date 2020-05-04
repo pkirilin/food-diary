@@ -3,6 +3,7 @@ using AutoMapper;
 using FoodDiary.API.Extensions;
 using FoodDiary.API.Middlewares;
 using FoodDiary.Infrastructure;
+using FoodDiary.Pdf.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -26,6 +27,7 @@ namespace FoodDiary.API
 
             services.AddRepositories();
             services.AddDomainServices();
+            services.AddPdfGenerator();
 
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 

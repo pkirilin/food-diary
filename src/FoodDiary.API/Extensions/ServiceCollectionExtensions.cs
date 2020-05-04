@@ -27,6 +27,7 @@ namespace FoodDiary.API.Extensions
             services.AddTransient<ICategoryService, CategoryService>();
             services.AddTransient<IProductService, ProductService>();
             services.AddTransient<ICaloriesService, CaloriesService>();
+            services.AddTransient<IExportService, ExportService>();
         }
 
         public static void AddFoodDiarySwagger(this IServiceCollection services)
