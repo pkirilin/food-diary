@@ -38,7 +38,7 @@ namespace FoodDiary.Infrastructure.Services
                 searchPagesQuery = searchPagesQuery.Take(pageFilter.ShowCount.Value);
 
             searchPagesQuery = _pageRepository.LoadNotesWithProducts(searchPagesQuery);
-            return await _pageRepository.GetListFromQuery(searchPagesQuery, cancellationToken);
+            return await _pageRepository.GetListFromQueryAsync(searchPagesQuery, cancellationToken);
         }
 
         public async Task<Page> GetPageByIdAsync(int pageId, CancellationToken cancellationToken)
@@ -50,7 +50,7 @@ namespace FoodDiary.Infrastructure.Services
         {
             var pagesByIdsQuery = _pageRepository.GetQuery()
                 .Where(p => ids.Contains(p.Id));
-            return await _pageRepository.GetListFromQuery(pagesByIdsQuery, cancellationToken);
+            return await _pageRepository.GetListFromQueryAsync(pagesByIdsQuery, cancellationToken);
         }
 
         public async Task<Page> CreatePageAsync(Page page, CancellationToken cancellationToken)

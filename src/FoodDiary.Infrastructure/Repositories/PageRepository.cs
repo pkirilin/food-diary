@@ -28,7 +28,7 @@ namespace FoodDiary.Infrastructure.Repositories
             return GetQuery().AsNoTracking();
         }
 
-        public async Task<List<Page>> GetListFromQuery(IQueryable<Page> pagesQuery, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Page>> GetListFromQueryAsync(IQueryable<Page> pagesQuery, CancellationToken cancellationToken)
         {
             return await pagesQuery.ToListAsync(cancellationToken);
         }

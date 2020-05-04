@@ -50,14 +50,14 @@ namespace FoodDiary.UnitTests.Services
 
             _pageRepositoryMock.Setup(r => r.GetQueryWithoutTracking())
                 .Returns(pagesQuery);
-            _pageRepositoryMock.Setup(r => r.GetListFromQuery(It.IsNotNull<IQueryable<Page>>(), default))
+            _pageRepositoryMock.Setup(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Page>>(), default))
                 .ReturnsAsync(pages);
 
             var result = await PageService.SearchPagesAsync(pageFilter, default);
 
             _pageRepositoryMock.Verify(r => r.GetQueryWithoutTracking(), Times.Once);
             _pageRepositoryMock.Verify(r => r.LoadNotesWithProducts(It.IsNotNull<IQueryable<Page>>()), Times.Once);
-            _pageRepositoryMock.Verify(r => r.GetListFromQuery(It.IsNotNull<IQueryable<Page>>(), default), Times.Once);
+            _pageRepositoryMock.Verify(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Page>>(), default), Times.Once);
             result.Should().HaveCount(expectedPagesCount).And.Contain(pages);
         }
 
@@ -77,14 +77,14 @@ namespace FoodDiary.UnitTests.Services
 
             _pageRepositoryMock.Setup(r => r.GetQueryWithoutTracking())
                 .Returns(pagesQuery);
-            _pageRepositoryMock.Setup(r => r.GetListFromQuery(It.IsNotNull<IQueryable<Page>>(), default))
+            _pageRepositoryMock.Setup(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Page>>(), default))
                 .ReturnsAsync(expectedOrderedPages);
 
             var result = await PageService.SearchPagesAsync(pageFilter, default);
 
             _pageRepositoryMock.Verify(r => r.GetQueryWithoutTracking(), Times.Once);
             _pageRepositoryMock.Verify(r => r.LoadNotesWithProducts(It.IsNotNull<IQueryable<Page>>()), Times.Once);
-            _pageRepositoryMock.Verify(r => r.GetListFromQuery(It.IsNotNull<IQueryable<Page>>(), default), Times.Once);
+            _pageRepositoryMock.Verify(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Page>>(), default), Times.Once);
 
             result.Should().Contain(expectedOrderedPages);
             if (sortOrder == SortOrder.Ascending)
@@ -115,13 +115,13 @@ namespace FoodDiary.UnitTests.Services
 
             _pageRepositoryMock.Setup(r => r.GetQuery())
                 .Returns(pagesQuery);
-            _pageRepositoryMock.Setup(r => r.GetListFromQuery(pagesQuery, default))
+            _pageRepositoryMock.Setup(r => r.GetListFromQueryAsync(pagesQuery, default))
                 .ReturnsAsync(pages);
 
             var result = await PageService.GetPagesByIdsAsync(pageIds, default);
 
             _pageRepositoryMock.Verify(r => r.GetQuery(), Times.Once);
-            _pageRepositoryMock.Verify(r => r.GetListFromQuery(pagesQuery, default), Times.Once);
+            _pageRepositoryMock.Verify(r => r.GetListFromQueryAsync(pagesQuery, default), Times.Once);
             result.Should().Contain(pages);
         }
 

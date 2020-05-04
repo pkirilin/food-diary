@@ -13,7 +13,7 @@ namespace FoodDiary.Domain.Repositories
 
         IQueryable<Page> GetQueryWithoutTracking();
 
-        Task<List<Page>> GetListFromQuery(IQueryable<Page> pagesQuery, CancellationToken cancellationToken);
+        Task<IEnumerable<Page>> GetListFromQueryAsync(IQueryable<Page> pagesQuery, CancellationToken cancellationToken);
 
         IQueryable<Page> LoadNotesWithProducts(IQueryable<Page> pagesQuery);
 
