@@ -22,13 +22,18 @@ namespace FoodDiary.Pdf.Implementation
                 _caloriesService.CalculateForQuantity(note.Product.CaloriesCost, note.ProductQuantity)));
 
             var row = notesTable.AddRow();
-            row.Height = "1cm";
+            row.Height = $"{PagesPdfGeneratorOptions.NotesTableRowHeightCentimeters}cm";
             row.Format.Alignment = ParagraphAlignment.Center;
             row.VerticalAlignment = VerticalAlignment.Center;
 
-            row.Cells[1].AddParagraph(note.Product.Name);
-            row.Cells[2].AddParagraph(note.ProductQuantity.ToString());
-            row.Cells[3].AddParagraph(caloriesCount.ToString());
+            row.Cells[PagesPdfGeneratorOptions.ProductNameColumnIndex]
+                .AddParagraph(note.Product.Name);
+
+            row.Cells[PagesPdfGeneratorOptions.ProductQuantityColumnIndex]
+                .AddParagraph(note.ProductQuantity.ToString());
+
+            row.Cells[PagesPdfGeneratorOptions.CaloriesCountColumnIndex]
+                .AddParagraph(caloriesCount.ToString());
         }
     }
 }
