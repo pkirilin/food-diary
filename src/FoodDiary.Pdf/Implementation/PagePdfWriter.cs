@@ -8,48 +8,33 @@ using MigraDoc.DocumentObjectModel.Tables;
 
 namespace FoodDiary.Pdf.Implementation
 {
-    internal class PagePdfWriter : IPagePdfWriter
+    class PagePdfWriter : IPagePdfWriter
     {
-        private readonly INotePdfWriter _notePdfWriter;
+        private readonly INotesTablePdfWriter _notesTablePdfWriter;
         private readonly ICaloriesService _caloriesService;
 
-        public PagePdfWriter(INotePdfWriter notePdfWriter, ICaloriesService caloriesService)
+        public PagePdfWriter(INotesTablePdfWriter notesTablePdfWriter, ICaloriesService caloriesService)
         {
-            _notePdfWriter = notePdfWriter;
-            _caloriesService = caloriesService;
+            _notesTablePdfWriter = notesTablePdfWriter ?? throw new ArgumentNullException(nameof(notesTablePdfWriter));
+            _caloriesService = caloriesService ?? throw new ArgumentNullException(nameof(caloriesService));
         }
 
-        public void WritePageToDocument(Document document, Page page)
+        public void WritePage(Document document, Page page)
         {
+            if (page.Notes == null)
+                throw new ArgumentNullException(nameof(page), $"Failed to write page with id = '{page.Id}' to PDF: page doesn't contain information about notes");
+
             var section = CreateSection(document);
             WritePageDate(section, page.Date);
 
             var notesTable = CreateNotesTable(section);
             FillNotesTableHeader(notesTable);
 
-            var notesGroupedByMealType = page.Notes
-                .GroupBy(n => n.MealType)
-                .OrderBy(g => g.Key);
-
-            foreach (var notesForMeal in notesGroupedByMealType)
-            {
-                var currentMealGroupStartRowIndex = notesTable.Rows.Count;
-
-                foreach (var note in notesForMeal.OrderBy(n => n.DisplayOrder))
-                    _notePdfWriter.WriteNoteToNotesTable(notesTable, note);
-
-                var currentMealGroupNotesCount = notesForMeal.Count();
-                var currentMealGroupCaloriesCount = Convert.ToInt32(Math.Floor(
-                    notesForMeal.Aggregate((double)0, (sum, note) =>
-                        sum += _caloriesService.CalculateForQuantity(note.Product.CaloriesCost, note.ProductQuantity))));
-
-                WriteMealNameForNotesGroup(notesTable, currentMealGroupStartRowIndex, notesForMeal.Key.ToString(), currentMealGroupNotesCount);
-                WriteCaloriesCountForNotesGroup(notesTable, currentMealGroupStartRowIndex, currentMealGroupCaloriesCount, currentMealGroupNotesCount);
-            }
+            _notesTablePdfWriter.WriteNotesTable(notesTable, page.Notes);
 
             var totalCaloriesCount = Convert.ToInt32(Math.Floor(page.Notes
                 .Aggregate((double)0, (sum, note) =>
-                    sum += _caloriesService.CalculateForQuantity(note.Product.CaloriesCost, note.ProductQuantity))));
+                    sum += _caloriesService.CalculateForQuantity(note.Product?.CaloriesCost ?? 0, note.ProductQuantity))));
             WriteTotalCaloriesCount(notesTable, totalCaloriesCount);
         }
 
@@ -114,22 +99,6 @@ namespace FoodDiary.Pdf.Implementation
             notesTableHeader.Cells[PagesPdfGeneratorOptions.ProductQuantityColumnIndex].AddParagraph("Кол-во (г, мл)");
             notesTableHeader.Cells[PagesPdfGeneratorOptions.CaloriesCountColumnIndex].AddParagraph("Ккал");
             notesTableHeader.Cells[PagesPdfGeneratorOptions.TotalCaloriesCountColumnIndex].AddParagraph("Общее количество калорий");
-        }
-
-        private void WriteMealNameForNotesGroup(Table notesTable, int rowIndex, string mealName, int currentMealGroupNotesCount)
-        {
-            var mealNameCell = notesTable.Rows[rowIndex].Cells[PagesPdfGeneratorOptions.MealNameColumnIndex];
-            mealNameCell.AddParagraph(mealName);
-            mealNameCell.MergeDown = currentMealGroupNotesCount - 1;
-        }
-
-        private void WriteCaloriesCountForNotesGroup(Table notesTable, int rowIndex, int currentMealGroupCaloriesCount, int currentMealGroupNotesCount)
-        {
-            var caloriesCountCell = notesTable.Rows[rowIndex].Cells[PagesPdfGeneratorOptions.TotalCaloriesCountColumnIndex];
-            caloriesCountCell.Format.Font.Bold = true;
-            caloriesCountCell.Format.Font.Italic = true;
-            caloriesCountCell.AddParagraph(currentMealGroupCaloriesCount.ToString());
-            caloriesCountCell.MergeDown = currentMealGroupNotesCount - 1;
         }
 
         private void WriteTotalCaloriesCount(Table notesTable, int totalCaloriesCount)

@@ -5,6 +5,6 @@ namespace FoodDiary.Pdf.Services
 {
     interface IPagePdfWriter
     {
-        void WritePageToDocument(Document document, Page page);
+        void WritePage(Document document, Page page);
     }
 }

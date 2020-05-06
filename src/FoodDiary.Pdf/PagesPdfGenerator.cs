@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using FoodDiary.Domain.Entities;
@@ -8,13 +9,13 @@ using MigraDoc.Rendering;
 
 namespace FoodDiary.Pdf
 {
-    internal class PagesPdfGenerator : IPagesPdfGenerator
+    class PagesPdfGenerator : IPagesPdfGenerator
     {
         private readonly IPagePdfWriter _pagePdfWriter;
 
         public PagesPdfGenerator(IPagePdfWriter pagePdfWriter)
         {
-            _pagePdfWriter = pagePdfWriter;
+            _pagePdfWriter = pagePdfWriter ?? throw new ArgumentNullException(nameof(pagePdfWriter));
         }
 
         public byte[] GeneratePdfForPages(IEnumerable<Page> pages)
@@ -26,7 +27,7 @@ namespace FoodDiary.Pdf
             var document = new Document();
 
             foreach (var page in pages)
-                _pagePdfWriter.WritePageToDocument(document, page);
+                _pagePdfWriter.WritePage(document, page);
 
             var renderer = new PdfDocumentRenderer(true) { Document = document };
             renderer.RenderDocument();

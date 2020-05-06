@@ -7,7 +7,7 @@ using MigraDoc.DocumentObjectModel.Tables;
 
 namespace FoodDiary.Pdf.Implementation
 {
-    internal class NotePdfWriter : INotePdfWriter
+    class NotePdfWriter : INotePdfWriter
     {
         private readonly ICaloriesService _caloriesService;
 
@@ -16,8 +16,11 @@ namespace FoodDiary.Pdf.Implementation
             _caloriesService = caloriesService ?? throw new ArgumentNullException(nameof(caloriesService));
         }
 
-        public void WriteNoteToNotesTable(Table notesTable, Note note)
+        public void WriteNote(Table notesTable, Note note)
         {
+            if (note.Product == null)
+                throw new ArgumentNullException(nameof(note), $"Failed to write note with id = '{note.Id}' to PDF: note doesn't contain information about product");
+
             var caloriesCount = Convert.ToInt32(Math.Floor(
                 _caloriesService.CalculateForQuantity(note.Product.CaloriesCost, note.ProductQuantity)));
 

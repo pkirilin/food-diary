@@ -5,6 +5,6 @@ namespace FoodDiary.Pdf.Services
 {
     interface INotePdfWriter
     {
-        void WriteNoteToNotesTable(Table notesTable, Note note);
+        void WriteNote(Table notesTable, Note note);
     }
 }

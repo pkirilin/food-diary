@@ -10,6 +10,7 @@ namespace FoodDiary.Pdf.Extensions
         {
             services.AddTransient<IPagesPdfGenerator, PagesPdfGenerator>();
             services.AddTransient<IPagePdfWriter, PagePdfWriter>();
+            services.AddTransient<INotesTablePdfWriter, NotesTablePdfWriter>();
             services.AddTransient<INotePdfWriter, NotePdfWriter>();
         }
     }

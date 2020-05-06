@@ -1,6 +1,6 @@
 ﻿namespace FoodDiary.Pdf
 {
-    internal static class PagesPdfGeneratorOptions
+    static class PagesPdfGeneratorOptions
     {
         public const decimal PageTopMarginCentimeters = 1;
         public const decimal PageBottomMarginCentimeters = 1;
