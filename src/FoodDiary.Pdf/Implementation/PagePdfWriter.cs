@@ -57,25 +57,45 @@ namespace FoodDiary.Pdf.Implementation
         {
             var section = document.AddSection();
             section.PageSetup.Orientation = Orientation.Landscape;
+            section.PageSetup.PageFormat = PageFormat.A4;
+            section.PageSetup.TopMargin = "1cm";
+            section.PageSetup.BottomMargin = "1cm";
+            section.PageSetup.LeftMargin = "1cm";
+            section.PageSetup.RightMargin = "1cm";
             return section;
         }
 
         private void WritePageDate(Section section, DateTime pageDate)
         {
-            section.AddParagraph($"Дата: {pageDate:dd.MM.yyyy}");
+            var dateParagraph = section.AddParagraph();
+            dateParagraph.Format.Font.Bold = true;
+            dateParagraph.Format.Font.Size = 20;
+            dateParagraph.Format.Alignment = ParagraphAlignment.Center;
+            dateParagraph.Format.SpaceAfter = 10;
+            dateParagraph.AddText($"Дата: {pageDate:dd.MM.yyyy}");
         }
 
         private Table CreateNotesTable(Section section)
         {
             var notesTable = section.AddTable();
             notesTable.Borders.Color = Color.FromRgb(0, 0, 0);
-            notesTable.Borders.Width = 0.25;
+            notesTable.Borders.Width = 1;
+            notesTable.Format.Font.Size = 14;
 
-            var mealNameColumn = notesTable.AddColumn();
-            var productNameColumn = notesTable.AddColumn();
-            var productQuantityColumn = notesTable.AddColumn();
-            var caloriesColumn = notesTable.AddColumn();
-            var totalCaloriesColumn = notesTable.AddColumn();
+            var mealNameColumn = notesTable.AddColumn("5cm");
+            mealNameColumn.Format.Alignment = ParagraphAlignment.Center;
+
+            var productNameColumn = notesTable.AddColumn("11cm");
+            productNameColumn.Format.Alignment = ParagraphAlignment.Center;
+
+            var productQuantityColumn = notesTable.AddColumn("4cm");
+            productQuantityColumn.Format.Alignment = ParagraphAlignment.Center;
+
+            var caloriesColumn = notesTable.AddColumn("3cm");
+            caloriesColumn.Format.Alignment = ParagraphAlignment.Center;
+
+            var totalCaloriesColumn = notesTable.AddColumn("5cm");
+            totalCaloriesColumn.Format.Alignment = ParagraphAlignment.Center;
 
             return notesTable;
         }
@@ -83,6 +103,12 @@ namespace FoodDiary.Pdf.Implementation
         private void FillNotesTableHeader(Table notesTable)
         {
             var notesTableHeader = notesTable.AddRow();
+            notesTableHeader.Height = "1cm";
+            notesTableHeader.Format.Alignment = ParagraphAlignment.Center;
+            notesTableHeader.VerticalAlignment = VerticalAlignment.Center;
+            notesTableHeader.Format.Font.Bold = true;
+            notesTableHeader.Format.Font.Italic = true;
+
             notesTableHeader.Cells[0].AddParagraph("Прием пищи");
             notesTableHeader.Cells[1].AddParagraph("Продукт/блюдо");
             notesTableHeader.Cells[2].AddParagraph("Кол-во (г, мл)");
@@ -98,15 +124,23 @@ namespace FoodDiary.Pdf.Implementation
 
         private void WriteCaloriesCountForNotesGroup(Table notesTable, int rowIndex, int currentMealGroupCaloriesCount, int currentMealGroupNotesCount)
         {
-            notesTable.Rows[rowIndex].Cells[4].AddParagraph(currentMealGroupCaloriesCount.ToString());
-            notesTable.Rows[rowIndex].Cells[4].MergeDown = currentMealGroupNotesCount - 1;
+            var caloriesCountForGroupCell = notesTable.Rows[rowIndex].Cells[4];
+            caloriesCountForGroupCell.Format.Font.Bold = true;
+            caloriesCountForGroupCell.Format.Font.Italic = true;
+            caloriesCountForGroupCell.AddParagraph(currentMealGroupCaloriesCount.ToString());
+            caloriesCountForGroupCell.MergeDown = currentMealGroupNotesCount - 1;
         }
 
         private void WriteTotalCaloriesCount(Table notesTable, int totalCaloriesCount)
         {
             var totalCaloriesCountRow = notesTable.AddRow();
+            totalCaloriesCountRow.Height = "1cm";
+            totalCaloriesCountRow.Format.Font.Bold = true;
+            totalCaloriesCountRow.Format.Font.Italic = true;
+            totalCaloriesCountRow.VerticalAlignment = VerticalAlignment.Center;
+
             totalCaloriesCountRow.Cells[0].MergeRight = 3;
-            totalCaloriesCountRow.Cells[0].AddParagraph("Всего");
+            totalCaloriesCountRow.Cells[0].AddParagraph("Всего за день:");
             totalCaloriesCountRow.Cells[4].AddParagraph(totalCaloriesCount.ToString());
         }
     }
