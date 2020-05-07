@@ -2,8 +2,10 @@
 using System.IO;
 using FoodDiary.Domain.Repositories;
 using FoodDiary.Domain.Services;
+using FoodDiary.Domain.Utils;
 using FoodDiary.Infrastructure.Repositories;
 using FoodDiary.Infrastructure.Services;
+using FoodDiary.Infrastructure.Utils;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 
@@ -28,6 +30,11 @@ namespace FoodDiary.API.Extensions
             services.AddTransient<IProductService, ProductService>();
             services.AddTransient<ICaloriesService, CaloriesService>();
             services.AddTransient<IExportService, ExportService>();
+        }
+
+        public static void AddUtils(this IServiceCollection services)
+        {
+            services.AddTransient<IMealNameResolver, RuMealNameResolver>();
         }
 
         public static void AddFoodDiarySwagger(this IServiceCollection services)

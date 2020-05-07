@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Services;
+using FoodDiary.Domain.Utils;
 using FoodDiary.Pdf.Services;
 using MigraDoc.DocumentObjectModel.Tables;
 
@@ -12,11 +13,13 @@ namespace FoodDiary.Pdf.Implementation
     {
         private readonly INotePdfWriter _notePdfWriter;
         private readonly ICaloriesService _caloriesService;
+        private readonly IMealNameResolver _mealNameResolver;
 
-        public NotesTablePdfWriter(INotePdfWriter notePdfWriter, ICaloriesService caloriesService)
+        public NotesTablePdfWriter(INotePdfWriter notePdfWriter, ICaloriesService caloriesService, IMealNameResolver mealNameResolver)
         {
             _notePdfWriter = notePdfWriter ?? throw new ArgumentNullException(nameof(notePdfWriter));
             _caloriesService = caloriesService ?? throw new ArgumentNullException(nameof(caloriesService));
+            _mealNameResolver = mealNameResolver ?? throw new ArgumentNullException(nameof(mealNameResolver));
         }
 
         public void WriteNotesTable(Table notesTable, ICollection<Note> notes)
@@ -37,7 +40,8 @@ namespace FoodDiary.Pdf.Implementation
                     notesForMeal.Aggregate((double)0, (sum, note) =>
                         sum += _caloriesService.CalculateForQuantity(note.Product?.CaloriesCost ?? 0, note.ProductQuantity))));
 
-                WriteMealNameForNotesGroup(notesTable, currentMealGroupStartRowIndex, notesForMeal.Key.ToString(), currentMealGroupNotesCount);
+                var currentMealName = _mealNameResolver.GetMealName(notesForMeal.Key);
+                WriteMealNameForNotesGroup(notesTable, currentMealGroupStartRowIndex, currentMealName, currentMealGroupNotesCount);
                 WriteCaloriesCountForNotesGroup(notesTable, currentMealGroupStartRowIndex, currentMealGroupCaloriesCount, currentMealGroupNotesCount);
             }
         }

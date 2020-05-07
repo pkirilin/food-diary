@@ -27,6 +27,7 @@ namespace FoodDiary.API
 
             services.AddRepositories();
             services.AddDomainServices();
+            services.AddUtils();
             services.AddPdfGenerator();
 
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
