@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using FoodDiary.Domain.Entities;
-using FoodDiary.Pdf.Services;
+using FoodDiary.PdfGenerator.Services;
 using MigraDoc.DocumentObjectModel;
 using MigraDoc.Rendering;
 
-namespace FoodDiary.Pdf
+namespace FoodDiary.PdfGenerator
 {
     class PagesPdfGenerator : IPagesPdfGenerator
     {

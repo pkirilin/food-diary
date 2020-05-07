@@ -1,11 +1,11 @@
 ﻿using System;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Services;
-using FoodDiary.Pdf.Services;
+using FoodDiary.PdfGenerator.Services;
 using MigraDoc.DocumentObjectModel;
 using MigraDoc.DocumentObjectModel.Tables;
 
-namespace FoodDiary.Pdf.Implementation
+namespace FoodDiary.PdfGenerator.Implementation
 {
     class NotePdfWriter : INotePdfWriter
     {

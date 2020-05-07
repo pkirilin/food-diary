@@ -1,12 +1,12 @@
-﻿using FoodDiary.Pdf.Implementation;
-using FoodDiary.Pdf.Services;
+﻿using FoodDiary.PdfGenerator.Implementation;
+using FoodDiary.PdfGenerator.Services;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace FoodDiary.Pdf.Extensions
+namespace FoodDiary.PdfGenerator.Extensions
 {
     public static class PdfGeneratorExtensions
     {
-        public static void AddPdfGenerator(this IServiceCollection services)
+        public static void AddPagesPdfGenerator(this IServiceCollection services)
         {
             services.AddTransient<IPagesPdfGenerator, PagesPdfGenerator>();
             services.AddTransient<IPagePdfWriter, PagePdfWriter>();

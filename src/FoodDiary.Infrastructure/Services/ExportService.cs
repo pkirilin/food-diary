@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using FoodDiary.Domain.Repositories;
 using FoodDiary.Domain.Services;
-using FoodDiary.Pdf;
+using FoodDiary.PdfGenerator;
 
 namespace FoodDiary.Infrastructure.Services
 {

@@ -1,7 +1,7 @@
 ﻿using FoodDiary.Domain.Entities;
 using MigraDoc.DocumentObjectModel.Tables;
 
-namespace FoodDiary.Pdf.Services
+namespace FoodDiary.PdfGenerator.Services
 {
     interface INotePdfWriter
     {

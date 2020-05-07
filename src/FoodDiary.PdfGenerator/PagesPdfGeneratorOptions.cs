@@ -1,4 +1,4 @@
-﻿namespace FoodDiary.Pdf
+﻿namespace FoodDiary.PdfGenerator
 {
     static class PagesPdfGeneratorOptions
     {

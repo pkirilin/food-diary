@@ -7,7 +7,7 @@ using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Repositories;
 using FoodDiary.Domain.Services;
 using FoodDiary.Infrastructure.Services;
-using FoodDiary.Pdf;
+using FoodDiary.PdfGenerator;
 using FoodDiary.UnitTests.Customizations;
 using Moq;
 using Xunit;

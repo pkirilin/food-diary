@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using FoodDiary.Domain.Entities;
 
-namespace FoodDiary.Pdf
+namespace FoodDiary.PdfGenerator
 {
     public interface IPagesPdfGenerator
     {
