@@ -1,11 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using FoodDiary.Domain.Entities;
 
 namespace FoodDiary.Domain.Services
 {
     public interface IExportService
     {
-        Task<byte[]> GetExportPagesPdfContentsAsync(DateTime startDate, DateTime endDate, CancellationToken cancellationToken);
+        Task<IEnumerable<Page>> GetPagesForExportAsync(DateTime startDate, DateTime endDate, CancellationToken cancellationToken);
     }
 }

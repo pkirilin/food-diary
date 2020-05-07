@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using FoodDiary.Domain.Dtos;
 using FoodDiary.Domain.Services;
+using FoodDiary.PdfGenerator;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
@@ -15,10 +16,12 @@ namespace FoodDiary.API.Controllers.v1
     public class ExportsController : ControllerBase
     {
         private readonly IExportService _exportService;
+        private readonly IPagesPdfGenerator _pagesPdfGenerator;
 
-        public ExportsController(IExportService exportService)
+        public ExportsController(IExportService exportService, IPagesPdfGenerator pagesPdfGenerator)
         {
             _exportService = exportService ?? throw new ArgumentNullException(nameof(exportService));
+            _pagesPdfGenerator = pagesPdfGenerator ?? throw new ArgumentNullException(nameof(pagesPdfGenerator));
         }
 
         [HttpGet("pages/pdf")]
@@ -32,7 +35,9 @@ namespace FoodDiary.API.Controllers.v1
                 return BadRequest(ModelState);
             }
 
-            var fileContents = await _exportService.GetExportPagesPdfContentsAsync(request.StartDate, request.EndDate, cancellationToken);
+            var pagesForExport = await _exportService.GetPagesForExportAsync(request.StartDate, request.EndDate, cancellationToken);
+            
+            var fileContents = _pagesPdfGenerator.GeneratePdfForPages(pagesForExport);
             return File(fileContents, "application/octet-stream");
         }
     }
