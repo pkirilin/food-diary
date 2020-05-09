@@ -2,6 +2,7 @@
 using AutoMapper;
 using FoodDiary.API.Extensions;
 using FoodDiary.API.Middlewares;
+using FoodDiary.API.Options;
 using FoodDiary.Infrastructure;
 using FoodDiary.PdfGenerator.Extensions;
 using Microsoft.AspNetCore.Builder;
@@ -23,6 +24,8 @@ namespace FoodDiary.API
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<ImportOptions>(Configuration.GetSection("Import"));
+
             services.AddDbContext<FoodDiaryContext>();
 
             services.AddRepositories();

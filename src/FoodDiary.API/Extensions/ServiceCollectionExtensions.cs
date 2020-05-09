@@ -30,6 +30,7 @@ namespace FoodDiary.API.Extensions
             services.AddTransient<IProductService, ProductService>();
             services.AddTransient<ICaloriesService, CaloriesService>();
             services.AddTransient<IExportService, ExportService>();
+            services.AddTransient<IImportService, ImportService>();
         }
 
         public static void AddUtils(this IServiceCollection services)
