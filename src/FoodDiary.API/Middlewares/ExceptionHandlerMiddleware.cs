@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using FoodDiary.Domain.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
@@ -24,13 +26,18 @@ namespace FoodDiary.API.Middlewares
             {
                 await _next(context);
             }
+            catch (ImportException importException)
+            {
+                await HandleExceptionAsBadRequestAsync(context, importException);
+            }
             catch (Exception e)
             {
-                await HandleExceptionAsync(context, e);
+                await HandleExceptionAsInternalServerErrorAsync(context, e);
             }
         }
 
-        private Task HandleExceptionAsync(HttpContext context, Exception e)
+        private Task HandleExceptionAsInternalServerErrorAsync<TException>(HttpContext context, TException e)
+            where TException : Exception
         {
             context.Response.ContentType = "text";
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
@@ -38,6 +45,14 @@ namespace FoodDiary.API.Middlewares
             var fullErrorMessage = $"Internal server error\n{errorDetailsSeparator}\nMessage: {e.Message}\n{errorDetailsSeparator}\nStack trace: {e.StackTrace}\n{errorDetailsSeparator}";
             _logger.LogCritical(fullErrorMessage);
             return context.Response.WriteAsync(fullErrorMessage, Encoding.UTF8);
+        }
+
+        private Task HandleExceptionAsBadRequestAsync<TException>(HttpContext context, TException e)
+            where TException : Exception
+        {
+            context.Response.ContentType = "text";
+            context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+            return context.Response.WriteAsync(e.Message, Encoding.UTF8);
         }
     }
 }
