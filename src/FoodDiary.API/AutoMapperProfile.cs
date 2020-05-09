@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Collections.Generic;
+using AutoMapper;
 using FoodDiary.API.Helpers;
 using FoodDiary.Domain.Dtos;
 using FoodDiary.Domain.Entities;
@@ -47,6 +48,21 @@ namespace FoodDiary.API
             CreateMap<Product, ProductDropdownItemDto>();
 
             CreateMap<ProductCreateEditDto, Product>();
+
+            AddPagesJsonExportMappings();
+        }
+
+        private void AddPagesJsonExportMappings()
+        {
+            CreateMap<Page, PageJsonItemDto>();
+            CreateMap<Note, NoteJsonItemDto>();
+            CreateMap<Product, ProductJsonItemDto>()
+                .ForMember(
+                    dest => dest.Category,
+                    o => o.MapFrom(src => src.Category.Name));
+
+            CreateMap<IEnumerable<Page>, PagesJsonExportDto>()
+                .ConvertUsing<PagesJsonExportTypeConverter>();
         }
     }
 }

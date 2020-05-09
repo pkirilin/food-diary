@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -36,6 +36,13 @@ namespace FoodDiary.Infrastructure.Repositories
         public IQueryable<Page> LoadNotesWithProducts(IQueryable<Page> pagesQuery)
         {
             return pagesQuery.Include(p => p.Notes).ThenInclude(n => n.Product);
+        }
+
+        public IQueryable<Page> LoadNotesWithProductsAndCategories(IQueryable<Page> pagesQuery)
+        {
+            return pagesQuery.Include(p => p.Notes)
+                .ThenInclude(n => n.Product)
+                .ThenInclude(p => p.Category);
         }
 
         public async Task<Page> GetByIdAsync(int id, CancellationToken cancellationToken)

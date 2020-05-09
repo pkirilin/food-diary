@@ -18,11 +18,16 @@ namespace FoodDiary.Infrastructure.Services
             _pageRepository = pageRepository ?? throw new ArgumentNullException(nameof(pageRepository));
         }
 
-        public async Task<IEnumerable<Page>> GetPagesForExportAsync(DateTime startDate, DateTime endDate, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Page>> GetPagesForExportAsync(DateTime startDate, DateTime endDate, bool includeCategory, CancellationToken cancellationToken)
         {
             var pagesForExportQuery = _pageRepository.GetQueryWithoutTracking()
                 .Where(p => p.Date >= startDate && p.Date <= endDate);
-            pagesForExportQuery = _pageRepository.LoadNotesWithProducts(pagesForExportQuery);
+
+            if (includeCategory)
+                pagesForExportQuery = _pageRepository.LoadNotesWithProductsAndCategories(pagesForExportQuery);
+            else
+                pagesForExportQuery = _pageRepository.LoadNotesWithProducts(pagesForExportQuery);
+
             pagesForExportQuery = pagesForExportQuery.OrderBy(p => p.Date);
 
             var pagesForExport = await _pageRepository.GetListFromQueryAsync(pagesForExportQuery, cancellationToken);

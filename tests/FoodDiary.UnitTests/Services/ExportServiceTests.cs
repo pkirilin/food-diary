@@ -36,7 +36,7 @@ namespace FoodDiary.UnitTests.Services
             => new ExportService(_pageRepositoryMock.Object);
 
         [Fact]
-        public async void GetPagesForExport_ReturnsRequestedPages()
+        public async void GetPagesForExport_ReturnsRequestedPagesWithoutCategories_WhenIncludeCategoryIsFalse()
         {
             var startDate = _fixture.Create<DateTime>();
             var endDate = _fixture.Create<DateTime>();
@@ -44,10 +44,29 @@ namespace FoodDiary.UnitTests.Services
             _pageRepositoryMock.Setup(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Page>>(), CancellationToken.None))
                 .ReturnsAsync(pagesForExport);
 
-            var result = await ExportService.GetPagesForExportAsync(startDate, endDate, CancellationToken.None);
+            var result = await ExportService.GetPagesForExportAsync(startDate, endDate, false, CancellationToken.None);
 
             _pageRepositoryMock.Verify(r => r.GetQueryWithoutTracking(), Times.Once);
             _pageRepositoryMock.Verify(r => r.LoadNotesWithProducts(It.IsNotNull<IQueryable<Page>>()), Times.Once);
+            _pageRepositoryMock.Verify(r => r.LoadNotesWithProductsAndCategories(It.IsNotNull<IQueryable<Page>>()), Times.Never);
+            _pageRepositoryMock.Verify(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Page>>(), CancellationToken.None), Times.Once);
+            result.Should().Contain(pagesForExport);
+        }
+
+        [Fact]
+        public async void GetPagesForExport_ReturnsRequestedPagesWithCategories_WhenIncludeCategoryIsTrue()
+        {
+            var startDate = _fixture.Create<DateTime>();
+            var endDate = _fixture.Create<DateTime>();
+            var pagesForExport = _fixture.CreateMany<Page>();
+            _pageRepositoryMock.Setup(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Page>>(), CancellationToken.None))
+                .ReturnsAsync(pagesForExport);
+
+            var result = await ExportService.GetPagesForExportAsync(startDate, endDate, true, CancellationToken.None);
+
+            _pageRepositoryMock.Verify(r => r.GetQueryWithoutTracking(), Times.Once);
+            _pageRepositoryMock.Verify(r => r.LoadNotesWithProducts(It.IsNotNull<IQueryable<Page>>()), Times.Never);
+            _pageRepositoryMock.Verify(r => r.LoadNotesWithProductsAndCategories(It.IsNotNull<IQueryable<Page>>()), Times.Once);
             _pageRepositoryMock.Verify(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Page>>(), CancellationToken.None), Times.Once);
             result.Should().Contain(pagesForExport);
         }

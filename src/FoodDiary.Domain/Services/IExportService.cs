@@ -8,6 +8,6 @@ namespace FoodDiary.Domain.Services
 {
     public interface IExportService
     {
-        Task<IEnumerable<Page>> GetPagesForExportAsync(DateTime startDate, DateTime endDate, CancellationToken cancellationToken);
+        Task<IEnumerable<Page>> GetPagesForExportAsync(DateTime startDate, DateTime endDate, bool includeCategory, CancellationToken cancellationToken);
     }
 }
