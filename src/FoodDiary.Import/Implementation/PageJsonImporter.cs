@@ -9,13 +9,13 @@ namespace FoodDiary.Import.Implementation
 {
     class PageJsonImporter : IPageJsonImporter
     {
-        private readonly IDictionary<DateTime, Page> _existingPagesDictionary;
+        private readonly IJsonImportDataProvider _importDataProvider;
 
         private readonly INoteJsonImporter _noteImporter;
 
         public PageJsonImporter(IJsonImportDataProvider importDataProvider, INoteJsonImporter noteImporter)
         {
-            _existingPagesDictionary = importDataProvider?.ExistingPages ?? throw new ArgumentNullException(nameof(importDataProvider), "Could not get existing pages dictionary");
+            _importDataProvider = importDataProvider ?? throw new ArgumentNullException(nameof(importDataProvider));
             _noteImporter = noteImporter ?? throw new ArgumentNullException(nameof(noteImporter));
         }
 
@@ -27,11 +27,12 @@ namespace FoodDiary.Import.Implementation
             if (pageFromJson.Notes == null)
                 throw new ArgumentNullException(nameof(pageFromJson.Notes));
 
+            var existingPagesDictionary = _importDataProvider.ExistingPages;
             Page importedPage;
             createdPage = null;
 
-            if (_existingPagesDictionary.ContainsKey(pageFromJson.Date))
-                importedPage = _existingPagesDictionary[pageFromJson.Date];
+            if (existingPagesDictionary.ContainsKey(pageFromJson.Date))
+                importedPage = existingPagesDictionary[pageFromJson.Date];
             else
             {
                 importedPage = createdPage = new Page()

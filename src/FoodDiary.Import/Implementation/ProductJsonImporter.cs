@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using FoodDiary.Domain.Dtos;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Import.Services;
@@ -8,13 +7,13 @@ namespace FoodDiary.Import.Implementation
 {
     class ProductJsonImporter : IProductJsonImporter
     {
-        private readonly IDictionary<string, Product> _existingProductsDictionary;
+        private readonly IJsonImportDataProvider _importDataProvider;
 
         private readonly ICategoryJsonImporter _categoryImporter;
 
         public ProductJsonImporter(IJsonImportDataProvider importDataProvider, ICategoryJsonImporter categoryImporter)
         {
-            _existingProductsDictionary = importDataProvider?.ExistingProducts ?? throw new ArgumentNullException(nameof(importDataProvider), "Could not get existing products dictionary");
+            _importDataProvider = importDataProvider ?? throw new ArgumentNullException(nameof(importDataProvider));
             _categoryImporter = categoryImporter ?? throw new ArgumentNullException(nameof(categoryImporter));
         }
 
@@ -26,10 +25,11 @@ namespace FoodDiary.Import.Implementation
             if (String.IsNullOrEmpty(productFromJson.Name))
                 throw new ArgumentNullException(nameof(productFromJson.Name));
 
+            var existingProductsDictionary = _importDataProvider.ExistingProducts;
             Product importedProduct;
 
-            if (_existingProductsDictionary.ContainsKey(productFromJson.Name))
-                importedProduct = _existingProductsDictionary[productFromJson.Name];
+            if (existingProductsDictionary.ContainsKey(productFromJson.Name))
+                importedProduct = existingProductsDictionary[productFromJson.Name];
             else
             {
                 importedProduct = new Product()
