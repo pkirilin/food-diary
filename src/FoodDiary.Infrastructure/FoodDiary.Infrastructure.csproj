@@ -4,6 +4,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\FoodDiary.Domain\FoodDiary.Domain.csproj" />
+    <ProjectReference Include="..\FoodDiary.Import\FoodDiary.Import.csproj" />
     <ProjectReference Include="..\FoodDiary.PdfGenerator\FoodDiary.PdfGenerator.csproj" />
   </ItemGroup>
   <ItemGroup>

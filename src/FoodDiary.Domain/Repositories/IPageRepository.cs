@@ -15,6 +15,8 @@ namespace FoodDiary.Domain.Repositories
 
         Task<IEnumerable<Page>> GetListFromQueryAsync(IQueryable<Page> pagesQuery, CancellationToken cancellationToken);
 
+        Task<IDictionary<DateTime, Page>> GetDictionaryFromQueryAsync(IQueryable<Page> pagesQuery, CancellationToken cancellationToken);
+
         IQueryable<Page> LoadNotesWithProducts(IQueryable<Page> pagesQuery);
 
         IQueryable<Page> LoadNotesWithProductsAndCategories(IQueryable<Page> pagesQuery);
@@ -23,6 +25,8 @@ namespace FoodDiary.Domain.Repositories
 
         Task<Page> CreateAsync(Page page, CancellationToken cancellationToken);
 
+        void CreateRange(IEnumerable<Page> pages);
+
         Task<Page> UpdateAsync(Page page, CancellationToken cancellationToken);
 
         Task<Page> DeleteAsync(Page page, CancellationToken cancellationToken);
@@ -30,5 +34,7 @@ namespace FoodDiary.Domain.Repositories
         Task<IEnumerable<Page>> DeleteRangeAsync(IEnumerable<Page> pages, CancellationToken cancellationToken);
 
         Task<bool> IsDuplicateAsync(DateTime pageDate, CancellationToken cancellationToken);
+
+        Task SaveChangesAsync(CancellationToken cancellationToken);
     }
 }

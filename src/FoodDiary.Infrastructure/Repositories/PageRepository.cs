@@ -33,6 +33,11 @@ namespace FoodDiary.Infrastructure.Repositories
             return await pagesQuery.ToListAsync(cancellationToken);
         }
 
+        public async Task<IDictionary<DateTime, Page>> GetDictionaryFromQueryAsync(IQueryable<Page> pagesQuery, CancellationToken cancellationToken)
+        {
+            return await pagesQuery.ToDictionaryAsync(p => p.Date);
+        }
+
         public IQueryable<Page> LoadNotesWithProducts(IQueryable<Page> pagesQuery)
         {
             return pagesQuery.Include(p => p.Notes).ThenInclude(n => n.Product);
@@ -55,6 +60,11 @@ namespace FoodDiary.Infrastructure.Repositories
             var entry = _context.Add(page);
             await _context.SaveChangesAsync(cancellationToken);
             return entry.Entity;
+        }
+
+        public void CreateRange(IEnumerable<Page> pages)
+        {
+            _context.AddRange(pages);
         }
 
         public async Task<Page> UpdateAsync(Page page, CancellationToken cancellationToken)
@@ -84,6 +94,11 @@ namespace FoodDiary.Infrastructure.Repositories
                 .AsNoTracking()
                 .ToListAsync();
             return pagesWithTheSameDate.Any();
+        }
+
+        public async Task SaveChangesAsync(CancellationToken cancellationToken)
+        {
+            await _context.SaveChangesAsync(cancellationToken);
         }
     }
 }

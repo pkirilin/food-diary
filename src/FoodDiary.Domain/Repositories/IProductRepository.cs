@@ -14,6 +14,8 @@ namespace FoodDiary.Domain.Repositories
 
         Task<List<Product>> GetListFromQueryAsync(IQueryable<Product> query, CancellationToken cancellationToken);
 
+        Task<Dictionary<string, Product>> GetDictionaryFromQueryAsync(IQueryable<Product> query, CancellationToken cancellationToken);
+
         IQueryable<Product> LoadCategory(IQueryable<Product> query);
 
         Task<Product> GetByIdAsync(int id, CancellationToken cancellationToken);

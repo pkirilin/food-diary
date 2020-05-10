@@ -14,6 +14,8 @@ namespace FoodDiary.Domain.Repositories
 
         Task<IEnumerable<Category>> GetListFromQueryAsync(IQueryable<Category> query, CancellationToken cancellationToken);
 
+        Task<Dictionary<string, Category>> GetDictionaryFromQueryAsync(IQueryable<Category> query, CancellationToken cancellationToken);
+
         Task<Category> GetByIdAsync(int id, CancellationToken cancellationToken);
 
         Task<bool> IsDuplicateAsync(string categoryName, CancellationToken cancellationToken);

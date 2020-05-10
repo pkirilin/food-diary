@@ -9,6 +9,6 @@ namespace FoodDiary.Domain.Services
     {
         Task<PagesJsonExportDto> DeserializePagesFromJsonAsync(Stream importFileStream, CancellationToken cancellationToken);
 
-        Task RunPagesJsonImportAsync(CancellationToken cancellationToken);
+        Task RunPagesJsonImportAsync(PagesJsonExportDto jsonObj, CancellationToken cancellationToken);
     }
 }

@@ -33,6 +33,11 @@ namespace FoodDiary.Infrastructure.Repositories
             return await query.ToListAsync(cancellationToken);
         }
 
+        public async Task<Dictionary<string, Category>> GetDictionaryFromQueryAsync(IQueryable<Category> query, CancellationToken cancellationToken)
+        {
+            return await query.ToDictionaryAsync(c => c.Name);
+        }
+
         public async Task<Category> GetByIdAsync(int id, CancellationToken cancellationToken)
         {
             return await _context.Categories.FindAsync(new object[] { id }, cancellationToken);

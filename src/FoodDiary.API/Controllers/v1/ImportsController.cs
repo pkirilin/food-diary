@@ -41,7 +41,7 @@ namespace FoodDiary.API.Controllers.v1
                 pagesFromJson = await _importService.DeserializePagesFromJsonAsync(importFileStream, cancellationToken);
             }
 
-            await _importService.RunPagesJsonImportAsync(cancellationToken);
+            await _importService.RunPagesJsonImportAsync(pagesFromJson, cancellationToken);
             return Ok();
         }
     }
