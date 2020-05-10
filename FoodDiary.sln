@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FoodDiary.UnitTests", "test
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FoodDiary.PdfGenerator", "src\FoodDiary.PdfGenerator\FoodDiary.PdfGenerator.csproj", "{F6464BFB-DF8E-4E2F-BC83-605912D844DA}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FoodDiary.Import", "src\FoodDiary.Import\FoodDiary.Import.csproj", "{2BF679E7-09D8-47E0-8CDE-D91799859D7D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +89,18 @@ Global
 		{F6464BFB-DF8E-4E2F-BC83-605912D844DA}.Release|x64.Build.0 = Release|Any CPU
 		{F6464BFB-DF8E-4E2F-BC83-605912D844DA}.Release|x86.ActiveCfg = Release|Any CPU
 		{F6464BFB-DF8E-4E2F-BC83-605912D844DA}.Release|x86.Build.0 = Release|Any CPU
+		{2BF679E7-09D8-47E0-8CDE-D91799859D7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2BF679E7-09D8-47E0-8CDE-D91799859D7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2BF679E7-09D8-47E0-8CDE-D91799859D7D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{2BF679E7-09D8-47E0-8CDE-D91799859D7D}.Debug|x64.Build.0 = Debug|Any CPU
+		{2BF679E7-09D8-47E0-8CDE-D91799859D7D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2BF679E7-09D8-47E0-8CDE-D91799859D7D}.Debug|x86.Build.0 = Debug|Any CPU
+		{2BF679E7-09D8-47E0-8CDE-D91799859D7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2BF679E7-09D8-47E0-8CDE-D91799859D7D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2BF679E7-09D8-47E0-8CDE-D91799859D7D}.Release|x64.ActiveCfg = Release|Any CPU
+		{2BF679E7-09D8-47E0-8CDE-D91799859D7D}.Release|x64.Build.0 = Release|Any CPU
+		{2BF679E7-09D8-47E0-8CDE-D91799859D7D}.Release|x86.ActiveCfg = Release|Any CPU
+		{2BF679E7-09D8-47E0-8CDE-D91799859D7D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -97,6 +111,7 @@ Global
 		{E0B86E79-9EAD-474D-B8D4-3F8042DF748E} = {8D097EA1-B4F0-42EC-8914-37C308AC9700}
 		{E91B757E-1E91-4846-9FCB-C6FA568CEF5E} = {9D969794-6092-4EA0-8428-ED7E1EA48DCB}
 		{F6464BFB-DF8E-4E2F-BC83-605912D844DA} = {8D097EA1-B4F0-42EC-8914-37C308AC9700}
+		{2BF679E7-09D8-47E0-8CDE-D91799859D7D} = {8D097EA1-B4F0-42EC-8914-37C308AC9700}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {865BF919-AA96-4CA9-9D91-CFD16926FB89}
