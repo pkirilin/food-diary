@@ -13,15 +13,19 @@ namespace FoodDiary.Import.Implementation
 
         private readonly INoteJsonImporter _noteImporter;
 
-        public PageJsonImporter(IJsonImportDataProvider importData, INoteJsonImporter noteImporter)
+        public PageJsonImporter(IJsonImportDataProvider importDataProvider, INoteJsonImporter noteImporter)
         {
-            _existingPagesDictionary = importData?.ExistingPages ?? throw new ArgumentNullException(nameof(importData), "Could not get existing pages dictionary");
+            _existingPagesDictionary = importDataProvider?.ExistingPages ?? throw new ArgumentNullException(nameof(importDataProvider), "Could not get existing pages dictionary");
             _noteImporter = noteImporter ?? throw new ArgumentNullException(nameof(noteImporter));
         }
 
         public void ImportPage(PageJsonItemDto pageFromJson, out Page createdPage)
         {
-            // argument checks
+            if (pageFromJson == null)
+                throw new ArgumentNullException(nameof(pageFromJson));
+
+            if (pageFromJson.Notes == null)
+                throw new ArgumentNullException(nameof(pageFromJson.Notes));
 
             Page importedPage;
             createdPage = null;

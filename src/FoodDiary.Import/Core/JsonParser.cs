@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using FoodDiary.Domain.Dtos;
 using FoodDiary.Domain.Exceptions;
@@ -9,6 +10,9 @@ namespace FoodDiary.Import.Core
     {
         public IEnumerable<PageJsonItemDto> ParsePages(PagesJsonExportDto jsonObj)
         {
+            if (jsonObj == null)
+                throw new ArgumentNullException(nameof(jsonObj));
+
             var jsonPagesGroupedByDates = jsonObj.Pages.GroupBy(p => p.Date);
             var arePageDatesUnique = jsonPagesGroupedByDates.Select(g => g.Count())
                 .All(groupSize => groupSize == 1);

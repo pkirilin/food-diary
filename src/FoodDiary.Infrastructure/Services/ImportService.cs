@@ -18,9 +18,9 @@ namespace FoodDiary.Infrastructure.Services
         private readonly IProductRepository _productRepository;
         private readonly ICategoryRepository _categoryRepository;
 
-        private readonly IJsonParser _pagesJsonParser;
+        private readonly IJsonParser _jsonParser;
         private readonly IJsonImportDataProvider _importDataProvider;
-        private readonly IJsonImporter _pagesJsonImporter;
+        private readonly IJsonImporter _jsonImporter;
 
         public ImportService(
             IPageRepository pageRepository,
@@ -33,9 +33,9 @@ namespace FoodDiary.Infrastructure.Services
             _pageRepository = pageRepository ?? throw new ArgumentNullException(nameof(pageRepository));
             _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
             _categoryRepository = categoryRepository ?? throw new ArgumentNullException(nameof(categoryRepository));
-            _pagesJsonParser = pagesJsonParser ?? throw new ArgumentNullException(nameof(pagesJsonParser));
+            _jsonParser = pagesJsonParser ?? throw new ArgumentNullException(nameof(pagesJsonParser));
             _importDataProvider = importDataProvider ?? throw new ArgumentNullException(nameof(importDataProvider));
-            _pagesJsonImporter = pagesJsonEntitiesUpdater ?? throw new ArgumentNullException(nameof(pagesJsonEntitiesUpdater));
+            _jsonImporter = pagesJsonEntitiesUpdater ?? throw new ArgumentNullException(nameof(pagesJsonEntitiesUpdater));
         }
 
         public async Task<PagesJsonExportDto> DeserializePagesFromJsonAsync(Stream importFileStream, CancellationToken cancellationToken)
@@ -57,10 +57,10 @@ namespace FoodDiary.Infrastructure.Services
 
         public async Task RunPagesJsonImportAsync(PagesJsonExportDto jsonObj, CancellationToken cancellationToken)
         {
-            var pagesFromJson = _pagesJsonParser.ParsePages(jsonObj);
-            var notesFromJson = _pagesJsonParser.ParseNotes(pagesFromJson);
-            var productNamesFromJson = _pagesJsonParser.ParseProductNames(notesFromJson);
-            var categoryNamesFromJson = _pagesJsonParser.ParseCategoryNames(notesFromJson);
+            var pagesFromJson = _jsonParser.ParsePages(jsonObj);
+            var notesFromJson = _jsonParser.ParseNotes(pagesFromJson);
+            var productNamesFromJson = _jsonParser.ParseProductNames(notesFromJson);
+            var categoryNamesFromJson = _jsonParser.ParseCategoryNames(notesFromJson);
             var pagesFromJsonDates = pagesFromJson.Select(p => p.Date);
 
             var pagesForUpdateQuery = _pageRepository.GetQuery()
@@ -76,7 +76,7 @@ namespace FoodDiary.Infrastructure.Services
             _importDataProvider.ExistingProducts = await _productRepository.GetDictionaryFromQueryAsync(importProductsQuery, cancellationToken);
             _importDataProvider.ExistingCategories = await _categoryRepository.GetDictionaryFromQueryAsync(importCategoriesQuery, cancellationToken);
 
-            _pagesJsonImporter.Import(jsonObj, out var createdPages);
+            _jsonImporter.Import(jsonObj, out var createdPages);
 
             _pageRepository.CreateRange(createdPages);
             await _pageRepository.SaveChangesAsync(cancellationToken);

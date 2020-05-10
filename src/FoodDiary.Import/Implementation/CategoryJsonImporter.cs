@@ -9,14 +9,15 @@ namespace FoodDiary.Import.Implementation
     {
         private readonly IDictionary<string, Category> _existingCategoriesDictionary;
 
-        public CategoryJsonImporter(IJsonImportDataProvider importData)
+        public CategoryJsonImporter(IJsonImportDataProvider importDataProvider)
         {
-            _existingCategoriesDictionary = importData?.ExistingCategories ?? throw new ArgumentNullException(nameof(importData), "Could not get existing categories dictionary");
+            _existingCategoriesDictionary = importDataProvider?.ExistingCategories ?? throw new ArgumentNullException(nameof(importDataProvider), "Could not get existing categories dictionary");
         }
 
         public Category ImportCategory(string categoryNameFromJson)
         {
-            // argument checks
+            if (String.IsNullOrWhiteSpace(categoryNameFromJson))
+                throw new ArgumentNullException(nameof(categoryNameFromJson));
 
             Category importedCategory;
 

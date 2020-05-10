@@ -12,15 +12,19 @@ namespace FoodDiary.Import.Implementation
 
         private readonly ICategoryJsonImporter _categoryImporter;
 
-        public ProductJsonImporter(IJsonImportDataProvider importData, ICategoryJsonImporter categoryImporter)
+        public ProductJsonImporter(IJsonImportDataProvider importDataProvider, ICategoryJsonImporter categoryImporter)
         {
-            _existingProductsDictionary = importData?.ExistingProducts ?? throw new ArgumentNullException(nameof(importData), "Could not get existing products dictionary");
+            _existingProductsDictionary = importDataProvider?.ExistingProducts ?? throw new ArgumentNullException(nameof(importDataProvider), "Could not get existing products dictionary");
             _categoryImporter = categoryImporter ?? throw new ArgumentNullException(nameof(categoryImporter));
         }
 
         public Product ImportProduct(ProductJsonItemDto productFromJson)
         {
-            // argument checks
+            if (productFromJson == null)
+                throw new ArgumentNullException(nameof(productFromJson));
+
+            if (String.IsNullOrEmpty(productFromJson.Name))
+                throw new ArgumentNullException(nameof(productFromJson.Name));
 
             Product importedProduct;
 

@@ -17,7 +17,8 @@ namespace FoodDiary.Import.Core
 
         public void Import(PagesJsonExportDto jsonObj, out List<Page> createdPages)
         {
-            // argument checks
+            if (jsonObj == null)
+                throw new ArgumentNullException(nameof(jsonObj));
 
             createdPages = new List<Page>();
 

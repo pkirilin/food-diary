@@ -18,12 +18,12 @@ namespace FoodDiary.Import.Core
         {
             get
             {
-                return _existingPages;
+                return _existingPages ?? throw new InvalidOperationException("Existing pages are not initialized");
             }
             set
             {
                 if (_existingPages != null)
-                    throw new ArgumentException("Existing pages has already been initialized");
+                    throw new InvalidOperationException("Existing pages has already been initialized");
                 
                 _existingPages = value;
             }
@@ -33,12 +33,12 @@ namespace FoodDiary.Import.Core
         {
             get
             {
-                return _existingProducts;
+                return _existingProducts ?? throw new InvalidOperationException("Existing products are not initialized");
             }
             set
             {
                 if (_existingProducts != null)
-                    throw new ArgumentException("Existing products has already been initialized");
+                    throw new InvalidOperationException("Existing products has already been initialized");
 
                 _existingProducts = value;
             }
@@ -48,12 +48,12 @@ namespace FoodDiary.Import.Core
         {
             get
             {
-                return _existingCategories;
+                return _existingCategories ?? throw new InvalidOperationException("Existing categories are not initialized");
             }
             set
             {
                 if (_existingCategories != null)
-                    throw new ArgumentException("Existing categories has already been initialized");
+                    throw new InvalidOperationException("Existing categories has already been initialized");
 
                 _existingCategories = value;
             }

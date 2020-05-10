@@ -16,6 +16,9 @@ namespace FoodDiary.Import.Implementation
 
         public Note ImportNote(NoteJsonItemDto noteFromJson)
         {
+            if (noteFromJson == null)
+                throw new ArgumentNullException(nameof(noteFromJson));
+
             var importedProduct = _productImporter.ImportProduct(noteFromJson.Product);
 
             return new Note()
