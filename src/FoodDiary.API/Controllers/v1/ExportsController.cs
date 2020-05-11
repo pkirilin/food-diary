@@ -29,7 +29,7 @@ namespace FoodDiary.API.Controllers.v1
             _pagesPdfGenerator = pagesPdfGenerator ?? throw new ArgumentNullException(nameof(pagesPdfGenerator));
         }
 
-        [HttpGet("pages/pdf")]
+        [HttpGet("pdf")]
         [ProducesResponseType(typeof(byte[]), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> ExportPagesPdf([FromQuery] PagesExportRequestDto request, CancellationToken cancellationToken)
@@ -46,7 +46,7 @@ namespace FoodDiary.API.Controllers.v1
             return File(fileContents, "application/octet-stream");
         }
 
-        [HttpGet("pages/json")]
+        [HttpGet("json")]
         [ProducesResponseType(typeof(byte[]), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> ExportPagesJson([FromQuery] PagesExportRequestDto request, CancellationToken cancellationToken)
@@ -58,7 +58,7 @@ namespace FoodDiary.API.Controllers.v1
             }
 
             var pagesForExport = await _exportService.GetPagesForExportAsync(request.StartDate, request.EndDate, true, cancellationToken);
-            var pagesJsonExportObject = _mapper.Map<PagesJsonExportDto>(pagesForExport);
+            var pagesJsonExportObject = _mapper.Map<PagesJsonObjectDto>(pagesForExport);
 
             byte[] fileContents;
             using (var stream = new MemoryStream())

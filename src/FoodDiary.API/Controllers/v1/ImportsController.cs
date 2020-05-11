@@ -25,7 +25,7 @@ namespace FoodDiary.API.Controllers.v1
             _importService = importService ?? throw new ArgumentNullException(nameof(importService));
         }
 
-        [HttpPost("pages/json")]
+        [HttpPost("json")]
         public async Task<IActionResult> ImportPagesJson([FromForm] IFormFile importFile, CancellationToken cancellationToken)
         {
             if (importFile == null)
@@ -34,14 +34,14 @@ namespace FoodDiary.API.Controllers.v1
             if (importFile.Length > _importOptions.MaxImportFileLengthBytes)
                 return BadRequest("Failed to import pages: import file is too large");
 
-            PagesJsonExportDto pagesFromJson;
+            PagesJsonObjectDto pagesJsonObject;
 
             using (var importFileStream = importFile.OpenReadStream())
             {
-                pagesFromJson = await _importService.DeserializePagesFromJsonAsync(importFileStream, cancellationToken);
+                pagesJsonObject = await _importService.DeserializePagesFromJsonAsync(importFileStream, cancellationToken);
             }
 
-            await _importService.RunPagesJsonImportAsync(pagesFromJson, cancellationToken);
+            await _importService.RunPagesJsonImportAsync(pagesJsonObject, cancellationToken);
             return Ok();
         }
     }

@@ -7,8 +7,8 @@ namespace FoodDiary.Domain.Services
 {
     public interface IImportService
     {
-        Task<PagesJsonExportDto> DeserializePagesFromJsonAsync(Stream importFileStream, CancellationToken cancellationToken);
+        Task<PagesJsonObjectDto> DeserializePagesFromJsonAsync(Stream importFileStream, CancellationToken cancellationToken);
 
-        Task RunPagesJsonImportAsync(PagesJsonExportDto jsonObj, CancellationToken cancellationToken);
+        Task RunPagesJsonImportAsync(PagesJsonObjectDto jsonObj, CancellationToken cancellationToken);
     }
 }

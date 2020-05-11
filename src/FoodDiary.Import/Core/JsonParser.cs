@@ -8,7 +8,7 @@ namespace FoodDiary.Import.Core
 {
     class JsonParser : IJsonParser
     {
-        public IEnumerable<PageJsonItemDto> ParsePages(PagesJsonExportDto jsonObj)
+        public IEnumerable<PageJsonItemDto> ParsePages(PagesJsonObjectDto jsonObj)
         {
             if (jsonObj == null)
                 throw new ArgumentNullException(nameof(jsonObj));

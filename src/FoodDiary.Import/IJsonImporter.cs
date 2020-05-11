@@ -6,6 +6,6 @@ namespace FoodDiary.Import
 {
     public interface IJsonImporter
     {
-        void Import(PagesJsonExportDto jsonObj, out List<Page> createdPages);
+        void Import(PagesJsonObjectDto jsonObj, out List<Page> createdPages);
     }
 }

@@ -5,11 +5,11 @@ using FoodDiary.Domain.Entities;
 
 namespace FoodDiary.API.Helpers
 {
-    public class PagesJsonExportTypeConverter : ITypeConverter<IEnumerable<Page>, PagesJsonExportDto>
+    public class PagesJsonExportTypeConverter : ITypeConverter<IEnumerable<Page>, PagesJsonObjectDto>
     {
-        public PagesJsonExportDto Convert(IEnumerable<Page> source, PagesJsonExportDto destination, ResolutionContext context)
+        public PagesJsonObjectDto Convert(IEnumerable<Page> source, PagesJsonObjectDto destination, ResolutionContext context)
         {
-            return new PagesJsonExportDto
+            return new PagesJsonObjectDto
             {
                 Pages = context.Mapper.Map<IEnumerable<PageJsonItemDto>>(source)
             };

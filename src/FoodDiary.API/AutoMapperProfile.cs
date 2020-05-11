@@ -61,7 +61,7 @@ namespace FoodDiary.API
                     dest => dest.Category,
                     o => o.MapFrom(src => src.Category.Name));
 
-            CreateMap<IEnumerable<Page>, PagesJsonExportDto>()
+            CreateMap<IEnumerable<Page>, PagesJsonObjectDto>()
                 .ConvertUsing<PagesJsonExportTypeConverter>();
         }
     }

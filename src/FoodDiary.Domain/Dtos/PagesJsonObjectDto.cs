@@ -4,7 +4,7 @@ using FoodDiary.Domain.Enums;
 
 namespace FoodDiary.Domain.Dtos
 {
-    public class PagesJsonExportDto
+    public class PagesJsonObjectDto
     {
         public IEnumerable<PageJsonItemDto> Pages { get; set; }
     }

@@ -5,7 +5,7 @@ namespace FoodDiary.Import
 {
     public interface IJsonParser
     {
-        IEnumerable<PageJsonItemDto> ParsePages(PagesJsonExportDto jsonObj);
+        IEnumerable<PageJsonItemDto> ParsePages(PagesJsonObjectDto jsonObj);
 
         IEnumerable<NoteJsonItemDto> ParseNotes(IEnumerable<PageJsonItemDto> pagesFromJson);
 
