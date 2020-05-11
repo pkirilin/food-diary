@@ -31,6 +31,9 @@ namespace FoodDiary.Import.Implementation
             Page importedPage;
             createdPage = null;
 
+            // Removing time from date for correct search
+            pageFromJson.Date = DateTime.Parse(pageFromJson.Date.ToShortDateString());
+
             if (existingPagesDictionary.ContainsKey(pageFromJson.Date))
                 importedPage = existingPagesDictionary[pageFromJson.Date];
             else

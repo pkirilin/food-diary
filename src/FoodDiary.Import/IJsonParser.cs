@@ -9,8 +9,8 @@ namespace FoodDiary.Import
 
         IEnumerable<NoteJsonItemDto> ParseNotes(IEnumerable<PageJsonItemDto> pagesFromJson);
 
-        IEnumerable<string> ParseProductNames(IEnumerable<NoteJsonItemDto> notesFromJson);
+        IEnumerable<string> ParseProducts(IEnumerable<NoteJsonItemDto> notesFromJson);
 
-        IEnumerable<string> ParseCategoryNames(IEnumerable<NoteJsonItemDto> notesFromJson);
+        IEnumerable<string> ParseCategories(IEnumerable<NoteJsonItemDto> notesFromJson);
     }
 }

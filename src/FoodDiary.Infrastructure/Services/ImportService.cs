@@ -59,8 +59,8 @@ namespace FoodDiary.Infrastructure.Services
         {
             var pagesFromJson = _jsonParser.ParsePages(jsonObj);
             var notesFromJson = _jsonParser.ParseNotes(pagesFromJson);
-            var productNamesFromJson = _jsonParser.ParseProductNames(notesFromJson);
-            var categoryNamesFromJson = _jsonParser.ParseCategoryNames(notesFromJson);
+            var productNamesFromJson = _jsonParser.ParseProducts(notesFromJson);
+            var categoryNamesFromJson = _jsonParser.ParseCategories(notesFromJson);
             var pagesFromJsonDates = pagesFromJson.Select(p => p.Date);
 
             var pagesForUpdateQuery = _pageRepository.GetQuery()
