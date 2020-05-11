@@ -32,10 +32,8 @@ namespace FoodDiary.Import.Implementation
                 importedProduct = existingProductsDictionary[productFromJson.Name];
             else
             {
-                importedProduct = new Product()
-                {
-                    Name = productFromJson.Name
-                };
+                importedProduct = new Product { Name = productFromJson.Name };
+                existingProductsDictionary.Add(productFromJson.Name, importedProduct);
             }
 
             importedProduct.Category = _categoryImporter.ImportCategory(productFromJson.Category);
