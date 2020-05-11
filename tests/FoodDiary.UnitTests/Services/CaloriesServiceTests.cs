@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using FluentAssertions;
 using FoodDiary.Domain.Services;
 using FoodDiary.Infrastructure.Services;
@@ -27,7 +27,6 @@ namespace FoodDiary.UnitTests.Services
         }
 
         [Theory]
-        [InlineData(0, 0)]
         [InlineData(100, -100)]
         [InlineData(-100, 100)]
         [InlineData(-100, -100)]
