@@ -36,6 +36,7 @@ namespace FoodDiary.Import.Implementation
                 existingProductsDictionary.Add(productFromJson.Name, importedProduct);
             }
 
+            importedProduct.CaloriesCost = productFromJson.CaloriesCost;
             importedProduct.Category = _categoryImporter.ImportCategory(productFromJson.Category);
             return importedProduct;
         }

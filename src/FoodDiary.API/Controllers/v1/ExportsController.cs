@@ -68,6 +68,7 @@ namespace FoodDiary.API.Controllers.v1
                     WriteIndented = true, 
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase
                 };
+
                 await JsonSerializer.SerializeAsync(stream, pagesJsonExportObject, options, cancellationToken);
                 fileContents = stream.ToArray();
             }
