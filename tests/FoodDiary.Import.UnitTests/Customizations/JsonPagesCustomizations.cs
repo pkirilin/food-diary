@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using AutoFixture;
 using FoodDiary.Domain.Dtos;
 using FoodDiary.Domain.Enums;
@@ -176,6 +177,36 @@ namespace FoodDiary.Import.UnitTests.Customizations
                     .CreateMany();
 
                 return pages;
+            });
+        }
+    }
+
+    class JsonPageWithNotExistingDateCustomization : ICustomization
+    {
+        public void Customize(IFixture fixture)
+        {
+            fixture.Register(() =>
+            {
+                var page = fixture.Build<PageJsonItemDto>()
+                    .With(p => p.Date, DateTime.Parse("2020-05-01"))
+                    .Create();
+
+                return page;
+            });
+        }
+    }
+
+    class JsonPageWithExistingDateCustomization : ICustomization
+    {
+        public void Customize(IFixture fixture)
+        {
+            fixture.Register(() =>
+            {
+                var page = fixture.Build<PageJsonItemDto>()
+                    .With(p => p.Date, DateTime.Parse("2020-05-03"))
+                    .Create();
+
+                return page;
             });
         }
     }
