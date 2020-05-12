@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using FoodDiary.Domain.Dtos;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Import.Services;
+
+[assembly: InternalsVisibleTo("FoodDiary.Import.UnitTests")]
 
 namespace FoodDiary.Import.Core
 {
