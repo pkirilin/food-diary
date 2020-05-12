@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using FoodDiary.Domain.Dtos;
 using FoodDiary.Domain.Enums;
 using FoodDiary.Domain.Exceptions;
+
+[assembly: InternalsVisibleTo("FoodDiary.Import.UnitTests")]
 
 namespace FoodDiary.Import.Core
 {
@@ -78,8 +81,8 @@ namespace FoodDiary.Import.Core
         {
             var categoryNamesFromJson = notesFromJson.Select(n => n.Product.Category);
 
-            var areCategoryNamesFromJsonValid = categoryNamesFromJson.All(name =>
-                name.Length >= 4 && name.Length <= 64);
+            var areCategoryNamesFromJsonValid = categoryNamesFromJson.All(name => name != null
+                && name.Length >= 4 && name.Length <= 64);
 
             if (!areCategoryNamesFromJsonValid)
                 throw new ImportException("Failed to parse categories from import file");
