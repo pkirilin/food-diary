@@ -1,4 +1,5 @@
-﻿using FoodDiary.Domain.Entities;
+﻿using FoodDiary.Domain.Abstractions;
+using FoodDiary.Domain.Entities;
 using FoodDiary.Infrastructure.EntityConfigurations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -6,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace FoodDiary.Infrastructure
 {
-    public class FoodDiaryContext : DbContext
+    public class FoodDiaryContext : DbContext, IUnitOfWork
     {
         private readonly IConfiguration _configuration;
 
