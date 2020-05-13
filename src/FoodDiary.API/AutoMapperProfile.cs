@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using AutoMapper;
-using FoodDiary.API.Helpers;
+using FoodDiary.API.Mapping;
 using FoodDiary.Domain.Dtos;
 using FoodDiary.Domain.Entities;
 
@@ -9,6 +9,15 @@ namespace FoodDiary.API
     public class AutoMapperProfile : Profile
     {
         public AutoMapperProfile()
+        {
+            CreatePageMappings();
+            CreateNoteMappings();
+            CreateCategoryMappings();
+            CreateProductMappings();
+            CreateExportMappings();
+        }
+
+        private void CreatePageMappings()
         {
             CreateMap<PageCreateEditDto, Page>();
 
@@ -21,41 +30,53 @@ namespace FoodDiary.API
                     o => o.MapFrom<PageCountCaloriesValueResolver>())
                 .ForMember(
                     dest => dest.CountNotes,
-                    o => o.MapFrom<PageCountNotesValueResolver>());
+                    o => o.MapFrom(src => src.Notes.Count));
+        }
 
+        private void CreateNoteMappings()
+        {
             CreateMap<Note, NoteItemDto>()
                 .ForMember(
                     dest => dest.Calories,
                     o => o.MapFrom<NoteCaloriesValueResolver>())
                 .ForMember(
                     dest => dest.ProductName,
-                    o => o.MapFrom<NoteProductNameValueResolver>());
+                    o => o.MapFrom(src => src.Product.Name));
 
             CreateMap<NoteCreateEditDto, Note>();
+        }
 
+        private void CreateCategoryMappings()
+        {
             CreateMap<Category, CategoryItemDto>()
                 .ForMember(
                     dest => dest.CountProducts,
-                    o => o.MapFrom<CategoryCountProductsValueResolver>()
+                    o => o.MapFrom(src => src.Products.Count)
                 );
-            CreateMap<Category, CategoryDropdownItemDto>();
-            CreateMap<CategoryCreateEditDto, Category>();
 
+            CreateMap<Category, CategoryDropdownItemDto>();
+
+            CreateMap<CategoryCreateEditDto, Category>();
+        }
+
+        private void CreateProductMappings()
+        {
             CreateMap<Product, ProductItemDto>()
                 .ForMember(
                     dest => dest.CategoryName,
-                    o => o.MapFrom<ProductCategoryNameValueResolver>());
+                    o => o.MapFrom(src => src.Category.Name));
+
             CreateMap<Product, ProductDropdownItemDto>();
 
             CreateMap<ProductCreateEditDto, Product>();
-
-            AddPagesJsonExportMappings();
         }
 
-        private void AddPagesJsonExportMappings()
+        private void CreateExportMappings()
         {
             CreateMap<Page, PageJsonItemDto>();
+
             CreateMap<Note, NoteJsonItemDto>();
+
             CreateMap<Product, ProductJsonItemDto>()
                 .ForMember(
                     dest => dest.Category,

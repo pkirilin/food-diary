@@ -4,7 +4,7 @@ using FoodDiary.Domain.Dtos;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Services;
 
-namespace FoodDiary.API.Helpers
+namespace FoodDiary.API.Mapping
 {
     public class NoteCaloriesValueResolver : IValueResolver<Note, NoteItemDto, int>
     {

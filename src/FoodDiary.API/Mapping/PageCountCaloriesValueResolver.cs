@@ -5,7 +5,7 @@ using FoodDiary.Domain.Dtos;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Services;
 
-namespace FoodDiary.API.Helpers
+namespace FoodDiary.API.Mapping
 {
     public class PageCountCaloriesValueResolver : IValueResolver<Page, PageItemDto, int>
     {

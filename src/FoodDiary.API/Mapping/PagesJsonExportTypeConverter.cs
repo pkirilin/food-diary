@@ -3,7 +3,7 @@ using AutoMapper;
 using FoodDiary.Domain.Dtos;
 using FoodDiary.Domain.Entities;
 
-namespace FoodDiary.API.Helpers
+namespace FoodDiary.API.Mapping
 {
     public class PagesJsonExportTypeConverter : ITypeConverter<IEnumerable<Page>, PagesJsonObjectDto>
     {
