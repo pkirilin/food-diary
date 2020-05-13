@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading;
 using AutoFixture;
+using FoodDiary.Domain.Abstractions;
 using FoodDiary.Domain.Dtos;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Repositories;
@@ -36,6 +37,9 @@ namespace FoodDiary.UnitTests.Services
             _importDataProviderMock = new Mock<IJsonImportDataProvider>();
             _jsonImporterMock = new Mock<IJsonImporter>();
             _fixture = SetupFixture();
+
+            _pageRepositoryMock.SetupGet(r => r.UnitOfWork)
+                .Returns(new Mock<IUnitOfWork>().Object);
         }
 
         IImportService Service => new ImportService(
@@ -127,8 +131,8 @@ namespace FoodDiary.UnitTests.Services
 
             _jsonImporterMock.Verify(i => i.Import(jsonObj, out createdPagesBeforeImport), Times.Once);
 
-            _pageRepositoryMock.Verify(r => r.CreateRange(createdPagesAfterImport), Times.Once);
-            _pageRepositoryMock.Verify(r => r.SaveChangesAsync(CancellationToken.None), Times.Once);
+            _pageRepositoryMock.Verify(r => r.AddRange(createdPagesAfterImport), Times.Once);
+            _pageRepositoryMock.Verify(r => r.UnitOfWork.SaveChangesAsync(CancellationToken.None), Times.Once);
         }
     }
 }

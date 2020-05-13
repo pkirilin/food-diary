@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using FoodDiary.Domain.Abstractions;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,8 @@ namespace FoodDiary.Infrastructure.Repositories
     public class PageRepository : IPageRepository
     {
         private readonly FoodDiaryContext _context;
+
+        public IUnitOfWork UnitOfWork => _context;
 
         public PageRepository(FoodDiaryContext context)
         {
@@ -28,77 +31,61 @@ namespace FoodDiary.Infrastructure.Repositories
             return GetQuery().AsNoTracking();
         }
 
-        public async Task<IEnumerable<Page>> GetListFromQueryAsync(IQueryable<Page> pagesQuery, CancellationToken cancellationToken)
+        public Task<List<Page>> GetListFromQueryAsync(IQueryable<Page> query, CancellationToken cancellationToken)
         {
-            return await pagesQuery.ToListAsync(cancellationToken);
+            return query.ToListAsync(cancellationToken);
         }
 
-        public async Task<IDictionary<DateTime, Page>> GetDictionaryFromQueryAsync(IQueryable<Page> pagesQuery, CancellationToken cancellationToken)
+        public Task<Dictionary<DateTime, Page>> GetDictionaryFromQueryAsync(IQueryable<Page> query, CancellationToken cancellationToken)
         {
-            return await pagesQuery.ToDictionaryAsync(p => p.Date);
+            return query.ToDictionaryAsync(p => p.Date);
         }
 
-        public IQueryable<Page> LoadNotesWithProducts(IQueryable<Page> pagesQuery)
+        public IQueryable<Page> LoadNotesWithProducts(IQueryable<Page> query)
         {
-            return pagesQuery.Include(p => p.Notes).ThenInclude(n => n.Product);
+            return query.Include(p => p.Notes).ThenInclude(n => n.Product);
         }
 
-        public IQueryable<Page> LoadNotesWithProductsAndCategories(IQueryable<Page> pagesQuery)
+        public IQueryable<Page> LoadNotesWithProductsAndCategories(IQueryable<Page> query)
         {
-            return pagesQuery.Include(p => p.Notes)
+            return query.Include(p => p.Notes)
                 .ThenInclude(n => n.Product)
                 .ThenInclude(p => p.Category);
         }
 
-        public async Task<Page> GetByIdAsync(int id, CancellationToken cancellationToken)
+        public Task<Page> GetByIdAsync(int id, CancellationToken cancellationToken)
         {
-            return await _context.Pages.FindAsync(new object[] { id }, cancellationToken);
+            return _context.Pages.FindAsync(new object[] { id }, cancellationToken);
         }
 
-        public async Task<Page> CreateAsync(Page page, CancellationToken cancellationToken)
+        public Task SaveChangesAsync(CancellationToken cancellationToken)
         {
-            var entry = _context.Add(page);
-            await _context.SaveChangesAsync(cancellationToken);
-            return entry.Entity;
+            return _context.SaveChangesAsync(cancellationToken);
         }
 
-        public void CreateRange(IEnumerable<Page> pages)
+        public Page Add(Page page)
+        {
+            return _context.Add(page).Entity;
+        }
+
+        public void AddRange(IEnumerable<Page> pages)
         {
             _context.AddRange(pages);
         }
 
-        public async Task<Page> UpdateAsync(Page page, CancellationToken cancellationToken)
+        public void Update(Page page)
         {
-            var entry = _context.Update(page);
-            await _context.SaveChangesAsync(cancellationToken);
-            return entry.Entity;
+            _context.Update(page);
         }
 
-        public async Task<Page> DeleteAsync(Page page, CancellationToken cancellationToken)
+        public void Delete(Page page)
         {
-            var entry = _context.Remove(page);
-            await _context.SaveChangesAsync(cancellationToken);
-            return entry.Entity;
+            _context.Remove(page);
         }
 
-        public async Task<IEnumerable<Page>> DeleteRangeAsync(IEnumerable<Page> pages, CancellationToken cancellationToken)
+        public void DeleteRange(IEnumerable<Page> pages)
         {
             _context.RemoveRange(pages);
-            await _context.SaveChangesAsync(cancellationToken);
-            return pages;
-        }
-
-        public async Task<bool> IsDuplicateAsync(DateTime pageDate, CancellationToken cancellationToken)
-        {
-            var pagesWithTheSameDate = await _context.Pages.Where(p => p.Date == pageDate)
-                .AsNoTracking()
-                .ToListAsync();
-            return pagesWithTheSameDate.Any();
-        }
-
-        public async Task SaveChangesAsync(CancellationToken cancellationToken)
-        {
-            await _context.SaveChangesAsync(cancellationToken);
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using FoodDiary.Domain.Abstractions;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,8 @@ namespace FoodDiary.Infrastructure.Repositories
     public class CategoryRepository : ICategoryRepository
     {
         private readonly FoodDiaryContext _context;
+
+        public IUnitOfWork UnitOfWork => _context;
 
         public CategoryRepository(FoodDiaryContext context)
         {
@@ -28,26 +31,19 @@ namespace FoodDiary.Infrastructure.Repositories
             return GetQuery().AsNoTracking();
         }
 
-        public async Task<IEnumerable<Category>> GetListFromQueryAsync(IQueryable<Category> query, CancellationToken cancellationToken)
+        public Task<List<Category>> GetListFromQueryAsync(IQueryable<Category> query, CancellationToken cancellationToken)
         {
-            return await query.ToListAsync(cancellationToken);
+            return query.ToListAsync(cancellationToken);
         }
 
-        public async Task<Dictionary<string, Category>> GetDictionaryFromQueryAsync(IQueryable<Category> query, CancellationToken cancellationToken)
+        public Task<Dictionary<string, Category>> GetDictionaryFromQueryAsync(IQueryable<Category> query, CancellationToken cancellationToken)
         {
-            return await query.ToDictionaryAsync(c => c.Name);
+            return query.ToDictionaryAsync(c => c.Name);
         }
 
-        public async Task<Category> GetByIdAsync(int id, CancellationToken cancellationToken)
+        public Task<Category> GetByIdAsync(int id, CancellationToken cancellationToken)
         {
-            return await _context.Categories.FindAsync(new object[] { id }, cancellationToken);
-        }
-
-        public async Task<bool> IsDuplicateAsync(string categoryName, CancellationToken cancellationToken)
-        {
-            var categoryWithTheSameName = await _context.Categories.AsNoTracking()
-                .FirstOrDefaultAsync(c => c.Name == categoryName);
-            return categoryWithTheSameName != null;
+            return _context.Categories.FindAsync(new object[] { id }, cancellationToken);
         }
 
         public Category Create(Category category)
@@ -56,21 +52,14 @@ namespace FoodDiary.Infrastructure.Repositories
             return entry.Entity;
         }
 
-        public Category Update(Category category)
+        public void Update(Category category)
         {
-            var entry = _context.Categories.Update(category);
-            return entry.Entity;
+            _context.Categories.Update(category);
         }
 
-        public Category Delete(Category category)
+        public void Delete(Category category)
         {
-            var entry = _context.Categories.Remove(category);
-            return entry.Entity;
-        }
-
-        public async Task SaveChangesAsync(CancellationToken cancellationToken)
-        {
-            await _context.SaveChangesAsync(cancellationToken);
+            _context.Categories.Remove(category);
         }
 
         public IQueryable<Category> LoadProducts(IQueryable<Category> query)

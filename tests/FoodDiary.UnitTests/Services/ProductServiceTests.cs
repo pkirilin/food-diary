@@ -4,6 +4,7 @@ using System.Linq;
 using AutoFixture;
 using AutoFixture.Xunit2;
 using FluentAssertions;
+using FoodDiary.Domain.Abstractions;
 using FoodDiary.Domain.Dtos;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Repositories;
@@ -25,6 +26,9 @@ namespace FoodDiary.UnitTests.Services
         {
             _productRepositoryMock = new Mock<IProductRepository>();
             _fixture = SetupFixture();
+
+            _productRepositoryMock.SetupGet(r => r.UnitOfWork)
+                .Returns(new Mock<IUnitOfWork>().Object);
         }
 
         public IProductService ProductService => new ProductService(_productRepositoryMock.Object);
@@ -136,7 +140,7 @@ namespace FoodDiary.UnitTests.Services
         [Fact]
         public async void GetProductsByIds_ReturnsRequestedProducts()
         {
-            var products = _fixture.CreateMany<Product>();
+            var products = _fixture.CreateMany<Product>().ToList();
             var productsIds = products.Select(p => p.Id);
             _productRepositoryMock.Setup(r => r.GetByIdsAsync(productsIds, default))
                 .ReturnsAsync(products);
@@ -151,12 +155,14 @@ namespace FoodDiary.UnitTests.Services
         public async void ValidateProduct_ReturnsValidationResultWithError_WhenGivenProductAlreadyExists()
         {
             var productData = _fixture.Create<ProductCreateEditDto>();
-            _productRepositoryMock.Setup(r => r.IsDuplicateAsync(productData.Name, default))
-                .ReturnsAsync(true);
+            var productsWithTheSameName = _fixture.CreateMany<Product>().ToList();
+            _productRepositoryMock.Setup(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Product>>(), default))
+                .ReturnsAsync(productsWithTheSameName);
 
             var result = await ProductService.ValidateProductAsync(productData, default);
 
-            _productRepositoryMock.Verify(r => r.IsDuplicateAsync(productData.Name, default), Times.Once);
+            _productRepositoryMock.Verify(r => r.GetQueryWithoutTracking(), Times.Once);
+            _productRepositoryMock.Verify(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Product>>(), default), Times.Once);
             result.IsValid.Should().BeFalse();
         }
 
@@ -193,7 +199,7 @@ namespace FoodDiary.UnitTests.Services
             var result = await ProductService.CreateProductAsync(product, default);
 
             _productRepositoryMock.Verify(r => r.Create(product), Times.Once);
-            _productRepositoryMock.Verify(r => r.SaveChangesAsync(default), Times.Once);
+            _productRepositoryMock.Verify(r => r.UnitOfWork.SaveChangesAsync(default), Times.Once);
             result.Should().Be(product);
         }
 
@@ -201,28 +207,22 @@ namespace FoodDiary.UnitTests.Services
         public async void EditProduct_UpdatesProductWithoutErrors()
         {
             var product = _fixture.Create<Product>();
-            _productRepositoryMock.Setup(r => r.Update(product))
-                .Returns(product);
 
-            var result = await ProductService.EditProductAsync(product, default);
+            await ProductService.EditProductAsync(product, default);
 
             _productRepositoryMock.Verify(r => r.Update(product), Times.Once);
-            _productRepositoryMock.Verify(r => r.SaveChangesAsync(default), Times.Once);
-            result.Should().Be(product);
+            _productRepositoryMock.Verify(r => r.UnitOfWork.SaveChangesAsync(default), Times.Once);
         }
 
         [Fact]
         public async void DeleteProduct_DeletesProductWithoutErrors()
         {
             var product = _fixture.Create<Product>();
-            _productRepositoryMock.Setup(r => r.Delete(product))
-                .Returns(product);
 
-            var result = await ProductService.DeleteProductAsync(product, default);
+            await ProductService.DeleteProductAsync(product, default);
 
             _productRepositoryMock.Verify(r => r.Delete(product), Times.Once);
-            _productRepositoryMock.Verify(r => r.SaveChangesAsync(default), Times.Once);
-            result.Should().Be(product);
+            _productRepositoryMock.Verify(r => r.UnitOfWork.SaveChangesAsync(default), Times.Once);
         }
 
         [Fact]
@@ -233,7 +233,7 @@ namespace FoodDiary.UnitTests.Services
             await ProductService.DeleteProductsRangeAsync(products, default);
 
             _productRepositoryMock.Verify(r => r.DeleteRange(products), Times.Once);
-            _productRepositoryMock.Verify(r => r.SaveChangesAsync(default), Times.Once);
+            _productRepositoryMock.Verify(r => r.UnitOfWork.SaveChangesAsync(default), Times.Once);
         }
 
         [Theory]

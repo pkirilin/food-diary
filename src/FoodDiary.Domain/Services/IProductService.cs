@@ -16,9 +16,9 @@ namespace FoodDiary.Domain.Services
 
         Task<Product> CreateProductAsync(Product product, CancellationToken cancellationToken);
 
-        Task<Product> EditProductAsync(Product product, CancellationToken cancellationToken);
+        Task EditProductAsync(Product product, CancellationToken cancellationToken);
 
-        Task<Product> DeleteProductAsync(Product product, CancellationToken cancellationToken);
+        Task DeleteProductAsync(Product product, CancellationToken cancellationToken);
 
         Task DeleteProductsRangeAsync(IEnumerable<Product> products, CancellationToken cancellationToken);
 

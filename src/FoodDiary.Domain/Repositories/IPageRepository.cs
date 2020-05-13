@@ -3,38 +3,35 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using FoodDiary.Domain.Abstractions;
 using FoodDiary.Domain.Entities;
 
 namespace FoodDiary.Domain.Repositories
 {
-    public interface IPageRepository
+    public interface IPageRepository : IRepository<Page>
     {
         IQueryable<Page> GetQuery();
 
         IQueryable<Page> GetQueryWithoutTracking();
 
-        Task<IEnumerable<Page>> GetListFromQueryAsync(IQueryable<Page> pagesQuery, CancellationToken cancellationToken);
+        Task<List<Page>> GetListFromQueryAsync(IQueryable<Page> query, CancellationToken cancellationToken);
 
-        Task<IDictionary<DateTime, Page>> GetDictionaryFromQueryAsync(IQueryable<Page> pagesQuery, CancellationToken cancellationToken);
+        Task<Dictionary<DateTime, Page>> GetDictionaryFromQueryAsync(IQueryable<Page> query, CancellationToken cancellationToken);
 
-        IQueryable<Page> LoadNotesWithProducts(IQueryable<Page> pagesQuery);
+        IQueryable<Page> LoadNotesWithProducts(IQueryable<Page> query);
 
-        IQueryable<Page> LoadNotesWithProductsAndCategories(IQueryable<Page> pagesQuery);
+        IQueryable<Page> LoadNotesWithProductsAndCategories(IQueryable<Page> query);
 
         Task<Page> GetByIdAsync(int id, CancellationToken cancellationToken);
 
-        Task<Page> CreateAsync(Page page, CancellationToken cancellationToken);
+        Page Add(Page page);
 
-        void CreateRange(IEnumerable<Page> pages);
+        void AddRange(IEnumerable<Page> pages);
 
-        Task<Page> UpdateAsync(Page page, CancellationToken cancellationToken);
+        void Update(Page page);
 
-        Task<Page> DeleteAsync(Page page, CancellationToken cancellationToken);
+        void Delete(Page page);
 
-        Task<IEnumerable<Page>> DeleteRangeAsync(IEnumerable<Page> pages, CancellationToken cancellationToken);
-
-        Task<bool> IsDuplicateAsync(DateTime pageDate, CancellationToken cancellationToken);
-
-        Task SaveChangesAsync(CancellationToken cancellationToken);
+        void DeleteRange(IEnumerable<Page> pages);
     }
 }

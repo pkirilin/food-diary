@@ -40,7 +40,7 @@ namespace FoodDiary.UnitTests.Services
         {
             var startDate = _fixture.Create<DateTime>();
             var endDate = _fixture.Create<DateTime>();
-            var pagesForExport = _fixture.CreateMany<Page>();
+            var pagesForExport = _fixture.CreateMany<Page>().ToList();
             _pageRepositoryMock.Setup(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Page>>(), CancellationToken.None))
                 .ReturnsAsync(pagesForExport);
 
@@ -58,7 +58,7 @@ namespace FoodDiary.UnitTests.Services
         {
             var startDate = _fixture.Create<DateTime>();
             var endDate = _fixture.Create<DateTime>();
-            var pagesForExport = _fixture.CreateMany<Page>();
+            var pagesForExport = _fixture.CreateMany<Page>().ToList();
             _pageRepositoryMock.Setup(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Page>>(), CancellationToken.None))
                 .ReturnsAsync(pagesForExport);
 

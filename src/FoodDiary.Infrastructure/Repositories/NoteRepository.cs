@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using FoodDiary.Domain.Abstractions;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,8 @@ namespace FoodDiary.Infrastructure.Repositories
     public class NoteRepository : INoteRepository
     {
         private readonly FoodDiaryContext _context;
+
+        public IUnitOfWork UnitOfWork => _context;
 
         public NoteRepository(FoodDiaryContext context)
         {
@@ -28,21 +31,19 @@ namespace FoodDiary.Infrastructure.Repositories
             return GetQuery().AsNoTracking();
         }
 
-        public async Task<List<Note>> GetListFromQueryAsync(IQueryable<Note> notesQuery, CancellationToken cancellationToken)
+        public Task<List<Note>> GetListFromQueryAsync(IQueryable<Note> notesQuery, CancellationToken cancellationToken)
         {
-            return await notesQuery.ToListAsync(cancellationToken);
+            return notesQuery.ToListAsync(cancellationToken);
         }
 
-        public async Task<int> GetMaxDisplayOrderFromQueryAsync(IQueryable<Note> notesQuery, CancellationToken cancellationToken)
+        public Task<int> GetMaxDisplayOrderFromQueryAsync(IQueryable<Note> notesQuery, CancellationToken cancellationToken)
         {
-            if (await notesQuery.AnyAsync())
-                return await notesQuery.MaxAsync(n => n.DisplayOrder, cancellationToken);
-            return -1;
+            return notesQuery.MaxAsync(n => n.DisplayOrder, cancellationToken);
         }
 
-        public async Task<Note> GetByIdAsync(int id, CancellationToken cancellationToken)
+        public Task<Note> GetByIdAsync(int id, CancellationToken cancellationToken)
         {
-            return await _context.Notes.FindAsync(new object[] { id }, cancellationToken);
+            return _context.Notes.FindAsync(new object[] { id }, cancellationToken);
         }
 
         public Note Create(Note note)
@@ -51,16 +52,14 @@ namespace FoodDiary.Infrastructure.Repositories
             return entry.Entity;
         }
 
-        public Note Update(Note note)
+        public void Update(Note note)
         {
-            var entry = _context.Update(note);
-            return entry.Entity;
+            _context.Update(note);
         }
 
-        public Note Delete(Note note)
+        public void Delete(Note note)
         {
-            var entry = _context.Remove(note);
-            return entry.Entity;
+            _context.Remove(note);
         }
 
         public void UpdateRange(IEnumerable<Note> notes)
@@ -71,11 +70,6 @@ namespace FoodDiary.Infrastructure.Repositories
         public void DeleteRange(IEnumerable<Note> notes)
         {
             _context.RemoveRange(notes);
-        }
-
-        public async Task SaveChangesAsync(CancellationToken cancellationToken)
-        {
-            await _context.SaveChangesAsync(cancellationToken);
         }
 
         public IQueryable<Note> LoadProduct(IQueryable<Note> query)

@@ -2,11 +2,12 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using FoodDiary.Domain.Abstractions;
 using FoodDiary.Domain.Entities;
 
 namespace FoodDiary.Domain.Repositories
 {
-    public interface IProductRepository
+    public interface IProductRepository : IRepository<Product>
     {
         IQueryable<Product> GetQuery();
 
@@ -20,20 +21,16 @@ namespace FoodDiary.Domain.Repositories
 
         Task<Product> GetByIdAsync(int id, CancellationToken cancellationToken);
 
-        Task<IEnumerable<Product>> GetByIdsAsync(IEnumerable<int> ids, CancellationToken cancellationToken);
-
-        Task<bool> IsDuplicateAsync(string productName, CancellationToken cancellationToken);
+        Task<List<Product>> GetByIdsAsync(IEnumerable<int> ids, CancellationToken cancellationToken);
 
         Product Create(Product product);
 
-        Product Update(Product product);
+        void Update(Product product);
 
-        Product Delete(Product product);
+        void Delete(Product product);
 
         void DeleteRange(IEnumerable<Product> products);
 
-        Task SaveChangesAsync(CancellationToken cancellationToken);
-
-        Task<int> CountByQueryAsync(IQueryable<Product> productsQuery, CancellationToken cancellationToken);
+        Task<int> CountByQueryAsync(IQueryable<Product> query, CancellationToken cancellationToken);
     }
 }

@@ -18,9 +18,9 @@ namespace FoodDiary.Domain.Services
 
         Task<Note> CreateNoteAsync(Note note, CancellationToken cancellationToken);
 
-        Task<Note> EditNoteAsync(Note note, CancellationToken cancellationToken);
+        Task EditNoteAsync(Note note, CancellationToken cancellationToken);
 
-        Task<Note> DeleteNoteAsync(Note note, CancellationToken cancellationToken);
+        Task DeleteNoteAsync(Note note, CancellationToken cancellationToken);
 
         bool AllNotesFetched(IEnumerable<int> requestedIds, IEnumerable<Note> fetchedNotes);
 

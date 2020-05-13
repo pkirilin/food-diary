@@ -2,31 +2,28 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using FoodDiary.Domain.Abstractions;
 using FoodDiary.Domain.Entities;
 
 namespace FoodDiary.Domain.Repositories
 {
-    public interface ICategoryRepository
+    public interface ICategoryRepository : IRepository<Category>
     {
         IQueryable<Category> GetQuery();
 
         IQueryable<Category> GetQueryWithoutTracking();
 
-        Task<IEnumerable<Category>> GetListFromQueryAsync(IQueryable<Category> query, CancellationToken cancellationToken);
+        Task<List<Category>> GetListFromQueryAsync(IQueryable<Category> query, CancellationToken cancellationToken);
 
         Task<Dictionary<string, Category>> GetDictionaryFromQueryAsync(IQueryable<Category> query, CancellationToken cancellationToken);
 
         Task<Category> GetByIdAsync(int id, CancellationToken cancellationToken);
 
-        Task<bool> IsDuplicateAsync(string categoryName, CancellationToken cancellationToken);
-
         Category Create(Category category);
 
-        Category Update(Category category);
+        void Update(Category category);
 
-        Category Delete(Category category);
-
-        Task SaveChangesAsync(CancellationToken cancellationToken);
+        void Delete(Category category);
 
         IQueryable<Category> LoadProducts(IQueryable<Category> query);
     }

@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using FoodDiary.Domain.Dtos;
@@ -18,12 +18,12 @@ namespace FoodDiary.Domain.Services
 
         Task<ValidationResultDto> ValidatePageAsync(PageCreateEditDto createPageInfo, CancellationToken cancellationToken);
 
-        Task<Page> EditPageAsync(Page page, CancellationToken cancellationToken);
+        Task EditPageAsync(Page page, CancellationToken cancellationToken);
 
         bool IsEditedPageValid(PageCreateEditDto updatedPageInfo, Page originalPage, ValidationResultDto editedPageValidationResult);
 
-        Task<Page> DeletePageAsync(Page page, CancellationToken cancellationToken);
+        Task DeletePageAsync(Page page, CancellationToken cancellationToken);
 
-        Task<IEnumerable<Page>> BatchDeletePagesAsync(IEnumerable<Page> pages, CancellationToken cancellationToken);
+        Task BatchDeletePagesAsync(IEnumerable<Page> pages, CancellationToken cancellationToken);
     }
 }

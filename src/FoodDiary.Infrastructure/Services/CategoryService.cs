@@ -34,7 +34,11 @@ namespace FoodDiary.Infrastructure.Services
 
         public async Task<ValidationResultDto> ValidateCategoryAsync(CategoryCreateEditDto newCategoryInfo, CancellationToken cancellationToken)
         {
-            if (await _categoryRepository.IsDuplicateAsync(newCategoryInfo.Name, cancellationToken))
+            var query = _categoryRepository.GetQueryWithoutTracking()
+                .Where(c => c.Name == newCategoryInfo.Name);
+            var categoriesWithTheSameName = await _categoryRepository.GetListFromQueryAsync(query, cancellationToken);
+
+            if (categoriesWithTheSameName.Any())
             {
                 return new ValidationResultDto(false, $"{nameof(newCategoryInfo.Name)}", $"Category with the name '{newCategoryInfo.Name}' already exists");
             }
@@ -51,22 +55,20 @@ namespace FoodDiary.Infrastructure.Services
         public async Task<Category> CreateCategoryAsync(Category category, CancellationToken cancellationToken)
         {
             var createdCategory = _categoryRepository.Create(category);
-            await _categoryRepository.SaveChangesAsync(cancellationToken);
+            await _categoryRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
             return createdCategory;
         }
 
-        public async Task<Category> EditCategoryAsync(Category category, CancellationToken cancellationToken)
+        public async Task EditCategoryAsync(Category category, CancellationToken cancellationToken)
         {
-            var updatedCategory = _categoryRepository.Update(category);
-            await _categoryRepository.SaveChangesAsync(cancellationToken);
-            return updatedCategory;
+            _categoryRepository.Update(category);
+            await _categoryRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<Category> DeleteCategoryAsync(Category category, CancellationToken cancellationToken)
+        public async Task DeleteCategoryAsync(Category category, CancellationToken cancellationToken)
         {
-            var deletedCategory = _categoryRepository.Delete(category);
-            await _categoryRepository.SaveChangesAsync(cancellationToken);
-            return deletedCategory;
+            _categoryRepository.Delete(category);
+            await _categoryRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
         }
 
         public async Task<IEnumerable<Category>> GetCategoriesDropdownAsync(CategoryDropdownSearchRequest request, CancellationToken cancellationToken)

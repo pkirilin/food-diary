@@ -72,23 +72,21 @@ namespace FoodDiary.Infrastructure.Services
         {
             note.DisplayOrder = await _notesOrderService.GetOrderForNewNoteAsync(note, cancellationToken);
             var addedNote = _noteRepository.Create(note);
-            await _noteRepository.SaveChangesAsync(cancellationToken);
+            await _noteRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
             return addedNote;
         }
 
-        public async Task<Note> EditNoteAsync(Note note, CancellationToken cancellationToken)
+        public async Task EditNoteAsync(Note note, CancellationToken cancellationToken)
         {
-            var updatedNote = _noteRepository.Update(note);
-            await _noteRepository.SaveChangesAsync(cancellationToken);
-            return updatedNote;
+            _noteRepository.Update(note);
+            await _noteRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<Note> DeleteNoteAsync(Note note, CancellationToken cancellationToken)
+        public async Task DeleteNoteAsync(Note note, CancellationToken cancellationToken)
         {
             await _notesOrderService.ReorderNotesOnDeleteAsync(note, cancellationToken);
-            var deletedNote = _noteRepository.Delete(note);
-            await _noteRepository.SaveChangesAsync(cancellationToken);
-            return deletedNote;
+            _noteRepository.Delete(note);
+            await _noteRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
         }
 
         public bool AllNotesFetched(IEnumerable<int> requestedIds, IEnumerable<Note> fetchedNotes)
@@ -100,7 +98,7 @@ namespace FoodDiary.Infrastructure.Services
         {
             await _notesOrderService.ReorderNotesOnDeleteRangeAsync(notes, cancellationToken);
             _noteRepository.DeleteRange(notes);
-            await _noteRepository.SaveChangesAsync(cancellationToken);
+            await _noteRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
         }
 
         public async Task<bool> NoteCanBeMovedAsync(Note noteForMove, NoteMoveRequestDto moveRequest, CancellationToken cancellationToken)
@@ -118,9 +116,9 @@ namespace FoodDiary.Infrastructure.Services
             noteForMove.MealType = moveRequest.DestMeal;
             noteForMove.DisplayOrder = moveRequest.Position;
 
-            var movedNote = _noteRepository.Update(noteForMove);
-            await _noteRepository.SaveChangesAsync(cancellationToken);
-            return movedNote;
+            _noteRepository.Update(noteForMove);
+            await _noteRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
+            return noteForMove;
         }
     }
 }

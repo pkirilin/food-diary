@@ -78,8 +78,8 @@ namespace FoodDiary.Infrastructure.Services
 
             _jsonImporter.Import(jsonObj, out var createdPages);
 
-            _pageRepository.CreateRange(createdPages);
-            await _pageRepository.SaveChangesAsync(cancellationToken);
+            _pageRepository.AddRange(createdPages);
+            await _pageRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
         }
     }
 }

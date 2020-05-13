@@ -2,11 +2,12 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using FoodDiary.Domain.Abstractions;
 using FoodDiary.Domain.Entities;
 
 namespace FoodDiary.Domain.Repositories
 {
-    public interface INoteRepository
+    public interface INoteRepository : IRepository<Note>
     {
         IQueryable<Note> GetQuery();
 
@@ -20,15 +21,13 @@ namespace FoodDiary.Domain.Repositories
 
         Note Create(Note note);
 
-        Note Update(Note note);
+        void Update(Note note);
 
-        Note Delete(Note note);
+        void Delete(Note note);
 
         void UpdateRange(IEnumerable<Note> notes);
 
         void DeleteRange(IEnumerable<Note> notes);
-
-        Task SaveChangesAsync(CancellationToken cancellationToken);
 
         IQueryable<Note> LoadProduct(IQueryable<Note> query);
     }

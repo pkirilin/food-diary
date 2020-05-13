@@ -62,7 +62,11 @@ namespace FoodDiary.Infrastructure.Services
 
         public async Task<ValidationResultDto> ValidateProductAsync(ProductCreateEditDto productData, CancellationToken cancellationToken)
         {
-            if (await _productRepository.IsDuplicateAsync(productData.Name, cancellationToken))
+            var query = _productRepository.GetQueryWithoutTracking()
+                .Where(p => p.Name == productData.Name);
+            var productsWithTheSameName = await _productRepository.GetListFromQueryAsync(query, cancellationToken);
+
+            if (productsWithTheSameName.Any())
             {
                 return new ValidationResultDto(false, $"{nameof(productData.Name)}", $"Product with the name '{productData.Name}' already exists");
             }
@@ -91,28 +95,26 @@ namespace FoodDiary.Infrastructure.Services
         public async Task<Product> CreateProductAsync(Product product, CancellationToken cancellationToken)
         {
             var createdProduct = _productRepository.Create(product);
-            await _productRepository.SaveChangesAsync(cancellationToken);
+            await _productRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
             return createdProduct;
         }
 
-        public async Task<Product> EditProductAsync(Product product, CancellationToken cancellationToken)
+        public async Task EditProductAsync(Product product, CancellationToken cancellationToken)
         {
-            var updatedProduct = _productRepository.Update(product);
-            await _productRepository.SaveChangesAsync(cancellationToken);
-            return updatedProduct;
+            _productRepository.Update(product);
+            await _productRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<Product> DeleteProductAsync(Product product, CancellationToken cancellationToken)
+        public async Task DeleteProductAsync(Product product, CancellationToken cancellationToken)
         {
-            var deletedProduct = _productRepository.Delete(product);
-            await _productRepository.SaveChangesAsync(cancellationToken);
-            return deletedProduct;
+            _productRepository.Delete(product);
+            await _productRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
         }
 
         public async Task DeleteProductsRangeAsync(IEnumerable<Product> products, CancellationToken cancellationToken)
         {
             _productRepository.DeleteRange(products);
-            await _productRepository.SaveChangesAsync(cancellationToken);
+            await _productRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
         }
 
         public async Task<IEnumerable<Product>> GetProductsDropdownListAsync(ProductDropdownSearchRequestDto request, CancellationToken cancellationToken)

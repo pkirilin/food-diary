@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using FoodDiary.Domain.Abstractions;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,8 @@ namespace FoodDiary.Infrastructure.Repositories
     public class ProductRepository : IProductRepository
     {
         private readonly FoodDiaryContext _context;
+
+        public IUnitOfWork UnitOfWork => _context;
 
         public ProductRepository(FoodDiaryContext context)
         {
@@ -28,14 +31,14 @@ namespace FoodDiary.Infrastructure.Repositories
             return GetQuery().AsNoTracking();
         }
 
-        public async Task<List<Product>> GetListFromQueryAsync(IQueryable<Product> query, CancellationToken cancellationToken)
+        public Task<List<Product>> GetListFromQueryAsync(IQueryable<Product> query, CancellationToken cancellationToken)
         {
-            return await query.ToListAsync(cancellationToken);
+            return query.ToListAsync(cancellationToken);
         }
 
-        public async Task<Dictionary<string, Product>> GetDictionaryFromQueryAsync(IQueryable<Product> query, CancellationToken cancellationToken)
+        public Task<Dictionary<string, Product>> GetDictionaryFromQueryAsync(IQueryable<Product> query, CancellationToken cancellationToken)
         {
-            return await query.ToDictionaryAsync(p => p.Name);
+            return query.ToDictionaryAsync(p => p.Name);
         }
 
         public IQueryable<Product> LoadCategory(IQueryable<Product> query)
@@ -43,21 +46,15 @@ namespace FoodDiary.Infrastructure.Repositories
             return query.Include(p => p.Category);
         }
 
-        public async Task<Product> GetByIdAsync(int id, CancellationToken cancellationToken)
+        public Task<Product> GetByIdAsync(int id, CancellationToken cancellationToken)
         {
-            return await _context.Products.FindAsync(new object[] { id }, cancellationToken);
+            return _context.Products.FindAsync(new object[] { id }, cancellationToken);
         }
 
-        public async Task<IEnumerable<Product>> GetByIdsAsync(IEnumerable<int> ids, CancellationToken cancellationToken)
+        public Task<List<Product>> GetByIdsAsync(IEnumerable<int> ids, CancellationToken cancellationToken)
         {
-            return await _context.Products.Where(p => ids.Contains(p.Id))
+            return _context.Products.Where(p => ids.Contains(p.Id))
                 .ToListAsync(cancellationToken);
-        }
-
-        public async Task<bool> IsDuplicateAsync(string productName, CancellationToken cancellationToken)
-        {
-            var productWithTheSameName = await _context.Products.FirstOrDefaultAsync(p => p.Name == productName, cancellationToken);
-            return productWithTheSameName != null;
         }
 
         public Product Create(Product product)
@@ -66,16 +63,14 @@ namespace FoodDiary.Infrastructure.Repositories
             return entry.Entity;
         }
 
-        public Product Update(Product product)
+        public void Update(Product product)
         {
-            var entry = _context.Products.Update(product);
-            return entry.Entity;
+            _context.Products.Update(product);
         }
 
-        public Product Delete(Product product)
+        public void Delete(Product product)
         {
-            var entry = _context.Products.Remove(product);
-            return entry.Entity;
+            _context.Products.Remove(product);
         }
 
         public void DeleteRange(IEnumerable<Product> products)
@@ -83,14 +78,9 @@ namespace FoodDiary.Infrastructure.Repositories
             _context.Products.RemoveRange(products);
         }
 
-        public async Task SaveChangesAsync(CancellationToken cancellationToken)
+        public Task<int> CountByQueryAsync(IQueryable<Product> query, CancellationToken cancellationToken)
         {
-            await _context.SaveChangesAsync(cancellationToken);
-        }
-
-        public async Task<int> CountByQueryAsync(IQueryable<Product> productsQuery, CancellationToken cancellationToken)
-        {
-            return await productsQuery.CountAsync(cancellationToken);
+            return query.CountAsync(cancellationToken);
         }
     }
 }
