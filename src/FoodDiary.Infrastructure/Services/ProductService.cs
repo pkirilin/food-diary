@@ -37,6 +37,7 @@ namespace FoodDiary.Infrastructure.Services
 
             var totalProductsCount = await _productRepository.CountByQueryAsync(searchQuery, cancellationToken);
 
+            searchQuery = searchQuery.OrderBy(p => p.Name);
             searchQuery = searchQuery.Skip((searchRequest.PageNumber - 1) * searchRequest.PageSize)
                 .Take(searchRequest.PageSize);
             searchQuery = _productRepository.LoadCategory(searchQuery);
