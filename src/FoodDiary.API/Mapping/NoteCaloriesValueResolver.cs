@@ -2,17 +2,17 @@
 using AutoMapper;
 using FoodDiary.Domain.Dtos;
 using FoodDiary.Domain.Entities;
-using FoodDiary.Domain.Services;
+using FoodDiary.Domain.Utils;
 
 namespace FoodDiary.API.Mapping
 {
     public class NoteCaloriesValueResolver : IValueResolver<Note, NoteItemDto, int>
     {
-        private readonly ICaloriesService _caloriesService;
+        private readonly ICaloriesCalculator _caloriesCalculator;
 
-        public NoteCaloriesValueResolver(ICaloriesService caloriesService)
+        public NoteCaloriesValueResolver(ICaloriesCalculator caloriesCalculator)
         {
-            _caloriesService = caloriesService;
+            _caloriesCalculator = caloriesCalculator ?? throw new ArgumentNullException(nameof(caloriesCalculator));
         }
 
         public int Resolve(Note source, NoteItemDto destination, int destMember, ResolutionContext context)
@@ -20,8 +20,8 @@ namespace FoodDiary.API.Mapping
             if (source?.Product == null)
                 throw new ArgumentNullException(nameof(source), $"Cannot resolve value '{nameof(destination.Calories)}' for '{nameof(NoteItemDto)}', because note entity is empty or doesn't contain information about product");
 
-            var calories = Convert.ToInt32(_caloriesService.CalculateForQuantity(source.Product.CaloriesCost, source.ProductQuantity));
-            return calories;
+            var caloriesCount = _caloriesCalculator.Calculate(source);
+            return caloriesCount;
         }
     }
 }

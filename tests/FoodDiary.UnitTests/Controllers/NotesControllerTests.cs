@@ -8,7 +8,8 @@ using FoodDiary.API.Controllers.v1;
 using FoodDiary.Domain.Dtos;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Services;
-using FoodDiary.Infrastructure.Services;
+using FoodDiary.Domain.Utils;
+using FoodDiary.Infrastructure.Utils;
 using FoodDiary.UnitTests.Customizations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
@@ -34,7 +35,7 @@ namespace FoodDiary.UnitTests.Controllers
             var serviceCollection = new ServiceCollection()
                 .AddLogging()
                 .AddAutoMapper(Assembly.GetAssembly(typeof(AutoMapperProfile)))
-                .AddTransient<ICaloriesService, CaloriesService>();
+                .AddTransient<ICaloriesCalculator, CaloriesCalculator>();
 
             var serviceProvider = serviceCollection.BuildServiceProvider();
 

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using FoodDiary.Domain.Entities;
-using FoodDiary.Domain.Services;
 using FoodDiary.Domain.Utils;
 using FoodDiary.PdfGenerator.Services;
 using MigraDoc.DocumentObjectModel.Tables;
@@ -12,13 +11,13 @@ namespace FoodDiary.PdfGenerator.Implementation
     class NotesTablePdfWriter : INotesTablePdfWriter
     {
         private readonly INotePdfWriter _notePdfWriter;
-        private readonly ICaloriesService _caloriesService;
+        private readonly ICaloriesCalculator _caloriesCalculator;
         private readonly IMealNameResolver _mealNameResolver;
 
-        public NotesTablePdfWriter(INotePdfWriter notePdfWriter, ICaloriesService caloriesService, IMealNameResolver mealNameResolver)
+        public NotesTablePdfWriter(INotePdfWriter notePdfWriter, ICaloriesCalculator caloriesCalculator, IMealNameResolver mealNameResolver)
         {
             _notePdfWriter = notePdfWriter ?? throw new ArgumentNullException(nameof(notePdfWriter));
-            _caloriesService = caloriesService ?? throw new ArgumentNullException(nameof(caloriesService));
+            _caloriesCalculator = caloriesCalculator ?? throw new ArgumentNullException(nameof(caloriesCalculator));
             _mealNameResolver = mealNameResolver ?? throw new ArgumentNullException(nameof(mealNameResolver));
         }
 
@@ -36,9 +35,7 @@ namespace FoodDiary.PdfGenerator.Implementation
                     _notePdfWriter.WriteNote(notesTable, note);
 
                 var currentMealGroupNotesCount = notesForMeal.Count();
-                var currentMealGroupCaloriesCount = Convert.ToInt32(Math.Floor(
-                    notesForMeal.Aggregate((double)0, (sum, note) =>
-                        sum += _caloriesService.CalculateForQuantity(note.Product?.CaloriesCost ?? 0, note.ProductQuantity))));
+                var currentMealGroupCaloriesCount = _caloriesCalculator.Calculate(notesForMeal.ToList());
 
                 var currentMealName = _mealNameResolver.GetMealName(notesForMeal.Key);
                 WriteMealNameForNotesGroup(notesTable, currentMealGroupStartRowIndex, currentMealName, currentMealGroupNotesCount);

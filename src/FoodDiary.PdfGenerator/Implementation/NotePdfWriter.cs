@@ -1,6 +1,6 @@
 ﻿using System;
 using FoodDiary.Domain.Entities;
-using FoodDiary.Domain.Services;
+using FoodDiary.Domain.Utils;
 using FoodDiary.PdfGenerator.Services;
 using MigraDoc.DocumentObjectModel;
 using MigraDoc.DocumentObjectModel.Tables;
@@ -9,11 +9,11 @@ namespace FoodDiary.PdfGenerator.Implementation
 {
     class NotePdfWriter : INotePdfWriter
     {
-        private readonly ICaloriesService _caloriesService;
+        private readonly ICaloriesCalculator _caloriesCalculator;
 
-        public NotePdfWriter(ICaloriesService caloriesService)
+        public NotePdfWriter(ICaloriesCalculator caloriesCalculator)
         {
-            _caloriesService = caloriesService ?? throw new ArgumentNullException(nameof(caloriesService));
+            _caloriesCalculator = caloriesCalculator ?? throw new ArgumentNullException(nameof(caloriesCalculator));
         }
 
         public void WriteNote(Table notesTable, Note note)
@@ -21,8 +21,7 @@ namespace FoodDiary.PdfGenerator.Implementation
             if (note.Product == null)
                 throw new ArgumentNullException(nameof(note), $"Failed to write note with id = '{note.Id}' to PDF: note doesn't contain information about product");
 
-            var caloriesCount = Convert.ToInt32(Math.Floor(
-                _caloriesService.CalculateForQuantity(note.Product.CaloriesCost, note.ProductQuantity)));
+            var caloriesCount = _caloriesCalculator.Calculate(note);
 
             var row = notesTable.AddRow();
             row.Height = $"{PagesPdfGeneratorOptions.NotesTableRowHeightCentimeters}cm";

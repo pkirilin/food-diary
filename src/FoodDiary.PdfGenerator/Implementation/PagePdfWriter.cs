@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Linq;
 using FoodDiary.Domain.Entities;
-using FoodDiary.Domain.Services;
+using FoodDiary.Domain.Utils;
 using FoodDiary.PdfGenerator.Services;
 using MigraDoc.DocumentObjectModel;
 using MigraDoc.DocumentObjectModel.Tables;
@@ -11,12 +10,12 @@ namespace FoodDiary.PdfGenerator.Implementation
     class PagePdfWriter : IPagePdfWriter
     {
         private readonly INotesTablePdfWriter _notesTablePdfWriter;
-        private readonly ICaloriesService _caloriesService;
+        private readonly ICaloriesCalculator _caloriesCalculator;
 
-        public PagePdfWriter(INotesTablePdfWriter notesTablePdfWriter, ICaloriesService caloriesService)
+        public PagePdfWriter(INotesTablePdfWriter notesTablePdfWriter, ICaloriesCalculator caloriesCalculator)
         {
             _notesTablePdfWriter = notesTablePdfWriter ?? throw new ArgumentNullException(nameof(notesTablePdfWriter));
-            _caloriesService = caloriesService ?? throw new ArgumentNullException(nameof(caloriesService));
+            _caloriesCalculator = caloriesCalculator ?? throw new ArgumentNullException(nameof(caloriesCalculator));
         }
 
         public void WritePage(Document document, Page page)
@@ -32,9 +31,7 @@ namespace FoodDiary.PdfGenerator.Implementation
 
             _notesTablePdfWriter.WriteNotesTable(notesTable, page.Notes);
 
-            var totalCaloriesCount = Convert.ToInt32(Math.Floor(page.Notes
-                .Aggregate((double)0, (sum, note) =>
-                    sum += _caloriesService.CalculateForQuantity(note.Product?.CaloriesCost ?? 0, note.ProductQuantity))));
+            var totalCaloriesCount = _caloriesCalculator.Calculate(page.Notes);
             WriteTotalCaloriesCount(notesTable, totalCaloriesCount);
         }
 
@@ -109,7 +106,7 @@ namespace FoodDiary.PdfGenerator.Implementation
             totalCaloriesCountRow.Format.Font.Italic = true;
             totalCaloriesCountRow.VerticalAlignment = VerticalAlignment.Center;
 
-            totalCaloriesCountRow.Cells[PagesPdfGeneratorOptions.MealNameColumnIndex].MergeRight = 
+            totalCaloriesCountRow.Cells[PagesPdfGeneratorOptions.MealNameColumnIndex].MergeRight =
                 PagesPdfGeneratorOptions.TotalCaloriesCountColumnIndex - 1;
 
             totalCaloriesCountRow.Cells[PagesPdfGeneratorOptions.MealNameColumnIndex]

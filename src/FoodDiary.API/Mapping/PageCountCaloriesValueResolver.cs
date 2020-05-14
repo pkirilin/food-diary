@@ -3,17 +3,17 @@ using System.Linq;
 using AutoMapper;
 using FoodDiary.Domain.Dtos;
 using FoodDiary.Domain.Entities;
-using FoodDiary.Domain.Services;
+using FoodDiary.Domain.Utils;
 
 namespace FoodDiary.API.Mapping
 {
     public class PageCountCaloriesValueResolver : IValueResolver<Page, PageItemDto, int>
     {
-        private readonly ICaloriesService _caloriesService;
+        private readonly ICaloriesCalculator _caloriesCalculator;
 
-        public PageCountCaloriesValueResolver(ICaloriesService caloriesService)
+        public PageCountCaloriesValueResolver(ICaloriesCalculator caloriesCalculator)
         {
-            _caloriesService = caloriesService;
+            _caloriesCalculator = caloriesCalculator ?? throw new ArgumentNullException(nameof(caloriesCalculator));
         }
 
         public int Resolve(Page source, PageItemDto destination, int destMember, ResolutionContext context)
@@ -24,9 +24,8 @@ namespace FoodDiary.API.Mapping
             if (source.Notes.Select(n => n.Product).Any(p => p == null))
                 throw new ArgumentNullException($"Cannot resolve value '{nameof(destination.CountCalories)}' for '{nameof(PageItemDto)}', because there's no information about product for one or few source page notes");
 
-            var calories = source.Notes.Aggregate((double)0, (sum, note) =>
-                sum + _caloriesService.CalculateForQuantity(note.Product.CaloriesCost, note.ProductQuantity));
-            return Convert.ToInt32(calories);
+            var caloriesCount = _caloriesCalculator.Calculate(source.Notes);
+            return caloriesCount;
         }
     }
 }

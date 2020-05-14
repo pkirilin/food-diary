@@ -28,7 +28,7 @@ namespace FoodDiary.API.Extensions
             services.AddTransient<INotesOrderService, NotesOrderService>();
             services.AddTransient<ICategoryService, CategoryService>();
             services.AddTransient<IProductService, ProductService>();
-            services.AddTransient<ICaloriesService, CaloriesService>();
+            services.AddTransient<ICaloriesCalculator, CaloriesCalculator>();
             services.AddTransient<IExportService, ExportService>();
             services.AddTransient<IImportService, ImportService>();
         }
