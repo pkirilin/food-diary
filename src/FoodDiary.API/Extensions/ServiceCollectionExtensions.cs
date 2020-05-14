@@ -1,10 +1,10 @@
 ﻿using System;
 using System.IO;
+using FoodDiary.API.Services;
+using FoodDiary.API.Services.Implementation;
 using FoodDiary.Domain.Repositories;
-using FoodDiary.Domain.Services;
 using FoodDiary.Domain.Utils;
 using FoodDiary.Infrastructure.Repositories;
-using FoodDiary.Infrastructure.Services;
 using FoodDiary.Infrastructure.Utils;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;

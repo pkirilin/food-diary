@@ -5,9 +5,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Repositories;
-using FoodDiary.Domain.Services;
 
-namespace FoodDiary.Infrastructure.Services
+namespace FoodDiary.API.Services.Implementation
 {
     public class ExportService : IExportService
     {

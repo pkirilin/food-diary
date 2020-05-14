@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using FoodDiary.Domain.Dtos;
 
-namespace FoodDiary.Domain.Services
+namespace FoodDiary.API.Services
 {
     public interface IImportService
     {

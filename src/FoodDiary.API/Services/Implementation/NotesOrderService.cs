@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -7,9 +7,8 @@ using FoodDiary.Domain.Dtos;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Enums;
 using FoodDiary.Domain.Repositories;
-using FoodDiary.Domain.Services;
 
-namespace FoodDiary.Infrastructure.Services
+namespace FoodDiary.API.Services.Implementation
 {
     public class NotesOrderService : INotesOrderService
     {

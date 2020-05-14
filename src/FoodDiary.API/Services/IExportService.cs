@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using FoodDiary.Domain.Entities;
 
-namespace FoodDiary.Domain.Services
+namespace FoodDiary.API.Services
 {
     public interface IExportService
     {

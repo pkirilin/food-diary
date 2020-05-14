@@ -6,7 +6,6 @@ using FoodDiary.API.Controllers.v1;
 using AutoMapper;
 using FoodDiary.API;
 using System.Reflection;
-using FoodDiary.Domain.Services;
 using Moq;
 using AutoFixture;
 using FoodDiary.Domain.Entities;
@@ -16,6 +15,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using FoodDiary.Domain.Utils;
 using FoodDiary.Infrastructure.Utils;
+using FoodDiary.API.Services;
 
 namespace FoodDiary.UnitTests.Controllers
 {

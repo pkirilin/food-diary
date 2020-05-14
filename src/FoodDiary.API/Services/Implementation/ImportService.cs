@@ -7,10 +7,9 @@ using System.Threading.Tasks;
 using FoodDiary.Domain.Dtos;
 using FoodDiary.Domain.Exceptions;
 using FoodDiary.Domain.Repositories;
-using FoodDiary.Domain.Services;
 using FoodDiary.Import;
 
-namespace FoodDiary.Infrastructure.Services
+namespace FoodDiary.API.Services.Implementation
 {
     public class ImportService : IImportService
     {

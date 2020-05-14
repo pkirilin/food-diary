@@ -2,8 +2,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 using FoodDiary.API.Options;
+using FoodDiary.API.Services;
 using FoodDiary.Domain.Dtos;
-using FoodDiary.Domain.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;

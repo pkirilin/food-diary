@@ -5,11 +5,10 @@ using System.Threading.Tasks;
 using FoodDiary.Domain.Dtos;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Repositories;
-using FoodDiary.Domain.Services;
 using FoodDiary.Domain.Enums;
 using System;
 
-namespace FoodDiary.Infrastructure.Services
+namespace FoodDiary.API.Services.Implementation
 {
     public class PageService : IPageService
     {

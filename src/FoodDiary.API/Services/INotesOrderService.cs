@@ -1,10 +1,10 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using FoodDiary.Domain.Dtos;
 using FoodDiary.Domain.Entities;
 
-namespace FoodDiary.Domain.Services
+namespace FoodDiary.API.Services
 {
     public interface INotesOrderService
     {

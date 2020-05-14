@@ -3,8 +3,6 @@ using AutoFixture;
 using FluentAssertions;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Repositories;
-using FoodDiary.Domain.Services;
-using FoodDiary.Infrastructure.Services;
 using FoodDiary.UnitTests.Customizations;
 using Moq;
 using Xunit;
@@ -13,6 +11,8 @@ using AutoFixture.Xunit2;
 using FoodDiary.Domain.Dtos;
 using System;
 using FoodDiary.Domain.Abstractions;
+using FoodDiary.API.Services;
+using FoodDiary.API.Services.Implementation;
 
 namespace FoodDiary.UnitTests.Services
 {

@@ -2,13 +2,13 @@
 using System.Linq;
 using System.Threading;
 using AutoFixture;
+using FoodDiary.API.Services;
+using FoodDiary.API.Services.Implementation;
 using FoodDiary.Domain.Abstractions;
 using FoodDiary.Domain.Dtos;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Repositories;
-using FoodDiary.Domain.Services;
 using FoodDiary.Import;
-using FoodDiary.Infrastructure.Services;
 using FoodDiary.UnitTests.Customizations;
 using Moq;
 using Xunit;
