@@ -8,11 +8,9 @@ namespace FoodDiary.UnitTests.Customizations
     {
         public void Customize(IFixture fixture)
         {
-            fixture.Customize(new FixtureWithCircularReferencesCustomization());
-
             var product1 = fixture.Build<Product>()
-                    .With(p => p.CaloriesCost, 60)
-                    .Create();
+                .With(p => p.CaloriesCost, 60)
+                .Create();
             var product2 = fixture.Build<Product>()
                 .With(p => p.CaloriesCost, 120)
                 .Create();

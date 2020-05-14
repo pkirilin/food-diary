@@ -10,38 +10,35 @@ namespace FoodDiary.Import.UnitTests.Customizations
     {
         public void Customize(IFixture fixture)
         {
-            fixture.Register(() =>
-            {
-                var note1 = fixture.Build<NoteJsonItemDto>()
-                    .With(n => n.MealType, MealType.Breakfast)
-                    .With(n => n.DisplayOrder, 0)
-                    .With(n => n.ProductQuantity, 100)
-                    .Create();
-                var note2 = fixture.Build<NoteJsonItemDto>()
-                    .With(n => n.MealType, MealType.Breakfast)
-                    .With(n => n.DisplayOrder, 1)
-                    .With(n => n.ProductQuantity, 120)
-                    .Create();
-                var note3 = fixture.Build<NoteJsonItemDto>()
-                    .With(n => n.MealType, MealType.Lunch)
-                    .With(n => n.DisplayOrder, 0)
-                    .With(n => n.ProductQuantity, 250)
-                    .Create();
-                var note4 = fixture.Build<NoteJsonItemDto>()
-                    .With(n => n.MealType, MealType.Lunch)
-                    .With(n => n.DisplayOrder, 1)
-                    .With(n => n.ProductQuantity, 310)
-                    .Create();
+            var note1 = fixture.Build<NoteJsonItemDto>()
+                .With(n => n.MealType, MealType.Breakfast)
+                .With(n => n.DisplayOrder, 0)
+                .With(n => n.ProductQuantity, 100)
+                .Create();
+            var note2 = fixture.Build<NoteJsonItemDto>()
+                .With(n => n.MealType, MealType.Breakfast)
+                .With(n => n.DisplayOrder, 1)
+                .With(n => n.ProductQuantity, 120)
+                .Create();
+            var note3 = fixture.Build<NoteJsonItemDto>()
+                .With(n => n.MealType, MealType.Lunch)
+                .With(n => n.DisplayOrder, 0)
+                .With(n => n.ProductQuantity, 250)
+                .Create();
+            var note4 = fixture.Build<NoteJsonItemDto>()
+                .With(n => n.MealType, MealType.Lunch)
+                .With(n => n.DisplayOrder, 1)
+                .With(n => n.ProductQuantity, 310)
+                .Create();
 
-                var pages = fixture.Build<PageJsonItemDto>()
-                    .With(p => p.Notes, new List<NoteJsonItemDto>()
-                    {
+            var pages = fixture.Build<PageJsonItemDto>()
+                .With(p => p.Notes, new List<NoteJsonItemDto>()
+                {
                         note1, note2, note3, note4
-                    })
-                    .CreateMany();
+                })
+                .CreateMany();
 
-                return pages;
-            });
+            fixture.Register(() => pages);
         }
     }
 
@@ -49,28 +46,25 @@ namespace FoodDiary.Import.UnitTests.Customizations
     {
         public void Customize(IFixture fixture)
         {
-            fixture.Register(() =>
-            {
-                var note1 = fixture.Build<NoteJsonItemDto>()
-                    .With(n => n.MealType, MealType.Breakfast)
-                    .With(n => n.DisplayOrder, 0)
-                    .With(n => n.ProductQuantity, 100)
-                    .Create();
-                var note2 = fixture.Build<NoteJsonItemDto>()
-                    .With(n => n.MealType, MealType.Breakfast)
-                    .With(n => n.DisplayOrder, 0)
-                    .With(n => n.ProductQuantity, 120)
-                    .Create();
+            var note1 = fixture.Build<NoteJsonItemDto>()
+                .With(n => n.MealType, MealType.Breakfast)
+                .With(n => n.DisplayOrder, 0)
+                .With(n => n.ProductQuantity, 100)
+                .Create();
+            var note2 = fixture.Build<NoteJsonItemDto>()
+                .With(n => n.MealType, MealType.Breakfast)
+                .With(n => n.DisplayOrder, 0)
+                .With(n => n.ProductQuantity, 120)
+                .Create();
 
-                var pages = fixture.Build<PageJsonItemDto>()
-                    .With(p => p.Notes, new List<NoteJsonItemDto>()
-                    {
+            var pages = fixture.Build<PageJsonItemDto>()
+                .With(p => p.Notes, new List<NoteJsonItemDto>()
+                {
                         note1, note2
-                    })
-                    .CreateMany();
+                })
+                .CreateMany();
 
-                return pages;
-            });
+            fixture.Register(() => pages);
         }
     }
 
@@ -78,28 +72,25 @@ namespace FoodDiary.Import.UnitTests.Customizations
     {
         public void Customize(IFixture fixture)
         {
-            fixture.Register(() =>
-            {
-                var note1 = fixture.Build<NoteJsonItemDto>()
-                    .With(n => n.MealType, MealType.Breakfast)
-                    .With(n => n.DisplayOrder, -1)
-                    .With(n => n.ProductQuantity, 100)
-                    .Create();
-                var note2 = fixture.Build<NoteJsonItemDto>()
-                    .With(n => n.MealType, MealType.Breakfast)
-                    .With(n => n.DisplayOrder, 1000)
-                    .With(n => n.ProductQuantity, 120)
-                    .Create();
+            var note1 = fixture.Build<NoteJsonItemDto>()
+                .With(n => n.MealType, MealType.Breakfast)
+                .With(n => n.DisplayOrder, -1)
+                .With(n => n.ProductQuantity, 100)
+                .Create();
+            var note2 = fixture.Build<NoteJsonItemDto>()
+                .With(n => n.MealType, MealType.Breakfast)
+                .With(n => n.DisplayOrder, 1000)
+                .With(n => n.ProductQuantity, 120)
+                .Create();
 
-                var pages = fixture.Build<PageJsonItemDto>()
-                    .With(p => p.Notes, new List<NoteJsonItemDto>()
-                    {
+            var pages = fixture.Build<PageJsonItemDto>()
+                .With(p => p.Notes, new List<NoteJsonItemDto>()
+                {
                         note1, note2
-                    })
-                    .CreateMany();
+                })
+                .CreateMany();
 
-                return pages;
-            });
+            fixture.Register(() => pages);
         }
     }
 
@@ -107,38 +98,35 @@ namespace FoodDiary.Import.UnitTests.Customizations
     {
         public void Customize(IFixture fixture)
         {
-            fixture.Register(() =>
-            {
-                var note1 = fixture.Build<NoteJsonItemDto>()
-                    .With(n => n.MealType, (MealType)(-1))
-                    .With(n => n.DisplayOrder, 0)
-                    .With(n => n.ProductQuantity, 100)
-                    .Create();
-                var note2 = fixture.Build<NoteJsonItemDto>()
-                    .With(n => n.MealType, MealType.Breakfast)
-                    .With(n => n.DisplayOrder, 1)
-                    .With(n => n.ProductQuantity, 120)
-                    .Create();
-                var note3 = fixture.Build<NoteJsonItemDto>()
-                    .With(n => n.MealType, MealType.Lunch)
-                    .With(n => n.DisplayOrder, 0)
-                    .With(n => n.ProductQuantity, 200)
-                    .Create();
-                var note4 = fixture.Build<NoteJsonItemDto>()
-                    .With(n => n.MealType, (MealType)10000)
-                    .With(n => n.DisplayOrder, 1)
-                    .With(n => n.ProductQuantity, 450)
-                    .Create();
+            var note1 = fixture.Build<NoteJsonItemDto>()
+                .With(n => n.MealType, (MealType)(-1))
+                .With(n => n.DisplayOrder, 0)
+                .With(n => n.ProductQuantity, 100)
+                .Create();
+            var note2 = fixture.Build<NoteJsonItemDto>()
+                .With(n => n.MealType, MealType.Breakfast)
+                .With(n => n.DisplayOrder, 1)
+                .With(n => n.ProductQuantity, 120)
+                .Create();
+            var note3 = fixture.Build<NoteJsonItemDto>()
+                .With(n => n.MealType, MealType.Lunch)
+                .With(n => n.DisplayOrder, 0)
+                .With(n => n.ProductQuantity, 200)
+                .Create();
+            var note4 = fixture.Build<NoteJsonItemDto>()
+                .With(n => n.MealType, (MealType)10000)
+                .With(n => n.DisplayOrder, 1)
+                .With(n => n.ProductQuantity, 450)
+                .Create();
 
-                var pages = fixture.Build<PageJsonItemDto>()
-                    .With(p => p.Notes, new List<NoteJsonItemDto>()
-                    {
+            var pages = fixture.Build<PageJsonItemDto>()
+                .With(p => p.Notes, new List<NoteJsonItemDto>()
+                {
                         note1, note2, note3, note4
-                    })
-                    .CreateMany();
+                })
+                .CreateMany();
 
-                return pages;
-            });
+            fixture.Register(() => pages);
         }
     }
 
@@ -146,38 +134,35 @@ namespace FoodDiary.Import.UnitTests.Customizations
     {
         public void Customize(IFixture fixture)
         {
-            fixture.Register(() =>
-            {
-                var note1 = fixture.Build<NoteJsonItemDto>()
-                    .With(n => n.MealType, MealType.Breakfast)
-                    .With(n => n.DisplayOrder, 0)
-                    .With(n => n.ProductQuantity, 9)
-                    .Create();
-                var note2 = fixture.Build<NoteJsonItemDto>()
-                    .With(n => n.MealType, MealType.Breakfast)
-                    .With(n => n.DisplayOrder, 1)
-                    .With(n => n.ProductQuantity, 1001)
-                    .Create();
-                var note3 = fixture.Build<NoteJsonItemDto>()
-                    .With(n => n.MealType, MealType.Lunch)
-                    .With(n => n.DisplayOrder, 0)
-                    .With(n => n.ProductQuantity, 10)
-                    .Create();
-                var note4 = fixture.Build<NoteJsonItemDto>()
-                    .With(n => n.MealType, MealType.Lunch)
-                    .With(n => n.DisplayOrder, 1)
-                    .With(n => n.ProductQuantity, 1000)
-                    .Create();
+            var note1 = fixture.Build<NoteJsonItemDto>()
+                .With(n => n.MealType, MealType.Breakfast)
+                .With(n => n.DisplayOrder, 0)
+                .With(n => n.ProductQuantity, 9)
+                .Create();
+            var note2 = fixture.Build<NoteJsonItemDto>()
+                .With(n => n.MealType, MealType.Breakfast)
+                .With(n => n.DisplayOrder, 1)
+                .With(n => n.ProductQuantity, 1001)
+                .Create();
+            var note3 = fixture.Build<NoteJsonItemDto>()
+                .With(n => n.MealType, MealType.Lunch)
+                .With(n => n.DisplayOrder, 0)
+                .With(n => n.ProductQuantity, 10)
+                .Create();
+            var note4 = fixture.Build<NoteJsonItemDto>()
+                .With(n => n.MealType, MealType.Lunch)
+                .With(n => n.DisplayOrder, 1)
+                .With(n => n.ProductQuantity, 1000)
+                .Create();
 
-                var pages = fixture.Build<PageJsonItemDto>()
-                    .With(p => p.Notes, new List<NoteJsonItemDto>()
-                    {
+            var pages = fixture.Build<PageJsonItemDto>()
+                .With(p => p.Notes, new List<NoteJsonItemDto>()
+                {
                         note1, note2, note3, note4
-                    })
-                    .CreateMany();
+                })
+                .CreateMany();
 
-                return pages;
-            });
+            fixture.Register(() => pages);
         }
     }
 
@@ -185,14 +170,11 @@ namespace FoodDiary.Import.UnitTests.Customizations
     {
         public void Customize(IFixture fixture)
         {
-            fixture.Register(() =>
-            {
-                var page = fixture.Build<PageJsonItemDto>()
-                    .With(p => p.Date, DateTime.Parse("2020-05-01"))
-                    .Create();
+            var page = fixture.Build<PageJsonItemDto>()
+                .With(p => p.Date, DateTime.Parse("2020-05-01"))
+                .Create();
 
-                return page;
-            });
+            fixture.Register(() => page);
         }
     }
 
@@ -200,14 +182,11 @@ namespace FoodDiary.Import.UnitTests.Customizations
     {
         public void Customize(IFixture fixture)
         {
-            fixture.Register(() =>
-            {
-                var page = fixture.Build<PageJsonItemDto>()
-                    .With(p => p.Date, DateTime.Parse("2020-05-03"))
-                    .Create();
+            var page = fixture.Build<PageJsonItemDto>()
+                .With(p => p.Date, DateTime.Parse("2020-05-03"))
+                .Create();
 
-                return page;
-            });
+            fixture.Register(() => page);
         }
     }
 }

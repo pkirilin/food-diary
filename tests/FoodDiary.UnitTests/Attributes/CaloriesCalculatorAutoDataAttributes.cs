@@ -7,7 +7,9 @@ namespace FoodDiary.UnitTests.Attributes
     class NotesWithTotalCaloriesCountAutoDataAttribute : AutoDataAttribute
     {
         public NotesWithTotalCaloriesCountAutoDataAttribute()
-            : base(() => new Fixture().Customize(new NotesWithTotalCaloriesCountCustomization()))
+            : base(() => new Fixture()
+                .Customize(new FixtureWithCircularReferencesCustomization())
+                .Customize(new NotesWithTotalCaloriesCountCustomization()))
         {
         }
     }
@@ -15,7 +17,8 @@ namespace FoodDiary.UnitTests.Attributes
     class EmptyNotesWithZeroTotalCaloriesCountAutoDataAttribute : AutoDataAttribute
     {
         public EmptyNotesWithZeroTotalCaloriesCountAutoDataAttribute()
-            : base(() => new Fixture().Customize(new EmptyNotesWithZeroTotalCaloriesCountCustomization()))
+            : base(() => new Fixture()
+                .Customize(new EmptyNotesWithZeroTotalCaloriesCountCustomization()))
         {
         }
     }

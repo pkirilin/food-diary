@@ -7,14 +7,11 @@ namespace FoodDiary.Import.UnitTests.Customizations
     {
         public void Customize(IFixture fixture)
         {
-            fixture.Register(() =>
-            {
-                var page = fixture.Build<ProductJsonItemDto>()
-                    .With(p => p.Name, "Product 1")
-                    .Create();
+            var product = fixture.Build<ProductJsonItemDto>()
+                .With(p => p.Name, "Product 1")
+                .Create();
 
-                return page;
-            });
+            fixture.Register(() => product);
         }
     }
 
@@ -22,14 +19,11 @@ namespace FoodDiary.Import.UnitTests.Customizations
     {
         public void Customize(IFixture fixture)
         {
-            fixture.Register(() =>
-            {
-                var page = fixture.Build<ProductJsonItemDto>()
-                    .With(p => p.Name, "Not existing product")
-                    .Create();
+            var product = fixture.Build<ProductJsonItemDto>()
+                .With(p => p.Name, "Not existing product")
+                .Create();
 
-                return page;
-            });
+            fixture.Register(() => product);
         }
     }
 }

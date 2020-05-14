@@ -9,18 +9,18 @@ namespace FoodDiary.Import.UnitTests.Customizations
     {
         public void Customize(IFixture fixture)
         {
+            var testPage1 = fixture.Build<PageJsonItemDto>()
+                .With(p => p.Date, DateTime.Parse("2020-05-03"))
+                .Create();
+            var testPage2 = fixture.Build<PageJsonItemDto>()
+                .With(p => p.Date, DateTime.Parse("2020-05-04"))
+                .Create();
+            var testPage3 = fixture.Build<PageJsonItemDto>()
+                .With(p => p.Date, DateTime.Parse("2020-05-05"))
+                .Create();
+
             fixture.Register(() =>
             {
-                var testPage1 = fixture.Build<PageJsonItemDto>()
-                    .With(p => p.Date, DateTime.Parse("2020-05-03"))
-                    .Create();
-                var testPage2 = fixture.Build<PageJsonItemDto>()
-                    .With(p => p.Date, DateTime.Parse("2020-05-04"))
-                    .Create();
-                var testPage3 = fixture.Build<PageJsonItemDto>()
-                    .With(p => p.Date, DateTime.Parse("2020-05-05"))
-                    .Create();
-
                 return new PagesJsonObjectDto
                 {
                     Pages = new List<PageJsonItemDto>() { testPage1, testPage2, testPage3 }
@@ -47,21 +47,21 @@ namespace FoodDiary.Import.UnitTests.Customizations
     {
         public void Customize(IFixture fixture)
         {
+            var testPage1 = fixture.Build<PageJsonItemDto>()
+                .With(p => p.Date, DateTime.Parse("2020-05-03"))
+                .Create();
+            var testPage2 = fixture.Build<PageJsonItemDto>()
+                .With(p => p.Date, DateTime.Parse("2020-05-04"))
+                .Create();
+            var testPage3 = fixture.Build<PageJsonItemDto>()
+                .With(p => p.Date, DateTime.Parse("2020-05-05"))
+                .Create();
+            var testPage4 = fixture.Build<PageJsonItemDto>()
+                .With(p => p.Date, DateTime.Parse("2020-05-04"))
+                .Create();
+
             fixture.Register(() =>
             {
-                var testPage1 = fixture.Build<PageJsonItemDto>()
-                    .With(p => p.Date, DateTime.Parse("2020-05-03"))
-                    .Create();
-                var testPage2 = fixture.Build<PageJsonItemDto>()
-                    .With(p => p.Date, DateTime.Parse("2020-05-04"))
-                    .Create();
-                var testPage3 = fixture.Build<PageJsonItemDto>()
-                    .With(p => p.Date, DateTime.Parse("2020-05-05"))
-                    .Create();
-                var testPage4 = fixture.Build<PageJsonItemDto>()
-                    .With(p => p.Date, DateTime.Parse("2020-05-04"))
-                    .Create();
-
                 return new PagesJsonObjectDto
                 {
                     Pages = new List<PageJsonItemDto>() { testPage1, testPage2, testPage3, testPage4 }
