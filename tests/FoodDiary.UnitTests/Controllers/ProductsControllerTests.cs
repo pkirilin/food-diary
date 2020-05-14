@@ -7,7 +7,7 @@ using FluentAssertions;
 using FoodDiary.API;
 using FoodDiary.API.Controllers.v1;
 using FoodDiary.API.Services;
-using FoodDiary.Domain.Dtos;
+using FoodDiary.API.Dtos;
 using FoodDiary.Domain.Entities;
 using FoodDiary.UnitTests.Customizations;
 using Microsoft.AspNetCore.Mvc;
@@ -15,6 +15,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
+using FoodDiary.API.Requests;
+using FoodDiary.API.Metadata;
 
 namespace FoodDiary.UnitTests.Controllers
 {
@@ -56,11 +58,11 @@ namespace FoodDiary.UnitTests.Controllers
         [InlineAutoData]
         public async void GetProducts_ReturnsFilteredProductsWithPaginationInfo_WhenModelStateIsValid_AndCategoryExists(int categoryId)
         {
-            var searchRequest = _fixture.Build<ProductsSearchRequestDto>()
+            var searchRequest = _fixture.Build<ProductsSearchRequest>()
                 .With(r => r.CategoryId, categoryId)
                 .Create();
             var requestedCategory = _fixture.Create<Category>();
-            var productSearchMeta = _fixture.Create<ProductSearchMetadata>();
+            var productSearchMeta = _fixture.Create<ProductsSearchResultMetadata>();
             _categoryServiceMock.Setup(s => s.GetCategoryByIdAsync(categoryId, default))
                 .ReturnsAsync(requestedCategory);
             _productServiceMock.Setup(s => s.SearchProductsAsync(searchRequest, default))
@@ -76,10 +78,10 @@ namespace FoodDiary.UnitTests.Controllers
         [Fact]
         public async void GetProducts_ReturnsFilteredProductsWithPaginationInfo_WhenModelStateIsValid_AndCategoryIsEmpty()
         {
-            var searchRequest = _fixture.Build<ProductsSearchRequestDto>()
+            var searchRequest = _fixture.Build<ProductsSearchRequest>()
                 .With(r => r.CategoryId, null as int?)
                 .Create();
-            var productSearchMeta = _fixture.Create<ProductSearchMetadata>();
+            var productSearchMeta = _fixture.Create<ProductsSearchResultMetadata>();
             _productServiceMock.Setup(s => s.SearchProductsAsync(searchRequest, default))
                 .ReturnsAsync(productSearchMeta);
 
@@ -93,7 +95,7 @@ namespace FoodDiary.UnitTests.Controllers
         [Fact]
         public async void GetProducts_ReturnsBadRequest_WhenModelStateIsInvalid()
         {
-            var searchRequest = _fixture.Create<ProductsSearchRequestDto>();
+            var searchRequest = _fixture.Create<ProductsSearchRequest>();
             var controller = ProductsController;
             controller.ModelState.AddModelError(_fixture.Create<string>(), _fixture.Create<string>());
 
@@ -108,7 +110,7 @@ namespace FoodDiary.UnitTests.Controllers
         [InlineAutoData]
         public async void GetProducts_ReturnsNotFound_WhenCategoryNotFound(int categoryId)
         {
-            var searchRequest = _fixture.Build<ProductsSearchRequestDto>()
+            var searchRequest = _fixture.Build<ProductsSearchRequest>()
                 .With(r => r.CategoryId, categoryId)
                 .Create();
             _categoryServiceMock.Setup(s => s.GetCategoryByIdAsync(categoryId, default))
@@ -124,7 +126,7 @@ namespace FoodDiary.UnitTests.Controllers
         [Fact]
         public async void CreateProduct_CreatesProductSuccessfully_WhenProductDataIsValid()
         {
-            var productData = _fixture.Create<ProductCreateEditDto>();
+            var productData = _fixture.Create<ProductCreateEditRequest>();
             var productValidationResult = _fixture.Build<ValidationResultDto>()
                 .With(v => v.IsValid, true)
                 .Create();
@@ -141,7 +143,7 @@ namespace FoodDiary.UnitTests.Controllers
         [Fact]
         public async void CreateProduct_ReturnsBadRequest_WhenModelStateIsInvalid()
         {
-            var productData = _fixture.Create<ProductCreateEditDto>();
+            var productData = _fixture.Create<ProductCreateEditRequest>();
             var controller = ProductsController;
             controller.ModelState.AddModelError("error", "error");
 
@@ -156,7 +158,7 @@ namespace FoodDiary.UnitTests.Controllers
         public async void EditProduct_UpdatesProductSuccessfully_WhenProductDataIsValid()
         {
             var productId = _fixture.Create<int>();
-            var productData = _fixture.Create<ProductCreateEditDto>();
+            var productData = _fixture.Create<ProductCreateEditRequest>();
             var originalProduct = _fixture.Create<Product>();
             var productValidationResult = _fixture.Build<ValidationResultDto>()
                 .With(v => v.IsValid, true)
@@ -181,7 +183,7 @@ namespace FoodDiary.UnitTests.Controllers
         public async void EditProduct_ReturnsBadRequest_WhenModelStateIsInvalid()
         {
             var productId = _fixture.Create<int>();
-            var productData = _fixture.Create<ProductCreateEditDto>();
+            var productData = _fixture.Create<ProductCreateEditRequest>();
             var controller = ProductsController;
             controller.ModelState.AddModelError("error", "error");
 
@@ -198,7 +200,7 @@ namespace FoodDiary.UnitTests.Controllers
         public async void EditProduct_ReturnsNotFound_WhenRequestedProductDoesNotExist()
         {
             var productId = _fixture.Create<int>();
-            var productData = _fixture.Create<ProductCreateEditDto>();
+            var productData = _fixture.Create<ProductCreateEditRequest>();
             _productServiceMock.Setup(s => s.GetProductByIdAsync(It.IsAny<int>(), default))
                 .ReturnsAsync(null as Product);
 
@@ -215,7 +217,7 @@ namespace FoodDiary.UnitTests.Controllers
         public async void EditProduct_ReturnsBadRequest_WhenProductDataIsInvalid()
         {
             var productId = _fixture.Create<int>();
-            var productData = _fixture.Create<ProductCreateEditDto>();
+            var productData = _fixture.Create<ProductCreateEditRequest>();
             var originalProduct = _fixture.Create<Product>();
             var productValidationResult = _fixture.Build<ValidationResultDto>()
                 .With(v => v.IsValid, false)
@@ -309,7 +311,7 @@ namespace FoodDiary.UnitTests.Controllers
         [Fact]
         public async void GetProductsDropdownList_ReturnsRequestedProducts()
         {
-            var request = _fixture.Create<ProductDropdownSearchRequestDto>();
+            var request = _fixture.Create<ProductDropdownSearchRequest>();
             var expectedProducts = _fixture.CreateMany<Product>();
             _productServiceMock.Setup(s => s.GetProductsDropdownListAsync(request, default))
                 .ReturnsAsync(expectedProducts);

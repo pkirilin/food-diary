@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
-using FoodDiary.Domain.Dtos;
 using FoodDiary.Domain.Exceptions;
 using FoodDiary.Import.Core;
+using FoodDiary.Import.Models;
 using FoodDiary.Import.UnitTests.Attributes;
 using Xunit;
 
@@ -15,7 +15,7 @@ namespace FoodDiary.Import.UnitTests.Core
 
         [Theory]
         [JsonObjectWithUniquePagesAutoData]
-        public void ParsePages_ReturnsJsonPages_WhenJsonContainsUniquePageDates(PagesJsonObjectDto jsonObj)
+        public void ParsePages_ReturnsJsonPages_WhenJsonContainsUniquePageDates(PagesJsonObject jsonObj)
         {
             var result = Sut.ParsePages(jsonObj);
 
@@ -25,7 +25,7 @@ namespace FoodDiary.Import.UnitTests.Core
         [Theory]
         [JsonObjectWithNullPagesAutoData]
         [JsonObjectWithDuplicatePageDatesAutoData]
-        public void ParsePages_ThrowsImportException_WhenJsonDoesNotContainUniquePageDates(PagesJsonObjectDto jsonObj)
+        public void ParsePages_ThrowsImportException_WhenJsonDoesNotContainUniquePageDates(PagesJsonObject jsonObj)
         {
             Sut.Invoking(sut => sut.ParsePages(jsonObj))
                 .Should()
@@ -34,7 +34,7 @@ namespace FoodDiary.Import.UnitTests.Core
 
         [Theory]
         [JsonPagesWithValidNotesAutoData]
-        public void ParseNotes_ReturnsNotesFromJson_WhenPagesContainValidNotes(IEnumerable<PageJsonItemDto> pagesFromJson)
+        public void ParseNotes_ReturnsNotesFromJson_WhenPagesContainValidNotes(IEnumerable<PageJsonItem> pagesFromJson)
         {
             var expectedParsedNotes = pagesFromJson.SelectMany(p => p.Notes);
 
@@ -48,7 +48,7 @@ namespace FoodDiary.Import.UnitTests.Core
         [JsonPagesWithInvalidDisplayOrdersAutoData]
         [JsonPagesWithInvalidMealTypesAutoData]
         [JsonPagesWithInvalidProductQuantitiesAutoData]
-        public void ParseNotes_ThrowsImportException_WhenPagesContainAtLeastOneInvalidNote(IEnumerable<PageJsonItemDto> pagesFromJson)
+        public void ParseNotes_ThrowsImportException_WhenPagesContainAtLeastOneInvalidNote(IEnumerable<PageJsonItem> pagesFromJson)
         {
             Sut.Invoking(sut => sut.ParseNotes(pagesFromJson))
                 .Should()
@@ -57,7 +57,7 @@ namespace FoodDiary.Import.UnitTests.Core
 
         [Theory]
         [JsonNotesWithValidInfoAutoData]
-        public void ParseProducts_ReturnsUniqueProductNames_WhenNotesInfoIsValid(IEnumerable<NoteJsonItemDto> notesFromJson)
+        public void ParseProducts_ReturnsUniqueProductNames_WhenNotesInfoIsValid(IEnumerable<NoteJsonItem> notesFromJson)
         {
             var expectedProductNames = notesFromJson.Select(n => n.Product.Name)
                 .Distinct();
@@ -69,7 +69,7 @@ namespace FoodDiary.Import.UnitTests.Core
 
         [Theory]
         [JsonNotesWithInvalidProductAutoData]
-        public void ParseProducts_ThrowsImportException_WhenNotesInfoIsInvalid(IEnumerable<NoteJsonItemDto> notesFromJson)
+        public void ParseProducts_ThrowsImportException_WhenNotesInfoIsInvalid(IEnumerable<NoteJsonItem> notesFromJson)
         {
             Sut.Invoking(sut => sut.ParseProducts(notesFromJson))
                 .Should()
@@ -78,7 +78,7 @@ namespace FoodDiary.Import.UnitTests.Core
 
         [Theory]
         [JsonNotesWithValidInfoAutoData]
-        public void ParseCategories_ReturnsUniqueCategoryNames_WhenNotesInfoIsValid(IEnumerable<NoteJsonItemDto> notesFromJson)
+        public void ParseCategories_ReturnsUniqueCategoryNames_WhenNotesInfoIsValid(IEnumerable<NoteJsonItem> notesFromJson)
         {
             var expectedCategoryNames = notesFromJson.Select(n => n.Product.Category)
                 .Distinct();
@@ -90,7 +90,7 @@ namespace FoodDiary.Import.UnitTests.Core
 
         [Theory]
         [JsonNotesWithInvalidCategoryAutoData]
-        public void ParseCategories_ThrowsImportException_WhenNotesInfoIsInvalid(IEnumerable<NoteJsonItemDto> notesFromJson)
+        public void ParseCategories_ThrowsImportException_WhenNotesInfoIsInvalid(IEnumerable<NoteJsonItem> notesFromJson)
         {
             Sut.Invoking(sut => sut.ParseCategories(notesFromJson))
                 .Should()

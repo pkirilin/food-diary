@@ -1,14 +1,14 @@
 ﻿using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using FoodDiary.Domain.Dtos;
+using FoodDiary.Import.Models;
 
 namespace FoodDiary.API.Services
 {
     public interface IImportService
     {
-        Task<PagesJsonObjectDto> DeserializePagesFromJsonAsync(Stream importFileStream, CancellationToken cancellationToken);
+        Task<PagesJsonObject> DeserializePagesFromJsonAsync(Stream importFileStream, CancellationToken cancellationToken);
 
-        Task RunPagesJsonImportAsync(PagesJsonObjectDto jsonObj, CancellationToken cancellationToken);
+        Task RunPagesJsonImportAsync(PagesJsonObject jsonObj, CancellationToken cancellationToken);
     }
 }

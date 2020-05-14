@@ -5,13 +5,13 @@ using AutoFixture;
 using FoodDiary.API.Services;
 using FoodDiary.API.Services.Implementation;
 using FoodDiary.Domain.Abstractions;
-using FoodDiary.Domain.Dtos;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Repositories;
 using FoodDiary.Import;
 using FoodDiary.UnitTests.Customizations;
 using Moq;
 using Xunit;
+using FoodDiary.Import.Models;
 
 namespace FoodDiary.UnitTests.Services
 {
@@ -26,7 +26,7 @@ namespace FoodDiary.UnitTests.Services
 
         private readonly IFixture _fixture;
 
-        delegate void JsonImporterMockingCallback(PagesJsonObjectDto jsonObj, out List<Page> createdPages);
+        delegate void JsonImporterMockingCallback(PagesJsonObject jsonObj, out List<Page> createdPages);
 
         public ImportServiceTests()
         {
@@ -60,9 +60,9 @@ namespace FoodDiary.UnitTests.Services
         [Fact]
         public async void RunPagesJsonImportAsync_ImportsEntities()
         {
-            var jsonObj = _fixture.Create<PagesJsonObjectDto>();
-            var pagesFromJson = _fixture.CreateMany<PageJsonItemDto>();
-            var notesFromJson = _fixture.CreateMany<NoteJsonItemDto>();
+            var jsonObj = _fixture.Create<PagesJsonObject>();
+            var pagesFromJson = _fixture.CreateMany<PageJsonItem>();
+            var notesFromJson = _fixture.CreateMany<NoteJsonItem>();
             var productNamesFromJson = _fixture.CreateMany<string>();
             var categoryNamesFromJson = _fixture.CreateMany<string>();
 
@@ -104,7 +104,7 @@ namespace FoodDiary.UnitTests.Services
                 .ReturnsAsync(existingCategoriesDictionary);
 
             _jsonImporterMock.Setup(i => i.Import(jsonObj, out createdPagesBeforeImport))
-                .Callback(new JsonImporterMockingCallback((PagesJsonObjectDto jsonObj, out List<Page> createdPages) =>
+                .Callback(new JsonImporterMockingCallback((PagesJsonObject jsonObj, out List<Page> createdPages) =>
                 {
                     createdPages = createdPagesAfterImport;
                 }));

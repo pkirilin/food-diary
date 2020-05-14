@@ -8,11 +8,12 @@ using Moq;
 using Xunit;
 using FoodDiary.Domain.Enums;
 using AutoFixture.Xunit2;
-using FoodDiary.Domain.Dtos;
+using FoodDiary.API.Dtos;
 using System;
 using FoodDiary.Domain.Abstractions;
 using FoodDiary.API.Services;
 using FoodDiary.API.Services.Implementation;
+using FoodDiary.API.Requests;
 
 namespace FoodDiary.UnitTests.Services
 {
@@ -45,7 +46,7 @@ namespace FoodDiary.UnitTests.Services
         [InlineAutoData(null)]
         public async void SearchPages_ReturnsRequestedPagesCount_DependingOnShowCount(int? showCount)
         {
-            var pageFilter = _fixture.Build<PageFilterDto>()
+            var pageFilter = _fixture.Build<PagesSearchRequest>()
                 .With(p => p.ShowCount, showCount)
                 .Create();
             var expectedPagesCount = pageFilter.ShowCount ?? 10;
@@ -70,7 +71,7 @@ namespace FoodDiary.UnitTests.Services
         [InlineData(SortOrder.Descending)]
         public async void SearchPages_ReturnsOrderedPages_DependingOnSortOrder(SortOrder sortOrder)
         {
-            var pageFilter = _fixture.Build<PageFilterDto>()
+            var pageFilter = _fixture.Build<PagesSearchRequest>()
                 .With(p => p.SortOrder, sortOrder)
                 .Create();
             var pages = _fixture.CreateMany<Page>().ToList();
@@ -178,7 +179,7 @@ namespace FoodDiary.UnitTests.Services
         [Fact]
         public async void ValidatePageAsync_ReturnsFalse_WhenPageHasDuplicateDate()
         {
-            var createPageInfo = _fixture.Create<PageCreateEditDto>();
+            var createPageInfo = _fixture.Create<PageCreateEditRequest>();
             var pagesWithTheSameDate = _fixture.CreateMany<Page>().ToList();
 
             _pageRepositoryMock.Setup(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Page>>(), default))
@@ -202,7 +203,7 @@ namespace FoodDiary.UnitTests.Services
             var originalPage = _fixture.Build<Page>()
                 .With(p => p.Date, DateTime.Parse(oldPageDateStr))
                 .Create();
-            var editedPageData = _fixture.Build<PageCreateEditDto>()
+            var editedPageData = _fixture.Build<PageCreateEditRequest>()
                 .With(p => p.Date, DateTime.Parse(newPageDateStr))
                 .Create();
             var validationResult = _fixture.Build<ValidationResultDto>()

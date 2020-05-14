@@ -7,12 +7,13 @@ using FluentAssertions;
 using FoodDiary.API.Services;
 using FoodDiary.API.Services.Implementation;
 using FoodDiary.Domain.Abstractions;
-using FoodDiary.Domain.Dtos;
+using FoodDiary.API.Dtos;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Repositories;
 using FoodDiary.UnitTests.Customizations;
 using Moq;
 using Xunit;
+using FoodDiary.API.Requests;
 
 namespace FoodDiary.UnitTests.Services
 {
@@ -40,7 +41,7 @@ namespace FoodDiary.UnitTests.Services
             return _fixture;
         }
 
-        private IQueryable<Product> GetQueryModifiedBySearchRequest(IQueryable<Product> sourceQuery, ProductsSearchRequestDto searchRequest)
+        private IQueryable<Product> GetQueryModifiedBySearchRequest(IQueryable<Product> sourceQuery, ProductsSearchRequest searchRequest)
         {
             var modifiedQuery = new List<Product>(sourceQuery.ToList()).AsQueryable();
 
@@ -79,7 +80,7 @@ namespace FoodDiary.UnitTests.Services
             int productsWithSearchNameCount = 0,
             int productsWithCategoryIdCount = 0)
         {
-            var searchRequest = _fixture.Build<ProductsSearchRequestDto>()
+            var searchRequest = _fixture.Build<ProductsSearchRequest>()
                 .With(r => r.PageNumber, pageIndex)
                 .With(r => r.PageSize, pageSize)
                 .With(r => r.ProductSearchName, productSearchName)
@@ -154,7 +155,7 @@ namespace FoodDiary.UnitTests.Services
         [Fact]
         public async void ValidateProduct_ReturnsValidationResultWithError_WhenGivenProductAlreadyExists()
         {
-            var productData = _fixture.Create<ProductCreateEditDto>();
+            var productData = _fixture.Create<ProductCreateEditRequest>();
             var productsWithTheSameName = _fixture.CreateMany<Product>().ToList();
             _productRepositoryMock.Setup(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Product>>(), default))
                 .ReturnsAsync(productsWithTheSameName);
@@ -177,7 +178,7 @@ namespace FoodDiary.UnitTests.Services
             var originalProduct = _fixture.Build<Product>()
                 .With(p => p.Name, oldProductName)
                 .Create();
-            var editedProductData = _fixture.Build<ProductCreateEditDto>()
+            var editedProductData = _fixture.Build<ProductCreateEditRequest>()
                 .With(p => p.Name, newProductName)
                 .Create();
             var validationResult = _fixture.Build<ValidationResultDto>()
@@ -243,7 +244,7 @@ namespace FoodDiary.UnitTests.Services
         [InlineAutoData("some name")]
         public async void GetProductsDropdownList_ReturnsAllProducts(string productNameFilter)
         {
-            var request = _fixture.Build<ProductDropdownSearchRequestDto>()
+            var request = _fixture.Build<ProductDropdownSearchRequest>()
                 .With(r => r.ProductNameFilter, productNameFilter)
                 .Create();
             var expectedProducts = _fixture.CreateMany<Product>().ToList();

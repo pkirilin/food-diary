@@ -2,9 +2,9 @@
 using System.ComponentModel.DataAnnotations;
 using FoodDiary.Domain.Enums;
 
-namespace FoodDiary.Domain.Dtos
+namespace FoodDiary.API.Requests
 {
-    public class NoteCreateEditDto
+    public class NoteCreateEditRequest
     {
         [EnumDataType(typeof(MealType))]
         public MealType MealType { get; set; }

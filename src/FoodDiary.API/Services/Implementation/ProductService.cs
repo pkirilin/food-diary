@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using FoodDiary.Domain.Dtos;
+using FoodDiary.API.Dtos;
+using FoodDiary.API.Metadata;
+using FoodDiary.API.Requests;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Repositories;
 
@@ -18,7 +20,7 @@ namespace FoodDiary.API.Services.Implementation
             _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
         }
 
-        public async Task<ProductSearchMetadata> SearchProductsAsync(ProductsSearchRequestDto searchRequest, CancellationToken cancellationToken)
+        public async Task<ProductsSearchResultMetadata> SearchProductsAsync(ProductsSearchRequest searchRequest, CancellationToken cancellationToken)
         {
             var searchQuery = _productRepository.GetQueryWithoutTracking();
 
@@ -43,7 +45,7 @@ namespace FoodDiary.API.Services.Implementation
 
             var products = await _productRepository.GetListFromQueryAsync(searchQuery, cancellationToken);
 
-            return new ProductSearchMetadata()
+            return new ProductsSearchResultMetadata()
             {
                 FoundProducts = products,
                 TotalProductsCount = totalProductsCount
@@ -60,7 +62,7 @@ namespace FoodDiary.API.Services.Implementation
             return await _productRepository.GetByIdsAsync(ids, cancellationToken);
         }
 
-        public async Task<ValidationResultDto> ValidateProductAsync(ProductCreateEditDto productData, CancellationToken cancellationToken)
+        public async Task<ValidationResultDto> ValidateProductAsync(ProductCreateEditRequest productData, CancellationToken cancellationToken)
         {
             var query = _productRepository.GetQueryWithoutTracking()
                 .Where(p => p.Name == productData.Name);
@@ -74,7 +76,7 @@ namespace FoodDiary.API.Services.Implementation
             return new ValidationResultDto(true);
         }
 
-        public bool IsEditedProductValid(ProductCreateEditDto editedProductData, Product originalProduct, ValidationResultDto editedProductValidationResult)
+        public bool IsEditedProductValid(ProductCreateEditRequest editedProductData, Product originalProduct, ValidationResultDto editedProductValidationResult)
         {
             bool productHasChanges = editedProductData.Name != originalProduct.Name;
             return !productHasChanges
@@ -117,7 +119,7 @@ namespace FoodDiary.API.Services.Implementation
             await _productRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<IEnumerable<Product>> GetProductsDropdownListAsync(ProductDropdownSearchRequestDto request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Product>> GetProductsDropdownListAsync(ProductDropdownSearchRequest request, CancellationToken cancellationToken)
         {
             var query = _productRepository.GetQueryWithoutTracking();
 

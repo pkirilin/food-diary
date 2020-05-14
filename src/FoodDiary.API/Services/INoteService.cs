@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using FoodDiary.Domain.Dtos;
+using FoodDiary.API.Dtos;
+using FoodDiary.API.Requests;
 using FoodDiary.Domain.Entities;
 
 namespace FoodDiary.API.Services
@@ -10,11 +11,11 @@ namespace FoodDiary.API.Services
     {
         Task<Note> GetNoteByIdAsync(int id, CancellationToken cancellationToken);
 
-        Task<IEnumerable<Note>> SearchNotesAsync(NotesSearchRequestDto request, CancellationToken cancellationToken);
+        Task<IEnumerable<Note>> SearchNotesAsync(NotesSearchRequest request, CancellationToken cancellationToken);
 
         Task<IEnumerable<Note>> GetNotesByIdsAsync(IEnumerable<int> ids, CancellationToken cancellationToken);
 
-        Task<ValidationResultDto> ValidateNoteDataAsync(NoteCreateEditDto noteData, CancellationToken cancellationToken);
+        Task<ValidationResultDto> ValidateNoteDataAsync(NoteCreateEditRequest noteData, CancellationToken cancellationToken);
 
         Task<Note> CreateNoteAsync(Note note, CancellationToken cancellationToken);
 
@@ -26,8 +27,8 @@ namespace FoodDiary.API.Services
 
         Task DeleteNotesAsync(IEnumerable<Note> notes, CancellationToken cancellationToken);
 
-        Task<bool> NoteCanBeMovedAsync(Note noteForMove, NoteMoveRequestDto moveRequest, CancellationToken cancellationToken);
+        Task<bool> NoteCanBeMovedAsync(Note noteForMove, NoteMoveRequest moveRequest, CancellationToken cancellationToken);
 
-        Task<Note> MoveNoteAsync(Note noteForMove, NoteMoveRequestDto moveRequest, CancellationToken cancellationToken);
+        Task<Note> MoveNoteAsync(Note noteForMove, NoteMoveRequest moveRequest, CancellationToken cancellationToken);
     }
 }

@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using FoodDiary.Domain.Dtos;
+using FoodDiary.API.Dtos;
+using FoodDiary.API.Requests;
 using FoodDiary.Domain.Entities;
 
 namespace FoodDiary.API.Services
@@ -12,9 +13,9 @@ namespace FoodDiary.API.Services
 
         Task<Category> GetCategoryByIdAsync(int id, CancellationToken cancellationToken);
 
-        Task<ValidationResultDto> ValidateCategoryAsync(CategoryCreateEditDto newCategoryInfo, CancellationToken cancellationToken);
+        Task<ValidationResultDto> ValidateCategoryAsync(CategoryCreateEditRequest newCategoryInfo, CancellationToken cancellationToken);
 
-        bool IsEditedCategoryValid(CategoryCreateEditDto updatedCategoryInfo, Category originalCategory, ValidationResultDto editedCategoryValidationResult);
+        bool IsEditedCategoryValid(CategoryCreateEditRequest updatedCategoryInfo, Category originalCategory, ValidationResultDto editedCategoryValidationResult);
 
         Task<Category> CreateCategoryAsync(Category category, CancellationToken cancellationToken);
 

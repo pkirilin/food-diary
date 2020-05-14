@@ -4,8 +4,9 @@ using AutoMapper;
 using FluentAssertions;
 using FoodDiary.API;
 using FoodDiary.API.Controllers.v1;
+using FoodDiary.API.Dtos;
+using FoodDiary.API.Requests;
 using FoodDiary.API.Services;
-using FoodDiary.Domain.Dtos;
 using FoodDiary.Domain.Entities;
 using FoodDiary.UnitTests.Customizations;
 using Microsoft.AspNetCore.Mvc;
@@ -64,7 +65,7 @@ namespace FoodDiary.UnitTests.Controllers
         [Fact]
         public async void CreateCategory_CreatesCategory_WhenCategoryCanBeCreated()
         {
-            var categoryInfo = _fixture.Create<CategoryCreateEditDto>();
+            var categoryInfo = _fixture.Create<CategoryCreateEditRequest>();
             var createdCategory = _fixture.Create<Category>();
             var validationResult = _fixture.Build<ValidationResultDto>()
                 .With(r => r.IsValid, true)
@@ -84,7 +85,7 @@ namespace FoodDiary.UnitTests.Controllers
         [Fact]
         public async void CreateCategory_ReturnsBadRequest_WhenModelStateIsInvalid()
         {
-            var categoryInfo = _fixture.Create<CategoryCreateEditDto>();
+            var categoryInfo = _fixture.Create<CategoryCreateEditRequest>();
             var controller = CategoriesController;
             controller.ModelState.AddModelError("error", "error");
 
@@ -98,7 +99,7 @@ namespace FoodDiary.UnitTests.Controllers
         [Fact]
         public async void CreateCategory_ReturnsBadRequest_WhenCategoryCannotBeCreated()
         {
-            var categoryInfo = _fixture.Create<CategoryCreateEditDto>();
+            var categoryInfo = _fixture.Create<CategoryCreateEditRequest>();
             var validationResult = _fixture.Build<ValidationResultDto>()
                 .With(r => r.IsValid, false)
                 .Create();
@@ -116,7 +117,7 @@ namespace FoodDiary.UnitTests.Controllers
         public async void EditCategory_UpdatesCategory_WhenCategoryCanBeUpdated()
         {
             var categoryId = _fixture.Create<int>();
-            var categoryInfo = _fixture.Create<CategoryCreateEditDto>();
+            var categoryInfo = _fixture.Create<CategoryCreateEditRequest>();
             var originalCategory = _fixture.Create<Category>();
             var validationResult = _fixture.Build<ValidationResultDto>()
                 .With(r => r.IsValid, true)
@@ -141,7 +142,7 @@ namespace FoodDiary.UnitTests.Controllers
         public async void EditCategory_ReturnsBadRequest_WhenModelStateIsInvalid()
         {
             var categoryId = _fixture.Create<int>();
-            var categoryInfo = _fixture.Create<CategoryCreateEditDto>();
+            var categoryInfo = _fixture.Create<CategoryCreateEditRequest>();
             var controller = CategoriesController;
             controller.ModelState.AddModelError("error", "error");
 
@@ -158,7 +159,7 @@ namespace FoodDiary.UnitTests.Controllers
         public async void EditCategory_ReturnsNotFound_WhenCategoryForUpdateDoesNotExist()
         {
             var categoryId = _fixture.Create<int>();
-            var categoryInfo = _fixture.Create<CategoryCreateEditDto>();
+            var categoryInfo = _fixture.Create<CategoryCreateEditRequest>();
             _categoryServiceMock.Setup(s => s.GetCategoryByIdAsync(categoryId, default))
                 .ReturnsAsync(null as Category);
 
@@ -175,7 +176,7 @@ namespace FoodDiary.UnitTests.Controllers
         public async void EditCategory_ReturnsBadRequest_WhenCategoryCannotBeUpdated()
         {
             var categoryId = _fixture.Create<int>();
-            var categoryInfo = _fixture.Create<CategoryCreateEditDto>();
+            var categoryInfo = _fixture.Create<CategoryCreateEditRequest>();
             var originalCategory = _fixture.Create<Category>();
             var validationResult = _fixture.Build<ValidationResultDto>()
                 .With(r => r.IsValid, false)

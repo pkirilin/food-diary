@@ -1,10 +1,10 @@
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 using FoodDiary.Domain.Enums;
 
-namespace FoodDiary.Domain.Dtos
+namespace FoodDiary.API.Requests
 {
-    public class NoteMoveRequestDto
+    public class NoteMoveRequest
     {
         [Range(1, Int32.MaxValue)]
         public int NoteId { get; set; }

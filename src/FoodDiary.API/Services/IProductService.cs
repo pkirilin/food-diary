@@ -1,14 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using FoodDiary.Domain.Dtos;
+using FoodDiary.API.Dtos;
+using FoodDiary.API.Metadata;
+using FoodDiary.API.Requests;
 using FoodDiary.Domain.Entities;
 
 namespace FoodDiary.API.Services
 {
     public interface IProductService
     {
-        Task<ProductSearchMetadata> SearchProductsAsync(ProductsSearchRequestDto searchRequest, CancellationToken cancellationToken);
+        Task<ProductsSearchResultMetadata> SearchProductsAsync(ProductsSearchRequest searchRequest, CancellationToken cancellationToken);
 
         Task<Product> GetProductByIdAsync(int id, CancellationToken cancellationToken);
 
@@ -22,12 +24,12 @@ namespace FoodDiary.API.Services
 
         Task DeleteProductsRangeAsync(IEnumerable<Product> products, CancellationToken cancellationToken);
 
-        Task<ValidationResultDto> ValidateProductAsync(ProductCreateEditDto productData, CancellationToken cancellationToken);
+        Task<ValidationResultDto> ValidateProductAsync(ProductCreateEditRequest productData, CancellationToken cancellationToken);
 
-        bool IsEditedProductValid(ProductCreateEditDto editedProductData, Product originalProduct, ValidationResultDto editedProductValidationResult);
+        bool IsEditedProductValid(ProductCreateEditRequest editedProductData, Product originalProduct, ValidationResultDto editedProductValidationResult);
 
         ValidationResultDto AllProductsFetched(IEnumerable<Product> fetchedProducts, IEnumerable<int> requestedIds);
 
-        Task<IEnumerable<Product>> GetProductsDropdownListAsync(ProductDropdownSearchRequestDto request, CancellationToken cancellationToken);
+        Task<IEnumerable<Product>> GetProductsDropdownListAsync(ProductDropdownSearchRequest request, CancellationToken cancellationToken);
     }
 }

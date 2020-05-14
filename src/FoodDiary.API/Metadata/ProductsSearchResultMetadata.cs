@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using FoodDiary.Domain.Entities;
 
-namespace FoodDiary.Domain.Dtos
+namespace FoodDiary.API.Metadata
 {
-    public class ProductSearchMetadata
+    public class ProductsSearchResultMetadata
     {
         public IEnumerable<Product> FoundProducts { get; set; }
 

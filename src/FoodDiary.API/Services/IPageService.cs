@@ -1,14 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using FoodDiary.Domain.Dtos;
+using FoodDiary.API.Dtos;
+using FoodDiary.API.Requests;
 using FoodDiary.Domain.Entities;
 
 namespace FoodDiary.API.Services
 {
     public interface IPageService
     {
-        Task<IEnumerable<Page>> SearchPagesAsync(PageFilterDto pageFilter, CancellationToken cancellationToken);
+        Task<IEnumerable<Page>> SearchPagesAsync(PagesSearchRequest pageFilter, CancellationToken cancellationToken);
 
         Task<Page> GetPageByIdAsync(int pageId, CancellationToken cancellationToken);
 
@@ -16,11 +17,11 @@ namespace FoodDiary.API.Services
 
         Task<Page> CreatePageAsync(Page page, CancellationToken cancellationToken);
 
-        Task<ValidationResultDto> ValidatePageAsync(PageCreateEditDto createPageInfo, CancellationToken cancellationToken);
+        Task<ValidationResultDto> ValidatePageAsync(PageCreateEditRequest createPageInfo, CancellationToken cancellationToken);
 
         Task EditPageAsync(Page page, CancellationToken cancellationToken);
 
-        bool IsEditedPageValid(PageCreateEditDto updatedPageInfo, Page originalPage, ValidationResultDto editedPageValidationResult);
+        bool IsEditedPageValid(PageCreateEditRequest updatedPageInfo, Page originalPage, ValidationResultDto editedPageValidationResult);
 
         Task DeletePageAsync(Page page, CancellationToken cancellationToken);
 

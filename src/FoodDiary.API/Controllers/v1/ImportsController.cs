@@ -3,10 +3,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using FoodDiary.API.Options;
 using FoodDiary.API.Services;
-using FoodDiary.Domain.Dtos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using FoodDiary.Import.Models;
 
 namespace FoodDiary.API.Controllers.v1
 {
@@ -34,7 +34,7 @@ namespace FoodDiary.API.Controllers.v1
             if (importFile.Length > _importOptions.MaxImportFileLengthBytes)
                 return BadRequest("Failed to import pages: import file is too large");
 
-            PagesJsonObjectDto pagesJsonObject;
+            PagesJsonObject pagesJsonObject;
 
             using (var importFileStream = importFile.OpenReadStream())
             {

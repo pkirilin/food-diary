@@ -1,10 +1,10 @@
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 using FoodDiary.Domain.Enums;
 
-namespace FoodDiary.Domain.Dtos
+namespace FoodDiary.API.Requests
 {
-    public class PageFilterDto
+    public class PagesSearchRequest
     {
         [EnumDataType(typeof(SortOrder))]
         public SortOrder SortOrder { get; set; } = SortOrder.Descending;

@@ -1,16 +1,16 @@
 ﻿using System.Collections.Generic;
-using FoodDiary.Domain.Dtos;
+using FoodDiary.Import.Models;
 
 namespace FoodDiary.Import
 {
     public interface IJsonParser
     {
-        IEnumerable<PageJsonItemDto> ParsePages(PagesJsonObjectDto jsonObj);
+        IEnumerable<PageJsonItem> ParsePages(PagesJsonObject jsonObj);
 
-        IEnumerable<NoteJsonItemDto> ParseNotes(IEnumerable<PageJsonItemDto> pagesFromJson);
+        IEnumerable<NoteJsonItem> ParseNotes(IEnumerable<PageJsonItem> pagesFromJson);
 
-        IEnumerable<string> ParseProducts(IEnumerable<NoteJsonItemDto> notesFromJson);
+        IEnumerable<string> ParseProducts(IEnumerable<NoteJsonItem> notesFromJson);
 
-        IEnumerable<string> ParseCategories(IEnumerable<NoteJsonItemDto> notesFromJson);
+        IEnumerable<string> ParseCategories(IEnumerable<NoteJsonItem> notesFromJson);
     }
 }

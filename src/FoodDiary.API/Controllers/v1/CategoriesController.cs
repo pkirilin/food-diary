@@ -5,11 +5,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using FoodDiary.API.Services;
-using FoodDiary.Domain.Dtos;
+using FoodDiary.API.Dtos;
 using FoodDiary.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Logging;
+using FoodDiary.API.Requests;
 
 namespace FoodDiary.API.Controllers.v1
 {
@@ -44,7 +45,7 @@ namespace FoodDiary.API.Controllers.v1
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> CreateCategory([FromBody] CategoryCreateEditDto newCateroryInfo, CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateCategory([FromBody] CategoryCreateEditRequest newCateroryInfo, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
             {
@@ -68,7 +69,7 @@ namespace FoodDiary.API.Controllers.v1
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> EditCategory([FromRoute] int id, [FromBody] CategoryCreateEditDto updatedCategoryInfo, CancellationToken cancellationToken)
+        public async Task<IActionResult> EditCategory([FromRoute] int id, [FromBody] CategoryCreateEditRequest updatedCategoryInfo, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
             {

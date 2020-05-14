@@ -1,10 +1,10 @@
-﻿using FoodDiary.Domain.Dtos;
-using FoodDiary.Domain.Entities;
+﻿using FoodDiary.Domain.Entities;
+using FoodDiary.Import.Models;
 
 namespace FoodDiary.Import.Services
 {
     interface IProductJsonImporter
     {
-        Product ImportProduct(ProductJsonItemDto productFromJson);
+        Product ImportProduct(ProductJsonItem productFromJson);
     }
 }

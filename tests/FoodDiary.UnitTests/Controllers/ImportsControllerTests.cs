@@ -5,7 +5,7 @@ using FluentAssertions;
 using FoodDiary.API.Controllers.v1;
 using FoodDiary.API.Options;
 using FoodDiary.API.Services;
-using FoodDiary.Domain.Dtos;
+using FoodDiary.Import.Models;
 using FoodDiary.UnitTests.Customizations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -61,7 +61,7 @@ namespace FoodDiary.UnitTests.Controllers
         public async void ImportPagesJson_ReturnsOk_WhenImportIsSuccessful(long importFileLengthBytes)
         {
             var streamMock = new Mock<Stream>();
-            var pagesJsonObject = _fixture.Create<PagesJsonObjectDto>();
+            var pagesJsonObject = _fixture.Create<PagesJsonObject>();
             _formFileMock.SetupGet(f => f.Length)
                 .Returns(importFileLengthBytes);
             _formFileMock.Setup(f => f.OpenReadStream())
@@ -86,7 +86,7 @@ namespace FoodDiary.UnitTests.Controllers
             _formFileMock.VerifyGet(f => f.Length, Times.Never);
             _formFileMock.Verify(f => f.OpenReadStream(), Times.Never);
             _importServiceMock.Verify(s => s.DeserializePagesFromJsonAsync(It.IsAny<Stream>(), CancellationToken.None), Times.Never);
-            _importServiceMock.Verify(s => s.RunPagesJsonImportAsync(It.IsAny<PagesJsonObjectDto>(), CancellationToken.None), Times.Never);
+            _importServiceMock.Verify(s => s.RunPagesJsonImportAsync(It.IsAny<PagesJsonObject>(), CancellationToken.None), Times.Never);
             result.Should().BeOfType<BadRequestObjectResult>();
         }
 
@@ -102,7 +102,7 @@ namespace FoodDiary.UnitTests.Controllers
             _formFileMock.VerifyGet(f => f.Length, Times.Once);
             _formFileMock.Verify(f => f.OpenReadStream(), Times.Never);
             _importServiceMock.Verify(s => s.DeserializePagesFromJsonAsync(It.IsAny<Stream>(), CancellationToken.None), Times.Never);
-            _importServiceMock.Verify(s => s.RunPagesJsonImportAsync(It.IsAny<PagesJsonObjectDto>(), CancellationToken.None), Times.Never);
+            _importServiceMock.Verify(s => s.RunPagesJsonImportAsync(It.IsAny<PagesJsonObject>(), CancellationToken.None), Times.Never);
             result.Should().BeOfType<BadRequestObjectResult>();
         }
     }

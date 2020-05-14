@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using FoodDiary.Domain.Dtos;
 using FoodDiary.Domain.Exceptions;
 using FoodDiary.Domain.Repositories;
 using FoodDiary.Import;
+using FoodDiary.Import.Models;
 
 namespace FoodDiary.API.Services.Implementation
 {
@@ -37,7 +37,7 @@ namespace FoodDiary.API.Services.Implementation
             _jsonImporter = pagesJsonEntitiesUpdater ?? throw new ArgumentNullException(nameof(pagesJsonEntitiesUpdater));
         }
 
-        public async Task<PagesJsonObjectDto> DeserializePagesFromJsonAsync(Stream importFileStream, CancellationToken cancellationToken)
+        public async Task<PagesJsonObject> DeserializePagesFromJsonAsync(Stream importFileStream, CancellationToken cancellationToken)
         {
             var options = new JsonSerializerOptions
             {
@@ -46,7 +46,7 @@ namespace FoodDiary.API.Services.Implementation
 
             try
             {
-                return await JsonSerializer.DeserializeAsync<PagesJsonObjectDto>(importFileStream, options, cancellationToken);
+                return await JsonSerializer.DeserializeAsync<PagesJsonObject>(importFileStream, options, cancellationToken);
             }
             catch (JsonException)
             {
@@ -54,7 +54,7 @@ namespace FoodDiary.API.Services.Implementation
             }
         }
 
-        public async Task RunPagesJsonImportAsync(PagesJsonObjectDto jsonObj, CancellationToken cancellationToken)
+        public async Task RunPagesJsonImportAsync(PagesJsonObject jsonObj, CancellationToken cancellationToken)
         {
             var pagesFromJson = _jsonParser.ParsePages(jsonObj);
             var notesFromJson = _jsonParser.ParseNotes(pagesFromJson);

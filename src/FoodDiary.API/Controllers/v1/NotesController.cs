@@ -5,11 +5,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using FoodDiary.API.Services;
-using FoodDiary.Domain.Dtos;
+using FoodDiary.API.Dtos;
 using FoodDiary.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Logging;
+using FoodDiary.API.Requests;
 
 namespace FoodDiary.API.Controllers.v1
 {
@@ -37,7 +38,7 @@ namespace FoodDiary.API.Controllers.v1
 
         [HttpGet]
         [ProducesResponseType(typeof(List<NoteItemDto>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetNotes([FromQuery] NotesSearchRequestDto request, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetNotes([FromQuery] NotesSearchRequest request, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
             {
@@ -58,7 +59,7 @@ namespace FoodDiary.API.Controllers.v1
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> CreateNote([FromBody] NoteCreateEditDto newNote, CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateNote([FromBody] NoteCreateEditRequest newNote, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
             {
@@ -82,7 +83,7 @@ namespace FoodDiary.API.Controllers.v1
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> EditNote([FromRoute] int id, [FromBody] NoteCreateEditDto updatedNote, CancellationToken cancellationToken)
+        public async Task<IActionResult> EditNote([FromRoute] int id, [FromBody] NoteCreateEditRequest updatedNote, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
             {
@@ -142,7 +143,7 @@ namespace FoodDiary.API.Controllers.v1
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> MoveNote([FromBody] NoteMoveRequestDto moveRequest, CancellationToken cancellationToken)
+        public async Task<IActionResult> MoveNote([FromBody] NoteMoveRequest moveRequest, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
             {

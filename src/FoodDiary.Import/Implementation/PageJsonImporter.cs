@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
-using FoodDiary.Domain.Dtos;
 using FoodDiary.Domain.Entities;
+using FoodDiary.Import.Models;
 using FoodDiary.Import.Services;
 
 namespace FoodDiary.Import.Implementation
@@ -18,7 +18,7 @@ namespace FoodDiary.Import.Implementation
             _noteImporter = noteImporter ?? throw new ArgumentNullException(nameof(noteImporter));
         }
 
-        public void ImportPage(PageJsonItemDto pageFromJson, out Page createdPage)
+        public void ImportPage(PageJsonItem pageFromJson, out Page createdPage)
         {
             if (pageFromJson == null)
                 throw new ArgumentNullException(nameof(pageFromJson));

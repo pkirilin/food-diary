@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using FoodDiary.Domain.Dtos;
+using FoodDiary.API.Dtos;
+using FoodDiary.API.Requests;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Repositories;
 
@@ -25,7 +26,7 @@ namespace FoodDiary.API.Services.Implementation
             _notesOrderService = notesOrderService ?? throw new ArgumentNullException(nameof(notesOrderService));
         }
 
-        public async Task<IEnumerable<Note>> SearchNotesAsync(NotesSearchRequestDto request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Note>> SearchNotesAsync(NotesSearchRequest request, CancellationToken cancellationToken)
         {
             var query = _noteRepository.GetQueryWithoutTracking()
                 .Where(n => n.PageId == request.PageId);
@@ -56,7 +57,7 @@ namespace FoodDiary.API.Services.Implementation
             );
         }
 
-        public async Task<ValidationResultDto> ValidateNoteDataAsync(NoteCreateEditDto noteData, CancellationToken cancellationToken)
+        public async Task<ValidationResultDto> ValidateNoteDataAsync(NoteCreateEditRequest noteData, CancellationToken cancellationToken)
         {
             var productForNote = await _productRepository.GetByIdAsync(noteData.ProductId, cancellationToken);
             if (productForNote == null)
@@ -100,7 +101,7 @@ namespace FoodDiary.API.Services.Implementation
             await _noteRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<bool> NoteCanBeMovedAsync(Note noteForMove, NoteMoveRequestDto moveRequest, CancellationToken cancellationToken)
+        public async Task<bool> NoteCanBeMovedAsync(Note noteForMove, NoteMoveRequest moveRequest, CancellationToken cancellationToken)
         {
             var q = _noteRepository.GetQueryWithoutTracking()
                 .Where(n => n.PageId == noteForMove.PageId && n.MealType == moveRequest.DestMeal);
@@ -108,7 +109,7 @@ namespace FoodDiary.API.Services.Implementation
             return moveRequest.Position >= 0 && moveRequest.Position <= maxDisplayOrder + 1;
         }
 
-        public async Task<Note> MoveNoteAsync(Note noteForMove, NoteMoveRequestDto moveRequest, CancellationToken cancellationToken)
+        public async Task<Note> MoveNoteAsync(Note noteForMove, NoteMoveRequest moveRequest, CancellationToken cancellationToken)
         {
             await _notesOrderService.ReorderNotesOnMoveAsync(noteForMove, moveRequest, cancellationToken);
 

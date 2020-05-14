@@ -1,6 +1,6 @@
-﻿namespace FoodDiary.Domain.Dtos
+﻿namespace FoodDiary.API.Dtos
 {
-    public class CategoryDropdownItemDto
+    public class ProductDropdownItemDto
     {
         public int Id { get; set; }
 

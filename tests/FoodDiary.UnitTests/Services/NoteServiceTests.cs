@@ -5,13 +5,13 @@ using FluentAssertions;
 using FoodDiary.API.Services;
 using FoodDiary.API.Services.Implementation;
 using FoodDiary.Domain.Abstractions;
-using FoodDiary.Domain.Dtos;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Enums;
 using FoodDiary.Domain.Repositories;
 using FoodDiary.UnitTests.Customizations;
 using Moq;
 using Xunit;
+using FoodDiary.API.Requests;
 
 namespace FoodDiary.UnitTests.Services
 {
@@ -68,7 +68,7 @@ namespace FoodDiary.UnitTests.Services
         [InlineAutoData(1, MealType.Breakfast)]
         public async void SearchNotesAsync_ReturnsNotesForRequestedParameters(int pageId, MealType? mealType)
         {
-            var request = _fixture.Build<NotesSearchRequestDto>()
+            var request = _fixture.Build<NotesSearchRequest>()
                 .With(r => r.PageId, pageId)
                 .With(r => r.MealType, mealType)
                 .Create();
@@ -103,7 +103,7 @@ namespace FoodDiary.UnitTests.Services
         [Fact]
         public async void ValidateNoteDataAsync_ReturnsTrue_WhenNoteDataIsValid()
         {
-            var noteData = _fixture.Create<NoteCreateEditDto>();
+            var noteData = _fixture.Create<NoteCreateEditRequest>();
             var productForNote = _fixture.Create<Product>();
             _productRepositoryMock.Setup(r => r.GetByIdAsync(noteData.ProductId, default))
                 .ReturnsAsync(productForNote);
@@ -185,7 +185,7 @@ namespace FoodDiary.UnitTests.Services
         public async void NoteCanBeMoved_ReturnsTrue_WhenRequestedPositionIsInAllowedRange(int expectedMaxDisplayOrder, int requestedPosition)
         {
             var noteForMove = _fixture.Create<Note>();
-            var moveRequest = _fixture.Build<NoteMoveRequestDto>()
+            var moveRequest = _fixture.Build<NoteMoveRequest>()
                 .With(n => n.Position, requestedPosition)
                 .Create();
             _noteRepositoryMock.Setup(r => r.GetMaxDisplayOrderFromQueryAsync(It.IsAny<IQueryable<Note>>(), default))
@@ -202,7 +202,7 @@ namespace FoodDiary.UnitTests.Services
         public async void MoveNoteAsync_UpdatesNoteWithReordering()
         {
             var noteForMove = _fixture.Create<Note>();
-            var moveRequest = _fixture.Create<NoteMoveRequestDto>();
+            var moveRequest = _fixture.Create<NoteMoveRequest>();
 
             var result = await NoteService.MoveNoteAsync(noteForMove, moveRequest, default);
 

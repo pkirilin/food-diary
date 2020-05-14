@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
-using FoodDiary.Domain.Dtos;
 using FoodDiary.Domain.Entities;
+using FoodDiary.Import.Models;
 
 namespace FoodDiary.Import
 {
     public interface IJsonImporter
     {
-        void Import(PagesJsonObjectDto jsonObj, out List<Page> createdPages);
+        void Import(PagesJsonObject jsonObj, out List<Page> createdPages);
     }
 }

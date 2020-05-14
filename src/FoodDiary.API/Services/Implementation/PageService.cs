@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using FoodDiary.Domain.Dtos;
+using FoodDiary.API.Dtos;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Repositories;
 using FoodDiary.Domain.Enums;
 using System;
+using FoodDiary.API.Requests;
 
 namespace FoodDiary.API.Services.Implementation
 {
@@ -19,7 +20,7 @@ namespace FoodDiary.API.Services.Implementation
             _pageRepository = pageRepository ?? throw new ArgumentNullException(nameof(pageRepository));
         }
 
-        public async Task<IEnumerable<Page>> SearchPagesAsync(PageFilterDto pageFilter, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Page>> SearchPagesAsync(PagesSearchRequest pageFilter, CancellationToken cancellationToken)
         {
             var searchPagesQuery = _pageRepository.GetQueryWithoutTracking();
 
@@ -59,7 +60,7 @@ namespace FoodDiary.API.Services.Implementation
             return createdPage;
         }
 
-        public async Task<ValidationResultDto> ValidatePageAsync(PageCreateEditDto createPageInfo, CancellationToken cancellationToken)
+        public async Task<ValidationResultDto> ValidatePageAsync(PageCreateEditRequest createPageInfo, CancellationToken cancellationToken)
         {
             var query = _pageRepository.GetQueryWithoutTracking()
                 .Where(p => p.Date == createPageInfo.Date);
@@ -79,7 +80,7 @@ namespace FoodDiary.API.Services.Implementation
             await _pageRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
         }
 
-        public bool IsEditedPageValid(PageCreateEditDto updatedPageInfo, Page originalPage, ValidationResultDto editedPageValidationResult)
+        public bool IsEditedPageValid(PageCreateEditRequest updatedPageInfo, Page originalPage, ValidationResultDto editedPageValidationResult)
         {
             bool pageHasChanges = originalPage.Date != updatedPageInfo.Date;
             return !pageHasChanges || (pageHasChanges && editedPageValidationResult.IsValid);

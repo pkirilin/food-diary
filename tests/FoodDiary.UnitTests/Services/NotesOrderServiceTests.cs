@@ -5,12 +5,12 @@ using AutoFixture.Xunit2;
 using FluentAssertions;
 using FoodDiary.API.Services;
 using FoodDiary.API.Services.Implementation;
-using FoodDiary.Domain.Dtos;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Repositories;
 using FoodDiary.UnitTests.Customizations;
 using Moq;
 using Xunit;
+using FoodDiary.API.Requests;
 
 namespace FoodDiary.UnitTests.Services
 {
@@ -91,7 +91,7 @@ namespace FoodDiary.UnitTests.Services
         public async void ReorderNotesOnMoveAsync_RecalculatesDisplayOrders_OfNotesFromSourceMealWithoutMoved_And_NotesFromDestMealWithMoved()
         {
             var noteForMove = _fixture.Create<Note>();
-            var moveRequest = _fixture.Create<NoteMoveRequestDto>();
+            var moveRequest = _fixture.Create<NoteMoveRequest>();
             var notesForReorderFromSourceMeal = _fixture.CreateMany<Note>().ToList();
             var notesForReorderFromDestMeal = _fixture.CreateMany<Note>().ToList();
             var expectedNoteOrdersFromSourceMeal = GetExpectedNoteOrders(notesForReorderFromSourceMeal);

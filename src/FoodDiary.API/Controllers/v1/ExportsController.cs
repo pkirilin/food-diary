@@ -6,10 +6,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using FoodDiary.API.Services;
-using FoodDiary.Domain.Dtos;
 using FoodDiary.PdfGenerator;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using FoodDiary.API.Requests;
+using FoodDiary.Import.Models;
 
 namespace FoodDiary.API.Controllers.v1
 {
@@ -32,7 +33,7 @@ namespace FoodDiary.API.Controllers.v1
         [HttpGet("pdf")]
         [ProducesResponseType(typeof(byte[]), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> ExportPagesPdf([FromQuery] PagesExportRequestDto request, CancellationToken cancellationToken)
+        public async Task<IActionResult> ExportPagesPdf([FromQuery] PagesExportRequest request, CancellationToken cancellationToken)
         {
             if (request.StartDate > request.EndDate)
             {
@@ -49,7 +50,7 @@ namespace FoodDiary.API.Controllers.v1
         [HttpGet("json")]
         [ProducesResponseType(typeof(byte[]), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> ExportPagesJson([FromQuery] PagesExportRequestDto request, CancellationToken cancellationToken)
+        public async Task<IActionResult> ExportPagesJson([FromQuery] PagesExportRequest request, CancellationToken cancellationToken)
         {
             if (request.StartDate > request.EndDate)
             {
@@ -58,7 +59,7 @@ namespace FoodDiary.API.Controllers.v1
             }
 
             var pagesForExport = await _exportService.GetPagesForExportAsync(request.StartDate, request.EndDate, true, cancellationToken);
-            var pagesJsonExportObject = _mapper.Map<PagesJsonObjectDto>(pagesForExport);
+            var pagesJsonExportObject = _mapper.Map<PagesJsonObject>(pagesForExport);
 
             byte[] fileContents;
             using (var stream = new MemoryStream())

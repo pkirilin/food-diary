@@ -5,11 +5,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using FoodDiary.API.Services;
-using FoodDiary.Domain.Dtos;
+using FoodDiary.API.Dtos;
 using FoodDiary.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Logging;
+using FoodDiary.API.Requests;
 
 namespace FoodDiary.API.Controllers.v1
 {
@@ -38,7 +39,7 @@ namespace FoodDiary.API.Controllers.v1
         [HttpGet]
         [ProducesResponseType(typeof(ProductsSearchResultDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> GetProducts([FromQuery] ProductsSearchRequestDto searchRequest, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetProducts([FromQuery] ProductsSearchRequest searchRequest, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
             {
@@ -69,21 +70,21 @@ namespace FoodDiary.API.Controllers.v1
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> CreateProduct([FromBody] ProductCreateEditDto productData, CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateProduct([FromBody] ProductCreateEditRequest request, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var productValidationResult = await _productService.ValidateProductAsync(productData, cancellationToken);
+            var productValidationResult = await _productService.ValidateProductAsync(request, cancellationToken);
             if (!productValidationResult.IsValid)
             {
                 ModelState.AddModelError(productValidationResult.ErrorKey, productValidationResult.ErrorMessage);
                 return BadRequest(ModelState);
             }
 
-            var product = _mapper.Map<Product>(productData);
+            var product = _mapper.Map<Product>(request);
             await _productService.CreateProductAsync(product, cancellationToken);
             return Ok();
         }
@@ -92,7 +93,7 @@ namespace FoodDiary.API.Controllers.v1
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> EditProduct([FromRoute] int id, [FromBody] ProductCreateEditDto productData, CancellationToken cancellationToken)
+        public async Task<IActionResult> EditProduct([FromRoute] int id, [FromBody] ProductCreateEditRequest request, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
             {
@@ -105,14 +106,14 @@ namespace FoodDiary.API.Controllers.v1
                 return NotFound();
             }
 
-            var productValidationResult = await _productService.ValidateProductAsync(productData, cancellationToken);
-            if (!_productService.IsEditedProductValid(productData, originalProduct, productValidationResult))
+            var productValidationResult = await _productService.ValidateProductAsync(request, cancellationToken);
+            if (!_productService.IsEditedProductValid(request, originalProduct, productValidationResult))
             {
                 ModelState.AddModelError(productValidationResult.ErrorKey, productValidationResult.ErrorMessage);
                 return BadRequest(ModelState);
             }
 
-            originalProduct = _mapper.Map(productData, originalProduct);
+            originalProduct = _mapper.Map(request, originalProduct);
             await _productService.EditProductAsync(originalProduct, cancellationToken);
             return Ok();
         }
@@ -151,7 +152,7 @@ namespace FoodDiary.API.Controllers.v1
 
         [HttpGet("dropdown")]
         [ProducesResponseType(typeof(IEnumerable<ProductDropdownItemDto>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetProductsDropdownList([FromQuery] ProductDropdownSearchRequestDto request, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetProductsDropdownList([FromQuery] ProductDropdownSearchRequest request, CancellationToken cancellationToken)
         {
             var products = await _productService.GetProductsDropdownListAsync(request, cancellationToken);
             var productsDropdownListResponse = _mapper.Map<IEnumerable<ProductDropdownItemDto>>(products);

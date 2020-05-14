@@ -1,6 +1,6 @@
 ﻿using FoodDiary.Domain.Enums;
 
-namespace FoodDiary.Domain.Dtos
+namespace FoodDiary.API.Dtos
 {
     public class NoteItemDto
     {

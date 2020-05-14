@@ -1,5 +1,5 @@
 ﻿using AutoFixture;
-using FoodDiary.Domain.Dtos;
+using FoodDiary.Import.Models;
 
 namespace FoodDiary.Import.UnitTests.Customizations
 {
@@ -7,7 +7,7 @@ namespace FoodDiary.Import.UnitTests.Customizations
     {
         public void Customize(IFixture fixture)
         {
-            var product = fixture.Build<ProductJsonItemDto>()
+            var product = fixture.Build<ProductJsonItem>()
                 .With(p => p.Name, "Product 1")
                 .Create();
 
@@ -19,7 +19,7 @@ namespace FoodDiary.Import.UnitTests.Customizations
     {
         public void Customize(IFixture fixture)
         {
-            var product = fixture.Build<ProductJsonItemDto>()
+            var product = fixture.Build<ProductJsonItem>()
                 .With(p => p.Name, "Not existing product")
                 .Create();
 

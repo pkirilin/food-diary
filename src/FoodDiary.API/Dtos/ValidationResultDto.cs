@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FoodDiary.Domain.Dtos
+namespace FoodDiary.API.Dtos
 {
     public struct ValidationResultDto
     {

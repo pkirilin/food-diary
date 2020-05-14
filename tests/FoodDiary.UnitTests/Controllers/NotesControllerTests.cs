@@ -6,7 +6,7 @@ using FluentAssertions;
 using FoodDiary.API;
 using FoodDiary.API.Controllers.v1;
 using FoodDiary.API.Services;
-using FoodDiary.Domain.Dtos;
+using FoodDiary.API.Dtos;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Utils;
 using FoodDiary.Infrastructure.Utils;
@@ -16,6 +16,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
+using FoodDiary.API.Requests;
 
 namespace FoodDiary.UnitTests.Controllers
 {
@@ -62,7 +63,7 @@ namespace FoodDiary.UnitTests.Controllers
         [Fact]
         public async void GetNotes_ReturnsFilteredNotes_WhenModelStateIsValid()
         {
-            var request = _fixture.Create<NotesSearchRequestDto>();
+            var request = _fixture.Create<NotesSearchRequest>();
             var notes = _fixture.CreateMany<Note>();
             var requestedPage = _fixture.Create<Page>();
             _pageServiceMock.Setup(s => s.GetPageByIdAsync(request.PageId, default))
@@ -80,7 +81,7 @@ namespace FoodDiary.UnitTests.Controllers
         [Fact]
         public async void GetNotes_ReturnsBadRequest_WhenModelStateIsInvalid()
         {
-            var request = _fixture.Create<NotesSearchRequestDto>();
+            var request = _fixture.Create<NotesSearchRequest>();
             var notes = _fixture.CreateMany<Note>();
             var controller = NotesController;
             controller.ModelState.AddModelError(_fixture.Create<string>(), _fixture.Create<string>());
@@ -95,7 +96,7 @@ namespace FoodDiary.UnitTests.Controllers
         [Fact]
         public async void GetNotes_ReturnsNotFound_WhenRequestedPageDoesNotExist()
         {
-            var request = _fixture.Create<NotesSearchRequestDto>();
+            var request = _fixture.Create<NotesSearchRequest>();
             _pageServiceMock.Setup(s => s.GetPageByIdAsync(request.PageId, default))
                 .ReturnsAsync(null as Page);
 
@@ -109,7 +110,7 @@ namespace FoodDiary.UnitTests.Controllers
         [Fact]
         public async void CreateNote_CreatesNoteSuccessfully_WhenNoteDataIsValid()
         {
-            var note = _fixture.Create<NoteCreateEditDto>();
+            var note = _fixture.Create<NoteCreateEditRequest>();
             var validationResult = _fixture.Build<ValidationResultDto>()
                 .With(r => r.IsValid, true)
                 .Create();
@@ -126,7 +127,7 @@ namespace FoodDiary.UnitTests.Controllers
         [Fact]
         public async void CreateNote_ReturnsBadRequest_WhenModelStateIsInvalid()
         {
-            var note = _fixture.Create<NoteCreateEditDto>();
+            var note = _fixture.Create<NoteCreateEditRequest>();
             var controller = NotesController;
             controller.ModelState.AddModelError("error", "error");
 
@@ -140,7 +141,7 @@ namespace FoodDiary.UnitTests.Controllers
         [Fact]
         public async void CreateNote_ReturnsBadRequest_WhenNoteDataIsInvalid()
         {
-            var note = _fixture.Create<NoteCreateEditDto>();
+            var note = _fixture.Create<NoteCreateEditRequest>();
             var validationResult = _fixture.Build<ValidationResultDto>()
                .With(r => r.IsValid, false)
                .Create();
@@ -158,7 +159,7 @@ namespace FoodDiary.UnitTests.Controllers
         public async void EditNote_UpdatesNoteSuccessfully_WhenRequestedNoteExists()
         {
             var noteId = _fixture.Create<int>();
-            var noteData = _fixture.Create<NoteCreateEditDto>();
+            var noteData = _fixture.Create<NoteCreateEditRequest>();
             var noteForUpdate = _fixture.Create<Note>();
             var validationResult = _fixture.Build<ValidationResultDto>()
                .With(r => r.IsValid, true)
@@ -180,7 +181,7 @@ namespace FoodDiary.UnitTests.Controllers
         public async void EditNote_ReturnsBadRequest_WhenModelStateIsInvalid()
         {
             var noteId = _fixture.Create<int>();
-            var noteData = _fixture.Create<NoteCreateEditDto>();
+            var noteData = _fixture.Create<NoteCreateEditRequest>();
             var controller = NotesController;
             controller.ModelState.AddModelError("error", "error");
 
@@ -196,7 +197,7 @@ namespace FoodDiary.UnitTests.Controllers
         public async void EditNote_ReturnsBadRequest_WhenNoteDataIsInvalid()
         {
             var noteId = _fixture.Create<int>();
-            var noteData = _fixture.Create<NoteCreateEditDto>();
+            var noteData = _fixture.Create<NoteCreateEditRequest>();
             var validationResult = _fixture.Build<ValidationResultDto>()
                .With(r => r.IsValid, false)
                .Create();
@@ -215,7 +216,7 @@ namespace FoodDiary.UnitTests.Controllers
         public async void EditNote_ReturnsNotFound_WhenRequestedNoteDoesNotExist()
         {
             var noteId = _fixture.Create<int>();
-            var noteData = _fixture.Create<NoteCreateEditDto>();
+            var noteData = _fixture.Create<NoteCreateEditRequest>();
             var validationResult = _fixture.Build<ValidationResultDto>()
               .With(r => r.IsValid, true)
               .Create();
@@ -301,7 +302,7 @@ namespace FoodDiary.UnitTests.Controllers
         [Fact]
         public async void MoveNote_MovesNoteSuccessfully_WhenNoteCanBeMoved()
         {
-            var moveRequest = _fixture.Create<NoteMoveRequestDto>();
+            var moveRequest = _fixture.Create<NoteMoveRequest>();
             var noteForMove = _fixture.Create<Note>();
 
             _noteServiceMock.Setup(s => s.GetNoteByIdAsync(moveRequest.NoteId, default))
@@ -320,7 +321,7 @@ namespace FoodDiary.UnitTests.Controllers
         [Fact]
         public async void MoveNote_ReturnsBadRequest_WhenModelStateIsInvalid()
         {
-            var moveRequest = _fixture.Create<NoteMoveRequestDto>();
+            var moveRequest = _fixture.Create<NoteMoveRequest>();
             var controller = NotesController;
             controller.ModelState.AddModelError("error", "error");
 
@@ -335,7 +336,7 @@ namespace FoodDiary.UnitTests.Controllers
         [Fact]
         public async void MoveNote_ReturnsNotFound_WhenNoteForMoveDoesNotExist()
         {
-            var moveRequest = _fixture.Create<NoteMoveRequestDto>();
+            var moveRequest = _fixture.Create<NoteMoveRequest>();
 
             _noteServiceMock.Setup(s => s.GetNoteByIdAsync(moveRequest.NoteId, default))
                 .ReturnsAsync(null as Note);
@@ -351,7 +352,7 @@ namespace FoodDiary.UnitTests.Controllers
         [Fact]
         public async void MoveNote_ReturnsBadRequest_WhenNoteCannotBeMoved()
         {
-            var moveRequest = _fixture.Create<NoteMoveRequestDto>();
+            var moveRequest = _fixture.Create<NoteMoveRequest>();
             var noteForMove = _fixture.Create<Note>();
 
             _noteServiceMock.Setup(s => s.GetNoteByIdAsync(moveRequest.NoteId, default))

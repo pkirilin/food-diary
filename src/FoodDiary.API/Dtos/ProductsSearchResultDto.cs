@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace FoodDiary.Domain.Dtos
+namespace FoodDiary.API.Dtos
 {
     public class ProductsSearchResultDto
     {

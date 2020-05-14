@@ -6,11 +6,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using FoodDiary.API.Services;
-using FoodDiary.Domain.Dtos;
+using FoodDiary.API.Dtos;
 using FoodDiary.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Logging;
+using FoodDiary.API.Requests;
 
 namespace FoodDiary.API.Controllers.v1
 {
@@ -35,14 +36,14 @@ namespace FoodDiary.API.Controllers.v1
 
         [HttpGet]
         [ProducesResponseType(typeof(List<PageItemDto>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetPages([FromQuery] PageFilterDto pageFilter, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetPages([FromQuery] PagesSearchRequest request, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var filteredPages = await _pageService.SearchPagesAsync(pageFilter, cancellationToken);
+            var filteredPages = await _pageService.SearchPagesAsync(request, cancellationToken);
             var pagesListResponse = _mapper.Map<List<PageItemDto>>(filteredPages);
             return Ok(pagesListResponse);
         }
@@ -50,7 +51,7 @@ namespace FoodDiary.API.Controllers.v1
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> CreatePage([FromBody] PageCreateEditDto request, CancellationToken cancellationToken)
+        public async Task<IActionResult> CreatePage([FromBody] PageCreateEditRequest request, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
             {
@@ -73,7 +74,7 @@ namespace FoodDiary.API.Controllers.v1
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> EditPage([FromRoute] int id, [FromBody] PageCreateEditDto request, CancellationToken cancellationToken)
+        public async Task<IActionResult> EditPage([FromRoute] int id, [FromBody] PageCreateEditRequest request, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
             {

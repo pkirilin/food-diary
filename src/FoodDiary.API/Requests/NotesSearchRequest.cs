@@ -2,9 +2,9 @@
 using System.ComponentModel.DataAnnotations;
 using FoodDiary.Domain.Enums;
 
-namespace FoodDiary.Domain.Dtos
+namespace FoodDiary.API.Requests
 {
-    public class NotesSearchRequestDto
+    public class NotesSearchRequest
     {
         [Required]
         [Range(1, Int32.MaxValue)]

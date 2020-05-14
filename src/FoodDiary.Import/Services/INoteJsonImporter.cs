@@ -1,10 +1,10 @@
-﻿using FoodDiary.Domain.Dtos;
-using FoodDiary.Domain.Entities;
+﻿using FoodDiary.Domain.Entities;
+using FoodDiary.Import.Models;
 
 namespace FoodDiary.Import.Services
 {
     interface INoteJsonImporter
     {
-        Note ImportNote(NoteJsonItemDto noteFromJson);
+        Note ImportNote(NoteJsonItem noteFromJson);
     }
 }

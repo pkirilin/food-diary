@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using AutoFixture;
-using FoodDiary.Domain.Dtos;
+using FoodDiary.Import.Models;
 
 namespace FoodDiary.Import.UnitTests.Customizations
 {
@@ -9,33 +9,33 @@ namespace FoodDiary.Import.UnitTests.Customizations
     {
         public void Customize(IFixture fixture)
         {
-            var product1 = fixture.Build<ProductJsonItemDto>()
+            var product1 = fixture.Build<ProductJsonItem>()
                 .With(p => p.Name, "Valid product name 1")
                 .With(p => p.CaloriesCost, 150)
                 .With(p => p.Category, "Valid category name 1")
                 .Create();
-            var product2 = fixture.Build<ProductJsonItemDto>()
+            var product2 = fixture.Build<ProductJsonItem>()
                 .With(p => p.Name, "Valid product name 1")
                 .With(p => p.CaloriesCost, 200)
                 .With(p => p.Category, "Valid category name 2")
                 .Create();
-            var product3 = fixture.Build<ProductJsonItemDto>()
+            var product3 = fixture.Build<ProductJsonItem>()
                 .With(p => p.Name, "Valid product name 2")
                 .With(p => p.CaloriesCost, 120)
                 .With(p => p.Category, "Valid category name 2")
                 .Create();
 
-            var note1 = fixture.Build<NoteJsonItemDto>()
+            var note1 = fixture.Build<NoteJsonItem>()
                 .With(n => n.Product, product1)
                 .Create();
-            var note2 = fixture.Build<NoteJsonItemDto>()
+            var note2 = fixture.Build<NoteJsonItem>()
                 .With(n => n.Product, product2)
                 .Create();
-            var note3 = fixture.Build<NoteJsonItemDto>()
+            var note3 = fixture.Build<NoteJsonItem>()
                 .With(n => n.Product, product3)
                 .Create();
 
-            var notes = new List<NoteJsonItemDto>() { note1, note2, note3 };
+            var notes = new List<NoteJsonItem>() { note1, note2, note3 };
 
             fixture.Register(() => notes.AsEnumerable());
         }
@@ -45,49 +45,49 @@ namespace FoodDiary.Import.UnitTests.Customizations
     {
         public void Customize(IFixture fixture)
         {
-            var productWithLongName = fixture.Build<ProductJsonItemDto>()
+            var productWithLongName = fixture.Build<ProductJsonItem>()
                 .With(p => p.Name, new string(fixture.Create<char>(), 65))
                 .With(p => p.CaloriesCost, 100)
                 .With(p => p.Category, "Valid category name")
                 .Create();
-            var productWithShortName = fixture.Build<ProductJsonItemDto>()
+            var productWithShortName = fixture.Build<ProductJsonItem>()
                 .With(p => p.Name, new string(fixture.Create<char>(), 1))
                 .With(p => p.CaloriesCost, 100)
                 .With(p => p.Category, "Valid category name")
                 .Create();
-            var productWithZeroCaloriesCost = fixture.Build<ProductJsonItemDto>()
+            var productWithZeroCaloriesCost = fixture.Build<ProductJsonItem>()
                 .With(p => p.Name, "Valid product name")
                 .With(p => p.CaloriesCost, 0)
                 .With(p => p.Category, "Valid category name")
                 .Create();
-            var productWithHugeCaloriesCost = fixture.Build<ProductJsonItemDto>()
+            var productWithHugeCaloriesCost = fixture.Build<ProductJsonItem>()
                 .With(p => p.Name, "Valid product name")
                 .With(p => p.CaloriesCost, 1001)
                 .With(p => p.Category, "Valid category name")
                 .Create();
-            var productWithNullName = fixture.Build<ProductJsonItemDto>()
+            var productWithNullName = fixture.Build<ProductJsonItem>()
                 .With(p => p.Name, null as string)
                 .With(p => p.CaloriesCost, 100)
                 .With(p => p.Category, "Valid category name")
                 .Create();
 
-            var note1 = fixture.Build<NoteJsonItemDto>()
+            var note1 = fixture.Build<NoteJsonItem>()
                 .With(n => n.Product, productWithLongName)
                 .Create();
-            var note2 = fixture.Build<NoteJsonItemDto>()
+            var note2 = fixture.Build<NoteJsonItem>()
                 .With(n => n.Product, productWithShortName)
                 .Create();
-            var note3 = fixture.Build<NoteJsonItemDto>()
+            var note3 = fixture.Build<NoteJsonItem>()
                 .With(n => n.Product, productWithZeroCaloriesCost)
                 .Create();
-            var note4 = fixture.Build<NoteJsonItemDto>()
+            var note4 = fixture.Build<NoteJsonItem>()
                 .With(n => n.Product, productWithHugeCaloriesCost)
                 .Create();
-            var note5 = fixture.Build<NoteJsonItemDto>()
+            var note5 = fixture.Build<NoteJsonItem>()
                 .With(n => n.Product, productWithNullName)
                 .Create();
 
-            var notes = new List<NoteJsonItemDto>() { note1, note2, note3, note4, note5 };
+            var notes = new List<NoteJsonItem>() { note1, note2, note3, note4, note5 };
 
             fixture.Register(() => notes.AsEnumerable());
         }
@@ -97,33 +97,33 @@ namespace FoodDiary.Import.UnitTests.Customizations
     {
         public void Customize(IFixture fixture)
         {
-            var productWithShortCategoryName = fixture.Build<ProductJsonItemDto>()
+            var productWithShortCategoryName = fixture.Build<ProductJsonItem>()
                 .With(p => p.Name, "Valid product name")
                 .With(p => p.CaloriesCost, 150)
                 .With(p => p.Category, new string(fixture.Create<char>(), 1))
                 .Create();
-            var productWithLongCategoryName = fixture.Build<ProductJsonItemDto>()
+            var productWithLongCategoryName = fixture.Build<ProductJsonItem>()
                 .With(p => p.Name, "Valid product name")
                 .With(p => p.CaloriesCost, 200)
                 .With(p => p.Category, new string(fixture.Create<char>(), 65))
                 .Create();
-            var productWithNullCategoryName = fixture.Build<ProductJsonItemDto>()
+            var productWithNullCategoryName = fixture.Build<ProductJsonItem>()
                 .With(p => p.Name, "Valid product name")
                 .With(p => p.CaloriesCost, 200)
                 .With(p => p.Category, null as string)
                 .Create();
 
-            var note1 = fixture.Build<NoteJsonItemDto>()
+            var note1 = fixture.Build<NoteJsonItem>()
                 .With(n => n.Product, productWithShortCategoryName)
                 .Create();
-            var note2 = fixture.Build<NoteJsonItemDto>()
+            var note2 = fixture.Build<NoteJsonItem>()
                 .With(n => n.Product, productWithLongCategoryName)
                 .Create();
-            var note3 = fixture.Build<NoteJsonItemDto>()
+            var note3 = fixture.Build<NoteJsonItem>()
                 .With(n => n.Product, productWithNullCategoryName)
                 .Create();
 
-            var notes = new List<NoteJsonItemDto>() { note1, note2, note3 };
+            var notes = new List<NoteJsonItem>() { note1, note2, note3 };
 
             fixture.Register(() => notes.AsEnumerable());
         }

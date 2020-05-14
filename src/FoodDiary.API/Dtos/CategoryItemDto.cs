@@ -1,4 +1,4 @@
-namespace FoodDiary.Domain.Dtos
+﻿namespace FoodDiary.API.Dtos
 {
     public class CategoryItemDto
     {

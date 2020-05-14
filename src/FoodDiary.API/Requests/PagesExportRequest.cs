@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace FoodDiary.Domain.Dtos
+namespace FoodDiary.API.Requests
 {
-    public class PagesExportRequestDto
+    public class PagesExportRequest
     {
         public DateTime StartDate { get; set; }
 

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace FoodDiary.Domain.Dtos
+namespace FoodDiary.API.Requests
 {
-    public class PageCreateEditDto
+    public class PageCreateEditRequest
     {
         [Required]
         public DateTime Date { get; set; }

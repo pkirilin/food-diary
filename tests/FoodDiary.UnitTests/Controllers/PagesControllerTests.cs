@@ -1,4 +1,4 @@
-﻿using FoodDiary.Domain.Dtos;
+﻿using FoodDiary.API.Dtos;
 using Xunit;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 using FoodDiary.Domain.Utils;
 using FoodDiary.Infrastructure.Utils;
 using FoodDiary.API.Services;
+using FoodDiary.API.Requests;
 
 namespace FoodDiary.UnitTests.Controllers
 {
@@ -56,7 +57,7 @@ namespace FoodDiary.UnitTests.Controllers
         [Fact]
         public async void GetPages_ReturnsFilteredPages_WhenModelStateIsValid()
         {
-            var pageFilter = _fixture.Create<PageFilterDto>();
+            var pageFilter = _fixture.Create<PagesSearchRequest>();
             var expectedPages = _fixture.CreateMany<Page>();
             _pageServiceMock.Setup(s => s.SearchPagesAsync(pageFilter, default))
                 .ReturnsAsync(expectedPages);
@@ -71,7 +72,7 @@ namespace FoodDiary.UnitTests.Controllers
         [Fact]
         public async void GetPages_ReturnsBadRequest_WhenModelStateIsInvalid()
         {
-            var pageFilter = _fixture.Create<PageFilterDto>();
+            var pageFilter = _fixture.Create<PagesSearchRequest>();
             var controller = PagesController;
             controller.ModelState.AddModelError(_fixture.Create<string>(), _fixture.Create<string>());
 
@@ -84,7 +85,7 @@ namespace FoodDiary.UnitTests.Controllers
         [Fact]
         public async void CreatePage_CreatesPageSuccessfully_WhenPageCanBeCreated()
         {
-            var createPageInfo = _fixture.Create<PageCreateEditDto>();
+            var createPageInfo = _fixture.Create<PageCreateEditRequest>();
             var createdPage = _fixture.Create<Page>();
             var validationResult = _fixture.Build<ValidationResultDto>()
                 .With(r => r.IsValid, true)
@@ -107,7 +108,7 @@ namespace FoodDiary.UnitTests.Controllers
         [Fact]
         public async void CreatePage_ReturnsBadRequest_WhenModelStateIsInvalid()
         {
-            var createPageInfo = _fixture.Create<PageCreateEditDto>();
+            var createPageInfo = _fixture.Create<PageCreateEditRequest>();
             var controller = PagesController;
             controller.ModelState.AddModelError("some", "error");
 
@@ -122,7 +123,7 @@ namespace FoodDiary.UnitTests.Controllers
         [Fact]
         public async void CreatePage_ReturnsBadRequest_WhenPageCannotBeCreated()
         {
-            var createPageInfo = _fixture.Create<PageCreateEditDto>();
+            var createPageInfo = _fixture.Create<PageCreateEditRequest>();
             var validationResult = _fixture.Build<ValidationResultDto>()
                 .With(r => r.IsValid, false)
                 .Create();
@@ -143,7 +144,7 @@ namespace FoodDiary.UnitTests.Controllers
         public async void EditPage_EditsPageSuccessfully_WhenPageCanBeUpdated()
         {
             var pageId = _fixture.Create<int>();
-            var updatedPageInfo = _fixture.Create<PageCreateEditDto>();
+            var updatedPageInfo = _fixture.Create<PageCreateEditRequest>();
             var originalPage = _fixture.Create<Page>();
             var validationResult = _fixture.Build<ValidationResultDto>()
                .With(r => r.IsValid, true)
@@ -171,7 +172,7 @@ namespace FoodDiary.UnitTests.Controllers
         public async void EditPage_ReturnsBadRequest_WhenModelStateIsInvalid()
         {
             var pageId = _fixture.Create<int>();
-            var updatedPageInfo = _fixture.Create<PageCreateEditDto>();
+            var updatedPageInfo = _fixture.Create<PageCreateEditRequest>();
             var originalPage = _fixture.Create<Page>();
             var controller = PagesController;
             controller.ModelState.AddModelError("some", "error");
@@ -190,7 +191,7 @@ namespace FoodDiary.UnitTests.Controllers
         public async void EditPage_ReturnsBadRequest_WhenPageCannotBeEdited()
         {
             var pageId = _fixture.Create<int>();
-            var updatedPageInfo = _fixture.Create<PageCreateEditDto>();
+            var updatedPageInfo = _fixture.Create<PageCreateEditRequest>();
             var originalPage = _fixture.Create<Page>();
             var validationResult = _fixture.Build<ValidationResultDto>()
                .With(r => r.IsValid, false)
@@ -217,7 +218,7 @@ namespace FoodDiary.UnitTests.Controllers
         public async void EditPage_ReturnsNotFound_WhenRequestedPageNotFound()
         {
             var pageId = _fixture.Create<int>();
-            var updatedPageInfo = _fixture.Create<PageCreateEditDto>();
+            var updatedPageInfo = _fixture.Create<PageCreateEditRequest>();
             var originalPage = _fixture.Create<Page>();
             _pageServiceMock.Setup(s => s.GetPageByIdAsync(pageId, default))
                 .ReturnsAsync(null as Page);

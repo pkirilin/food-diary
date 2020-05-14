@@ -1,8 +1,8 @@
 ﻿using AutoFixture;
 using FluentAssertions;
-using FoodDiary.Domain.Dtos;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Import.Implementation;
+using FoodDiary.Import.Models;
 using FoodDiary.Import.Services;
 using FoodDiary.UnitTests.Customizations;
 using Moq;
@@ -34,7 +34,7 @@ namespace FoodDiary.Import.UnitTests.Services
         [Fact]
         public void ImportNote_CreatesNoteEntityFromJson()
         {
-            var noteFromJson = _fixture.Create<NoteJsonItemDto>();
+            var noteFromJson = _fixture.Create<NoteJsonItem>();
             var importedProductEntity = _fixture.Create<Product>();
 
             _productJsonImporterMock.Setup(i => i.ImportProduct(noteFromJson.Product))

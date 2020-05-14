@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using FoodDiary.Domain.Dtos;
+using FoodDiary.API.Dtos;
+using FoodDiary.API.Requests;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Repositories;
 
@@ -31,7 +32,7 @@ namespace FoodDiary.API.Services.Implementation
             return await _categoryRepository.GetByIdAsync(id, cancellationToken);
         }
 
-        public async Task<ValidationResultDto> ValidateCategoryAsync(CategoryCreateEditDto newCategoryInfo, CancellationToken cancellationToken)
+        public async Task<ValidationResultDto> ValidateCategoryAsync(CategoryCreateEditRequest newCategoryInfo, CancellationToken cancellationToken)
         {
             var query = _categoryRepository.GetQueryWithoutTracking()
                 .Where(c => c.Name == newCategoryInfo.Name);
@@ -45,7 +46,7 @@ namespace FoodDiary.API.Services.Implementation
             return new ValidationResultDto(true);
         }
 
-        public bool IsEditedCategoryValid(CategoryCreateEditDto updatedCategoryInfo, Category originalCategory, ValidationResultDto editedCategoryValidationResult)
+        public bool IsEditedCategoryValid(CategoryCreateEditRequest updatedCategoryInfo, Category originalCategory, ValidationResultDto editedCategoryValidationResult)
         {
             bool categoryHasChanges = originalCategory.Name != updatedCategoryInfo.Name;
             return !categoryHasChanges || (categoryHasChanges && editedCategoryValidationResult.IsValid);

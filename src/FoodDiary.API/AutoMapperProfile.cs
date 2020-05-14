@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using AutoMapper;
 using FoodDiary.API.Mapping;
-using FoodDiary.Domain.Dtos;
+using FoodDiary.API.Dtos;
 using FoodDiary.Domain.Entities;
+using FoodDiary.API.Requests;
+using FoodDiary.Import.Models;
 
 namespace FoodDiary.API
 {
@@ -19,7 +21,7 @@ namespace FoodDiary.API
 
         private void CreatePageMappings()
         {
-            CreateMap<PageCreateEditDto, Page>();
+            CreateMap<PageCreateEditRequest, Page>();
 
             CreateMap<Page, PageItemDto>()
                 .ForMember(
@@ -43,7 +45,7 @@ namespace FoodDiary.API
                     dest => dest.ProductName,
                     o => o.MapFrom(src => src.Product.Name));
 
-            CreateMap<NoteCreateEditDto, Note>();
+            CreateMap<NoteCreateEditRequest, Note>();
         }
 
         private void CreateCategoryMappings()
@@ -56,7 +58,7 @@ namespace FoodDiary.API
 
             CreateMap<Category, CategoryDropdownItemDto>();
 
-            CreateMap<CategoryCreateEditDto, Category>();
+            CreateMap<CategoryCreateEditRequest, Category>();
         }
 
         private void CreateProductMappings()
@@ -68,21 +70,21 @@ namespace FoodDiary.API
 
             CreateMap<Product, ProductDropdownItemDto>();
 
-            CreateMap<ProductCreateEditDto, Product>();
+            CreateMap<ProductCreateEditRequest, Product>();
         }
 
         private void CreateExportMappings()
         {
-            CreateMap<Page, PageJsonItemDto>();
+            CreateMap<Page, PageJsonItem>();
 
-            CreateMap<Note, NoteJsonItemDto>();
+            CreateMap<Note, NoteJsonItem>();
 
-            CreateMap<Product, ProductJsonItemDto>()
+            CreateMap<Product, ProductJsonItem>()
                 .ForMember(
                     dest => dest.Category,
                     o => o.MapFrom(src => src.Category.Name));
 
-            CreateMap<IEnumerable<Page>, PagesJsonObjectDto>()
+            CreateMap<IEnumerable<Page>, PagesJsonObject>()
                 .ConvertUsing<PagesJsonExportTypeConverter>();
         }
     }

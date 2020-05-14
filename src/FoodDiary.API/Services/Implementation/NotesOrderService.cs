@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using FoodDiary.Domain.Dtos;
+using FoodDiary.API.Requests;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Enums;
 using FoodDiary.Domain.Repositories;
@@ -53,7 +53,7 @@ namespace FoodDiary.API.Services.Implementation
             RecalculateDisplayOrders(notesWithoutDeleted);
         }
 
-        public async Task ReorderNotesOnMoveAsync(Note noteForMove, NoteMoveRequestDto moveRequest, CancellationToken cancellationToken)
+        public async Task ReorderNotesOnMoveAsync(Note noteForMove, NoteMoveRequest moveRequest, CancellationToken cancellationToken)
         {
             // Recalculating display orders in source meal group
             var notesFromSourceMealWithoutMoved = await GetNotesByPageIdAndMealTypeAsync(

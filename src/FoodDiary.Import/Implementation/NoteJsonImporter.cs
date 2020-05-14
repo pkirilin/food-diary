@@ -1,6 +1,6 @@
 ﻿using System;
-using FoodDiary.Domain.Dtos;
 using FoodDiary.Domain.Entities;
+using FoodDiary.Import.Models;
 using FoodDiary.Import.Services;
 
 namespace FoodDiary.Import.Implementation
@@ -14,7 +14,7 @@ namespace FoodDiary.Import.Implementation
             _productImporter = productImporter ?? throw new ArgumentNullException(nameof(productImporter));
         }
 
-        public Note ImportNote(NoteJsonItemDto noteFromJson)
+        public Note ImportNote(NoteJsonItem noteFromJson)
         {
             if (noteFromJson == null)
                 throw new ArgumentNullException(nameof(noteFromJson));

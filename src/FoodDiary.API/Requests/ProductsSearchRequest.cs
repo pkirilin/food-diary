@@ -1,9 +1,9 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace FoodDiary.Domain.Dtos
+namespace FoodDiary.API.Requests
 {
-    public class ProductsSearchRequestDto
+    public class ProductsSearchRequest
     {
         [Range(1, Int32.MaxValue, ErrorMessage = "Invalid page number value specified")]
         public int PageNumber { get; set; } = 1;

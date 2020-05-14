@@ -1,11 +1,9 @@
 ﻿using System.Collections.Generic;
-using AutoFixture;
 using FluentAssertions;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Import.Implementation;
 using FoodDiary.Import.Services;
 using FoodDiary.Import.UnitTests.Attributes;
-using FoodDiary.UnitTests.Customizations;
 using Moq;
 using Xunit;
 

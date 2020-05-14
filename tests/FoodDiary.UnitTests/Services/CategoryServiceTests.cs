@@ -5,12 +5,13 @@ using FluentAssertions;
 using FoodDiary.API.Services;
 using FoodDiary.API.Services.Implementation;
 using FoodDiary.Domain.Abstractions;
-using FoodDiary.Domain.Dtos;
+using FoodDiary.API.Dtos;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Repositories;
 using FoodDiary.UnitTests.Customizations;
 using Moq;
 using Xunit;
+using FoodDiary.API.Requests;
 
 namespace FoodDiary.UnitTests.Services
 {
@@ -105,7 +106,7 @@ namespace FoodDiary.UnitTests.Services
         [Fact]
         public async void ValidateCategory_ReturnsFalse_WhenCategoryHasDuplicateName()
         {
-            var categoryInfo = _fixture.Create<CategoryCreateEditDto>();
+            var categoryInfo = _fixture.Create<CategoryCreateEditRequest>();
             var categoriesWithTheSameName = _fixture.CreateMany<Category>().ToList();
             _categoryRepositoryMock.Setup(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Category>>(), default))
                 .ReturnsAsync(categoriesWithTheSameName);
@@ -129,7 +130,7 @@ namespace FoodDiary.UnitTests.Services
             var originalCategory = _fixture.Build<Category>()
                 .With(c => c.Name, oldCategoryName)
                 .Create();
-            var editedCategoryData = _fixture.Build<CategoryCreateEditDto>()
+            var editedCategoryData = _fixture.Build<CategoryCreateEditRequest>()
                 .With(c => c.Name, newCategoryName)
                 .Create();
             var validationResult = _fixture.Build<ValidationResultDto>()
