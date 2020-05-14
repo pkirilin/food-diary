@@ -1,4 +1,4 @@
-using FoodDiary.Domain.Enums;
+﻿using FoodDiary.Domain.Enums;
 
 namespace FoodDiary.Domain.Entities
 {
@@ -10,7 +10,7 @@ namespace FoodDiary.Domain.Entities
 
         public int ProductId { get; set; }
 
-        public double ProductQuantity { get; set; }
+        public int ProductQuantity { get; set; }
 
         public int DisplayOrder { get; set; }
 

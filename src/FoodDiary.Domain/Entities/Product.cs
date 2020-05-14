@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace FoodDiary.Domain.Entities
 {
@@ -8,7 +8,7 @@ namespace FoodDiary.Domain.Entities
 
         public string Name { get; set; }
 
-        public double CaloriesCost { get; set; }
+        public int CaloriesCost { get; set; }
 
         public int CategoryId { get; set; }
 

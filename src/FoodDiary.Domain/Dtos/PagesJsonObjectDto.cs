@@ -31,7 +31,7 @@ namespace FoodDiary.Domain.Dtos
     {
         public string Name { get; set; }
 
-        public double CaloriesCost { get; set; }
+        public int CaloriesCost { get; set; }
 
         public string Category { get; set; }
     }
