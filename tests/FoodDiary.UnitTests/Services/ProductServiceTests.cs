@@ -7,7 +7,6 @@ using FluentAssertions;
 using FoodDiary.API.Services;
 using FoodDiary.API.Services.Implementation;
 using FoodDiary.Domain.Abstractions;
-using FoodDiary.API.Dtos;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Repositories;
 using FoodDiary.UnitTests.Customizations;
@@ -153,27 +152,27 @@ namespace FoodDiary.UnitTests.Services
         }
 
         [Fact]
-        public async void ValidateProduct_ReturnsValidationResultWithError_WhenGivenProductAlreadyExists()
+        public async void IsProductExists_ReturnsTrue_WhenProductWithTheSameNameAlreadyExists()
         {
-            var productData = _fixture.Create<ProductCreateEditRequest>();
+            var request = _fixture.Create<ProductCreateEditRequest>();
             var productsWithTheSameName = _fixture.CreateMany<Product>().ToList();
             _productRepositoryMock.Setup(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Product>>(), default))
                 .ReturnsAsync(productsWithTheSameName);
 
-            var result = await ProductService.ValidateProductAsync(productData, default);
+            var result = await ProductService.IsProductExistsAsync(request.Name, default);
 
             _productRepositoryMock.Verify(r => r.GetQueryWithoutTracking(), Times.Once);
             _productRepositoryMock.Verify(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Product>>(), default), Times.Once);
-            result.IsValid.Should().BeFalse();
+            result.Should().BeTrue();
         }
 
         [Theory]
-        [InlineData("Some name", "Some new name", true)]
+        [InlineData("Some name", "Some new name", false)]
         [InlineData("Some name", "Some name", true)]
         public void IsEditedProductValid_ReturnsTrue_WhenProductIsValidAfterItWasEdited(
             string oldProductName,
             string newProductName,
-            bool isValid)
+            bool isProductExists)
         {
             var originalProduct = _fixture.Build<Product>()
                 .With(p => p.Name, oldProductName)
@@ -181,11 +180,8 @@ namespace FoodDiary.UnitTests.Services
             var editedProductData = _fixture.Build<ProductCreateEditRequest>()
                 .With(p => p.Name, newProductName)
                 .Create();
-            var validationResult = _fixture.Build<ValidationResultDto>()
-                .With(r => r.IsValid, isValid)
-                .Create();
 
-            var result = ProductService.IsEditedProductValid(editedProductData, originalProduct, validationResult);
+            var result = ProductService.IsEditedProductValid(editedProductData, originalProduct, isProductExists);
 
             result.Should().BeTrue();
         }

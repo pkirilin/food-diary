@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using FoodDiary.API.Dtos;
 using FoodDiary.API.Metadata;
 using FoodDiary.API.Requests;
 using FoodDiary.Domain.Entities;
@@ -62,36 +61,27 @@ namespace FoodDiary.API.Services.Implementation
             return await _productRepository.GetByIdsAsync(ids, cancellationToken);
         }
 
-        public async Task<ValidationResultDto> ValidateProductAsync(ProductCreateEditRequest productData, CancellationToken cancellationToken)
+        public async Task<bool> IsProductExistsAsync(string productName, CancellationToken cancellationToken)
         {
-            var query = _productRepository.GetQueryWithoutTracking()
-                .Where(p => p.Name == productData.Name);
+            var query = _productRepository
+                .GetQueryWithoutTracking()
+                .Where(p => p.Name == productName);
+
             var productsWithTheSameName = await _productRepository.GetListFromQueryAsync(query, cancellationToken);
 
-            if (productsWithTheSameName.Any())
-            {
-                return new ValidationResultDto(false, $"{nameof(productData.Name)}", $"Product with the name '{productData.Name}' already exists");
-            }
-
-            return new ValidationResultDto(true);
+            return productsWithTheSameName.Any();
         }
 
-        public bool IsEditedProductValid(ProductCreateEditRequest editedProductData, Product originalProduct, ValidationResultDto editedProductValidationResult)
+        public bool IsEditedProductValid(ProductCreateEditRequest editedProductData, Product originalProduct, bool isProductExists)
         {
             bool productHasChanges = editedProductData.Name != originalProduct.Name;
-            return !productHasChanges
-                || (productHasChanges && editedProductValidationResult.IsValid);
+            return !productHasChanges || (productHasChanges && !isProductExists);
         }
 
-        public ValidationResultDto AllProductsFetched(IEnumerable<Product> fetchedProducts, IEnumerable<int> requestedIds)
+        public bool AreAllProductsFetched(IEnumerable<Product> fetchedProducts, IEnumerable<int> requestedIds)
         {
             var fetchedProductsIds = fetchedProducts.Select(p => p.Id);
-            if (requestedIds.Except(fetchedProductsIds).Any())
-            {
-                return new ValidationResultDto(false, "Products cannot be deleted: wrong ids specified");
-            }
-
-            return new ValidationResultDto(true);
+            return !requestedIds.Except(fetchedProductsIds).Any();
         }
 
         public async Task<Product> CreateProductAsync(Product product, CancellationToken cancellationToken)

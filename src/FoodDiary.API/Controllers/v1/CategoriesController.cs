@@ -54,10 +54,9 @@ namespace FoodDiary.API.Controllers.v1
 
             var category = _mapper.Map<Category>(newCateroryInfo);
 
-            var categoryValidationResult = await _categoryService.ValidateCategoryAsync(newCateroryInfo, cancellationToken);
-            if (!categoryValidationResult.IsValid)
+            if (await _categoryService.IsCategoryExistsAsync(newCateroryInfo.Name, cancellationToken))
             {
-                ModelState.AddModelError(categoryValidationResult.ErrorKey, categoryValidationResult.ErrorMessage);
+                ModelState.AddModelError(nameof(newCateroryInfo.Name), $"Category with the name '{newCateroryInfo.Name}' already exists");
                 return BadRequest(ModelState);
             }
 
@@ -81,10 +80,11 @@ namespace FoodDiary.API.Controllers.v1
             {
                 return NotFound();
             }
-            var categoryValidationResult = await _categoryService.ValidateCategoryAsync(updatedCategoryInfo, cancellationToken);
-            if (!_categoryService.IsEditedCategoryValid(updatedCategoryInfo, originalCategory, categoryValidationResult))
+
+            var isCategoryExists = await _categoryService.IsCategoryExistsAsync(updatedCategoryInfo.Name, cancellationToken);
+            if (!_categoryService.IsEditedCategoryValid(updatedCategoryInfo, originalCategory, isCategoryExists))
             {
-                ModelState.AddModelError(categoryValidationResult.ErrorKey, categoryValidationResult.ErrorMessage);
+                ModelState.AddModelError(nameof(updatedCategoryInfo.Name), $"Category with the name '{updatedCategoryInfo.Name}' already exists");
                 return BadRequest(ModelState);
             }
 

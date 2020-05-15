@@ -58,10 +58,9 @@ namespace FoodDiary.API.Controllers.v1
                 return BadRequest(ModelState);
             }
 
-            var pageValidationResult = await _pageService.ValidatePageAsync(request, cancellationToken);
-            if (!pageValidationResult.IsValid)
+            if (await _pageService.IsPageExistsAsync(request.Date, cancellationToken))
             {
-                ModelState.AddModelError(pageValidationResult.ErrorKey, pageValidationResult.ErrorMessage);
+                ModelState.AddModelError(nameof(request.Date), $"Page with date '${request.Date.ToShortDateString()}' already exists");
                 return BadRequest(ModelState);
             }
 
@@ -87,10 +86,10 @@ namespace FoodDiary.API.Controllers.v1
                 return NotFound();
             }
 
-            var pageValidationResult = await _pageService.ValidatePageAsync(request, cancellationToken);
-            if (!_pageService.IsEditedPageValid(request, originalPage, pageValidationResult))
+            var isPageExists = await _pageService.IsPageExistsAsync(request.Date, cancellationToken);
+            if (!_pageService.IsEditedPageValid(request, originalPage, isPageExists))
             {
-                ModelState.AddModelError(pageValidationResult.ErrorKey, pageValidationResult.ErrorMessage);
+                ModelState.AddModelError(nameof(request.Date), $"Page with date '${request.Date.ToShortDateString()}' already exists");
                 return BadRequest(ModelState);
             }
 

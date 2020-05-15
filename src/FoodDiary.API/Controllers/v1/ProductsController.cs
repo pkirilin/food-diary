@@ -77,10 +77,9 @@ namespace FoodDiary.API.Controllers.v1
                 return BadRequest(ModelState);
             }
 
-            var productValidationResult = await _productService.ValidateProductAsync(request, cancellationToken);
-            if (!productValidationResult.IsValid)
+            if (await _productService.IsProductExistsAsync(request.Name, cancellationToken))
             {
-                ModelState.AddModelError(productValidationResult.ErrorKey, productValidationResult.ErrorMessage);
+                ModelState.AddModelError(nameof(request.Name), $"Product with the name '{request.Name}' already exists");
                 return BadRequest(ModelState);
             }
 
@@ -106,10 +105,10 @@ namespace FoodDiary.API.Controllers.v1
                 return NotFound();
             }
 
-            var productValidationResult = await _productService.ValidateProductAsync(request, cancellationToken);
-            if (!_productService.IsEditedProductValid(request, originalProduct, productValidationResult))
+            var isProductExists = await _productService.IsProductExistsAsync(request.Name, cancellationToken);
+            if (!_productService.IsEditedProductValid(request, originalProduct, isProductExists))
             {
-                ModelState.AddModelError(productValidationResult.ErrorKey, productValidationResult.ErrorMessage);
+                ModelState.AddModelError(nameof(request.Name), $"Product with the name '{request.Name}' already exists");
                 return BadRequest(ModelState);
             }
 
@@ -139,10 +138,10 @@ namespace FoodDiary.API.Controllers.v1
         public async Task<IActionResult> DeleteProducts([FromBody] IEnumerable<int> ids, CancellationToken cancellationToken)
         {
             var productsForDelete = await _productService.GetProductsByIdsAsync(ids, cancellationToken);
-            var validationResult = _productService.AllProductsFetched(productsForDelete, ids);
-            if (!validationResult.IsValid)
+
+            if (!_productService.AreAllProductsFetched(productsForDelete, ids))
             {
-                ModelState.AddModelError(validationResult.ErrorKey, validationResult.ErrorMessage);
+                ModelState.AddModelError(nameof(ids), "Products cannot be deleted: wrong ids specified");
                 return BadRequest(ModelState);
             }
 

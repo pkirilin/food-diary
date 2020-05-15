@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using FoodDiary.API.Dtos;
 using FoodDiary.API.Requests;
 using FoodDiary.Domain.Entities;
 
@@ -15,7 +14,7 @@ namespace FoodDiary.API.Services
 
         Task<IEnumerable<Note>> GetNotesByIdsAsync(IEnumerable<int> ids, CancellationToken cancellationToken);
 
-        Task<ValidationResultDto> ValidateNoteDataAsync(NoteCreateEditRequest noteData, CancellationToken cancellationToken);
+        Task<bool> IsNoteProductExistsAsync(int productId, CancellationToken cancellationToken);
 
         Task<Note> CreateNoteAsync(Note note, CancellationToken cancellationToken);
 

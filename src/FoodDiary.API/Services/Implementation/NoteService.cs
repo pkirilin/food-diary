@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using FoodDiary.API.Dtos;
 using FoodDiary.API.Requests;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Repositories;
@@ -57,15 +56,10 @@ namespace FoodDiary.API.Services.Implementation
             );
         }
 
-        public async Task<ValidationResultDto> ValidateNoteDataAsync(NoteCreateEditRequest noteData, CancellationToken cancellationToken)
+        public async Task<bool> IsNoteProductExistsAsync(int productId, CancellationToken cancellationToken)
         {
-            var productForNote = await _productRepository.GetByIdAsync(noteData.ProductId, cancellationToken);
-            if (productForNote == null)
-            {
-                return new ValidationResultDto(false, $"{nameof(noteData.ProductId)}", "Selected product not found");
-            }
-
-            return new ValidationResultDto(true);
+            var productForNote = await _productRepository.GetByIdAsync(productId, cancellationToken);
+            return productForNote != null;
         }
 
         public async Task<Note> CreateNoteAsync(Note note, CancellationToken cancellationToken)

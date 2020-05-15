@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using FoodDiary.API.Dtos;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Repositories;
 using FoodDiary.Domain.Enums;
@@ -60,18 +59,15 @@ namespace FoodDiary.API.Services.Implementation
             return createdPage;
         }
 
-        public async Task<ValidationResultDto> ValidatePageAsync(PageCreateEditRequest createPageInfo, CancellationToken cancellationToken)
+        public async Task<bool> IsPageExistsAsync(DateTime pageDate, CancellationToken cancellationToken)
         {
-            var query = _pageRepository.GetQueryWithoutTracking()
-                .Where(p => p.Date == createPageInfo.Date);
+            var query = _pageRepository
+                .GetQueryWithoutTracking()
+                .Where(p => p.Date == pageDate);
+
             var pagesWithTheSameDate = await _pageRepository.GetListFromQueryAsync(query, cancellationToken);
 
-            if (pagesWithTheSameDate.Any())
-            {
-                return new ValidationResultDto(false, $"{nameof(createPageInfo.Date)}", $"Page with such date already exists");
-            }
-
-            return new ValidationResultDto(true);
+            return pagesWithTheSameDate.Any();
         }
 
         public async Task EditPageAsync(Page page, CancellationToken cancellationToken)
@@ -80,10 +76,10 @@ namespace FoodDiary.API.Services.Implementation
             await _pageRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
         }
 
-        public bool IsEditedPageValid(PageCreateEditRequest updatedPageInfo, Page originalPage, ValidationResultDto editedPageValidationResult)
+        public bool IsEditedPageValid(PageCreateEditRequest updatedPageInfo, Page originalPage, bool isPageExists)
         {
             bool pageHasChanges = originalPage.Date != updatedPageInfo.Date;
-            return !pageHasChanges || (pageHasChanges && editedPageValidationResult.IsValid);
+            return !pageHasChanges || (pageHasChanges && !isPageExists);
         }
 
         public async Task DeletePageAsync(Page page, CancellationToken cancellationToken)

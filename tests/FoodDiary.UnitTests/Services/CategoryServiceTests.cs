@@ -5,7 +5,6 @@ using FluentAssertions;
 using FoodDiary.API.Services;
 using FoodDiary.API.Services.Implementation;
 using FoodDiary.Domain.Abstractions;
-using FoodDiary.API.Dtos;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Repositories;
 using FoodDiary.UnitTests.Customizations;
@@ -104,28 +103,28 @@ namespace FoodDiary.UnitTests.Services
         }
 
         [Fact]
-        public async void ValidateCategory_ReturnsFalse_WhenCategoryHasDuplicateName()
+        public async void IsCategoryExists_ReturnsTrue_WhenCategoryHasDuplicateName()
         {
             var categoryInfo = _fixture.Create<CategoryCreateEditRequest>();
             var categoriesWithTheSameName = _fixture.CreateMany<Category>().ToList();
             _categoryRepositoryMock.Setup(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Category>>(), default))
                 .ReturnsAsync(categoriesWithTheSameName);
 
-            var result = await CategoryService.ValidateCategoryAsync(categoryInfo, default);
+            var result = await CategoryService.IsCategoryExistsAsync(categoryInfo.Name, default);
 
             _categoryRepositoryMock.Verify(r => r.GetQueryWithoutTracking(), Times.Once);
             _categoryRepositoryMock.Verify(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Category>>(), default), Times.Once);
-            result.IsValid.Should().BeFalse();
+            result.Should().BeTrue();
         }
 
 
         [Theory]
-        [InlineData("Some name", "Some new name", true)]
+        [InlineData("Some name", "Some new name", false)]
         [InlineData("Some name", "Some name", true)]
         public void IsEditedCategoryValid_ReturnsTrue_WhenCategoryIsValidAfterItWasEdited(
             string oldCategoryName,
             string newCategoryName,
-            bool isValid)
+            bool isCategoryExists)
         {
             var originalCategory = _fixture.Build<Category>()
                 .With(c => c.Name, oldCategoryName)
@@ -133,11 +132,8 @@ namespace FoodDiary.UnitTests.Services
             var editedCategoryData = _fixture.Build<CategoryCreateEditRequest>()
                 .With(c => c.Name, newCategoryName)
                 .Create();
-            var validationResult = _fixture.Build<ValidationResultDto>()
-                .With(r => r.IsValid, isValid)
-                .Create();
 
-            var result = CategoryService.IsEditedCategoryValid(editedCategoryData, originalCategory, validationResult);
+            var result = CategoryService.IsEditedCategoryValid(editedCategoryData, originalCategory, isCategoryExists);
 
             result.Should().BeTrue();
         }

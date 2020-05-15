@@ -101,17 +101,17 @@ namespace FoodDiary.UnitTests.Services
         }
 
         [Fact]
-        public async void ValidateNoteDataAsync_ReturnsTrue_WhenNoteDataIsValid()
+        public async void IsNoteProductExists_ReturnsTrue_WhenNoteDataIsValid()
         {
             var noteData = _fixture.Create<NoteCreateEditRequest>();
             var productForNote = _fixture.Create<Product>();
             _productRepositoryMock.Setup(r => r.GetByIdAsync(noteData.ProductId, default))
                 .ReturnsAsync(productForNote);
 
-            var result = await NoteService.ValidateNoteDataAsync(noteData, default);
+            var result = await NoteService.IsNoteProductExistsAsync(noteData.ProductId, default);
 
             _productRepositoryMock.Verify(r => r.GetByIdAsync(noteData.ProductId, default), Times.Once);
-            result.IsValid.Should().BeTrue();
+            result.Should().BeTrue();
         }
 
         [Fact]

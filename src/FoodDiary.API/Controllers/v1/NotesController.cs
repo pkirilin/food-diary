@@ -66,10 +66,9 @@ namespace FoodDiary.API.Controllers.v1
                 return BadRequest(ModelState);
             }
 
-            var noteValidationResult = await _noteService.ValidateNoteDataAsync(newNote, cancellationToken);
-            if (!noteValidationResult.IsValid)
+            if (!await _noteService.IsNoteProductExistsAsync(newNote.ProductId, cancellationToken))
             {
-                ModelState.AddModelError(noteValidationResult.ErrorKey, noteValidationResult.ErrorMessage);
+                ModelState.AddModelError(nameof(newNote.ProductId), "Selected product not found");
                 return BadRequest(ModelState);
             }
 
@@ -90,10 +89,9 @@ namespace FoodDiary.API.Controllers.v1
                 return BadRequest(ModelState);
             }
 
-            var noteValidationResult = await _noteService.ValidateNoteDataAsync(updatedNote, cancellationToken);
-            if (!noteValidationResult.IsValid)
+            if (!await _noteService.IsNoteProductExistsAsync(updatedNote.ProductId, cancellationToken))
             {
-                ModelState.AddModelError(noteValidationResult.ErrorKey, noteValidationResult.ErrorMessage);
+                ModelState.AddModelError(nameof(updatedNote.ProductId), "Selected product not found");
                 return BadRequest(ModelState);
             }
 

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using FoodDiary.API.Dtos;
 using FoodDiary.API.Requests;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Repositories;
@@ -32,24 +31,21 @@ namespace FoodDiary.API.Services.Implementation
             return await _categoryRepository.GetByIdAsync(id, cancellationToken);
         }
 
-        public async Task<ValidationResultDto> ValidateCategoryAsync(CategoryCreateEditRequest newCategoryInfo, CancellationToken cancellationToken)
+        public async Task<bool> IsCategoryExistsAsync(string categoryName, CancellationToken cancellationToken)
         {
-            var query = _categoryRepository.GetQueryWithoutTracking()
-                .Where(c => c.Name == newCategoryInfo.Name);
+            var query = _categoryRepository
+                .GetQueryWithoutTracking()
+                .Where(c => c.Name == categoryName);
+            
             var categoriesWithTheSameName = await _categoryRepository.GetListFromQueryAsync(query, cancellationToken);
 
-            if (categoriesWithTheSameName.Any())
-            {
-                return new ValidationResultDto(false, $"{nameof(newCategoryInfo.Name)}", $"Category with the name '{newCategoryInfo.Name}' already exists");
-            }
-
-            return new ValidationResultDto(true);
+            return categoriesWithTheSameName.Any();
         }
 
-        public bool IsEditedCategoryValid(CategoryCreateEditRequest updatedCategoryInfo, Category originalCategory, ValidationResultDto editedCategoryValidationResult)
+        public bool IsEditedCategoryValid(CategoryCreateEditRequest updatedCategoryInfo, Category originalCategory, bool isCategoryExists)
         {
             bool categoryHasChanges = originalCategory.Name != updatedCategoryInfo.Name;
-            return !categoryHasChanges || (categoryHasChanges && editedCategoryValidationResult.IsValid);
+            return !categoryHasChanges || (categoryHasChanges && !isCategoryExists);
         }
 
         public async Task<Category> CreateCategoryAsync(Category category, CancellationToken cancellationToken)

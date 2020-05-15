@@ -8,7 +8,6 @@ using Moq;
 using Xunit;
 using FoodDiary.Domain.Enums;
 using AutoFixture.Xunit2;
-using FoodDiary.API.Dtos;
 using System;
 using FoodDiary.Domain.Abstractions;
 using FoodDiary.API.Services;
@@ -177,7 +176,7 @@ namespace FoodDiary.UnitTests.Services
         }
 
         [Fact]
-        public async void ValidatePageAsync_ReturnsFalse_WhenPageHasDuplicateDate()
+        public async void IsPageExists_ReturnsTrue_WhenPageWithTheSameDateExists()
         {
             var createPageInfo = _fixture.Create<PageCreateEditRequest>();
             var pagesWithTheSameDate = _fixture.CreateMany<Page>().ToList();
@@ -185,20 +184,20 @@ namespace FoodDiary.UnitTests.Services
             _pageRepositoryMock.Setup(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Page>>(), default))
                 .ReturnsAsync(pagesWithTheSameDate);
 
-            var result = await PageService.ValidatePageAsync(createPageInfo, default);
+            var result = await PageService.IsPageExistsAsync(createPageInfo.Date, default);
 
             _pageRepositoryMock.Verify(r => r.GetQueryWithoutTracking(), Times.Once);
             _pageRepositoryMock.Verify(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Page>>(), default), Times.Once);
-            result.IsValid.Should().BeFalse();
+            result.Should().BeTrue();
         }
 
         [Theory]
-        [InlineData("2019-12-11", "2019-12-12", true)]
+        [InlineData("2019-12-11", "2019-12-12", false)]
         [InlineData("2019-12-11", "2019-12-11", true)]
         public void IsEditedPageValid_ReturnsTrue_WhenPageIsValidAfterItWasEdited(
             string oldPageDateStr,
             string newPageDateStr,
-            bool isValid)
+            bool isPageExists)
         {
             var originalPage = _fixture.Build<Page>()
                 .With(p => p.Date, DateTime.Parse(oldPageDateStr))
@@ -206,11 +205,8 @@ namespace FoodDiary.UnitTests.Services
             var editedPageData = _fixture.Build<PageCreateEditRequest>()
                 .With(p => p.Date, DateTime.Parse(newPageDateStr))
                 .Create();
-            var validationResult = _fixture.Build<ValidationResultDto>()
-                .With(r => r.IsValid, isValid)
-                .Create();
 
-            var result = PageService.IsEditedPageValid(editedPageData, originalPage, validationResult);
+            var result = PageService.IsEditedPageValid(editedPageData, originalPage, isPageExists);
 
             result.Should().BeTrue();
         }

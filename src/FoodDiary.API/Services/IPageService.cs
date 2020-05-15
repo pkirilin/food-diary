@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using FoodDiary.API.Dtos;
 using FoodDiary.API.Requests;
 using FoodDiary.Domain.Entities;
 
@@ -17,11 +17,11 @@ namespace FoodDiary.API.Services
 
         Task<Page> CreatePageAsync(Page page, CancellationToken cancellationToken);
 
-        Task<ValidationResultDto> ValidatePageAsync(PageCreateEditRequest createPageInfo, CancellationToken cancellationToken);
+        Task<bool> IsPageExistsAsync(DateTime pageDate, CancellationToken cancellationToken);
 
         Task EditPageAsync(Page page, CancellationToken cancellationToken);
 
-        bool IsEditedPageValid(PageCreateEditRequest updatedPageInfo, Page originalPage, ValidationResultDto editedPageValidationResult);
+        bool IsEditedPageValid(PageCreateEditRequest updatedPageInfo, Page originalPage, bool isPageExists);
 
         Task DeletePageAsync(Page page, CancellationToken cancellationToken);
 

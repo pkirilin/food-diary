@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using FoodDiary.API.Dtos;
 using FoodDiary.API.Metadata;
 using FoodDiary.API.Requests;
 using FoodDiary.Domain.Entities;
@@ -24,11 +23,11 @@ namespace FoodDiary.API.Services
 
         Task DeleteProductsRangeAsync(IEnumerable<Product> products, CancellationToken cancellationToken);
 
-        Task<ValidationResultDto> ValidateProductAsync(ProductCreateEditRequest productData, CancellationToken cancellationToken);
+        Task<bool> IsProductExistsAsync(string productName, CancellationToken cancellationToken);
 
-        bool IsEditedProductValid(ProductCreateEditRequest editedProductData, Product originalProduct, ValidationResultDto editedProductValidationResult);
+        bool IsEditedProductValid(ProductCreateEditRequest editedProductData, Product originalProduct, bool isProductExists);
 
-        ValidationResultDto AllProductsFetched(IEnumerable<Product> fetchedProducts, IEnumerable<int> requestedIds);
+        bool AreAllProductsFetched(IEnumerable<Product> fetchedProducts, IEnumerable<int> requestedIds);
 
         Task<IEnumerable<Product>> GetProductsDropdownListAsync(ProductDropdownSearchRequest request, CancellationToken cancellationToken);
     }
