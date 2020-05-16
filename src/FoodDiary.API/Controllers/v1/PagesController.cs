@@ -10,7 +10,6 @@ using FoodDiary.API.Dtos;
 using FoodDiary.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.Extensions.Logging;
 using FoodDiary.API.Requests;
 
 namespace FoodDiary.API.Controllers.v1
@@ -20,16 +19,11 @@ namespace FoodDiary.API.Controllers.v1
     [ApiExplorerSettings(GroupName = "v1")]
     public class PagesController : ControllerBase
     {
-        private readonly ILogger<PagesController> _logger;
         private readonly IMapper _mapper;
         private readonly IPageService _pageService;
 
-        public PagesController(
-            ILoggerFactory loggerFactory,
-            IMapper mapper,
-            IPageService pageService)
+        public PagesController(IMapper mapper, IPageService pageService)
         {
-            _logger = loggerFactory?.CreateLogger<PagesController>() ?? throw new ArgumentNullException(nameof(loggerFactory));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _pageService = pageService ?? throw new ArgumentNullException(nameof(pageService));
         }

@@ -12,7 +12,6 @@ using FoodDiary.Infrastructure.Utils;
 using FoodDiary.UnitTests.Customizations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
 using FoodDiary.API.Requests;
@@ -21,8 +20,6 @@ namespace FoodDiary.UnitTests.Controllers
 {
     public class NotesControllerTests
     {
-        private readonly ILoggerFactory _loggerFactory;
-
         private readonly IMapper _mapper;
 
         private readonly Mock<INoteService> _noteServiceMock;
@@ -33,13 +30,11 @@ namespace FoodDiary.UnitTests.Controllers
         public NotesControllerTests()
         {
             var serviceCollection = new ServiceCollection()
-                .AddLogging()
                 .AddAutoMapper(Assembly.GetAssembly(typeof(AutoMapperProfile)))
                 .AddTransient<ICaloriesCalculator, CaloriesCalculator>();
 
             var serviceProvider = serviceCollection.BuildServiceProvider();
 
-            _loggerFactory = serviceProvider.GetService<ILoggerFactory>();
             _mapper = serviceProvider.GetService<IMapper>();
             _noteServiceMock = new Mock<INoteService>();
             _pageServiceMock = new Mock<IPageService>();
@@ -54,7 +49,6 @@ namespace FoodDiary.UnitTests.Controllers
         }
 
         public NotesController NotesController => new NotesController(
-            _loggerFactory,
             _mapper,
             _noteServiceMock.Object,
             _pageServiceMock.Object);

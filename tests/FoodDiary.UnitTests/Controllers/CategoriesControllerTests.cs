@@ -10,7 +10,6 @@ using FoodDiary.Domain.Entities;
 using FoodDiary.UnitTests.Customizations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
 
@@ -18,8 +17,6 @@ namespace FoodDiary.UnitTests.Controllers
 {
     public class CategoriesControllerTests
     {
-        private readonly ILoggerFactory _loggerFactory;
-
         private readonly IMapper _mapper;
 
         private readonly Mock<ICategoryService> _categoryServiceMock;
@@ -29,11 +26,9 @@ namespace FoodDiary.UnitTests.Controllers
         public CategoriesControllerTests()
         {
             var serviceProvider = new ServiceCollection()
-                .AddLogging()
                 .AddAutoMapper(Assembly.GetAssembly(typeof(AutoMapperProfile)))
                 .BuildServiceProvider();
 
-            _loggerFactory = serviceProvider.GetService<ILoggerFactory>();
             _mapper = serviceProvider.GetService<IMapper>();
             _categoryServiceMock = new Mock<ICategoryService>();
             _fixture = SetupFixture();
@@ -46,7 +41,7 @@ namespace FoodDiary.UnitTests.Controllers
             return _fixture;
         }
 
-        public CategoriesController CategoriesController => new CategoriesController(_loggerFactory, _mapper, _categoryServiceMock.Object);
+        public CategoriesController CategoriesController => new CategoriesController(_mapper, _categoryServiceMock.Object);
 
         [Fact]
         public async void GetCategories_ReturnsRequestedCategories()

@@ -9,7 +9,6 @@ using FoodDiary.API.Dtos;
 using FoodDiary.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.Extensions.Logging;
 using FoodDiary.API.Requests;
 
 namespace FoodDiary.API.Controllers.v1
@@ -19,16 +18,11 @@ namespace FoodDiary.API.Controllers.v1
     [ApiExplorerSettings(GroupName = "v1")]
     public class CategoriesController : ControllerBase
     {
-        private readonly ILogger<CategoriesController> _logger;
         private readonly IMapper _mapper;
         private readonly ICategoryService _categoryService;
 
-        public CategoriesController(
-            ILoggerFactory loggerFactory,
-            IMapper mapper,
-            ICategoryService categoryService)
+        public CategoriesController(IMapper mapper, ICategoryService categoryService)
         {
-            _logger = loggerFactory?.CreateLogger<CategoriesController>() ?? throw new ArgumentNullException(nameof(loggerFactory));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _categoryService = categoryService ?? throw new ArgumentNullException(nameof(categoryService));
         }

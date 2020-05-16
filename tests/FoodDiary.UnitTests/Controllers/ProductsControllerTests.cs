@@ -11,7 +11,6 @@ using FoodDiary.Domain.Entities;
 using FoodDiary.UnitTests.Customizations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
 using FoodDiary.API.Requests;
@@ -21,8 +20,6 @@ namespace FoodDiary.UnitTests.Controllers
 {
     public class ProductsControllerTests
     {
-        private readonly ILoggerFactory _loggerFactory;
-
         private readonly IMapper _mapper;
 
         private readonly Mock<IProductService> _productServiceMock;
@@ -33,11 +30,9 @@ namespace FoodDiary.UnitTests.Controllers
         public ProductsControllerTests()
         {
             var serviceProvider = new ServiceCollection()
-                .AddLogging()
                 .AddAutoMapper(Assembly.GetAssembly(typeof(AutoMapperProfile)))
                 .BuildServiceProvider();
 
-            _loggerFactory = serviceProvider.GetService<ILoggerFactory>();
             _mapper = serviceProvider.GetService<IMapper>();
             _productServiceMock = new Mock<IProductService>();
             _categoryServiceMock = new Mock<ICategoryService>();
@@ -51,7 +46,7 @@ namespace FoodDiary.UnitTests.Controllers
             return _fixture;
         }
 
-        public ProductsController ProductsController => new ProductsController(_loggerFactory, _mapper, _productServiceMock.Object, _categoryServiceMock.Object);
+        public ProductsController ProductsController => new ProductsController(_mapper, _productServiceMock.Object, _categoryServiceMock.Object);
 
         [Theory]
         [InlineAutoData]

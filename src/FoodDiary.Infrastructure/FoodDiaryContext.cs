@@ -3,7 +3,6 @@ using FoodDiary.Domain.Entities;
 using FoodDiary.Infrastructure.EntityConfigurations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 
 namespace FoodDiary.Infrastructure
 {
@@ -11,7 +10,7 @@ namespace FoodDiary.Infrastructure
     {
         private readonly IConfiguration _configuration;
 
-        public FoodDiaryContext(DbContextOptions options, IConfiguration configuration, ILoggerFactory lf) : base(options)
+        public FoodDiaryContext(DbContextOptions options, IConfiguration configuration) : base(options)
         {
             _configuration = configuration;
         }

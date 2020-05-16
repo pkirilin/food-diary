@@ -1,6 +1,5 @@
 ﻿using Xunit;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using FoodDiary.API.Controllers.v1;
 using AutoMapper;
 using FoodDiary.API;
@@ -22,8 +21,6 @@ namespace FoodDiary.UnitTests.Controllers
 {
     public class PagesControllerTests
     {
-        private readonly ILoggerFactory _loggerFactory;
-
         private readonly IMapper _mapper;
 
         private readonly Mock<IPageService> _pageServiceMock;
@@ -33,13 +30,11 @@ namespace FoodDiary.UnitTests.Controllers
         public PagesControllerTests()
         {
             var serviceCollection = new ServiceCollection()
-                .AddLogging()
                 .AddAutoMapper(Assembly.GetAssembly(typeof(AutoMapperProfile)))
                 .AddTransient<ICaloriesCalculator, CaloriesCalculator>();
 
             var serviceProvider = serviceCollection.BuildServiceProvider();
 
-            _loggerFactory = serviceProvider.GetService<ILoggerFactory>();
             _mapper = serviceProvider.GetService<IMapper>();
             _pageServiceMock = new Mock<IPageService>();
             _fixture = SetupFixture();
@@ -52,7 +47,7 @@ namespace FoodDiary.UnitTests.Controllers
             return _fixture;
         }
 
-        public PagesController PagesController => new PagesController(_loggerFactory, _mapper, _pageServiceMock.Object);
+        public PagesController PagesController => new PagesController(_mapper, _pageServiceMock.Object);
 
         [Fact]
         public async void GetPages_ReturnsFilteredPages_WhenModelStateIsValid()

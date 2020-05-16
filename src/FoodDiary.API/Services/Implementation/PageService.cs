@@ -28,8 +28,10 @@ namespace FoodDiary.API.Services.Implementation
                 case SortOrder.Ascending:
                     searchPagesQuery = searchPagesQuery.OrderBy(p => p.Date);
                     break;
-                default:
+                case SortOrder.Descending:
                     searchPagesQuery = searchPagesQuery.OrderByDescending(p => p.Date);
+                    break;
+                default:
                     break;
             }
 
