@@ -147,9 +147,9 @@ namespace FoodDiary.API.Controllers.v1
 
         [HttpGet("dropdown")]
         [ProducesResponseType(typeof(IEnumerable<ProductDropdownItemDto>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetProductsDropdownList([FromQuery] ProductDropdownSearchRequest request, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetProductsDropdown([FromQuery] ProductDropdownSearchRequest request, CancellationToken cancellationToken)
         {
-            var products = await _productService.GetProductsDropdownListAsync(request, cancellationToken);
+            var products = await _productService.GetProductsDropdownAsync(request, cancellationToken);
             var productsDropdownListResponse = _mapper.Map<IEnumerable<ProductDropdownItemDto>>(products);
             return Ok(productsDropdownListResponse);
         }

@@ -252,13 +252,13 @@ namespace FoodDiary.UnitTests.Controllers
 
             _noteServiceMock.Setup(s => s.GetNotesByIdsAsync(notesForDeleteIds, default))
                 .ReturnsAsync(notesForDelete);
-            _noteServiceMock.Setup(s => s.AllNotesFetched(notesForDeleteIds, notesForDelete))
+            _noteServiceMock.Setup(s => s.AreAllNotesFetched(notesForDeleteIds, notesForDelete))
                 .Returns(true);
 
             var result = await NotesController.DeleteNotes(notesForDeleteIds, default);
 
             _noteServiceMock.Verify(s => s.GetNotesByIdsAsync(notesForDeleteIds, default), Times.Once);
-            _noteServiceMock.Verify(s => s.AllNotesFetched(notesForDeleteIds, notesForDelete), Times.Once);
+            _noteServiceMock.Verify(s => s.AreAllNotesFetched(notesForDeleteIds, notesForDelete), Times.Once);
             _noteServiceMock.Verify(s => s.DeleteNotesAsync(notesForDelete, default), Times.Once);
             result.Should().BeOfType<OkResult>();
         }
@@ -271,13 +271,13 @@ namespace FoodDiary.UnitTests.Controllers
 
             _noteServiceMock.Setup(s => s.GetNotesByIdsAsync(notesForDeleteIds, default))
                 .ReturnsAsync(notesForDelete);
-            _noteServiceMock.Setup(s => s.AllNotesFetched(notesForDeleteIds, notesForDelete))
+            _noteServiceMock.Setup(s => s.AreAllNotesFetched(notesForDeleteIds, notesForDelete))
                 .Returns(false);
 
             var result = await NotesController.DeleteNotes(notesForDeleteIds, default);
 
             _noteServiceMock.Verify(s => s.GetNotesByIdsAsync(notesForDeleteIds, default), Times.Once);
-            _noteServiceMock.Verify(s => s.AllNotesFetched(notesForDeleteIds, notesForDelete), Times.Once);
+            _noteServiceMock.Verify(s => s.AreAllNotesFetched(notesForDeleteIds, notesForDelete), Times.Once);
             _noteServiceMock.Verify(s => s.DeleteNotesAsync(notesForDelete, default), Times.Never);
             result.Should().BeOfType<BadRequestObjectResult>();
         }
@@ -290,13 +290,13 @@ namespace FoodDiary.UnitTests.Controllers
 
             _noteServiceMock.Setup(s => s.GetNoteByIdAsync(moveRequest.NoteId, default))
                 .ReturnsAsync(noteForMove);
-            _noteServiceMock.Setup(s => s.NoteCanBeMovedAsync(noteForMove, moveRequest, default))
+            _noteServiceMock.Setup(s => s.CanNoteBeMovedAsync(noteForMove, moveRequest, default))
                 .ReturnsAsync(true);
 
             var result = await NotesController.MoveNote(moveRequest, default);
 
             _noteServiceMock.Verify(s => s.GetNoteByIdAsync(moveRequest.NoteId, default), Times.Once);
-            _noteServiceMock.Verify(s => s.NoteCanBeMovedAsync(noteForMove, moveRequest, default), Times.Once);
+            _noteServiceMock.Verify(s => s.CanNoteBeMovedAsync(noteForMove, moveRequest, default), Times.Once);
             _noteServiceMock.Verify(s => s.MoveNoteAsync(noteForMove, moveRequest, default), Times.Once);
             result.Should().BeOfType<OkResult>();
         }
@@ -311,7 +311,7 @@ namespace FoodDiary.UnitTests.Controllers
             var result = await controller.MoveNote(moveRequest, default);
 
             _noteServiceMock.Verify(s => s.GetNoteByIdAsync(moveRequest.NoteId, default), Times.Never);
-            _noteServiceMock.Verify(s => s.NoteCanBeMovedAsync(It.IsAny<Note>(), moveRequest, default), Times.Never);
+            _noteServiceMock.Verify(s => s.CanNoteBeMovedAsync(It.IsAny<Note>(), moveRequest, default), Times.Never);
             _noteServiceMock.Verify(s => s.MoveNoteAsync(It.IsAny<Note>(), moveRequest, default), Times.Never);
             result.Should().BeOfType<BadRequestObjectResult>();
         }
@@ -327,7 +327,7 @@ namespace FoodDiary.UnitTests.Controllers
             var result = await NotesController.MoveNote(moveRequest, default);
 
             _noteServiceMock.Verify(s => s.GetNoteByIdAsync(moveRequest.NoteId, default), Times.Once);
-            _noteServiceMock.Verify(s => s.NoteCanBeMovedAsync(It.IsAny<Note>(), moveRequest, default), Times.Never);
+            _noteServiceMock.Verify(s => s.CanNoteBeMovedAsync(It.IsAny<Note>(), moveRequest, default), Times.Never);
             _noteServiceMock.Verify(s => s.MoveNoteAsync(It.IsAny<Note>(), moveRequest, default), Times.Never);
             result.Should().BeOfType<NotFoundResult>();
         }
@@ -340,13 +340,13 @@ namespace FoodDiary.UnitTests.Controllers
 
             _noteServiceMock.Setup(s => s.GetNoteByIdAsync(moveRequest.NoteId, default))
                 .ReturnsAsync(noteForMove);
-            _noteServiceMock.Setup(s => s.NoteCanBeMovedAsync(noteForMove, moveRequest, default))
+            _noteServiceMock.Setup(s => s.CanNoteBeMovedAsync(noteForMove, moveRequest, default))
                 .ReturnsAsync(false);
 
             var result = await NotesController.MoveNote(moveRequest, default);
 
             _noteServiceMock.Verify(s => s.GetNoteByIdAsync(moveRequest.NoteId, default), Times.Once);
-            _noteServiceMock.Verify(s => s.NoteCanBeMovedAsync(noteForMove, moveRequest, default), Times.Once);
+            _noteServiceMock.Verify(s => s.CanNoteBeMovedAsync(noteForMove, moveRequest, default), Times.Once);
             _noteServiceMock.Verify(s => s.MoveNoteAsync(noteForMove, moveRequest, default), Times.Never);
             result.Should().BeOfType<BadRequestObjectResult>();
         }

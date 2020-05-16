@@ -22,11 +22,11 @@ namespace FoodDiary.API.Services
 
         Task DeleteNoteAsync(Note note, CancellationToken cancellationToken);
 
-        bool AllNotesFetched(IEnumerable<int> requestedIds, IEnumerable<Note> fetchedNotes);
+        bool AreAllNotesFetched(IEnumerable<int> requestedIds, IEnumerable<Note> fetchedNotes);
 
         Task DeleteNotesAsync(IEnumerable<Note> notes, CancellationToken cancellationToken);
 
-        Task<bool> NoteCanBeMovedAsync(Note noteForMove, NoteMoveRequest moveRequest, CancellationToken cancellationToken);
+        Task<bool> CanNoteBeMovedAsync(Note noteForMove, NoteMoveRequest moveRequest, CancellationToken cancellationToken);
 
         Task<Note> MoveNoteAsync(Note noteForMove, NoteMoveRequest moveRequest, CancellationToken cancellationToken);
     }

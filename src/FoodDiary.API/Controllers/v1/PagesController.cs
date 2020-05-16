@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,7 +28,7 @@ namespace FoodDiary.API.Controllers.v1
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(List<PageItemDto>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(IEnumerable<PageItemDto>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetPages([FromQuery] PagesSearchRequest request, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
@@ -38,7 +37,7 @@ namespace FoodDiary.API.Controllers.v1
             }
 
             var filteredPages = await _pageService.SearchPagesAsync(request, cancellationToken);
-            var pagesListResponse = _mapper.Map<List<PageItemDto>>(filteredPages);
+            var pagesListResponse = _mapper.Map<IEnumerable<PageItemDto>>(filteredPages);
             return Ok(pagesListResponse);
         }
 
@@ -110,10 +109,10 @@ namespace FoodDiary.API.Controllers.v1
         [HttpDelete("batch")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> DeletePages([FromBody] List<int> ids, CancellationToken cancellationToken)
+        public async Task<IActionResult> DeletePages([FromBody] ICollection<int> ids, CancellationToken cancellationToken)
         {
             var pagesForDelete = await _pageService.GetPagesByIdsAsync(ids, cancellationToken);
-            if (pagesForDelete.Count() != ids.Count)
+            if (pagesForDelete.Count != ids.Count)
             {
                 ModelState.AddModelError(String.Empty, "Pages cannot be deleted: wrong ids specified");
                 return BadRequest(ModelState);

@@ -109,7 +109,7 @@ namespace FoodDiary.API.Services.Implementation
             await _productRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<IEnumerable<Product>> GetProductsDropdownListAsync(ProductDropdownSearchRequest request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Product>> GetProductsDropdownAsync(ProductDropdownSearchRequest request, CancellationToken cancellationToken)
         {
             var query = _productRepository.GetQueryWithoutTracking();
 

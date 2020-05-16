@@ -33,7 +33,7 @@ namespace FoodDiary.API.Controllers.v1
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(List<NoteItemDto>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(IEnumerable<NoteItemDto>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetNotes([FromQuery] NotesSearchRequest request, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
@@ -48,7 +48,7 @@ namespace FoodDiary.API.Controllers.v1
             }
 
             var noteEntities = await _noteService.SearchNotesAsync(request, cancellationToken);
-            var notesListResponse = _mapper.Map<List<NoteItemDto>>(noteEntities);
+            var notesListResponse = _mapper.Map<IEnumerable<NoteItemDto>>(noteEntities);
             return Ok(notesListResponse);
         }
 
@@ -123,7 +123,7 @@ namespace FoodDiary.API.Controllers.v1
         public async Task<IActionResult> DeleteNotes([FromBody] IEnumerable<int> ids, CancellationToken cancellationToken)
         {
             var notesForDelete = await _noteService.GetNotesByIdsAsync(ids, cancellationToken);
-            if (!_noteService.AllNotesFetched(ids, notesForDelete))
+            if (!_noteService.AreAllNotesFetched(ids, notesForDelete))
             {
                 ModelState.AddModelError(String.Empty, "Unable to delete target notes: wrong ids specified");
                 return BadRequest(ModelState);
@@ -150,7 +150,7 @@ namespace FoodDiary.API.Controllers.v1
                 return NotFound();
             }
 
-            if (!await _noteService.NoteCanBeMovedAsync(noteForMove, moveRequest, cancellationToken))
+            if (!await _noteService.CanNoteBeMovedAsync(noteForMove, moveRequest, cancellationToken))
             {
                 ModelState.AddModelError(String.Empty, "Note cannot be moved on target meal group to the specified position");
                 return BadRequest(ModelState);

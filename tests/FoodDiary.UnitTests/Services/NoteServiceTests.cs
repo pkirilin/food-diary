@@ -153,12 +153,12 @@ namespace FoodDiary.UnitTests.Services
         }
 
         [Fact]
-        public void AllNotesFetched_ReturnsTrue_WhenFetchedNotesContainsAllRequestedIds()
+        public void AreAllNotesFetched_ReturnsTrue_WhenFetchedNotesContainsAllRequestedIds()
         {
             var fetchedNotes = _fixture.CreateMany<Note>();
             var requestedIds = fetchedNotes.Select(n => n.Id);
 
-            var result = NoteService.AllNotesFetched(requestedIds, fetchedNotes);
+            var result = NoteService.AreAllNotesFetched(requestedIds, fetchedNotes);
 
             result.Should().BeTrue();
         }
@@ -182,7 +182,7 @@ namespace FoodDiary.UnitTests.Services
         [InlineData(2, 0)]
         [InlineData(2, 1)]
         [InlineData(2, 2)]
-        public async void NoteCanBeMoved_ReturnsTrue_WhenRequestedPositionIsInAllowedRange(int expectedMaxDisplayOrder, int requestedPosition)
+        public async void CanNoteBeMoved_ReturnsTrue_WhenRequestedPositionIsInAllowedRange(int expectedMaxDisplayOrder, int requestedPosition)
         {
             var noteForMove = _fixture.Create<Note>();
             var moveRequest = _fixture.Build<NoteMoveRequest>()
@@ -191,7 +191,7 @@ namespace FoodDiary.UnitTests.Services
             _notesOrderServiceMock.Setup(s => s.GetOrderForNewNoteAsync(noteForMove.PageId, moveRequest.DestMeal, default))
                 .ReturnsAsync(expectedMaxDisplayOrder);
 
-            var result = await NoteService.NoteCanBeMovedAsync(noteForMove, moveRequest, default);
+            var result = await NoteService.CanNoteBeMovedAsync(noteForMove, moveRequest, default);
 
             _notesOrderServiceMock.Verify(s => s.GetOrderForNewNoteAsync(noteForMove.PageId, moveRequest.DestMeal, default), Times.Once);
             result.Should().BeTrue();

@@ -87,7 +87,7 @@ namespace FoodDiary.API.Services.Implementation
             await _noteRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
         }
 
-        public bool AllNotesFetched(IEnumerable<int> requestedIds, IEnumerable<Note> fetchedNotes)
+        public bool AreAllNotesFetched(IEnumerable<int> requestedIds, IEnumerable<Note> fetchedNotes)
         {
             return !requestedIds.Except(fetchedNotes.Select(n => n.Id)).Any();
         }
@@ -99,7 +99,7 @@ namespace FoodDiary.API.Services.Implementation
             await _noteRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<bool> NoteCanBeMovedAsync(Note noteForMove, NoteMoveRequest moveRequest, CancellationToken cancellationToken)
+        public async Task<bool> CanNoteBeMovedAsync(Note noteForMove, NoteMoveRequest moveRequest, CancellationToken cancellationToken)
         {
             var orderLimit = await _notesOrderService.GetOrderForNewNoteAsync(
                 noteForMove.PageId, 

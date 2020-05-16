@@ -13,7 +13,7 @@ namespace FoodDiary.API.Services
 
         Task<Page> GetPageByIdAsync(int pageId, CancellationToken cancellationToken);
 
-        Task<IEnumerable<Page>> GetPagesByIdsAsync(IEnumerable<int> ids, CancellationToken cancellationToken);
+        Task<ICollection<Page>> GetPagesByIdsAsync(IEnumerable<int> ids, CancellationToken cancellationToken);
 
         Task<Page> CreatePageAsync(Page page, CancellationToken cancellationToken);
 

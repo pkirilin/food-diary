@@ -29,6 +29,6 @@ namespace FoodDiary.API.Services
 
         bool AreAllProductsFetched(IEnumerable<Product> fetchedProducts, IEnumerable<int> requestedIds);
 
-        Task<IEnumerable<Product>> GetProductsDropdownListAsync(ProductDropdownSearchRequest request, CancellationToken cancellationToken);
+        Task<IEnumerable<Product>> GetProductsDropdownAsync(ProductDropdownSearchRequest request, CancellationToken cancellationToken);
     }
 }

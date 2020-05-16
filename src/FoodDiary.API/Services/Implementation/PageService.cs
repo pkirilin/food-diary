@@ -47,7 +47,7 @@ namespace FoodDiary.API.Services.Implementation
             return await _pageRepository.GetByIdAsync(pageId, cancellationToken);
         }
 
-        public async Task<IEnumerable<Page>> GetPagesByIdsAsync(IEnumerable<int> ids, CancellationToken cancellationToken)
+        public async Task<ICollection<Page>> GetPagesByIdsAsync(IEnumerable<int> ids, CancellationToken cancellationToken)
         {
             var pagesByIdsQuery = _pageRepository.GetQuery()
                 .Where(p => ids.Contains(p.Id));

@@ -28,11 +28,11 @@ namespace FoodDiary.API.Controllers.v1
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(List<CategoryItemDto>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(IEnumerable<CategoryItemDto>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetCategories(CancellationToken cancellationToken)
         {
             var categories = await _categoryService.GetCategoriesAsync(cancellationToken);
-            var categoriesListResponse = _mapper.Map<List<CategoryItemDto>>(categories);
+            var categoriesListResponse = _mapper.Map<IEnumerable<CategoryItemDto>>(categories);
             return Ok(categoriesListResponse);
         }
 
