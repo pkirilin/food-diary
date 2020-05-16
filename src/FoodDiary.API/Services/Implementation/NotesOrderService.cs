@@ -19,14 +19,17 @@ namespace FoodDiary.API.Services.Implementation
             _noteRepository = noteRepository ?? throw new ArgumentNullException(nameof(noteRepository));
         }
 
-        public async Task<int> GetOrderForNewNoteAsync(Note note, CancellationToken cancellationToken)
+        public async Task<int> GetOrderForNewNoteAsync(int pageId, MealType mealType, CancellationToken cancellationToken)
         {
-            var q = _noteRepository.GetQueryWithoutTracking()
-                .Where(n => n.PageId == note.PageId && n.MealType == note.MealType);
+            var query = _noteRepository.GetQueryWithoutTracking()
+                .Where(n => n.PageId == pageId && n.MealType == mealType);
 
-            var maxDisplayOrder = await _noteRepository.GetMaxDisplayOrderFromQueryAsync(q, cancellationToken);
+            var notes = await _noteRepository.GetListFromQueryAsync(query, cancellationToken);
 
-            return maxDisplayOrder + 1;
+            if (!notes.Any())
+                return 0;
+
+            return notes.Max(n => n.DisplayOrder) + 1;
         }
 
         public async Task ReorderNotesOnDeleteAsync(Note noteForDelete, CancellationToken cancellationToken)

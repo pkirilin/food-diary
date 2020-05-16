@@ -36,11 +36,6 @@ namespace FoodDiary.Infrastructure.Repositories
             return notesQuery.ToListAsync(cancellationToken);
         }
 
-        public Task<int> GetMaxDisplayOrderFromQueryAsync(IQueryable<Note> notesQuery, CancellationToken cancellationToken)
-        {
-            return notesQuery.MaxAsync(n => n.DisplayOrder, cancellationToken);
-        }
-
         public Task<Note> GetByIdAsync(int id, CancellationToken cancellationToken)
         {
             return _context.Notes.FindAsync(new object[] { id }, cancellationToken);

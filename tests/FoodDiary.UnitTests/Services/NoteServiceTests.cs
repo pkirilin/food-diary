@@ -123,7 +123,7 @@ namespace FoodDiary.UnitTests.Services
 
             var result = await NoteService.CreateNoteAsync(note, default);
 
-            _notesOrderServiceMock.Verify(s => s.GetOrderForNewNoteAsync(note, default), Times.Once);
+            _notesOrderServiceMock.Verify(s => s.GetOrderForNewNoteAsync(note.PageId, note.MealType, default), Times.Once);
             _noteRepositoryMock.Verify(r => r.Create(note), Times.Once);
             _noteRepositoryMock.Verify(r => r.UnitOfWork.SaveChangesAsync(default), Times.Once);
             result.Should().Be(note);
@@ -188,13 +188,12 @@ namespace FoodDiary.UnitTests.Services
             var moveRequest = _fixture.Build<NoteMoveRequest>()
                 .With(n => n.Position, requestedPosition)
                 .Create();
-            _noteRepositoryMock.Setup(r => r.GetMaxDisplayOrderFromQueryAsync(It.IsAny<IQueryable<Note>>(), default))
+            _notesOrderServiceMock.Setup(s => s.GetOrderForNewNoteAsync(noteForMove.PageId, moveRequest.DestMeal, default))
                 .ReturnsAsync(expectedMaxDisplayOrder);
 
             var result = await NoteService.NoteCanBeMovedAsync(noteForMove, moveRequest, default);
 
-            _noteRepositoryMock.Verify(r => r.GetQueryWithoutTracking(), Times.Once);
-            _noteRepositoryMock.Verify(r => r.GetMaxDisplayOrderFromQueryAsync(It.IsAny<IQueryable<Note>>(), default), Times.Once);
+            _notesOrderServiceMock.Verify(s => s.GetOrderForNewNoteAsync(noteForMove.PageId, moveRequest.DestMeal, default), Times.Once);
             result.Should().BeTrue();
         }
 

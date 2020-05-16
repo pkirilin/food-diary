@@ -64,7 +64,11 @@ namespace FoodDiary.API.Services.Implementation
 
         public async Task<Note> CreateNoteAsync(Note note, CancellationToken cancellationToken)
         {
-            note.DisplayOrder = await _notesOrderService.GetOrderForNewNoteAsync(note, cancellationToken);
+            note.DisplayOrder = await _notesOrderService.GetOrderForNewNoteAsync(
+                note.PageId, 
+                note.MealType, 
+                cancellationToken);
+
             var addedNote = _noteRepository.Create(note);
             await _noteRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
             return addedNote;
@@ -97,10 +101,12 @@ namespace FoodDiary.API.Services.Implementation
 
         public async Task<bool> NoteCanBeMovedAsync(Note noteForMove, NoteMoveRequest moveRequest, CancellationToken cancellationToken)
         {
-            var q = _noteRepository.GetQueryWithoutTracking()
-                .Where(n => n.PageId == noteForMove.PageId && n.MealType == moveRequest.DestMeal);
-            var maxDisplayOrder = await _noteRepository.GetMaxDisplayOrderFromQueryAsync(q, cancellationToken);
-            return moveRequest.Position >= 0 && moveRequest.Position <= maxDisplayOrder + 1;
+            var orderLimit = await _notesOrderService.GetOrderForNewNoteAsync(
+                noteForMove.PageId, 
+                moveRequest.DestMeal, 
+                cancellationToken);
+
+            return moveRequest.Position >= 0 && moveRequest.Position <= orderLimit;
         }
 
         public async Task<Note> MoveNoteAsync(Note noteForMove, NoteMoveRequest moveRequest, CancellationToken cancellationToken)

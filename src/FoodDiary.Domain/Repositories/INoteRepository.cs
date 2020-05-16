@@ -15,8 +15,6 @@ namespace FoodDiary.Domain.Repositories
 
         Task<List<Note>> GetListFromQueryAsync(IQueryable<Note> notesQuery, CancellationToken cancellationToken);
 
-        Task<int> GetMaxDisplayOrderFromQueryAsync(IQueryable<Note> notesQuery, CancellationToken cancellationToken);
-
         Task<Note> GetByIdAsync(int id, CancellationToken cancellationToken);
 
         Note Create(Note note);
