@@ -19,27 +19,27 @@ namespace FoodDiary.API.Services.Implementation
             _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
         }
 
-        public async Task<ProductsSearchResultMetadata> SearchProductsAsync(ProductsSearchRequest searchRequest, CancellationToken cancellationToken)
+        public async Task<ProductsSearchResultMetadata> SearchProductsAsync(ProductsSearchRequest request, CancellationToken cancellationToken)
         {
             var searchQuery = _productRepository.GetQueryWithoutTracking();
 
-            if (!String.IsNullOrWhiteSpace(searchRequest.ProductSearchName))
+            if (!String.IsNullOrWhiteSpace(request.ProductSearchName))
             {
                 searchQuery = searchQuery.Where(p =>
                     p.Name.ToLower()
-                        .StartsWith(searchRequest.ProductSearchName.ToLower()));
+                        .StartsWith(request.ProductSearchName.ToLower()));
             }
 
-            if (searchRequest.CategoryId.HasValue)
+            if (request.CategoryId.HasValue)
             {
-                searchQuery = searchQuery.Where(p => p.CategoryId == searchRequest.CategoryId);
+                searchQuery = searchQuery.Where(p => p.CategoryId == request.CategoryId);
             }
 
             var totalProductsCount = await _productRepository.CountByQueryAsync(searchQuery, cancellationToken);
 
             searchQuery = searchQuery.OrderBy(p => p.Name);
-            searchQuery = searchQuery.Skip((searchRequest.PageNumber - 1) * searchRequest.PageSize)
-                .Take(searchRequest.PageSize);
+            searchQuery = searchQuery.Skip((request.PageNumber - 1) * request.PageSize)
+                .Take(request.PageSize);
             searchQuery = _productRepository.LoadCategory(searchQuery);
 
             var products = await _productRepository.GetListFromQueryAsync(searchQuery, cancellationToken);
@@ -72,9 +72,9 @@ namespace FoodDiary.API.Services.Implementation
             return productsWithTheSameName.Any();
         }
 
-        public bool IsEditedProductValid(ProductCreateEditRequest editedProductData, Product originalProduct, bool isProductExists)
+        public bool IsEditedProductValid(ProductCreateEditRequest updatedProductData, Product originalProduct, bool isProductExists)
         {
-            bool productHasChanges = editedProductData.Name != originalProduct.Name;
+            bool productHasChanges = updatedProductData.Name != originalProduct.Name;
             return !productHasChanges || (productHasChanges && !isProductExists);
         }
 

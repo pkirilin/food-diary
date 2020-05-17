@@ -19,11 +19,11 @@ namespace FoodDiary.API.Services.Implementation
             _pageRepository = pageRepository ?? throw new ArgumentNullException(nameof(pageRepository));
         }
 
-        public async Task<IEnumerable<Page>> SearchPagesAsync(PagesSearchRequest pageFilter, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Page>> SearchPagesAsync(PagesSearchRequest request, CancellationToken cancellationToken)
         {
             var searchPagesQuery = _pageRepository.GetQueryWithoutTracking();
 
-            switch (pageFilter.SortOrder)
+            switch (request.SortOrder)
             {
                 case SortOrder.Ascending:
                     searchPagesQuery = searchPagesQuery.OrderBy(p => p.Date);
@@ -35,8 +35,8 @@ namespace FoodDiary.API.Services.Implementation
                     break;
             }
 
-            if (pageFilter.ShowCount.HasValue)
-                searchPagesQuery = searchPagesQuery.Take(pageFilter.ShowCount.Value);
+            if (request.ShowCount.HasValue)
+                searchPagesQuery = searchPagesQuery.Take(request.ShowCount.Value);
 
             searchPagesQuery = _pageRepository.LoadNotesWithProducts(searchPagesQuery);
             return await _pageRepository.GetListFromQueryAsync(searchPagesQuery, cancellationToken);
@@ -78,9 +78,9 @@ namespace FoodDiary.API.Services.Implementation
             await _pageRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
         }
 
-        public bool IsEditedPageValid(PageCreateEditRequest updatedPageInfo, Page originalPage, bool isPageExists)
+        public bool IsEditedPageValid(PageCreateEditRequest updatedPageData, Page originalPage, bool isPageExists)
         {
-            bool pageHasChanges = originalPage.Date != updatedPageInfo.Date;
+            bool pageHasChanges = originalPage.Date != updatedPageData.Date;
             return !pageHasChanges || (pageHasChanges && !isPageExists);
         }
 

@@ -35,23 +35,23 @@ namespace FoodDiary.API.Controllers.v1
         [HttpGet]
         [ProducesResponseType(typeof(ProductsSearchResultDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> GetProducts([FromQuery] ProductsSearchRequest searchRequest, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetProducts([FromQuery] ProductsSearchRequest request, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (searchRequest.CategoryId.HasValue)
+            if (request.CategoryId.HasValue)
             {
-                var requestedCategory = await _categoryService.GetCategoryByIdAsync(searchRequest.CategoryId.Value, cancellationToken);
+                var requestedCategory = await _categoryService.GetCategoryByIdAsync(request.CategoryId.Value, cancellationToken);
                 if (requestedCategory == null)
                 {
                     return NotFound();
                 }
             }
 
-            var productSearchMeta = await _productService.SearchProductsAsync(searchRequest, cancellationToken);
+            var productSearchMeta = await _productService.SearchProductsAsync(request, cancellationToken);
             var productItemsResult = _mapper.Map<IEnumerable<ProductItemDto>>(productSearchMeta.FoundProducts);
 
             var productsSearchResult = new ProductsSearchResultDto()
@@ -66,20 +66,20 @@ namespace FoodDiary.API.Controllers.v1
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> CreateProduct([FromBody] ProductCreateEditRequest request, CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateProduct([FromBody] ProductCreateEditRequest productData, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (await _productService.IsProductExistsAsync(request.Name, cancellationToken))
+            if (await _productService.IsProductExistsAsync(productData.Name, cancellationToken))
             {
-                ModelState.AddModelError(nameof(request.Name), $"Product with the name '{request.Name}' already exists");
+                ModelState.AddModelError(nameof(productData.Name), $"Product with the name '{productData.Name}' already exists");
                 return BadRequest(ModelState);
             }
 
-            var product = _mapper.Map<Product>(request);
+            var product = _mapper.Map<Product>(productData);
             await _productService.CreateProductAsync(product, cancellationToken);
             return Ok();
         }
@@ -88,7 +88,7 @@ namespace FoodDiary.API.Controllers.v1
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> EditProduct([FromRoute] int id, [FromBody] ProductCreateEditRequest request, CancellationToken cancellationToken)
+        public async Task<IActionResult> EditProduct([FromRoute] int id, [FromBody] ProductCreateEditRequest updatedProductData, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
             {
@@ -101,14 +101,14 @@ namespace FoodDiary.API.Controllers.v1
                 return NotFound();
             }
 
-            var isProductExists = await _productService.IsProductExistsAsync(request.Name, cancellationToken);
-            if (!_productService.IsEditedProductValid(request, originalProduct, isProductExists))
+            var isProductExists = await _productService.IsProductExistsAsync(updatedProductData.Name, cancellationToken);
+            if (!_productService.IsEditedProductValid(updatedProductData, originalProduct, isProductExists))
             {
-                ModelState.AddModelError(nameof(request.Name), $"Product with the name '{request.Name}' already exists");
+                ModelState.AddModelError(nameof(updatedProductData.Name), $"Product with the name '{updatedProductData.Name}' already exists");
                 return BadRequest(ModelState);
             }
 
-            originalProduct = _mapper.Map(request, originalProduct);
+            originalProduct = _mapper.Map(updatedProductData, originalProduct);
             await _productService.EditProductAsync(originalProduct, cancellationToken);
             return Ok();
         }

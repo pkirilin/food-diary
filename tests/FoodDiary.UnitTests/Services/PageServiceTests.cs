@@ -3,16 +3,15 @@ using AutoFixture;
 using FluentAssertions;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Repositories;
-using FoodDiary.UnitTests.Customizations;
 using Moq;
 using Xunit;
-using FoodDiary.Domain.Enums;
-using AutoFixture.Xunit2;
 using System;
 using FoodDiary.Domain.Abstractions;
 using FoodDiary.API.Services;
 using FoodDiary.API.Services.Implementation;
 using FoodDiary.API.Requests;
+using FoodDiary.UnitTests.Attributes;
+using System.Collections.Generic;
 
 namespace FoodDiary.UnitTests.Services
 {
@@ -20,174 +19,122 @@ namespace FoodDiary.UnitTests.Services
     {
         private readonly Mock<IPageRepository> _pageRepositoryMock;
 
-        private readonly IFixture _fixture;
+        private readonly IFixture _fixture = Fixtures.Custom;
 
         public PageServiceTests()
         {
             _pageRepositoryMock = new Mock<IPageRepository>();
-            _fixture = SetupFixture();
 
             _pageRepositoryMock.SetupGet(r => r.UnitOfWork)
                 .Returns(new Mock<IUnitOfWork>().Object);
         }
 
-        public IPageService PageService => new PageService(_pageRepositoryMock.Object);
-
-        private IFixture SetupFixture()
-        {
-            var _fixture = new Fixture();
-            _fixture.Customize(new FixtureWithCircularReferencesCustomization());
-            return _fixture;
-        }
+        public IPageService Sut => new PageService(_pageRepositoryMock.Object);
 
         [Theory]
-        [InlineAutoData]
-        [InlineAutoData(null)]
-        public async void SearchPages_ReturnsRequestedPagesCount_DependingOnShowCount(int? showCount)
+        [CustomAutoData]
+        public async void SearchPages_ReturnsRequestedPages(
+            PagesSearchRequest request, List<Page> pages)
         {
-            var pageFilter = _fixture.Build<PagesSearchRequest>()
-                .With(p => p.ShowCount, showCount)
-                .Create();
-            var expectedPagesCount = pageFilter.ShowCount ?? 10;
-            var pages = _fixture.CreateMany<Page>(expectedPagesCount).ToList();
-            var pagesQuery = pages.AsQueryable();
-
-            _pageRepositoryMock.Setup(r => r.GetQueryWithoutTracking())
-                .Returns(pagesQuery);
             _pageRepositoryMock.Setup(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Page>>(), default))
                 .ReturnsAsync(pages);
 
-            var result = await PageService.SearchPagesAsync(pageFilter, default);
-
-            _pageRepositoryMock.Verify(r => r.GetQueryWithoutTracking(), Times.Once);
-            _pageRepositoryMock.Verify(r => r.LoadNotesWithProducts(It.IsNotNull<IQueryable<Page>>()), Times.Once);
-            _pageRepositoryMock.Verify(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Page>>(), default), Times.Once);
-            result.Should().HaveCount(expectedPagesCount).And.Contain(pages);
-        }
-
-        [Theory]
-        [InlineData(SortOrder.Ascending)]
-        [InlineData(SortOrder.Descending)]
-        public async void SearchPages_ReturnsOrderedPages_DependingOnSortOrder(SortOrder sortOrder)
-        {
-            var pageFilter = _fixture.Build<PagesSearchRequest>()
-                .With(p => p.SortOrder, sortOrder)
-                .Create();
-            var pages = _fixture.CreateMany<Page>().ToList();
-            var pagesQuery = pages.AsQueryable();
-            var expectedOrderedPages = sortOrder == SortOrder.Ascending ?
-                pages.OrderBy(p => p.Date).ToList()
-                : pages.OrderByDescending(p => p.Date).ToList();
-
-            _pageRepositoryMock.Setup(r => r.GetQueryWithoutTracking())
-                .Returns(pagesQuery);
-            _pageRepositoryMock.Setup(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Page>>(), default))
-                .ReturnsAsync(expectedOrderedPages);
-
-            var result = await PageService.SearchPagesAsync(pageFilter, default);
+            var result = await Sut.SearchPagesAsync(request, default);
 
             _pageRepositoryMock.Verify(r => r.GetQueryWithoutTracking(), Times.Once);
             _pageRepositoryMock.Verify(r => r.LoadNotesWithProducts(It.IsNotNull<IQueryable<Page>>()), Times.Once);
             _pageRepositoryMock.Verify(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Page>>(), default), Times.Once);
 
-            result.Should().Contain(expectedOrderedPages);
-            if (sortOrder == SortOrder.Ascending)
-                result.Should().BeInAscendingOrder(p => p.Date);
-            else
-                result.Should().BeInDescendingOrder(p => p.Date);
+            result.Should().ContainInOrder(pages);
         }
 
-        [Fact]
-        public async void GetPageById_ReturnsPageWithRequestedId()
+        [Theory]
+        [CustomAutoData]
+        public async void GetPageById_ReturnsRequestedPage(int requestedPageId, Page requestedPage)
         {
-            var expectedPage = _fixture.Create<Page>();
-            _pageRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<int>(), default))
-                .ReturnsAsync(expectedPage);
+            _pageRepositoryMock.Setup(r => r.GetByIdAsync(requestedPageId, default))
+                .ReturnsAsync(requestedPage);
 
-            var result = await PageService.GetPageByIdAsync(expectedPage.Id, default);
+            var result = await Sut.GetPageByIdAsync(requestedPageId, default);
 
-            _pageRepositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<int>(), default), Times.Once);
-            result.Should().Be(expectedPage);
+            _pageRepositoryMock.Verify(r => r.GetByIdAsync(requestedPageId, default), Times.Once);
+            
+            result.Should().Be(requestedPage);
         }
 
-        [Fact]
-        public async void GetPagesByIds_ReturnsPagesWithRequestedIds()
+        [Theory]
+        [CustomAutoData]
+        public async void GetPagesByIds_ReturnsRequestedPages(
+            IEnumerable<int> pageIds, List<Page> pages)
         {
-            var pages = _fixture.CreateMany<Page>().ToList();
-            var pagesQuery = pages.AsQueryable();
-            var pageIds = pages.Select(p => p.Id).ToList();
-
-            _pageRepositoryMock.Setup(r => r.GetQuery())
-                .Returns(pagesQuery);
-            _pageRepositoryMock.Setup(r => r.GetListFromQueryAsync(pagesQuery, default))
+            _pageRepositoryMock.Setup(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Page>>(), default))
                 .ReturnsAsync(pages);
 
-            var result = await PageService.GetPagesByIdsAsync(pageIds, default);
+            var result = await Sut.GetPagesByIdsAsync(pageIds, default);
 
             _pageRepositoryMock.Verify(r => r.GetQuery(), Times.Once);
-            _pageRepositoryMock.Verify(r => r.GetListFromQueryAsync(pagesQuery, default), Times.Once);
+            _pageRepositoryMock.Verify(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Page>>(), default), Times.Once);
+            
             result.Should().Contain(pages);
         }
 
-        [Fact]
-        public async void CreatePage_CreatesPageWithoutErrors()
+        [Theory]
+        [CustomAutoData]
+        public async void CreatePage_CreatesPage(Page pageForCreate)
         {
-            var pageForCreate = _fixture.Create<Page>();
             _pageRepositoryMock.Setup(r => r.Add(pageForCreate))
                 .Returns(pageForCreate);
 
-            var result = await PageService.CreatePageAsync(pageForCreate, default);
+            var result = await Sut.CreatePageAsync(pageForCreate, default);
 
             _pageRepositoryMock.Verify(r => r.Add(pageForCreate), Times.Once);
+
             result.Should().Be(pageForCreate);
         }
 
-        [Fact]
-        public async void EditPage_UpdatesPageWithoutErrors()
+        [Theory]
+        [CustomAutoData]
+        public async void EditPage_UpdatesPage(Page pageForUpdate)
         {
-            var pageForEdit = _fixture.Create<Page>();
+            await Sut.EditPageAsync(pageForUpdate, default);
 
-            await PageService.EditPageAsync(pageForEdit, default);
-
-            _pageRepositoryMock.Verify(r => r.Update(pageForEdit), Times.Once);
+            _pageRepositoryMock.Verify(r => r.Update(pageForUpdate), Times.Once);
             _pageRepositoryMock.Verify(r => r.UnitOfWork.SaveChangesAsync(default), Times.Once);
         }
 
-        [Fact]
-        public async void DeletePage_DeletesPageWithoutErrors()
+        [Theory]
+        [CustomAutoData]
+        public async void DeletePage_DeletesPage(Page pageForDelete)
         {
-            var pageForDelete = _fixture.Create<Page>();
-
-            await PageService.DeletePageAsync(pageForDelete, default);
+            await Sut.DeletePageAsync(pageForDelete, default);
 
             _pageRepositoryMock.Verify(r => r.Delete(pageForDelete), Times.Once);
             _pageRepositoryMock.Verify(r => r.UnitOfWork.SaveChangesAsync(default), Times.Once);
         }
 
-        [Fact]
-        public async void BatchDeletePages_DeletesPagesWithoutErrors()
+        [Theory]
+        [CustomAutoData]
+        public async void BatchDeletePages_DeletesPages(IEnumerable<Page> pagesForDelete)
         {
-            var pagesForBatchDelete = _fixture.CreateMany<Page>().ToList();
+            await Sut.BatchDeletePagesAsync(pagesForDelete, default);
 
-            await PageService.BatchDeletePagesAsync(pagesForBatchDelete, default);
-
-            _pageRepositoryMock.Verify(r => r.DeleteRange(pagesForBatchDelete), Times.Once);
+            _pageRepositoryMock.Verify(r => r.DeleteRange(pagesForDelete), Times.Once);
             _pageRepositoryMock.Verify(r => r.UnitOfWork.SaveChangesAsync(default), Times.Once);
         }
 
-        [Fact]
-        public async void IsPageExists_ReturnsTrue_WhenPageWithTheSameDateExists()
+        [Theory]
+        [CustomAutoData]
+        public async void IsPageExists_ReturnsTrue_WhenPageWithTheSameDateExists(
+            DateTime pageDate, List<Page> pagesWithTheSameDate)
         {
-            var createPageInfo = _fixture.Create<PageCreateEditRequest>();
-            var pagesWithTheSameDate = _fixture.CreateMany<Page>().ToList();
-
             _pageRepositoryMock.Setup(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Page>>(), default))
                 .ReturnsAsync(pagesWithTheSameDate);
 
-            var result = await PageService.IsPageExistsAsync(createPageInfo.Date, default);
+            var result = await Sut.IsPageExistsAsync(pageDate, default);
 
             _pageRepositoryMock.Verify(r => r.GetQueryWithoutTracking(), Times.Once);
             _pageRepositoryMock.Verify(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Page>>(), default), Times.Once);
+            
             result.Should().BeTrue();
         }
 
@@ -206,7 +153,7 @@ namespace FoodDiary.UnitTests.Services
                 .With(p => p.Date, DateTime.Parse(newPageDateStr))
                 .Create();
 
-            var result = PageService.IsEditedPageValid(editedPageData, originalPage, isPageExists);
+            var result = Sut.IsEditedPageValid(editedPageData, originalPage, isPageExists);
 
             result.Should().BeTrue();
         }

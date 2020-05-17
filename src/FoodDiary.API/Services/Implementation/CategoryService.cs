@@ -42,9 +42,9 @@ namespace FoodDiary.API.Services.Implementation
             return categoriesWithTheSameName.Any();
         }
 
-        public bool IsEditedCategoryValid(CategoryCreateEditRequest updatedCategoryInfo, Category originalCategory, bool isCategoryExists)
+        public bool IsEditedCategoryValid(CategoryCreateEditRequest updatedCategoryData, Category originalCategory, bool isCategoryExists)
         {
-            bool categoryHasChanges = originalCategory.Name != updatedCategoryInfo.Name;
+            bool categoryHasChanges = originalCategory.Name != updatedCategoryData.Name;
             return !categoryHasChanges || (categoryHasChanges && !isCategoryExists);
         }
 

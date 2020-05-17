@@ -39,21 +39,20 @@ namespace FoodDiary.API.Controllers.v1
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> CreateCategory([FromBody] CategoryCreateEditRequest newCateroryInfo, CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateCategory([FromBody] CategoryCreateEditRequest categoryData, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var category = _mapper.Map<Category>(newCateroryInfo);
-
-            if (await _categoryService.IsCategoryExistsAsync(newCateroryInfo.Name, cancellationToken))
+            if (await _categoryService.IsCategoryExistsAsync(categoryData.Name, cancellationToken))
             {
-                ModelState.AddModelError(nameof(newCateroryInfo.Name), $"Category with the name '{newCateroryInfo.Name}' already exists");
+                ModelState.AddModelError(nameof(categoryData.Name), $"Category with the name '{categoryData.Name}' already exists");
                 return BadRequest(ModelState);
             }
 
+            var category = _mapper.Map<Category>(categoryData);
             var createdCategory = await _categoryService.CreateCategoryAsync(category, cancellationToken);
             return Ok(createdCategory.Id);
         }
@@ -62,7 +61,7 @@ namespace FoodDiary.API.Controllers.v1
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> EditCategory([FromRoute] int id, [FromBody] CategoryCreateEditRequest updatedCategoryInfo, CancellationToken cancellationToken)
+        public async Task<IActionResult> EditCategory([FromRoute] int id, [FromBody] CategoryCreateEditRequest updatedCategoryData, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
             {
@@ -75,14 +74,14 @@ namespace FoodDiary.API.Controllers.v1
                 return NotFound();
             }
 
-            var isCategoryExists = await _categoryService.IsCategoryExistsAsync(updatedCategoryInfo.Name, cancellationToken);
-            if (!_categoryService.IsEditedCategoryValid(updatedCategoryInfo, originalCategory, isCategoryExists))
+            var isCategoryExists = await _categoryService.IsCategoryExistsAsync(updatedCategoryData.Name, cancellationToken);
+            if (!_categoryService.IsEditedCategoryValid(updatedCategoryData, originalCategory, isCategoryExists))
             {
-                ModelState.AddModelError(nameof(updatedCategoryInfo.Name), $"Category with the name '{updatedCategoryInfo.Name}' already exists");
+                ModelState.AddModelError(nameof(updatedCategoryData.Name), $"Category with the name '{updatedCategoryData.Name}' already exists");
                 return BadRequest(ModelState);
             }
 
-            originalCategory = _mapper.Map(updatedCategoryInfo, originalCategory);
+            originalCategory = _mapper.Map(updatedCategoryData, originalCategory);
             await _categoryService.EditCategoryAsync(originalCategory, cancellationToken);
             return Ok();
         }

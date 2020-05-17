@@ -16,19 +16,12 @@ namespace FoodDiary.UnitTests.Services
     public class NotesOrderServiceTests
     {
         private readonly Mock<INoteRepository> _noteRepositoryMock;
-        private readonly IFixture _fixture;
+
+        private readonly IFixture _fixture = Fixtures.Custom;
 
         public NotesOrderServiceTests()
         {
             _noteRepositoryMock = new Mock<INoteRepository>();
-            _fixture = SetupFixture();
-        }
-
-        private IFixture SetupFixture()
-        {
-            var _fixture = new Fixture();
-            _fixture.Customize(new FixtureWithCircularReferencesCustomization());
-            return _fixture;
         }
 
         public INotesOrderService NotesOrderService => new NotesOrderService(_noteRepositoryMock.Object);

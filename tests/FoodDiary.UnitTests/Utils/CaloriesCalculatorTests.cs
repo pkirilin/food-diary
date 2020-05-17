@@ -6,25 +6,16 @@ using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Utils;
 using FoodDiary.Infrastructure.Utils;
 using FoodDiary.UnitTests.Attributes;
-using FoodDiary.UnitTests.Customizations;
 using Xunit;
 
 namespace FoodDiary.UnitTests.Utils
 {
     public class CaloriesCalculatorTests
     {
-        private readonly IFixture _fixture;
+        private readonly IFixture _fixture = Fixtures.Custom;
 
         public CaloriesCalculatorTests()
         {
-            _fixture = SetupFixture();
-        }
-
-        private IFixture SetupFixture()
-        {
-            var _fixture = new Fixture();
-            _fixture.Customize(new FixtureWithCircularReferencesCustomization());
-            return _fixture;
         }
 
         ICaloriesCalculator Sut => new CaloriesCalculator();

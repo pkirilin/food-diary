@@ -44,20 +44,20 @@ namespace FoodDiary.API.Controllers.v1
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> CreatePage([FromBody] PageCreateEditRequest request, CancellationToken cancellationToken)
+        public async Task<IActionResult> CreatePage([FromBody] PageCreateEditRequest pageData, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (await _pageService.IsPageExistsAsync(request.Date, cancellationToken))
+            if (await _pageService.IsPageExistsAsync(pageData.Date, cancellationToken))
             {
-                ModelState.AddModelError(nameof(request.Date), $"Page with date '${request.Date.ToShortDateString()}' already exists");
+                ModelState.AddModelError(nameof(pageData.Date), $"Page with date '${pageData.Date.ToShortDateString()}' already exists");
                 return BadRequest(ModelState);
             }
 
-            var page = _mapper.Map<Page>(request);
+            var page = _mapper.Map<Page>(pageData);
             var createdPage = await _pageService.CreatePageAsync(page, cancellationToken);
             return Ok(createdPage.Id);
         }
@@ -66,7 +66,7 @@ namespace FoodDiary.API.Controllers.v1
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> EditPage([FromRoute] int id, [FromBody] PageCreateEditRequest request, CancellationToken cancellationToken)
+        public async Task<IActionResult> EditPage([FromRoute] int id, [FromBody] PageCreateEditRequest updatedPageData, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
             {
@@ -79,14 +79,14 @@ namespace FoodDiary.API.Controllers.v1
                 return NotFound();
             }
 
-            var isPageExists = await _pageService.IsPageExistsAsync(request.Date, cancellationToken);
-            if (!_pageService.IsEditedPageValid(request, originalPage, isPageExists))
+            var isPageExists = await _pageService.IsPageExistsAsync(updatedPageData.Date, cancellationToken);
+            if (!_pageService.IsEditedPageValid(updatedPageData, originalPage, isPageExists))
             {
-                ModelState.AddModelError(nameof(request.Date), $"Page with date '${request.Date.ToShortDateString()}' already exists");
+                ModelState.AddModelError(nameof(updatedPageData.Date), $"Page with date '${updatedPageData.Date.ToShortDateString()}' already exists");
                 return BadRequest(ModelState);
             }
 
-            originalPage = _mapper.Map(request, originalPage);
+            originalPage = _mapper.Map(updatedPageData, originalPage);
             await _pageService.EditPageAsync(originalPage, cancellationToken);
             return Ok();
         }

@@ -55,21 +55,20 @@ namespace FoodDiary.API.Controllers.v1
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> CreateNote([FromBody] NoteCreateEditRequest newNote, CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateNote([FromBody] NoteCreateEditRequest noteData, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (!await _noteService.IsNoteProductExistsAsync(newNote.ProductId, cancellationToken))
+            if (!await _noteService.IsNoteProductExistsAsync(noteData.ProductId, cancellationToken))
             {
-                ModelState.AddModelError(nameof(newNote.ProductId), "Selected product not found");
+                ModelState.AddModelError(nameof(noteData.ProductId), "Selected product not found");
                 return BadRequest(ModelState);
             }
 
-            var note = _mapper.Map<Note>(newNote);
-
+            var note = _mapper.Map<Note>(noteData);
             await _noteService.CreateNoteAsync(note, cancellationToken);
             return Ok();
         }
@@ -78,16 +77,16 @@ namespace FoodDiary.API.Controllers.v1
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> EditNote([FromRoute] int id, [FromBody] NoteCreateEditRequest updatedNote, CancellationToken cancellationToken)
+        public async Task<IActionResult> EditNote([FromRoute] int id, [FromBody] NoteCreateEditRequest updatedNoteData, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (!await _noteService.IsNoteProductExistsAsync(updatedNote.ProductId, cancellationToken))
+            if (!await _noteService.IsNoteProductExistsAsync(updatedNoteData.ProductId, cancellationToken))
             {
-                ModelState.AddModelError(nameof(updatedNote.ProductId), "Selected product not found");
+                ModelState.AddModelError(nameof(updatedNoteData.ProductId), "Selected product not found");
                 return BadRequest(ModelState);
             }
 
@@ -97,7 +96,7 @@ namespace FoodDiary.API.Controllers.v1
                 return NotFound();
             }
 
-            originalNote = _mapper.Map(updatedNote, originalNote);
+            originalNote = _mapper.Map(updatedNoteData, originalNote);
             await _noteService.EditNoteAsync(originalNote, cancellationToken);
             return Ok();
         }

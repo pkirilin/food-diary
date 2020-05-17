@@ -9,7 +9,7 @@ namespace FoodDiary.API.Services
 {
     public interface IProductService
     {
-        Task<ProductsSearchResultMetadata> SearchProductsAsync(ProductsSearchRequest searchRequest, CancellationToken cancellationToken);
+        Task<ProductsSearchResultMetadata> SearchProductsAsync(ProductsSearchRequest request, CancellationToken cancellationToken);
 
         Task<Product> GetProductByIdAsync(int id, CancellationToken cancellationToken);
 
@@ -25,7 +25,7 @@ namespace FoodDiary.API.Services
 
         Task<bool> IsProductExistsAsync(string productName, CancellationToken cancellationToken);
 
-        bool IsEditedProductValid(ProductCreateEditRequest editedProductData, Product originalProduct, bool isProductExists);
+        bool IsEditedProductValid(ProductCreateEditRequest updatedProductData, Product originalProduct, bool isProductExists);
 
         bool AreAllProductsFetched(IEnumerable<Product> fetchedProducts, IEnumerable<int> requestedIds);
 

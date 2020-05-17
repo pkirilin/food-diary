@@ -14,7 +14,7 @@ namespace FoodDiary.API.Services
 
         Task<bool> IsCategoryExistsAsync(string categoryName, CancellationToken cancellationToken);
 
-        bool IsEditedCategoryValid(CategoryCreateEditRequest updatedCategoryInfo, Category originalCategory, bool isCategoryExists);
+        bool IsEditedCategoryValid(CategoryCreateEditRequest updatedCategoryData, Category originalCategory, bool isCategoryExists);
 
         Task<Category> CreateCategoryAsync(Category category, CancellationToken cancellationToken);
 

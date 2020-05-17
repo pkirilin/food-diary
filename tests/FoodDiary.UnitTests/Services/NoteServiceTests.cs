@@ -1,17 +1,16 @@
 ﻿using System.Linq;
 using AutoFixture;
-using AutoFixture.Xunit2;
 using FluentAssertions;
 using FoodDiary.API.Services;
 using FoodDiary.API.Services.Implementation;
 using FoodDiary.Domain.Abstractions;
 using FoodDiary.Domain.Entities;
-using FoodDiary.Domain.Enums;
 using FoodDiary.Domain.Repositories;
-using FoodDiary.UnitTests.Customizations;
 using Moq;
 using Xunit;
 using FoodDiary.API.Requests;
+using FoodDiary.UnitTests.Attributes;
+using System.Collections.Generic;
 
 namespace FoodDiary.UnitTests.Services
 {
@@ -20,14 +19,14 @@ namespace FoodDiary.UnitTests.Services
         private readonly Mock<INoteRepository> _noteRepositoryMock;
         private readonly Mock<IProductRepository> _productRepositoryMock;
         private readonly Mock<INotesOrderService> _notesOrderServiceMock;
-        private readonly IFixture _fixture;
+
+        private readonly IFixture _fixture = Fixtures.Custom;
 
         public NoteServiceTests()
         {
             _noteRepositoryMock = new Mock<INoteRepository>();
             _productRepositoryMock = new Mock<IProductRepository>();
             _notesOrderServiceMock = new Mock<INotesOrderService>();
-            _fixture = SetupFixture();
 
             var unitOfWorkMock = new Mock<IUnitOfWork>();
             _noteRepositoryMock.SetupGet(r => r.UnitOfWork)
@@ -36,139 +35,127 @@ namespace FoodDiary.UnitTests.Services
                 .Returns(unitOfWorkMock.Object);
         }
 
-        private IFixture SetupFixture()
+        public INoteService Sut => new NoteService(
+            _noteRepositoryMock.Object,
+            _productRepositoryMock.Object,
+            _notesOrderServiceMock.Object);
+
+        [Theory]
+        [CustomAutoData]
+        public async void GetNoteById_ReturnsRequestedNote(int requestedNoteId, Note note)
         {
-            var _fixture = new Fixture();
-            _fixture.Customize(new FixtureWithCircularReferencesCustomization());
-            return _fixture;
-        }
+            _noteRepositoryMock.Setup(r => r.GetByIdAsync(requestedNoteId, default))
+                .ReturnsAsync(note);
 
-        public INoteService NoteService => new NoteService(_noteRepositoryMock.Object, _productRepositoryMock.Object, _notesOrderServiceMock.Object);
+            var result = await Sut.GetNoteByIdAsync(requestedNoteId, default);
 
-        [Fact]
-        public async void GetNoteByIdAsync_ReturnsNoteWithRequestedId()
-        {
-            var id = _fixture.Create<int>();
-            var expectedNote = _fixture.Build<Note>()
-                .With(n => n.Id, id)
-                .Create();
-            _noteRepositoryMock.Setup(r => r.GetByIdAsync(id, default))
-                .ReturnsAsync(expectedNote);
-
-            var result = await NoteService.GetNoteByIdAsync(id, default);
-
-            _noteRepositoryMock.Verify(r => r.GetByIdAsync(id, default), Times.Once);
-            result.Should().NotBeNull().And.Be(expectedNote);
+            _noteRepositoryMock.Verify(r => r.GetByIdAsync(requestedNoteId, default), Times.Once);
+            
+            result.Should().Be(note);
         }
 
         [Theory]
-        [InlineAutoData]
-        [InlineAutoData(1)]
-        [InlineAutoData(1, null)]
-        [InlineAutoData(1, MealType.Breakfast)]
-        public async void SearchNotesAsync_ReturnsNotesForRequestedParameters(int pageId, MealType? mealType)
+        [CustomAutoData]
+        public async void SearchNotes_ReturnsRequestedNotes(
+            NotesSearchRequest request, List<Note> notes)
         {
-            var request = _fixture.Build<NotesSearchRequest>()
-                .With(r => r.PageId, pageId)
-                .With(r => r.MealType, mealType)
-                .Create();
-            var expectedNotes = _fixture.CreateMany<Note>().ToList();
             _noteRepositoryMock.Setup(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Note>>(), default))
-                .ReturnsAsync(expectedNotes);
+                .ReturnsAsync(notes);
 
-            var result = await NoteService.SearchNotesAsync(request, default);
+            var result = await Sut.SearchNotesAsync(request, default);
 
             _noteRepositoryMock.Verify(r => r.GetQueryWithoutTracking(), Times.Once);
             _noteRepositoryMock.Verify(r => r.LoadProduct(It.IsNotNull<IQueryable<Note>>()), Times.Once);
             _noteRepositoryMock.Verify(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Note>>(), default), Times.Once);
-            result.Should().Contain(expectedNotes);
+            
+            result.Should().Contain(notes);
         }
 
-        [Fact]
-        public async void GetNotesByIdsAsync_ReturnsNotesWithRequestedIds()
+        [Theory]
+        [CustomAutoData]
+        public async void GetNotesByIds_ReturnsRequestedNotes(
+            IEnumerable<int> requestedNotesIds, List<Note> notes)
         {
-            var expectedNotes = _fixture.CreateMany<Note>().ToList();
-            var expectedNotesIds = expectedNotes.Select(n => n.Id);
+            _noteRepositoryMock.Setup(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Note>>(), default))
+                .ReturnsAsync(notes);
 
-            _noteRepositoryMock.Setup(r => r.GetListFromQueryAsync(It.IsAny<IQueryable<Note>>(), default))
-                .ReturnsAsync(expectedNotes);
-
-            var result = await NoteService.GetNotesByIdsAsync(expectedNotesIds, default);
+            var result = await Sut.GetNotesByIdsAsync(requestedNotesIds, default);
 
             _noteRepositoryMock.Verify(r => r.GetQuery(), Times.Once);
-            _noteRepositoryMock.Verify(r => r.GetListFromQueryAsync(It.IsAny<IQueryable<Note>>(), default), Times.Once);
-            result.Should().Contain(expectedNotes);
+            _noteRepositoryMock.Verify(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Note>>(), default), Times.Once);
+            
+            result.Should().Contain(notes);
         }
 
-        [Fact]
-        public async void IsNoteProductExists_ReturnsTrue_WhenNoteDataIsValid()
+        [Theory]
+        [CustomAutoData]
+        public async void IsNoteProductExists_ReturnsTrue_WhenNoteDataIsValid(
+            NoteCreateEditRequest noteData, Product productForNote)
         {
-            var noteData = _fixture.Create<NoteCreateEditRequest>();
-            var productForNote = _fixture.Create<Product>();
             _productRepositoryMock.Setup(r => r.GetByIdAsync(noteData.ProductId, default))
                 .ReturnsAsync(productForNote);
 
-            var result = await NoteService.IsNoteProductExistsAsync(noteData.ProductId, default);
+            var result = await Sut.IsNoteProductExistsAsync(noteData.ProductId, default);
 
             _productRepositoryMock.Verify(r => r.GetByIdAsync(noteData.ProductId, default), Times.Once);
+            
             result.Should().BeTrue();
         }
 
-        [Fact]
-        public async void CreateNoteAsync_CreatesNoteWithoutErrors()
+        [Theory]
+        [CustomAutoData]
+        public async void CreateNote_CreatesNote(Note note)
         {
-            var note = _fixture.Create<Note>();
             _noteRepositoryMock.Setup(r => r.Create(note))
                 .Returns(note);
 
-            var result = await NoteService.CreateNoteAsync(note, default);
+            var result = await Sut.CreateNoteAsync(note, default);
 
             _notesOrderServiceMock.Verify(s => s.GetOrderForNewNoteAsync(note.PageId, note.MealType, default), Times.Once);
             _noteRepositoryMock.Verify(r => r.Create(note), Times.Once);
             _noteRepositoryMock.Verify(r => r.UnitOfWork.SaveChangesAsync(default), Times.Once);
+            
             result.Should().Be(note);
         }
 
-        [Fact]
-        public async void EditNoteAsync_UpdatesNoteWithoutErrors()
+        [Theory]
+        [CustomAutoData]
+        public async void EditNote_UpdatesNote(Note note)
         {
-            var note = _fixture.Create<Note>();
-
-            await NoteService.EditNoteAsync(note, default);
+            await Sut.EditNoteAsync(note, default);
 
             _noteRepositoryMock.Verify(r => r.Update(note), Times.Once);
             _noteRepositoryMock.Verify(r => r.UnitOfWork.SaveChangesAsync(default), Times.Once);
         }
 
-        [Fact]
-        public async void DeleteNoteAsync_DeletesNoteWithoutErrors()
+        [Theory]
+        [CustomAutoData]
+        public async void DeleteNote_DeletesNote(Note note)
         {
-            var note = _fixture.Create<Note>();
-
-            await NoteService.DeleteNoteAsync(note, default);
+            await Sut.DeleteNoteAsync(note, default);
 
             _notesOrderServiceMock.Verify(s => s.ReorderNotesOnDeleteAsync(note, default), Times.Once);
             _noteRepositoryMock.Verify(r => r.Delete(note), Times.Once);
             _noteRepositoryMock.Verify(r => r.UnitOfWork.SaveChangesAsync(default), Times.Once);
         }
 
-        [Fact]
-        public void AreAllNotesFetched_ReturnsTrue_WhenFetchedNotesContainsAllRequestedIds()
+        [Theory]
+        [CustomAutoData]
+        public void AreAllNotesFetched_ReturnsTrue_WhenFetchedNotesContainsAllRequestedIds(
+            IEnumerable<Note> fetchedNotes)
         {
-            var fetchedNotes = _fixture.CreateMany<Note>();
             var requestedIds = fetchedNotes.Select(n => n.Id);
 
-            var result = NoteService.AreAllNotesFetched(requestedIds, fetchedNotes);
+            var result = Sut.AreAllNotesFetched(requestedIds, fetchedNotes);
 
             result.Should().BeTrue();
         }
 
-        [Fact]
-        public async void DeleteNotesAsync_DeletesNotesWithoutErrors()
+        [Theory]
+        [CustomAutoData]
+        public async void DeleteNotes_DeletesNotes(IEnumerable<Note> notesForDelete)
         {
-            var notesForDelete = _fixture.CreateMany<Note>();
-
-            await NoteService.DeleteNotesAsync(notesForDelete, default);
+            await Sut.DeleteNotesAsync(notesForDelete, default);
 
             _notesOrderServiceMock.Verify(s => s.ReorderNotesOnDeleteRangeAsync(notesForDelete, default), Times.Once);
             _noteRepositoryMock.Verify(r => r.DeleteRange(notesForDelete), Times.Once);
@@ -182,32 +169,35 @@ namespace FoodDiary.UnitTests.Services
         [InlineData(2, 0)]
         [InlineData(2, 1)]
         [InlineData(2, 2)]
-        public async void CanNoteBeMoved_ReturnsTrue_WhenRequestedPositionIsInAllowedRange(int expectedMaxDisplayOrder, int requestedPosition)
+        public async void CanNoteBeMoved_ReturnsTrue_WhenRequestedPositionIsInAllowedRange(
+            int expectedMaxDisplayOrder, int requestedPosition)
         {
             var noteForMove = _fixture.Create<Note>();
             var moveRequest = _fixture.Build<NoteMoveRequest>()
                 .With(n => n.Position, requestedPosition)
                 .Create();
+
             _notesOrderServiceMock.Setup(s => s.GetOrderForNewNoteAsync(noteForMove.PageId, moveRequest.DestMeal, default))
                 .ReturnsAsync(expectedMaxDisplayOrder);
 
-            var result = await NoteService.CanNoteBeMovedAsync(noteForMove, moveRequest, default);
+            var result = await Sut.CanNoteBeMovedAsync(noteForMove, moveRequest, default);
 
             _notesOrderServiceMock.Verify(s => s.GetOrderForNewNoteAsync(noteForMove.PageId, moveRequest.DestMeal, default), Times.Once);
+            
             result.Should().BeTrue();
         }
 
-        [Fact]
-        public async void MoveNoteAsync_UpdatesNoteWithReordering()
+        [Theory]
+        [CustomAutoData]
+        public async void MoveNote_UpdatesNoteWithReordering(
+            Note noteForMove, NoteMoveRequest moveRequest)
         {
-            var noteForMove = _fixture.Create<Note>();
-            var moveRequest = _fixture.Create<NoteMoveRequest>();
-
-            var result = await NoteService.MoveNoteAsync(noteForMove, moveRequest, default);
+            var result = await Sut.MoveNoteAsync(noteForMove, moveRequest, default);
 
             _notesOrderServiceMock.Verify(s => s.ReorderNotesOnMoveAsync(noteForMove, moveRequest, default), Times.Once);
             _noteRepositoryMock.Verify(r => r.Update(noteForMove), Times.Once);
             _noteRepositoryMock.Verify(r => r.UnitOfWork.SaveChangesAsync(default), Times.Once);
+            
             result.Should().Be(noteForMove);
         }
     }

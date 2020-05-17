@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using System.Reflection;
-using AutoFixture;
+﻿using System.Reflection;
 using AutoMapper;
 using FluentAssertions;
 using FoodDiary.API;
@@ -9,12 +7,13 @@ using FoodDiary.API.Services;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Utils;
 using FoodDiary.Infrastructure.Utils;
-using FoodDiary.UnitTests.Customizations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Xunit;
 using FoodDiary.API.Requests;
+using FoodDiary.UnitTests.Attributes;
+using System.Collections.Generic;
 
 namespace FoodDiary.UnitTests.Controllers
 {
@@ -24,8 +23,6 @@ namespace FoodDiary.UnitTests.Controllers
 
         private readonly Mock<INoteService> _noteServiceMock;
         private readonly Mock<IPageService> _pageServiceMock;
-
-        private readonly IFixture _fixture;
 
         public NotesControllerTests()
         {
@@ -38,316 +35,326 @@ namespace FoodDiary.UnitTests.Controllers
             _mapper = serviceProvider.GetService<IMapper>();
             _noteServiceMock = new Mock<INoteService>();
             _pageServiceMock = new Mock<IPageService>();
-            _fixture = SetupFixture();
         }
 
-        private IFixture SetupFixture()
-        {
-            var _fixture = new Fixture();
-            _fixture.Customize(new FixtureWithCircularReferencesCustomization());
-            return _fixture;
-        }
-
-        public NotesController NotesController => new NotesController(
+        public NotesController Sut => new NotesController(
             _mapper,
             _noteServiceMock.Object,
             _pageServiceMock.Object);
 
-        [Fact]
-        public async void GetNotes_ReturnsFilteredNotes_WhenModelStateIsValid()
+        [Theory]
+        [CustomAutoData]
+        public async void GetNotes_ReturnsFilteredNotes_WhenModelStateIsValid(
+            NotesSearchRequest request,
+            IEnumerable<Note> notes,
+            Page requestedPage)
         {
-            var request = _fixture.Create<NotesSearchRequest>();
-            var notes = _fixture.CreateMany<Note>();
-            var requestedPage = _fixture.Create<Page>();
             _pageServiceMock.Setup(s => s.GetPageByIdAsync(request.PageId, default))
                 .ReturnsAsync(requestedPage);
+
             _noteServiceMock.Setup(s => s.SearchNotesAsync(request, default))
                 .ReturnsAsync(notes);
 
-            var result = await NotesController.GetNotes(request, default);
+            var result = await Sut.GetNotes(request, default);
 
             _pageServiceMock.Verify(s => s.GetPageByIdAsync(request.PageId, default), Times.Once);
             _noteServiceMock.Verify(s => s.SearchNotesAsync(request, default), Times.Once);
+            
             result.Should().BeOfType<OkObjectResult>();
         }
 
-        [Fact]
-        public async void GetNotes_ReturnsBadRequest_WhenModelStateIsInvalid()
+        [Theory]
+        [CustomAutoData]
+        public async void GetNotes_ReturnsBadRequest_WhenModelStateIsInvalid(
+            NotesSearchRequest request, string errorMessage)
         {
-            var request = _fixture.Create<NotesSearchRequest>();
-            var notes = _fixture.CreateMany<Note>();
-            var controller = NotesController;
-            controller.ModelState.AddModelError(_fixture.Create<string>(), _fixture.Create<string>());
+            var controller = Sut;
+            controller.ModelState.AddModelError(errorMessage, errorMessage);
 
             var result = await controller.GetNotes(request, default);
 
             _pageServiceMock.Verify(s => s.GetPageByIdAsync(request.PageId, default), Times.Never);
             _noteServiceMock.Verify(s => s.SearchNotesAsync(request, default), Times.Never);
+            
             result.Should().BeOfType<BadRequestObjectResult>();
         }
 
-        [Fact]
-        public async void GetNotes_ReturnsNotFound_WhenRequestedPageDoesNotExist()
+        [Theory]
+        [CustomAutoData]
+        public async void GetNotes_ReturnsNotFound_WhenRequestedPageDoesNotExist(NotesSearchRequest request)
         {
-            var request = _fixture.Create<NotesSearchRequest>();
             _pageServiceMock.Setup(s => s.GetPageByIdAsync(request.PageId, default))
                 .ReturnsAsync(null as Page);
 
-            var result = await NotesController.GetNotes(request, default);
+            var result = await Sut.GetNotes(request, default);
 
             _pageServiceMock.Verify(s => s.GetPageByIdAsync(request.PageId, default), Times.Once);
             _noteServiceMock.Verify(s => s.SearchNotesAsync(request, default), Times.Never);
+            
             result.Should().BeOfType<NotFoundResult>();
         }
 
-        [Fact]
-        public async void CreateNote_CreatesNoteSuccessfully_WhenNoteDataIsValid()
+        [Theory]
+        [CustomAutoData]
+        public async void CreateNote_CreatesNote_WhenProductFromNoteExists(NoteCreateEditRequest noteData)
         {
-            var note = _fixture.Create<NoteCreateEditRequest>();
-
-            _noteServiceMock.Setup(s => s.IsNoteProductExistsAsync(note.ProductId, default))
+            _noteServiceMock.Setup(s => s.IsNoteProductExistsAsync(noteData.ProductId, default))
                 .ReturnsAsync(true);
 
-            var result = await NotesController.CreateNote(note, default);
+            var result = await Sut.CreateNote(noteData, default);
 
-            _noteServiceMock.Verify(s => s.IsNoteProductExistsAsync(note.ProductId, default), Times.Once);
+            _noteServiceMock.Verify(s => s.IsNoteProductExistsAsync(noteData.ProductId, default), Times.Once);
             _noteServiceMock.Verify(s => s.CreateNoteAsync(It.IsNotNull<Note>(), default), Times.Once);
+            
             result.Should().BeOfType<OkResult>();
         }
 
-        [Fact]
-        public async void CreateNote_ReturnsBadRequest_WhenModelStateIsInvalid()
+        [Theory]
+        [CustomAutoData]
+        public async void CreateNote_ReturnsBadRequest_WhenModelStateIsInvalid(
+            NoteCreateEditRequest noteData, string errorMessage)
         {
-            var note = _fixture.Create<NoteCreateEditRequest>();
-            var controller = NotesController;
-            controller.ModelState.AddModelError("error", "error");
+            var controller = Sut;
+            controller.ModelState.AddModelError(errorMessage, errorMessage);
 
-            var result = await controller.CreateNote(note, default);
+            var result = await controller.CreateNote(noteData, default);
 
-            _noteServiceMock.Verify(s => s.IsNoteProductExistsAsync(note.ProductId, default), Times.Never);
-            _noteServiceMock.Verify(s => s.CreateNoteAsync(It.IsNotNull<Note>(), default), Times.Never);
+            _noteServiceMock.Verify(s => s.IsNoteProductExistsAsync(noteData.ProductId, default), Times.Never);
+            _noteServiceMock.Verify(s => s.CreateNoteAsync(It.IsAny<Note>(), default), Times.Never);
+            
             result.Should().BeOfType<BadRequestObjectResult>();
         }
 
-        [Fact]
-        public async void CreateNote_ReturnsBadRequest_WhenNoteDataIsInvalid()
+        [Theory]
+        [CustomAutoData]
+        public async void CreateNote_ReturnsBadRequest_WhenProductFromNoteDoesNotExist(NoteCreateEditRequest noteData)
         {
-            var note = _fixture.Create<NoteCreateEditRequest>();
-
-            _noteServiceMock.Setup(s => s.IsNoteProductExistsAsync(note.ProductId, default))
+            _noteServiceMock.Setup(s => s.IsNoteProductExistsAsync(noteData.ProductId, default))
                 .ReturnsAsync(false);
 
-            var result = await NotesController.CreateNote(note, default);
+            var result = await Sut.CreateNote(noteData, default);
 
-            _noteServiceMock.Verify(s => s.IsNoteProductExistsAsync(note.ProductId, default), Times.Once);
-            _noteServiceMock.Verify(s => s.CreateNoteAsync(It.IsNotNull<Note>(), default), Times.Never);
+            _noteServiceMock.Verify(s => s.IsNoteProductExistsAsync(noteData.ProductId, default), Times.Once);
+            _noteServiceMock.Verify(s => s.CreateNoteAsync(It.IsAny<Note>(), default), Times.Never);
+            
             result.Should().BeOfType<BadRequestObjectResult>();
         }
 
-        [Fact]
-        public async void EditNote_UpdatesNoteSuccessfully_WhenRequestedNoteExists()
+        [Theory]
+        [CustomAutoData]
+        public async void EditNote_UpdatesNote_WhenRequestedNoteExists(
+            int noteId, NoteCreateEditRequest updatedNoteData, Note noteForUpdate)
         {
-            var noteId = _fixture.Create<int>();
-            var noteData = _fixture.Create<NoteCreateEditRequest>();
-            var noteForUpdate = _fixture.Create<Note>();
-
-            _noteServiceMock.Setup(s => s.IsNoteProductExistsAsync(noteData.ProductId, default))
+            _noteServiceMock.Setup(s => s.IsNoteProductExistsAsync(updatedNoteData.ProductId, default))
                 .ReturnsAsync(true);
+
             _noteServiceMock.Setup(s => s.GetNoteByIdAsync(noteId, default))
                 .ReturnsAsync(noteForUpdate);
 
-            var result = await NotesController.EditNote(noteId, noteData, default);
+            var result = await Sut.EditNote(noteId, updatedNoteData, default);
 
-            _noteServiceMock.Verify(s => s.IsNoteProductExistsAsync(noteData.ProductId, default), Times.Once);
+            _noteServiceMock.Verify(s => s.IsNoteProductExistsAsync(updatedNoteData.ProductId, default), Times.Once);
             _noteServiceMock.Verify(s => s.GetNoteByIdAsync(noteId, default), Times.Once);
             _noteServiceMock.Verify(s => s.EditNoteAsync(noteForUpdate, default), Times.Once);
+            
             result.Should().BeOfType<OkResult>();
         }
 
-        [Fact]
-        public async void EditNote_ReturnsBadRequest_WhenModelStateIsInvalid()
+        [Theory]
+        [CustomAutoData]
+        public async void EditNote_ReturnsBadRequest_WhenModelStateIsInvalid(
+            int noteId, NoteCreateEditRequest updatedNoteData, string errorMessage)
         {
-            var noteId = _fixture.Create<int>();
-            var noteData = _fixture.Create<NoteCreateEditRequest>();
-            var controller = NotesController;
-            controller.ModelState.AddModelError("error", "error");
+            var controller = Sut;
+            controller.ModelState.AddModelError(errorMessage, errorMessage);
 
-            var result = await controller.EditNote(noteId, noteData, default);
+            var result = await controller.EditNote(noteId, updatedNoteData, default);
 
-            _noteServiceMock.Verify(s => s.IsNoteProductExistsAsync(noteData.ProductId, default), Times.Never);
+            _noteServiceMock.Verify(s => s.IsNoteProductExistsAsync(updatedNoteData.ProductId, default), Times.Never);
             _noteServiceMock.Verify(s => s.GetNoteByIdAsync(noteId, default), Times.Never);
             _noteServiceMock.Verify(s => s.EditNoteAsync(It.IsAny<Note>(), default), Times.Never);
+            
             result.Should().BeOfType<BadRequestObjectResult>();
         }
 
-        [Fact]
-        public async void EditNote_ReturnsBadRequest_WhenNoteDataIsInvalid()
+        [Theory]
+        [CustomAutoData]
+        public async void EditNote_ReturnsBadRequest_WhenProductFromNoteDoesNotExist(
+            int noteId, NoteCreateEditRequest updatedNoteData)
         {
-            var noteId = _fixture.Create<int>();
-            var noteData = _fixture.Create<NoteCreateEditRequest>();
-
-            _noteServiceMock.Setup(s => s.IsNoteProductExistsAsync(noteData.ProductId, default))
+            _noteServiceMock.Setup(s => s.IsNoteProductExistsAsync(updatedNoteData.ProductId, default))
                 .ReturnsAsync(false);
 
-            var result = await NotesController.EditNote(noteId, noteData, default);
+            var result = await Sut.EditNote(noteId, updatedNoteData, default);
 
-            _noteServiceMock.Verify(s => s.IsNoteProductExistsAsync(noteData.ProductId, default), Times.Once);
+            _noteServiceMock.Verify(s => s.IsNoteProductExistsAsync(updatedNoteData.ProductId, default), Times.Once);
             _noteServiceMock.Verify(s => s.GetNoteByIdAsync(noteId, default), Times.Never);
             _noteServiceMock.Verify(s => s.EditNoteAsync(It.IsAny<Note>(), default), Times.Never);
+            
             result.Should().BeOfType<BadRequestObjectResult>();
         }
 
-        [Fact]
-        public async void EditNote_ReturnsNotFound_WhenRequestedNoteDoesNotExist()
+        [Theory]
+        [CustomAutoData]
+        public async void EditNote_ReturnsNotFound_WhenRequestedNoteDoesNotExist(
+            int noteId, NoteCreateEditRequest updatedNoteData)
         {
-            var noteId = _fixture.Create<int>();
-            var noteData = _fixture.Create<NoteCreateEditRequest>();
-
-            _noteServiceMock.Setup(s => s.IsNoteProductExistsAsync(noteData.ProductId, default))
+            _noteServiceMock.Setup(s => s.IsNoteProductExistsAsync(updatedNoteData.ProductId, default))
                 .ReturnsAsync(true);
+
             _noteServiceMock.Setup(s => s.GetNoteByIdAsync(noteId, default))
                 .ReturnsAsync(null as Note);
 
-            var result = await NotesController.EditNote(noteId, noteData, default);
+            var result = await Sut.EditNote(noteId, updatedNoteData, default);
 
-            _noteServiceMock.Verify(s => s.IsNoteProductExistsAsync(noteData.ProductId, default), Times.Once);
+            _noteServiceMock.Verify(s => s.IsNoteProductExistsAsync(updatedNoteData.ProductId, default), Times.Once);
             _noteServiceMock.Verify(s => s.GetNoteByIdAsync(noteId, default), Times.Once);
             _noteServiceMock.Verify(s => s.EditNoteAsync(It.IsAny<Note>(), default), Times.Never);
+            
             result.Should().BeOfType<NotFoundResult>();
         }
 
-        [Fact]
-        public async void DeleteNote_DeletesNoteSuccessfully_WhenRequestedNoteExists()
+        [Theory]
+        [CustomAutoData]
+        public async void DeleteNote_DeletesNote_WhenRequestedNoteExists(
+            int noteForDeleteId, Note noteForDelete)
         {
-            var noteForDelete = _fixture.Create<Note>();
-            _noteServiceMock.Setup(s => s.GetNoteByIdAsync(noteForDelete.Id, default))
+            _noteServiceMock.Setup(s => s.GetNoteByIdAsync(noteForDeleteId, default))
                 .ReturnsAsync(noteForDelete);
 
-            var result = await NotesController.DeleteNote(noteForDelete.Id, default);
+            var result = await Sut.DeleteNote(noteForDeleteId, default);
 
-            _noteServiceMock.Verify(s => s.GetNoteByIdAsync(noteForDelete.Id, default), Times.Once);
+            _noteServiceMock.Verify(s => s.GetNoteByIdAsync(noteForDeleteId, default), Times.Once);
             _noteServiceMock.Verify(s => s.DeleteNoteAsync(noteForDelete, default), Times.Once);
+            
             result.Should().BeOfType<OkResult>();
         }
 
-        [Fact]
-        public async void DeleteNote_ReturnsNotFound_WhenRequestedNoteDoesNotExists()
+        [Theory]
+        [CustomAutoData]
+        public async void DeleteNote_ReturnsNotFound_WhenRequestedNoteDoesNotExist(int noteForDeleteId)
         {
-            var noteForDeleteId = _fixture.Create<int>();
             _noteServiceMock.Setup(s => s.GetNoteByIdAsync(noteForDeleteId, default))
                 .ReturnsAsync(null as Note);
 
-            var result = await NotesController.DeleteNote(noteForDeleteId, default);
+            var result = await Sut.DeleteNote(noteForDeleteId, default);
 
             _noteServiceMock.Verify(s => s.GetNoteByIdAsync(noteForDeleteId, default), Times.Once);
             _noteServiceMock.Verify(s => s.DeleteNoteAsync(It.IsAny<Note>(), default), Times.Never);
+            
             result.Should().BeOfType<NotFoundResult>();
         }
 
-        [Fact]
-        public async void DeleteNotes_DeletesNotesSuccessfully_WhenAllRequestedNotesAreFetched()
+        [Theory]
+        [CustomAutoData]
+        public async void DeleteNotes_DeletesNotes_WhenAllRequestedNotesAreFetched(
+            IEnumerable<int> notesForDeleteIds, IEnumerable<Note> notesForDelete)
         {
-            var notesForDelete = _fixture.CreateMany<Note>();
-            var notesForDeleteIds = notesForDelete.Select(n => n.Id);
-
             _noteServiceMock.Setup(s => s.GetNotesByIdsAsync(notesForDeleteIds, default))
                 .ReturnsAsync(notesForDelete);
+
             _noteServiceMock.Setup(s => s.AreAllNotesFetched(notesForDeleteIds, notesForDelete))
                 .Returns(true);
 
-            var result = await NotesController.DeleteNotes(notesForDeleteIds, default);
+            var result = await Sut.DeleteNotes(notesForDeleteIds, default);
 
             _noteServiceMock.Verify(s => s.GetNotesByIdsAsync(notesForDeleteIds, default), Times.Once);
             _noteServiceMock.Verify(s => s.AreAllNotesFetched(notesForDeleteIds, notesForDelete), Times.Once);
             _noteServiceMock.Verify(s => s.DeleteNotesAsync(notesForDelete, default), Times.Once);
+            
             result.Should().BeOfType<OkResult>();
         }
 
-        [Fact]
-        public async void DeleteNotes_ReturnsBadRequest_WhenNotAllRequestedNotesAreFetched()
+        [Theory]
+        [CustomAutoData]
+        public async void DeleteNotes_ReturnsBadRequest_WhenNotAllRequestedNotesAreFetched(
+            IEnumerable<int> notesForDeleteIds, IEnumerable<Note> notesForDelete)
         {
-            var notesForDelete = _fixture.CreateMany<Note>();
-            var notesForDeleteIds = notesForDelete.Select(n => n.Id);
-
             _noteServiceMock.Setup(s => s.GetNotesByIdsAsync(notesForDeleteIds, default))
                 .ReturnsAsync(notesForDelete);
+
             _noteServiceMock.Setup(s => s.AreAllNotesFetched(notesForDeleteIds, notesForDelete))
                 .Returns(false);
 
-            var result = await NotesController.DeleteNotes(notesForDeleteIds, default);
+            var result = await Sut.DeleteNotes(notesForDeleteIds, default);
 
             _noteServiceMock.Verify(s => s.GetNotesByIdsAsync(notesForDeleteIds, default), Times.Once);
             _noteServiceMock.Verify(s => s.AreAllNotesFetched(notesForDeleteIds, notesForDelete), Times.Once);
             _noteServiceMock.Verify(s => s.DeleteNotesAsync(notesForDelete, default), Times.Never);
+            
             result.Should().BeOfType<BadRequestObjectResult>();
         }
 
-        [Fact]
-        public async void MoveNote_MovesNoteSuccessfully_WhenNoteCanBeMoved()
+        [Theory]
+        [CustomAutoData]
+        public async void MoveNote_MovesNoteSuccessfully_WhenNoteCanBeMoved(
+            NoteMoveRequest moveRequest, Note noteForMove)
         {
-            var moveRequest = _fixture.Create<NoteMoveRequest>();
-            var noteForMove = _fixture.Create<Note>();
-
             _noteServiceMock.Setup(s => s.GetNoteByIdAsync(moveRequest.NoteId, default))
                 .ReturnsAsync(noteForMove);
+
             _noteServiceMock.Setup(s => s.CanNoteBeMovedAsync(noteForMove, moveRequest, default))
                 .ReturnsAsync(true);
 
-            var result = await NotesController.MoveNote(moveRequest, default);
+            var result = await Sut.MoveNote(moveRequest, default);
 
             _noteServiceMock.Verify(s => s.GetNoteByIdAsync(moveRequest.NoteId, default), Times.Once);
             _noteServiceMock.Verify(s => s.CanNoteBeMovedAsync(noteForMove, moveRequest, default), Times.Once);
             _noteServiceMock.Verify(s => s.MoveNoteAsync(noteForMove, moveRequest, default), Times.Once);
+            
             result.Should().BeOfType<OkResult>();
         }
 
-        [Fact]
-        public async void MoveNote_ReturnsBadRequest_WhenModelStateIsInvalid()
+        [Theory]
+        [CustomAutoData]
+        public async void MoveNote_ReturnsBadRequest_WhenModelStateIsInvalid(
+            NoteMoveRequest moveRequest, string errorMessage)
         {
-            var moveRequest = _fixture.Create<NoteMoveRequest>();
-            var controller = NotesController;
-            controller.ModelState.AddModelError("error", "error");
+            var controller = Sut;
+            controller.ModelState.AddModelError(errorMessage, errorMessage);
 
             var result = await controller.MoveNote(moveRequest, default);
 
             _noteServiceMock.Verify(s => s.GetNoteByIdAsync(moveRequest.NoteId, default), Times.Never);
             _noteServiceMock.Verify(s => s.CanNoteBeMovedAsync(It.IsAny<Note>(), moveRequest, default), Times.Never);
             _noteServiceMock.Verify(s => s.MoveNoteAsync(It.IsAny<Note>(), moveRequest, default), Times.Never);
+            
             result.Should().BeOfType<BadRequestObjectResult>();
         }
 
-        [Fact]
-        public async void MoveNote_ReturnsNotFound_WhenNoteForMoveDoesNotExist()
+        [Theory]
+        [CustomAutoData]
+        public async void MoveNote_ReturnsNotFound_WhenNoteForMoveDoesNotExist(NoteMoveRequest moveRequest)
         {
-            var moveRequest = _fixture.Create<NoteMoveRequest>();
-
             _noteServiceMock.Setup(s => s.GetNoteByIdAsync(moveRequest.NoteId, default))
                 .ReturnsAsync(null as Note);
 
-            var result = await NotesController.MoveNote(moveRequest, default);
+            var result = await Sut.MoveNote(moveRequest, default);
 
             _noteServiceMock.Verify(s => s.GetNoteByIdAsync(moveRequest.NoteId, default), Times.Once);
             _noteServiceMock.Verify(s => s.CanNoteBeMovedAsync(It.IsAny<Note>(), moveRequest, default), Times.Never);
             _noteServiceMock.Verify(s => s.MoveNoteAsync(It.IsAny<Note>(), moveRequest, default), Times.Never);
+            
             result.Should().BeOfType<NotFoundResult>();
         }
 
-        [Fact]
-        public async void MoveNote_ReturnsBadRequest_WhenNoteCannotBeMoved()
+        [Theory]
+        [CustomAutoData]
+        public async void MoveNote_ReturnsBadRequest_WhenNoteCannotBeMoved(
+            NoteMoveRequest moveRequest, Note noteForMove)
         {
-            var moveRequest = _fixture.Create<NoteMoveRequest>();
-            var noteForMove = _fixture.Create<Note>();
-
             _noteServiceMock.Setup(s => s.GetNoteByIdAsync(moveRequest.NoteId, default))
                 .ReturnsAsync(noteForMove);
+
             _noteServiceMock.Setup(s => s.CanNoteBeMovedAsync(noteForMove, moveRequest, default))
                 .ReturnsAsync(false);
 
-            var result = await NotesController.MoveNote(moveRequest, default);
+            var result = await Sut.MoveNote(moveRequest, default);
 
             _noteServiceMock.Verify(s => s.GetNoteByIdAsync(moveRequest.NoteId, default), Times.Once);
             _noteServiceMock.Verify(s => s.CanNoteBeMovedAsync(noteForMove, moveRequest, default), Times.Once);
             _noteServiceMock.Verify(s => s.MoveNoteAsync(noteForMove, moveRequest, default), Times.Never);
+            
             result.Should().BeOfType<BadRequestObjectResult>();
         }
     }

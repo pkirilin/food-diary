@@ -1,5 +1,5 @@
-﻿using System.Reflection;
-using AutoFixture;
+﻿using System.Collections.Generic;
+using System.Reflection;
 using AutoMapper;
 using FluentAssertions;
 using FoodDiary.API;
@@ -7,7 +7,7 @@ using FoodDiary.API.Controllers.v1;
 using FoodDiary.API.Requests;
 using FoodDiary.API.Services;
 using FoodDiary.Domain.Entities;
-using FoodDiary.UnitTests.Customizations;
+using FoodDiary.UnitTests.Attributes;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
@@ -21,8 +21,6 @@ namespace FoodDiary.UnitTests.Controllers
 
         private readonly Mock<ICategoryService> _categoryServiceMock;
 
-        private readonly IFixture _fixture;
-
         public CategoriesControllerTests()
         {
             var serviceProvider = new ServiceCollection()
@@ -31,197 +29,202 @@ namespace FoodDiary.UnitTests.Controllers
 
             _mapper = serviceProvider.GetService<IMapper>();
             _categoryServiceMock = new Mock<ICategoryService>();
-            _fixture = SetupFixture();
         }
 
-        private IFixture SetupFixture()
-        {
-            var _fixture = new Fixture();
-            _fixture.Customize(new FixtureWithCircularReferencesCustomization());
-            return _fixture;
-        }
+        public CategoriesController Sut => new CategoriesController(_mapper, _categoryServiceMock.Object);
 
-        public CategoriesController CategoriesController => new CategoriesController(_mapper, _categoryServiceMock.Object);
-
-        [Fact]
-        public async void GetCategories_ReturnsRequestedCategories()
+        [Theory]
+        [CustomAutoData]
+        public async void GetCategories_ReturnsRequestedCategories(IEnumerable<Category> categories)
         {
-            var expectedCategories = _fixture.CreateMany<Category>();
             _categoryServiceMock.Setup(s => s.GetCategoriesAsync(default))
-                .ReturnsAsync(expectedCategories);
+                .ReturnsAsync(categories);
 
-            var result = await CategoriesController.GetCategories(default);
+            var result = await Sut.GetCategories(default);
 
             _categoryServiceMock.Verify(s => s.GetCategoriesAsync(default), Times.Once);
             result.Should().BeOfType<OkObjectResult>();
         }
 
-        [Fact]
-        public async void CreateCategory_CreatesCategory_WhenCategoryCanBeCreated()
+        [Theory]
+        [CustomAutoData]
+        public async void CreateCategory_ReturnsOk_WhenCategoryWithTheSameNameDoesNotExist(
+            CategoryCreateEditRequest categoryData, Category createdCategory)
         {
-            var categoryInfo = _fixture.Create<CategoryCreateEditRequest>();
-            var createdCategory = _fixture.Create<Category>();
-            
-            _categoryServiceMock.Setup(s => s.IsCategoryExistsAsync(categoryInfo.Name, default))
+            _categoryServiceMock.Setup(s => s.IsCategoryExistsAsync(categoryData.Name, default))
                 .ReturnsAsync(false);
+
             _categoryServiceMock.Setup(s => s.CreateCategoryAsync(It.IsNotNull<Category>(), default))
                 .ReturnsAsync(createdCategory);
 
-            var result = await CategoriesController.CreateCategory(categoryInfo, default);
+            var result = await Sut.CreateCategory(categoryData, default);
 
-            _categoryServiceMock.Verify(s => s.IsCategoryExistsAsync(categoryInfo.Name, default), Times.Once);
+            _categoryServiceMock.Verify(s => s.IsCategoryExistsAsync(categoryData.Name, default), Times.Once);
             _categoryServiceMock.Verify(s => s.CreateCategoryAsync(It.IsNotNull<Category>(), default), Times.Once);
+            
             result.Should().BeOfType<OkObjectResult>();
         }
 
-        [Fact]
-        public async void CreateCategory_ReturnsBadRequest_WhenModelStateIsInvalid()
+        [Theory]
+        [CustomAutoData]
+        public async void CreateCategory_ReturnsBadRequest_WhenModelStateIsInvalid(
+            CategoryCreateEditRequest categoryData, string errorMessage)
         {
-            var categoryInfo = _fixture.Create<CategoryCreateEditRequest>();
-            var controller = CategoriesController;
-            controller.ModelState.AddModelError("error", "error");
+            var controller = Sut;
+            controller.ModelState.AddModelError(errorMessage, errorMessage);
 
-            var result = await controller.CreateCategory(categoryInfo, default);
+            var result = await controller.CreateCategory(categoryData, default);
 
-            _categoryServiceMock.Verify(s => s.IsCategoryExistsAsync(categoryInfo.Name, default), Times.Never);
+            _categoryServiceMock.Verify(s => s.IsCategoryExistsAsync(categoryData.Name, default), Times.Never);
             _categoryServiceMock.Verify(s => s.CreateCategoryAsync(It.IsNotNull<Category>(), default), Times.Never);
+            
             result.Should().BeOfType<BadRequestObjectResult>();
         }
 
-        [Fact]
-        public async void CreateCategory_ReturnsBadRequest_WhenCategoryCannotBeCreated()
+        [Theory]
+        [CustomAutoData]
+        public async void CreateCategory_ReturnsBadRequest_WhenCategoryWithTheSameNameAlreadyExists(
+            CategoryCreateEditRequest categoryData)
         {
-            var categoryInfo = _fixture.Create<CategoryCreateEditRequest>();
-
-            _categoryServiceMock.Setup(s => s.IsCategoryExistsAsync(categoryInfo.Name, default))
+            _categoryServiceMock.Setup(s => s.IsCategoryExistsAsync(categoryData.Name, default))
                 .ReturnsAsync(true);
 
-            var result = await CategoriesController.CreateCategory(categoryInfo, default);
+            var result = await Sut.CreateCategory(categoryData, default);
 
-            _categoryServiceMock.Verify(s => s.IsCategoryExistsAsync(categoryInfo.Name, default), Times.Once);
+            _categoryServiceMock.Verify(s => s.IsCategoryExistsAsync(categoryData.Name, default), Times.Once);
             _categoryServiceMock.Verify(s => s.CreateCategoryAsync(It.IsNotNull<Category>(), default), Times.Never);
+            
             result.Should().BeOfType<BadRequestObjectResult>();
         }
 
-        [Fact]
-        public async void EditCategory_UpdatesCategory_WhenCategoryCanBeUpdated()
+        [Theory]
+        [CustomAutoData]
+        public async void EditCategory_UpdatesCategory_WhenEditedCategoryIsValid(
+            int categoryId, CategoryCreateEditRequest updatedCategoryData, Category originalCategory)
         {
-            var categoryId = _fixture.Create<int>();
-            var categoryInfo = _fixture.Create<CategoryCreateEditRequest>();
-            var originalCategory = _fixture.Create<Category>();
-
             _categoryServiceMock.Setup(s => s.GetCategoryByIdAsync(categoryId, default))
                 .ReturnsAsync(originalCategory);
-            _categoryServiceMock.Setup(s => s.IsCategoryExistsAsync(categoryInfo.Name, default))
+
+            _categoryServiceMock.Setup(s => s.IsCategoryExistsAsync(updatedCategoryData.Name, default))
                 .ReturnsAsync(false);
-            _categoryServiceMock.Setup(s => s.IsEditedCategoryValid(categoryInfo, originalCategory, false))
+
+            _categoryServiceMock.Setup(s => s.IsEditedCategoryValid(updatedCategoryData, originalCategory, false))
                 .Returns(true);
 
-            var result = await CategoriesController.EditCategory(categoryId, categoryInfo, default);
+            var result = await Sut.EditCategory(categoryId, updatedCategoryData, default);
 
             _categoryServiceMock.Verify(s => s.GetCategoryByIdAsync(categoryId, default), Times.Once);
-            _categoryServiceMock.Verify(s => s.IsCategoryExistsAsync(categoryInfo.Name, default), Times.Once);
-            _categoryServiceMock.Verify(s => s.IsEditedCategoryValid(categoryInfo, originalCategory, false), Times.Once);
+            _categoryServiceMock.Verify(s => s.IsCategoryExistsAsync(updatedCategoryData.Name, default), Times.Once);
+            _categoryServiceMock.Verify(s => s.IsEditedCategoryValid(updatedCategoryData, originalCategory, false), Times.Once);
             _categoryServiceMock.Verify(s => s.EditCategoryAsync(It.IsNotNull<Category>(), default), Times.Once);
+            
             result.Should().BeOfType<OkResult>();
         }
 
-        [Fact]
-        public async void EditCategory_ReturnsBadRequest_WhenModelStateIsInvalid()
+        [Theory]
+        [CustomAutoData]
+        public async void EditCategory_ReturnsBadRequest_WhenModelStateIsInvalid(
+            int categoryId, CategoryCreateEditRequest updatedCategoryData, string errorMessage)
         {
-            var categoryId = _fixture.Create<int>();
-            var categoryInfo = _fixture.Create<CategoryCreateEditRequest>();
-            var controller = CategoriesController;
-            controller.ModelState.AddModelError("error", "error");
+            var controller = Sut;
+            controller.ModelState.AddModelError(errorMessage, errorMessage);
 
-            var result = await controller.EditCategory(categoryId, categoryInfo, default);
+            var result = await controller.EditCategory(categoryId, updatedCategoryData, default);
 
             _categoryServiceMock.Verify(s => s.GetCategoryByIdAsync(categoryId, default), Times.Never);
-            _categoryServiceMock.Verify(s => s.IsCategoryExistsAsync(categoryInfo.Name, default), Times.Never);
-            _categoryServiceMock.Verify(s => s.IsEditedCategoryValid(categoryInfo, It.IsAny<Category>(), It.IsAny<bool>()), Times.Never);
+            _categoryServiceMock.Verify(s => s.IsCategoryExistsAsync(updatedCategoryData.Name, default), Times.Never);
+            _categoryServiceMock.Verify(s => s.IsEditedCategoryValid(updatedCategoryData, It.IsAny<Category>(), It.IsAny<bool>()), Times.Never);
             _categoryServiceMock.Verify(s => s.EditCategoryAsync(It.IsNotNull<Category>(), default), Times.Never);
+            
             result.Should().BeOfType<BadRequestObjectResult>();
         }
 
-        [Fact]
-        public async void EditCategory_ReturnsNotFound_WhenCategoryForUpdateDoesNotExist()
+        [Theory]
+        [CustomAutoData]
+        public async void EditCategory_ReturnsNotFound_WhenCategoryForUpdateDoesNotExist(
+            int categoryId, CategoryCreateEditRequest updatedCategoryData)
         {
-            var categoryId = _fixture.Create<int>();
-            var categoryInfo = _fixture.Create<CategoryCreateEditRequest>();
             _categoryServiceMock.Setup(s => s.GetCategoryByIdAsync(categoryId, default))
                 .ReturnsAsync(null as Category);
 
-            var result = await CategoriesController.EditCategory(categoryId, categoryInfo, default);
+            var result = await Sut.EditCategory(categoryId, updatedCategoryData, default);
 
             _categoryServiceMock.Verify(s => s.GetCategoryByIdAsync(categoryId, default), Times.Once);
-            _categoryServiceMock.Verify(s => s.IsCategoryExistsAsync(categoryInfo.Name, default), Times.Never);
-            _categoryServiceMock.Verify(s => s.IsEditedCategoryValid(categoryInfo, It.IsAny<Category>(), It.IsAny<bool>()), Times.Never);
+            _categoryServiceMock.Verify(s => s.IsCategoryExistsAsync(updatedCategoryData.Name, default), Times.Never);
+            _categoryServiceMock.Verify(s => s.IsEditedCategoryValid(updatedCategoryData, It.IsAny<Category>(), It.IsAny<bool>()), Times.Never);
             _categoryServiceMock.Verify(s => s.EditCategoryAsync(It.IsNotNull<Category>(), default), Times.Never);
+            
             result.Should().BeOfType<NotFoundResult>();
         }
 
-        [Fact]
-        public async void EditCategory_ReturnsBadRequest_WhenCategoryCannotBeUpdated()
+        [Theory]
+        [CustomAutoData]
+        public async void EditCategory_ReturnsBadRequest_WhenEditedCategoryIsInvalid(
+            int categoryId, CategoryCreateEditRequest updatedCategoryData, Category originalCategory)
         {
-            var categoryId = _fixture.Create<int>();
-            var categoryInfo = _fixture.Create<CategoryCreateEditRequest>();
-            var originalCategory = _fixture.Create<Category>();
-
             _categoryServiceMock.Setup(s => s.GetCategoryByIdAsync(categoryId, default))
                 .ReturnsAsync(originalCategory);
-            _categoryServiceMock.Setup(s => s.IsCategoryExistsAsync(categoryInfo.Name, default))
+
+            _categoryServiceMock.Setup(s => s.IsCategoryExistsAsync(updatedCategoryData.Name, default))
                 .ReturnsAsync(false);
-            _categoryServiceMock.Setup(s => s.IsEditedCategoryValid(categoryInfo, originalCategory, false))
+
+            _categoryServiceMock.Setup(s => s.IsEditedCategoryValid(updatedCategoryData, originalCategory, false))
                 .Returns(false);
 
-            var result = await CategoriesController.EditCategory(categoryId, categoryInfo, default);
+            var result = await Sut.EditCategory(categoryId, updatedCategoryData, default);
 
             _categoryServiceMock.Verify(s => s.GetCategoryByIdAsync(categoryId, default), Times.Once);
-            _categoryServiceMock.Verify(s => s.IsCategoryExistsAsync(categoryInfo.Name, default), Times.Once);
-            _categoryServiceMock.Verify(s => s.IsEditedCategoryValid(categoryInfo, originalCategory, false), Times.Once);
+            _categoryServiceMock.Verify(s => s.IsCategoryExistsAsync(updatedCategoryData.Name, default), Times.Once);
+            _categoryServiceMock.Verify(s => s.IsEditedCategoryValid(updatedCategoryData, originalCategory, false), Times.Once);
             _categoryServiceMock.Verify(s => s.EditCategoryAsync(It.IsNotNull<Category>(), default), Times.Never);
+            
             result.Should().BeOfType<BadRequestObjectResult>();
         }
 
-        [Fact]
-        public async void DeleteCategory_DeletesCategory_WhenCategoryForDeleteExists()
+        [Theory]
+        [CustomAutoData]
+        public async void DeleteCategory_DeletesCategory_WhenCategoryForDeleteExists(
+            int categoryId, Category categoryForDelete)
         {
-            var categoryForDelete = _fixture.Create<Category>();
-            _categoryServiceMock.Setup(s => s.GetCategoryByIdAsync(categoryForDelete.Id, default))
+            _categoryServiceMock.Setup(s => s.GetCategoryByIdAsync(categoryId, default))
                 .ReturnsAsync(categoryForDelete);
 
-            var result = await CategoriesController.DeleteCategory(categoryForDelete.Id, default);
+            var result = await Sut.DeleteCategory(categoryId, default);
 
-            _categoryServiceMock.Verify(s => s.GetCategoryByIdAsync(categoryForDelete.Id, default), Times.Once);
+            _categoryServiceMock.Verify(s => s.GetCategoryByIdAsync(categoryId, default), Times.Once);
             _categoryServiceMock.Verify(s => s.DeleteCategoryAsync(categoryForDelete, default), Times.Once);
+            
             result.Should().BeOfType<OkResult>();
         }
 
-        [Fact]
-        public async void DeleteCategory_ReturnsNotFound_WhenCategoryForDeleteDoesNotExist()
+        [Theory]
+        [CustomAutoData]
+        public async void DeleteCategory_ReturnsNotFound_WhenCategoryForDeleteDoesNotExist(
+            int categoryId)
         {
-            var categoryForDeleteId = _fixture.Create<int>();
-            _categoryServiceMock.Setup(s => s.GetCategoryByIdAsync(categoryForDeleteId, default))
+            _categoryServiceMock.Setup(s => s.GetCategoryByIdAsync(categoryId, default))
                 .ReturnsAsync(null as Category);
 
-            var result = await CategoriesController.DeleteCategory(categoryForDeleteId, default);
+            var result = await Sut.DeleteCategory(categoryId, default);
 
-            _categoryServiceMock.Verify(s => s.GetCategoryByIdAsync(categoryForDeleteId, default), Times.Once);
+            _categoryServiceMock.Verify(s => s.GetCategoryByIdAsync(categoryId, default), Times.Once);
             _categoryServiceMock.Verify(s => s.DeleteCategoryAsync(It.IsAny<Category>(), default), Times.Never);
+            
             result.Should().BeOfType<NotFoundResult>();
         }
 
-        [Fact]
-        public async void GetCategoriesDropdown_ReturnsRequestedCategories()
+        [Theory]
+        [CustomAutoData]
+        public async void GetCategoriesDropdown_ReturnsRequestedCategories(
+            CategoryDropdownSearchRequest request, IEnumerable<Category> categories)
         {
-            var request = _fixture.Create<CategoryDropdownSearchRequest>();
-            var expectedCategories = _fixture.CreateMany<Category>();
             _categoryServiceMock.Setup(s => s.GetCategoriesDropdownAsync(request, default))
-                .ReturnsAsync(expectedCategories);
+                .ReturnsAsync(categories);
 
-            var result = await CategoriesController.GetCategoriesDropdown(request, default);
+            var result = await Sut.GetCategoriesDropdown(request, default);
 
             _categoryServiceMock.Verify(s => s.GetCategoriesDropdownAsync(request, default), Times.Once);
+            
             result.Should().BeOfType<OkObjectResult>();
         }
     }

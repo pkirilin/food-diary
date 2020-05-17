@@ -9,7 +9,7 @@ namespace FoodDiary.API.Services
 {
     public interface IPageService
     {
-        Task<IEnumerable<Page>> SearchPagesAsync(PagesSearchRequest pageFilter, CancellationToken cancellationToken);
+        Task<IEnumerable<Page>> SearchPagesAsync(PagesSearchRequest request, CancellationToken cancellationToken);
 
         Task<Page> GetPageByIdAsync(int pageId, CancellationToken cancellationToken);
 
@@ -21,7 +21,7 @@ namespace FoodDiary.API.Services
 
         Task EditPageAsync(Page page, CancellationToken cancellationToken);
 
-        bool IsEditedPageValid(PageCreateEditRequest updatedPageInfo, Page originalPage, bool isPageExists);
+        bool IsEditedPageValid(PageCreateEditRequest updatedPageData, Page originalPage, bool isPageExists);
 
         Task DeletePageAsync(Page page, CancellationToken cancellationToken);
 

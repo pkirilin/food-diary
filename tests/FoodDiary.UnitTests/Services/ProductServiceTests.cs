@@ -1,18 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using AutoFixture;
-using AutoFixture.Xunit2;
 using FluentAssertions;
 using FoodDiary.API.Services;
 using FoodDiary.API.Services.Implementation;
 using FoodDiary.Domain.Abstractions;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Repositories;
-using FoodDiary.UnitTests.Customizations;
 using Moq;
 using Xunit;
 using FoodDiary.API.Requests;
+using FoodDiary.UnitTests.Attributes;
+using FoodDiary.API.Metadata;
 
 namespace FoodDiary.UnitTests.Services
 {
@@ -20,149 +19,82 @@ namespace FoodDiary.UnitTests.Services
     {
         private readonly Mock<IProductRepository> _productRepositoryMock;
 
-        private readonly IFixture _fixture;
+        private readonly IFixture _fixture = Fixtures.Custom;
 
         public ProductServiceTests()
         {
             _productRepositoryMock = new Mock<IProductRepository>();
-            _fixture = SetupFixture();
 
             _productRepositoryMock.SetupGet(r => r.UnitOfWork)
                 .Returns(new Mock<IUnitOfWork>().Object);
         }
 
-        public IProductService ProductService => new ProductService(_productRepositoryMock.Object);
-
-        private IFixture SetupFixture()
-        {
-            var _fixture = new Fixture();
-            _fixture.Customize(new FixtureWithCircularReferencesCustomization());
-            return _fixture;
-        }
-
-        private IQueryable<Product> GetQueryModifiedBySearchRequest(IQueryable<Product> sourceQuery, ProductsSearchRequest searchRequest)
-        {
-            var modifiedQuery = new List<Product>(sourceQuery.ToList()).AsQueryable();
-
-            if (!String.IsNullOrWhiteSpace(searchRequest.ProductSearchName))
-            {
-                modifiedQuery = modifiedQuery.Where(p =>
-                    p.Name.ToLower()
-                        .StartsWith(searchRequest.ProductSearchName.ToLower()));
-            }
-
-            if (searchRequest.CategoryId.HasValue)
-            {
-                modifiedQuery = modifiedQuery.Where(p => p.CategoryId == searchRequest.CategoryId);
-            }
-
-            modifiedQuery = modifiedQuery.Skip((searchRequest.PageNumber - 1) * searchRequest.PageSize)
-                .Take(searchRequest.PageSize);
-            return modifiedQuery;
-        }
+        public IProductService Sut => new ProductService(_productRepositoryMock.Object);
 
         [Theory]
-        [InlineData(100, 0, 10)]
-        [InlineData(5, 1, 10)]
-        [InlineData(100, 1, 10)]
-        [InlineData(100, 1, 10, "", null, 0, 0)]
-        [InlineData(100, 1, 10, " ", null, 0, 0)]
-        [InlineData(100, 1, 10, "Test product", null, 3, 0)]
-        [InlineData(100, 1, 10, null, 1, 0, 3)]
-        [InlineData(100, 1, 10, "Test product", 1, 3, 3)]
+        [CustomAutoData]
         public async void SearchProducts_ReturnsFilteredProducts(
-            int productsCount,
-            int pageIndex,
-            int pageSize,
-            string productSearchName = null,
-            int? categoryId = null,
-            int productsWithSearchNameCount = 0,
-            int productsWithCategoryIdCount = 0)
+            ProductsSearchRequest request, ProductsSearchResultMetadata searchResult)
         {
-            var searchRequest = _fixture.Build<ProductsSearchRequest>()
-                .With(r => r.PageNumber, pageIndex)
-                .With(r => r.PageSize, pageSize)
-                .With(r => r.ProductSearchName, productSearchName)
-                .With(r => r.CategoryId, categoryId)
-                .Create();
+            _productRepositoryMock.Setup(r => r.CountByQueryAsync(It.IsNotNull<IQueryable<Product>>(), default))
+                .ReturnsAsync(searchResult.TotalProductsCount);
 
-            var productsList = _fixture.CreateMany<Product>(productsCount);
-
-            var productsListWithSearchName = _fixture.Build<Product>()
-                .With(p => p.Name, productSearchName)
-                .CreateMany(productsWithSearchNameCount);
-
-            var productsListWithCategoryId = _fixture.Build<Product>()
-                .With(p => p.CategoryId, categoryId)
-                .CreateMany(productsWithCategoryIdCount);
-
-            var searchQuery = productsList.Concat(productsListWithSearchName)
-                .Concat(productsListWithCategoryId)
-                .AsQueryable();
-
-            var modifiedSearchQuery = GetQueryModifiedBySearchRequest(searchQuery, searchRequest);
-            var expectedProductsResult = modifiedSearchQuery.ToList();
-
-            _productRepositoryMock.Setup(r => r.GetQueryWithoutTracking())
-                .Returns(searchQuery);
-            _productRepositoryMock.Setup(r => r.LoadCategory(It.IsNotNull<IQueryable<Product>>()))
-                .Returns(modifiedSearchQuery);
             _productRepositoryMock.Setup(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Product>>(), default))
-                .ReturnsAsync(expectedProductsResult);
+                .ReturnsAsync(searchResult.FoundProducts.ToList());
 
-            var result = await ProductService.SearchProductsAsync(searchRequest, default);
+            var result = await Sut.SearchProductsAsync(request, default);
 
             _productRepositoryMock.Verify(r => r.GetQueryWithoutTracking(), Times.Once);
             _productRepositoryMock.Verify(r => r.LoadCategory(It.IsNotNull<IQueryable<Product>>()), Times.Once);
-            _productRepositoryMock.Verify(r => r.GetListFromQueryAsync(modifiedSearchQuery, default), Times.Once);
+            _productRepositoryMock.Verify(r => r.CountByQueryAsync(It.IsNotNull<IQueryable<Product>>(), default), Times.Once);
+            _productRepositoryMock.Verify(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Product>>(), default), Times.Once);
 
-            // TODO: assert TotalProductsCount
-
-            if (!expectedProductsResult.Any())
-                result.FoundProducts.Should().BeEmpty();
-            else
-                result.FoundProducts.Should().Contain(expectedProductsResult);
+            result.Should().BeEquivalentTo(searchResult);
         }
 
-        [Fact]
-        public async void GetProductById_ReturnsRequestedProduct()
+        [Theory]
+        [CustomAutoData]
+        public async void GetProductById_ReturnsRequestedProduct(
+            int productId, Product product)
         {
-            var product = _fixture.Create<Product>();
-            _productRepositoryMock.Setup(r => r.GetByIdAsync(product.Id, default))
+            _productRepositoryMock.Setup(r => r.GetByIdAsync(productId, default))
                 .ReturnsAsync(product);
 
-            var result = await ProductService.GetProductByIdAsync(product.Id, default);
+            var result = await Sut.GetProductByIdAsync(productId, default);
 
-            _productRepositoryMock.Verify(r => r.GetByIdAsync(product.Id, default), Times.Once);
+            _productRepositoryMock.Verify(r => r.GetByIdAsync(productId, default), Times.Once);
+            
             result.Should().Be(product);
         }
 
-        [Fact]
-        public async void GetProductsByIds_ReturnsRequestedProducts()
+        [Theory]
+        [CustomAutoData]
+        public async void GetProductsByIds_ReturnsRequestedProducts(
+            IEnumerable<int> productsIds, List<Product> products)
         {
-            var products = _fixture.CreateMany<Product>().ToList();
-            var productsIds = products.Select(p => p.Id);
             _productRepositoryMock.Setup(r => r.GetByIdsAsync(productsIds, default))
                 .ReturnsAsync(products);
 
-            var result = await ProductService.GetProductsByIdsAsync(productsIds, default);
+            var result = await Sut.GetProductsByIdsAsync(productsIds, default);
 
             _productRepositoryMock.Verify(r => r.GetByIdsAsync(productsIds, default), Times.Once);
+            
             result.Should().Contain(products);
         }
 
-        [Fact]
-        public async void IsProductExists_ReturnsTrue_WhenProductWithTheSameNameAlreadyExists()
+        [Theory]
+        [CustomAutoData]
+        public async void IsProductExists_ReturnsTrue_WhenProductWithTheSameNameAlreadyExists(
+            ProductCreateEditRequest request, List<Product> productsWithTheSameName)
         {
-            var request = _fixture.Create<ProductCreateEditRequest>();
-            var productsWithTheSameName = _fixture.CreateMany<Product>().ToList();
             _productRepositoryMock.Setup(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Product>>(), default))
                 .ReturnsAsync(productsWithTheSameName);
 
-            var result = await ProductService.IsProductExistsAsync(request.Name, default);
+            var result = await Sut.IsProductExistsAsync(request.Name, default);
 
             _productRepositoryMock.Verify(r => r.GetQueryWithoutTracking(), Times.Once);
             _productRepositoryMock.Verify(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Product>>(), default), Times.Once);
+            
             result.Should().BeTrue();
         }
 
@@ -181,77 +113,70 @@ namespace FoodDiary.UnitTests.Services
                 .With(p => p.Name, newProductName)
                 .Create();
 
-            var result = ProductService.IsEditedProductValid(editedProductData, originalProduct, isProductExists);
+            var result = Sut.IsEditedProductValid(editedProductData, originalProduct, isProductExists);
 
             result.Should().BeTrue();
         }
 
-        [Fact]
-        public async void CreateProduct_CreatesProductWithoutErrors()
+        [Theory]
+        [CustomAutoData]
+        public async void CreateProduct_CreatesProduct(Product product)
         {
-            var product = _fixture.Create<Product>();
             _productRepositoryMock.Setup(r => r.Create(product))
                 .Returns(product);
 
-            var result = await ProductService.CreateProductAsync(product, default);
+            var result = await Sut.CreateProductAsync(product, default);
 
             _productRepositoryMock.Verify(r => r.Create(product), Times.Once);
             _productRepositoryMock.Verify(r => r.UnitOfWork.SaveChangesAsync(default), Times.Once);
+            
             result.Should().Be(product);
         }
 
-        [Fact]
-        public async void EditProduct_UpdatesProductWithoutErrors()
+        [Theory]
+        [CustomAutoData]
+        public async void EditProduct_UpdatesProduct(Product product)
         {
-            var product = _fixture.Create<Product>();
-
-            await ProductService.EditProductAsync(product, default);
+            await Sut.EditProductAsync(product, default);
 
             _productRepositoryMock.Verify(r => r.Update(product), Times.Once);
             _productRepositoryMock.Verify(r => r.UnitOfWork.SaveChangesAsync(default), Times.Once);
         }
 
-        [Fact]
-        public async void DeleteProduct_DeletesProductWithoutErrors()
+        [Theory]
+        [CustomAutoData]
+        public async void DeleteProduct_DeletesProduct(Product product)
         {
-            var product = _fixture.Create<Product>();
-
-            await ProductService.DeleteProductAsync(product, default);
+            await Sut.DeleteProductAsync(product, default);
 
             _productRepositoryMock.Verify(r => r.Delete(product), Times.Once);
             _productRepositoryMock.Verify(r => r.UnitOfWork.SaveChangesAsync(default), Times.Once);
         }
 
-        [Fact]
-        public async void DeleteProducts_DeletesMultipleProductsWithoutErrors()
+        [Theory]
+        [CustomAutoData]
+        public async void DeleteProducts_DeletesProducts(List<Product> products)
         {
-            var products = _fixture.CreateMany<Product>();
-
-            await ProductService.DeleteProductsRangeAsync(products, default);
+            await Sut.DeleteProductsRangeAsync(products, default);
 
             _productRepositoryMock.Verify(r => r.DeleteRange(products), Times.Once);
             _productRepositoryMock.Verify(r => r.UnitOfWork.SaveChangesAsync(default), Times.Once);
         }
 
         [Theory]
-        [InlineAutoData(null)]
-        [InlineAutoData("")]
-        [InlineAutoData("  ")]
-        [InlineAutoData("some name")]
-        public async void GetProductsDropdown_ReturnsAllProducts(string productNameFilter)
+        [CustomAutoData]
+        public async void GetProductsDropdown_ReturnsAllProducts(
+            ProductDropdownSearchRequest request, List<Product> products)
         {
-            var request = _fixture.Build<ProductDropdownSearchRequest>()
-                .With(r => r.ProductNameFilter, productNameFilter)
-                .Create();
-            var expectedProducts = _fixture.CreateMany<Product>().ToList();
             _productRepositoryMock.Setup(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Product>>(), default))
-                .ReturnsAsync(expectedProducts);
+                .ReturnsAsync(products);
 
-            var result = await ProductService.GetProductsDropdownAsync(request, default);
+            var result = await Sut.GetProductsDropdownAsync(request, default);
 
             _productRepositoryMock.Verify(r => r.GetQueryWithoutTracking(), Times.Once);
             _productRepositoryMock.Verify(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Product>>(), default), Times.Once);
-            result.Should().Contain(expectedProducts);
+            
+            result.Should().Contain(products);
         }
     }
 }
