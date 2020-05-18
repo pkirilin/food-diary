@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using AutoFixture;
 using FluentAssertions;
 using FoodDiary.API.Services;
 using FoodDiary.API.Services.Implementation;
@@ -9,6 +8,8 @@ using FoodDiary.Domain.Repositories;
 using Moq;
 using Xunit;
 using FoodDiary.API.Requests;
+using FoodDiary.Domain.Enums;
+using FoodDiary.UnitTests.Services.TestData;
 
 namespace FoodDiary.UnitTests.Services
 {
@@ -16,99 +17,130 @@ namespace FoodDiary.UnitTests.Services
     {
         private readonly Mock<INoteRepository> _noteRepositoryMock;
 
-        private readonly IFixture _fixture = Fixtures.Custom;
-
         public NotesOrderServiceTests()
         {
             _noteRepositoryMock = new Mock<INoteRepository>();
         }
 
-        public INotesOrderService NotesOrderService => new NotesOrderService(_noteRepositoryMock.Object);
+        public INotesOrderService Sut => new NotesOrderService(_noteRepositoryMock.Object);
 
-        [Fact]
-        public void GetOrderForNewNoteAsync()
+        [Theory]
+        [MemberData(nameof(NotesOrderServiceTestData.GetOrderForNewNote), MemberType = typeof(NotesOrderServiceTestData))]
+        public async void GetOrderForNewNote_ReturnsCorrectDisplayOrder(
+            int pageId,
+            MealType mealType,
+            List<Note> sourceNotes,
+            List<Note> filteredNotes,
+            int expectedDisplayOrderForNewNote)
         {
-            // TODO: rewrite this test
-            true.Should().BeTrue();
+            var filteredNotesQuery = filteredNotes.AsQueryable();
+
+            _noteRepositoryMock.Setup(r => r.GetQueryWithoutTracking())
+                .Returns(sourceNotes.AsQueryable());
+
+            _noteRepositoryMock.Setup(r => r.GetListFromQueryAsync(filteredNotesQuery, default))
+                .ReturnsAsync(filteredNotes);
+
+            var result = await Sut.GetOrderForNewNoteAsync(pageId, mealType, default);
+
+            _noteRepositoryMock.Verify(r => r.GetQueryWithoutTracking(), Times.Once);
+            _noteRepositoryMock.Verify(r => r.GetListFromQueryAsync(filteredNotesQuery, default), Times.Once);
+
+            result.Should().Be(expectedDisplayOrderForNewNote);
         }
 
-        [Fact]
-        public async void ReorderNotesOnDeleteAsync_RecalculatesDisplayOrders_OfNotesWithoutDeleted()
+        [Theory]
+        [MemberData(nameof(NotesOrderServiceTestData.ReorderNotesOnDelete), MemberType = typeof(NotesOrderServiceTestData))]
+        public async void ReorderNotesOnDelete_RecalculatesDisplayOrders_OfNotesWithoutDeleted(
+            Note noteForDelete,
+            List<Note> sourceNotes,
+            List<Note> notesWithoutDeleted,
+            List<int> expectedDisplayOrders)
         {
-            var noteForDelete = _fixture.Create<Note>();
-            var notesForReorder = _fixture.CreateMany<Note>().ToList();
-            var expectedNoteOrders = GetExpectedNoteOrders(notesForReorder);
+            var notesWithoutDeletedQuery = notesWithoutDeleted.AsQueryable();
 
-            _noteRepositoryMock.Setup(r => r.GetListFromQueryAsync(It.IsAny<IQueryable<Note>>(), default))
-                .ReturnsAsync(notesForReorder);
+            _noteRepositoryMock.Setup(r => r.GetQuery())
+                .Returns(sourceNotes.AsQueryable());
 
-            await NotesOrderService.ReorderNotesOnDeleteAsync(noteForDelete, default);
-            var resultNoteOrders = GetResultNoteOrders(notesForReorder);
+            _noteRepositoryMock.Setup(r => r.GetListFromQueryAsync(notesWithoutDeletedQuery, default))
+                .ReturnsAsync(notesWithoutDeleted);
+
+            await Sut.ReorderNotesOnDeleteAsync(noteForDelete, default);
 
             _noteRepositoryMock.Verify(r => r.GetQuery(), Times.Once);
-            _noteRepositoryMock.Verify(r => r.GetListFromQueryAsync(It.IsAny<IQueryable<Note>>(), default), Times.Once);
-            _noteRepositoryMock.Verify(r => r.UpdateRange(notesForReorder), Times.Once);
-            resultNoteOrders.Should().Contain(expectedNoteOrders);
+            _noteRepositoryMock.Verify(r => r.GetListFromQueryAsync(notesWithoutDeletedQuery, default), Times.Once);
+            _noteRepositoryMock.Verify(r => r.UpdateRange(notesWithoutDeleted), Times.Once);
+
+            notesWithoutDeleted.Select(n => n.DisplayOrder)
+                .Should()
+                .ContainInOrder(expectedDisplayOrders);
         }
 
-        [Fact]
-        public async void ReorderNotesOnDeleteRangeAsync_RecalculatesDisplayOrders_OfNotesWithoutDeleted()
+        [Theory]
+        [MemberData(nameof(NotesOrderServiceTestData.ReorderNotesOnDeleteRange), MemberType = typeof(NotesOrderServiceTestData))]
+        public async void ReorderNotesOnDeleteRange_RecalculatesDisplayOrders_OfNotesWithoutDeleted(
+            List<Note> notesForDelete,
+            List<Note> sourceNotes,
+            List<Note> notesWithoutDeleted,
+            List<int> expectedDisplayOrders)
         {
-            var notesForDelete = _fixture.CreateMany<Note>();
-            var notesForReorder = _fixture.CreateMany<Note>().ToList();
-            var expectedNoteOrders = GetExpectedNoteOrders(notesForReorder);
+            var notesWithoutDeletedQuery = notesWithoutDeleted.AsQueryable();
 
-            _noteRepositoryMock.Setup(r => r.GetListFromQueryAsync(It.IsAny<IQueryable<Note>>(), default))
-                .ReturnsAsync(notesForReorder);
+            _noteRepositoryMock.Setup(r => r.GetQuery())
+                .Returns(sourceNotes.AsQueryable());
 
-            await NotesOrderService.ReorderNotesOnDeleteRangeAsync(notesForDelete, default);
-            var resultNoteOrders = GetResultNoteOrders(notesForReorder);
+            _noteRepositoryMock.Setup(r => r.GetListFromQueryAsync(notesWithoutDeletedQuery, default))
+                .ReturnsAsync(notesWithoutDeleted);
+
+            await Sut.ReorderNotesOnDeleteRangeAsync(notesForDelete, default);
 
             _noteRepositoryMock.Verify(r => r.GetQuery(), Times.Once);
-            _noteRepositoryMock.Verify(r => r.GetListFromQueryAsync(It.IsAny<IQueryable<Note>>(), default), Times.Once);
-            _noteRepositoryMock.Verify(r => r.UpdateRange(notesForReorder), Times.Once);
-            resultNoteOrders.Should().Contain(expectedNoteOrders);
+            _noteRepositoryMock.Verify(r => r.GetListFromQueryAsync(notesWithoutDeletedQuery, default), Times.Once);
+            _noteRepositoryMock.Verify(r => r.UpdateRange(notesWithoutDeleted), Times.Once);
+
+            notesWithoutDeleted.Select(n => n.DisplayOrder)
+                .Should()
+                .ContainInOrder(expectedDisplayOrders);
         }
 
-        [Fact]
-        public async void ReorderNotesOnMoveAsync_RecalculatesDisplayOrders_OfNotesFromSourceMealWithoutMoved_And_NotesFromDestMealWithMoved()
+        [Theory]
+        [MemberData(nameof(NotesOrderServiceTestData.ReorderNotesOnMove), MemberType = typeof(NotesOrderServiceTestData))]
+        public async void ReorderNotesOnMove_RecalculatesDisplayOrders_OfNotesFromSourceMealWithoutMoved_And_NotesFromDestMealWithMoved(
+            Note noteForMove,
+            NoteMoveRequest moveRequest,
+            List<Note> sourceNotes,
+            List<Note> notesFromSourceMealWithoutMoved,
+            List<Note> notesFromDestMealWithMoved,
+            List<int> expectedSourceMealDisplayOrders,
+            List<int> expectedDestMealDisplayOrders)
         {
-            var noteForMove = _fixture.Create<Note>();
-            var moveRequest = _fixture.Create<NoteMoveRequest>();
-            var notesForReorderFromSourceMeal = _fixture.CreateMany<Note>().ToList();
-            var notesForReorderFromDestMeal = _fixture.CreateMany<Note>().ToList();
-            var expectedNoteOrdersFromSourceMeal = GetExpectedNoteOrders(notesForReorderFromSourceMeal);
-            var expectedNoteOrdersFromDestMeal = GetExpectedNoteOrders(notesForReorderFromDestMeal, moveRequest.Position);
+            var notesFromSourceMealWithoutMovedQuery = notesFromSourceMealWithoutMoved.AsQueryable();
+            var notesFromDestMealWithMovedQuery = notesFromDestMealWithMoved.AsQueryable();
 
-            _noteRepositoryMock.SetupSequence(r => r.GetListFromQueryAsync(It.IsAny<IQueryable<Note>>(), default))
-                .ReturnsAsync(notesForReorderFromSourceMeal)
-                .ReturnsAsync(notesForReorderFromDestMeal);
+            _noteRepositoryMock.Setup(r => r.GetQuery())
+                .Returns(sourceNotes.AsQueryable());
 
-            await NotesOrderService.ReorderNotesOnMoveAsync(noteForMove, moveRequest, default);
-            var resultNoteOrdersFromSourceMeal = GetResultNoteOrders(notesForReorderFromSourceMeal);
-            var resultNoteOrdersFromDestMeal = GetResultNoteOrders(notesForReorderFromDestMeal);
+            _noteRepositoryMock.Setup(r => r.GetListFromQueryAsync(notesFromSourceMealWithoutMovedQuery, default))
+                .ReturnsAsync(notesFromSourceMealWithoutMoved);
+
+            _noteRepositoryMock.Setup(r => r.GetListFromQueryAsync(notesFromDestMealWithMovedQuery, default))
+                .ReturnsAsync(notesFromDestMealWithMoved);
+
+            await Sut.ReorderNotesOnMoveAsync(noteForMove, moveRequest, default);
 
             _noteRepositoryMock.Verify(r => r.GetQuery(), Times.Exactly(2));
-            _noteRepositoryMock.Verify(r => r.GetListFromQueryAsync(It.IsAny<IQueryable<Note>>(), default), Times.Exactly(2));
-            _noteRepositoryMock.Verify(r => r.UpdateRange(notesForReorderFromSourceMeal), Times.Once);
-            _noteRepositoryMock.Verify(r => r.UpdateRange(notesForReorderFromDestMeal), Times.Once);
+            _noteRepositoryMock.Verify(r => r.GetListFromQueryAsync(notesFromSourceMealWithoutMovedQuery, default), Times.Once);
+            _noteRepositoryMock.Verify(r => r.GetListFromQueryAsync(notesFromDestMealWithMovedQuery, default), Times.Once);
+            _noteRepositoryMock.Verify(r => r.UpdateRange(notesFromSourceMealWithoutMoved), Times.Once);
+            _noteRepositoryMock.Verify(r => r.UpdateRange(notesFromDestMealWithMoved), Times.Once);
 
-            resultNoteOrdersFromSourceMeal.Should().Contain(expectedNoteOrdersFromSourceMeal);
-            resultNoteOrdersFromDestMeal.Should().Contain(expectedNoteOrdersFromDestMeal);
-        }
+            notesFromSourceMealWithoutMoved.Select(n => n.DisplayOrder)
+                .Should()
+                .ContainInOrder(expectedSourceMealDisplayOrders);
 
-        private List<int> GetExpectedNoteOrders(IEnumerable<Note> notesForReorder, int initialOrderValue = -1)
-        {
-            var expectedNoteOrders = new List<int>();
-            int curIndex = initialOrderValue;
-            foreach (var note in notesForReorder)
-                expectedNoteOrders.Add(++curIndex);
-            return expectedNoteOrders;
-        }
-
-        private List<int> GetResultNoteOrders(IEnumerable<Note> notesForReorder)
-        {
-            return notesForReorder.Select(n => n.DisplayOrder).ToList();
+            notesFromDestMealWithMoved.Select(n => n.DisplayOrder)
+                .Should()
+                .ContainInOrder(expectedDestMealDisplayOrders);
         }
     }
 }
