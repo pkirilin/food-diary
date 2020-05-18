@@ -1,14 +1,13 @@
 ﻿using AutoFixture;
 using AutoFixture.Xunit2;
 using FoodDiary.Import.UnitTests.Customizations;
-using FoodDiary.UnitTests.Customizations;
+using FoodDiary.UnitTests;
 
 namespace FoodDiary.Import.UnitTests.Attributes
 {
     class JsonObjectWithUniquePagesAutoDataAttribute : AutoDataAttribute
     {
-        public JsonObjectWithUniquePagesAutoDataAttribute() : base(() => new Fixture()
-            .Customize(new FixtureWithCircularReferencesCustomization())
+        public JsonObjectWithUniquePagesAutoDataAttribute() : base(() => Fixtures.Custom
             .Customize(new JsonObjectWithUniquePagesCustomization()))
         {
         }
@@ -24,8 +23,7 @@ namespace FoodDiary.Import.UnitTests.Attributes
 
     class JsonObjectWithDuplicatePageDatesAutoDataAttribute : AutoDataAttribute
     {
-        public JsonObjectWithDuplicatePageDatesAutoDataAttribute() : base(() => new Fixture()
-            .Customize(new FixtureWithCircularReferencesCustomization())
+        public JsonObjectWithDuplicatePageDatesAutoDataAttribute() : base(() => Fixtures.Custom
             .Customize(new JsonObjectWithDuplicatePageDatesCustomization()))
         {
         }

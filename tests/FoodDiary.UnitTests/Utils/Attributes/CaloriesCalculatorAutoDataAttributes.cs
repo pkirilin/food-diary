@@ -1,14 +1,13 @@
 ﻿using AutoFixture;
 using AutoFixture.Xunit2;
-using FoodDiary.UnitTests.Customizations;
+using FoodDiary.UnitTests.Utils.Customizations;
 
-namespace FoodDiary.UnitTests.Attributes
+namespace FoodDiary.UnitTests.Utils.Attributes
 {
     class NotesWithTotalCaloriesCountAutoDataAttribute : AutoDataAttribute
     {
         public NotesWithTotalCaloriesCountAutoDataAttribute()
-            : base(() => new Fixture()
-                .Customize(new FixtureWithCircularReferencesCustomization())
+            : base(() => Fixtures.Custom
                 .Customize(new NotesWithTotalCaloriesCountCustomization()))
         {
         }

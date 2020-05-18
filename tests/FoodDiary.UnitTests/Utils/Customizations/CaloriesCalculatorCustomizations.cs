@@ -2,7 +2,7 @@
 using AutoFixture;
 using FoodDiary.Domain.Entities;
 
-namespace FoodDiary.UnitTests.Customizations
+namespace FoodDiary.UnitTests.Utils.Customizations
 {
     class NotesWithTotalCaloriesCountCustomization : ICustomization
     {

@@ -1,14 +1,12 @@
-﻿using AutoFixture;
-using AutoFixture.Xunit2;
+﻿using AutoFixture.Xunit2;
 using FoodDiary.Import.UnitTests.Customizations;
-using FoodDiary.UnitTests.Customizations;
+using FoodDiary.UnitTests;
 
 namespace FoodDiary.Import.UnitTests.Attributes
 {
     class JsonPagesWithValidNotesAutoDataAttribute : AutoDataAttribute
     {
-        public JsonPagesWithValidNotesAutoDataAttribute() : base(() => new Fixture()
-            .Customize(new FixtureWithCircularReferencesCustomization())
+        public JsonPagesWithValidNotesAutoDataAttribute() : base(() => Fixtures.Custom
             .Customize(new JsonPagesWithValidNotesCustomization()))
         {
         }
@@ -16,8 +14,7 @@ namespace FoodDiary.Import.UnitTests.Attributes
 
     class JsonPagesWithDuplicateDisplayOrdersAutoDataAttribute : AutoDataAttribute
     {
-        public JsonPagesWithDuplicateDisplayOrdersAutoDataAttribute() : base(() => new Fixture()
-            .Customize(new FixtureWithCircularReferencesCustomization())
+        public JsonPagesWithDuplicateDisplayOrdersAutoDataAttribute() : base(() => Fixtures.Custom
             .Customize(new JsonPagesWithDuplicateDisplayOrdersCustomization()))
         {
         }
@@ -25,8 +22,7 @@ namespace FoodDiary.Import.UnitTests.Attributes
 
     class JsonPagesWithInvalidDisplayOrdersAutoDataAttribute : AutoDataAttribute
     {
-        public JsonPagesWithInvalidDisplayOrdersAutoDataAttribute() : base(() => new Fixture()
-            .Customize(new FixtureWithCircularReferencesCustomization())
+        public JsonPagesWithInvalidDisplayOrdersAutoDataAttribute() : base(() => Fixtures.Custom
             .Customize(new JsonPagesWithInvalidDisplayOrdersCustomization()))
         {
         }
@@ -34,8 +30,7 @@ namespace FoodDiary.Import.UnitTests.Attributes
 
     class JsonPagesWithInvalidMealTypesAutoDataAttribute : AutoDataAttribute
     {
-        public JsonPagesWithInvalidMealTypesAutoDataAttribute() : base(() => new Fixture()
-            .Customize(new FixtureWithCircularReferencesCustomization())
+        public JsonPagesWithInvalidMealTypesAutoDataAttribute() : base(() => Fixtures.Custom
             .Customize(new JsonPagesWithInvalidMealTypesCustomization()))
         {
         }
@@ -43,8 +38,7 @@ namespace FoodDiary.Import.UnitTests.Attributes
 
     class JsonPagesWithInvalidProductQuantitiesAutoDataAttribute : AutoDataAttribute
     {
-        public JsonPagesWithInvalidProductQuantitiesAutoDataAttribute() : base(() => new Fixture()
-            .Customize(new FixtureWithCircularReferencesCustomization())
+        public JsonPagesWithInvalidProductQuantitiesAutoDataAttribute() : base(() => Fixtures.Custom
             .Customize(new JsonPagesWithInvalidProductQuantitiesCustomization()))
         {
         }

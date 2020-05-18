@@ -1,14 +1,12 @@
-﻿using AutoFixture;
-using AutoFixture.Xunit2;
+﻿using AutoFixture.Xunit2;
 using FoodDiary.Import.UnitTests.Customizations;
-using FoodDiary.UnitTests.Customizations;
+using FoodDiary.UnitTests;
 
 namespace FoodDiary.Import.UnitTests.Attributes
 {
     class JsonNotesWithValidInfoAutoDataAttribute : AutoDataAttribute
     {
-        public JsonNotesWithValidInfoAutoDataAttribute() : base(() => new Fixture()
-            .Customize(new FixtureWithCircularReferencesCustomization())
+        public JsonNotesWithValidInfoAutoDataAttribute() : base(() => Fixtures.Custom
             .Customize(new JsonNotesWithValidInfoCustomization()))
         {
         }
@@ -16,8 +14,7 @@ namespace FoodDiary.Import.UnitTests.Attributes
 
     class JsonNotesWithInvalidProductAutoDataAttribute : AutoDataAttribute
     {
-        public JsonNotesWithInvalidProductAutoDataAttribute() : base(() => new Fixture()
-            .Customize(new FixtureWithCircularReferencesCustomization())
+        public JsonNotesWithInvalidProductAutoDataAttribute() : base(() => Fixtures.Custom
             .Customize(new JsonNotesWithInvalidProductCustomization()))
         {
         }
@@ -25,8 +22,7 @@ namespace FoodDiary.Import.UnitTests.Attributes
 
     class JsonNotesWithInvalidCategoryAutoDataAttribute : AutoDataAttribute
     {
-        public JsonNotesWithInvalidCategoryAutoDataAttribute() : base(() => new Fixture()
-            .Customize(new FixtureWithCircularReferencesCustomization())
+        public JsonNotesWithInvalidCategoryAutoDataAttribute() : base(() => Fixtures.Custom
             .Customize(new JsonNotesWithInvalidCategoryCustomization()))
         {
         }

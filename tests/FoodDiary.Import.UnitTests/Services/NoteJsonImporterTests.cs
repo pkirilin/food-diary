@@ -4,7 +4,7 @@ using FoodDiary.Domain.Entities;
 using FoodDiary.Import.Implementation;
 using FoodDiary.Import.Models;
 using FoodDiary.Import.Services;
-using FoodDiary.UnitTests.Customizations;
+using FoodDiary.UnitTests;
 using Moq;
 using Xunit;
 
@@ -14,22 +14,14 @@ namespace FoodDiary.Import.UnitTests.Services
     {
         private readonly Mock<IProductJsonImporter> _productJsonImporterMock;
 
-        private readonly IFixture _fixture;
+        private readonly IFixture _fixture = Fixtures.Custom;
 
         public NoteJsonImporterTests()
         {
             _productJsonImporterMock = new Mock<IProductJsonImporter>();
-            _fixture = SetupFixture();
         }
 
         INoteJsonImporter Sut => new NoteJsonImporter(_productJsonImporterMock.Object);
-
-        private IFixture SetupFixture()
-        {
-            var _fixture = new Fixture();
-            _fixture.Customize(new FixtureWithCircularReferencesCustomization());
-            return _fixture;
-        }
 
         [Fact]
         public void ImportNote_CreatesNoteEntityFromJson()

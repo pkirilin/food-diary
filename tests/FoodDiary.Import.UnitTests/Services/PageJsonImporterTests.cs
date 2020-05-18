@@ -8,7 +8,7 @@ using FoodDiary.Import.Implementation;
 using FoodDiary.Import.Models;
 using FoodDiary.Import.Services;
 using FoodDiary.Import.UnitTests.Attributes;
-using FoodDiary.UnitTests.Customizations;
+using FoodDiary.UnitTests;
 using Moq;
 using Xunit;
 
@@ -19,25 +19,17 @@ namespace FoodDiary.Import.UnitTests.Services
         private readonly Mock<IJsonImportDataProvider> _importDataProviderMock;
         private readonly Mock<INoteJsonImporter> _noteJsonImporterMock;
 
-        private readonly IFixture _fixture;
+        private readonly IFixture _fixture = Fixtures.Custom;
 
         public PageJsonImporterTests()
         {
             _importDataProviderMock = new Mock<IJsonImportDataProvider>();
             _noteJsonImporterMock = new Mock<INoteJsonImporter>();
-            _fixture = SetupFixture();
         }
 
         IPageJsonImporter Sut => new PageJsonImporter(
             _importDataProviderMock.Object,
             _noteJsonImporterMock.Object);
-
-        private IFixture SetupFixture()
-        {
-            var _fixture = new Fixture();
-            _fixture.Customize(new FixtureWithCircularReferencesCustomization());
-            return _fixture;
-        }
 
         [Theory]
         [ImportNotExistingPageAutoData]

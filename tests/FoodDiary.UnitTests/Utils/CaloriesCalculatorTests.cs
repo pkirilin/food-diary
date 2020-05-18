@@ -5,7 +5,7 @@ using FluentAssertions;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Utils;
 using FoodDiary.Infrastructure.Utils;
-using FoodDiary.UnitTests.Attributes;
+using FoodDiary.UnitTests.Utils.Attributes;
 using Xunit;
 
 namespace FoodDiary.UnitTests.Utils

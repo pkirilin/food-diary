@@ -6,7 +6,7 @@ using FoodDiary.Import.Core;
 using FoodDiary.Import.Models;
 using FoodDiary.Import.Services;
 using FoodDiary.Import.UnitTests.Attributes;
-using FoodDiary.UnitTests.Customizations;
+using FoodDiary.UnitTests;
 using Moq;
 using Xunit;
 
@@ -16,24 +16,16 @@ namespace FoodDiary.Import.UnitTests.Core
     {
         private readonly Mock<IPageJsonImporter> _pageJsonImporterMock;
 
-        private readonly IFixture _fixture;
+        private readonly IFixture _fixture = Fixtures.Custom;
 
         public JsonImporterTests()
         {
             _pageJsonImporterMock = new Mock<IPageJsonImporter>();
-            _fixture = SetupFixture();
         }
 
         delegate void PageJsonImporterMockingCallback(PageJsonItem pageFromJson, out Page createdPage);
 
         public IJsonImporter Sut => new JsonImporter(_pageJsonImporterMock.Object);
-
-        private IFixture SetupFixture()
-        {
-            var _fixture = new Fixture();
-            _fixture.Customize(new FixtureWithCircularReferencesCustomization());
-            return _fixture;
-        }
 
         [Theory]
         [JsonObjectWithUniquePagesAutoData]
