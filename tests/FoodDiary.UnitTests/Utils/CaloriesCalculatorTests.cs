@@ -5,7 +5,7 @@ using FluentAssertions;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Utils;
 using FoodDiary.Infrastructure.Utils;
-using FoodDiary.UnitTests.Utils.Attributes;
+using FoodDiary.UnitTests.Utils.TestData;
 using Xunit;
 
 namespace FoodDiary.UnitTests.Utils
@@ -63,13 +63,12 @@ namespace FoodDiary.UnitTests.Utils
         }
 
         [Theory]
-        [NotesWithTotalCaloriesCountAutoData]
-        [EmptyNotesWithZeroTotalCaloriesCountAutoData]
-        public void Calculator_CalculatesCaloriesForMultipleNotes(List<Note> notes, int expectedResult)
+        [MemberData(nameof(CaloriesCalculatorTestData.CalculateForNotes), MemberType = typeof(CaloriesCalculatorTestData))]
+        public void Calculator_CalculatesCaloriesForMultipleNotes(List<Note> notes, int totalCaloriesCount)
         {
             var result = Sut.Calculate(notes);
 
-            result.Should().Be(expectedResult);
+            result.Should().Be(totalCaloriesCount);
         }
     }
 }
