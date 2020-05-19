@@ -11,6 +11,7 @@ using Xunit;
 using FoodDiary.API.Requests;
 using FoodDiary.UnitTests.Attributes;
 using System.Collections.Generic;
+using FoodDiary.UnitTests.Services.TestData;
 
 namespace FoodDiary.UnitTests.Services
 {
@@ -55,36 +56,53 @@ namespace FoodDiary.UnitTests.Services
         }
 
         [Theory]
-        [CustomAutoData]
+        [MemberData(nameof(NoteServiceTestData.SearchNotes), MemberType = typeof(NoteServiceTestData))]
         public async void SearchNotes_ReturnsRequestedNotes(
-            NotesSearchRequest request, List<Note> notes)
+            NotesSearchRequest request,
+            List<Note> sourceNotes,
+            List<Note> filteredNotes)
         {
-            _noteRepositoryMock.Setup(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Note>>(), default))
-                .ReturnsAsync(notes);
+            var filteredNotesQuery = filteredNotes.AsQueryable();
+
+            _noteRepositoryMock.Setup(r => r.GetQueryWithoutTracking())
+                .Returns(sourceNotes.AsQueryable());
+
+            _noteRepositoryMock.Setup(r => r.LoadProduct(filteredNotesQuery))
+                .Returns(filteredNotesQuery);
+
+            _noteRepositoryMock.Setup(r => r.GetListFromQueryAsync(filteredNotesQuery, default))
+                .ReturnsAsync(filteredNotes);
 
             var result = await Sut.SearchNotesAsync(request, default);
 
             _noteRepositoryMock.Verify(r => r.GetQueryWithoutTracking(), Times.Once);
-            _noteRepositoryMock.Verify(r => r.LoadProduct(It.IsNotNull<IQueryable<Note>>()), Times.Once);
-            _noteRepositoryMock.Verify(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Note>>(), default), Times.Once);
-            
-            result.Should().Contain(notes);
+            _noteRepositoryMock.Verify(r => r.LoadProduct(filteredNotesQuery), Times.Once);
+            _noteRepositoryMock.Verify(r => r.GetListFromQueryAsync(filteredNotesQuery, default), Times.Once);
+
+            result.Should().ContainInOrder(filteredNotes);
         }
 
         [Theory]
-        [CustomAutoData]
+        [MemberData(nameof(NoteServiceTestData.GetNotesByIds), MemberType = typeof(NoteServiceTestData))]
         public async void GetNotesByIds_ReturnsRequestedNotes(
-            IEnumerable<int> requestedNotesIds, List<Note> notes)
+            IEnumerable<int> requestedNotesIds,
+            List<Note> sourceNotes,
+            List<Note> expectedNotes)
         {
-            _noteRepositoryMock.Setup(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Note>>(), default))
-                .ReturnsAsync(notes);
+            var expectedNotesQuery = expectedNotes.AsQueryable();
+
+            _noteRepositoryMock.Setup(r => r.GetQuery())
+                .Returns(sourceNotes.AsQueryable());
+
+            _noteRepositoryMock.Setup(r => r.GetListFromQueryAsync(expectedNotesQuery, default))
+                .ReturnsAsync(expectedNotes);
 
             var result = await Sut.GetNotesByIdsAsync(requestedNotesIds, default);
 
             _noteRepositoryMock.Verify(r => r.GetQuery(), Times.Once);
-            _noteRepositoryMock.Verify(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Note>>(), default), Times.Once);
+            _noteRepositoryMock.Verify(r => r.GetListFromQueryAsync(expectedNotesQuery, default), Times.Once);
             
-            result.Should().Contain(notes);
+            result.Should().Contain(expectedNotes);
         }
 
         [Theory]

@@ -11,8 +11,8 @@ using FoodDiary.Import;
 using Moq;
 using Xunit;
 using FoodDiary.Import.Models;
-using FoodDiary.UnitTests.Attributes;
 using System;
+using FoodDiary.UnitTests.Services.TestData;
 
 namespace FoodDiary.UnitTests.Services
 {
@@ -51,23 +51,28 @@ namespace FoodDiary.UnitTests.Services
             _jsonImporterMock.Object);
 
         [Theory]
-        [CustomAutoData]
-        public async void RunPagesJsonImportAsync_ImportsEntities(
+        [MemberData(nameof(ImportServiceTestData.RunPagesJsonImport), MemberType = typeof(ImportServiceTestData))]
+        public async void RunPagesJsonImport_ImportsEntities(
             PagesJsonObject jsonObj,
-            IEnumerable<PageJsonItem> pagesFromJson,
-            IEnumerable<NoteJsonItem> notesFromJson,
-            IEnumerable<string> productNamesFromJson,
-            IEnumerable<string> categoryNamesFromJson,
-            IEnumerable<Page> pages,
-            IEnumerable<Product> products,
-            IEnumerable<Category> categories,
-            IEnumerable<Page> pagesForUpdate,
+            List<PageJsonItem> pagesFromJson,
+            List<NoteJsonItem> notesFromJson,
+            List<string> productNamesFromJson,
+            List<string> categoryNamesFromJson,
+            List<Page> sourcePages,
+            List<Product> sourceProducts,
+            List<Category> sourceCategories,
+            List<Page> existingPages,
+            List<Product> existingProducts,
+            List<Category> existingCategories,
             Dictionary<DateTime, Page> existingPagesDictionary,
             Dictionary<string, Product> existingProductsDictionary,
             Dictionary<string, Category> existingCategoriesDictionary,
             List<Page> createdPagesAfterImport)
         {
-            var pagesForUpdateQuery = pagesForUpdate.AsQueryable();
+            var existingPagesQuery = existingPages.AsQueryable();
+            var existingProductsQuery = existingProducts.AsQueryable();
+            var existingCategoriesQuery = existingCategories.AsQueryable();
+
             var createdPagesBeforeImport = _fixture.CreateMany<Page>().ToList();
 
             _jsonParserMock.Setup(p => p.ParsePages(jsonObj))
@@ -80,19 +85,20 @@ namespace FoodDiary.UnitTests.Services
                 .Returns(categoryNamesFromJson);
 
             _pageRepositoryMock.Setup(r => r.GetQuery())
-                .Returns(pages.AsQueryable());
+                .Returns(sourcePages.AsQueryable());
             _productRepositoryMock.Setup(r => r.GetQuery())
-                .Returns(products.AsQueryable());
+                .Returns(sourceProducts.AsQueryable());
             _categoryRepositoryMock.Setup(r => r.GetQuery())
-                .Returns(categories.AsQueryable());
-            _pageRepositoryMock.Setup(r => r.LoadNotesWithProductsAndCategories(It.IsNotNull<IQueryable<Page>>()))
-                .Returns(pagesForUpdateQuery);
+                .Returns(sourceCategories.AsQueryable());
 
-            _pageRepositoryMock.Setup(r => r.GetDictionaryFromQueryAsync(pagesForUpdateQuery, CancellationToken.None))
+            _pageRepositoryMock.Setup(r => r.LoadNotesWithProductsAndCategories(existingPagesQuery))
+                .Returns(existingPagesQuery);
+
+            _pageRepositoryMock.Setup(r => r.GetDictionaryFromQueryAsync(existingPagesQuery, CancellationToken.None))
                 .ReturnsAsync(existingPagesDictionary);
-            _productRepositoryMock.Setup(r => r.GetDictionaryFromQueryAsync(It.IsNotNull<IQueryable<Product>>(), CancellationToken.None))
+            _productRepositoryMock.Setup(r => r.GetDictionaryFromQueryAsync(existingProductsQuery, CancellationToken.None))
                 .ReturnsAsync(existingProductsDictionary);
-            _categoryRepositoryMock.Setup(r => r.GetDictionaryFromQueryAsync(It.IsNotNull<IQueryable<Category>>(), CancellationToken.None))
+            _categoryRepositoryMock.Setup(r => r.GetDictionaryFromQueryAsync(existingCategoriesQuery, CancellationToken.None))
                 .ReturnsAsync(existingCategoriesDictionary);
 
             _jsonImporterMock.Setup(i => i.Import(jsonObj, out createdPagesBeforeImport))
@@ -111,11 +117,11 @@ namespace FoodDiary.UnitTests.Services
             _pageRepositoryMock.Verify(r => r.GetQuery(), Times.Once);
             _productRepositoryMock.Verify(r => r.GetQuery(), Times.Once);
             _categoryRepositoryMock.Verify(r => r.GetQuery(), Times.Once);
-            _pageRepositoryMock.Verify(r => r.LoadNotesWithProductsAndCategories(It.IsNotNull<IQueryable<Page>>()), Times.Once);
+            _pageRepositoryMock.Verify(r => r.LoadNotesWithProductsAndCategories(existingPagesQuery), Times.Once);
 
-            _pageRepositoryMock.Verify(r => r.GetDictionaryFromQueryAsync(pagesForUpdateQuery, CancellationToken.None), Times.Once);
-            _productRepositoryMock.Verify(r => r.GetDictionaryFromQueryAsync(It.IsNotNull<IQueryable<Product>>(), CancellationToken.None), Times.Once);
-            _categoryRepositoryMock.Verify(r => r.GetDictionaryFromQueryAsync(It.IsNotNull<IQueryable<Category>>(), CancellationToken.None), Times.Once);
+            _pageRepositoryMock.Verify(r => r.GetDictionaryFromQueryAsync(existingPagesQuery, CancellationToken.None), Times.Once);
+            _productRepositoryMock.Verify(r => r.GetDictionaryFromQueryAsync(existingProductsQuery, CancellationToken.None), Times.Once);
+            _categoryRepositoryMock.Verify(r => r.GetDictionaryFromQueryAsync(existingCategoriesQuery, CancellationToken.None), Times.Once);
 
             _importDataProviderMock.VerifySet(p => p.ExistingPages = existingPagesDictionary, Times.Once);
             _importDataProviderMock.VerifySet(p => p.ExistingProducts = existingProductsDictionary, Times.Once);

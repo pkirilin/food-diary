@@ -12,6 +12,7 @@ using FoodDiary.API.Services.Implementation;
 using FoodDiary.API.Requests;
 using FoodDiary.UnitTests.Attributes;
 using System.Collections.Generic;
+using FoodDiary.UnitTests.Services.TestData;
 
 namespace FoodDiary.UnitTests.Services
 {
@@ -32,20 +33,30 @@ namespace FoodDiary.UnitTests.Services
         public IPageService Sut => new PageService(_pageRepositoryMock.Object);
 
         [Theory]
-        [CustomAutoData]
+        [MemberData(nameof(PageServiceTestData.SearchPages), MemberType = typeof(PageServiceTestData))]
         public async void SearchPages_ReturnsRequestedPages(
-            PagesSearchRequest request, List<Page> pages)
+            PagesSearchRequest request,
+            List<Page> sourcePages,
+            List<Page> resultPages)
         {
-            _pageRepositoryMock.Setup(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Page>>(), default))
-                .ReturnsAsync(pages);
+            var resultPagesQuery = resultPages.AsQueryable();
+
+            _pageRepositoryMock.Setup(r => r.GetQueryWithoutTracking())
+                .Returns(sourcePages.AsQueryable());
+
+            _pageRepositoryMock.Setup(r => r.LoadNotesWithProducts(resultPagesQuery))
+                .Returns(resultPagesQuery);
+
+            _pageRepositoryMock.Setup(r => r.GetListFromQueryAsync(resultPagesQuery, default))
+                .ReturnsAsync(resultPages);
 
             var result = await Sut.SearchPagesAsync(request, default);
 
             _pageRepositoryMock.Verify(r => r.GetQueryWithoutTracking(), Times.Once);
-            _pageRepositoryMock.Verify(r => r.LoadNotesWithProducts(It.IsNotNull<IQueryable<Page>>()), Times.Once);
-            _pageRepositoryMock.Verify(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Page>>(), default), Times.Once);
+            _pageRepositoryMock.Verify(r => r.LoadNotesWithProducts(resultPagesQuery), Times.Once);
+            _pageRepositoryMock.Verify(r => r.GetListFromQueryAsync(resultPagesQuery, default), Times.Once);
 
-            result.Should().ContainInOrder(pages);
+            result.Should().ContainInOrder(resultPages);
         }
 
         [Theory]
@@ -63,19 +74,26 @@ namespace FoodDiary.UnitTests.Services
         }
 
         [Theory]
-        [CustomAutoData]
+        [MemberData(nameof(PageServiceTestData.GetPagesByIds), MemberType = typeof(PageServiceTestData))]
         public async void GetPagesByIds_ReturnsRequestedPages(
-            IEnumerable<int> pageIds, List<Page> pages)
+            IEnumerable<int> requestedIds,
+            List<Page> sourcePages,
+            List<Page> resultPages)
         {
-            _pageRepositoryMock.Setup(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Page>>(), default))
-                .ReturnsAsync(pages);
+            var resultPagesQuery = resultPages.AsQueryable();
 
-            var result = await Sut.GetPagesByIdsAsync(pageIds, default);
+            _pageRepositoryMock.Setup(r => r.GetQuery())
+                .Returns(sourcePages.AsQueryable());
+
+            _pageRepositoryMock.Setup(r => r.GetListFromQueryAsync(resultPagesQuery, default))
+                .ReturnsAsync(resultPages);
+
+            var result = await Sut.GetPagesByIdsAsync(requestedIds, default);
 
             _pageRepositoryMock.Verify(r => r.GetQuery(), Times.Once);
-            _pageRepositoryMock.Verify(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Page>>(), default), Times.Once);
+            _pageRepositoryMock.Verify(r => r.GetListFromQueryAsync(resultPagesQuery, default), Times.Once);
             
-            result.Should().Contain(pages);
+            result.Should().Contain(resultPages);
         }
 
         [Theory]
@@ -123,19 +141,27 @@ namespace FoodDiary.UnitTests.Services
         }
 
         [Theory]
-        [CustomAutoData]
+        [MemberData(nameof(PageServiceTestData.IsPageExists), MemberType = typeof(PageServiceTestData))]
         public async void IsPageExists_ReturnsTrue_WhenPageWithTheSameDateExists(
-            DateTime pageDate, List<Page> pagesWithTheSameDate)
+            DateTime pageDate,
+            List<Page> sourcePages,
+            List<Page> pagesWithTheSameDate,
+            bool expectedResult)
         {
-            _pageRepositoryMock.Setup(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Page>>(), default))
+            var pagesWithTheSameDateQuery = pagesWithTheSameDate.AsQueryable();
+
+            _pageRepositoryMock.Setup(r => r.GetQueryWithoutTracking())
+                .Returns(sourcePages.AsQueryable());
+
+            _pageRepositoryMock.Setup(r => r.GetListFromQueryAsync(pagesWithTheSameDateQuery, default))
                 .ReturnsAsync(pagesWithTheSameDate);
 
             var result = await Sut.IsPageExistsAsync(pageDate, default);
 
             _pageRepositoryMock.Verify(r => r.GetQueryWithoutTracking(), Times.Once);
-            _pageRepositoryMock.Verify(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Page>>(), default), Times.Once);
+            _pageRepositoryMock.Verify(r => r.GetListFromQueryAsync(pagesWithTheSameDateQuery, default), Times.Once);
             
-            result.Should().BeTrue();
+            result.Should().Be(expectedResult);
         }
 
         [Theory]

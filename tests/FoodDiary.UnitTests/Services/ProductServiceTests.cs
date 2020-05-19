@@ -12,6 +12,7 @@ using Xunit;
 using FoodDiary.API.Requests;
 using FoodDiary.UnitTests.Attributes;
 using FoodDiary.API.Metadata;
+using FoodDiary.UnitTests.Services.TestData;
 
 namespace FoodDiary.UnitTests.Services
 {
@@ -32,24 +33,38 @@ namespace FoodDiary.UnitTests.Services
         public IProductService Sut => new ProductService(_productRepositoryMock.Object);
 
         [Theory]
-        [CustomAutoData]
+        [MemberData(nameof(ProductServiceTestData.SearchProducts), MemberType = typeof(ProductServiceTestData))]
         public async void SearchProducts_ReturnsFilteredProducts(
-            ProductsSearchRequest request, ProductsSearchResultMetadata searchResult)
+            ProductsSearchRequest request,
+            List<Product> sourceProducts,
+            ProductsSearchResultMetadata searchResult)
         {
+            var resultProductsQuery = searchResult.FoundProducts.AsQueryable();
+
             _productRepositoryMock.Setup(r => r.CountByQueryAsync(It.IsNotNull<IQueryable<Product>>(), default))
                 .ReturnsAsync(searchResult.TotalProductsCount);
 
-            _productRepositoryMock.Setup(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Product>>(), default))
+            _productRepositoryMock.Setup(r => r.GetQueryWithoutTracking())
+                .Returns(sourceProducts.AsQueryable());
+
+            _productRepositoryMock.Setup(r => r.LoadCategory(resultProductsQuery))
+                .Returns(resultProductsQuery);
+
+            _productRepositoryMock.Setup(r => r.GetListFromQueryAsync(resultProductsQuery, default))
                 .ReturnsAsync(searchResult.FoundProducts.ToList());
 
             var result = await Sut.SearchProductsAsync(request, default);
 
             _productRepositoryMock.Verify(r => r.GetQueryWithoutTracking(), Times.Once);
-            _productRepositoryMock.Verify(r => r.LoadCategory(It.IsNotNull<IQueryable<Product>>()), Times.Once);
+            _productRepositoryMock.Verify(r => r.LoadCategory(resultProductsQuery), Times.Once);
             _productRepositoryMock.Verify(r => r.CountByQueryAsync(It.IsNotNull<IQueryable<Product>>(), default), Times.Once);
-            _productRepositoryMock.Verify(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Product>>(), default), Times.Once);
+            _productRepositoryMock.Verify(r => r.GetListFromQueryAsync(resultProductsQuery, default), Times.Once);
 
-            result.Should().BeEquivalentTo(searchResult);
+            result.FoundProducts.Should()
+                .ContainInOrder(searchResult.FoundProducts);
+
+            result.TotalProductsCount.Should()
+                .Be(searchResult.TotalProductsCount);
         }
 
         [Theory]
@@ -83,19 +98,27 @@ namespace FoodDiary.UnitTests.Services
         }
 
         [Theory]
-        [CustomAutoData]
+        [MemberData(nameof(ProductServiceTestData.IsProductExists), MemberType = typeof(ProductServiceTestData))]
         public async void IsProductExists_ReturnsTrue_WhenProductWithTheSameNameAlreadyExists(
-            ProductCreateEditRequest request, List<Product> productsWithTheSameName)
+            string productSearchName,
+            List<Product> sourceProducts,
+            List<Product> productsWithTheSameName,
+            bool expectedResult)
         {
-            _productRepositoryMock.Setup(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Product>>(), default))
+            var productsWithTheSameNameQuery = productsWithTheSameName.AsQueryable();
+
+            _productRepositoryMock.Setup(r => r.GetQueryWithoutTracking())
+                .Returns(sourceProducts.AsQueryable());
+
+            _productRepositoryMock.Setup(r => r.GetListFromQueryAsync(productsWithTheSameNameQuery, default))
                 .ReturnsAsync(productsWithTheSameName);
 
-            var result = await Sut.IsProductExistsAsync(request.Name, default);
+            var result = await Sut.IsProductExistsAsync(productSearchName, default);
 
             _productRepositoryMock.Verify(r => r.GetQueryWithoutTracking(), Times.Once);
-            _productRepositoryMock.Verify(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Product>>(), default), Times.Once);
+            _productRepositoryMock.Verify(r => r.GetListFromQueryAsync(productsWithTheSameNameQuery, default), Times.Once);
             
-            result.Should().BeTrue();
+            result.Should().Be(expectedResult);
         }
 
         [Theory]
@@ -164,19 +187,26 @@ namespace FoodDiary.UnitTests.Services
         }
 
         [Theory]
-        [CustomAutoData]
+        [MemberData(nameof(ProductServiceTestData.GetProductsDropdown), MemberType = typeof(ProductServiceTestData))]
         public async void GetProductsDropdown_ReturnsAllProducts(
-            ProductDropdownSearchRequest request, List<Product> products)
+            ProductDropdownSearchRequest request,
+            List<Product> sourceProducts,
+            List<Product> foundProducts)
         {
-            _productRepositoryMock.Setup(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Product>>(), default))
-                .ReturnsAsync(products);
+            var foundProductsQuery = foundProducts.AsQueryable();
+
+            _productRepositoryMock.Setup(r => r.GetQueryWithoutTracking())
+                .Returns(sourceProducts.AsQueryable());
+
+            _productRepositoryMock.Setup(r => r.GetListFromQueryAsync(foundProductsQuery, default))
+                .ReturnsAsync(foundProducts);
 
             var result = await Sut.GetProductsDropdownAsync(request, default);
 
             _productRepositoryMock.Verify(r => r.GetQueryWithoutTracking(), Times.Once);
-            _productRepositoryMock.Verify(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Product>>(), default), Times.Once);
+            _productRepositoryMock.Verify(r => r.GetListFromQueryAsync(foundProductsQuery, default), Times.Once);
             
-            result.Should().Contain(products);
+            result.Should().ContainInOrder(foundProducts);
         }
     }
 }
