@@ -1,6 +1,5 @@
 ﻿using AutoFixture.Xunit2;
 using FoodDiary.Import.UnitTests.Customizations;
-using FoodDiary.UnitTests;
 
 namespace FoodDiary.Import.UnitTests.Attributes
 {

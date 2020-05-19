@@ -4,7 +4,6 @@ using FoodDiary.Domain.Entities;
 using FoodDiary.Import.Implementation;
 using FoodDiary.Import.Models;
 using FoodDiary.Import.Services;
-using FoodDiary.UnitTests;
 using Moq;
 using Xunit;
 

@@ -8,7 +8,6 @@ using FoodDiary.Import.Implementation;
 using FoodDiary.Import.Models;
 using FoodDiary.Import.Services;
 using FoodDiary.Import.UnitTests.Attributes;
-using FoodDiary.UnitTests;
 using Moq;
 using Xunit;
 
