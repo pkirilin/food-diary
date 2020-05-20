@@ -121,5 +121,13 @@ namespace FoodDiary.API.Controllers.v1
             await _pageService.BatchDeletePagesAsync(pagesForDelete, cancellationToken);
             return Ok();
         }
+
+        [HttpGet("date")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetDateForNewPage(CancellationToken cancellationToken)
+        {
+            var dateForNewPage = await _pageService.GetDateForNewPageAsync(cancellationToken);
+            return Ok(dateForNewPage);
+        }
     }
 }

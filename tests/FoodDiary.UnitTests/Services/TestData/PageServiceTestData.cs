@@ -114,5 +114,31 @@ namespace FoodDiary.UnitTests.Services.TestData
                 };
             }
         }
+
+        public static IEnumerable<object[]> GetDateForNewPage
+        {
+            get
+            {
+                var fixture = Fixtures.Custom;
+
+                var page1 = fixture.Build<Page>()
+                    .With(p => p.Date, DateTime.Parse("2020-05-19"))
+                    .Create();
+                var page2 = fixture.Build<Page>()
+                    .With(p => p.Date, DateTime.Parse("2020-05-21"))
+                    .Create();
+                var page3 = fixture.Build<Page>()
+                    .With(p => p.Date, DateTime.Parse("2020-05-20"))
+                    .Create();
+
+                var sourcePages = new List<Page>() { page1, page2, page3 };
+                var lastPagesByDate = new List<Page>() { page2 };
+                var dateForNewPage = DateTime.Parse("2020-05-22");
+                var emptyPages = new List<Page>();
+
+                yield return new object[] { sourcePages, lastPagesByDate, dateForNewPage };
+                yield return new object[] { emptyPages, emptyPages, DateTime.Now.Date };
+            }
+        }
     }
 }

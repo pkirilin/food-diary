@@ -183,5 +183,28 @@ namespace FoodDiary.UnitTests.Services
 
             result.Should().BeTrue();
         }
+
+        [Theory]
+        [MemberData(nameof(PageServiceTestData.GetDateForNewPage), MemberType = typeof(PageServiceTestData))]
+        public async void GetDateForNewPage_ReturnsCorrectDate(
+            List<Page> sourcePages,
+            List<Page> lastPagesByDate,
+            DateTime dateForNewPage)
+        {
+            var lastPagesByDateQuery = lastPagesByDate.AsQueryable();
+
+            _pageRepositoryMock.Setup(r => r.GetQueryWithoutTracking())
+                .Returns(sourcePages.AsQueryable());
+
+            _pageRepositoryMock.Setup(r => r.GetListFromQueryAsync(lastPagesByDateQuery, default))
+                .ReturnsAsync(lastPagesByDate);
+
+            var result = await Sut.GetDateForNewPageAsync(default);
+
+            _pageRepositoryMock.Verify(r => r.GetQueryWithoutTracking(), Times.Once);
+            _pageRepositoryMock.Verify(r => r.GetListFromQueryAsync(lastPagesByDateQuery, default), Times.Once);
+
+            result.Should().Be(dateForNewPage);
+        }
     }
 }

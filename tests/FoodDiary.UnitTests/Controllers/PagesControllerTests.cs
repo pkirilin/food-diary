@@ -15,6 +15,7 @@ using FoodDiary.API.Services;
 using FoodDiary.API.Requests;
 using FoodDiary.UnitTests.Attributes;
 using System.Collections.Generic;
+using System;
 
 namespace FoodDiary.UnitTests.Controllers
 {
@@ -275,6 +276,20 @@ namespace FoodDiary.UnitTests.Controllers
             _pageServiceMock.Verify(s => s.BatchDeletePagesAsync(pagesForDelete, default), Times.Never);
             
             result.Should().BeOfType<BadRequestObjectResult>();
+        }
+
+        [Theory]
+        [CustomAutoData]
+        public async void GetDateForNewPage_ReturnsRequestedDate(DateTime dateForNewPage)
+        {
+            _pageServiceMock.Setup(s => s.GetDateForNewPageAsync(default))
+                .ReturnsAsync(dateForNewPage);
+
+            var result = await Sut.GetDateForNewPage(default);
+
+            _pageServiceMock.Verify(s => s.GetDateForNewPageAsync(default), Times.Once);
+
+            result.Should().BeOfType<OkObjectResult>();
         }
     }
 }

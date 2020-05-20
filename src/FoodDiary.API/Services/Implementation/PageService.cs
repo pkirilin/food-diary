@@ -95,5 +95,19 @@ namespace FoodDiary.API.Services.Implementation
             _pageRepository.DeleteRange(pages);
             await _pageRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
         }
+
+        public async Task<DateTime> GetDateForNewPageAsync(CancellationToken cancellationToken)
+        {
+            var query = _pageRepository.GetQueryWithoutTracking()
+                .OrderByDescending(p => p.Date)
+                .Take(1);
+
+            var pages = await _pageRepository.GetListFromQueryAsync(query, cancellationToken);
+
+            if (pages.Any())
+                return pages.First().Date.AddDays(1);
+
+            return DateTime.Now.Date;
+        }
     }
 }
