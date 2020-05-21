@@ -1,0 +1,52 @@
+@import '../../variables.scss';
+@import '../Controls/FormControls.variables.scss';
+
+$modal-z-index: 12000;
+$modal-content-padding: 16px;
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: $modal-z-index;
+
+  &-content {
+    position: relative;
+    background-color: $color-white;
+    margin: 15% auto;
+    padding: 0;
+    width: 80%;
+    border: $border-width-thick solid $color-middle-green;
+
+    &__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 5px $modal-content-padding;
+
+      h2 {
+        font-size: 16px;
+      }
+    }
+
+    &__body {
+      padding: $modal-content-padding;
+    }
+  }
+
+  &-close {
+    font-size: 28px;
+    color: $color-middle-green;
+    transition: $form-control-transition;
+
+    &:hover,
+    &:focus {
+      cursor: pointer;
+      color: $color-dark-green;
+    }
+  }
+}
