@@ -1,27 +1,20 @@
 import React, { useRef } from 'react';
 import './Modal.scss';
 import { useInsideClick } from '../../hooks';
+import { ModalStateToPropsMapResult, ModalDispatchToPropsMapResult } from './ModalConnected';
 
-interface ModalProps {
-  title: string;
-  isOpen: boolean;
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-}
+interface ModalProps extends ModalStateToPropsMapResult, ModalDispatchToPropsMapResult {}
 
-const Modal: React.FC<ModalProps> = ({ title, isOpen, setIsOpen, children }: React.PropsWithChildren<ModalProps>) => {
+const Modal: React.FC<ModalProps> = ({ title, body, isOpened, closeModal }: ModalProps) => {
   const modalRef = useRef(null);
 
-  const closeModal = (): void => {
-    setIsOpen(false);
-  };
-
   useInsideClick(modalRef, (event: MouseEvent): void => {
-    if (event.target == modalRef.current) {
+    if (event.target === modalRef.current) {
       closeModal();
     }
   });
 
-  if (!isOpen) {
+  if (!isOpened) {
     return null;
   }
 
@@ -34,7 +27,7 @@ const Modal: React.FC<ModalProps> = ({ title, isOpen, setIsOpen, children }: Rea
             &times;
           </span>
         </div>
-        <div className="modal-content__body">{children}</div>
+        <div className="modal-content__body">{body}</div>
       </div>
     </div>
   );

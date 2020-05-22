@@ -6,12 +6,14 @@ import Navbar from './components/Navbar';
 import PagesConnected from './components/Pages';
 import ProductsConnected from './components/Products';
 import CategoriesConnected from './components/Categories';
+import ModalConnected from './components/Modal/ModalConnected';
 
 const history = createBrowserHistory();
 
 const App: React.FC = () => {
   return (
     <Router history={history}>
+      <ModalConnected></ModalConnected>
       <Navbar></Navbar>
       <Switch>
         <Route path="/pages" component={PagesConnected}></Route>

@@ -16,3 +16,4 @@ export * from './notes-state';
 export * from './meals-state';
 export * from './products-state';
 export * from './categories-state';
+export * from './modal-state';

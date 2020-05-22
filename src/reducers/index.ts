@@ -4,6 +4,7 @@ import notesReducer from './notes';
 import mealsReducer from './meals';
 import productsReducer from './products';
 import categoriesReducer from './categories';
+import modalReducer from './modal-reducer';
 
 const rootReducer = combineReducers({
   pages: pagesReducer,
@@ -11,6 +12,7 @@ const rootReducer = combineReducers({
   meals: mealsReducer,
   products: productsReducer,
   categories: categoriesReducer,
+  modal: modalReducer,
 });
 
 export default rootReducer;
