@@ -9,6 +9,7 @@ import {
 import { useRouteMatch } from 'react-router-dom';
 import { PagesListActionTypes } from '../../action-types';
 import { DropdownMenu, DropdownItem } from '../Controls';
+import PagesExportFormConnected from '../PagesExportForm';
 
 interface PagesListControlsTopProps
   extends PagesListControlsTopStateToPropsMapResult,
@@ -26,6 +27,7 @@ const PagesListControlsTop: React.FC<PagesListControlsTopProps> = ({
   areNotesForPageLoading,
   isPageOperationInProcess,
   isNoteOperationInProcess,
+  openModal,
 }: PagesListControlsTopProps) => {
   const match = useRouteMatch<{ [key: string]: string }>('/pages/:id');
 
@@ -66,7 +68,7 @@ const PagesListControlsTop: React.FC<PagesListControlsTopProps> = ({
   };
 
   const handleExportPagesClick = (): void => {
-    return;
+    openModal('Export pages', <PagesExportFormConnected></PagesExportFormConnected>);
   };
 
   const handleImportPagesClick = (): void => {

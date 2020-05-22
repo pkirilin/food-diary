@@ -8,12 +8,13 @@ import {
   CreateDraftPageAction,
   GetPagesListDispatchProp,
   GetNotesForPageDispatchProp,
+  OpenModalAction,
 } from '../../action-types';
-import { RootState } from '../../store';
-import { createDraftPage, clearFilter, getPages, getNotesForPage } from '../../action-creators';
+import { RootState, ModalBody } from '../../store';
+import { createDraftPage, clearFilter, getPages, getNotesForPage, openModal } from '../../action-creators';
 import { PagesFilter, PageItem, NotesSearchRequest } from '../../models';
 
-type PagesListControlsTopDispatch = Dispatch<CreateDraftPageAction | ClearPagesFilterAction> &
+type PagesListControlsTopDispatch = Dispatch<CreateDraftPageAction | ClearPagesFilterAction | OpenModalAction> &
   GetPagesListDispatch &
   GetNotesForPageDispatch;
 
@@ -30,6 +31,7 @@ export interface PagesListControlsTopStateToPropsMapResult {
 export interface PagesListControlsTopDispatchToPropsMapResult {
   createDraftPage: (draftPage: PageItem) => void;
   clearPagesFilter: () => void;
+  openModal: (title: string, body: ModalBody) => void;
   getPages: GetPagesListDispatchProp;
   getNotesForPage: GetNotesForPageDispatchProp;
 }
@@ -62,6 +64,10 @@ const mapDispatchToProps = (dispatch: PagesListControlsTopDispatch): PagesListCo
 
     clearPagesFilter: (): void => {
       dispatch(clearFilter());
+    },
+
+    openModal: (title: string, body: ModalBody): void => {
+      dispatch(openModal(title, body));
     },
 
     getPages: getPagesProp,

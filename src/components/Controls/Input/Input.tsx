@@ -3,10 +3,10 @@ import './Input.scss';
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   type?: 'text' | 'number' | 'date';
-  controlSize?: 'small';
+  controlSize?: 'small' | 'normal';
 }
 
-const Input: React.FC<InputProps> = ({ type = 'text', controlSize, ...props }: InputProps) => {
+const Input: React.FC<InputProps> = ({ type = 'text', controlSize = 'normal', ...props }: InputProps) => {
   const classNames = ['input'];
 
   if (controlSize) {
