@@ -8,6 +8,7 @@ import {
 } from './PagesListControlsTopConnected';
 import { useRouteMatch } from 'react-router-dom';
 import { PagesListActionTypes } from '../../action-types';
+import { DropdownMenu, DropdownItem } from '../Controls';
 
 interface PagesListControlsTopProps
   extends PagesListControlsTopStateToPropsMapResult,
@@ -64,6 +65,14 @@ const PagesListControlsTop: React.FC<PagesListControlsTopProps> = ({
     clearPagesFilter();
   };
 
+  const handleExportPagesClick = (): void => {
+    return;
+  };
+
+  const handleImportPagesClick = (): void => {
+    return;
+  };
+
   return (
     <SidebarControlPanel>
       <SidebarControlPanelIcons>
@@ -71,6 +80,15 @@ const PagesListControlsTop: React.FC<PagesListControlsTopProps> = ({
         <Icon type="refresh" onClick={handleRefreshPagesListIconClick} disabled={isControlDisabled}></Icon>
         <Icon type="filter" disabled></Icon>
         <Icon type="close" disabled={isClearFilterDisabled} onClick={handleResetFilterIconClick}></Icon>
+        <DropdownMenu
+          toggler={<Icon type="three-dots" disabled={isControlDisabled}></Icon>}
+          contentWidth={160}
+          contentAlignment="right"
+          disabled={isControlDisabled}
+        >
+          <DropdownItem onClick={handleExportPagesClick}>Export pages</DropdownItem>
+          <DropdownItem onClick={handleImportPagesClick}>Import pages (JSON)</DropdownItem>
+        </DropdownMenu>
       </SidebarControlPanelIcons>
     </SidebarControlPanel>
   );
