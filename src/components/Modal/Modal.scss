@@ -17,9 +17,8 @@ $modal-content-padding: 16px;
   &-content {
     position: relative;
     background-color: $color-white;
-    margin: 15% auto;
+    margin: 100px auto;
     padding: 0;
-    width: 80%;
     border: $border-width-thick solid $color-middle-green;
 
     &__header {

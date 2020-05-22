@@ -1,11 +1,12 @@
 import { OpenModalAction, ModalActionTypes, CloseModalAction } from '../action-types';
-import { ModalBody } from '../store';
+import { ModalBody, ModalOptions } from '../store';
 
-export const openModal = (title: string, body: ModalBody): OpenModalAction => {
+export const openModal = (title: string, body: ModalBody, options?: ModalOptions): OpenModalAction => {
   return {
     type: ModalActionTypes.Open,
     title,
     body,
+    options,
   };
 };
 

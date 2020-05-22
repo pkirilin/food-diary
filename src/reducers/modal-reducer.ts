@@ -5,6 +5,9 @@ const initialState: ModalState = {
   isOpened: false,
   title: '',
   body: '',
+  options: {
+    width: '80%',
+  },
 };
 
 const modalReducer = (state: ModalState = initialState, action: ModalActions): ModalState => {
@@ -14,13 +17,13 @@ const modalReducer = (state: ModalState = initialState, action: ModalActions): M
         isOpened: true,
         title: action.title,
         body: action.body,
+        options: {
+          ...initialState.options,
+          ...action.options,
+        },
       };
     case ModalActionTypes.Close:
-      return {
-        isOpened: false,
-        title: initialState.title,
-        body: initialState.body,
-      };
+      return initialState;
     default:
       return state;
   }

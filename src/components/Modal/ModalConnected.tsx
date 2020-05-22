@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import Modal from './Modal';
-import { RootState, ModalBody } from '../../store';
+import { RootState, ModalBody, ModalOptions } from '../../store';
 import { Dispatch } from 'redux';
 import { CloseModalAction } from '../../action-types';
 import { closeModal } from '../../action-creators';
@@ -9,6 +9,7 @@ export interface ModalStateToPropsMapResult {
   title: string;
   body: ModalBody;
   isOpened: boolean;
+  options: ModalOptions;
 }
 
 export interface ModalDispatchToPropsMapResult {
@@ -20,6 +21,7 @@ const mapStateToProps = (state: RootState): ModalStateToPropsMapResult => {
     title: state.modal.title,
     body: state.modal.body,
     isOpened: state.modal.isOpened,
+    options: state.modal.options,
   };
 };
 

@@ -5,7 +5,7 @@ import { ModalStateToPropsMapResult, ModalDispatchToPropsMapResult } from './Mod
 
 interface ModalProps extends ModalStateToPropsMapResult, ModalDispatchToPropsMapResult {}
 
-const Modal: React.FC<ModalProps> = ({ title, body, isOpened, closeModal }: ModalProps) => {
+const Modal: React.FC<ModalProps> = ({ title, body, isOpened, options, closeModal }: ModalProps) => {
   const modalRef = useRef(null);
 
   useInsideClick(modalRef, (event: MouseEvent): void => {
@@ -20,7 +20,12 @@ const Modal: React.FC<ModalProps> = ({ title, body, isOpened, closeModal }: Moda
 
   return (
     <div ref={modalRef} className="modal">
-      <div className="modal-content">
+      <div
+        className="modal-content"
+        style={{
+          width: options.width,
+        }}
+      >
         <div className="modal-content__header">
           <h2>{title}</h2>
           <span className="modal-close" onClick={closeModal}>

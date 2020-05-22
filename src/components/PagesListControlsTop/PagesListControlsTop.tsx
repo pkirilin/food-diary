@@ -68,7 +68,9 @@ const PagesListControlsTop: React.FC<PagesListControlsTopProps> = ({
   };
 
   const handleExportPagesClick = (): void => {
-    openModal('Export pages', <PagesExportFormConnected></PagesExportFormConnected>);
+    openModal('Export pages', <PagesExportFormConnected></PagesExportFormConnected>, {
+      width: '30%',
+    });
   };
 
   const handleImportPagesClick = (): void => {
