@@ -29,10 +29,16 @@ namespace FoodDiary.API.Controllers.v1
         public async Task<IActionResult> ImportPagesJson([FromForm] IFormFile importFile, CancellationToken cancellationToken)
         {
             if (importFile == null)
-                return BadRequest("Failed to import pages: no file specified");
+            {
+                ModelState.AddModelError(nameof(importFile), "No import file specified");
+                return BadRequest(ModelState);
+            }
 
             if (importFile.Length > _importOptions.MaxImportFileLengthBytes)
-                return BadRequest("Failed to import pages: import file is too large");
+            {
+                ModelState.AddModelError(nameof(importFile), "Import file is too large");
+                return BadRequest(ModelState);
+            }
 
             PagesJsonObject pagesJsonObject;
 
