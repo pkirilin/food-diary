@@ -1,4 +1,4 @@
-import { SortOrder } from './common';
+import { SortOrder, ExportFormat } from './common';
 
 export interface PageItem {
   id: number;
@@ -19,4 +19,10 @@ export interface PageCreateEdit {
 export interface PageEditRequest {
   id: number;
   page: PageCreateEdit;
+}
+
+export interface PagesExportRequest {
+  startDate: string;
+  endDate: string;
+  format: ExportFormat;
 }

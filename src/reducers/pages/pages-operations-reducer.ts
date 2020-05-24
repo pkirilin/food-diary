@@ -83,6 +83,30 @@ const pagesOperationsReducer = (
           error: action.error,
         },
       };
+
+    case PagesOperationsActionTypes.ExportRequest:
+      return {
+        ...state,
+        status: {
+          performing: true,
+          message: action.operationMessage,
+        },
+      };
+    case PagesOperationsActionTypes.ExportSuccess:
+      return {
+        ...state,
+        status: {
+          performing: false,
+        },
+      };
+    case PagesOperationsActionTypes.ExportError:
+      return {
+        ...state,
+        status: {
+          performing: false,
+          error: action.error,
+        },
+      };
     default:
       return state;
   }

@@ -1,6 +1,3 @@
-export enum ExportFormat {
-  Json = 'json',
-  Pdf = 'pdf',
-}
+import { ExportFormat } from '../../models';
 
-export const exportFormats: string[] = [ExportFormat.Json, ExportFormat.Pdf];
+export const exportFormats: ExportFormat[] = [ExportFormat.Json, ExportFormat.Pdf];
