@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using FoodDiary.API.Requests;
 using FoodDiary.Import.Models;
+using System.Text.Encodings.Web;
 
 namespace FoodDiary.API.Controllers.v1
 {
@@ -67,7 +68,8 @@ namespace FoodDiary.API.Controllers.v1
                 var options = new JsonSerializerOptions
                 { 
                     WriteIndented = true, 
-                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                    Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
                 };
 
                 await JsonSerializer.SerializeAsync(stream, pagesJsonExportObject, options, cancellationToken);
