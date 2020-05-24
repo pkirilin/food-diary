@@ -18,6 +18,10 @@ export enum PagesOperationsActionTypes {
   ExportRequest = 'PAGES_OPERATIONS__EXPORT_REQUEST',
   ExportSuccess = 'PAGES_OPERATIONS__EXPORT_SUCCESS',
   ExportError = 'PAGES_OPERATIONS__EXPORT_ERROR',
+
+  ImportRequest = 'PAGES_OPERATIONS__IMPORT_REQUEST',
+  ImportSuccess = 'PAGES_OPERATIONS__IMPORT_SUCCESS',
+  ImportError = 'PAGES_OPERATIONS__IMPORT_ERROR',
 }
 
 export interface CreatePageRequestAction extends Action<PagesOperationsActionTypes.CreateRequest> {
@@ -80,6 +84,20 @@ export interface ExportPagesErrorAction extends Action<PagesOperationsActionType
   error: string;
 }
 
+export interface ImportPagesRequestAction extends Action<PagesOperationsActionTypes.ImportRequest> {
+  type: PagesOperationsActionTypes.ImportRequest;
+  operationMessage: string;
+}
+
+export interface ImportPagesSuccessAction extends Action<PagesOperationsActionTypes.ImportSuccess> {
+  type: PagesOperationsActionTypes.ImportSuccess;
+}
+
+export interface ImportPagesErrorAction extends Action<PagesOperationsActionTypes.ImportError> {
+  type: PagesOperationsActionTypes.ImportError;
+  error: string;
+}
+
 export type CreatePageActions = CreatePageRequestAction | CreatePageSuccessAction | CreatePageErrorAction;
 
 export type EditPageActions = EditPageRequestAction | EditPageSuccessAction | EditPageErrorAction;
@@ -88,7 +106,14 @@ export type DeletePagesActions = DeletePagesRequestAction | DeletePagesSuccessAc
 
 export type ExportPagesActions = ExportPagesRequestAction | ExportPagesSuccessAction | ExportPagesErrorAction;
 
-export type PagesOperationsActions = CreatePageActions | EditPageActions | DeletePagesActions | ExportPagesActions;
+export type ImportPagesActions = ImportPagesRequestAction | ImportPagesSuccessAction | ImportPagesErrorAction;
+
+export type PagesOperationsActions =
+  | CreatePageActions
+  | EditPageActions
+  | DeletePagesActions
+  | ExportPagesActions
+  | ImportPagesActions;
 
 export type CreatePageActionCreator = ActionCreator<
   ThunkAction<
@@ -126,6 +151,15 @@ export type ExportPagesActionCreator = ActionCreator<
   >
 >;
 
+export type ImportPagesActionCreator = ActionCreator<
+  ThunkAction<
+    Promise<ImportPagesSuccessAction | ImportPagesErrorAction>,
+    void,
+    File,
+    ImportPagesSuccessAction | ImportPagesErrorAction
+  >
+>;
+
 export type CreatePageDispatch = ThunkDispatch<void, PageCreateEdit, CreatePageSuccessAction | CreatePageErrorAction>;
 
 export type EditPageDispatch = ThunkDispatch<void, PageEditRequest, EditPageSuccessAction | EditPageErrorAction>;
@@ -137,6 +171,8 @@ export type ExportPagesDispatch = ThunkDispatch<
   PagesExportRequest,
   ExportPagesSuccessAction | ExportPagesErrorAction
 >;
+
+export type ImportPagesDispatch = ThunkDispatch<void, File, ImportPagesSuccessAction | ImportPagesErrorAction>;
 
 export type CreatePageDispatchProp = (page: PageCreateEdit) => Promise<CreatePageSuccessAction | CreatePageErrorAction>;
 
@@ -150,6 +186,4 @@ export type ExportPagesDispatchProp = (
   request: PagesExportRequest,
 ) => Promise<ExportPagesSuccessAction | ExportPagesErrorAction>;
 
-export type DeletePagesDispatchProp = (
-  pagesIds: number[],
-) => Promise<DeletePagesSuccessAction | DeletePagesErrorAction>;
+export type ImportPagesDispatchProp = (importFile: File) => Promise<ImportPagesSuccessAction | ImportPagesErrorAction>;

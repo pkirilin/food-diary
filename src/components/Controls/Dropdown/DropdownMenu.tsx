@@ -38,7 +38,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
 
   // Common hooks
   useOutsideClick(dropdownRef, closeIfTargetOutside);
-  useInsideClick(contentRef, handleMenuItemClick, '.dropdown-item');
+  useInsideClick(contentRef, handleMenuItemClick, '.dropdown-item, .dropdown-item label, .dropdown-item label span');
   useHiddenBlockHeightCalculation(contentRef as React.RefObject<HTMLElement>, setContentBlockHeight);
 
   return (

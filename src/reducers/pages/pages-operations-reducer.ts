@@ -107,6 +107,30 @@ const pagesOperationsReducer = (
           error: action.error,
         },
       };
+
+    case PagesOperationsActionTypes.ImportRequest:
+      return {
+        ...state,
+        status: {
+          performing: true,
+          message: action.operationMessage,
+        },
+      };
+    case PagesOperationsActionTypes.ImportSuccess:
+      return {
+        ...state,
+        status: {
+          performing: false,
+        },
+      };
+    case PagesOperationsActionTypes.ImportError:
+      return {
+        ...state,
+        status: {
+          performing: false,
+          error: action.error,
+        },
+      };
     default:
       return state;
   }

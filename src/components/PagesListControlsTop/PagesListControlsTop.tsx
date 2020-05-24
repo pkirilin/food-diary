@@ -7,7 +7,7 @@ import {
   PagesListControlsTopStateToPropsMapResult,
 } from './PagesListControlsTopConnected';
 import { useRouteMatch } from 'react-router-dom';
-import { PagesListActionTypes } from '../../action-types';
+import { PagesListActionTypes, PagesOperationsActionTypes } from '../../action-types';
 import { DropdownMenu, DropdownItem } from '../Controls';
 import PagesExportFormConnected from '../PagesExportForm';
 
@@ -28,6 +28,7 @@ const PagesListControlsTop: React.FC<PagesListControlsTopProps> = ({
   isPageOperationInProcess,
   isNoteOperationInProcess,
   openModal,
+  importPages,
 }: PagesListControlsTopProps) => {
   const match = useRouteMatch<{ [key: string]: string }>('/pages/:id');
 
@@ -73,8 +74,33 @@ const PagesListControlsTop: React.FC<PagesListControlsTopProps> = ({
     });
   };
 
-  const handleImportPagesClick = (): void => {
-    return;
+  const handleImportPagesFileChange = async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
+    const target = event.target;
+
+    try {
+      const file = event.target.files?.item(0);
+
+      if (file) {
+        const isImportConfirmed = window.confirm(
+          'Pages import is going to be started. Import may update or overwrite existing data from file and may cause data loss. Continue?',
+        );
+
+        if (isImportConfirmed) {
+          const { type } = await importPages(file);
+
+          if (type === PagesOperationsActionTypes.ImportSuccess) {
+            await getPages(pagesFilter);
+            alert('Pages has been successfully imported from file');
+          }
+        }
+      }
+    } finally {
+      // Cleaning file input value. Without this change handler will not be executed
+      // if user tries to load file with the same name multiple times
+      if (target) {
+        target.value = '';
+      }
+    }
   };
 
   return (
@@ -91,7 +117,12 @@ const PagesListControlsTop: React.FC<PagesListControlsTopProps> = ({
           disabled={isControlDisabled}
         >
           <DropdownItem onClick={handleExportPagesClick}>Export pages</DropdownItem>
-          <DropdownItem onClick={handleImportPagesClick}>Import pages (JSON)</DropdownItem>
+          <DropdownItem>
+            <label>
+              <span>Import pages (JSON)</span>
+              <input type="file" name="importFile" hidden onChange={handleImportPagesFileChange} />
+            </label>
+          </DropdownItem>
         </DropdownMenu>
       </SidebarControlPanelIcons>
     </SidebarControlPanel>

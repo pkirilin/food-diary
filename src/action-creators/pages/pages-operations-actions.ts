@@ -22,8 +22,13 @@ import {
   ExportPagesSuccessAction,
   ExportPagesErrorAction,
   ExportPagesRequestAction,
+  ImportPagesActionCreator,
+  ImportPagesActions,
+  ImportPagesRequestAction,
+  ImportPagesSuccessAction,
+  ImportPagesErrorAction,
 } from '../../action-types';
-import { createPageAsync, deletePagesAsync, editPageAsync, exportPagesAsync } from '../../services';
+import { createPageAsync, deletePagesAsync, editPageAsync, exportPagesAsync, importPagesAsync } from '../../services';
 import { readBadRequestResponseAsync } from '../../utils/bad-request-response-reader';
 
 const createPageRequest = (page: PageCreateEdit, operationMessage: string): CreatePageRequestAction => {
@@ -110,11 +115,32 @@ const exportPagesError = (error: string): ExportPagesErrorAction => {
   };
 };
 
+const importPagesRequest = (operationMessage: string): ImportPagesRequestAction => {
+  return {
+    type: PagesOperationsActionTypes.ImportRequest,
+    operationMessage,
+  };
+};
+
+const importPagesSuccess = (): ImportPagesSuccessAction => {
+  return {
+    type: PagesOperationsActionTypes.ImportSuccess,
+  };
+};
+
+const importPagesError = (error: string): ImportPagesErrorAction => {
+  return {
+    type: PagesOperationsActionTypes.ImportError,
+    error,
+  };
+};
+
 enum PagesOperationsBaseErrorMessages {
   Create = 'Failed to create page',
   Edit = 'Failed to update page',
   Delete = 'Failed to delete selected',
   Export = 'Failed to export pages',
+  Import = 'Failed to import pages',
 }
 
 export const createPage: CreatePageActionCreator = (page: PageCreateEdit) => {
@@ -246,6 +272,36 @@ export const exportPages: ExportPagesActionCreator = (request: PagesExportReques
       console.error(error);
       alert(PagesOperationsBaseErrorMessages.Export);
       return dispatch(exportPagesError(PagesOperationsBaseErrorMessages.Export));
+    }
+  };
+};
+
+export const importPages: ImportPagesActionCreator = (importFile: File) => {
+  return async (dispatch: Dispatch<ImportPagesActions>): Promise<ImportPagesSuccessAction | ImportPagesErrorAction> => {
+    dispatch(importPagesRequest('Importing pages'));
+    try {
+      const response = await importPagesAsync(importFile);
+
+      if (response.ok) {
+        return dispatch(importPagesSuccess());
+      }
+
+      switch (response.status) {
+        case 400:
+          const badRequestResponse = await readBadRequestResponseAsync(response);
+          alert(`${PagesOperationsBaseErrorMessages.Import}: ${badRequestResponse}`);
+          return dispatch(importPagesError(`${PagesOperationsBaseErrorMessages.Import}: ${badRequestResponse}`));
+        case 500:
+          alert(`${PagesOperationsBaseErrorMessages.Import}: server error`);
+          return dispatch(importPagesError(`${PagesOperationsBaseErrorMessages.Import}: server error`));
+        default:
+          alert(`${PagesOperationsBaseErrorMessages.Import}: unknown response code`);
+          return dispatch(importPagesError(`${PagesOperationsBaseErrorMessages.Import}: unknown response code`));
+      }
+    } catch (error) {
+      console.error(error);
+      alert(PagesOperationsBaseErrorMessages.Import);
+      return dispatch(importPagesError(PagesOperationsBaseErrorMessages.Import));
     }
   };
 };
