@@ -10,13 +10,13 @@ import { useRouteMatch } from 'react-router-dom';
 import { PagesListActionTypes, PagesOperationsActionTypes } from '../../action-types';
 import { DropdownMenu, DropdownItem } from '../Controls';
 import PagesExportFormConnected from '../PagesExportForm';
+import PageCreateFormConnected from '../PageCreateForm';
 
 interface PagesListControlsTopProps
   extends PagesListControlsTopStateToPropsMapResult,
     PagesListControlsTopDispatchToPropsMapResult {}
 
 const PagesListControlsTop: React.FC<PagesListControlsTopProps> = ({
-  createDraftPage,
   pagesFilter,
   isPagesFilterChanged,
   clearPagesFilter,
@@ -29,7 +29,6 @@ const PagesListControlsTop: React.FC<PagesListControlsTopProps> = ({
   isNoteOperationInProcess,
   openModal,
   importPages,
-  getDateForNewPage,
 }: PagesListControlsTopProps) => {
   const match = useRouteMatch<{ [key: string]: string }>('/pages/:id');
 
@@ -42,19 +41,9 @@ const PagesListControlsTop: React.FC<PagesListControlsTopProps> = ({
 
   const isClearFilterDisabled = isControlDisabled || !isPagesFilterChanged;
 
-  const handleAddIconClick = async (): Promise<void> => {
-    const getDateForNewPageResultAction = await getDateForNewPage();
-    let dateForNewPage = '';
-
-    if (getDateForNewPageResultAction.type === PagesOperationsActionTypes.DateForNewPageSuccess) {
-      dateForNewPage = getDateForNewPageResultAction.dateForNewPage;
-    }
-
-    createDraftPage({
-      id: 0,
-      date: dateForNewPage,
-      countNotes: 0,
-      countCalories: 0,
+  const handleAddIconClick = (): void => {
+    openModal('New page', <PageCreateFormConnected></PageCreateFormConnected>, {
+      width: '35%',
     });
   };
 

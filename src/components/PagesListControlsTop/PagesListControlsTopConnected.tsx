@@ -12,19 +12,10 @@ import {
   ImportPagesDispatchProp,
   ImportPagesDispatch,
   GetDateForNewPageDispatch,
-  GetDateForNewPageDispatchProp,
 } from '../../action-types';
 import { RootState, ModalBody, ModalOptions } from '../../store';
-import {
-  createDraftPage,
-  clearFilter,
-  getPages,
-  getNotesForPage,
-  openModal,
-  importPages,
-  getDateForNewPage,
-} from '../../action-creators';
-import { PagesFilter, PageItem, NotesSearchRequest } from '../../models';
+import { clearFilter, getPages, getNotesForPage, openModal, importPages } from '../../action-creators';
+import { PagesFilter, NotesSearchRequest } from '../../models';
 
 type PagesListControlsTopDispatch = Dispatch<CreateDraftPageAction | ClearPagesFilterAction | OpenModalAction> &
   GetPagesListDispatch &
@@ -43,13 +34,11 @@ export interface PagesListControlsTopStateToPropsMapResult {
 }
 
 export interface PagesListControlsTopDispatchToPropsMapResult {
-  createDraftPage: (draftPage: PageItem) => void;
   clearPagesFilter: () => void;
   openModal: (title: string, body: ModalBody, options?: ModalOptions) => void;
   getPages: GetPagesListDispatchProp;
   getNotesForPage: GetNotesForPageDispatchProp;
   importPages: ImportPagesDispatchProp;
-  getDateForNewPage: GetDateForNewPageDispatchProp;
 }
 
 const mapStateToProps = (state: RootState): PagesListControlsTopStateToPropsMapResult => {
@@ -77,15 +66,7 @@ const mapDispatchToProps = (dispatch: PagesListControlsTopDispatch): PagesListCo
     return dispatch(importPages(importFile));
   };
 
-  const getDateForNewPageProp: GetDateForNewPageDispatchProp = () => {
-    return dispatch(getDateForNewPage());
-  };
-
   return {
-    createDraftPage: (draftPage: PageItem): void => {
-      dispatch(createDraftPage(draftPage));
-    },
-
     clearPagesFilter: (): void => {
       dispatch(clearFilter());
     },
@@ -97,7 +78,6 @@ const mapDispatchToProps = (dispatch: PagesListControlsTopDispatch): PagesListCo
     getPages: getPagesProp,
     getNotesForPage: getNotesForPageProp,
     importPages: importPagesProp,
-    getDateForNewPage: getDateForNewPageProp,
   };
 };
 
