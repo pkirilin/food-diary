@@ -22,6 +22,10 @@ export enum PagesOperationsActionTypes {
   ImportRequest = 'PAGES_OPERATIONS__IMPORT_REQUEST',
   ImportSuccess = 'PAGES_OPERATIONS__IMPORT_SUCCESS',
   ImportError = 'PAGES_OPERATIONS__IMPORT_ERROR',
+
+  DateForNewPageRequest = 'PAGES_OPERATIONS__DATE_FOR_NEW_PAGE_REQUEST',
+  DateForNewPageSuccess = 'PAGES_OPERATIONS__DATE_FOR_NEW_PAGE_SUCCESS',
+  DateForNewPageError = 'PAGES_OPERATIONS__DATE_FOR_NEW_PAGE_ERROR',
 }
 
 export interface CreatePageRequestAction extends Action<PagesOperationsActionTypes.CreateRequest> {
@@ -98,6 +102,21 @@ export interface ImportPagesErrorAction extends Action<PagesOperationsActionType
   error: string;
 }
 
+export interface GetDateForNewPageRequestAction extends Action<PagesOperationsActionTypes.DateForNewPageRequest> {
+  type: PagesOperationsActionTypes.DateForNewPageRequest;
+  operationMessage: string;
+}
+
+export interface GetDateForNewPageSuccessAction extends Action<PagesOperationsActionTypes.DateForNewPageSuccess> {
+  type: PagesOperationsActionTypes.DateForNewPageSuccess;
+  dateForNewPage: string;
+}
+
+export interface GetDateForNewPageErrorAction extends Action<PagesOperationsActionTypes.DateForNewPageError> {
+  type: PagesOperationsActionTypes.DateForNewPageError;
+  error?: string;
+}
+
 export type CreatePageActions = CreatePageRequestAction | CreatePageSuccessAction | CreatePageErrorAction;
 
 export type EditPageActions = EditPageRequestAction | EditPageSuccessAction | EditPageErrorAction;
@@ -108,12 +127,18 @@ export type ExportPagesActions = ExportPagesRequestAction | ExportPagesSuccessAc
 
 export type ImportPagesActions = ImportPagesRequestAction | ImportPagesSuccessAction | ImportPagesErrorAction;
 
+export type GetDateForNewPageActions =
+  | GetDateForNewPageRequestAction
+  | GetDateForNewPageSuccessAction
+  | GetDateForNewPageErrorAction;
+
 export type PagesOperationsActions =
   | CreatePageActions
   | EditPageActions
   | DeletePagesActions
   | ExportPagesActions
-  | ImportPagesActions;
+  | ImportPagesActions
+  | GetDateForNewPageActions;
 
 export type CreatePageActionCreator = ActionCreator<
   ThunkAction<
@@ -160,6 +185,15 @@ export type ImportPagesActionCreator = ActionCreator<
   >
 >;
 
+export type GetDateForNewPageActionCreator = ActionCreator<
+  ThunkAction<
+    Promise<GetDateForNewPageSuccessAction | GetDateForNewPageErrorAction>,
+    void,
+    void,
+    GetDateForNewPageSuccessAction | GetDateForNewPageErrorAction
+  >
+>;
+
 export type CreatePageDispatch = ThunkDispatch<void, PageCreateEdit, CreatePageSuccessAction | CreatePageErrorAction>;
 
 export type EditPageDispatch = ThunkDispatch<void, PageEditRequest, EditPageSuccessAction | EditPageErrorAction>;
@@ -174,6 +208,12 @@ export type ExportPagesDispatch = ThunkDispatch<
 
 export type ImportPagesDispatch = ThunkDispatch<void, File, ImportPagesSuccessAction | ImportPagesErrorAction>;
 
+export type GetDateForNewPageDispatch = ThunkDispatch<
+  void,
+  void,
+  GetDateForNewPageSuccessAction | GetDateForNewPageErrorAction
+>;
+
 export type CreatePageDispatchProp = (page: PageCreateEdit) => Promise<CreatePageSuccessAction | CreatePageErrorAction>;
 
 export type EditPageDispatchProp = (request: PageEditRequest) => Promise<EditPageSuccessAction | EditPageErrorAction>;
@@ -187,3 +227,7 @@ export type ExportPagesDispatchProp = (
 ) => Promise<ExportPagesSuccessAction | ExportPagesErrorAction>;
 
 export type ImportPagesDispatchProp = (importFile: File) => Promise<ImportPagesSuccessAction | ImportPagesErrorAction>;
+
+export type GetDateForNewPageDispatchProp = () => Promise<
+  GetDateForNewPageSuccessAction | GetDateForNewPageErrorAction
+>;

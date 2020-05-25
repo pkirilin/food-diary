@@ -29,6 +29,7 @@ const PagesListControlsTop: React.FC<PagesListControlsTopProps> = ({
   isNoteOperationInProcess,
   openModal,
   importPages,
+  getDateForNewPage,
 }: PagesListControlsTopProps) => {
   const match = useRouteMatch<{ [key: string]: string }>('/pages/:id');
 
@@ -41,10 +42,17 @@ const PagesListControlsTop: React.FC<PagesListControlsTopProps> = ({
 
   const isClearFilterDisabled = isControlDisabled || !isPagesFilterChanged;
 
-  const handleAddIconClick = (): void => {
+  const handleAddIconClick = async (): Promise<void> => {
+    const getDateForNewPageResultAction = await getDateForNewPage();
+    let dateForNewPage = '';
+
+    if (getDateForNewPageResultAction.type === PagesOperationsActionTypes.DateForNewPageSuccess) {
+      dateForNewPage = getDateForNewPageResultAction.dateForNewPage;
+    }
+
     createDraftPage({
       id: 0,
-      date: '',
+      date: dateForNewPage,
       countNotes: 0,
       countCalories: 0,
     });

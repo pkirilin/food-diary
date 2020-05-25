@@ -27,8 +27,20 @@ import {
   ImportPagesRequestAction,
   ImportPagesSuccessAction,
   ImportPagesErrorAction,
+  GetDateForNewPageActionCreator,
+  GetDateForNewPageActions,
+  GetDateForNewPageSuccessAction,
+  GetDateForNewPageErrorAction,
+  GetDateForNewPageRequestAction,
 } from '../../action-types';
-import { createPageAsync, deletePagesAsync, editPageAsync, exportPagesAsync, importPagesAsync } from '../../services';
+import {
+  createPageAsync,
+  deletePagesAsync,
+  editPageAsync,
+  exportPagesAsync,
+  importPagesAsync,
+  getDateForNewPageAsync,
+} from '../../services';
 import { readBadRequestResponseAsync } from '../../utils/bad-request-response-reader';
 
 const createPageRequest = (page: PageCreateEdit, operationMessage: string): CreatePageRequestAction => {
@@ -135,12 +147,34 @@ const importPagesError = (error: string): ImportPagesErrorAction => {
   };
 };
 
+const getDateForNewPageRequest = (operationMessage: string): GetDateForNewPageRequestAction => {
+  return {
+    type: PagesOperationsActionTypes.DateForNewPageRequest,
+    operationMessage,
+  };
+};
+
+const getDateForNewPageSuccess = (dateForNewPage: string): GetDateForNewPageSuccessAction => {
+  return {
+    type: PagesOperationsActionTypes.DateForNewPageSuccess,
+    dateForNewPage,
+  };
+};
+
+const getDateForNewPageError = (error?: string): GetDateForNewPageErrorAction => {
+  return {
+    type: PagesOperationsActionTypes.DateForNewPageError,
+    error,
+  };
+};
+
 enum PagesOperationsBaseErrorMessages {
   Create = 'Failed to create page',
   Edit = 'Failed to update page',
   Delete = 'Failed to delete selected',
   Export = 'Failed to export pages',
   Import = 'Failed to import pages',
+  DateForNewPage = 'Failed to get date for new page',
 }
 
 export const createPage: CreatePageActionCreator = (page: PageCreateEdit) => {
@@ -302,6 +336,33 @@ export const importPages: ImportPagesActionCreator = (importFile: File) => {
       console.error(error);
       alert(PagesOperationsBaseErrorMessages.Import);
       return dispatch(importPagesError(PagesOperationsBaseErrorMessages.Import));
+    }
+  };
+};
+
+export const getDateForNewPage: GetDateForNewPageActionCreator = () => {
+  return async (
+    dispatch: Dispatch<GetDateForNewPageActions>,
+  ): Promise<GetDateForNewPageSuccessAction | GetDateForNewPageErrorAction> => {
+    dispatch(getDateForNewPageRequest('Getting date'));
+    try {
+      const response = await getDateForNewPageAsync();
+
+      if (response.ok) {
+        const dateForNewPage = await response.text();
+        return dispatch(getDateForNewPageSuccess(dateForNewPage));
+      }
+
+      switch (response.status) {
+        case 500:
+          return dispatch(getDateForNewPageError(`${PagesOperationsBaseErrorMessages.DateForNewPage}: server error`));
+        default:
+          return dispatch(
+            getDateForNewPageError(`${PagesOperationsBaseErrorMessages.DateForNewPage}: unknown response code`),
+          );
+      }
+    } catch (error) {
+      return dispatch(getDateForNewPageError(PagesOperationsBaseErrorMessages.DateForNewPage));
     }
   };
 };

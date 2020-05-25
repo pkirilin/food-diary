@@ -131,6 +131,30 @@ const pagesOperationsReducer = (
           error: action.error,
         },
       };
+
+    case PagesOperationsActionTypes.DateForNewPageRequest:
+      return {
+        ...state,
+        status: {
+          performing: true,
+          message: action.operationMessage,
+        },
+      };
+    case PagesOperationsActionTypes.DateForNewPageSuccess:
+      return {
+        ...state,
+        status: {
+          performing: false,
+        },
+      };
+    case PagesOperationsActionTypes.DateForNewPageError:
+      return {
+        ...state,
+        status: {
+          performing: false,
+          error: action.error,
+        },
+      };
     default:
       return state;
   }

@@ -47,3 +47,12 @@ export const deletePagesAsync = async (pagesIds: number[]): Promise<Response> =>
     body: JSON.stringify(pagesIds),
   });
 };
+
+export const getDateForNewPageAsync = async (): Promise<Response> => {
+  return await fetch(`${pagesApiClientUrl}/date`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+};
