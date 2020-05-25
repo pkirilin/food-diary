@@ -1,18 +1,20 @@
 import { connect } from 'react-redux';
 import CategoriesListControlsTop from './CategoriesListControlsTop';
-import { CategoryItem, ProductsFilter } from '../../models';
+import { ProductsFilter } from '../../models';
 import {
   CreateDraftCategoryAction,
   GetCategoriesListDispatch,
   GetProductsListDispatch,
   GetCategoriesListDispatchProp,
   GetProductsListDispatchProp,
+  OpenModalAction,
 } from '../../action-types';
 import { Dispatch } from 'redux';
-import { createDraftCategory, getCategories, getProducts } from '../../action-creators';
-import { RootState } from '../../store';
+import { getCategories, getProducts, openModal } from '../../action-creators';
+import { RootState, ModalBody, ModalOptions } from '../../store';
 
-type CategoriesListControlsTopDispatch = GetCategoriesListDispatch &
+type CategoriesListControlsTopDispatch = Dispatch<OpenModalAction> &
+  GetCategoriesListDispatch &
   GetProductsListDispatch &
   Dispatch<CreateDraftCategoryAction>;
 
@@ -25,9 +27,9 @@ export interface CategoriesListControlsTopStateToPropsMapResult {
 }
 
 export interface CategoriesListControlsTopDispatchToPropsMapResult {
+  openModal: (title: string, body: ModalBody, options?: ModalOptions) => void;
   getCategories: GetCategoriesListDispatchProp;
   getProducts: GetProductsListDispatchProp;
-  createDraftCategory: (draftCategory: CategoryItem) => void;
 }
 
 const mapStateToProps = (state: RootState): CategoriesListControlsTopStateToPropsMapResult => {
@@ -52,11 +54,12 @@ const mapDispatchToProps = (
   };
 
   return {
+    openModal: (title: string, body: ModalBody, options?: ModalOptions): void => {
+      dispatch(openModal(title, body, options));
+    },
+
     getCategories: getCategoriesProp,
     getProducts: getProductsProp,
-    createDraftCategory: (draftCategory: CategoryItem): void => {
-      dispatch(createDraftCategory(draftCategory));
-    },
   };
 };
 

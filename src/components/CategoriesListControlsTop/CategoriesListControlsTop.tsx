@@ -8,6 +8,7 @@ import {
 } from './CategoriesListControlsTopConnected';
 import { CategoriesListActionTypes } from '../../action-types';
 import { useRouteMatch } from 'react-router-dom';
+import CategoryCreateFormConnected from '../CategoryCreateForm';
 
 interface CategoriesListControlsTopProps
   extends CategoriesListControlsTopStateToPropsMapResult,
@@ -21,7 +22,7 @@ const CategoriesListControlsTop: React.FC<CategoriesListControlsTopProps> = ({
   productsFilter,
   getCategories,
   getProducts,
-  createDraftCategory,
+  openModal,
 }: CategoriesListControlsTopProps) => {
   const match = useRouteMatch<{ [key: string]: string }>('/categories/:id');
 
@@ -29,10 +30,8 @@ const CategoriesListControlsTop: React.FC<CategoriesListControlsTopProps> = ({
     isCategoryOperationInProcess || isProductOperationInProcess || areCategoriesLoading || areProductsLoading;
 
   const handleAddIconClick = (): void => {
-    createDraftCategory({
-      id: 0,
-      name: '',
-      countProducts: 0,
+    openModal('New category', <CategoryCreateFormConnected></CategoryCreateFormConnected>, {
+      width: '35%',
     });
   };
 
