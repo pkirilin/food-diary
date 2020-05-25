@@ -3,8 +3,7 @@ import { SidebarListItem, SidebarListItemControls } from '../SidebarBlocks';
 import { Input } from '../Controls';
 import Icon from '../Icon';
 import { usePageValidation } from '../../hooks';
-import { useHistory } from 'react-router-dom';
-import { PagesOperationsActionTypes, PagesListActionTypes, CreatePageSuccessAction } from '../../action-types';
+import { PagesOperationsActionTypes } from '../../action-types';
 import { PageItem } from '../../models';
 import {
   PagesListItemEditableStateToPropsMapResult,
@@ -15,26 +14,21 @@ interface PagesListItemEditableProps
   extends PagesListItemEditableStateToPropsMapResult,
     PagesListItemEditableDispatchToPropsMapResult {
   page: PageItem;
-  isDraft?: boolean;
 }
 
 const PagesListItemEditable: React.FC<PagesListItemEditableProps> = ({
   page,
-  isDraft = false,
   pageOperationStatus,
   mealOperationStatuses,
   notesForPageFetchState,
   notesForMealFetchStates,
   pagesFilter,
-  createPage,
   editPage,
-  deleteDraftPage,
   getPages,
   setEditableForPages,
 }: PagesListItemEditableProps) => {
   const [selectedDate, setSelectedDate] = useState(page.date);
   const [isPageDateValid] = usePageValidation(selectedDate);
-  const history = useHistory();
 
   const { performing: isPageOperationInProcess } = pageOperationStatus;
   const { loading: areNotesForPageLoading } = notesForPageFetchState;
@@ -54,42 +48,22 @@ const PagesListItemEditable: React.FC<PagesListItemEditableProps> = ({
   };
 
   const handleConfirmEditPageIconClick = async (): Promise<void> => {
-    if (isDraft) {
-      const createPageAction = await createPage({
+    const editPageAction = await editPage({
+      id: page.id,
+      page: {
         date: selectedDate,
-      });
+      },
+    });
 
-      if (createPageAction.type === PagesOperationsActionTypes.CreateSuccess) {
-        deleteDraftPage(page.id);
-        const { type: getPagesActionType } = await getPages(pagesFilter);
-
-        if (getPagesActionType === PagesListActionTypes.Success) {
-          const { createdPageId } = createPageAction as CreatePageSuccessAction;
-          history.push(`/pages/${createdPageId}`);
-        }
-      }
-    } else {
-      const editPageAction = await editPage({
-        id: page.id,
-        page: {
-          date: selectedDate,
-        },
-      });
-
-      if (editPageAction.type === PagesOperationsActionTypes.EditSuccess) {
-        setEditableForPages([page.id], false);
-        await getPages(pagesFilter);
-      }
+    if (editPageAction.type === PagesOperationsActionTypes.EditSuccess) {
+      setEditableForPages([page.id], false);
+      await getPages(pagesFilter);
     }
   };
 
   const handleCancelEditPageIconClick = (): void => {
-    if (isDraft) {
-      deleteDraftPage(page.id);
-    } else {
-      setEditableForPages([page.id], false);
-      setSelectedDate(page.date);
-    }
+    setEditableForPages([page.id], false);
+    setSelectedDate(page.date);
   };
 
   return (

@@ -6,8 +6,6 @@ export enum CategoriesListActionTypes {
   Request = 'CATEGORIES_LIST__REQUEST',
   Success = 'CATEGORIES_LIST__SUCCESS',
   Error = 'CATEGORIES_LIST__ERROR',
-  CreateDraftCategory = 'CATEGORIES_LIST__CREATE_DRAFT_CATEGORY',
-  DeleteDraftCategory = 'CATEGORIES_LIST__DELETE_DRAFT_CATEGORY',
   SetEditable = 'CATEGORIES_LIST__SET_EDITABLE_FOR_PAGES',
 }
 
@@ -26,16 +24,6 @@ export interface GetCategoriesListErrorAction extends Action<CategoriesListActio
   errorMessage: string;
 }
 
-export interface CreateDraftCategoryAction extends Action<CategoriesListActionTypes.CreateDraftCategory> {
-  type: CategoriesListActionTypes.CreateDraftCategory;
-  draftCategory: CategoryItem;
-}
-
-export interface DeleteDraftCategoryAction extends Action<CategoriesListActionTypes.DeleteDraftCategory> {
-  type: CategoriesListActionTypes.DeleteDraftCategory;
-  draftCategoryId: number;
-}
-
 export interface SetEditableForCategoriesAction extends Action<CategoriesListActionTypes.SetEditable> {
   type: CategoriesListActionTypes.SetEditable;
   categoriesIds: number[];
@@ -47,11 +35,7 @@ export type GetCategoriesListActions =
   | GetCategoriesListSuccessAction
   | GetCategoriesListErrorAction;
 
-export type CategoriesListActions =
-  | GetCategoriesListActions
-  | CreateDraftCategoryAction
-  | DeleteDraftCategoryAction
-  | SetEditableForCategoriesAction;
+export type CategoriesListActions = GetCategoriesListActions | SetEditableForCategoriesAction;
 
 export type GetCategoriesListActionCreator = ActionCreator<
   ThunkAction<

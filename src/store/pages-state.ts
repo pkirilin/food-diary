@@ -10,8 +10,6 @@ export interface PagesState {
 export interface PagesListState {
   pageItems: PageItem[];
   pageItemsFetchState: DataFetchState;
-  pageDraftItems: PageItem[];
-  currentDraftPageId: number;
   editablePagesIds: number[];
   selectedPagesIds: number[];
 }

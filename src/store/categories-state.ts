@@ -15,8 +15,6 @@ export interface CategoriesDropdownState {
 export interface CategoriesListState {
   categoryItems: CategoryItem[];
   categoryItemsFetchState: DataFetchState;
-  categoryDraftItems: CategoryItem[];
-  currentDraftCategoryId: number;
   editableCategoriesIds: number[];
 }
 

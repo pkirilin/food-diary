@@ -4,8 +4,6 @@ import {
   GetCategoriesListErrorAction,
   GetCategoriesListRequestAction,
   CategoriesListActionTypes,
-  CreateDraftCategoryAction,
-  DeleteDraftCategoryAction,
   SetEditableForCategoriesAction,
   GetCategoriesListActionCreator,
   GetCategoriesListActions,
@@ -60,20 +58,6 @@ export const getCategories: GetCategoriesListActionCreator = () => {
       console.error(error);
       return dispatch(getCategoriesError(baseErrorMessage));
     }
-  };
-};
-
-export const createDraftCategory = (draftCategory: CategoryItem): CreateDraftCategoryAction => {
-  return {
-    type: CategoriesListActionTypes.CreateDraftCategory,
-    draftCategory,
-  };
-};
-
-export const deleteDraftCategory = (draftCategoryId: number): DeleteDraftCategoryAction => {
-  return {
-    type: CategoriesListActionTypes.DeleteDraftCategory,
-    draftCategoryId,
   };
 };
 

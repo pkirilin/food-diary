@@ -5,7 +5,6 @@ import {
   ClearPagesFilterAction,
   GetPagesListDispatch,
   GetNotesForPageDispatch,
-  CreateDraftPageAction,
   GetPagesListDispatchProp,
   GetNotesForPageDispatchProp,
   OpenModalAction,
@@ -17,7 +16,7 @@ import { RootState, ModalBody, ModalOptions } from '../../store';
 import { clearFilter, getPages, getNotesForPage, openModal, importPages } from '../../action-creators';
 import { PagesFilter, NotesSearchRequest } from '../../models';
 
-type PagesListControlsTopDispatch = Dispatch<CreateDraftPageAction | ClearPagesFilterAction | OpenModalAction> &
+type PagesListControlsTopDispatch = Dispatch<ClearPagesFilterAction | OpenModalAction> &
   GetPagesListDispatch &
   GetNotesForPageDispatch &
   ImportPagesDispatch &

@@ -10,8 +10,6 @@ type PagesListDispatch = GetPagesListDispatch;
 export interface PagesListStateToPropsMapResult {
   pageItems: PageItem[];
   pageItemsFetchState: DataFetchState;
-  pageDraftItems: PageItem[];
-  currentDraftPageId: number;
   pagesFilter: PagesFilter;
 }
 
@@ -23,9 +21,7 @@ const mapStateToProps = (state: RootState): PagesListStateToPropsMapResult => {
   return {
     pageItems: state.pages.list.pageItems,
     pageItemsFetchState: state.pages.list.pageItemsFetchState,
-    pageDraftItems: state.pages.list.pageDraftItems,
     pagesFilter: state.pages.filter.params,
-    currentDraftPageId: state.pages.list.currentDraftPageId,
   };
 };
 

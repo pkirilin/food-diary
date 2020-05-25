@@ -2,7 +2,6 @@ import { connect } from 'react-redux';
 import PagesListItemEditable from './PagesListItemEditable';
 import { PagesFilter, PageCreateEdit, PageEditRequest } from '../../models';
 import {
-  DeleteDraftPageAction,
   SetSelectedForPageAction,
   SetEditableForPagesAction,
   CreatePageDispatchProp,
@@ -12,7 +11,7 @@ import {
   EditPageDispatch,
   GetPagesListDispatch,
 } from '../../action-types';
-import { deleteDraftPage, createPage, getPages, setEditableForPages, editPage } from '../../action-creators';
+import { createPage, getPages, setEditableForPages, editPage } from '../../action-creators';
 import { Dispatch } from 'redux';
 import {
   RootState,
@@ -22,9 +21,7 @@ import {
   NotesForMealFetchState,
 } from '../../store';
 
-type PagesListItemDispatchType = Dispatch<
-  DeleteDraftPageAction | SetSelectedForPageAction | SetEditableForPagesAction
-> &
+type PagesListItemDispatchType = Dispatch<SetSelectedForPageAction | SetEditableForPagesAction> &
   CreatePageDispatch &
   EditPageDispatch &
   GetPagesListDispatch;
@@ -38,7 +35,6 @@ export interface PagesListItemEditableStateToPropsMapResult {
 }
 
 export interface PagesListItemEditableDispatchToPropsMapResult {
-  deleteDraftPage: (draftPageId: number) => void;
   setEditableForPages: (pagesIds: number[], editable: boolean) => void;
   createPage: CreatePageDispatchProp;
   editPage: EditPageDispatchProp;
@@ -69,10 +65,6 @@ const mapDispatchToProps = (dispatch: PagesListItemDispatchType): PagesListItemE
   };
 
   return {
-    deleteDraftPage: (draftPageId: number): void => {
-      dispatch(deleteDraftPage(draftPageId));
-    },
-
     setEditableForPages: (pagesIds: number[], editable: boolean): void => {
       dispatch(setEditableForPages(pagesIds, editable));
     },

@@ -4,14 +4,12 @@ import { SidebarList, SidebarListPlaceholder } from '../SidebarBlocks';
 import CategoriesListItemConnected from '../CategoriesListItem';
 import { CategoriesListStateToPropsMapResult, CategoriesListDispatchToPropsMapResult } from './CategoriesListConnected';
 import Loader from '../Loader';
-import CategoriesListItemEditableConnected from '../CategoriesListItem/CategoriesListItemEditableConnected';
 
 interface CategoriesListProps extends CategoriesListStateToPropsMapResult, CategoriesListDispatchToPropsMapResult {}
 
 const CategoriesList: React.FC<CategoriesListProps> = ({
   categoryItems,
   categoryItemsFetchState,
-  categoryDraftItems,
   getCategories,
 }: CategoriesListProps) => {
   useEffect(() => {
@@ -34,13 +32,6 @@ const CategoriesList: React.FC<CategoriesListProps> = ({
 
   return categoryItems.length > 0 ? (
     <SidebarList>
-      {categoryDraftItems.map(category => (
-        <CategoriesListItemEditableConnected
-          key={category.id}
-          category={category}
-          isDraft={true}
-        ></CategoriesListItemEditableConnected>
-      ))}
       {categoryItems.map(category => (
         <CategoriesListItemConnected key={category.id} category={category}></CategoriesListItemConnected>
       ))}

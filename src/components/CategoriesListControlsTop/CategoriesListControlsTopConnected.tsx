@@ -2,7 +2,6 @@ import { connect } from 'react-redux';
 import CategoriesListControlsTop from './CategoriesListControlsTop';
 import { ProductsFilter } from '../../models';
 import {
-  CreateDraftCategoryAction,
   GetCategoriesListDispatch,
   GetProductsListDispatch,
   GetCategoriesListDispatchProp,
@@ -15,8 +14,7 @@ import { RootState, ModalBody, ModalOptions } from '../../store';
 
 type CategoriesListControlsTopDispatch = Dispatch<OpenModalAction> &
   GetCategoriesListDispatch &
-  GetProductsListDispatch &
-  Dispatch<CreateDraftCategoryAction>;
+  GetProductsListDispatch;
 
 export interface CategoriesListControlsTopStateToPropsMapResult {
   isCategoryOperationInProcess: boolean;

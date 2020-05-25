@@ -10,7 +10,6 @@ type CategoriesListDispatch = GetCategoriesListDispatch;
 export interface CategoriesListStateToPropsMapResult {
   categoryItems: CategoryItem[];
   categoryItemsFetchState: DataFetchState;
-  categoryDraftItems: CategoryItem[];
 }
 
 export interface CategoriesListDispatchToPropsMapResult {
@@ -21,7 +20,6 @@ const mapStateToProps = (state: RootState): CategoriesListStateToPropsMapResult 
   return {
     categoryItems: state.categories.list.categoryItems,
     categoryItemsFetchState: state.categories.list.categoryItemsFetchState,
-    categoryDraftItems: state.categories.list.categoryDraftItems,
   };
 };
 

@@ -4,7 +4,6 @@ import { DataOperationState, DataFetchState, RootState } from '../../store';
 import { ProductsFilter, CategoryCreateEdit, CategoryEditRequest } from '../../models';
 import {
   SetEditableForCategoriesAction,
-  DeleteDraftCategoryAction,
   CreateCategoryDispatch,
   EditCategoryDispatch,
   GetCategoriesListDispatch,
@@ -17,14 +16,13 @@ import {
 import { Dispatch } from 'react';
 import {
   setEditableForCategories,
-  deleteDraftCategory,
   createCategory,
   editCategory,
   getCategories,
   getProducts,
 } from '../../action-creators';
 
-type CategoriesListItemDispatch = Dispatch<SetEditableForCategoriesAction | DeleteDraftCategoryAction> &
+type CategoriesListItemDispatch = Dispatch<SetEditableForCategoriesAction> &
   CreateCategoryDispatch &
   EditCategoryDispatch &
   GetCategoriesListDispatch &
@@ -38,7 +36,6 @@ export interface CategoriesListItemEditableStateToPropsMapResult {
 }
 
 export interface CategoriesListItemEditableDispatchToPropsMapResult {
-  deleteDraftCategory: (draftCategoryId: number) => void;
   setEditableForCategories: (categoriesIds: number[], editable: boolean) => void;
   createCategory: CreateCategoryDispatchProp;
   editCategory: EditCategoryDispatchProp;
@@ -77,10 +74,6 @@ const mapDispatchToProps = (
   return {
     setEditableForCategories: (categoriesIds: number[], editable: boolean): void => {
       dispatch(setEditableForCategories(categoriesIds, editable));
-    },
-
-    deleteDraftCategory: (draftCategoryId: number): void => {
-      dispatch(deleteDraftCategory(draftCategoryId));
     },
 
     createCategory: createCategoryProp,

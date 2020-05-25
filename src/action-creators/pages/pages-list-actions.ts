@@ -5,8 +5,6 @@ import {
   GetPagesListRequestAction,
   PagesListActionTypes,
   GetPagesListErrorAction,
-  CreateDraftPageAction,
-  DeleteDraftPageAction,
   SetSelectedForPageAction,
   SetSelectedForAllPagesAction,
   SetEditableForPagesAction,
@@ -62,20 +60,6 @@ export const getPages: GetPagesListActionCreator = (filter: PagesFilter) => {
       console.error(error);
       return dispatch(getPagesError(baseErrorMessage));
     }
-  };
-};
-
-export const createDraftPage = (draftPage: PageItem): CreateDraftPageAction => {
-  return {
-    type: PagesListActionTypes.CreateDraftPage,
-    draftPage,
-  };
-};
-
-export const deleteDraftPage = (draftPageId: number): DeleteDraftPageAction => {
-  return {
-    type: PagesListActionTypes.DeleteDraftPage,
-    draftPageId,
   };
 };
 

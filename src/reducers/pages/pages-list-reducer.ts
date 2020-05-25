@@ -7,8 +7,6 @@ const initialState: PagesListState = {
     loading: false,
     loaded: false,
   },
-  pageDraftItems: [],
-  currentDraftPageId: 1,
   editablePagesIds: [],
   selectedPagesIds: [],
 };
@@ -42,23 +40,6 @@ const pagesListReducer = (state: PagesListState = initialState, action: PagesLis
           loaded: false,
           error: action.errorMessage,
         },
-      };
-    case PagesListActionTypes.CreateDraftPage:
-      return {
-        ...state,
-        pageDraftItems: [
-          {
-            ...action.draftPage,
-            id: state.currentDraftPageId,
-          },
-          ...state.pageDraftItems,
-        ],
-        currentDraftPageId: state.currentDraftPageId + 1,
-      };
-    case PagesListActionTypes.DeleteDraftPage:
-      return {
-        ...state,
-        pageDraftItems: [...state.pageDraftItems.filter(p => p.id !== action.draftPageId)],
       };
     case PagesListActionTypes.SetSelected:
       return {
