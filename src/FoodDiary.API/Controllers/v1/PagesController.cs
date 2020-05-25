@@ -127,7 +127,7 @@ namespace FoodDiary.API.Controllers.v1
         public async Task<IActionResult> GetDateForNewPage(CancellationToken cancellationToken)
         {
             var dateForNewPage = await _pageService.GetDateForNewPageAsync(cancellationToken);
-            return Ok(dateForNewPage);
+            return Ok(dateForNewPage.ToString("yyyy-MM-dd"));
         }
     }
 }
