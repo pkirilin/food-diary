@@ -8,8 +8,9 @@ export interface PageItem {
 }
 
 export interface PagesFilter {
+  startDate?: string;
+  endDate?: string;
   sortOrder: SortOrder;
-  showCount?: number;
 }
 
 export interface PageCreateEdit {

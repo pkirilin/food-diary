@@ -1,27 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import './PagesListControlsBottom.scss';
-import { Label, FormGroup, DropdownList } from '../Controls';
 import {
   PagesListControlsBottomDispatchToPropsMapResult,
   PagesListControlsBottomStateToPropsMapResult,
 } from './PagesListControlsBottomConnected';
-import { SortOrder, ShowCount } from '../../models';
+import { SortOrder } from '../../models';
 import Icon from '../Icon';
-import { showCountAllString, invertSortOrder } from '../../utils/filter-utils';
+import { invertSortOrder } from '../../utils/filter-utils';
+import { formatDateStr, DateFormat } from '../../utils/date-utils';
 
 interface PagesListControlsBottomProps
   extends PagesListControlsBottomStateToPropsMapResult,
     PagesListControlsBottomDispatchToPropsMapResult {}
-
-const showCountDropdownItems: string[] = [
-  ShowCount.LastWeek.toString(),
-  ShowCount.LastMonth.toString(),
-  ShowCount.LastTwoMonths.toString(),
-  ShowCount.LastThreeMonths.toString(),
-  ShowCount.LastHalfYear.toString(),
-  ShowCount.LastYear.toString(),
-  showCountAllString,
-];
 
 const PagesListControlsBottom: React.FC<PagesListControlsBottomProps> = ({
   pagesFilter,
@@ -32,8 +22,6 @@ const PagesListControlsBottom: React.FC<PagesListControlsBottomProps> = ({
   isPageOperationInProcess,
   isNoteOperationInProcess,
 }: PagesListControlsBottomProps) => {
-  const [showCountInputValue, setShowCountInputValue] = useState(showCountAllString);
-
   const isControlDisabled =
     arePagesLoading ||
     areNotesForMealLoading ||
@@ -41,44 +29,48 @@ const PagesListControlsBottom: React.FC<PagesListControlsBottomProps> = ({
     isPageOperationInProcess ||
     isNoteOperationInProcess;
 
-  useEffect(() => {
-    setShowCountInputValue(pagesFilter.showCount ? pagesFilter.showCount.toString() : showCountAllString);
-  }, [pagesFilter]);
-
   const handleSortIconClick = (): void => {
     updatePagesFilter({ ...pagesFilter, sortOrder: invertSortOrder(pagesFilter.sortOrder) });
   };
 
-  const handleShowCountDropdownValueSelect = (newSelectedValueIndex: number): void => {
-    let showCount: number;
-    const newSelectedValue = showCountDropdownItems[newSelectedValueIndex];
-    setShowCountInputValue(showCountDropdownItems[newSelectedValueIndex]);
-    if (!isNaN((showCount = Number(newSelectedValue)))) {
-      updatePagesFilter({ ...pagesFilter, showCount });
-    } else if (newSelectedValue === showCountAllString) {
-      updatePagesFilter({ ...pagesFilter, showCount: undefined });
-    }
-  };
+  const { startDate, endDate, sortOrder } = pagesFilter;
+  const visibleRangesClassNames = ['pages-list-controls-bottom__visible-ranges'];
+
+  if (startDate && endDate) {
+    visibleRangesClassNames.push('pages-list-controls-bottom__visible-ranges_small');
+  }
 
   return (
     <div className="pages-list-controls-bottom">
-      {pagesFilter.sortOrder === SortOrder.Ascending ? (
-        <Icon type="sort-ascending" onClick={handleSortIconClick} disabled={isControlDisabled}></Icon>
+      {sortOrder === SortOrder.Ascending ? (
+        <Icon type="sort-ascending" label="Sort" onClick={handleSortIconClick} disabled={isControlDisabled}></Icon>
       ) : (
-        <Icon type="sort-descending" onClick={handleSortIconClick} disabled={isControlDisabled}></Icon>
+        <Icon type="sort-descending" label="Sort" onClick={handleSortIconClick} disabled={isControlDisabled}></Icon>
       )}
-      <FormGroup inline>
-        <Label>Show</Label>
-        <div className="pages-list-controls-bottom__show-count-wrapper">
-          <DropdownList
-            items={showCountDropdownItems}
-            toggleDirection="top"
-            disabled={isControlDisabled}
-            inputValue={showCountInputValue}
-            onValueSelect={handleShowCountDropdownValueSelect}
-          ></DropdownList>
-        </div>
-      </FormGroup>
+      <div className="pages-list-controls-bottom__divider"></div>
+      <div className={visibleRangesClassNames.join(' ')}>
+        {!startDate && !endDate && <div>All pages visible</div>}
+        {startDate && !endDate && (
+          <React.Fragment>
+            <div>Pages since:</div>
+            <div>{formatDateStr(startDate, DateFormat.SlashDMY)}</div>
+          </React.Fragment>
+        )}
+        {!startDate && endDate && (
+          <React.Fragment>
+            <div>Pages until:</div>
+            <div>{formatDateStr(endDate, DateFormat.SlashDMY)}</div>
+          </React.Fragment>
+        )}
+        {startDate && endDate && (
+          <React.Fragment>
+            <div>Pages period:</div>
+            <div>
+              {formatDateStr(startDate, DateFormat.SlashDMY)} - {formatDateStr(endDate, DateFormat.SlashDMY)}
+            </div>
+          </React.Fragment>
+        )}
+      </div>
     </div>
   );
 };

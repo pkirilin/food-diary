@@ -3,13 +3,34 @@
 
 .pages-list-controls-bottom {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   height: 50px;
   border-top: $divider-border-width solid $color-middle-green;
   padding: 0px $nested-items-padding-left-right;
 
-  &__show-count-wrapper {
-    width: 120px;
+  &__divider {
+    border-left: $divider-border-width solid $color-middle-green;
+    height: 100%;
+    margin: 0 $nested-items-padding-left-right;
+  }
+
+  &__visible-ranges {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    height: 100%;
+    width: 100%;
+    text-align: center;
+    padding: 5px 0;
+
+    div {
+      color: $color-middle-green;
+    }
+
+    &_small {
+      div {
+        font-size: 12px;
+      }
+    }
   }
 }

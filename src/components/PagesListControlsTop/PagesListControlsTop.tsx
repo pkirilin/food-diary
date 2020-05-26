@@ -11,6 +11,7 @@ import { PagesListActionTypes, PagesOperationsActionTypes } from '../../action-t
 import { DropdownMenu, DropdownItem } from '../Controls';
 import PagesExportFormConnected from '../PagesExportForm';
 import PageCreateFormConnected from '../PageCreateForm';
+import PagesFilterFormConnected from '../PagesFilterForm';
 
 interface PagesListControlsTopProps
   extends PagesListControlsTopStateToPropsMapResult,
@@ -61,6 +62,12 @@ const PagesListControlsTop: React.FC<PagesListControlsTopProps> = ({
     }
   };
 
+  const handleOpenFilterIconClick = (): void => {
+    openModal('Pages filter', <PagesFilterFormConnected></PagesFilterFormConnected>, {
+      width: '30%',
+    });
+  };
+
   const handleResetFilterIconClick = (): void => {
     clearPagesFilter();
   };
@@ -105,7 +112,7 @@ const PagesListControlsTop: React.FC<PagesListControlsTopProps> = ({
       <SidebarControlPanelIcons>
         <Icon type="add" onClick={handleAddIconClick} disabled={isControlDisabled}></Icon>
         <Icon type="refresh" onClick={handleRefreshPagesListIconClick} disabled={isControlDisabled}></Icon>
-        <Icon type="filter" disabled></Icon>
+        <Icon type="filter" onClick={handleOpenFilterIconClick} disabled={isControlDisabled}></Icon>
         <Icon type="close" disabled={isClearFilterDisabled} onClick={handleResetFilterIconClick}></Icon>
         <DropdownMenu
           toggler={<Icon type="three-dots" disabled={isControlDisabled}></Icon>}

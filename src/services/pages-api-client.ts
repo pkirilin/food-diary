@@ -3,11 +3,15 @@ import { PagesFilter, PageCreateEdit, PageEditRequest } from '../models';
 
 const pagesApiClientUrl = `${API_URL}/v1/pages`;
 
-export const getPagesAsync = async ({ sortOrder, showCount }: PagesFilter): Promise<Response> => {
+export const getPagesAsync = async ({ startDate, endDate, sortOrder }: PagesFilter): Promise<Response> => {
   let requestUrl = `${pagesApiClientUrl}?sortOrder=${sortOrder}`;
 
-  if (showCount) {
-    requestUrl += `&showCount=${showCount}`;
+  if (startDate) {
+    requestUrl += `&startDate=${startDate}`;
+  }
+
+  if (endDate) {
+    requestUrl += `&endDate=${endDate}`;
   }
 
   return await fetch(requestUrl, {
