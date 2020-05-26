@@ -9,7 +9,8 @@ namespace FoodDiary.API.Requests
         [EnumDataType(typeof(SortOrder))]
         public SortOrder SortOrder { get; set; } = SortOrder.Descending;
 
-        [Range(1, Int32.MaxValue, ErrorMessage = "Invalid show count specified")]
-        public int? ShowCount { get; set; } = 30;
+        public DateTime? StartDate { get; set; }
+
+        public DateTime? EndDate { get; set; }
     }
 }

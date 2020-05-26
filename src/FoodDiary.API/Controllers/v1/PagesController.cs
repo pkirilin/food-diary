@@ -36,6 +36,12 @@ namespace FoodDiary.API.Controllers.v1
                 return BadRequest(ModelState);
             }
 
+            if (!_pageService.AreDateRangesValid(request.StartDate, request.EndDate))
+            {
+                ModelState.AddModelError(nameof(request.StartDate), "Start date cannot be greater than end date");
+                return BadRequest(ModelState);
+            }
+
             var filteredPages = await _pageService.SearchPagesAsync(request, cancellationToken);
             var pagesListResponse = _mapper.Map<IEnumerable<PageItemDto>>(filteredPages);
             return Ok(pagesListResponse);

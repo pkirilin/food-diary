@@ -46,11 +46,14 @@ namespace FoodDiary.UnitTests.Controllers
         public async void GetPages_ReturnsFilteredPages_WhenModelStateIsValid(
             PagesSearchRequest request, IEnumerable<Page> filteredPages)
         {
+            _pageServiceMock.Setup(s => s.AreDateRangesValid(request.StartDate, request.EndDate))
+                .Returns(true);
             _pageServiceMock.Setup(s => s.SearchPagesAsync(request, default))
                 .ReturnsAsync(filteredPages);
 
             var result = await Sut.GetPages(request, default);
 
+            _pageServiceMock.Verify(s => s.AreDateRangesValid(request.StartDate, request.EndDate), Times.Once);
             _pageServiceMock.Verify(s => s.SearchPagesAsync(request, default), Times.Once);
 
             result.Should().BeOfType<OkObjectResult>();
@@ -66,6 +69,21 @@ namespace FoodDiary.UnitTests.Controllers
 
             var result = await controller.GetPages(request, default);
 
+            _pageServiceMock.Verify(s => s.SearchPagesAsync(request, default), Times.Never);
+
+            result.Should().BeOfType<BadRequestObjectResult>();
+        }
+
+        [Theory]
+        [CustomAutoData]
+        public async void GetPages_ReturnsBadRequest_WhenDateRangesAreInvalid(PagesSearchRequest request)
+        {
+            _pageServiceMock.Setup(s => s.AreDateRangesValid(request.StartDate, request.EndDate))
+                .Returns(false);
+
+            var result = await Sut.GetPages(request, default);
+
+            _pageServiceMock.Verify(s => s.AreDateRangesValid(request.StartDate, request.EndDate), Times.Once);
             _pageServiceMock.Verify(s => s.SearchPagesAsync(request, default), Times.Never);
 
             result.Should().BeOfType<BadRequestObjectResult>();

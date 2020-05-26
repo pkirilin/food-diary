@@ -29,30 +29,45 @@ namespace FoodDiary.UnitTests.Services.TestData
                     .Create();
 
                 var sourcePages = new List<Page>() { page1, page2, page3, page4 };
+                var startDate = DateTime.Parse("2020-05-18");
+                var endDate = DateTime.Parse("2020-05-19");
 
                 var request1 = fixture.Build<PagesSearchRequest>()
-                    .With(r => r.ShowCount, 3)
                     .With(r => r.SortOrder, SortOrder.Ascending)
                     .OmitAutoProperties()
                     .Create();
                 var request2 = fixture.Build<PagesSearchRequest>()
-                    .Without(r => r.ShowCount)
                     .With(r => r.SortOrder, SortOrder.Descending)
                     .OmitAutoProperties()
                     .Create();
+                var request3 = fixture.Build<PagesSearchRequest>()
+                    .With(r => r.SortOrder, SortOrder.Descending)
+                    .With(r => r.StartDate, startDate)
+                    .OmitAutoProperties()
+                    .Create();
+                var request4 = fixture.Build<PagesSearchRequest>()
+                    .With(r => r.SortOrder, SortOrder.Descending)
+                    .With(r => r.EndDate, endDate)
+                    .OmitAutoProperties()
+                    .Create();
+                var request5 = fixture.Build<PagesSearchRequest>()
+                    .With(r => r.SortOrder, SortOrder.Descending)
+                    .With(r => r.StartDate, startDate)
+                    .With(r => r.EndDate, endDate)
+                    .OmitAutoProperties()
+                    .Create();
 
-                var resultPages1 = new List<Page>() { page4, page2, page1 };
+                var resultPages1 = new List<Page>() { page4, page2, page1, page3 };
                 var resultPages2 = new List<Page>() { page3, page1, page2, page4 };
+                var resultPages3 = new List<Page>() { page3, page1, page2 };
+                var resultPages4 = new List<Page>() { page1, page2, page4 };
+                var resultPages5 = new List<Page>() { page1, page2 };
 
-                yield return new object[]
-                {
-                    request1, sourcePages, resultPages1
-                };
-
-                yield return new object[]
-                {
-                    request2, sourcePages, resultPages2
-                };
+                yield return new object[] { request1, sourcePages, resultPages1 };
+                yield return new object[] { request2, sourcePages, resultPages2 };
+                yield return new object[] { request3, sourcePages, resultPages3 };
+                yield return new object[] { request4, sourcePages, resultPages4 };
+                yield return new object[] { request5, sourcePages, resultPages5 };
             }
         }
     
@@ -138,6 +153,22 @@ namespace FoodDiary.UnitTests.Services.TestData
 
                 yield return new object[] { sourcePages, lastPagesByDate, dateForNewPage };
                 yield return new object[] { emptyPages, emptyPages, DateTime.Now.Date };
+            }
+        }
+
+        public static IEnumerable<object[]> AreDateRangesValid
+        {
+            get
+            {
+                var noDate = null as DateTime?;
+                var lesserDate = DateTime.Parse("2020-05-26");
+                var greaterDate = DateTime.Parse("2020-05-30");
+
+                yield return new object[] { noDate, noDate, true };
+                yield return new object[] { noDate, greaterDate, true };
+                yield return new object[] { lesserDate, noDate, true };
+                yield return new object[] { lesserDate, greaterDate, true };
+                yield return new object[] { greaterDate, lesserDate, false };
             }
         }
     }

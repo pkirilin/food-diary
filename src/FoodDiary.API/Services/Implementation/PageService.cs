@@ -23,6 +23,11 @@ namespace FoodDiary.API.Services.Implementation
         {
             var searchPagesQuery = _pageRepository.GetQueryWithoutTracking();
 
+            if (request.StartDate.HasValue)
+                searchPagesQuery = searchPagesQuery.Where(p => p.Date >= request.StartDate);
+            if (request.EndDate.HasValue)
+                searchPagesQuery = searchPagesQuery.Where(p => p.Date <= request.EndDate);
+
             switch (request.SortOrder)
             {
                 case SortOrder.Ascending:
@@ -34,9 +39,6 @@ namespace FoodDiary.API.Services.Implementation
                 default:
                     break;
             }
-
-            if (request.ShowCount.HasValue)
-                searchPagesQuery = searchPagesQuery.Take(request.ShowCount.Value);
 
             searchPagesQuery = _pageRepository.LoadNotesWithProducts(searchPagesQuery);
             return await _pageRepository.GetListFromQueryAsync(searchPagesQuery, cancellationToken);
@@ -108,6 +110,13 @@ namespace FoodDiary.API.Services.Implementation
                 return pages.First().Date.AddDays(1);
 
             return DateTime.Now.Date;
+        }
+
+        public bool AreDateRangesValid(DateTime? startDate, DateTime? endDate)
+        {
+            if (startDate.HasValue && endDate.HasValue && startDate > endDate)
+                return false;
+            return true;
         }
     }
 }

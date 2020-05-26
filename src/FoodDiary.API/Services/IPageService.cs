@@ -28,5 +28,7 @@ namespace FoodDiary.API.Services
         Task BatchDeletePagesAsync(IEnumerable<Page> pages, CancellationToken cancellationToken);
 
         Task<DateTime> GetDateForNewPageAsync(CancellationToken cancellationToken);
+
+        bool AreDateRangesValid(DateTime? startDate, DateTime? endDate);
     }
 }

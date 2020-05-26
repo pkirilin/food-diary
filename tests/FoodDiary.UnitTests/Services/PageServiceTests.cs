@@ -206,5 +206,17 @@ namespace FoodDiary.UnitTests.Services
 
             result.Should().Be(dateForNewPage);
         }
+
+        [Theory]
+        [MemberData(nameof(PageServiceTestData.AreDateRangesValid), MemberType = typeof(PageServiceTestData))]
+        public void AreDateRangesValid_ValidatesDateRanges(
+            DateTime? startDate,
+            DateTime? endDate,
+            bool expectedResult)
+        {
+            var result = Sut.AreDateRangesValid(startDate, endDate);
+
+            result.Should().Be(expectedResult);
+        }
     }
 }
