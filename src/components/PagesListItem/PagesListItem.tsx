@@ -11,7 +11,7 @@ import { BadgesContainer } from '../ContainerBlocks';
 import { Checkbox } from '../Controls';
 import { PagesListItemDispatchToPropsMapResult, PagesListItemStateToPropsMapResult } from './PagesListItemConnected';
 import { PageItem } from '../../models';
-import { getFormattedDate } from '../../utils/date-utils';
+import { formatDateStr, DateFormat } from '../../utils/date-utils';
 import PagesListItemEditableConnected from './PagesListItemEditableConnected';
 import { getWordWithCount } from '../../utils/string-utils';
 
@@ -44,7 +44,7 @@ const PagesListItem: React.FC<PagesListItemProps> = ({
   return (
     <SidebarListItem selected={isSelected}>
       <SidebarListItemLink to={`/pages/${page.id}`} activeClassName={activeLinkClassName} selected={isSelected}>
-        <div>{getFormattedDate(page.date)}</div>
+        <div>{formatDateStr(page.date, DateFormat.SlashDMY)}</div>
         <BadgesContainer>
           <Badge label={notesBadgeLabel} selected={isSelected}></Badge>
           <Badge label={caloriesBadgeLabel} selected={isSelected}></Badge>

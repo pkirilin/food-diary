@@ -4,7 +4,7 @@ import { PageContentHeaderStateToPropsMapResult } from './PageContentHeaderConne
 import Icon from '../Icon';
 import { NavLink } from 'react-router-dom';
 import MealsControlPanelConnected from '../MealsControlPanel/MealsControlPanelConnected';
-import { getFormattedDate } from '../../utils/date-utils';
+import { formatDateStr, DateFormat } from '../../utils/date-utils';
 import { useIdFromRoute } from '../../hooks';
 
 type PageContentHeaderProps = PageContentHeaderStateToPropsMapResult;
@@ -56,7 +56,7 @@ const PageContentHeader: React.FC<PageContentHeaderProps> = ({
             ></Icon>
           </NavLink>
           <div className="page-content-header__navigation__date">
-            {currentSelectedPage && getFormattedDate(currentSelectedPage.date)}
+            {currentSelectedPage && formatDateStr(currentSelectedPage.date, DateFormat.SlashDMY)}
           </div>
           <NavLink to={`/pages/${nextPageId}`} className={nextPageLinkClassNames.join(' ')}>
             <Icon
