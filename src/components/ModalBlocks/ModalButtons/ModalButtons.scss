@@ -1,0 +1,15 @@
+@import '../ModalBlocks.variables.scss';
+
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: $modal-buttons-margin;
+
+  & > * {
+    flex: 0.25;
+
+    &:not(:first-child) {
+      margin-left: 10px;
+    }
+  }
+}
