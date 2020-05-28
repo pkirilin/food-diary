@@ -28,6 +28,7 @@ const PagesSelectionPanel: React.FC<PagesSelectionPanelProps> = ({
   isNoteOperationInProcess,
   areNotesForPageFetching,
   areNotesForMealFetching,
+  openConfirmationModal,
 }: PagesSelectionPanelProps) => {
   const history = useHistory();
 
@@ -35,6 +36,15 @@ const PagesSelectionPanel: React.FC<PagesSelectionPanelProps> = ({
     isPageOperationInProcess || isNoteOperationInProcess || areNotesForPageFetching || areNotesForMealFetching;
   const isSelectAllChecked = visiblePagesIds.every(id => selectedPagesIds.includes(id));
   const selectedPagesCount = selectedPagesIds.length;
+
+  const runDeletePagesAsync = async (): Promise<void> => {
+    const deletePagesAction = await deletePages(selectedPagesIds);
+
+    if (deletePagesAction.type === PagesOperationsActionTypes.DeleteSuccess) {
+      await getPages(pagesFilter);
+      history.push('/pages');
+    }
+  };
 
   const handleSelectAllClick = (): void => {
     setSelectedForAllPages(!isSelectAllChecked);
@@ -44,18 +54,10 @@ const PagesSelectionPanel: React.FC<PagesSelectionPanelProps> = ({
     setEditableForPages(selectedPagesIds, true);
   };
 
-  const handleDeleteOptionClick = async (): Promise<void> => {
-    // TODO: create component for modal
-    const isDeleteConfirmed = window.confirm('Do you want to delete all selected pages?');
-
-    if (isDeleteConfirmed) {
-      const deletePagesAction = await deletePages(selectedPagesIds);
-
-      if (deletePagesAction.type === PagesOperationsActionTypes.DeleteSuccess) {
-        await getPages(pagesFilter);
-        history.push('/pages');
-      }
-    }
+  const handleDeleteOptionClick = (): void => {
+    openConfirmationModal('Delete pages', 'Do you want to delete selected pages?', () => {
+      runDeletePagesAsync();
+    });
   };
 
   const selectionOptionsToggler = <Icon type="three-dots" disabled={isAnySideEffectHappening}></Icon>;

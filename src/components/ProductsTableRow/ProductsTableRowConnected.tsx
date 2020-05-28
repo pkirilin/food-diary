@@ -9,12 +9,19 @@ import {
   GetProductsListDispatchProp,
   GetCategoriesListDispatchProp,
   DeleteProductDispatchProp,
+  OpenModalAction,
 } from '../../action-types';
 import { Dispatch } from 'redux';
-import { setEditableForProduct, deleteProduct, getProducts, getCategories } from '../../action-creators';
+import {
+  setEditableForProduct,
+  deleteProduct,
+  getProducts,
+  getCategories,
+  openConfirmationModal,
+} from '../../action-creators';
 import { ProductsFilter } from '../../models';
 
-type ProductsTableRowDispatch = Dispatch<SetEditableForProductAction> &
+type ProductsTableRowDispatch = Dispatch<SetEditableForProductAction | OpenModalAction> &
   GetProductsListDispatch &
   GetCategoriesListDispatch &
   DeleteProductDispatch;
@@ -28,6 +35,7 @@ export interface ProductsTableRowStateToPropsMapResult {
 
 export interface ProductsTableRowDispatchToPropsMapResult {
   setEditableForProduct: (productId: number, editable: boolean) => void;
+  openConfirmationModal: (title: string, message: string, confirm: () => void) => void;
   getProducts: GetProductsListDispatchProp;
   getCategories: GetCategoriesListDispatchProp;
   deleteProduct: DeleteProductDispatchProp;
@@ -58,6 +66,10 @@ const mapDispatchToProps = (dispatch: ProductsTableRowDispatch): ProductsTableRo
   return {
     setEditableForProduct: (productId: number, editable: boolean): void => {
       dispatch(setEditableForProduct(productId, editable));
+    },
+
+    openConfirmationModal: (title: string, message: string, confirm: () => void): void => {
+      dispatch(openConfirmationModal(title, message, confirm));
     },
 
     getProducts: getProductsProp,

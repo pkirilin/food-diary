@@ -28,28 +28,31 @@ const ProductsTableRow: React.FC<ProductsTableRowProps> = ({
   getProducts,
   getCategories,
   deleteProduct,
+  openConfirmationModal,
 }: ProductsTableRowProps) => {
   const isProductEditable = editableProductsIds.some(id => id === product.id);
   const isProductInputDisabled = useProductInputDisabled(isProductOperationInProcess, isCategoryOperationInProcess);
+
+  const runDeleteProductAsync = async (): Promise<void> => {
+    const { type: deleteProductActionType } = await deleteProduct(product.id);
+
+    if (deleteProductActionType === ProductsOperationsActionTypes.DeleteSuccess) {
+      await getProducts(productsFilter);
+
+      if (refreshCategoriesOnDeleteProduct) {
+        await getCategories();
+      }
+    }
+  };
 
   const handleEditIconClick = (): void => {
     setEditableForProduct(product.id, true);
   };
 
-  const handleDeleteIconClick = async (): Promise<void> => {
-    const isDeleteConfirmed = window.confirm('Do you want to delete product?');
-
-    if (isDeleteConfirmed) {
-      const { type: deleteProductActionType } = await deleteProduct(product.id);
-
-      if (deleteProductActionType === ProductsOperationsActionTypes.DeleteSuccess) {
-        await getProducts(productsFilter);
-
-        if (refreshCategoriesOnDeleteProduct) {
-          await getCategories();
-        }
-      }
-    }
+  const handleDeleteIconClick = (): void => {
+    openConfirmationModal('Delete product', `Do you want to delete product "${product.name}"`, () => {
+      runDeleteProductAsync();
+    });
   };
 
   if (isProductEditable) {

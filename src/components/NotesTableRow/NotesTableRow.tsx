@@ -21,33 +21,40 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({
   deleteNote,
   getNotesForMeal,
   getPages,
+  openConfirmationModal,
 }: NotesTableRowProps) => {
   const pageId = useIdFromRoute();
 
   const isNoteEditable = editableNotesIds.some(id => id === note.id);
   const isNoteInputDisabled = useNoteInputDisabled(mealOperationStatuses, note.mealType, isPageOperationInProcess);
 
+  const runDeleteNoteAsync = async (): Promise<void> => {
+    const { type: deleteNoteActionType } = await deleteNote({
+      id: note.id,
+      mealType: note.mealType,
+    });
+
+    if (deleteNoteActionType === NotesOperationsActionTypes.DeleteSuccess) {
+      await getNotesForMeal({
+        pageId,
+        mealType: note.mealType,
+      });
+      await getPages(pagesFilter);
+    }
+  };
+
   const handleEditIconClick = (): void => {
     setEditableForNote(note.id, true);
   };
 
-  const handleDeleteIconClick = async (): Promise<void> => {
-    const isDeleteConfirmed = window.confirm('Do you want to delete note?');
-
-    if (isDeleteConfirmed) {
-      const { type: deleteNoteActionType } = await deleteNote({
-        id: note.id,
-        mealType: note.mealType,
-      });
-
-      if (deleteNoteActionType === NotesOperationsActionTypes.DeleteSuccess) {
-        await getNotesForMeal({
-          pageId,
-          mealType: note.mealType,
-        });
-        await getPages(pagesFilter);
-      }
-    }
+  const handleDeleteIconClick = (): void => {
+    openConfirmationModal(
+      'Delete note',
+      `Do you want to delete note ("${note.productName}", ${note.productQuantity} g, ${note.calories} cal)?`,
+      () => {
+        runDeleteNoteAsync();
+      },
+    );
   };
 
   if (isNoteEditable) {

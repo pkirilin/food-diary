@@ -35,6 +35,7 @@ const CategoriesListItem: React.FC<CategoriesListItemProps> = ({
   setEditableForCategories,
   deleteCategory,
   getCategories,
+  openConfirmationModal,
 }: CategoriesListItemProps) => {
   const activeLinkClassName = useActiveLinkClassName();
   const history = useHistory();
@@ -48,21 +49,27 @@ const CategoriesListItem: React.FC<CategoriesListItemProps> = ({
 
   const categoryProductsBadgeLabel = getWordWithCount(category.countProducts, 'product', 'products');
 
+  const runDeleteCategoryAsync = async (): Promise<void> => {
+    const { type: deleteCategoryActionType } = await deleteCategory(category.id);
+
+    if (deleteCategoryActionType === CategoriesOperationsActionTypes.DeleteSuccess) {
+      await getCategories();
+      history.push('/categories');
+    }
+  };
+
   const handleEditItemClick = (): void => {
     setEditableForCategories([category.id], true);
   };
 
-  const handleDeleteItemClick = async (): Promise<void> => {
-    const isDeleteConfirmed = window.confirm('Do you want to delete category?');
-
-    if (isDeleteConfirmed) {
-      const { type: deleteCategoryActionType } = await deleteCategory(category.id);
-
-      if (deleteCategoryActionType === CategoriesOperationsActionTypes.DeleteSuccess) {
-        await getCategories();
-        history.push('/categories');
-      }
-    }
+  const handleDeleteItemClick = (): void => {
+    openConfirmationModal(
+      'Delete category',
+      `Do you want to delete category "${category.name}" and all its products?`,
+      () => {
+        runDeleteCategoryAsync();
+      },
+    );
   };
 
   if (isEditable) {

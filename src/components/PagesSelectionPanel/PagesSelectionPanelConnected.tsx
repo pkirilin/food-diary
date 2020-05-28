@@ -9,11 +9,20 @@ import {
   GetPagesListDispatch,
   DeletePagesDispatchProp,
   GetPagesListDispatchProp,
+  OpenModalAction,
 } from '../../action-types';
-import { setSelectedForAllPages, deletePages, getPages, setEditableForPages } from '../../action-creators';
+import {
+  setSelectedForAllPages,
+  deletePages,
+  getPages,
+  setEditableForPages,
+  openConfirmationModal,
+} from '../../action-creators';
 import { PagesFilter } from '../../models';
 
-type PagesSelectionPanelConnectedDispatch = Dispatch<SetSelectedForAllPagesAction | SetEditableForPagesAction> &
+type PagesSelectionPanelConnectedDispatch = Dispatch<
+  SetSelectedForAllPagesAction | SetEditableForPagesAction | OpenModalAction
+> &
   DeletePagesDispatch &
   GetPagesListDispatch;
 
@@ -31,6 +40,7 @@ export interface PagesSelectionPanelStateToPropsMapResult {
 export interface PagesSelectionPanelDispatchToPropsMapResult {
   setSelectedForAllPages: (selected: boolean) => void;
   setEditableForPages: (pagesIds: number[], editable: boolean) => void;
+  openConfirmationModal: (title: string, message: string, confirm: () => void) => void;
   deletePages: DeletePagesDispatchProp;
   getPages: GetPagesListDispatchProp;
 }
@@ -66,6 +76,10 @@ const mapDispatchToProps = (
 
     setEditableForPages: (pagesIds: number[], editable: boolean): void => {
       dispatch(setEditableForPages(pagesIds, editable));
+    },
+
+    openConfirmationModal: (title: string, message: string, confirm: () => void): void => {
+      dispatch(openConfirmationModal(title, message, confirm));
     },
 
     deletePages: deletePagesProp,

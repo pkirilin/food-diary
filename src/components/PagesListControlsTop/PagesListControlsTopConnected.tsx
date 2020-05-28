@@ -13,7 +13,15 @@ import {
   GetDateForNewPageDispatch,
 } from '../../action-types';
 import { RootState, ModalBody, ModalOptions } from '../../store';
-import { clearFilter, getPages, getNotesForPage, openModal, importPages } from '../../action-creators';
+import {
+  clearFilter,
+  getPages,
+  getNotesForPage,
+  openModal,
+  importPages,
+  openConfirmationModal,
+  openMessageModal,
+} from '../../action-creators';
 import { PagesFilter, NotesSearchRequest } from '../../models';
 
 type PagesListControlsTopDispatch = Dispatch<ClearPagesFilterAction | OpenModalAction> &
@@ -35,6 +43,8 @@ export interface PagesListControlsTopStateToPropsMapResult {
 export interface PagesListControlsTopDispatchToPropsMapResult {
   clearPagesFilter: () => void;
   openModal: (title: string, body: ModalBody, options?: ModalOptions) => void;
+  openMessageModal: (title: string, message: string) => void;
+  openConfirmationModal: (title: string, message: string, confirm: () => void) => void;
   getPages: GetPagesListDispatchProp;
   getNotesForPage: GetNotesForPageDispatchProp;
   importPages: ImportPagesDispatchProp;
@@ -72,6 +82,14 @@ const mapDispatchToProps = (dispatch: PagesListControlsTopDispatch): PagesListCo
 
     openModal: (title: string, body: ModalBody, options?: ModalOptions): void => {
       dispatch(openModal(title, body, options));
+    },
+
+    openMessageModal: (title: string, message: string): void => {
+      dispatch(openMessageModal(title, message));
+    },
+
+    openConfirmationModal: (title: string, message: string, confirm: () => void): void => {
+      dispatch(openConfirmationModal(title, message, confirm));
     },
 
     getPages: getPagesProp,

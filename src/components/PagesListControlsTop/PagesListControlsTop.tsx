@@ -29,6 +29,8 @@ const PagesListControlsTop: React.FC<PagesListControlsTopProps> = ({
   isPageOperationInProcess,
   isNoteOperationInProcess,
   openModal,
+  openMessageModal,
+  openConfirmationModal,
   importPages,
 }: PagesListControlsTopProps) => {
   const match = useRouteMatch<{ [key: string]: string }>('/pages/:id');
@@ -41,6 +43,15 @@ const PagesListControlsTop: React.FC<PagesListControlsTopProps> = ({
     isNoteOperationInProcess;
 
   const isClearFilterDisabled = isControlDisabled || !isPagesFilterChanged;
+
+  const runImportAsync = async (file: File): Promise<void> => {
+    const { type } = await importPages(file);
+
+    if (type === PagesOperationsActionTypes.ImportSuccess) {
+      await getPages(pagesFilter);
+      openMessageModal('Import success', 'Pages has been successfully imported from file');
+    }
+  };
 
   const handleAddIconClick = (): void => {
     openModal('New page', <PageCreateFormConnected></PageCreateFormConnected>, {
@@ -78,25 +89,20 @@ const PagesListControlsTop: React.FC<PagesListControlsTopProps> = ({
     });
   };
 
-  const handleImportPagesFileChange = async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
+  const handleImportPagesFileChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const target = event.target;
 
     try {
       const file = event.target.files?.item(0);
 
       if (file) {
-        const isImportConfirmed = window.confirm(
+        openConfirmationModal(
+          'Import warning',
           'Pages import is going to be started. Import may update or overwrite existing data from file and may cause data loss. Continue?',
+          () => {
+            runImportAsync(file);
+          },
         );
-
-        if (isImportConfirmed) {
-          const { type } = await importPages(file);
-
-          if (type === PagesOperationsActionTypes.ImportSuccess) {
-            await getPages(pagesFilter);
-            alert('Pages has been successfully imported from file');
-          }
-        }
       }
     } finally {
       // Cleaning file input value. Without this change handler will not be executed

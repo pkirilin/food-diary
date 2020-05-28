@@ -8,10 +8,11 @@ import {
   DeleteCategoryDispatch,
   DeleteCategoryDispatchProp,
   GetCategoriesListDispatchProp,
+  OpenModalAction,
 } from '../../action-types';
-import { setEditableForCategories, deleteCategory, getCategories } from '../../action-creators';
+import { setEditableForCategories, deleteCategory, getCategories, openConfirmationModal } from '../../action-creators';
 
-type CategoriesListItemDispatch = Dispatch<SetEditableForCategoriesAction> &
+type CategoriesListItemDispatch = Dispatch<SetEditableForCategoriesAction | OpenModalAction> &
   DeleteCategoryDispatch &
   GetCategoriesListDispatch;
 
@@ -24,6 +25,7 @@ export interface CategoriesListItemStateToPropsMapResult {
 
 export interface CategoriesListItemDispatchToPropsMapResult {
   setEditableForCategories: (categoriesIds: number[], editable: boolean) => void;
+  openConfirmationModal: (title: string, message: string, confirm: () => void) => void;
   deleteCategory: DeleteCategoryDispatchProp;
   getCategories: GetCategoriesListDispatchProp;
 }
@@ -49,6 +51,10 @@ const mapDispatchToProps = (dispatch: CategoriesListItemDispatch): CategoriesLis
   return {
     setEditableForCategories: (categoriesIds: number[], editable: boolean): void => {
       dispatch(setEditableForCategories(categoriesIds, editable));
+    },
+
+    openConfirmationModal: (title: string, message: string, confirm: () => void): void => {
+      dispatch(openConfirmationModal(title, message, confirm));
     },
 
     deleteCategory: deleteCategoryProp,
