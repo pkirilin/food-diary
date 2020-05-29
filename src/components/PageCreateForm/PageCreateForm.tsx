@@ -4,6 +4,7 @@ import { PageCreateFormStateToPropsMapResult, PageCreateFormDispatchToPropsMapRe
 import { FormGroup, Label, Input, Button } from '../Controls';
 import { PagesOperationsActionTypes } from '../../action-types';
 import { usePageValidation } from '../../hooks';
+import { ModalButtons } from '../ModalBlocks';
 
 interface PageCreateFormProps extends PageCreateFormStateToPropsMapResult, PageCreateFormDispatchToPropsMapResult {}
 
@@ -47,20 +48,18 @@ const PageCreateForm: React.FC<PageCreateFormProps> = ({
   const isInputDisabled = pageOperationStatus.performing;
 
   return (
-    <div className="page-create-form">
-      <div className="page-create-form__input">
-        <FormGroup>
-          <Label>Page date</Label>
-          <Input type="date" value={date} onChange={handleDateChange} disabled={isInputDisabled}></Input>
-        </FormGroup>
-      </div>
-      <div className="page-create-form__buttons">
+    <React.Fragment>
+      <FormGroup>
+        <Label>Page date</Label>
+        <Input type="date" value={date} onChange={handleDateChange} disabled={isInputDisabled}></Input>
+      </FormGroup>
+      <ModalButtons>
         <Button onClick={handleCreateClick} disabled={isInputDisabled || !isPageDateValid}>
           Create
         </Button>
         <Button onClick={handleCancelClick}>Cancel</Button>
-      </div>
-    </div>
+      </ModalButtons>
+    </React.Fragment>
   );
 };
 

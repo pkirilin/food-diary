@@ -5,6 +5,7 @@ import {
   PagesFilterFormStateToPropsMapResult,
 } from './PagesFilterFormConnected';
 import { Button, FormGroup, Label, Input } from '../Controls';
+import { ModalButtons } from '../ModalBlocks';
 
 interface PagesFilterFormProps extends PagesFilterFormStateToPropsMapResult, PagesFilterFormDispatchToPropsMapResult {}
 
@@ -50,22 +51,20 @@ const PagesFilterForm: React.FC<PagesFilterFormProps> = ({
 
   return (
     <div className="pages-filter-form">
-      <div className="pages-filter-form__input">
-        <FormGroup>
-          <Label>Start date</Label>
-          <Input type="date" value={startDate} onChange={handleStartDateChange}></Input>
-        </FormGroup>
-        <FormGroup>
-          <Label>End date</Label>
-          <Input type="date" value={endDate} onChange={handleEndDateChange}></Input>
-        </FormGroup>
-      </div>
-      <div className="pages-filter-form__buttons">
+      <FormGroup>
+        <Label>Start date</Label>
+        <Input type="date" value={startDate} onChange={handleStartDateChange}></Input>
+      </FormGroup>
+      <FormGroup>
+        <Label>End date</Label>
+        <Input type="date" value={endDate} onChange={handleEndDateChange}></Input>
+      </FormGroup>
+      <ModalButtons>
         <Button onClick={handleApplyClick} disabled={!areDateRangesValid}>
           Apply
         </Button>
         <Button onClick={handleCancelClick}>Cancel</Button>
-      </div>
+      </ModalButtons>
     </div>
   );
 };

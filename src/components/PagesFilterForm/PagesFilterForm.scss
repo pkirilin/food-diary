@@ -1,24 +1,5 @@
 .pages-filter-form {
-  &__input {
-    display: flex;
-    flex-direction: column;
-
-    & > :not(:first-child) {
-      margin-top: 10px;
-    }
-  }
-
-  &__buttons {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 20px;
-
-    & > :not(:first-child) {
-      margin-left: 10px;
-    }
-
-    & > * {
-      flex: 0.25;
-    }
+  & > :not(:first-child):not(:last-child) {
+    margin-top: 10px;
   }
 }

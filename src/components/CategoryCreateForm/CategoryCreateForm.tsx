@@ -3,6 +3,7 @@ import './CategoryCreateForm.scss';
 import { CategoryCreateFormDispatchToPropsMapResult } from './CategoryCreateFormConnected';
 import { FormGroup, Label, Input, Button } from '../Controls';
 import { useCategoryValidation } from '../../hooks';
+import { ModalButtons } from '../ModalBlocks';
 
 type CategoryCreateFormProps = CategoryCreateFormDispatchToPropsMapResult;
 
@@ -29,25 +30,18 @@ const CategoryCreateForm: React.FC<CategoryCreateFormProps> = ({
   };
 
   return (
-    <div className="category-create-form">
-      <div className="category-create-form__input">
-        <FormGroup>
-          <Label>Category name</Label>
-          <Input
-            type="text"
-            placeholder="Category name"
-            value={categoryName}
-            onChange={handleCategoryNameChange}
-          ></Input>
-        </FormGroup>
-      </div>
-      <div className="category-create-form__buttons">
+    <React.Fragment>
+      <FormGroup>
+        <Label>Category name</Label>
+        <Input type="text" placeholder="Category name" value={categoryName} onChange={handleCategoryNameChange}></Input>
+      </FormGroup>
+      <ModalButtons>
         <Button onClick={handleCreateClick} disabled={!isCategoryNameValid}>
           Create
         </Button>
         <Button onClick={handleCancelClick}>Cancel</Button>
-      </div>
-    </div>
+      </ModalButtons>
+    </React.Fragment>
   );
 };
 
