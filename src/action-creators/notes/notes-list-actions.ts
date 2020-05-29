@@ -14,7 +14,7 @@ import {
   GetNotesForMealActions,
 } from '../../action-types';
 import { getNotesAsync } from '../../services';
-import { NoteItem, MealType, NotesForMealSearchRequest, NotesSearchRequest } from '../../models';
+import { NoteItem, MealType, NotesForMealSearchRequest, NotesSearchRequest, ErrorReason } from '../../models';
 
 const getNotesForPageRequest = (loadingMessage?: string): GetNotesForPageRequestAction => {
   return {
@@ -79,18 +79,25 @@ export const getNotesForPage: GetNotesForPageActionCreator = (request: NotesSear
         return dispatch(getNotesForPageSuccess(noteItems));
       }
 
+      let errorMessage = `${NotesListBaseErrorMessages.NotesForPage}`;
+
       switch (response.status) {
         case 400:
-          return dispatch(getNotesForPageError(`${NotesListBaseErrorMessages.NotesForPage}: wrong request data`));
+          errorMessage += `: ${ErrorReason.WrongRequestData}`;
+          break;
         case 404:
-          return dispatch(getNotesForPageError(`${NotesListBaseErrorMessages.NotesForPage}: page not found`));
+          errorMessage += `: page with id = ${request.pageId} not found`;
+          break;
         case 500:
-          return dispatch(getNotesForPageError(`${NotesListBaseErrorMessages.NotesForPage}: server error`));
+          errorMessage += `: ${ErrorReason.ServerError}`;
+          break;
         default:
-          return dispatch(getNotesForPageError(`${NotesListBaseErrorMessages.NotesForPage}: unknown response code`));
+          errorMessage += `: ${ErrorReason.UnknownResponseCode}`;
+          break;
       }
+
+      return dispatch(getNotesForPageError(errorMessage));
     } catch (error) {
-      console.error(error);
       return dispatch(getNotesForPageError(NotesListBaseErrorMessages.NotesForPage));
     }
   };
@@ -112,20 +119,22 @@ export const getNotesForMeal: GetNotesForMealActionCreator = ({ pageId, mealType
         return dispatch(getNotesForMealSuccess(mealType, noteItems));
       }
 
+      let errorMessage = `${NotesListBaseErrorMessages.NotesForMeal}`;
+
       switch (response.status) {
         case 400:
-          return dispatch(
-            getNotesForMealError(mealType, `${NotesListBaseErrorMessages.NotesForMeal}: wrong request data`),
-          );
+          errorMessage += `: ${ErrorReason.WrongRequestData}`;
+          break;
         case 500:
-          return dispatch(getNotesForMealError(mealType, `${NotesListBaseErrorMessages.NotesForMeal}: server error`));
+          errorMessage += `: ${ErrorReason.ServerError}`;
+          break;
         default:
-          return dispatch(
-            getNotesForMealError(mealType, `${NotesListBaseErrorMessages.NotesForMeal}: unknown response code`),
-          );
+          errorMessage += `: ${ErrorReason.UnknownResponseCode}`;
+          break;
       }
+
+      return dispatch(getNotesForMealError(mealType, errorMessage));
     } catch (error) {
-      console.error(error);
       return dispatch(getNotesForMealError(mealType, NotesListBaseErrorMessages.NotesForMeal));
     }
   };

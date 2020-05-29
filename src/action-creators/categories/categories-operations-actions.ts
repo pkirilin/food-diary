@@ -16,10 +16,12 @@ import {
   EditCategoryActions,
   DeleteCategoryActionCreator,
   DeleteCategoryActions,
+  OpenModalAction,
 } from '../../action-types';
-import { CategoryCreateEdit, CategoryEditRequest } from '../../models';
+import { CategoryCreateEdit, CategoryEditRequest, ErrorReason } from '../../models';
 import { createCategoryAsync, editCategoryAsync, deleteCategoryAsync } from '../../services';
 import { readBadRequestResponseAsync } from '../../utils/bad-request-response-reader';
+import { openMessageModal } from '../modal-actions';
 
 const createCategoryRequest = (category: CategoryCreateEdit, operationMessage: string): CreateCategoryRequestAction => {
   return {
@@ -84,7 +86,7 @@ const deleteCategoryError = (error: string): DeleteCategoryErrorAction => {
   };
 };
 
-enum CategoriesOperationsBaseErrorMessages {
+enum CategoriesOperationsErrorMessages {
   Create = 'Failed to create category',
   Edit = 'Failed to update category',
   Delete = 'Failed to delete category',
@@ -92,7 +94,7 @@ enum CategoriesOperationsBaseErrorMessages {
 
 export const createCategory: CreateCategoryActionCreator = (category: CategoryCreateEdit) => {
   return async (
-    dispatch: Dispatch<CreateCategoryActions>,
+    dispatch: Dispatch<CreateCategoryActions | OpenModalAction>,
   ): Promise<CreateCategorySuccessAction | CreateCategoryErrorAction> => {
     dispatch(createCategoryRequest(category, 'Creating category'));
     try {
@@ -103,33 +105,33 @@ export const createCategory: CreateCategoryActionCreator = (category: CategoryCr
         return dispatch(createCategorySuccess(+createdCategoryIdStr));
       }
 
+      let errorMessage = `${CategoriesOperationsErrorMessages.Create}`;
+
       switch (response.status) {
         case 400:
           const badRequestResponse = await readBadRequestResponseAsync(response);
-          alert(`${CategoriesOperationsBaseErrorMessages.Create}: ${badRequestResponse}`);
-          return dispatch(
-            createCategoryError(`${CategoriesOperationsBaseErrorMessages.Create}: ${badRequestResponse}`),
-          );
+          errorMessage += `: ${badRequestResponse}`;
+          break;
         case 500:
-          alert(`${CategoriesOperationsBaseErrorMessages.Create}: server error`);
-          return dispatch(createCategoryError(`${CategoriesOperationsBaseErrorMessages.Create}: server error`));
+          errorMessage += `: ${ErrorReason.ServerError}`;
+          break;
         default:
-          alert(`${CategoriesOperationsBaseErrorMessages.Create}: unknown response code`);
-          return dispatch(
-            createCategoryError(`${CategoriesOperationsBaseErrorMessages.Create}: unknown response code`),
-          );
+          errorMessage += `: ${ErrorReason.UnknownResponseCode}`;
+          break;
       }
+
+      dispatch(openMessageModal('Error', errorMessage));
+      return dispatch(createCategoryError(errorMessage));
     } catch (error) {
-      console.error(error);
-      alert(CategoriesOperationsBaseErrorMessages.Create);
-      return dispatch(createCategoryError(CategoriesOperationsBaseErrorMessages.Create));
+      dispatch(openMessageModal('Error', CategoriesOperationsErrorMessages.Create));
+      return dispatch(createCategoryError(CategoriesOperationsErrorMessages.Create));
     }
   };
 };
 
 export const editCategory: EditCategoryActionCreator = (request: CategoryEditRequest) => {
   return async (
-    dispatch: Dispatch<EditCategoryActions>,
+    dispatch: Dispatch<EditCategoryActions | OpenModalAction>,
   ): Promise<EditCategorySuccessAction | EditCategoryErrorAction> => {
     dispatch(editCategoryRequest(request, 'Updating category'));
     try {
@@ -139,29 +141,33 @@ export const editCategory: EditCategoryActionCreator = (request: CategoryEditReq
         return dispatch(editCategorySuccess());
       }
 
+      let errorMessage = `${CategoriesOperationsErrorMessages.Edit}`;
+
       switch (response.status) {
         case 400:
           const badRequestResponse = await readBadRequestResponseAsync(response);
-          alert(`${CategoriesOperationsBaseErrorMessages.Edit}: ${badRequestResponse}`);
-          return dispatch(editCategoryError(`${CategoriesOperationsBaseErrorMessages.Edit}: ${badRequestResponse}`));
+          errorMessage += `: ${badRequestResponse}`;
+          break;
         case 500:
-          alert(`${CategoriesOperationsBaseErrorMessages.Edit}: server error`);
-          return dispatch(editCategoryError(`${CategoriesOperationsBaseErrorMessages.Edit}: server error`));
+          errorMessage += `: ${ErrorReason.ServerError}`;
+          break;
         default:
-          alert(`${CategoriesOperationsBaseErrorMessages.Edit}: unknown response code`);
-          return dispatch(editCategoryError(`${CategoriesOperationsBaseErrorMessages.Edit}: unknown response code`));
+          errorMessage += `: ${ErrorReason.UnknownResponseCode}`;
+          break;
       }
+
+      dispatch(openMessageModal('Error', errorMessage));
+      return dispatch(editCategoryError(errorMessage));
     } catch (error) {
-      console.error(error);
-      alert(CategoriesOperationsBaseErrorMessages.Edit);
-      return dispatch(editCategoryError(CategoriesOperationsBaseErrorMessages.Edit));
+      dispatch(openMessageModal('Error', CategoriesOperationsErrorMessages.Edit));
+      return dispatch(editCategoryError(CategoriesOperationsErrorMessages.Edit));
     }
   };
 };
 
 export const deleteCategory: DeleteCategoryActionCreator = (categoryId: number) => {
   return async (
-    dispatch: Dispatch<DeleteCategoryActions>,
+    dispatch: Dispatch<DeleteCategoryActions | OpenModalAction>,
   ): Promise<DeleteCategorySuccessAction | DeleteCategoryErrorAction> => {
     dispatch(deleteCategoryRequest('Deleting category'));
     try {
@@ -171,26 +177,26 @@ export const deleteCategory: DeleteCategoryActionCreator = (categoryId: number) 
         return dispatch(deleteCategorySuccess());
       }
 
+      let errorMessage = `${CategoriesOperationsErrorMessages.Delete}`;
+
       switch (response.status) {
         case 400:
           const badRequestResponse = await readBadRequestResponseAsync(response);
-          alert(`${CategoriesOperationsBaseErrorMessages.Delete}: ${badRequestResponse}`);
-          return dispatch(
-            deleteCategoryError(`${CategoriesOperationsBaseErrorMessages.Delete}: ${badRequestResponse}`),
-          );
+          errorMessage += `: ${badRequestResponse}`;
+          break;
         case 500:
-          alert(`${CategoriesOperationsBaseErrorMessages.Delete}: server error`);
-          return dispatch(deleteCategoryError(`${CategoriesOperationsBaseErrorMessages.Delete}: server error`));
+          errorMessage += `: ${ErrorReason.ServerError}`;
+          break;
         default:
-          alert(`${CategoriesOperationsBaseErrorMessages.Delete}: unknown response code`);
-          return dispatch(
-            deleteCategoryError(`${CategoriesOperationsBaseErrorMessages.Delete}: unknown response code`),
-          );
+          errorMessage += `: ${ErrorReason.UnknownResponseCode}`;
+          break;
       }
+
+      dispatch(openMessageModal('Error', errorMessage));
+      return dispatch(deleteCategoryError(errorMessage));
     } catch (error) {
-      console.error(error);
-      alert(CategoriesOperationsBaseErrorMessages.Delete);
-      return dispatch(deleteCategoryError(CategoriesOperationsBaseErrorMessages.Delete));
+      dispatch(openMessageModal('Error', CategoriesOperationsErrorMessages.Delete));
+      return dispatch(deleteCategoryError(CategoriesOperationsErrorMessages.Delete));
     }
   };
 };

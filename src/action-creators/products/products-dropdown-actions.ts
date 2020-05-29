@@ -1,5 +1,5 @@
 import { Dispatch } from 'redux';
-import { ProductDropdownItem, ProductDropdownSearchRequest } from '../../models';
+import { ProductDropdownItem, ProductDropdownSearchRequest, ErrorReason } from '../../models';
 import {
   GetProductDropdownItemsSuccessAction,
   GetProductDropdownItemsErrorAction,
@@ -33,13 +33,16 @@ const getProductDropdownItemsError = (error?: string): GetProductDropdownItemsEr
   };
 };
 
+enum ProductsDropdownErrorMessages {
+  GetItems = 'Failed to get products',
+}
+
 export const getProductDropdownItems: GetProductDropdownItemsActionCreator = (
   request: ProductDropdownSearchRequest,
 ) => {
   return async (
     dispatch: Dispatch<GetProductDropdownItemsActions>,
   ): Promise<GetProductDropdownItemsSuccessAction | GetProductDropdownItemsErrorAction> => {
-    const baseErrorMessage = 'Failed to get products';
     dispatch(getProductDropdownItemsRequest('Loading products'));
     try {
       const response = await getProductDropdownItemsAsync(request);
@@ -49,17 +52,23 @@ export const getProductDropdownItems: GetProductDropdownItemsActionCreator = (
         return dispatch(getProductDropdownItemsSuccess(productDropdownItems));
       }
 
+      let errorMessage = `${ProductsDropdownErrorMessages.GetItems}`;
+
       switch (response.status) {
         case 400:
-          return dispatch(getProductDropdownItemsError(`${baseErrorMessage}: wrong request data`));
+          errorMessage += `: ${ErrorReason.WrongRequestData}`;
+          break;
         case 500:
-          return dispatch(getProductDropdownItemsError(`${baseErrorMessage}: server error`));
+          errorMessage += `: ${ErrorReason.ServerError}`;
+          break;
         default:
-          return dispatch(getProductDropdownItemsError(`${baseErrorMessage}: unknown response code`));
+          errorMessage += `: ${ErrorReason.UnknownResponseCode}`;
+          break;
       }
+
+      return dispatch(getProductDropdownItemsError(errorMessage));
     } catch (error) {
-      console.error(error);
-      return dispatch(getProductDropdownItemsError(baseErrorMessage));
+      return dispatch(getProductDropdownItemsError(ProductsDropdownErrorMessages.GetItems));
     }
   };
 };

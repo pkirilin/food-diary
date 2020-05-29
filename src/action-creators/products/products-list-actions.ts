@@ -8,7 +8,7 @@ import {
   GetProductsListActionCreator,
   GetProductsListActions,
 } from '../../action-types';
-import { ProductItem, ProductsFilter } from '../../models';
+import { ProductItem, ProductsFilter, ErrorReason } from '../../models';
 import { getProductsAsync } from '../../services';
 
 const getProductsRequest = (loadingMessage?: string): GetProductsListRequestAction => {
@@ -33,11 +33,14 @@ const getProductsError = (errorMessage: string): GetProductsListErrorAction => {
   };
 };
 
+enum ProductsListErrorMessages {
+  GetList = 'Failed to get products',
+}
+
 export const getProducts: GetProductsListActionCreator = (productsFilter: ProductsFilter) => {
   return async (
     dispatch: Dispatch<GetProductsListActions>,
   ): Promise<GetProductsListSuccessAction | GetProductsListErrorAction> => {
-    const baseErrorMessage = 'Failed to get products';
     dispatch(getProductsRequest('Loading products list'));
     try {
       const response = await getProductsAsync(productsFilter);
@@ -47,19 +50,26 @@ export const getProducts: GetProductsListActionCreator = (productsFilter: Produc
         return dispatch(getProductsSuccess(productItems, totalProductsCount));
       }
 
+      let errorMessage = `${ProductsListErrorMessages.GetList}`;
+
       switch (response.status) {
         case 400:
-          return dispatch(getProductsError(`${baseErrorMessage}: wrong request data`));
+          errorMessage += `: ${ErrorReason.WrongRequestData}`;
+          break;
         case 404:
-          return dispatch(getProductsError(`${baseErrorMessage}: category not found`));
+          errorMessage += `: category with id = ${productsFilter.categoryId} not found`;
+          break;
         case 500:
-          return dispatch(getProductsError(`${baseErrorMessage}: server error`));
+          errorMessage += `: ${ErrorReason.ServerError}`;
+          break;
         default:
-          return dispatch(getProductsError(`${baseErrorMessage}: unknown response code`));
+          errorMessage += `: ${ErrorReason.UnknownResponseCode}`;
+          break;
       }
+
+      return dispatch(getProductsError(errorMessage));
     } catch (error) {
-      console.error(baseErrorMessage);
-      return dispatch(getProductsError(baseErrorMessage));
+      return dispatch(getProductsError(ProductsListErrorMessages.GetList));
     }
   };
 };

@@ -16,11 +16,13 @@ import {
   EditNoteActions,
   DeleteNoteActionCreator,
   DeleteNoteActions,
+  OpenModalAction,
 } from '../../action-types';
-import { NoteCreateEdit, MealType, NoteDeleteRequest } from '../../models';
+import { NoteCreateEdit, MealType, NoteDeleteRequest, ErrorReason } from '../../models';
 import { createNoteAsync, editNoteAsync, deleteNoteAsync } from '../../services';
 import { NoteEditRequest } from '../../models';
 import { readBadRequestResponseAsync } from '../../utils/bad-request-response-reader';
+import { openMessageModal } from '../modal-actions';
 
 const createNoteRequest = (note: NoteCreateEdit, operationMessage: string): CreateNoteRequestAction => {
   return {
@@ -91,14 +93,16 @@ const deleteNoteError = (mealType: MealType, error: string): DeleteNoteErrorActi
   };
 };
 
-enum NotesOperationsBaseErrorMessages {
+enum NotesOperationsErrorMessages {
   Create = 'Failed to create note',
   Edit = 'Failed to update note',
   Delete = 'Failed to delete note',
 }
 
 export const createNote: CreateNoteActionCreator = (note: NoteCreateEdit) => {
-  return async (dispatch: Dispatch<CreateNoteActions>): Promise<CreateNoteSuccessAction | CreateNoteErrorAction> => {
+  return async (
+    dispatch: Dispatch<CreateNoteActions | OpenModalAction>,
+  ): Promise<CreateNoteSuccessAction | CreateNoteErrorAction> => {
     dispatch(createNoteRequest(note, 'Creating note'));
     try {
       const response = await createNoteAsync(note);
@@ -107,31 +111,34 @@ export const createNote: CreateNoteActionCreator = (note: NoteCreateEdit) => {
         return dispatch(createNoteSuccess(note.mealType));
       }
 
+      let errorMessage = `${NotesOperationsErrorMessages.Create}`;
+
       switch (response.status) {
         case 400:
           const badRequestResponse = await readBadRequestResponseAsync(response);
-          alert(`${NotesOperationsBaseErrorMessages.Create}: ${badRequestResponse}`);
-          return dispatch(
-            createNoteError(note.mealType, `${NotesOperationsBaseErrorMessages.Create}: ${badRequestResponse}`),
-          );
+          errorMessage += `: ${badRequestResponse}`;
+          break;
         case 500:
-          alert(`${NotesOperationsBaseErrorMessages.Create}: server error`);
-          return dispatch(createNoteError(note.mealType, `${NotesOperationsBaseErrorMessages.Create}: server error`));
+          errorMessage += `: ${ErrorReason.ServerError}`;
+          break;
         default:
-          alert(`${NotesOperationsBaseErrorMessages.Create}: unknown response code`);
-          return dispatch(
-            createNoteError(note.mealType, `${NotesOperationsBaseErrorMessages.Create}: unknown response code`),
-          );
+          errorMessage += `: ${ErrorReason.UnknownResponseCode}`;
+          break;
       }
+
+      dispatch(openMessageModal('Error', errorMessage));
+      return dispatch(createNoteError(note.mealType, errorMessage));
     } catch (error) {
-      alert(NotesOperationsBaseErrorMessages.Create);
-      return dispatch(createNoteError(note.mealType, NotesOperationsBaseErrorMessages.Create));
+      dispatch(openMessageModal('Error', NotesOperationsErrorMessages.Create));
+      return dispatch(createNoteError(note.mealType, NotesOperationsErrorMessages.Create));
     }
   };
 };
 
 export const editNote: EditNoteActionCreator = (request: NoteEditRequest) => {
-  return async (dispatch: Dispatch<EditNoteActions>): Promise<EditNoteSuccessAction | EditNoteErrorAction> => {
+  return async (
+    dispatch: Dispatch<EditNoteActions | OpenModalAction>,
+  ): Promise<EditNoteSuccessAction | EditNoteErrorAction> => {
     dispatch(editNoteRequest(request, 'Updating note'));
     try {
       const response = await editNoteAsync(request);
@@ -140,33 +147,34 @@ export const editNote: EditNoteActionCreator = (request: NoteEditRequest) => {
         return dispatch(editNoteSuccess(request.note.mealType));
       }
 
+      let errorMessage = `${NotesOperationsErrorMessages.Edit}`;
+
       switch (response.status) {
         case 400:
           const badRequestResponse = await readBadRequestResponseAsync(response);
-          alert(`${NotesOperationsBaseErrorMessages.Edit}: ${badRequestResponse}`);
-          return dispatch(
-            editNoteError(request.note.mealType, `${NotesOperationsBaseErrorMessages.Edit}: ${badRequestResponse}`),
-          );
+          errorMessage += `: ${badRequestResponse}`;
+          break;
         case 500:
-          alert(`${NotesOperationsBaseErrorMessages.Edit}: server error`);
-          return dispatch(
-            editNoteError(request.note.mealType, `${NotesOperationsBaseErrorMessages.Edit}: server error`),
-          );
+          errorMessage += `: ${ErrorReason.ServerError}`;
+          break;
         default:
-          alert(`${NotesOperationsBaseErrorMessages.Edit}: unknown response code`);
-          return dispatch(
-            editNoteError(request.note.mealType, `${NotesOperationsBaseErrorMessages.Edit}: unknown response code`),
-          );
+          errorMessage += `: ${ErrorReason.UnknownResponseCode}`;
+          break;
       }
+
+      dispatch(openMessageModal('Error', errorMessage));
+      return dispatch(editNoteError(request.note.mealType, errorMessage));
     } catch (error) {
-      alert(NotesOperationsBaseErrorMessages.Edit);
-      return dispatch(editNoteError(request.note.mealType, NotesOperationsBaseErrorMessages.Edit));
+      dispatch(openMessageModal('Error', NotesOperationsErrorMessages.Edit));
+      return dispatch(editNoteError(request.note.mealType, NotesOperationsErrorMessages.Edit));
     }
   };
 };
 
 export const deleteNote: DeleteNoteActionCreator = (request: NoteDeleteRequest) => {
-  return async (dispatch: Dispatch<DeleteNoteActions>): Promise<DeleteNoteSuccessAction | DeleteNoteErrorAction> => {
+  return async (
+    dispatch: Dispatch<DeleteNoteActions | OpenModalAction>,
+  ): Promise<DeleteNoteSuccessAction | DeleteNoteErrorAction> => {
     dispatch(deleteNoteRequest(request, 'Deleting note'));
     try {
       const response = await deleteNoteAsync(request.id);
@@ -175,27 +183,26 @@ export const deleteNote: DeleteNoteActionCreator = (request: NoteDeleteRequest) 
         return dispatch(deleteNoteSuccess(request.mealType));
       }
 
+      let errorMessage = `${NotesOperationsErrorMessages.Delete}`;
+
       switch (response.status) {
         case 400:
           const badRequestResponse = await readBadRequestResponseAsync(response);
-          alert(`${NotesOperationsBaseErrorMessages.Delete}: ${badRequestResponse}`);
-          return dispatch(
-            deleteNoteError(request.mealType, `${NotesOperationsBaseErrorMessages.Delete}: ${badRequestResponse}`),
-          );
+          errorMessage += `: ${badRequestResponse}`;
+          break;
         case 500:
-          alert(`${NotesOperationsBaseErrorMessages.Delete}: server error`);
-          return dispatch(
-            deleteNoteError(request.mealType, `${NotesOperationsBaseErrorMessages.Delete}: server error`),
-          );
+          errorMessage += `: ${ErrorReason.ServerError}`;
+          break;
         default:
-          alert(`${NotesOperationsBaseErrorMessages.Delete}: unknown response code`);
-          return dispatch(
-            deleteNoteError(request.mealType, `${NotesOperationsBaseErrorMessages.Delete}: unknown response code`),
-          );
+          errorMessage += `: ${ErrorReason.UnknownResponseCode}`;
+          break;
       }
+
+      dispatch(openMessageModal('Error', errorMessage));
+      return dispatch(deleteNoteError(request.mealType, errorMessage));
     } catch (error) {
-      alert(NotesOperationsBaseErrorMessages.Delete);
-      return dispatch(deleteNoteError(request.mealType, NotesOperationsBaseErrorMessages.Delete));
+      dispatch(openMessageModal('Error', NotesOperationsErrorMessages.Delete));
+      return dispatch(deleteNoteError(request.mealType, NotesOperationsErrorMessages.Delete));
     }
   };
 };

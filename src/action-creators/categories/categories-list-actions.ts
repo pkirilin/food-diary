@@ -8,7 +8,7 @@ import {
   GetCategoriesListActionCreator,
   GetCategoriesListActions,
 } from '../../action-types';
-import { CategoryItem } from '../../models';
+import { CategoryItem, ErrorReason } from '../../models';
 import { getCategoriesAsync } from '../../services';
 
 const getCategoriesRequest = (loadingMessage?: string): GetCategoriesListRequestAction => {
@@ -32,11 +32,14 @@ const getCategoriesError = (errorMessage: string): GetCategoriesListErrorAction 
   };
 };
 
+enum CategoriesListErrorMessages {
+  GetList = 'Failed to get categories',
+}
+
 export const getCategories: GetCategoriesListActionCreator = () => {
   return async (
     dispatch: Dispatch<GetCategoriesListActions>,
   ): Promise<GetCategoriesListSuccessAction | GetCategoriesListErrorAction> => {
-    const baseErrorMessage = 'Failed to get categories';
     dispatch(getCategoriesRequest('Loading categories'));
     try {
       const response = await getCategoriesAsync();
@@ -46,17 +49,23 @@ export const getCategories: GetCategoriesListActionCreator = () => {
         return dispatch(getCategoriesSuccess(categories));
       }
 
+      let errorMessage = `${CategoriesListErrorMessages.GetList}`;
+
       switch (response.status) {
         case 400:
-          return dispatch(getCategoriesError(`${baseErrorMessage}: wrong request data`));
+          errorMessage += `: ${ErrorReason.WrongRequestData}`;
+          break;
         case 500:
-          return dispatch(getCategoriesError(`${baseErrorMessage}: server error`));
+          errorMessage += `: ${ErrorReason.ServerError}`;
+          break;
         default:
-          return dispatch(getCategoriesError(`${baseErrorMessage}: unknown response code`));
+          errorMessage += `: ${ErrorReason.UnknownResponseCode}`;
+          break;
       }
+
+      return dispatch(getCategoriesError(errorMessage));
     } catch (error) {
-      console.error(error);
-      return dispatch(getCategoriesError(baseErrorMessage));
+      return dispatch(getCategoriesError(CategoriesListErrorMessages.GetList));
     }
   };
 };

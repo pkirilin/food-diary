@@ -6,7 +6,7 @@ import {
   GetCategoryDropdownItemsActionCreator,
   GetCategoryDropdownItemsActions,
 } from '../../action-types';
-import { CategoryDropdownItem, CategoryDropdownSearchRequest } from '../../models';
+import { CategoryDropdownItem, CategoryDropdownSearchRequest, ErrorReason } from '../../models';
 import { Dispatch } from 'redux';
 import { getCategoryDropdownItemsAsync } from '../../services';
 
@@ -33,13 +33,16 @@ const getCategoryDropdownItemsError = (error?: string): GetCategoryDropdownItems
   };
 };
 
+enum CategoriesDropdownErrorMessages {
+  GetItems = 'Failed to get categories',
+}
+
 export const getCategoryDropdownItems: GetCategoryDropdownItemsActionCreator = (
   request: CategoryDropdownSearchRequest,
 ) => {
   return async (
     dispatch: Dispatch<GetCategoryDropdownItemsActions>,
   ): Promise<GetCategoryDropdownItemsSuccessAction | GetCategoryDropdownItemsErrorAction> => {
-    const baseErrorMessage = 'Failed to get categories';
     dispatch(getCategoryDropdownItemsRequest('Loading categories'));
     try {
       const response = await getCategoryDropdownItemsAsync(request);
@@ -49,17 +52,23 @@ export const getCategoryDropdownItems: GetCategoryDropdownItemsActionCreator = (
         return dispatch(getCategoryDropdownItemsSuccess(categoryDropdownItems));
       }
 
+      let errorMessage = `${CategoriesDropdownErrorMessages.GetItems}`;
+
       switch (response.status) {
         case 400:
-          return dispatch(getCategoryDropdownItemsError(`${baseErrorMessage}: wrong request data`));
+          errorMessage += `: ${ErrorReason.WrongRequestData}`;
+          break;
         case 500:
-          return dispatch(getCategoryDropdownItemsError(`${baseErrorMessage}: server error`));
+          errorMessage += `: ${ErrorReason.ServerError}`;
+          break;
         default:
-          return dispatch(getCategoryDropdownItemsError(`${baseErrorMessage}: unknown response code`));
+          errorMessage += `: ${ErrorReason.UnknownResponseCode}`;
+          break;
       }
+
+      return dispatch(getCategoryDropdownItemsError(errorMessage));
     } catch (error) {
-      console.error(error);
-      return dispatch(getCategoryDropdownItemsError(baseErrorMessage));
+      return dispatch(getCategoryDropdownItemsError(CategoriesDropdownErrorMessages.GetItems));
     }
   };
 };

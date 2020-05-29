@@ -16,10 +16,12 @@ import {
   EditProductActions,
   DeleteProductActionCreator,
   DeleteProductActions,
+  OpenModalAction,
 } from '../../action-types';
-import { ProductEditRequest, ProductCreateEdit } from '../../models';
+import { ProductEditRequest, ProductCreateEdit, ErrorReason } from '../../models';
 import { createProductAsync, editProductAsync, deleteProductAsync } from '../../services';
 import { readBadRequestResponseAsync } from '../../utils/bad-request-response-reader';
+import { openMessageModal } from '../modal-actions';
 
 const createProductRequest = (product: ProductCreateEdit, operationMessage: string): CreateProductRequestAction => {
   return {
@@ -92,7 +94,7 @@ enum ProductsOperationsBaseErrorMessages {
 
 export const createProduct: CreateProductActionCreator = (product: ProductCreateEdit) => {
   return async (
-    dispatch: Dispatch<CreateProductActions>,
+    dispatch: Dispatch<CreateProductActions | OpenModalAction>,
   ): Promise<CreateProductSuccessAction | CreateProductErrorAction> => {
     dispatch(createProductRequest(product, 'Creating product'));
     try {
@@ -102,28 +104,34 @@ export const createProduct: CreateProductActionCreator = (product: ProductCreate
         return dispatch(createProductSuccess());
       }
 
+      let errorMessage = `${ProductsOperationsBaseErrorMessages.Create}`;
+
       switch (response.status) {
         case 400:
           const badRequestResponse = await readBadRequestResponseAsync(response);
-          alert(`${ProductsOperationsBaseErrorMessages.Create}: ${badRequestResponse}`);
-          return dispatch(createProductError(`${ProductsOperationsBaseErrorMessages.Create}: ${badRequestResponse}`));
+          errorMessage += `: ${badRequestResponse}`;
+          break;
         case 500:
-          alert(`${ProductsOperationsBaseErrorMessages.Create}: server error`);
-          return dispatch(createProductError(`${ProductsOperationsBaseErrorMessages.Create}: server error`));
+          errorMessage += `: ${ErrorReason.ServerError}`;
+          break;
         default:
-          alert(`${ProductsOperationsBaseErrorMessages.Create}: unknown response code`);
-          return dispatch(createProductError(`${ProductsOperationsBaseErrorMessages.Create}: unknown response code`));
+          errorMessage += `: ${ErrorReason.UnknownResponseCode}`;
+          break;
       }
+
+      dispatch(openMessageModal('Error', errorMessage));
+      return dispatch(createProductError(errorMessage));
     } catch (error) {
-      console.error(error);
-      alert(ProductsOperationsBaseErrorMessages.Create);
+      dispatch(openMessageModal('Error', ProductsOperationsBaseErrorMessages.Create));
       return dispatch(createProductError(ProductsOperationsBaseErrorMessages.Create));
     }
   };
 };
 
 export const editProduct: EditProductActionCreator = (request: ProductEditRequest) => {
-  return async (dispatch: Dispatch<EditProductActions>): Promise<EditProductSuccessAction | EditProductErrorAction> => {
+  return async (
+    dispatch: Dispatch<EditProductActions | OpenModalAction>,
+  ): Promise<EditProductSuccessAction | EditProductErrorAction> => {
     dispatch(editProductRequest(request, 'Updating product'));
     try {
       const response = await editProductAsync(request);
@@ -132,21 +140,25 @@ export const editProduct: EditProductActionCreator = (request: ProductEditReques
         return dispatch(editProductSuccess());
       }
 
+      let errorMessage = `${ProductsOperationsBaseErrorMessages.Edit}`;
+
       switch (response.status) {
         case 400:
           const badRequestResponse = await readBadRequestResponseAsync(response);
-          alert(`${ProductsOperationsBaseErrorMessages.Edit}: ${badRequestResponse}`);
-          return dispatch(editProductError(`${ProductsOperationsBaseErrorMessages.Edit}: ${badRequestResponse}`));
+          errorMessage += `: ${badRequestResponse}`;
+          break;
         case 500:
-          alert(`${ProductsOperationsBaseErrorMessages.Edit}: server error`);
-          return dispatch(editProductError(`${ProductsOperationsBaseErrorMessages.Edit}: server error`));
+          errorMessage += `: ${ErrorReason.ServerError}`;
+          break;
         default:
-          alert(`${ProductsOperationsBaseErrorMessages.Edit}: unknown response code`);
-          return dispatch(editProductError(`${ProductsOperationsBaseErrorMessages.Edit}: unknown response code`));
+          errorMessage += `: ${ErrorReason.UnknownResponseCode}`;
+          break;
       }
+
+      dispatch(openMessageModal('Error', errorMessage));
+      return dispatch(editProductError(errorMessage));
     } catch (error) {
-      console.error(error);
-      alert(ProductsOperationsBaseErrorMessages.Edit);
+      dispatch(openMessageModal('Error', ProductsOperationsBaseErrorMessages.Edit));
       return dispatch(editProductError(ProductsOperationsBaseErrorMessages.Edit));
     }
   };
@@ -154,7 +166,7 @@ export const editProduct: EditProductActionCreator = (request: ProductEditReques
 
 export const deleteProduct: DeleteProductActionCreator = (productId: number) => {
   return async (
-    dispatch: Dispatch<DeleteProductActions>,
+    dispatch: Dispatch<DeleteProductActions | OpenModalAction>,
   ): Promise<DeleteProductSuccessAction | DeleteProductErrorAction> => {
     dispatch(deleteProductRequest(productId, 'Deleting product'));
     try {
@@ -164,21 +176,25 @@ export const deleteProduct: DeleteProductActionCreator = (productId: number) => 
         return dispatch(deleteProductSuccess());
       }
 
+      let errorMessage = `${ProductsOperationsBaseErrorMessages.Delete}`;
+
       switch (response.status) {
         case 400:
           const badRequestResponse = await readBadRequestResponseAsync(response);
-          alert(`${ProductsOperationsBaseErrorMessages.Delete}: ${badRequestResponse}`);
-          return dispatch(deleteProductError(`${ProductsOperationsBaseErrorMessages.Delete}: ${badRequestResponse}`));
+          errorMessage += `: ${badRequestResponse}`;
+          break;
         case 500:
-          alert(`${ProductsOperationsBaseErrorMessages.Delete}: server error`);
-          return dispatch(deleteProductError(`${ProductsOperationsBaseErrorMessages.Delete}: server error`));
+          errorMessage += `: ${ErrorReason.ServerError}`;
+          break;
         default:
-          alert(`${ProductsOperationsBaseErrorMessages.Delete}: unknown response code`);
-          return dispatch(deleteProductError(`${ProductsOperationsBaseErrorMessages.Delete}: unknown response code`));
+          errorMessage += `: ${ErrorReason.UnknownResponseCode}`;
+          break;
       }
+
+      dispatch(openMessageModal('Error', errorMessage));
+      return dispatch(deleteProductError(errorMessage));
     } catch (error) {
-      console.error(error);
-      alert(ProductsOperationsBaseErrorMessages.Delete);
+      dispatch(openMessageModal('Error', ProductsOperationsBaseErrorMessages.Delete));
       return dispatch(deleteProductError(ProductsOperationsBaseErrorMessages.Delete));
     }
   };

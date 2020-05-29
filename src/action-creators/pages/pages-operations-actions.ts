@@ -1,5 +1,5 @@
 import { Dispatch } from 'redux';
-import { PageCreateEdit, PageEditRequest, PagesExportRequest } from '../../models';
+import { PageCreateEdit, PageEditRequest, PagesExportRequest, ErrorReason } from '../../models';
 import {
   PagesOperationsActionTypes,
   CreatePageSuccessAction,
@@ -32,6 +32,7 @@ import {
   GetDateForNewPageSuccessAction,
   GetDateForNewPageErrorAction,
   GetDateForNewPageRequestAction,
+  OpenModalAction,
 } from '../../action-types';
 import {
   createPageAsync,
@@ -42,6 +43,7 @@ import {
   getDateForNewPageAsync,
 } from '../../services';
 import { readBadRequestResponseAsync } from '../../utils/bad-request-response-reader';
+import { openMessageModal } from '../modal-actions';
 
 const createPageRequest = (page: PageCreateEdit, operationMessage: string): CreatePageRequestAction => {
   return {
@@ -168,7 +170,7 @@ const getDateForNewPageError = (error?: string): GetDateForNewPageErrorAction =>
   };
 };
 
-enum PagesOperationsBaseErrorMessages {
+enum PagesOperationsErrorMessages {
   Create = 'Failed to create page',
   Edit = 'Failed to update page',
   Delete = 'Failed to delete selected',
@@ -178,7 +180,9 @@ enum PagesOperationsBaseErrorMessages {
 }
 
 export const createPage: CreatePageActionCreator = (page: PageCreateEdit) => {
-  return async (dispatch: Dispatch<CreatePageActions>): Promise<CreatePageSuccessAction | CreatePageErrorAction> => {
+  return async (
+    dispatch: Dispatch<CreatePageActions | OpenModalAction>,
+  ): Promise<CreatePageSuccessAction | CreatePageErrorAction> => {
     dispatch(createPageRequest(page, 'Creating page'));
     try {
       const response = await createPageAsync(page);
@@ -188,28 +192,34 @@ export const createPage: CreatePageActionCreator = (page: PageCreateEdit) => {
         return dispatch(createPageSuccess(+createdPageIdStr));
       }
 
+      let errorMessage = `${PagesOperationsErrorMessages.Create}`;
+
       switch (response.status) {
         case 400:
           const badRequestResponse = await readBadRequestResponseAsync(response);
-          alert(`${PagesOperationsBaseErrorMessages.Create}: ${badRequestResponse}`);
-          return dispatch(createPageError(`${PagesOperationsBaseErrorMessages.Create}: ${badRequestResponse}`));
+          errorMessage += `: ${badRequestResponse}`;
+          break;
         case 500:
-          alert(`${PagesOperationsBaseErrorMessages.Create}: server error`);
-          return dispatch(createPageError(`${PagesOperationsBaseErrorMessages.Create}: server error`));
+          errorMessage += `: ${ErrorReason.ServerError}`;
+          break;
         default:
-          alert(`${PagesOperationsBaseErrorMessages.Create}: unknown response code`);
-          return dispatch(createPageError(`${PagesOperationsBaseErrorMessages.Create}: unknown response code`));
+          errorMessage += `: ${ErrorReason.UnknownResponseCode}`;
+          break;
       }
+
+      dispatch(openMessageModal('Error', errorMessage));
+      return dispatch(createPageError(errorMessage));
     } catch (error) {
-      console.error(error);
-      alert(PagesOperationsBaseErrorMessages.Create);
-      return dispatch(createPageError(PagesOperationsBaseErrorMessages.Create));
+      dispatch(openMessageModal('Error', PagesOperationsErrorMessages.Create));
+      return dispatch(createPageError(PagesOperationsErrorMessages.Create));
     }
   };
 };
 
 export const editPage: EditPageActionCreator = (request: PageEditRequest) => {
-  return async (dispatch: Dispatch<EditPageActions>): Promise<EditPageSuccessAction | EditPageErrorAction> => {
+  return async (
+    dispatch: Dispatch<EditPageActions | OpenModalAction>,
+  ): Promise<EditPageSuccessAction | EditPageErrorAction> => {
     dispatch(editPageRequest(request, 'Updating page'));
     try {
       const response = await editPageAsync(request);
@@ -218,28 +228,34 @@ export const editPage: EditPageActionCreator = (request: PageEditRequest) => {
         return dispatch(editPageSuccess());
       }
 
+      let errorMessage = `${PagesOperationsErrorMessages.Edit}`;
+
       switch (response.status) {
         case 400:
           const badRequestResponse = await readBadRequestResponseAsync(response);
-          alert(`${PagesOperationsBaseErrorMessages.Edit}: ${badRequestResponse}`);
-          return dispatch(editPageError(`${PagesOperationsBaseErrorMessages.Edit}: ${badRequestResponse}`));
+          errorMessage += `: ${badRequestResponse}`;
+          break;
         case 500:
-          alert(`${PagesOperationsBaseErrorMessages.Edit}: server error`);
-          return dispatch(editPageError(`${PagesOperationsBaseErrorMessages.Edit}: server error`));
+          errorMessage += `: ${ErrorReason.ServerError}`;
+          break;
         default:
-          alert(`${PagesOperationsBaseErrorMessages.Edit}: unknown response code`);
-          return dispatch(editPageError(`${PagesOperationsBaseErrorMessages.Edit}: unknown response code`));
+          errorMessage += `: ${ErrorReason.UnknownResponseCode}`;
+          break;
       }
+
+      dispatch(openMessageModal('Error', errorMessage));
+      return dispatch(editPageError(errorMessage));
     } catch (error) {
-      console.error(error);
-      alert(PagesOperationsBaseErrorMessages.Edit);
-      return dispatch(editPageError(PagesOperationsBaseErrorMessages.Edit));
+      dispatch(openMessageModal('Error', PagesOperationsErrorMessages.Edit));
+      return dispatch(editPageError(PagesOperationsErrorMessages.Edit));
     }
   };
 };
 
 export const deletePages: DeletePagesActionCreator = (pagesIds: number[]) => {
-  return async (dispatch: Dispatch<DeletePagesActions>): Promise<DeletePagesSuccessAction | DeletePagesErrorAction> => {
+  return async (
+    dispatch: Dispatch<DeletePagesActions | OpenModalAction>,
+  ): Promise<DeletePagesSuccessAction | DeletePagesErrorAction> => {
     const messageSuffixForPage = pagesIds.length > 1 ? 'pages' : 'page';
     dispatch(deletePagesRequest(`Deleting ${messageSuffixForPage}`));
     try {
@@ -249,38 +265,34 @@ export const deletePages: DeletePagesActionCreator = (pagesIds: number[]) => {
         return dispatch(deletePagesSuccess());
       }
 
+      let errorMessage = `${PagesOperationsErrorMessages.Delete} ${messageSuffixForPage}`;
+
       switch (response.status) {
         case 400:
           const badRequestResponse = await readBadRequestResponseAsync(response);
-          alert(`${PagesOperationsBaseErrorMessages.Delete} ${messageSuffixForPage}: ${badRequestResponse}`);
-          return dispatch(
-            deletePagesError(
-              `${PagesOperationsBaseErrorMessages.Delete} ${messageSuffixForPage}: ${badRequestResponse}`,
-            ),
-          );
+          errorMessage += `: ${badRequestResponse}`;
+          break;
         case 500:
-          alert(`${PagesOperationsBaseErrorMessages.Delete} ${messageSuffixForPage}: server error`);
-          return dispatch(
-            deletePagesError(`${PagesOperationsBaseErrorMessages.Delete} ${messageSuffixForPage}: server error`),
-          );
+          errorMessage += `: ${ErrorReason.ServerError}`;
+          break;
         default:
-          alert(`${PagesOperationsBaseErrorMessages.Delete} ${messageSuffixForPage}: unknown response code`);
-          return dispatch(
-            deletePagesError(
-              `${PagesOperationsBaseErrorMessages.Delete} ${messageSuffixForPage}: unknown response code`,
-            ),
-          );
+          errorMessage += `: ${ErrorReason.UnknownResponseCode}`;
+          break;
       }
+
+      dispatch(openMessageModal('Error', errorMessage));
+      return dispatch(deletePagesError(errorMessage));
     } catch (error) {
-      console.error(error);
-      alert(`${PagesOperationsBaseErrorMessages.Delete} ${messageSuffixForPage}`);
-      return dispatch(deletePagesError(`${PagesOperationsBaseErrorMessages.Delete} ${messageSuffixForPage}`));
+      dispatch(openMessageModal('Error', `${PagesOperationsErrorMessages.Delete} ${messageSuffixForPage}`));
+      return dispatch(deletePagesError(`${PagesOperationsErrorMessages.Delete} ${messageSuffixForPage}`));
     }
   };
 };
 
 export const exportPages: ExportPagesActionCreator = (request: PagesExportRequest) => {
-  return async (dispatch: Dispatch<ExportPagesActions>): Promise<ExportPagesSuccessAction | ExportPagesErrorAction> => {
+  return async (
+    dispatch: Dispatch<ExportPagesActions | OpenModalAction>,
+  ): Promise<ExportPagesSuccessAction | ExportPagesErrorAction> => {
     dispatch(exportPagesRequest('Exporting pages'));
     try {
       const response = await exportPagesAsync(request);
@@ -290,28 +302,34 @@ export const exportPages: ExportPagesActionCreator = (request: PagesExportReques
         return dispatch(exportPagesSuccess(blob));
       }
 
+      let errorMessage = `${PagesOperationsErrorMessages.Export}`;
+
       switch (response.status) {
         case 400:
           const badRequestResponse = await readBadRequestResponseAsync(response);
-          alert(`${PagesOperationsBaseErrorMessages.Export}: ${badRequestResponse}`);
-          return dispatch(exportPagesError(`${PagesOperationsBaseErrorMessages.Export}: ${badRequestResponse}`));
+          errorMessage += `: ${badRequestResponse}`;
+          break;
         case 500:
-          alert(`${PagesOperationsBaseErrorMessages.Export}: server error`);
-          return dispatch(exportPagesError(`${PagesOperationsBaseErrorMessages.Export}: server error`));
+          errorMessage += `: ${ErrorReason.ServerError}`;
+          break;
         default:
-          alert(`${PagesOperationsBaseErrorMessages.Export}: unknown response code`);
-          return dispatch(exportPagesError(`${PagesOperationsBaseErrorMessages.Export}: unknown response code`));
+          errorMessage += `: ${ErrorReason.UnknownResponseCode}`;
+          break;
       }
+
+      dispatch(openMessageModal('Error', errorMessage));
+      return dispatch(exportPagesError(errorMessage));
     } catch (error) {
-      console.error(error);
-      alert(PagesOperationsBaseErrorMessages.Export);
-      return dispatch(exportPagesError(PagesOperationsBaseErrorMessages.Export));
+      dispatch(openMessageModal('Error', PagesOperationsErrorMessages.Export));
+      return dispatch(exportPagesError(PagesOperationsErrorMessages.Export));
     }
   };
 };
 
 export const importPages: ImportPagesActionCreator = (importFile: File) => {
-  return async (dispatch: Dispatch<ImportPagesActions>): Promise<ImportPagesSuccessAction | ImportPagesErrorAction> => {
+  return async (
+    dispatch: Dispatch<ImportPagesActions | OpenModalAction>,
+  ): Promise<ImportPagesSuccessAction | ImportPagesErrorAction> => {
     dispatch(importPagesRequest('Importing pages'));
     try {
       const response = await importPagesAsync(importFile);
@@ -320,22 +338,26 @@ export const importPages: ImportPagesActionCreator = (importFile: File) => {
         return dispatch(importPagesSuccess());
       }
 
+      let errorMessage = `${PagesOperationsErrorMessages.Import}`;
+
       switch (response.status) {
         case 400:
           const badRequestResponse = await readBadRequestResponseAsync(response);
-          alert(`${PagesOperationsBaseErrorMessages.Import}: ${badRequestResponse}`);
-          return dispatch(importPagesError(`${PagesOperationsBaseErrorMessages.Import}: ${badRequestResponse}`));
+          errorMessage += `: ${badRequestResponse}`;
+          break;
         case 500:
-          alert(`${PagesOperationsBaseErrorMessages.Import}: server error`);
-          return dispatch(importPagesError(`${PagesOperationsBaseErrorMessages.Import}: server error`));
+          errorMessage += `: ${ErrorReason.ServerError}`;
+          break;
         default:
-          alert(`${PagesOperationsBaseErrorMessages.Import}: unknown response code`);
-          return dispatch(importPagesError(`${PagesOperationsBaseErrorMessages.Import}: unknown response code`));
+          errorMessage += `: ${ErrorReason.UnknownResponseCode}`;
+          break;
       }
+
+      dispatch(openMessageModal('Error', errorMessage));
+      return dispatch(importPagesError(errorMessage));
     } catch (error) {
-      console.error(error);
-      alert(PagesOperationsBaseErrorMessages.Import);
-      return dispatch(importPagesError(PagesOperationsBaseErrorMessages.Import));
+      dispatch(openMessageModal('Error', PagesOperationsErrorMessages.Import));
+      return dispatch(importPagesError(PagesOperationsErrorMessages.Import));
     }
   };
 };
@@ -353,16 +375,20 @@ export const getDateForNewPage: GetDateForNewPageActionCreator = () => {
         return dispatch(getDateForNewPageSuccess(dateForNewPage));
       }
 
+      let errorMessage = `${PagesOperationsErrorMessages.DateForNewPage}`;
+
       switch (response.status) {
         case 500:
-          return dispatch(getDateForNewPageError(`${PagesOperationsBaseErrorMessages.DateForNewPage}: server error`));
+          errorMessage += `: ${ErrorReason.ServerError}`;
+          break;
         default:
-          return dispatch(
-            getDateForNewPageError(`${PagesOperationsBaseErrorMessages.DateForNewPage}: unknown response code`),
-          );
+          errorMessage += `: ${ErrorReason.UnknownResponseCode}`;
+          break;
       }
+
+      return dispatch(getDateForNewPageError(errorMessage));
     } catch (error) {
-      return dispatch(getDateForNewPageError(PagesOperationsBaseErrorMessages.DateForNewPage));
+      return dispatch(getDateForNewPageError(PagesOperationsErrorMessages.DateForNewPage));
     }
   };
 };

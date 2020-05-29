@@ -1,5 +1,5 @@
 import { Dispatch } from 'redux';
-import { PagesFilter, PageItem } from '../../models';
+import { PagesFilter, PageItem, ErrorReason } from '../../models';
 import {
   GetPagesListSuccessAction,
   GetPagesListRequestAction,
@@ -34,11 +34,14 @@ const getPagesError = (errorMessage: string): GetPagesListErrorAction => {
   };
 };
 
+enum PagesListErrorMessages {
+  GetList = 'Failed to get pages list',
+}
+
 export const getPages: GetPagesListActionCreator = (filter: PagesFilter) => {
   return async (
     dispatch: Dispatch<GetPagesListActions>,
   ): Promise<GetPagesListSuccessAction | GetPagesListErrorAction> => {
-    const baseErrorMessage = 'Failed to get pages list';
     dispatch(getPagesRequest('Loading pages'));
     try {
       const response = await getPagesAsync(filter);
@@ -48,17 +51,23 @@ export const getPages: GetPagesListActionCreator = (filter: PagesFilter) => {
         return dispatch(getPagesSuccess(pages));
       }
 
+      let errorMessage = `${PagesListErrorMessages.GetList}`;
+
       switch (response.status) {
         case 400:
-          return dispatch(getPagesError(`${baseErrorMessage}: wrong request data`));
+          errorMessage += `: ${ErrorReason.WrongRequestData}`;
+          break;
         case 500:
-          return dispatch(getPagesError(`${baseErrorMessage}: server error`));
+          errorMessage += `: ${ErrorReason.ServerError}`;
+          break;
         default:
-          return dispatch(getPagesError(`${baseErrorMessage}: unknown response code`));
+          errorMessage += `: ${ErrorReason.UnknownResponseCode}`;
+          break;
       }
+
+      return dispatch(getPagesError(errorMessage));
     } catch (error) {
-      console.error(error);
-      return dispatch(getPagesError(baseErrorMessage));
+      return dispatch(getPagesError(PagesListErrorMessages.GetList));
     }
   };
 };
