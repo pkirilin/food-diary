@@ -13,9 +13,7 @@ function parseBadRequestResponseObject(responseObj: BadRequestResponseObject): B
     });
   }
 
-  return {
-    errors,
-  };
+  return { errors };
 }
 
 function getAllBadRequestErrorMessages(badRequestErrors: Map<string, Array<string>>): string[] {
@@ -43,5 +41,5 @@ export async function readBadRequestResponseAsync(response: Response): Promise<s
     return allErrorMessages.join('. ');
   }
 
-  return `Wrong request data`;
+  return 'Wrong request data';
 }

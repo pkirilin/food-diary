@@ -1,7 +1,7 @@
 import { PagesFilterState } from '../../store';
 import { PagesFilterActions, PagesFilterActionTypes } from '../../action-types';
 import { SortOrder } from '../../models';
-import { formatDate, DateFormat } from '../../utils/date-utils';
+import { formatDate, DateFormat } from '../../utils';
 
 function getInitialStartDate(): string {
   // Getting initial start date as current date minus 1 month

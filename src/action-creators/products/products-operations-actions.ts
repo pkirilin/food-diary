@@ -20,7 +20,7 @@ import {
 } from '../../action-types';
 import { ProductEditRequest, ProductCreateEdit, ErrorReason } from '../../models';
 import { createProductAsync, editProductAsync, deleteProductAsync } from '../../services';
-import { readBadRequestResponseAsync } from '../../utils/bad-request-response-reader';
+import { readBadRequestResponseAsync } from '../../utils';
 import { openMessageModal } from '../modal-actions';
 
 const createProductRequest = (product: ProductCreateEdit, operationMessage: string): CreateProductRequestAction => {

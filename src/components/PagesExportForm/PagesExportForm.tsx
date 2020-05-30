@@ -7,7 +7,7 @@ import {
   PagesExportFormDispatchToPropsMapResult,
 } from './PagesExportFormConnected';
 import { PagesOperationsActionTypes } from '../../action-types';
-import { downloadFile } from '../../utils/file-utils';
+import { downloadFile } from '../../utils';
 import { ExportFormat } from '../../models';
 import { ModalButtons } from '../ModalBlocks';
 

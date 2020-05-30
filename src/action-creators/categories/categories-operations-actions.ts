@@ -20,7 +20,7 @@ import {
 } from '../../action-types';
 import { CategoryCreateEdit, CategoryEditRequest, ErrorReason } from '../../models';
 import { createCategoryAsync, editCategoryAsync, deleteCategoryAsync } from '../../services';
-import { readBadRequestResponseAsync } from '../../utils/bad-request-response-reader';
+import { readBadRequestResponseAsync } from '../../utils';
 import { openMessageModal } from '../modal-actions';
 
 const createCategoryRequest = (category: CategoryCreateEdit, operationMessage: string): CreateCategoryRequestAction => {

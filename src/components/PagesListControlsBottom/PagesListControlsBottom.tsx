@@ -6,8 +6,7 @@ import {
 } from './PagesListControlsBottomConnected';
 import { SortOrder } from '../../models';
 import Icon from '../Icon';
-import { invertSortOrder } from '../../utils/filter-utils';
-import { formatDateStr, DateFormat } from '../../utils/date-utils';
+import { invertSortOrder, formatDateStr, DateFormat } from '../../utils';
 
 interface PagesListControlsBottomProps
   extends PagesListControlsBottomStateToPropsMapResult,

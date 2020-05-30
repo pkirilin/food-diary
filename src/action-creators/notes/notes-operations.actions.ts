@@ -21,7 +21,7 @@ import {
 import { NoteCreateEdit, MealType, NoteDeleteRequest, ErrorReason } from '../../models';
 import { createNoteAsync, editNoteAsync, deleteNoteAsync } from '../../services';
 import { NoteEditRequest } from '../../models';
-import { readBadRequestResponseAsync } from '../../utils/bad-request-response-reader';
+import { readBadRequestResponseAsync } from '../../utils';
 import { openMessageModal } from '../modal-actions';
 
 const createNoteRequest = (note: NoteCreateEdit, operationMessage: string): CreateNoteRequestAction => {

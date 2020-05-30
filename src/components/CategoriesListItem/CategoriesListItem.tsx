@@ -18,7 +18,7 @@ import Icon from '../Icon';
 import { CategoriesOperationsActionTypes } from '../../action-types';
 import { useHistory } from 'react-router-dom';
 import CategoriesListItemEditableConnected from './CategoriesListItemEditableConnected';
-import { getWordWithCount } from '../../utils/string-utils';
+import { getWordWithCount } from '../../utils';
 
 interface CategoriesListItemProps
   extends CategoriesListItemStateToPropsMapResult,

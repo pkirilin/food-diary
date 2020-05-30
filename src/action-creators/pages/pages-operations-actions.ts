@@ -42,7 +42,7 @@ import {
   importPagesAsync,
   getDateForNewPageAsync,
 } from '../../services';
-import { readBadRequestResponseAsync } from '../../utils/bad-request-response-reader';
+import { readBadRequestResponseAsync } from '../../utils';
 import { openMessageModal } from '../modal-actions';
 
 const createPageRequest = (page: PageCreateEdit, operationMessage: string): CreatePageRequestAction => {

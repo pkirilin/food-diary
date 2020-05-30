@@ -11,9 +11,8 @@ import { BadgesContainer } from '../ContainerBlocks';
 import { Checkbox } from '../Controls';
 import { PagesListItemDispatchToPropsMapResult, PagesListItemStateToPropsMapResult } from './PagesListItemConnected';
 import { PageItem } from '../../models';
-import { formatDateStr, DateFormat } from '../../utils/date-utils';
+import { formatDateStr, DateFormat, getWordWithCount } from '../../utils';
 import PagesListItemEditableConnected from './PagesListItemEditableConnected';
-import { getWordWithCount } from '../../utils/string-utils';
 
 interface PagesListItemProps extends PagesListItemStateToPropsMapResult, PagesListItemDispatchToPropsMapResult {
   page: PageItem;

@@ -4,7 +4,7 @@ import { PageContentHeaderStateToPropsMapResult } from './PageContentHeaderConne
 import Icon from '../Icon';
 import { NavLink } from 'react-router-dom';
 import MealsControlPanelConnected from '../MealsControlPanel/MealsControlPanelConnected';
-import { formatDateStr, DateFormat } from '../../utils/date-utils';
+import { formatDateStr, DateFormat } from '../../utils';
 import { useIdFromRoute } from '../../hooks';
 
 type PageContentHeaderProps = PageContentHeaderStateToPropsMapResult;
