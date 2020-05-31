@@ -12,11 +12,11 @@ services:
             context: .
             dockerfile: src/FoodDiary.API/Dockerfile
         ports:
-            - "5000:80"
-            - "5001:443"     
+            - "5000:5000"
         networks:
             - food-diary-server-network
-        environment: 
+        environment:
+            ASPNETCORE_URLS: "http://+:5000"
             ASPNETCORE_ENVIRONMENT: "Staging"
 
     food-diary-db:
