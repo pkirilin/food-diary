@@ -31,35 +31,45 @@ namespace FoodDiary.API.Controllers.v1
             _pagesPdfGenerator = pagesPdfGenerator ?? throw new ArgumentNullException(nameof(pagesPdfGenerator));
         }
 
+        /// <summary>
+        /// Exports diary pages with notes and products info to PDF document
+        /// </summary>
+        /// <param name="exportRequest">Parameters to determine which pages should be exported</param>
+        /// <param name="cancellationToken"></param>
         [HttpGet("pdf")]
         [ProducesResponseType(typeof(byte[]), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> ExportPagesPdf([FromQuery] PagesExportRequest request, CancellationToken cancellationToken)
+        public async Task<IActionResult> ExportPagesPdf([FromQuery] PagesExportRequest exportRequest, CancellationToken cancellationToken)
         {
-            if (request.StartDate > request.EndDate)
+            if (exportRequest.StartDate > exportRequest.EndDate)
             {
-                ModelState.AddModelError(nameof(request.StartDate), "Start date cannot be greater than end date");
+                ModelState.AddModelError(nameof(exportRequest.StartDate), "Start date cannot be greater than end date");
                 return BadRequest(ModelState);
             }
 
-            var pagesForExport = await _exportService.GetPagesForExportAsync(request.StartDate, request.EndDate, false, cancellationToken);
+            var pagesForExport = await _exportService.GetPagesForExportAsync(exportRequest.StartDate, exportRequest.EndDate, false, cancellationToken);
             
             var fileContents = _pagesPdfGenerator.GeneratePdfForPages(pagesForExport);
             return File(fileContents, "application/octet-stream");
         }
 
+        /// <summary>
+        /// Exports diary pages with notes, products and categories to JSON file
+        /// </summary>
+        /// <param name="exportRequest">Parameters to determine which pages should be exported</param>
+        /// <param name="cancellationToken"></param>
         [HttpGet("json")]
         [ProducesResponseType(typeof(byte[]), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> ExportPagesJson([FromQuery] PagesExportRequest request, CancellationToken cancellationToken)
+        public async Task<IActionResult> ExportPagesJson([FromQuery] PagesExportRequest exportRequest, CancellationToken cancellationToken)
         {
-            if (request.StartDate > request.EndDate)
+            if (exportRequest.StartDate > exportRequest.EndDate)
             {
-                ModelState.AddModelError(nameof(request.StartDate), "Start date cannot be greater than end date");
+                ModelState.AddModelError(nameof(exportRequest.StartDate), "Start date cannot be greater than end date");
                 return BadRequest(ModelState);
             }
 
-            var pagesForExport = await _exportService.GetPagesForExportAsync(request.StartDate, request.EndDate, true, cancellationToken);
+            var pagesForExport = await _exportService.GetPagesForExportAsync(exportRequest.StartDate, exportRequest.EndDate, true, cancellationToken);
             var pagesJsonExportObject = _mapper.Map<PagesJsonObject>(pagesForExport);
 
             byte[] fileContents;

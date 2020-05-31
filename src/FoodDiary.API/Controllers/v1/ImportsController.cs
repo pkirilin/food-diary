@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using FoodDiary.Import.Models;
+using System.Net;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace FoodDiary.API.Controllers.v1
 {
@@ -25,7 +27,15 @@ namespace FoodDiary.API.Controllers.v1
             _importService = importService ?? throw new ArgumentNullException(nameof(importService));
         }
 
+        /// <summary>
+        /// Accepts JSON file with diary pages data in custom format.
+        /// If it's valid, imports all data from this file
+        /// </summary>
+        /// <param name="importFile">Import form data</param>
+        /// <param name="cancellationToken"></param>
         [HttpPost("json")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> ImportPagesJson([FromForm] IFormFile importFile, CancellationToken cancellationToken)
         {
             if (importFile == null)

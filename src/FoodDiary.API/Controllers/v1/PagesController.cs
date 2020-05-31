@@ -27,26 +27,36 @@ namespace FoodDiary.API.Controllers.v1
             _pageService = pageService ?? throw new ArgumentNullException(nameof(pageService));
         }
 
+        /// <summary>
+        /// Gets pages list by specified parameters
+        /// </summary>
+        /// <param name="pagesRequest">Pages search parameters</param>
+        /// <param name="cancellationToken"></param>
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<PageItemDto>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetPages([FromQuery] PagesSearchRequest request, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetPages([FromQuery] PagesSearchRequest pagesRequest, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (!_pageService.AreDateRangesValid(request.StartDate, request.EndDate))
+            if (!_pageService.AreDateRangesValid(pagesRequest.StartDate, pagesRequest.EndDate))
             {
-                ModelState.AddModelError(nameof(request.StartDate), "Start date cannot be greater than end date");
+                ModelState.AddModelError(nameof(pagesRequest.StartDate), "Start date cannot be greater than end date");
                 return BadRequest(ModelState);
             }
 
-            var filteredPages = await _pageService.SearchPagesAsync(request, cancellationToken);
+            var filteredPages = await _pageService.SearchPagesAsync(pagesRequest, cancellationToken);
             var pagesListResponse = _mapper.Map<IEnumerable<PageItemDto>>(filteredPages);
             return Ok(pagesListResponse);
         }
 
+        /// <summary>
+        /// Creates new page if page with the same date doesn't exist
+        /// </summary>
+        /// <param name="pageData">New page info</param>
+        /// <param name="cancellationToken"></param>
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
@@ -68,6 +78,12 @@ namespace FoodDiary.API.Controllers.v1
             return Ok(createdPage.Id);
         }
 
+        /// <summary>
+        /// Updates page by specified id
+        /// </summary>
+        /// <param name="id">Page for update id</param>
+        /// <param name="updatedPageData">Updated page info</param>
+        /// <param name="cancellationToken"></param>
         [HttpPut("{id}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
@@ -97,6 +113,11 @@ namespace FoodDiary.API.Controllers.v1
             return Ok();
         }
 
+        /// <summary>
+        /// Deletes page by specified id
+        /// </summary>
+        /// <param name="id">Page for delete id</param>
+        /// <param name="cancellationToken"></param>
         [HttpDelete("{id}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
@@ -112,6 +133,11 @@ namespace FoodDiary.API.Controllers.v1
             return Ok();
         }
 
+        /// <summary>
+        /// Deletes pages by specified ids
+        /// </summary>
+        /// <param name="ids">Pages for delete ids</param>
+        /// <param name="cancellationToken"></param>
         [HttpDelete("batch")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
@@ -128,6 +154,9 @@ namespace FoodDiary.API.Controllers.v1
             return Ok();
         }
 
+        /// <summary>
+        /// Gets suggested date for next page that is going to be created
+        /// </summary>
         [HttpGet("date")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetDateForNewPage(CancellationToken cancellationToken)

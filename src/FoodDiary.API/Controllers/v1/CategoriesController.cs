@@ -27,6 +27,9 @@ namespace FoodDiary.API.Controllers.v1
             _categoryService = categoryService ?? throw new ArgumentNullException(nameof(categoryService));
         }
 
+        /// <summary>
+        /// Gets all available categories ordered by name
+        /// </summary>
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<CategoryItemDto>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetCategories(CancellationToken cancellationToken)
@@ -36,6 +39,11 @@ namespace FoodDiary.API.Controllers.v1
             return Ok(categoriesListResponse);
         }
 
+        /// <summary>
+        /// Creates new category if category with the same name doesn't exist
+        /// </summary>
+        /// <param name="categoryData">New category info</param>
+        /// <param name="cancellationToken"></param>
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
@@ -57,6 +65,12 @@ namespace FoodDiary.API.Controllers.v1
             return Ok(createdCategory.Id);
         }
 
+        /// <summary>
+        /// Updates existing category if category with the same name doesn't exist
+        /// </summary>
+        /// <param name="id">Updated category id</param>
+        /// <param name="updatedCategoryData">Updated category info</param>
+        /// <param name="cancellationToken"></param>
         [HttpPut("{id}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
@@ -86,6 +100,11 @@ namespace FoodDiary.API.Controllers.v1
             return Ok();
         }
 
+        /// <summary>
+        /// Deletes category by id
+        /// </summary>
+        /// <param name="id">Category for delete id</param>
+        /// <param name="cancellationToken"></param>
         [HttpDelete("{id}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
@@ -101,11 +120,16 @@ namespace FoodDiary.API.Controllers.v1
             return Ok();
         }
 
+        /// <summary>
+        /// Gets all available categories for dropdown list
+        /// </summary>
+        /// <param name="categoriesDropdownRequest">Search parameters for categories dropdown</param>
+        /// <param name="cancellationToken"></param>
         [HttpGet("dropdown")]
         [ProducesResponseType(typeof(IEnumerable<CategoryDropdownItemDto>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetCategoriesDropdown([FromQuery] CategoryDropdownSearchRequest request, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetCategoriesDropdown([FromQuery] CategoryDropdownSearchRequest categoriesDropdownRequest, CancellationToken cancellationToken)
         {
-            var categories = await _categoryService.GetCategoriesDropdownAsync(request, cancellationToken);
+            var categories = await _categoryService.GetCategoriesDropdownAsync(categoriesDropdownRequest, cancellationToken);
             var categoriesDropdownListResponse = _mapper.Map<IEnumerable<Category>>(categories);
             return Ok(categoriesDropdownListResponse);
         }

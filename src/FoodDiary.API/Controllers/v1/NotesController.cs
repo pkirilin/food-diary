@@ -32,26 +32,36 @@ namespace FoodDiary.API.Controllers.v1
             _pageService = pageService ?? throw new ArgumentNullException(nameof(pageService));
         }
 
+        /// <summary>
+        /// Gets all notes by specified parameters
+        /// </summary>
+        /// <param name="notesRequest">Notes search parameters</param>
+        /// <param name="cancellationToken"></param>
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<NoteItemDto>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetNotes([FromQuery] NotesSearchRequest request, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetNotes([FromQuery] NotesSearchRequest notesRequest, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var requestedPage = await _pageService.GetPageByIdAsync(request.PageId, cancellationToken);
+            var requestedPage = await _pageService.GetPageByIdAsync(notesRequest.PageId, cancellationToken);
             if (requestedPage == null)
             {
                 return NotFound();
             }
 
-            var noteEntities = await _noteService.SearchNotesAsync(request, cancellationToken);
+            var noteEntities = await _noteService.SearchNotesAsync(notesRequest, cancellationToken);
             var notesListResponse = _mapper.Map<IEnumerable<NoteItemDto>>(noteEntities);
             return Ok(notesListResponse);
         }
 
+        /// <summary>
+        /// Creates new note
+        /// </summary>
+        /// <param name="noteData">New note info</param>
+        /// <param name="cancellationToken"></param>
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
@@ -73,6 +83,12 @@ namespace FoodDiary.API.Controllers.v1
             return Ok();
         }
 
+        /// <summary>
+        /// Updates existing note
+        /// </summary>
+        /// <param name="id">Note for update id</param>
+        /// <param name="updatedNoteData">Updated note info</param>
+        /// <param name="cancellationToken"></param>
         [HttpPut("{id}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
@@ -101,6 +117,11 @@ namespace FoodDiary.API.Controllers.v1
             return Ok();
         }
 
+        /// <summary>
+        /// Deletes note by id
+        /// </summary>
+        /// <param name="id">Note for delete id</param>
+        /// <param name="cancellationToken"></param>
         [HttpDelete("{id}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
@@ -116,6 +137,11 @@ namespace FoodDiary.API.Controllers.v1
             return Ok();
         }
 
+        /// <summary>
+        /// Deletes many notes by specified ids
+        /// </summary>
+        /// <param name="ids">Notes ids</param>
+        /// <param name="cancellationToken"></param>
         [HttpDelete("batch")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
@@ -132,6 +158,11 @@ namespace FoodDiary.API.Controllers.v1
             return Ok();
         }
 
+        /// <summary>
+        /// Moves note by specified parameters
+        /// </summary>
+        /// <param name="moveRequest">Parameters for moving note</param>
+        /// <param name="cancellationToken"></param>
         [HttpPut("move")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]

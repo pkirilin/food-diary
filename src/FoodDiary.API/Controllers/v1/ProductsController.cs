@@ -32,26 +32,31 @@ namespace FoodDiary.API.Controllers.v1
             _categoryService = categoryService ?? throw new ArgumentNullException(nameof(categoryService));
         }
 
+        /// <summary>
+        /// Gets products list by specified parameters
+        /// </summary>
+        /// <param name="productsRequest">Products search parameters</param>
+        /// <param name="cancellationToken"></param>
         [HttpGet]
         [ProducesResponseType(typeof(ProductsSearchResultDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> GetProducts([FromQuery] ProductsSearchRequest request, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetProducts([FromQuery] ProductsSearchRequest productsRequest, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (request.CategoryId.HasValue)
+            if (productsRequest.CategoryId.HasValue)
             {
-                var requestedCategory = await _categoryService.GetCategoryByIdAsync(request.CategoryId.Value, cancellationToken);
+                var requestedCategory = await _categoryService.GetCategoryByIdAsync(productsRequest.CategoryId.Value, cancellationToken);
                 if (requestedCategory == null)
                 {
                     return NotFound();
                 }
             }
 
-            var productSearchMeta = await _productService.SearchProductsAsync(request, cancellationToken);
+            var productSearchMeta = await _productService.SearchProductsAsync(productsRequest, cancellationToken);
             var productItemsResult = _mapper.Map<IEnumerable<ProductItemDto>>(productSearchMeta.FoundProducts);
 
             var productsSearchResult = new ProductsSearchResultDto()
@@ -63,6 +68,11 @@ namespace FoodDiary.API.Controllers.v1
             return Ok(productsSearchResult);
         }
 
+        /// <summary>
+        /// Creates new product if product with the same name doesn't exist
+        /// </summary>
+        /// <param name="productData">New product info</param>
+        /// <param name="cancellationToken"></param>
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
@@ -84,6 +94,12 @@ namespace FoodDiary.API.Controllers.v1
             return Ok();
         }
 
+        /// <summary>
+        /// Updates existing product by specified id
+        /// </summary>
+        /// <param name="id">Product for update id</param>
+        /// <param name="updatedProductData">Updated product info</param>
+        /// <param name="cancellationToken"></param>
         [HttpPut("{id}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
@@ -113,6 +129,11 @@ namespace FoodDiary.API.Controllers.v1
             return Ok();
         }
 
+        /// <summary>
+        /// Deletes product by specified id
+        /// </summary>
+        /// <param name="id">Product for delete id</param>
+        /// <param name="cancellationToken"></param>
         [HttpDelete("{id}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
@@ -128,6 +149,11 @@ namespace FoodDiary.API.Controllers.v1
             return Ok();
         }
 
+        /// <summary>
+        /// Deletes products by specified ids
+        /// </summary>
+        /// <param name="ids">Products for delete ids</param>
+        /// <param name="cancellationToken"></param>
         [HttpDelete("batch")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
@@ -145,11 +171,16 @@ namespace FoodDiary.API.Controllers.v1
             return Ok();
         }
 
+        /// <summary>
+        /// Gets all available products for dropdown list
+        /// </summary>
+        /// <param name="productsDropdownRequest">Search parameters for products dropdown</param>
+        /// <param name="cancellationToken"></param>
         [HttpGet("dropdown")]
         [ProducesResponseType(typeof(IEnumerable<ProductDropdownItemDto>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetProductsDropdown([FromQuery] ProductDropdownSearchRequest request, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetProductsDropdown([FromQuery] ProductDropdownSearchRequest productsDropdownRequest, CancellationToken cancellationToken)
         {
-            var products = await _productService.GetProductsDropdownAsync(request, cancellationToken);
+            var products = await _productService.GetProductsDropdownAsync(productsDropdownRequest, cancellationToken);
             var productsDropdownListResponse = _mapper.Map<IEnumerable<ProductDropdownItemDto>>(products);
             return Ok(productsDropdownListResponse);
         }
