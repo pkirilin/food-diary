@@ -21,14 +21,13 @@ namespace FoodDiary.API.Extensions
             services.AddTransient<IProductRepository, ProductRepository>();
         }
 
-        public static void AddDomainServices(this IServiceCollection services)
+        public static void AddAppServices(this IServiceCollection services)
         {
             services.AddTransient<IPageService, PageService>();
             services.AddTransient<INoteService, NoteService>();
             services.AddTransient<INotesOrderService, NotesOrderService>();
             services.AddTransient<ICategoryService, CategoryService>();
             services.AddTransient<IProductService, ProductService>();
-            services.AddTransient<ICaloriesCalculator, CaloriesCalculator>();
             services.AddTransient<IExportService, ExportService>();
             services.AddTransient<IImportService, ImportService>();
         }
@@ -36,13 +35,14 @@ namespace FoodDiary.API.Extensions
         public static void AddUtils(this IServiceCollection services)
         {
             services.AddTransient<IMealNameResolver, RuMealNameResolver>();
+            services.AddTransient<ICaloriesCalculator, CaloriesCalculator>();
         }
 
         public static void AddFoodDiarySwagger(this IServiceCollection services)
         {
             services.AddSwaggerGen(c =>
             {
-                var xmlCommentsFilePath = Path.Combine(System.AppContext.BaseDirectory, "FoodDiary.API.xml");
+                var xmlCommentsFilePath = Path.Combine(AppContext.BaseDirectory, "FoodDiary.API.xml");
 
                 if (File.Exists(xmlCommentsFilePath))
                 {

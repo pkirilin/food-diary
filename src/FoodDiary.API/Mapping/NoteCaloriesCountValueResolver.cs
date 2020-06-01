@@ -6,11 +6,11 @@ using FoodDiary.Domain.Utils;
 
 namespace FoodDiary.API.Mapping
 {
-    public class NoteCaloriesValueResolver : IValueResolver<Note, NoteItemDto, int>
+    public class NoteCaloriesCountValueResolver : IValueResolver<Note, NoteItemDto, int>
     {
         private readonly ICaloriesCalculator _caloriesCalculator;
 
-        public NoteCaloriesValueResolver(ICaloriesCalculator caloriesCalculator)
+        public NoteCaloriesCountValueResolver(ICaloriesCalculator caloriesCalculator)
         {
             _caloriesCalculator = caloriesCalculator ?? throw new ArgumentNullException(nameof(caloriesCalculator));
         }

@@ -29,7 +29,7 @@ namespace FoodDiary.API
                     o => o.MapFrom(src => src.Date.ToString("yyyy-MM-dd")))
                 .ForMember(
                     dest => dest.CountCalories,
-                    o => o.MapFrom<PageCountCaloriesValueResolver>())
+                    o => o.MapFrom<PageCaloriesCountValueResolver>())
                 .ForMember(
                     dest => dest.CountNotes,
                     o => o.MapFrom(src => src.Notes.Count));
@@ -40,7 +40,7 @@ namespace FoodDiary.API
             CreateMap<Note, NoteItemDto>()
                 .ForMember(
                     dest => dest.Calories,
-                    o => o.MapFrom<NoteCaloriesValueResolver>())
+                    o => o.MapFrom<NoteCaloriesCountValueResolver>())
                 .ForMember(
                     dest => dest.ProductName,
                     o => o.MapFrom(src => src.Product.Name));

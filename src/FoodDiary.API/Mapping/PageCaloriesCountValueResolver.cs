@@ -7,11 +7,11 @@ using FoodDiary.Domain.Utils;
 
 namespace FoodDiary.API.Mapping
 {
-    public class PageCountCaloriesValueResolver : IValueResolver<Page, PageItemDto, int>
+    public class PageCaloriesCountValueResolver : IValueResolver<Page, PageItemDto, int>
     {
         private readonly ICaloriesCalculator _caloriesCalculator;
 
-        public PageCountCaloriesValueResolver(ICaloriesCalculator caloriesCalculator)
+        public PageCaloriesCountValueResolver(ICaloriesCalculator caloriesCalculator)
         {
             _caloriesCalculator = caloriesCalculator ?? throw new ArgumentNullException(nameof(caloriesCalculator));
         }
