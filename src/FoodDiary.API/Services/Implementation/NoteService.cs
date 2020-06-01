@@ -25,14 +25,14 @@ namespace FoodDiary.API.Services.Implementation
             _notesOrderService = notesOrderService ?? throw new ArgumentNullException(nameof(notesOrderService));
         }
 
-        public async Task<IEnumerable<Note>> SearchNotesAsync(NotesSearchRequest request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Note>> SearchNotesAsync(NotesSearchRequest notesRequest, CancellationToken cancellationToken)
         {
             var query = _noteRepository.GetQueryWithoutTracking()
-                .Where(n => n.PageId == request.PageId);
+                .Where(n => n.PageId == notesRequest.PageId);
 
-            if (request.MealType.HasValue)
+            if (notesRequest.MealType.HasValue)
             {
-                query = query.Where(n => n.MealType == request.MealType);
+                query = query.Where(n => n.MealType == notesRequest.MealType);
             }
 
             query = query.OrderBy(n => n.MealType)

@@ -134,7 +134,7 @@ namespace FoodDiary.UnitTests.Services
         [CustomAutoData]
         public async void BatchDeletePages_DeletesPages(IEnumerable<Page> pagesForDelete)
         {
-            await Sut.BatchDeletePagesAsync(pagesForDelete, default);
+            await Sut.DeletePagesAsync(pagesForDelete, default);
 
             _pageRepositoryMock.Verify(r => r.DeleteRange(pagesForDelete), Times.Once);
             _pageRepositoryMock.Verify(r => r.UnitOfWork.SaveChangesAsync(default), Times.Once);

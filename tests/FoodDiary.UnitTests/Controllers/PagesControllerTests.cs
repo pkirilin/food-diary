@@ -271,7 +271,7 @@ namespace FoodDiary.UnitTests.Controllers
             var result = await Sut.DeletePages(pagesForDeleteIds, default);
 
             _pageServiceMock.Verify(s => s.GetPagesByIdsAsync(pagesForDeleteIds, default), Times.Once);
-            _pageServiceMock.Verify(s => s.BatchDeletePagesAsync(pagesForDelete, default), Times.Once);
+            _pageServiceMock.Verify(s => s.DeletePagesAsync(pagesForDelete, default), Times.Once);
 
             result.Should().BeOfType<OkResult>();
         }
@@ -291,7 +291,7 @@ namespace FoodDiary.UnitTests.Controllers
             var result = await Sut.DeletePages(pagesForDeleteIds, default);
 
             _pageServiceMock.Verify(s => s.GetPagesByIdsAsync(pagesForDeleteIds, default), Times.Once);
-            _pageServiceMock.Verify(s => s.BatchDeletePagesAsync(pagesForDelete, default), Times.Never);
+            _pageServiceMock.Verify(s => s.DeletePagesAsync(pagesForDelete, default), Times.Never);
             
             result.Should().BeOfType<BadRequestObjectResult>();
         }

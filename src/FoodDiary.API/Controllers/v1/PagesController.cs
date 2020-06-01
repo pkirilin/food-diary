@@ -150,7 +150,7 @@ namespace FoodDiary.API.Controllers.v1
                 return BadRequest(ModelState);
             }
 
-            await _pageService.BatchDeletePagesAsync(pagesForDelete, cancellationToken);
+            await _pageService.DeletePagesAsync(pagesForDelete, cancellationToken);
             return Ok();
         }
 

@@ -19,16 +19,16 @@ namespace FoodDiary.API.Services.Implementation
             _pageRepository = pageRepository ?? throw new ArgumentNullException(nameof(pageRepository));
         }
 
-        public async Task<IEnumerable<Page>> SearchPagesAsync(PagesSearchRequest request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Page>> SearchPagesAsync(PagesSearchRequest pagesRequest, CancellationToken cancellationToken)
         {
             var searchPagesQuery = _pageRepository.GetQueryWithoutTracking();
 
-            if (request.StartDate.HasValue)
-                searchPagesQuery = searchPagesQuery.Where(p => p.Date >= request.StartDate);
-            if (request.EndDate.HasValue)
-                searchPagesQuery = searchPagesQuery.Where(p => p.Date <= request.EndDate);
+            if (pagesRequest.StartDate.HasValue)
+                searchPagesQuery = searchPagesQuery.Where(p => p.Date >= pagesRequest.StartDate);
+            if (pagesRequest.EndDate.HasValue)
+                searchPagesQuery = searchPagesQuery.Where(p => p.Date <= pagesRequest.EndDate);
 
-            switch (request.SortOrder)
+            switch (pagesRequest.SortOrder)
             {
                 case SortOrder.Ascending:
                     searchPagesQuery = searchPagesQuery.OrderBy(p => p.Date);
@@ -92,7 +92,7 @@ namespace FoodDiary.API.Services.Implementation
             await _pageRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task BatchDeletePagesAsync(IEnumerable<Page> pages, CancellationToken cancellationToken)
+        public async Task DeletePagesAsync(IEnumerable<Page> pages, CancellationToken cancellationToken)
         {
             _pageRepository.DeleteRange(pages);
             await _pageRepository.UnitOfWork.SaveChangesAsync(cancellationToken);

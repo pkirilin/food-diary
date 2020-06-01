@@ -67,13 +67,13 @@ namespace FoodDiary.API.Services.Implementation
             await _categoryRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<IEnumerable<Category>> GetCategoriesDropdownAsync(CategoryDropdownSearchRequest request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Category>> GetCategoriesDropdownAsync(CategoryDropdownSearchRequest categoriesDropdownRequest, CancellationToken cancellationToken)
         {
             var query = _categoryRepository.GetQueryWithoutTracking();
 
-            if (!String.IsNullOrWhiteSpace(request.CategoryNameFilter))
+            if (!String.IsNullOrWhiteSpace(categoriesDropdownRequest.CategoryNameFilter))
             {
-                query = query.Where(c => c.Name.Contains(request.CategoryNameFilter));
+                query = query.Where(c => c.Name.Contains(categoriesDropdownRequest.CategoryNameFilter));
             }
 
             query = query.OrderBy(c => c.Name);

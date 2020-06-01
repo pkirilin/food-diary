@@ -56,12 +56,14 @@ namespace FoodDiary.API.Services.Implementation
 
         public async Task RunPagesJsonImportAsync(PagesJsonObject jsonObj, CancellationToken cancellationToken)
         {
+            // Checking if data from json object valid
             var pagesFromJson = _jsonParser.ParsePages(jsonObj);
             var notesFromJson = _jsonParser.ParseNotes(pagesFromJson);
             var productNamesFromJson = _jsonParser.ParseProducts(notesFromJson);
             var categoryNamesFromJson = _jsonParser.ParseCategories(notesFromJson);
             var pagesFromJsonDates = pagesFromJson.Select(p => p.Date);
 
+            // Preparing queries for entities which are going to be updated
             var pagesForUpdateQuery = _pageRepository.GetQuery()
                 .Where(p => pagesFromJsonDates.Contains(p.Date));
             var importProductsQuery = _productRepository.GetQuery()
@@ -71,6 +73,7 @@ namespace FoodDiary.API.Services.Implementation
 
             pagesForUpdateQuery = _pageRepository.LoadNotesWithProductsAndCategories(pagesForUpdateQuery);
 
+            // Loading entities for update to data provider
             _importDataProvider.ExistingPages = await _pageRepository.GetDictionaryFromQueryAsync(pagesForUpdateQuery, cancellationToken);
             _importDataProvider.ExistingProducts = await _productRepository.GetDictionaryFromQueryAsync(importProductsQuery, cancellationToken);
             _importDataProvider.ExistingCategories = await _categoryRepository.GetDictionaryFromQueryAsync(importCategoriesQuery, cancellationToken);

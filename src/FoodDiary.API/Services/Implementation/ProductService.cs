@@ -19,27 +19,27 @@ namespace FoodDiary.API.Services.Implementation
             _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
         }
 
-        public async Task<ProductsSearchResultMetadata> SearchProductsAsync(ProductsSearchRequest request, CancellationToken cancellationToken)
+        public async Task<ProductsSearchResultMetadata> SearchProductsAsync(ProductsSearchRequest productsRequest, CancellationToken cancellationToken)
         {
             var searchQuery = _productRepository.GetQueryWithoutTracking();
 
-            if (!String.IsNullOrWhiteSpace(request.ProductSearchName))
+            if (!String.IsNullOrWhiteSpace(productsRequest.ProductSearchName))
             {
                 searchQuery = searchQuery.Where(p =>
                     p.Name.ToLower()
-                        .StartsWith(request.ProductSearchName.ToLower()));
+                        .StartsWith(productsRequest.ProductSearchName.ToLower()));
             }
 
-            if (request.CategoryId.HasValue)
+            if (productsRequest.CategoryId.HasValue)
             {
-                searchQuery = searchQuery.Where(p => p.CategoryId == request.CategoryId);
+                searchQuery = searchQuery.Where(p => p.CategoryId == productsRequest.CategoryId);
             }
 
             var totalProductsCount = await _productRepository.CountByQueryAsync(searchQuery, cancellationToken);
 
             searchQuery = searchQuery.OrderBy(p => p.Name);
-            searchQuery = searchQuery.Skip((request.PageNumber - 1) * request.PageSize)
-                .Take(request.PageSize);
+            searchQuery = searchQuery.Skip((productsRequest.PageNumber - 1) * productsRequest.PageSize)
+                .Take(productsRequest.PageSize);
             searchQuery = _productRepository.LoadCategory(searchQuery);
 
             var products = await _productRepository.GetListFromQueryAsync(searchQuery, cancellationToken);
@@ -109,13 +109,13 @@ namespace FoodDiary.API.Services.Implementation
             await _productRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<IEnumerable<Product>> GetProductsDropdownAsync(ProductDropdownSearchRequest request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Product>> GetProductsDropdownAsync(ProductDropdownSearchRequest productsDropdownRequest, CancellationToken cancellationToken)
         {
             var query = _productRepository.GetQueryWithoutTracking();
 
-            if (!String.IsNullOrWhiteSpace(request.ProductNameFilter))
+            if (!String.IsNullOrWhiteSpace(productsDropdownRequest.ProductNameFilter))
             {
-                query = query.Where(p => p.Name.Contains(request.ProductNameFilter));
+                query = query.Where(p => p.Name.Contains(productsDropdownRequest.ProductNameFilter));
             }
 
             query = query.OrderBy(p => p.Name);
