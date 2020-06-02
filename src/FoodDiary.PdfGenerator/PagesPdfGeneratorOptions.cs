@@ -1,5 +1,8 @@
 ﻿namespace FoodDiary.PdfGenerator
 {
+    /// <summary>
+    /// Format settings for PDF generator
+    /// </summary>
     static class PagesPdfGeneratorOptions
     {
         public const decimal PageTopMarginCentimeters = 1;

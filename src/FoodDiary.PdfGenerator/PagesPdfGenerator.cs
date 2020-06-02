@@ -9,6 +9,9 @@ using MigraDoc.Rendering;
 
 namespace FoodDiary.PdfGenerator
 {
+    /// <summary>
+    /// Pages PDF generator implementation based on PdfSharp & MigraDoc
+    /// </summary>
     class PagesPdfGenerator : IPagesPdfGenerator
     {
         private readonly IPagePdfWriter _pagePdfWriter;

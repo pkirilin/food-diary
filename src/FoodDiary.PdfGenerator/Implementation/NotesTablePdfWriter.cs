@@ -43,6 +43,9 @@ namespace FoodDiary.PdfGenerator.Implementation
             }
         }
 
+        /// <summary>
+        /// Adds meal name for group of notes
+        /// </summary>
         private void WriteMealNameForNotesGroup(Table notesTable, int rowIndex, string mealName, int currentMealGroupNotesCount)
         {
             var mealNameCell = notesTable.Rows[rowIndex].Cells[PagesPdfGeneratorOptions.MealNameColumnIndex];
@@ -50,6 +53,9 @@ namespace FoodDiary.PdfGenerator.Implementation
             mealNameCell.MergeDown = currentMealGroupNotesCount - 1;
         }
 
+        /// <summary>
+        /// Adds calories count for group of notes
+        /// </summary>
         private void WriteCaloriesCountForNotesGroup(Table notesTable, int rowIndex, int currentMealGroupCaloriesCount, int currentMealGroupNotesCount)
         {
             var caloriesCountCell = notesTable.Rows[rowIndex].Cells[PagesPdfGeneratorOptions.TotalCaloriesCountColumnIndex];

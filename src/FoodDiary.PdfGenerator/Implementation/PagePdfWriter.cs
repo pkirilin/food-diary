@@ -35,6 +35,10 @@ namespace FoodDiary.PdfGenerator.Implementation
             WriteTotalCaloriesCount(notesTable, totalCaloriesCount);
         }
 
+        /// <summary>
+        /// Adds new section to the document. One section is equivalent to one PDF page
+        /// </summary>
+        /// <returns>Created section</returns>
         private Section CreateSection(Document document)
         {
             var section = document.AddSection();
@@ -47,6 +51,9 @@ namespace FoodDiary.PdfGenerator.Implementation
             return section;
         }
 
+        /// <summary>
+        /// Adds page date header to the center of the section
+        /// </summary>
         private void WritePageDate(Section section, DateTime pageDate)
         {
             var dateParagraph = section.AddParagraph();
@@ -57,6 +64,10 @@ namespace FoodDiary.PdfGenerator.Implementation
             dateParagraph.AddText($"Дата: {pageDate:dd.MM.yyyy}");
         }
 
+        /// <summary>
+        /// Adds table with notes for page to the section, creates table columns
+        /// </summary>
+        /// <returns>Created table</returns>
         private Table CreateNotesTable(Section section)
         {
             var notesTable = section.AddTable();
@@ -82,6 +93,9 @@ namespace FoodDiary.PdfGenerator.Implementation
             return notesTable;
         }
 
+        /// <summary>
+        /// Fills first notes table row as table header
+        /// </summary>
         private void FillNotesTableHeader(Table notesTable)
         {
             var notesTableHeader = notesTable.AddRow();
@@ -98,6 +112,9 @@ namespace FoodDiary.PdfGenerator.Implementation
             notesTableHeader.Cells[PagesPdfGeneratorOptions.TotalCaloriesCountColumnIndex].AddParagraph("Общее количество калорий");
         }
 
+        /// <summary>
+        /// Fills last notes table row with total calories count value
+        /// </summary>
         private void WriteTotalCaloriesCount(Table notesTable, int totalCaloriesCount)
         {
             var totalCaloriesCountRow = notesTable.AddRow();
