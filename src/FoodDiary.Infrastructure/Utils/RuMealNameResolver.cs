@@ -4,6 +4,9 @@ using FoodDiary.Domain.Utils;
 
 namespace FoodDiary.Infrastructure.Utils
 {
+    /// <summary>
+    /// Meal name resolver implementation for russian meal type names
+    /// </summary>
     public class RuMealNameResolver : IMealNameResolver
     {
         public string GetMealName(MealType mealType)
