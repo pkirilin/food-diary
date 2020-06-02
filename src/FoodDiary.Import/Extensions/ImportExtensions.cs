@@ -7,6 +7,9 @@ namespace FoodDiary.Import.Extensions
 {
     public static class ImportExtensions
     {
+        /// <summary>
+        /// Adds all services related to import
+        /// </summary>
         public static void AddPagesJsonImportServices(this IServiceCollection services)
         {
             services.AddTransient<IJsonParser, JsonParser>();
