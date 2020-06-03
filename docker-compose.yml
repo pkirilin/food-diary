@@ -1,7 +1,7 @@
 version: "3.4"
 
 networks:
-    food-diary-server-network:
+    food-diary-network:
         driver: bridge
 services:
     food-diary-client:
@@ -9,7 +9,7 @@ services:
         ports:
             - "3000:3000"
         networks:
-            - food-diary-server-network
+            - food-diary-network
 
     food-diary-server:
         image: pkirilin/food-diary-server:latest
@@ -18,10 +18,10 @@ services:
         ports:
             - "5000:5000"
         networks:
-            - food-diary-server-network
+            - food-diary-network
         environment:
             ASPNETCORE_URLS: "http://+:5000"
-            ASPNETCORE_ENVIRONMENT: "Staging"
+            ASPNETCORE_ENVIRONMENT: "Production"
 
     food-diary-db:
         image: postgres:12.2-alpine
@@ -35,6 +35,6 @@ services:
             POSTGRES_PASSWORD: "postgres"
             POSTGRES_DB: "FoodDiaryDatabase"
         networks:
-            - food-diary-server-network
+            - food-diary-network
 volumes:
     food-diary-db-volume:
