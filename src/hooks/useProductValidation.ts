@@ -1,5 +1,11 @@
 import { useState, useEffect } from 'react';
 
+/**
+ * Validates product data and returns validation state for each validated field
+ * @param productNameInputValue Product name
+ * @param caloriesCost Product calories cost
+ * @param categoryNameInputValue Product's category name
+ */
 function useProductValidation(
   productNameInputValue: string,
   caloriesCost: number,

@@ -13,6 +13,10 @@ import { ReactComponent as Expand } from './assets/expand.svg';
 import { ReactComponent as RightArrow } from './assets/right-arrow.svg';
 import { ReactComponent as Edit } from './assets/edit.svg';
 
+/**
+ * Gets icon component by icon type
+ * @param type Icon type
+ */
 export const useIconType = (type: IconType): React.ComponentType<React.SVGProps<SVGSVGElement>> => {
   switch (type) {
     case 'add':
