@@ -7,7 +7,7 @@ services:
   food-diary-server:
     image: pkirilin/food-diary-server:latest
     depends_on:
-      - food-diary-db
+      - food-diary-db-staging
     ports:
       - '5000:5000'
     networks:
@@ -16,13 +16,13 @@ services:
       ASPNETCORE_URLS: 'http://+:5000'
       ASPNETCORE_ENVIRONMENT: 'Staging'
 
-  food-diary-db:
+  food-diary-db-staging:
     image: postgres:12.2-alpine
     ports:
       - '5432'
     restart: always
     volumes:
-      - food-diary-db-volume:/var/lib/postgresql/data
+      - food-diary-db-staging-volume:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: 'postgres'
       POSTGRES_PASSWORD: 'postgres'
@@ -30,4 +30,4 @@ services:
     networks:
       - food-diary-server-network
 volumes:
-  food-diary-db-volume:
+  food-diary-db-staging-volume:
