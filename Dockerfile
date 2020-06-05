@@ -1,7 +1,12 @@
 FROM node:12.16.1 as react-build
 WORKDIR /app
+ENV PATH /app/node_modules/.bin:$PATH
+
+COPY package.json ./
+COPY package-lock.json ./
+RUN npm ci
+RUN npm install react-scripts@3.3.0 -g
 COPY . ./
-RUN npm install
 RUN npm run build
 
 FROM nginx:alpine
