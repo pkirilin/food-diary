@@ -3,6 +3,7 @@
 ![Check food-diary-client](https://github.com/pkirilin/food-diary-client/workflows/Check%20food-diary-client/badge.svg?branch=master)
 
 **food-diary-client** is the client part of [food-diary](https://github.com/pkirilin/food-diary) application.
+It is written on React & Redux.
 
 The application is divided into 3 sections:
 
