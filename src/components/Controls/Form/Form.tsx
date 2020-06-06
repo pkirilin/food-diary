@@ -1,9 +1,7 @@
 import React from 'react';
 import './Form.scss';
 
-type FormProps = {};
-
-const Form: React.FC<FormProps> = ({ children }: React.PropsWithChildren<FormProps>) => {
+const Form: React.FC = ({ children }: React.PropsWithChildren<unknown>) => {
   return <div className="form">{children}</div>;
 };
 
