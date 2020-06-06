@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using FoodDiary.Import.Models;
 using System.Net;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace FoodDiary.API.Controllers.v1
 {
@@ -35,7 +34,7 @@ namespace FoodDiary.API.Controllers.v1
         /// <param name="cancellationToken"></param>
         [HttpPost("json")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> ImportPagesJson([FromForm] IFormFile importFile, CancellationToken cancellationToken)
         {
             if (importFile == null)

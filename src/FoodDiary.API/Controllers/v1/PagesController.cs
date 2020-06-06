@@ -8,7 +8,6 @@ using FoodDiary.API.Services;
 using FoodDiary.API.Dtos;
 using FoodDiary.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using FoodDiary.API.Requests;
 
 namespace FoodDiary.API.Controllers.v1
@@ -59,7 +58,7 @@ namespace FoodDiary.API.Controllers.v1
         /// <param name="cancellationToken"></param>
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> CreatePage([FromBody] PageCreateEditRequest pageData, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
@@ -86,7 +85,7 @@ namespace FoodDiary.API.Controllers.v1
         /// <param name="cancellationToken"></param>
         [HttpPut("{id}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> EditPage([FromRoute] int id, [FromBody] PageCreateEditRequest updatedPageData, CancellationToken cancellationToken)
         {
@@ -140,7 +139,7 @@ namespace FoodDiary.API.Controllers.v1
         /// <param name="cancellationToken"></param>
         [HttpDelete("batch")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> DeletePages([FromBody] ICollection<int> ids, CancellationToken cancellationToken)
         {
             var pagesForDelete = await _pageService.GetPagesByIdsAsync(ids, cancellationToken);

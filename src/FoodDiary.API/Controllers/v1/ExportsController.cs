@@ -8,7 +8,6 @@ using AutoMapper;
 using FoodDiary.API.Services;
 using FoodDiary.PdfGenerator;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using FoodDiary.API.Requests;
 using FoodDiary.Import.Models;
 using System.Text.Encodings.Web;
@@ -38,7 +37,7 @@ namespace FoodDiary.API.Controllers.v1
         /// <param name="cancellationToken"></param>
         [HttpGet("pdf")]
         [ProducesResponseType(typeof(byte[]), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> ExportPagesPdf([FromQuery] PagesExportRequest exportRequest, CancellationToken cancellationToken)
         {
             if (exportRequest.StartDate > exportRequest.EndDate)
@@ -60,7 +59,7 @@ namespace FoodDiary.API.Controllers.v1
         /// <param name="cancellationToken"></param>
         [HttpGet("json")]
         [ProducesResponseType(typeof(byte[]), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> ExportPagesJson([FromQuery] PagesExportRequest exportRequest, CancellationToken cancellationToken)
         {
             if (exportRequest.StartDate > exportRequest.EndDate)
