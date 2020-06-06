@@ -1,9 +1,7 @@
 import React from 'react';
 import './Label.scss';
 
-type LabelProps = {};
-
-const Label: React.FC<LabelProps> = ({ children }: React.PropsWithChildren<LabelProps>) => {
+const Label: React.FC = ({ children }: React.PropsWithChildren<unknown>) => {
   return <label className="label">{children}</label>;
 };
 

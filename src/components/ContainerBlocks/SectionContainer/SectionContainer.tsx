@@ -1,11 +1,7 @@
 import React from 'react';
 import './SectionContainer.scss';
 
-type SectionContainerProps = {};
-
-const SectionContainer: React.FC<SectionContainerProps> = ({
-  children,
-}: React.PropsWithChildren<SectionContainerProps>) => {
+const SectionContainer: React.FC = ({ children }: React.PropsWithChildren<unknown>) => {
   return <section className="section-container">{children}</section>;
 };
 
