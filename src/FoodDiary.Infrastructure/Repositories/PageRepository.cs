@@ -55,7 +55,9 @@ namespace FoodDiary.Infrastructure.Repositories
 
         public Task<Page> GetByIdAsync(int id, CancellationToken cancellationToken)
         {
-            return _context.Pages.FindAsync(new object[] { id }, cancellationToken);
+            return _context.Pages
+                .FindAsync(new object[] { id }, cancellationToken)
+                .AsTask();
         }
 
         public Task SaveChangesAsync(CancellationToken cancellationToken)

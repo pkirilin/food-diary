@@ -38,7 +38,9 @@ namespace FoodDiary.Infrastructure.Repositories
 
         public Task<Note> GetByIdAsync(int id, CancellationToken cancellationToken)
         {
-            return _context.Notes.FindAsync(new object[] { id }, cancellationToken);
+            return _context.Notes
+                .FindAsync(new object[] { id }, cancellationToken)
+                .AsTask();
         }
 
         public Note Create(Note note)

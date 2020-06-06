@@ -43,7 +43,9 @@ namespace FoodDiary.Infrastructure.Repositories
 
         public Task<Category> GetByIdAsync(int id, CancellationToken cancellationToken)
         {
-            return _context.Categories.FindAsync(new object[] { id }, cancellationToken);
+            return _context.Categories
+                .FindAsync(new object[] { id }, cancellationToken)
+                .AsTask();
         }
 
         public Category Create(Category category)

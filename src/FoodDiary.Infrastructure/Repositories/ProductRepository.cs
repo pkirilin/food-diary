@@ -48,7 +48,9 @@ namespace FoodDiary.Infrastructure.Repositories
 
         public Task<Product> GetByIdAsync(int id, CancellationToken cancellationToken)
         {
-            return _context.Products.FindAsync(new object[] { id }, cancellationToken);
+            return _context.Products
+                .FindAsync(new object[] { id }, cancellationToken)
+                .AsTask();
         }
 
         public Task<List<Product>> GetByIdsAsync(IEnumerable<int> ids, CancellationToken cancellationToken)
