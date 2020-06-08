@@ -1,0 +1,15 @@
+$container-child-space-small: 5px;
+
+@mixin child-space-margin($child-space-size) {
+  :not(:first-child) {
+    margin-left: $container-child-space-small;
+  }
+}
+
+.container {
+  display: flex;
+
+  &_child-space-small {
+    @include child-space-margin($container-child-space-small);
+  }
+}
