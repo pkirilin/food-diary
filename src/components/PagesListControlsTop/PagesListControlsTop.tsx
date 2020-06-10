@@ -1,7 +1,6 @@
 import React from 'react';
 import './PagesListControlsTop.scss';
 import { SidebarControlPanel, SidebarControlPanelIcons } from '../SidebarBlocks';
-import Icon from '../Icon';
 import {
   PagesListControlsTopDispatchToPropsMapResult,
   PagesListControlsTopStateToPropsMapResult,
@@ -12,6 +11,7 @@ import { DropdownMenu, DropdownItem } from '../Controls';
 import PagesExportFormConnected from '../PagesExportForm';
 import PageCreateFormConnected from '../PageCreateForm';
 import PagesFilterFormConnected from '../PagesFilterForm';
+import { Icon } from '../__ui__';
 
 interface PagesListControlsTopProps
   extends PagesListControlsTopStateToPropsMapResult,

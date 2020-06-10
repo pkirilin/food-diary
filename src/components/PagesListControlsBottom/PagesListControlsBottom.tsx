@@ -5,8 +5,8 @@ import {
   PagesListControlsBottomStateToPropsMapResult,
 } from './PagesListControlsBottomConnected';
 import { SortOrder } from '../../models';
-import Icon from '../Icon';
 import { invertSortOrder, formatDateStr, DateFormat } from '../../utils';
+import { Icon } from '../__ui__';
 
 interface PagesListControlsBottomProps
   extends PagesListControlsBottomStateToPropsMapResult,

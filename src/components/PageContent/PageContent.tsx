@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
 import './PageContent.scss';
 import { PageContentStateToPropsMapResult, PageContentDispatchToPropsMapResult } from './PageContentConnected';
-import Loader from '../Loader';
 import PageContentHeaderConnected from '../PageContentHeader';
 import MealsList from '../MealsList';
 import { SectionPlaceholder } from '../ContainerBlocks';
 import { useIdFromRoute } from '../../hooks';
+import { Loader } from '../__ui__';
 
 interface PageContentProps extends PageContentStateToPropsMapResult, PageContentDispatchToPropsMapResult {}
 

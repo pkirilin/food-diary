@@ -2,14 +2,13 @@ import React from 'react';
 import './PagesSelectionPanel.scss';
 import { SidebarSelectionPanel, SidebarSelectionPanelOptions } from '../SidebarBlocks';
 import { Checkbox, DropdownMenu, DropdownItem } from '../Controls';
-import Icon from '../Icon';
 import {
   PagesSelectionPanelStateToPropsMapResult,
   PagesSelectionPanelDispatchToPropsMapResult,
 } from './PagesSelectionPanelConnected';
-import Loader from '../Loader';
 import { PagesOperationsActionTypes } from '../../action-types';
 import { useHistory } from 'react-router-dom';
+import { Icon, Loader } from '../__ui__';
 
 interface PagesSelectionPanelProps
   extends PagesSelectionPanelStateToPropsMapResult,

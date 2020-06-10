@@ -11,14 +11,11 @@ $inner-padding: 10px;
     border: $border-width-thick solid $color-middle-green-50;
     cursor: pointer;
 
-    :first-child {
-      margin-right: 5px;
-    }
-
     &__name {
       flex: 1;
       color: $color-middle-green;
       transition: 0.2s;
+      margin: 0 5px;
     }
 
     svg {

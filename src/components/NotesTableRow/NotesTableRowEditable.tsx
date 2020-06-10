@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { DropdownList, Input, productDropdownItemRenderer } from '../Controls';
-import Icon from '../Icon';
 import {
   NotesTableRowEditableStateToPropsMapResult,
   NotesTableRowEditableDispatchToPropsMapResult,
@@ -8,6 +7,7 @@ import {
 import { NoteItem } from '../../models';
 import { useNoteValidation, useDebounce, useNoteInputDisabled, useIdFromRoute } from '../../hooks';
 import { NotesOperationsActionTypes } from '../../action-types';
+import { Icon } from '../__ui__';
 
 interface NotesTableRowEditableProps
   extends NotesTableRowEditableStateToPropsMapResult,

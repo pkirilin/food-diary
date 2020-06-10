@@ -7,7 +7,7 @@ import {
 } from './ProductsTableRowEditableConnected';
 import { ProductsOperationsActionTypes } from '../../action-types';
 import { Input, DropdownList, categoryDropdownItemRenderer } from '../Controls';
-import Icon from '../Icon';
+import { Icon } from '../__ui__';
 
 interface ProductsTableRowEditableProps
   extends ProductsTableRowEditableStateToPropsMapResult,

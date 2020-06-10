@@ -1,7 +1,6 @@
 import React from 'react';
 import './CategoriesListControlsTop.scss';
 import { SidebarControlPanel, SidebarControlPanelIcons } from '../SidebarBlocks';
-import Icon from '../Icon';
 import {
   CategoriesListControlsTopStateToPropsMapResult,
   CategoriesListControlsTopDispatchToPropsMapResult,
@@ -9,6 +8,7 @@ import {
 import { CategoriesListActionTypes } from '../../action-types';
 import { useRouteMatch } from 'react-router-dom';
 import CategoryCreateFormConnected from '../CategoryCreateForm';
+import { Icon } from '../__ui__';
 
 interface CategoriesListControlsTopProps
   extends CategoriesListControlsTopStateToPropsMapResult,

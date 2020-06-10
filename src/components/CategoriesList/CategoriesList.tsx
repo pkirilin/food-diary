@@ -3,7 +3,7 @@ import './CategoriesList.scss';
 import { SidebarList, SidebarListPlaceholder } from '../SidebarBlocks';
 import CategoriesListItemConnected from '../CategoriesListItem';
 import { CategoriesListStateToPropsMapResult, CategoriesListDispatchToPropsMapResult } from './CategoriesListConnected';
-import Loader from '../Loader';
+import { Loader } from '../__ui__';
 
 interface CategoriesListProps extends CategoriesListStateToPropsMapResult, CategoriesListDispatchToPropsMapResult {}
 

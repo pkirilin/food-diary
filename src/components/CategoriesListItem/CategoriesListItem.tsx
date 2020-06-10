@@ -6,19 +6,18 @@ import {
   SidebarListItemControls,
   useActiveLinkClassName,
 } from '../SidebarBlocks';
-import { BadgesContainer } from '../ContainerBlocks';
-import Badge from '../Badge';
 import { CategoryItem } from '../../models';
 import {
   CategoriesListItemStateToPropsMapResult,
   CategoriesListItemDispatchToPropsMapResult,
 } from './CategoriesListItemConnected';
 import { DropdownMenu, DropdownItem } from '../Controls';
-import Icon from '../Icon';
+import { Icon } from '../__ui__';
 import { CategoriesOperationsActionTypes } from '../../action-types';
 import { useHistory } from 'react-router-dom';
 import CategoriesListItemEditableConnected from './CategoriesListItemEditableConnected';
 import { getWordWithCount } from '../../utils';
+import { Container, Badge } from '../__ui__';
 
 interface CategoriesListItemProps
   extends CategoriesListItemStateToPropsMapResult,
@@ -80,9 +79,9 @@ const CategoriesListItem: React.FC<CategoriesListItemProps> = ({
     <SidebarListItem>
       <SidebarListItemLink to={`/categories/${category.id}`} activeClassName={activeLinkClassName} selected={false}>
         <div>{category.name}</div>
-        <BadgesContainer>
+        <Container spaceBetweenChildren="small">
           <Badge label={categoryProductsBadgeLabel} selected={false}></Badge>
-        </BadgesContainer>
+        </Container>
       </SidebarListItemLink>
       <SidebarListItemControls>
         <DropdownMenu

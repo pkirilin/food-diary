@@ -1,11 +1,11 @@
 import React from 'react';
 import './PageContentHeader.scss';
 import { PageContentHeaderStateToPropsMapResult } from './PageContentHeaderConnected';
-import Icon from '../Icon';
 import { NavLink } from 'react-router-dom';
 import MealsControlPanelConnected from '../MealsControlPanel/MealsControlPanelConnected';
 import { formatDateStr, DateFormat } from '../../utils';
 import { useIdFromRoute } from '../../hooks';
+import { Icon } from '../__ui__';
 
 type PageContentHeaderProps = PageContentHeaderStateToPropsMapResult;
 

@@ -3,9 +3,9 @@ import './NoteInput.scss';
 import { FormGroup, Label, Input, Button, productDropdownItemRenderer, DropdownList } from '../Controls';
 import { NoteInputStateToPropsMapResult, NoteInputDispatchToPropsMapResult } from './NoteInputConnected';
 import { MealType } from '../../models';
-import Loader from '../Loader';
 import { NotesOperationsActionTypes } from '../../action-types';
 import { useDebounce, useNoteValidation, useIdFromRoute } from '../../hooks';
+import { Loader } from '../__ui__';
 
 interface NoteInputProps extends NoteInputStateToPropsMapResult, NoteInputDispatchToPropsMapResult {
   mealType: MealType;

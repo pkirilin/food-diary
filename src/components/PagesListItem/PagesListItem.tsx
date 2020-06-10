@@ -1,18 +1,17 @@
 import React from 'react';
 import './PagesListItem.scss';
-import Badge from '../Badge';
 import {
   SidebarListItem,
   SidebarListItemLink,
   SidebarListItemControls,
   useActiveLinkClassName,
 } from '../SidebarBlocks';
-import { BadgesContainer } from '../ContainerBlocks';
 import { Checkbox } from '../Controls';
 import { PagesListItemDispatchToPropsMapResult, PagesListItemStateToPropsMapResult } from './PagesListItemConnected';
 import { PageItem } from '../../models';
 import { formatDateStr, DateFormat, getWordWithCount } from '../../utils';
 import PagesListItemEditableConnected from './PagesListItemEditableConnected';
+import { Container, Badge } from '../__ui__';
 
 interface PagesListItemProps extends PagesListItemStateToPropsMapResult, PagesListItemDispatchToPropsMapResult {
   page: PageItem;
@@ -44,10 +43,10 @@ const PagesListItem: React.FC<PagesListItemProps> = ({
     <SidebarListItem selected={isSelected}>
       <SidebarListItemLink to={`/pages/${page.id}`} activeClassName={activeLinkClassName} selected={isSelected}>
         <div>{formatDateStr(page.date, DateFormat.SlashDMY)}</div>
-        <BadgesContainer>
+        <Container spaceBetweenChildren="small">
           <Badge label={notesBadgeLabel} selected={isSelected}></Badge>
           <Badge label={caloriesBadgeLabel} selected={isSelected}></Badge>
-        </BadgesContainer>
+        </Container>
       </SidebarListItemLink>
       <SidebarListItemControls>
         <Checkbox checked={isSelected} onCheck={handlePageCheck}></Checkbox>

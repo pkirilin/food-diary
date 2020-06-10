@@ -3,7 +3,7 @@ import './PagesList.scss';
 import { PagesListStateToPropsMapResult, PagesListDispatchToPropsMapResult } from './PagesListConnected';
 import PagesListItemConnected from '../PagesListItem';
 import { SidebarList, SidebarListPlaceholder } from '../SidebarBlocks';
-import Loader from '../Loader';
+import { Loader } from '../__ui__';
 
 interface PagesListProps extends PagesListStateToPropsMapResult, PagesListDispatchToPropsMapResult {}
 

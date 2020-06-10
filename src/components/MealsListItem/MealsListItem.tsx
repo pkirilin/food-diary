@@ -1,13 +1,10 @@
 import React from 'react';
 import './MealsListItem.scss';
 import { MealType, availableMeals } from '../../models';
-import Icon from '../Icon';
-import { BadgesContainer } from '../ContainerBlocks';
-import Badge from '../Badge';
 import { MealsListItemStateToPropsMapResult, MealsListItemDispatchToPropsMapResult } from './MealsListItemConnected';
 import NoteInputConnected from '../NoteInput';
 import NotesTableConnected from '../NotesTable';
-import Loader from '../Loader';
+import { Container, Badge, Icon, Loader } from '../__ui__';
 
 interface MealsListItemProps extends MealsListItemStateToPropsMapResult, MealsListItemDispatchToPropsMapResult {
   mealType: MealType;
@@ -58,10 +55,10 @@ const MealsListItem: React.FC<MealsListItemProps> = ({
           }
         ></Icon>
         <div className="meals-list-item__header__name">{mealName}</div>
-        <BadgesContainer>
+        <Container spaceBetweenChildren="small">
           <Badge label={`${countNotes} ${countNotes === 1 ? 'note' : 'notes'}`}></Badge>
           <Badge label={`${countCalories} cal`}></Badge>
-        </BadgesContainer>
+        </Container>
       </div>
       <div className={mealsListItemContentClassNames.join(' ')}>
         <NoteInputConnected mealType={mealType}></NoteInputConnected>

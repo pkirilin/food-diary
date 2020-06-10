@@ -2,7 +2,7 @@ import React from 'react';
 import './NotesTableRow.scss';
 import { NoteItem } from '../../models';
 import { NotesTableRowStateToPropsMapResult, NotesTableRowDispatchToPropsMapResult } from './NotesTableRowConnected';
-import Icon from '../Icon';
+import { Icon } from '../__ui__';
 import { NotesOperationsActionTypes } from '../../action-types';
 import { useIdFromRoute, useNoteInputDisabled } from '../../hooks';
 import NotesTableRowEditableConnected from './NotesTableRowEditableConnected';

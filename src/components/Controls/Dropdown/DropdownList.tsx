@@ -16,7 +16,7 @@ import {
 import { defaultItemRenderer } from './renderers';
 import Input from '../Input';
 import DropdownItem from '../DropdownItem';
-import Loader from '../../Loader';
+import { Loader } from '../../__ui__';
 
 interface DropdownListProps<T = string> extends DropdownPropsBase {
   items?: T[];

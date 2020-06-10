@@ -1,8 +1,8 @@
 import React from 'react';
 import './CategoriesOperationsPanel.scss';
 import { SidebarOperationsPanel } from '../SidebarBlocks';
-import Loader from '../Loader';
 import { CategoriesOperationsPanelStateToPropsMapResult } from './CategoriesOperationsPanelConnected';
+import { Loader } from '../__ui__';
 
 type CategoriesOperationsPanelProps = CategoriesOperationsPanelStateToPropsMapResult;
 

@@ -3,8 +3,8 @@ import './ProductsTable.scss';
 import { Table, TableColumn } from '../Controls';
 import { ProductsTableStateToPropsMapResult, ProductsTableDispatchToPropsMapResult } from './ProductsTableConnected';
 import ProductsTableRowConnected from '../ProductsTableRow';
-import Loader from '../Loader';
 import Pagination from '../Pagination';
+import { Loader } from '../__ui__';
 
 interface ProductsTableProps extends ProductsTableStateToPropsMapResult, ProductsTableDispatchToPropsMapResult {
   refreshCategoriesOnDeleteProduct?: boolean;

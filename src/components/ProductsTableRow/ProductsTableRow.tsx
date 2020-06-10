@@ -1,7 +1,6 @@
 import React from 'react';
 import './ProductsTableRow.scss';
 import { ProductItem } from '../../models';
-import Icon from '../Icon';
 import {
   ProductsTableRowStateToPropsMapResult,
   ProductsTableRowDispatchToPropsMapResult,
@@ -9,6 +8,7 @@ import {
 import { ProductsOperationsActionTypes } from '../../action-types';
 import { useProductInputDisabled } from '../../hooks';
 import ProductsTableRowEditableConnected from './ProductsTableRowEditableConnected';
+import { Icon } from '../__ui__';
 
 interface ProductsTableRowProps
   extends ProductsTableRowStateToPropsMapResult,

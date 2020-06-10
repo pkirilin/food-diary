@@ -1,8 +1,8 @@
 import React from 'react';
 import './MealsControlPanel.scss';
-import Icon from '../Icon';
 import { MealsControlPanelStateToProps, MealsControlPanelDispatchToPropsMapResult } from './MealsControlPanelConnected';
 import { availableMealTypes } from '../../models';
+import { Icon } from '../__ui__';
 
 interface MealsControlPanelProps extends MealsControlPanelStateToProps, MealsControlPanelDispatchToPropsMapResult {}
 
