@@ -4,7 +4,6 @@ import {
   CategoryContentStateToPropsMapResult,
   CategoryContentDispatchToPropsMapResult,
 } from './CategoryContentConnected';
-import { SectionTitle } from '../ContainerBlocks';
 import ProductInputConnected from '../ProductInput';
 import { useIdFromRoute } from '../../hooks';
 
@@ -33,7 +32,7 @@ const CategoryContent: React.FC<CategoryContentProps> = ({
 
   return (
     <React.Fragment>
-      <SectionTitle title="Categories"></SectionTitle>
+      <h1>Products</h1>
       <ProductInputConnected refreshCategoriesOnCreateProduct={true}></ProductInputConnected>
       <ProductsTableConnected refreshCategoriesOnDeleteProduct={true}></ProductsTableConnected>
     </React.Fragment>
