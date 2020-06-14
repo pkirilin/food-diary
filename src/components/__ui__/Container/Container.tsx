@@ -2,25 +2,31 @@ import React from 'react';
 import './Container.scss';
 
 interface ContainerProps {
+  justify?: 'center';
+  align?: 'center';
+  textColor?: 'middle-green';
   spaceBetweenChildren?: 'small';
 }
 
 const Container: React.FC<ContainerProps> = ({
   children,
+  justify,
+  align,
+  textColor,
   spaceBetweenChildren,
 }: React.PropsWithChildren<ContainerProps>) => {
-  const style: React.CSSProperties = {};
-  const classNames = ['container'];
+  const baseClassName = 'container';
+  const classNames = [baseClassName];
 
-  if (spaceBetweenChildren) {
-    classNames.push(`container_child-space-${spaceBetweenChildren}`);
-  }
+  if (justify) classNames.push(`${baseClassName}_justify-${justify}`);
 
-  return (
-    <div className={classNames.join(' ')} style={style}>
-      {children}
-    </div>
-  );
+  if (align) classNames.push(`${baseClassName}_align-${align}`);
+
+  if (textColor) classNames.push(`${baseClassName}_text-color-${textColor}`);
+
+  if (spaceBetweenChildren) classNames.push(`${baseClassName}_child-space-${spaceBetweenChildren}`);
+
+  return <div className={classNames.join(' ')}>{children}</div>;
 };
 
 export default Container;

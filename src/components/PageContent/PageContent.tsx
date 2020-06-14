@@ -3,9 +3,8 @@ import './PageContent.scss';
 import { PageContentStateToPropsMapResult, PageContentDispatchToPropsMapResult } from './PageContentConnected';
 import PageContentHeaderConnected from '../PageContentHeader';
 import MealsList from '../MealsList';
-import { SectionPlaceholder } from '../ContainerBlocks';
 import { useIdFromRoute } from '../../hooks';
-import { Loader } from '../__ui__';
+import { Loader, Container } from '../__ui__';
 
 interface PageContentProps extends PageContentStateToPropsMapResult, PageContentDispatchToPropsMapResult {}
 
@@ -26,7 +25,11 @@ const PageContent: React.FC<PageContentProps> = ({ notesForPageFetchState, getNo
   const { loading: areNotesForPageLoading, error: notesForPageError, loadingMessage } = notesForPageFetchState;
 
   if (notesForPageError) {
-    return <SectionPlaceholder>{notesForPageError}</SectionPlaceholder>;
+    return (
+      <Container justify="center" textColor="middle-green">
+        {notesForPageError}
+      </Container>
+    );
   }
 
   return (

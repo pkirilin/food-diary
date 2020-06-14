@@ -1,3 +1,5 @@
+@import '../../../variables.scss';
+
 $container-child-space-small: 5px;
 
 @mixin child-space-margin($child-space-size) {
@@ -8,6 +10,18 @@ $container-child-space-small: 5px;
 
 .container {
   display: flex;
+
+  &_justify-center {
+    justify-content: center;
+  }
+
+  &_align-center {
+    align-items: center;
+  }
+
+  &_text-color-middle-green {
+    color: $color-middle-green;
+  }
 
   &_child-space-small {
     @include child-space-margin($container-child-space-small);

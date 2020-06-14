@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import './Products.scss';
-import { ContentWrapper, MainContainer, SectionContainer } from '../ContainerBlocks';
 import ProductInputConnected from '../ProductInput';
 import ProductsTableConnected from '../ProductsTable';
 import { ProductsStateToPropsMapResult, ProductsDispatchToPropsMapResult } from './ProductsConnected';
@@ -33,20 +32,18 @@ const Products: React.FC<ProductsProps> = ({ productsFilter, clearProductsFilter
   }, [clearProductsFilter]);
 
   return (
-    <ContentWrapper>
-      <MainContainer>
-        <SectionContainer>
-          {/* Ensures that products table in this section is initially rendered with cleared filter */}
-          {isFilterCleared && (
-            <React.Fragment>
-              <h1>Products</h1>
-              <ProductInputConnected></ProductInputConnected>
-              <ProductsTableConnected></ProductsTableConnected>
-            </React.Fragment>
-          )}
-        </SectionContainer>
-      </MainContainer>
-    </ContentWrapper>
+    <main>
+      <section>
+        {/* Ensures that products table in this section is initially rendered with cleared filter */}
+        {isFilterCleared && (
+          <React.Fragment>
+            <h1>Products</h1>
+            <ProductInputConnected></ProductInputConnected>
+            <ProductsTableConnected></ProductsTableConnected>
+          </React.Fragment>
+        )}
+      </section>
+    </main>
   );
 };
 
