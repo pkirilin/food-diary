@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import './PageCreateForm.scss';
 import { PageCreateFormStateToPropsMapResult, PageCreateFormDispatchToPropsMapResult } from './PageCreateFormConnected';
-import { Label, Input, Button } from '../__ui__';
+import { Label, Input, Button, Container } from '../__ui__';
 import { PagesOperationsActionTypes } from '../../action-types';
 import { usePageValidation } from '../../hooks';
 import { ModalButtons } from '../ModalBlocks';
-import { FormGroup } from '../Controls';
 
 interface PageCreateFormProps extends PageCreateFormStateToPropsMapResult, PageCreateFormDispatchToPropsMapResult {}
 
@@ -50,10 +49,10 @@ const PageCreateForm: React.FC<PageCreateFormProps> = ({
 
   return (
     <React.Fragment>
-      <FormGroup>
+      <Container direction="column">
         <Label>Page date</Label>
         <Input type="date" value={date} onChange={handleDateChange} disabled={isInputDisabled}></Input>
-      </FormGroup>
+      </Container>
       <ModalButtons>
         <Button onClick={handleCreateClick} disabled={isInputDisabled || !isPageDateValid}>
           Create

@@ -4,8 +4,7 @@ import { NoteInputStateToPropsMapResult, NoteInputDispatchToPropsMapResult } fro
 import { MealType } from '../../models';
 import { NotesOperationsActionTypes } from '../../action-types';
 import { useDebounce, useNoteValidation, useIdFromRoute } from '../../hooks';
-import { Loader, Label, Input, Button, productDropdownItemRenderer, DropdownList } from '../__ui__';
-import { FormGroup } from '../Controls';
+import { Loader, Label, Input, Button, productDropdownItemRenderer, DropdownList, Container } from '../__ui__';
 
 interface NoteInputProps extends NoteInputStateToPropsMapResult, NoteInputDispatchToPropsMapResult {
   mealType: MealType;
@@ -101,49 +100,49 @@ const NoteInput: React.FC<NoteInputProps> = ({
   };
 
   return (
-    <div className="note-input">
-      <div className="note-input__product">
-        <FormGroup>
-          <Label>Product</Label>
-          <DropdownList
-            items={productDropdownItems}
-            itemRenderer={productDropdownItemRenderer}
-            placeholder="Select product"
-            searchable={true}
-            inputValue={productNameInputValue}
-            isContentLoading={isProductDropdownContentLoading}
-            contentLoadingMessage={productDropdownContentLoadingMessage}
-            contentErrorMessage={productDropdownContentErrorMessage}
-            disabled={isInputDisabled}
-            onValueSelect={handleProductDropdownItemSelect}
-            onInputValueChange={handleProductNameDropdownInputChange}
-            onContentOpen={handleProductDropdownContentOpen}
-          ></DropdownList>
-        </FormGroup>
-      </div>
-      <div className="note-input__quantity">
-        <FormGroup>
-          <Label>Quantity, g</Label>
-          <Input
-            type="number"
-            placeholder="Enter quantity"
-            value={productQuantity}
-            onChange={handleQuantityValueChange}
-            disabled={isInputDisabled}
-          ></Input>
-        </FormGroup>
-      </div>
-      <div className="note-input__add">
-        <Button onClick={handleAddButtonClick} disabled={isAddButtonDisabled}>
-          Add
-        </Button>
-      </div>
-      {isMealOperationInProcess && (
-        <div className="note-input__loader">
-          <Loader size="small" label={operationMessage}></Loader>
-        </div>
-      )}
-    </div>
+    <Container col="12" align="flex-end" spaceBetweenChildren="medium">
+      <Container col="4" direction="column">
+        <Label>Product</Label>
+        <DropdownList
+          items={productDropdownItems}
+          itemRenderer={productDropdownItemRenderer}
+          placeholder="Select product"
+          searchable={true}
+          inputValue={productNameInputValue}
+          isContentLoading={isProductDropdownContentLoading}
+          contentLoadingMessage={productDropdownContentLoadingMessage}
+          contentErrorMessage={productDropdownContentErrorMessage}
+          disabled={isInputDisabled}
+          onValueSelect={handleProductDropdownItemSelect}
+          onInputValueChange={handleProductNameDropdownInputChange}
+          onContentOpen={handleProductDropdownContentOpen}
+        ></DropdownList>
+      </Container>
+      <Container col="2" direction="column">
+        <Label>Quantity, g</Label>
+        <Input
+          type="number"
+          placeholder="Enter quantity"
+          value={productQuantity}
+          onChange={handleQuantityValueChange}
+          disabled={isInputDisabled}
+        ></Input>
+      </Container>
+      <Container col="6">
+        <Container col="12" justify="space-between">
+          <Container col="4">
+            <Button onClick={handleAddButtonClick} disabled={isAddButtonDisabled}>
+              Add
+            </Button>
+          </Container>
+          {isMealOperationInProcess && (
+            <Container col="6">
+              <Loader size="small" label={operationMessage}></Loader>
+            </Container>
+          )}
+        </Container>
+      </Container>
+    </Container>
   );
 };
 

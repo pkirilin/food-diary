@@ -3,8 +3,7 @@ import './ProductInput.scss';
 import { ProductInputStateToPropsMapResult, ProductInputDispatchToPropsMapResult } from './ProductInputConnected';
 import { ProductsOperationsActionTypes } from '../../action-types';
 import { useDebounce, useProductValidation } from '../../hooks';
-import { Loader, Input, Label, Button, DropdownList, categoryDropdownItemRenderer } from '../__ui__';
-import { FormGroup } from '../Controls';
+import { Loader, Input, Label, Button, DropdownList, categoryDropdownItemRenderer, Container } from '../__ui__';
 
 interface ProductInputProps extends ProductInputStateToPropsMapResult, ProductInputDispatchToPropsMapResult {
   refreshCategoriesOnCreateProduct?: boolean;
@@ -129,61 +128,59 @@ const ProductInput: React.FC<ProductInputProps> = ({
   };
 
   return (
-    <div className="product-input">
-      <div className="product-input__name">
-        <FormGroup>
-          <Label>Name</Label>
-          <Input
-            type="text"
-            placeholder="New product name"
-            value={productNameInputValue}
-            onChange={handleProductNameChange}
-            disabled={isInputDisabled}
-          ></Input>
-        </FormGroup>
-      </div>
-      <div className="product-input__calories">
-        <FormGroup>
-          <Label>Calories cost</Label>
-          <Input
-            type="number"
-            placeholder="Calories per 100g"
-            value={caloriesCost}
-            onChange={handleCaloriesCostChange}
-            disabled={isInputDisabled}
-          ></Input>
-        </FormGroup>
-      </div>
-      <div className="product-input__category">
-        <FormGroup>
-          <Label>Category</Label>
-          <DropdownList
-            items={categoryDropdownItems}
-            itemRenderer={categoryDropdownItemRenderer}
-            placeholder="Select category"
-            searchable={true}
-            inputValue={categoryNameInputValue}
-            isContentLoading={isCategoryDropdownContentLoading}
-            contentLoadingMessage={categoryDropdownContentLoadingMessage}
-            contentErrorMessage={categoryDropdownContentErrorMessage}
-            disabled={isInputDisabled}
-            onValueSelect={handleCategoryDropdownItemSelect}
-            onInputValueChange={handleCategoryNameDropdownInputChange}
-            onContentOpen={handleCategoryDropdownContentOpen}
-          ></DropdownList>
-        </FormGroup>
-      </div>
-      <div className="product-input__add">
-        <Button onClick={handleAddButtonClick} disabled={isAddButtonDisabled}>
-          Add
-        </Button>
-      </div>
-      {isOperationInProcess && (
-        <div className="product-input__loader">
-          <Loader size="small" label={operationMessage}></Loader>
-        </div>
-      )}
-    </div>
+    <Container col="12" align="flex-end" spaceBetweenChildren="medium">
+      <Container col="3" direction="column">
+        <Label>Name</Label>
+        <Input
+          type="text"
+          placeholder="New product name"
+          value={productNameInputValue}
+          onChange={handleProductNameChange}
+          disabled={isInputDisabled}
+        ></Input>
+      </Container>
+      <Container col="2" direction="column">
+        <Label>Calories cost</Label>
+        <Input
+          type="number"
+          placeholder="Calories per 100g"
+          value={caloriesCost}
+          onChange={handleCaloriesCostChange}
+          disabled={isInputDisabled}
+        ></Input>
+      </Container>
+      <Container col="3" direction="column">
+        <Label>Category</Label>
+        <DropdownList
+          items={categoryDropdownItems}
+          itemRenderer={categoryDropdownItemRenderer}
+          placeholder="Select category"
+          searchable={true}
+          inputValue={categoryNameInputValue}
+          isContentLoading={isCategoryDropdownContentLoading}
+          contentLoadingMessage={categoryDropdownContentLoadingMessage}
+          contentErrorMessage={categoryDropdownContentErrorMessage}
+          disabled={isInputDisabled}
+          onValueSelect={handleCategoryDropdownItemSelect}
+          onInputValueChange={handleCategoryNameDropdownInputChange}
+          onContentOpen={handleCategoryDropdownContentOpen}
+        ></DropdownList>
+      </Container>
+      <Container col="4">
+        <Container col="12" justify="space-between">
+          <Container col="4">
+            <Button onClick={handleAddButtonClick} disabled={isAddButtonDisabled}>
+              Add
+            </Button>
+          </Container>
+          {isOperationInProcess && (
+            <Container col="7">
+              <Loader size="small" label={operationMessage}></Loader>
+            </Container>
+          )}
+        </Container>
+      </Container>
+    </Container>
   );
 };
 
