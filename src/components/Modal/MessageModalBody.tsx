@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { CloseModalAction } from '../../action-types';
 import { closeModal } from '../../action-creators';
-import { Button } from '../Controls';
 import { ModalButtons } from '../ModalBlocks';
+import { Button } from '../__ui__';
 
 export interface MessageModalBodyProps extends MessageBodyDispatchToPropsMapResult {
   message: string;

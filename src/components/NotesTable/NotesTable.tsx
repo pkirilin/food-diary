@@ -2,7 +2,7 @@ import React from 'react';
 import './NotesTable.scss';
 import { MealType } from '../../models';
 import { NotesTableStateToPropsMapResult } from './NotesTableConnected';
-import { Table, TableColumn } from '../Controls';
+import { Table, TableColumn } from '../__ui__';
 import NotesTableRowConnected from '../NotesTableRow';
 
 interface NotesTableProps extends NotesTableStateToPropsMapResult {

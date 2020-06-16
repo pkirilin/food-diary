@@ -1,5 +1,5 @@
 @import '../../../variables.scss';
-@import '../FormControls.variables.scss';
+@import '../controls.variables.scss';
 @import './Dropdown.variables.scss';
 
 .dropdown {
@@ -8,11 +8,11 @@
   &__toggler {
     display: flex;
     align-items: center;
-    border: $form-control-border-width solid $color-middle-green-50;
-    border-radius: $form-control-border-radius;
-    padding: $form-control-padding;
+    border: $control-border-width solid $color-middle-green-50;
+    border-radius: $control-border-radius;
+    padding: $control-padding;
     cursor: pointer;
-    transition: $form-control-transition;
+    transition: $control-transition;
 
     &_small {
       height: 25px;
@@ -20,7 +20,7 @@
 
     &_active {
       border-color: $color-middle-green;
-      box-shadow: $form-control-box-shadow $color-middle-green;
+      box-shadow: $control-box-shadow $color-middle-green;
     }
 
     &_disabled {
@@ -53,7 +53,7 @@
     width: 10px;
     height: 10px;
     fill: $color-middle-green;
-    margin-left: $form-control-padding;
+    margin-left: $control-padding;
 
     &_disabled {
       fill: $color-middle-green-50;
@@ -63,7 +63,7 @@
       position: absolute;
       top: 12px;
       right: 0;
-      margin-right: $form-control-padding;
+      margin-right: $control-padding;
 
       width: 10px;
       height: 10px;
@@ -85,7 +85,7 @@
     position: absolute;
     max-height: 400px;
     overflow-y: auto;
-    border: $form-control-border-width solid $color-middle-green-50;
+    border: $control-border-width solid $color-middle-green-50;
     background-color: $color-white;
 
     &_opened {
@@ -99,13 +99,13 @@
     &_loading {
       display: flex;
       justify-content: center;
-      padding: $form-control-padding;
+      padding: $control-padding;
     }
 
     &_empty {
       text-align: center;
       color: $color-middle-green-50;
-      padding: $form-control-padding;
+      padding: $control-padding;
     }
   }
 }

@@ -1,9 +1,8 @@
 import React, { useEffect } from 'react';
 import './ProductsTable.scss';
-import { Table, TableColumn } from '../Controls';
 import { ProductsTableStateToPropsMapResult, ProductsTableDispatchToPropsMapResult } from './ProductsTableConnected';
 import ProductsTableRowConnected from '../ProductsTableRow';
-import { Loader, Pagination } from '../__ui__';
+import { Loader, Pagination, Table, TableColumn } from '../__ui__';
 
 interface ProductsTableProps extends ProductsTableStateToPropsMapResult, ProductsTableDispatchToPropsMapResult {
   refreshCategoriesOnDeleteProduct?: boolean;

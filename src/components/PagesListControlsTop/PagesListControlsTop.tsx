@@ -7,11 +7,10 @@ import {
 } from './PagesListControlsTopConnected';
 import { useRouteMatch } from 'react-router-dom';
 import { PagesListActionTypes, PagesOperationsActionTypes } from '../../action-types';
-import { DropdownMenu, DropdownItem } from '../Controls';
 import PagesExportFormConnected from '../PagesExportForm';
 import PageCreateFormConnected from '../PageCreateForm';
 import PagesFilterFormConnected from '../PagesFilterForm';
-import { Icon } from '../__ui__';
+import { Icon, DropdownMenu, DropdownItem } from '../__ui__';
 
 interface PagesListControlsTopProps
   extends PagesListControlsTopStateToPropsMapResult,

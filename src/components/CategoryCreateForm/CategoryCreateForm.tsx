@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import './CategoryCreateForm.scss';
 import { CategoryCreateFormDispatchToPropsMapResult } from './CategoryCreateFormConnected';
-import { FormGroup, Label, Input, Button } from '../Controls';
+import { Label, Input, Button } from '../__ui__';
 import { useCategoryValidation } from '../../hooks';
 import { ModalButtons } from '../ModalBlocks';
+import { FormGroup } from '../Controls';
 
 type CategoryCreateFormProps = CategoryCreateFormDispatchToPropsMapResult;
 

@@ -11,13 +11,11 @@ import {
   CategoriesListItemStateToPropsMapResult,
   CategoriesListItemDispatchToPropsMapResult,
 } from './CategoriesListItemConnected';
-import { DropdownMenu, DropdownItem } from '../Controls';
-import { Icon } from '../__ui__';
 import { CategoriesOperationsActionTypes } from '../../action-types';
 import { useHistory } from 'react-router-dom';
 import CategoriesListItemEditableConnected from './CategoriesListItemEditableConnected';
 import { getWordWithCount } from '../../utils';
-import { Container, Badge } from '../__ui__';
+import { Container, Badge, Icon, DropdownMenu, DropdownItem } from '../__ui__';
 
 interface CategoriesListItemProps
   extends CategoriesListItemStateToPropsMapResult,

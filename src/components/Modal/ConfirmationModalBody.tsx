@@ -4,8 +4,8 @@ import { closeModal } from '../../action-creators';
 import { Dispatch } from 'redux';
 import { CloseModalAction } from '../../action-types';
 import { ModalButtons } from '../ModalBlocks';
-import { Button } from '../Controls';
 import { MessageModalBodyProps } from './MessageModalBody';
+import { Button } from '../__ui__';
 
 interface ConfirmationDialogBodyProps extends MessageModalBodyProps, ConfirmationDialogBodyDispatchToPropsMapResult {
   confirm: () => void;

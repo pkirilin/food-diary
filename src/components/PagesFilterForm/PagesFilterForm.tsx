@@ -4,8 +4,9 @@ import {
   PagesFilterFormDispatchToPropsMapResult,
   PagesFilterFormStateToPropsMapResult,
 } from './PagesFilterFormConnected';
-import { Button, FormGroup, Label, Input } from '../Controls';
+import { Button, Label, Input } from '../__ui__';
 import { ModalButtons } from '../ModalBlocks';
+import { FormGroup } from '../Controls';
 
 interface PagesFilterFormProps extends PagesFilterFormStateToPropsMapResult, PagesFilterFormDispatchToPropsMapResult {}
 

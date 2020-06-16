@@ -1,5 +1,5 @@
 @import '../../../variables.scss';
-@import '../../Controls/FormControls.variables.scss';
+@import '../../__ui__/controls.variables.scss';
 
 .pagination-item {
   display: flex;
@@ -11,7 +11,7 @@
   border-radius: 5px;
   background-color: $color-light-green;
   margin: 3px;
-  transition: $form-control-transition;
+  transition: $control-transition;
   cursor: pointer;
 
   &:hover,

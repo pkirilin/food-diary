@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './PagesExportForm.scss';
-import { Input, Label, FormGroup, DropdownList, Button } from '../Controls';
+import { Input, Label, DropdownList, Button } from '../__ui__';
 import { exportFormats } from './export-formats';
 import {
   PagesExportFormStateToPropsMapResult,
@@ -10,6 +10,7 @@ import { PagesOperationsActionTypes } from '../../action-types';
 import { downloadFile } from '../../utils';
 import { ExportFormat } from '../../models';
 import { ModalButtons } from '../ModalBlocks';
+import { FormGroup } from '../Controls';
 
 interface PagesExportFormProps extends PagesExportFormStateToPropsMapResult, PagesExportFormDispatchToPropsMapResult {}
 

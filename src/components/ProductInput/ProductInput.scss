@@ -1,4 +1,4 @@
-@import '../Controls/FormControls.variables.scss';
+@import '../../components/__ui__/controls.variables.scss';
 
 .product-input {
   display: flex;
@@ -33,6 +33,6 @@
     display: flex;
     justify-content: center;
     flex: 0.2;
-    padding: $form-control-padding 0px;
+    padding: $control-padding 0px;
   }
 }

@@ -1,4 +1,4 @@
-@import '../Controls/FormControls.variables.scss';
+@import '../../components/__ui__/controls.variables.scss';
 
 .note-input {
   display: flex;
@@ -29,6 +29,6 @@
     display: flex;
     justify-content: center;
     flex: 0.25;
-    padding: $form-control-padding 0px;
+    padding: $control-padding 0px;
   }
 }

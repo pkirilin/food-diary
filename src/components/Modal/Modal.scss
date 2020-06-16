@@ -1,5 +1,5 @@
 @import '../../variables.scss';
-@import '../Controls/FormControls.variables.scss';
+@import '../__ui__/controls.variables.scss';
 
 $modal-z-index: 12000;
 $modal-content-padding: 16px;
@@ -40,7 +40,7 @@ $modal-content-padding: 16px;
   &-close {
     font-size: 28px;
     color: $color-middle-green;
-    transition: $form-control-transition;
+    transition: $control-transition;
 
     &:hover,
     &:focus {

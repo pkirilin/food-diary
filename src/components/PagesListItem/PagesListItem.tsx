@@ -6,12 +6,11 @@ import {
   SidebarListItemControls,
   useActiveLinkClassName,
 } from '../SidebarBlocks';
-import { Checkbox } from '../Controls';
 import { PagesListItemDispatchToPropsMapResult, PagesListItemStateToPropsMapResult } from './PagesListItemConnected';
 import { PageItem } from '../../models';
 import { formatDateStr, DateFormat, getWordWithCount } from '../../utils';
 import PagesListItemEditableConnected from './PagesListItemEditableConnected';
-import { Container, Badge } from '../__ui__';
+import { Container, Badge, Checkbox } from '../__ui__';
 
 interface PagesListItemProps extends PagesListItemStateToPropsMapResult, PagesListItemDispatchToPropsMapResult {
   page: PageItem;

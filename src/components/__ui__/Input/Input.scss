@@ -1,0 +1,34 @@
+@import '../../../variables.scss';
+@import '../controls.variables.scss';
+
+.input {
+  width: 100%;
+  padding: $control-padding;
+  border: $control-border-width solid $color-middle-green-50;
+  border-radius: $control-border-radius;
+  transition: $control-transition;
+  outline: none;
+  background-color: transparent;
+
+  &_small {
+    height: 25px;
+  }
+
+  &_normal {
+    height: 35px;
+  }
+
+  &:disabled {
+    border: $control-border-width solid $color-middle-green-25;
+    color: $color-middle-green-25;
+  }
+
+  &:focus {
+    border-color: $color-middle-green;
+    box-shadow: $control-box-shadow $color-middle-green;
+  }
+
+  &::placeholder {
+    color: $color-middle-green-50;
+  }
+}

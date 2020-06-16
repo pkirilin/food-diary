@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import './PageCreateForm.scss';
 import { PageCreateFormStateToPropsMapResult, PageCreateFormDispatchToPropsMapResult } from './PageCreateFormConnected';
-import { FormGroup, Label, Input, Button } from '../Controls';
+import { Label, Input, Button } from '../__ui__';
 import { PagesOperationsActionTypes } from '../../action-types';
 import { usePageValidation } from '../../hooks';
 import { ModalButtons } from '../ModalBlocks';
+import { FormGroup } from '../Controls';
 
 interface PageCreateFormProps extends PageCreateFormStateToPropsMapResult, PageCreateFormDispatchToPropsMapResult {}
 

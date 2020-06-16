@@ -1,12 +1,12 @@
 @import '../../../variables.scss';
-@import '../FormControls.variables.scss';
+@import '../controls.variables.scss';
 
 .dropdown-item {
   transition: 0.2s;
 
   &,
   & > label {
-    padding: $form-control-padding;
+    padding: $control-padding;
     cursor: pointer;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -14,7 +14,7 @@
 
   & > label {
     display: block;
-    margin: -$form-control-padding;
+    margin: -$control-padding;
   }
 
   &:hover,

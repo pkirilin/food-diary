@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import './ProductInput.scss';
-import { FormGroup, Input, Label, Button, DropdownList, categoryDropdownItemRenderer } from '../Controls';
 import { ProductInputStateToPropsMapResult, ProductInputDispatchToPropsMapResult } from './ProductInputConnected';
 import { ProductsOperationsActionTypes } from '../../action-types';
 import { useDebounce, useProductValidation } from '../../hooks';
-import { Loader } from '../__ui__';
+import { Loader, Input, Label, Button, DropdownList, categoryDropdownItemRenderer } from '../__ui__';
+import { FormGroup } from '../Controls';
 
 interface ProductInputProps extends ProductInputStateToPropsMapResult, ProductInputDispatchToPropsMapResult {
   refreshCategoriesOnCreateProduct?: boolean;

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Input } from '../Controls';
 import { SidebarListItemControls, SidebarListItem } from '../SidebarBlocks';
 import { useCategoryValidation } from '../../hooks';
 import { CategoryItem } from '../../models';
@@ -8,7 +7,7 @@ import {
   CategoriesListItemEditableDispatchToPropsMapResult,
 } from './CategoriesListItemEditableConnected';
 import { CategoriesOperationsActionTypes } from '../../action-types';
-import { Icon } from '../__ui__';
+import { Icon, Input } from '../__ui__';
 
 interface CategoriesListItemEditableProps
   extends CategoriesListItemEditableStateToPropsMapResult,

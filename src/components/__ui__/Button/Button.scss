@@ -1,20 +1,20 @@
 @import '../../../variables.scss';
-@import '../FormControls.variables.scss';
+@import '../controls.variables.scss';
 
 .button {
   background-color: $color-light-green;
-  padding: $form-control-padding;
-  border: $form-control-border-width solid $color-middle-green-50;
-  border-radius: $form-control-border-radius;
+  padding: $control-padding;
+  border: $control-border-width solid $color-middle-green-50;
+  border-radius: $control-border-radius;
   text-align: center;
-  transition: $form-control-transition;
+  transition: $control-transition;
   outline: none;
   cursor: pointer;
   width: 100%;
 
   &:disabled {
     cursor: default;
-    border: $form-control-border-width solid $color-middle-green-25;
+    border: $control-border-width solid $color-middle-green-25;
     color: $color-middle-green-25;
   }
 
@@ -27,7 +27,7 @@
 
     &:focus {
       border-color: $color-middle-green;
-      box-shadow: $form-control-box-shadow $color-middle-green;
+      box-shadow: $control-box-shadow $color-middle-green;
     }
   }
 }
