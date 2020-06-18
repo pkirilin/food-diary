@@ -5,7 +5,6 @@ import {
   PagesFilterFormStateToPropsMapResult,
 } from './PagesFilterFormConnected';
 import { Button, Label, Input, Container } from '../__ui__';
-import { ModalButtons } from '../ModalBlocks';
 
 interface PagesFilterFormProps extends PagesFilterFormStateToPropsMapResult, PagesFilterFormDispatchToPropsMapResult {}
 
@@ -50,7 +49,7 @@ const PagesFilterForm: React.FC<PagesFilterFormProps> = ({
   };
 
   return (
-    <Container direction="column">
+    <Container direction="column" spaceBetweenChildren="large">
       <Container direction="column" spaceBetweenChildren="medium">
         <Container direction="column">
           <Label>Start date</Label>
@@ -61,12 +60,16 @@ const PagesFilterForm: React.FC<PagesFilterFormProps> = ({
           <Input type="date" value={endDate} onChange={handleEndDateChange}></Input>
         </Container>
       </Container>
-      <ModalButtons>
-        <Button onClick={handleApplyClick} disabled={!areDateRangesValid}>
-          Apply
-        </Button>
-        <Button onClick={handleCancelClick}>Cancel</Button>
-      </ModalButtons>
+      <Container justify="flex-end" spaceBetweenChildren="medium">
+        <Container col="4">
+          <Button onClick={handleApplyClick} disabled={!areDateRangesValid}>
+            Apply
+          </Button>
+        </Container>
+        <Container col="4">
+          <Button onClick={handleCancelClick}>Cancel</Button>
+        </Container>
+      </Container>
     </Container>
   );
 };

@@ -3,8 +3,7 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { CloseModalAction } from '../../action-types';
 import { closeModal } from '../../action-creators';
-import { ModalButtons } from '../ModalBlocks';
-import { Button } from '../__ui__';
+import { Button, Container } from '../__ui__';
 
 export interface MessageModalBodyProps extends MessageBodyDispatchToPropsMapResult {
   message: string;
@@ -16,18 +15,20 @@ interface MessageBodyDispatchToPropsMapResult {
 
 const MessageModalBody: React.FC<MessageModalBodyProps> = ({ message, closeModal }: MessageModalBodyProps) => {
   return (
-    <React.Fragment>
+    <Container direction="column" spaceBetweenChildren="large">
       <p>{message}</p>
-      <ModalButtons>
-        <Button
-          onClick={(): void => {
-            closeModal();
-          }}
-        >
-          OK
-        </Button>
-      </ModalButtons>
-    </React.Fragment>
+      <Container justify="flex-end">
+        <Container col="4">
+          <Button
+            onClick={(): void => {
+              closeModal();
+            }}
+          >
+            OK
+          </Button>
+        </Container>
+      </Container>
+    </Container>
   );
 };
 

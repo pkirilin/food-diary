@@ -2,12 +2,12 @@ import React from 'react';
 import './Container.scss';
 
 interface ContainerProps {
-  justify?: 'center' | 'space-between';
+  justify?: 'center' | 'space-between' | 'flex-end';
   align?: 'center' | 'flex-end';
   direction?: 'row' | 'column';
   col?: '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '10' | '11' | '12';
   textColor?: 'middle-green';
-  spaceBetweenChildren?: 'small' | 'medium';
+  spaceBetweenChildren?: 'small' | 'medium' | 'large';
 }
 
 const Container: React.FC<ContainerProps> = ({

@@ -2,6 +2,7 @@
 
 $container-child-space-small: 5px;
 $container-child-space-medium: 10px;
+$container-child-space-large: 20px;
 
 @mixin child-space-margin-row($child-space-size) {
   & > :not(:first-child) {
@@ -24,6 +25,10 @@ $container-child-space-medium: 10px;
 
   &_justify-space-between {
     justify-content: space-between;
+  }
+
+  &_justify-flex-end {
+    justify-content: flex-end;
   }
 
   &_align-center {
@@ -102,11 +107,19 @@ $container-child-space-medium: 10px;
     @include child-space-margin-row($container-child-space-medium);
   }
 
+  &_child-space-row-large {
+    @include child-space-margin-row($container-child-space-large);
+  }
+
   &_child-space-col-small {
     @include child-space-margin-col($container-child-space-small);
   }
 
   &_child-space-col-medium {
     @include child-space-margin-col($container-child-space-medium);
+  }
+
+  &_child-space-col-large {
+    @include child-space-margin-col($container-child-space-large);
   }
 }

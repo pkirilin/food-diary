@@ -3,9 +3,8 @@ import { connect } from 'react-redux';
 import { closeModal } from '../../action-creators';
 import { Dispatch } from 'redux';
 import { CloseModalAction } from '../../action-types';
-import { ModalButtons } from '../ModalBlocks';
 import { MessageModalBodyProps } from './MessageModalBody';
-import { Button } from '../__ui__';
+import { Button, Container } from '../__ui__';
 
 interface ConfirmationDialogBodyProps extends MessageModalBodyProps, ConfirmationDialogBodyDispatchToPropsMapResult {
   confirm: () => void;
@@ -21,26 +20,30 @@ const ConfirmationModalBody: React.FC<ConfirmationDialogBodyProps> = ({
   closeModal,
 }: ConfirmationDialogBodyProps) => {
   return (
-    <React.Fragment>
+    <Container direction="column" spaceBetweenChildren="large">
       <p>{message}</p>
-      <ModalButtons>
-        <Button
-          onClick={(): void => {
-            closeModal();
-            confirm();
-          }}
-        >
-          Yes
-        </Button>
-        <Button
-          onClick={(): void => {
-            closeModal();
-          }}
-        >
-          No
-        </Button>
-      </ModalButtons>
-    </React.Fragment>
+      <Container justify="flex-end" spaceBetweenChildren="medium">
+        <Container col="4">
+          <Button
+            onClick={(): void => {
+              closeModal();
+              confirm();
+            }}
+          >
+            Yes
+          </Button>
+        </Container>
+        <Container col="4">
+          <Button
+            onClick={(): void => {
+              closeModal();
+            }}
+          >
+            No
+          </Button>
+        </Container>
+      </Container>
+    </Container>
   );
 };
 

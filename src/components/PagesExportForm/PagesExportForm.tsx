@@ -9,7 +9,6 @@ import {
 import { PagesOperationsActionTypes } from '../../action-types';
 import { downloadFile } from '../../utils';
 import { ExportFormat } from '../../models';
-import { ModalButtons } from '../ModalBlocks';
 
 interface PagesExportFormProps extends PagesExportFormStateToPropsMapResult, PagesExportFormDispatchToPropsMapResult {}
 
@@ -62,7 +61,7 @@ const PagesExportForm: React.FC<PagesExportFormProps> = ({
   };
 
   return (
-    <Container direction="column">
+    <Container direction="column" spaceBetweenChildren="large">
       <Container direction="column" spaceBetweenChildren="medium">
         <Container direction="column">
           <Label>Start date</Label>
@@ -83,14 +82,18 @@ const PagesExportForm: React.FC<PagesExportFormProps> = ({
           ></DropdownList>
         </Container>
       </Container>
-      <ModalButtons>
-        <Button onClick={handleExportButtonClick} disabled={isInputDisabled || !isInputValid}>
-          Export
-        </Button>
-        <Button onClick={handleCancelButtonClick} disabled={isInputDisabled}>
-          Cancel
-        </Button>
-      </ModalButtons>
+      <Container justify="flex-end" spaceBetweenChildren="medium">
+        <Container col="4">
+          <Button onClick={handleExportButtonClick} disabled={isInputDisabled || !isInputValid}>
+            Export
+          </Button>
+        </Container>
+        <Container col="4">
+          <Button onClick={handleCancelButtonClick} disabled={isInputDisabled}>
+            Cancel
+          </Button>
+        </Container>
+      </Container>
     </Container>
   );
 };
