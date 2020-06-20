@@ -8,6 +8,7 @@ interface ContainerProps {
   col?: '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '10' | '11' | '12';
   textColor?: 'middle-green';
   spaceBetweenChildren?: 'small' | 'medium' | 'large';
+  additionalCssClassNames?: string[];
 }
 
 const Container: React.FC<ContainerProps> = ({
@@ -18,6 +19,7 @@ const Container: React.FC<ContainerProps> = ({
   col,
   textColor,
   spaceBetweenChildren,
+  additionalCssClassNames = [],
 }: React.PropsWithChildren<ContainerProps>) => {
   const baseClassName = 'container';
   const classNames = [baseClassName];
@@ -39,6 +41,10 @@ const Container: React.FC<ContainerProps> = ({
       classNames.push(`${baseClassName}_child-space-row-${spaceBetweenChildren}`);
     }
   }
+
+  additionalCssClassNames.forEach(cn => {
+    classNames.push(cn);
+  });
 
   return <div className={classNames.join(' ')}>{children}</div>;
 };
