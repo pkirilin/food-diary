@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import './Products.scss';
 import ProductInputConnected from '../ProductInput';
 import ProductsTableConnected from '../ProductsTable';
 import { ProductsStateToPropsMapResult, ProductsDispatchToPropsMapResult } from './ProductsConnected';
 import { ProductsFilter } from '../../models';
 import { productsFilterInitialState } from '../../reducers/products';
+import { Container } from '../__ui__';
 
 interface ProductsProps extends ProductsStateToPropsMapResult, ProductsDispatchToPropsMapResult {}
 
@@ -38,8 +38,10 @@ const Products: React.FC<ProductsProps> = ({ productsFilter, clearProductsFilter
         {isFilterCleared && (
           <React.Fragment>
             <h1>Products</h1>
-            <ProductInputConnected></ProductInputConnected>
-            <ProductsTableConnected></ProductsTableConnected>
+            <Container direction="column" spaceBetweenChildren="medium">
+              <ProductInputConnected></ProductInputConnected>
+              <ProductsTableConnected></ProductsTableConnected>
+            </Container>
           </React.Fragment>
         )}
       </section>

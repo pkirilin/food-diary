@@ -1,5 +1,13 @@
+@import '../../variables.scss';
 @import '../PageContent/PageContent.variables.scss';
+@import '../Navbar/Navbar.variables.scss';
 
 .meals-list {
   margin-top: $top-panel-height;
+
+  &_loading {
+    position: relative;
+    max-height: calc(100vh - #{$navbar-height} - #{$top-panel-height} - 2 * #{$section-padding});
+    overflow: visible;
+  }
 }

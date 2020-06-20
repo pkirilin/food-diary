@@ -10,6 +10,7 @@ import DropdownItem from './DropdownItem';
 import Input from './Input';
 import Label from './Label';
 import { Table, TableColumn } from './Table';
+import Preloader from './Preloader';
 
 export {
   Container,
@@ -26,6 +27,7 @@ export {
   Label,
   Table,
   TableColumn,
+  Preloader,
 };
 
 export { categoryDropdownItemRenderer, productDropdownItemRenderer };

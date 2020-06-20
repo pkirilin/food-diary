@@ -1,3 +1,3 @@
-import MealsList from './MealsList';
+import MealsListConnected from './MealsListConnected';
 
-export default MealsList;
+export default MealsListConnected;

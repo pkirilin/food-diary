@@ -2,7 +2,7 @@ import React from 'react';
 import './Loader.scss';
 import { ReactComponent as LoaderSvg } from './loader.svg';
 
-interface LoaderProps {
+export interface LoaderProps {
   size?: 'small' | 'medium' | 'large';
   label?: string;
 }

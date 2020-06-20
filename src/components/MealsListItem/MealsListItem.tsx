@@ -4,7 +4,7 @@ import { MealType, availableMeals } from '../../models';
 import { MealsListItemStateToPropsMapResult, MealsListItemDispatchToPropsMapResult } from './MealsListItemConnected';
 import NoteInputConnected from '../NoteInput';
 import NotesTableConnected from '../NotesTable';
-import { Container, Badge, Icon, Loader } from '../__ui__';
+import { Container, Badge, Icon, Preloader } from '../__ui__';
 
 interface MealsListItemProps extends MealsListItemStateToPropsMapResult, MealsListItemDispatchToPropsMapResult {
   mealType: MealType;
@@ -60,17 +60,16 @@ const MealsListItem: React.FC<MealsListItemProps> = ({
           <Badge label={`${countCalories} cal`}></Badge>
         </Container>
       </div>
-      <div className={mealsListItemContentClassNames.join(' ')}>
+      <Container
+        direction="column"
+        spaceBetweenChildren="medium"
+        additionalCssClassNames={mealsListItemContentClassNames}
+      >
         <NoteInputConnected mealType={mealType}></NoteInputConnected>
-        <div className="meals-list-item__content__notes">
-          {isNotesTableLoading && (
-            <div className="meals-list-item__content__notes__preloader">
-              <Loader label={notesTableLoadingMessage}></Loader>
-            </div>
-          )}
+        <Preloader isVisible={isNotesTableLoading} label={notesTableLoadingMessage}>
           <NotesTableConnected mealType={mealType}></NotesTableConnected>
-        </div>
-      </div>
+        </Preloader>
+      </Container>
     </div>
   );
 };

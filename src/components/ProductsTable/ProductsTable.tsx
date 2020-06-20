@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react';
-import './ProductsTable.scss';
 import { ProductsTableStateToPropsMapResult, ProductsTableDispatchToPropsMapResult } from './ProductsTableConnected';
 import ProductsTableRowConnected from '../ProductsTableRow';
-import { Loader, Pagination, Table, TableColumn } from '../__ui__';
+import { Pagination, Table, TableColumn, Preloader, Container } from '../__ui__';
 
 interface ProductsTableProps extends ProductsTableStateToPropsMapResult, ProductsTableDispatchToPropsMapResult {
   refreshCategoriesOnDeleteProduct?: boolean;
@@ -59,30 +58,22 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
   }, [getProducts, productsFilter]);
 
   return (
-    <React.Fragment>
-      <div className="products">
-        {isProductsTableLoading && (
-          <div className="products__preloader">
-            <Loader label={loadingMessage}></Loader>
-          </div>
-        )}
-        <div className="products-table">
-          <Table
-            columns={productsTableColumns}
-            rows={mapProductItemsToTableRows()}
-            dataErrorMessage={productsListError}
-          ></Table>
-        </div>
-      </div>
+    <Container direction="column" spaceBetweenChildren="medium">
+      <Preloader isVisible={isProductsTableLoading} label={loadingMessage}>
+        <Table
+          columns={productsTableColumns}
+          rows={mapProductItemsToTableRows()}
+          dataErrorMessage={productsListError}
+        ></Table>
+      </Preloader>
       <Pagination
         totalPagesCount={totalPagesCount}
         maxVisiblePagesCount={10}
         isDisabled={isPaginationDisabled}
-        marginTop="10px"
         currentPageNumber={productsFilter.pageNumber}
         onPageNumberUpdate={handlePageNumberUpdate}
       ></Pagination>
-    </React.Fragment>
+    </Container>
   );
 };
 

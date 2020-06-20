@@ -2,9 +2,9 @@ import React, { useEffect } from 'react';
 import './PageContent.scss';
 import { PageContentStateToPropsMapResult, PageContentDispatchToPropsMapResult } from './PageContentConnected';
 import PageContentHeaderConnected from '../PageContentHeader';
-import MealsList from '../MealsList';
+import MealsListConnected from '../MealsList';
 import { useIdFromRoute } from '../../hooks';
-import { Loader, Container } from '../__ui__';
+import { Container, Preloader } from '../__ui__';
 
 interface PageContentProps extends PageContentStateToPropsMapResult, PageContentDispatchToPropsMapResult {}
 
@@ -37,12 +37,9 @@ const PageContent: React.FC<PageContentProps> = ({ notesForPageFetchState, getNo
       <div className="page-content__top-panel">
         <PageContentHeaderConnected></PageContentHeaderConnected>
       </div>
-      {areNotesForPageLoading && (
-        <div className="page-content__preloader">
-          <Loader label={loadingMessage}></Loader>
-        </div>
-      )}
-      <MealsList></MealsList>
+      <Preloader isVisible={areNotesForPageLoading} label={loadingMessage}>
+        <MealsListConnected></MealsListConnected>
+      </Preloader>
     </div>
   );
 };
