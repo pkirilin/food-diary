@@ -1,8 +1,8 @@
 @import '../../../variables.scss';
-@import '../controls.variables.scss';
+@import '../variables.scss';
 
 .dropdown-item {
-  transition: 0.2s;
+  transition: $transition-fast;
 
   &,
   & > label {

@@ -4,7 +4,7 @@ $cell-inner-padding: 5px;
 $cell-height: 35px;
 
 $row-border-thickness: 0.5px;
-$row-transition: 0.5s;
+$row-transition: $transition-slow;
 
 .table {
   border-collapse: collapse;

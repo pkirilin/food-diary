@@ -1,5 +1,4 @@
 @import '../../../variables.scss';
-@import '../../__ui__/controls.variables.scss';
 
 .pagination-item {
   display: flex;
@@ -8,10 +7,10 @@
   min-width: 30px;
   height: 30px;
   border: $border-width-thick solid $color-middle-green-50;
-  border-radius: 5px;
+  border-radius: $border-radius;
   background-color: $color-light-green;
   margin: 3px;
-  transition: $control-transition;
+  transition: $transition-slow;
   cursor: pointer;
 
   &:hover,

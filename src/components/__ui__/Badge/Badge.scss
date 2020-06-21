@@ -1,11 +1,12 @@
 @import '../../../variables.scss';
+@import '../variables.scss';
 
 .badge {
   font-size: 10px;
   font-weight: bold;
   color: $color-light-green;
   background-color: $color-dark-green;
-  border-radius: 5px;
+  border-radius: $control-border-radius;
   padding: 2px 5px;
   max-width: 100px;
 

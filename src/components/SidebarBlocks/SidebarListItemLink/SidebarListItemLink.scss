@@ -11,7 +11,7 @@
   border-left: $active-item-border-width solid transparent;
   padding: $nested-items-padding-top-bottom 0 $nested-items-padding-top-bottom $nested-items-padding-left-right -
     $active-item-border-width;
-  transition: 0.2s;
+  transition: $transition-fast;
 
   & > * {
     color: $color-dark-green;

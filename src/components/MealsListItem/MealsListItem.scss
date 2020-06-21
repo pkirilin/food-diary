@@ -14,13 +14,13 @@ $inner-padding: 10px;
     &__name {
       flex: 1;
       color: $color-middle-green;
-      transition: 0.2s;
+      transition: $transition-fast;
       margin: 0 5px;
     }
 
     svg {
       fill: $color-middle-green;
-      transition: 0.2s;
+      transition: $transition-fast;
     }
 
     &:hover > &__name {

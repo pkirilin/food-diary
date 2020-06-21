@@ -1,10 +1,9 @@
+@import '../../variables.scss';
+
 $navbar-height: 60px;
 $navbar-z-index: 100;
-
-$navbar-link-border-width: 5px;
+$navbar-link-border-width: $border-width-navigation;
 $navbar-link-padding: 20px;
 $navbar-links-width: 400px;
-
-$navbar-hover-transition: 0.5s;
-
+$navbar-hover-transition: $transition-slow;
 $navbar-brand-logo-size: 50px;

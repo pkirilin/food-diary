@@ -6,7 +6,7 @@
 
   &__label,
   &__icon {
-    transition: 0.5s;
+    transition: $transition-slow;
   }
 
   &__label {
