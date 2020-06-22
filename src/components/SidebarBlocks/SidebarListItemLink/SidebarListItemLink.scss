@@ -13,10 +13,14 @@
     $active-item-border-width;
   transition: $transition-fast;
 
-  & > * {
+  & > :first-child {
     color: $color-dark-green;
     font-size: 16px;
     letter-spacing: 0.5px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 190px;
   }
 
   &:hover {

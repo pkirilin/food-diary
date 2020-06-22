@@ -76,7 +76,7 @@ const CategoriesListItem: React.FC<CategoriesListItemProps> = ({
   return (
     <SidebarListItem>
       <SidebarListItemLink to={`/categories/${category.id}`} activeClassName={activeLinkClassName} selected={false}>
-        <div>{category.name}</div>
+        <span title={category.name}>{category.name}</span>
         <Container spaceBetweenChildren="small">
           <Badge label={categoryProductsBadgeLabel} selected={false}></Badge>
         </Container>

@@ -9,6 +9,7 @@
   transition: $control-transition;
   outline: none;
   background-color: transparent;
+  text-overflow: ellipsis;
 
   &_small {
     height: 25px;
