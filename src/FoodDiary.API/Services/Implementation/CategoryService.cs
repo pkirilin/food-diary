@@ -73,7 +73,9 @@ namespace FoodDiary.API.Services.Implementation
 
             if (!String.IsNullOrWhiteSpace(categoriesDropdownRequest.CategoryNameFilter))
             {
-                query = query.Where(c => c.Name.Contains(categoriesDropdownRequest.CategoryNameFilter));
+                query = query.Where(c =>
+                    c.Name.ToLower()
+                        .StartsWith(categoriesDropdownRequest.CategoryNameFilter.ToLower()));
             }
 
             query = query.OrderBy(c => c.Name);

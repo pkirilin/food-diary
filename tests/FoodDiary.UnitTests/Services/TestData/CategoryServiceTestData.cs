@@ -93,6 +93,12 @@ namespace FoodDiary.UnitTests.Services.TestData
                 var request5 = fixture.Build<CategoryDropdownSearchRequest>()
                     .With(r => r.CategoryNameFilter, "   ")
                     .Create();
+                var request6 = fixture.Build<CategoryDropdownSearchRequest>()
+                    .With(r => r.CategoryNameFilter, "category")
+                    .Create();
+                var request7 = fixture.Build<CategoryDropdownSearchRequest>()
+                    .With(r => r.CategoryNameFilter, "gory")
+                    .Create();
 
                 var sourceCategories = new List<Category> { category1, category2, category3 };
                 var categoriesOrderedByName = new List<Category> { category2, category1, category3 };
@@ -122,6 +128,16 @@ namespace FoodDiary.UnitTests.Services.TestData
                 yield return new object[]
                 {
                     request5, sourceCategories, categoriesOrderedByName
+                };
+
+                yield return new object[]
+                {
+                    request6, sourceCategories, categoriesOrderedByName
+                };
+
+                yield return new object[]
+                {
+                    request7, sourceCategories, emptyCategories
                 };
             }
         }

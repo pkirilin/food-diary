@@ -60,7 +60,7 @@ namespace FoodDiary.UnitTests.Services.TestData
                     .With(r => r.PageNumber, 1)
                     .With(r => r.PageSize, 10)
                     .With(r => r.CategoryId, 2)
-                    .With(r => r.ProductSearchName, "Produ")
+                    .With(r => r.ProductSearchName, "produ")
                     .OmitAutoProperties()
                     .Create();
                 var request4 = fixture.Build<ProductsSearchRequest>()
@@ -172,6 +172,12 @@ namespace FoodDiary.UnitTests.Services.TestData
                 var request5 = fixture.Build<ProductDropdownSearchRequest>()
                     .Without(r => r.ProductNameFilter)
                     .Create();
+                var request6 = fixture.Build<ProductDropdownSearchRequest>()
+                    .With(r => r.ProductNameFilter, "product")
+                    .Create();
+                var request7 = fixture.Build<ProductDropdownSearchRequest>()
+                    .With(r => r.ProductNameFilter, "roduct")
+                    .Create();
 
                 var sourceProducts = new List<Product> { product1, product2, product3 };
                 var sourceProductsOrderedByName = new List<Product> { product2, product1, product3 };
@@ -201,6 +207,16 @@ namespace FoodDiary.UnitTests.Services.TestData
                 yield return new object[]
                 {
                     request5, sourceProducts, sourceProductsOrderedByName
+                };
+
+                yield return new object[]
+                {
+                    request6, sourceProducts, sourceProductsOrderedByName
+                };
+
+                yield return new object[]
+                {
+                    request7, sourceProducts, emptyProducts
                 };
             }
         }
