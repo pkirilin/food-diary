@@ -68,7 +68,7 @@ namespace FoodDiary.Import.Core
             var productsFromJson = notesFromJson.Select(n => n.Product);
 
             var areProductsFromJsonValid = productsFromJson.All(p => p != null
-                && p.Name.Length >= 4 && p.Name.Length <= 64
+                && p.Name.Length >= 3 && p.Name.Length <= 64
                 && p.CaloriesCost >= 1 && p.CaloriesCost <= 1000);
 
             if (!areProductsFromJsonValid)
