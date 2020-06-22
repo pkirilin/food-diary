@@ -13,7 +13,7 @@ jobs:
         dotnet-version: [3.1.300]
         os: [ubuntu-latest, windows-latest]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v1
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1
         with:
