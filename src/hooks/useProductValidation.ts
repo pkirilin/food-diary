@@ -17,7 +17,7 @@ function useProductValidation(
 
   useEffect(() => {
     const trimmedProductName = productNameInputValue.trim();
-    setIsProductNameValid(trimmedProductName.length >= 4 && trimmedProductName.length <= 64);
+    setIsProductNameValid(trimmedProductName.length >= 3 && trimmedProductName.length <= 64);
   }, [productNameInputValue, setIsProductNameValid]);
 
   useEffect(() => {
