@@ -65,10 +65,22 @@ const ProductsTableRow: React.FC<ProductsTableRowProps> = ({
       <td>{product.caloriesCost}</td>
       <td>{product.categoryName}</td>
       <td>
-        <Icon type="edit" size="small" disabled={isProductInputDisabled} onClick={handleEditIconClick}></Icon>
+        <Icon
+          type="edit"
+          size="small"
+          title="Edit product"
+          disabled={isProductInputDisabled}
+          onClick={handleEditIconClick}
+        ></Icon>
       </td>
       <td>
-        <Icon type="close" size="small" disabled={isProductInputDisabled} onClick={handleDeleteIconClick}></Icon>
+        <Icon
+          type="close"
+          size="small"
+          title="Delete product"
+          disabled={isProductInputDisabled}
+          onClick={handleDeleteIconClick}
+        ></Icon>
       </td>
     </tr>
   );

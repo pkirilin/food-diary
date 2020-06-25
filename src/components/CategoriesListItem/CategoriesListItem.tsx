@@ -88,7 +88,7 @@ const CategoriesListItem: React.FC<CategoriesListItemProps> = ({
       </SidebarListItemLink>
       <SidebarListItemControls>
         <DropdownMenu
-          toggler={<Icon type="three-dots"></Icon>}
+          toggler={<Icon type="three-dots" title="More actions"></Icon>}
           contentAlignment="right"
           contentWidth={150}
           disabled={isAnySideEffectHappening}

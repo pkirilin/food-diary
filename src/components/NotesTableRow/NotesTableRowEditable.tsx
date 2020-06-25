@@ -130,12 +130,19 @@ const NotesTableRowEditable: React.FC<NotesTableRowEditableProps> = ({
         <Icon
           type="check"
           size="small"
+          title="Save note changes"
           disabled={isConfirmEditIconDisabled}
           onClick={handleConfirmEditIconClick}
         ></Icon>
       </td>
       <td>
-        <Icon type="close" size="small" disabled={isNoteInputDisabled} onClick={handleCancelEditIconClick}></Icon>
+        <Icon
+          type="close"
+          size="small"
+          title="Cancel note changes"
+          disabled={isNoteInputDisabled}
+          onClick={handleCancelEditIconClick}
+        ></Icon>
       </td>
     </tr>
   );

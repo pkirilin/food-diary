@@ -47,6 +47,7 @@ const PageContentHeader: React.FC<PageContentHeaderProps> = ({
           <NavLink to={`/pages/${previousPageId}`} className={previousPageLinkClassNames.join(' ')}>
             <Icon
               type="next-arrow"
+              title="Navigate to the previous page"
               svgStyle={{
                 width: '25px',
                 height: '25px',
@@ -61,6 +62,7 @@ const PageContentHeader: React.FC<PageContentHeaderProps> = ({
           <NavLink to={`/pages/${nextPageId}`} className={nextPageLinkClassNames.join(' ')}>
             <Icon
               type="next-arrow"
+              title="Navigate to the next page"
               svgStyle={{
                 width: '25px',
                 height: '25px',

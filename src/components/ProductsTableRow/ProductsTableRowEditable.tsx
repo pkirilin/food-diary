@@ -143,12 +143,19 @@ const ProductsTableRowEditable: React.FC<ProductsTableRowEditableProps> = ({
         <Icon
           type="check"
           size="small"
+          title="Save product changes"
           disabled={isConfirmEditIconDisabled}
           onClick={handleConfirmEditIconClick}
         ></Icon>
       </td>
       <td>
-        <Icon type="close" size="small" disabled={isProductInputDisabled} onClick={handleCancelEditIconClick}></Icon>
+        <Icon
+          type="close"
+          size="small"
+          title="Cancel product changes"
+          disabled={isProductInputDisabled}
+          onClick={handleCancelEditIconClick}
+        ></Icon>
       </td>
     </tr>
   );

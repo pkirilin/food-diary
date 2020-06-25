@@ -67,10 +67,22 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({
       <td>{note.productQuantity}</td>
       <td>{note.calories}</td>
       <td>
-        <Icon type="edit" size="small" disabled={isNoteInputDisabled} onClick={handleEditIconClick}></Icon>
+        <Icon
+          type="edit"
+          size="small"
+          title="Edit note"
+          disabled={isNoteInputDisabled}
+          onClick={handleEditIconClick}
+        ></Icon>
       </td>
       <td>
-        <Icon type="close" size="small" disabled={isNoteInputDisabled} onClick={handleDeleteIconClick}></Icon>
+        <Icon
+          type="close"
+          size="small"
+          title="Delete note"
+          disabled={isNoteInputDisabled}
+          onClick={handleDeleteIconClick}
+        ></Icon>
       </td>
     </tr>
   );

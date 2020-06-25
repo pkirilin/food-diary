@@ -50,10 +50,15 @@ const CategoriesListControlsTop: React.FC<CategoriesListControlsTopProps> = ({
   return (
     <SidebarControlPanel>
       <SidebarControlPanelIcons>
-        <Icon type="add" onClick={handleAddIconClick} disabled={isControlDisabled}></Icon>
-        <Icon type="refresh" onClick={handleRefreshIconClick} disabled={isControlDisabled}></Icon>
-        <Icon type="filter" disabled={true}></Icon>
-        <Icon type="close" disabled={true}></Icon>
+        <Icon type="add" title="Create new category" onClick={handleAddIconClick} disabled={isControlDisabled}></Icon>
+        <Icon
+          type="refresh"
+          title="Refresh categories"
+          onClick={handleRefreshIconClick}
+          disabled={isControlDisabled}
+        ></Icon>
+        <Icon type="filter" title="Filter categories" disabled={true}></Icon>
+        <Icon type="close" title="Clear categories filter" disabled={true}></Icon>
       </SidebarControlPanelIcons>
     </SidebarControlPanel>
   );

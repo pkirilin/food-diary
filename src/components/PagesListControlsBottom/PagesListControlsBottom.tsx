@@ -42,9 +42,21 @@ const PagesListControlsBottom: React.FC<PagesListControlsBottomProps> = ({
   return (
     <div className="pages-list-controls-bottom">
       {sortOrder === SortOrder.Ascending ? (
-        <Icon type="sort-ascending" label="Sort" onClick={handleSortIconClick} disabled={isControlDisabled}></Icon>
+        <Icon
+          type="sort-ascending"
+          label="Sort"
+          title="Sort pages by date descending"
+          onClick={handleSortIconClick}
+          disabled={isControlDisabled}
+        ></Icon>
       ) : (
-        <Icon type="sort-descending" label="Sort" onClick={handleSortIconClick} disabled={isControlDisabled}></Icon>
+        <Icon
+          type="sort-descending"
+          label="Sort"
+          title="Sort pages by date ascending"
+          onClick={handleSortIconClick}
+          disabled={isControlDisabled}
+        ></Icon>
       )}
       <div className="pages-list-controls-bottom__divider"></div>
       <div className={visibleRangesClassNames.join(' ')}>

@@ -115,12 +115,27 @@ const PagesListControlsTop: React.FC<PagesListControlsTopProps> = ({
   return (
     <SidebarControlPanel>
       <SidebarControlPanelIcons>
-        <Icon type="add" onClick={handleAddIconClick} disabled={isControlDisabled}></Icon>
-        <Icon type="refresh" onClick={handleRefreshPagesListIconClick} disabled={isControlDisabled}></Icon>
-        <Icon type="filter" onClick={handleOpenFilterIconClick} disabled={isControlDisabled}></Icon>
-        <Icon type="close" disabled={isClearFilterDisabled} onClick={handleResetFilterIconClick}></Icon>
+        <Icon type="add" title="Create new page" onClick={handleAddIconClick} disabled={isControlDisabled}></Icon>
+        <Icon
+          type="refresh"
+          title="Refresh pages"
+          onClick={handleRefreshPagesListIconClick}
+          disabled={isControlDisabled}
+        ></Icon>
+        <Icon
+          type="filter"
+          title="Filter pages"
+          onClick={handleOpenFilterIconClick}
+          disabled={isControlDisabled}
+        ></Icon>
+        <Icon
+          type="close"
+          title="Clear pages filter"
+          disabled={isClearFilterDisabled}
+          onClick={handleResetFilterIconClick}
+        ></Icon>
         <DropdownMenu
-          toggler={<Icon type="three-dots" disabled={isControlDisabled}></Icon>}
+          toggler={<Icon type="three-dots" title="More actions" disabled={isControlDisabled}></Icon>}
           contentWidth={160}
           contentAlignment="right"
           disabled={isControlDisabled}

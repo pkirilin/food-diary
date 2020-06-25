@@ -3,7 +3,7 @@ import './Icon.scss';
 import { IconType, IconSize } from './Icon.types';
 import { useIconType } from './Icon.hooks';
 
-interface IconProps extends React.DOMAttributes<HTMLElement> {
+interface IconProps extends React.HTMLAttributes<HTMLElement> {
   type: IconType;
   size?: IconSize;
   disabled?: boolean;
