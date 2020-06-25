@@ -1,6 +1,7 @@
 ﻿using FoodDiary.PdfGenerator.Implementation;
 using FoodDiary.PdfGenerator.Services;
 using Microsoft.Extensions.DependencyInjection;
+using PdfSharp.Fonts;
 
 namespace FoodDiary.PdfGenerator.Extensions
 {
@@ -15,6 +16,7 @@ namespace FoodDiary.PdfGenerator.Extensions
             services.AddTransient<IPagePdfWriter, PagePdfWriter>();
             services.AddTransient<INotesTablePdfWriter, NotesTablePdfWriter>();
             services.AddTransient<INotePdfWriter, NotePdfWriter>();
+            GlobalFontSettings.FontResolver = new FoodDiaryFontResolver();
         }
     }
 }

@@ -16,4 +16,9 @@ RUN dotnet publish "FoodDiary.API.csproj" -c Release -o /app/publish
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+COPY ["src/FoodDiary.API/fonts", "fonts/"]
+
+# For correct work of GDI+ on linux
+RUN apt-get update && apt-get install -y --allow-unauthenticated libxml2 libc6-dev libgdiplus && rm -rf /var/lib/apt/lists/*
+
 ENTRYPOINT ["dotnet", "FoodDiary.API.dll"]
