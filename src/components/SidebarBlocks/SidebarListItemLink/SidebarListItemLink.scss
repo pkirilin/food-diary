@@ -28,7 +28,7 @@
   }
 
   &_selected {
-    & > * {
+    & > :first-child {
       color: $color-light-green;
     }
 
