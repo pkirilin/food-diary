@@ -20,7 +20,13 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
-    max-width: 190px;
+    max-width: 175px;
+  }
+
+  &_narrow > :first-child {
+    font-size: 14px;
+    max-width: 175px;
+    letter-spacing: normal;
   }
 
   &:hover {
