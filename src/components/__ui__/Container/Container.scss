@@ -1,4 +1,5 @@
 @import '../../../variables.scss';
+@import '../../Navbar/Navbar.variables.scss';
 
 $container-child-space-small: 5px;
 $container-child-space-medium: 10px;
@@ -99,6 +100,10 @@ $container-child-space-large: 20px;
     color: $color-middle-green;
   }
 
+  &_text-color-middle-green-50 {
+    color: $color-middle-green-50;
+  }
+
   &_child-space-row-small {
     @include child-space-margin-row($container-child-space-small);
   }
@@ -121,5 +126,9 @@ $container-child-space-large: 20px;
 
   &_child-space-col-large {
     @include child-space-margin-col($container-child-space-large);
+  }
+
+  &_section-root {
+    min-height: calc(100vh - #{$navbar-height} - 2 * #{$section-padding});
   }
 }

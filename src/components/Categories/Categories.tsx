@@ -6,7 +6,7 @@ import CategoriesOperationsPanelConnected from '../CategoriesOperationsPanel';
 import { Switch, Route } from 'react-router-dom';
 import { CategoriesDispatchToPropsMapResult } from './CategoriesConnected';
 import CategoryContentConnected from '../CategoryContent';
-import { Container } from '../__ui__';
+import CategoryContentEmpty from '../CategoryContentEmpty';
 
 type CategoriesProps = CategoriesDispatchToPropsMapResult;
 
@@ -28,9 +28,7 @@ const Categories: React.FC<CategoriesProps> = ({ clearProductsFilter }: Categori
         <section>
           <Switch>
             <Route exact path="/categories">
-              <Container justify="center" textColor="middle-green">
-                No category selected
-              </Container>
+              <CategoryContentEmpty></CategoryContentEmpty>
             </Route>
             <Route exact path="/categories/:id">
               <CategoryContentConnected></CategoryContentConnected>

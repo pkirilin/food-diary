@@ -7,7 +7,7 @@ import { Switch, Route } from 'react-router-dom';
 import PagesSelectionPanelConnected from '../PagesSelectionPanel';
 import { PagesStateToPropsMapResult } from './PagesConnected';
 import PageContentConnected from '../PageContent';
-import { Container } from '../__ui__';
+import PageContentEmpty from '../PageContentEmpty';
 
 type PagesProps = PagesStateToPropsMapResult;
 
@@ -24,9 +24,7 @@ const Pages: React.FC<PagesProps> = ({ isPagesListAvailable, pagesCount }: Pages
         <section>
           <Switch>
             <Route exact path="/pages">
-              <Container justify="center" textColor="middle-green">
-                No page selected
-              </Container>
+              <PageContentEmpty></PageContentEmpty>
             </Route>
             <Route exact path="/pages/:id">
               <PageContentConnected></PageContentConnected>
