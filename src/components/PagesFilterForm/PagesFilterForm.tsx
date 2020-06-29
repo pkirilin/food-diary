@@ -67,7 +67,9 @@ const PagesFilterForm: React.FC<PagesFilterFormProps> = ({
           </Button>
         </Container>
         <Container col="4">
-          <Button onClick={handleCancelClick}>Cancel</Button>
+          <Button variant="text" onClick={handleCancelClick}>
+            Cancel
+          </Button>
         </Container>
       </Container>
     </Container>

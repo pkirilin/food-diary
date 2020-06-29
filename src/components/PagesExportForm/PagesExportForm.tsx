@@ -89,7 +89,7 @@ const PagesExportForm: React.FC<PagesExportFormProps> = ({
           </Button>
         </Container>
         <Container col="4">
-          <Button onClick={handleCancelButtonClick} disabled={isInputDisabled}>
+          <Button variant="text" onClick={handleCancelButtonClick} disabled={isInputDisabled}>
             Cancel
           </Button>
         </Container>

@@ -1,10 +1,9 @@
 @import '../../../variables.scss';
 @import '../variables.scss';
 
-.button {
-  background-color: $color-light-green;
+// Common button styles
+@mixin button-props() {
   padding: $control-padding;
-  border: $control-border-width solid $color-middle-green-50;
   border-radius: $control-border-radius;
   text-align: center;
   transition: $control-transition;
@@ -14,8 +13,25 @@
 
   &:disabled {
     cursor: default;
-    border: $control-border-width solid $color-middle-green-25;
     color: $color-middle-green-25;
+  }
+
+  &:not(:disabled) {
+    &:focus {
+      box-shadow: $control-box-shadow $color-middle-green;
+    }
+  }
+}
+
+// Default button styles
+.button {
+  background-color: $color-light-green;
+  border: $control-border-width solid $color-middle-green-50;
+
+  @include button-props();
+
+  &:disabled {
+    border: $control-border-width solid $color-middle-green-25;
   }
 
   &:not(:disabled) {
@@ -27,7 +43,20 @@
 
     &:focus {
       border-color: $color-middle-green;
-      box-shadow: $control-box-shadow $color-middle-green;
+    }
+  }
+
+  // Text button styles
+  &-text {
+    background-color: transparent;
+    border: none;
+
+    @include button-props();
+
+    &:not(:disabled) {
+      &:hover {
+        background-color: $color-middle-green-25;
+      }
     }
   }
 }

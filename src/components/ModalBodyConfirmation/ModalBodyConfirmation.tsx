@@ -28,6 +28,7 @@ const ModalBodyConfirmation: React.FC<ModalBodyConfirmationProps> = ({
         </Container>
         <Container col="4">
           <Button
+            variant="text"
             onClick={(): void => {
               closeModal();
             }}

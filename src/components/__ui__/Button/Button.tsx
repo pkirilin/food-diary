@@ -1,14 +1,24 @@
 import React from 'react';
 import './Button.scss';
 
-type ButtonProps = React.DOMAttributes<HTMLInputElement> & React.InputHTMLAttributes<HTMLInputElement>;
+interface ButtonProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  variant?: 'text';
+}
 
-const Button: React.FC<ButtonProps> = ({ children, ...props }: React.PropsWithChildren<ButtonProps>) => {
-  if (children) {
-    return <input type="button" className="button" value={children.toString()} {...props} />;
+const Button: React.FC<ButtonProps> = ({ children, variant, ...props }: React.PropsWithChildren<ButtonProps>) => {
+  const classNames: string[] = [];
+
+  if (variant) {
+    classNames.push(`button-${variant}`);
+  } else {
+    classNames.push('button');
   }
 
-  return <input {...props} type="button" className="button" />;
+  if (children) {
+    return <input type="button" className={classNames.join(' ')} value={children.toString()} {...props} />;
+  }
+
+  return <input {...props} type="button" className={classNames.join(' ')} />;
 };
 
 export default Button;
