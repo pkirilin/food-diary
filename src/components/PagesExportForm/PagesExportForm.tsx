@@ -9,6 +9,7 @@ import {
 import { PagesOperationsActionTypes } from '../../action-types';
 import { downloadFile } from '../../utils';
 import { ExportFormat } from '../../models';
+import { useFocus } from '../../hooks';
 
 interface PagesExportFormProps extends PagesExportFormStateToPropsMapResult, PagesExportFormDispatchToPropsMapResult {}
 
@@ -17,18 +18,19 @@ const PagesExportForm: React.FC<PagesExportFormProps> = ({
   closeModal,
   exportPages,
 }: PagesExportFormProps) => {
+  const { performing: isInputDisabled } = pageOperationStatus;
+
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [format, setFormat] = useState(ExportFormat.Json);
   const [isInputValid, setIsInputValid] = useState<boolean>();
+  const elementToFocusRef = useFocus<HTMLInputElement>();
 
   useEffect(() => {
     const startDateMs = Date.parse(startDate);
     const endDateMs = Date.parse(endDate);
     setIsInputValid(startDateMs <= endDateMs && exportFormats.includes(format));
   }, [startDate, endDate, format, setIsInputValid]);
-
-  const isInputDisabled = pageOperationStatus.performing;
 
   const handleStartDateChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setStartDate(event.target.value);
@@ -89,7 +91,12 @@ const PagesExportForm: React.FC<PagesExportFormProps> = ({
           </Button>
         </Container>
         <Container col="4">
-          <Button variant="text" onClick={handleCancelButtonClick} disabled={isInputDisabled}>
+          <Button
+            inputRef={elementToFocusRef}
+            variant="text"
+            onClick={handleCancelButtonClick}
+            disabled={isInputDisabled}
+          >
             Cancel
           </Button>
         </Container>

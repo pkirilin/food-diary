@@ -3,7 +3,7 @@ import './PageCreateForm.scss';
 import { PageCreateFormStateToPropsMapResult, PageCreateFormDispatchToPropsMapResult } from './PageCreateFormConnected';
 import { Label, Input, Button, Container } from '../__ui__';
 import { PagesOperationsActionTypes } from '../../action-types';
-import { usePageValidation } from '../../hooks';
+import { usePageValidation, useFocus } from '../../hooks';
 
 interface PageCreateFormProps extends PageCreateFormStateToPropsMapResult, PageCreateFormDispatchToPropsMapResult {}
 
@@ -15,8 +15,11 @@ const PageCreateForm: React.FC<PageCreateFormProps> = ({
   createPage,
   getPages,
 }: PageCreateFormProps) => {
+  const { performing: isInputDisabled } = pageOperationStatus;
+
   const [date, setDate] = useState('');
   const [isPageDateValid] = usePageValidation(date);
+  const elementToFocusRef = useFocus<HTMLInputElement>(!isInputDisabled && isPageDateValid);
 
   useEffect(() => {
     const setDateForNewPageAsync = async (): Promise<void> => {
@@ -44,8 +47,6 @@ const PageCreateForm: React.FC<PageCreateFormProps> = ({
     closeModal();
   };
 
-  const isInputDisabled = pageOperationStatus.performing;
-
   return (
     <Container direction="column" spaceBetweenChildren="large">
       <Container direction="column">
@@ -54,7 +55,11 @@ const PageCreateForm: React.FC<PageCreateFormProps> = ({
       </Container>
       <Container justify="flex-end" spaceBetweenChildren="medium">
         <Container col="4">
-          <Button onClick={handleCreateClick} disabled={isInputDisabled || !isPageDateValid}>
+          <Button
+            inputRef={elementToFocusRef}
+            onClick={handleCreateClick}
+            disabled={isInputDisabled || !isPageDateValid}
+          >
             Create
           </Button>
         </Container>

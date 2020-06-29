@@ -5,6 +5,7 @@ import {
   PagesFilterFormStateToPropsMapResult,
 } from './PagesFilterFormConnected';
 import { Button, Label, Input, Container } from '../__ui__';
+import { useFocus } from '../../hooks';
 
 interface PagesFilterFormProps extends PagesFilterFormStateToPropsMapResult, PagesFilterFormDispatchToPropsMapResult {}
 
@@ -17,7 +18,8 @@ const PagesFilterForm: React.FC<PagesFilterFormProps> = ({
 
   const [startDate, setStartDate] = useState(filterStartDate ? filterStartDate : '');
   const [endDate, setEndDate] = useState(filterEndDate ? filterEndDate : '');
-  const [areDateRangesValid, setAreDateRangesValid] = useState<boolean>();
+  const [areDateRangesValid, setAreDateRangesValid] = useState(false);
+  const elementToFocusRef = useFocus<HTMLInputElement>(areDateRangesValid);
 
   useEffect(() => {
     if (startDate && endDate) {
@@ -62,7 +64,7 @@ const PagesFilterForm: React.FC<PagesFilterFormProps> = ({
       </Container>
       <Container justify="flex-end" spaceBetweenChildren="medium">
         <Container col="4">
-          <Button onClick={handleApplyClick} disabled={!areDateRangesValid}>
+          <Button inputRef={elementToFocusRef} onClick={handleApplyClick} disabled={!areDateRangesValid}>
             Apply
           </Button>
         </Container>

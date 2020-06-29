@@ -9,6 +9,7 @@ import usePageValidation from './usePageValidation';
 import useIdFromRoute from './useIdFromRoute';
 import useNoteInputDisabled from './useNoteInputDisabled';
 import useProductInputDisabled from './useProductInputDisabled';
+import useFocus from './useFocus';
 
 export {
   useOutsideClick,
@@ -22,4 +23,5 @@ export {
   useIdFromRoute,
   useNoteInputDisabled,
   useProductInputDisabled,
+  useFocus,
 };

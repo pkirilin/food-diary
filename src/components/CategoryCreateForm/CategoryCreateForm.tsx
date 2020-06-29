@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './CategoryCreateForm.scss';
 import { CategoryCreateFormDispatchToPropsMapResult } from './CategoryCreateFormConnected';
 import { Label, Input, Button, Container } from '../__ui__';
-import { useCategoryValidation } from '../../hooks';
+import { useCategoryValidation, useFocus } from '../../hooks';
 
 type CategoryCreateFormProps = CategoryCreateFormDispatchToPropsMapResult;
 
@@ -13,6 +13,7 @@ const CategoryCreateForm: React.FC<CategoryCreateFormProps> = ({
 }: CategoryCreateFormProps) => {
   const [categoryName, setCategoryName] = useState('');
   const [isCategoryNameValid] = useCategoryValidation(categoryName);
+  const elementToFocusRef = useFocus<HTMLInputElement>();
 
   const handleCategoryNameChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setCategoryName(event.target.value);
@@ -32,7 +33,13 @@ const CategoryCreateForm: React.FC<CategoryCreateFormProps> = ({
     <Container direction="column" spaceBetweenChildren="large">
       <Container direction="column">
         <Label>Category name</Label>
-        <Input type="text" placeholder="Category name" value={categoryName} onChange={handleCategoryNameChange}></Input>
+        <Input
+          inputRef={elementToFocusRef}
+          type="text"
+          placeholder="Category name"
+          value={categoryName}
+          onChange={handleCategoryNameChange}
+        ></Input>
       </Container>
       <Container justify="flex-end" spaceBetweenChildren="medium">
         <Container col="4">

@@ -3,9 +3,15 @@ import './Button.scss';
 
 interface ButtonProps extends React.InputHTMLAttributes<HTMLInputElement> {
   variant?: 'text';
+  inputRef?: React.RefObject<HTMLInputElement>;
 }
 
-const Button: React.FC<ButtonProps> = ({ children, variant, ...props }: React.PropsWithChildren<ButtonProps>) => {
+const Button: React.FC<ButtonProps> = ({
+  children,
+  variant,
+  inputRef,
+  ...props
+}: React.PropsWithChildren<ButtonProps>) => {
   const classNames: string[] = [];
 
   if (variant) {
@@ -15,10 +21,12 @@ const Button: React.FC<ButtonProps> = ({ children, variant, ...props }: React.Pr
   }
 
   if (children) {
-    return <input type="button" className={classNames.join(' ')} value={children.toString()} {...props} />;
+    return (
+      <input ref={inputRef} type="button" className={classNames.join(' ')} value={children.toString()} {...props} />
+    );
   }
 
-  return <input {...props} type="button" className={classNames.join(' ')} />;
+  return <input {...props} ref={inputRef} type="button" className={classNames.join(' ')} />;
 };
 
 export default Button;
