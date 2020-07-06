@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import ProductsTableRow from './ProductsTableRow';
-import { RootState } from '../../store';
+import { RootState, ModalBody, ModalOptions } from '../../store';
 import {
   SetEditableForProductAction,
   GetProductsListDispatch,
@@ -18,6 +18,7 @@ import {
   getProducts,
   getCategories,
   openConfirmationModal,
+  openModal,
 } from '../../action-creators';
 import { ProductsFilter } from '../../models';
 
@@ -35,6 +36,7 @@ export interface ProductsTableRowStateToPropsMapResult {
 
 export interface ProductsTableRowDispatchToPropsMapResult {
   setEditableForProduct: (productId: number, editable: boolean) => void;
+  openModal: (title: string, body: ModalBody, options?: ModalOptions) => void;
   openConfirmationModal: (title: string, message: string, confirm: () => void) => void;
   getProducts: GetProductsListDispatchProp;
   getCategories: GetCategoriesListDispatchProp;
@@ -66,6 +68,10 @@ const mapDispatchToProps = (dispatch: ProductsTableRowDispatch): ProductsTableRo
   return {
     setEditableForProduct: (productId: number, editable: boolean): void => {
       dispatch(setEditableForProduct(productId, editable));
+    },
+
+    openModal: (title: string, body: ModalBody, options?: ModalOptions): void => {
+      dispatch(openModal(title, body, options));
     },
 
     openConfirmationModal: (title: string, message: string, confirm: () => void): void => {

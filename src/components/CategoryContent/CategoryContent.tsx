@@ -4,9 +4,9 @@ import {
   CategoryContentStateToPropsMapResult,
   CategoryContentDispatchToPropsMapResult,
 } from './CategoryContentConnected';
-import ProductInputConnected from '../ProductInput';
 import { useIdFromRoute } from '../../hooks';
 import { Container } from '../__ui__';
+import ProductsControlPanelConnected from '../ProductsControlPanel';
 
 interface CategoryContentProps extends CategoryContentStateToPropsMapResult, CategoryContentDispatchToPropsMapResult {}
 
@@ -32,13 +32,10 @@ const CategoryContent: React.FC<CategoryContentProps> = ({
   }
 
   return (
-    <React.Fragment>
-      <h1>Products</h1>
-      <Container direction="column" spaceBetweenChildren="medium">
-        <ProductInputConnected refreshCategoriesOnCreateProduct={true}></ProductInputConnected>
-        <ProductsTableConnected refreshCategoriesOnDeleteProduct={true}></ProductsTableConnected>
-      </Container>
-    </React.Fragment>
+    <Container direction="column" spaceBetweenChildren="medium">
+      <ProductsControlPanelConnected></ProductsControlPanelConnected>
+      <ProductsTableConnected refreshCategoriesOnDeleteProduct={true}></ProductsTableConnected>
+    </Container>
   );
 };
 

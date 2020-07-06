@@ -9,6 +9,7 @@ import { ProductsOperationsActionTypes } from '../../action-types';
 import { useProductInputDisabled } from '../../hooks';
 import ProductsTableRowEditableConnected from './ProductsTableRowEditableConnected';
 import { Icon } from '../__ui__';
+import ProductInputConnected from '../ProductInput';
 
 interface ProductsTableRowProps
   extends ProductsTableRowStateToPropsMapResult,
@@ -24,10 +25,10 @@ const ProductsTableRow: React.FC<ProductsTableRowProps> = ({
   isProductOperationInProcess,
   isCategoryOperationInProcess,
   productsFilter,
-  setEditableForProduct,
   getProducts,
   getCategories,
   deleteProduct,
+  openModal,
   openConfirmationModal,
 }: ProductsTableRowProps) => {
   const isProductEditable = editableProductsIds.some(id => id === product.id);
@@ -46,11 +47,13 @@ const ProductsTableRow: React.FC<ProductsTableRowProps> = ({
   };
 
   const handleEditIconClick = (): void => {
-    setEditableForProduct(product.id, true);
+    openModal('Edit product', <ProductInputConnected product={product}></ProductInputConnected>, {
+      width: '35%',
+    });
   };
 
   const handleDeleteIconClick = (): void => {
-    openConfirmationModal('Delete product', `Do you want to delete product "${product.name}"`, () => {
+    openConfirmationModal('Delete product', `Do you want to delete product "${product.name}"?`, () => {
       runDeleteProductAsync();
     });
   };

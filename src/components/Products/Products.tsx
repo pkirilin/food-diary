@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import ProductInputConnected from '../ProductInput';
 import ProductsTableConnected from '../ProductsTable';
 import { ProductsStateToPropsMapResult, ProductsDispatchToPropsMapResult } from './ProductsConnected';
 import { ProductsFilter } from '../../models';
 import { productsFilterInitialState } from '../../reducers/products';
 import { Container } from '../__ui__';
+import ProductsControlPanelConnected from '../ProductsControlPanel';
 
 interface ProductsProps extends ProductsStateToPropsMapResult, ProductsDispatchToPropsMapResult {}
 
@@ -36,13 +36,10 @@ const Products: React.FC<ProductsProps> = ({ productsFilter, clearProductsFilter
       <section>
         {/* Ensures that products table in this section is initially rendered with cleared filter */}
         {isFilterCleared && (
-          <React.Fragment>
-            <h1>Products</h1>
-            <Container direction="column" spaceBetweenChildren="medium">
-              <ProductInputConnected></ProductInputConnected>
-              <ProductsTableConnected></ProductsTableConnected>
-            </Container>
-          </React.Fragment>
+          <Container direction="column" spaceBetweenChildren="medium">
+            <ProductsControlPanelConnected></ProductsControlPanelConnected>
+            <ProductsTableConnected></ProductsTableConnected>
+          </Container>
         )}
       </section>
     </main>

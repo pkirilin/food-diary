@@ -2,33 +2,43 @@ import React, { useState, useEffect, useCallback } from 'react';
 import './ProductInput.scss';
 import { ProductInputStateToPropsMapResult, ProductInputDispatchToPropsMapResult } from './ProductInputConnected';
 import { ProductsOperationsActionTypes } from '../../action-types';
-import { useDebounce, useProductValidation } from '../../hooks';
-import { Loader, Input, Label, Button, DropdownList, categoryDropdownItemRenderer, Container } from '../__ui__';
+import { useDebounce, useProductValidation, useFocus } from '../../hooks';
+import { Input, Label, Button, DropdownList, categoryDropdownItemRenderer, Container } from '../__ui__';
+import { ProductItem } from '../../models';
+
+const emptyProduct: ProductItem = {
+  id: 0,
+  name: '',
+  caloriesCost: 100,
+  categoryId: 0,
+  categoryName: '',
+};
 
 interface ProductInputProps extends ProductInputStateToPropsMapResult, ProductInputDispatchToPropsMapResult {
   refreshCategoriesOnCreateProduct?: boolean;
+  product?: ProductItem;
 }
 
 const ProductInput: React.FC<ProductInputProps> = ({
   refreshCategoriesOnCreateProduct = false,
-  productOperationStatus,
-  productItemsFetchState,
+  product = emptyProduct,
   categoryItems,
   categoryDropdownItems,
   categoryDropdownItemsFetchState,
   productsFilter,
   createProduct,
+  editProduct,
   getProducts,
   getCategoryDropdownItems,
   getCategories,
+  closeModal,
 }: ProductInputProps) => {
-  const [productNameInputValue, setProductNameInputValue] = useState('');
-  const [caloriesCost, setCaloriesCost] = useState(100);
-  const [categoryId, setCategoryId] = useState(0);
-  const [categoryNameInputValue, setCategoryNameInputValue] = useState('');
+  const [productNameInputValue, setProductNameInputValue] = useState(product.name);
+  const [caloriesCost, setCaloriesCost] = useState(product.caloriesCost);
+  const [categoryId, setCategoryId] = useState(product.categoryId);
+  const [categoryNameInputValue, setCategoryNameInputValue] = useState(product.categoryName);
+  const elementToFocusRef = useFocus<HTMLInputElement>();
 
-  const { performing: isOperationInProcess, message: operationMessage } = productOperationStatus;
-  const { loading: isProductsTableLoading } = productItemsFetchState;
   const {
     loading: isCategoryDropdownContentLoading,
     error: categoryDropdownContentErrorMessage,
@@ -41,8 +51,8 @@ const ProductInput: React.FC<ProductInputProps> = ({
     categoryNameInputValue,
   );
 
-  const isInputDisabled = isOperationInProcess || isProductsTableLoading;
-  const isAddButtonDisabled = isInputDisabled || !isProductNameValid || !isCaloriesCostValid || !isCategoryNameValid;
+  const isSubmitButtonDisabled = !isProductNameValid || !isCaloriesCostValid || !isCategoryNameValid;
+  const isProductEditable = product !== emptyProduct;
 
   const setCategoryInputByFilter = (): void => {
     if (productsFilter.categoryId) {
@@ -65,13 +75,16 @@ const ProductInput: React.FC<ProductInputProps> = ({
   ]);
 
   useEffect(() => {
-    setCategoryInputByFilterMemo();
+    if (!isProductEditable) {
+      setCategoryInputByFilterMemo();
+    }
   }, [
     setCategoryInputByFilterMemo,
     productsFilter.categoryId,
     categoryItems,
     setCategoryId,
     setCategoryNameInputValue,
+    isProductEditable,
   ]);
 
   const categoryNameChangeDebounce = useDebounce((newCategoryName?: string) => {
@@ -79,6 +92,13 @@ const ProductInput: React.FC<ProductInputProps> = ({
       categoryNameFilter: newCategoryName,
     });
   });
+
+  const refreshProductsAsync = async (): Promise<void> => {
+    await getProducts(productsFilter);
+    if (refreshCategoriesOnCreateProduct) {
+      await getCategories();
+    }
+  };
 
   const handleProductNameChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const target = event.target as HTMLInputElement;
@@ -109,6 +129,8 @@ const ProductInput: React.FC<ProductInputProps> = ({
   };
 
   const handleAddButtonClick = async (): Promise<void> => {
+    closeModal();
+
     const { type: createProductActionType } = await createProduct({
       name: productNameInputValue.trim(),
       caloriesCost,
@@ -116,27 +138,40 @@ const ProductInput: React.FC<ProductInputProps> = ({
     });
 
     if (createProductActionType === ProductsOperationsActionTypes.CreateSuccess) {
-      setProductNameInputValue('');
-      setCaloriesCost(100);
-      setCategoryInputByFilter();
-      await getProducts(productsFilter);
-
-      if (refreshCategoriesOnCreateProduct) {
-        await getCategories();
-      }
+      await refreshProductsAsync();
     }
   };
 
+  const handleEditButtonClick = async (): Promise<void> => {
+    closeModal();
+
+    const { type: editProductActionType } = await editProduct({
+      id: product.id,
+      product: {
+        name: productNameInputValue.trim(),
+        caloriesCost,
+        categoryId,
+      },
+    });
+
+    if (editProductActionType === ProductsOperationsActionTypes.EditSuccess) {
+      await refreshProductsAsync();
+    }
+  };
+
+  const handleCancelButtonClick = (): void => {
+    closeModal();
+  };
+
   return (
-    <Container col="12" align="flex-end" spaceBetweenChildren="medium">
+    <Container direction="column" spaceBetweenChildren="large">
       <Container col="3" direction="column">
         <Label>Name</Label>
         <Input
           type="text"
-          placeholder="New product name"
+          placeholder="Product name"
           value={productNameInputValue}
           onChange={handleProductNameChange}
-          disabled={isInputDisabled}
         ></Input>
       </Container>
       <Container col="2" direction="column">
@@ -146,7 +181,6 @@ const ProductInput: React.FC<ProductInputProps> = ({
           placeholder="Calories per 100g"
           value={caloriesCost}
           onChange={handleCaloriesCostChange}
-          disabled={isInputDisabled}
         ></Input>
       </Container>
       <Container col="3" direction="column">
@@ -160,24 +194,27 @@ const ProductInput: React.FC<ProductInputProps> = ({
           isContentLoading={isCategoryDropdownContentLoading}
           contentLoadingMessage={categoryDropdownContentLoadingMessage}
           contentErrorMessage={categoryDropdownContentErrorMessage}
-          disabled={isInputDisabled}
           onValueSelect={handleCategoryDropdownItemSelect}
           onInputValueChange={handleCategoryNameDropdownInputChange}
           onContentOpen={handleCategoryDropdownContentOpen}
         ></DropdownList>
       </Container>
-      <Container col="4">
-        <Container col="12" justify="space-between">
-          <Container col="4">
-            <Button onClick={handleAddButtonClick} disabled={isAddButtonDisabled}>
+      <Container justify="flex-end" spaceBetweenChildren="medium">
+        <Container col="4">
+          {isProductEditable ? (
+            <Button onClick={handleEditButtonClick} disabled={isSubmitButtonDisabled}>
+              Save
+            </Button>
+          ) : (
+            <Button onClick={handleAddButtonClick} disabled={isSubmitButtonDisabled}>
               Add
             </Button>
-          </Container>
-          {isOperationInProcess && (
-            <Container col="7">
-              <Loader size="small" label={operationMessage}></Loader>
-            </Container>
           )}
+        </Container>
+        <Container col="4">
+          <Button inputRef={elementToFocusRef} variant="text" onClick={handleCancelButtonClick}>
+            Cancel
+          </Button>
         </Container>
       </Container>
     </Container>

@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import ProductInput from './ProductInput';
-import { RootState, DataOperationState, DataFetchState } from '../../store';
+import { RootState, DataFetchState } from '../../store';
 import {
   CreateProductDispatch,
   GetProductsListDispatch,
@@ -10,6 +10,9 @@ import {
   GetProductsListDispatchProp,
   GetCategoryDropdownItemsDispatchProp,
   GetCategoriesListDispatchProp,
+  CloseModalAction,
+  EditProductDispatchProp,
+  EditProductDispatch,
 } from '../../action-types';
 import {
   ProductCreateEdit,
@@ -17,17 +20,26 @@ import {
   ProductsFilter,
   CategoryItem,
   CategoryDropdownSearchRequest,
+  ProductEditRequest,
 } from '../../models';
-import { createProduct, getProducts, getCategoryDropdownItems, getCategories } from '../../action-creators';
+import {
+  createProduct,
+  getProducts,
+  getCategoryDropdownItems,
+  getCategories,
+  closeModal,
+  editProduct,
+} from '../../action-creators';
+import { Dispatch } from 'redux';
 
-type ProductInputDispatch = CreateProductDispatch &
+type ProductInputDispatch = Dispatch<CloseModalAction> &
+  CreateProductDispatch &
+  EditProductDispatch &
   GetProductsListDispatch &
   GetCategoryDropdownItemsDispatch &
   GetCategoriesListDispatch;
 
 export interface ProductInputStateToPropsMapResult {
-  productOperationStatus: DataOperationState;
-  productItemsFetchState: DataFetchState;
   categoryItems: CategoryItem[];
   categoryDropdownItems: CategoryDropdownItem[];
   categoryDropdownItemsFetchState: DataFetchState;
@@ -35,7 +47,9 @@ export interface ProductInputStateToPropsMapResult {
 }
 
 export interface ProductInputDispatchToPropsMapResult {
+  closeModal: () => void;
   createProduct: CreateProductDispatchProp;
+  editProduct: EditProductDispatchProp;
   getProducts: GetProductsListDispatchProp;
   getCategoryDropdownItems: GetCategoryDropdownItemsDispatchProp;
   getCategories: GetCategoriesListDispatchProp;
@@ -43,8 +57,6 @@ export interface ProductInputDispatchToPropsMapResult {
 
 const mapStateToProps = (state: RootState): ProductInputStateToPropsMapResult => {
   return {
-    productOperationStatus: state.products.operations.productOperationStatus,
-    productItemsFetchState: state.products.list.productItemsFetchState,
     categoryItems: state.categories.list.categoryItems,
     categoryDropdownItems: state.categories.dropdown.categoryDropdownItems,
     categoryDropdownItemsFetchState: state.categories.dropdown.categoryDropdownItemsFetchState,
@@ -55,6 +67,10 @@ const mapStateToProps = (state: RootState): ProductInputStateToPropsMapResult =>
 const mapDispatchToProps = (dispatch: ProductInputDispatch): ProductInputDispatchToPropsMapResult => {
   const createProductProp: CreateProductDispatchProp = (product: ProductCreateEdit) => {
     return dispatch(createProduct(product));
+  };
+
+  const editProductProp: EditProductDispatchProp = (request: ProductEditRequest) => {
+    return dispatch(editProduct(request));
   };
 
   const getProductsProp: GetProductsListDispatchProp = (productsFilter: ProductsFilter) => {
@@ -72,7 +88,12 @@ const mapDispatchToProps = (dispatch: ProductInputDispatch): ProductInputDispatc
   };
 
   return {
+    closeModal: (): void => {
+      dispatch(closeModal());
+    },
+
     createProduct: createProductProp,
+    editProduct: editProductProp,
     getProducts: getProductsProp,
     getCategoryDropdownItems: getCategoryDropdownItemsProp,
     getCategories: getCategoriesProp,

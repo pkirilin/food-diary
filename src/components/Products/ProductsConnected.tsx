@@ -1,12 +1,12 @@
 import Products from './Products';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { ClearProductsFilterAction } from '../../action-types';
+import { ClearProductsFilterAction, OpenModalAction } from '../../action-types';
 import { clearProductsFilter } from '../../action-creators';
 import { ProductsFilter } from '../../models';
 import { RootState } from '../../store';
 
-type ProductsDispatch = Dispatch<ClearProductsFilterAction>;
+type ProductsDispatch = Dispatch<ClearProductsFilterAction | OpenModalAction>;
 
 export interface ProductsStateToPropsMapResult {
   productsFilter: ProductsFilter;
