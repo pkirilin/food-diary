@@ -6,6 +6,7 @@ import { Icon } from '../__ui__';
 import { NotesOperationsActionTypes } from '../../action-types';
 import { useIdFromRoute, useNoteInputDisabled } from '../../hooks';
 import NotesTableRowEditableConnected from './NotesTableRowEditableConnected';
+import NoteInputConnected from '../NoteInput';
 
 interface NotesTableRowProps extends NotesTableRowStateToPropsMapResult, NotesTableRowDispatchToPropsMapResult {
   note: NoteItem;
@@ -17,10 +18,10 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({
   mealOperationStatuses,
   isPageOperationInProcess,
   pagesFilter,
-  setEditableForNote,
   deleteNote,
   getNotesForMeal,
   getPages,
+  openModal,
   openConfirmationModal,
 }: NotesTableRowProps) => {
   const pageId = useIdFromRoute();
@@ -44,7 +45,13 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({
   };
 
   const handleEditIconClick = (): void => {
-    setEditableForNote(note.id, true);
+    openModal(
+      'Edit note',
+      <NoteInputConnected note={note} mealType={note.mealType} pageId={pageId}></NoteInputConnected>,
+      {
+        width: '35%',
+      },
+    );
   };
 
   const handleDeleteIconClick = (): void => {

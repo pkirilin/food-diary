@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import NotesTableRow from './NotesTableRow';
 import { NotesForMealSearchRequest, NoteDeleteRequest, PagesFilter } from '../../models';
-import { RootState, MealOperationStatus } from '../../store';
+import { RootState, MealOperationStatus, ModalBody, ModalOptions } from '../../store';
 import {
   SetEditableForNoteAction,
   EditNoteDispatch,
@@ -21,6 +21,7 @@ import {
   getNotesForMeal,
   getPages,
   openConfirmationModal,
+  openModal,
 } from '../../action-creators';
 
 type NotesTableRowDispatch = Dispatch<SetEditableForNoteAction | OpenModalAction> &
@@ -39,6 +40,7 @@ export interface NotesTableRowStateToPropsMapResult {
 
 export interface NotesTableRowDispatchToPropsMapResult {
   setEditableForNote: (noteId: number, editable: boolean) => void;
+  openModal: (title: string, body: ModalBody, options?: ModalOptions) => void;
   openConfirmationModal: (title: string, message: string, confirm: () => void) => void;
   deleteNote: DeleteNoteDispatchProp;
   getNotesForMeal: GetNotesForMealDispatchProp;
@@ -70,6 +72,10 @@ const mapDispatchToProps = (dispatch: NotesTableRowDispatch): NotesTableRowDispa
   return {
     setEditableForNote: (noteId: number, editable: boolean): void => {
       dispatch(setEditableForNote(noteId, editable));
+    },
+
+    openModal: (title: string, body: ModalBody, options?: ModalOptions): void => {
+      dispatch(openModal(title, body, options));
     },
 
     openConfirmationModal: (title: string, message: string, confirm: () => void): void => {

@@ -1,33 +1,47 @@
 import React, { useState } from 'react';
 import './NoteInput.scss';
 import { NoteInputStateToPropsMapResult, NoteInputDispatchToPropsMapResult } from './NoteInputConnected';
-import { MealType } from '../../models';
+import { MealType, NoteItem } from '../../models';
 import { NotesOperationsActionTypes } from '../../action-types';
-import { useDebounce, useNoteValidation, useIdFromRoute } from '../../hooks';
-import { Loader, Label, Input, Button, productDropdownItemRenderer, DropdownList, Container } from '../__ui__';
+import { useDebounce, useNoteValidation, useFocus } from '../../hooks';
+import { Label, Input, Button, productDropdownItemRenderer, DropdownList, Container } from '../__ui__';
+
+const emptyNote: NoteItem = {
+  id: 0,
+  mealType: MealType.Breakfast,
+  displayOrder: 0,
+  productId: 0,
+  productName: '',
+  productQuantity: 100,
+  calories: 0,
+};
 
 interface NoteInputProps extends NoteInputStateToPropsMapResult, NoteInputDispatchToPropsMapResult {
+  note?: NoteItem;
   mealType: MealType;
+  pageId: number;
 }
 
 const NoteInput: React.FC<NoteInputProps> = ({
+  note = emptyNote,
   mealType,
-  mealOperationStatuses,
-  notesForMealFetchStates,
+  pageId,
   productDropdownItems,
   noteItems,
   productDropdownItemsFetchState,
-  isPageOperationInProcess,
   pagesFilter,
+  closeModal,
   createNote,
+  editNote,
   getNotesForMeal,
   getProductDropdownItems,
   getPages,
 }: NoteInputProps) => {
-  const [productId, setProductId] = useState(0);
-  const [productNameInputValue, setProductNameInputValue] = useState('');
-  const [productQuantity, setProductQuantity] = useState(100);
+  const [productId, setProductId] = useState(note.productId);
+  const [productNameInputValue, setProductNameInputValue] = useState(note.productName);
+  const [productQuantity, setProductQuantity] = useState(note.productQuantity);
   const [isProductNameValid, isProductQuantityValid] = useNoteValidation(productNameInputValue, productQuantity);
+  const elementToFocusRef = useFocus<HTMLInputElement>();
 
   const productNameChangeDebounce = useDebounce((newProductName?: string) => {
     getProductDropdownItems({
@@ -35,23 +49,22 @@ const NoteInput: React.FC<NoteInputProps> = ({
     });
   });
 
-  const pageId = useIdFromRoute();
-
-  const currentMealOperationStatus = mealOperationStatuses.find(s => s.mealType === mealType);
-  const currentMealFetchState = notesForMealFetchStates.find(s => s.mealType === mealType);
-
-  const operationMessage = currentMealOperationStatus ? currentMealOperationStatus.message : '';
-
   const {
     loading: isProductDropdownContentLoading,
     loadingMessage: productDropdownContentLoadingMessage,
     error: productDropdownContentErrorMessage,
   } = productDropdownItemsFetchState;
 
-  const isMealOperationInProcess = currentMealOperationStatus && currentMealOperationStatus.performing;
-  const isNotesTableLoading = currentMealFetchState && currentMealFetchState.loading;
-  const isInputDisabled = isMealOperationInProcess || isNotesTableLoading || isPageOperationInProcess;
-  const isAddButtonDisabled = isInputDisabled || !isProductNameValid || !isProductQuantityValid;
+  const isSubmitButtonDisabled = !isProductNameValid || !isProductQuantityValid;
+  const isNoteEditable = note !== emptyNote;
+
+  const refreshMealNotesWithPagesAsync = async (): Promise<void> => {
+    await getNotesForMeal({
+      pageId,
+      mealType,
+    });
+    await getPages(pagesFilter);
+  };
 
   const handleProductDropdownItemSelect = (newSelectedProductIndex: number): void => {
     setProductId(productDropdownItems[newSelectedProductIndex].id);
@@ -74,6 +87,8 @@ const NoteInput: React.FC<NoteInputProps> = ({
     const lastNoteDisplayOrder =
       noteItemsForThisMeal.length > 0 ? noteItemsForThisMeal[noteItemsForThisMeal.length - 1].displayOrder : -1;
 
+    closeModal();
+
     const createNoteAction = await createNote({
       mealType,
       productId,
@@ -83,14 +98,31 @@ const NoteInput: React.FC<NoteInputProps> = ({
     });
 
     if (createNoteAction.type === NotesOperationsActionTypes.CreateSuccess) {
-      setProductNameInputValue('');
-      setProductQuantity(100);
-      await getNotesForMeal({
-        pageId,
-        mealType,
-      });
-      await getPages(pagesFilter);
+      await refreshMealNotesWithPagesAsync();
     }
+  };
+
+  const handleConfirmButtonClick = async (): Promise<void> => {
+    closeModal();
+
+    const editNoteAction = await editNote({
+      id: note.id,
+      note: {
+        mealType,
+        productId,
+        productQuantity,
+        pageId,
+        displayOrder: note.displayOrder,
+      },
+    });
+
+    if (editNoteAction.type === NotesOperationsActionTypes.EditSuccess) {
+      await refreshMealNotesWithPagesAsync();
+    }
+  };
+
+  const handleCancelButtonClick = (): void => {
+    closeModal();
   };
 
   const handleProductDropdownContentOpen = (): void => {
@@ -100,7 +132,7 @@ const NoteInput: React.FC<NoteInputProps> = ({
   };
 
   return (
-    <Container col="12" align="flex-end" spaceBetweenChildren="medium">
+    <Container direction="column" spaceBetweenChildren="large">
       <Container col="4" direction="column">
         <Label>Product</Label>
         <DropdownList
@@ -112,7 +144,6 @@ const NoteInput: React.FC<NoteInputProps> = ({
           isContentLoading={isProductDropdownContentLoading}
           contentLoadingMessage={productDropdownContentLoadingMessage}
           contentErrorMessage={productDropdownContentErrorMessage}
-          disabled={isInputDisabled}
           onValueSelect={handleProductDropdownItemSelect}
           onInputValueChange={handleProductNameDropdownInputChange}
           onContentOpen={handleProductDropdownContentOpen}
@@ -125,21 +156,26 @@ const NoteInput: React.FC<NoteInputProps> = ({
           placeholder="Enter quantity"
           value={productQuantity}
           onChange={handleQuantityValueChange}
-          disabled={isInputDisabled}
         ></Input>
       </Container>
       <Container col="6">
-        <Container col="12" justify="space-between">
+        <Container col="12" justify="flex-end" spaceBetweenChildren="medium">
           <Container col="4">
-            <Button onClick={handleAddButtonClick} disabled={isAddButtonDisabled}>
-              Add
+            {isNoteEditable ? (
+              <Button onClick={handleConfirmButtonClick} disabled={isSubmitButtonDisabled}>
+                Save
+              </Button>
+            ) : (
+              <Button onClick={handleAddButtonClick} disabled={isSubmitButtonDisabled}>
+                Add
+              </Button>
+            )}
+          </Container>
+          <Container col="4">
+            <Button inputRef={elementToFocusRef} variant="text" onClick={handleCancelButtonClick}>
+              Cancel
             </Button>
           </Container>
-          {isMealOperationInProcess && (
-            <Container col="6">
-              <Loader size="small" label={operationMessage}></Loader>
-            </Container>
-          )}
         </Container>
       </Container>
     </Container>
