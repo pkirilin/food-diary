@@ -34,11 +34,11 @@ namespace FoodDiary.API.Services.Implementation
 
         public async Task ReorderNotesOnDeleteAsync(Note noteForDelete, CancellationToken cancellationToken)
         {
-            var notesWithoutDeleted = await GetNotesByPageIdAndMealTypeAsync(
-                noteForDelete.PageId,
-                noteForDelete.MealType,
-                n => n.Id != noteForDelete.Id,
-                cancellationToken);
+            var notesWithoutDeletedQuery = GetNotesByPageIdAndMealTypeQuery(noteForDelete.PageId, noteForDelete.MealType)
+                .Where(n => n.Id != noteForDelete.Id);
+
+            var notesWithoutDeleted = await _noteRepository.GetListFromQueryAsync(notesWithoutDeletedQuery, cancellationToken);
+
             RecalculateDisplayOrders(notesWithoutDeleted);
         }
 
@@ -48,40 +48,34 @@ namespace FoodDiary.API.Services.Implementation
             var mealType = notesForDelete.Select(n => n.MealType).Distinct().First();
             var notesForDeleteIds = notesForDelete.Select(n => n.Id);
 
-            var notesWithoutDeleted = await GetNotesByPageIdAndMealTypeAsync(
-                pageId,
-                mealType,
-                n => !notesForDeleteIds.Contains(n.Id),
-                cancellationToken);
+            var notesWithoutDeletedQuery = GetNotesByPageIdAndMealTypeQuery(pageId, mealType)
+                .Where(n => !notesForDeleteIds.Contains(n.Id));
+
+            var notesWithoutDeleted = await _noteRepository.GetListFromQueryAsync(notesWithoutDeletedQuery, cancellationToken);
+
             RecalculateDisplayOrders(notesWithoutDeleted);
         }
 
         public async Task ReorderNotesOnMoveAsync(Note noteForMove, NoteMoveRequest moveRequest, CancellationToken cancellationToken)
         {
-            // Recalculating display orders in source meal group
-            var notesFromSourceMealWithoutMoved = await GetNotesByPageIdAndMealTypeAsync(
-                noteForMove.PageId,
-                noteForMove.MealType,
-                n => n.Id != noteForMove.Id,
-                cancellationToken);
-            RecalculateDisplayOrders(notesFromSourceMealWithoutMoved);
+            var notesFromSourceMealWithoutMovedQuery = GetNotesByPageIdAndMealTypeQuery(noteForMove.PageId, noteForMove.MealType)
+                .Where(n => n.Id != noteForMove.Id);
 
-            // Recalculating display orders in dest meal group
-            var notesFromDestMealWithMoved = await GetNotesByPageIdAndMealTypeAsync(
-                noteForMove.PageId,
-                moveRequest.DestMeal,
-                n => n.DisplayOrder >= moveRequest.Position,
-                cancellationToken);
+            var notesFromDestMealWithMovedQuery = GetNotesByPageIdAndMealTypeQuery(noteForMove.PageId, moveRequest.DestMeal)
+                .Where(n => n.DisplayOrder >= moveRequest.Position);
+
+            var notesFromSourceMealWithoutMoved = await _noteRepository.GetListFromQueryAsync(notesFromSourceMealWithoutMovedQuery, cancellationToken);
+            var notesFromDestMealWithMoved = await _noteRepository.GetListFromQueryAsync(notesFromDestMealWithMovedQuery, cancellationToken);
+
+            RecalculateDisplayOrders(notesFromSourceMealWithoutMoved);
             RecalculateDisplayOrders(notesFromDestMealWithMoved, moveRequest.Position);
         }
 
-        private async Task<List<Note>> GetNotesByPageIdAndMealTypeAsync(int pageId, MealType mealType, Predicate<Note> AdditinalCondition, CancellationToken cancellationToken)
+        private IQueryable<Note> GetNotesByPageIdAndMealTypeQuery(int pageId, MealType mealType)
         {
-            var q = _noteRepository.GetQuery()
-                .Where(n => n.PageId == pageId && n.MealType == mealType && AdditinalCondition(n));
-
-            q = q.OrderBy(n => n.DisplayOrder);
-            return await _noteRepository.GetListFromQueryAsync(q, cancellationToken);
+            return _noteRepository.GetQuery()
+                .Where(n => n.PageId == pageId && n.MealType == mealType)
+                .OrderBy(n => n.DisplayOrder);
         }
 
         private void RecalculateDisplayOrders(IEnumerable<Note> notes, int initialOrderValue = -1)
