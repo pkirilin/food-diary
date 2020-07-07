@@ -1,16 +1,25 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './MealsList.scss';
 import MealsListItemConnected from '../MealsListItem';
 import { availableMealTypes } from '../../models';
-import { MealsListStateToPropsMapResult } from './MealsListConnected';
+import { MealsListStateToPropsMapResult, MealsListDispatchToPropsMapResult } from './MealsListConnected';
+import { useIdFromRoute } from '../../hooks';
 
-type MealsListProps = MealsListStateToPropsMapResult;
+interface MealsListProps extends MealsListStateToPropsMapResult, MealsListDispatchToPropsMapResult {}
 
-const MealsList: React.FC<MealsListProps> = ({ notesForPageFetchState }: MealsListProps) => {
+const MealsList: React.FC<MealsListProps> = ({ notesForPageFetchState, setCollapsedForAllMeals }: MealsListProps) => {
   const classNames = ['meals-list'];
   const { loading: areNotesForPageLoading } = notesForPageFetchState;
 
   if (areNotesForPageLoading) classNames.push('meals-list_loading');
+
+  const pageId = useIdFromRoute();
+
+  useEffect(() => {
+    return (): void => {
+      setCollapsedForAllMeals(false, availableMealTypes);
+    };
+  }, [pageId, setCollapsedForAllMeals]);
 
   return (
     <div className={classNames.join(' ')}>
