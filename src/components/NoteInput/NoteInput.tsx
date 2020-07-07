@@ -40,10 +40,12 @@ const NoteInput: React.FC<NoteInputProps> = ({
   const [productId, setProductId] = useState(note.productId);
   const [productNameInputValue, setProductNameInputValue] = useState(note.productName);
   const [productQuantity, setProductQuantity] = useState(note.productQuantity);
+  const [isProductNameInputValueChanged, setIsProductNameInputValueChanged] = useState(false);
   const [isProductNameValid, isProductQuantityValid] = useNoteValidation(productNameInputValue, productQuantity);
   const elementToFocusRef = useFocus<HTMLInputElement>();
 
   const productNameChangeDebounce = useDebounce((newProductName?: string) => {
+    setIsProductNameInputValueChanged(true);
     getProductDropdownItems({
       productNameFilter: newProductName,
     });
@@ -138,10 +140,12 @@ const NoteInput: React.FC<NoteInputProps> = ({
         <DropdownList
           items={productDropdownItems}
           itemRenderer={productDropdownItemRenderer}
-          placeholder="Select product"
+          placeholder="Product name"
           searchable={true}
           inputValue={productNameInputValue}
+          inputRef={elementToFocusRef}
           isContentLoading={isProductDropdownContentLoading}
+          isContentVisible={isProductNameInputValueChanged}
           contentLoadingMessage={productDropdownContentLoadingMessage}
           contentErrorMessage={productDropdownContentErrorMessage}
           onValueSelect={handleProductDropdownItemSelect}
@@ -172,7 +176,7 @@ const NoteInput: React.FC<NoteInputProps> = ({
             )}
           </Container>
           <Container col="4">
-            <Button inputRef={elementToFocusRef} variant="text" onClick={handleCancelButtonClick}>
+            <Button variant="text" onClick={handleCancelButtonClick}>
               Cancel
             </Button>
           </Container>

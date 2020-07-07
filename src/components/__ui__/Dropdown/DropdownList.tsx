@@ -25,8 +25,10 @@ interface DropdownListProps<T = string> extends DropdownPropsBase {
   searchable?: boolean;
   inputValue?: string;
   isContentLoading?: boolean;
+  isContentVisible?: boolean;
   contentLoadingMessage?: string;
   contentErrorMessage?: string;
+  inputRef?: React.RefObject<HTMLInputElement>;
   onValueSelect?: (newSelectedValueIndex: number) => void;
   onInputValueChange?: (newInputValue: string) => void;
   onContentOpen?: () => void;
@@ -44,8 +46,10 @@ function DropdownList<T = string>({
   controlSize,
   inputValue = '',
   isContentLoading = false,
+  isContentVisible = true,
   contentLoadingMessage = 'Fetching elements',
   contentErrorMessage,
+  inputRef,
   onValueSelect,
   onInputValueChange,
   onContentOpen,
@@ -57,7 +61,7 @@ function DropdownList<T = string>({
   const [activeItemIndex, setActiveItemIndex] = useState(-1);
 
   // Dropdown hooks
-  const [isOpen, toggle, close] = useToggle(disabled, onContentOpen);
+  const [isOpen, toggle, close] = useToggle(disabled, onContentOpen, isContentVisible);
   const closeIfTargetOutside = useCloseIfTargetOutside(close);
   const togglerClassNames = useTogglerClassNames(isOpen, disabled, controlSize);
   const togglerValueClassNames = useTogglerValueClassNames(inputValue !== '', disabled);
@@ -159,6 +163,7 @@ function DropdownList<T = string>({
       {searchable ? (
         <React.Fragment>
           <Input
+            inputRef={inputRef}
             type="text"
             placeholder={placeholder}
             value={inputValue}
@@ -180,28 +185,30 @@ function DropdownList<T = string>({
         </React.Fragment>
       )}
 
-      <div ref={contentRef} className={contentClassNames.join(' ')} style={contentStyle}>
-        {!contentErrorMessage ? (
-          isContentLoading ? (
-            <div className="dropdown__content_loading">
-              <Loader label={contentLoadingMessage} size="small"></Loader>
-            </div>
-          ) : items.length === 0 ? (
-            <div className="dropdown__content_empty">No elements found</div>
+      {isContentVisible && (
+        <div ref={contentRef} className={contentClassNames.join(' ')} style={contentStyle}>
+          {!contentErrorMessage ? (
+            isContentLoading ? (
+              <div className="dropdown__content_loading">
+                <Loader label={contentLoadingMessage} size="small"></Loader>
+              </div>
+            ) : items.length === 0 ? (
+              <div className="dropdown__content_empty">No elements found</div>
+            ) : (
+              items.map((item, index) => {
+                const isActive = activeItemIndex === index;
+                return (
+                  <DropdownItem key={index} onClick={handleListItemClick.bind(index)} active={isActive}>
+                    {itemRenderer(item)}
+                  </DropdownItem>
+                );
+              })
+            )
           ) : (
-            items.map((item, index) => {
-              const isActive = activeItemIndex === index;
-              return (
-                <DropdownItem key={index} onClick={handleListItemClick.bind(index)} active={isActive}>
-                  {itemRenderer(item)}
-                </DropdownItem>
-              );
-            })
-          )
-        ) : (
-          <div className="dropdown__content_empty">{contentErrorMessage}</div>
-        )}
-      </div>
+            <div className="dropdown__content_empty">{contentErrorMessage}</div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

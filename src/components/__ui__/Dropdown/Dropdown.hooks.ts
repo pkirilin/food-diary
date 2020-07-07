@@ -9,6 +9,7 @@ import {
 export const useToggle = (
   disabled: boolean,
   onContentOpen?: () => void,
+  isContentVisible = true,
 ): [
   // isOpen dropdown state
   boolean,
@@ -24,7 +25,7 @@ export const useToggle = (
   const toggle = (): void => {
     if (!disabled) {
       setIsOpen(!isOpen);
-      if (!isOpen && onContentOpen) {
+      if (!isOpen && onContentOpen && isContentVisible) {
         onContentOpen();
       }
     }

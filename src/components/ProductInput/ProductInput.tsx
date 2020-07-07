@@ -37,6 +37,7 @@ const ProductInput: React.FC<ProductInputProps> = ({
   const [caloriesCost, setCaloriesCost] = useState(product.caloriesCost);
   const [categoryId, setCategoryId] = useState(product.categoryId);
   const [categoryNameInputValue, setCategoryNameInputValue] = useState(product.categoryName);
+  const [isCategoryNameInputValueChanged, setIsCategoryNameInputValueChanged] = useState(false);
   const elementToFocusRef = useFocus<HTMLInputElement>();
 
   const {
@@ -88,6 +89,7 @@ const ProductInput: React.FC<ProductInputProps> = ({
   ]);
 
   const categoryNameChangeDebounce = useDebounce((newCategoryName?: string) => {
+    setIsCategoryNameInputValueChanged(true);
     getCategoryDropdownItems({
       categoryNameFilter: newCategoryName,
     });
@@ -168,6 +170,7 @@ const ProductInput: React.FC<ProductInputProps> = ({
       <Container col="3" direction="column">
         <Label>Name</Label>
         <Input
+          inputRef={elementToFocusRef}
           type="text"
           placeholder="Product name"
           value={productNameInputValue}
@@ -188,10 +191,11 @@ const ProductInput: React.FC<ProductInputProps> = ({
         <DropdownList
           items={categoryDropdownItems}
           itemRenderer={categoryDropdownItemRenderer}
-          placeholder="Select category"
+          placeholder="Category name"
           searchable={true}
           inputValue={categoryNameInputValue}
           isContentLoading={isCategoryDropdownContentLoading}
+          isContentVisible={isCategoryNameInputValueChanged}
           contentLoadingMessage={categoryDropdownContentLoadingMessage}
           contentErrorMessage={categoryDropdownContentErrorMessage}
           onValueSelect={handleCategoryDropdownItemSelect}
@@ -212,7 +216,7 @@ const ProductInput: React.FC<ProductInputProps> = ({
           )}
         </Container>
         <Container col="4">
-          <Button inputRef={elementToFocusRef} variant="text" onClick={handleCancelButtonClick}>
+          <Button variant="text" onClick={handleCancelButtonClick}>
             Cancel
           </Button>
         </Container>
