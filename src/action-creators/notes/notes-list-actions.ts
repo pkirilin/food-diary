@@ -7,7 +7,6 @@ import {
   GetNotesForMealSuccessAction,
   GetNotesForMealErrorAction,
   GetNotesForMealRequestAction,
-  SetEditableForNoteAction,
   GetNotesForPageActionCreator,
   GetNotesForPageActions,
   GetNotesForMealActionCreator,
@@ -137,13 +136,5 @@ export const getNotesForMeal: GetNotesForMealActionCreator = ({ pageId, mealType
     } catch (error) {
       return dispatch(getNotesForMealError(mealType, NotesListBaseErrorMessages.NotesForMeal));
     }
-  };
-};
-
-export const setEditableForNote = (noteId: number, editable: boolean): SetEditableForNoteAction => {
-  return {
-    type: NotesListActionTypes.SetEditable,
-    noteId,
-    editable,
   };
 };

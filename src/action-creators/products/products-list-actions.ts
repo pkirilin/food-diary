@@ -4,7 +4,6 @@ import {
   ProductsListActionTypes,
   GetProductsListSuccessAction,
   GetProductsListErrorAction,
-  SetEditableForProductAction,
   GetProductsListActionCreator,
   GetProductsListActions,
 } from '../../action-types';
@@ -71,13 +70,5 @@ export const getProducts: GetProductsListActionCreator = (productsFilter: Produc
     } catch (error) {
       return dispatch(getProductsError(ProductsListErrorMessages.GetList));
     }
-  };
-};
-
-export const setEditableForProduct = (productId: number, editable: boolean): SetEditableForProductAction => {
-  return {
-    type: ProductsListActionTypes.SetEditable,
-    productId,
-    editable,
   };
 };

@@ -5,7 +5,6 @@ import { NotesTableRowStateToPropsMapResult, NotesTableRowDispatchToPropsMapResu
 import { Icon } from '../__ui__';
 import { NotesOperationsActionTypes } from '../../action-types';
 import { useIdFromRoute, useNoteInputDisabled } from '../../hooks';
-import NotesTableRowEditableConnected from './NotesTableRowEditableConnected';
 import NoteInputConnected from '../NoteInput';
 
 interface NotesTableRowProps extends NotesTableRowStateToPropsMapResult, NotesTableRowDispatchToPropsMapResult {
@@ -14,7 +13,6 @@ interface NotesTableRowProps extends NotesTableRowStateToPropsMapResult, NotesTa
 
 const NotesTableRow: React.FC<NotesTableRowProps> = ({
   note,
-  editableNotesIds,
   mealOperationStatuses,
   isPageOperationInProcess,
   pagesFilter,
@@ -25,8 +23,6 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({
   openConfirmationModal,
 }: NotesTableRowProps) => {
   const pageId = useIdFromRoute();
-
-  const isNoteEditable = editableNotesIds.some(id => id === note.id);
   const isNoteInputDisabled = useNoteInputDisabled(mealOperationStatuses, note.mealType, isPageOperationInProcess);
 
   const runDeleteNoteAsync = async (): Promise<void> => {
@@ -63,10 +59,6 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({
       },
     );
   };
-
-  if (isNoteEditable) {
-    return <NotesTableRowEditableConnected note={note}></NotesTableRowEditableConnected>;
-  }
 
   return (
     <tr>

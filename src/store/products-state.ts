@@ -16,7 +16,6 @@ export interface ProductsDropdownState {
 export interface ProductsListState {
   productItems: ProductItem[];
   productItemsFetchState: DataFetchState;
-  editableProductsIds: number[];
   totalProductsCount: number;
 }
 

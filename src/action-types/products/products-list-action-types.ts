@@ -6,7 +6,6 @@ export enum ProductsListActionTypes {
   Request = 'PRODUCTS_LIST__REQUEST',
   Success = 'PRODUCTS_LIST__SUCCESS',
   Error = 'PRODUCTS_LIST__ERROR',
-  SetEditable = 'PRODUCTS_LIST__SET_EDITABLE',
 }
 
 export interface GetProductsListRequestAction extends Action<ProductsListActionTypes.Request> {
@@ -25,18 +24,12 @@ export interface GetProductsListErrorAction extends Action<ProductsListActionTyp
   errorMessage: string;
 }
 
-export interface SetEditableForProductAction extends Action<ProductsListActionTypes.SetEditable> {
-  type: ProductsListActionTypes.SetEditable;
-  productId: number;
-  editable: boolean;
-}
-
 export type GetProductsListActions =
   | GetProductsListRequestAction
   | GetProductsListSuccessAction
   | GetProductsListErrorAction;
 
-export type ProductListActions = GetProductsListActions | SetEditableForProductAction;
+export type ProductListActions = GetProductsListActions;
 
 export type GetProductsListActionCreator = ActionCreator<
   ThunkAction<
