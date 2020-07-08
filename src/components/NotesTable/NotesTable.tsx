@@ -38,6 +38,7 @@ const NotesTable: React.FC<NotesTableProps> = ({ mealType, noteItems, notesForMe
         columns={notesTableColumns}
         rows={mapNoteItemsToTableRows()}
         dataErrorMessage={targetNotesErrorMessage}
+        isCondensed={true}
       ></Table>
     </div>
   );

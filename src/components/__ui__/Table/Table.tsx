@@ -6,6 +6,7 @@ interface TableProps<C extends JSX.Element, R extends JSX.Element> {
   rows?: R[];
   noDataMessage?: string;
   dataErrorMessage?: string;
+  isCondensed?: boolean;
 }
 
 function Table<C extends JSX.Element, R extends JSX.Element>({
@@ -13,9 +14,14 @@ function Table<C extends JSX.Element, R extends JSX.Element>({
   rows = [],
   noDataMessage = 'No data provided',
   dataErrorMessage,
+  isCondensed = false,
 }: TableProps<C, R>): ReactElement {
+  const classNames = ['table'];
+
+  if (isCondensed) classNames.push('table_condensed');
+
   return (
-    <table className="table">
+    <table className={classNames.join(' ')}>
       <thead>
         <tr>
           {columns.map((col, index) => (

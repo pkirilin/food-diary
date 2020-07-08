@@ -2,9 +2,28 @@
 
 $cell-inner-padding: 5px;
 $cell-height: 35px;
+$cell-height-condensed: 25px;
 
 $row-border-thickness: 0.5px;
 $row-transition: $transition-slow;
+
+@mixin set-cell-height($height) {
+  thead {
+    tr {
+      td {
+        height: $height;
+      }
+    }
+  }
+
+  tbody {
+    tr {
+      td {
+        height: $height;
+      }
+    }
+  }
+}
 
 .table {
   border-collapse: collapse;
@@ -17,7 +36,6 @@ $row-transition: $transition-slow;
       td {
         color: $color-light-green;
         padding: $cell-inner-padding;
-        height: $cell-height;
       }
     }
   }
@@ -29,7 +47,6 @@ $row-transition: $transition-slow;
 
       td {
         padding: $cell-inner-padding;
-        height: $cell-height;
 
         &.empty {
           color: $color-middle-green-50;
@@ -37,5 +54,11 @@ $row-transition: $transition-slow;
         }
       }
     }
+  }
+
+  @include set-cell-height($cell-height);
+
+  &_condensed {
+    @include set-cell-height($cell-height-condensed);
   }
 }
