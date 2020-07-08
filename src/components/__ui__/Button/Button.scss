@@ -21,6 +21,10 @@
       box-shadow: $control-box-shadow $color-middle-green;
     }
   }
+
+  &_small {
+    padding: $control-padding-small $control-padding;
+  }
 }
 
 // Default button styles

@@ -3,12 +3,14 @@ import './Button.scss';
 
 interface ButtonProps extends React.InputHTMLAttributes<HTMLInputElement> {
   variant?: 'text';
+  controlSize?: 'small';
   inputRef?: React.RefObject<HTMLInputElement>;
 }
 
 const Button: React.FC<ButtonProps> = ({
   children,
   variant,
+  controlSize,
   inputRef,
   ...props
 }: React.PropsWithChildren<ButtonProps>) => {
@@ -18,6 +20,10 @@ const Button: React.FC<ButtonProps> = ({
     classNames.push(`button-${variant}`);
   } else {
     classNames.push('button');
+  }
+
+  if (controlSize) {
+    classNames.push(`button_${controlSize}`);
   }
 
   if (children) {

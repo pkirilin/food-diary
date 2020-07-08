@@ -6,6 +6,7 @@ import NoteInputConnected from '../NoteInput';
 import NotesTableConnected from '../NotesTable';
 import { Container, Badge, Icon, Preloader, Button, Loader } from '../__ui__';
 import { useIdFromRoute } from '../../hooks';
+import { getWordWithCount } from '../../utils';
 
 interface MealsListItemProps extends MealsListItemStateToPropsMapResult, MealsListItemDispatchToPropsMapResult {
   mealType: MealType;
@@ -45,6 +46,10 @@ const MealsListItem: React.FC<MealsListItemProps> = ({
   };
 
   const handleAddNoteButtonClick = (): void => {
+    if (isCollapsed) {
+      setCollapsedForMeal(false, mealType);
+    }
+
     openModal('New note', <NoteInputConnected mealType={mealType} pageId={pageId}></NoteInputConnected>, {
       width: '35%',
     });
@@ -57,45 +62,56 @@ const MealsListItem: React.FC<MealsListItemProps> = ({
   }
 
   return (
-    <div className="meals-list-item">
-      <div className="meals-list-item__header" onClick={handleItemHeaderClick}>
-        <Icon
-          type="right-arrow"
-          size="small"
-          svgStyle={
-            isCollapsed
-              ? {}
-              : {
-                  transform: 'rotate(90deg)',
-                }
-          }
-        ></Icon>
-        <div className="meals-list-item__header__name">{mealName}</div>
+    <Container direction="column" additionalCssClassNames={['meals-list-item']}>
+      <Container align="center" spaceBetweenChildren="large" additionalCssClassNames={['meals-list-item__header']}>
+        <Container
+          spaceBetweenChildren="small"
+          additionalCssClassNames={['meals-list-item__name']}
+          onClick={handleItemHeaderClick}
+        >
+          <Container>
+            <Icon
+              type="right-arrow"
+              size="small"
+              svgStyle={
+                isCollapsed
+                  ? {}
+                  : {
+                      transform: 'rotate(90deg)',
+                    }
+              }
+            ></Icon>
+          </Container>
+          <Container>{mealName}</Container>
+        </Container>
         <Container spaceBetweenChildren="small">
-          <Badge label={`${countNotes} ${countNotes === 1 ? 'note' : 'notes'}`}></Badge>
+          <Badge label={getWordWithCount(countNotes, 'note', 'notes')}></Badge>
           <Badge label={`${countCalories} cal`}></Badge>
         </Container>
-      </div>
-      <Container
-        direction="column"
-        spaceBetweenChildren="medium"
-        additionalCssClassNames={mealsListItemContentClassNames}
-      >
-        <Container justify="space-between">
+        <Container col="12" justify="space-between" spaceBetweenChildren="medium">
           <Container col="3">
-            <Button onClick={handleAddNoteButtonClick} disabled={isAddNoteButtonDisabled}>
+            <Button controlSize="small" onClick={handleAddNoteButtonClick} disabled={isAddNoteButtonDisabled}>
               Add note
             </Button>
           </Container>
-          <Container col="3">
+          <Container>
             {isMealOperationInProcess && <Loader size="small" label={notesTableOperationMessage}></Loader>}
           </Container>
         </Container>
-        <Preloader isVisible={isNotesTableLoading} label={notesTableLoadingMessage}>
-          <NotesTableConnected mealType={mealType}></NotesTableConnected>
-        </Preloader>
       </Container>
-    </div>
+      <Container>
+        <Container
+          col="12"
+          direction="column"
+          spaceBetweenChildren="medium"
+          additionalCssClassNames={mealsListItemContentClassNames}
+        >
+          <Preloader isVisible={isNotesTableLoading} label={notesTableLoadingMessage}>
+            <NotesTableConnected mealType={mealType}></NotesTableConnected>
+          </Preloader>
+        </Container>
+      </Container>
+    </Container>
   );
 };
 

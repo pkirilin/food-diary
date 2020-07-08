@@ -1,7 +1,7 @@
 import React from 'react';
 import './Container.scss';
 
-interface ContainerProps {
+interface ContainerProps extends React.DOMAttributes<HTMLDivElement> {
   justify?: 'center' | 'space-between' | 'flex-end';
   align?: 'center' | 'flex-end';
   direction?: 'row' | 'column';
@@ -22,6 +22,7 @@ const Container: React.FC<ContainerProps> = ({
   spaceBetweenChildren,
   additionalCssClassNames = [],
   isSectionRoot = false,
+  ...props
 }: React.PropsWithChildren<ContainerProps>) => {
   const baseClassName = 'container';
   const classNames = [baseClassName];
@@ -50,7 +51,11 @@ const Container: React.FC<ContainerProps> = ({
     classNames.push(cn);
   });
 
-  return <div className={classNames.join(' ')}>{children}</div>;
+  return (
+    <div {...props} className={classNames.join(' ')}>
+      {children}
+    </div>
+  );
 };
 
 export default Container;

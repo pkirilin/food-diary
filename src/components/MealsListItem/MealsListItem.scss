@@ -4,24 +4,15 @@ $inner-padding: 10px;
 
 .meals-list-item {
   &__header {
-    display: flex;
-    align-items: center;
     background-color: $color-light-green;
-    padding: $inner-padding;
+    padding: $inner-padding / 2 $inner-padding;
     border: $border-width-thick solid $color-middle-green-50;
+  }
+
+  &__name {
+    color: $color-middle-green;
+    transition: $transition-fast;
     cursor: pointer;
-
-    &__name {
-      flex: 1;
-      color: $color-middle-green;
-      transition: $transition-fast;
-      margin: 0 5px;
-    }
-
-    svg {
-      fill: $color-middle-green;
-      transition: $transition-fast;
-    }
 
     &:hover > &__name {
       color: $color-dark-green;
@@ -30,6 +21,11 @@ $inner-padding: 10px;
     &:hover svg {
       fill: $color-dark-green;
     }
+  }
+
+  svg {
+    fill: $color-middle-green;
+    transition: $transition-fast;
   }
 
   &:not(:first-child) > &__header {
