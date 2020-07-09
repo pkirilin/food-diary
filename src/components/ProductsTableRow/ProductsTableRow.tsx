@@ -6,7 +6,7 @@ import {
   ProductsTableRowDispatchToPropsMapResult,
 } from './ProductsTableRowConnected';
 import { ProductsOperationsActionTypes } from '../../action-types';
-import { useProductInputDisabled } from '../../hooks';
+import { useProductInputDisabled, useHover } from '../../hooks';
 import { Icon } from '../__ui__';
 import ProductInputConnected from '../ProductInput';
 
@@ -30,6 +30,7 @@ const ProductsTableRow: React.FC<ProductsTableRowProps> = ({
   openConfirmationModal,
 }: ProductsTableRowProps) => {
   const isProductInputDisabled = useProductInputDisabled(isProductOperationInProcess, isCategoryOperationInProcess);
+  const [areRowIconsVisible, handleRowMouseEnter, handleRowMouseLeave] = useHover();
 
   const runDeleteProductAsync = async (): Promise<void> => {
     const { type: deleteProductActionType } = await deleteProduct(product.id);
@@ -56,28 +57,37 @@ const ProductsTableRow: React.FC<ProductsTableRowProps> = ({
   };
 
   return (
-    <tr>
+    <tr onMouseEnter={handleRowMouseEnter} onMouseLeave={handleRowMouseLeave}>
       <td>{product.name}</td>
       <td>{product.caloriesCost}</td>
       <td>{product.categoryName}</td>
-      <td>
-        <Icon
-          type="edit"
-          size="small"
-          title="Edit product"
-          disabled={isProductInputDisabled}
-          onClick={handleEditIconClick}
-        ></Icon>
-      </td>
-      <td>
-        <Icon
-          type="close"
-          size="small"
-          title="Delete product"
-          disabled={isProductInputDisabled}
-          onClick={handleDeleteIconClick}
-        ></Icon>
-      </td>
+      {areRowIconsVisible ? (
+        <React.Fragment>
+          <td>
+            <Icon
+              type="edit"
+              size="small"
+              title="Edit product"
+              disabled={isProductInputDisabled}
+              onClick={handleEditIconClick}
+            ></Icon>
+          </td>
+          <td>
+            <Icon
+              type="close"
+              size="small"
+              title="Delete product"
+              disabled={isProductInputDisabled}
+              onClick={handleDeleteIconClick}
+            ></Icon>
+          </td>
+        </React.Fragment>
+      ) : (
+        <React.Fragment>
+          <td></td>
+          <td></td>
+        </React.Fragment>
+      )}
     </tr>
   );
 };

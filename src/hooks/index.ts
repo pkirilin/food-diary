@@ -10,6 +10,7 @@ import useIdFromRoute from './useIdFromRoute';
 import useNoteInputDisabled from './useNoteInputDisabled';
 import useProductInputDisabled from './useProductInputDisabled';
 import useFocus from './useFocus';
+import useHover from './useHover';
 
 export {
   useOutsideClick,
@@ -24,4 +25,5 @@ export {
   useNoteInputDisabled,
   useProductInputDisabled,
   useFocus,
+  useHover,
 };

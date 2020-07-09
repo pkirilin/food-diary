@@ -4,7 +4,7 @@ import { NoteItem } from '../../models';
 import { NotesTableRowStateToPropsMapResult, NotesTableRowDispatchToPropsMapResult } from './NotesTableRowConnected';
 import { Icon } from '../__ui__';
 import { NotesOperationsActionTypes } from '../../action-types';
-import { useIdFromRoute, useNoteInputDisabled } from '../../hooks';
+import { useIdFromRoute, useNoteInputDisabled, useHover } from '../../hooks';
 import NoteInputConnected from '../NoteInput';
 
 interface NotesTableRowProps extends NotesTableRowStateToPropsMapResult, NotesTableRowDispatchToPropsMapResult {
@@ -24,6 +24,7 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({
 }: NotesTableRowProps) => {
   const pageId = useIdFromRoute();
   const isNoteInputDisabled = useNoteInputDisabled(mealOperationStatuses, note.mealType, isPageOperationInProcess);
+  const [areRowIconsVisible, handleRowMouseEnter, handleRowMouseLeave] = useHover();
 
   const runDeleteNoteAsync = async (): Promise<void> => {
     const { type: deleteNoteActionType } = await deleteNote({
@@ -61,28 +62,37 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({
   };
 
   return (
-    <tr>
+    <tr onMouseEnter={handleRowMouseEnter} onMouseLeave={handleRowMouseLeave}>
       <td>{note.productName}</td>
       <td>{note.productQuantity}</td>
       <td>{note.calories}</td>
-      <td>
-        <Icon
-          type="edit"
-          size="small"
-          title="Edit note"
-          disabled={isNoteInputDisabled}
-          onClick={handleEditIconClick}
-        ></Icon>
-      </td>
-      <td>
-        <Icon
-          type="close"
-          size="small"
-          title="Delete note"
-          disabled={isNoteInputDisabled}
-          onClick={handleDeleteIconClick}
-        ></Icon>
-      </td>
+      {areRowIconsVisible ? (
+        <React.Fragment>
+          <td>
+            <Icon
+              type="edit"
+              size="small"
+              title="Edit note"
+              disabled={isNoteInputDisabled}
+              onClick={handleEditIconClick}
+            ></Icon>
+          </td>
+          <td>
+            <Icon
+              type="close"
+              size="small"
+              title="Delete note"
+              disabled={isNoteInputDisabled}
+              onClick={handleDeleteIconClick}
+            ></Icon>
+          </td>
+        </React.Fragment>
+      ) : (
+        <React.Fragment>
+          <td></td>
+          <td></td>
+        </React.Fragment>
+      )}
     </tr>
   );
 };
