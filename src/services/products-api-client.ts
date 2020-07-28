@@ -20,7 +20,12 @@ export const getProductDropdownItemsAsync = async ({
   });
 };
 
-export const getProductsAsync = async ({ pageSize, pageNumber, categoryId }: ProductsFilter): Promise<Response> => {
+export const getProductsAsync = async ({
+  pageSize,
+  pageNumber,
+  categoryId,
+  productName,
+}: ProductsFilter): Promise<Response> => {
   let requestUrl = `${productsApiUrl}?pageSize=${pageSize}`;
 
   if (pageNumber) {
@@ -29,6 +34,10 @@ export const getProductsAsync = async ({ pageSize, pageNumber, categoryId }: Pro
 
   if (categoryId) {
     requestUrl += `&categoryId=${categoryId}`;
+  }
+
+  if (productName) {
+    requestUrl += `&productSearchName=${productName}`;
   }
 
   return await fetch(requestUrl, {

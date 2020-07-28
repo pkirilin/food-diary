@@ -5,6 +5,7 @@ const initialState: ProductsFilterState = {
   params: {
     pageSize: 10,
   },
+  isChanged: false,
 };
 
 const productsFilterReducer = (
@@ -16,6 +17,7 @@ const productsFilterReducer = (
       return {
         ...state,
         params: action.updatedFilter,
+        isChanged: !!action.updatedFilter.productName,
       };
     case ProductsFilterActionTypes.ClearFilter:
       return initialState;

@@ -24,5 +24,6 @@ export interface ProductsOperationsState {
 }
 
 export interface ProductsFilterState {
+  isChanged: boolean;
   params: ProductsFilter;
 }
