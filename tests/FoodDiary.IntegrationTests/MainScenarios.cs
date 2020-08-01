@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using FluentAssertions;
 using FoodDiary.API.Dtos;
 using FoodDiary.API.Requests;
 using FoodDiary.Domain.Enums;
-using Newtonsoft.Json;
 using Xunit;
 
 namespace FoodDiary.IntegrationTests
@@ -89,10 +87,7 @@ namespace FoodDiary.IntegrationTests
             var queryString = $"{Endpoints.GetPages}?startDate={startDate}&endDate={endDate}";
 
             // Act
-            var response = await _client.GetAsync(queryString);
-            response.EnsureSuccessStatusCode();
-            var pagesContent = await response.Content.ReadAsStringAsync();
-            var pages = JsonConvert.DeserializeObject<IEnumerable<PageItemDto>>(pagesContent);
+            var pages = await _client.GetDataAsync<IEnumerable<PageItemDto>>(queryString);
 
             // Assert
             pages.Should().BeEquivalentTo(expectedPages);
@@ -106,10 +101,7 @@ namespace FoodDiary.IntegrationTests
             var queryString = $"{Endpoints.GetNotes}?pageId={pageId}&mealType={mealType}";
 
             // Act
-            var response = await _client.GetAsync(queryString);
-            response.EnsureSuccessStatusCode();
-            var notesContent = await response.Content.ReadAsStringAsync();
-            var notes = JsonConvert.DeserializeObject<IEnumerable<NoteItemDto>>(notesContent);
+            var notes = await _client.GetDataAsync<IEnumerable<NoteItemDto>>(queryString);
 
             // Assert
             notes.Should().BeEquivalentTo(expectedNotes);
@@ -124,20 +116,11 @@ namespace FoodDiary.IntegrationTests
             {
                 Date = DateTime.Parse(newPageDate)
             };
-
-            var newPageBody = new StringContent(JsonConvert.SerializeObject(newPageRequest));
-            newPageBody.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            var pagesSearchQuery = $"{Endpoints.GetPages}?startDate=2020-07-30&endDate=2020-07-30";
 
             // Act
-            var createPageResponse = await _client.PostAsync(Endpoints.CreatePage, newPageBody);
-            createPageResponse.EnsureSuccessStatusCode();
-
-            var pagesSearchQuery = $"{Endpoints.GetPages}?startDate=2020-07-30&endDate=2020-07-30";
-            var pagesResponse = await _client.GetAsync(pagesSearchQuery);
-            pagesResponse.EnsureSuccessStatusCode();
-
-            var pagesResponseStr = await pagesResponse.Content.ReadAsStringAsync();
-            var pages = JsonConvert.DeserializeObject<ICollection<PageItemDto>>(pagesResponseStr);
+            var response = await _client.PostDataAsync(Endpoints.CreatePage, newPageRequest);
+            var pages = await _client.GetDataAsync<IEnumerable<PageItemDto>>(pagesSearchQuery);
 
             // Assert
             pages.Should().Contain(p => p.Date == newPageDate);
@@ -156,20 +139,11 @@ namespace FoodDiary.IntegrationTests
                 ProductId = productId,
                 PageId = pageId,
             };
-
-            var newNoteBody = new StringContent(JsonConvert.SerializeObject(newNoteRequest));
-            newNoteBody.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            var notesSearchQuery = $"{Endpoints.GetNotes}?pageId={pageId}";
 
             // Act
-            var createNoteResponse = await _client.PostAsync(Endpoints.CreateNote, newNoteBody);
-            createNoteResponse.EnsureSuccessStatusCode();
-
-            var notesSearchQuery = $"{Endpoints.GetNotes}?pageId={pageId}";
-            var notesResponse = await _client.GetAsync(notesSearchQuery);
-            notesResponse.EnsureSuccessStatusCode();
-
-            var notesResponseStr = await notesResponse.Content.ReadAsStringAsync();
-            var notes = JsonConvert.DeserializeObject<IEnumerable<NoteItemDto>>(notesResponseStr);
+            var response = await _client.PostDataAsync(Endpoints.CreateNote, newNoteRequest);
+            var notes = await _client.GetDataAsync<IEnumerable<NoteItemDto>>(notesSearchQuery);
 
             // Assert
             notes.Should().Contain(n =>
@@ -185,11 +159,10 @@ namespace FoodDiary.IntegrationTests
         public async void PostInvalidNote_ReturnsBadRequest()
         {
             // Arrange
-            var body = new StringContent(JsonConvert.SerializeObject(new NoteCreateEditRequest()));
-            body.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            var request = new NoteCreateEditRequest();
 
             // Act
-            var response = await _client.PostAsync(Endpoints.CreateNote, body);
+            var response = await _client.PostDataAsync(Endpoints.CreateNote, request, false);
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
@@ -200,17 +173,12 @@ namespace FoodDiary.IntegrationTests
         public async void DeleteExistingNote_RemovesNoteFromDiaryPage(int noteId, int pageId)
         {
             // Arrange
+            var notesSearchQuery = $"{Endpoints.GetNotes}?pageId={pageId}";
 
             // Act
             var deleteNoteResponse = await _client.DeleteAsync($"{Endpoints.DeleteNote}/{noteId}");
             deleteNoteResponse.EnsureSuccessStatusCode();
-
-            var notesSearchQuery = $"{Endpoints.GetNotes}?pageId={pageId}";
-            var notesResponse = await _client.GetAsync(notesSearchQuery);
-            notesResponse.EnsureSuccessStatusCode();
-
-            var notesResponseStr = await notesResponse.Content.ReadAsStringAsync();
-            var notes = JsonConvert.DeserializeObject<IEnumerable<NoteItemDto>>(notesResponseStr);
+            var notes = await _client.GetDataAsync<IEnumerable<NoteItemDto>>(notesSearchQuery);
 
             // Assert
             notes.Should().NotContain(n => n.Id == noteId);
