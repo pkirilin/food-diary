@@ -5,6 +5,7 @@ import { ProductsFilter } from '../../models';
 import { productsFilterInitialState } from '../../reducers/products';
 import { Container } from '../__ui__';
 import ProductsControlPanelConnected from '../ProductsControlPanel';
+import ProductsFilterInfoConnected from '../ProductsFilterInfo';
 
 interface ProductsProps extends ProductsStateToPropsMapResult, ProductsDispatchToPropsMapResult {}
 
@@ -37,7 +38,10 @@ const Products: React.FC<ProductsProps> = ({ productsFilter, clearProductsFilter
         {/* Ensures that products table in this section is initially rendered with cleared filter */}
         {isFilterCleared && (
           <Container direction="column" spaceBetweenChildren="medium">
-            <ProductsControlPanelConnected></ProductsControlPanelConnected>
+            <Container direction="column" spaceBetweenChildren="large">
+              <ProductsControlPanelConnected></ProductsControlPanelConnected>
+              <ProductsFilterInfoConnected></ProductsFilterInfoConnected>
+            </Container>
             <ProductsTableConnected></ProductsTableConnected>
           </Container>
         )}

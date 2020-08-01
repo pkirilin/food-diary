@@ -3,7 +3,7 @@ import { ProductsFilterActions, ProductsFilterActionTypes } from '../../action-t
 
 const initialState: ProductsFilterState = {
   params: {
-    pageSize: 10,
+    pageSize: 30,
   },
   isChanged: false,
 };
