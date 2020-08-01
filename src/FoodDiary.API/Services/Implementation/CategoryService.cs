@@ -75,7 +75,7 @@ namespace FoodDiary.API.Services.Implementation
             {
                 query = query.Where(c =>
                     c.Name.ToLower()
-                        .StartsWith(categoriesDropdownRequest.CategoryNameFilter.ToLower()));
+                        .Contains(categoriesDropdownRequest.CategoryNameFilter.ToLower()));
             }
 
             query = query.OrderBy(c => c.Name);

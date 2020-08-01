@@ -27,7 +27,7 @@ namespace FoodDiary.API.Services.Implementation
             {
                 searchQuery = searchQuery.Where(p =>
                     p.Name.ToLower()
-                        .StartsWith(productsRequest.ProductSearchName.ToLower()));
+                        .Contains(productsRequest.ProductSearchName.ToLower()));
             }
 
             if (productsRequest.CategoryId.HasValue)
@@ -117,7 +117,7 @@ namespace FoodDiary.API.Services.Implementation
             {
                 query = query.Where(p =>
                     p.Name.ToLower()
-                        .StartsWith(productsDropdownRequest.ProductNameFilter.ToLower()));
+                        .Contains(productsDropdownRequest.ProductNameFilter.ToLower()));
             }
 
             query = query.OrderBy(p => p.Name);

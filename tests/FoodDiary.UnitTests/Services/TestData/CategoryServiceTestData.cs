@@ -97,7 +97,7 @@ namespace FoodDiary.UnitTests.Services.TestData
                     .With(r => r.CategoryNameFilter, "category")
                     .Create();
                 var request7 = fixture.Build<CategoryDropdownSearchRequest>()
-                    .With(r => r.CategoryNameFilter, "gory")
+                    .With(r => r.CategoryNameFilter, "gory 1")
                     .Create();
 
                 var sourceCategories = new List<Category> { category1, category2, category3 };
@@ -137,7 +137,7 @@ namespace FoodDiary.UnitTests.Services.TestData
 
                 yield return new object[]
                 {
-                    request7, sourceCategories, emptyCategories
+                    request7, sourceCategories, categoriesFilteredAndOrderedByName
                 };
             }
         }

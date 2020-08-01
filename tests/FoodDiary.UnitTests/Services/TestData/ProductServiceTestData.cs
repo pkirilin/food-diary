@@ -43,7 +43,7 @@ namespace FoodDiary.UnitTests.Services.TestData
                 var resultProducts1 = new List<Product>() { product4, product3 };
                 var resultProducts2 = new List<Product>() { product1, product5, product4 };
                 var resultProducts3 = new List<Product>() { product2, product3 };
-                var resultProducts4 = new List<Product>();
+                var resultProducts4 = new List<Product>() { product3 };
 
                 var request1 = fixture.Build<ProductsSearchRequest>()
                     .With(r => r.PageNumber, 2)
@@ -176,7 +176,7 @@ namespace FoodDiary.UnitTests.Services.TestData
                     .With(r => r.ProductNameFilter, "product")
                     .Create();
                 var request7 = fixture.Build<ProductDropdownSearchRequest>()
-                    .With(r => r.ProductNameFilter, "roduct")
+                    .With(r => r.ProductNameFilter, "roduct 1")
                     .Create();
 
                 var sourceProducts = new List<Product> { product1, product2, product3 };
@@ -216,7 +216,7 @@ namespace FoodDiary.UnitTests.Services.TestData
 
                 yield return new object[]
                 {
-                    request7, sourceProducts, emptyProducts
+                    request7, sourceProducts, productsWithTheSameName
                 };
             }
         }
