@@ -28,5 +28,17 @@ namespace FoodDiary.IntegrationTests
 
             return response;
         }
+
+        public static async Task<HttpResponseMessage> PutDataAsync<TData>(this HttpClient client, string requestUri, TData data, bool ensureSuccessful = true, CancellationToken cancellationToken = default)
+        {
+            var body = new StringContent(JsonConvert.SerializeObject(data));
+            body.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            var response = await client.PutAsync(requestUri, body, cancellationToken);
+
+            if (ensureSuccessful)
+                response.EnsureSuccessStatusCode();
+
+            return response;
+        }
     }
 }

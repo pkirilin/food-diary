@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using AutoMapper;
 using FoodDiary.API;
 using FoodDiary.API.Controllers.v1;
@@ -80,113 +81,138 @@ namespace FoodDiary.IntegrationTests
             var context = app.ApplicationServices.GetService<FoodDiaryContext>();
             context.Database.EnsureCreated();
 
-            var category1 = new Category()
+            context.Categories.AddRange(GetTestCategories());
+            context.Products.AddRange(GetTestProducts());
+            context.Pages.AddRange(GetTestPages());
+            context.Notes.AddRange(GetTestNotes());
+            
+            context.SaveChanges();
+        }
+
+        private IEnumerable<Category> GetTestCategories()
+        {
+            yield return new Category()
             {
-                Id = 100,
+                Id = 1,
                 Name = "First category"
             };
-            var category2 = new Category()
+
+            yield return new Category()
             {
-                Id = 101,
+                Id = 2,
                 Name = "Second category"
             };
+        }
 
-            var product1 = new Product()
+        private IEnumerable<Product> GetTestProducts()
+        {
+            yield return new Product()
             {
-                Id = 100,
+                Id = 1,
                 Name = "First product",
                 CaloriesCost = 120,
-                Category = category1
-            };
-            var product2 = new Product()
-            {
-                Id = 101,
-                Name = "Second product",
-                CaloriesCost = 150,
-                Category = category2
+                CategoryId = 1
             };
 
-            var page1 = new Page()
+            yield return new Product()
             {
-                Id = 100,
+                Id = 2,
+                Name = "Second product",
+                CaloriesCost = 150,
+                CategoryId = 2
+            };
+
+            yield return new Product()
+            {
+                Id = 3,
+                Name = "Third product",
+                CaloriesCost = 100,
+                CategoryId = 1
+            };
+        }
+
+        private IEnumerable<Page> GetTestPages()
+        {
+            yield return new Page()
+            {
+                Id = 1,
                 Date = DateTime.Parse("2020-08-01")
             };
 
-            var page2 = new Page()
+            yield return new Page()
             {
-                Id = 101,
+                Id = 2,
                 Date = DateTime.Parse("2020-08-02")
             };
 
-            var page3 = new Page()
+            yield return new Page()
             {
-                Id = 102,
+                Id = 3,
                 Date = DateTime.Parse("2020-08-03")
             };
+        }
 
-            context.Pages.Add(page1);
-
-            context.Notes.Add(new Note()
+        private IEnumerable<Note> GetTestNotes()
+        {
+            yield return new Note()
             {
-                Id = 100,
+                Id = 1,
                 MealType = MealType.Breakfast,
                 ProductQuantity = 170,
                 DisplayOrder = 0,
-                Product = product1,
-                Page = page1,
-            });
+                ProductId = 1,
+                PageId = 1,
+            };
 
-            context.Notes.Add(new Note()
+            yield return new Note()
             {
-                Id = 101,
+                Id = 2,
                 MealType = MealType.Dinner,
                 ProductQuantity = 50,
                 DisplayOrder = 0,
-                Product = product2,
-                Page = page1,
-            });
+                ProductId = 2,
+                PageId = 1,
+            };
 
-            context.Notes.Add(new Note()
+            yield return new Note()
             {
-                Id = 102,
+                Id = 3,
                 MealType = MealType.Breakfast,
                 ProductQuantity = 200,
                 DisplayOrder = 0,
-                Product = product1,
-                Page = page2,
-            });
+                ProductId = 1,
+                PageId = 2,
+            };
 
-            context.Notes.Add(new Note()
+            yield return new Note()
             {
-                Id = 103,
+                Id = 4,
                 MealType = MealType.Breakfast,
                 ProductQuantity = 300,
                 DisplayOrder = 1,
-                Product = product2,
-                Page = page2,
-            });
+                ProductId = 2,
+                PageId = 2,
+            };
 
-            context.Notes.Add(new Note()
+            yield return new Note()
             {
-                Id = 104,
+                Id = 5,
                 MealType = MealType.Lunch,
                 ProductQuantity = 250,
                 DisplayOrder = 0,
-                Product = product2,
-                Page = page2,
-            });
+                ProductId = 2,
+                PageId = 2,
+            };
 
-            context.Notes.Add(new Note()
+            yield return new Note()
             {
-                Id = 105,
+                Id = 6,
                 MealType = MealType.Dinner,
                 ProductQuantity = 150,
                 DisplayOrder = 0,
-                Product = product1,
-                Page = page3,
-            });
-
-            context.SaveChanges();
+                ProductId = 1,
+                PageId = 3,
+            };
         }
     }
 }
