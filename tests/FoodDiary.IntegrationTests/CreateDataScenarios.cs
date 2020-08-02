@@ -61,5 +61,25 @@ namespace FoodDiary.IntegrationTests
                 && n.PageId == pageId
             );
         }
+
+        [Theory]
+        [InlineData("New product", 100, 1)]
+        public async void PostValidProduct_CreatesNewProduct(string productName, int caloriesCost, int categoryId)
+        {
+            // Arrange
+            var product = new ProductCreateEditRequest()
+            {
+                Name = productName,
+                CaloriesCost = caloriesCost,
+                CategoryId = categoryId
+            };
+
+            // Act
+            var response = await _client.PostDataAsync(Endpoints.CreateProduct, product);
+            var products = await _client.GetDataAsync<ProductsSearchResultDto>(Endpoints.GetProducts);
+
+            // Assert
+            products.ProductItems.Should().Contain(p => p.Name == productName);
+        }
     }
 }

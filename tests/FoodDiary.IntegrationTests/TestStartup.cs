@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using AutoMapper;
 using FoodDiary.API;
@@ -55,7 +55,8 @@ namespace FoodDiary.IntegrationTests
             // Application parts are also added for integration tests web host to identify controllers
             services.AddControllers()
                 .AddApplicationPart(typeof(PagesController).Assembly)
-                .AddApplicationPart(typeof(NotesController).Assembly);
+                .AddApplicationPart(typeof(NotesController).Assembly)
+                .AddApplicationPart(typeof(ProductsController).Assembly);
             services.AddFoodDiarySwagger();
         }
 

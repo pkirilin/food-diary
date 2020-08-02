@@ -12,6 +12,8 @@ namespace FoodDiary.IntegrationTests
         {
         }
 
+        #region Test data
+
         public static IEnumerable<object[]> MemberData_GetPages
         {
             get
@@ -72,15 +74,100 @@ namespace FoodDiary.IntegrationTests
             }
         }
 
+        public static IEnumerable<object[]> MemberData_GetProducts
+        {
+            get
+            {
+                var product1 = new ProductItemDto()
+                {
+                    Id = 1,
+                    Name = "First product",
+                    CaloriesCost = 120,
+                    CategoryId = 1,
+                    CategoryName = "First category"
+                };
+
+                var product2 = new ProductItemDto()
+                {
+                    Id = 2,
+                    Name = "Second product",
+                    CaloriesCost = 150,
+                    CategoryId = 2,
+                    CategoryName = "Second category"
+                };
+
+                var product3 = new ProductItemDto()
+                {
+                    Id = 3,
+                    Name = "Third product",
+                    CaloriesCost = 100,
+                    CategoryId = 1,
+                    CategoryName = "First category"
+                };
+
+                var request1 = Endpoints.GetProducts;
+                var request2 = $"{Endpoints.GetProducts}?pageNumber=1&pageSize=2&categoryId=1&productSearchName=First";
+
+                var result1 = new ProductsSearchResultDto()
+                {
+                    TotalProductsCount = 3,
+                    ProductItems = new List<ProductItemDto>() { product1, product2, product3 }
+                };
+                var result2 = new ProductsSearchResultDto()
+                {
+                    TotalProductsCount = 1,
+                    ProductItems = new List<ProductItemDto>() { product1 }
+                };
+
+                yield return new object[] { request1, result1 };
+                yield return new object[] { request2, result2 };
+            }
+        }
+
+        public static IEnumerable<object[]> MemberData_GetProductsDropdown
+        {
+            get
+            {
+                var product1 = new ProductDropdownItemDto()
+                {
+                    Id = 1,
+                    Name = "First product"
+                };
+
+                var product2 = new ProductDropdownItemDto()
+                {
+                    Id = 2,
+                    Name = "Second product"
+                };
+
+                var product3 = new ProductDropdownItemDto()
+                {
+                    Id = 3,
+                    Name = "Third product"
+                };
+
+                var request1 = Endpoints.GetProductsDropdown;
+                var request2 = $"{Endpoints.GetProductsDropdown}?productNameFilter=First";
+
+                var result1 = new List<ProductDropdownItemDto>() { product1, product2, product3 };
+                var result2 = new List<ProductDropdownItemDto>() { product1 };
+
+                yield return new object[] { request1, result1 };
+                yield return new object[] { request2, result2 };
+            }
+        }
+
+        #endregion
+
         [Theory]
         [MemberData(nameof(MemberData_GetPages))]
         public async void GetPages_ReceivesPagesInCorrectFormat(string startDate, string endDate, IEnumerable<PageItemDto> expectedPages)
         {
             // Arrange
-            var queryString = $"{Endpoints.GetPages}?startDate={startDate}&endDate={endDate}";
+            var requestUri = $"{Endpoints.GetPages}?startDate={startDate}&endDate={endDate}";
 
             // Act
-            var pages = await _client.GetDataAsync<IEnumerable<PageItemDto>>(queryString);
+            var pages = await _client.GetDataAsync<IEnumerable<PageItemDto>>(requestUri);
 
             // Assert
             pages.Should().BeEquivalentTo(expectedPages);
@@ -91,13 +178,35 @@ namespace FoodDiary.IntegrationTests
         public async void GetNotes_ReceivesNotesInCorrectFormat(int pageId, MealType mealType, IEnumerable<NoteItemDto> expectedNotes)
         {
             // Arrange
-            var queryString = $"{Endpoints.GetNotes}?pageId={pageId}&mealType={mealType}";
+            var requestUri = $"{Endpoints.GetNotes}?pageId={pageId}&mealType={mealType}";
 
             // Act
-            var notes = await _client.GetDataAsync<IEnumerable<NoteItemDto>>(queryString);
+            var notes = await _client.GetDataAsync<IEnumerable<NoteItemDto>>(requestUri);
 
             // Assert
             notes.Should().BeEquivalentTo(expectedNotes);
+        }
+
+        [Theory]
+        [MemberData(nameof(MemberData_GetProducts))]
+        public async void GetProducts_ReceivesProductsInCorrectFormat(string requestUri, ProductsSearchResultDto expectedResult)
+        {
+            // Act
+            var result = await _client.GetDataAsync<ProductsSearchResultDto>(requestUri);
+
+            // Assert
+            result.Should().BeEquivalentTo(expectedResult);
+        }
+
+        [Theory]
+        [MemberData(nameof(MemberData_GetProductsDropdown))]
+        public async void GetProductsDropdown_ReceivesProductsInCorrectFormat(string requestUri, IEnumerable<ProductDropdownItemDto> expectedResult)
+        {
+            // Act
+            var result = await _client.GetDataAsync<IEnumerable<ProductDropdownItemDto>>(requestUri);
+
+            // Assert
+            result.Should().BeEquivalentTo(expectedResult);
         }
     }
 }
