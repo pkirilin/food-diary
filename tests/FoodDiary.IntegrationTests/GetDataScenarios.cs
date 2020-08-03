@@ -157,6 +157,52 @@ namespace FoodDiary.IntegrationTests
             }
         }
 
+        public static IEnumerable<object[]> MemberData_GetCategories
+        {
+            get
+            {
+                var category1 = new CategoryItemDto()
+                {
+                    Id = 1,
+                    Name = "First category",
+                    CountProducts = 2
+                };
+
+                var category2 = new CategoryItemDto()
+                {
+                    Id = 2,
+                    Name = "Second category",
+                    CountProducts = 1
+                };
+
+                var expectedResult = new List<CategoryItemDto>() { category1, category2 };
+
+                yield return new object[] { Endpoints.GetCategories, expectedResult };
+            }
+        }
+
+        public static IEnumerable<object[]> MemberData_GetCategoriesDropdown
+        {
+            get
+            {
+                var category1 = new CategoryDropdownItemDto()
+                {
+                    Id = 1,
+                    Name = "First category"
+                };
+
+                var category2 = new CategoryDropdownItemDto()
+                {
+                    Id = 2,
+                    Name = "Second category"
+                };
+
+                var expectedResult = new List<CategoryDropdownItemDto>() { category1, category2 };
+
+                yield return new object[] { Endpoints.GetCategories, expectedResult };
+            }
+        }
+
         #endregion
 
         [Theory]
@@ -204,6 +250,28 @@ namespace FoodDiary.IntegrationTests
         {
             // Act
             var result = await _client.GetDataAsync<IEnumerable<ProductDropdownItemDto>>(requestUri);
+
+            // Assert
+            result.Should().BeEquivalentTo(expectedResult);
+        }
+
+        [Theory]
+        [MemberData(nameof(MemberData_GetCategories))]
+        public async void GetCategories_ReceivesCategoriesInCorrectFormat(string requestUri, IEnumerable<CategoryItemDto> expectedResult)
+        {
+            // Act
+            var result = await _client.GetDataAsync<IEnumerable<CategoryItemDto>>(requestUri);
+
+            // Assert
+            result.Should().BeEquivalentTo(expectedResult);
+        }
+
+        [Theory]
+        [MemberData(nameof(MemberData_GetCategoriesDropdown))]
+        public async void GetCategoriesDropdown_ReceivesCategoriesInCorrectFormat(string requestUri, IEnumerable<CategoryDropdownItemDto> expectedResult)
+        {
+            // Act
+            var result = await _client.GetDataAsync<IEnumerable<CategoryDropdownItemDto>>(requestUri);
 
             // Assert
             result.Should().BeEquivalentTo(expectedResult);

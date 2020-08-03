@@ -81,5 +81,23 @@ namespace FoodDiary.IntegrationTests
             // Assert
             products.ProductItems.Should().Contain(p => p.Name == productName);
         }
+
+        [Theory]
+        [InlineData("New category")]
+        public async void PostValidCategory_CreatesNewCategory(string categoryName)
+        {
+            // Arrange
+            var category = new CategoryCreateEditRequest()
+            {
+                Name = categoryName
+            };
+
+            // Act
+            var response = await _client.PostDataAsync(Endpoints.CreateCategory, category);
+            var categories = await _client.GetDataAsync<IEnumerable<CategoryItemDto>>(Endpoints.GetCategories);
+
+            // Assert
+            categories.Should().Contain(c => c.Name == categoryName);
+        }
     }
 }

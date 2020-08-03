@@ -56,7 +56,8 @@ namespace FoodDiary.IntegrationTests
             services.AddControllers()
                 .AddApplicationPart(typeof(PagesController).Assembly)
                 .AddApplicationPart(typeof(NotesController).Assembly)
-                .AddApplicationPart(typeof(ProductsController).Assembly);
+                .AddApplicationPart(typeof(ProductsController).Assembly)
+                .AddApplicationPart(typeof(CategoriesController).Assembly);
             services.AddFoodDiarySwagger();
         }
 

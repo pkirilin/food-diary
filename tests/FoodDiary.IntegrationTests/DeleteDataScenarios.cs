@@ -38,5 +38,17 @@ namespace FoodDiary.IntegrationTests
             // Assert
             products.ProductItems.Should().NotContain(p => p.Id == productId);
         }
+
+        [Theory]
+        [InlineData(1)]
+        public async void DeleteCategory_DeletesExistingCategory(int categoryId)
+        {
+            // Act
+            var response = await _client.DeleteAsync($"{Endpoints.DeleteCategory}/{categoryId}");
+            var categories = await _client.GetDataAsync<IEnumerable<CategoryItemDto>>(Endpoints.GetCategories);
+
+            // Assert
+            categories.Should().NotContain(c => c.Id == categoryId);
+        }
     }
 }
