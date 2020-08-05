@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,6 +16,14 @@ namespace FoodDiary.IntegrationTests
             var content = await response.Content.ReadAsStringAsync();
             var data = JsonConvert.DeserializeObject<TData>(content);
             return data;
+        }
+
+        public static async Task<string> GetStringAsync(this HttpClient client, string requestUri, CancellationToken cancellationToken = default)
+        {
+            var response = await client.GetAsync(requestUri, cancellationToken);
+            response.EnsureSuccessStatusCode();
+            var content = await response.Content.ReadAsStringAsync();
+            return content;
         }
 
         public static async Task<HttpResponseMessage> PostDataAsync<TData>(this HttpClient client, string requestUri, TData data, bool ensureSuccessful = true, CancellationToken cancellationToken = default)
@@ -34,6 +43,29 @@ namespace FoodDiary.IntegrationTests
             var body = new StringContent(JsonConvert.SerializeObject(data));
             body.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             var response = await client.PutAsync(requestUri, body, cancellationToken);
+
+            if (ensureSuccessful)
+                response.EnsureSuccessStatusCode();
+
+            return response;
+        }
+
+        public static async Task<HttpResponseMessage> SendDataAsync<TData>(this HttpClient client, string requestUri, HttpMethod method, TData data, bool ensureSuccessful = true, CancellationToken cancellationToken = default)
+        {
+            var request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Delete,
+                RequestUri = new Uri($"{client.BaseAddress}{requestUri}"),
+                Content = new StringContent(JsonConvert.SerializeObject(data))
+                {
+                    Headers =
+                    {
+                        ContentType = new MediaTypeHeaderValue("application/json")
+                    }
+                }
+            };
+
+            var response = await client.SendAsync(request, cancellationToken);
 
             if (ensureSuccessful)
                 response.EnsureSuccessStatusCode();

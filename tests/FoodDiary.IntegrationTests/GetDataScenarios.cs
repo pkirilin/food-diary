@@ -276,5 +276,15 @@ namespace FoodDiary.IntegrationTests
             // Assert
             result.Should().BeEquivalentTo(expectedResult);
         }
+
+        [Fact]
+        public async void GetDateForNewPage_ReceivesCorrectDate()
+        {
+            // Act
+            var result = await _client.GetStringAsync(Endpoints.GetDateForNewPage);
+
+            // Assert
+            result.Should().Be("2020-08-07");
+        }
     }
 }

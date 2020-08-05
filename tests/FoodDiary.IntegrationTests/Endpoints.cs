@@ -16,15 +16,20 @@
         public static string GetProductsDropdown { get; } = $"{ProductsBaseUrl}/dropdown";
         public static string GetCategories { get; } = CategoriesBaseUrl;
         public static string GetCategoriesDropdown { get; } = $"{CategoriesBaseUrl}/dropdown";
+        public static string GetDateForNewPage { get; } = $"{PagesBaseUrl}/date";
 
         public static string CreatePage { get; } = PagesBaseUrl;
         public static string CreateNote { get; } = NotesBaseUrl;
         public static string CreateProduct { get; } = ProductsBaseUrl;
         public static string CreateCategory { get; } = CategoriesBaseUrl;
 
+        public static string EditPage { get; } = PagesBaseUrl;
+        public static string EditNote { get; } = NotesBaseUrl;
         public static string EditProduct { get; } = ProductsBaseUrl;
         public static string EditCategory { get; } = CategoriesBaseUrl;
 
+        public static string DeletePage { get; } = PagesBaseUrl;
+        public static string DeletePages { get; } = $"{PagesBaseUrl}/batch";
         public static string DeleteNote { get; } = NotesBaseUrl;
         public static string DeleteProduct { get; } = ProductsBaseUrl;
         public static string DeleteCategory { get; } = CategoriesBaseUrl;

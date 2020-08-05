@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
 using FluentAssertions;
 using FoodDiary.API.Dtos;
+using Microsoft.EntityFrameworkCore.Internal;
 using Xunit;
 
 namespace FoodDiary.IntegrationTests
@@ -12,8 +15,35 @@ namespace FoodDiary.IntegrationTests
         }
 
         [Theory]
+        [InlineData(4)]
+        public async void DeletePage_RemovesExistingPage(int pageId)
+        {
+            // Arrange
+            var requestUri = $"{Endpoints.DeletePage}/{pageId}";
+
+            // Act
+            var response = await _client.DeleteAsync(requestUri);
+            var pages = await _client.GetDataAsync<IEnumerable<PageItemDto>>(Endpoints.GetPages);
+
+            // Assert
+            pages.Should().NotContain(p => p.Id == pageId);
+        }
+
+        [Theory]
+        [InlineData(new int[] { 5, 6 })]
+        public async void DeletePages_RemovesExistingPages(IEnumerable<int> pageIds)
+        {
+            // Act
+            var response = await _client.SendDataAsync(Endpoints.DeletePages, HttpMethod.Delete, pageIds);
+            var pages = await _client.GetDataAsync<IEnumerable<PageItemDto>>(Endpoints.GetPages);
+
+            // Assert
+            pages.Should().NotContain(p => pageIds.Any(id => p.Id == id));
+        }
+
+        [Theory]
         [InlineData(2, 1)]
-        public async void DeleteExistingNote_RemovesNoteFromDiaryPage(int noteId, int pageId)
+        public async void DeleteNote_RemovesExistingNoteFromDiaryPage(int noteId, int pageId)
         {
             // Arrange
             var notesSearchQuery = $"{Endpoints.GetNotes}?pageId={pageId}";

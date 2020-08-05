@@ -152,6 +152,24 @@ namespace FoodDiary.IntegrationTests
                 Id = 3,
                 Date = DateTime.Parse("2020-08-03")
             };
+
+            yield return new Page()
+            {
+                Id = 4,
+                Date = DateTime.Parse("2020-08-04")
+            };
+
+            yield return new Page()
+            {
+                Id = 5,
+                Date = DateTime.Parse("2020-08-05")
+            };
+
+            yield return new Page()
+            {
+                Id = 6,
+                Date = DateTime.Parse("2020-08-06")
+            };
         }
 
         private IEnumerable<Note> GetTestNotes()
