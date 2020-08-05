@@ -1,0 +1,29 @@
+{
+  "pages": [
+    {
+      "date": "2020-08-08T00:00:00",
+      "notes": [
+        {
+          "mealType": 1,
+          "product": {
+            "name": "Imported product 1",
+            "caloriesCost": 100,
+            "category": "Imported category 1"
+          },
+          "productQuantity": 100,
+          "displayOrder": 0
+        },
+        {
+          "mealType": 1,
+          "product": {
+            "name": "First product",
+            "caloriesCost": 120,
+            "category": "First category"
+          },
+          "productQuantity": 100,
+          "displayOrder": 1
+        }
+      ]
+    }
+  ]
+}

@@ -10,6 +10,7 @@
         private const string ProductsBaseUrl = "v1/products";
         private const string CategoriesBaseUrl = "v1/categories";
         private const string ExportsBaseUrl = "v1/exports";
+        private const string ImportsBaseUrl = "v1/imports";
 
         public static string GetPages { get; } = PagesBaseUrl;
         public static string GetNotes { get; } = NotesBaseUrl;
@@ -37,5 +38,7 @@
 
         public static string ExportPagesPdf { get; } = $"{ExportsBaseUrl}/pdf";
         public static string ExportPagesJson { get; } = $"{ExportsBaseUrl}/json";
+
+        public static string ImportPagesJson { get; } = $"{ImportsBaseUrl}/json";
     }
 }
