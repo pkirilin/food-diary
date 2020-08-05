@@ -9,6 +9,7 @@
         private const string NotesBaseUrl = "v1/notes";
         private const string ProductsBaseUrl = "v1/products";
         private const string CategoriesBaseUrl = "v1/categories";
+        private const string ExportsBaseUrl = "v1/exports";
 
         public static string GetPages { get; } = PagesBaseUrl;
         public static string GetNotes { get; } = NotesBaseUrl;
@@ -33,5 +34,8 @@
         public static string DeleteNote { get; } = NotesBaseUrl;
         public static string DeleteProduct { get; } = ProductsBaseUrl;
         public static string DeleteCategory { get; } = CategoriesBaseUrl;
+
+        public static string ExportPagesPdf { get; } = $"{ExportsBaseUrl}/pdf";
+        public static string ExportPagesJson { get; } = $"{ExportsBaseUrl}/json";
     }
 }

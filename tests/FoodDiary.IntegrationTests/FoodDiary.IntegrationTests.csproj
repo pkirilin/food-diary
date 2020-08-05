@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -20,5 +20,9 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\FoodDiary.API\FoodDiary.API.csproj" />
   </ItemGroup>
+
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="XCOPY &quot;$(SolutionDir)src\FoodDiary.API\fonts\**&quot; &quot;$(TargetDir)\fonts\**&quot; /S /Y" />
+  </Target>
 
 </Project>
