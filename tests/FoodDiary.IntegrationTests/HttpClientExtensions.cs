@@ -54,7 +54,7 @@ namespace FoodDiary.IntegrationTests
         {
             var request = new HttpRequestMessage
             {
-                Method = HttpMethod.Delete,
+                Method = method,
                 RequestUri = new Uri($"{client.BaseAddress}{requestUri}"),
                 Content = new StringContent(JsonConvert.SerializeObject(data))
                 {
