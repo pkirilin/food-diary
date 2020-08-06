@@ -25,8 +25,10 @@
     <Folder Include="Assets\" />
   </ItemGroup>
 
-  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="XCOPY &quot;$(SolutionDir)src\FoodDiary.API\fonts\**&quot; &quot;$(TargetDir)\fonts\**&quot; /S /Y&#xD;&#xA;XCOPY &quot;$(SolutionDir)tests\FoodDiary.IntegrationTests\Assets\**&quot; &quot;$(TargetDir)\Assets\**&quot; /S /Y" />
-  </Target>
+  <ItemGroup>
+    <None Update="Assets\testImportFile.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 
 </Project>
