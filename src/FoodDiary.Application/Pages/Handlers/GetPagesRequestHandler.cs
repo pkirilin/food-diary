@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using FoodDiary.Application.Enums;
 using FoodDiary.Application.Pages.Requests;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Enums;
@@ -41,7 +42,18 @@ namespace FoodDiary.Application.Pages.Handlers
                     break;
             }
 
-            query = _pageRepository.LoadNotesWithProducts(query);
+            switch (request.LoadType)
+            {
+                case PagesLoadRequestType.OnlyNotesWithProducts:
+                    query = _pageRepository.LoadNotesWithProducts(query);
+                    break;
+                case PagesLoadRequestType.All:
+                    query = _pageRepository.LoadNotesWithProductsAndCategories(query);
+                    break;
+                default:
+                    break;
+            }
+
             return _pageRepository.GetListFromQueryAsync(query, cancellationToken);
         }
     }

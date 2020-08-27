@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using AutoFixture;
 using FluentAssertions;
+using FoodDiary.Application.Enums;
 using FoodDiary.Application.Pages.Handlers;
 using FoodDiary.Application.Pages.Requests;
 using FoodDiary.Domain.Abstractions;
@@ -112,8 +114,12 @@ namespace FoodDiary.UnitTests.Handlers
         }
 
         [Theory]
-        [CustomAutoData]
-        public async void GetPagesRequestHandler_ReturnsRequestedPages(GetPagesRequest request, List<Page> expectedResult)
+        [MemberData(nameof(MemberData_GetPagesRequestHandler))]
+        public async void GetPagesRequestHandler_ReturnsRequestedPages(
+            GetPagesRequest request,
+            List<Page> expectedResult,
+            int expectedLoadNotesWithProductsCallCount,
+            int expectedLoadNotesWithProductsAndCategoriesCallCount)
         {
             var handler = new GetPagesRequestHandler(_pageRepositoryMock.Object);
             var pagesQuery = expectedResult.AsQueryable();
@@ -125,10 +131,45 @@ namespace FoodDiary.UnitTests.Handlers
             var result = await handler.Handle(request, default);
 
             _pageRepositoryMock.Verify(r => r.GetQueryWithoutTracking(), Times.Once);
-            _pageRepositoryMock.Verify(r => r.LoadNotesWithProducts(It.IsNotNull<IQueryable<Page>>()), Times.Once);
+            _pageRepositoryMock.Verify(r => r.LoadNotesWithProducts(
+                It.IsNotNull<IQueryable<Page>>()),
+                Times.Exactly(expectedLoadNotesWithProductsCallCount)
+            );
+            _pageRepositoryMock.Verify(r => r.LoadNotesWithProductsAndCategories(
+                It.IsNotNull<IQueryable<Page>>()),
+                Times.Exactly(expectedLoadNotesWithProductsAndCategoriesCallCount)
+            );
             _pageRepositoryMock.Verify(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Page>>(), default), Times.Once);
 
             result.Should().BeEquivalentTo(expectedResult);
         }
+
+        #region Test data
+
+        public static IEnumerable<object[]> MemberData_GetPagesRequestHandler
+        {
+            get
+            {
+                var fixture = Fixtures.Custom;
+
+                var request1 = fixture.Build<GetPagesRequest>()
+                    .With(r => r.LoadType, PagesLoadRequestType.OnlyNotesWithProducts)
+                    .Create();
+                var request2 = fixture.Build<GetPagesRequest>()
+                    .With(r => r.LoadType, PagesLoadRequestType.All)
+                    .Create();
+                var request3 = fixture.Build<GetPagesRequest>()
+                    .With(r => r.LoadType, PagesLoadRequestType.None)
+                    .Create();
+
+                var expectedResult = fixture.CreateMany<Page>().ToList();
+
+                yield return new object[] { request1, expectedResult, 1, 0 };
+                yield return new object[] { request2, expectedResult, 0, 1 };
+                yield return new object[] { request3, expectedResult, 0, 0 };
+            }
+        }
+
+        #endregion
     }
 }

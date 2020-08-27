@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using FoodDiary.Application.Enums;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Enums;
 using MediatR;
@@ -13,6 +14,8 @@ namespace FoodDiary.Application.Pages.Requests
         public DateTime? StartDate { get; set; }
 
         public DateTime? EndDate { get; set; }
+
+        public PagesLoadRequestType LoadType { get; set; } = PagesLoadRequestType.None;
 
         public GetPagesRequest()
         {
@@ -29,6 +32,14 @@ namespace FoodDiary.Application.Pages.Requests
             SortOrder = sortOrder;
             StartDate = startDate;
             EndDate = endDate;
+        }
+
+        public GetPagesRequest(SortOrder sortOrder, DateTime? startDate, DateTime? endDate, PagesLoadRequestType loadType)
+        {
+            SortOrder = sortOrder;
+            StartDate = startDate;
+            EndDate = endDate;
+            LoadType = loadType;
         }
     }
 }
