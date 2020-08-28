@@ -7,7 +7,7 @@ using MediatR;
 
 namespace FoodDiary.Application.Categories.Handlers
 {
-    public class DeleteCategoryRequestHandler : IRequestHandler<DeleteCategoryRequest, int>
+    class DeleteCategoryRequestHandler : IRequestHandler<DeleteCategoryRequest, int>
     {
         private readonly ICategoryRepository _categoryRepository;
 

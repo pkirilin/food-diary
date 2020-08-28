@@ -8,7 +8,7 @@ using MediatR;
 
 namespace FoodDiary.Application.Categories.Handlers
 {
-    public class GetCategoryByIdRequestHandler : IRequestHandler<GetCategoryByIdRequest, Category>
+    class GetCategoryByIdRequestHandler : IRequestHandler<GetCategoryByIdRequest, Category>
     {
         private readonly ICategoryRepository _categoryRepository;
 

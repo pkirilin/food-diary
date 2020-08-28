@@ -7,7 +7,7 @@ using MediatR;
 
 namespace FoodDiary.Application.Products.Handlers
 {
-    public class DeleteProductRequestHandler : IRequestHandler<DeleteProductRequest, int>
+    class DeleteProductRequestHandler : IRequestHandler<DeleteProductRequest, int>
     {
         private readonly IProductRepository _productRepository;
 

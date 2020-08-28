@@ -7,7 +7,7 @@ using MediatR;
 
 namespace FoodDiary.Application.Pages.Handlers
 {
-    public class EditPageRequestHandler : IRequestHandler<EditPageRequest, int>
+    class EditPageRequestHandler : IRequestHandler<EditPageRequest, int>
     {
         private readonly IPageRepository _pageRepository;
 

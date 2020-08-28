@@ -9,7 +9,7 @@ using MediatR;
 
 namespace FoodDiary.Application.Notes.Handlers
 {
-    public class DeleteNoteRequestHandler : IRequestHandler<DeleteNoteRequest, int>
+    class DeleteNoteRequestHandler : IRequestHandler<DeleteNoteRequest, int>
     {
         private readonly INoteRepository _noteRepository;
         private readonly INotesOrderCalculator _notesOrderCalculator;

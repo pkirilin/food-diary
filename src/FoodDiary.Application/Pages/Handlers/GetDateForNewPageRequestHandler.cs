@@ -8,7 +8,7 @@ using MediatR;
 
 namespace FoodDiary.Application.Pages.Handlers
 {
-    public class GetDateForNewPageRequestHandler : IRequestHandler<GetDateForNewPageRequest, DateTime>
+    class GetDateForNewPageRequestHandler : IRequestHandler<GetDateForNewPageRequest, DateTime>
     {
         private readonly IPageRepository _pageRepository;
 

@@ -7,7 +7,7 @@ using MediatR;
 
 namespace FoodDiary.Application.Pages.Handlers
 {
-    public class DeletePagesRequestHandler : IRequestHandler<DeletePagesRequest, int>
+    class DeletePagesRequestHandler : IRequestHandler<DeletePagesRequest, int>
     {
         private readonly IPageRepository _pageRepository;
 

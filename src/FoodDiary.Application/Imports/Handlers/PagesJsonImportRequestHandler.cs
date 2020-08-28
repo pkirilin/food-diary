@@ -9,7 +9,7 @@ using FoodDiary.Import;
 
 namespace FoodDiary.Application.Imports.Handlers
 {
-    public class PagesJsonImportRequestHandler : IRequestHandler<PagesJsonImportRequest, int>
+    class PagesJsonImportRequestHandler : IRequestHandler<PagesJsonImportRequest, int>
     {
         private readonly IPageRepository _pageRepository;
         private readonly IProductRepository _productRepository;

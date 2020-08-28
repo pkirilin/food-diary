@@ -10,7 +10,7 @@ using MediatR;
 
 namespace FoodDiary.Application.Pages.Handlers
 {
-    public class GetPagesByExactDateRequestHandler : IRequestHandler<GetPagesByExactDateRequest, List<Page>>
+    class GetPagesByExactDateRequestHandler : IRequestHandler<GetPagesByExactDateRequest, List<Page>>
     {
         private readonly IPageRepository _pageRepository;
 

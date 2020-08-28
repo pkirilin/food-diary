@@ -10,7 +10,7 @@ using MediatR;
 
 namespace FoodDiary.Application.Notes.Handlers
 {
-    public class GetNotesByIdsRequestHandler : IRequestHandler<GetNotesByIdsRequest, List<Note>>
+    class GetNotesByIdsRequestHandler : IRequestHandler<GetNotesByIdsRequest, List<Note>>
     {
         private readonly INoteRepository _noteRepository;
 

@@ -9,7 +9,7 @@ using MediatR;
 
 namespace FoodDiary.Application.Products.Handlers
 {
-    public class GetProductsByIdsRequestHandler : IRequestHandler<GetProductsByIdsRequest, List<Product>>
+    class GetProductsByIdsRequestHandler : IRequestHandler<GetProductsByIdsRequest, List<Product>>
     {
         private readonly IProductRepository _productRepository;
 

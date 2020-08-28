@@ -9,7 +9,7 @@ using MediatR;
 
 namespace FoodDiary.Application.Notes.Handlers
 {
-    public class MoveNoteRequestHandler : IRequestHandler<MoveNoteRequest, int>
+    class MoveNoteRequestHandler : IRequestHandler<MoveNoteRequest, int>
     {
         private readonly INoteRepository _noteRepository;
         private readonly INotesOrderCalculator _notesOrderCalculator;

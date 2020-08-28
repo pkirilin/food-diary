@@ -7,7 +7,7 @@ using MediatR;
 
 namespace FoodDiary.Application.Categories.Handlers
 {
-    public class EditCategoryRequestHandler : IRequestHandler<EditCategoryRequest, int>
+    class EditCategoryRequestHandler : IRequestHandler<EditCategoryRequest, int>
     {
         private readonly ICategoryRepository _categoryRepository;
 
