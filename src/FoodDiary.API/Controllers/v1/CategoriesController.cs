@@ -4,11 +4,13 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
-using FoodDiary.API.Services;
 using FoodDiary.API.Dtos;
 using FoodDiary.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using FoodDiary.API.Requests;
+using MediatR;
+using FoodDiary.Application.Categories.Requests;
+using System.Linq;
 
 namespace FoodDiary.API.Controllers.v1
 {
@@ -18,12 +20,12 @@ namespace FoodDiary.API.Controllers.v1
     public class CategoriesController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private readonly ICategoryService _categoryService;
+        private readonly IMediator _mediator;
 
-        public CategoriesController(IMapper mapper, ICategoryService categoryService)
+        public CategoriesController(IMapper mapper, IMediator mediator)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            _categoryService = categoryService ?? throw new ArgumentNullException(nameof(categoryService));
+            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
         /// <summary>
@@ -33,7 +35,7 @@ namespace FoodDiary.API.Controllers.v1
         [ProducesResponseType(typeof(IEnumerable<CategoryItemDto>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetCategories(CancellationToken cancellationToken)
         {
-            var categories = await _categoryService.GetCategoriesAsync(cancellationToken);
+            var categories = await _mediator.Send(new GetCategoriesRequest(loadProducts: true), cancellationToken);
             var categoriesListResponse = _mapper.Map<IEnumerable<CategoryItemDto>>(categories);
             return Ok(categoriesListResponse);
         }
@@ -49,18 +51,18 @@ namespace FoodDiary.API.Controllers.v1
         public async Task<IActionResult> CreateCategory([FromBody] CategoryCreateEditRequest categoryData, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
-            if (await _categoryService.IsCategoryExistsAsync(categoryData.Name, cancellationToken))
+            var categoriesWithTheSameName = await _mediator.Send(new GetCategoriesByExactNameRequest(categoryData.Name), cancellationToken);
+
+            if (categoriesWithTheSameName.Any())
             {
                 ModelState.AddModelError(nameof(categoryData.Name), $"Category with the name '{categoryData.Name}' already exists");
                 return BadRequest(ModelState);
             }
 
             var category = _mapper.Map<Category>(categoryData);
-            var createdCategory = await _categoryService.CreateCategoryAsync(category, cancellationToken);
+            var createdCategory = await _mediator.Send(new CreateCategoryRequest(category), cancellationToken);
             return Ok(createdCategory.Id);
         }
 
@@ -77,25 +79,25 @@ namespace FoodDiary.API.Controllers.v1
         public async Task<IActionResult> EditCategory([FromRoute] int id, [FromBody] CategoryCreateEditRequest updatedCategoryData, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
-            var originalCategory = await _categoryService.GetCategoryByIdAsync(id, cancellationToken);
+            var originalCategory = await _mediator.Send(new GetCategoryByIdRequest(id), cancellationToken);
+
             if (originalCategory == null)
-            {
                 return NotFound();
-            }
 
-            var isCategoryExists = await _categoryService.IsCategoryExistsAsync(updatedCategoryData.Name, cancellationToken);
-            if (!_categoryService.IsEditedCategoryValid(updatedCategoryData, originalCategory, isCategoryExists))
+            var categoriesWithTheSameName = await _mediator.Send(new GetCategoriesByExactNameRequest(updatedCategoryData.Name), cancellationToken);
+            var categoryHasChanges = originalCategory.Name != updatedCategoryData.Name;
+            var categoryCanBeUpdated = !categoryHasChanges || (categoryHasChanges && !categoriesWithTheSameName.Any());
+
+            if (!categoryCanBeUpdated)
             {
                 ModelState.AddModelError(nameof(updatedCategoryData.Name), $"Category with the name '{updatedCategoryData.Name}' already exists");
                 return BadRequest(ModelState);
             }
 
             originalCategory = _mapper.Map(updatedCategoryData, originalCategory);
-            await _categoryService.EditCategoryAsync(originalCategory, cancellationToken);
+            await _mediator.Send(new EditCategoryRequest(originalCategory), cancellationToken);
             return Ok();
         }
 
@@ -109,13 +111,13 @@ namespace FoodDiary.API.Controllers.v1
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> DeleteCategory([FromRoute] int id, CancellationToken cancellationToken)
         {
-            var categoryForDelete = await _categoryService.GetCategoryByIdAsync(id, cancellationToken);
+            var categoryForDelete = await _mediator.Send(new GetCategoryByIdRequest(id), cancellationToken);
             if (categoryForDelete == null)
             {
                 return NotFound();
             }
 
-            await _categoryService.DeleteCategoryAsync(categoryForDelete, cancellationToken);
+            await _mediator.Send(new DeleteCategoryRequest(categoryForDelete), cancellationToken);
             return Ok();
         }
 
@@ -128,7 +130,7 @@ namespace FoodDiary.API.Controllers.v1
         [ProducesResponseType(typeof(IEnumerable<CategoryDropdownItemDto>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetCategoriesDropdown([FromQuery] CategoryDropdownSearchRequest categoriesDropdownRequest, CancellationToken cancellationToken)
         {
-            var categories = await _categoryService.GetCategoriesDropdownAsync(categoriesDropdownRequest, cancellationToken);
+            var categories = await _mediator.Send(new GetCategoriesRequest(categoriesDropdownRequest.CategoryNameFilter), cancellationToken);
             var categoriesDropdownListResponse = _mapper.Map<IEnumerable<Category>>(categories);
             return Ok(categoriesDropdownListResponse);
         }

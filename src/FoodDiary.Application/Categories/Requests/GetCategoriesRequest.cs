@@ -14,9 +14,13 @@ namespace FoodDiary.Application.Categories.Requests
         {
         }
 
-        public GetCategoriesRequest(string categoryNameFilter, bool loadProducts)
+        public GetCategoriesRequest(string categoryNameFilter)
         {
             CategoryNameFilter = categoryNameFilter;
+        }
+
+        public GetCategoriesRequest(bool loadProducts)
+        {
             LoadProducts = loadProducts;
         }
     }

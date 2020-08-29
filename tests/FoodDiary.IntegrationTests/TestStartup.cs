@@ -6,6 +6,7 @@ using FoodDiary.API.Controllers.v1;
 using FoodDiary.API.Extensions;
 using FoodDiary.API.Middlewares;
 using FoodDiary.API.Options;
+using FoodDiary.Application.Extensions;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Enums;
 using FoodDiary.Import.Extensions;
@@ -51,6 +52,7 @@ namespace FoodDiary.IntegrationTests
             services.AddPagesJsonImportServices();
 
             services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
+            services.AddApplicationDependencies();
 
             // Application parts are also added for integration tests web host to identify controllers
             services.AddControllers()

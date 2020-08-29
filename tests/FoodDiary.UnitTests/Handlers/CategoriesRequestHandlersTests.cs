@@ -132,7 +132,11 @@ namespace FoodDiary.UnitTests.Handlers
             {
                 var fixture = Fixtures.Custom;
                 var request1 = new GetCategoriesRequest();
-                var request2 = new GetCategoriesRequest(fixture.Create<string>(), true);
+                var request2 = new GetCategoriesRequest()
+                {
+                    CategoryNameFilter = fixture.Create<string>(),
+                    LoadProducts = true
+                };
                 var categories = fixture.CreateMany<Category>().ToList();
 
                 yield return new object[] { request1, categories, 0 };
