@@ -4,11 +4,14 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
-using FoodDiary.API.Services;
 using FoodDiary.API.Dtos;
 using FoodDiary.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using FoodDiary.API.Requests;
+using MediatR;
+using FoodDiary.Application.Pages.Requests;
+using FoodDiary.Application.Enums;
+using System.Linq;
 
 namespace FoodDiary.API.Controllers.v1
 {
@@ -18,12 +21,12 @@ namespace FoodDiary.API.Controllers.v1
     public class PagesController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private readonly IPageService _pageService;
+        private readonly IMediator _mediator;
 
-        public PagesController(IMapper mapper, IPageService pageService)
+        public PagesController(IMapper mapper, IMediator mediator)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            _pageService = pageService ?? throw new ArgumentNullException(nameof(pageService));
+            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
         /// <summary>
@@ -36,17 +39,24 @@ namespace FoodDiary.API.Controllers.v1
         public async Task<IActionResult> GetPages([FromQuery] PagesSearchRequest pagesRequest, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
-            if (!_pageService.AreDateRangesValid(pagesRequest.StartDate, pagesRequest.EndDate))
+            var startDate = pagesRequest.StartDate;
+            var endDate = pagesRequest.EndDate;
+
+            if (startDate.HasValue && endDate.HasValue && startDate > endDate)
             {
                 ModelState.AddModelError(nameof(pagesRequest.StartDate), "Start date cannot be greater than end date");
                 return BadRequest(ModelState);
             }
 
-            var filteredPages = await _pageService.SearchPagesAsync(pagesRequest, cancellationToken);
+            var getPagesRequest = new GetPagesRequest(
+                pagesRequest.SortOrder,
+                pagesRequest.StartDate,
+                pagesRequest.EndDate,
+                PagesLoadRequestType.All);
+            
+            var filteredPages = await _mediator.Send(getPagesRequest, cancellationToken);
             var pagesListResponse = _mapper.Map<IEnumerable<PageItemDto>>(filteredPages);
             return Ok(pagesListResponse);
         }
@@ -62,18 +72,18 @@ namespace FoodDiary.API.Controllers.v1
         public async Task<IActionResult> CreatePage([FromBody] PageCreateEditRequest pageData, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
-            if (await _pageService.IsPageExistsAsync(pageData.Date, cancellationToken))
+            var pagesWithTheSameDate = await _mediator.Send(new GetPagesByExactDateRequest(pageData.Date), cancellationToken);
+
+            if (pagesWithTheSameDate.Any())
             {
                 ModelState.AddModelError(nameof(pageData.Date), $"Page with date '${pageData.Date.ToShortDateString()}' already exists");
                 return BadRequest(ModelState);
             }
 
             var page = _mapper.Map<Page>(pageData);
-            var createdPage = await _pageService.CreatePageAsync(page, cancellationToken);
+            var createdPage = await _mediator.Send(new CreatePageRequest(page), cancellationToken);
             return Ok(createdPage.Id);
         }
 
@@ -90,25 +100,25 @@ namespace FoodDiary.API.Controllers.v1
         public async Task<IActionResult> EditPage([FromRoute] int id, [FromBody] PageCreateEditRequest updatedPageData, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
-            var originalPage = await _pageService.GetPageByIdAsync(id, cancellationToken);
+            var originalPage = await _mediator.Send(new GetPageByIdRequest(id), cancellationToken);
+            
             if (originalPage == null)
-            {
                 return NotFound();
-            }
 
-            var isPageExists = await _pageService.IsPageExistsAsync(updatedPageData.Date, cancellationToken);
-            if (!_pageService.IsEditedPageValid(updatedPageData, originalPage, isPageExists))
+            var pagesWithTheSameDate = await _mediator.Send(new GetPagesByExactDateRequest(updatedPageData.Date), cancellationToken);
+            var pageHasChanges = originalPage.Date != updatedPageData.Date;
+            var pageCanBeUpdated = !pageHasChanges || (pageHasChanges && !pagesWithTheSameDate.Any());
+
+            if (!pageCanBeUpdated)
             {
                 ModelState.AddModelError(nameof(updatedPageData.Date), $"Page with date '${updatedPageData.Date.ToShortDateString()}' already exists");
                 return BadRequest(ModelState);
             }
 
             originalPage = _mapper.Map(updatedPageData, originalPage);
-            await _pageService.EditPageAsync(originalPage, cancellationToken);
+            await _mediator.Send(new EditPageRequest(originalPage), cancellationToken);
             return Ok();
         }
 
@@ -122,13 +132,12 @@ namespace FoodDiary.API.Controllers.v1
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> DeletePage([FromRoute] int id, CancellationToken cancellationToken)
         {
-            var pageForDelete = await _pageService.GetPageByIdAsync(id, cancellationToken);
-            if (pageForDelete == null)
-            {
-                return NotFound();
-            }
+            var pageForDelete = await _mediator.Send(new GetPageByIdRequest(id), cancellationToken);
 
-            await _pageService.DeletePageAsync(pageForDelete, cancellationToken);
+            if (pageForDelete == null)
+                return NotFound();
+
+            await _mediator.Send(new DeletePageRequest(pageForDelete), cancellationToken);
             return Ok();
         }
 
@@ -142,14 +151,8 @@ namespace FoodDiary.API.Controllers.v1
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> DeletePages([FromBody] ICollection<int> ids, CancellationToken cancellationToken)
         {
-            var pagesForDelete = await _pageService.GetPagesByIdsAsync(ids, cancellationToken);
-            if (pagesForDelete.Count != ids.Count)
-            {
-                ModelState.AddModelError(String.Empty, "Pages cannot be deleted: wrong ids specified");
-                return BadRequest(ModelState);
-            }
-
-            await _pageService.DeletePagesAsync(pagesForDelete, cancellationToken);
+            var pagesForDelete = await _mediator.Send(new GetPagesByIdsRequest(ids), cancellationToken);
+            await _mediator.Send(new DeletePagesRequest(pagesForDelete), cancellationToken);
             return Ok();
         }
 
@@ -160,7 +163,7 @@ namespace FoodDiary.API.Controllers.v1
         [ProducesResponseType((int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetDateForNewPage(CancellationToken cancellationToken)
         {
-            var dateForNewPage = await _pageService.GetDateForNewPageAsync(cancellationToken);
+            var dateForNewPage = await _mediator.Send(new GetDateForNewPageRequest(), cancellationToken);
             return Ok(dateForNewPage.ToString("yyyy-MM-dd"));
         }
     }

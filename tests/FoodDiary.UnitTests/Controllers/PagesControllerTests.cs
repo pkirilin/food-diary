@@ -11,81 +11,76 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using FoodDiary.Domain.Utils;
 using FoodDiary.Infrastructure.Utils;
-using FoodDiary.API.Services;
 using FoodDiary.API.Requests;
 using FoodDiary.UnitTests.Attributes;
 using System.Collections.Generic;
 using System;
+using MediatR;
+using FoodDiary.Application.Pages.Requests;
+using FoodDiary.Application.Enums;
+using AutoFixture;
 
 namespace FoodDiary.UnitTests.Controllers
 {
     public class PagesControllerTests
     {
         private readonly IMapper _mapper;
-
-        private readonly Mock<IPageService> _pageServiceMock;
+        private readonly Mock<IMediator> _mediatorMock = new Mock<IMediator>();
 
         public PagesControllerTests()
         {
-            var serviceCollection = new ServiceCollection()
+            var serviceProvider = new ServiceCollection()
                 .AddAutoMapper(Assembly.GetAssembly(typeof(AutoMapperProfile)))
-                .AddTransient<ICaloriesCalculator, CaloriesCalculator>();
-
-            var serviceProvider = serviceCollection.BuildServiceProvider();
+                .AddTransient<ICaloriesCalculator, CaloriesCalculator>()
+                .BuildServiceProvider();
 
             _mapper = serviceProvider.GetService<IMapper>();
-            _pageServiceMock = new Mock<IPageService>();
         }
 
-        public PagesController Sut => new PagesController(
-            _mapper,
-            _pageServiceMock.Object);
+        public PagesController Sut => new PagesController(_mapper, _mediatorMock.Object);
 
         [Theory]
-        [CustomAutoData]
-        public async void GetPages_ReturnsFilteredPages_WhenModelStateIsValid(
-            PagesSearchRequest request, IEnumerable<Page> filteredPages)
+        [MemberData(nameof(MemberData_GetPages_ValidDateRanges))]
+        public async void GetPages_ReturnsFilteredPages_WhenModelStateAndDateRangesAreValid(PagesSearchRequest request, List<Page> filteredPages)
         {
-            _pageServiceMock.Setup(s => s.AreDateRangesValid(request.StartDate, request.EndDate))
-                .Returns(true);
-            _pageServiceMock.Setup(s => s.SearchPagesAsync(request, default))
+            _mediatorMock.Setup(m => m.Send(It.Is<GetPagesRequest>(r =>
+                    r.SortOrder == request.SortOrder
+                    && r.StartDate == request.StartDate
+                    && r.EndDate == request.EndDate
+                    && r.LoadType == PagesLoadRequestType.All), default))
                 .ReturnsAsync(filteredPages);
 
             var result = await Sut.GetPages(request, default);
 
-            _pageServiceMock.Verify(s => s.AreDateRangesValid(request.StartDate, request.EndDate), Times.Once);
-            _pageServiceMock.Verify(s => s.SearchPagesAsync(request, default), Times.Once);
-
+            _mediatorMock.Verify(m => m.Send(It.Is<GetPagesRequest>(r =>
+                    r.SortOrder == request.SortOrder
+                    && r.StartDate == request.StartDate
+                    && r.EndDate == request.EndDate
+                    && r.LoadType == PagesLoadRequestType.All), default),
+                Times.Once);
             result.Should().BeOfType<OkObjectResult>();
         }
 
         [Theory]
         [CustomAutoData]
-        public async void GetPages_ReturnsBadRequest_WhenModelStateIsInvalid(
-            PagesSearchRequest request, string errorMessage)
+        public async void GetPages_ReturnsBadRequest_WhenModelStateIsInvalid(PagesSearchRequest request, string errorMessage)
         {
             var controller = Sut;
             controller.ModelState.AddModelError(errorMessage, errorMessage);
 
             var result = await controller.GetPages(request, default);
 
-            _pageServiceMock.Verify(s => s.SearchPagesAsync(request, default), Times.Never);
-
+            _mediatorMock.Verify(m => m.Send(It.IsAny<GetPagesRequest>(), default), Times.Never);
             result.Should().BeOfType<BadRequestObjectResult>();
         }
 
         [Theory]
-        [CustomAutoData]
+        [MemberData(nameof(MemberData_GetPages_InvalidDateRanges))]
         public async void GetPages_ReturnsBadRequest_WhenDateRangesAreInvalid(PagesSearchRequest request)
         {
-            _pageServiceMock.Setup(s => s.AreDateRangesValid(request.StartDate, request.EndDate))
-                .Returns(false);
-
             var result = await Sut.GetPages(request, default);
 
-            _pageServiceMock.Verify(s => s.AreDateRangesValid(request.StartDate, request.EndDate), Times.Once);
-            _pageServiceMock.Verify(s => s.SearchPagesAsync(request, default), Times.Never);
-
+            _mediatorMock.Verify(m => m.Send(It.IsAny<GetPagesRequest>(), default), Times.Never);
             result.Should().BeOfType<BadRequestObjectResult>();
         }
 
@@ -93,73 +88,66 @@ namespace FoodDiary.UnitTests.Controllers
         [CustomAutoData]
         public async void CreatePage_CreatesPage(PageCreateEditRequest pageData, Page createdPage)
         {
-            _pageServiceMock.Setup(s => s.IsPageExistsAsync(pageData.Date, default))
-                .ReturnsAsync(false);
-
-            _pageServiceMock.Setup(s => s.CreatePageAsync(It.IsNotNull<Page>(), default))
+            _mediatorMock.Setup(m => m.Send(It.Is<GetPagesByExactDateRequest>(r => r.Date == pageData.Date), default))
+                .ReturnsAsync(new List<Page>());
+            _mediatorMock.Setup(m => m.Send(It.IsNotNull<CreatePageRequest>(), default))
                 .ReturnsAsync(createdPage);
 
             var result = await Sut.CreatePage(pageData, default);
 
-            _pageServiceMock.Verify(s => s.IsPageExistsAsync(pageData.Date, default), Times.Once);
-            _pageServiceMock.Verify(s => s.CreatePageAsync(It.IsNotNull<Page>(), default), Times.Once);
-
+            _mediatorMock.Verify(m => m.Send(It.Is<GetPagesByExactDateRequest>(r => r.Date == pageData.Date), default), Times.Once);
+            _mediatorMock.Verify(m => m.Send(It.IsNotNull<CreatePageRequest>(), default), Times.Once);
             result.Should().BeOfType<OkObjectResult>();
         }
 
         [Theory]
         [CustomAutoData]
-        public async void CreatePage_ReturnsBadRequest_WhenModelStateIsInvalid(
-            PageCreateEditRequest pageData, string errorMessage)
+        public async void CreatePage_ReturnsBadRequest_WhenModelStateIsInvalid(PageCreateEditRequest pageData, string errorMessage)
         {
             var controller = Sut;
             controller.ModelState.AddModelError(errorMessage, errorMessage);
 
             var result = await controller.CreatePage(pageData, default);
 
-            _pageServiceMock.Verify(s => s.IsPageExistsAsync(pageData.Date, default), Times.Never);
-            _pageServiceMock.Verify(s => s.CreatePageAsync(It.IsNotNull<Page>(), default), Times.Never);
-
+            _mediatorMock.Verify(m => m.Send(It.IsAny<GetPagesByExactDateRequest>(), default), Times.Never);
+            _mediatorMock.Verify(m => m.Send(It.IsAny<CreatePageRequest>(), default), Times.Never);
             result.Should().BeOfType<BadRequestObjectResult>();
         }
 
         [Theory]
         [CustomAutoData]
         public async void CreatePage_ReturnsBadRequest_WhenPageWithTheSameDateAlreadyExists(
-            PageCreateEditRequest pageData)
+            PageCreateEditRequest pageData,
+            List<Page> pagesWithTheSameDate)
         {
-            _pageServiceMock.Setup(s => s.IsPageExistsAsync(pageData.Date, default))
-                .ReturnsAsync(true);
+            _mediatorMock.Setup(m => m.Send(It.Is<GetPagesByExactDateRequest>(r => r.Date == pageData.Date), default))
+                .ReturnsAsync(pagesWithTheSameDate);
 
             var result = await Sut.CreatePage(pageData, default);
 
-            _pageServiceMock.Verify(s => s.IsPageExistsAsync(pageData.Date, default), Times.Once);
-            _pageServiceMock.Verify(s => s.CreatePageAsync(It.IsNotNull<Page>(), default), Times.Never);
-
+            _mediatorMock.Verify(m => m.Send(It.Is<GetPagesByExactDateRequest>(r => r.Date == pageData.Date), default), Times.Once);
+            _mediatorMock.Verify(m => m.Send(It.IsAny<CreatePageRequest>(), default), Times.Never);
             result.Should().BeOfType<BadRequestObjectResult>();
         }
 
         [Theory]
-        [CustomAutoData]
+        [MemberData(nameof(MemberData_EditPage_ValidUpdatedPage))]
         public async void EditPage_UpdatesPage_WhenEditedPageIsValid(
-            int pageId, PageCreateEditRequest updatedPageData, Page originalPage)
+            int pageId,
+            PageCreateEditRequest updatedPageData,
+            Page originalPage,
+            List<Page> pagesWithTheSameDate)
         {
-            _pageServiceMock.Setup(s => s.GetPageByIdAsync(pageId, default))
+            _mediatorMock.Setup(m => m.Send(It.Is<GetPageByIdRequest>(r => r.Id == pageId), default))
                 .ReturnsAsync(originalPage);
-
-            _pageServiceMock.Setup(s => s.IsPageExistsAsync(updatedPageData.Date, default))
-                .ReturnsAsync(false);
-
-            _pageServiceMock.Setup(s => s.IsEditedPageValid(updatedPageData, originalPage, false))
-                .Returns(true);
+            _mediatorMock.Setup(m => m.Send(It.Is<GetPagesByExactDateRequest>(r => r.Date == updatedPageData.Date), default))
+                .ReturnsAsync(pagesWithTheSameDate);
 
             var result = await Sut.EditPage(pageId, updatedPageData, default);
 
-            _pageServiceMock.Verify(s => s.GetPageByIdAsync(pageId, default), Times.Once);
-            _pageServiceMock.Verify(s => s.IsPageExistsAsync(updatedPageData.Date, default), Times.Once);
-            _pageServiceMock.Verify(s => s.IsEditedPageValid(updatedPageData, originalPage, false), Times.Once);
-            _pageServiceMock.Verify(s => s.EditPageAsync(originalPage, default), Times.Once);
-
+            _mediatorMock.Verify(m => m.Send(It.Is<GetPageByIdRequest>(r => r.Id == pageId), default), Times.Once);
+            _mediatorMock.Verify(m => m.Send(It.Is<GetPagesByExactDateRequest>(r => r.Date == updatedPageData.Date), default), Times.Once);
+            _mediatorMock.Verify(m => m.Send(It.IsNotNull<EditPageRequest>(), default), Times.Once);
             result.Should().BeOfType<OkResult>();
         }
 
@@ -168,7 +156,6 @@ namespace FoodDiary.UnitTests.Controllers
         public async void EditPage_ReturnsBadRequest_WhenModelStateIsInvalid(
             int pageId,
             PageCreateEditRequest updatedPageData,
-            Page originalPage,
             string errorMessage)
         {
             var controller = Sut;
@@ -176,138 +163,202 @@ namespace FoodDiary.UnitTests.Controllers
 
             var result = await controller.EditPage(pageId, updatedPageData, default);
 
-            _pageServiceMock.Verify(s => s.GetPageByIdAsync(pageId, default), Times.Never);
-            _pageServiceMock.Verify(s => s.IsPageExistsAsync(updatedPageData.Date, default), Times.Never);
-            _pageServiceMock.Verify(s => s.IsEditedPageValid(updatedPageData, originalPage, It.IsAny<bool>()), Times.Never);
-            _pageServiceMock.Verify(s => s.EditPageAsync(originalPage, default), Times.Never);
-
-            result.Should().BeOfType<BadRequestObjectResult>();
-        }
-
-        [Theory]
-        [CustomAutoData]
-        public async void EditPage_ReturnsBadRequest_WhenEditedPageIsInvalid(
-            int pageId, PageCreateEditRequest updatedPageData, Page originalPage)
-        {
-            _pageServiceMock.Setup(s => s.GetPageByIdAsync(pageId, default))
-                .ReturnsAsync(originalPage);
-
-            _pageServiceMock.Setup(s => s.IsPageExistsAsync(updatedPageData.Date, default))
-                .ReturnsAsync(true);
-
-            _pageServiceMock.Setup(s => s.IsEditedPageValid(updatedPageData, originalPage, true))
-                .Returns(false);
-
-            var result = await Sut.EditPage(pageId, updatedPageData, default);
-
-            _pageServiceMock.Verify(s => s.GetPageByIdAsync(pageId, default), Times.Once);
-            _pageServiceMock.Verify(s => s.IsPageExistsAsync(updatedPageData.Date, default), Times.Once);
-            _pageServiceMock.Verify(s => s.IsEditedPageValid(updatedPageData, originalPage, true), Times.Once);
-            _pageServiceMock.Verify(s => s.EditPageAsync(originalPage, default), Times.Never);
-
+            _mediatorMock.Verify(m => m.Send(It.IsAny<GetPageByIdRequest>(), default), Times.Never);
+            _mediatorMock.Verify(m => m.Send(It.IsAny<GetPagesByExactDateRequest>(), default), Times.Never);
+            _mediatorMock.Verify(m => m.Send(It.IsAny<EditPageRequest>(), default), Times.Never);
             result.Should().BeOfType<BadRequestObjectResult>();
         }
 
         [Theory]
         [CustomAutoData]
         public async void EditPage_ReturnsNotFound_WhenRequestedPageNotFound(
-            int pageId, PageCreateEditRequest updatedPageData, Page originalPage)
+            int pageId,
+            PageCreateEditRequest updatedPageData)
         {
-            _pageServiceMock.Setup(s => s.GetPageByIdAsync(pageId, default))
+            _mediatorMock.Setup(m => m.Send(It.Is<GetPageByIdRequest>(r => r.Id == pageId), default))
                 .ReturnsAsync(null as Page);
 
             var result = await Sut.EditPage(pageId, updatedPageData, default);
 
-            _pageServiceMock.Verify(s => s.GetPageByIdAsync(pageId, default), Times.Once);
-            _pageServiceMock.Verify(s => s.IsPageExistsAsync(updatedPageData.Date, default), Times.Never);
-            _pageServiceMock.Verify(s => s.IsEditedPageValid(updatedPageData, originalPage, It.IsAny<bool>()), Times.Never);
-            _pageServiceMock.Verify(s => s.EditPageAsync(originalPage, default), Times.Never);
-            
+            _mediatorMock.Verify(m => m.Send(It.Is<GetPageByIdRequest>(r => r.Id == pageId), default), Times.Once);
+            _mediatorMock.Verify(m => m.Send(It.IsAny<GetPagesByExactDateRequest>(), default), Times.Never);
+            _mediatorMock.Verify(m => m.Send(It.IsAny<EditPageRequest>(), default), Times.Never);
             result.Should().BeOfType<NotFoundResult>();
         }
 
         [Theory]
-        [CustomAutoData]
-        public async void DeletePage_DeletesPage_WhenRequestedPageExists(
-            int pageForDeleteId, Page pageForDelete)
+        [MemberData(nameof(MemberData_EditPage_InvalidUpdatedPage))]
+        public async void EditPage_ReturnsBadRequest_WhenEditedPageIsInvalid(
+            int pageId,
+            PageCreateEditRequest updatedPageData,
+            Page originalPage,
+            List<Page> pagesWithTheSameDate)
         {
-            _pageServiceMock.Setup(s => s.GetPageByIdAsync(pageForDeleteId, default))
+            _mediatorMock.Setup(m => m.Send(It.Is<GetPageByIdRequest>(r => r.Id == pageId), default))
+                .ReturnsAsync(originalPage);
+            _mediatorMock.Setup(m => m.Send(It.Is<GetPagesByExactDateRequest>(r => r.Date == updatedPageData.Date), default))
+                .ReturnsAsync(pagesWithTheSameDate);
+
+            var result = await Sut.EditPage(pageId, updatedPageData, default);
+
+            _mediatorMock.Verify(m => m.Send(It.Is<GetPageByIdRequest>(r => r.Id == pageId), default), Times.Once);
+            _mediatorMock.Verify(m => m.Send(It.Is<GetPagesByExactDateRequest>(r => r.Date == updatedPageData.Date), default), Times.Once);
+            _mediatorMock.Verify(m => m.Send(It.IsAny<EditPageRequest>(), default), Times.Never);
+            result.Should().BeOfType<BadRequestObjectResult>();
+        }
+
+        [Theory]
+        [CustomAutoData]
+        public async void DeletePage_DeletesPage_WhenRequestedPageExists(int pageForDeleteId, Page pageForDelete)
+        {
+            _mediatorMock.Setup(m => m.Send(It.Is<GetPageByIdRequest>(r => r.Id == pageForDeleteId), default))
                 .ReturnsAsync(pageForDelete);
 
             var result = await Sut.DeletePage(pageForDeleteId, default);
 
-            _pageServiceMock.Verify(s => s.GetPageByIdAsync(pageForDeleteId, default), Times.Once);
-            _pageServiceMock.Verify(s => s.DeletePageAsync(pageForDelete, default), Times.Once);
-
+            _mediatorMock.Verify(m => m.Send(It.Is<GetPageByIdRequest>(r => r.Id == pageForDeleteId), default), Times.Once);
+            _mediatorMock.Verify(m => m.Send(It.Is<DeletePageRequest>(r => r.Entity == pageForDelete), default), Times.Once);
             result.Should().BeOfType<OkResult>();
         }
 
         [Theory]
         [CustomAutoData]
-        public async void DeletePage_ReturnsNotFound_WhenRequestedPageDoesNotExist(
-            int pageForDeleteId, Page pageForDelete)
+        public async void DeletePage_ReturnsNotFound_WhenRequestedPageDoesNotExist(int pageForDeleteId)
         {
-            _pageServiceMock.Setup(s => s.GetPageByIdAsync(pageForDeleteId, default))
+            _mediatorMock.Setup(m => m.Send(It.Is<GetPageByIdRequest>(r => r.Id == pageForDeleteId), default))
                 .ReturnsAsync(null as Page);
 
             var result = await Sut.DeletePage(pageForDeleteId, default);
 
-            _pageServiceMock.Verify(s => s.GetPageByIdAsync(pageForDeleteId, default), Times.Once);
-            _pageServiceMock.Verify(s => s.DeletePageAsync(pageForDelete, default), Times.Never);
-
+            _mediatorMock.Verify(m => m.Send(It.Is<GetPageByIdRequest>(r => r.Id == pageForDeleteId), default), Times.Once);
+            _mediatorMock.Verify(m => m.Send(It.IsAny<DeletePageRequest>(), default), Times.Never);
             result.Should().BeOfType<NotFoundResult>();
         }
 
         [Theory]
         [CustomAutoData]
         public async void DeletePages_DeletesRequestedPages_WhenAllRequestedPagesAreFound(
+            ICollection<int> pagesForDeleteIds,
             List<Page> pagesForDelete)
         {
-            var pagesForDeleteIds = pagesForDelete.Select(p => p.Id).ToList();
-
-            _pageServiceMock.Setup(s => s.GetPagesByIdsAsync(pagesForDeleteIds, default))
+            _mediatorMock.Setup(m => m.Send(It.Is<GetPagesByIdsRequest>(r => r.Ids == pagesForDeleteIds), default))
                 .ReturnsAsync(pagesForDelete);
 
             var result = await Sut.DeletePages(pagesForDeleteIds, default);
 
-            _pageServiceMock.Verify(s => s.GetPagesByIdsAsync(pagesForDeleteIds, default), Times.Once);
-            _pageServiceMock.Verify(s => s.DeletePagesAsync(pagesForDelete, default), Times.Once);
-
+            _mediatorMock.Verify(m => m.Send(It.Is<GetPagesByIdsRequest>(r => r.Ids == pagesForDeleteIds), default), Times.Once);
+            _mediatorMock.Verify(m => m.Send(It.Is<DeletePagesRequest>(r => r.Entities == pagesForDelete), default), Times.Once);
             result.Should().BeOfType<OkResult>();
-        }
-
-        [Theory]
-        [CustomAutoData]
-        public async void DeletePages_ReturnsBadRequest_WhenAtLeastOneRequestedPageIsNotFound(
-            List<Page> pagesForDelete)
-        {
-            var pagesForDeleteIds = pagesForDelete.Select(p => p.Id)
-                .SkipLast(1)
-                .ToList();
-
-            _pageServiceMock.Setup(s => s.GetPagesByIdsAsync(pagesForDeleteIds, default))
-                .ReturnsAsync(pagesForDelete);
-
-            var result = await Sut.DeletePages(pagesForDeleteIds, default);
-
-            _pageServiceMock.Verify(s => s.GetPagesByIdsAsync(pagesForDeleteIds, default), Times.Once);
-            _pageServiceMock.Verify(s => s.DeletePagesAsync(pagesForDelete, default), Times.Never);
-            
-            result.Should().BeOfType<BadRequestObjectResult>();
         }
 
         [Theory]
         [CustomAutoData]
         public async void GetDateForNewPage_ReturnsRequestedDate(DateTime dateForNewPage)
         {
-            _pageServiceMock.Setup(s => s.GetDateForNewPageAsync(default))
+            _mediatorMock.Setup(m => m.Send(It.IsNotNull<GetDateForNewPageRequest>(), default))
                 .ReturnsAsync(dateForNewPage);
 
             var result = await Sut.GetDateForNewPage(default);
 
-            _pageServiceMock.Verify(s => s.GetDateForNewPageAsync(default), Times.Once);
-
+            _mediatorMock.Verify(m => m.Send(It.IsNotNull<GetDateForNewPageRequest>(), default), Times.Once);
             result.Should().BeOfType<OkObjectResult>();
         }
+
+        #region Test data
+
+        public static IEnumerable<object[]> MemberData_GetPages_ValidDateRanges
+        {
+            get
+            {
+                var fixture = Fixtures.Custom;
+
+                var searchRequest1 = fixture.Build<PagesSearchRequest>()
+                    .With(r => r.StartDate, DateTime.Parse("2020-08-30"))
+                    .With(r => r.EndDate, DateTime.Parse("2020-08-31"))
+                    .Create();
+                var filteredPages1 = fixture.CreateMany<Page>().ToList();
+
+                var searchRequest2 = fixture.Build<PagesSearchRequest>()
+                    .With(r => r.StartDate, DateTime.Parse("2020-08-30"))
+                    .With(r => r.EndDate, DateTime.Parse("2020-08-30"))
+                    .Create();
+                var filteredPages2 = fixture.CreateMany<Page>().ToList();
+
+                var searchRequest3 = fixture.Build<PagesSearchRequest>()
+                    .Without(r => r.StartDate)
+                    .Without(r => r.EndDate)
+                    .Create();
+                var filteredPages3 = fixture.CreateMany<Page>().ToList();
+
+                yield return new object[] { searchRequest1, filteredPages1 };
+                yield return new object[] { searchRequest2, filteredPages2 };
+                yield return new object[] { searchRequest3, filteredPages3 };
+            }
+        }
+
+        public static IEnumerable<object[]> MemberData_GetPages_InvalidDateRanges
+        {
+            get
+            {
+                var fixture = Fixtures.Custom;
+
+                var searchRequest = fixture.Build<PagesSearchRequest>()
+                    .With(r => r.StartDate, DateTime.Parse("2020-08-30"))
+                    .With(r => r.EndDate, DateTime.Parse("2020-08-29"))
+                    .Create();
+
+                yield return new object[] { searchRequest };
+            }
+        }
+
+        public static IEnumerable<object[]> MemberData_EditPage_ValidUpdatedPage
+        {
+            get
+            {
+                var fixture = Fixtures.Custom;
+
+                var pageId1 = fixture.Create<int>();
+                var updatedPageData1 = fixture.Build<PageCreateEditRequest>()
+                    .With(p => p.Date, DateTime.Parse("2020-08-30"))
+                    .Create();
+                var originalPage1 = fixture.Build<Page>()
+                    .With(p => p.Date, DateTime.Parse("2020-08-30"))
+                    .Create();
+                var pagesWithTheSameDate1 = fixture.CreateMany<Page>().ToList();
+
+                var pageId2 = fixture.Create<int>();
+                var updatedPageData2 = fixture.Build<PageCreateEditRequest>()
+                    .With(p => p.Date, DateTime.Parse("2020-08-30"))
+                    .Create();
+                var originalPage2 = fixture.Build<Page>()
+                    .With(p => p.Date, DateTime.Parse("2020-08-31"))
+                    .Create();
+                var pagesWithTheSameDate2 = new List<Page>();
+
+                yield return new object[] { pageId1, updatedPageData1, originalPage1, pagesWithTheSameDate1 };
+                yield return new object[] { pageId2, updatedPageData2, originalPage2, pagesWithTheSameDate2 };
+            }
+        }
+
+        public static IEnumerable<object[]> MemberData_EditPage_InvalidUpdatedPage
+        {
+            get
+            {
+                var fixture = Fixtures.Custom;
+
+                var pageId = fixture.Create<int>();
+                var updatedPageData = fixture.Build<PageCreateEditRequest>()
+                    .With(p => p.Date, DateTime.Parse("2020-08-30"))
+                    .Create();
+                var originalPage = fixture.Build<Page>()
+                    .With(p => p.Date, DateTime.Parse("2020-08-31"))
+                    .Create();
+                var pagesWithTheSameDate = fixture.CreateMany<Page>().ToList();
+
+                yield return new object[] { pageId, updatedPageData, originalPage, pagesWithTheSameDate };
+            }
+        }
+
+        #endregion
     }
 }
