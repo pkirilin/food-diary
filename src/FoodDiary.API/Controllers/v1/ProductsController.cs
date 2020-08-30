@@ -4,11 +4,13 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
-using FoodDiary.API.Services;
 using FoodDiary.API.Dtos;
 using FoodDiary.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using FoodDiary.API.Requests;
+using MediatR;
+using FoodDiary.Application.Products.Requests;
+using System.Linq;
 
 namespace FoodDiary.API.Controllers.v1
 {
@@ -18,17 +20,12 @@ namespace FoodDiary.API.Controllers.v1
     public class ProductsController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private readonly IProductService _productService;
-        private readonly ICategoryService _categoryService;
+        private readonly IMediator _mediator;
 
-        public ProductsController(
-            IMapper mapper,
-            IProductService productService,
-            ICategoryService categoryService)
+        public ProductsController(IMapper mapper, IMediator mediator)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            _productService = productService ?? throw new ArgumentNullException(nameof(productService));
-            _categoryService = categoryService ?? throw new ArgumentNullException(nameof(categoryService));
+            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
         /// <summary>
@@ -42,29 +39,27 @@ namespace FoodDiary.API.Controllers.v1
         public async Task<IActionResult> GetProducts([FromQuery] ProductsSearchRequest productsRequest, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
-            if (productsRequest.CategoryId.HasValue)
+            var getProductsRequest = new GetProductsRequest()
             {
-                var requestedCategory = await _categoryService.GetCategoryByIdAsync(productsRequest.CategoryId.Value, cancellationToken);
-                if (requestedCategory == null)
-                {
-                    return NotFound();
-                }
-            }
-
-            var productSearchMeta = await _productService.SearchProductsAsync(productsRequest, cancellationToken);
-            var productItemsResult = _mapper.Map<IEnumerable<ProductItemDto>>(productSearchMeta.FoundProducts);
-
-            var productsSearchResult = new ProductsSearchResultDto()
-            {
-                TotalProductsCount = productSearchMeta.TotalProductsCount,
-                ProductItems = productItemsResult
+                PageNumber = productsRequest.PageNumber,
+                PageSize = productsRequest.PageSize,
+                ProductName = productsRequest.ProductSearchName,
+                CategoryId = productsRequest.CategoryId,
+                LoadCategory = true,
+                CalculateTotalProductsCount = true
             };
 
-            return Ok(productsSearchResult);
+            var searchResult = await _mediator.Send(getProductsRequest, cancellationToken);
+            var productItems = _mapper.Map<IEnumerable<ProductItemDto>>(searchResult.FoundProducts);
+            var searchResultDto = new ProductsSearchResultDto()
+            {
+                TotalProductsCount = searchResult.TotalProductsCount.GetValueOrDefault(),
+                ProductItems = productItems
+            };
+
+            return Ok(searchResultDto);
         }
 
         /// <summary>
@@ -78,18 +73,18 @@ namespace FoodDiary.API.Controllers.v1
         public async Task<IActionResult> CreateProduct([FromBody] ProductCreateEditRequest productData, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
-            if (await _productService.IsProductExistsAsync(productData.Name, cancellationToken))
+            var productsWithTheSameName = await _mediator.Send(new GetProductsByExactNameRequest(productData.Name), cancellationToken);
+            
+            if (productsWithTheSameName.Any())
             {
                 ModelState.AddModelError(nameof(productData.Name), $"Product with the name '{productData.Name}' already exists");
                 return BadRequest(ModelState);
             }
 
             var product = _mapper.Map<Product>(productData);
-            await _productService.CreateProductAsync(product, cancellationToken);
+            await _mediator.Send(new CreateProductRequest(product), cancellationToken);
             return Ok();
         }
 
@@ -106,25 +101,25 @@ namespace FoodDiary.API.Controllers.v1
         public async Task<IActionResult> EditProduct([FromRoute] int id, [FromBody] ProductCreateEditRequest updatedProductData, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
-            var originalProduct = await _productService.GetProductByIdAsync(id, cancellationToken);
+            var originalProduct = await _mediator.Send(new GetProductByIdRequest(id), cancellationToken);
+
             if (originalProduct == null)
-            {
                 return NotFound();
-            }
 
-            var isProductExists = await _productService.IsProductExistsAsync(updatedProductData.Name, cancellationToken);
-            if (!_productService.IsEditedProductValid(updatedProductData, originalProduct, isProductExists))
+            var productsWithTheSameName = await _mediator.Send(new GetProductsByExactNameRequest(updatedProductData.Name), cancellationToken);
+            var productHasChanges = originalProduct.Name != updatedProductData.Name;
+            var productCanBeUpdated = !productHasChanges || (productHasChanges && !productsWithTheSameName.Any());
+
+            if (!productCanBeUpdated)
             {
                 ModelState.AddModelError(nameof(updatedProductData.Name), $"Product with the name '{updatedProductData.Name}' already exists");
                 return BadRequest(ModelState);
             }
 
             originalProduct = _mapper.Map(updatedProductData, originalProduct);
-            await _productService.EditProductAsync(originalProduct, cancellationToken);
+            await _mediator.Send(new EditProductRequest(originalProduct), cancellationToken);
             return Ok();
         }
 
@@ -138,13 +133,12 @@ namespace FoodDiary.API.Controllers.v1
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> DeleteProduct([FromRoute] int id, CancellationToken cancellationToken)
         {
-            var productForDelete = await _productService.GetProductByIdAsync(id, cancellationToken);
-            if (productForDelete == null)
-            {
-                return NotFound();
-            }
+            var productForDelete = await _mediator.Send(new GetProductByIdRequest(id), cancellationToken);
 
-            await _productService.DeleteProductAsync(productForDelete, cancellationToken);
+            if (productForDelete == null)
+                return NotFound();
+
+            await _mediator.Send(new DeleteProductRequest(productForDelete), cancellationToken);
             return Ok();
         }
 
@@ -158,15 +152,8 @@ namespace FoodDiary.API.Controllers.v1
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> DeleteProducts([FromBody] IEnumerable<int> ids, CancellationToken cancellationToken)
         {
-            var productsForDelete = await _productService.GetProductsByIdsAsync(ids, cancellationToken);
-
-            if (!_productService.AreAllProductsFetched(productsForDelete, ids))
-            {
-                ModelState.AddModelError(nameof(ids), "Products cannot be deleted: wrong ids specified");
-                return BadRequest(ModelState);
-            }
-
-            await _productService.DeleteProductsRangeAsync(productsForDelete, cancellationToken);
+            var productsForDelete = await _mediator.Send(new GetProductsByIdsRequest(ids), cancellationToken);
+            await _mediator.Send(new DeleteProductsRequest(productsForDelete), cancellationToken);
             return Ok();
         }
 
@@ -179,8 +166,13 @@ namespace FoodDiary.API.Controllers.v1
         [ProducesResponseType(typeof(IEnumerable<ProductDropdownItemDto>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetProductsDropdown([FromQuery] ProductDropdownSearchRequest productsDropdownRequest, CancellationToken cancellationToken)
         {
-            var products = await _productService.GetProductsDropdownAsync(productsDropdownRequest, cancellationToken);
-            var productsDropdownListResponse = _mapper.Map<IEnumerable<ProductDropdownItemDto>>(products);
+            var getProductsRequest = new GetProductsRequest()
+            {
+                ProductName = productsDropdownRequest.ProductNameFilter
+            };
+
+            var searchResult = await _mediator.Send(getProductsRequest, cancellationToken);
+            var productsDropdownListResponse = _mapper.Map<IEnumerable<ProductDropdownItemDto>>(searchResult.FoundProducts);
             return Ok(productsDropdownListResponse);
         }
     }
