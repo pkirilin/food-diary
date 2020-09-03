@@ -5,12 +5,15 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
-using FoodDiary.API.Services;
 using FoodDiary.PdfGenerator;
 using Microsoft.AspNetCore.Mvc;
 using FoodDiary.API.Requests;
 using FoodDiary.Import.Models;
 using System.Text.Encodings.Web;
+using MediatR;
+using FoodDiary.Application.Pages.Requests;
+using FoodDiary.Domain.Enums;
+using FoodDiary.Application.Enums;
 
 namespace FoodDiary.API.Controllers.v1
 {
@@ -20,13 +23,16 @@ namespace FoodDiary.API.Controllers.v1
     public class ExportsController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private readonly IExportService _exportService;
+        private readonly IMediator _mediator;
         private readonly IPagesPdfGenerator _pagesPdfGenerator;
 
-        public ExportsController(IMapper mapper, IExportService exportService, IPagesPdfGenerator pagesPdfGenerator)
+        public ExportsController(
+            IMapper mapper,
+            IMediator mediator,
+            IPagesPdfGenerator pagesPdfGenerator)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            _exportService = exportService ?? throw new ArgumentNullException(nameof(exportService));
+            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
             _pagesPdfGenerator = pagesPdfGenerator ?? throw new ArgumentNullException(nameof(pagesPdfGenerator));
         }
 
@@ -46,10 +52,15 @@ namespace FoodDiary.API.Controllers.v1
                 return BadRequest(ModelState);
             }
 
-            var pagesForExport = await _exportService.GetPagesForExportAsync(exportRequest.StartDate, exportRequest.EndDate, false, cancellationToken);
-            
+            var pagesRequest = new GetPagesRequest(
+                SortOrder.Ascending,
+                exportRequest.StartDate,
+                exportRequest.EndDate,
+                PagesLoadRequestType.OnlyNotesWithProducts);
+
+            var pagesForExport = await _mediator.Send(pagesRequest, cancellationToken);
             var fileContents = _pagesPdfGenerator.GeneratePdfForPages(pagesForExport);
-            return File(fileContents, "application/octet-stream");
+            return File(fileContents, "application/pdf");
         }
 
         /// <summary>
@@ -68,7 +79,13 @@ namespace FoodDiary.API.Controllers.v1
                 return BadRequest(ModelState);
             }
 
-            var pagesForExport = await _exportService.GetPagesForExportAsync(exportRequest.StartDate, exportRequest.EndDate, true, cancellationToken);
+            var pagesRequest = new GetPagesRequest(
+                SortOrder.Ascending,
+                exportRequest.StartDate,
+                exportRequest.EndDate,
+                PagesLoadRequestType.All);
+
+            var pagesForExport = await _mediator.Send(pagesRequest, cancellationToken);
             var pagesJsonExportObject = _mapper.Map<PagesJsonObject>(pagesForExport);
 
             byte[] fileContents;
@@ -85,7 +102,7 @@ namespace FoodDiary.API.Controllers.v1
                 fileContents = stream.ToArray();
             }
 
-            return File(fileContents, "application/octet-stream");
+            return File(fileContents, "application/json");
         }
     }
 }
