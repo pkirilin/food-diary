@@ -10,5 +10,11 @@ namespace FoodDiary.Application.Notes.Requests
         public int PageId { get; set; }
 
         public MealType? MealType { get; set; }
+
+        public GetNotesRequest(int pageId, MealType? mealType)
+        {
+            PageId = pageId;
+            MealType = mealType;
+        }
     }
 }

@@ -36,6 +36,7 @@ namespace FoodDiary.API.Extensions
         {
             services.AddTransient<IMealNameResolver, RuMealNameResolver>();
             services.AddTransient<ICaloriesCalculator, CaloriesCalculator>();
+            services.AddTransient<INotesOrderCalculator, NotesOrderCalculator>();
         }
 
         public static void AddFoodDiarySwagger(this IServiceCollection services)

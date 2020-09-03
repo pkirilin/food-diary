@@ -11,5 +11,12 @@ namespace FoodDiary.Application.Notes.Requests
         public MealType DestMeal { get; set; }
 
         public int Position { get; set; }
+
+        public MoveNoteRequest(Note noteForMove, MealType destMeal, int position)
+        {
+            NoteForMove = noteForMove;
+            DestMeal = destMeal;
+            Position = position;
+        }
     }
 }

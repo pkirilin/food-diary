@@ -4,11 +4,13 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
-using FoodDiary.API.Services;
 using FoodDiary.API.Dtos;
 using FoodDiary.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using FoodDiary.API.Requests;
+using MediatR;
+using FoodDiary.Application.Notes.Requests;
+using FoodDiary.Application.Products.Requests;
 
 namespace FoodDiary.API.Controllers.v1
 {
@@ -18,17 +20,12 @@ namespace FoodDiary.API.Controllers.v1
     public class NotesController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private readonly INoteService _noteService;
-        private readonly IPageService _pageService;
+        private readonly IMediator _mediator;
 
-        public NotesController(
-            IMapper mapper,
-            INoteService noteService,
-            IPageService pageService)
+        public NotesController(IMapper mapper, IMediator mediator)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            _noteService = noteService ?? throw new ArgumentNullException(nameof(noteService));
-            _pageService = pageService ?? throw new ArgumentNullException(nameof(pageService));
+            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
         /// <summary>
@@ -41,17 +38,9 @@ namespace FoodDiary.API.Controllers.v1
         public async Task<IActionResult> GetNotes([FromQuery] NotesSearchRequest notesRequest, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
-            var requestedPage = await _pageService.GetPageByIdAsync(notesRequest.PageId, cancellationToken);
-            if (requestedPage == null)
-            {
-                return NotFound();
-            }
-
-            var noteEntities = await _noteService.SearchNotesAsync(notesRequest, cancellationToken);
+            var noteEntities = await _mediator.Send(new GetNotesRequest(notesRequest.PageId, notesRequest.MealType), cancellationToken);
             var notesListResponse = _mapper.Map<IEnumerable<NoteItemDto>>(noteEntities);
             return Ok(notesListResponse);
         }
@@ -67,18 +56,18 @@ namespace FoodDiary.API.Controllers.v1
         public async Task<IActionResult> CreateNote([FromBody] NoteCreateEditRequest noteData, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
-            if (!await _noteService.IsNoteProductExistsAsync(noteData.ProductId, cancellationToken))
+            var product = await _mediator.Send(new GetProductByIdRequest(noteData.ProductId), cancellationToken);
+
+            if (product == null)
             {
-                ModelState.AddModelError(nameof(noteData.ProductId), "Selected product not found");
+                ModelState.AddModelError(nameof(noteData.ProductId), "Selected product does not exist");
                 return BadRequest(ModelState);
             }
 
             var note = _mapper.Map<Note>(noteData);
-            await _noteService.CreateNoteAsync(note, cancellationToken);
+            await _mediator.Send(new CreateNoteRequest(note), cancellationToken);
             return Ok();
         }
 
@@ -95,24 +84,23 @@ namespace FoodDiary.API.Controllers.v1
         public async Task<IActionResult> EditNote([FromRoute] int id, [FromBody] NoteCreateEditRequest updatedNoteData, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var product = await _mediator.Send(new GetProductByIdRequest(updatedNoteData.ProductId), cancellationToken);
+
+            if (product == null)
             {
+                ModelState.AddModelError(nameof(updatedNoteData.ProductId), "Selected product does not exist");
                 return BadRequest(ModelState);
             }
 
-            if (!await _noteService.IsNoteProductExistsAsync(updatedNoteData.ProductId, cancellationToken))
-            {
-                ModelState.AddModelError(nameof(updatedNoteData.ProductId), "Selected product not found");
-                return BadRequest(ModelState);
-            }
+            var originalNote = await _mediator.Send(new GetNoteByIdRequest(id), cancellationToken);
 
-            var originalNote = await _noteService.GetNoteByIdAsync(id, cancellationToken);
             if (originalNote == null)
-            {
                 return NotFound();
-            }
 
             originalNote = _mapper.Map(updatedNoteData, originalNote);
-            await _noteService.EditNoteAsync(originalNote, cancellationToken);
+            await _mediator.Send(new EditNoteRequest(originalNote), cancellationToken);
             return Ok();
         }
 
@@ -126,13 +114,12 @@ namespace FoodDiary.API.Controllers.v1
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> DeleteNote([FromRoute] int id, CancellationToken cancellationToken)
         {
-            var noteForDelete = await _noteService.GetNoteByIdAsync(id, cancellationToken);
-            if (noteForDelete == null)
-            {
-                return NotFound();
-            }
+            var noteForDelete = await _mediator.Send(new GetNoteByIdRequest(id), cancellationToken);
 
-            await _noteService.DeleteNoteAsync(noteForDelete, cancellationToken);
+            if (noteForDelete == null)
+                return NotFound();
+
+            await _mediator.Send(new DeleteNoteRequest(noteForDelete), cancellationToken);
             return Ok();
         }
 
@@ -146,14 +133,8 @@ namespace FoodDiary.API.Controllers.v1
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> DeleteNotes([FromBody] IEnumerable<int> ids, CancellationToken cancellationToken)
         {
-            var notesForDelete = await _noteService.GetNotesByIdsAsync(ids, cancellationToken);
-            if (!_noteService.AreAllNotesFetched(ids, notesForDelete))
-            {
-                ModelState.AddModelError(String.Empty, "Unable to delete target notes: wrong ids specified");
-                return BadRequest(ModelState);
-            }
-
-            await _noteService.DeleteNotesAsync(notesForDelete, cancellationToken);
+            var notesForDelete = await _mediator.Send(new GetNotesByIdsRequest(ids), cancellationToken);
+            await _mediator.Send(new DeleteNotesRequest(notesForDelete), cancellationToken);
             return Ok();
         }
 
@@ -169,23 +150,22 @@ namespace FoodDiary.API.Controllers.v1
         public async Task<IActionResult> MoveNote([FromBody] NoteMoveRequest moveRequest, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
-            var noteForMove = await _noteService.GetNoteByIdAsync(moveRequest.NoteId, cancellationToken);
+            var noteForMove = await _mediator.Send(new GetNoteByIdRequest(moveRequest.NoteId), cancellationToken);
+
             if (noteForMove == null)
-            {
                 return NotFound();
-            }
 
-            if (!await _noteService.CanNoteBeMovedAsync(noteForMove, moveRequest, cancellationToken))
+            var orderLimit = await _mediator.Send(new GetOrderForNewNoteRequest(noteForMove.PageId, moveRequest.DestMeal), cancellationToken);
+
+            if (moveRequest.Position < 0 || moveRequest.Position > orderLimit)
             {
                 ModelState.AddModelError(String.Empty, "Note cannot be moved on target meal group to the specified position");
                 return BadRequest(ModelState);
             }
 
-            await _noteService.MoveNoteAsync(noteForMove, moveRequest, cancellationToken);
+            await _mediator.Send(new MoveNoteRequest(noteForMove, moveRequest.DestMeal, moveRequest.Position), cancellationToken);
             return Ok();
         }
     }
