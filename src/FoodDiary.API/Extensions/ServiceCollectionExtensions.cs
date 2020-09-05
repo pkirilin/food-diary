@@ -1,7 +1,5 @@
 ﻿using System;
 using System.IO;
-using FoodDiary.API.Services;
-using FoodDiary.API.Services.Implementation;
 using FoodDiary.Domain.Repositories;
 using FoodDiary.Domain.Utils;
 using FoodDiary.Infrastructure.Repositories;
@@ -19,17 +17,6 @@ namespace FoodDiary.API.Extensions
             services.AddTransient<INoteRepository, NoteRepository>();
             services.AddTransient<ICategoryRepository, CategoryRepository>();
             services.AddTransient<IProductRepository, ProductRepository>();
-        }
-
-        public static void AddAppServices(this IServiceCollection services)
-        {
-            services.AddTransient<IPageService, PageService>();
-            services.AddTransient<INoteService, NoteService>();
-            services.AddTransient<INotesOrderService, NotesOrderService>();
-            services.AddTransient<ICategoryService, CategoryService>();
-            services.AddTransient<IProductService, ProductService>();
-            services.AddTransient<IExportService, ExportService>();
-            services.AddTransient<IImportService, ImportService>();
         }
 
         public static void AddUtils(this IServiceCollection services)

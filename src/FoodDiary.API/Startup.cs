@@ -31,7 +31,6 @@ namespace FoodDiary.API
             services.AddDbContext<FoodDiaryContext>();
 
             services.AddRepositories();
-            services.AddAppServices();
             services.AddUtils();
             services.AddPagesPdfGenerator();
             services.AddPagesJsonImportServices();

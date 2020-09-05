@@ -46,7 +46,6 @@ namespace FoodDiary.IntegrationTests
             }, ServiceLifetime.Singleton);
 
             services.AddRepositories();
-            services.AddAppServices();
             services.AddUtils();
             services.AddPagesPdfGenerator();
             services.AddPagesJsonImportServices();
