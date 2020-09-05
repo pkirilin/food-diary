@@ -10,7 +10,8 @@ Currently, server part consists of the following projects:
 
 | Project | Description
 | --- | --- |
-| FoodDiary.API | Application layer project with API, app services, mappers and data transfer objects |
+| FoodDiary.API | Executable web API project with API controllers, mappers and data transfer objects |
+| FoodDiary.Application | Application layer project with requests and request handlers |
 | FoodDiary.Domain | Domain layer project with entities, repository contracts and business logic objects |
 | FoodDiary.Infrastructure | Infrastructure layer project with repositories and database context |
 | FoodDiary.Import | Library for importing diary objects with import file parser and import engine |
