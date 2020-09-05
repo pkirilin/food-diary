@@ -6,7 +6,7 @@ $inner-padding: 10px;
   &__header {
     background-color: $color-light-green;
     padding: $inner-padding / 2 $inner-padding;
-    border: $border-width-thick solid $color-middle-green-50;
+    border: $border-width-default solid $color-middle-green-50;
   }
 
   &__name {
@@ -33,7 +33,7 @@ $inner-padding: 10px;
   }
 
   &__content {
-    border: $border-width-thick solid $color-middle-green-50;
+    border: $border-width-default solid $color-middle-green-50;
     border-top: none;
     padding: $inner-padding;
 
