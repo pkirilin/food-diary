@@ -1,7 +1,7 @@
 import { ModalState } from '../store';
 import { ModalActions, ModalActionTypes } from '../action-types';
 
-const initialState: ModalState = {
+export const initialState: ModalState = {
   isOpened: false,
   title: '',
   body: '',
