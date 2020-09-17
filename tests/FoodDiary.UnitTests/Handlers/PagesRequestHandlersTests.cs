@@ -29,11 +29,11 @@ namespace FoodDiary.UnitTests.Handlers
         {
             var handler = new CreatePageRequestHandler(_pageRepositoryMock.Object);
 
-            _pageRepositoryMock.Setup(r => r.Add(request.Entity)).Returns(expectedPage);
+            _pageRepositoryMock.Setup(r => r.Create(request.Entity)).Returns(expectedPage);
 
             var result = await handler.Handle(request, default);
 
-            _pageRepositoryMock.Verify(r => r.Add(request.Entity), Times.Once);
+            _pageRepositoryMock.Verify(r => r.Create(request.Entity), Times.Once);
             _pageRepositoryMock.Verify(r => r.UnitOfWork.SaveChangesAsync(default), Times.Once);
         }
 

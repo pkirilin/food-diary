@@ -131,7 +131,7 @@ namespace FoodDiary.UnitTests.Handlers
 
             _jsonImporterMock.Verify(i => i.Import(jsonObj, out createdPagesBeforeImport), Times.Once);
 
-            _pageRepositoryMock.Verify(r => r.AddRange(createdPagesAfterImport), Times.Once);
+            _pageRepositoryMock.Verify(r => r.CreateRange(createdPagesAfterImport), Times.Once);
             _pageRepositoryMock.Verify(r => r.UnitOfWork.SaveChangesAsync(CancellationToken.None), Times.Once);
         }
 

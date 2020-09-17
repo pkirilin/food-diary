@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FoodDiary.Application.Products.Requests;
@@ -20,7 +21,8 @@ namespace FoodDiary.Application.Products.Handlers
 
         public Task<List<Product>> Handle(GetProductsByIdsRequest request, CancellationToken cancellationToken)
         {
-            return _productRepository.GetByIdsAsync(request.Ids, cancellationToken);
+            var query = _productRepository.GetQuery().Where(p => request.Ids.Contains(p.Id));
+            return _productRepository.GetListFromQueryAsync(query, cancellationToken);
         }
     }
 }

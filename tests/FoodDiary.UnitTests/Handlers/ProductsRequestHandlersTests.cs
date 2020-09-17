@@ -112,13 +112,16 @@ namespace FoodDiary.UnitTests.Handlers
         public async void GetProductsByIdsRequestHandler_ReturnsRequestedProducts(GetProductsByIdsRequest request, List<Product> expectedResult)
         {
             var handler = new GetProductsByIdsRequestHandler(_productRepositoryMock.Object);
+            var productsQuery = expectedResult.AsQueryable();
 
-            _productRepositoryMock.Setup(r => r.GetByIdsAsync(request.Ids, default))
+            _productRepositoryMock.Setup(r => r.GetQuery()).Returns(productsQuery);
+            _productRepositoryMock.Setup(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Product>>(), default))
                 .ReturnsAsync(expectedResult);
 
             var result = await handler.Handle(request, default);
 
-            _productRepositoryMock.Verify(r => r.GetByIdsAsync(request.Ids, default), Times.Once);
+            _productRepositoryMock.Verify(r => r.GetQuery(), Times.Once);
+            _productRepositoryMock.Verify(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Product>>(), default), Times.Once);
 
             result.Should().Contain(expectedResult);
         }
