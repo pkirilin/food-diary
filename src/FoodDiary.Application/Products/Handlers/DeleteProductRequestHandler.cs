@@ -18,7 +18,7 @@ namespace FoodDiary.Application.Products.Handlers
 
         public Task<int> Handle(DeleteProductRequest request, CancellationToken cancellationToken)
         {
-            _productRepository.Delete(request.Entity);
+            _productRepository.Remove(request.Entity);
             return _productRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
         }
     }

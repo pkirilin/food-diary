@@ -30,11 +30,11 @@ namespace FoodDiary.Application.Notes.Handlers
                 .Where(n => n.PageId == pageId)
                 .Where(n => n.MealType == mealType)
                 .Where(n => !notesForDeleteIds.Contains(n.Id));
-            var notesWithoutDeleted = await _noteRepository.GetListFromQueryAsync(notesWithoutDeletedQuery, cancellationToken);
+            var notesWithoutDeleted = await _noteRepository.GetByQueryAsync(notesWithoutDeletedQuery, cancellationToken);
 
             _notesOrderCalculator.RecalculateDisplayOrders(notesWithoutDeleted);
 
-            _noteRepository.DeleteRange(request.Entities);
+            _noteRepository.RemoveRange(request.Entities);
             return await _noteRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
         }
     }

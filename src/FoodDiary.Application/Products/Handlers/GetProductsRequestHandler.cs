@@ -36,7 +36,7 @@ namespace FoodDiary.Application.Products.Handlers
                 .Skip((request.PageNumber - 1) * request.PageSize)
                 .Take(request.PageSize);
 
-            var foundProducts = await _productRepository.GetListFromQueryAsync(query, cancellationToken);
+            var foundProducts = await _productRepository.GetByQueryAsync(query, cancellationToken);
 
             return new ProductsSearchResult()
             {

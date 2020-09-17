@@ -18,7 +18,7 @@ namespace FoodDiary.Application.Pages.Handlers
 
         public Task<int> Handle(DeletePageRequest request, CancellationToken cancellationToken)
         {
-            _pageRepository.Delete(request.Entity);
+            _pageRepository.Remove(request.Entity);
             return _pageRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
         }
     }

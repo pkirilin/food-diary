@@ -22,7 +22,7 @@ namespace FoodDiary.Application.Categories.Handlers
         public Task<List<Category>> Handle(GetCategoriesByExactNameRequest request, CancellationToken cancellationToken)
         {
             var query = _categoryRepository.GetQueryWithoutTracking().Where(c => c.Name == request.Name);
-            return _categoryRepository.GetListFromQueryAsync(query, cancellationToken);
+            return _categoryRepository.GetByQueryAsync(query, cancellationToken);
         }
     }
 }

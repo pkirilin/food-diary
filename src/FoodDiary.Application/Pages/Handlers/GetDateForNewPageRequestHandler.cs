@@ -23,7 +23,7 @@ namespace FoodDiary.Application.Pages.Handlers
                 .OrderByDescending(p => p.Date)
                 .Take(1);
 
-            var pages = await _pageRepository.GetListFromQueryAsync(query, cancellationToken);
+            var pages = await _pageRepository.GetByQueryAsync(query, cancellationToken);
 
             if (pages.Any())
                 return pages.First().Date.AddDays(1);

@@ -29,7 +29,7 @@ namespace FoodDiary.Application.Categories.Handlers
                 query = _categoryRepository.LoadProducts(query);
 
             query = query.OrderBy(c => c.Name);
-            return _categoryRepository.GetListFromQueryAsync(query, cancellationToken);
+            return _categoryRepository.GetByQueryAsync(query, cancellationToken);
         }
     }
 }

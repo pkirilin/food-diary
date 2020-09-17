@@ -19,7 +19,7 @@ namespace FoodDiary.Infrastructure.Repositories
             return query.Include(p => p.Category);
         }
 
-        public Task<Dictionary<string, Product>> GetDictionaryFromQueryAsync(IQueryable<Product> query, CancellationToken cancellationToken)
+        public Task<Dictionary<string, Product>> GetDictionaryByQueryAsync(IQueryable<Product> query, CancellationToken cancellationToken)
         {
             return query.ToDictionaryAsync(p => p.Name);
         }

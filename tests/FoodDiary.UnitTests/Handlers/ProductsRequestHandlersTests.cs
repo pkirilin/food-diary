@@ -28,11 +28,11 @@ namespace FoodDiary.UnitTests.Handlers
         {
             var handler = new CreateProductRequestHandler(_productRepositoryMock.Object);
 
-            _productRepositoryMock.Setup(r => r.Create(request.Entity)).Returns(expectedResult);
+            _productRepositoryMock.Setup(r => r.Add(request.Entity)).Returns(expectedResult);
 
             var result = await handler.Handle(request, default);
 
-            _productRepositoryMock.Verify(r => r.Create(request.Entity), Times.Once);
+            _productRepositoryMock.Verify(r => r.Add(request.Entity), Times.Once);
             _productRepositoryMock.Verify(r => r.UnitOfWork.SaveChangesAsync(default), Times.Once);
 
             result.Should().Be(expectedResult);
@@ -46,7 +46,7 @@ namespace FoodDiary.UnitTests.Handlers
 
             await handler.Handle(request, default);
 
-            _productRepositoryMock.Verify(r => r.Delete(request.Entity), Times.Once);
+            _productRepositoryMock.Verify(r => r.Remove(request.Entity), Times.Once);
             _productRepositoryMock.Verify(r => r.UnitOfWork.SaveChangesAsync(default), Times.Once);
         }
 
@@ -58,7 +58,7 @@ namespace FoodDiary.UnitTests.Handlers
 
             await handler.Handle(request, default);
 
-            _productRepositoryMock.Verify(r => r.DeleteRange(request.Entities), Times.Once);
+            _productRepositoryMock.Verify(r => r.RemoveRange(request.Entities), Times.Once);
             _productRepositoryMock.Verify(r => r.UnitOfWork.SaveChangesAsync(default), Times.Once);
         }
 
@@ -98,13 +98,13 @@ namespace FoodDiary.UnitTests.Handlers
             var handler = new GetProductsByExactNameRequestHandler(_productRepositoryMock.Object);
 
             _productRepositoryMock.Setup(r => r.GetQueryWithoutTracking()).Returns(categoriesQuery);
-            _productRepositoryMock.Setup(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Product>>(), default))
+            _productRepositoryMock.Setup(r => r.GetByQueryAsync(It.IsNotNull<IQueryable<Product>>(), default))
                 .ReturnsAsync(expectedResult);
 
             var result = await handler.Handle(request, default);
 
             _productRepositoryMock.Verify(r => r.GetQueryWithoutTracking(), Times.Once);
-            _productRepositoryMock.Verify(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Product>>(), default), Times.Once);
+            _productRepositoryMock.Verify(r => r.GetByQueryAsync(It.IsNotNull<IQueryable<Product>>(), default), Times.Once);
         }
 
         [Theory]
@@ -115,13 +115,13 @@ namespace FoodDiary.UnitTests.Handlers
             var productsQuery = expectedResult.AsQueryable();
 
             _productRepositoryMock.Setup(r => r.GetQuery()).Returns(productsQuery);
-            _productRepositoryMock.Setup(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Product>>(), default))
+            _productRepositoryMock.Setup(r => r.GetByQueryAsync(It.IsNotNull<IQueryable<Product>>(), default))
                 .ReturnsAsync(expectedResult);
 
             var result = await handler.Handle(request, default);
 
             _productRepositoryMock.Verify(r => r.GetQuery(), Times.Once);
-            _productRepositoryMock.Verify(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Product>>(), default), Times.Once);
+            _productRepositoryMock.Verify(r => r.GetByQueryAsync(It.IsNotNull<IQueryable<Product>>(), default), Times.Once);
 
             result.Should().Contain(expectedResult);
         }
@@ -141,7 +141,7 @@ namespace FoodDiary.UnitTests.Handlers
             _productRepositoryMock.Setup(r => r.GetQueryWithoutTracking()).Returns(productsQuery);
             _productRepositoryMock.Setup(r => r.CountByQueryAsync(It.IsNotNull<IQueryable<Product>>(), default))
                 .ReturnsAsync(expectedTotalProductsCount.GetValueOrDefault());
-            _productRepositoryMock.Setup(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Product>>(), default))
+            _productRepositoryMock.Setup(r => r.GetByQueryAsync(It.IsNotNull<IQueryable<Product>>(), default))
                 .ReturnsAsync(expectedFoundProducts);
 
             var result = await handler.Handle(request, default);
@@ -149,7 +149,7 @@ namespace FoodDiary.UnitTests.Handlers
             _productRepositoryMock.Verify(r => r.GetQueryWithoutTracking(), Times.Once);
             _productRepositoryMock.Verify(r => r.CountByQueryAsync(It.IsNotNull<IQueryable<Product>>(), default), Times.Exactly(expectedCountByQueryCallCount));
             _productRepositoryMock.Verify(r => r.LoadCategory(It.IsNotNull<IQueryable<Product>>()), Times.Exactly(expectedLoadCategoryCallCount));
-            _productRepositoryMock.Verify(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Product>>(), default), Times.Once);
+            _productRepositoryMock.Verify(r => r.GetByQueryAsync(It.IsNotNull<IQueryable<Product>>(), default), Times.Once);
 
             result.FoundProducts.Should().Contain(expectedFoundProducts);
             result.TotalProductsCount.Should().Be(expectedTotalProductsCount);

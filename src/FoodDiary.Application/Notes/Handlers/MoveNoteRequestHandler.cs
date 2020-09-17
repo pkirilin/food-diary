@@ -31,8 +31,8 @@ namespace FoodDiary.Application.Notes.Handlers
                 .Where(n => n.MealType == request.DestMeal)
                 .Where(n => n.DisplayOrder >= request.Position);
 
-            var sourceNotesForRecalculationTask = _noteRepository.GetListFromQueryAsync(notesFromSourceMealWithoutMovedQuery, cancellationToken);
-            var destNotesForRecalculationTask = _noteRepository.GetListFromQueryAsync(notesFromDestMealWithMovedQuery, cancellationToken);
+            var sourceNotesForRecalculationTask = _noteRepository.GetByQueryAsync(notesFromSourceMealWithoutMovedQuery, cancellationToken);
+            var destNotesForRecalculationTask = _noteRepository.GetByQueryAsync(notesFromDestMealWithMovedQuery, cancellationToken);
             
             var notesForRecalculation = await Task.WhenAll(sourceNotesForRecalculationTask, destNotesForRecalculationTask);
 

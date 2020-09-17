@@ -7,6 +7,6 @@ namespace FoodDiary.Domain.Abstractions
 {
     public interface ILookupRepository<TKey, TEntity> where TEntity : class
     {
-        Task<Dictionary<TKey, TEntity>> GetDictionaryFromQueryAsync(IQueryable<TEntity> query, CancellationToken cancellationToken);
+        Task<Dictionary<TKey, TEntity>> GetDictionaryByQueryAsync(IQueryable<TEntity> query, CancellationToken cancellationToken);
     }
 }

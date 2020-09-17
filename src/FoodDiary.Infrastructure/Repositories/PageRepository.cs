@@ -27,7 +27,7 @@ namespace FoodDiary.Infrastructure.Repositories
                 .ThenInclude(p => p.Category);
         }
 
-        public Task<Dictionary<DateTime, Page>> GetDictionaryFromQueryAsync(IQueryable<Page> query, CancellationToken cancellationToken)
+        public Task<Dictionary<DateTime, Page>> GetDictionaryByQueryAsync(IQueryable<Page> query, CancellationToken cancellationToken)
         {
             return query.ToDictionaryAsync(p => p.Date);
         }

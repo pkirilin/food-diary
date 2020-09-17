@@ -22,7 +22,7 @@ namespace FoodDiary.Application.Notes.Handlers
             var query = _noteRepository.GetQueryWithoutTracking()
                 .Where(n => n.PageId == request.PageId && n.MealType == request.MealType);
 
-            var notes = await _noteRepository.GetListFromQueryAsync(query, cancellationToken);
+            var notes = await _noteRepository.GetByQueryAsync(query, cancellationToken);
 
             if (!notes.Any())
                 return 0;

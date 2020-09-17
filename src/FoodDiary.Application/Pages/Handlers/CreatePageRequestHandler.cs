@@ -19,7 +19,7 @@ namespace FoodDiary.Application.Pages.Handlers
 
         public async Task<Page> Handle(CreatePageRequest request, CancellationToken cancellationToken)
         {
-            var createdPage = _pageRepository.Create(request.Entity);
+            var createdPage = _pageRepository.Add(request.Entity);
             await _pageRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
             return createdPage;
         }

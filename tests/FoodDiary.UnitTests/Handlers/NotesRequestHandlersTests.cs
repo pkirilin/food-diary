@@ -30,11 +30,11 @@ namespace FoodDiary.UnitTests.Handlers
         {
             var handler = new CreateNoteRequestHandler(_noteRepositoryMock.Object);
 
-            _noteRepositoryMock.Setup(r => r.Create(request.Entity)).Returns(expectedResult);
+            _noteRepositoryMock.Setup(r => r.Add(request.Entity)).Returns(expectedResult);
 
             var result = await handler.Handle(request, default);
 
-            _noteRepositoryMock.Verify(r => r.Create(request.Entity), Times.Once);
+            _noteRepositoryMock.Verify(r => r.Add(request.Entity), Times.Once);
             _noteRepositoryMock.Verify(r => r.UnitOfWork.SaveChangesAsync(default), Times.Once);
 
             result.Should().Be(expectedResult);
@@ -48,15 +48,15 @@ namespace FoodDiary.UnitTests.Handlers
             var notesQuery = notes.AsQueryable();
 
             _noteRepositoryMock.Setup(r => r.GetQuery()).Returns(notesQuery);
-            _noteRepositoryMock.Setup(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Note>>(), default))
+            _noteRepositoryMock.Setup(r => r.GetByQueryAsync(It.IsNotNull<IQueryable<Note>>(), default))
                 .ReturnsAsync(notes);
 
             var result = await handler.Handle(request, default);
 
             _noteRepositoryMock.Verify(r => r.GetQuery(), Times.Once);
-            _noteRepositoryMock.Verify(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Note>>(), default), Times.Once);
+            _noteRepositoryMock.Verify(r => r.GetByQueryAsync(It.IsNotNull<IQueryable<Note>>(), default), Times.Once);
             _notesOrderCalculatorMock.Verify(c => c.RecalculateDisplayOrders(notes, -1), Times.Once);
-            _noteRepositoryMock.Verify(r => r.Delete(request.Entity), Times.Once);
+            _noteRepositoryMock.Verify(r => r.Remove(request.Entity), Times.Once);
             _noteRepositoryMock.Verify(r => r.UnitOfWork.SaveChangesAsync(default), Times.Once);
         }
 
@@ -68,15 +68,15 @@ namespace FoodDiary.UnitTests.Handlers
             var notesQuery = notes.AsQueryable();
 
             _noteRepositoryMock.Setup(r => r.GetQuery()).Returns(notesQuery);
-            _noteRepositoryMock.Setup(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Note>>(), default))
+            _noteRepositoryMock.Setup(r => r.GetByQueryAsync(It.IsNotNull<IQueryable<Note>>(), default))
                 .ReturnsAsync(notes);
 
             var result = await handler.Handle(request, default);
 
             _noteRepositoryMock.Verify(r => r.GetQuery(), Times.Once);
-            _noteRepositoryMock.Verify(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Note>>(), default), Times.Once);
+            _noteRepositoryMock.Verify(r => r.GetByQueryAsync(It.IsNotNull<IQueryable<Note>>(), default), Times.Once);
             _notesOrderCalculatorMock.Verify(c => c.RecalculateDisplayOrders(notes, -1), Times.Once);
-            _noteRepositoryMock.Verify(r => r.DeleteRange(request.Entities), Times.Once);
+            _noteRepositoryMock.Verify(r => r.RemoveRange(request.Entities), Times.Once);
             _noteRepositoryMock.Verify(r => r.UnitOfWork.SaveChangesAsync(default), Times.Once);
         }
 
@@ -116,13 +116,13 @@ namespace FoodDiary.UnitTests.Handlers
             var notesQuery = expectedResult.AsQueryable();
 
             _noteRepositoryMock.Setup(r => r.GetQuery()).Returns(notesQuery);
-            _noteRepositoryMock.Setup(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Note>>(), default))
+            _noteRepositoryMock.Setup(r => r.GetByQueryAsync(It.IsNotNull<IQueryable<Note>>(), default))
                 .ReturnsAsync(expectedResult);
 
             var result = await handler.Handle(request, default);
 
             _noteRepositoryMock.Verify(r => r.GetQuery(), Times.Once);
-            _noteRepositoryMock.Verify(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Note>>(), default), Times.Once);
+            _noteRepositoryMock.Verify(r => r.GetByQueryAsync(It.IsNotNull<IQueryable<Note>>(), default), Times.Once);
 
             result.Should().BeEquivalentTo(expectedResult);
         }
@@ -135,14 +135,14 @@ namespace FoodDiary.UnitTests.Handlers
             var notesQuery = expectedResult.AsQueryable();
 
             _noteRepositoryMock.Setup(r => r.GetQueryWithoutTracking()).Returns(notesQuery);
-            _noteRepositoryMock.Setup(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Note>>(), default))
+            _noteRepositoryMock.Setup(r => r.GetByQueryAsync(It.IsNotNull<IQueryable<Note>>(), default))
                 .ReturnsAsync(expectedResult);
 
             var result = await handler.Handle(request, default);
 
             _noteRepositoryMock.Verify(r => r.GetQueryWithoutTracking(), Times.Once);
             _noteRepositoryMock.Verify(r => r.LoadProduct(It.IsNotNull<IQueryable<Note>>()), Times.Once);
-            _noteRepositoryMock.Verify(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Note>>(), default), Times.Once);
+            _noteRepositoryMock.Verify(r => r.GetByQueryAsync(It.IsNotNull<IQueryable<Note>>(), default), Times.Once);
 
             result.Should().BeEquivalentTo(expectedResult);
         }
@@ -158,13 +158,13 @@ namespace FoodDiary.UnitTests.Handlers
             var notesQuery = notes.AsQueryable();
 
             _noteRepositoryMock.Setup(r => r.GetQueryWithoutTracking()).Returns(notesQuery);
-            _noteRepositoryMock.Setup(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Note>>(), default))
+            _noteRepositoryMock.Setup(r => r.GetByQueryAsync(It.IsNotNull<IQueryable<Note>>(), default))
                 .ReturnsAsync(notes);
 
             var result = await handler.Handle(request, default);
 
             _noteRepositoryMock.Verify(r => r.GetQueryWithoutTracking(), Times.Once);
-            _noteRepositoryMock.Verify(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Note>>(), default), Times.Once);
+            _noteRepositoryMock.Verify(r => r.GetByQueryAsync(It.IsNotNull<IQueryable<Note>>(), default), Times.Once);
 
             result.Should().Be(expectedResult);
         }
@@ -184,7 +184,7 @@ namespace FoodDiary.UnitTests.Handlers
             await handler.Handle(request, default);
 
             _noteRepositoryMock.Verify(r => r.GetQuery(), Times.Exactly(2));
-            _noteRepositoryMock.Verify(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Note>>(), default), Times.Exactly(2));
+            _noteRepositoryMock.Verify(r => r.GetByQueryAsync(It.IsNotNull<IQueryable<Note>>(), default), Times.Exactly(2));
             _notesOrderCalculatorMock.Verify(c => c.RecalculateDisplayOrders(It.IsAny<IEnumerable<Note>>(), -1), Times.Once);
             _notesOrderCalculatorMock.Verify(c => c.RecalculateDisplayOrders(It.IsAny<IEnumerable<Note>>(), request.Position), Times.Once);
             _noteRepositoryMock.Verify(r => r.Update(request.NoteForMove), Times.Once);

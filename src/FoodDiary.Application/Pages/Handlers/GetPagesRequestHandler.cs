@@ -54,7 +54,7 @@ namespace FoodDiary.Application.Pages.Handlers
                     break;
             }
 
-            return _pageRepository.GetListFromQueryAsync(query, cancellationToken);
+            return _pageRepository.GetByQueryAsync(query, cancellationToken);
         }
     }
 }

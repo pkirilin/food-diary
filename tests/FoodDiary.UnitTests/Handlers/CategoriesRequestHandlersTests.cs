@@ -28,11 +28,11 @@ namespace FoodDiary.UnitTests.Handlers
         {
             var handler = new CreateCategoryRequestHandler(_categoryRepositoryMock.Object);
 
-            _categoryRepositoryMock.Setup(r => r.Create(request.Entity)).Returns(expectedResult);
+            _categoryRepositoryMock.Setup(r => r.Add(request.Entity)).Returns(expectedResult);
 
             var result = await handler.Handle(request, default);
 
-            _categoryRepositoryMock.Verify(r => r.Create(request.Entity), Times.Once);
+            _categoryRepositoryMock.Verify(r => r.Add(request.Entity), Times.Once);
             _categoryRepositoryMock.Verify(r => r.UnitOfWork.SaveChangesAsync(default), Times.Once);
 
             result.Should().BeEquivalentTo(expectedResult);
@@ -58,7 +58,7 @@ namespace FoodDiary.UnitTests.Handlers
 
             await handler.Handle(request, default);
 
-            _categoryRepositoryMock.Verify(r => r.Delete(request.Entity), Times.Once);
+            _categoryRepositoryMock.Verify(r => r.Remove(request.Entity), Times.Once);
             _categoryRepositoryMock.Verify(r => r.UnitOfWork.SaveChangesAsync(default), Times.Once);
         }
 
@@ -71,13 +71,13 @@ namespace FoodDiary.UnitTests.Handlers
 
             _categoryRepositoryMock.Setup(r => r.GetQueryWithoutTracking())
                 .Returns(categoriesQuery);
-            _categoryRepositoryMock.Setup(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Category>>(), default))
+            _categoryRepositoryMock.Setup(r => r.GetByQueryAsync(It.IsNotNull<IQueryable<Category>>(), default))
                 .ReturnsAsync(categories);
 
             var result = await handler.Handle(request, default);
 
             _categoryRepositoryMock.Verify(r => r.GetQueryWithoutTracking(), Times.Once);
-            _categoryRepositoryMock.Verify(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Category>>(), default), Times.Once);
+            _categoryRepositoryMock.Verify(r => r.GetByQueryAsync(It.IsNotNull<IQueryable<Category>>(), default), Times.Once);
 
             result.Should().BeEquivalentTo(categories);
         }
@@ -96,14 +96,14 @@ namespace FoodDiary.UnitTests.Handlers
                 .Returns(categoriesQuery);
             _categoryRepositoryMock.Setup(r => r.LoadProducts(It.IsNotNull<IQueryable<Category>>()))
                 .Returns(categoriesQuery);
-            _categoryRepositoryMock.Setup(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Category>>(), default))
+            _categoryRepositoryMock.Setup(r => r.GetByQueryAsync(It.IsNotNull<IQueryable<Category>>(), default))
                 .ReturnsAsync(categories);
 
             var result = await handler.Handle(request, default);
 
             _categoryRepositoryMock.Verify(r => r.GetQueryWithoutTracking(), Times.Once);
             _categoryRepositoryMock.Verify(r => r.LoadProducts(It.IsNotNull<IQueryable<Category>>()), Times.Exactly(loadProductsCallCount));
-            _categoryRepositoryMock.Verify(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Category>>(), default), Times.Once);
+            _categoryRepositoryMock.Verify(r => r.GetByQueryAsync(It.IsNotNull<IQueryable<Category>>(), default), Times.Once);
 
             result.Should().BeEquivalentTo(categories);
         }

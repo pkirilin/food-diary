@@ -22,7 +22,7 @@ namespace FoodDiary.Application.Notes.Handlers
         public Task<List<Note>> Handle(GetNotesByIdsRequest request, CancellationToken cancellationToken)
         {
             var query = _noteRepository.GetQuery().Where(n => request.Ids.Contains(n.Id));
-            return _noteRepository.GetListFromQueryAsync(query, cancellationToken);
+            return _noteRepository.GetByQueryAsync(query, cancellationToken);
         }
     }
 }

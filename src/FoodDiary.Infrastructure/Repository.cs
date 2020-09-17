@@ -34,7 +34,7 @@ namespace FoodDiary.Infrastructure
             return TargetDbSet.ToListAsync(cancellationToken);
         }
 
-        public virtual Task<List<TEntity>> GetListFromQueryAsync(IQueryable<TEntity> query, CancellationToken cancellationToken)
+        public virtual Task<List<TEntity>> GetByQueryAsync(IQueryable<TEntity> query, CancellationToken cancellationToken)
         {
             return query.ToListAsync(cancellationToken);
         }
@@ -49,7 +49,7 @@ namespace FoodDiary.Infrastructure
             return query.CountAsync(cancellationToken);
         }
 
-        public virtual TEntity Create(TEntity entity)
+        public virtual TEntity Add(TEntity entity)
         {
             var entry = TargetDbSet.Add(entity);
             return entry.Entity;
@@ -60,12 +60,12 @@ namespace FoodDiary.Infrastructure
             TargetDbSet.Update(entity);
         }
 
-        public virtual void Delete(TEntity entity)
+        public virtual void Remove(TEntity entity)
         {
             TargetDbSet.Remove(entity);
         }
 
-        public virtual void CreateRange(IEnumerable<TEntity> entities)
+        public virtual void AddRange(IEnumerable<TEntity> entities)
         {
             TargetDbSet.AddRange(entities);
         }
@@ -75,7 +75,7 @@ namespace FoodDiary.Infrastructure
             TargetDbSet.UpdateRange(entities);
         }
 
-        public virtual void DeleteRange(IEnumerable<TEntity> entities)
+        public virtual void RemoveRange(IEnumerable<TEntity> entities)
         {
             TargetDbSet.RemoveRange(entities);
         }

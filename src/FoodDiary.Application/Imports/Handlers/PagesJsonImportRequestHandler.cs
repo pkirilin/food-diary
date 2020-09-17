@@ -55,13 +55,13 @@ namespace FoodDiary.Application.Imports.Handlers
             pagesForUpdateQuery = _pageRepository.LoadNotesWithProductsAndCategories(pagesForUpdateQuery);
 
             // Loading entities for update to data provider
-            _importDataProvider.ExistingPages = await _pageRepository.GetDictionaryFromQueryAsync(pagesForUpdateQuery, cancellationToken);
-            _importDataProvider.ExistingProducts = await _productRepository.GetDictionaryFromQueryAsync(importProductsQuery, cancellationToken);
-            _importDataProvider.ExistingCategories = await _categoryRepository.GetDictionaryFromQueryAsync(importCategoriesQuery, cancellationToken);
+            _importDataProvider.ExistingPages = await _pageRepository.GetDictionaryByQueryAsync(pagesForUpdateQuery, cancellationToken);
+            _importDataProvider.ExistingProducts = await _productRepository.GetDictionaryByQueryAsync(importProductsQuery, cancellationToken);
+            _importDataProvider.ExistingCategories = await _categoryRepository.GetDictionaryByQueryAsync(importCategoriesQuery, cancellationToken);
 
             _jsonImporter.Import(request.JsonObj, out var createdPages);
 
-            _pageRepository.CreateRange(createdPages);
+            _pageRepository.AddRange(createdPages);
             return await _pageRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
         }
     }

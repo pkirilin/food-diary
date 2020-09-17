@@ -22,7 +22,7 @@ namespace FoodDiary.Application.Pages.Handlers
         public Task<List<Page>> Handle(GetPagesByIdsRequest request, CancellationToken cancellationToken)
         {
             var query = _pageRepository.GetQuery().Where(p => request.Ids.Contains(p.Id));
-            return _pageRepository.GetListFromQueryAsync(query, cancellationToken);
+            return _pageRepository.GetByQueryAsync(query, cancellationToken);
         }
     }
 }

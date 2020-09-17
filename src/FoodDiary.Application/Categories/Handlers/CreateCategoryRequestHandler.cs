@@ -19,7 +19,7 @@ namespace FoodDiary.Application.Categories.Handlers
 
         public async Task<Category> Handle(CreateCategoryRequest request, CancellationToken cancellationToken)
         {
-            var createdCategory = _categoryRepository.Create(request.Entity);
+            var createdCategory = _categoryRepository.Add(request.Entity);
             await _categoryRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
             return createdCategory;
         }

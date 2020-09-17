@@ -29,11 +29,11 @@ namespace FoodDiary.UnitTests.Handlers
         {
             var handler = new CreatePageRequestHandler(_pageRepositoryMock.Object);
 
-            _pageRepositoryMock.Setup(r => r.Create(request.Entity)).Returns(expectedPage);
+            _pageRepositoryMock.Setup(r => r.Add(request.Entity)).Returns(expectedPage);
 
             var result = await handler.Handle(request, default);
 
-            _pageRepositoryMock.Verify(r => r.Create(request.Entity), Times.Once);
+            _pageRepositoryMock.Verify(r => r.Add(request.Entity), Times.Once);
             _pageRepositoryMock.Verify(r => r.UnitOfWork.SaveChangesAsync(default), Times.Once);
         }
 
@@ -45,7 +45,7 @@ namespace FoodDiary.UnitTests.Handlers
 
             await handler.Handle(request, default);
 
-            _pageRepositoryMock.Verify(r => r.Delete(request.Entity), Times.Once);
+            _pageRepositoryMock.Verify(r => r.Remove(request.Entity), Times.Once);
             _pageRepositoryMock.Verify(r => r.UnitOfWork.SaveChangesAsync(default), Times.Once);
         }
 
@@ -57,7 +57,7 @@ namespace FoodDiary.UnitTests.Handlers
 
             await handler.Handle(request, default);
 
-            _pageRepositoryMock.Verify(r => r.DeleteRange(request.Entities), Times.Once);
+            _pageRepositoryMock.Verify(r => r.RemoveRange(request.Entities), Times.Once);
             _pageRepositoryMock.Verify(r => r.UnitOfWork.SaveChangesAsync(default), Times.Once);
         }
 
@@ -83,13 +83,13 @@ namespace FoodDiary.UnitTests.Handlers
 
             _pageRepositoryMock.Setup(r => r.GetQueryWithoutTracking())
                 .Returns(pagesByDateQuery);
-            _pageRepositoryMock.Setup(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Page>>(), default))
+            _pageRepositoryMock.Setup(r => r.GetByQueryAsync(It.IsNotNull<IQueryable<Page>>(), default))
                 .ReturnsAsync(pagesByDate);
 
             var result = await handler.Handle(request, default);
 
             _pageRepositoryMock.Verify(r => r.GetQueryWithoutTracking(), Times.Once);
-            _pageRepositoryMock.Verify(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Page>>(), default), Times.Once);
+            _pageRepositoryMock.Verify(r => r.GetByQueryAsync(It.IsNotNull<IQueryable<Page>>(), default), Times.Once);
 
             result.Should().Be(expectedResult);
         }
@@ -102,13 +102,13 @@ namespace FoodDiary.UnitTests.Handlers
             var pagesQuery = expectedResult.AsQueryable();
 
             _pageRepositoryMock.Setup(r => r.GetQueryWithoutTracking()).Returns(pagesQuery);
-            _pageRepositoryMock.Setup(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Page>>(), default))
+            _pageRepositoryMock.Setup(r => r.GetByQueryAsync(It.IsNotNull<IQueryable<Page>>(), default))
                 .ReturnsAsync(expectedResult);
 
             var result = await handler.Handle(request, default);
 
             _pageRepositoryMock.Verify(r => r.GetQueryWithoutTracking(), Times.Once);
-            _pageRepositoryMock.Verify(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Page>>(), default), Times.Once);
+            _pageRepositoryMock.Verify(r => r.GetByQueryAsync(It.IsNotNull<IQueryable<Page>>(), default), Times.Once);
 
             result.Should().BeEquivalentTo(expectedResult);
         }
@@ -125,7 +125,7 @@ namespace FoodDiary.UnitTests.Handlers
             var pagesQuery = expectedResult.AsQueryable();
 
             _pageRepositoryMock.Setup(r => r.GetQueryWithoutTracking()).Returns(pagesQuery);
-            _pageRepositoryMock.Setup(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Page>>(), default))
+            _pageRepositoryMock.Setup(r => r.GetByQueryAsync(It.IsNotNull<IQueryable<Page>>(), default))
                 .ReturnsAsync(expectedResult);
 
             var result = await handler.Handle(request, default);
@@ -139,7 +139,7 @@ namespace FoodDiary.UnitTests.Handlers
                 It.IsNotNull<IQueryable<Page>>()),
                 Times.Exactly(expectedLoadNotesWithProductsAndCategoriesCallCount)
             );
-            _pageRepositoryMock.Verify(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Page>>(), default), Times.Once);
+            _pageRepositoryMock.Verify(r => r.GetByQueryAsync(It.IsNotNull<IQueryable<Page>>(), default), Times.Once);
 
             result.Should().BeEquivalentTo(expectedResult);
         }
@@ -166,13 +166,13 @@ namespace FoodDiary.UnitTests.Handlers
             var pagesQuery = expectedResult.AsQueryable();
 
             _pageRepositoryMock.Setup(r => r.GetQuery()).Returns(pagesQuery);
-            _pageRepositoryMock.Setup(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Page>>(), default))
+            _pageRepositoryMock.Setup(r => r.GetByQueryAsync(It.IsNotNull<IQueryable<Page>>(), default))
                 .ReturnsAsync(expectedResult);
 
             var result = await handler.Handle(request, default);
 
             _pageRepositoryMock.Verify(r => r.GetQuery(), Times.Once);
-            _pageRepositoryMock.Verify(r => r.GetListFromQueryAsync(It.IsNotNull<IQueryable<Page>>(), default), Times.Once);
+            _pageRepositoryMock.Verify(r => r.GetByQueryAsync(It.IsNotNull<IQueryable<Page>>(), default), Times.Once);
         }
 
         #region Test data

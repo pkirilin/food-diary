@@ -19,7 +19,7 @@ namespace FoodDiary.Application.Notes.Handlers
 
         public async Task<Note> Handle(CreateNoteRequest request, CancellationToken cancellationToken)
         {
-            var createdNote = _noteRepository.Create(request.Entity);
+            var createdNote = _noteRepository.Add(request.Entity);
             await _noteRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
             return createdNote;
         }

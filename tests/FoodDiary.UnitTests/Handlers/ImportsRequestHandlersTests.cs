@@ -96,11 +96,11 @@ namespace FoodDiary.UnitTests.Handlers
             _pageRepositoryMock.Setup(r => r.LoadNotesWithProductsAndCategories(existingPagesQuery))
                 .Returns(existingPagesQuery);
 
-            _pageRepositoryMock.Setup(r => r.GetDictionaryFromQueryAsync(existingPagesQuery, CancellationToken.None))
+            _pageRepositoryMock.Setup(r => r.GetDictionaryByQueryAsync(existingPagesQuery, CancellationToken.None))
                 .ReturnsAsync(existingPagesDictionary);
-            _productRepositoryMock.Setup(r => r.GetDictionaryFromQueryAsync(existingProductsQuery, CancellationToken.None))
+            _productRepositoryMock.Setup(r => r.GetDictionaryByQueryAsync(existingProductsQuery, CancellationToken.None))
                 .ReturnsAsync(existingProductsDictionary);
-            _categoryRepositoryMock.Setup(r => r.GetDictionaryFromQueryAsync(existingCategoriesQuery, CancellationToken.None))
+            _categoryRepositoryMock.Setup(r => r.GetDictionaryByQueryAsync(existingCategoriesQuery, CancellationToken.None))
                 .ReturnsAsync(existingCategoriesDictionary);
 
             _jsonImporterMock.Setup(i => i.Import(jsonObj, out createdPagesBeforeImport))
@@ -121,9 +121,9 @@ namespace FoodDiary.UnitTests.Handlers
             _categoryRepositoryMock.Verify(r => r.GetQuery(), Times.Once);
             _pageRepositoryMock.Verify(r => r.LoadNotesWithProductsAndCategories(existingPagesQuery), Times.Once);
 
-            _pageRepositoryMock.Verify(r => r.GetDictionaryFromQueryAsync(existingPagesQuery, CancellationToken.None), Times.Once);
-            _productRepositoryMock.Verify(r => r.GetDictionaryFromQueryAsync(existingProductsQuery, CancellationToken.None), Times.Once);
-            _categoryRepositoryMock.Verify(r => r.GetDictionaryFromQueryAsync(existingCategoriesQuery, CancellationToken.None), Times.Once);
+            _pageRepositoryMock.Verify(r => r.GetDictionaryByQueryAsync(existingPagesQuery, CancellationToken.None), Times.Once);
+            _productRepositoryMock.Verify(r => r.GetDictionaryByQueryAsync(existingProductsQuery, CancellationToken.None), Times.Once);
+            _categoryRepositoryMock.Verify(r => r.GetDictionaryByQueryAsync(existingCategoriesQuery, CancellationToken.None), Times.Once);
 
             _importDataProviderMock.VerifySet(p => p.ExistingPages = existingPagesDictionary, Times.Once);
             _importDataProviderMock.VerifySet(p => p.ExistingProducts = existingProductsDictionary, Times.Once);
@@ -131,7 +131,7 @@ namespace FoodDiary.UnitTests.Handlers
 
             _jsonImporterMock.Verify(i => i.Import(jsonObj, out createdPagesBeforeImport), Times.Once);
 
-            _pageRepositoryMock.Verify(r => r.CreateRange(createdPagesAfterImport), Times.Once);
+            _pageRepositoryMock.Verify(r => r.AddRange(createdPagesAfterImport), Times.Once);
             _pageRepositoryMock.Verify(r => r.UnitOfWork.SaveChangesAsync(CancellationToken.None), Times.Once);
         }
 

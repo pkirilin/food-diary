@@ -28,7 +28,7 @@ namespace FoodDiary.Application.Notes.Handlers
                 query = query.Where(n => n.MealType == request.MealType);
             query = query.OrderBy(n => n.MealType).ThenBy(n => n.DisplayOrder);
             query = _noteRepository.LoadProduct(query);
-            return _noteRepository.GetListFromQueryAsync(query, cancellationToken);
+            return _noteRepository.GetByQueryAsync(query, cancellationToken);
         }
     }
 }

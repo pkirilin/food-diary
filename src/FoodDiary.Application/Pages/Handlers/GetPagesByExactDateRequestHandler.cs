@@ -22,7 +22,7 @@ namespace FoodDiary.Application.Pages.Handlers
         public Task<List<Page>> Handle(GetPagesByExactDateRequest request, CancellationToken cancellationToken)
         {
             var query = _pageRepository.GetQueryWithoutTracking().Where(p => p.Date == request.Date);
-            return _pageRepository.GetListFromQueryAsync(query, cancellationToken);
+            return _pageRepository.GetByQueryAsync(query, cancellationToken);
         }
     }
 }

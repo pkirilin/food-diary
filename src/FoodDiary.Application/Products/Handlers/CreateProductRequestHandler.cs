@@ -19,7 +19,7 @@ namespace FoodDiary.Application.Products.Handlers
 
         public async Task<Product> Handle(CreateProductRequest request, CancellationToken cancellationToken)
         {
-            var createdProduct = _productRepository.Create(request.Entity);
+            var createdProduct = _productRepository.Add(request.Entity);
             await _productRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
             return createdProduct;
         }

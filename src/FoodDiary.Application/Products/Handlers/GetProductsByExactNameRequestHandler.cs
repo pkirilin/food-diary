@@ -22,7 +22,7 @@ namespace FoodDiary.Application.Products.Handlers
         public Task<List<Product>> Handle(GetProductsByExactNameRequest request, CancellationToken cancellationToken)
         {
             var query = _productRepository.GetQueryWithoutTracking().Where(p => p.Name == request.Name);
-            return _productRepository.GetListFromQueryAsync(query, cancellationToken);
+            return _productRepository.GetByQueryAsync(query, cancellationToken);
         }
     }
 }
