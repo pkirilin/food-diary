@@ -1,7 +1,7 @@
 import { CategoriesListState } from '../../store';
 import { CategoriesListActions, CategoriesListActionTypes } from '../../action-types';
 
-const initialState: CategoriesListState = {
+export const initialState: CategoriesListState = {
   categoryItems: [],
   categoryItemsFetchState: {
     loading: false,

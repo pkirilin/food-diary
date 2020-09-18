@@ -1,7 +1,7 @@
 import { CategoriesDropdownState } from '../../store';
 import { CategoriesDropdownActions, CategoriesDropdownActionTypes } from '../../action-types';
 
-const initialState: CategoriesDropdownState = {
+export const initialState: CategoriesDropdownState = {
   categoryDropdownItems: [],
   categoryDropdownItemsFetchState: {
     loading: false,
