@@ -1,19 +1,19 @@
 import { connect } from 'react-redux';
 import MealsControlPanel from '.';
-import { MealType } from '../../models';
 import { Dispatch } from 'redux';
-import { SetCollapsedForAllMealsAction } from '../../action-types';
-import { setCollapsedForAllMeals } from '../../action-creators';
 import { RootState } from '../../store';
+import { CollapseAllMealsAction, ExpandAllMealsAction } from '../../action-types';
+import { collapseAllMeals, expandAllMeals } from '../../action-creators';
 
-type MealsControlPanelDispatch = Dispatch<SetCollapsedForAllMealsAction>;
+type MealsControlPanelDispatch = Dispatch<ExpandAllMealsAction | CollapseAllMealsAction>;
 
 export interface MealsControlPanelStateToProps {
   isPageContentLoading: boolean;
 }
 
 export interface MealsControlPanelDispatchToPropsMapResult {
-  setCollapsedForAllMeals: (collapsed: boolean, meals: MealType[]) => void;
+  expandAllMeals: () => void;
+  collapseAllMeals: () => void;
 }
 
 const mapStateToProps = (state: RootState): MealsControlPanelStateToProps => {
@@ -24,8 +24,11 @@ const mapStateToProps = (state: RootState): MealsControlPanelStateToProps => {
 
 const mapDispatchToProps = (dispatch: MealsControlPanelDispatch): MealsControlPanelDispatchToPropsMapResult => {
   return {
-    setCollapsedForAllMeals: (collapsed: boolean, meals: MealType[]): void => {
-      dispatch(setCollapsedForAllMeals(collapsed, meals));
+    expandAllMeals: (): void => {
+      dispatch(expandAllMeals());
+    },
+    collapseAllMeals: (): void => {
+      dispatch(collapseAllMeals());
     },
   };
 };

@@ -18,7 +18,8 @@ const MealsListItem: React.FC<MealsListItemProps> = ({
   notesForMealFetchStates,
   noteItems,
   mealOperationStatuses,
-  setCollapsedForMeal,
+  expandMeal,
+  collapseMeal,
   openModal,
 }: MealsListItemProps) => {
   const pageId = useIdFromRoute();
@@ -42,12 +43,16 @@ const MealsListItem: React.FC<MealsListItemProps> = ({
   const countCalories = mealNotes.reduce((sum, note) => sum + note.calories, 0);
 
   const handleItemHeaderClick = (): void => {
-    setCollapsedForMeal(!isCollapsed, mealType);
+    if (isCollapsed) {
+      expandMeal(mealType);
+    } else {
+      collapseMeal(mealType);
+    }
   };
 
   const handleAddNoteButtonClick = (): void => {
     if (isCollapsed) {
-      setCollapsedForMeal(false, mealType);
+      expandMeal(mealType);
     }
 
     openModal('New note', <NoteInputConnected mealType={mealType} pageId={pageId}></NoteInputConnected>, {

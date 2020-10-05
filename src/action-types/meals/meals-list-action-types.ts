@@ -2,20 +2,28 @@ import { Action } from 'redux';
 import { MealType } from '../../models';
 
 export enum MealsListActionTypes {
-  SetCollapsedForMeal = 'MEALS_LIST__SET_COLLAPSED_FOR_MEAL',
-  SetCollapsedForAllMeals = 'MEALS_LIST_SET_COLLAPSED_FOR_ALL_MEALS',
+  ExpandMeal = 'MEALS_LIST_EXPAND',
+  CollapseMeal = 'MEALS_LIST_COLLAPSE',
+  ExpandAllMeals = 'MEALS_LIST_EXPAND_ALL',
+  CollapseAllMeals = 'MEALS_LIST_COLLAPSE_ALL',
 }
 
-export interface SetCollapsedForMealAction extends Action<MealsListActionTypes.SetCollapsedForMeal> {
-  type: MealsListActionTypes.SetCollapsedForMeal;
-  collapsed: boolean;
+export interface ExpandMealAction extends Action<MealsListActionTypes.ExpandMeal> {
+  type: MealsListActionTypes.ExpandMeal;
   meal: MealType;
 }
 
-export interface SetCollapsedForAllMealsAction extends Action<MealsListActionTypes.SetCollapsedForAllMeals> {
-  type: MealsListActionTypes.SetCollapsedForAllMeals;
-  collapsed: boolean;
-  meals: MealType[];
+export interface CollapseMealAction extends Action<MealsListActionTypes.CollapseMeal> {
+  type: MealsListActionTypes.CollapseMeal;
+  meal: MealType;
 }
 
-export type MealsListActions = SetCollapsedForMealAction | SetCollapsedForAllMealsAction;
+export interface ExpandAllMealsAction extends Action<MealsListActionTypes.ExpandAllMeals> {
+  type: MealsListActionTypes.ExpandAllMeals;
+}
+
+export interface CollapseAllMealsAction extends Action<MealsListActionTypes.CollapseAllMeals> {
+  type: MealsListActionTypes.CollapseAllMeals;
+}
+
+export type MealsListActions = ExpandMealAction | CollapseMealAction | ExpandAllMealsAction | CollapseAllMealsAction;

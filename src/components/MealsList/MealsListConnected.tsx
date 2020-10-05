@@ -2,18 +2,17 @@ import { connect } from 'react-redux';
 import MealsList from './MealsList';
 import { DataFetchState, RootState } from '../../store';
 import { Dispatch } from 'redux';
-import { SetCollapsedForAllMealsAction } from '../../action-types';
-import { setCollapsedForAllMeals } from '../../action-creators';
-import { MealType } from '../../models';
+import { ExpandAllMealsAction } from '../../action-types';
+import { expandAllMeals } from '../../action-creators';
 
-type MealsListDispatch = Dispatch<SetCollapsedForAllMealsAction>;
+type MealsListDispatch = Dispatch<ExpandAllMealsAction>;
 
 export interface MealsListStateToPropsMapResult {
   notesForPageFetchState: DataFetchState;
 }
 
 export interface MealsListDispatchToPropsMapResult {
-  setCollapsedForAllMeals: (collapsed: boolean, meals: MealType[]) => void;
+  expandAllMeals: () => void;
 }
 
 const mapStateToProps = (state: RootState): MealsListStateToPropsMapResult => {
@@ -24,8 +23,8 @@ const mapStateToProps = (state: RootState): MealsListStateToPropsMapResult => {
 
 const mapDispatchToProps = (dispatch: MealsListDispatch): MealsListDispatchToPropsMapResult => {
   return {
-    setCollapsedForAllMeals: (collapsed: boolean, meals: MealType[]): void => {
-      dispatch(setCollapsedForAllMeals(collapsed, meals));
+    expandAllMeals: (): void => {
+      dispatch(expandAllMeals());
     },
   };
 };

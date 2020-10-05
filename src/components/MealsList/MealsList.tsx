@@ -7,7 +7,7 @@ import { useIdFromRoute } from '../../hooks';
 
 interface MealsListProps extends MealsListStateToPropsMapResult, MealsListDispatchToPropsMapResult {}
 
-const MealsList: React.FC<MealsListProps> = ({ notesForPageFetchState, setCollapsedForAllMeals }: MealsListProps) => {
+const MealsList: React.FC<MealsListProps> = ({ notesForPageFetchState, expandAllMeals }: MealsListProps) => {
   const classNames = ['meals-list'];
   const { loading: areNotesForPageLoading } = notesForPageFetchState;
 
@@ -17,9 +17,9 @@ const MealsList: React.FC<MealsListProps> = ({ notesForPageFetchState, setCollap
 
   useEffect(() => {
     return (): void => {
-      setCollapsedForAllMeals(false, availableMealTypes);
+      expandAllMeals();
     };
-  }, [pageId, setCollapsedForAllMeals]);
+  }, [pageId, expandAllMeals]);
 
   return (
     <div className={classNames.join(' ')}>

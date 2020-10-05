@@ -1,23 +1,28 @@
 import { MealsListState } from '../../store';
 import { MealsListActions, MealsListActionTypes } from '../../action-types';
+import { availableMealTypes } from '../../models';
 
-const initialState: MealsListState = {
+export const initialState: MealsListState = {
   collapsedMeals: [],
 };
 
 const mealsListReducer = (state: MealsListState = initialState, action: MealsListActions): MealsListState => {
   switch (action.type) {
-    case MealsListActionTypes.SetCollapsedForMeal:
+    case MealsListActionTypes.ExpandMeal:
       return {
-        ...state,
-        collapsedMeals: action.collapsed
-          ? [...state.collapsedMeals, action.meal]
-          : state.collapsedMeals.filter(mt => mt !== action.meal),
+        collapsedMeals: state.collapsedMeals.filter(mt => mt !== action.meal),
       };
-    case MealsListActionTypes.SetCollapsedForAllMeals:
+    case MealsListActionTypes.CollapseMeal:
       return {
-        ...state,
-        collapsedMeals: action.collapsed ? action.meals : [],
+        collapsedMeals: [...state.collapsedMeals, action.meal],
+      };
+    case MealsListActionTypes.ExpandAllMeals:
+      return {
+        collapsedMeals: [],
+      };
+    case MealsListActionTypes.CollapseAllMeals:
+      return {
+        collapsedMeals: [...availableMealTypes],
       };
     default:
       return state;
