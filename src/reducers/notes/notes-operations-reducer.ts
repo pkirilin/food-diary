@@ -24,7 +24,6 @@ const notesOperationsReducer = (
   switch (action.type) {
     case NotesOperationsActionTypes.CreateRequest:
       return {
-        ...state,
         mealOperationStatuses: [
           ...state.mealOperationStatuses.filter(s => s.mealType !== action.note.mealType),
           {
@@ -36,7 +35,6 @@ const notesOperationsReducer = (
       };
     case NotesOperationsActionTypes.CreateSuccess:
       return {
-        ...state,
         mealOperationStatuses: [
           ...state.mealOperationStatuses.filter(s => s.mealType !== action.mealType),
           {
@@ -47,7 +45,6 @@ const notesOperationsReducer = (
       };
     case NotesOperationsActionTypes.CreateError:
       return {
-        ...state,
         mealOperationStatuses: [
           ...state.mealOperationStatuses.filter(s => s.mealType !== action.mealType),
           {
@@ -60,7 +57,6 @@ const notesOperationsReducer = (
 
     case NotesOperationsActionTypes.EditRequest:
       return {
-        ...state,
         mealOperationStatuses: [
           ...state.mealOperationStatuses.filter(s => s.mealType !== action.request.note.mealType),
           {
@@ -72,7 +68,6 @@ const notesOperationsReducer = (
       };
     case NotesOperationsActionTypes.EditSuccess:
       return {
-        ...state,
         mealOperationStatuses: [
           ...state.mealOperationStatuses.filter(s => s.mealType !== action.mealType),
           {
@@ -83,7 +78,6 @@ const notesOperationsReducer = (
       };
     case NotesOperationsActionTypes.EditError:
       return {
-        ...state,
         mealOperationStatuses: [
           ...state.mealOperationStatuses.filter(s => s.mealType !== action.mealType),
           {
@@ -96,7 +90,6 @@ const notesOperationsReducer = (
 
     case NotesOperationsActionTypes.DeleteRequest:
       return {
-        ...state,
         mealOperationStatuses: [
           ...state.mealOperationStatuses.filter(s => s.mealType !== action.request.mealType),
           {
@@ -108,7 +101,6 @@ const notesOperationsReducer = (
       };
     case NotesOperationsActionTypes.DeleteSuccess:
       return {
-        ...state,
         mealOperationStatuses: [
           ...state.mealOperationStatuses.filter(s => s.mealType !== action.mealType),
           {
@@ -119,7 +111,6 @@ const notesOperationsReducer = (
       };
     case NotesOperationsActionTypes.DeleteError:
       return {
-        ...state,
         mealOperationStatuses: [
           ...state.mealOperationStatuses.filter(s => s.mealType !== action.mealType),
           {

@@ -14,7 +14,7 @@ const initNotesForMealFetchStates = (): NotesForMealFetchState[] => {
   return result;
 };
 
-const initialState: NotesListState = {
+export const initialState: NotesListState = {
   noteItems: [],
   notesForPageFetchState: {
     loading: false,
