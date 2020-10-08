@@ -1,7 +1,7 @@
 import { PagesListState } from '../../store';
 import { PagesListActionTypes, PagesListActions } from '../../action-types';
 
-const initialState: PagesListState = {
+export const initialState: PagesListState = {
   pageItems: [],
   pageItemsFetchState: {
     loading: false,

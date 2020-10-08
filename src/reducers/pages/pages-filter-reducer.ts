@@ -2,7 +2,7 @@ import { PagesFilterState } from '../../store';
 import { PagesFilterActions, PagesFilterActionTypes } from '../../action-types';
 import { SortOrder } from '../../models';
 
-const initialState: PagesFilterState = {
+export const initialState: PagesFilterState = {
   params: {
     sortOrder: SortOrder.Descending,
   },
@@ -13,7 +13,6 @@ const pagesFilterReducer = (state: PagesFilterState = initialState, action: Page
   switch (action.type) {
     case PagesFilterActionTypes.UpdateFilter:
       return {
-        ...state,
         params: action.updatedFilter,
         isChanged: true,
       };
