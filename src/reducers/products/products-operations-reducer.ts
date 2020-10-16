@@ -1,7 +1,7 @@
 import { ProductsOperationsState } from '../../store';
 import { ProductsOperationsActions, ProductsOperationsActionTypes } from '../../action-types';
 
-const initialState: ProductsOperationsState = {
+export const initialState: ProductsOperationsState = {
   productOperationStatus: {
     performing: false,
   },

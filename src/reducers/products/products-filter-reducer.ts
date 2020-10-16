@@ -1,7 +1,7 @@
 import { ProductsFilterState } from '../../store';
 import { ProductsFilterActions, ProductsFilterActionTypes } from '../../action-types';
 
-const initialState: ProductsFilterState = {
+export const initialState: ProductsFilterState = {
   params: {
     pageSize: 30,
   },
