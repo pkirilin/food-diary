@@ -6,12 +6,19 @@ import {
   GetCategoryDropdownItemsDispatch,
 } from '../../../action-types';
 import { CategoryDropdownItem, CategoryDropdownSearchRequest } from '../../../models';
-import * as categoriesApiClient from '../../../services/categories-api-client';
 import { CategoriesDropdownState } from '../../../store';
 import { getCategoryDropdownItems } from '../categories-dropdown-actions';
 
 const mockStore = configureStore<CategoriesDropdownState, GetCategoryDropdownItemsDispatch>([thunk]);
 const store = mockStore();
+
+jest.mock('../../../services');
+
+const servicesMockObject = jest.requireMock('../../../services');
+
+const getCategoryDropdownItemsAsyncMock = servicesMockObject.getCategoryDropdownItemsAsync as jest.Mock<
+  Promise<Response>
+>;
 
 describe('categories dropdown actions', () => {
   describe('getCategoryDropdownItems', () => {
@@ -46,9 +53,8 @@ describe('categories dropdown actions', () => {
           categoryDropdownItems,
         },
       ];
-      const categoriesApiClientMock = jest.spyOn(categoriesApiClient, 'getCategoryDropdownItemsAsync');
 
-      categoriesApiClientMock.mockResolvedValue({
+      getCategoryDropdownItemsAsyncMock.mockResolvedValue({
         ...new Response(),
         ok: true,
         json: jest.fn().mockResolvedValue(categoryDropdownItems),
@@ -58,7 +64,6 @@ describe('categories dropdown actions', () => {
       await store.dispatch(action);
 
       // Assert
-      expect(categoriesApiClientMock).toHaveBeenCalledWith(request);
       expect(store.getActions()).toEqual(expectedActions);
     });
 
@@ -78,9 +83,8 @@ describe('categories dropdown actions', () => {
           error: 'Failed to get categories: unknown response code',
         },
       ];
-      const categoriesApiClientMock = jest.spyOn(categoriesApiClient, 'getCategoryDropdownItemsAsync');
 
-      categoriesApiClientMock.mockResolvedValue({
+      getCategoryDropdownItemsAsyncMock.mockResolvedValue({
         ...new Response(),
         ok: false,
         status: -1,
@@ -90,11 +94,10 @@ describe('categories dropdown actions', () => {
       await store.dispatch(action);
 
       // Assert
-      expect(categoriesApiClientMock).toHaveBeenCalledWith(request);
       expect(store.getActions()).toEqual(expectedActions);
     });
 
-    test(`should dispatch '${CategoriesDropdownActionTypes.Request}', then '${CategoriesDropdownActionTypes.Error}' if server error occured`, async () => {
+    test(`should dispatch '${CategoriesDropdownActionTypes.Request}', then '${CategoriesDropdownActionTypes.Error}' if request failed`, async () => {
       // Arrange
       const request: CategoryDropdownSearchRequest = {
         categoryNameFilter: 'test',
@@ -110,15 +113,13 @@ describe('categories dropdown actions', () => {
           error: 'Failed to get categories',
         },
       ];
-      const categoriesApiClientMock = jest.spyOn(categoriesApiClient, 'getCategoryDropdownItemsAsync');
 
-      categoriesApiClientMock.mockRejectedValue(new Response());
+      getCategoryDropdownItemsAsyncMock.mockRejectedValue(new Response());
 
       // Act
       await store.dispatch(action);
 
       // Assert
-      expect(categoriesApiClientMock).toHaveBeenCalledWith(request);
       expect(store.getActions()).toEqual(expectedActions);
     });
   });
