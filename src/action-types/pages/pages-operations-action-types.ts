@@ -214,6 +214,13 @@ export type GetDateForNewPageDispatch = ThunkDispatch<
   GetDateForNewPageSuccessAction | GetDateForNewPageErrorAction
 >;
 
+export type PagesOperationsActionsDispatch = CreatePageDispatch &
+  EditPageDispatch &
+  DeletePagesDispatch &
+  ExportPagesDispatch &
+  ImportPagesDispatch &
+  GetDateForNewPageDispatch;
+
 export type CreatePageDispatchProp = (page: PageCreateEdit) => Promise<CreatePageSuccessAction | CreatePageErrorAction>;
 
 export type EditPageDispatchProp = (request: PageEditRequest) => Promise<EditPageSuccessAction | EditPageErrorAction>;
