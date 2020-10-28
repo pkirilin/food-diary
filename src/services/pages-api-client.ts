@@ -14,7 +14,7 @@ export const getPagesAsync = async ({ startDate, endDate, sortOrder }: PagesFilt
     requestUrl += `&endDate=${endDate}`;
   }
 
-  return await fetch(requestUrl, {
+  return fetch(requestUrl, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -23,7 +23,7 @@ export const getPagesAsync = async ({ startDate, endDate, sortOrder }: PagesFilt
 };
 
 export const createPageAsync = async (page: PageCreateEdit): Promise<Response> => {
-  return await fetch(pagesApiClientUrl, {
+  return fetch(pagesApiClientUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -33,7 +33,7 @@ export const createPageAsync = async (page: PageCreateEdit): Promise<Response> =
 };
 
 export const editPageAsync = async ({ id, page }: PageEditRequest): Promise<Response> => {
-  return await fetch(`${pagesApiClientUrl}/${id}`, {
+  return fetch(`${pagesApiClientUrl}/${id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -43,7 +43,7 @@ export const editPageAsync = async ({ id, page }: PageEditRequest): Promise<Resp
 };
 
 export const deletePagesAsync = async (pagesIds: number[]): Promise<Response> => {
-  return await fetch(`${pagesApiClientUrl}/batch`, {
+  return fetch(`${pagesApiClientUrl}/batch`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
@@ -53,7 +53,7 @@ export const deletePagesAsync = async (pagesIds: number[]): Promise<Response> =>
 };
 
 export const getDateForNewPageAsync = async (): Promise<Response> => {
-  return await fetch(`${pagesApiClientUrl}/date`, {
+  return fetch(`${pagesApiClientUrl}/date`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
