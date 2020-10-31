@@ -25,38 +25,36 @@ export type ApiMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
 export type ApiResponseHandler<A extends Action, R> = (response: Response, dispatch: Dispatch<A>) => R | Promise<R>;
 
-export interface ApiOptions<SA extends Action, EA extends Action, SD> {
+export interface ApiOptions<SA extends Action, EA extends Action, D> {
   url: string;
   method?: ApiMethod;
   contentType?: string;
-  onSuccess?: ApiResponseHandler<SA, SD>;
+  onSuccess?: ApiResponseHandler<SA, D>;
   onError?: ApiResponseHandler<EA, string>;
 }
 
-export interface AsyncActionBuilderOptions<RA extends Action, SA extends Action, EA extends Action, SD> {
+export interface AsyncActionBuilderOptions<RA extends Action, SA extends Action, EA extends Action, D> {
   makeRequest(): ActionCreatorComposer<RA>;
-  makeSuccess(): ActionCreatorParameterizedComposer<SA, SD>;
+  makeSuccess(): ActionCreatorParameterizedComposer<SA, D>;
   makeError(): ActionCreatorParameterizedComposer<EA, string>;
-  apiOptions: ApiOptions<SA, EA, SD>;
+  apiOptions: ApiOptions<SA, EA, D>;
 }
 
 export function createAsyncAction<
-  RA extends RequestAction<RC, RP>,
-  SA extends SuccessAction<SC, SD>,
+  RA extends RequestAction<RC, P>,
+  SA extends SuccessAction<SC, D>,
   EA extends ErrorAction<EC>,
   RC extends string,
   SC extends string,
   EC extends string,
-  RP,
-  SD,
-  D = void,
-  P = void
+  D = {},
+  P = {}
 >({
   makeRequest,
   makeSuccess,
   makeError,
   apiOptions,
-}: AsyncActionBuilderOptions<RA, SA, EA, SD>): ActionCreator<ThunkAction<Promise<SA | EA>, D, P, SA | EA>> {
+}: AsyncActionBuilderOptions<RA, SA, EA, D>): ActionCreator<ThunkAction<Promise<SA | EA>, D, P, SA | EA>> {
   function getHeaders(contentType?: string): Record<string, string> {
     const headers: Record<string, string> = {};
 
