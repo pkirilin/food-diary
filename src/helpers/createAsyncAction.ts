@@ -58,10 +58,12 @@ export function createAsyncAction<
   apiOptions,
 }: AsyncActionBuilderOptions<RA, SA, EA, SD>): ActionCreator<ThunkAction<Promise<SA | EA>, D, P, SA | EA>> {
   function getHeaders(contentType?: string): Record<string, string> {
-    const headers = {};
+    const headers: Record<string, string> = {};
 
     if (!contentType) {
-      Object.assign(headers, { 'Content-Type': 'application/json' });
+      headers['Content-Type'] = 'application/json';
+    } else {
+      headers['Content-Type'] = contentType;
     }
 
     return headers;
