@@ -14,15 +14,11 @@ export interface ErrorAction<A> extends Action<A> {
   errorMessage: string;
 }
 
-export type AsyncActionApiCall = {
-  setUrl(url: string): AsyncActionApiCall;
-};
-
 export type ActionCreatorComposer<A, T> = (data?: T) => A;
 
 export type ApiMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
 export type ApiRequestBody = string | FormData | null;
-export type ApiResponseHandler<A extends Action, R> = (response: Response, dispatch: Dispatch<A>) => R | Promise<R>;
+export type ApiResponseHandler<A extends Action, R> = (dispatch: Dispatch<A>, response?: Response) => R | Promise<R>;
 export type ApiRequestUrlModifier<P> = (baseUrl: string, payload: P) => string;
 export type ApiRequestBodyConstructor<P> = (payload: P) => ApiRequestBody;
 
@@ -122,20 +118,25 @@ export function createAsyncAction<
 
         if (response.ok) {
           if (onSuccess) {
-            const data = await onSuccess(response, dispatch);
+            const data = await onSuccess(dispatch, response);
             return dispatch(success(data));
           }
           return dispatch(success());
         }
 
         if (onError) {
-          const errorMessage = await onError(response, dispatch);
+          const errorMessage = await onError(dispatch, response);
           return dispatch(error(errorMessage));
         }
 
         return dispatch(error('Unknown error occured'));
       } catch (err) {
-        return dispatch(error('Failed to fetch data: server is not available'));
+        if (onError) {
+          const errorMessage = await onError(dispatch);
+          return dispatch(error(errorMessage));
+        }
+
+        return dispatch(error('Failed to fetch data'));
       }
     };
   };

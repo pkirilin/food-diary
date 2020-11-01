@@ -99,7 +99,11 @@ function generateGetTestRecordsAsyncAction() {
     },
     apiOptions: {
       baseUrl: 'test url',
-      onSuccess: async (response): Promise<TestRecord[]> => {
+      onSuccess: async (dispatch, response): Promise<TestRecord[]> => {
+        if (!response) {
+          throw new Error('Failed to get test records: response is undefined');
+        }
+
         const data = (await response.json()) as TestRecord[];
         return data;
       },
@@ -264,7 +268,7 @@ describe('createAsyncAction', () => {
       },
       {
         type: GetTestRecordsActionTypes.Error,
-        errorMessage: 'Failed to fetch data: server is not available',
+        errorMessage: 'test error message',
       },
     ];
 
