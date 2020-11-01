@@ -18,7 +18,18 @@ export type ActionCreatorComposer<A, T> = (data?: T) => A;
 
 export type ApiMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
 export type ApiRequestBody = string | FormData | null;
-export type ApiResponseHandler<A extends Action, R> = (dispatch: Dispatch<A>, response?: Response) => R | Promise<R>;
+
+export type ApiSuccessResponseHandler<A extends Action, R> = (
+  dispatch: Dispatch<A>,
+  response: Response,
+) => R | Promise<R>;
+
+export type ApiErrorResponseHandler<A extends Action, R> = (
+  dispatch: Dispatch<A>,
+  // Response is optional because handler might not received any response in case of error
+  response?: Response,
+) => R | Promise<R>;
+
 export type ApiRequestUrlModifier<P> = (baseUrl: string, payload: P) => string;
 export type ApiRequestBodyConstructor<P> = (payload: P) => ApiRequestBody;
 
@@ -26,8 +37,8 @@ export interface ApiOptions<SA extends Action, EA extends Action, D, P> {
   baseUrl: string;
   method?: ApiMethod;
   contentType?: string;
-  onSuccess?: ApiResponseHandler<SA, D>;
-  onError?: ApiResponseHandler<EA, string>;
+  onSuccess?: ApiSuccessResponseHandler<SA, D>;
+  onError?: ApiErrorResponseHandler<EA, string>;
   modifyUrl?: ApiRequestUrlModifier<P>;
   constructBody?: ApiRequestBodyConstructor<P>;
 }
