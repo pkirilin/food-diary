@@ -17,7 +17,7 @@ describe('createErrorResponseHandler', () => {
     {
       baseErrorMessage: 'Base error message',
       response: { status: 404 } as Response,
-      expectedErrorMessage: 'Base error message: not found',
+      expectedErrorMessage: 'Base error message: data not found',
     },
     {
       baseErrorMessage: 'Base error message',
@@ -70,11 +70,31 @@ describe('createErrorResponseHandler', () => {
     const response = new Response();
 
     // Act
-    const getErrorMessage = createErrorResponseHandler<TestAction>('TEST', errorDispatcherMock);
+    const getErrorMessage = createErrorResponseHandler<TestAction>('TEST', {}, errorDispatcherMock);
     const errorMessage = await getErrorMessage(dispatchMock, response);
 
     // Assert
     expect(errorDispatcherMock).toHaveBeenCalledWith(dispatchMock, errorMessage);
+  });
+
+  test('should create handler which transforms received response if response transformer is specified', async () => {
+    // Arrange
+    const dispatchMock = jest.fn();
+    const responseTransformerMock = jest.fn().mockResolvedValue('TRANSFORMED MESSAGE');
+    const response: Response = {
+      ...new Response(),
+      status: 400,
+    };
+
+    // Act
+    const getErrorMessage = createErrorResponseHandler<TestAction>('TEST', {
+      [400]: responseTransformerMock,
+    });
+    const errorMessage = await getErrorMessage(dispatchMock, response);
+
+    // Assert
+    expect(responseTransformerMock).toHaveBeenCalledWith(response);
+    expect(errorMessage).toBe('TEST: TRANSFORMED MESSAGE');
   });
 });
 

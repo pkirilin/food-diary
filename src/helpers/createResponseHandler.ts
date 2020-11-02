@@ -2,30 +2,42 @@ import { Action, Dispatch } from 'redux';
 import { ApiErrorResponseHandler, ApiSuccessResponseHandler } from './createAsyncAction';
 
 export type MessageDispatcher<A extends Action> = (dispatch: Dispatch<A>, message: string) => void;
+export type ResponseTransformer<D> = (response: Response) => Promise<D>;
 
 export function createErrorResponseHandler<A extends Action>(
   baseErrorMessage = 'Failed to fetch',
+  responseTransformersByStatusCode: Record<number, ResponseTransformer<string>> = {},
   errorMessageDispatcher?: MessageDispatcher<A>,
 ): ApiErrorResponseHandler<A, string> {
-  function composeErrorMessage(baseError: string, detailedError: string): string {
-    return `${baseError}: ${detailedError}`;
+  // Each response code (supported for handling) should have default error message
+  const defaultErrorMessagesByStatusCode = {
+    [400]: 'wrong request data',
+    [404]: 'data not found',
+    [500]: 'internal server error',
+  } as Record<number, string>;
+
+  function formatErrorMessage(errorMessage: string): string {
+    return `${baseErrorMessage}: ${errorMessage}`;
   }
 
   async function getErrorMessageByResponseAsync(response?: Response): Promise<string> {
     if (!response) {
-      return composeErrorMessage(baseErrorMessage, 'server is not available');
+      return formatErrorMessage('server is not available');
     }
 
-    switch (response.status) {
-      case 400:
-        return composeErrorMessage(baseErrorMessage, 'wrong request data');
-      case 404:
-        return composeErrorMessage(baseErrorMessage, 'not found');
-      case 500:
-        return composeErrorMessage(baseErrorMessage, 'internal server error');
-      default:
-        return composeErrorMessage(baseErrorMessage, 'unknown response code');
+    const defaultErrorMessage = defaultErrorMessagesByStatusCode[response.status];
+    const responseTransformer = responseTransformersByStatusCode[response.status];
+
+    if (!defaultErrorMessage) {
+      return formatErrorMessage('unknown response code');
     }
+
+    if (!responseTransformer) {
+      return formatErrorMessage(defaultErrorMessage);
+    }
+
+    const transformedErrorMessage = await responseTransformer(response);
+    return formatErrorMessage(transformedErrorMessage);
   }
 
   return async (dispatch, response): Promise<string> => {
@@ -40,7 +52,7 @@ export function createErrorResponseHandler<A extends Action>(
 }
 
 export function createSuccessResponseHandler<A extends Action, D = {}>(
-  responseTransformer: (response: Response) => Promise<D>,
+  responseTransformer: ResponseTransformer<D>,
 ): ApiSuccessResponseHandler<A, D> {
   return async (dispatch, response): Promise<D> => {
     const data = await responseTransformer(response);
