@@ -1,8 +1,8 @@
 import configureStore from 'redux-mock-store';
 import thunk, { ThunkDispatch } from 'redux-thunk';
-import { ApiRequestBody, createAsyncAction, ErrorAction, RequestAction, SuccessAction } from '../createAsyncAction';
+import { createAsyncAction, ErrorAction, RequestAction, SuccessAction } from '../createAsyncAction';
 
-const mockStore = configureStore<TestRecordsState, GetTestRecordsDispatch & CreateTestRecordDispatch>([thunk]);
+const mockStore = configureStore<TestRecordsState, GetTestRecordsDispatch>([thunk]);
 const store = mockStore();
 const fetchMock = jest.fn() as jest.Mock<Promise<Response>>;
 
@@ -29,300 +29,424 @@ enum GetTestRecordsActionTypes {
   Error = 'GET_TEST_RECORDS_ERROR',
 }
 
-enum CreateTestRecordActionTypes {
-  Request = 'CREATE_TEST_RECORD_REQUEST',
-  Success = 'CREATE_TEST_RECORD_SUCCESS',
-  Error = 'CREATE_TEST_RECORD_ERROR',
-}
-
 type GetTestRecordsRequestAction = RequestAction<GetTestRecordsActionTypes.Request, GetTestRecordsRequest>;
 type GetTestRecordsSuccessAction = SuccessAction<GetTestRecordsActionTypes.Success, TestRecord[]>;
 type GetTestRecordsErrorAction = ErrorAction<GetTestRecordsActionTypes.Error>;
-
-type CreateTestRecordRequestAction = RequestAction<CreateTestRecordActionTypes.Request, TestRecord>;
-type CreateTestRecordSuccessAction = SuccessAction<CreateTestRecordActionTypes.Success>;
-type CreateTestRecordErrorAction = ErrorAction<CreateTestRecordActionTypes.Error>;
-
-type GetTestRecordsActions = GetTestRecordsRequestAction | GetTestRecordsSuccessAction | GetTestRecordsErrorAction;
-type CreateTestRecordActions =
-  | CreateTestRecordRequestAction
-  | CreateTestRecordSuccessAction
-  | CreateTestRecordErrorAction;
 
 type GetTestRecordsDispatch = ThunkDispatch<
   TestRecord[],
   GetTestRecordsRequest,
   GetTestRecordsSuccessAction | GetTestRecordsErrorAction
 >;
-type CreateTestRecordDispatch = ThunkDispatch<
-  {},
-  TestRecord,
-  CreateTestRecordSuccessAction | CreateTestRecordErrorAction
->;
-
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function generateGetTestRecordsAsyncAction() {
-  return createAsyncAction<
-    GetTestRecordsRequestAction,
-    GetTestRecordsSuccessAction,
-    GetTestRecordsErrorAction,
-    GetTestRecordsActionTypes.Request,
-    GetTestRecordsActionTypes.Success,
-    GetTestRecordsActionTypes.Error,
-    TestRecord[],
-    GetTestRecordsRequest
-  >({
-    makeRequest: () => {
-      return (payload?: GetTestRecordsRequest): GetTestRecordsRequestAction => {
-        if (!payload) {
-          throw new Error('Failed to get test records: request payload is empty');
-        }
-
-        return {
-          type: GetTestRecordsActionTypes.Request,
-          requestMessage: 'Loading test records',
-          payload,
-        };
-      };
-    },
-    makeSuccess: () => {
-      return (data?: TestRecord[]): GetTestRecordsSuccessAction => ({
-        type: GetTestRecordsActionTypes.Success,
-        data: data ?? [],
-      });
-    },
-    makeError: () => {
-      return (errorMessage?: string): GetTestRecordsErrorAction => ({
-        type: GetTestRecordsActionTypes.Error,
-        errorMessage: errorMessage ?? '',
-      });
-    },
-    apiOptions: {
-      baseUrl: 'test url',
-      onSuccess: async (dispatch, response): Promise<TestRecord[]> => {
-        if (!response) {
-          throw new Error('Failed to get test records: response is undefined');
-        }
-
-        const data = (await response.json()) as TestRecord[];
-        return data;
-      },
-      onError: (): string => {
-        return 'test error message';
-      },
-    },
-  });
-}
-
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function generateCreateTestRecordAsyncAction() {
-  return createAsyncAction<
-    CreateTestRecordRequestAction,
-    CreateTestRecordSuccessAction,
-    CreateTestRecordErrorAction,
-    CreateTestRecordActionTypes.Request,
-    CreateTestRecordActionTypes.Success,
-    CreateTestRecordActionTypes.Error,
-    {},
-    TestRecord
-  >({
-    makeRequest: () => {
-      return (payload?: TestRecord): CreateTestRecordRequestAction => {
-        if (!payload) {
-          throw new Error('Failed to create test record: payload is empty');
-        }
-
-        return {
-          type: CreateTestRecordActionTypes.Request,
-          requestMessage: 'Creating test record',
-          payload,
-        };
-      };
-    },
-    makeSuccess: () => {
-      return (): CreateTestRecordSuccessAction => ({
-        type: CreateTestRecordActionTypes.Success,
-        data: {},
-      });
-    },
-    makeError: () => {
-      return (errorMessage?: string): CreateTestRecordErrorAction => ({
-        type: CreateTestRecordActionTypes.Error,
-        errorMessage: errorMessage ?? '',
-      });
-    },
-    apiOptions: {
-      baseUrl: 'create test record base url',
-      method: 'POST',
-      modifyUrl: (baseUrl, payload): string => `${baseUrl} - (payload id = '${payload.id}')`,
-      constructBody: (payload: TestRecord): ApiRequestBody => JSON.stringify(payload),
-    },
-  });
-}
 
 describe('createAsyncAction', () => {
+  const receivedRecords: TestRecord[] = [
+    {
+      id: 1,
+      name: 'John',
+      age: 34,
+    },
+    {
+      id: 2,
+      name: 'Mike',
+      age: 26,
+    },
+  ];
+
   afterEach(() => {
     jest.clearAllMocks();
     store.clearActions();
   });
 
-  test('should create async action which dispatches request and success actions, calls onSuccess callback and receives data if server response is ok', async () => {
+  test('should dispatch request and success actions if response is ok', async () => {
     // Arrange
-    const getTestRecords = generateGetTestRecordsAsyncAction();
-    const requestPayload: GetTestRecordsRequest = {
-      filterByName: 'John',
-      ageLimit: 40,
+    const expectedRequestAction: GetTestRecordsRequestAction = {
+      type: GetTestRecordsActionTypes.Request,
+      requestMessage: 'Loading test records',
+      payload: {
+        filterByName: 'John',
+        ageLimit: 40,
+      },
     };
-    const receivedRecords: TestRecord[] = [
-      {
-        id: 1,
-        name: 'John',
-        age: 34,
-      },
-      {
-        id: 2,
-        name: 'Mike',
-        age: 26,
-      },
-    ];
-    const expectedActions: GetTestRecordsActions[] = [
-      {
-        type: GetTestRecordsActionTypes.Request,
-        requestMessage: 'Loading test records',
-        payload: requestPayload,
-      },
-      {
-        type: GetTestRecordsActionTypes.Success,
-        data: receivedRecords,
-      },
-    ];
+    const expectedSuccessAction: GetTestRecordsSuccessAction = {
+      type: GetTestRecordsActionTypes.Success,
+      data: receivedRecords,
+    };
 
-    fetchMock.mockResolvedValue({
-      ...new Response(),
-      ok: true,
-      json: jest.fn().mockResolvedValue(receivedRecords),
-    });
+    const makeRequestMock = jest.fn().mockReturnValue(() => expectedRequestAction);
+    const makeSuccessMock = jest.fn().mockReturnValue(() => expectedSuccessAction);
+    const makeErrorMock = jest.fn();
+
+    fetchMock.mockResolvedValue({ ...new Response(), ok: true });
 
     // Act
-    await store.dispatch(getTestRecords(requestPayload));
+    const getTestRecords = createAsyncAction<
+      GetTestRecordsRequestAction,
+      GetTestRecordsSuccessAction,
+      GetTestRecordsErrorAction,
+      GetTestRecordsActionTypes.Request,
+      GetTestRecordsActionTypes.Success,
+      GetTestRecordsActionTypes.Error,
+      TestRecord[],
+      GetTestRecordsRequest
+    >({
+      makeRequest: makeRequestMock,
+      makeSuccess: makeSuccessMock,
+      makeError: makeErrorMock,
+      apiOptions: { baseUrl: 'test url' },
+    });
+
+    await store.dispatch(getTestRecords());
 
     // Assert
-    expect(store.getActions()).toEqual(expectedActions);
-    expect(fetchMock).toHaveBeenCalledWith('test url', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    expect(makeRequestMock).toHaveBeenCalledTimes(1);
+    expect(makeSuccessMock).toHaveBeenCalledTimes(1);
+    expect(makeErrorMock).toHaveBeenCalledTimes(1);
+    expect(store.getActions()).toEqual([expectedRequestAction, expectedSuccessAction]);
   });
 
-  test('should create async action which dispatches request and error actions and calls onError callback if server response is not ok', async () => {
+  test('should dispatch request and error actions if response is not ok', async () => {
     // Arrange
-    const getTestRecords = generateGetTestRecordsAsyncAction();
-    const requestPayload: GetTestRecordsRequest = {
-      filterByName: 'John',
-      ageLimit: 40,
+    const expectedRequestAction: GetTestRecordsRequestAction = {
+      type: GetTestRecordsActionTypes.Request,
+      requestMessage: 'Loading test records',
+      payload: {
+        filterByName: 'John',
+        ageLimit: 40,
+      },
     };
-    const expectedActions: GetTestRecordsActions[] = [
-      {
-        type: GetTestRecordsActionTypes.Request,
-        requestMessage: 'Loading test records',
-        payload: requestPayload,
-      },
-      {
-        type: GetTestRecordsActionTypes.Error,
-        errorMessage: 'test error message',
-      },
-    ];
+    const expectedErrorAction: GetTestRecordsErrorAction = {
+      type: GetTestRecordsActionTypes.Error,
+      errorMessage: 'Error',
+    };
 
-    fetchMock.mockResolvedValue({
-      ...new Response(),
-      ok: false,
-    });
+    const makeRequestMock = jest.fn().mockReturnValue(() => expectedRequestAction);
+    const makeSuccessMock = jest.fn();
+    const makeErrorMock = jest.fn().mockReturnValue(() => expectedErrorAction);
+
+    fetchMock.mockResolvedValue({ ...new Response(), ok: false });
 
     // Act
-    await store.dispatch(getTestRecords(requestPayload));
+    const getTestRecords = createAsyncAction<
+      GetTestRecordsRequestAction,
+      GetTestRecordsSuccessAction,
+      GetTestRecordsErrorAction,
+      GetTestRecordsActionTypes.Request,
+      GetTestRecordsActionTypes.Success,
+      GetTestRecordsActionTypes.Error,
+      TestRecord[],
+      GetTestRecordsRequest
+    >({
+      makeRequest: makeRequestMock,
+      makeSuccess: makeSuccessMock,
+      makeError: makeErrorMock,
+      apiOptions: { baseUrl: 'test url' },
+    });
+
+    await store.dispatch(getTestRecords());
 
     // Assert
-    expect(store.getActions()).toEqual(expectedActions);
-    expect(fetchMock).toHaveBeenCalledWith('test url', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    expect(makeRequestMock).toHaveBeenCalledTimes(1);
+    expect(makeSuccessMock).toHaveBeenCalledTimes(1);
+    expect(makeErrorMock).toHaveBeenCalledTimes(1);
+    expect(store.getActions()).toEqual([expectedRequestAction, expectedErrorAction]);
   });
 
-  test('should create async action which dispatches request and error actions and calls onError callback if server response is rejected', async () => {
+  test('should dispatch request and error actions if response is rejected', async () => {
     // Arrange
-    const getTestRecords = generateGetTestRecordsAsyncAction();
-    const requestPayload: GetTestRecordsRequest = {
-      filterByName: 'John',
-      ageLimit: 40,
+    const expectedRequestAction: GetTestRecordsRequestAction = {
+      type: GetTestRecordsActionTypes.Request,
+      requestMessage: 'Loading test records',
+      payload: {
+        filterByName: 'John',
+        ageLimit: 40,
+      },
     };
-    const expectedActions: GetTestRecordsActions[] = [
-      {
-        type: GetTestRecordsActionTypes.Request,
-        requestMessage: 'Loading test records',
-        payload: requestPayload,
-      },
-      {
-        type: GetTestRecordsActionTypes.Error,
-        errorMessage: 'test error message',
-      },
-    ];
+    const expectedErrorAction: GetTestRecordsErrorAction = {
+      type: GetTestRecordsActionTypes.Error,
+      errorMessage: 'Error',
+    };
+
+    const makeRequestMock = jest.fn().mockReturnValue(() => expectedRequestAction);
+    const makeSuccessMock = jest.fn();
+    const makeErrorMock = jest.fn().mockReturnValue(() => expectedErrorAction);
 
     fetchMock.mockRejectedValue(new Response());
 
     // Act
-    await store.dispatch(getTestRecords(requestPayload));
+    const getTestRecords = createAsyncAction<
+      GetTestRecordsRequestAction,
+      GetTestRecordsSuccessAction,
+      GetTestRecordsErrorAction,
+      GetTestRecordsActionTypes.Request,
+      GetTestRecordsActionTypes.Success,
+      GetTestRecordsActionTypes.Error,
+      TestRecord[],
+      GetTestRecordsRequest
+    >({
+      makeRequest: makeRequestMock,
+      makeSuccess: makeSuccessMock,
+      makeError: makeErrorMock,
+      apiOptions: { baseUrl: 'test url' },
+    });
+
+    await store.dispatch(getTestRecords());
 
     // Assert
-    expect(store.getActions()).toEqual(expectedActions);
-    expect(fetchMock).toHaveBeenCalledWith('test url', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
+    expect(makeRequestMock).toHaveBeenCalledTimes(1);
+    expect(makeSuccessMock).toHaveBeenCalledTimes(1);
+    expect(makeErrorMock).toHaveBeenCalledTimes(1);
+    expect(store.getActions()).toEqual([expectedRequestAction, expectedErrorAction]);
+  });
+
+  test('should dispatch request action, transform successful response and dispatch success with transformed data if response is ok', async () => {
+    // Arrange
+    const expectedRequestAction: GetTestRecordsRequestAction = {
+      type: GetTestRecordsActionTypes.Request,
+      requestMessage: 'Loading test records',
+      payload: {
+        filterByName: 'John',
+        ageLimit: 40,
       },
+    };
+    const expectedSuccessAction: GetTestRecordsSuccessAction = {
+      type: GetTestRecordsActionTypes.Success,
+      data: receivedRecords,
+    };
+
+    const successActionCreatorMock = jest.fn().mockReturnValue(expectedSuccessAction);
+    const onSuccessMock = jest.fn().mockResolvedValue(receivedRecords);
+    const makeRequestMock = jest.fn().mockReturnValue(() => expectedRequestAction);
+    const makeSuccessMock = jest.fn().mockReturnValue(successActionCreatorMock);
+    const makeErrorMock = jest.fn();
+
+    fetchMock.mockResolvedValue({ ...new Response(), ok: true });
+
+    // Act
+    const getTestRecords = createAsyncAction<
+      GetTestRecordsRequestAction,
+      GetTestRecordsSuccessAction,
+      GetTestRecordsErrorAction,
+      GetTestRecordsActionTypes.Request,
+      GetTestRecordsActionTypes.Success,
+      GetTestRecordsActionTypes.Error,
+      TestRecord[],
+      GetTestRecordsRequest
+    >({
+      makeRequest: makeRequestMock,
+      makeSuccess: makeSuccessMock,
+      makeError: makeErrorMock,
+      apiOptions: {
+        baseUrl: 'test url',
+        onSuccess: onSuccessMock,
+      },
+    });
+
+    await store.dispatch(getTestRecords());
+
+    // Assert
+    expect(makeRequestMock).toHaveBeenCalledTimes(1);
+    expect(makeSuccessMock).toHaveBeenCalledTimes(1);
+    expect(makeErrorMock).toHaveBeenCalledTimes(1);
+    expect(onSuccessMock).toHaveBeenCalledTimes(1);
+    expect(store.getActions()).toEqual([expectedRequestAction, expectedSuccessAction]);
+  });
+
+  test('should dispatch request action, transform error response and dispatch error with transformed data if response is not ok', async () => {
+    // Arrange
+    const expectedRequestAction: GetTestRecordsRequestAction = {
+      type: GetTestRecordsActionTypes.Request,
+      requestMessage: 'Loading test records',
+      payload: {
+        filterByName: 'John',
+        ageLimit: 40,
+      },
+    };
+    const expectedErrorAction: GetTestRecordsErrorAction = {
+      type: GetTestRecordsActionTypes.Error,
+      errorMessage: 'Error',
+    };
+
+    const onErrorMock = jest.fn().mockResolvedValue('Error');
+    const makeRequestMock = jest.fn().mockReturnValue(() => expectedRequestAction);
+    const makeSuccessMock = jest.fn();
+    const makeErrorMock = jest.fn().mockReturnValue(() => expectedErrorAction);
+
+    fetchMock.mockResolvedValue({ ...new Response(), ok: false });
+
+    // Act
+    const getTestRecords = createAsyncAction<
+      GetTestRecordsRequestAction,
+      GetTestRecordsSuccessAction,
+      GetTestRecordsErrorAction,
+      GetTestRecordsActionTypes.Request,
+      GetTestRecordsActionTypes.Success,
+      GetTestRecordsActionTypes.Error,
+      TestRecord[],
+      GetTestRecordsRequest
+    >({
+      makeRequest: makeRequestMock,
+      makeSuccess: makeSuccessMock,
+      makeError: makeErrorMock,
+      apiOptions: {
+        baseUrl: 'test url',
+        onError: onErrorMock,
+      },
+    });
+
+    await store.dispatch(getTestRecords());
+
+    // Assert
+    expect(makeRequestMock).toHaveBeenCalledTimes(1);
+    expect(makeSuccessMock).toHaveBeenCalledTimes(1);
+    expect(makeErrorMock).toHaveBeenCalledTimes(1);
+    expect(onErrorMock).toHaveBeenCalledTimes(1);
+    expect(store.getActions()).toEqual([expectedRequestAction, expectedErrorAction]);
+  });
+
+  test('should dispatch request action, transform error response and dispatch error with transformed data if response is rejected', async () => {
+    // Arrange
+    const expectedRequestAction: GetTestRecordsRequestAction = {
+      type: GetTestRecordsActionTypes.Request,
+      requestMessage: 'Loading test records',
+      payload: {
+        filterByName: 'John',
+        ageLimit: 40,
+      },
+    };
+    const expectedErrorAction: GetTestRecordsErrorAction = {
+      type: GetTestRecordsActionTypes.Error,
+      errorMessage: 'Error',
+    };
+
+    const onErrorMock = jest.fn().mockResolvedValue('Error');
+    const makeRequestMock = jest.fn().mockReturnValue(() => expectedRequestAction);
+    const makeSuccessMock = jest.fn();
+    const makeErrorMock = jest.fn().mockReturnValue(() => expectedErrorAction);
+
+    fetchMock.mockRejectedValue(new Response());
+
+    // Act
+    const getTestRecords = createAsyncAction<
+      GetTestRecordsRequestAction,
+      GetTestRecordsSuccessAction,
+      GetTestRecordsErrorAction,
+      GetTestRecordsActionTypes.Request,
+      GetTestRecordsActionTypes.Success,
+      GetTestRecordsActionTypes.Error,
+      TestRecord[],
+      GetTestRecordsRequest
+    >({
+      makeRequest: makeRequestMock,
+      makeSuccess: makeSuccessMock,
+      makeError: makeErrorMock,
+      apiOptions: {
+        baseUrl: 'test url',
+        onError: onErrorMock,
+      },
+    });
+
+    await store.dispatch(getTestRecords());
+
+    // Assert
+    expect(makeRequestMock).toHaveBeenCalledTimes(1);
+    expect(makeSuccessMock).toHaveBeenCalledTimes(1);
+    expect(makeErrorMock).toHaveBeenCalledTimes(1);
+    expect(onErrorMock).toHaveBeenCalledTimes(1);
+    expect(store.getActions()).toEqual([expectedRequestAction, expectedErrorAction]);
+  });
+
+  test('should fetch data with specified url, method and content-type', async () => {
+    // Arrange
+    const payload: GetTestRecordsRequest = {
+      filterByName: 'John',
+      ageLimit: 40,
+    };
+    const makeActionMock = jest.fn().mockReturnValue(jest.fn());
+
+    // Act
+    const action = createAsyncAction({
+      makeRequest: makeActionMock,
+      makeSuccess: makeActionMock,
+      makeError: makeActionMock,
+      apiOptions: {
+        baseUrl: 'test url',
+        method: 'POST',
+        contentType: 'test content type',
+      },
+    });
+
+    await action(payload)(jest.fn(), jest.fn(), {});
+
+    // Assert
+    expect(fetchMock).toHaveBeenCalledWith('test url', {
+      method: 'POST',
+      headers: { 'Content-Type': 'test content type' },
     });
   });
 
-  test('should create async action which modifies base url by action parameter, POSTs test record and dispatches request and success actions if server response is ok', async () => {
+  test('should fetch data with modified url, specified method and content-type', async () => {
     // Arrange
-    const createTestRecord = generateCreateTestRecordAsyncAction();
-    const record: TestRecord = {
-      id: 1,
-      name: 'Mike',
-      age: 26,
+    const payload: GetTestRecordsRequest = {
+      filterByName: 'John',
+      ageLimit: 40,
     };
-    const expectedActions: CreateTestRecordActions[] = [
-      {
-        type: CreateTestRecordActionTypes.Request,
-        requestMessage: 'Creating test record',
-        payload: record,
-      },
-      {
-        type: CreateTestRecordActionTypes.Success,
-        data: {},
-      },
-    ];
-
-    fetchMock.mockResolvedValue({
-      ...new Response(),
-      ok: true,
-    });
+    const makeActionMock = jest.fn().mockReturnValue(jest.fn());
+    const modifyUrlMock = jest.fn().mockReturnValue('test url (modified)');
 
     // Act
-    await store.dispatch(createTestRecord(record));
+    const action = createAsyncAction({
+      makeRequest: makeActionMock,
+      makeSuccess: makeActionMock,
+      makeError: makeActionMock,
+      apiOptions: {
+        baseUrl: 'test url',
+        method: 'POST',
+        contentType: 'test content type',
+        modifyUrl: modifyUrlMock,
+      },
+    });
+
+    await action(payload)(jest.fn(), jest.fn(), {});
 
     // Assert
-    expect(store.getActions()).toEqual(expectedActions);
-    expect(fetchMock).toHaveBeenCalledWith("create test record base url - (payload id = '1')", {
+    expect(modifyUrlMock).toHaveBeenCalledWith('test url', payload);
+    expect(fetchMock).toHaveBeenCalledWith('test url (modified)', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(record),
+      headers: { 'Content-Type': 'test content type' },
     });
+  });
+
+  test('should fetch data with specified url, method, content-type and constructed body', async () => {
+    // Arrange
+    const payload: GetTestRecordsRequest = {
+      filterByName: 'John',
+      ageLimit: 40,
+    };
+    const makeActionMock = jest.fn().mockReturnValue(jest.fn());
+    const constructBodyMock = jest.fn().mockReturnValue(JSON.stringify(payload));
+
+    // Act
+    const action = createAsyncAction({
+      makeRequest: makeActionMock,
+      makeSuccess: makeActionMock,
+      makeError: makeActionMock,
+      apiOptions: {
+        baseUrl: 'test url',
+        method: 'POST',
+        contentType: 'test content type',
+        constructBody: constructBodyMock,
+      },
+    });
+
+    await action(payload)(jest.fn(), jest.fn(), {});
+
+    // Assert
+    expect(fetchMock).toHaveBeenCalledWith('test url', {
+      method: 'POST',
+      headers: { 'Content-Type': 'test content type' },
+      body: JSON.stringify(payload),
+    });
+    expect(constructBodyMock).toHaveBeenCalledWith(payload);
   });
 });
