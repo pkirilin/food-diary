@@ -2,7 +2,7 @@ import { Action, Dispatch } from 'redux';
 import { ApiErrorResponseHandler, ApiSuccessResponseHandler } from './createAsyncAction';
 
 export type MessageDispatcher<A extends Action> = (dispatch: Dispatch<A>, message: string) => void;
-export type ResponseTransformer<D> = (response: Response) => Promise<D>;
+export type ResponseTransformer<D> = (response: Response) => D | Promise<D>;
 
 export function createErrorResponseHandler<A extends Action>(
   baseErrorMessage = 'Failed to fetch',
@@ -51,11 +51,6 @@ export function createErrorResponseHandler<A extends Action>(
   };
 }
 
-export function createSuccessResponseHandler<A extends Action, D = {}>(
-  responseTransformer: ResponseTransformer<D>,
-): ApiSuccessResponseHandler<A, D> {
-  return async (dispatch, response): Promise<D> => {
-    const data = await responseTransformer(response);
-    return data;
-  };
+export function createSuccessJsonResponseHandler<A extends Action, D = {}>(): ApiSuccessResponseHandler<A, D> {
+  return async (dispatch, response): Promise<D> => response.json();
 }

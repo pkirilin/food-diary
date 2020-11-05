@@ -1,7 +1,8 @@
 import { Action } from 'redux';
-import { createErrorResponseHandler, createSuccessResponseHandler } from '../createResponseHandler';
+import { createErrorResponseHandler, createSuccessJsonResponseHandler } from '../createResponseHandler';
 
 type TestAction = Action<'TEST'>;
+
 type TestRecord = {
   id: number;
   name: string;
@@ -98,29 +99,29 @@ describe('createErrorResponseHandler', () => {
   });
 });
 
-describe('createSuccessResponseHandler', () => {
-  test('should create handler which calls response transformer callback and returns received data', async () => {
+describe('createSuccessJsonResponseHandler', () => {
+  test('should create handler which receives JSON data from response', async () => {
     // Arrange
-    const expectedReceivedData: TestRecord[] = [
+    const expectedRecords: TestRecord[] = [
       {
         id: 1,
-        name: 'record1',
+        name: 'Test1',
       },
       {
         id: 2,
-        name: 'record2',
+        name: 'Test2',
       },
     ];
-    const dispatchMock = jest.fn();
-    const responseTransformerMock = jest.fn().mockResolvedValue(expectedReceivedData);
-    const response = new Response();
+    const response: Response = {
+      ...new Response(),
+      json: jest.fn().mockResolvedValue(expectedRecords),
+    };
 
     // Act
-    const getData = createSuccessResponseHandler<TestAction, TestRecord[]>(responseTransformerMock);
-    const data = await getData(dispatchMock, response);
+    const getJsonTestRecords = createSuccessJsonResponseHandler<TestAction, TestRecord[]>();
+    const records = await getJsonTestRecords(jest.fn(), response);
 
     // Assert
-    expect(data).toBe(expectedReceivedData);
-    expect(responseTransformerMock).toHaveBeenCalledWith(response);
+    expect(records).toEqual(expectedRecords);
   });
 });
