@@ -11,9 +11,9 @@ export function createErrorResponseHandler<A extends Action>(
 ): ApiErrorResponseHandler<A, string> {
   // Each response code (supported for handling) should have default error message
   const defaultErrorMessagesByStatusCode = {
-    [400]: 'wrong request data',
-    [404]: 'data not found',
-    [500]: 'internal server error',
+    400: 'wrong request data',
+    404: 'data not found',
+    500: 'internal server error',
   } as Record<number, string>;
 
   function formatErrorMessage(errorMessage: string): string {
