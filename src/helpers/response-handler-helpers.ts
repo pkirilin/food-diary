@@ -54,3 +54,15 @@ export function createErrorResponseHandler<A extends Action>(
 export function createSuccessJsonResponseHandler<A extends Action, D = {}>(): ApiSuccessResponseHandler<A, D> {
   return async (dispatch, response): Promise<D> => response.json();
 }
+
+export function createSuccessNumberResponseHandler<A extends Action>(): ApiSuccessResponseHandler<A, number> {
+  return async (dispatch, response): Promise<number> => {
+    const responseText = await response.text();
+
+    if (isNaN(+responseText)) {
+      throw new Error('Failed to convert text response to number');
+    }
+
+    return +responseText;
+  };
+}

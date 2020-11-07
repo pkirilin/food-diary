@@ -25,14 +25,15 @@ describe('categories dropdown reducer', () => {
   test('should handle dropdown items request', () => {
     const action: GetCategoryDropdownItemsRequestAction = {
       type: CategoriesDropdownActionTypes.Request,
-      loadingMessage: 'Test loading message',
+      requestMessage: 'Test loading message',
+      payload: {},
     };
     const expectedState: CategoriesDropdownState = {
       ...initialState,
       categoryDropdownItemsFetchState: {
         loading: true,
         loaded: false,
-        loadingMessage: action.loadingMessage,
+        loadingMessage: action.requestMessage,
       },
     };
 
@@ -44,11 +45,11 @@ describe('categories dropdown reducer', () => {
   test('should handle dropdown items success', () => {
     const action: GetCategoryDropdownItemsSuccessAction = {
       type: CategoriesDropdownActionTypes.Success,
-      categoryDropdownItems: generateTestDropdownItems(),
+      data: generateTestDropdownItems(),
     };
     const expectedState: CategoriesDropdownState = {
       ...initialState,
-      categoryDropdownItems: action.categoryDropdownItems,
+      categoryDropdownItems: action.data,
       categoryDropdownItemsFetchState: {
         loading: false,
         loaded: true,
@@ -63,7 +64,7 @@ describe('categories dropdown reducer', () => {
   test('should handle dropdown items error', () => {
     const action: GetCategoryDropdownItemsErrorAction = {
       type: CategoriesDropdownActionTypes.Error,
-      error: 'Error',
+      errorMessage: 'Error',
     };
 
     const expectedState: CategoriesDropdownState = {
@@ -71,7 +72,7 @@ describe('categories dropdown reducer', () => {
       categoryDropdownItemsFetchState: {
         loading: false,
         loaded: false,
-        error: action.error,
+        error: action.errorMessage,
       },
     };
 

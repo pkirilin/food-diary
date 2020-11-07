@@ -28,14 +28,15 @@ describe('categories list reducer', () => {
   test('should handle categories list request', () => {
     const action: GetCategoriesListRequestAction = {
       type: CategoriesListActionTypes.Request,
-      loadingMessage: 'Test',
+      requestMessage: 'Test',
+      payload: {},
     };
     const expectedState: CategoriesListState = {
       ...initialState,
       categoryItemsFetchState: {
         loading: true,
         loaded: false,
-        loadingMessage: action.loadingMessage,
+        loadingMessage: action.requestMessage,
       },
     };
 
@@ -47,11 +48,11 @@ describe('categories list reducer', () => {
   test('should handle categories list success', () => {
     const action: GetCategoriesListSuccessAction = {
       type: CategoriesListActionTypes.Success,
-      categories: generateTestCategoryItems(),
+      data: generateTestCategoryItems(),
     };
     const expectedState: CategoriesListState = {
       ...initialState,
-      categoryItems: action.categories,
+      categoryItems: action.data,
       categoryItemsFetchState: {
         loading: false,
         loaded: true,

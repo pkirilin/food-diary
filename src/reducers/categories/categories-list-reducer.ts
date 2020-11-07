@@ -21,7 +21,7 @@ const categoriesListReducer = (
         categoryItemsFetchState: {
           loading: true,
           loaded: false,
-          loadingMessage: action.loadingMessage,
+          loadingMessage: action.requestMessage,
         },
       };
     case CategoriesListActionTypes.Success:
@@ -31,7 +31,7 @@ const categoriesListReducer = (
           loading: false,
           loaded: true,
         },
-        categoryItems: action.categories,
+        categoryItems: action.data,
       };
     case CategoriesListActionTypes.Error:
       return {

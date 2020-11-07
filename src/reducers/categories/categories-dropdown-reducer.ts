@@ -20,13 +20,13 @@ const categoriesDropdownReducer = (
         categoryDropdownItemsFetchState: {
           loading: true,
           loaded: false,
-          loadingMessage: action.loadingMessage,
+          loadingMessage: action.requestMessage,
         },
       };
     case CategoriesDropdownActionTypes.Success:
       return {
         ...state,
-        categoryDropdownItems: action.categoryDropdownItems,
+        categoryDropdownItems: action.data,
         categoryDropdownItemsFetchState: {
           loading: false,
           loaded: true,
@@ -38,7 +38,7 @@ const categoriesDropdownReducer = (
         categoryDropdownItemsFetchState: {
           loading: false,
           loaded: false,
-          error: action.error,
+          error: action.errorMessage,
         },
       };
     default:

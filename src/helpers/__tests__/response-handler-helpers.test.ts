@@ -1,5 +1,9 @@
 import { Action } from 'redux';
-import { createErrorResponseHandler, createSuccessJsonResponseHandler } from '../response-handler-helpers';
+import {
+  createErrorResponseHandler,
+  createSuccessJsonResponseHandler,
+  createSuccessNumberResponseHandler,
+} from '../response-handler-helpers';
 
 type TestAction = Action<'TEST'>;
 
@@ -100,6 +104,10 @@ describe('createErrorResponseHandler', () => {
 });
 
 describe('createSuccessJsonResponseHandler', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   test('should create handler which receives JSON data from response', async () => {
     // Arrange
     const expectedRecords: TestRecord[] = [
@@ -123,5 +131,27 @@ describe('createSuccessJsonResponseHandler', () => {
 
     // Assert
     expect(records).toEqual(expectedRecords);
+  });
+});
+
+describe('createSuccessNumberResponseHandler', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('should create handler which receives number from response', async () => {
+    // Arrange
+    const expectedNumber = 123;
+    const response: Response = {
+      ...new Response(),
+      text: jest.fn().mockResolvedValue('123'),
+    };
+
+    // Act
+    const getNumber = createSuccessNumberResponseHandler<TestAction>();
+    const number = await getNumber(jest.fn(), response);
+
+    // Assert
+    expect(number).toBe(expectedNumber);
   });
 });

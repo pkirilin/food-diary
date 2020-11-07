@@ -17,7 +17,7 @@ const categoriesOperationsReducer = (
         ...state,
         status: {
           performing: true,
-          message: action.operationMessage,
+          message: action.requestMessage,
         },
       };
     case CategoriesOperationsActionTypes.CreateSuccess:
@@ -32,7 +32,7 @@ const categoriesOperationsReducer = (
         ...state,
         status: {
           performing: false,
-          error: action.error,
+          error: action.errorMessage,
         },
       };
 
@@ -41,7 +41,7 @@ const categoriesOperationsReducer = (
         ...state,
         status: {
           performing: true,
-          message: action.operationMessage,
+          message: action.requestMessage,
         },
       };
     case CategoriesOperationsActionTypes.EditSuccess:
@@ -56,7 +56,7 @@ const categoriesOperationsReducer = (
         ...state,
         status: {
           performing: false,
-          error: action.error,
+          error: action.errorMessage,
         },
       };
 
@@ -65,7 +65,7 @@ const categoriesOperationsReducer = (
         ...state,
         status: {
           performing: true,
-          message: action.operationMessage,
+          message: action.requestMessage,
         },
       };
     case CategoriesOperationsActionTypes.DeleteSuccess:
@@ -80,7 +80,7 @@ const categoriesOperationsReducer = (
         ...state,
         status: {
           performing: false,
-          error: action.error,
+          error: action.errorMessage,
         },
       };
 

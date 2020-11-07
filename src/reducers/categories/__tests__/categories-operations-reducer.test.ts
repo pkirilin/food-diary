@@ -17,16 +17,16 @@ describe('categories operations reducer', () => {
   test('should handle create category request', () => {
     const action: CreateCategoryRequestAction = {
       type: CategoriesOperationsActionTypes.CreateRequest,
-      category: {
+      payload: {
         name: 'Test',
       },
-      operationMessage: 'Test',
+      requestMessage: 'Test',
     };
     const expectedState: CategoriesOperationsState = {
       ...initialState,
       status: {
         performing: true,
-        message: action.operationMessage,
+        message: action.requestMessage,
       },
     };
 
@@ -38,7 +38,7 @@ describe('categories operations reducer', () => {
   test('should handle create category success', () => {
     const action: CreateCategorySuccessAction = {
       type: CategoriesOperationsActionTypes.CreateSuccess,
-      createdCategoryId: 1,
+      data: 1,
     };
     const expectedState: CategoriesOperationsState = {
       ...initialState,
@@ -55,13 +55,13 @@ describe('categories operations reducer', () => {
   test('should handle create category error', () => {
     const action: CreateCategoryErrorAction = {
       type: CategoriesOperationsActionTypes.CreateError,
-      error: 'error',
+      errorMessage: 'error',
     };
     const expectedState: CategoriesOperationsState = {
       ...initialState,
       status: {
         performing: false,
-        error: action.error,
+        error: action.errorMessage,
       },
     };
 
@@ -73,13 +73,13 @@ describe('categories operations reducer', () => {
   test('should handle edit category request', () => {
     const action: EditCategoryRequestAction = {
       type: CategoriesOperationsActionTypes.EditRequest,
-      request: {
+      payload: {
         id: 1,
         category: {
           name: 'Test',
         },
       },
-      operationMessage: 'Test',
+      requestMessage: 'Test',
     };
     const expectedState: CategoriesOperationsState = {
       ...initialState,
@@ -96,6 +96,7 @@ describe('categories operations reducer', () => {
   test('should handle edit category success', () => {
     const action: EditCategorySuccessAction = {
       type: CategoriesOperationsActionTypes.EditSuccess,
+      data: {},
     };
     const expectedState: CategoriesOperationsState = {
       ...initialState,
@@ -112,13 +113,13 @@ describe('categories operations reducer', () => {
   test('should handle edit category error', () => {
     const action: EditCategoryErrorAction = {
       type: CategoriesOperationsActionTypes.EditError,
-      error: 'error',
+      errorMessage: 'error',
     };
     const expectedState: CategoriesOperationsState = {
       ...initialState,
       status: {
         performing: false,
-        error: action.error,
+        error: action.errorMessage,
       },
     };
 
@@ -130,13 +131,14 @@ describe('categories operations reducer', () => {
   test('should handle delete category request', () => {
     const action: DeleteCategoryRequestAction = {
       type: CategoriesOperationsActionTypes.DeleteRequest,
-      operationMessage: 'Test',
+      requestMessage: 'Test',
+      payload: 1,
     };
     const expectedState: CategoriesOperationsState = {
       ...initialState,
       status: {
         performing: true,
-        message: action.operationMessage,
+        message: action.requestMessage,
       },
     };
 
@@ -148,6 +150,7 @@ describe('categories operations reducer', () => {
   test('should handle delete category success', () => {
     const action: DeleteCategorySuccessAction = {
       type: CategoriesOperationsActionTypes.DeleteSuccess,
+      data: {},
     };
     const expectedState: CategoriesOperationsState = {
       ...initialState,
@@ -164,13 +167,13 @@ describe('categories operations reducer', () => {
   test('should handle delete category error', () => {
     const action: DeleteCategoryErrorAction = {
       type: CategoriesOperationsActionTypes.DeleteError,
-      error: 'error',
+      errorMessage: 'error',
     };
     const expectedState: CategoriesOperationsState = {
       ...initialState,
       status: {
         performing: false,
-        error: action.error,
+        error: action.errorMessage,
       },
     };
 

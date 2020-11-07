@@ -1,74 +1,49 @@
-import { Dispatch } from 'redux';
 import {
   GetCategoriesListSuccessAction,
   GetCategoriesListErrorAction,
   GetCategoriesListRequestAction,
   CategoriesListActionTypes,
   SetEditableForCategoriesAction,
-  GetCategoriesListActionCreator,
-  GetCategoriesListActions,
 } from '../../action-types';
-import { CategoryItem, ErrorReason } from '../../models';
-import { getCategoriesAsync } from '../../services';
+import { API_URL } from '../../config';
+import { createErrorResponseHandler, createSuccessJsonResponseHandler, createThunkWithApiCall } from '../../helpers';
+import { CategoryItem } from '../../models';
 
-const getCategoriesRequest = (loadingMessage?: string): GetCategoriesListRequestAction => {
-  return {
-    type: CategoriesListActionTypes.Request,
-    loadingMessage,
-  };
-};
-
-const getCategoriesSuccess = (categories: CategoryItem[]): GetCategoriesListSuccessAction => {
-  return {
-    type: CategoriesListActionTypes.Success,
-    categories,
-  };
-};
-
-const getCategoriesError = (errorMessage: string): GetCategoriesListErrorAction => {
-  return {
-    type: CategoriesListActionTypes.Error,
-    errorMessage,
-  };
-};
-
-enum CategoriesListErrorMessages {
-  GetList = 'Failed to get categories',
-}
-
-export const getCategories: GetCategoriesListActionCreator = () => {
-  return async (
-    dispatch: Dispatch<GetCategoriesListActions>,
-  ): Promise<GetCategoriesListSuccessAction | GetCategoriesListErrorAction> => {
-    dispatch(getCategoriesRequest('Loading categories'));
-    try {
-      const response = await getCategoriesAsync();
-
-      if (response.ok) {
-        const categories = await response.json();
-        return dispatch(getCategoriesSuccess(categories));
-      }
-
-      let errorMessage = `${CategoriesListErrorMessages.GetList}`;
-
-      switch (response.status) {
-        case 400:
-          errorMessage += `: ${ErrorReason.WrongRequestData}`;
-          break;
-        case 500:
-          errorMessage += `: ${ErrorReason.ServerError}`;
-          break;
-        default:
-          errorMessage += `: ${ErrorReason.UnknownResponseCode}`;
-          break;
-      }
-
-      return dispatch(getCategoriesError(errorMessage));
-    } catch (error) {
-      return dispatch(getCategoriesError(CategoriesListErrorMessages.GetList));
-    }
-  };
-};
+export const getCategories = createThunkWithApiCall<
+  GetCategoriesListRequestAction,
+  GetCategoriesListSuccessAction,
+  GetCategoriesListErrorAction,
+  CategoriesListActionTypes.Request,
+  CategoriesListActionTypes.Success,
+  CategoriesListActionTypes.Error,
+  CategoryItem[]
+>({
+  makeRequest: () => {
+    return (): GetCategoriesListRequestAction => ({
+      type: CategoriesListActionTypes.Request,
+      requestMessage: 'Loading categories',
+      payload: {},
+    });
+  },
+  makeSuccess: () => {
+    return (categoryItems): GetCategoriesListSuccessAction => ({
+      type: CategoriesListActionTypes.Success,
+      data: categoryItems ?? [],
+    });
+  },
+  makeError: () => {
+    return (receivedErrorMessage): GetCategoriesListErrorAction => ({
+      type: CategoriesListActionTypes.Error,
+      errorMessage: receivedErrorMessage ?? '',
+    });
+  },
+  apiOptions: {
+    baseUrl: `${API_URL}/v1/categories`,
+    method: 'GET',
+    onSuccess: createSuccessJsonResponseHandler(),
+    onError: createErrorResponseHandler('Failed to get categories'),
+  },
+});
 
 export const setEditableForCategories = (
   categoriesIds: number[],
