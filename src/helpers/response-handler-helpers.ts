@@ -1,5 +1,5 @@
 import { Action, Dispatch } from 'redux';
-import { ApiErrorResponseHandler, ApiSuccessResponseHandler } from './createAsyncAction';
+import { ApiErrorResponseHandler, ApiSuccessResponseHandler } from './action-creator-helpers';
 
 export type MessageDispatcher<A extends Action> = (dispatch: Dispatch<A>, message: string) => void;
 export type ResponseTransformer<D> = (response: Response) => D | Promise<D>;

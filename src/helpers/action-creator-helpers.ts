@@ -53,7 +53,7 @@ export interface AsyncActionBuilderOptions<RA extends Action, SA extends Action,
 type RequestHeadersFragment = Pick<RequestInit, 'headers'>;
 type RequestBodyFragment = Pick<RequestInit, 'body'>;
 
-export function createAsyncAction<
+export function createThunkWithApiCall<
   RA extends RequestAction<RC, P>,
   SA extends SuccessAction<SC, D>,
   EA extends ErrorAction<EC>,

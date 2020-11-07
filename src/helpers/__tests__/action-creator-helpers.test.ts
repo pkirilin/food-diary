@@ -1,6 +1,6 @@
 import configureStore from 'redux-mock-store';
 import thunk, { ThunkDispatch } from 'redux-thunk';
-import { createAsyncAction, ErrorAction, RequestAction, SuccessAction } from '../createAsyncAction';
+import { createThunkWithApiCall, ErrorAction, RequestAction, SuccessAction } from '../action-creator-helpers';
 
 const mockStore = configureStore<TestRecordsState, GetTestRecordsDispatch>([thunk]);
 const store = mockStore();
@@ -39,7 +39,7 @@ type GetTestRecordsDispatch = ThunkDispatch<
   GetTestRecordsSuccessAction | GetTestRecordsErrorAction
 >;
 
-describe('createAsyncAction', () => {
+describe('createThunkWithApiCall', () => {
   const receivedRecords: TestRecord[] = [
     {
       id: 1,
@@ -80,7 +80,7 @@ describe('createAsyncAction', () => {
     fetchMock.mockResolvedValue({ ...new Response(), ok: true });
 
     // Act
-    const getTestRecords = createAsyncAction<
+    const getTestRecords = createThunkWithApiCall<
       GetTestRecordsRequestAction,
       GetTestRecordsSuccessAction,
       GetTestRecordsErrorAction,
@@ -127,7 +127,7 @@ describe('createAsyncAction', () => {
     fetchMock.mockResolvedValue({ ...new Response(), ok: false });
 
     // Act
-    const getTestRecords = createAsyncAction<
+    const getTestRecords = createThunkWithApiCall<
       GetTestRecordsRequestAction,
       GetTestRecordsSuccessAction,
       GetTestRecordsErrorAction,
@@ -174,7 +174,7 @@ describe('createAsyncAction', () => {
     fetchMock.mockRejectedValue(new Response());
 
     // Act
-    const getTestRecords = createAsyncAction<
+    const getTestRecords = createThunkWithApiCall<
       GetTestRecordsRequestAction,
       GetTestRecordsSuccessAction,
       GetTestRecordsErrorAction,
@@ -223,7 +223,7 @@ describe('createAsyncAction', () => {
     fetchMock.mockResolvedValue({ ...new Response(), ok: true });
 
     // Act
-    const getTestRecords = createAsyncAction<
+    const getTestRecords = createThunkWithApiCall<
       GetTestRecordsRequestAction,
       GetTestRecordsSuccessAction,
       GetTestRecordsErrorAction,
@@ -275,7 +275,7 @@ describe('createAsyncAction', () => {
     fetchMock.mockResolvedValue({ ...new Response(), ok: false });
 
     // Act
-    const getTestRecords = createAsyncAction<
+    const getTestRecords = createThunkWithApiCall<
       GetTestRecordsRequestAction,
       GetTestRecordsSuccessAction,
       GetTestRecordsErrorAction,
@@ -327,7 +327,7 @@ describe('createAsyncAction', () => {
     fetchMock.mockRejectedValue(new Response());
 
     // Act
-    const getTestRecords = createAsyncAction<
+    const getTestRecords = createThunkWithApiCall<
       GetTestRecordsRequestAction,
       GetTestRecordsSuccessAction,
       GetTestRecordsErrorAction,
@@ -365,7 +365,7 @@ describe('createAsyncAction', () => {
     const makeActionMock = jest.fn().mockReturnValue(jest.fn());
 
     // Act
-    const action = createAsyncAction({
+    const action = createThunkWithApiCall({
       makeRequest: makeActionMock,
       makeSuccess: makeActionMock,
       makeError: makeActionMock,
@@ -395,7 +395,7 @@ describe('createAsyncAction', () => {
     const modifyUrlMock = jest.fn().mockReturnValue('test url (modified)');
 
     // Act
-    const action = createAsyncAction({
+    const action = createThunkWithApiCall({
       makeRequest: makeActionMock,
       makeSuccess: makeActionMock,
       makeError: makeActionMock,
@@ -427,7 +427,7 @@ describe('createAsyncAction', () => {
     const constructBodyMock = jest.fn().mockReturnValue(JSON.stringify(payload));
 
     // Act
-    const action = createAsyncAction({
+    const action = createThunkWithApiCall({
       makeRequest: makeActionMock,
       makeSuccess: makeActionMock,
       makeError: makeActionMock,

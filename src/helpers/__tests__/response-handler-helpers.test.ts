@@ -1,5 +1,5 @@
 import { Action } from 'redux';
-import { createErrorResponseHandler, createSuccessJsonResponseHandler } from '../createResponseHandler';
+import { createErrorResponseHandler, createSuccessJsonResponseHandler } from '../response-handler-helpers';
 
 type TestAction = Action<'TEST'>;
 
