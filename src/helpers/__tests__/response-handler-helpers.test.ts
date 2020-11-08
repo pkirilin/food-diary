@@ -68,20 +68,6 @@ describe('createErrorResponseHandler', () => {
     expect(dispatchMock).not.toHaveBeenCalled();
   });
 
-  test('should create handler which dispatches received error message if error dispatcher is specified', async () => {
-    // Arrange
-    const dispatchMock = jest.fn();
-    const errorDispatcherMock = jest.fn();
-    const response = new Response();
-
-    // Act
-    const getErrorMessage = createErrorResponseHandler<TestAction>('TEST', {}, errorDispatcherMock);
-    const errorMessage = await getErrorMessage(dispatchMock, response);
-
-    // Assert
-    expect(errorDispatcherMock).toHaveBeenCalledWith(dispatchMock, errorMessage);
-  });
-
   test('should create handler which transforms received response if response transformer is specified', async () => {
     // Arrange
     const dispatchMock = jest.fn();
