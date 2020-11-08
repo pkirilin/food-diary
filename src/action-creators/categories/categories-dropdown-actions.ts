@@ -26,13 +26,13 @@ export const getCategoryDropdownItems = createThunkWithApiCall<
     });
   },
   makeSuccess: () => {
-    return (dropdownItems): GetCategoryDropdownItemsSuccessAction => ({
+    return (_, dropdownItems): GetCategoryDropdownItemsSuccessAction => ({
       type: CategoriesDropdownActionTypes.Success,
       data: dropdownItems ?? [],
     });
   },
   makeError: () => {
-    return (receivedErrorMessage): GetCategoryDropdownItemsErrorAction => ({
+    return (_, receivedErrorMessage): GetCategoryDropdownItemsErrorAction => ({
       type: CategoriesDropdownActionTypes.Error,
       errorMessage: receivedErrorMessage ?? '',
     });

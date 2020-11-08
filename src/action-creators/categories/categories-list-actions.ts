@@ -26,13 +26,13 @@ export const getCategories = createThunkWithApiCall<
     });
   },
   makeSuccess: () => {
-    return (categoryItems): GetCategoriesListSuccessAction => ({
+    return (_, categoryItems): GetCategoriesListSuccessAction => ({
       type: CategoriesListActionTypes.Success,
       data: categoryItems ?? [],
     });
   },
   makeError: () => {
-    return (receivedErrorMessage): GetCategoriesListErrorAction => ({
+    return (_, receivedErrorMessage): GetCategoriesListErrorAction => ({
       type: CategoriesListActionTypes.Error,
       errorMessage: receivedErrorMessage ?? '',
     });

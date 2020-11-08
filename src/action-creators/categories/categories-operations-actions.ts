@@ -38,7 +38,7 @@ export const createCategory = createThunkWithApiCall<
     };
   },
   makeSuccess: () => {
-    return (createdCategoryId): CreateCategorySuccessAction => {
+    return (p, createdCategoryId): CreateCategorySuccessAction => {
       if (!createdCategoryId) {
         throw new Error('Failed to create category: createdCategoryId is undefined');
       }
@@ -50,7 +50,7 @@ export const createCategory = createThunkWithApiCall<
     };
   },
   makeError: () => {
-    return (receivedErrorMessage): CreateCategoryErrorAction => ({
+    return (p, receivedErrorMessage): CreateCategoryErrorAction => ({
       type: CategoriesOperationsActionTypes.CreateError,
       errorMessage: receivedErrorMessage ?? '',
     });
@@ -94,7 +94,7 @@ export const editCategory = createThunkWithApiCall<
     });
   },
   makeError: () => {
-    return (receivedErrorMessage): EditCategoryErrorAction => ({
+    return (p, receivedErrorMessage): EditCategoryErrorAction => ({
       type: CategoriesOperationsActionTypes.EditError,
       errorMessage: receivedErrorMessage ?? '',
     });
@@ -132,7 +132,7 @@ export const deleteCategory = createThunkWithApiCall<
     });
   },
   makeError: () => {
-    return (receivedErrorMessage): DeleteCategoryErrorAction => ({
+    return (p, receivedErrorMessage): DeleteCategoryErrorAction => ({
       type: CategoriesOperationsActionTypes.DeleteError,
       errorMessage: receivedErrorMessage ?? '',
     });

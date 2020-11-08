@@ -14,7 +14,9 @@ export interface ErrorAction<A> extends Action<A> {
   errorMessage: string;
 }
 
-export type ActionCreatorComposer<A, T> = (data?: T) => A;
+export type RequestActionCreatorComposer<A, P> = (payload: P) => A;
+export type SuccessActionCreatorComposer<A, P, D> = (payload: P, data?: D) => A;
+export type ErrorActionCreatorComposer<A, P> = (payload: P, errorMessage: string) => A;
 
 export type ApiMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
 export type ApiRequestBody = string | FormData | null;
@@ -44,9 +46,9 @@ export interface ApiOptions<SA extends Action, EA extends Action, D, P> {
 }
 
 export interface AsyncActionBuilderOptions<RA extends Action, SA extends Action, EA extends Action, D, P> {
-  makeRequest(): ActionCreatorComposer<RA, P>;
-  makeSuccess(): ActionCreatorComposer<SA, D>;
-  makeError(): ActionCreatorComposer<EA, string>;
+  makeRequest(): RequestActionCreatorComposer<RA, P>;
+  makeSuccess(): SuccessActionCreatorComposer<SA, P, D>;
+  makeError(): ErrorActionCreatorComposer<EA, P>;
   apiOptions: ApiOptions<SA, EA, D, P>;
 }
 
@@ -130,24 +132,24 @@ export function createThunkWithApiCall<
         if (response.ok) {
           if (onSuccess) {
             const data = await onSuccess(dispatch, response);
-            return dispatch(success(data));
+            return dispatch(success(payload, data));
           }
-          return dispatch(success());
+          return dispatch(success(payload));
         }
 
         if (onError) {
           const errorMessage = await onError(dispatch, response);
-          return dispatch(error(errorMessage));
+          return dispatch(error(payload, errorMessage));
         }
 
-        return dispatch(error('Unknown error occured'));
+        return dispatch(error(payload, 'Unknown error occured'));
       } catch (err) {
         if (onError) {
           const errorMessage = await onError(dispatch);
-          return dispatch(error(errorMessage));
+          return dispatch(error(payload, errorMessage));
         }
 
-        return dispatch(error('Failed to fetch data'));
+        return dispatch(error(payload, 'Failed to fetch data'));
       }
     };
   };
