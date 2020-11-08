@@ -7,6 +7,7 @@ import { Switch, Route } from 'react-router-dom';
 import { CategoriesDispatchToPropsMapResult } from './CategoriesConnected';
 import CategoryContentConnected from '../CategoryContent';
 import CategoryContentEmpty from '../CategoryContentEmpty';
+import { useModalMessage } from '../../hooks';
 
 type CategoriesProps = CategoriesDispatchToPropsMapResult;
 
@@ -16,6 +17,8 @@ const Categories: React.FC<CategoriesProps> = ({ clearProductsFilter }: Categori
       clearProductsFilter();
     };
   }, [clearProductsFilter]);
+
+  useModalMessage('Error', state => state.categories.operations.status.error);
 
   return (
     <React.Fragment>

@@ -11,6 +11,7 @@ import useNoteInputDisabled from './useNoteInputDisabled';
 import useProductInputDisabled from './useProductInputDisabled';
 import useFocus from './useFocus';
 import useHover from './useHover';
+import useModalMessage from './useModalMessage';
 
 export {
   useOutsideClick,
@@ -26,4 +27,5 @@ export {
   useProductInputDisabled,
   useFocus,
   useHover,
+  useModalMessage,
 };
