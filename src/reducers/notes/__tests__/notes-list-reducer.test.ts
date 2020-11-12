@@ -36,7 +36,8 @@ describe('notes list reducer', () => {
   test('should handle notes for page request', () => {
     const action: GetNotesForPageRequestAction = {
       type: NotesListActionTypes.RequestForPage,
-      loadingMessage: 'Test',
+      requestMessage: 'Test',
+      payload: { pageId: 1 },
     };
     const expectedState: NotesListState = {
       ...initialState,
@@ -55,11 +56,11 @@ describe('notes list reducer', () => {
   test('should handle notes for page success', () => {
     const action: GetNotesForPageSuccessAction = {
       type: NotesListActionTypes.SuccessForPage,
-      noteItems: generateTestNoteItems(),
+      data: generateTestNoteItems(),
     };
     const expectedState: NotesListState = {
       ...initialState,
-      noteItems: action.noteItems,
+      noteItems: action.data,
       notesForPageFetchState: {
         loading: false,
         loaded: true,
@@ -93,8 +94,11 @@ describe('notes list reducer', () => {
   test('should handle notes for meal request', () => {
     const action: GetNotesForMealRequestAction = {
       type: NotesListActionTypes.RequestForMeal,
-      mealType: MealType.Breakfast,
-      loadingMessage: 'Test',
+      requestMessage: 'Test',
+      payload: {
+        pageId: 1,
+        mealType: MealType.Breakfast,
+      },
     };
     const state: NotesListState = {
       ...initialState,
@@ -137,7 +141,7 @@ describe('notes list reducer', () => {
     const action: GetNotesForMealSuccessAction = {
       type: NotesListActionTypes.SuccessForMeal,
       mealType: MealType.Lunch,
-      noteItems: [generateTestNoteItem(MealType.Lunch)],
+      data: [generateTestNoteItem(MealType.Lunch)],
     };
     const state: NotesListState = {
       ...initialState,

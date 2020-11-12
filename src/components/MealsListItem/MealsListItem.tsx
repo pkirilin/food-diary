@@ -5,7 +5,7 @@ import { MealsListItemStateToPropsMapResult, MealsListItemDispatchToPropsMapResu
 import NoteInputConnected from '../NoteInput';
 import NotesTableConnected from '../NotesTable';
 import { Container, Badge, Icon, Preloader, Button, Loader } from '../__ui__';
-import { useIdFromRoute } from '../../hooks';
+import { useIdFromRoute, useModalMessage } from '../../hooks';
 import { getWordWithCount } from '../../utils';
 
 interface MealsListItemProps extends MealsListItemStateToPropsMapResult, MealsListItemDispatchToPropsMapResult {
@@ -23,6 +23,11 @@ const MealsListItem: React.FC<MealsListItemProps> = ({
   openModal,
 }: MealsListItemProps) => {
   const pageId = useIdFromRoute();
+
+  useModalMessage(
+    'Error',
+    state => state.notes.operations.mealOperationStatuses.find(s => s.mealType === mealType)?.error,
+  );
 
   const isCollapsed = collapsedMeals.includes(mealType);
 

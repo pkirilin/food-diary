@@ -25,11 +25,11 @@ const notesOperationsReducer = (
     case NotesOperationsActionTypes.CreateRequest:
       return {
         mealOperationStatuses: [
-          ...state.mealOperationStatuses.filter(s => s.mealType !== action.note.mealType),
+          ...state.mealOperationStatuses.filter(s => s.mealType !== action.payload.mealType),
           {
-            mealType: action.note.mealType,
+            mealType: action.payload.mealType,
             performing: true,
-            message: action.operationMessage,
+            message: action.requestMessage,
           },
         ],
       };
@@ -50,7 +50,7 @@ const notesOperationsReducer = (
           {
             mealType: action.mealType,
             performing: false,
-            error: action.error,
+            error: action.errorMessage,
           },
         ],
       };
@@ -58,11 +58,11 @@ const notesOperationsReducer = (
     case NotesOperationsActionTypes.EditRequest:
       return {
         mealOperationStatuses: [
-          ...state.mealOperationStatuses.filter(s => s.mealType !== action.request.note.mealType),
+          ...state.mealOperationStatuses.filter(s => s.mealType !== action.payload.note.mealType),
           {
-            mealType: action.request.note.mealType,
+            mealType: action.payload.note.mealType,
             performing: true,
-            message: action.operationMessage,
+            message: action.requestMessage,
           },
         ],
       };
@@ -83,7 +83,7 @@ const notesOperationsReducer = (
           {
             mealType: action.mealType,
             performing: false,
-            error: action.error,
+            error: action.errorMessage,
           },
         ],
       };
@@ -91,11 +91,11 @@ const notesOperationsReducer = (
     case NotesOperationsActionTypes.DeleteRequest:
       return {
         mealOperationStatuses: [
-          ...state.mealOperationStatuses.filter(s => s.mealType !== action.request.mealType),
+          ...state.mealOperationStatuses.filter(s => s.mealType !== action.payload.mealType),
           {
-            mealType: action.request.mealType,
+            mealType: action.payload.mealType,
             performing: true,
-            message: action.operationMessage,
+            message: action.requestMessage,
           },
         ],
       };
@@ -116,7 +116,7 @@ const notesOperationsReducer = (
           {
             mealType: action.mealType,
             performing: false,
-            error: action.error,
+            error: action.errorMessage,
           },
         ],
       };

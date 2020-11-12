@@ -1,4 +1,3 @@
-import { Dispatch } from 'redux';
 import {
   CreateNoteSuccessAction,
   CreateNoteErrorAction,
@@ -10,199 +9,131 @@ import {
   DeleteNoteSuccessAction,
   DeleteNoteErrorAction,
   DeleteNoteRequestAction,
-  CreateNoteActionCreator,
-  CreateNoteActions,
-  EditNoteActionCreator,
-  EditNoteActions,
-  DeleteNoteActionCreator,
-  DeleteNoteActions,
-  OpenModalAction,
 } from '../../action-types';
-import { NoteCreateEdit, MealType, NoteDeleteRequest, ErrorReason } from '../../models';
-import { createNoteAsync, editNoteAsync, deleteNoteAsync } from '../../services';
+import { NoteCreateEdit, NoteDeleteRequest } from '../../models';
 import { NoteEditRequest } from '../../models';
-import { readBadRequestResponseAsync } from '../../utils';
-import { openMessageModal } from '../modal-actions';
+import { createErrorResponseHandler, createThunkWithApiCall } from '../../helpers';
+import { API_URL } from '../../config';
 
-const createNoteRequest = (note: NoteCreateEdit, operationMessage: string): CreateNoteRequestAction => {
-  return {
-    type: NotesOperationsActionTypes.CreateRequest,
-    note,
-    operationMessage,
-  };
-};
+export const createNote = createThunkWithApiCall<
+  CreateNoteRequestAction,
+  CreateNoteSuccessAction,
+  CreateNoteErrorAction,
+  NotesOperationsActionTypes.CreateRequest,
+  NotesOperationsActionTypes.CreateSuccess,
+  NotesOperationsActionTypes.CreateError,
+  {},
+  NoteCreateEdit
+>({
+  makeRequest: () => {
+    return (note): CreateNoteRequestAction => ({
+      type: NotesOperationsActionTypes.CreateRequest,
+      requestMessage: 'Creating note',
+      payload: note,
+    });
+  },
+  makeSuccess: () => {
+    return ({ mealType }): CreateNoteSuccessAction => ({
+      type: NotesOperationsActionTypes.CreateSuccess,
+      data: {},
+      mealType,
+    });
+  },
+  makeError: () => {
+    return ({ mealType }, receivedErrorMessage): CreateNoteErrorAction => ({
+      type: NotesOperationsActionTypes.CreateError,
+      errorMessage: receivedErrorMessage,
+      mealType,
+    });
+  },
+  apiOptions: {
+    baseUrl: `${API_URL}/v1/notes`,
+    method: 'POST',
+    constructBody: (note): string => JSON.stringify(note),
+    onError: createErrorResponseHandler('Failed to create note'),
+  },
+});
 
-const createNoteError = (mealType: MealType, error: string): CreateNoteErrorAction => {
-  return {
-    type: NotesOperationsActionTypes.CreateError,
-    mealType,
-    error,
-  };
-};
+export const editNote = createThunkWithApiCall<
+  EditNoteRequestAction,
+  EditNoteSuccessAction,
+  EditNoteErrorAction,
+  NotesOperationsActionTypes.EditRequest,
+  NotesOperationsActionTypes.EditSuccess,
+  NotesOperationsActionTypes.EditError,
+  {},
+  NoteEditRequest
+>({
+  makeRequest: () => {
+    return (noteEditRequest): EditNoteRequestAction => ({
+      type: NotesOperationsActionTypes.EditRequest,
+      requestMessage: 'Updating note',
+      payload: noteEditRequest,
+    });
+  },
+  makeSuccess: () => {
+    return ({ note }): EditNoteSuccessAction => ({
+      type: NotesOperationsActionTypes.EditSuccess,
+      data: {},
+      mealType: note.mealType,
+    });
+  },
+  makeError: () => {
+    return ({ note }, receivedErrorMessage): EditNoteErrorAction => ({
+      type: NotesOperationsActionTypes.EditError,
+      errorMessage: receivedErrorMessage,
+      mealType: note.mealType,
+    });
+  },
+  apiOptions: {
+    baseUrl: `${API_URL}/v1/notes`,
+    method: 'PUT',
+    constructBody: ({ note }): string => JSON.stringify(note),
+    onError: createErrorResponseHandler('Failed to update note'),
+  },
+});
 
-const createNoteSuccess = (mealType: MealType): CreateNoteSuccessAction => {
-  return {
-    type: NotesOperationsActionTypes.CreateSuccess,
-    mealType,
-  };
-};
-
-const editNoteRequest = (request: NoteEditRequest, operationMessage: string): EditNoteRequestAction => {
-  return {
-    type: NotesOperationsActionTypes.EditRequest,
-    request,
-    operationMessage,
-  };
-};
-
-const editNoteSuccess = (mealType: MealType): EditNoteSuccessAction => {
-  return {
-    type: NotesOperationsActionTypes.EditSuccess,
-    mealType,
-  };
-};
-
-const editNoteError = (mealType: MealType, error: string): EditNoteErrorAction => {
-  return {
-    type: NotesOperationsActionTypes.EditError,
-    mealType,
-    error,
-  };
-};
-
-const deleteNoteRequest = (request: NoteDeleteRequest, operationMessage: string): DeleteNoteRequestAction => {
-  return {
-    type: NotesOperationsActionTypes.DeleteRequest,
-    request,
-    operationMessage,
-  };
-};
-
-const deleteNoteSuccess = (mealType: MealType): DeleteNoteSuccessAction => {
-  return {
-    type: NotesOperationsActionTypes.DeleteSuccess,
-    mealType,
-  };
-};
-
-const deleteNoteError = (mealType: MealType, error: string): DeleteNoteErrorAction => {
-  return {
-    type: NotesOperationsActionTypes.DeleteError,
-    mealType,
-    error,
-  };
-};
-
-enum NotesOperationsErrorMessages {
-  Create = 'Failed to create note',
-  Edit = 'Failed to update note',
-  Delete = 'Failed to delete note',
-}
-
-export const createNote: CreateNoteActionCreator = (note: NoteCreateEdit) => {
-  return async (
-    dispatch: Dispatch<CreateNoteActions | OpenModalAction>,
-  ): Promise<CreateNoteSuccessAction | CreateNoteErrorAction> => {
-    dispatch(createNoteRequest(note, 'Creating note'));
-    try {
-      const response = await createNoteAsync(note);
-
-      if (response.ok) {
-        return dispatch(createNoteSuccess(note.mealType));
+export const deleteNote = createThunkWithApiCall<
+  DeleteNoteRequestAction,
+  DeleteNoteSuccessAction,
+  DeleteNoteErrorAction,
+  NotesOperationsActionTypes.DeleteRequest,
+  NotesOperationsActionTypes.DeleteSuccess,
+  NotesOperationsActionTypes.DeleteError,
+  {},
+  NoteDeleteRequest
+>({
+  makeRequest: () => {
+    return (deleteNoteRequest): DeleteNoteRequestAction => {
+      if (!deleteNoteRequest) {
+        throw new Error('Failed to delete note: deleteNoteRequest is undefined');
       }
 
-      let errorMessage = `${NotesOperationsErrorMessages.Create}`;
-
-      switch (response.status) {
-        case 400:
-          const badRequestResponse = await readBadRequestResponseAsync(response);
-          errorMessage += `: ${badRequestResponse}`;
-          break;
-        case 500:
-          errorMessage += `: ${ErrorReason.ServerError}`;
-          break;
-        default:
-          errorMessage += `: ${ErrorReason.UnknownResponseCode}`;
-          break;
-      }
-
-      dispatch(openMessageModal('Error', errorMessage));
-      return dispatch(createNoteError(note.mealType, errorMessage));
-    } catch (error) {
-      dispatch(openMessageModal('Error', NotesOperationsErrorMessages.Create));
-      return dispatch(createNoteError(note.mealType, NotesOperationsErrorMessages.Create));
-    }
-  };
-};
-
-export const editNote: EditNoteActionCreator = (request: NoteEditRequest) => {
-  return async (
-    dispatch: Dispatch<EditNoteActions | OpenModalAction>,
-  ): Promise<EditNoteSuccessAction | EditNoteErrorAction> => {
-    dispatch(editNoteRequest(request, 'Updating note'));
-    try {
-      const response = await editNoteAsync(request);
-
-      if (response.ok) {
-        return dispatch(editNoteSuccess(request.note.mealType));
-      }
-
-      let errorMessage = `${NotesOperationsErrorMessages.Edit}`;
-
-      switch (response.status) {
-        case 400:
-          const badRequestResponse = await readBadRequestResponseAsync(response);
-          errorMessage += `: ${badRequestResponse}`;
-          break;
-        case 500:
-          errorMessage += `: ${ErrorReason.ServerError}`;
-          break;
-        default:
-          errorMessage += `: ${ErrorReason.UnknownResponseCode}`;
-          break;
-      }
-
-      dispatch(openMessageModal('Error', errorMessage));
-      return dispatch(editNoteError(request.note.mealType, errorMessage));
-    } catch (error) {
-      dispatch(openMessageModal('Error', NotesOperationsErrorMessages.Edit));
-      return dispatch(editNoteError(request.note.mealType, NotesOperationsErrorMessages.Edit));
-    }
-  };
-};
-
-export const deleteNote: DeleteNoteActionCreator = (request: NoteDeleteRequest) => {
-  return async (
-    dispatch: Dispatch<DeleteNoteActions | OpenModalAction>,
-  ): Promise<DeleteNoteSuccessAction | DeleteNoteErrorAction> => {
-    dispatch(deleteNoteRequest(request, 'Deleting note'));
-    try {
-      const response = await deleteNoteAsync(request.id);
-
-      if (response.ok) {
-        return dispatch(deleteNoteSuccess(request.mealType));
-      }
-
-      let errorMessage = `${NotesOperationsErrorMessages.Delete}`;
-
-      switch (response.status) {
-        case 400:
-          const badRequestResponse = await readBadRequestResponseAsync(response);
-          errorMessage += `: ${badRequestResponse}`;
-          break;
-        case 500:
-          errorMessage += `: ${ErrorReason.ServerError}`;
-          break;
-        default:
-          errorMessage += `: ${ErrorReason.UnknownResponseCode}`;
-          break;
-      }
-
-      dispatch(openMessageModal('Error', errorMessage));
-      return dispatch(deleteNoteError(request.mealType, errorMessage));
-    } catch (error) {
-      dispatch(openMessageModal('Error', NotesOperationsErrorMessages.Delete));
-      return dispatch(deleteNoteError(request.mealType, NotesOperationsErrorMessages.Delete));
-    }
-  };
-};
+      return {
+        type: NotesOperationsActionTypes.DeleteRequest,
+        requestMessage: 'Deleting note',
+        payload: deleteNoteRequest,
+      };
+    };
+  },
+  makeSuccess: () => {
+    return ({ mealType }): DeleteNoteSuccessAction => ({
+      type: NotesOperationsActionTypes.DeleteSuccess,
+      data: {},
+      mealType,
+    });
+  },
+  makeError: () => {
+    return ({ mealType }, receivedErrorMessage): DeleteNoteErrorAction => ({
+      type: NotesOperationsActionTypes.DeleteError,
+      errorMessage: receivedErrorMessage ?? '',
+      mealType,
+    });
+  },
+  apiOptions: {
+    baseUrl: `${API_URL}/v1/notes`,
+    method: 'DELETE',
+    modifyUrl: (baseUrl, { id }): string => `${baseUrl}/${id}`,
+    onError: createErrorResponseHandler('Failed to delete note'),
+  },
+});

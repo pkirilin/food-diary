@@ -1,4 +1,3 @@
-import { Dispatch } from 'redux';
 import {
   GetNotesForPageSuccessAction,
   GetNotesForPageErrorAction,
@@ -7,134 +6,127 @@ import {
   GetNotesForMealSuccessAction,
   GetNotesForMealErrorAction,
   GetNotesForMealRequestAction,
-  GetNotesForPageActionCreator,
-  GetNotesForPageActions,
-  GetNotesForMealActionCreator,
-  GetNotesForMealActions,
 } from '../../action-types';
-import { getNotesAsync } from '../../services';
-import { NoteItem, MealType, NotesForMealSearchRequest, NotesSearchRequest, ErrorReason } from '../../models';
+import { NoteItem, NotesForMealSearchRequest, NotesSearchRequest } from '../../models';
+import {
+  ApiRequestUrlModifier,
+  createErrorResponseHandler,
+  createSuccessJsonResponseHandler,
+  createThunkWithApiCall,
+} from '../../helpers';
+import { API_URL } from '../../config';
 
-const getNotesForPageRequest = (loadingMessage?: string): GetNotesForPageRequestAction => {
-  return {
-    type: NotesListActionTypes.RequestForPage,
-    loadingMessage,
-  };
+const modifyUrlByNotesSearchRequest: ApiRequestUrlModifier<NotesSearchRequest> = (
+  baseUrl,
+  { pageId, mealType },
+): string => {
+  let modifiedUrl = `${baseUrl}?pageId=${pageId}`;
+
+  if (mealType) {
+    modifiedUrl += `&mealType=${mealType}`;
+  }
+
+  return modifiedUrl;
 };
 
-const getNotesForPageSuccess = (noteItems: NoteItem[]): GetNotesForPageSuccessAction => {
-  return {
-    type: NotesListActionTypes.SuccessForPage,
-    noteItems,
-  };
-};
-
-const getNotesForPageError = (errorMessage: string): GetNotesForPageErrorAction => {
-  return {
-    type: NotesListActionTypes.ErrorForPage,
-    errorMessage,
-  };
-};
-
-const getNotesForMealRequest = (mealType: MealType, loadingMessage?: string): GetNotesForMealRequestAction => {
-  return {
-    type: NotesListActionTypes.RequestForMeal,
-    mealType,
-    loadingMessage,
-  };
-};
-
-const getNotesForMealSuccess = (mealType: MealType, noteItems: NoteItem[]): GetNotesForMealSuccessAction => {
-  return {
-    type: NotesListActionTypes.SuccessForMeal,
-    mealType,
-    noteItems,
-  };
-};
-
-const getNotesForMealError = (mealType: MealType, errorMessage: string): GetNotesForMealErrorAction => {
-  return {
-    type: NotesListActionTypes.ErrorForMeal,
-    mealType,
-    errorMessage,
-  };
-};
-
-enum NotesListBaseErrorMessages {
-  NotesForPage = 'Failed to get notes for page',
-  NotesForMeal = 'Failed to get notes for meal',
-}
-
-export const getNotesForPage: GetNotesForPageActionCreator = (request: NotesSearchRequest) => {
-  return async (
-    dispatch: Dispatch<GetNotesForPageActions>,
-  ): Promise<GetNotesForPageSuccessAction | GetNotesForPageErrorAction> => {
-    dispatch(getNotesForPageRequest('Loading page content'));
-    try {
-      const response = await getNotesAsync(request);
-
-      if (response.ok) {
-        const noteItems = await response.json();
-        return dispatch(getNotesForPageSuccess(noteItems));
+export const getNotesForPage = createThunkWithApiCall<
+  GetNotesForPageRequestAction,
+  GetNotesForPageSuccessAction,
+  GetNotesForPageErrorAction,
+  NotesListActionTypes.RequestForPage,
+  NotesListActionTypes.SuccessForPage,
+  NotesListActionTypes.ErrorForPage,
+  NoteItem[],
+  NotesSearchRequest
+>({
+  makeRequest: () => {
+    return (notesSearchRequest): GetNotesForPageRequestAction => {
+      if (!notesSearchRequest) {
+        throw new Error('Failed to load notes: notesSearchRequest is undefined');
       }
 
-      let errorMessage = `${NotesListBaseErrorMessages.NotesForPage}`;
+      return {
+        type: NotesListActionTypes.RequestForPage,
+        requestMessage: 'Loading page content',
+        payload: notesSearchRequest,
+      };
+    };
+  },
+  makeSuccess: () => {
+    return (_, noteItems): GetNotesForPageSuccessAction => ({
+      type: NotesListActionTypes.SuccessForPage,
+      data: noteItems ?? [],
+    });
+  },
+  makeError: () => {
+    return (_, receivedErrorMessage): GetNotesForPageErrorAction => ({
+      type: NotesListActionTypes.ErrorForPage,
+      errorMessage: receivedErrorMessage ?? '',
+    });
+  },
+  apiOptions: {
+    baseUrl: `${API_URL}/v1/notes`,
+    method: 'GET',
+    modifyUrl: modifyUrlByNotesSearchRequest,
+    onSuccess: createSuccessJsonResponseHandler(),
+    onError: createErrorResponseHandler('Failed to get notes for page'),
+  },
+});
 
-      switch (response.status) {
-        case 400:
-          errorMessage += `: ${ErrorReason.WrongRequestData}`;
-          break;
-        case 404:
-          errorMessage += `: page with id = ${request.pageId} not found`;
-          break;
-        case 500:
-          errorMessage += `: ${ErrorReason.ServerError}`;
-          break;
-        default:
-          errorMessage += `: ${ErrorReason.UnknownResponseCode}`;
-          break;
+export const getNotesForMeal = createThunkWithApiCall<
+  GetNotesForMealRequestAction,
+  GetNotesForMealSuccessAction,
+  GetNotesForMealErrorAction,
+  NotesListActionTypes.RequestForMeal,
+  NotesListActionTypes.SuccessForMeal,
+  NotesListActionTypes.ErrorForMeal,
+  NoteItem[],
+  NotesForMealSearchRequest
+>({
+  makeRequest: () => {
+    return (notesSearchRequest): GetNotesForMealRequestAction => {
+      if (!notesSearchRequest) {
+        throw new Error('Failed to load notes: notesSearchRequest is undefined');
       }
 
-      return dispatch(getNotesForPageError(errorMessage));
-    } catch (error) {
-      return dispatch(getNotesForPageError(NotesListBaseErrorMessages.NotesForPage));
-    }
-  };
-};
+      return {
+        type: NotesListActionTypes.RequestForMeal,
+        requestMessage: 'Loading notes',
+        payload: notesSearchRequest,
+      };
+    };
+  },
+  makeSuccess: () => {
+    return ({ mealType }, notesResponseData): GetNotesForMealSuccessAction => {
+      if (!notesResponseData) {
+        throw new Error('Failed to load notes: notesResponseData is undefined');
+      }
 
-export const getNotesForMeal: GetNotesForMealActionCreator = ({ pageId, mealType }: NotesForMealSearchRequest) => {
-  return async (
-    dispatch: Dispatch<GetNotesForMealActions>,
-  ): Promise<GetNotesForMealSuccessAction | GetNotesForMealErrorAction> => {
-    dispatch(getNotesForMealRequest(mealType, 'Loading notes'));
-    try {
-      const response = await getNotesAsync({
-        pageId,
+      return {
+        type: NotesListActionTypes.SuccessForMeal,
+        data: notesResponseData,
         mealType,
-      });
-
-      if (response.ok) {
-        const noteItems = await response.json();
-        return dispatch(getNotesForMealSuccess(mealType, noteItems));
+      };
+    };
+  },
+  makeError: () => {
+    return ({ mealType }, receivedError): GetNotesForMealErrorAction => {
+      if (!receivedError) {
+        throw new Error('Failed to load notes: receivedError is undefined');
       }
 
-      let errorMessage = `${NotesListBaseErrorMessages.NotesForMeal}`;
-
-      switch (response.status) {
-        case 400:
-          errorMessage += `: ${ErrorReason.WrongRequestData}`;
-          break;
-        case 500:
-          errorMessage += `: ${ErrorReason.ServerError}`;
-          break;
-        default:
-          errorMessage += `: ${ErrorReason.UnknownResponseCode}`;
-          break;
-      }
-
-      return dispatch(getNotesForMealError(mealType, errorMessage));
-    } catch (error) {
-      return dispatch(getNotesForMealError(mealType, NotesListBaseErrorMessages.NotesForMeal));
-    }
-  };
-};
+      return {
+        type: NotesListActionTypes.ErrorForMeal,
+        errorMessage: receivedError,
+        mealType,
+      };
+    };
+  },
+  apiOptions: {
+    baseUrl: `${API_URL}/v1/notes`,
+    method: 'GET',
+    modifyUrl: modifyUrlByNotesSearchRequest,
+    onSuccess: createSuccessJsonResponseHandler(),
+    onError: createErrorResponseHandler('Failed to get notes for meal'),
+  },
+});
