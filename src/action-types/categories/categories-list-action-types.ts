@@ -1,7 +1,7 @@
 import { Action } from 'redux';
 import { CategoryItem } from '../../models';
 import { ThunkDispatch } from 'redux-thunk';
-import { RequestAction, SuccessAction, ErrorAction } from '../../helpers';
+import { ThunkHelperAllActions, ThunkHelperResultActions } from '../../helpers';
 
 export enum CategoriesListActionTypes {
   Request = 'CATEGORIES_LIST__REQUEST',
@@ -10,24 +10,22 @@ export enum CategoriesListActionTypes {
   SetEditable = 'CATEGORIES_LIST__SET_EDITABLE_FOR_PAGES',
 }
 
-export type GetCategoriesListRequestAction = RequestAction<CategoriesListActionTypes.Request>;
-export type GetCategoriesListSuccessAction = SuccessAction<CategoriesListActionTypes.Success, CategoryItem[]>;
-export type GetCategoriesListErrorAction = ErrorAction<CategoriesListActionTypes.Error>;
-
-export type GetCategoriesListActions =
-  | GetCategoriesListRequestAction
-  | GetCategoriesListSuccessAction
-  | GetCategoriesListErrorAction;
-
-export type GetCategoriesListDispatch = ThunkDispatch<
-  CategoryItem[],
-  {},
-  GetCategoriesListSuccessAction | GetCategoriesListErrorAction
+export type GetCategoriesListActions = ThunkHelperAllActions<
+  CategoriesListActionTypes.Request,
+  CategoriesListActionTypes.Success,
+  CategoriesListActionTypes.Error,
+  CategoryItem[]
 >;
 
-export type GetCategoriesListDispatchProp = () => Promise<
-  GetCategoriesListSuccessAction | GetCategoriesListErrorAction
+export type GetCategoriesListResultActions = ThunkHelperResultActions<
+  CategoriesListActionTypes.Success,
+  CategoriesListActionTypes.Error,
+  CategoryItem[]
 >;
+
+export type GetCategoriesListDispatch = ThunkDispatch<CategoryItem[], {}, GetCategoriesListResultActions>;
+
+export type GetCategoriesListDispatchProp = () => Promise<GetCategoriesListResultActions>;
 
 export interface SetEditableForCategoriesAction extends Action<CategoriesListActionTypes.SetEditable> {
   categoriesIds: number[];

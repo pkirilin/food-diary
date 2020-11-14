@@ -6,17 +6,15 @@ export interface RequestAction<A, P = {}> extends Action<A> {
   payload: P;
 }
 
-export interface SuccessAction<A, D = {}> extends Action<A> {
+export interface SuccessAction<A, D = {}, P = {}> extends Action<A> {
   data: D;
+  payload: P;
 }
 
-export interface ErrorAction<A> extends Action<A> {
+export interface ErrorAction<A, P = {}> extends Action<A> {
   errorMessage: string;
+  payload: P;
 }
-
-export type RequestActionCreatorComposer<A, P> = (payload: P) => A;
-export type SuccessActionCreatorComposer<A, P, D> = (payload: P, data?: D) => A;
-export type ErrorActionCreatorComposer<A, P> = (payload: P, errorMessage: string) => A;
 
 export type ApiMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
 export type ApiRequestBody = string | FormData | null;
@@ -35,77 +33,40 @@ export type ApiErrorResponseHandler<A extends Action, R> = (
 export type ApiRequestUrlModifier<P> = (baseUrl: string, payload: P) => string;
 export type ApiRequestBodyConstructor<P> = (payload: P) => ApiRequestBody;
 
-export interface ApiOptions<SA extends Action, EA extends Action, D, P> {
+export interface ApiOptions<S, E, D, P> {
   baseUrl: string;
   method?: ApiMethod;
   contentType?: string;
-  onSuccess?: ApiSuccessResponseHandler<SA, D>;
-  onError?: ApiErrorResponseHandler<EA, string>;
+  onSuccess?: ApiSuccessResponseHandler<SuccessAction<S, D, P>, D>;
+  onError?: ApiErrorResponseHandler<ErrorAction<E, P>, string>;
   modifyUrl?: ApiRequestUrlModifier<P>;
   constructBody?: ApiRequestBodyConstructor<P>;
-}
-
-export interface AsyncActionBuilderOptions<RA extends Action, SA extends Action, EA extends Action, D, P> {
-  makeRequest(): RequestActionCreatorComposer<RA, P>;
-  makeSuccess(): SuccessActionCreatorComposer<SA, P, D>;
-  makeError(): ErrorActionCreatorComposer<EA, P>;
-  apiOptions: ApiOptions<SA, EA, D, P>;
 }
 
 type RequestHeadersFragment = Pick<RequestInit, 'headers'>;
 type RequestBodyFragment = Pick<RequestInit, 'body'>;
 
-export function createThunkWithApiCall<
-  RA extends RequestAction<RC, P>,
-  SA extends SuccessAction<SC, D>,
-  EA extends ErrorAction<EC>,
-  RC extends string,
-  SC extends string,
-  EC extends string,
-  D = {},
-  P = {}
->({
-  makeRequest,
-  makeSuccess,
-  makeError,
-  apiOptions,
-}: AsyncActionBuilderOptions<RA, SA, EA, D, P>): ActionCreator<ThunkAction<Promise<SA | EA>, D, P, SA | EA>> {
-  function getRequestUrl(baseUrl: string, payload: P, modifyUrl?: ApiRequestUrlModifier<P>): string {
-    if (modifyUrl) {
-      return modifyUrl(baseUrl, payload);
-    }
+export type ThunkHelperResultActions<S, E, D = {}, P = {}> = SuccessAction<S, D, P> | ErrorAction<E, P>;
 
-    return baseUrl;
-  }
+export type ThunkHelperAllActions<R, S, E, D = {}, P = {}> =
+  | RequestAction<R, P>
+  | SuccessAction<S, D, P>
+  | ErrorAction<E, P>;
 
-  function getHeadersFragment(contentType?: string): RequestHeadersFragment {
-    const headersFragment: RequestHeadersFragment = {};
+export type ThunkHelperAction<S, E, D = {}, P = {}> = ThunkAction<
+  Promise<ThunkHelperResultActions<S, E, D, P>>,
+  D,
+  P,
+  ThunkHelperResultActions<S, E, D, P>
+>;
 
-    if (!contentType) {
-      headersFragment['headers'] = {
-        'Content-Type': 'application/json',
-      };
-    } else {
-      headersFragment['headers'] = {
-        'Content-Type': contentType,
-      };
-    }
-
-    return headersFragment;
-  }
-
-  function getBodyFragment(payload: P, constructBody?: ApiRequestBodyConstructor<P>): RequestBodyFragment {
-    if (constructBody) {
-      return { body: constructBody(payload) };
-    }
-
-    return {};
-  }
-
-  const request = makeRequest();
-  const success = makeSuccess();
-  const error = makeError();
-
+export function createAsyncAction<D = {}, P = {}, R = string, S = string, E = string>(
+  requestActionType: R,
+  successActionType: S,
+  errorActionType: E,
+  apiOptions: ApiOptions<S, E, D, P>,
+  requestMessage = 'Performing request',
+): ActionCreator<ThunkHelperAction<S, E, D, P>> {
   const {
     baseUrl,
     method = 'GET',
@@ -116,40 +77,73 @@ export function createThunkWithApiCall<
     onError,
   } = apiOptions;
 
-  return (payload: P) => {
-    return async (dispatch: Dispatch<RA | SA | EA>): Promise<SA | EA> => {
-      dispatch(request(payload));
+  function getRequestUrl(baseUrl: string, payload: P, modifyUrl?: ApiRequestUrlModifier<P>): string {
+    return modifyUrl ? modifyUrl(baseUrl, payload) : baseUrl;
+  }
+
+  function getHeaders(contentType?: string): RequestHeadersFragment {
+    return contentType ? { headers: { 'Content-Type': contentType } } : {};
+  }
+
+  function getBody(payload: P, constructBody?: ApiRequestBodyConstructor<P>): RequestBodyFragment {
+    return constructBody ? { body: constructBody(payload) } : {};
+  }
+
+  return (payload: P): ThunkHelperAction<S, E, D, P> => {
+    const createRequest = (payload: P): RequestAction<R, P> => ({
+      type: requestActionType,
+      requestMessage,
+      payload,
+    });
+
+    const createSuccess = (data: D, payload: P): SuccessAction<S, D, P> => ({
+      type: successActionType,
+      data,
+      payload,
+    });
+
+    const createError = (errorMessage: string, payload: P): ErrorAction<E, P> => ({
+      type: errorActionType,
+      errorMessage,
+      payload,
+    });
+
+    type TDispatch = Dispatch<RequestAction<R, P> | SuccessAction<S, D, P> | ErrorAction<E, P>>;
+
+    return async (dispatch: TDispatch): Promise<ThunkHelperResultActions<S, E, D, P>> => {
+      dispatch(createRequest(payload));
 
       const requestUrl = getRequestUrl(baseUrl, payload, modifyUrl);
 
       try {
         const response = await fetch(requestUrl, {
           method,
-          ...getHeadersFragment(contentType),
-          ...getBodyFragment(payload, constructBody),
+          ...getHeaders(contentType),
+          ...getBody(payload, constructBody),
         });
 
         if (response.ok) {
           if (onSuccess) {
             const data = await onSuccess(dispatch, response);
-            return dispatch(success(payload, data));
+            return dispatch(createSuccess(data, payload));
           }
-          return dispatch(success(payload));
+
+          return dispatch(createSuccess({} as D, payload));
         }
 
         if (onError) {
           const errorMessage = await onError(dispatch, response);
-          return dispatch(error(payload, errorMessage));
+          return dispatch(createError(errorMessage, payload));
         }
 
-        return dispatch(error(payload, 'Unknown error occured'));
+        return dispatch(createError('Unknown error occured', payload));
       } catch (err) {
         if (onError) {
           const errorMessage = await onError(dispatch);
-          return dispatch(error(payload, errorMessage));
+          return dispatch(createError(errorMessage, payload));
         }
 
-        return dispatch(error(payload, 'Failed to fetch data'));
+        return dispatch(createError('Failed to fetch data', payload));
       }
     };
   };

@@ -1,7 +1,7 @@
-import { NoteCreateEdit, MealType, NoteDeleteRequest } from '../../models';
+import { NoteCreateEdit, NoteDeleteRequest } from '../../models';
 import { NoteEditRequest } from '../../models';
 import { ThunkDispatch } from 'redux-thunk';
-import { ErrorAction, RequestAction, SuccessAction } from '../../helpers';
+import { ThunkHelperAllActions, ThunkHelperResultActions } from '../../helpers';
 
 export enum NotesOperationsActionTypes {
   CreateRequest = 'NOTES_OPERATIONS__CREATE_REQUEST',
@@ -17,54 +17,61 @@ export enum NotesOperationsActionTypes {
   DeleteError = 'NOTES_OPERATIONS__DELETE_ERROR',
 }
 
-export type CreateNoteRequestAction = RequestAction<NotesOperationsActionTypes.CreateRequest, NoteCreateEdit>;
+export type CreateNoteActions = ThunkHelperAllActions<
+  NotesOperationsActionTypes.CreateRequest,
+  NotesOperationsActionTypes.CreateSuccess,
+  NotesOperationsActionTypes.CreateError,
+  {},
+  NoteCreateEdit
+>;
 
-export interface CreateNoteSuccessAction extends SuccessAction<NotesOperationsActionTypes.CreateSuccess> {
-  mealType: MealType;
-}
+export type EditNoteActions = ThunkHelperAllActions<
+  NotesOperationsActionTypes.EditRequest,
+  NotesOperationsActionTypes.EditSuccess,
+  NotesOperationsActionTypes.EditError,
+  {},
+  NoteEditRequest
+>;
 
-export interface CreateNoteErrorAction extends ErrorAction<NotesOperationsActionTypes.CreateError> {
-  mealType: MealType;
-}
+export type DeleteNoteActions = ThunkHelperAllActions<
+  NotesOperationsActionTypes.DeleteRequest,
+  NotesOperationsActionTypes.DeleteSuccess,
+  NotesOperationsActionTypes.DeleteError,
+  {},
+  NoteDeleteRequest
+>;
 
-export type EditNoteRequestAction = RequestAction<NotesOperationsActionTypes.EditRequest, NoteEditRequest>;
+export type CreateNoteResultActions = ThunkHelperResultActions<
+  NotesOperationsActionTypes.CreateSuccess,
+  NotesOperationsActionTypes.CreateError,
+  {},
+  NoteCreateEdit
+>;
 
-export interface EditNoteSuccessAction extends SuccessAction<NotesOperationsActionTypes.EditSuccess> {
-  mealType: MealType;
-}
+export type EditNoteResultActions = ThunkHelperResultActions<
+  NotesOperationsActionTypes.EditSuccess,
+  NotesOperationsActionTypes.EditError,
+  {},
+  NoteEditRequest
+>;
 
-export interface EditNoteErrorAction extends ErrorAction<NotesOperationsActionTypes.EditError> {
-  mealType: MealType;
-}
-
-export type DeleteNoteRequestAction = RequestAction<NotesOperationsActionTypes.DeleteRequest, NoteDeleteRequest>;
-
-export interface DeleteNoteSuccessAction extends SuccessAction<NotesOperationsActionTypes.DeleteSuccess> {
-  mealType: MealType;
-}
-
-export interface DeleteNoteErrorAction extends ErrorAction<NotesOperationsActionTypes.DeleteError> {
-  mealType: MealType;
-}
-
-export type CreateNoteActions = CreateNoteRequestAction | CreateNoteSuccessAction | CreateNoteErrorAction;
-
-export type EditNoteActions = EditNoteRequestAction | EditNoteSuccessAction | EditNoteErrorAction;
-
-export type DeleteNoteActions = DeleteNoteRequestAction | DeleteNoteSuccessAction | DeleteNoteErrorAction;
+export type DeleteNoteResultActions = ThunkHelperResultActions<
+  NotesOperationsActionTypes.DeleteSuccess,
+  NotesOperationsActionTypes.DeleteError,
+  {},
+  NoteDeleteRequest
+>;
 
 export type NotesOperationsActions = CreateNoteActions | EditNoteActions | DeleteNoteActions;
 
-export type CreateNoteDispatch = ThunkDispatch<{}, NoteCreateEdit, CreateNoteSuccessAction | CreateNoteErrorAction>;
+export type CreateNoteDispatch = ThunkDispatch<{}, NoteCreateEdit, CreateNoteResultActions>;
 
-export type EditNoteDispatch = ThunkDispatch<{}, NoteEditRequest, EditNoteSuccessAction | EditNoteErrorAction>;
+export type EditNoteDispatch = ThunkDispatch<{}, NoteEditRequest, EditNoteResultActions>;
 
-export type DeleteNoteDispatch = ThunkDispatch<{}, NoteDeleteRequest, DeleteNoteSuccessAction | DeleteNoteErrorAction>;
+export type DeleteNoteDispatch = ThunkDispatch<{}, NoteDeleteRequest, DeleteNoteResultActions>;
 
-export type CreateNoteDispatchProp = (note: NoteCreateEdit) => Promise<CreateNoteSuccessAction | CreateNoteErrorAction>;
+export type CreateNoteDispatchProp = (note: NoteCreateEdit) => Promise<CreateNoteResultActions>;
 
-export type EditNoteDispatchProp = (request: NoteEditRequest) => Promise<EditNoteSuccessAction | EditNoteErrorAction>;
+export type EditNoteDispatchProp = (request: NoteEditRequest) => Promise<EditNoteResultActions>;
 
-export type DeleteNoteDispatchProp = (
-  request: NoteDeleteRequest,
-) => Promise<DeleteNoteSuccessAction | DeleteNoteErrorAction>;
+export type DeleteNoteDispatchProp = (request: NoteDeleteRequest) => Promise<DeleteNoteResultActions>;

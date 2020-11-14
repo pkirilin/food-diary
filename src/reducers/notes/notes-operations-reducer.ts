@@ -36,9 +36,9 @@ const notesOperationsReducer = (
     case NotesOperationsActionTypes.CreateSuccess:
       return {
         mealOperationStatuses: [
-          ...state.mealOperationStatuses.filter(s => s.mealType !== action.mealType),
+          ...state.mealOperationStatuses.filter(s => s.mealType !== action.payload.mealType),
           {
-            mealType: action.mealType,
+            mealType: action.payload.mealType,
             performing: false,
           },
         ],
@@ -46,9 +46,9 @@ const notesOperationsReducer = (
     case NotesOperationsActionTypes.CreateError:
       return {
         mealOperationStatuses: [
-          ...state.mealOperationStatuses.filter(s => s.mealType !== action.mealType),
+          ...state.mealOperationStatuses.filter(s => s.mealType !== action.payload.mealType),
           {
-            mealType: action.mealType,
+            mealType: action.payload.mealType,
             performing: false,
             error: action.errorMessage,
           },
@@ -69,9 +69,9 @@ const notesOperationsReducer = (
     case NotesOperationsActionTypes.EditSuccess:
       return {
         mealOperationStatuses: [
-          ...state.mealOperationStatuses.filter(s => s.mealType !== action.mealType),
+          ...state.mealOperationStatuses.filter(s => s.mealType !== action.payload.note.mealType),
           {
-            mealType: action.mealType,
+            mealType: action.payload.note.mealType,
             performing: false,
           },
         ],
@@ -79,9 +79,9 @@ const notesOperationsReducer = (
     case NotesOperationsActionTypes.EditError:
       return {
         mealOperationStatuses: [
-          ...state.mealOperationStatuses.filter(s => s.mealType !== action.mealType),
+          ...state.mealOperationStatuses.filter(s => s.mealType !== action.payload.note.mealType),
           {
-            mealType: action.mealType,
+            mealType: action.payload.note.mealType,
             performing: false,
             error: action.errorMessage,
           },
@@ -102,9 +102,9 @@ const notesOperationsReducer = (
     case NotesOperationsActionTypes.DeleteSuccess:
       return {
         mealOperationStatuses: [
-          ...state.mealOperationStatuses.filter(s => s.mealType !== action.mealType),
+          ...state.mealOperationStatuses.filter(s => s.mealType !== action.payload.mealType),
           {
-            mealType: action.mealType,
+            mealType: action.payload.mealType,
             performing: false,
           },
         ],
@@ -112,9 +112,9 @@ const notesOperationsReducer = (
     case NotesOperationsActionTypes.DeleteError:
       return {
         mealOperationStatuses: [
-          ...state.mealOperationStatuses.filter(s => s.mealType !== action.mealType),
+          ...state.mealOperationStatuses.filter(s => s.mealType !== action.payload.mealType),
           {
-            mealType: action.mealType,
+            mealType: action.payload.mealType,
             performing: false,
             error: action.errorMessage,
           },

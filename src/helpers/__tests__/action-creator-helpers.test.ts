@@ -1,6 +1,6 @@
 import configureStore from 'redux-mock-store';
 import thunk, { ThunkDispatch } from 'redux-thunk';
-import { createThunkWithApiCall, ErrorAction, RequestAction, SuccessAction } from '../action-creator-helpers';
+import { createAsyncAction, ErrorAction, RequestAction, SuccessAction } from '../action-creator-helpers';
 
 const mockStore = configureStore<TestRecordsState, GetTestRecordsDispatch>([thunk]);
 const store = mockStore();
@@ -30,8 +30,12 @@ enum GetTestRecordsActionTypes {
 }
 
 type GetTestRecordsRequestAction = RequestAction<GetTestRecordsActionTypes.Request, GetTestRecordsRequest>;
-type GetTestRecordsSuccessAction = SuccessAction<GetTestRecordsActionTypes.Success, TestRecord[]>;
-type GetTestRecordsErrorAction = ErrorAction<GetTestRecordsActionTypes.Error>;
+type GetTestRecordsSuccessAction = SuccessAction<
+  GetTestRecordsActionTypes.Success,
+  TestRecord[],
+  GetTestRecordsRequest
+>;
+type GetTestRecordsErrorAction = ErrorAction<GetTestRecordsActionTypes.Error, GetTestRecordsRequest>;
 
 type GetTestRecordsDispatch = ThunkDispatch<
   TestRecord[],
@@ -39,7 +43,7 @@ type GetTestRecordsDispatch = ThunkDispatch<
   GetTestRecordsSuccessAction | GetTestRecordsErrorAction
 >;
 
-describe('createThunkWithApiCall', () => {
+describe('createAsyncAction', () => {
   const receivedRecords: TestRecord[] = [
     {
       id: 1,
@@ -60,298 +64,222 @@ describe('createThunkWithApiCall', () => {
 
   test('should dispatch request and success actions if response is ok', async () => {
     // Arrange
+    const payload: GetTestRecordsRequest = {
+      filterByName: 'John',
+      ageLimit: 40,
+    };
     const expectedRequestAction: GetTestRecordsRequestAction = {
       type: GetTestRecordsActionTypes.Request,
       requestMessage: 'Loading test records',
-      payload: {
-        filterByName: 'John',
-        ageLimit: 40,
-      },
+      payload,
     };
     const expectedSuccessAction: GetTestRecordsSuccessAction = {
       type: GetTestRecordsActionTypes.Success,
-      data: receivedRecords,
+      data: {} as TestRecord[],
+      payload,
     };
-
-    const makeRequestMock = jest.fn().mockReturnValue(() => expectedRequestAction);
-    const makeSuccessMock = jest.fn().mockReturnValue(() => expectedSuccessAction);
-    const makeErrorMock = jest.fn();
 
     fetchMock.mockResolvedValue({ ...new Response(), ok: true });
 
     // Act
-    const getTestRecords = createThunkWithApiCall<
-      GetTestRecordsRequestAction,
-      GetTestRecordsSuccessAction,
-      GetTestRecordsErrorAction,
+    const getTestRecords = createAsyncAction<TestRecord[], GetTestRecordsRequest>(
       GetTestRecordsActionTypes.Request,
       GetTestRecordsActionTypes.Success,
       GetTestRecordsActionTypes.Error,
-      TestRecord[],
-      GetTestRecordsRequest
-    >({
-      makeRequest: makeRequestMock,
-      makeSuccess: makeSuccessMock,
-      makeError: makeErrorMock,
-      apiOptions: { baseUrl: 'test url' },
-    });
+      { baseUrl: 'test url' },
+      'Loading test records',
+    );
 
-    await store.dispatch(getTestRecords());
+    await store.dispatch(getTestRecords(payload));
 
     // Assert
-    expect(makeRequestMock).toHaveBeenCalledTimes(1);
-    expect(makeSuccessMock).toHaveBeenCalledTimes(1);
-    expect(makeErrorMock).toHaveBeenCalledTimes(1);
     expect(store.getActions()).toEqual([expectedRequestAction, expectedSuccessAction]);
   });
 
   test('should dispatch request and error actions if response is not ok', async () => {
     // Arrange
+    const payload: GetTestRecordsRequest = {
+      filterByName: 'John',
+      ageLimit: 40,
+    };
     const expectedRequestAction: GetTestRecordsRequestAction = {
       type: GetTestRecordsActionTypes.Request,
       requestMessage: 'Loading test records',
-      payload: {
-        filterByName: 'John',
-        ageLimit: 40,
-      },
+      payload,
     };
     const expectedErrorAction: GetTestRecordsErrorAction = {
       type: GetTestRecordsActionTypes.Error,
-      errorMessage: 'Error',
+      errorMessage: 'Unknown error occured',
+      payload,
     };
-
-    const makeRequestMock = jest.fn().mockReturnValue(() => expectedRequestAction);
-    const makeSuccessMock = jest.fn();
-    const makeErrorMock = jest.fn().mockReturnValue(() => expectedErrorAction);
 
     fetchMock.mockResolvedValue({ ...new Response(), ok: false });
 
     // Act
-    const getTestRecords = createThunkWithApiCall<
-      GetTestRecordsRequestAction,
-      GetTestRecordsSuccessAction,
-      GetTestRecordsErrorAction,
+    const getTestRecords = createAsyncAction<TestRecord[], GetTestRecordsRequest>(
       GetTestRecordsActionTypes.Request,
       GetTestRecordsActionTypes.Success,
       GetTestRecordsActionTypes.Error,
-      TestRecord[],
-      GetTestRecordsRequest
-    >({
-      makeRequest: makeRequestMock,
-      makeSuccess: makeSuccessMock,
-      makeError: makeErrorMock,
-      apiOptions: { baseUrl: 'test url' },
-    });
+      { baseUrl: 'test url' },
+      'Loading test records',
+    );
 
-    await store.dispatch(getTestRecords());
+    await store.dispatch(getTestRecords(payload));
 
     // Assert
-    expect(makeRequestMock).toHaveBeenCalledTimes(1);
-    expect(makeSuccessMock).toHaveBeenCalledTimes(1);
-    expect(makeErrorMock).toHaveBeenCalledTimes(1);
     expect(store.getActions()).toEqual([expectedRequestAction, expectedErrorAction]);
   });
 
   test('should dispatch request and error actions if response is rejected', async () => {
     // Arrange
+    const payload: GetTestRecordsRequest = {
+      filterByName: 'John',
+      ageLimit: 40,
+    };
     const expectedRequestAction: GetTestRecordsRequestAction = {
       type: GetTestRecordsActionTypes.Request,
       requestMessage: 'Loading test records',
-      payload: {
-        filterByName: 'John',
-        ageLimit: 40,
-      },
+      payload,
     };
     const expectedErrorAction: GetTestRecordsErrorAction = {
       type: GetTestRecordsActionTypes.Error,
-      errorMessage: 'Error',
+      errorMessage: 'Failed to fetch data',
+      payload,
     };
-
-    const makeRequestMock = jest.fn().mockReturnValue(() => expectedRequestAction);
-    const makeSuccessMock = jest.fn();
-    const makeErrorMock = jest.fn().mockReturnValue(() => expectedErrorAction);
 
     fetchMock.mockRejectedValue(new Response());
 
     // Act
-    const getTestRecords = createThunkWithApiCall<
-      GetTestRecordsRequestAction,
-      GetTestRecordsSuccessAction,
-      GetTestRecordsErrorAction,
+    const getTestRecords = createAsyncAction<TestRecord[], GetTestRecordsRequest>(
       GetTestRecordsActionTypes.Request,
       GetTestRecordsActionTypes.Success,
       GetTestRecordsActionTypes.Error,
-      TestRecord[],
-      GetTestRecordsRequest
-    >({
-      makeRequest: makeRequestMock,
-      makeSuccess: makeSuccessMock,
-      makeError: makeErrorMock,
-      apiOptions: { baseUrl: 'test url' },
-    });
+      { baseUrl: 'test url' },
+      'Loading test records',
+    );
 
-    await store.dispatch(getTestRecords());
+    await store.dispatch(getTestRecords(payload));
 
     // Assert
-    expect(makeRequestMock).toHaveBeenCalledTimes(1);
-    expect(makeSuccessMock).toHaveBeenCalledTimes(1);
-    expect(makeErrorMock).toHaveBeenCalledTimes(1);
     expect(store.getActions()).toEqual([expectedRequestAction, expectedErrorAction]);
   });
 
   test('should dispatch request action, transform successful response and dispatch success with transformed data if response is ok', async () => {
     // Arrange
+    const payload: GetTestRecordsRequest = {
+      filterByName: 'John',
+      ageLimit: 40,
+    };
     const expectedRequestAction: GetTestRecordsRequestAction = {
       type: GetTestRecordsActionTypes.Request,
       requestMessage: 'Loading test records',
-      payload: {
-        filterByName: 'John',
-        ageLimit: 40,
-      },
+      payload,
     };
     const expectedSuccessAction: GetTestRecordsSuccessAction = {
       type: GetTestRecordsActionTypes.Success,
       data: receivedRecords,
+      payload,
     };
 
-    const successActionCreatorMock = jest.fn().mockReturnValue(expectedSuccessAction);
     const onSuccessMock = jest.fn().mockResolvedValue(receivedRecords);
-    const makeRequestMock = jest.fn().mockReturnValue(() => expectedRequestAction);
-    const makeSuccessMock = jest.fn().mockReturnValue(successActionCreatorMock);
-    const makeErrorMock = jest.fn();
 
     fetchMock.mockResolvedValue({ ...new Response(), ok: true });
 
     // Act
-    const getTestRecords = createThunkWithApiCall<
-      GetTestRecordsRequestAction,
-      GetTestRecordsSuccessAction,
-      GetTestRecordsErrorAction,
+    const getTestRecords = createAsyncAction<TestRecord[], GetTestRecordsRequest>(
       GetTestRecordsActionTypes.Request,
       GetTestRecordsActionTypes.Success,
       GetTestRecordsActionTypes.Error,
-      TestRecord[],
-      GetTestRecordsRequest
-    >({
-      makeRequest: makeRequestMock,
-      makeSuccess: makeSuccessMock,
-      makeError: makeErrorMock,
-      apiOptions: {
+      {
         baseUrl: 'test url',
         onSuccess: onSuccessMock,
       },
-    });
+      'Loading test records',
+    );
 
-    await store.dispatch(getTestRecords());
+    await store.dispatch(getTestRecords(payload));
 
     // Assert
-    expect(makeRequestMock).toHaveBeenCalledTimes(1);
-    expect(makeSuccessMock).toHaveBeenCalledTimes(1);
-    expect(makeErrorMock).toHaveBeenCalledTimes(1);
     expect(onSuccessMock).toHaveBeenCalledTimes(1);
     expect(store.getActions()).toEqual([expectedRequestAction, expectedSuccessAction]);
   });
 
   test('should dispatch request action, transform error response and dispatch error with transformed data if response is not ok', async () => {
     // Arrange
+    const payload: GetTestRecordsRequest = {
+      filterByName: 'John',
+      ageLimit: 40,
+    };
     const expectedRequestAction: GetTestRecordsRequestAction = {
       type: GetTestRecordsActionTypes.Request,
       requestMessage: 'Loading test records',
-      payload: {
-        filterByName: 'John',
-        ageLimit: 40,
-      },
+      payload,
     };
     const expectedErrorAction: GetTestRecordsErrorAction = {
       type: GetTestRecordsActionTypes.Error,
       errorMessage: 'Error',
+      payload,
     };
 
     const onErrorMock = jest.fn().mockResolvedValue('Error');
-    const makeRequestMock = jest.fn().mockReturnValue(() => expectedRequestAction);
-    const makeSuccessMock = jest.fn();
-    const makeErrorMock = jest.fn().mockReturnValue(() => expectedErrorAction);
 
     fetchMock.mockResolvedValue({ ...new Response(), ok: false });
 
     // Act
-    const getTestRecords = createThunkWithApiCall<
-      GetTestRecordsRequestAction,
-      GetTestRecordsSuccessAction,
-      GetTestRecordsErrorAction,
+    const getTestRecords = createAsyncAction<TestRecord[], GetTestRecordsRequest>(
       GetTestRecordsActionTypes.Request,
       GetTestRecordsActionTypes.Success,
       GetTestRecordsActionTypes.Error,
-      TestRecord[],
-      GetTestRecordsRequest
-    >({
-      makeRequest: makeRequestMock,
-      makeSuccess: makeSuccessMock,
-      makeError: makeErrorMock,
-      apiOptions: {
+      {
         baseUrl: 'test url',
         onError: onErrorMock,
       },
-    });
+      'Loading test records',
+    );
 
-    await store.dispatch(getTestRecords());
+    await store.dispatch(getTestRecords(payload));
 
     // Assert
-    expect(makeRequestMock).toHaveBeenCalledTimes(1);
-    expect(makeSuccessMock).toHaveBeenCalledTimes(1);
-    expect(makeErrorMock).toHaveBeenCalledTimes(1);
     expect(onErrorMock).toHaveBeenCalledTimes(1);
     expect(store.getActions()).toEqual([expectedRequestAction, expectedErrorAction]);
   });
 
   test('should dispatch request action, transform error response and dispatch error with transformed data if response is rejected', async () => {
     // Arrange
+    const payload: GetTestRecordsRequest = {
+      filterByName: 'John',
+      ageLimit: 40,
+    };
     const expectedRequestAction: GetTestRecordsRequestAction = {
       type: GetTestRecordsActionTypes.Request,
       requestMessage: 'Loading test records',
-      payload: {
-        filterByName: 'John',
-        ageLimit: 40,
-      },
+      payload,
     };
     const expectedErrorAction: GetTestRecordsErrorAction = {
       type: GetTestRecordsActionTypes.Error,
       errorMessage: 'Error',
+      payload,
     };
 
     const onErrorMock = jest.fn().mockResolvedValue('Error');
-    const makeRequestMock = jest.fn().mockReturnValue(() => expectedRequestAction);
-    const makeSuccessMock = jest.fn();
-    const makeErrorMock = jest.fn().mockReturnValue(() => expectedErrorAction);
 
     fetchMock.mockRejectedValue(new Response());
 
     // Act
-    const getTestRecords = createThunkWithApiCall<
-      GetTestRecordsRequestAction,
-      GetTestRecordsSuccessAction,
-      GetTestRecordsErrorAction,
+    const getTestRecords = createAsyncAction<TestRecord[], GetTestRecordsRequest>(
       GetTestRecordsActionTypes.Request,
       GetTestRecordsActionTypes.Success,
       GetTestRecordsActionTypes.Error,
-      TestRecord[],
-      GetTestRecordsRequest
-    >({
-      makeRequest: makeRequestMock,
-      makeSuccess: makeSuccessMock,
-      makeError: makeErrorMock,
-      apiOptions: {
+      {
         baseUrl: 'test url',
         onError: onErrorMock,
       },
-    });
+      'Loading test records',
+    );
 
-    await store.dispatch(getTestRecords());
+    await store.dispatch(getTestRecords(payload));
 
     // Assert
-    expect(makeRequestMock).toHaveBeenCalledTimes(1);
-    expect(makeSuccessMock).toHaveBeenCalledTimes(1);
-    expect(makeErrorMock).toHaveBeenCalledTimes(1);
     expect(onErrorMock).toHaveBeenCalledTimes(1);
     expect(store.getActions()).toEqual([expectedRequestAction, expectedErrorAction]);
   });
@@ -362,19 +290,19 @@ describe('createThunkWithApiCall', () => {
       filterByName: 'John',
       ageLimit: 40,
     };
-    const makeActionMock = jest.fn().mockReturnValue(jest.fn());
 
     // Act
-    const action = createThunkWithApiCall({
-      makeRequest: makeActionMock,
-      makeSuccess: makeActionMock,
-      makeError: makeActionMock,
-      apiOptions: {
+    const action = createAsyncAction(
+      'request',
+      'success',
+      'error',
+      {
         baseUrl: 'test url',
         method: 'POST',
         contentType: 'test content type',
       },
-    });
+      'Loading test records',
+    );
 
     await action(payload)(jest.fn(), jest.fn(), {});
 
@@ -391,21 +319,21 @@ describe('createThunkWithApiCall', () => {
       filterByName: 'John',
       ageLimit: 40,
     };
-    const makeActionMock = jest.fn().mockReturnValue(jest.fn());
     const modifyUrlMock = jest.fn().mockReturnValue('test url (modified)');
 
     // Act
-    const action = createThunkWithApiCall({
-      makeRequest: makeActionMock,
-      makeSuccess: makeActionMock,
-      makeError: makeActionMock,
-      apiOptions: {
+    const action = createAsyncAction(
+      'request',
+      'success',
+      'error',
+      {
         baseUrl: 'test url',
         method: 'POST',
         contentType: 'test content type',
         modifyUrl: modifyUrlMock,
       },
-    });
+      'Loading test records',
+    );
 
     await action(payload)(jest.fn(), jest.fn(), {});
 
@@ -423,21 +351,22 @@ describe('createThunkWithApiCall', () => {
       filterByName: 'John',
       ageLimit: 40,
     };
-    const makeActionMock = jest.fn().mockReturnValue(jest.fn());
-    const constructBodyMock = jest.fn().mockReturnValue(JSON.stringify(payload));
+    const payloadBody = JSON.stringify(payload);
+    const constructBodyMock = jest.fn().mockReturnValue(payloadBody);
 
     // Act
-    const action = createThunkWithApiCall({
-      makeRequest: makeActionMock,
-      makeSuccess: makeActionMock,
-      makeError: makeActionMock,
-      apiOptions: {
+    const action = createAsyncAction(
+      'request',
+      'success',
+      'error',
+      {
         baseUrl: 'test url',
         method: 'POST',
         contentType: 'test content type',
         constructBody: constructBodyMock,
       },
-    });
+      'Loading test records',
+    );
 
     await action(payload)(jest.fn(), jest.fn(), {});
 
@@ -445,7 +374,7 @@ describe('createThunkWithApiCall', () => {
     expect(fetchMock).toHaveBeenCalledWith('test url', {
       method: 'POST',
       headers: { 'Content-Type': 'test content type' },
-      body: JSON.stringify(payload),
+      body: payloadBody,
     });
     expect(constructBodyMock).toHaveBeenCalledWith(payload);
   });
