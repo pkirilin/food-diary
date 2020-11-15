@@ -292,24 +292,42 @@ describe('createAsyncAction', () => {
     };
 
     // Act
-    const action = createAsyncAction(
+    const action1 = createAsyncAction(
       'request',
       'success',
       'error',
       {
         baseUrl: 'test url',
         method: 'POST',
-        contentType: 'test content type',
+        contentType: 'application/json',
       },
       'Loading test records',
     );
+    const action2 = createAsyncAction('request', 'success', 'error', {
+      baseUrl: 'test url 2',
+      method: 'POST',
+    });
+    const action3 = createAsyncAction('request', 'success', 'error', {
+      baseUrl: 'test url 3',
+      method: 'POST',
+      contentType: 'none',
+    });
 
-    await action(payload)(jest.fn(), jest.fn(), {});
+    await action1(payload)(jest.fn(), jest.fn(), {});
+    await action2(payload)(jest.fn(), jest.fn(), {});
+    await action3(payload)(jest.fn(), jest.fn(), {});
 
     // Assert
     expect(fetchMock).toHaveBeenCalledWith('test url', {
       method: 'POST',
-      headers: { 'Content-Type': 'test content type' },
+      headers: { 'Content-Type': 'application/json' },
+    });
+    expect(fetchMock).toHaveBeenNthCalledWith(2, 'test url 2', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+    });
+    expect(fetchMock).toHaveBeenNthCalledWith(3, 'test url 3', {
+      method: 'POST',
     });
   });
 
@@ -329,7 +347,7 @@ describe('createAsyncAction', () => {
       {
         baseUrl: 'test url',
         method: 'POST',
-        contentType: 'test content type',
+        contentType: 'application/json',
         modifyUrl: modifyUrlMock,
       },
       'Loading test records',
@@ -341,7 +359,7 @@ describe('createAsyncAction', () => {
     expect(modifyUrlMock).toHaveBeenCalledWith('test url', payload);
     expect(fetchMock).toHaveBeenCalledWith('test url (modified)', {
       method: 'POST',
-      headers: { 'Content-Type': 'test content type' },
+      headers: { 'Content-Type': 'application/json' },
     });
   });
 
@@ -362,7 +380,7 @@ describe('createAsyncAction', () => {
       {
         baseUrl: 'test url',
         method: 'POST',
-        contentType: 'test content type',
+        contentType: 'application/json',
         constructBody: constructBodyMock,
       },
       'Loading test records',
@@ -373,7 +391,7 @@ describe('createAsyncAction', () => {
     // Assert
     expect(fetchMock).toHaveBeenCalledWith('test url', {
       method: 'POST',
-      headers: { 'Content-Type': 'test content type' },
+      headers: { 'Content-Type': 'application/json' },
       body: payloadBody,
     });
     expect(constructBodyMock).toHaveBeenCalledWith(payload);

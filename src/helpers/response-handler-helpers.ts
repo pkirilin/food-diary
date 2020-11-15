@@ -54,3 +54,11 @@ export function createSuccessNumberResponseHandler<A extends Action>(): ApiSucce
     return +responseText;
   };
 }
+
+export function createSuccessTextResponseHandler<A extends Action>(): ApiSuccessResponseHandler<A, string> {
+  return async (dispatch, response): Promise<string> => response.text();
+}
+
+export function createSuccessBlobResponseHandler<A extends Action>(): ApiSuccessResponseHandler<A, Blob> {
+  return async (dispatch, response): Promise<Blob> => response.blob();
+}

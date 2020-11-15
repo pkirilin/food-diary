@@ -1,13 +1,11 @@
 import {
-  GetPagesListErrorAction,
-  GetPagesListRequestAction,
-  GetPagesListSuccessAction,
   PagesListActionTypes,
   SetEditableForPagesAction,
   SetSelectedForAllPagesAction,
   SetSelectedForPageAction,
 } from '../../../action-types';
-import { PageItem } from '../../../models';
+import { ErrorAction, RequestAction, SuccessAction } from '../../../helpers';
+import { PageItem, PagesFilter, SortOrder } from '../../../models';
 import { PagesListState } from '../../../store';
 import pagesListReducer, { initialState } from '../pages-list-reducer';
 
@@ -36,9 +34,10 @@ function generateTestPages(): PageItem[] {
 
 describe('pages list reducer', () => {
   test('should handle pages request', () => {
-    const action: GetPagesListRequestAction = {
+    const action: RequestAction<PagesListActionTypes.Request, PagesFilter> = {
       type: PagesListActionTypes.Request,
-      loadingMessage: 'Test',
+      requestMessage: 'Test',
+      payload: { sortOrder: SortOrder.Ascending },
     };
     const expectedState: PagesListState = {
       ...initialState,
@@ -55,13 +54,14 @@ describe('pages list reducer', () => {
   });
 
   test('should handle pages success', () => {
-    const action: GetPagesListSuccessAction = {
+    const action: SuccessAction<PagesListActionTypes.Success, PageItem[], PagesFilter> = {
       type: PagesListActionTypes.Success,
-      pages: generateTestPages(),
+      payload: { sortOrder: SortOrder.Ascending },
+      data: generateTestPages(),
     };
     const expectedState: PagesListState = {
       ...initialState,
-      pageItems: action.pages,
+      pageItems: action.data,
       pageItemsFetchState: {
         loading: false,
         loaded: true,
@@ -75,9 +75,10 @@ describe('pages list reducer', () => {
   });
 
   test('should handle pages error', () => {
-    const action: GetPagesListErrorAction = {
+    const action: ErrorAction<PagesListActionTypes.Error, PagesFilter> = {
       type: PagesListActionTypes.Error,
       errorMessage: 'Test',
+      payload: { sortOrder: SortOrder.Ascending },
     };
     const expectedState: PagesListState = {
       ...initialState,

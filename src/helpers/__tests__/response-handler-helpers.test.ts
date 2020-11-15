@@ -1,8 +1,10 @@
 import { Action } from 'redux';
 import {
   createErrorResponseHandler,
+  createSuccessBlobResponseHandler,
   createSuccessJsonResponseHandler,
   createSuccessNumberResponseHandler,
+  createSuccessTextResponseHandler,
 } from '../response-handler-helpers';
 
 type TestAction = Action<'TEST'>;
@@ -139,5 +141,49 @@ describe('createSuccessNumberResponseHandler', () => {
 
     // Assert
     expect(number).toBe(expectedNumber);
+  });
+});
+
+describe('createSuccessTextResponseHandler', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('should create handler which receives string from response', async () => {
+    // Arrange
+    const expectedText = 'hello world';
+    const response: Response = {
+      ...new Response(),
+      text: jest.fn().mockResolvedValue('hello world'),
+    };
+
+    // Act
+    const getText = createSuccessTextResponseHandler<TestAction>();
+    const text = await getText(jest.fn(), response);
+
+    // Assert
+    expect(text).toBe(expectedText);
+  });
+});
+
+describe('createSuccessBlobResponseHandler', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('should create handler which receives blob from response', async () => {
+    // Arrange
+    const expectedBlob = new Blob(['this', 'is', 'test', 'blob']);
+    const response: Response = {
+      ...new Response(),
+      blob: jest.fn().mockResolvedValue(expectedBlob),
+    };
+
+    // Act
+    const getBlob = createSuccessBlobResponseHandler<TestAction>();
+    const blob = await getBlob(jest.fn(), response);
+
+    // Assert
+    expect(blob).toBe(expectedBlob);
   });
 });

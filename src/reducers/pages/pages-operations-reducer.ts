@@ -17,7 +17,7 @@ const pagesOperationsReducer = (
         ...state,
         status: {
           performing: true,
-          message: action.operationMessage,
+          message: action.requestMessage,
         },
       };
     case PagesOperationsActionTypes.CreateSuccess:
@@ -32,7 +32,7 @@ const pagesOperationsReducer = (
         ...state,
         status: {
           performing: false,
-          error: action.error,
+          error: action.errorMessage,
         },
       };
 
@@ -41,7 +41,7 @@ const pagesOperationsReducer = (
         ...state,
         status: {
           performing: true,
-          message: action.operationMessage,
+          message: action.requestMessage,
         },
       };
     case PagesOperationsActionTypes.EditSuccess:
@@ -56,7 +56,7 @@ const pagesOperationsReducer = (
         ...state,
         status: {
           performing: false,
-          error: action.error,
+          error: action.errorMessage,
         },
       };
 
@@ -65,7 +65,7 @@ const pagesOperationsReducer = (
         ...state,
         status: {
           performing: true,
-          message: action.operationMessage,
+          message: action.requestMessage,
         },
       };
     case PagesOperationsActionTypes.DeleteSuccess:
@@ -80,7 +80,7 @@ const pagesOperationsReducer = (
         ...state,
         status: {
           performing: false,
-          error: action.error,
+          error: action.errorMessage,
         },
       };
 
@@ -89,7 +89,7 @@ const pagesOperationsReducer = (
         ...state,
         status: {
           performing: true,
-          message: action.operationMessage,
+          message: action.requestMessage,
         },
       };
     case PagesOperationsActionTypes.ExportSuccess:
@@ -104,7 +104,7 @@ const pagesOperationsReducer = (
         ...state,
         status: {
           performing: false,
-          error: action.error,
+          error: action.errorMessage,
         },
       };
 
@@ -113,7 +113,7 @@ const pagesOperationsReducer = (
         ...state,
         status: {
           performing: true,
-          message: action.operationMessage,
+          message: action.requestMessage,
         },
       };
     case PagesOperationsActionTypes.ImportSuccess:
@@ -128,7 +128,7 @@ const pagesOperationsReducer = (
         ...state,
         status: {
           performing: false,
-          error: action.error,
+          error: action.errorMessage,
         },
       };
 
@@ -137,7 +137,7 @@ const pagesOperationsReducer = (
         ...state,
         status: {
           performing: true,
-          message: action.operationMessage,
+          message: action.requestMessage,
         },
       };
     case PagesOperationsActionTypes.DateForNewPageSuccess:
@@ -152,7 +152,7 @@ const pagesOperationsReducer = (
         ...state,
         status: {
           performing: false,
-          error: action.error,
+          error: action.errorMessage,
         },
       };
     default:

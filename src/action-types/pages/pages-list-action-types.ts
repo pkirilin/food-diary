@@ -1,6 +1,7 @@
 import { Action, ActionCreator } from 'redux';
 import { PageItem, PagesFilter } from '../../models';
 import { ThunkAction, ThunkDispatch } from 'redux-thunk';
+import { ThunkHelperAllActions, ThunkHelperResultActions } from '../../helpers';
 
 export enum PagesListActionTypes {
   Request = 'PAGES_LIST__REQUEST',
@@ -9,21 +10,6 @@ export enum PagesListActionTypes {
   SetSelected = 'PAGES_LIST__SET_SELECTED_FOR_PAGE',
   SetSelectedAll = 'PAGES_LIST__SET_SELECTED_FOR_ALL_PAGES',
   SetEditable = 'PAGES_LIST__SET_EDITABLE_FOR_PAGES',
-}
-
-export interface GetPagesListRequestAction extends Action<PagesListActionTypes.Request> {
-  type: PagesListActionTypes.Request;
-  loadingMessage?: string;
-}
-
-export interface GetPagesListSuccessAction extends Action<PagesListActionTypes.Success> {
-  type: PagesListActionTypes.Success;
-  pages: PageItem[];
-}
-
-export interface GetPagesListErrorAction extends Action<PagesListActionTypes.Error> {
-  type: PagesListActionTypes.Error;
-  errorMessage: string;
 }
 
 export interface SetSelectedForPageAction extends Action<PagesListActionTypes.SetSelected> {
@@ -43,7 +29,20 @@ export interface SetEditableForPagesAction extends Action<PagesListActionTypes.S
   editable: boolean;
 }
 
-export type GetPagesListActions = GetPagesListRequestAction | GetPagesListSuccessAction | GetPagesListErrorAction;
+export type GetPagesListActions = ThunkHelperAllActions<
+  PagesListActionTypes.Request,
+  PagesListActionTypes.Success,
+  PagesListActionTypes.Error,
+  PageItem[],
+  PagesFilter
+>;
+
+export type GetPagesListResultActions = ThunkHelperResultActions<
+  PagesListActionTypes.Success,
+  PagesListActionTypes.Error,
+  PageItem[],
+  PagesFilter
+>;
 
 export type PagesListActions =
   | GetPagesListActions
@@ -52,20 +51,9 @@ export type PagesListActions =
   | SetEditableForPagesAction;
 
 export type GetPagesListActionCreator = ActionCreator<
-  ThunkAction<
-    Promise<GetPagesListSuccessAction | GetPagesListErrorAction>,
-    PageItem[],
-    PagesFilter,
-    GetPagesListSuccessAction | GetPagesListErrorAction
-  >
+  ThunkAction<Promise<GetPagesListResultActions>, PageItem[], PagesFilter, GetPagesListResultActions>
 >;
 
-export type GetPagesListDispatch = ThunkDispatch<
-  PageItem[],
-  PagesFilter,
-  GetPagesListSuccessAction | GetPagesListErrorAction
->;
+export type GetPagesListDispatch = ThunkDispatch<PageItem[], PagesFilter, GetPagesListResultActions>;
 
-export type GetPagesListDispatchProp = (
-  filter: PagesFilter,
-) => Promise<GetPagesListSuccessAction | GetPagesListErrorAction>;
+export type GetPagesListDispatchProp = (filter: PagesFilter) => Promise<GetPagesListResultActions>;

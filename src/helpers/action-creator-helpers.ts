@@ -30,13 +30,14 @@ export type ApiErrorResponseHandler<A extends Action, R> = (
   response?: Response,
 ) => R | Promise<R>;
 
+export type ApiRequestContentType = 'application/json' | 'none';
 export type ApiRequestUrlModifier<P> = (baseUrl: string, payload: P) => string;
 export type ApiRequestBodyConstructor<P> = (payload: P) => ApiRequestBody;
 
 export interface ApiOptions<S, E, D, P> {
   baseUrl: string;
   method?: ApiMethod;
-  contentType?: string;
+  contentType?: ApiRequestContentType;
   onSuccess?: ApiSuccessResponseHandler<SuccessAction<S, D, P>, D>;
   onError?: ApiErrorResponseHandler<ErrorAction<E, P>, string>;
   modifyUrl?: ApiRequestUrlModifier<P>;
@@ -81,8 +82,8 @@ export function createAsyncAction<D = {}, P = {}, R = string, S = string, E = st
     return modifyUrl ? modifyUrl(baseUrl, payload) : baseUrl;
   }
 
-  function getHeaders(contentType?: string): RequestHeadersFragment {
-    return contentType ? { headers: { 'Content-Type': contentType } } : {};
+  function getHeaders(contentType: ApiRequestContentType): RequestHeadersFragment {
+    return contentType === 'none' ? {} : { headers: { 'Content-Type': contentType } };
   }
 
   function getBody(payload: P, constructBody?: ApiRequestBodyConstructor<P>): RequestBodyFragment {

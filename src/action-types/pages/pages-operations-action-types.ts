@@ -1,6 +1,6 @@
-import { Action, ActionCreator } from 'redux';
 import { PageCreateEdit, PageEditRequest, PagesExportRequest } from '../../models';
-import { ThunkAction, ThunkDispatch } from 'redux-thunk';
+import { ThunkDispatch } from 'redux-thunk';
+import { ThunkHelperAllActions, ThunkHelperResultActions } from '../../helpers';
 
 export enum PagesOperationsActionTypes {
   CreateRequest = 'PAGES_OPERATIONS__CREATE_REQUEST',
@@ -28,109 +28,93 @@ export enum PagesOperationsActionTypes {
   DateForNewPageError = 'PAGES_OPERATIONS__DATE_FOR_NEW_PAGE_ERROR',
 }
 
-export interface CreatePageRequestAction extends Action<PagesOperationsActionTypes.CreateRequest> {
-  type: PagesOperationsActionTypes.CreateRequest;
-  page: PageCreateEdit;
-  operationMessage: string;
-}
+export type CreatePageActions = ThunkHelperAllActions<
+  PagesOperationsActionTypes.CreateRequest,
+  PagesOperationsActionTypes.CreateSuccess,
+  PagesOperationsActionTypes.CreateError,
+  number,
+  PageCreateEdit
+>;
 
-export interface CreatePageSuccessAction extends Action<PagesOperationsActionTypes.CreateSuccess> {
-  type: PagesOperationsActionTypes.CreateSuccess;
-  createdPageId: number;
-}
+export type EditPageActions = ThunkHelperAllActions<
+  PagesOperationsActionTypes.EditRequest,
+  PagesOperationsActionTypes.EditSuccess,
+  PagesOperationsActionTypes.EditError,
+  {},
+  PageEditRequest
+>;
 
-export interface CreatePageErrorAction extends Action<PagesOperationsActionTypes.CreateError> {
-  type: PagesOperationsActionTypes.CreateError;
-  error: string;
-}
+export type DeletePagesActions = ThunkHelperAllActions<
+  PagesOperationsActionTypes.DeleteRequest,
+  PagesOperationsActionTypes.DeleteSuccess,
+  PagesOperationsActionTypes.DeleteError,
+  {},
+  number[]
+>;
 
-export interface EditPageRequestAction extends Action<PagesOperationsActionTypes.EditRequest> {
-  type: PagesOperationsActionTypes.EditRequest;
-  request: PageEditRequest;
-  operationMessage: string;
-}
+export type ExportPagesActions = ThunkHelperAllActions<
+  PagesOperationsActionTypes.ExportRequest,
+  PagesOperationsActionTypes.ExportSuccess,
+  PagesOperationsActionTypes.ExportError,
+  Blob,
+  PagesExportRequest
+>;
 
-export interface EditPageSuccessAction extends Action<PagesOperationsActionTypes.EditSuccess> {
-  type: PagesOperationsActionTypes.EditSuccess;
-}
+export type ImportPagesActions = ThunkHelperAllActions<
+  PagesOperationsActionTypes.ImportRequest,
+  PagesOperationsActionTypes.ImportSuccess,
+  PagesOperationsActionTypes.ImportError,
+  {},
+  File
+>;
 
-export interface EditPageErrorAction extends Action<PagesOperationsActionTypes.EditError> {
-  type: PagesOperationsActionTypes.EditError;
-  error: string;
-}
+export type GetDateForNewPageActions = ThunkHelperAllActions<
+  PagesOperationsActionTypes.DateForNewPageRequest,
+  PagesOperationsActionTypes.DateForNewPageSuccess,
+  PagesOperationsActionTypes.DateForNewPageError,
+  string
+>;
 
-export interface DeletePagesRequestAction extends Action<PagesOperationsActionTypes.DeleteRequest> {
-  type: PagesOperationsActionTypes.DeleteRequest;
-  operationMessage: string;
-}
+export type CreatePageResultActions = ThunkHelperResultActions<
+  PagesOperationsActionTypes.CreateSuccess,
+  PagesOperationsActionTypes.CreateError,
+  number,
+  PageCreateEdit
+>;
 
-export interface DeletePagesSuccessAction extends Action<PagesOperationsActionTypes.DeleteSuccess> {
-  type: PagesOperationsActionTypes.DeleteSuccess;
-}
+export type EditPageResultActions = ThunkHelperResultActions<
+  PagesOperationsActionTypes.EditSuccess,
+  PagesOperationsActionTypes.EditError,
+  {},
+  PageEditRequest
+>;
 
-export interface DeletePagesErrorAction extends Action<PagesOperationsActionTypes.DeleteError> {
-  type: PagesOperationsActionTypes.DeleteError;
-  error: string;
-}
+export type DeletePagesResultActions = ThunkHelperResultActions<
+  PagesOperationsActionTypes.DeleteSuccess,
+  PagesOperationsActionTypes.DeleteError,
+  {},
+  number[]
+>;
 
-export interface ExportPagesRequestAction extends Action<PagesOperationsActionTypes.ExportRequest> {
-  type: PagesOperationsActionTypes.ExportRequest;
-  operationMessage: string;
-}
+export type ExportPagesResultActions = ThunkHelperResultActions<
+  PagesOperationsActionTypes.ExportSuccess,
+  PagesOperationsActionTypes.ExportError,
+  Blob,
+  PagesExportRequest
+>;
 
-export interface ExportPagesSuccessAction extends Action<PagesOperationsActionTypes.ExportSuccess> {
-  type: PagesOperationsActionTypes.ExportSuccess;
-  exportFile: Blob;
-}
+export type ImportPagesResultActions = ThunkHelperResultActions<
+  PagesOperationsActionTypes.ImportSuccess,
+  PagesOperationsActionTypes.ImportError,
+  {},
+  File
+>;
 
-export interface ExportPagesErrorAction extends Action<PagesOperationsActionTypes.ExportError> {
-  type: PagesOperationsActionTypes.ExportError;
-  error: string;
-}
-
-export interface ImportPagesRequestAction extends Action<PagesOperationsActionTypes.ImportRequest> {
-  type: PagesOperationsActionTypes.ImportRequest;
-  operationMessage: string;
-}
-
-export interface ImportPagesSuccessAction extends Action<PagesOperationsActionTypes.ImportSuccess> {
-  type: PagesOperationsActionTypes.ImportSuccess;
-}
-
-export interface ImportPagesErrorAction extends Action<PagesOperationsActionTypes.ImportError> {
-  type: PagesOperationsActionTypes.ImportError;
-  error: string;
-}
-
-export interface GetDateForNewPageRequestAction extends Action<PagesOperationsActionTypes.DateForNewPageRequest> {
-  type: PagesOperationsActionTypes.DateForNewPageRequest;
-  operationMessage: string;
-}
-
-export interface GetDateForNewPageSuccessAction extends Action<PagesOperationsActionTypes.DateForNewPageSuccess> {
-  type: PagesOperationsActionTypes.DateForNewPageSuccess;
-  dateForNewPage: string;
-}
-
-export interface GetDateForNewPageErrorAction extends Action<PagesOperationsActionTypes.DateForNewPageError> {
-  type: PagesOperationsActionTypes.DateForNewPageError;
-  error?: string;
-}
-
-export type CreatePageActions = CreatePageRequestAction | CreatePageSuccessAction | CreatePageErrorAction;
-
-export type EditPageActions = EditPageRequestAction | EditPageSuccessAction | EditPageErrorAction;
-
-export type DeletePagesActions = DeletePagesRequestAction | DeletePagesSuccessAction | DeletePagesErrorAction;
-
-export type ExportPagesActions = ExportPagesRequestAction | ExportPagesSuccessAction | ExportPagesErrorAction;
-
-export type ImportPagesActions = ImportPagesRequestAction | ImportPagesSuccessAction | ImportPagesErrorAction;
-
-export type GetDateForNewPageActions =
-  | GetDateForNewPageRequestAction
-  | GetDateForNewPageSuccessAction
-  | GetDateForNewPageErrorAction;
+export type GetDateForNewPageResultActions = ThunkHelperResultActions<
+  PagesOperationsActionTypes.DateForNewPageSuccess,
+  PagesOperationsActionTypes.DateForNewPageError,
+  string
+>;
 
 export type PagesOperationsActions =
   | CreatePageActions
@@ -140,79 +124,17 @@ export type PagesOperationsActions =
   | ImportPagesActions
   | GetDateForNewPageActions;
 
-export type CreatePageActionCreator = ActionCreator<
-  ThunkAction<
-    Promise<CreatePageSuccessAction | CreatePageErrorAction>,
-    void,
-    PageCreateEdit,
-    CreatePageSuccessAction | CreatePageErrorAction
-  >
->;
+export type CreatePageDispatch = ThunkDispatch<number, PageCreateEdit, CreatePageActions>;
 
-export type EditPageActionCreator = ActionCreator<
-  ThunkAction<
-    Promise<EditPageSuccessAction | EditPageErrorAction>,
-    void,
-    PageEditRequest,
-    EditPageSuccessAction | EditPageErrorAction
-  >
->;
+export type EditPageDispatch = ThunkDispatch<{}, PageEditRequest, EditPageActions>;
 
-export type DeletePagesActionCreator = ActionCreator<
-  ThunkAction<
-    Promise<DeletePagesSuccessAction | DeletePagesErrorAction>,
-    void,
-    number[],
-    DeletePagesSuccessAction | DeletePagesErrorAction
-  >
->;
+export type DeletePagesDispatch = ThunkDispatch<{}, number[], DeletePagesActions>;
 
-export type ExportPagesActionCreator = ActionCreator<
-  ThunkAction<
-    Promise<ExportPagesSuccessAction | ExportPagesErrorAction>,
-    void,
-    PagesExportRequest,
-    ExportPagesSuccessAction | ExportPagesErrorAction
-  >
->;
+export type ExportPagesDispatch = ThunkDispatch<Blob, PagesExportRequest, ExportPagesActions>;
 
-export type ImportPagesActionCreator = ActionCreator<
-  ThunkAction<
-    Promise<ImportPagesSuccessAction | ImportPagesErrorAction>,
-    void,
-    File,
-    ImportPagesSuccessAction | ImportPagesErrorAction
-  >
->;
+export type ImportPagesDispatch = ThunkDispatch<{}, File, ImportPagesActions>;
 
-export type GetDateForNewPageActionCreator = ActionCreator<
-  ThunkAction<
-    Promise<GetDateForNewPageSuccessAction | GetDateForNewPageErrorAction>,
-    void,
-    void,
-    GetDateForNewPageSuccessAction | GetDateForNewPageErrorAction
-  >
->;
-
-export type CreatePageDispatch = ThunkDispatch<void, PageCreateEdit, CreatePageSuccessAction | CreatePageErrorAction>;
-
-export type EditPageDispatch = ThunkDispatch<void, PageEditRequest, EditPageSuccessAction | EditPageErrorAction>;
-
-export type DeletePagesDispatch = ThunkDispatch<void, number[], DeletePagesSuccessAction | DeletePagesErrorAction>;
-
-export type ExportPagesDispatch = ThunkDispatch<
-  void,
-  PagesExportRequest,
-  ExportPagesSuccessAction | ExportPagesErrorAction
->;
-
-export type ImportPagesDispatch = ThunkDispatch<void, File, ImportPagesSuccessAction | ImportPagesErrorAction>;
-
-export type GetDateForNewPageDispatch = ThunkDispatch<
-  void,
-  void,
-  GetDateForNewPageSuccessAction | GetDateForNewPageErrorAction
->;
+export type GetDateForNewPageDispatch = ThunkDispatch<string, {}, GetDateForNewPageActions>;
 
 export type PagesOperationsActionsDispatch = CreatePageDispatch &
   EditPageDispatch &
@@ -221,20 +143,14 @@ export type PagesOperationsActionsDispatch = CreatePageDispatch &
   ImportPagesDispatch &
   GetDateForNewPageDispatch;
 
-export type CreatePageDispatchProp = (page: PageCreateEdit) => Promise<CreatePageSuccessAction | CreatePageErrorAction>;
+export type CreatePageDispatchProp = (page: PageCreateEdit) => Promise<CreatePageActions>;
 
-export type EditPageDispatchProp = (request: PageEditRequest) => Promise<EditPageSuccessAction | EditPageErrorAction>;
+export type EditPageDispatchProp = (request: PageEditRequest) => Promise<EditPageActions>;
 
-export type DeletePagesDispatchProp = (
-  pagesIds: number[],
-) => Promise<DeletePagesSuccessAction | DeletePagesErrorAction>;
+export type DeletePagesDispatchProp = (pagesIds: number[]) => Promise<DeletePagesActions>;
 
-export type ExportPagesDispatchProp = (
-  request: PagesExportRequest,
-) => Promise<ExportPagesSuccessAction | ExportPagesErrorAction>;
+export type ExportPagesDispatchProp = (request: PagesExportRequest) => Promise<ExportPagesActions>;
 
-export type ImportPagesDispatchProp = (importFile: File) => Promise<ImportPagesSuccessAction | ImportPagesErrorAction>;
+export type ImportPagesDispatchProp = (importFile: File) => Promise<ImportPagesActions>;
 
-export type GetDateForNewPageDispatchProp = () => Promise<
-  GetDateForNewPageSuccessAction | GetDateForNewPageErrorAction
->;
+export type GetDateForNewPageDispatchProp = () => Promise<GetDateForNewPageActions>;

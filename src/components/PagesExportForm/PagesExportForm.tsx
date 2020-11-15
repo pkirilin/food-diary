@@ -54,7 +54,7 @@ const PagesExportForm: React.FC<PagesExportFormProps> = ({
     });
 
     if (exportPagesResultAction.type === PagesOperationsActionTypes.ExportSuccess) {
-      downloadFile(exportPagesResultAction.exportFile, `FoodDiary_${startDate}_${endDate}.${format}`);
+      downloadFile(exportPagesResultAction.data, `FoodDiary_${startDate}_${endDate}.${format}`);
     }
   };
 

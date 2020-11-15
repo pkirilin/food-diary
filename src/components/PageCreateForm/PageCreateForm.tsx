@@ -26,7 +26,7 @@ const PageCreateForm: React.FC<PageCreateFormProps> = ({
       const action = await getDateForNewPage();
 
       if (action.type === PagesOperationsActionTypes.DateForNewPageSuccess) {
-        setDate(action.dateForNewPage);
+        setDate(action.data);
       }
     };
 

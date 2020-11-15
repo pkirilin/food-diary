@@ -1,76 +1,43 @@
-import { Dispatch } from 'redux';
-import { PagesFilter, PageItem, ErrorReason } from '../../models';
+import { PagesFilter, PageItem } from '../../models';
 import {
-  GetPagesListSuccessAction,
-  GetPagesListRequestAction,
   PagesListActionTypes,
-  GetPagesListErrorAction,
   SetSelectedForPageAction,
   SetSelectedForAllPagesAction,
   SetEditableForPagesAction,
-  GetPagesListActionCreator,
-  GetPagesListActions,
 } from '../../action-types';
-import { getPagesAsync } from '../../services';
+import { createAsyncAction, createErrorResponseHandler, createSuccessJsonResponseHandler } from '../../helpers';
+import { API_URL } from '../../config';
 
-const getPagesRequest = (loadingMessage?: string): GetPagesListRequestAction => {
-  return {
-    type: PagesListActionTypes.Request,
-    loadingMessage,
-  };
-};
+export const getPages = createAsyncAction<
+  PageItem[],
+  PagesFilter,
+  PagesListActionTypes.Request,
+  PagesListActionTypes.Success,
+  PagesListActionTypes.Error
+>(
+  PagesListActionTypes.Request,
+  PagesListActionTypes.Success,
+  PagesListActionTypes.Error,
+  {
+    baseUrl: `${API_URL}/v1/pages`,
+    method: 'GET',
+    modifyUrl: (baseUrl, { startDate, endDate, sortOrder }) => {
+      let requestUrl = `${baseUrl}?sortOrder=${sortOrder}`;
 
-const getPagesSuccess = (pages: PageItem[]): GetPagesListSuccessAction => {
-  return {
-    type: PagesListActionTypes.Success,
-    pages,
-  };
-};
-
-const getPagesError = (errorMessage: string): GetPagesListErrorAction => {
-  return {
-    type: PagesListActionTypes.Error,
-    errorMessage,
-  };
-};
-
-enum PagesListErrorMessages {
-  GetList = 'Failed to get pages list',
-}
-
-export const getPages: GetPagesListActionCreator = (filter: PagesFilter) => {
-  return async (
-    dispatch: Dispatch<GetPagesListActions>,
-  ): Promise<GetPagesListSuccessAction | GetPagesListErrorAction> => {
-    dispatch(getPagesRequest('Loading pages'));
-    try {
-      const response = await getPagesAsync(filter);
-
-      if (response.ok) {
-        const pages = await response.json();
-        return dispatch(getPagesSuccess(pages));
+      if (startDate) {
+        requestUrl += `&startDate=${startDate}`;
+      }
+      if (endDate) {
+        requestUrl += `&endDate=${endDate}`;
       }
 
-      let errorMessage = `${PagesListErrorMessages.GetList}`;
-
-      switch (response.status) {
-        case 400:
-          errorMessage += `: ${ErrorReason.WrongRequestData}`;
-          break;
-        case 500:
-          errorMessage += `: ${ErrorReason.ServerError}`;
-          break;
-        default:
-          errorMessage += `: ${ErrorReason.UnknownResponseCode}`;
-          break;
-      }
-
-      return dispatch(getPagesError(errorMessage));
-    } catch (error) {
-      return dispatch(getPagesError(PagesListErrorMessages.GetList));
-    }
-  };
-};
+      return requestUrl;
+    },
+    onSuccess: createSuccessJsonResponseHandler(),
+    onError: createErrorResponseHandler('Failed to get pages list'),
+  },
+  'Loading pages',
+);
 
 export const setSelectedForPage = (selected: boolean, pageId: number): SetSelectedForPageAction => {
   return {

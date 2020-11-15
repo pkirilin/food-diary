@@ -1,33 +1,15 @@
-import {
-  CreatePageErrorAction,
-  CreatePageRequestAction,
-  CreatePageSuccessAction,
-  DeletePagesErrorAction,
-  DeletePagesRequestAction,
-  DeletePagesSuccessAction,
-  EditPageErrorAction,
-  EditPageRequestAction,
-  EditPageSuccessAction,
-  ExportPagesErrorAction,
-  ExportPagesRequestAction,
-  ExportPagesSuccessAction,
-  GetDateForNewPageErrorAction,
-  GetDateForNewPageRequestAction,
-  GetDateForNewPageSuccessAction,
-  ImportPagesErrorAction,
-  ImportPagesRequestAction,
-  ImportPagesSuccessAction,
-  PagesOperationsActionTypes,
-} from '../../../action-types';
+import { PagesOperationsActionTypes } from '../../../action-types';
+import { ErrorAction, RequestAction, SuccessAction } from '../../../helpers';
+import { ExportFormat, PageCreateEdit, PageEditRequest, PagesExportRequest } from '../../../models';
 import { PagesOperationsState } from '../../../store';
 import pagesOperationsReducer, { initialState } from '../pages-operations-reducer';
 
 describe('pages operations reducer', () => {
   test('should handle create request', () => {
-    const action: CreatePageRequestAction = {
+    const action: RequestAction<PagesOperationsActionTypes.CreateRequest, PageCreateEdit> = {
       type: PagesOperationsActionTypes.CreateRequest,
-      page: { date: '2020-10-07' },
-      operationMessage: 'Test',
+      payload: { date: '2020-10-07' },
+      requestMessage: 'Test',
     };
     const expectedState: PagesOperationsState = {
       ...initialState,
@@ -43,9 +25,10 @@ describe('pages operations reducer', () => {
   });
 
   test('should handle create success', () => {
-    const action: CreatePageSuccessAction = {
+    const action: SuccessAction<PagesOperationsActionTypes.CreateSuccess, number, PageCreateEdit> = {
       type: PagesOperationsActionTypes.CreateSuccess,
-      createdPageId: 1,
+      data: 1,
+      payload: { date: '2020-10-07' },
     };
     const expectedState: PagesOperationsState = {
       ...initialState,
@@ -60,9 +43,10 @@ describe('pages operations reducer', () => {
   });
 
   test('should handle create error', () => {
-    const action: CreatePageErrorAction = {
+    const action: ErrorAction<PagesOperationsActionTypes.CreateError, PageCreateEdit> = {
       type: PagesOperationsActionTypes.CreateError,
-      error: 'Test',
+      errorMessage: 'Test',
+      payload: { date: '2020-10-07' },
     };
     const expectedState: PagesOperationsState = {
       ...initialState,
@@ -78,13 +62,13 @@ describe('pages operations reducer', () => {
   });
 
   test('should handle edit request', () => {
-    const action: EditPageRequestAction = {
+    const action: RequestAction<PagesOperationsActionTypes.EditRequest, PageEditRequest> = {
       type: PagesOperationsActionTypes.EditRequest,
-      request: {
+      payload: {
         id: 1,
         page: { date: '2020-10-07' },
       },
-      operationMessage: 'Test',
+      requestMessage: 'Test',
     };
     const expectedState: PagesOperationsState = {
       ...initialState,
@@ -100,8 +84,13 @@ describe('pages operations reducer', () => {
   });
 
   test('should handle edit success', () => {
-    const action: EditPageSuccessAction = {
+    const action: SuccessAction<PagesOperationsActionTypes.EditSuccess, {}, PageEditRequest> = {
       type: PagesOperationsActionTypes.EditSuccess,
+      data: {},
+      payload: {
+        id: 1,
+        page: { date: '2020-10-07' },
+      },
     };
     const expectedState: PagesOperationsState = {
       ...initialState,
@@ -116,9 +105,13 @@ describe('pages operations reducer', () => {
   });
 
   test('should handle edit error', () => {
-    const action: EditPageErrorAction = {
+    const action: ErrorAction<PagesOperationsActionTypes.EditError, PageEditRequest> = {
       type: PagesOperationsActionTypes.EditError,
-      error: 'Test',
+      errorMessage: 'Test',
+      payload: {
+        id: 1,
+        page: { date: '2020-10-07' },
+      },
     };
     const expectedState: PagesOperationsState = {
       ...initialState,
@@ -134,9 +127,10 @@ describe('pages operations reducer', () => {
   });
 
   test('should handle delete request', () => {
-    const action: DeletePagesRequestAction = {
+    const action: RequestAction<PagesOperationsActionTypes.DeleteRequest, number[]> = {
       type: PagesOperationsActionTypes.DeleteRequest,
-      operationMessage: 'Test',
+      requestMessage: 'Test',
+      payload: [1, 2, 3],
     };
     const expectedState: PagesOperationsState = {
       ...initialState,
@@ -152,8 +146,10 @@ describe('pages operations reducer', () => {
   });
 
   test('should handle delete success', () => {
-    const action: DeletePagesSuccessAction = {
+    const action: SuccessAction<PagesOperationsActionTypes.DeleteSuccess, {}, number[]> = {
       type: PagesOperationsActionTypes.DeleteSuccess,
+      data: {},
+      payload: [1, 2, 3],
     };
     const expectedState: PagesOperationsState = {
       ...initialState,
@@ -168,9 +164,10 @@ describe('pages operations reducer', () => {
   });
 
   test('should handle delete error', () => {
-    const action: DeletePagesErrorAction = {
+    const action: ErrorAction<PagesOperationsActionTypes.DeleteError, number[]> = {
       type: PagesOperationsActionTypes.DeleteError,
-      error: 'Test',
+      errorMessage: 'Test',
+      payload: [1, 2, 3],
     };
     const expectedState: PagesOperationsState = {
       ...initialState,
@@ -186,9 +183,14 @@ describe('pages operations reducer', () => {
   });
 
   test('should handle export request', () => {
-    const action: ExportPagesRequestAction = {
+    const action: RequestAction<PagesOperationsActionTypes.ExportRequest, PagesExportRequest> = {
       type: PagesOperationsActionTypes.ExportRequest,
-      operationMessage: 'Test',
+      requestMessage: 'Test',
+      payload: {
+        startDate: '2020-11-12',
+        endDate: '2020-11-15',
+        format: ExportFormat.Json,
+      },
     };
     const expectedState: PagesOperationsState = {
       ...initialState,
@@ -205,9 +207,14 @@ describe('pages operations reducer', () => {
 
   test('should handle export success', () => {
     const blob: Blob = new Blob();
-    const action: ExportPagesSuccessAction = {
+    const action: SuccessAction<PagesOperationsActionTypes.ExportSuccess, Blob, PagesExportRequest> = {
       type: PagesOperationsActionTypes.ExportSuccess,
-      exportFile: blob,
+      data: blob,
+      payload: {
+        startDate: '2020-11-12',
+        endDate: '2020-11-15',
+        format: ExportFormat.Json,
+      },
     };
     const expectedState: PagesOperationsState = {
       ...initialState,
@@ -222,9 +229,14 @@ describe('pages operations reducer', () => {
   });
 
   test('should handle export error', () => {
-    const action: ExportPagesErrorAction = {
+    const action: ErrorAction<PagesOperationsActionTypes.ExportError, PagesExportRequest> = {
       type: PagesOperationsActionTypes.ExportError,
-      error: 'Test',
+      errorMessage: 'Test',
+      payload: {
+        startDate: '2020-11-12',
+        endDate: '2020-11-15',
+        format: ExportFormat.Json,
+      },
     };
     const expectedState: PagesOperationsState = {
       ...initialState,
@@ -240,9 +252,10 @@ describe('pages operations reducer', () => {
   });
 
   test('should handle import request', () => {
-    const action: ImportPagesRequestAction = {
+    const action: RequestAction<PagesOperationsActionTypes.ImportRequest, File> = {
       type: PagesOperationsActionTypes.ImportRequest,
-      operationMessage: 'Test',
+      requestMessage: 'Test',
+      payload: new File([], 'test'),
     };
     const expectedState: PagesOperationsState = {
       ...initialState,
@@ -258,8 +271,10 @@ describe('pages operations reducer', () => {
   });
 
   test('should handle import success', () => {
-    const action: ImportPagesSuccessAction = {
+    const action: SuccessAction<PagesOperationsActionTypes.ImportSuccess, {}, File> = {
       type: PagesOperationsActionTypes.ImportSuccess,
+      data: {},
+      payload: new File([], 'test'),
     };
     const expectedState: PagesOperationsState = {
       ...initialState,
@@ -274,9 +289,10 @@ describe('pages operations reducer', () => {
   });
 
   test('should handle import error', () => {
-    const action: ImportPagesErrorAction = {
+    const action: ErrorAction<PagesOperationsActionTypes.ImportError, File> = {
       type: PagesOperationsActionTypes.ImportError,
-      error: 'Test',
+      errorMessage: 'Test',
+      payload: new File([], 'test'),
     };
     const expectedState: PagesOperationsState = {
       ...initialState,
@@ -292,9 +308,10 @@ describe('pages operations reducer', () => {
   });
 
   test('should handle date for new page request', () => {
-    const action: GetDateForNewPageRequestAction = {
+    const action: RequestAction<PagesOperationsActionTypes.DateForNewPageRequest> = {
       type: PagesOperationsActionTypes.DateForNewPageRequest,
-      operationMessage: 'Test',
+      requestMessage: 'Test',
+      payload: {},
     };
     const expectedState: PagesOperationsState = {
       ...initialState,
@@ -310,9 +327,10 @@ describe('pages operations reducer', () => {
   });
 
   test('should handle date for new page success', () => {
-    const action: GetDateForNewPageSuccessAction = {
+    const action: SuccessAction<PagesOperationsActionTypes.DateForNewPageSuccess, string> = {
       type: PagesOperationsActionTypes.DateForNewPageSuccess,
-      dateForNewPage: '2020-10-08',
+      data: '2020-10-08',
+      payload: {},
     };
     const expectedState: PagesOperationsState = {
       ...initialState,
@@ -327,9 +345,10 @@ describe('pages operations reducer', () => {
   });
 
   test('should handle date for new page error', () => {
-    const action: GetDateForNewPageErrorAction = {
+    const action: ErrorAction<PagesOperationsActionTypes.DateForNewPageError> = {
       type: PagesOperationsActionTypes.DateForNewPageError,
-      error: 'Test',
+      errorMessage: 'Test',
+      payload: {},
     };
     const expectedState: PagesOperationsState = {
       ...initialState,

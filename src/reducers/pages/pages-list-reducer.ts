@@ -19,13 +19,13 @@ const pagesListReducer = (state: PagesListState = initialState, action: PagesLis
         pageItemsFetchState: {
           loading: true,
           loaded: false,
-          loadingMessage: action.loadingMessage,
+          loadingMessage: action.requestMessage,
         },
       };
     case PagesListActionTypes.Success:
       return {
         ...state,
-        pageItems: action.pages,
+        pageItems: action.data,
         pageItemsFetchState: {
           loading: false,
           loaded: true,
