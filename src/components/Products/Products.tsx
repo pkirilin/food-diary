@@ -6,6 +6,7 @@ import { productsFilterInitialState } from '../../reducers/products';
 import { Container } from '../__ui__';
 import ProductsControlPanelConnected from '../ProductsControlPanel';
 import ProductsFilterInfoConnected from '../ProductsFilterInfo';
+import { useModalMessage } from '../../hooks';
 
 interface ProductsProps extends ProductsStateToPropsMapResult, ProductsDispatchToPropsMapResult {}
 
@@ -31,6 +32,8 @@ const Products: React.FC<ProductsProps> = ({ productsFilter, clearProductsFilter
       clearProductsFilter();
     };
   }, [clearProductsFilter]);
+
+  useModalMessage('Error', state => state.products.operations.productOperationStatus.error);
 
   return (
     <main>

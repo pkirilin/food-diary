@@ -8,10 +8,13 @@ import PagesSelectionPanelConnected from '../PagesSelectionPanel';
 import { PagesStateToPropsMapResult } from './PagesConnected';
 import PageContentConnected from '../PageContent';
 import PageContentEmpty from '../PageContentEmpty';
+import { useModalMessage } from '../../hooks';
 
 type PagesProps = PagesStateToPropsMapResult;
 
 const Pages: React.FC<PagesProps> = ({ isPagesListAvailable, pagesCount }: PagesProps) => {
+  useModalMessage('Error', state => state.pages.operations.status.error);
+
   return (
     <React.Fragment>
       <aside>
