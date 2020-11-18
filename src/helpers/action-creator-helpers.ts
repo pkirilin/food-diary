@@ -19,16 +19,10 @@ export interface ErrorAction<A, P = {}> extends Action<A> {
 export type ApiMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
 export type ApiRequestBody = string | FormData | null;
 
-export type ApiSuccessResponseHandler<A extends Action, R> = (
-  dispatch: Dispatch<A>,
-  response: Response,
-) => R | Promise<R>;
+export type ApiSuccessResponseHandler<R> = (response: Response) => R | Promise<R>;
 
-export type ApiErrorResponseHandler<A extends Action, R> = (
-  dispatch: Dispatch<A>,
-  // Response is optional because handler might not received any response in case of error
-  response?: Response,
-) => R | Promise<R>;
+// Response is optional because handler might not received any response in case of error
+export type ApiErrorResponseHandler<R> = (response?: Response) => R | Promise<R>;
 
 export type ApiRequestContentType = 'application/json' | 'none';
 export type ApiRequestUrlModifier<P> = (baseUrl: string, payload: P) => string;
@@ -38,8 +32,8 @@ export interface ApiOptions<S, E, D, P> {
   baseUrl: string;
   method?: ApiMethod;
   contentType?: ApiRequestContentType;
-  onSuccess?: ApiSuccessResponseHandler<SuccessAction<S, D, P>, D>;
-  onError?: ApiErrorResponseHandler<ErrorAction<E, P>, string>;
+  onSuccess?: ApiSuccessResponseHandler<D>;
+  onError?: ApiErrorResponseHandler<string>;
   modifyUrl?: ApiRequestUrlModifier<P>;
   constructBody?: ApiRequestBodyConstructor<P>;
 }
@@ -125,7 +119,7 @@ export function createAsyncAction<D = {}, P = {}, R = string, S = string, E = st
 
         if (response.ok) {
           if (onSuccess) {
-            const data = await onSuccess(dispatch, response);
+            const data = await onSuccess(response);
             return dispatch(createSuccess(data, payload));
           }
 
@@ -133,14 +127,14 @@ export function createAsyncAction<D = {}, P = {}, R = string, S = string, E = st
         }
 
         if (onError) {
-          const errorMessage = await onError(dispatch, response);
+          const errorMessage = await onError(response);
           return dispatch(createError(errorMessage, payload));
         }
 
         return dispatch(createError('Unknown error occured', payload));
       } catch (err) {
         if (onError) {
-          const errorMessage = await onError(dispatch);
+          const errorMessage = await onError();
           return dispatch(createError(errorMessage, payload));
         }
 

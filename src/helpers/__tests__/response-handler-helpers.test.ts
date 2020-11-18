@@ -44,35 +44,26 @@ describe('createErrorResponseHandler', () => {
 
   errorHandlerTestData.forEach(({ baseErrorMessage, response, expectedErrorMessage }) => {
     test(`should create handler which receives message '${expectedErrorMessage}' on status '${response.status}'`, async () => {
-      // Arrange
-      const dispatchMock = jest.fn();
-
       // Act
-      const getErrorMessage = createErrorResponseHandler<TestAction>(baseErrorMessage);
-      const errorMessage = await getErrorMessage(dispatchMock, response);
+      const getErrorMessage = createErrorResponseHandler(baseErrorMessage);
+      const errorMessage = await getErrorMessage(response);
 
       // Assert
       expect(errorMessage).toBe(expectedErrorMessage);
-      expect(dispatchMock).not.toHaveBeenCalled();
     });
   });
 
   test(`should create handler which receives message 'server is not available' if response is undefined`, async () => {
-    // Arrange
-    const dispatchMock = jest.fn();
-
     // Act
-    const getErrorMessage = createErrorResponseHandler<TestAction>();
-    const errorMessage = await getErrorMessage(dispatchMock);
+    const getErrorMessage = createErrorResponseHandler();
+    const errorMessage = await getErrorMessage();
 
     // Assert
     expect(errorMessage).toBe('Failed to fetch: server is not available');
-    expect(dispatchMock).not.toHaveBeenCalled();
   });
 
   test('should create handler which transforms received response if response transformer is specified', async () => {
     // Arrange
-    const dispatchMock = jest.fn();
     const responseTransformerMock = jest.fn().mockResolvedValue('TRANSFORMED MESSAGE');
     const response: Response = {
       ...new Response(),
@@ -80,10 +71,10 @@ describe('createErrorResponseHandler', () => {
     };
 
     // Act
-    const getErrorMessage = createErrorResponseHandler<TestAction>('TEST', {
+    const getErrorMessage = createErrorResponseHandler('TEST', {
       [400]: responseTransformerMock,
     });
-    const errorMessage = await getErrorMessage(dispatchMock, response);
+    const errorMessage = await getErrorMessage(response);
 
     // Assert
     expect(responseTransformerMock).toHaveBeenCalledWith(response);
@@ -114,8 +105,8 @@ describe('createSuccessJsonResponseHandler', () => {
     };
 
     // Act
-    const getJsonTestRecords = createSuccessJsonResponseHandler<TestAction, TestRecord[]>();
-    const records = await getJsonTestRecords(jest.fn(), response);
+    const getJsonTestRecords = createSuccessJsonResponseHandler<TestRecord[]>();
+    const records = await getJsonTestRecords(response);
 
     // Assert
     expect(records).toEqual(expectedRecords);
@@ -136,8 +127,8 @@ describe('createSuccessNumberResponseHandler', () => {
     };
 
     // Act
-    const getNumber = createSuccessNumberResponseHandler<TestAction>();
-    const number = await getNumber(jest.fn(), response);
+    const getNumber = createSuccessNumberResponseHandler();
+    const number = await getNumber(response);
 
     // Assert
     expect(number).toBe(expectedNumber);
@@ -158,8 +149,8 @@ describe('createSuccessTextResponseHandler', () => {
     };
 
     // Act
-    const getText = createSuccessTextResponseHandler<TestAction>();
-    const text = await getText(jest.fn(), response);
+    const getText = createSuccessTextResponseHandler();
+    const text = await getText(response);
 
     // Assert
     expect(text).toBe(expectedText);
@@ -180,8 +171,8 @@ describe('createSuccessBlobResponseHandler', () => {
     };
 
     // Act
-    const getBlob = createSuccessBlobResponseHandler<TestAction>();
-    const blob = await getBlob(jest.fn(), response);
+    const getBlob = createSuccessBlobResponseHandler();
+    const blob = await getBlob(response);
 
     // Assert
     expect(blob).toBe(expectedBlob);

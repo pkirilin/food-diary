@@ -1,13 +1,11 @@
-import { Action, Dispatch } from 'redux';
 import { ApiErrorResponseHandler, ApiSuccessResponseHandler } from './action-creator-helpers';
 
-export type MessageDispatcher<A extends Action> = (dispatch: Dispatch<A>, message: string) => void;
-export type ResponseTransformer<D> = (response: Response) => D | Promise<D>;
+export type ResponseTransformer<T> = (response: Response) => T | Promise<T>;
 
-export function createErrorResponseHandler<A extends Action>(
+export function createErrorResponseHandler(
   baseErrorMessage = 'Failed to fetch',
-  responseTransformersByStatusCode: Record<number, ResponseTransformer<string>> = {},
-): ApiErrorResponseHandler<A, string> {
+  statusCodeTransformers: Record<number, ResponseTransformer<string>> = {},
+): ApiErrorResponseHandler<string> {
   // Each response code (supported for handling) should have default error message
   const defaultErrorMessagesByStatusCode = {
     400: 'wrong request data',
@@ -19,7 +17,7 @@ export function createErrorResponseHandler<A extends Action>(
     return `${baseErrorMessage}: ${errorMessage}`;
   }
 
-  return async (dispatch, response): Promise<string> => {
+  return async (response): Promise<string> => {
     if (!response) {
       return formatErrorMessage('server is not available');
     }
@@ -29,7 +27,7 @@ export function createErrorResponseHandler<A extends Action>(
       return formatErrorMessage('unknown response code');
     }
 
-    const responseTransformer = responseTransformersByStatusCode[response.status];
+    const responseTransformer = statusCodeTransformers[response.status];
     if (!responseTransformer) {
       return formatErrorMessage(defaultErrorMessage);
     }
@@ -39,12 +37,12 @@ export function createErrorResponseHandler<A extends Action>(
   };
 }
 
-export function createSuccessJsonResponseHandler<A extends Action, D = {}>(): ApiSuccessResponseHandler<A, D> {
-  return async (dispatch, response): Promise<D> => response.json();
+export function createSuccessJsonResponseHandler<D = {}>(): ApiSuccessResponseHandler<D> {
+  return async (response): Promise<D> => response.json();
 }
 
-export function createSuccessNumberResponseHandler<A extends Action>(): ApiSuccessResponseHandler<A, number> {
-  return async (dispatch, response): Promise<number> => {
+export function createSuccessNumberResponseHandler(): ApiSuccessResponseHandler<number> {
+  return async (response): Promise<number> => {
     const responseText = await response.text();
 
     if (isNaN(+responseText)) {
@@ -55,10 +53,10 @@ export function createSuccessNumberResponseHandler<A extends Action>(): ApiSucce
   };
 }
 
-export function createSuccessTextResponseHandler<A extends Action>(): ApiSuccessResponseHandler<A, string> {
-  return async (dispatch, response): Promise<string> => response.text();
+export function createSuccessTextResponseHandler(): ApiSuccessResponseHandler<string> {
+  return async (response): Promise<string> => response.text();
 }
 
-export function createSuccessBlobResponseHandler<A extends Action>(): ApiSuccessResponseHandler<A, Blob> {
-  return async (dispatch, response): Promise<Blob> => response.blob();
+export function createSuccessBlobResponseHandler(): ApiSuccessResponseHandler<Blob> {
+  return async (response): Promise<Blob> => response.blob();
 }
