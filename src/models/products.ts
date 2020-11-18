@@ -32,3 +32,8 @@ export interface ProductEditRequest {
   id: number;
   product: ProductCreateEdit;
 }
+
+export interface ProductItemsWithTotalCount {
+  productItems: ProductItem[];
+  totalProductsCount: number;
+}

@@ -1,10 +1,6 @@
-import {
-  GetProductDropdownItemsErrorAction,
-  GetProductDropdownItemsRequestAction,
-  GetProductDropdownItemsSuccessAction,
-  ProductsDropdownActionTypes,
-} from '../../../action-types';
-import { ProductDropdownItem } from '../../../models';
+import { ProductsDropdownActionTypes } from '../../../action-types';
+import { ErrorAction, RequestAction, SuccessAction } from '../../../helpers';
+import { ProductDropdownItem, ProductDropdownSearchRequest } from '../../../models';
 import { ProductsDropdownState } from '../../../store';
 import productsDropdownReducer, { initialState } from '../products-dropdown-reducer';
 
@@ -23,9 +19,10 @@ function generateTestDropdownItems(): ProductDropdownItem[] {
 
 describe('products dropdown reducer', () => {
   test('should handle dropdown items request', () => {
-    const action: GetProductDropdownItemsRequestAction = {
+    const action: RequestAction<ProductsDropdownActionTypes.Request, ProductDropdownSearchRequest> = {
       type: ProductsDropdownActionTypes.Request,
-      loadingMessage: 'Test',
+      requestMessage: 'Test',
+      payload: {},
     };
     const expectedState: ProductsDropdownState = {
       ...initialState,
@@ -42,9 +39,10 @@ describe('products dropdown reducer', () => {
   });
 
   test('should handle dropdown items success', () => {
-    const action: GetProductDropdownItemsSuccessAction = {
+    const action: SuccessAction<ProductsDropdownActionTypes.Success, ProductDropdownItem[]> = {
       type: ProductsDropdownActionTypes.Success,
-      productDropdownItems: generateTestDropdownItems(),
+      data: generateTestDropdownItems(),
+      payload: {},
     };
     const expectedState: ProductsDropdownState = {
       ...initialState,
@@ -61,9 +59,10 @@ describe('products dropdown reducer', () => {
   });
 
   test('should handle dropdown items error', () => {
-    const action: GetProductDropdownItemsErrorAction = {
+    const action: ErrorAction<ProductsDropdownActionTypes.Error, ProductDropdownSearchRequest> = {
       type: ProductsDropdownActionTypes.Error,
-      error: 'Test',
+      errorMessage: 'Test',
+      payload: {},
     };
     const expectedState: ProductsDropdownState = {
       ...initialState,

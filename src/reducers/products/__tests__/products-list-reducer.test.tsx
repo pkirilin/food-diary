@@ -1,10 +1,6 @@
-import {
-  GetProductsListErrorAction,
-  GetProductsListRequestAction,
-  GetProductsListSuccessAction,
-  ProductsListActionTypes,
-} from '../../../action-types';
-import { ProductItem } from '../../../models';
+import { ProductsListActionTypes } from '../../../action-types';
+import { ErrorAction, RequestAction, SuccessAction } from '../../../helpers';
+import { ProductItem, ProductItemsWithTotalCount, ProductsFilter } from '../../../models';
 import { ProductsListState } from '../../../store';
 import productsListReducer, { initialState } from '../products-list-reducer';
 
@@ -29,9 +25,10 @@ function generateTestProducts(): ProductItem[] {
 
 describe('products list reducer', () => {
   test('should handle products list request', () => {
-    const action: GetProductsListRequestAction = {
+    const action: RequestAction<ProductsListActionTypes.Request, ProductsFilter> = {
       type: ProductsListActionTypes.Request,
-      loadingMessage: 'Test',
+      requestMessage: 'Test',
+      payload: { pageSize: 10 },
     };
     const expectedState: ProductsListState = {
       ...initialState,
@@ -48,10 +45,13 @@ describe('products list reducer', () => {
   });
 
   test('should handle products list success', () => {
-    const action: GetProductsListSuccessAction = {
+    const action: SuccessAction<ProductsListActionTypes.Success, ProductItemsWithTotalCount, ProductsFilter> = {
       type: ProductsListActionTypes.Success,
-      productItems: generateTestProducts(),
-      totalProductsCount: 123,
+      data: {
+        productItems: generateTestProducts(),
+        totalProductsCount: 123,
+      },
+      payload: { pageSize: 10 },
     };
     const expectedState: ProductsListState = {
       ...initialState,
@@ -69,9 +69,10 @@ describe('products list reducer', () => {
   });
 
   test('should handle products list error', () => {
-    const action: GetProductsListErrorAction = {
+    const action: ErrorAction<ProductsListActionTypes.Error, ProductsFilter> = {
       type: ProductsListActionTypes.Error,
       errorMessage: 'Test',
+      payload: { pageSize: 10 },
     };
     const expectedState: ProductsListState = {
       ...initialState,

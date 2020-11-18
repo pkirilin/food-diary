@@ -1,6 +1,6 @@
-import { Action, ActionCreator } from 'redux';
-import { ProductItem, ProductsFilter } from '../../models';
-import { ThunkAction, ThunkDispatch } from 'redux-thunk';
+import { ProductItemsWithTotalCount, ProductsFilter } from '../../models';
+import { ThunkDispatch } from 'redux-thunk';
+import { ThunkHelperAllActions, ThunkHelperResultActions } from '../../helpers';
 
 export enum ProductsListActionTypes {
   Request = 'PRODUCTS_LIST__REQUEST',
@@ -8,44 +8,27 @@ export enum ProductsListActionTypes {
   Error = 'PRODUCTS_LIST__ERROR',
 }
 
-export interface GetProductsListRequestAction extends Action<ProductsListActionTypes.Request> {
-  type: ProductsListActionTypes.Request;
-  loadingMessage?: string;
-}
+export type GetProductsListActions = ThunkHelperAllActions<
+  ProductsListActionTypes.Request,
+  ProductsListActionTypes.Success,
+  ProductsListActionTypes.Error,
+  ProductItemsWithTotalCount,
+  ProductsFilter
+>;
 
-export interface GetProductsListSuccessAction extends Action<ProductsListActionTypes.Success> {
-  type: ProductsListActionTypes.Success;
-  productItems: ProductItem[];
-  totalProductsCount: number;
-}
-
-export interface GetProductsListErrorAction extends Action<ProductsListActionTypes.Error> {
-  type: ProductsListActionTypes.Error;
-  errorMessage: string;
-}
-
-export type GetProductsListActions =
-  | GetProductsListRequestAction
-  | GetProductsListSuccessAction
-  | GetProductsListErrorAction;
+export type GetProductsListResultActions = ThunkHelperResultActions<
+  ProductsListActionTypes.Success,
+  ProductsListActionTypes.Error,
+  ProductItemsWithTotalCount,
+  ProductsFilter
+>;
 
 export type ProductListActions = GetProductsListActions;
 
-export type GetProductsListActionCreator = ActionCreator<
-  ThunkAction<
-    Promise<GetProductsListSuccessAction | GetProductsListErrorAction>,
-    ProductItem[],
-    ProductsFilter,
-    GetProductsListSuccessAction | GetProductsListErrorAction
-  >
->;
-
 export type GetProductsListDispatch = ThunkDispatch<
-  ProductItem[],
+  ProductItemsWithTotalCount,
   ProductsFilter,
-  GetProductsListSuccessAction | GetProductsListErrorAction
+  GetProductsListResultActions
 >;
 
-export type GetProductsListDispatchProp = (
-  filter: ProductsFilter,
-) => Promise<GetProductsListSuccessAction | GetProductsListErrorAction>;
+export type GetProductsListDispatchProp = (filter: ProductsFilter) => Promise<GetProductsListResultActions>;

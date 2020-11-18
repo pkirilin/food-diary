@@ -1,28 +1,19 @@
-import {
-  CreateProductErrorAction,
-  CreateProductRequestAction,
-  CreateProductSuccessAction,
-  DeleteProductErrorAction,
-  DeleteProductRequestAction,
-  DeleteProductSuccessAction,
-  EditProductErrorAction,
-  EditProductRequestAction,
-  EditProductSuccessAction,
-  ProductsOperationsActionTypes,
-} from '../../../action-types';
+import { ProductsOperationsActionTypes } from '../../../action-types';
+import { ErrorAction, RequestAction, SuccessAction } from '../../../helpers';
+import { ProductCreateEdit, ProductEditRequest } from '../../../models';
 import { ProductsOperationsState } from '../../../store';
 import productsOperationsReducer, { initialState } from '../products-operations-reducer';
 
 describe('products operations reducer', () => {
   test('should handle create product request', () => {
-    const action: CreateProductRequestAction = {
+    const action: RequestAction<ProductsOperationsActionTypes.CreateRequest, ProductCreateEdit> = {
       type: ProductsOperationsActionTypes.CreateRequest,
-      product: {
+      payload: {
         name: 'Product',
         caloriesCost: 120,
         categoryId: 1,
       },
-      operationMessage: 'Test',
+      requestMessage: 'Test',
     };
     const expectedState: ProductsOperationsState = {
       productOperationStatus: {
@@ -36,8 +27,14 @@ describe('products operations reducer', () => {
   });
 
   test('should handle create product success', () => {
-    const action: CreateProductSuccessAction = {
+    const action: SuccessAction<ProductsOperationsActionTypes.CreateSuccess, {}, ProductCreateEdit> = {
       type: ProductsOperationsActionTypes.CreateSuccess,
+      data: {},
+      payload: {
+        name: 'Product',
+        caloriesCost: 120,
+        categoryId: 1,
+      },
     };
     const expectedState: ProductsOperationsState = {
       productOperationStatus: {
@@ -51,9 +48,14 @@ describe('products operations reducer', () => {
   });
 
   test('should handle create product error', () => {
-    const action: CreateProductErrorAction = {
+    const action: ErrorAction<ProductsOperationsActionTypes.CreateError, ProductCreateEdit> = {
       type: ProductsOperationsActionTypes.CreateError,
-      error: 'Test',
+      errorMessage: 'Test',
+      payload: {
+        name: 'Product',
+        caloriesCost: 120,
+        categoryId: 1,
+      },
     };
     const expectedState: ProductsOperationsState = {
       productOperationStatus: {
@@ -68,9 +70,9 @@ describe('products operations reducer', () => {
   });
 
   test('should handle edit product request', () => {
-    const action: EditProductRequestAction = {
+    const action: RequestAction<ProductsOperationsActionTypes.EditRequest, ProductEditRequest> = {
       type: ProductsOperationsActionTypes.EditRequest,
-      request: {
+      payload: {
         id: 1,
         product: {
           name: 'Product',
@@ -78,7 +80,7 @@ describe('products operations reducer', () => {
           categoryId: 1,
         },
       },
-      operationMessage: 'Test',
+      requestMessage: 'Test',
     };
     const expectedState: ProductsOperationsState = {
       productOperationStatus: {
@@ -93,8 +95,17 @@ describe('products operations reducer', () => {
   });
 
   test('should handle edit product success', () => {
-    const action: EditProductSuccessAction = {
+    const action: SuccessAction<ProductsOperationsActionTypes.EditSuccess, {}, ProductEditRequest> = {
       type: ProductsOperationsActionTypes.EditSuccess,
+      data: {},
+      payload: {
+        id: 1,
+        product: {
+          name: 'Product',
+          caloriesCost: 120,
+          categoryId: 1,
+        },
+      },
     };
     const expectedState: ProductsOperationsState = {
       productOperationStatus: {
@@ -108,9 +119,17 @@ describe('products operations reducer', () => {
   });
 
   test('should handle edit product error', () => {
-    const action: EditProductErrorAction = {
+    const action: ErrorAction<ProductsOperationsActionTypes.EditError, ProductEditRequest> = {
       type: ProductsOperationsActionTypes.EditError,
-      error: 'Test',
+      errorMessage: 'Test',
+      payload: {
+        id: 1,
+        product: {
+          name: 'Product',
+          caloriesCost: 120,
+          categoryId: 1,
+        },
+      },
     };
     const expectedState: ProductsOperationsState = {
       productOperationStatus: {
@@ -125,10 +144,10 @@ describe('products operations reducer', () => {
   });
 
   test('should handle delete product request', () => {
-    const action: DeleteProductRequestAction = {
+    const action: RequestAction<ProductsOperationsActionTypes.DeleteRequest, number> = {
       type: ProductsOperationsActionTypes.DeleteRequest,
-      productId: 1,
-      operationMessage: 'Test',
+      payload: 1,
+      requestMessage: 'Test',
     };
     const expectedState: ProductsOperationsState = {
       productOperationStatus: {
@@ -143,8 +162,10 @@ describe('products operations reducer', () => {
   });
 
   test('should handle delete product success', () => {
-    const action: DeleteProductSuccessAction = {
+    const action: SuccessAction<ProductsOperationsActionTypes.DeleteSuccess, {}, number> = {
       type: ProductsOperationsActionTypes.DeleteSuccess,
+      data: {},
+      payload: 1,
     };
     const expectedState: ProductsOperationsState = {
       productOperationStatus: {
@@ -158,9 +179,10 @@ describe('products operations reducer', () => {
   });
 
   test('should handle delete product error', () => {
-    const action: DeleteProductErrorAction = {
+    const action: ErrorAction<ProductsOperationsActionTypes.DeleteError, number> = {
       type: ProductsOperationsActionTypes.DeleteError,
-      error: 'Test',
+      errorMessage: 'Test',
+      payload: 1,
     };
     const expectedState: ProductsOperationsState = {
       productOperationStatus: {

@@ -20,13 +20,13 @@ const productsDropdownReducer = (
         productDropdownItemsFetchState: {
           loading: true,
           loaded: false,
-          loadingMessage: action.loadingMessage,
+          loadingMessage: action.requestMessage,
         },
       };
     case ProductsDropdownActionTypes.Success:
       return {
         ...state,
-        productDropdownItems: action.productDropdownItems,
+        productDropdownItems: action.data,
         productDropdownItemsFetchState: {
           loading: false,
           loaded: true,
@@ -38,7 +38,7 @@ const productsDropdownReducer = (
         productDropdownItemsFetchState: {
           loading: false,
           loaded: false,
-          error: action.error,
+          error: action.errorMessage,
         },
       };
     default:

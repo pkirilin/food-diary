@@ -1,6 +1,6 @@
-import { Action, ActionCreator } from 'redux';
 import { ProductEditRequest, ProductCreateEdit } from '../../models';
-import { ThunkAction, ThunkDispatch } from 'redux-thunk';
+import { ThunkDispatch } from 'redux-thunk';
+import { ThunkHelperAllActions, ThunkHelperResultActions } from '../../helpers';
 
 export enum ProductsOperationsActionTypes {
   CreateRequest = 'PRODUCTS_OPERATIONS__CREATE_REQUEST',
@@ -16,108 +16,61 @@ export enum ProductsOperationsActionTypes {
   DeleteError = 'PRODUCTS_OPERATIONS__DELETE_ERROR',
 }
 
-export interface CreateProductRequestAction extends Action<ProductsOperationsActionTypes.CreateRequest> {
-  type: ProductsOperationsActionTypes.CreateRequest;
-  product: ProductCreateEdit;
-  operationMessage: string;
-}
+export type CreateProductActions = ThunkHelperAllActions<
+  ProductsOperationsActionTypes.CreateRequest,
+  ProductsOperationsActionTypes.CreateSuccess,
+  ProductsOperationsActionTypes.CreateError,
+  {},
+  ProductCreateEdit
+>;
 
-export interface CreateProductSuccessAction extends Action<ProductsOperationsActionTypes.CreateSuccess> {
-  type: ProductsOperationsActionTypes.CreateSuccess;
-}
+export type EditProductActions = ThunkHelperAllActions<
+  ProductsOperationsActionTypes.EditRequest,
+  ProductsOperationsActionTypes.EditSuccess,
+  ProductsOperationsActionTypes.EditError,
+  {},
+  ProductEditRequest
+>;
 
-export interface CreateProductErrorAction extends Action<ProductsOperationsActionTypes.CreateError> {
-  type: ProductsOperationsActionTypes.CreateError;
-  error: string;
-}
+export type DeleteProductActions = ThunkHelperAllActions<
+  ProductsOperationsActionTypes.DeleteRequest,
+  ProductsOperationsActionTypes.DeleteSuccess,
+  ProductsOperationsActionTypes.DeleteError,
+  {},
+  number
+>;
 
-export interface EditProductRequestAction extends Action<ProductsOperationsActionTypes.EditRequest> {
-  type: ProductsOperationsActionTypes.EditRequest;
-  request: ProductEditRequest;
-  operationMessage: string;
-}
+export type CreateProductResultActions = ThunkHelperResultActions<
+  ProductsOperationsActionTypes.CreateSuccess,
+  ProductsOperationsActionTypes.CreateError,
+  {},
+  ProductCreateEdit
+>;
 
-export interface EditProductSuccessAction extends Action<ProductsOperationsActionTypes.EditSuccess> {
-  type: ProductsOperationsActionTypes.EditSuccess;
-}
+export type EditProductResultActions = ThunkHelperResultActions<
+  ProductsOperationsActionTypes.EditSuccess,
+  ProductsOperationsActionTypes.EditError,
+  {},
+  ProductEditRequest
+>;
 
-export interface EditProductErrorAction extends Action<ProductsOperationsActionTypes.EditError> {
-  type: ProductsOperationsActionTypes.EditError;
-  error: string;
-}
-
-export interface DeleteProductRequestAction extends Action<ProductsOperationsActionTypes.DeleteRequest> {
-  type: ProductsOperationsActionTypes.DeleteRequest;
-  productId: number;
-  operationMessage: string;
-}
-
-export interface DeleteProductSuccessAction extends Action<ProductsOperationsActionTypes.DeleteSuccess> {
-  type: ProductsOperationsActionTypes.DeleteSuccess;
-}
-
-export interface DeleteProductErrorAction extends Action<ProductsOperationsActionTypes.DeleteError> {
-  type: ProductsOperationsActionTypes.DeleteError;
-  error: string;
-}
-
-export type CreateProductActions = CreateProductRequestAction | CreateProductSuccessAction | CreateProductErrorAction;
-
-export type EditProductActions = EditProductRequestAction | EditProductSuccessAction | EditProductErrorAction;
-
-export type DeleteProductActions = DeleteProductRequestAction | DeleteProductSuccessAction | DeleteProductErrorAction;
+export type DeleteProductResultActions = ThunkHelperResultActions<
+  ProductsOperationsActionTypes.DeleteSuccess,
+  ProductsOperationsActionTypes.DeleteError,
+  {},
+  number
+>;
 
 export type ProductsOperationsActions = CreateProductActions | EditProductActions | DeleteProductActions;
 
-export type CreateProductActionCreator = ActionCreator<
-  ThunkAction<
-    Promise<CreateProductSuccessAction | CreateProductErrorAction>,
-    void,
-    ProductCreateEdit,
-    CreateProductSuccessAction | CreateProductErrorAction
-  >
->;
+export type CreateProductDispatch = ThunkDispatch<{}, ProductCreateEdit, CreateProductActions>;
 
-export type EditProductActionCreator = ActionCreator<
-  ThunkAction<
-    Promise<EditProductSuccessAction | EditProductErrorAction>,
-    void,
-    ProductEditRequest,
-    EditProductSuccessAction | EditProductErrorAction
-  >
->;
+export type EditProductDispatch = ThunkDispatch<{}, ProductEditRequest, EditProductActions>;
 
-export type DeleteProductActionCreator = ActionCreator<
-  ThunkAction<
-    Promise<DeleteProductSuccessAction | DeleteProductErrorAction>,
-    void,
-    number,
-    DeleteProductSuccessAction | DeleteProductErrorAction
-  >
->;
+export type DeleteProductDispatch = ThunkDispatch<{}, number, DeleteProductActions>;
 
-export type CreateProductDispatch = ThunkDispatch<
-  void,
-  ProductCreateEdit,
-  CreateProductSuccessAction | CreateProductErrorAction
->;
+export type CreateProductDispatchProp = (product: ProductCreateEdit) => Promise<CreateProductResultActions>;
 
-export type EditProductDispatch = ThunkDispatch<
-  void,
-  ProductEditRequest,
-  EditProductSuccessAction | EditProductErrorAction
->;
+export type EditProductDispatchProp = (request: ProductEditRequest) => Promise<EditProductResultActions>;
 
-export type DeleteProductDispatch = ThunkDispatch<void, number, DeleteProductSuccessAction | DeleteProductErrorAction>;
-
-export type CreateProductDispatchProp = (
-  product: ProductCreateEdit,
-) => Promise<CreateProductSuccessAction | CreateProductErrorAction>;
-
-export type EditProductDispatchProp = (
-  request: ProductEditRequest,
-) => Promise<EditProductSuccessAction | EditProductErrorAction>;
-
-export type DeleteProductDispatchProp = (
-  productId: number,
-) => Promise<DeleteProductSuccessAction | DeleteProductErrorAction>;
+export type DeleteProductDispatchProp = (productId: number) => Promise<DeleteProductResultActions>;

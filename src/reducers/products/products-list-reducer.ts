@@ -21,18 +21,18 @@ const productsListReducer = (
         productItemsFetchState: {
           loading: true,
           loaded: false,
-          loadingMessage: action.loadingMessage,
+          loadingMessage: action.requestMessage,
         },
       };
     case ProductsListActionTypes.Success:
       return {
         ...state,
-        productItems: action.productItems,
+        productItems: action.data.productItems,
         productItemsFetchState: {
           loading: false,
           loaded: true,
         },
-        totalProductsCount: action.totalProductsCount,
+        totalProductsCount: action.data.totalProductsCount,
       };
     case ProductsListActionTypes.Error:
       return {

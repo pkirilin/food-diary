@@ -1,74 +1,38 @@
-import { Dispatch } from 'redux';
-import {
-  GetProductsListRequestAction,
-  ProductsListActionTypes,
-  GetProductsListSuccessAction,
-  GetProductsListErrorAction,
-  GetProductsListActionCreator,
-  GetProductsListActions,
-} from '../../action-types';
-import { ProductItem, ProductsFilter, ErrorReason } from '../../models';
-import { getProductsAsync } from '../../services';
+import { ProductsListActionTypes } from '../../action-types';
+import { API_URL } from '../../config';
+import { createAsyncAction, createErrorResponseHandler, createSuccessJsonResponseHandler } from '../../helpers';
+import { ProductItemsWithTotalCount, ProductsFilter } from '../../models';
 
-const getProductsRequest = (loadingMessage?: string): GetProductsListRequestAction => {
-  return {
-    type: ProductsListActionTypes.Request,
-    loadingMessage,
-  };
-};
+export const getProducts = createAsyncAction<
+  ProductItemsWithTotalCount,
+  ProductsFilter,
+  ProductsListActionTypes.Request,
+  ProductsListActionTypes.Success,
+  ProductsListActionTypes.Error
+>(
+  ProductsListActionTypes.Request,
+  ProductsListActionTypes.Success,
+  ProductsListActionTypes.Error,
+  {
+    baseUrl: `${API_URL}/v1/products`,
+    method: 'GET',
+    modifyUrl: (baseUrl, { pageSize, pageNumber, categoryId, productName }) => {
+      let requestUrl = `${baseUrl}?pageSize=${pageSize}`;
 
-const getProductsSuccess = (productItems: ProductItem[], totalProductsCount: number): GetProductsListSuccessAction => {
-  return {
-    type: ProductsListActionTypes.Success,
-    productItems,
-    totalProductsCount,
-  };
-};
-
-const getProductsError = (errorMessage: string): GetProductsListErrorAction => {
-  return {
-    type: ProductsListActionTypes.Error,
-    errorMessage,
-  };
-};
-
-enum ProductsListErrorMessages {
-  GetList = 'Failed to get products',
-}
-
-export const getProducts: GetProductsListActionCreator = (productsFilter: ProductsFilter) => {
-  return async (
-    dispatch: Dispatch<GetProductsListActions>,
-  ): Promise<GetProductsListSuccessAction | GetProductsListErrorAction> => {
-    dispatch(getProductsRequest('Loading products list'));
-    try {
-      const response = await getProductsAsync(productsFilter);
-
-      if (response.ok) {
-        const { productItems, totalProductsCount } = await response.json();
-        return dispatch(getProductsSuccess(productItems, totalProductsCount));
+      if (pageNumber) {
+        requestUrl += `&pageNumber=${pageNumber}`;
+      }
+      if (categoryId) {
+        requestUrl += `&categoryId=${categoryId}`;
+      }
+      if (productName) {
+        requestUrl += `&productSearchName=${productName}`;
       }
 
-      let errorMessage = `${ProductsListErrorMessages.GetList}`;
-
-      switch (response.status) {
-        case 400:
-          errorMessage += `: ${ErrorReason.WrongRequestData}`;
-          break;
-        case 404:
-          errorMessage += `: category with id = ${productsFilter.categoryId} not found`;
-          break;
-        case 500:
-          errorMessage += `: ${ErrorReason.ServerError}`;
-          break;
-        default:
-          errorMessage += `: ${ErrorReason.UnknownResponseCode}`;
-          break;
-      }
-
-      return dispatch(getProductsError(errorMessage));
-    } catch (error) {
-      return dispatch(getProductsError(ProductsListErrorMessages.GetList));
-    }
-  };
-};
+      return requestUrl;
+    },
+    onSuccess: createSuccessJsonResponseHandler(),
+    onError: createErrorResponseHandler('Failed to get products'),
+  },
+  'Loading products list',
+);

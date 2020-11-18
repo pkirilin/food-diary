@@ -17,7 +17,7 @@ const productsOperationsReducer = (
         ...state,
         productOperationStatus: {
           performing: true,
-          message: action.operationMessage,
+          message: action.requestMessage,
         },
       };
     case ProductsOperationsActionTypes.CreateSuccess:
@@ -32,7 +32,7 @@ const productsOperationsReducer = (
         ...state,
         productOperationStatus: {
           performing: false,
-          error: action.error,
+          error: action.errorMessage,
         },
       };
 
@@ -41,7 +41,7 @@ const productsOperationsReducer = (
         ...state,
         productOperationStatus: {
           performing: true,
-          message: action.operationMessage,
+          message: action.requestMessage,
         },
       };
     case ProductsOperationsActionTypes.EditSuccess:
@@ -56,7 +56,7 @@ const productsOperationsReducer = (
         ...state,
         productOperationStatus: {
           performing: false,
-          error: action.error,
+          error: action.errorMessage,
         },
       };
 
@@ -65,7 +65,7 @@ const productsOperationsReducer = (
         ...state,
         productOperationStatus: {
           performing: true,
-          message: action.operationMessage,
+          message: action.requestMessage,
         },
       };
     case ProductsOperationsActionTypes.DeleteSuccess:
@@ -80,7 +80,7 @@ const productsOperationsReducer = (
         ...state,
         productOperationStatus: {
           performing: false,
-          error: action.error,
+          error: action.errorMessage,
         },
       };
     default:
