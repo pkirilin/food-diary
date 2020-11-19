@@ -28,7 +28,7 @@ export type ApiRequestContentType = 'application/json' | 'none';
 export type ApiRequestUrlModifier<P> = (baseUrl: string, payload: P) => string;
 export type ApiRequestBodyConstructor<P> = (payload: P) => ApiRequestBody;
 
-export interface ApiOptions<S, E, D, P> {
+export interface ApiOptions<D, P> {
   baseUrl: string;
   method?: ApiMethod;
   contentType?: ApiRequestContentType;
@@ -59,7 +59,7 @@ export function createAsyncAction<D = {}, P = {}, R = string, S = string, E = st
   requestActionType: R,
   successActionType: S,
   errorActionType: E,
-  apiOptions: ApiOptions<S, E, D, P>,
+  apiOptions: ApiOptions<D, P>,
   requestMessage = 'Performing request',
 ): ActionCreator<ThunkHelperAction<S, E, D, P>> {
   const {

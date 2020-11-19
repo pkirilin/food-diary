@@ -1,4 +1,3 @@
-import { Action } from 'redux';
 import {
   createErrorResponseHandler,
   createSuccessBlobResponseHandler,
@@ -6,8 +5,6 @@ import {
   createSuccessNumberResponseHandler,
   createSuccessTextResponseHandler,
 } from '../response-handler-helpers';
-
-type TestAction = Action<'TEST'>;
 
 type TestRecord = {
   id: number;
