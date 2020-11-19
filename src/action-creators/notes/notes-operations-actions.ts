@@ -39,6 +39,7 @@ export const editNote = createAsyncAction<
   {
     baseUrl: `${API_URL}/v1/notes`,
     method: 'PUT',
+    modifyUrl: (baseUrl, { id }) => `${baseUrl}/${id}`,
     constructBody: ({ note }): string => JSON.stringify(note),
     onError: createErrorResponseHandler('Failed to update note', {
       400: response => readBadRequestResponseAsync(response),
