@@ -2,6 +2,7 @@ import { CategoriesOperationsActionTypes } from '../../action-types';
 import { API_URL } from '../../config';
 import { createErrorResponseHandler, createSuccessNumberResponseHandler, createAsyncAction } from '../../helpers';
 import { CategoryCreateEdit, CategoryEditRequest } from '../../models';
+import { readBadRequestResponseAsync } from '../../utils';
 
 export const createCategory = createAsyncAction<
   number,
@@ -17,7 +18,9 @@ export const createCategory = createAsyncAction<
     baseUrl: `${API_URL}/v1/categories`,
     method: 'POST',
     onSuccess: createSuccessNumberResponseHandler(),
-    onError: createErrorResponseHandler('Failed to create category'),
+    onError: createErrorResponseHandler('Failed to create category', {
+      400: response => readBadRequestResponseAsync(response),
+    }),
     constructBody: (category): string => JSON.stringify(category),
   },
   'Creating category',
@@ -36,7 +39,9 @@ export const editCategory = createAsyncAction<
   {
     baseUrl: `${API_URL}/v1/categories`,
     method: 'PUT',
-    onError: createErrorResponseHandler('Failed to update category'),
+    onError: createErrorResponseHandler('Failed to update category', {
+      400: response => readBadRequestResponseAsync(response),
+    }),
     modifyUrl: (baseUrl, { id }): string => `${baseUrl}/${id}`,
     constructBody: ({ category }): string => JSON.stringify(category),
   },
@@ -56,7 +61,9 @@ export const deleteCategory = createAsyncAction<
   {
     baseUrl: `${API_URL}/v1/categories`,
     method: 'DELETE',
-    onError: createErrorResponseHandler('Failed to delete category'),
+    onError: createErrorResponseHandler('Failed to delete category', {
+      400: response => readBadRequestResponseAsync(response),
+    }),
     modifyUrl: (baseUrl, categoryId): string => `${baseUrl}/${categoryId}`,
   },
   'Deleting category',

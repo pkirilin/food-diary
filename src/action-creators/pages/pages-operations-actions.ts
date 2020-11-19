@@ -8,6 +8,7 @@ import {
   createSuccessTextResponseHandler,
 } from '../../helpers';
 import { API_URL } from '../../config';
+import { readBadRequestResponseAsync } from '../../utils';
 
 export const createPage = createAsyncAction<
   number,
@@ -24,7 +25,9 @@ export const createPage = createAsyncAction<
     method: 'POST',
     constructBody: (page): string => JSON.stringify(page),
     onSuccess: createSuccessNumberResponseHandler(),
-    onError: createErrorResponseHandler('Failed to create page'),
+    onError: createErrorResponseHandler('Failed to create page', {
+      400: response => readBadRequestResponseAsync(response),
+    }),
   },
   'Creating page',
 );
@@ -44,7 +47,9 @@ export const editPage = createAsyncAction<
     method: 'PUT',
     modifyUrl: (baseUrl, { id }): string => `${baseUrl}/${id}`,
     constructBody: ({ page }): string => JSON.stringify(page),
-    onError: createErrorResponseHandler('Failed to update page'),
+    onError: createErrorResponseHandler('Failed to update page', {
+      400: response => readBadRequestResponseAsync(response),
+    }),
   },
   'Updating page',
 );
@@ -63,7 +68,9 @@ export const deletePages = createAsyncAction<
     baseUrl: `${API_URL}/v1/pages/batch`,
     method: 'DELETE',
     constructBody: pageIds => JSON.stringify(pageIds),
-    onError: createErrorResponseHandler('Failed to delete selected'),
+    onError: createErrorResponseHandler('Failed to delete selected', {
+      400: response => readBadRequestResponseAsync(response),
+    }),
   },
   'Deleting pages',
 );
@@ -84,7 +91,9 @@ export const exportPages = createAsyncAction<
     modifyUrl: (baseUrl, { startDate, endDate, format }) =>
       `${baseUrl}/${format}?startDate=${startDate}&endDate=${endDate}`,
     onSuccess: createSuccessBlobResponseHandler(),
-    onError: createErrorResponseHandler('Failed to export pages'),
+    onError: createErrorResponseHandler('Failed to export pages', {
+      400: response => readBadRequestResponseAsync(response),
+    }),
   },
   'Exporting pages',
 );
@@ -108,7 +117,9 @@ export const importPages = createAsyncAction<
       formData.append('importFile', importFile, importFile.name);
       return formData;
     },
-    onError: createErrorResponseHandler('Failed to import pages'),
+    onError: createErrorResponseHandler('Failed to import pages', {
+      400: response => readBadRequestResponseAsync(response),
+    }),
   },
   'Importing pages',
 );

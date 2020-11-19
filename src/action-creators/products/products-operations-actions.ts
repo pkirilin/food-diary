@@ -2,6 +2,7 @@ import { ProductsOperationsActionTypes } from '../../action-types';
 import { API_URL } from '../../config';
 import { createAsyncAction, createErrorResponseHandler } from '../../helpers';
 import { ProductEditRequest, ProductCreateEdit } from '../../models';
+import { readBadRequestResponseAsync } from '../../utils';
 
 export const createProduct = createAsyncAction<
   {},
@@ -17,7 +18,9 @@ export const createProduct = createAsyncAction<
     baseUrl: `${API_URL}/v1/products`,
     method: 'POST',
     constructBody: product => JSON.stringify(product),
-    onError: createErrorResponseHandler('Failed to create product'),
+    onError: createErrorResponseHandler('Failed to create product', {
+      400: response => readBadRequestResponseAsync(response),
+    }),
   },
   'Creating product',
 );
@@ -37,7 +40,9 @@ export const editProduct = createAsyncAction<
     method: 'PUT',
     modifyUrl: (baseUrl, { id }) => `${baseUrl}/${id}`,
     constructBody: ({ product }) => JSON.stringify(product),
-    onError: createErrorResponseHandler('Failed to update product'),
+    onError: createErrorResponseHandler('Failed to update product', {
+      400: response => readBadRequestResponseAsync(response),
+    }),
   },
   'Updating product',
 );
@@ -56,7 +61,9 @@ export const deleteProduct = createAsyncAction<
     baseUrl: `${API_URL}/v1/products`,
     method: 'DELETE',
     modifyUrl: (baseUrl, productId) => `${baseUrl}/${productId}`,
-    onError: createErrorResponseHandler('Failed to delete product'),
+    onError: createErrorResponseHandler('Failed to delete product', {
+      400: response => readBadRequestResponseAsync(response),
+    }),
   },
   'Deleting product',
 );

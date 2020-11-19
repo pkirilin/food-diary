@@ -3,6 +3,7 @@ import { NoteCreateEdit, NoteDeleteRequest } from '../../models';
 import { NoteEditRequest } from '../../models';
 import { createErrorResponseHandler, createAsyncAction } from '../../helpers';
 import { API_URL } from '../../config';
+import { readBadRequestResponseAsync } from '../../utils';
 
 export const createNote = createAsyncAction<
   {},
@@ -18,7 +19,9 @@ export const createNote = createAsyncAction<
     baseUrl: `${API_URL}/v1/notes`,
     method: 'POST',
     constructBody: (note): string => JSON.stringify(note),
-    onError: createErrorResponseHandler('Failed to create note'),
+    onError: createErrorResponseHandler('Failed to create note', {
+      400: response => readBadRequestResponseAsync(response),
+    }),
   },
   'Creating note',
 );
@@ -37,7 +40,9 @@ export const editNote = createAsyncAction<
     baseUrl: `${API_URL}/v1/notes`,
     method: 'PUT',
     constructBody: ({ note }): string => JSON.stringify(note),
-    onError: createErrorResponseHandler('Failed to update note'),
+    onError: createErrorResponseHandler('Failed to update note', {
+      400: response => readBadRequestResponseAsync(response),
+    }),
   },
   'Updating note',
 );
@@ -56,7 +61,9 @@ export const deleteNote = createAsyncAction<
     baseUrl: `${API_URL}/v1/notes`,
     method: 'DELETE',
     modifyUrl: (baseUrl, { id }): string => `${baseUrl}/${id}`,
-    onError: createErrorResponseHandler('Failed to delete note'),
+    onError: createErrorResponseHandler('Failed to delete note', {
+      400: response => readBadRequestResponseAsync(response),
+    }),
   },
   'Deleting note',
 );

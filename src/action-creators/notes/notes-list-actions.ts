@@ -36,7 +36,9 @@ export const getNotesForPage = createAsyncAction<
     method: 'GET',
     modifyUrl: modifyUrlByNotesSearchRequest,
     onSuccess: createSuccessJsonResponseHandler(),
-    onError: createErrorResponseHandler('Failed to get notes for page'),
+    onError: createErrorResponseHandler('Failed to get notes for page', {
+      404: () => 'page not found',
+    }),
   },
   'Loading page content',
 );

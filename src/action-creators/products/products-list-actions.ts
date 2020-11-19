@@ -32,7 +32,9 @@ export const getProducts = createAsyncAction<
       return requestUrl;
     },
     onSuccess: createSuccessJsonResponseHandler(),
-    onError: createErrorResponseHandler('Failed to get products'),
+    onError: createErrorResponseHandler('Failed to get products', {
+      404: () => 'category not found',
+    }),
   },
   'Loading products list',
 );
