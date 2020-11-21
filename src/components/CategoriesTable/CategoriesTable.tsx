@@ -6,7 +6,8 @@ import CategoriesTableRow from '../CategoriesTableRow';
 import { Container, Preloader, Table, TableColumn } from '../__ui__';
 
 const columns = [
-  <TableColumn key="Category name" name="Name"></TableColumn>,
+  <TableColumn key="Category name" name="Name" width="50%"></TableColumn>,
+  <TableColumn key="Count products" name="Count products"></TableColumn>,
   <TableColumn key="Edit" name="" width="35px"></TableColumn>,
   <TableColumn key="Delete" name="" width="35px"></TableColumn>,
 ];
