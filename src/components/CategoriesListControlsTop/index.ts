@@ -1,3 +1,0 @@
-import CategoriesListControlsTopConnected from './CategoriesListControlsTopConnected';
-
-export default CategoriesListControlsTopConnected;

@@ -1,3 +1,0 @@
-import CategoriesOperationsPanelConnected from './CategoriesOperationsPanelConnected';
-
-export default CategoriesOperationsPanelConnected;
