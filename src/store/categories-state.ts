@@ -1,5 +1,5 @@
 import { CategoryDropdownItem, CategoryItem } from '../models';
-import { DataFetchState, DataOperationState } from './common';
+import { DataFetchState, DataOperationState, OperationCompletionStatus } from './common';
 
 export interface CategoriesState {
   dropdown: CategoriesDropdownState;
@@ -20,4 +20,5 @@ export interface CategoriesListState {
 
 export interface CategoriesOperationsState {
   status: DataOperationState;
+  completionStatus: OperationCompletionStatus;
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { useModalMessage } from '../../hooks';
+import { useModalMessage, useTypedSelector } from '../../hooks';
 import { Button, Container } from '../__ui__';
 import { createCategory, openModal } from '../../action-creators';
 import CategoriesTable from '../CategoriesTable';
@@ -9,6 +9,9 @@ import CategoryInput from '../CategoryInput';
 const Categories: React.FC = () => {
   useModalMessage('Error', state => state.categories.operations.status.error);
 
+  const isCreateButtonDisabled = useTypedSelector(
+    state => state.categories.list.categoryItemsFetchState.loading || state.categories.operations.status.performing,
+  );
   const dispatch = useDispatch();
 
   const handleCreateCategory = (): void => {
@@ -32,7 +35,9 @@ const Categories: React.FC = () => {
           <Container justify="space-between" align="center" spaceBetweenChildren="medium">
             <h1>Categories</h1>
             <Container>
-              <Button onClick={handleCreateCategory}>Create category</Button>
+              <Button disabled={isCreateButtonDisabled} onClick={handleCreateCategory}>
+                Create category
+              </Button>
             </Container>
           </Container>
           <CategoriesTable></CategoriesTable>

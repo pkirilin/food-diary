@@ -10,3 +10,5 @@ export interface DataOperationState<E = string> {
   message?: string;
   error?: E;
 }
+
+export type OperationCompletionStatus = 'initial' | 'idle' | 'created' | 'updated' | 'deleted';

@@ -15,11 +15,16 @@ const columns = [
 const CategoriesTable: React.FC = () => {
   const categories = useTypedSelector(state => state.categories.list.categoryItems);
   const dataErrorMessage = useTypedSelector(state => state.categories.list.categoryItemsFetchState.error);
+  const completionStatus = useTypedSelector(state => state.categories.operations.completionStatus);
+  const isLoaderVisible = useTypedSelector(state => state.categories.list.categoryItemsFetchState.loading);
+  const loadingMessage = useTypedSelector(state => state.categories.list.categoryItemsFetchState.loadingMessage);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getCategories());
-  }, [dispatch]);
+    if (completionStatus !== 'idle') {
+      dispatch(getCategories());
+    }
+  }, [dispatch, completionStatus]);
 
   const rows = useMemo(
     () => categories.map(category => <CategoriesTableRow key={category.id} category={category}></CategoriesTableRow>),
@@ -28,7 +33,7 @@ const CategoriesTable: React.FC = () => {
 
   return (
     <Container direction="column" spaceBetweenChildren="medium">
-      <Preloader>
+      <Preloader isVisible={isLoaderVisible} label={loadingMessage}>
         <Table columns={columns} rows={rows} dataErrorMessage={dataErrorMessage}></Table>
       </Preloader>
     </Container>
