@@ -1,6 +1,5 @@
 import { CategoryCreateEdit, CategoryEditRequest } from '../../models';
-import { ThunkDispatch } from 'redux-thunk';
-import { ThunkHelperAllActions, ThunkHelperResultActions } from '../../helpers';
+import { ThunkHelperAllActions } from '../../helpers';
 
 export enum CategoriesOperationsActionTypes {
   CreateRequest = 'CATEGORIES_OPERATIONS__CREATE_REQUEST',
@@ -40,37 +39,4 @@ export type DeleteCategoryActions = ThunkHelperAllActions<
   number
 >;
 
-export type CreateCategoryResultActions = ThunkHelperResultActions<
-  CategoriesOperationsActionTypes.CreateSuccess,
-  CategoriesOperationsActionTypes.CreateError,
-  number,
-  CategoryCreateEdit
->;
-
-export type EditCategoryResultActions = ThunkHelperResultActions<
-  CategoriesOperationsActionTypes.EditSuccess,
-  CategoriesOperationsActionTypes.EditError,
-  {},
-  CategoryEditRequest
->;
-
-export type DeleteCategoryResultActions = ThunkHelperResultActions<
-  CategoriesOperationsActionTypes.DeleteSuccess,
-  CategoriesOperationsActionTypes.DeleteError,
-  {},
-  number
->;
-
 export type CategoriesOperationsActions = CreateCategoryActions | EditCategoryActions | DeleteCategoryActions;
-
-export type CreateCategoryDispatch = ThunkDispatch<number, CategoryCreateEdit, CreateCategoryResultActions>;
-
-export type EditCategoryDispatch = ThunkDispatch<{}, CategoryEditRequest, EditCategoryResultActions>;
-
-export type DeleteCategoryDispatch = ThunkDispatch<{}, number, DeleteCategoryResultActions>;
-
-export type CreateCategoryDispatchProp = (category: CategoryCreateEdit) => Promise<CreateCategoryResultActions>;
-
-export type EditCategoryDispatchProp = (request: CategoryEditRequest) => Promise<EditCategoryResultActions>;
-
-export type DeleteCategoryDispatchProp = (categoryId: number) => Promise<DeleteCategoryResultActions>;

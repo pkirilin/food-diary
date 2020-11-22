@@ -4,13 +4,7 @@ import { createErrorResponseHandler, createSuccessNumberResponseHandler, createA
 import { CategoryCreateEdit, CategoryEditRequest } from '../../models';
 import { readBadRequestResponseAsync } from '../../utils';
 
-export const createCategory = createAsyncAction<
-  number,
-  CategoryCreateEdit,
-  CategoriesOperationsActionTypes.CreateRequest,
-  CategoriesOperationsActionTypes.CreateSuccess,
-  CategoriesOperationsActionTypes.CreateError
->(
+export const createCategory = createAsyncAction<number, CategoryCreateEdit>(
   CategoriesOperationsActionTypes.CreateRequest,
   CategoriesOperationsActionTypes.CreateSuccess,
   CategoriesOperationsActionTypes.CreateError,
@@ -26,13 +20,7 @@ export const createCategory = createAsyncAction<
   'Creating category',
 );
 
-export const editCategory = createAsyncAction<
-  {},
-  CategoryEditRequest,
-  CategoriesOperationsActionTypes.EditRequest,
-  CategoriesOperationsActionTypes.EditSuccess,
-  CategoriesOperationsActionTypes.EditError
->(
+export const editCategory = createAsyncAction<{}, CategoryEditRequest>(
   CategoriesOperationsActionTypes.EditRequest,
   CategoriesOperationsActionTypes.EditSuccess,
   CategoriesOperationsActionTypes.EditError,
@@ -48,13 +36,7 @@ export const editCategory = createAsyncAction<
   'Updating category',
 );
 
-export const deleteCategory = createAsyncAction<
-  {},
-  number,
-  CategoriesOperationsActionTypes.DeleteRequest,
-  CategoriesOperationsActionTypes.DeleteSuccess,
-  CategoriesOperationsActionTypes.DeleteError
->(
+export const deleteCategory = createAsyncAction<{}, number>(
   CategoriesOperationsActionTypes.DeleteRequest,
   CategoriesOperationsActionTypes.DeleteSuccess,
   CategoriesOperationsActionTypes.DeleteError,

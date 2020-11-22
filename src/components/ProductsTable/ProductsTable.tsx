@@ -1,11 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { ProductsTableStateToPropsMapResult, ProductsTableDispatchToPropsMapResult } from './ProductsTableConnected';
 import ProductsTableRowConnected from '../ProductsTableRow';
 import { Pagination, Table, TableColumn, Preloader, Container } from '../__ui__';
 
-interface ProductsTableProps extends ProductsTableStateToPropsMapResult, ProductsTableDispatchToPropsMapResult {
-  refreshCategoriesOnDeleteProduct?: boolean;
-}
+interface ProductsTableProps extends ProductsTableStateToPropsMapResult, ProductsTableDispatchToPropsMapResult {}
 
 const productsTableColumns = [
   <TableColumn key="Product name" name="Product name" width="50%"></TableColumn>,
@@ -16,7 +14,6 @@ const productsTableColumns = [
 ];
 
 const ProductsTable: React.FC<ProductsTableProps> = ({
-  refreshCategoriesOnDeleteProduct = false,
   productItemsFetchState,
   isProductOperationInProcess,
   productItems,
@@ -40,18 +37,13 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
     }
   };
 
-  const mapProductItemsToTableRows = (): JSX.Element[] => {
-    const rows: JSX.Element[] = [];
-    productItems.forEach(product => {
-      rows.push(
-        <ProductsTableRowConnected
-          product={product}
-          refreshCategoriesOnDeleteProduct={refreshCategoriesOnDeleteProduct}
-        ></ProductsTableRowConnected>,
-      );
-    });
-    return rows;
-  };
+  const rows = useMemo(
+    () =>
+      productItems.map(product => (
+        <ProductsTableRowConnected key={product.id} product={product}></ProductsTableRowConnected>
+      )),
+    [productItems],
+  );
 
   useEffect(() => {
     getProducts(productsFilter);
@@ -60,11 +52,7 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
   return (
     <Container direction="column" spaceBetweenChildren="medium">
       <Preloader isVisible={isProductsTableLoading} label={loadingMessage}>
-        <Table
-          columns={productsTableColumns}
-          rows={mapProductItemsToTableRows()}
-          dataErrorMessage={productsListError}
-        ></Table>
+        <Table columns={productsTableColumns} rows={rows} dataErrorMessage={productsListError}></Table>
       </Preloader>
       <Pagination
         totalPagesCount={totalPagesCount}

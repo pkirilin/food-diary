@@ -5,11 +5,9 @@ import {
   CreateProductDispatch,
   GetProductsListDispatch,
   GetCategoryDropdownItemsDispatch,
-  GetCategoriesListDispatch,
   CreateProductDispatchProp,
   GetProductsListDispatchProp,
   GetCategoryDropdownItemsDispatchProp,
-  GetCategoriesListDispatchProp,
   CloseModalAction,
   EditProductDispatchProp,
   EditProductDispatch,
@@ -22,22 +20,14 @@ import {
   CategoryDropdownSearchRequest,
   ProductEditRequest,
 } from '../../models';
-import {
-  createProduct,
-  getProducts,
-  getCategoryDropdownItems,
-  getCategories,
-  closeModal,
-  editProduct,
-} from '../../action-creators';
+import { createProduct, getProducts, getCategoryDropdownItems, closeModal, editProduct } from '../../action-creators';
 import { Dispatch } from 'redux';
 
 type ProductInputDispatch = Dispatch<CloseModalAction> &
   CreateProductDispatch &
   EditProductDispatch &
   GetProductsListDispatch &
-  GetCategoryDropdownItemsDispatch &
-  GetCategoriesListDispatch;
+  GetCategoryDropdownItemsDispatch;
 
 export interface ProductInputStateToPropsMapResult {
   categoryItems: CategoryItem[];
@@ -52,7 +42,6 @@ export interface ProductInputDispatchToPropsMapResult {
   editProduct: EditProductDispatchProp;
   getProducts: GetProductsListDispatchProp;
   getCategoryDropdownItems: GetCategoryDropdownItemsDispatchProp;
-  getCategories: GetCategoriesListDispatchProp;
 }
 
 const mapStateToProps = (state: RootState): ProductInputStateToPropsMapResult => {
@@ -83,10 +72,6 @@ const mapDispatchToProps = (dispatch: ProductInputDispatch): ProductInputDispatc
     return dispatch(getCategoryDropdownItems(request));
   };
 
-  const getCategoriesProp: GetCategoriesListDispatchProp = () => {
-    return dispatch(getCategories());
-  };
-
   return {
     closeModal: (): void => {
       dispatch(closeModal());
@@ -96,7 +81,6 @@ const mapDispatchToProps = (dispatch: ProductInputDispatch): ProductInputDispatc
     editProduct: editProductProp,
     getProducts: getProductsProp,
     getCategoryDropdownItems: getCategoryDropdownItemsProp,
-    getCategories: getCategoriesProp,
   };
 };
 

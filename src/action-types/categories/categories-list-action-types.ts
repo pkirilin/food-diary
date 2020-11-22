@@ -1,7 +1,6 @@
 import { Action } from 'redux';
 import { CategoryItem } from '../../models';
-import { ThunkDispatch } from 'redux-thunk';
-import { ThunkHelperAllActions, ThunkHelperResultActions } from '../../helpers';
+import { ThunkHelperAllActions } from '../../helpers';
 
 export enum CategoriesListActionTypes {
   Request = 'CATEGORIES_LIST__REQUEST',
@@ -16,16 +15,6 @@ export type GetCategoriesListActions = ThunkHelperAllActions<
   CategoriesListActionTypes.Error,
   CategoryItem[]
 >;
-
-export type GetCategoriesListResultActions = ThunkHelperResultActions<
-  CategoriesListActionTypes.Success,
-  CategoriesListActionTypes.Error,
-  CategoryItem[]
->;
-
-export type GetCategoriesListDispatch = ThunkDispatch<CategoryItem[], {}, GetCategoriesListResultActions>;
-
-export type GetCategoriesListDispatchProp = () => Promise<GetCategoriesListResultActions>;
 
 export interface SetEditableForCategoriesAction extends Action<CategoriesListActionTypes.SetEditable> {
   categoriesIds: number[];

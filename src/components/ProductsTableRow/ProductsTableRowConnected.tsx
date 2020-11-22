@@ -4,20 +4,15 @@ import { RootState, ModalBody, ModalOptions } from '../../store';
 import {
   GetProductsListDispatch,
   DeleteProductDispatch,
-  GetCategoriesListDispatch,
   GetProductsListDispatchProp,
-  GetCategoriesListDispatchProp,
   DeleteProductDispatchProp,
   OpenModalAction,
 } from '../../action-types';
 import { Dispatch } from 'redux';
-import { deleteProduct, getProducts, getCategories, openConfirmationModal, openModal } from '../../action-creators';
+import { deleteProduct, getProducts, openConfirmationModal, openModal } from '../../action-creators';
 import { ProductsFilter } from '../../models';
 
-type ProductsTableRowDispatch = Dispatch<OpenModalAction> &
-  GetProductsListDispatch &
-  GetCategoriesListDispatch &
-  DeleteProductDispatch;
+type ProductsTableRowDispatch = Dispatch<OpenModalAction> & GetProductsListDispatch & DeleteProductDispatch;
 
 export interface ProductsTableRowStateToPropsMapResult {
   isProductOperationInProcess: boolean;
@@ -29,7 +24,6 @@ export interface ProductsTableRowDispatchToPropsMapResult {
   openModal: (title: string, body: ModalBody, options?: ModalOptions) => void;
   openConfirmationModal: (title: string, message: string, confirm: () => void) => void;
   getProducts: GetProductsListDispatchProp;
-  getCategories: GetCategoriesListDispatchProp;
   deleteProduct: DeleteProductDispatchProp;
 }
 
@@ -46,10 +40,6 @@ const mapDispatchToProps = (dispatch: ProductsTableRowDispatch): ProductsTableRo
     return dispatch(getProducts(productsFilter));
   };
 
-  const getCategoriesProp: GetCategoriesListDispatchProp = () => {
-    return dispatch(getCategories());
-  };
-
   const deleteProductProp: DeleteProductDispatchProp = (productId: number) => {
     return dispatch(deleteProduct(productId));
   };
@@ -64,7 +54,6 @@ const mapDispatchToProps = (dispatch: ProductsTableRowDispatch): ProductsTableRo
     },
 
     getProducts: getProductsProp,
-    getCategories: getCategoriesProp,
     deleteProduct: deleteProductProp,
   };
 };

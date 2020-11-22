@@ -15,12 +15,10 @@ const emptyProduct: ProductItem = {
 };
 
 interface ProductInputProps extends ProductInputStateToPropsMapResult, ProductInputDispatchToPropsMapResult {
-  refreshCategoriesOnCreateProduct?: boolean;
   product?: ProductItem;
 }
 
 const ProductInput: React.FC<ProductInputProps> = ({
-  refreshCategoriesOnCreateProduct = false,
   product = emptyProduct,
   categoryItems,
   categoryDropdownItems,
@@ -30,7 +28,6 @@ const ProductInput: React.FC<ProductInputProps> = ({
   editProduct,
   getProducts,
   getCategoryDropdownItems,
-  getCategories,
   closeModal,
 }: ProductInputProps) => {
   const [productNameInputValue, setProductNameInputValue] = useState(product.name);
@@ -97,9 +94,6 @@ const ProductInput: React.FC<ProductInputProps> = ({
 
   const refreshProductsAsync = async (): Promise<void> => {
     await getProducts(productsFilter);
-    if (refreshCategoriesOnCreateProduct) {
-      await getCategories();
-    }
   };
 
   const handleProductNameChange = (event: React.ChangeEvent<HTMLInputElement>): void => {

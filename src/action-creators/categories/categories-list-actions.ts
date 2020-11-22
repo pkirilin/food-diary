@@ -3,15 +3,7 @@ import { API_URL } from '../../config';
 import { createErrorResponseHandler, createSuccessJsonResponseHandler, createAsyncAction } from '../../helpers';
 import { CategoryItem } from '../../models';
 
-export const getCategories = createAsyncAction<
-  CategoryItem[],
-  {},
-  // TODO: remove this duplicate strings along with *DispatchProp types
-  // this was made for correct typing of legacy components
-  CategoriesListActionTypes.Request,
-  CategoriesListActionTypes.Success,
-  CategoriesListActionTypes.Error
->(
+export const getCategories = createAsyncAction<CategoryItem[]>(
   CategoriesListActionTypes.Request,
   CategoriesListActionTypes.Success,
   CategoriesListActionTypes.Error,

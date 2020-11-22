@@ -1,19 +1,20 @@
 import React, { useEffect } from 'react';
-import ProductsTableConnected from '../ProductsTable';
-import { ProductsStateToPropsMapResult, ProductsDispatchToPropsMapResult } from './ProductsConnected';
+import { useDispatch } from 'react-redux';
 import { Container } from '../__ui__';
+import { useModalMessage } from '../../hooks';
+import { clearProductsFilter } from '../../action-creators';
+import ProductsTableConnected from '../ProductsTable';
 import ProductsControlPanelConnected from '../ProductsControlPanel';
 import ProductsFilterInfoConnected from '../ProductsFilterInfo';
-import { useModalMessage } from '../../hooks';
 
-interface ProductsProps extends ProductsStateToPropsMapResult, ProductsDispatchToPropsMapResult {}
+const Products: React.FC = () => {
+  const dispatch = useDispatch();
 
-const Products: React.FC<ProductsProps> = ({ clearProductsFilter }: ProductsProps) => {
   useEffect(() => {
     return (): void => {
-      clearProductsFilter();
+      dispatch(clearProductsFilter());
     };
-  }, [clearProductsFilter]);
+  }, [dispatch]);
 
   useModalMessage('Error', state => state.products.operations.productOperationStatus.error);
 
@@ -21,10 +22,11 @@ const Products: React.FC<ProductsProps> = ({ clearProductsFilter }: ProductsProp
     <main>
       <section>
         <Container direction="column" spaceBetweenChildren="medium">
-          <Container direction="column" spaceBetweenChildren="large">
+          <Container justify="space-between" align="center" spaceBetweenChildren="medium">
+            <h1>Products</h1>
             <ProductsControlPanelConnected></ProductsControlPanelConnected>
-            <ProductsFilterInfoConnected></ProductsFilterInfoConnected>
           </Container>
+          <ProductsFilterInfoConnected></ProductsFilterInfoConnected>
           <ProductsTableConnected></ProductsTableConnected>
         </Container>
       </section>
