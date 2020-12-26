@@ -1,6 +1,0 @@
-.git/
-.vscode/
-node_modules/
-build/
-src/serviceWorker.ts
-.eslintrc.js
