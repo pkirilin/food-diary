@@ -1,12 +1,8 @@
 import React from 'react';
-import { Typography } from '@material-ui/core';
+import Counter from '../features/counter/Counter';
 
 const App: React.FC = () => {
-  return (
-    <div>
-      <Typography variant="h1">App</Typography>
-    </div>
-  );
+  return <Counter></Counter>;
 };
 
 export default App;
