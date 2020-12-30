@@ -6,9 +6,11 @@ export default createMuiTheme({
     type: 'light',
     primary: {
       main: lightGreen[800],
+      contrastText: lightGreen[50],
     },
     secondary: {
       main: green[100],
+      contrastText: green[900],
     },
   },
 });
