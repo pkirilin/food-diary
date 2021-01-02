@@ -46,7 +46,8 @@ export function renderExtended(ui: React.ReactElement, createInitialState: TestS
   const history = createBrowserHistory();
   let renderResult = renderWithProviders(ui, store, history);
 
-  function rerenderWithStateChange(ui: React.ReactElement, newState: RootState): void {
+  function rerenderWithStateChange(ui: React.ReactElement, createNewState: TestStateCreator): void {
+    const newState = createNewState();
     const newStore = mockStore(newState);
     renderResult = renderWithProviders(ui, newStore, history);
   }

@@ -7,12 +7,14 @@ import * as serviceWorker from './serviceWorker';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
 ReactDOM.render(
-  <Provider store={store}>
-    <ThemeProvider theme={theme}>
-      <CssBaseline></CssBaseline>
-      <App></App>
-    </ThemeProvider>
-  </Provider>,
+  <React.StrictMode>
+    <Provider store={store}>
+      <ThemeProvider theme={theme}>
+        <CssBaseline></CssBaseline>
+        <App></App>
+      </ThemeProvider>
+    </Provider>
+  </React.StrictMode>,
   document.getElementById('root'),
 );
 
