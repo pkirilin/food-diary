@@ -117,7 +117,12 @@ describe('createApiCallAsyncThunk', () => {
       fetchMock.mockRejectedValue({ ...new Response() });
 
       // Act
-      const thunk = createApiCallAsyncThunk<void, number>('test', jest.fn(), jest.fn(), errorMessage);
+      const thunk = createApiCallAsyncThunk<void, number>(
+        'test',
+        jest.fn(),
+        jest.fn(),
+        errorMessage,
+      );
       await store.dispatch(thunk(arg));
       const actions = store.getActions();
 

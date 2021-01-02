@@ -49,7 +49,12 @@ const Navbar: React.FC = () => {
         </RouterLink>
         <List component="nav" className={classes.navLinksContainer}>
           {navLinks.map(({ title, path }, index) => (
-            <NavLink key={index} to={path} className={classes.navLink} activeClassName={classes.navLinkActive}>
+            <NavLink
+              key={index}
+              to={path}
+              className={classes.navLink}
+              activeClassName={classes.navLinkActive}
+            >
               <ListItem button>
                 <ListItemText primary={title}></ListItemText>
               </ListItem>

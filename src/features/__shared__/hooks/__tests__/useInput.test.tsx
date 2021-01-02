@@ -8,7 +8,10 @@ type TestComponentProps = {
   validator?: InputValidator<string>;
 };
 
-function TestComponent({ initialValue = '', validator }: TestComponentProps): React.ReactElement<TestComponentProps> {
+function TestComponent({
+  initialValue = '',
+  validator,
+}: TestComponentProps): React.ReactElement<TestComponentProps> {
   const testInput = useInput<string>(initialValue, { validator });
   return <input data-testid="input" {...testInput.binding}></input>;
 }

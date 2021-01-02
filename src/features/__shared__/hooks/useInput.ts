@@ -1,7 +1,10 @@
 import { InputHTMLAttributes, useEffect, useRef, useState } from 'react';
 import { BindableObject } from './types';
 
-export type InputBinding = Pick<InputHTMLAttributes<HTMLInputElement>, 'value' | 'onChange' | 'onChangeCapture'>;
+export type InputBinding = Pick<
+  InputHTMLAttributes<HTMLInputElement>,
+  'value' | 'onChange' | 'onChangeCapture'
+>;
 export type InputValue = InputBinding['value'];
 
 export interface InputHookResult<TValue> extends BindableObject<TValue, InputBinding> {

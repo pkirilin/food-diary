@@ -40,7 +40,10 @@ function renderWithProviders(
  * @param ui Component under test
  * @param createInitialState Redux initial test state creator function
  */
-export function renderExtended(ui: React.ReactElement, createInitialState: TestStateCreator): ExtendedRenderResult {
+export function renderExtended(
+  ui: React.ReactElement,
+  createInitialState: TestStateCreator,
+): ExtendedRenderResult {
   const initialState = createInitialState();
   const store = mockStore(initialState);
   const history = createBrowserHistory();

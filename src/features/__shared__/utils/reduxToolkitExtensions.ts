@@ -1,6 +1,10 @@
 import { AsyncThunk, createAsyncThunk } from '@reduxjs/toolkit';
 
-export type ApiCallAsyncThunk<TData, TArgument> = AsyncThunk<TData, TArgument, Record<string, unknown>>;
+export type ApiCallAsyncThunk<TData, TArgument> = AsyncThunk<
+  TData,
+  TArgument,
+  Record<string, unknown>
+>;
 export type ApiResponseHandler<TData> = (response: Response) => Promise<TData>;
 export type ApiCallBodyCreator<TArgument> = (arg: TArgument) => RequestBodyFragment['body'];
 
@@ -28,7 +32,9 @@ export function createApiCallAsyncThunk<TData, TArgument>(
   const { method = 'GET', contentType = 'application/json', bodyCreator } = options;
 
   function getHeaders(): RequestHeadersFragment {
-    return contentType && contentType !== 'none' ? { headers: { 'Content-Type': contentType } } : {};
+    return contentType && contentType !== 'none'
+      ? { headers: { 'Content-Type': contentType } }
+      : {};
   }
 
   function getBody(arg: TArgument): RequestBodyFragment {
