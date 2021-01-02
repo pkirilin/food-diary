@@ -76,7 +76,8 @@
     "ignorePatterns": [
       "node_modules/",
       "build/",
-      "src/serviceWorker.ts"
+      "src/serviceWorker.ts",
+      "src/__legacy__/"
     ]
   },
   "prettier": {
