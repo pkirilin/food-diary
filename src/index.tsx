@@ -1,10 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { ThemeProvider } from '@material-ui/core/styles';
-import App, { store, theme } from './app';
+import { ThemeProvider, CssBaseline } from '@material-ui/core';
 import * as serviceWorker from './serviceWorker';
-import CssBaseline from '@material-ui/core/CssBaseline';
+import App from './App';
+import store from './store';
+import theme from './theme';
 
 ReactDOM.render(
   <React.StrictMode>

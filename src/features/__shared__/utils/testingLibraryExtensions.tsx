@@ -2,11 +2,11 @@ import React from 'react';
 import { render, RenderResult } from '@testing-library/react';
 import { createBrowserHistory, History } from 'history';
 import configureStore, { MockStoreEnhanced } from 'redux-mock-store';
-import { RootState } from '../../../app/store';
+import { RootState } from '../../../store';
 import { Provider } from 'react-redux';
 import { ThemeProvider } from '@material-ui/core';
 import { Router } from 'react-router-dom';
-import theme from '../../../app/theme';
+import theme from '../../../theme';
 
 export type TestRootState = Partial<RootState>;
 export type TestStateCreator = () => TestRootState;

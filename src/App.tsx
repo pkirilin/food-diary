@@ -2,9 +2,9 @@ import React from 'react';
 import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
 import { Container, makeStyles } from '@material-ui/core';
 import Navbar from './Navbar';
-import { Pages } from '../features/pages/components';
-import { Products } from '../features/products/components';
-import { Categories } from '../features/categories/components';
+import { Pages } from './features/pages/components';
+import { Products } from './features/products/components';
+import { Categories } from './features/categories/components';
 
 const useStyles = makeStyles(theme => ({
   content: {

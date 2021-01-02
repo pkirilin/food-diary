@@ -1,6 +1,6 @@
 import React from 'react';
 import App from './App';
-import { renderExtended } from '../features/__shared__/utils';
+import { renderExtended } from './features/__shared__/utils';
 
 describe('App component', () => {
   afterEach(() => {
