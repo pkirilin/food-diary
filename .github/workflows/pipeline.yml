@@ -11,7 +11,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        node_version: ['10']
+        node_version: ['14']
         os: [ubuntu-latest, windows-latest, macos-latest]
     steps:
       - uses: actions/checkout@v1
@@ -20,10 +20,10 @@ jobs:
         with:
           node-version: ${{ matrix.node_version }}
       - name: Install packages
-        run: npm install
+        run: yarn install
       - name: Lint
-        run: npm run lint
+        run: yarn run lint
       - name: Build
-        run: npm run build
+        run: yarn build
       - name: Test
-        run: npm run test
+        run: yarn test
