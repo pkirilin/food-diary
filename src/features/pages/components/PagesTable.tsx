@@ -1,4 +1,5 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
 import {
   Checkbox,
   Table,
@@ -9,8 +10,23 @@ import {
   TableRow,
 } from '@material-ui/core';
 import PagesTableRow from './PagesTableRow';
+import { selectAllPages } from '../slice';
+import { useTypedSelector } from '../../__shared__/hooks';
 
 const PagesTable: React.FC = () => {
+  const pageItems = useTypedSelector(state => state.pages.pageItems);
+  const selectedPagesCount = useTypedSelector(state => state.pages.selectedPageIds.length);
+  const areAllPagesSelected = pageItems.length > 0 && pageItems.length === selectedPagesCount;
+  const dispatch = useDispatch();
+
+  const handleSelectAllPages = (): void => {
+    dispatch(
+      selectAllPages({
+        selected: !areAllPagesSelected,
+      }),
+    );
+  };
+
   return (
     <TableContainer>
       <Table>
@@ -19,9 +35,9 @@ const PagesTable: React.FC = () => {
             <TableCell padding="checkbox">
               <Checkbox
                 color="primary"
-                // indeterminate={numSelected > 0 && numSelected < rowCount}
-                // checked={rowCount > 0 && numSelected === rowCount}
-                // onChange={onSelectAllClick}
+                indeterminate={selectedPagesCount > 0 && selectedPagesCount < pageItems.length}
+                checked={areAllPagesSelected}
+                onChange={handleSelectAllPages}
               />
             </TableCell>
             <TableCell>Date</TableCell>
@@ -31,14 +47,9 @@ const PagesTable: React.FC = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          <PagesTableRow
-            page={{
-              id: 1,
-              date: new Date().toLocaleDateString(),
-              countCalories: 2000,
-              countNotes: 10,
-            }}
-          ></PagesTableRow>
+          {pageItems.map(page => (
+            <PagesTableRow key={page.id} page={page}></PagesTableRow>
+          ))}
         </TableBody>
       </Table>
     </TableContainer>
