@@ -1,4 +1,4 @@
-import { AsyncThunk, createAsyncThunk } from '@reduxjs/toolkit';
+import { AnyAction, AsyncThunk, createAsyncThunk } from '@reduxjs/toolkit';
 
 export type ApiCallAsyncThunk<TData, TArgument> = AsyncThunk<
   TData,
@@ -63,3 +63,17 @@ export function createApiCallAsyncThunk<TData, TArgument>(
 export const handleEmptyResponse: ApiResponseHandler<void> = async () => {
   return;
 };
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type AnyAsyncThunk = AsyncThunk<any, any, Record<string, unknown>>;
+export type AnyAsyncThunkActionProperties = keyof Pick<
+  AnyAsyncThunk,
+  'pending' | 'fulfilled' | 'rejected'
+>;
+
+export function createAsyncThunkMatcher<TAction extends AnyAction = AnyAction>(
+  thunks: AnyAsyncThunk[],
+  actionProp: AnyAsyncThunkActionProperties,
+): (action: TAction) => boolean {
+  return action => thunks.some(t => t[actionProp].type === action.type);
+}

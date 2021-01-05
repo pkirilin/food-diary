@@ -1,7 +1,7 @@
-import { AnyAction } from '@reduxjs/toolkit';
+import { AnyAction, createAsyncThunk } from '@reduxjs/toolkit';
 import configureStore from 'redux-mock-store';
 import thunk, { ThunkDispatch } from 'redux-thunk';
-import { createApiCallAsyncThunk } from '../reduxToolkitExtensions';
+import { createApiCallAsyncThunk, createAsyncThunkMatcher } from '../reduxToolkitExtensions';
 
 type TestRecord = {
   id: number;
@@ -130,6 +130,42 @@ describe('createApiCallAsyncThunk', () => {
       expect(actions[0].type).toEqual('test/pending');
       expect(actions[1].type).toEqual('test/rejected');
       expect(actions[1].payload).toEqual(errorMessage);
+    });
+  });
+});
+
+describe('createAsyncThunkMatcher', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  describe('when thunks array contains at least one with matching type', () => {
+    test('should return true', () => {
+      // Arrange
+      const thunk1 = createAsyncThunk('thunk1', jest.fn());
+      const thunk2 = createAsyncThunk('thunk2', jest.fn());
+      const thunk3 = createAsyncThunk('thunk3', jest.fn());
+
+      // Act
+      const matcher = createAsyncThunkMatcher([thunk1, thunk2, thunk3], 'pending');
+
+      // Assert
+      expect(matcher(thunk2.pending)).toBeTruthy();
+    });
+  });
+
+  describe('when thunks array does not contain any with matching type', () => {
+    test('should return false', () => {
+      // Arrange
+      const thunk1 = createAsyncThunk('thunk1', jest.fn());
+      const thunk2 = createAsyncThunk('thunk2', jest.fn());
+      const thunk3 = createAsyncThunk('thunk3', jest.fn());
+
+      // Act
+      const matcher = createAsyncThunkMatcher([thunk1, thunk2, thunk3], 'fulfilled');
+
+      // Assert
+      expect(matcher(thunk3.rejected)).toBeFalsy();
     });
   });
 });
