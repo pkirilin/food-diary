@@ -13,7 +13,7 @@ import DateFnsUtils from '@date-io/date-fns';
 import { PageCreateEdit } from '../models';
 import { CustomDialogProps } from '../../__shared__/types';
 
-interface PageCreateEditDialogProps extends DialogProps, CustomDialogProps {
+interface PageCreateEditDialogProps extends DialogProps, CustomDialogProps<PageCreateEdit> {
   page?: PageCreateEdit;
 }
 
@@ -37,6 +37,14 @@ const PageCreateEditDialog: React.FC<PageCreateEditDialogProps> = ({
     setDate(date);
   };
 
+  const handleSubmitClick = (): void => {
+    if (date) {
+      onDialogConfirm({
+        date: date.toISOString().slice(0, 10),
+      });
+    }
+  };
+
   return (
     <Dialog {...dialogProps}>
       <DialogTitle>{title}</DialogTitle>
@@ -53,7 +61,7 @@ const PageCreateEditDialog: React.FC<PageCreateEditDialogProps> = ({
         </MuiPickersUtilsProvider>
       </DialogContent>
       <DialogActions>
-        <Button variant="contained" color="primary" onClick={onDialogConfirm}>
+        <Button variant="contained" color="primary" onClick={handleSubmitClick}>
           {page ? 'Save' : 'Create'}
         </Button>
         <Button variant="text" onClick={onDialogCancel}>

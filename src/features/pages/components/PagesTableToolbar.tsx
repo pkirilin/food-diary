@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { IconButton, makeStyles, Toolbar, Tooltip, Typography } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import FilterListIcon from '@material-ui/icons/FilterList';
@@ -7,6 +8,8 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import { useTypedSelector } from '../../__shared__/hooks';
 import PageCreateEditDialog from './PageCreateEditDialog';
+import { PageCreateEdit } from '../models';
+import { createPage } from '../thunks';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -22,13 +25,15 @@ const PagesTableToolbar: React.FC = () => {
   const classes = useStyles();
   const selectedPageIds = useTypedSelector(state => state.pages.selectedPageIds);
   const [pageCreateEditDialogOpen, setPageCreateEditDialogOpen] = useState(false);
+  const dispatch = useDispatch();
 
   const handleAddClick = (): void => {
     setPageCreateEditDialogOpen(true);
   };
 
-  const handleCreateEditDialogComplete = (): void => {
-    return;
+  const handleCreateEditDialogComplete = (page: PageCreateEdit): void => {
+    setPageCreateEditDialogOpen(false);
+    dispatch(createPage(page));
   };
 
   const handleCreateEditDialogClose = (): void => {

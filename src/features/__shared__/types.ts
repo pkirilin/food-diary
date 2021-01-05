@@ -2,7 +2,7 @@ export interface SelectionPayload {
   selected: boolean;
 }
 
-export interface CustomDialogProps {
-  onDialogConfirm: React.MouseEventHandler<HTMLButtonElement>;
-  onDialogCancel: React.MouseEventHandler<HTMLButtonElement>;
+export interface CustomDialogProps<TConfirmedData = unknown> {
+  onDialogConfirm: (data: TConfirmedData) => void;
+  onDialogCancel: () => void;
 }

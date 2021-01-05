@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { TableRow, TableCell, Checkbox, Tooltip, IconButton } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
-import { PageItem } from '../models';
+import { PageCreateEdit, PageItem } from '../models';
 import { useTypedSelector } from '../../__shared__/hooks';
 import { selectPage } from '../slice';
 import PageCreateEditDialog from './PageCreateEditDialog';
+import { editPage } from '../thunks';
 
 type PagesTableRowProps = {
   page: PageItem;
@@ -32,8 +33,14 @@ const PagesTableRow: React.FC<PagesTableRowProps> = ({ page }: PagesTableRowProp
     setPageCreateEditDialogOpen(true);
   };
 
-  const handleCreateEditDialogComplete = (): void => {
-    return;
+  const handleCreateEditDialogComplete = (pageInfo: PageCreateEdit): void => {
+    setPageCreateEditDialogOpen(false);
+    dispatch(
+      editPage({
+        id: page.id,
+        page: pageInfo,
+      }),
+    );
   };
 
   const handleCreateEditDialogClose = (): void => {
