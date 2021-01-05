@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { IconButton, makeStyles, Toolbar, Tooltip, Typography } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import FilterListIcon from '@material-ui/icons/FilterList';
@@ -6,6 +6,7 @@ import PublishIcon from '@material-ui/icons/Publish';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import { useTypedSelector } from '../../__shared__/hooks';
+import PageCreateEditDialog from './PageCreateEditDialog';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -20,9 +21,28 @@ const useStyles = makeStyles(theme => ({
 const PagesTableToolbar: React.FC = () => {
   const classes = useStyles();
   const selectedPageIds = useTypedSelector(state => state.pages.selectedPageIds);
+  const [pageCreateEditDialogOpen, setPageCreateEditDialogOpen] = useState(false);
+
+  const handleAddClick = (): void => {
+    setPageCreateEditDialogOpen(true);
+  };
+
+  const handleCreateEditDialogComplete = (): void => {
+    return;
+  };
+
+  const handleCreateEditDialogClose = (): void => {
+    setPageCreateEditDialogOpen(false);
+  };
 
   return (
     <Toolbar className={classes.root}>
+      <PageCreateEditDialog
+        open={pageCreateEditDialogOpen}
+        onClose={handleCreateEditDialogClose}
+        onDialogConfirm={handleCreateEditDialogComplete}
+        onDialogCancel={handleCreateEditDialogClose}
+      ></PageCreateEditDialog>
       {selectedPageIds.length > 0 ? (
         <React.Fragment>
           <Typography className={classes.title}>{selectedPageIds.length} selected</Typography>
@@ -48,7 +68,7 @@ const PagesTableToolbar: React.FC = () => {
           </Typography>
           <Tooltip title="Add new page">
             <span>
-              <IconButton disabled>
+              <IconButton onClick={handleAddClick}>
                 <AddIcon />
               </IconButton>
             </span>

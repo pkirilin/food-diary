@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { TableRow, TableCell, Checkbox, Tooltip, IconButton } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import { PageItem } from '../models';
 import { useTypedSelector } from '../../__shared__/hooks';
 import { selectPage } from '../slice';
+import PageCreateEditDialog from './PageCreateEditDialog';
 
 type PagesTableRowProps = {
   page: PageItem;
@@ -16,6 +17,7 @@ const PagesTableRow: React.FC<PagesTableRowProps> = ({ page }: PagesTableRowProp
   );
 
   const dispatch = useDispatch();
+  const [pageCreateEditDialogOpen, setPageCreateEditDialogOpen] = useState(false);
 
   const handleSelectPage = (): void => {
     dispatch(
@@ -26,8 +28,27 @@ const PagesTableRow: React.FC<PagesTableRowProps> = ({ page }: PagesTableRowProp
     );
   };
 
+  const handleEditClick = (): void => {
+    setPageCreateEditDialogOpen(true);
+  };
+
+  const handleCreateEditDialogComplete = (): void => {
+    return;
+  };
+
+  const handleCreateEditDialogClose = (): void => {
+    setPageCreateEditDialogOpen(false);
+  };
+
   return (
     <TableRow hover>
+      <PageCreateEditDialog
+        open={pageCreateEditDialogOpen}
+        onClose={handleCreateEditDialogClose}
+        onDialogCancel={handleCreateEditDialogClose}
+        onDialogConfirm={handleCreateEditDialogComplete}
+        page={page}
+      ></PageCreateEditDialog>
       <TableCell padding="checkbox">
         <Checkbox color="primary" checked={isPageSelected} onChange={handleSelectPage} />
       </TableCell>
@@ -36,7 +57,7 @@ const PagesTableRow: React.FC<PagesTableRowProps> = ({ page }: PagesTableRowProp
       <TableCell>{page.countNotes}</TableCell>
       <TableCell width="30px">
         <Tooltip title="Edit page">
-          <IconButton>
+          <IconButton onClick={handleEditClick}>
             <EditIcon></EditIcon>
           </IconButton>
         </Tooltip>

@@ -4,3 +4,7 @@ export interface PageItem {
   countNotes: number;
   countCalories: number;
 }
+
+export interface PageCreateEdit {
+  date: string;
+}
