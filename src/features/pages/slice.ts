@@ -3,7 +3,7 @@ import { OperationStatus } from '../__shared__/models';
 import { SelectionPayload } from '../__shared__/types';
 import { AnyAsyncThunk, createAsyncThunkMatcher } from '../__shared__/utils';
 import { PageItem } from './models';
-import { createPage, editPage, getPages } from './thunks';
+import { createPage, deletePages, editPage, getPages } from './thunks';
 
 export type PagesState = {
   pageItems: PageItem[];
@@ -23,7 +23,7 @@ const initialState: PagesState = {
   selectedPageIds: [],
 };
 
-const pageItemsChangingThunks: AnyAsyncThunk[] = [createPage, editPage];
+const pageItemsChangingThunks: AnyAsyncThunk[] = [createPage, editPage, deletePages];
 
 const pagesSlice = createSlice({
   name: 'pages',

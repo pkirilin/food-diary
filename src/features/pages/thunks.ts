@@ -42,3 +42,14 @@ export const editPage = createApiCallAsyncThunk<void, EditPageRequest>(
     bodyCreator: ({ page }) => JSON.stringify(page),
   },
 );
+
+export const deletePages = createApiCallAsyncThunk<void, number[]>(
+  'pages/deletePages',
+  () => `${config.apiUrl}/v1/pages/batch`,
+  handleEmptyResponse,
+  'Failed to delete pages',
+  {
+    method: 'DELETE',
+    bodyCreator: pageids => JSON.stringify(pageids),
+  },
+);

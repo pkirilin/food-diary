@@ -9,7 +9,7 @@ import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import { useTypedSelector } from '../../__shared__/hooks';
 import PageCreateEditDialog from './PageCreateEditDialog';
 import { PageCreateEdit } from '../models';
-import { createPage } from '../thunks';
+import { createPage, deletePages } from '../thunks';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -40,6 +40,10 @@ const PagesTableToolbar: React.FC = () => {
     setPageCreateEditDialogOpen(false);
   };
 
+  const handleDeleteClick = (): void => {
+    dispatch(deletePages(selectedPageIds));
+  };
+
   return (
     <Toolbar className={classes.root}>
       <PageCreateEditDialog
@@ -60,7 +64,7 @@ const PagesTableToolbar: React.FC = () => {
           </Tooltip>
           <Tooltip title="Delete selected pages">
             <span>
-              <IconButton disabled>
+              <IconButton onClick={handleDeleteClick}>
                 <DeleteIcon />
               </IconButton>
             </span>
