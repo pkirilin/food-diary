@@ -4,6 +4,7 @@ import { createBrowserHistory, History } from 'history';
 import configureStore, { MockStoreEnhanced } from 'redux-mock-store';
 import { RootState } from '../../../store';
 import { Provider } from 'react-redux';
+import thunk from 'redux-thunk';
 import { ThemeProvider } from '@material-ui/core';
 import { Router } from 'react-router-dom';
 import theme from '../../../theme';
@@ -17,7 +18,7 @@ export interface ExtendedRenderResult extends RenderResult {
   rerenderWithStateChange: (ui: React.ReactElement, createNewState: TestStateCreator) => void;
 }
 
-const mockStore = configureStore<TestRootState>();
+const mockStore = configureStore<TestRootState>([thunk]);
 
 function renderWithProviders(
   ui: React.ReactElement,
