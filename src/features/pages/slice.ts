@@ -1,10 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { OperationStatus } from '../__shared__/models';
 import { SelectionPayload } from '../__shared__/types';
+import { AnyAsyncThunk, createAsyncThunkMatcher } from '../__shared__/utils';
 import { PageItem } from './models';
-import { getPages } from './thunks';
+import { createPage, editPage, getPages } from './thunks';
 
 export type PagesState = {
   pageItems: PageItem[];
+  pageItemsChangingStatus: OperationStatus;
   selectedPageIds: number[];
 };
 
@@ -16,8 +19,11 @@ export type SelectAllPagesPayload = SelectionPayload;
 
 const initialState: PagesState = {
   pageItems: [],
+  pageItemsChangingStatus: 'idle',
   selectedPageIds: [],
 };
+
+const pageItemsChangingThunks: AnyAsyncThunk[] = [createPage, editPage];
 
 const pagesSlice = createSlice({
   name: 'pages',
@@ -37,9 +43,19 @@ const pagesSlice = createSlice({
     },
   },
   extraReducers: builder =>
-    builder.addCase(getPages.fulfilled, (state, { payload }) => {
-      state.pageItems = payload;
-    }),
+    builder
+      .addCase(getPages.fulfilled, (state, { payload }) => {
+        state.pageItems = payload;
+      })
+      .addMatcher(createAsyncThunkMatcher(pageItemsChangingThunks, 'pending'), state => {
+        state.pageItemsChangingStatus = 'pending';
+      })
+      .addMatcher(createAsyncThunkMatcher(pageItemsChangingThunks, 'fulfilled'), state => {
+        state.pageItemsChangingStatus = 'succeeded';
+      })
+      .addMatcher(createAsyncThunkMatcher(pageItemsChangingThunks, 'rejected'), state => {
+        state.pageItemsChangingStatus = 'failed';
+      }),
 });
 
 export const { selectPage, selectAllPages } = pagesSlice.actions;

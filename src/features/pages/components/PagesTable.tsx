@@ -19,16 +19,19 @@ import { SortOrder } from '../../__shared__/models';
 const PagesTable: React.FC = () => {
   const pageItems = useTypedSelector(state => state.pages.pageItems);
   const selectedPagesCount = useTypedSelector(state => state.pages.selectedPageIds.length);
+  const pageItemsChangingStatus = useTypedSelector(state => state.pages.pageItemsChangingStatus);
   const areAllPagesSelected = pageItems.length > 0 && pageItems.length === selectedPagesCount;
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(
-      getPages({
-        sortOrder: SortOrder.Descending,
-      }),
-    );
-  }, []);
+    if (pageItemsChangingStatus === 'idle' || pageItemsChangingStatus === 'succeeded') {
+      dispatch(
+        getPages({
+          sortOrder: SortOrder.Descending,
+        }),
+      );
+    }
+  }, [pageItemsChangingStatus]);
 
   const handleSelectAllPages = (): void => {
     dispatch(
