@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Mvc;
 using FoodDiary.API.Requests;
 using MediatR;
 using FoodDiary.Application.Pages.Requests;
-using FoodDiary.Application.Enums;
 using System.Linq;
 
 namespace FoodDiary.API.Controllers.v1
@@ -54,10 +53,15 @@ namespace FoodDiary.API.Controllers.v1
                 pagesRequest.SortOrder,
                 pagesRequest.StartDate,
                 pagesRequest.EndDate,
-                PagesLoadRequestType.All);
+                pagesRequest.PageNumber,
+                pagesRequest.PageSize);
             
-            var filteredPages = await _mediator.Send(getPagesRequest, cancellationToken);
-            var pagesListResponse = _mapper.Map<IEnumerable<PageItemDto>>(filteredPages);
+            var pagesSearchResult = await _mediator.Send(getPagesRequest, cancellationToken);
+            var pagesListResponse = new PagesSearchResultDto()
+            {
+                PageItems = _mapper.Map<IEnumerable<PageItemDto>>(pagesSearchResult.FoundPages),
+                TotalPagesCount = pagesSearchResult.TotalPagesCount
+            };
             return Ok(pagesListResponse);
         }
 

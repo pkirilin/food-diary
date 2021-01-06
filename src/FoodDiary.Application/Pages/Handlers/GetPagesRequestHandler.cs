@@ -1,18 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using FoodDiary.Application.Enums;
+using FoodDiary.Application.Models;
 using FoodDiary.Application.Pages.Requests;
-using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Enums;
 using FoodDiary.Domain.Repositories;
 using MediatR;
 
 namespace FoodDiary.Application.Pages.Handlers
 {
-    class GetPagesRequestHandler : IRequestHandler<GetPagesRequest, List<Page>>
+    class GetPagesRequestHandler : IRequestHandler<GetPagesRequest, PagesSearchResult>
     {
         private readonly IPageRepository _pageRepository;
 
@@ -21,7 +19,7 @@ namespace FoodDiary.Application.Pages.Handlers
             _pageRepository = pageRepository ?? throw new ArgumentNullException(nameof(pageRepository));
         }
 
-        public Task<List<Page>> Handle(GetPagesRequest request, CancellationToken cancellationToken)
+        public async Task<PagesSearchResult> Handle(GetPagesRequest request, CancellationToken cancellationToken)
         {
             var query = _pageRepository.GetQueryWithoutTracking();
 
@@ -30,31 +28,21 @@ namespace FoodDiary.Application.Pages.Handlers
             if (request.EndDate.HasValue)
                 query = query.Where(p => p.Date <= request.EndDate);
 
-            switch (request.SortOrder)
-            {
-                case SortOrder.Ascending:
-                    query = query.OrderBy(p => p.Date);
-                    break;
-                case SortOrder.Descending:
-                    query = query.OrderByDescending(p => p.Date);
-                    break;
-                default:
-                    break;
-            }
+            query = request.SortOrder == SortOrder.Ascending ? query.OrderBy(p => p.Date) : query.OrderByDescending(p => p.Date);
+            query = _pageRepository.LoadNotesWithProductsAndCategories(query);
 
-            switch (request.LoadType)
-            {
-                case PagesLoadRequestType.OnlyNotesWithProducts:
-                    query = _pageRepository.LoadNotesWithProducts(query);
-                    break;
-                case PagesLoadRequestType.All:
-                    query = _pageRepository.LoadNotesWithProductsAndCategories(query);
-                    break;
-                default:
-                    break;
-            }
+            var totalPagesCount = await _pageRepository.CountByQueryAsync(query, cancellationToken);
 
-            return _pageRepository.GetByQueryAsync(query, cancellationToken);
+            query = query.Skip((request.PageNumber - 1) * request.PageSize)
+                .Take(request.PageSize);
+
+            var foundPages = await _pageRepository.GetByQueryAsync(query, cancellationToken);
+            
+            return new PagesSearchResult()
+            {
+                FoundPages = foundPages,
+                TotalPagesCount = totalPagesCount
+            };
         }
     }
 }

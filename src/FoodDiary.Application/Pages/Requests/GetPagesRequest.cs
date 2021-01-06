@@ -1,45 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
-using FoodDiary.Application.Enums;
-using FoodDiary.Domain.Entities;
+using FoodDiary.Application.Models;
 using FoodDiary.Domain.Enums;
 using MediatR;
 
 namespace FoodDiary.Application.Pages.Requests
 {
-    public class GetPagesRequest : IRequest<List<Page>>
+    public class GetPagesRequest : IRequest<PagesSearchResult>
     {
-        public SortOrder SortOrder { get; set; } = SortOrder.Descending;
+        public SortOrder SortOrder { get; set; }
 
         public DateTime? StartDate { get; set; }
 
         public DateTime? EndDate { get; set; }
 
-        public PagesLoadRequestType LoadType { get; set; } = PagesLoadRequestType.None;
+        public int PageNumber { get; set; }
 
-        public GetPagesRequest()
-        {
-        }
-
-        public GetPagesRequest(DateTime? startDate, DateTime? endDate)
-        {
-            StartDate = startDate;
-            EndDate = endDate;
-        }
-
-        public GetPagesRequest(SortOrder sortOrder, DateTime? startDate, DateTime? endDate)
+        public int PageSize { get; set; }
+        
+        public GetPagesRequest(SortOrder sortOrder, DateTime? startDate, DateTime? endDate, int pageNumber, int pageSize)
         {
             SortOrder = sortOrder;
             StartDate = startDate;
             EndDate = endDate;
-        }
-
-        public GetPagesRequest(SortOrder sortOrder, DateTime? startDate, DateTime? endDate, PagesLoadRequestType loadType)
-        {
-            SortOrder = sortOrder;
-            StartDate = startDate;
-            EndDate = endDate;
-            LoadType = loadType;
+            PageNumber = pageNumber;
+            PageSize = pageSize;
         }
     }
 }

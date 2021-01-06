@@ -16,7 +16,6 @@ using Xunit;
 using FoodDiary.API.Requests;
 using MediatR;
 using FoodDiary.Application.Pages.Requests;
-using FoodDiary.Domain.Enums;
 using FoodDiary.Application.Enums;
 using System.Linq;
 
@@ -55,19 +54,17 @@ namespace FoodDiary.UnitTests.Controllers
                 .Create();
             var pagesForExport = _fixture.CreateMany<Page>().ToList();
 
-            _mediatorMock.Setup(m => m.Send(It.Is<GetPagesRequest>(r =>
+            _mediatorMock.Setup(m => m.Send(It.Is<GetPagesForExportRequest>(r =>
                     r.StartDate == request.StartDate
                     && r.EndDate == request.EndDate
-                    && r.SortOrder == SortOrder.Ascending
                     && r.LoadType == PagesLoadRequestType.OnlyNotesWithProducts), default))
                 .ReturnsAsync(pagesForExport);
 
             var result = await Sut.ExportPagesPdf(request, CancellationToken.None);
 
-            _mediatorMock.Verify(m => m.Send(It.Is<GetPagesRequest>(r =>
+            _mediatorMock.Verify(m => m.Send(It.Is<GetPagesForExportRequest>(r =>
                     r.StartDate == request.StartDate
                     && r.EndDate == request.EndDate
-                    && r.SortOrder == SortOrder.Ascending
                     && r.LoadType == PagesLoadRequestType.OnlyNotesWithProducts), default)
                 , Times.Once);
             _pagesPdfGeneratorMock.Verify(g => g.GeneratePdfForPages(pagesForExport), Times.Once);            
@@ -85,7 +82,7 @@ namespace FoodDiary.UnitTests.Controllers
 
             var result = await Sut.ExportPagesPdf(request, CancellationToken.None);
 
-            _mediatorMock.Verify(m => m.Send(It.IsAny<GetPagesRequest>(), default), Times.Never);
+            _mediatorMock.Verify(m => m.Send(It.IsAny<GetPagesForExportRequest>(), default), Times.Never);
             _pagesPdfGeneratorMock.Verify(g => g.GeneratePdfForPages(It.IsAny<IEnumerable<Page>>()), Times.Never);
             result.Should().BeOfType<BadRequestObjectResult>();
         }
@@ -101,19 +98,17 @@ namespace FoodDiary.UnitTests.Controllers
                 .Create();
             var pagesForExport = _fixture.CreateMany<Page>().ToList();
 
-            _mediatorMock.Setup(m => m.Send(It.Is<GetPagesRequest>(r =>
+            _mediatorMock.Setup(m => m.Send(It.Is<GetPagesForExportRequest>(r =>
                     r.StartDate == request.StartDate
                     && r.EndDate == request.EndDate
-                    && r.SortOrder == SortOrder.Ascending
                     && r.LoadType == PagesLoadRequestType.All), default))
                 .ReturnsAsync(pagesForExport);
 
             var result = await Sut.ExportPagesJson(request, CancellationToken.None);
 
-            _mediatorMock.Verify(m => m.Send(It.Is<GetPagesRequest>(r =>
+            _mediatorMock.Verify(m => m.Send(It.Is<GetPagesForExportRequest>(r =>
                     r.StartDate == request.StartDate
                     && r.EndDate == request.EndDate
-                    && r.SortOrder == SortOrder.Ascending
                     && r.LoadType == PagesLoadRequestType.All), default)
                 , Times.Once);
             result.Should().BeOfType<FileContentResult>();
@@ -130,7 +125,7 @@ namespace FoodDiary.UnitTests.Controllers
 
             var result = await Sut.ExportPagesJson(request, CancellationToken.None);
 
-            _mediatorMock.Verify(m => m.Send(It.IsAny<GetPagesRequest>(), default), Times.Never);
+            _mediatorMock.Verify(m => m.Send(It.IsAny<GetPagesForExportRequest>(), default), Times.Never);
             result.Should().BeOfType<BadRequestObjectResult>();
         }
     }

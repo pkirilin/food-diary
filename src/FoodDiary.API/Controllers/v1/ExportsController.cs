@@ -12,7 +12,6 @@ using FoodDiary.Import.Models;
 using System.Text.Encodings.Web;
 using MediatR;
 using FoodDiary.Application.Pages.Requests;
-using FoodDiary.Domain.Enums;
 using FoodDiary.Application.Enums;
 
 namespace FoodDiary.API.Controllers.v1
@@ -52,8 +51,7 @@ namespace FoodDiary.API.Controllers.v1
                 return BadRequest(ModelState);
             }
 
-            var pagesRequest = new GetPagesRequest(
-                SortOrder.Ascending,
+            var pagesRequest = new GetPagesForExportRequest(
                 exportRequest.StartDate,
                 exportRequest.EndDate,
                 PagesLoadRequestType.OnlyNotesWithProducts);
@@ -79,8 +77,7 @@ namespace FoodDiary.API.Controllers.v1
                 return BadRequest(ModelState);
             }
 
-            var pagesRequest = new GetPagesRequest(
-                SortOrder.Ascending,
+            var pagesRequest = new GetPagesForExportRequest(
                 exportRequest.StartDate,
                 exportRequest.EndDate,
                 PagesLoadRequestType.All);
