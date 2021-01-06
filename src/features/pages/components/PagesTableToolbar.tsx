@@ -10,6 +10,7 @@ import { useTypedSelector } from '../../__shared__/hooks';
 import PageCreateEditDialog from './PageCreateEditDialog';
 import { PageCreateEdit } from '../models';
 import { createPage, deletePages } from '../thunks';
+import { ConfirmationDialog } from '../../__shared__/components';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -25,13 +26,18 @@ const PagesTableToolbar: React.FC = () => {
   const classes = useStyles();
   const selectedPageIds = useTypedSelector(state => state.pages.selectedPageIds);
   const [pageCreateEditDialogOpen, setPageCreateEditDialogOpen] = useState(false);
+  const [deletePagesDialogOpen, setDeletePagesDialogOpen] = useState(false);
   const dispatch = useDispatch();
 
   const handleAddClick = (): void => {
     setPageCreateEditDialogOpen(true);
   };
 
-  const handleCreateEditDialogComplete = (page: PageCreateEdit): void => {
+  const handleDeleteClick = (): void => {
+    setDeletePagesDialogOpen(true);
+  };
+
+  const handleCreateEditDialogConfirm = (page: PageCreateEdit): void => {
     setPageCreateEditDialogOpen(false);
     dispatch(createPage(page));
   };
@@ -40,8 +46,13 @@ const PagesTableToolbar: React.FC = () => {
     setPageCreateEditDialogOpen(false);
   };
 
-  const handleDeleteClick = (): void => {
+  const handleDeletePagesDialogConfirm = (): void => {
+    setDeletePagesDialogOpen(false);
     dispatch(deletePages(selectedPageIds));
+  };
+
+  const handleDeletePagesDialogClose = (): void => {
+    setDeletePagesDialogOpen(false);
   };
 
   return (
@@ -49,9 +60,16 @@ const PagesTableToolbar: React.FC = () => {
       <PageCreateEditDialog
         open={pageCreateEditDialogOpen}
         onClose={handleCreateEditDialogClose}
-        onDialogConfirm={handleCreateEditDialogComplete}
+        onDialogConfirm={handleCreateEditDialogConfirm}
         onDialogCancel={handleCreateEditDialogClose}
       ></PageCreateEditDialog>
+      <ConfirmationDialog
+        open={deletePagesDialogOpen}
+        dialogTitle="Delete pages confirmation"
+        dialogMessage="Do you really want to delete all selected pages?"
+        onDialogConfirm={handleDeletePagesDialogConfirm}
+        onDialogCancel={handleDeletePagesDialogClose}
+      ></ConfirmationDialog>
       {selectedPageIds.length > 0 ? (
         <React.Fragment>
           <Typography className={classes.title}>{selectedPageIds.length} selected</Typography>

@@ -11,9 +11,11 @@ import {
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import { PageCreateEdit } from '../models';
-import { CustomDialogProps } from '../../__shared__/types';
+import { ConfirmationDialogActionProps } from '../../__shared__/types';
 
-interface PageCreateEditDialogProps extends DialogProps, CustomDialogProps<PageCreateEdit> {
+interface PageCreateEditDialogProps
+  extends DialogProps,
+    ConfirmationDialogActionProps<PageCreateEdit> {
   page?: PageCreateEdit;
 }
 

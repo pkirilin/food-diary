@@ -47,6 +47,9 @@ const pagesSlice = createSlice({
       .addCase(getPages.fulfilled, (state, { payload }) => {
         state.pageItems = payload;
       })
+      .addCase(deletePages.fulfilled, state => {
+        state.selectedPageIds = [];
+      })
       .addMatcher(createAsyncThunkMatcher(pageItemsChangingThunks, 'pending'), state => {
         state.pageItemsChangingStatus = 'pending';
       })
