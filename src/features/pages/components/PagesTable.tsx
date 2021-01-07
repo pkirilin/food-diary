@@ -20,20 +20,23 @@ const PagesTable: React.FC = () => {
   const pageItems = useTypedSelector(state => state.pages.pageItems);
   const selectedPagesCount = useTypedSelector(state => state.pages.selectedPageIds.length);
   const pageItemsChangingStatus = useTypedSelector(state => state.pages.pageItemsChangingStatus);
+  const pageItemsFilter = useTypedSelector(state => state.pages.filter);
   const areAllPagesSelected = pageItems.length > 0 && pageItems.length === selectedPagesCount;
   const dispatch = useDispatch();
 
   useEffect(() => {
     if (pageItemsChangingStatus === 'idle' || pageItemsChangingStatus === 'succeeded') {
+      const { pageNumber, pageSize } = pageItemsFilter;
+
       dispatch(
         getPages({
           sortOrder: SortOrder.Descending,
-          pageNumber: 1,
-          pageSize: 10,
+          pageNumber,
+          pageSize,
         }),
       );
     }
-  }, [pageItemsChangingStatus]);
+  }, [pageItemsChangingStatus, pageItemsFilter]);
 
   const handleSelectAllPages = (): void => {
     dispatch(

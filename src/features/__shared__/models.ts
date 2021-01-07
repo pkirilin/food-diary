@@ -4,3 +4,7 @@ export enum SortOrder {
 }
 
 export type OperationStatus = 'idle' | 'pending' | 'succeeded' | 'failed';
+
+export interface ItemsFilterBase {
+  changed: boolean;
+}

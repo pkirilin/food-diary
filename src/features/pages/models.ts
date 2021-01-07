@@ -1,3 +1,5 @@
+import { ItemsFilterBase } from '../__shared__/models';
+
 export interface PageItem {
   id: number;
   date: string;
@@ -12,4 +14,9 @@ export interface PagesSearchResult {
 
 export interface PageCreateEdit {
   date: string;
+}
+
+export interface PageItemsFilter extends ItemsFilterBase {
+  pageNumber: number;
+  pageSize: number;
 }

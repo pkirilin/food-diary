@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { OperationStatus } from '../__shared__/models';
 import { SelectionPayload } from '../__shared__/types';
 import { AnyAsyncThunk, createAsyncThunkMatcher } from '../__shared__/utils';
-import { PageItem } from './models';
+import { PageItem, PageItemsFilter } from './models';
 import { createPage, deletePages, editPage, getPages } from './thunks';
 
 export type PagesState = {
@@ -10,6 +10,7 @@ export type PagesState = {
   pageItemsChangingStatus: OperationStatus;
   selectedPageIds: number[];
   totalPagesCount: number;
+  filter: PageItemsFilter;
 };
 
 export interface SelectPagePayload extends SelectionPayload {
@@ -23,6 +24,11 @@ const initialState: PagesState = {
   pageItemsChangingStatus: 'idle',
   selectedPageIds: [],
   totalPagesCount: 0,
+  filter: {
+    changed: false,
+    pageNumber: 1,
+    pageSize: 10,
+  },
 };
 
 const pageItemsChangingThunks: AnyAsyncThunk[] = [createPage, editPage, deletePages];
@@ -42,6 +48,12 @@ const pagesSlice = createSlice({
     selectAllPages: (state, { payload }: PayloadAction<SelectAllPagesPayload>) => {
       const { selected } = payload;
       state.selectedPageIds = selected ? state.pageItems.map(p => p.id) : [];
+    },
+    pageNumberChanged: (state, { payload }: PayloadAction<number>) => {
+      state.filter.pageNumber = payload;
+    },
+    pageSizeChanged: (state, { payload }: PayloadAction<number>) => {
+      state.filter.pageSize = payload;
     },
   },
   extraReducers: builder =>
@@ -64,6 +76,11 @@ const pagesSlice = createSlice({
       }),
 });
 
-export const { selectPage, selectAllPages } = pagesSlice.actions;
+export const {
+  selectPage,
+  selectAllPages,
+  pageNumberChanged,
+  pageSizeChanged,
+} = pagesSlice.actions;
 
 export default pagesSlice.reducer;
