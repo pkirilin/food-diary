@@ -9,6 +9,7 @@ export type PagesState = {
   pageItems: PageItem[];
   pageItemsChangingStatus: OperationStatus;
   selectedPageIds: number[];
+  totalPagesCount: number;
 };
 
 export interface SelectPagePayload extends SelectionPayload {
@@ -21,6 +22,7 @@ const initialState: PagesState = {
   pageItems: [],
   pageItemsChangingStatus: 'idle',
   selectedPageIds: [],
+  totalPagesCount: 0,
 };
 
 const pageItemsChangingThunks: AnyAsyncThunk[] = [createPage, editPage, deletePages];
@@ -45,7 +47,8 @@ const pagesSlice = createSlice({
   extraReducers: builder =>
     builder
       .addCase(getPages.fulfilled, (state, { payload }) => {
-        state.pageItems = payload;
+        state.pageItems = payload.pageItems;
+        state.totalPagesCount = payload.totalPagesCount;
       })
       .addCase(deletePages.fulfilled, state => {
         state.selectedPageIds = [];

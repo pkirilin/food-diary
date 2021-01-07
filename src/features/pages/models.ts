@@ -5,6 +5,11 @@ export interface PageItem {
   countCalories: number;
 }
 
+export interface PagesSearchResult {
+  totalPagesCount: number;
+  pageItems: PageItem[];
+}
+
 export interface PageCreateEdit {
   date: string;
 }

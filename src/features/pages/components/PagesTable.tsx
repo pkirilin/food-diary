@@ -28,6 +28,8 @@ const PagesTable: React.FC = () => {
       dispatch(
         getPages({
           sortOrder: SortOrder.Descending,
+          pageNumber: 1,
+          pageSize: 10,
         }),
       );
     }

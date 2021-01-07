@@ -5,7 +5,7 @@ networks:
     driver: bridge
 services:
   food-diary-server:
-    image: pkirilin/food-diary-server:latest
+    image: pkirilin/food-diary-server:1.1.0
     depends_on:
       - food-diary-db-staging
     ports:

@@ -1,12 +1,14 @@
 import config from '../__shared__/config';
 import { SortOrder } from '../__shared__/models';
 import { createApiCallAsyncThunk, createUrl, handleEmptyResponse } from '../__shared__/utils';
-import { PageCreateEdit, PageItem } from './models';
+import { PageCreateEdit, PagesSearchResult } from './models';
 
 export type GetPagesRequest = {
   startDate?: string;
   endDate?: string;
   sortOrder: SortOrder;
+  pageNumber: number;
+  pageSize: number;
 };
 
 export type EditPageRequest = {
@@ -14,7 +16,7 @@ export type EditPageRequest = {
   page: PageCreateEdit;
 };
 
-export const getPages = createApiCallAsyncThunk<PageItem[], GetPagesRequest>(
+export const getPages = createApiCallAsyncThunk<PagesSearchResult, GetPagesRequest>(
   'pages/getPages',
   params => createUrl(`${config.apiUrl}/v1/pages`, params),
   response => response.json(),
