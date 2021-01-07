@@ -106,7 +106,7 @@ namespace FoodDiary.IntegrationTests
             var response = await _client.GetAsync(requestUri);
 
             // Assert
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            response.EnsureSuccessStatusCode();
         }
 
         [Theory]

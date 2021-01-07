@@ -35,8 +35,14 @@ namespace FoodDiary.IntegrationTests
                         CountCalories = 1065,
                     },
                 };
+                
+                var searchResult = new PagesSearchResultDto()
+                {
+                    PageItems = expectedPages,
+                    TotalPagesCount = 3
+                };
 
-                yield return new object[] { "2020-08-02", "2020-08-03", expectedPages };
+                yield return new object[] { "2020-08-01", "2020-08-03", 1, 2, searchResult };
             }
         }
 
@@ -207,16 +213,21 @@ namespace FoodDiary.IntegrationTests
 
         [Theory]
         [MemberData(nameof(MemberData_GetPages))]
-        public async void GetPages_ReceivesPagesInCorrectFormat(string startDate, string endDate, IEnumerable<PageItemDto> expectedPages)
+        public async void GetPages_ReceivesPagesInCorrectFormat(
+            string startDate,
+            string endDate,
+            int pageNumber,
+            int pageSize,
+            PagesSearchResultDto expectedPagesSearchResult)
         {
             // Arrange
-            var requestUri = $"{Endpoints.GetPages}?startDate={startDate}&endDate={endDate}";
+            var requestUri = $"{Endpoints.GetPages}?startDate={startDate}&endDate={endDate}&pageNumber={pageNumber}&pageSize={pageSize}";
 
             // Act
-            var pages = await _client.GetDataAsync<IEnumerable<PageItemDto>>(requestUri);
+            var pages = await _client.GetDataAsync<PagesSearchResultDto>(requestUri);
 
             // Assert
-            pages.Should().BeEquivalentTo(expectedPages);
+            pages.Should().BeEquivalentTo(expectedPagesSearchResult);
         }
 
         [Theory]

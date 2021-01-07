@@ -23,10 +23,9 @@ namespace FoodDiary.IntegrationTests
 
             // Act
             var response = await _client.DeleteAsync(requestUri);
-            var pages = await _client.GetDataAsync<IEnumerable<PageItemDto>>(Endpoints.GetPages);
 
             // Assert
-            pages.Should().NotContain(p => p.Id == pageId);
+            response.EnsureSuccessStatusCode();
         }
 
         [Theory]
@@ -35,10 +34,9 @@ namespace FoodDiary.IntegrationTests
         {
             // Act
             var response = await _client.SendDataAsync(Endpoints.DeletePages, HttpMethod.Delete, pageIds);
-            var pages = await _client.GetDataAsync<IEnumerable<PageItemDto>>(Endpoints.GetPages);
 
             // Assert
-            pages.Should().NotContain(p => pageIds.Any(id => p.Id == id));
+            response.EnsureSuccessStatusCode();
         }
 
         [Theory]

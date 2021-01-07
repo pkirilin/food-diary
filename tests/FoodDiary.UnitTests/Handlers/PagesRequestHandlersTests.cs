@@ -114,14 +114,14 @@ namespace FoodDiary.UnitTests.Handlers
         }
 
         [Theory]
-        [MemberData(nameof(MemberData_GetPagesRequestHandler))]
-        public async void GetPagesRequestHandler_ReturnsRequestedPages(
-            GetPagesRequest request,
+        [MemberData(nameof(MemberData_GetPagesForExportRequestHandler))]
+        public async void GetPagesForExportRequestHandler_ReturnsRequestedPages(
+            GetPagesForExportRequest request,
             List<Page> expectedResult,
             int expectedLoadNotesWithProductsCallCount,
             int expectedLoadNotesWithProductsAndCategoriesCallCount)
         {
-            var handler = new GetPagesRequestHandler(_pageRepositoryMock.Object);
+            var handler = new GetPagesForExportRequestHandler(_pageRepositoryMock.Object);
             var pagesQuery = expectedResult.AsQueryable();
 
             _pageRepositoryMock.Setup(r => r.GetQueryWithoutTracking()).Returns(pagesQuery);
@@ -177,19 +177,19 @@ namespace FoodDiary.UnitTests.Handlers
 
         #region Test data
 
-        public static IEnumerable<object[]> MemberData_GetPagesRequestHandler
+        public static IEnumerable<object[]> MemberData_GetPagesForExportRequestHandler
         {
             get
             {
                 var fixture = Fixtures.Custom;
 
-                var request1 = fixture.Build<GetPagesRequest>()
+                var request1 = fixture.Build<GetPagesForExportRequest>()
                     .With(r => r.LoadType, PagesLoadRequestType.OnlyNotesWithProducts)
                     .Create();
-                var request2 = fixture.Build<GetPagesRequest>()
+                var request2 = fixture.Build<GetPagesForExportRequest>()
                     .With(r => r.LoadType, PagesLoadRequestType.All)
                     .Create();
-                var request3 = fixture.Build<GetPagesRequest>()
+                var request3 = fixture.Build<GetPagesForExportRequest>()
                     .With(r => r.LoadType, PagesLoadRequestType.None)
                     .Create();
 

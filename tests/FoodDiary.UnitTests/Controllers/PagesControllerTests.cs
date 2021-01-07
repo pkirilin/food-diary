@@ -19,6 +19,7 @@ using MediatR;
 using FoodDiary.Application.Pages.Requests;
 using FoodDiary.Application.Enums;
 using AutoFixture;
+using FoodDiary.Application.Models;
 
 namespace FoodDiary.UnitTests.Controllers
 {
@@ -41,22 +42,22 @@ namespace FoodDiary.UnitTests.Controllers
 
         [Theory]
         [MemberData(nameof(MemberData_GetPages_ValidDateRanges))]
-        public async void GetPages_ReturnsFilteredPages_WhenModelStateAndDateRangesAreValid(PagesSearchRequest request, List<Page> filteredPages)
+        public async void GetPages_ReturnsFilteredPages_WhenModelStateAndDateRangesAreValid(PagesSearchRequest request, PagesSearchResult pagesSearchResult)
         {
-            _mediatorMock.Setup(m => m.Send(It.Is<GetPagesRequest>(r =>
-                    r.SortOrder == request.SortOrder
-                    && r.StartDate == request.StartDate
+            _mediatorMock.Setup(m => m.Send(It.Is<GetPagesRequest>(r => 
+                    r.StartDate == request.StartDate
                     && r.EndDate == request.EndDate
-                    && r.LoadType == PagesLoadRequestType.All), default))
-                .ReturnsAsync(filteredPages);
+                    && r.PageNumber == request.PageNumber
+                    && r.PageSize == request.PageSize), default))
+                .ReturnsAsync(pagesSearchResult);
 
             var result = await Sut.GetPages(request, default);
 
             _mediatorMock.Verify(m => m.Send(It.Is<GetPagesRequest>(r =>
-                    r.SortOrder == request.SortOrder
-                    && r.StartDate == request.StartDate
+                    r.StartDate == request.StartDate
                     && r.EndDate == request.EndDate
-                    && r.LoadType == PagesLoadRequestType.All), default),
+                    && r.PageNumber == request.PageNumber
+                    && r.PageSize == request.PageSize), default),
                 Times.Once);
             result.Should().BeOfType<OkObjectResult>();
         }
@@ -276,23 +277,23 @@ namespace FoodDiary.UnitTests.Controllers
                     .With(r => r.StartDate, DateTime.Parse("2020-08-30"))
                     .With(r => r.EndDate, DateTime.Parse("2020-08-31"))
                     .Create();
-                var filteredPages1 = fixture.CreateMany<Page>().ToList();
+                var searchResult1 = fixture.Create<PagesSearchResult>();
 
                 var searchRequest2 = fixture.Build<PagesSearchRequest>()
                     .With(r => r.StartDate, DateTime.Parse("2020-08-30"))
                     .With(r => r.EndDate, DateTime.Parse("2020-08-30"))
                     .Create();
-                var filteredPages2 = fixture.CreateMany<Page>().ToList();
+                var searchResult2 = fixture.Create<PagesSearchResult>();
 
                 var searchRequest3 = fixture.Build<PagesSearchRequest>()
                     .Without(r => r.StartDate)
                     .Without(r => r.EndDate)
                     .Create();
-                var filteredPages3 = fixture.CreateMany<Page>().ToList();
+                var searchResult3 = fixture.Create<PagesSearchResult>();
 
-                yield return new object[] { searchRequest1, filteredPages1 };
-                yield return new object[] { searchRequest2, filteredPages2 };
-                yield return new object[] { searchRequest3, filteredPages3 };
+                yield return new object[] { searchRequest1, searchResult1 };
+                yield return new object[] { searchRequest2, searchResult2 };
+                yield return new object[] { searchRequest3, searchResult3 };
             }
         }
 

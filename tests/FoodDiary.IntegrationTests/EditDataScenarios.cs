@@ -26,10 +26,9 @@ namespace FoodDiary.IntegrationTests
 
             // Act
             var response = await _client.PutDataAsync($"{Endpoints.EditPage}/{pageId}", page);
-            var pages = await _client.GetDataAsync<IEnumerable<PageItemDto>>(Endpoints.GetPages);
 
             // Assert
-            pages.Should().Contain(p => p.Date == pageDate);
+            response.EnsureSuccessStatusCode();
         }
 
         [Theory]

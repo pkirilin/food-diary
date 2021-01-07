@@ -37,6 +37,12 @@ namespace FoodDiary.IntegrationTests
                         CountCalories = 220,
                     }
                 };
+                
+                var expectedPagesSearchResult = new PagesSearchResultDto()
+                {
+                    PageItems = expectedPages,
+                    TotalPagesCount = 1
+                };
 
                 var expectedNotes = new List<NoteItemDto>()
                 {
@@ -81,7 +87,7 @@ namespace FoodDiary.IntegrationTests
                     notesRequestUri,
                     productsRequestUri,
                     categoriesRequestUri,
-                    expectedPages,
+                    expectedPagesSearchResult,
                     expectedNotes,
                     expectedProductNames,
                     expectedCategoryNames
@@ -97,7 +103,7 @@ namespace FoodDiary.IntegrationTests
             string notesRequestUri,
             string productsRequestUri,
             string categoriesRequestUri,
-            IEnumerable<PageItemDto> expectedPages,
+            PagesSearchResultDto expectedPagesSearchResult,
             IEnumerable<NoteItemDto> expectedNotes,
             IEnumerable<string> expectedProductNames,
             IEnumerable<string> expectedCategoryNames)
@@ -120,13 +126,13 @@ namespace FoodDiary.IntegrationTests
             }
 
             // Requesting entities
-            var pages = await _client.GetDataAsync<IEnumerable<PageItemDto>>(pagesRequestUri);
+            var pagesSearchResult = await _client.GetDataAsync<PagesSearchResultDto>(pagesRequestUri);
             var notes = await _client.GetDataAsync<IEnumerable<NoteItemDto>>(notesRequestUri);
             var products = await _client.GetDataAsync<ProductsSearchResultDto>(productsRequestUri);
             var categories = await _client.GetDataAsync<IEnumerable<CategoryItemDto>>(categoriesRequestUri);
 
             // Checking if all required entities were imported/updated
-            pages.Should().BeEquivalentTo(expectedPages);
+            pagesSearchResult.Should().BeEquivalentTo(expectedPagesSearchResult);
             notes.Should().BeEquivalentTo(expectedNotes);
             products.ProductItems.Select(p => p.Name)
                 .Should().Contain(expectedProductNames);
