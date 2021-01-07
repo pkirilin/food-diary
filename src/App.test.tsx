@@ -13,6 +13,12 @@ describe('App component', () => {
         pageItems: [],
         pageItemsChangingStatus: 'idle',
         selectedPageIds: [],
+        totalPagesCount: 0,
+        filter: {
+          changed: false,
+          pageNumber: 1,
+          pageSize: 10,
+        },
       },
     });
 
