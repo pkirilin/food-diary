@@ -1,32 +1,33 @@
-import React from 'react';
-import { Divider, List } from '@material-ui/core';
-import { CategoryItem } from '../models';
+import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { Divider, List, makeStyles, Typography } from '@material-ui/core';
 import CategoriesListItem from './CategoriesListItem';
+import { getCategories } from '../thunks';
+import { useTypedSelector } from '../../__shared__/hooks';
 
-const categoryItems: CategoryItem[] = [
-  {
-    id: 1,
-    name: 'Category 1',
-    countProducts: 1,
+const useStyles = makeStyles(theme => ({
+  emptyItems: {
+    padding: theme.spacing(2),
   },
-  {
-    id: 2,
-    name: 'Category 2',
-    countProducts: 2,
-  },
-  {
-    id: 3,
-    name: 'Category 3',
-    countProducts: 0,
-  },
-  {
-    id: 4,
-    name: 'Category 4',
-    countProducts: 13,
-  },
-];
+}));
 
 const CategoriesList: React.FC = () => {
+  const categoryItems = useTypedSelector(state => state.categories.categoryItems);
+  const dispatch = useDispatch();
+  const classes = useStyles();
+
+  useEffect(() => {
+    dispatch(getCategories());
+  }, []);
+
+  if (categoryItems.length === 0) {
+    return (
+      <Typography color="textSecondary" align="center" className={classes.emptyItems}>
+        No categories found
+      </Typography>
+    );
+  }
+
   return (
     <List>
       {categoryItems.map((category, index) => (
