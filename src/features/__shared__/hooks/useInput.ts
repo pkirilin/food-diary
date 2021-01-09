@@ -5,7 +5,8 @@ export type InputBinding = Pick<
   InputHTMLAttributes<HTMLInputElement>,
   'value' | 'onChange' | 'onChangeCapture'
 >;
-export type InputValue = InputBinding['value'];
+
+export type BindableInputValue = InputBinding['value'];
 
 export interface InputHookResult<TValue> extends BindableObject<TValue, InputBinding> {
   isValid: boolean;
@@ -31,7 +32,20 @@ export interface InputHookOptions<TValue> {
   debounce?: InputHookDebounce<TValue>;
 }
 
-export function useInput<TValue extends InputValue>(
+function convertToBindableValue(value: unknown): BindableInputValue {
+  switch (typeof value) {
+    case 'string':
+      return value;
+    case 'number':
+      return value.toString();
+    default:
+      throw new Error(
+        `Convertation to bindable value from type '${typeof value}' is not supported`,
+      );
+  }
+}
+
+export function useInput<TValue>(
   initialValue: TValue,
   { validator, debounce }: InputHookOptions<TValue> = {},
 ): InputHookResult<TValue> {
@@ -47,7 +61,7 @@ export function useInput<TValue extends InputValue>(
   };
 
   const onChange: React.ChangeEventHandler<HTMLInputElement> = event => {
-    const currentValue = event.target.value as TValue;
+    const currentValue = (event.target.value as unknown) as TValue;
     setValue(currentValue);
 
     if (!debounce) {
@@ -87,7 +101,7 @@ export function useInput<TValue extends InputValue>(
     isValid,
     validationMessage,
     binding: {
-      value,
+      value: convertToBindableValue(value),
       onChange,
       onChangeCapture,
     },
