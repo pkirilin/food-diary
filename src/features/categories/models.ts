@@ -3,3 +3,7 @@ export interface CategoryItem {
   name: string;
   countProducts: number;
 }
+
+export interface CategoryCreateEdit {
+  name: string;
+}
