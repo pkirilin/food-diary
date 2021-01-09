@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import {
   Chip,
   Grid,
@@ -11,9 +12,10 @@ import {
 } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { CategoryItem } from '../models';
+import { CategoryCreateEdit, CategoryItem } from '../models';
 import CategoryCreateEditDialog from './CategoryCreateEditDialog';
 import { ConfirmationDialog } from '../../__shared__/components';
+import { deleteCategory, editCategory } from '../thunks';
 
 type CategoriesListItemProps = {
   category: CategoryItem;
@@ -31,6 +33,7 @@ const CategoriesListItem: React.FC<CategoriesListItemProps> = ({
   const classes = useStyles();
   const [categoryEditDialogOpen, setCategoryEditDialogOpen] = useState(false);
   const [categoryDeleteDialogOpen, setCategoryDeleteDialogOpen] = useState(false);
+  const dispatch = useDispatch();
 
   const handleEditClick = (): void => {
     setCategoryEditDialogOpen(true);
@@ -44,8 +47,14 @@ const CategoriesListItem: React.FC<CategoriesListItemProps> = ({
     setCategoryEditDialogOpen(false);
   };
 
-  const handleCategoryEditDialogConfirm = (): void => {
-    return;
+  const handleCategoryEditDialogConfirm = (updatedCategory: CategoryCreateEdit): void => {
+    setCategoryEditDialogOpen(false);
+    dispatch(
+      editCategory({
+        id: category.id,
+        category: updatedCategory,
+      }),
+    );
   };
 
   const handleCategoryDeleteDialogClose = (): void => {
@@ -53,7 +62,8 @@ const CategoriesListItem: React.FC<CategoriesListItemProps> = ({
   };
 
   const handleCategoryDeleteDialogConfirm = (): void => {
-    return;
+    setCategoryDeleteDialogOpen(false);
+    dispatch(deleteCategory(category.id));
   };
 
   return (

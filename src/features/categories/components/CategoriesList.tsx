@@ -13,12 +13,17 @@ const useStyles = makeStyles(theme => ({
 
 const CategoriesList: React.FC = () => {
   const categoryItems = useTypedSelector(state => state.categories.categoryItems);
+  const categoryItemsChangingStatus = useTypedSelector(
+    state => state.categories.categoryItemsChangingStatus,
+  );
   const dispatch = useDispatch();
   const classes = useStyles();
 
   useEffect(() => {
-    dispatch(getCategories());
-  }, []);
+    if (categoryItemsChangingStatus === 'idle' || categoryItemsChangingStatus === 'succeeded') {
+      dispatch(getCategories());
+    }
+  }, [categoryItemsChangingStatus]);
 
   if (categoryItems.length === 0) {
     return (

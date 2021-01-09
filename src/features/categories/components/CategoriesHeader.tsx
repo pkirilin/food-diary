@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { Fab, Grid, makeStyles, Tooltip, Typography } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import CategoryCreateEditDialog from './CategoryCreateEditDialog';
+import { createCategory } from '../thunks';
+import { CategoryCreateEdit } from '../models';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -12,6 +15,7 @@ const useStyles = makeStyles(theme => ({
 const CategoriesHeader: React.FC = () => {
   const classes = useStyles();
   const [categoryCreateDialogOpen, setCategoryCreateDialogOpen] = useState(false);
+  const dispatch = useDispatch();
 
   const handleAddClick = (): void => {
     setCategoryCreateDialogOpen(true);
@@ -21,8 +25,9 @@ const CategoriesHeader: React.FC = () => {
     setCategoryCreateDialogOpen(false);
   };
 
-  const handleCategoryCreateDialogConfirm = (): void => {
-    return;
+  const handleCategoryCreateDialogConfirm = (category: CategoryCreateEdit): void => {
+    setCategoryCreateDialogOpen(false);
+    dispatch(createCategory(category));
   };
 
   return (
