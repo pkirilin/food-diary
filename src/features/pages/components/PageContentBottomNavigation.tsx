@@ -1,6 +1,6 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import { BottomNavigation, BottomNavigationAction } from '@material-ui/core';
+import { BottomNavigation, BottomNavigationAction, makeStyles } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
@@ -9,8 +9,15 @@ const previousPageValue = '/pages/:prev';
 const currentPageValue = 'current';
 const nextPageValue = '/pages/:next';
 
+const useStyles = makeStyles(() => ({
+  root: {
+    backgroundColor: 'transparent',
+  },
+}));
+
 const PageContentBottomNavigation: React.FC = () => {
   const history = useHistory();
+  const classes = useStyles();
 
   const handleNavigationChange = (event: React.ChangeEvent<unknown>, newValue: string): void => {
     if ([previousPageValue, nextPageValue].find(v => v === newValue)) {
@@ -21,7 +28,7 @@ const PageContentBottomNavigation: React.FC = () => {
   };
 
   return (
-    <BottomNavigation showLabels onChange={handleNavigationChange}>
+    <BottomNavigation showLabels onChange={handleNavigationChange} className={classes.root}>
       <BottomNavigationAction
         label="Previous page"
         icon={<ArrowBackIcon />}

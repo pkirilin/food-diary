@@ -1,11 +1,13 @@
 import React from 'react';
 import {
+  Box,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
+  Typography,
 } from '@material-ui/core';
 import { MealType, NoteItem } from '../models';
 import NotesTableRow from './NotesTableRow';
@@ -40,6 +42,8 @@ const noteItems: NoteItem[] = [
   },
 ];
 
+const totalCalories = noteItems.reduce((sum, note) => sum + note.calories, 0);
+
 const NotesTable: React.FC = () => {
   return (
     <TableContainer>
@@ -57,6 +61,11 @@ const NotesTable: React.FC = () => {
           ))}
         </TableBody>
       </Table>
+      <Box mt={2}>
+        <Typography variant="subtitle1" align="right">
+          Total calories: {totalCalories}
+        </Typography>
+      </Box>
     </TableContainer>
   );
 };

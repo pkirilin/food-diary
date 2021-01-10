@@ -1,6 +1,6 @@
 import React from 'react';
-import PageContentBottomNavigation from './PageContentBottomNavigation';
 import PageContentHeader from './PageContentHeader';
+import PageContentFooter from './PageContentFooter';
 import { MealsList } from '../../notes/components';
 
 const PageContent: React.FC = () => {
@@ -8,7 +8,7 @@ const PageContent: React.FC = () => {
     <React.Fragment>
       <PageContentHeader></PageContentHeader>
       <MealsList></MealsList>
-      <PageContentBottomNavigation></PageContentBottomNavigation>
+      <PageContentFooter></PageContentFooter>
     </React.Fragment>
   );
 };
