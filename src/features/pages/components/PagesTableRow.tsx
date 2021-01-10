@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { TableRow, TableCell, Checkbox, Tooltip, IconButton } from '@material-ui/core';
+import { Link as RouterLink } from 'react-router-dom';
+import { TableRow, TableCell, Checkbox, Tooltip, IconButton, Link } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import { PageCreateEdit, PageItem } from '../models';
 import { useTypedSelector } from '../../__shared__/hooks';
@@ -59,7 +60,11 @@ const PagesTableRow: React.FC<PagesTableRowProps> = ({ page }: PagesTableRowProp
       <TableCell padding="checkbox">
         <Checkbox color="primary" checked={isPageSelected} onChange={handleSelectPage} />
       </TableCell>
-      <TableCell>{page.date}</TableCell>
+      <TableCell>
+        <Link component={RouterLink} to={`/pages/${page.id}`}>
+          {page.date}
+        </Link>
+      </TableCell>
       <TableCell>{page.countCalories}</TableCell>
       <TableCell>{page.countNotes}</TableCell>
       <TableCell width="30px">
