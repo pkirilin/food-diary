@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   Box,
+  Button,
   Table,
   TableBody,
   TableCell,
@@ -9,6 +10,7 @@ import {
   TableRow,
   Typography,
 } from '@material-ui/core';
+import AddIcon from '@material-ui/icons/Add';
 import { MealType, NoteItem } from '../models';
 import NotesTableRow from './NotesTableRow';
 
@@ -53,6 +55,7 @@ const NotesTable: React.FC = () => {
             <TableCell>Product</TableCell>
             <TableCell>Quantity</TableCell>
             <TableCell>Calories</TableCell>
+            <TableCell padding="checkbox"></TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -61,6 +64,11 @@ const NotesTable: React.FC = () => {
           ))}
         </TableBody>
       </Table>
+      <Box mt={1}>
+        <Button variant="text" size="medium" fullWidth startIcon={<AddIcon></AddIcon>}>
+          Add note
+        </Button>
+      </Box>
       <Box mt={2}>
         <Typography variant="subtitle1" align="right">
           Total calories: {totalCalories}
