@@ -43,7 +43,7 @@ const Navbar: React.FC = () => {
 
   return (
     <AppBar position="static">
-      <Toolbar>
+      <Toolbar id="back-to-top-anchor">
         <RouterLink to="/" className={classes.brand}>
           Food diary
         </RouterLink>

@@ -19,11 +19,17 @@ const PageContentBottomNavigation: React.FC = () => {
   const history = useHistory();
   const classes = useStyles();
 
-  const handleNavigationChange = (event: React.ChangeEvent<unknown>, newValue: string): void => {
+  const handleNavigationChange = (event: React.SyntheticEvent<unknown>, newValue: string): void => {
     if ([previousPageValue, nextPageValue].find(v => v === newValue)) {
       history.push(newValue);
     } else if (newValue === currentPageValue) {
-      // TODO: scroll to top
+      const anchor = ((event.target as HTMLDivElement).ownerDocument || document).querySelector(
+        '#back-to-top-anchor',
+      );
+
+      if (anchor) {
+        anchor.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
     }
   };
 
