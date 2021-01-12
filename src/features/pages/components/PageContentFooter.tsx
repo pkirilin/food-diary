@@ -1,16 +1,20 @@
 import React from 'react';
-import { makeStyles, Grid } from '@material-ui/core';
+import { makeStyles, Grid, AppBar } from '@material-ui/core';
 import { MealsListSummary } from '../../notes/components';
 import PageContentBottomNavigation from './PageContentBottomNavigation';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    marginTop: theme.spacing(1),
+    top: 'auto',
+    bottom: 0,
+    marginTop: theme.spacing(2),
+  },
+  footerContent: {
+    padding: `0 ${theme.spacing(2)}px`,
   },
   summaryContainer: {
     display: 'flex',
     alignItems: 'center',
-    padding: `0 ${theme.spacing(1)}px`,
   },
 }));
 
@@ -18,14 +22,22 @@ const PageContentFooter: React.FC = () => {
   const classes = useStyles();
 
   return (
-    <Grid container className={classes.root}>
-      <Grid item xs>
-        <PageContentBottomNavigation></PageContentBottomNavigation>
+    <AppBar
+      component="footer"
+      position="sticky"
+      color="default"
+      variant="outlined"
+      className={classes.root}
+    >
+      <Grid container className={classes.footerContent}>
+        <Grid item xs>
+          <PageContentBottomNavigation></PageContentBottomNavigation>
+        </Grid>
+        <Grid item className={classes.summaryContainer}>
+          <MealsListSummary></MealsListSummary>
+        </Grid>
       </Grid>
-      <Grid item className={classes.summaryContainer}>
-        <MealsListSummary></MealsListSummary>
-      </Grid>
-    </Grid>
+    </AppBar>
   );
 };
 
