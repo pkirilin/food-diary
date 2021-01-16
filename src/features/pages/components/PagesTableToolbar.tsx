@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { IconButton, makeStyles, Toolbar, Tooltip, Typography } from '@material-ui/core';
+import { IconButton, Toolbar, Tooltip, Typography } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import PublishIcon from '@material-ui/icons/Publish';
@@ -11,19 +11,10 @@ import PageCreateEditDialog from './PageCreateEditDialog';
 import { PageCreateEdit } from '../models';
 import { createPage, deletePages } from '../thunks';
 import { ConfirmationDialog } from '../../__shared__/components';
-
-const useStyles = makeStyles(theme => ({
-  root: {
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(1),
-  },
-  title: {
-    flex: '1 1 100%',
-  },
-}));
+import { useToolbarStyles } from '../../__shared__/styles';
 
 const PagesTableToolbar: React.FC = () => {
-  const classes = useStyles();
+  const classes = useToolbarStyles();
   const selectedPageIds = useTypedSelector(state => state.pages.selectedPageIds);
   const [pageCreateEditDialogOpen, setPageCreateEditDialogOpen] = useState(false);
   const [deletePagesDialogOpen, setDeletePagesDialogOpen] = useState(false);
