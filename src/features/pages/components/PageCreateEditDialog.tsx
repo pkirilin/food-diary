@@ -25,9 +25,19 @@ const PageCreateEditDialog: React.FC<PageCreateEditDialogProps> = ({
   onDialogCancel,
   ...dialogProps
 }: PageCreateEditDialogProps) => {
-  const initialDate = page ? new Date(page.date) : new Date();
+  const { title, submitText, initialDate } = page
+    ? {
+        title: 'Edit page',
+        submitText: 'Save',
+        initialDate: new Date(page.date),
+      }
+    : {
+        title: 'New page',
+        submitText: 'Create',
+        initialDate: new Date(),
+      };
+
   const [date, setDate] = useState<Date | null>(initialDate);
-  const title = page ? 'Edit page' : 'Create page';
 
   useEffect(() => {
     return () => {
@@ -48,12 +58,14 @@ const PageCreateEditDialog: React.FC<PageCreateEditDialogProps> = ({
   };
 
   return (
-    <Dialog {...dialogProps}>
+    <Dialog maxWidth="xs" fullWidth {...dialogProps}>
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
           <KeyboardDatePicker
             disableToolbar
+            autoFocus
+            fullWidth
             variant="inline"
             format="dd.MM.yyyy"
             margin="normal"
@@ -64,7 +76,7 @@ const PageCreateEditDialog: React.FC<PageCreateEditDialogProps> = ({
       </DialogContent>
       <DialogActions>
         <Button variant="contained" color="primary" onClick={handleSubmitClick}>
-          {page ? 'Save' : 'Create'}
+          {submitText}
         </Button>
         <Button variant="text" onClick={onDialogCancel}>
           Cancel
