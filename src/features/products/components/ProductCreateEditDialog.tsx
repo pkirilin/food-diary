@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Box,
   Button,
@@ -57,6 +57,18 @@ const ProductCreateEditDialog: React.FC<ProductCreateEditDialogProps> = ({
   const productNameInput = useInput(initialProductName);
   const caloriesCostInput = useInput(initialCaloriesCost);
   const [categoryId, setCategoryId] = useState(initialCategoryId);
+  const initialCategory = useMemo(
+    () => categoryAutocompleteOptions.find(c => c.id === initialCategoryId),
+    [initialCategoryId],
+  );
+
+  useEffect(() => {
+    return () => {
+      productNameInput.setValue(initialProductName);
+      caloriesCostInput.setValue(initialCaloriesCost);
+      setCategoryId(initialCategoryId);
+    };
+  }, [dialogProps.open]);
 
   const handleSubmitClick = (): void => {
     if (categoryId !== null) {
@@ -97,6 +109,7 @@ const ProductCreateEditDialog: React.FC<ProductCreateEditDialogProps> = ({
             options={categoryAutocompleteOptions}
             getOptionLabel={option => option.name}
             noOptionsText="No categories found"
+            value={initialCategory}
             onChange={(event, value) => {
               setCategoryId(value?.id ?? null);
             }}
