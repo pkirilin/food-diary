@@ -12,6 +12,7 @@ import {
 import { ProductCreateEdit } from '../models';
 import { ConfirmationDialogActionProps } from '../../__shared__/types';
 import { useInput } from '../../__shared__/hooks';
+import { CategoryAutocompleteInput } from '../../categories/components';
 
 interface ProductCreateEditDialogProps
   extends DialogProps,
@@ -72,6 +73,9 @@ const ProductCreateEditDialog: React.FC<ProductCreateEditDialogProps> = ({
             placeholder="Enter calories cost"
             {...caloriesCostInput.binding}
           ></TextField>
+        </Box>
+        <Box mt={2}>
+          <CategoryAutocompleteInput></CategoryAutocompleteInput>
         </Box>
       </DialogContent>
       <DialogActions>

@@ -1,3 +1,4 @@
 import Categories from './Categories';
+import CategoryAutocompleteInput from './CategoryAutocompleteInput';
 
-export { Categories };
+export { Categories, CategoryAutocompleteInput };
