@@ -7,3 +7,8 @@ export interface CategoryItem {
 export interface CategoryCreateEdit {
   name: string;
 }
+
+export interface CategoryAutocompleteOption {
+  id: number;
+  name: string;
+}
