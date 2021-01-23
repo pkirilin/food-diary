@@ -45,6 +45,27 @@ function convertToBindableValue(value: unknown): BindableInputValue {
   }
 }
 
+// This function is used to get generic input type's value from input change event
+// It fixes an error when value converted as `(event.target.value as unknown) as TValue` was of incorrect type
+// TODOs:
+// - add `useInput` hook's value parameter constraints (e.g. string | number | Date) to avoid the input of incorrect parameter types
+// - remove throwing errors in convert* functions
+// - remove unknown types where possible
+function convertFromChangeEvent(
+  event: React.ChangeEvent<HTMLInputElement>,
+  value: unknown,
+): unknown {
+  const targetValue = event.target.value;
+  switch (typeof value) {
+    case 'string':
+      return targetValue;
+    case 'number':
+      return Number(targetValue);
+    default:
+      throw new Error(`Convertation from change event to type '${typeof value}' is not supported`);
+  }
+}
+
 export function useInput<TValue>(
   initialValue: TValue,
   { validator, debounce }: InputHookOptions<TValue> = {},
@@ -61,7 +82,7 @@ export function useInput<TValue>(
   };
 
   const onChange: React.ChangeEventHandler<HTMLInputElement> = event => {
-    const currentValue = (event.target.value as unknown) as TValue;
+    const currentValue = convertFromChangeEvent(event, value) as TValue;
     setValue(currentValue);
 
     if (!debounce) {
