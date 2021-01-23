@@ -11,3 +11,8 @@ export interface ProductCreateEdit {
   caloriesCost: number;
   categoryId: number;
 }
+
+export interface ProductsSearchResult {
+  productItems: ProductItem[];
+  totalProductsCount: number;
+}

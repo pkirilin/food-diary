@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import {
   Checkbox,
   Table,
@@ -9,34 +10,22 @@ import {
   TableRow,
   Typography,
 } from '@material-ui/core';
-import { ProductItem } from '../models';
 import ProductsTableRow from './ProductsTableRow';
-
-const productItems: ProductItem[] = [
-  {
-    id: 1,
-    name: 'Product 1',
-    caloriesCost: 100,
-    categoryId: 1,
-    categoryName: 'Category',
-  },
-  {
-    id: 2,
-    name: 'Product 2',
-    caloriesCost: 200,
-    categoryId: 1,
-    categoryName: 'Category',
-  },
-  {
-    id: 3,
-    name: 'Product 3',
-    caloriesCost: 300,
-    categoryId: 3,
-    categoryName: 'Category',
-  },
-];
+import { useTypedSelector } from '../../__shared__/hooks';
+import { getProducts } from '../thunks';
 
 const ProductsTable: React.FC = () => {
+  const productItems = useTypedSelector(state => state.products.productItems);
+  const changingStatus = useTypedSelector(state => state.products.productItemsChangingStatus);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (changingStatus === 'idle' || changingStatus === 'succeeded') {
+      dispatch(getProducts({}));
+    }
+  }, [changingStatus]);
+
   return (
     <TableContainer>
       <Table>

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { IconButton, Toolbar, Tooltip, Typography } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import FilterListIcon from '@material-ui/icons/FilterList';
@@ -6,27 +7,30 @@ import { useToolbarStyles } from '../../__shared__/styles';
 import ProductCreateEditDialog from './ProductCreateEditDialog';
 import ProductsFilterDialog from './ProductsFilterDialog';
 import { ProductCreateEdit } from '../models';
+import { createProduct } from '../thunks';
 
 const ProductsTableToolbar: React.FC = () => {
   const classes = useToolbarStyles();
   const [productCreateEditDialogOpen, setProductCreateEditDialogOpen] = useState(false);
-  const [productsFilterDIalogOpen, setProductsFilterDIalogOpen] = useState(false);
+  const [productsFilterDialogOpen, setProductsFilterDialogOpen] = useState(false);
+
+  const dispatch = useDispatch();
 
   const handleAddClick = (): void => {
     setProductCreateEditDialogOpen(true);
   };
 
   const handleFilterClick = (): void => {
-    setProductsFilterDIalogOpen(true);
+    setProductsFilterDialogOpen(true);
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleCreateEditDialogConfirm = (product: ProductCreateEdit): void => {
     setProductCreateEditDialogOpen(false);
+    dispatch(createProduct(product));
   };
 
   const handleFilterDialogConfirm = (): void => {
-    setProductsFilterDIalogOpen(false);
+    setProductsFilterDialogOpen(false);
   };
 
   const handleCreateEditDialogClose = (): void => {
@@ -34,7 +38,7 @@ const ProductsTableToolbar: React.FC = () => {
   };
 
   const handleFilterDialogClose = (): void => {
-    setProductsFilterDIalogOpen(false);
+    setProductsFilterDialogOpen(false);
   };
 
   return (
@@ -46,7 +50,7 @@ const ProductsTableToolbar: React.FC = () => {
         onDialogCancel={handleCreateEditDialogClose}
       ></ProductCreateEditDialog>
       <ProductsFilterDialog
-        open={productsFilterDIalogOpen}
+        open={productsFilterDialogOpen}
         onClose={handleFilterDialogClose}
         onDialogConfirm={handleFilterDialogConfirm}
         onDialogCancel={handleFilterDialogClose}

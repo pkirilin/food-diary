@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { Checkbox, IconButton, TableCell, TableRow, Tooltip } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import { ProductCreateEdit, ProductItem } from '../models';
 import ProductCreateEditDialog from './ProductCreateEditDialog';
+import { editProduct } from '../thunks';
 
 type ProductsTableRowProps = {
   product: ProductItem;
@@ -11,13 +13,20 @@ type ProductsTableRowProps = {
 const ProductsTableRow: React.FC<ProductsTableRowProps> = ({ product }: ProductsTableRowProps) => {
   const [productCreateEditDialogOpen, setProductCreateEditDialogOpen] = useState(false);
 
+  const dispatch = useDispatch();
+
   const handleEditClick = (): void => {
     setProductCreateEditDialogOpen(true);
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleCreateEditDialogConfirm = (product: ProductCreateEdit): void => {
+  const handleCreateEditDialogConfirm = (productInfo: ProductCreateEdit): void => {
     setProductCreateEditDialogOpen(false);
+    dispatch(
+      editProduct({
+        id: product.id,
+        product: productInfo,
+      }),
+    );
   };
 
   const handleCreateEditDialogClose = (): void => {

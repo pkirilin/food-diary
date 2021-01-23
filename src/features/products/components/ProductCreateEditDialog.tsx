@@ -57,6 +57,7 @@ const ProductCreateEditDialog: React.FC<ProductCreateEditDialogProps> = ({
   const productNameInput = useInput(initialProductName);
   const caloriesCostInput = useInput(initialCaloriesCost);
   const [categoryId, setCategoryId] = useState(initialCategoryId);
+
   const initialCategory = useMemo(
     () => categoryAutocompleteOptions.find(c => c.id === initialCategoryId),
     [initialCategoryId],
@@ -96,6 +97,7 @@ const ProductCreateEditDialog: React.FC<ProductCreateEditDialogProps> = ({
         <Box mt={2}>
           <TextField
             fullWidth
+            type="number"
             label="Calories cost"
             placeholder="Enter calories cost"
             {...caloriesCostInput.binding}
