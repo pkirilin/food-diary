@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { OperationStatus } from '../__shared__/models';
 import { SelectionPayload } from '../__shared__/types';
 import { AnyAsyncThunk, createAsyncThunkMatcher } from '../__shared__/utils';
-import { ProductItem } from './models';
+import { ProductItem, ProductItemsFilter } from './models';
 import { createProduct, deleteProduct, editProduct, getProducts } from './thunks';
 
 export type ProductsState = {
@@ -10,6 +10,7 @@ export type ProductsState = {
   totalProductsCount: number;
   productItemsChangingStatus: OperationStatus;
   selectedProductId: number | null;
+  filter: ProductItemsFilter;
 };
 
 export interface SelectProductPayload extends SelectionPayload {
@@ -21,6 +22,11 @@ const initialState: ProductsState = {
   totalProductsCount: 0,
   productItemsChangingStatus: 'idle',
   selectedProductId: null,
+  filter: {
+    changed: false,
+    pageNumber: 1,
+    pageSize: 10,
+  },
 };
 
 const productItemsChangingThunks: AnyAsyncThunk[] = [createProduct, editProduct, deleteProduct];
@@ -32,6 +38,12 @@ const productsSlice = createSlice({
     productSelected: (state, { payload }: PayloadAction<SelectProductPayload>) => {
       const { productId, selected } = payload;
       state.selectedProductId = selected ? productId : null;
+    },
+    pageNumberChanged: (state, { payload }: PayloadAction<number>) => {
+      state.filter.pageNumber = payload;
+    },
+    pageSizeChanged: (state, { payload }: PayloadAction<number>) => {
+      state.filter.pageSize = payload;
     },
   },
   extraReducers: builder =>
@@ -51,6 +63,6 @@ const productsSlice = createSlice({
       }),
 });
 
-export const { productSelected } = productsSlice.actions;
+export const { productSelected, pageNumberChanged, pageSizeChanged } = productsSlice.actions;
 
 export default productsSlice.reducer;

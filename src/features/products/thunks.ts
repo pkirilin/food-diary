@@ -1,15 +1,20 @@
 import config from '../__shared__/config';
-import { createApiCallAsyncThunk, handleEmptyResponse } from '../__shared__/utils';
+import { createApiCallAsyncThunk, createUrl, handleEmptyResponse } from '../__shared__/utils';
 import { ProductCreateEdit, ProductsSearchResult } from './models';
+
+export type GetProductsRequest = {
+  pageNumber: number;
+  pageSize: number;
+};
 
 export type ProductEditRequest = {
   id: number;
   product: ProductCreateEdit;
 };
 
-export const getProducts = createApiCallAsyncThunk<ProductsSearchResult, unknown>(
+export const getProducts = createApiCallAsyncThunk<ProductsSearchResult, GetProductsRequest>(
   'products/getProducts',
-  () => `${config.apiUrl}/v1/products`,
+  params => createUrl(`${config.apiUrl}/v1/products`, params),
   response => response.json(),
   'Failed to get products',
 );

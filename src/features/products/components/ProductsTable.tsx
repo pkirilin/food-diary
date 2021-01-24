@@ -17,14 +17,22 @@ import { getProducts } from '../thunks';
 const ProductsTable: React.FC = () => {
   const productItems = useTypedSelector(state => state.products.productItems);
   const changingStatus = useTypedSelector(state => state.products.productItemsChangingStatus);
+  const productsFilter = useTypedSelector(state => state.products.filter);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
     if (changingStatus === 'idle' || changingStatus === 'succeeded') {
-      dispatch(getProducts({}));
+      const { pageNumber, pageSize } = productsFilter;
+
+      dispatch(
+        getProducts({
+          pageNumber,
+          pageSize,
+        }),
+      );
     }
-  }, [changingStatus]);
+  }, [changingStatus, productsFilter]);
 
   return (
     <TableContainer>

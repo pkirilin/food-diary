@@ -1,3 +1,5 @@
+import { ItemsFilterBase } from '../__shared__/models';
+
 export interface ProductItem {
   id: number;
   name: string;
@@ -15,4 +17,9 @@ export interface ProductCreateEdit {
 export interface ProductsSearchResult {
   productItems: ProductItem[];
   totalProductsCount: number;
+}
+
+export interface ProductItemsFilter extends ItemsFilterBase {
+  pageNumber: number;
+  pageSize: number;
 }
