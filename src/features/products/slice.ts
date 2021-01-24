@@ -3,13 +3,13 @@ import { OperationStatus } from '../__shared__/models';
 import { SelectionPayload } from '../__shared__/types';
 import { AnyAsyncThunk, createAsyncThunkMatcher } from '../__shared__/utils';
 import { ProductItem, ProductItemsFilter } from './models';
-import { createProduct, deleteProduct, editProduct, getProducts } from './thunks';
+import { createProduct, deleteProducts, editProduct, getProducts } from './thunks';
 
 export type ProductsState = {
   productItems: ProductItem[];
   totalProductsCount: number;
   productItemsChangingStatus: OperationStatus;
-  selectedProductId: number | null;
+  selectedProductIds: number[];
   filter: ProductItemsFilter;
 };
 
@@ -17,11 +17,13 @@ export interface SelectProductPayload extends SelectionPayload {
   productId: number;
 }
 
+export type SelectAllProductsPayload = SelectionPayload;
+
 const initialState: ProductsState = {
   productItems: [],
   totalProductsCount: 0,
   productItemsChangingStatus: 'idle',
-  selectedProductId: null,
+  selectedProductIds: [],
   filter: {
     changed: false,
     pageNumber: 1,
@@ -29,7 +31,7 @@ const initialState: ProductsState = {
   },
 };
 
-const productItemsChangingThunks: AnyAsyncThunk[] = [createProduct, editProduct, deleteProduct];
+const productItemsChangingThunks: AnyAsyncThunk[] = [createProduct, editProduct, deleteProducts];
 
 const productsSlice = createSlice({
   name: 'products',
@@ -37,7 +39,14 @@ const productsSlice = createSlice({
   reducers: {
     productSelected: (state, { payload }: PayloadAction<SelectProductPayload>) => {
       const { productId, selected } = payload;
-      state.selectedProductId = selected ? productId : null;
+      if (selected) {
+        state.selectedProductIds.push(productId);
+      } else {
+        state.selectedProductIds = state.selectedProductIds.filter(id => id !== productId);
+      }
+    },
+    allProductsSelected: (state, { payload }: PayloadAction<SelectAllProductsPayload>) => {
+      state.selectedProductIds = payload.selected ? state.productItems.map(p => p.id) : [];
     },
     pageNumberChanged: (state, { payload }: PayloadAction<number>) => {
       state.filter.pageNumber = payload;
@@ -52,6 +61,9 @@ const productsSlice = createSlice({
         state.productItems = payload.productItems;
         state.totalProductsCount = payload.totalProductsCount;
       })
+      .addCase(deleteProducts.fulfilled, state => {
+        state.selectedProductIds = [];
+      })
       .addMatcher(createAsyncThunkMatcher(productItemsChangingThunks, 'pending'), state => {
         state.productItemsChangingStatus = 'pending';
       })
@@ -63,6 +75,11 @@ const productsSlice = createSlice({
       }),
 });
 
-export const { productSelected, pageNumberChanged, pageSizeChanged } = productsSlice.actions;
+export const {
+  productSelected,
+  allProductsSelected,
+  pageNumberChanged,
+  pageSizeChanged,
+} = productsSlice.actions;
 
 export default productsSlice.reducer;

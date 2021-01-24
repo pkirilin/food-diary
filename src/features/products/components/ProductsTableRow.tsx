@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Checkbox, IconButton, TableCell, TableRow, Tooltip } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
@@ -14,13 +14,10 @@ type ProductsTableRowProps = {
 
 const ProductsTableRow: React.FC<ProductsTableRowProps> = ({ product }: ProductsTableRowProps) => {
   const [productCreateEditDialogOpen, setProductCreateEditDialogOpen] = useState(false);
-  const [checked, setChecked] = useState(false);
 
-  const selected = useTypedSelector(state => state.products.selectedProductId === product.id);
-
-  useEffect(() => {
-    setChecked(selected);
-  }, [selected]);
+  const isProductSelected = useTypedSelector(state =>
+    state.products.selectedProductIds.some(id => id === product.id),
+  );
 
   const dispatch = useDispatch();
 
@@ -32,10 +29,9 @@ const ProductsTableRow: React.FC<ProductsTableRowProps> = ({ product }: Products
     dispatch(
       productSelected({
         productId: product.id,
-        selected: !checked,
+        selected: !isProductSelected,
       }),
     );
-    setChecked(!checked);
   };
 
   const handleCreateEditDialogConfirm = (productInfo: ProductCreateEdit): void => {
@@ -62,7 +58,11 @@ const ProductsTableRow: React.FC<ProductsTableRowProps> = ({ product }: Products
         product={product}
       ></ProductCreateEditDialog>
       <TableCell padding="checkbox">
-        <Checkbox color="primary" checked={checked} onChange={handleSelectProduct}></Checkbox>
+        <Checkbox
+          color="primary"
+          checked={isProductSelected}
+          onChange={handleSelectProduct}
+        ></Checkbox>
       </TableCell>
       <TableCell>{product.name}</TableCell>
       <TableCell>{product.caloriesCost}</TableCell>

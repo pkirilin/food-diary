@@ -41,12 +41,13 @@ export const editProduct = createApiCallAsyncThunk<void, ProductEditRequest>(
   },
 );
 
-export const deleteProduct = createApiCallAsyncThunk<void, number>(
+export const deleteProducts = createApiCallAsyncThunk<void, number[]>(
   'products/deleteProduct',
-  id => `${config.apiUrl}/v1/products/${id}`,
+  () => `${config.apiUrl}/v1/products/batch`,
   handleEmptyResponse,
   'Failed to delete product',
   {
     method: 'DELETE',
+    bodyCreator: ids => JSON.stringify(ids),
   },
 );

@@ -9,7 +9,7 @@ import { useToolbarStyles } from '../../__shared__/styles';
 import ProductCreateEditDialog from './ProductCreateEditDialog';
 import ProductsFilterDialog from './ProductsFilterDialog';
 import { ProductCreateEdit } from '../models';
-import { createProduct, deleteProduct } from '../thunks';
+import { createProduct, deleteProducts } from '../thunks';
 import { ConfirmationDialog } from '../../__shared__/components';
 
 const ProductsTableToolbar: React.FC = () => {
@@ -18,7 +18,7 @@ const ProductsTableToolbar: React.FC = () => {
   const [productsFilterDialogOpen, setProductsFilterDialogOpen] = useState(false);
   const [productDeleteDialogOpen, setProductDeleteDialogOpen] = useState(false);
 
-  const selectedProductId = useTypedSelector(state => state.products.selectedProductId);
+  const selectedProductIds = useTypedSelector(state => state.products.selectedProductIds);
 
   const dispatch = useDispatch();
 
@@ -45,10 +45,7 @@ const ProductsTableToolbar: React.FC = () => {
 
   const handleDeleteDialogConfirm = (): void => {
     setProductDeleteDialogOpen(false);
-
-    if (selectedProductId !== null) {
-      dispatch(deleteProduct(selectedProductId));
-    }
+    dispatch(deleteProducts(selectedProductIds));
   };
 
   const handleCreateEditDialogClose = (): void => {
@@ -79,16 +76,16 @@ const ProductsTableToolbar: React.FC = () => {
       ></ProductsFilterDialog>
       <ConfirmationDialog
         open={productDeleteDialogOpen}
-        dialogTitle="Delete product confirmation"
-        dialogMessage="Do you really want to delete selected product?"
+        dialogTitle="Delete products confirmation"
+        dialogMessage="Do you really want to delete selected products?"
         onDialogConfirm={handleDeleteDialogConfirm}
         onDialogCancel={handleDeleteDialogClose}
       ></ConfirmationDialog>
-      <Typography variant="h1" className={classes.title}>
-        Products
-      </Typography>
-      {selectedProductId === null ? (
+      {selectedProductIds.length === 0 ? (
         <React.Fragment>
+          <Typography variant="h1" className={classes.title}>
+            Products
+          </Typography>
           <Tooltip title="Add new product">
             <span>
               <IconButton onClick={handleAddClick}>
@@ -106,6 +103,7 @@ const ProductsTableToolbar: React.FC = () => {
         </React.Fragment>
       ) : (
         <React.Fragment>
+          <Typography className={classes.title}>{selectedProductIds.length} selected</Typography>
           <Tooltip title="Delete product">
             <span>
               <IconButton onClick={handleDeleteClick}>

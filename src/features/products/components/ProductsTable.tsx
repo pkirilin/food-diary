@@ -13,11 +13,16 @@ import {
 import ProductsTableRow from './ProductsTableRow';
 import { useTypedSelector } from '../../__shared__/hooks';
 import { getProducts } from '../thunks';
+import { allProductsSelected } from '../slice';
 
 const ProductsTable: React.FC = () => {
   const productItems = useTypedSelector(state => state.products.productItems);
   const changingStatus = useTypedSelector(state => state.products.productItemsChangingStatus);
   const productsFilter = useTypedSelector(state => state.products.filter);
+  const selectedProductsCount = useTypedSelector(state => state.products.selectedProductIds.length);
+
+  const areAllProductsSelected =
+    productItems.length > 0 && productItems.length === selectedProductsCount;
 
   const dispatch = useDispatch();
 
@@ -34,13 +39,25 @@ const ProductsTable: React.FC = () => {
     }
   }, [changingStatus, productsFilter]);
 
+  const handleSelectAllProducts = (): void => {
+    dispatch(allProductsSelected({ selected: !areAllProductsSelected }));
+  };
+
   return (
     <TableContainer>
       <Table>
         <TableHead>
           <TableRow>
             <TableCell padding="checkbox">
-              <Checkbox disabled></Checkbox>
+              <Checkbox
+                color="primary"
+                indeterminate={
+                  selectedProductsCount > 0 && selectedProductsCount < productItems.length
+                }
+                checked={areAllProductsSelected}
+                onChange={handleSelectAllProducts}
+                disabled={productItems.length === 0}
+              ></Checkbox>
             </TableCell>
             <TableCell>Name</TableCell>
             <TableCell>Calories cost</TableCell>
