@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Button,
@@ -9,22 +9,10 @@ import {
   DialogTitle,
   TextField,
 } from '@material-ui/core';
-import { Autocomplete } from '@material-ui/lab';
 import { ProductCreateEdit } from '../models';
 import { ConfirmationDialogActionProps } from '../../__shared__/types';
 import { useInput } from '../../__shared__/hooks';
-import { CategoryAutocompleteOption } from '../../categories/models';
-
-const categoryAutocompleteOptions: CategoryAutocompleteOption[] = [
-  {
-    id: 1,
-    name: 'Category 1',
-  },
-  {
-    id: 2,
-    name: 'Category 2',
-  },
-];
+import { CategoryAutocomplete } from '../../categories/components';
 
 interface ProductCreateEditDialogProps
   extends DialogProps,
@@ -57,11 +45,6 @@ const ProductCreateEditDialog: React.FC<ProductCreateEditDialogProps> = ({
   const productNameInput = useInput(initialProductName);
   const caloriesCostInput = useInput(initialCaloriesCost);
   const [categoryId, setCategoryId] = useState(initialCategoryId);
-
-  const initialCategory = useMemo(
-    () => categoryAutocompleteOptions.find(c => c.id === initialCategoryId),
-    [initialCategoryId],
-  );
 
   useEffect(() => {
     return () => {
@@ -104,18 +87,12 @@ const ProductCreateEditDialog: React.FC<ProductCreateEditDialogProps> = ({
           ></TextField>
         </Box>
         <Box mt={2}>
-          <Autocomplete
-            renderInput={params => (
-              <TextField {...params} label="Category" placeholder="Select a category"></TextField>
-            )}
-            options={categoryAutocompleteOptions}
-            getOptionLabel={option => option.name}
-            noOptionsText="No categories found"
-            value={initialCategory}
+          <CategoryAutocomplete
+            initialCategoryId={initialCategoryId}
             onChange={(event, value) => {
               setCategoryId(value?.id ?? null);
             }}
-          ></Autocomplete>
+          ></CategoryAutocomplete>
         </Box>
       </DialogContent>
       <DialogActions>
