@@ -5,6 +5,8 @@ import { ProductCreateEdit, ProductsSearchResult } from './models';
 export type GetProductsRequest = {
   pageNumber: number;
   pageSize: number;
+  productSearchName?: string;
+  categoryId?: number;
 };
 
 export type ProductEditRequest = {

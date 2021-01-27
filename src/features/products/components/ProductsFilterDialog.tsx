@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Button,
@@ -9,28 +9,31 @@ import {
   DialogTitle,
   TextField,
 } from '@material-ui/core';
-import { Autocomplete } from '@material-ui/lab';
-import { CategoryAutocompleteOption } from '../../categories/models';
 import { ConfirmationDialogActionProps } from '../../__shared__/types';
+import { useInput, useTypedSelector } from '../../__shared__/hooks';
+import { CategoryAutocomplete } from '../../categories/components';
+import { ProductsFilterUpdatedData } from '../models';
 
-const categoryAutocompleteOptions: CategoryAutocompleteOption[] = [
-  {
-    id: 1,
-    name: 'Category 1',
-  },
-  {
-    id: 2,
-    name: 'Category 2',
-  },
-];
-
-interface ProductsFilterDialogProps extends DialogProps, ConfirmationDialogActionProps {}
+interface ProductsFilterDialogProps
+  extends DialogProps,
+    ConfirmationDialogActionProps<ProductsFilterUpdatedData> {}
 
 const ProductsFilterDialog: React.FC<ProductsFilterDialogProps> = ({
   onDialogCancel,
   onDialogConfirm,
   ...dialogProps
 }: ProductsFilterDialogProps) => {
+  const currentFilter = useTypedSelector(state => state.products.filter);
+  const productSearchNameInput = useInput(currentFilter.productSearchName ?? '');
+  const [categoryId, setCategoryId] = useState(currentFilter.categoryId);
+
+  const handleSubmitClick = (): void => {
+    onDialogConfirm({
+      productSearchName: productSearchNameInput.value,
+      categoryId,
+    });
+  };
+
   return (
     <Dialog maxWidth="xs" fullWidth {...dialogProps}>
       <DialogTitle>Products filter</DialogTitle>
@@ -41,25 +44,20 @@ const ProductsFilterDialog: React.FC<ProductsFilterDialogProps> = ({
             autoFocus
             label="Product name"
             placeholder="Enter product name"
+            {...productSearchNameInput.binding}
           ></TextField>
         </Box>
         <Box mt={2}>
-          <Autocomplete
-            fullWidth
-            renderInput={params => (
-              <TextField {...params} label="Category" placeholder="Select a category"></TextField>
-            )}
-            options={categoryAutocompleteOptions}
-            getOptionLabel={option => option.name}
-            noOptionsText="No categories found"
-            onChange={() => {
-              return;
+          <CategoryAutocomplete
+            initialCategoryId={categoryId}
+            onChange={(event, value) => {
+              setCategoryId(value?.id ?? null);
             }}
-          ></Autocomplete>
+          ></CategoryAutocomplete>
         </Box>
       </DialogContent>
       <DialogActions>
-        <Button color="primary" variant="contained" onClick={onDialogConfirm}>
+        <Button color="primary" variant="contained" onClick={handleSubmitClick}>
           Apply
         </Button>
         <Button variant="text" onClick={onDialogCancel}>

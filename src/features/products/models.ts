@@ -22,4 +22,11 @@ export interface ProductsSearchResult {
 export interface ProductItemsFilter extends ItemsFilterBase {
   pageNumber: number;
   pageSize: number;
+  productSearchName?: string;
+  categoryId: number | null;
 }
+
+export type ProductsFilterUpdatedData = Pick<
+  ProductItemsFilter,
+  'productSearchName' | 'categoryId'
+>;

@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { OperationStatus } from '../__shared__/models';
 import { SelectionPayload } from '../__shared__/types';
 import { AnyAsyncThunk, createAsyncThunkMatcher } from '../__shared__/utils';
-import { ProductItem, ProductItemsFilter } from './models';
+import { ProductItem, ProductItemsFilter, ProductsFilterUpdatedData } from './models';
 import { createProduct, deleteProducts, editProduct, getProducts } from './thunks';
 
 export type ProductsState = {
@@ -28,6 +28,7 @@ const initialState: ProductsState = {
     changed: false,
     pageNumber: 1,
     pageSize: 10,
+    categoryId: null,
   },
 };
 
@@ -53,6 +54,12 @@ const productsSlice = createSlice({
     },
     pageSizeChanged: (state, { payload }: PayloadAction<number>) => {
       state.filter.pageSize = payload;
+    },
+    filterUpdated: (state, { payload }: PayloadAction<ProductsFilterUpdatedData>) => {
+      state.filter = {
+        ...state.filter,
+        ...payload,
+      };
     },
   },
   extraReducers: builder =>
@@ -80,6 +87,7 @@ export const {
   allProductsSelected,
   pageNumberChanged,
   pageSizeChanged,
+  filterUpdated,
 } = productsSlice.actions;
 
 export default productsSlice.reducer;

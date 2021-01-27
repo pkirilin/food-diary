@@ -8,9 +8,10 @@ import { useTypedSelector } from '../../__shared__/hooks';
 import { useToolbarStyles } from '../../__shared__/styles';
 import ProductCreateEditDialog from './ProductCreateEditDialog';
 import ProductsFilterDialog from './ProductsFilterDialog';
-import { ProductCreateEdit } from '../models';
+import { ProductCreateEdit, ProductsFilterUpdatedData } from '../models';
 import { createProduct, deleteProducts } from '../thunks';
 import { ConfirmationDialog } from '../../__shared__/components';
+import { filterUpdated } from '../slice';
 
 const ProductsTableToolbar: React.FC = () => {
   const classes = useToolbarStyles();
@@ -39,8 +40,9 @@ const ProductsTableToolbar: React.FC = () => {
     dispatch(createProduct(product));
   };
 
-  const handleFilterDialogConfirm = (): void => {
+  const handleFilterDialogConfirm = (filterData: ProductsFilterUpdatedData): void => {
     setProductsFilterDialogOpen(false);
+    dispatch(filterUpdated(filterData));
   };
 
   const handleDeleteDialogConfirm = (): void => {
