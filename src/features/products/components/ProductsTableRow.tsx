@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useDispatch } from 'react-redux';
 import { Checkbox, IconButton, TableCell, TableRow, Tooltip } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import { ProductCreateEdit, ProductItem } from '../models';
 import ProductCreateEditDialog from './ProductCreateEditDialog';
 import { editProduct } from '../thunks';
-import { useTypedSelector } from '../../__shared__/hooks';
+import { useDialog, useTypedSelector } from '../../__shared__/hooks';
 import { productSelected } from '../slice';
 
 type ProductsTableRowProps = {
@@ -13,16 +13,23 @@ type ProductsTableRowProps = {
 };
 
 const ProductsTableRow: React.FC<ProductsTableRowProps> = ({ product }: ProductsTableRowProps) => {
-  const [productCreateEditDialogOpen, setProductCreateEditDialogOpen] = useState(false);
-
   const isProductSelected = useTypedSelector(state =>
     state.products.selectedProductIds.some(id => id === product.id),
   );
 
   const dispatch = useDispatch();
 
+  const productEditDialog = useDialog<ProductCreateEdit>(productInfo => {
+    dispatch(
+      editProduct({
+        id: product.id,
+        product: productInfo,
+      }),
+    );
+  });
+
   const handleEditClick = (): void => {
-    setProductCreateEditDialogOpen(true);
+    productEditDialog.show();
   };
 
   const handleSelectProduct = (): void => {
@@ -34,27 +41,10 @@ const ProductsTableRow: React.FC<ProductsTableRowProps> = ({ product }: Products
     );
   };
 
-  const handleCreateEditDialogConfirm = (productInfo: ProductCreateEdit): void => {
-    setProductCreateEditDialogOpen(false);
-    dispatch(
-      editProduct({
-        id: product.id,
-        product: productInfo,
-      }),
-    );
-  };
-
-  const handleCreateEditDialogClose = (): void => {
-    setProductCreateEditDialogOpen(false);
-  };
-
   return (
     <TableRow>
       <ProductCreateEditDialog
-        open={productCreateEditDialogOpen}
-        onClose={handleCreateEditDialogClose}
-        onDialogConfirm={handleCreateEditDialogConfirm}
-        onDialogCancel={handleCreateEditDialogClose}
+        {...productEditDialog.binding}
         product={product}
       ></ProductCreateEditDialog>
       <TableCell padding="checkbox">

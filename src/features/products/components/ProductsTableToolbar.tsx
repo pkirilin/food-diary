@@ -1,87 +1,55 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useDispatch } from 'react-redux';
 import { IconButton, Toolbar, Tooltip, Typography } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { useTypedSelector } from '../../__shared__/hooks';
+import { useDialog, useTypedSelector } from '../../__shared__/hooks';
 import { useToolbarStyles } from '../../__shared__/styles';
+import { ConfirmationDialog } from '../../__shared__/components';
 import ProductCreateEditDialog from './ProductCreateEditDialog';
 import ProductsFilterDialog from './ProductsFilterDialog';
 import { ProductCreateEdit, ProductsFilterUpdatedData } from '../models';
 import { createProduct, deleteProducts } from '../thunks';
-import { ConfirmationDialog } from '../../__shared__/components';
 import { filterUpdated } from '../slice';
 
 const ProductsTableToolbar: React.FC = () => {
   const classes = useToolbarStyles();
-  const [productCreateEditDialogOpen, setProductCreateEditDialogOpen] = useState(false);
-  const [productsFilterDialogOpen, setProductsFilterDialogOpen] = useState(false);
-  const [productDeleteDialogOpen, setProductDeleteDialogOpen] = useState(false);
-
   const selectedProductIds = useTypedSelector(state => state.products.selectedProductIds);
-
   const dispatch = useDispatch();
 
+  const productCreateDialog = useDialog<ProductCreateEdit>(product => {
+    dispatch(createProduct(product));
+  });
+
+  const productsFilterDialog = useDialog<ProductsFilterUpdatedData>(filterData => {
+    dispatch(filterUpdated(filterData));
+  });
+
+  const productsDeleteDialog = useDialog(() => {
+    dispatch(deleteProducts(selectedProductIds));
+  });
+
   const handleAddClick = (): void => {
-    setProductCreateEditDialogOpen(true);
+    productCreateDialog.show();
   };
 
   const handleFilterClick = (): void => {
-    setProductsFilterDialogOpen(true);
+    productsFilterDialog.show();
   };
 
   const handleDeleteClick = (): void => {
-    setProductDeleteDialogOpen(true);
-  };
-
-  const handleCreateEditDialogConfirm = (product: ProductCreateEdit): void => {
-    setProductCreateEditDialogOpen(false);
-    dispatch(createProduct(product));
-  };
-
-  const handleFilterDialogConfirm = (filterData: ProductsFilterUpdatedData): void => {
-    setProductsFilterDialogOpen(false);
-    dispatch(filterUpdated(filterData));
-  };
-
-  const handleDeleteDialogConfirm = (): void => {
-    setProductDeleteDialogOpen(false);
-    dispatch(deleteProducts(selectedProductIds));
-  };
-
-  const handleCreateEditDialogClose = (): void => {
-    setProductCreateEditDialogOpen(false);
-  };
-
-  const handleFilterDialogClose = (): void => {
-    setProductsFilterDialogOpen(false);
-  };
-
-  const handleDeleteDialogClose = (): void => {
-    setProductDeleteDialogOpen(false);
+    productsDeleteDialog.show();
   };
 
   return (
     <Toolbar className={classes.root}>
-      <ProductCreateEditDialog
-        open={productCreateEditDialogOpen}
-        onClose={handleCreateEditDialogClose}
-        onDialogConfirm={handleCreateEditDialogConfirm}
-        onDialogCancel={handleCreateEditDialogClose}
-      ></ProductCreateEditDialog>
-      <ProductsFilterDialog
-        open={productsFilterDialogOpen}
-        onClose={handleFilterDialogClose}
-        onDialogConfirm={handleFilterDialogConfirm}
-        onDialogCancel={handleFilterDialogClose}
-      ></ProductsFilterDialog>
+      <ProductCreateEditDialog {...productCreateDialog.binding}></ProductCreateEditDialog>
+      <ProductsFilterDialog {...productsFilterDialog.binding}></ProductsFilterDialog>
       <ConfirmationDialog
-        open={productDeleteDialogOpen}
+        {...productsDeleteDialog.binding}
         dialogTitle="Delete products confirmation"
         dialogMessage="Do you really want to delete selected products?"
-        onDialogConfirm={handleDeleteDialogConfirm}
-        onDialogCancel={handleDeleteDialogClose}
       ></ConfirmationDialog>
       {selectedProductIds.length === 0 ? (
         <React.Fragment>
