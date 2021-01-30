@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useDispatch } from 'react-redux';
 import {
   Chip,
@@ -16,6 +16,7 @@ import { CategoryCreateEdit, CategoryItem } from '../models';
 import CategoryCreateEditDialog from './CategoryCreateEditDialog';
 import { ConfirmationDialog } from '../../__shared__/components';
 import { deleteCategory, editCategory } from '../thunks';
+import { useDialog } from '../../__shared__/hooks';
 
 type CategoriesListItemProps = {
   category: CategoryItem;
@@ -31,57 +32,39 @@ const CategoriesListItem: React.FC<CategoriesListItemProps> = ({
   category,
 }: CategoriesListItemProps) => {
   const classes = useStyles();
-  const [categoryEditDialogOpen, setCategoryEditDialogOpen] = useState(false);
-  const [categoryDeleteDialogOpen, setCategoryDeleteDialogOpen] = useState(false);
   const dispatch = useDispatch();
 
-  const handleEditClick = (): void => {
-    setCategoryEditDialogOpen(true);
-  };
-
-  const handleDeleteClick = (): void => {
-    setCategoryDeleteDialogOpen(true);
-  };
-
-  const handleCategoryEditDialogClose = (): void => {
-    setCategoryEditDialogOpen(false);
-  };
-
-  const handleCategoryEditDialogConfirm = (updatedCategory: CategoryCreateEdit): void => {
-    setCategoryEditDialogOpen(false);
+  const categoryEditDialog = useDialog<CategoryCreateEdit>(categoryInfo => {
     dispatch(
       editCategory({
         id: category.id,
-        category: updatedCategory,
+        category: categoryInfo,
       }),
     );
-  };
+  });
 
-  const handleCategoryDeleteDialogClose = (): void => {
-    setCategoryDeleteDialogOpen(false);
-  };
-
-  const handleCategoryDeleteDialogConfirm = (): void => {
-    setCategoryDeleteDialogOpen(false);
+  const categoryDeleteDialog = useDialog(() => {
     dispatch(deleteCategory(category.id));
+  });
+
+  const handleEditClick = (): void => {
+    categoryEditDialog.show();
+  };
+
+  const handleDeleteClick = (): void => {
+    categoryDeleteDialog.show();
   };
 
   return (
     <ListItem className={classes.root}>
       <CategoryCreateEditDialog
-        open={categoryEditDialogOpen}
-        onClose={handleCategoryEditDialogClose}
-        onDialogCancel={handleCategoryEditDialogClose}
-        onDialogConfirm={handleCategoryEditDialogConfirm}
+        {...categoryEditDialog.binding}
         category={category}
       ></CategoryCreateEditDialog>
       <ConfirmationDialog
-        open={categoryDeleteDialogOpen}
         dialogTitle="Delete category confirmation"
         dialogMessage={`Are you sure you want to delete category '${category.name}' and all its products?`}
-        onClose={handleCategoryDeleteDialogClose}
-        onDialogCancel={handleCategoryDeleteDialogClose}
-        onDialogConfirm={handleCategoryDeleteDialogConfirm}
+        {...categoryDeleteDialog.binding}
       ></ConfirmationDialog>
       <ListItemText>
         <Grid container spacing={2}>
