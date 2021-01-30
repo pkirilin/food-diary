@@ -7,7 +7,10 @@ export interface MessageDialogProps {
   dialogMessage: string;
 }
 
-export interface ConfirmationDialogActionProps<TConfirmedData = unknown> {
-  onDialogConfirm: (data: TConfirmedData) => void;
-  onDialogCancel: () => void;
+export type DialogActionFn = () => void;
+export type DialogConfirmActionFn<TConfirmedData> = (data: TConfirmedData) => void;
+
+export interface DialogCustomActionProps<TConfirmedData = unknown> {
+  onDialogConfirm: DialogConfirmActionFn<TConfirmedData>;
+  onDialogCancel: DialogActionFn;
 }

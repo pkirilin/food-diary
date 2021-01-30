@@ -9,14 +9,14 @@ import {
   DialogTitle,
   TextField,
 } from '@material-ui/core';
-import { ConfirmationDialogActionProps } from '../../__shared__/types';
+import { DialogCustomActionProps } from '../../__shared__/types';
 import { useInput, useTypedSelector } from '../../__shared__/hooks';
 import { CategoryAutocomplete } from '../../categories/components';
 import { ProductsFilterUpdatedData } from '../models';
 
 interface ProductsFilterDialogProps
   extends DialogProps,
-    ConfirmationDialogActionProps<ProductsFilterUpdatedData> {}
+    DialogCustomActionProps<ProductsFilterUpdatedData> {}
 
 const ProductsFilterDialog: React.FC<ProductsFilterDialogProps> = ({
   onDialogCancel,

@@ -8,12 +8,12 @@ import {
   DialogTitle,
   Typography,
 } from '@material-ui/core';
-import { ConfirmationDialogActionProps, MessageDialogProps } from '../types';
+import { DialogCustomActionProps, MessageDialogProps } from '../types';
 
 interface ConfirmationDialogProps
   extends DialogProps,
     MessageDialogProps,
-    ConfirmationDialogActionProps {}
+    DialogCustomActionProps {}
 
 const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
   dialogTitle,

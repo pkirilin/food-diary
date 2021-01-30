@@ -10,13 +10,13 @@ import {
   TextField,
 } from '@material-ui/core';
 import { ProductCreateEdit } from '../models';
-import { ConfirmationDialogActionProps } from '../../__shared__/types';
+import { DialogCustomActionProps } from '../../__shared__/types';
 import { useInput } from '../../__shared__/hooks';
 import { CategoryAutocomplete } from '../../categories/components';
 
 interface ProductCreateEditDialogProps
   extends DialogProps,
-    ConfirmationDialogActionProps<ProductCreateEdit> {
+    DialogCustomActionProps<ProductCreateEdit> {
   product?: ProductCreateEdit;
 }
 

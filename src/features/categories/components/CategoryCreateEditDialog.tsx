@@ -9,12 +9,12 @@ import {
   TextField,
 } from '@material-ui/core';
 import { CategoryCreateEdit } from '../models';
-import { ConfirmationDialogActionProps } from '../../__shared__/types';
+import { DialogCustomActionProps } from '../../__shared__/types';
 import { useInput } from '../../__shared__/hooks';
 
 interface CategoryCreateEditDialogProps
   extends DialogProps,
-    ConfirmationDialogActionProps<CategoryCreateEdit> {
+    DialogCustomActionProps<CategoryCreateEdit> {
   category?: CategoryCreateEdit;
 }
 

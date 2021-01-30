@@ -1,5 +1,5 @@
 import { InputHTMLAttributes, useEffect, useRef, useState } from 'react';
-import { BindableObject } from './types';
+import { BindableValueHookResult } from './types';
 
 export type InputBinding = Pick<
   InputHTMLAttributes<HTMLInputElement>,
@@ -8,7 +8,7 @@ export type InputBinding = Pick<
 
 export type BindableInputValue = InputBinding['value'];
 
-export interface InputHookResult<TValue> extends BindableObject<TValue, InputBinding> {
+export interface InputHookResult<TValue> extends BindableValueHookResult<TValue, InputBinding> {
   isValid: boolean;
   validationMessage?: string;
 }
