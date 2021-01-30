@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useDispatch } from 'react-redux';
 import { Link as RouterLink } from 'react-router-dom';
 import { TableRow, TableCell, Checkbox, Tooltip, IconButton, Link } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import { PageCreateEdit, PageItem } from '../models';
-import { useTypedSelector } from '../../__shared__/hooks';
+import { useDialog, useTypedSelector } from '../../__shared__/hooks';
 import { selectPage } from '../slice';
 import PageCreateEditDialog from './PageCreateEditDialog';
 import { editPage } from '../thunks';
@@ -19,7 +19,15 @@ const PagesTableRow: React.FC<PagesTableRowProps> = ({ page }: PagesTableRowProp
   );
 
   const dispatch = useDispatch();
-  const [pageCreateEditDialogOpen, setPageCreateEditDialogOpen] = useState(false);
+
+  const pageEditDialog = useDialog<PageCreateEdit>(pageInfo => {
+    dispatch(
+      editPage({
+        id: page.id,
+        page: pageInfo,
+      }),
+    );
+  });
 
   const handleSelectPage = (): void => {
     dispatch(
@@ -31,32 +39,12 @@ const PagesTableRow: React.FC<PagesTableRowProps> = ({ page }: PagesTableRowProp
   };
 
   const handleEditClick = (): void => {
-    setPageCreateEditDialogOpen(true);
-  };
-
-  const handleCreateEditDialogComplete = (pageInfo: PageCreateEdit): void => {
-    setPageCreateEditDialogOpen(false);
-    dispatch(
-      editPage({
-        id: page.id,
-        page: pageInfo,
-      }),
-    );
-  };
-
-  const handleCreateEditDialogClose = (): void => {
-    setPageCreateEditDialogOpen(false);
+    pageEditDialog.show();
   };
 
   return (
     <TableRow hover>
-      <PageCreateEditDialog
-        open={pageCreateEditDialogOpen}
-        onClose={handleCreateEditDialogClose}
-        onDialogCancel={handleCreateEditDialogClose}
-        onDialogConfirm={handleCreateEditDialogComplete}
-        page={page}
-      ></PageCreateEditDialog>
+      <PageCreateEditDialog {...pageEditDialog.binding} page={page}></PageCreateEditDialog>
       <TableCell padding="checkbox">
         <Checkbox color="primary" checked={isPageSelected} onChange={handleSelectPage} />
       </TableCell>

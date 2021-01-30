@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useDispatch } from 'react-redux';
 import { IconButton, Toolbar, Tooltip, Typography } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
@@ -6,7 +6,7 @@ import FilterListIcon from '@material-ui/icons/FilterList';
 import PublishIcon from '@material-ui/icons/Publish';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
-import { useTypedSelector } from '../../__shared__/hooks';
+import { useDialog, useTypedSelector } from '../../__shared__/hooks';
 import PageCreateEditDialog from './PageCreateEditDialog';
 import { PageCreateEdit } from '../models';
 import { createPage, deletePages } from '../thunks';
@@ -16,50 +16,31 @@ import { useToolbarStyles } from '../../__shared__/styles';
 const PagesTableToolbar: React.FC = () => {
   const classes = useToolbarStyles();
   const selectedPageIds = useTypedSelector(state => state.pages.selectedPageIds);
-  const [pageCreateEditDialogOpen, setPageCreateEditDialogOpen] = useState(false);
-  const [deletePagesDialogOpen, setDeletePagesDialogOpen] = useState(false);
   const dispatch = useDispatch();
 
+  const pageCreateDialog = useDialog<PageCreateEdit>(page => {
+    dispatch(createPage(page));
+  });
+
+  const pagesDeleteDialog = useDialog(() => {
+    dispatch(deletePages(selectedPageIds));
+  });
+
   const handleAddClick = (): void => {
-    setPageCreateEditDialogOpen(true);
+    pageCreateDialog.show();
   };
 
   const handleDeleteClick = (): void => {
-    setDeletePagesDialogOpen(true);
-  };
-
-  const handleCreateEditDialogConfirm = (page: PageCreateEdit): void => {
-    setPageCreateEditDialogOpen(false);
-    dispatch(createPage(page));
-  };
-
-  const handleCreateEditDialogClose = (): void => {
-    setPageCreateEditDialogOpen(false);
-  };
-
-  const handleDeletePagesDialogConfirm = (): void => {
-    setDeletePagesDialogOpen(false);
-    dispatch(deletePages(selectedPageIds));
-  };
-
-  const handleDeletePagesDialogClose = (): void => {
-    setDeletePagesDialogOpen(false);
+    pagesDeleteDialog.show();
   };
 
   return (
     <Toolbar className={classes.root}>
-      <PageCreateEditDialog
-        open={pageCreateEditDialogOpen}
-        onClose={handleCreateEditDialogClose}
-        onDialogConfirm={handleCreateEditDialogConfirm}
-        onDialogCancel={handleCreateEditDialogClose}
-      ></PageCreateEditDialog>
+      <PageCreateEditDialog {...pageCreateDialog.binding}></PageCreateEditDialog>
       <ConfirmationDialog
-        open={deletePagesDialogOpen}
         dialogTitle="Delete pages confirmation"
         dialogMessage="Do you really want to delete all selected pages?"
-        onDialogConfirm={handleDeletePagesDialogConfirm}
-        onDialogCancel={handleDeletePagesDialogClose}
+        {...pagesDeleteDialog.binding}
       ></ConfirmationDialog>
       {selectedPageIds.length > 0 ? (
         <React.Fragment>
