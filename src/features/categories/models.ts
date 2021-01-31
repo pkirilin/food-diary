@@ -1,3 +1,5 @@
+import { AutocompleteOption } from '../__shared__/models';
+
 export interface CategoryItem {
   id: number;
   name: string;
@@ -8,7 +10,4 @@ export interface CategoryCreateEdit {
   name: string;
 }
 
-export interface CategoryAutocompleteOption {
-  id: number;
-  name: string;
-}
+export type CategoryAutocompleteOption = AutocompleteOption;

@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { useDispatch } from 'react-redux';
 import { CircularProgress, TextField } from '@material-ui/core';
 import { Autocomplete, AutocompleteProps } from '@material-ui/lab';
-import { useTypedSelector } from '../../__shared__/hooks';
+import { useAsyncAutocomplete } from '../../__shared__/hooks';
 import { CategoryAutocompleteOption } from '../models';
-import { useDispatch } from 'react-redux';
 import { getCategoriesAutocomplete } from '../thunks';
 import { clearAutocompleteOptions } from '../slice';
 
@@ -21,43 +21,21 @@ const CategoryAutocomplete: React.FC<CategoryAutocompleteProps> = ({
   selectedCategory,
   onChange,
 }: CategoryAutocompleteProps) => {
-  const [open, setOpen] = useState(false);
-
-  const options = useTypedSelector(state => state.categories.autocompleteOptions);
-  const loading = open && options.length === 0;
-
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    let active = true;
-
-    if (!loading) {
-      return;
-    }
-
-    dispatch(getCategoriesAutocomplete(active));
-
-    return () => {
-      active = false;
-    };
-  }, [loading]);
-
-  useEffect(() => {
-    if (!open) {
+  const { options, loading, binding } = useAsyncAutocomplete(
+    state => state.categories.autocompleteOptions,
+    active => {
+      dispatch(getCategoriesAutocomplete(active));
+    },
+    () => {
       dispatch(clearAutocompleteOptions());
-    }
-  }, [open]);
+    },
+  );
 
   return (
     <Autocomplete
-      open={open}
-      onOpen={() => {
-        setOpen(true);
-      }}
-      onClose={() => {
-        setOpen(false);
-      }}
-      loading={loading}
+      {...binding}
       renderInput={params => (
         <TextField
           {...params}
@@ -75,8 +53,6 @@ const CategoryAutocomplete: React.FC<CategoryAutocompleteProps> = ({
         ></TextField>
       )}
       options={options}
-      getOptionSelected={(option, value) => option.name === value.name}
-      getOptionLabel={option => option.name}
       noOptionsText="No categories found"
       value={selectedCategory}
       onChange={(...args) => {
