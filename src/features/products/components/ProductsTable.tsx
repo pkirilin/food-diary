@@ -28,14 +28,14 @@ const ProductsTable: React.FC = () => {
 
   useEffect(() => {
     if (changingStatus === 'idle' || changingStatus === 'succeeded') {
-      const { pageNumber, pageSize, productSearchName, categoryId } = productsFilter;
+      const { pageNumber, pageSize, productSearchName, category } = productsFilter;
 
       dispatch(
         getProducts({
           pageNumber,
           pageSize,
           productSearchName,
-          categoryId: categoryId ?? undefined,
+          categoryId: category?.id,
         }),
       );
     }

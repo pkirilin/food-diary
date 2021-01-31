@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Button,
@@ -25,12 +25,19 @@ const ProductsFilterDialog: React.FC<ProductsFilterDialogProps> = ({
 }: ProductsFilterDialogProps) => {
   const currentFilter = useTypedSelector(state => state.products.filter);
   const productSearchNameInput = useInput(currentFilter.productSearchName ?? '');
-  const [categoryId, setCategoryId] = useState(currentFilter.categoryId);
+  const [category, setCategory] = useState(currentFilter.category);
+
+  useEffect(() => {
+    return () => {
+      productSearchNameInput.setValue(currentFilter.productSearchName ?? '');
+      setCategory(currentFilter.category);
+    };
+  }, [dialogProps.open]);
 
   const handleSubmitClick = (): void => {
     onDialogConfirm({
       productSearchName: productSearchNameInput.value,
-      categoryId,
+      category,
     });
   };
 
@@ -49,9 +56,9 @@ const ProductsFilterDialog: React.FC<ProductsFilterDialogProps> = ({
         </Box>
         <Box mt={2}>
           <CategoryAutocomplete
-            initialCategoryId={categoryId}
+            selectedCategory={category}
             onChange={(event, value) => {
-              setCategoryId(value?.id ?? null);
+              setCategory(value);
             }}
           ></CategoryAutocomplete>
         </Box>

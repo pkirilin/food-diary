@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CircularProgress, TextField } from '@material-ui/core';
 import { Autocomplete, AutocompleteProps } from '@material-ui/lab';
 import { useTypedSelector } from '../../__shared__/hooks';
@@ -13,22 +13,18 @@ type AutocompletePropsToInject = Pick<
 >;
 
 type CategoryAutocompleteProps = {
-  initialCategoryId: number | null;
+  selectedCategory: CategoryAutocompleteOption | null;
   onChange?: AutocompletePropsToInject['onChange'];
 };
 
 const CategoryAutocomplete: React.FC<CategoryAutocompleteProps> = ({
-  initialCategoryId,
+  selectedCategory,
   onChange,
 }: CategoryAutocompleteProps) => {
   const [open, setOpen] = useState(false);
 
   const options = useTypedSelector(state => state.categories.autocompleteOptions);
   const loading = open && options.length === 0;
-
-  const initialCategory = useMemo(() => options.find(c => c.id === initialCategoryId), [
-    initialCategoryId,
-  ]);
 
   const dispatch = useDispatch();
 
@@ -79,9 +75,10 @@ const CategoryAutocomplete: React.FC<CategoryAutocompleteProps> = ({
         ></TextField>
       )}
       options={options}
+      getOptionSelected={(option, value) => option.name === value.name}
       getOptionLabel={option => option.name}
       noOptionsText="No categories found"
-      value={initialCategory}
+      value={selectedCategory}
       onChange={(...args) => {
         if (onChange) {
           onChange(...args);

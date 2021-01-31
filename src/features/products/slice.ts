@@ -28,7 +28,7 @@ const initialState: ProductsState = {
     changed: false,
     pageNumber: 1,
     pageSize: 10,
-    categoryId: null,
+    category: null,
   },
 };
 

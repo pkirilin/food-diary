@@ -1,3 +1,4 @@
+import { CategoryAutocompleteOption } from '../categories/models';
 import { ItemsFilterBase } from '../__shared__/models';
 
 export interface ProductItem {
@@ -23,10 +24,7 @@ export interface ProductItemsFilter extends ItemsFilterBase {
   pageNumber: number;
   pageSize: number;
   productSearchName?: string;
-  categoryId: number | null;
+  category: CategoryAutocompleteOption | null;
 }
 
-export type ProductsFilterUpdatedData = Pick<
-  ProductItemsFilter,
-  'productSearchName' | 'categoryId'
->;
+export type ProductsFilterUpdatedData = Pick<ProductItemsFilter, 'productSearchName' | 'category'>;

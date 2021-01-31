@@ -9,7 +9,7 @@ import {
   DialogTitle,
   TextField,
 } from '@material-ui/core';
-import { ProductCreateEdit } from '../models';
+import { ProductCreateEdit, ProductItem } from '../models';
 import { DialogCustomActionProps } from '../../__shared__/types';
 import { useInput } from '../../__shared__/hooks';
 import { CategoryAutocomplete } from '../../categories/components';
@@ -17,7 +17,7 @@ import { CategoryAutocomplete } from '../../categories/components';
 interface ProductCreateEditDialogProps
   extends DialogProps,
     DialogCustomActionProps<ProductCreateEdit> {
-  product?: ProductCreateEdit;
+  product?: ProductItem;
 }
 
 const ProductCreateEditDialog: React.FC<ProductCreateEditDialogProps> = ({
@@ -26,40 +26,47 @@ const ProductCreateEditDialog: React.FC<ProductCreateEditDialogProps> = ({
   onDialogConfirm,
   ...dialogProps
 }: ProductCreateEditDialogProps) => {
-  const { title, submitText, initialProductName, initialCaloriesCost, initialCategoryId } = product
+  const { title, submitText, initialProductName, initialCaloriesCost, initialCategory } = product
     ? {
         title: 'Edit product',
         submitText: 'Save',
         initialProductName: product.name,
         initialCaloriesCost: product.caloriesCost,
-        initialCategoryId: product.categoryId,
+        initialCategory: {
+          id: product.categoryId,
+          name: product.categoryName,
+        },
       }
     : {
         title: 'New product',
         submitText: 'Create',
         initialProductName: '',
         initialCaloriesCost: 100,
-        initialCategoryId: null,
+        initialCategory: null,
       };
 
   const productNameInput = useInput(initialProductName);
   const caloriesCostInput = useInput(initialCaloriesCost);
-  const [categoryId, setCategoryId] = useState(initialCategoryId);
+  const [category, setCategory] = useState(initialCategory);
 
   useEffect(() => {
+    if (dialogProps.open) {
+      setCategory(initialCategory);
+    }
+
     return () => {
       productNameInput.setValue(initialProductName);
       caloriesCostInput.setValue(initialCaloriesCost);
-      setCategoryId(initialCategoryId);
+      setCategory(initialCategory);
     };
   }, [dialogProps.open]);
 
   const handleSubmitClick = (): void => {
-    if (categoryId !== null) {
+    if (category) {
       onDialogConfirm({
         name: productNameInput.value,
         caloriesCost: caloriesCostInput.value,
-        categoryId,
+        categoryId: category.id,
       });
     }
   };
@@ -88,9 +95,9 @@ const ProductCreateEditDialog: React.FC<ProductCreateEditDialogProps> = ({
         </Box>
         <Box mt={2}>
           <CategoryAutocomplete
-            initialCategoryId={initialCategoryId}
+            selectedCategory={category}
             onChange={(event, value) => {
-              setCategoryId(value?.id ?? null);
+              setCategory(value);
             }}
           ></CategoryAutocomplete>
         </Box>
