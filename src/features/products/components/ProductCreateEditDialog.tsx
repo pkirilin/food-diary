@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import {
   Box,
   Button,
@@ -11,7 +11,7 @@ import {
 } from '@material-ui/core';
 import { ProductCreateEdit, ProductItem } from '../models';
 import { DialogCustomActionProps } from '../../__shared__/types';
-import { useInput } from '../../__shared__/hooks';
+import { useInput, useInputAutocomplete } from '../../__shared__/hooks';
 import { CategoryAutocomplete } from '../../categories/components';
 
 interface ProductCreateEditDialogProps
@@ -47,26 +47,26 @@ const ProductCreateEditDialog: React.FC<ProductCreateEditDialogProps> = ({
 
   const productNameInput = useInput(initialProductName);
   const caloriesCostInput = useInput(initialCaloriesCost);
-  const [category, setCategory] = useState(initialCategory);
+  const categoryInput = useInputAutocomplete(initialCategory);
 
   useEffect(() => {
     if (dialogProps.open) {
-      setCategory(initialCategory);
+      categoryInput.setValue(initialCategory);
     }
 
     return () => {
       productNameInput.setValue(initialProductName);
       caloriesCostInput.setValue(initialCaloriesCost);
-      setCategory(initialCategory);
+      categoryInput.setValue(initialCategory);
     };
   }, [dialogProps.open]);
 
   const handleSubmitClick = (): void => {
-    if (category) {
+    if (categoryInput.value) {
       onDialogConfirm({
         name: productNameInput.value,
         caloriesCost: caloriesCostInput.value,
-        categoryId: category.id,
+        categoryId: categoryInput.value.id,
       });
     }
   };
@@ -94,12 +94,7 @@ const ProductCreateEditDialog: React.FC<ProductCreateEditDialogProps> = ({
           ></TextField>
         </Box>
         <Box mt={2}>
-          <CategoryAutocomplete
-            value={category}
-            onChange={(event, value) => {
-              setCategory(value);
-            }}
-          ></CategoryAutocomplete>
+          <CategoryAutocomplete {...categoryInput.binding}></CategoryAutocomplete>
         </Box>
       </DialogContent>
       <DialogActions>

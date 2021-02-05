@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import {
   Box,
   Button,
@@ -10,7 +10,7 @@ import {
   TextField,
 } from '@material-ui/core';
 import { DialogCustomActionProps } from '../../__shared__/types';
-import { useInput, useTypedSelector } from '../../__shared__/hooks';
+import { useInput, useInputAutocomplete, useTypedSelector } from '../../__shared__/hooks';
 import { CategoryAutocomplete } from '../../categories/components';
 import { ProductsFilterUpdatedData } from '../models';
 
@@ -25,19 +25,19 @@ const ProductsFilterDialog: React.FC<ProductsFilterDialogProps> = ({
 }: ProductsFilterDialogProps) => {
   const currentFilter = useTypedSelector(state => state.products.filter);
   const productSearchNameInput = useInput(currentFilter.productSearchName ?? '');
-  const [category, setCategory] = useState(currentFilter.category);
+  const categoryInput = useInputAutocomplete(currentFilter.category);
 
   useEffect(() => {
     return () => {
       productSearchNameInput.setValue(currentFilter.productSearchName ?? '');
-      setCategory(currentFilter.category);
+      categoryInput.setValue(currentFilter.category);
     };
   }, [dialogProps.open]);
 
   const handleSubmitClick = (): void => {
     onDialogConfirm({
       productSearchName: productSearchNameInput.value,
-      category,
+      category: categoryInput.value,
     });
   };
 
@@ -55,12 +55,7 @@ const ProductsFilterDialog: React.FC<ProductsFilterDialogProps> = ({
           ></TextField>
         </Box>
         <Box mt={2}>
-          <CategoryAutocomplete
-            value={category}
-            onChange={(event, value) => {
-              setCategory(value);
-            }}
-          ></CategoryAutocomplete>
+          <CategoryAutocomplete {...categoryInput.binding}></CategoryAutocomplete>
         </Box>
       </DialogContent>
       <DialogActions>
