@@ -1,29 +1,24 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { CircularProgress, TextField } from '@material-ui/core';
-import { Autocomplete, AutocompleteProps } from '@material-ui/lab';
+import { TextField } from '@material-ui/core';
+import { Autocomplete } from '@material-ui/lab';
+import { AutocompleteEndAdornment } from '../../__shared__/components';
 import { useAsyncAutocomplete } from '../../__shared__/hooks';
-import { CategoryAutocompleteOption } from '../models';
+import { AutocompleteCustomBaseProps } from '../../__shared__/types';
 import { getCategoriesAutocomplete } from '../thunks';
 import { clearAutocompleteOptions } from '../slice';
+import { CategoryAutocompleteOption } from '../models';
 
-type AutocompletePropsToInject = Pick<
-  AutocompleteProps<CategoryAutocompleteOption, undefined, undefined, undefined>,
-  'onChange'
->;
-
-type CategoryAutocompleteProps = {
-  selectedCategory: CategoryAutocompleteOption | null;
-  onChange?: AutocompletePropsToInject['onChange'];
-};
+type CategoryAutocompleteProps = AutocompleteCustomBaseProps<CategoryAutocompleteOption>;
 
 const CategoryAutocomplete: React.FC<CategoryAutocompleteProps> = ({
-  selectedCategory,
+  value,
   onChange,
 }: CategoryAutocompleteProps) => {
   const dispatch = useDispatch();
 
-  const { options, loading, binding } = useAsyncAutocomplete(
+  const { loading, binding } = useAsyncAutocomplete(
+    { value, onChange },
     state => state.categories.autocompleteOptions,
     active => {
       dispatch(getCategoriesAutocomplete(active));
@@ -44,22 +39,15 @@ const CategoryAutocomplete: React.FC<CategoryAutocompleteProps> = ({
           InputProps={{
             ...params.InputProps,
             endAdornment: (
-              <React.Fragment>
-                {loading ? <CircularProgress color="inherit" size={20} /> : null}
-                {params.InputProps.endAdornment}
-              </React.Fragment>
+              <AutocompleteEndAdornment
+                loading={loading}
+                params={params}
+              ></AutocompleteEndAdornment>
             ),
           }}
         ></TextField>
       )}
-      options={options}
       noOptionsText="No categories found"
-      value={selectedCategory}
-      onChange={(...args) => {
-        if (onChange) {
-          onChange(...args);
-        }
-      }}
     ></Autocomplete>
   );
 };

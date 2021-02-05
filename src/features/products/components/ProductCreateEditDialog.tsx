@@ -95,7 +95,7 @@ const ProductCreateEditDialog: React.FC<ProductCreateEditDialogProps> = ({
         </Box>
         <Box mt={2}>
           <CategoryAutocomplete
-            selectedCategory={category}
+            value={category}
             onChange={(event, value) => {
               setCategory(value);
             }}

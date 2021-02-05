@@ -1,3 +1,4 @@
+import AutocompleteEndAdornment from './AutocompleteEndAdornment';
 import ConfirmationDialog from './ConfirmationDialog';
 
-export { ConfirmationDialog };
+export { ConfirmationDialog, AutocompleteEndAdornment };

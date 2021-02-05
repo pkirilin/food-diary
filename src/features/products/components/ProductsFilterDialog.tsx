@@ -56,7 +56,7 @@ const ProductsFilterDialog: React.FC<ProductsFilterDialogProps> = ({
         </Box>
         <Box mt={2}>
           <CategoryAutocomplete
-            selectedCategory={category}
+            value={category}
             onChange={(event, value) => {
               setCategory(value);
             }}

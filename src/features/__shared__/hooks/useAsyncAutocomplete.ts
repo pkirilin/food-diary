@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
+import { AutocompleteProps } from '@material-ui/lab';
 import useTypedSelector from './useTypedSelector';
 import { RootState } from '../../../store';
-import { AutocompleteProps } from '@material-ui/lab';
 import { BindableHookResult } from './types';
 import { AutocompleteOption } from '../models';
+import { AutocompleteCustomBaseProps } from '../types';
 
 type OptionsSelector<TOption> = (state: RootState) => TOption[];
 type GetOptionsAction = (active: boolean) => void;
@@ -23,6 +24,7 @@ export interface AsyncAutocompleteHookResult<TOption>
 }
 
 export function useAsyncAutocomplete<TOption extends AutocompleteOption>(
+  { value, onChange }: AutocompleteCustomBaseProps<TOption>,
   selector: OptionsSelector<TOption>,
   getOptions: GetOptionsAction,
   clearOptions: ClearOptionsAction,
@@ -58,6 +60,8 @@ export function useAsyncAutocomplete<TOption extends AutocompleteOption>(
       options,
       open,
       loading,
+      value,
+      onChange,
       onOpen: () => {
         setOpen(true);
       },
