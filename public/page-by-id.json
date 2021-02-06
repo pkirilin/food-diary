@@ -9,5 +9,33 @@
     "id": 3,
     "date": "2021-02-07"
   },
-  "noteItems": []
+  "noteItems": [
+    {
+      "id": 1,
+      "mealType": 1,
+      "displayOrder": 0,
+      "productId": 1,
+      "productName": "Product 1",
+      "productQuantity": 100,
+      "calories": 100
+    },
+    {
+      "id": 2,
+      "mealType": 1,
+      "displayOrder": 1,
+      "productId": 1,
+      "productName": "Product 1",
+      "productQuantity": 100,
+      "calories": 100
+    },
+    {
+      "id": 3,
+      "mealType": 2,
+      "displayOrder": 0,
+      "productId": 1,
+      "productName": "Product 1",
+      "productQuantity": 100,
+      "calories": 100
+    }
+  ]
 }

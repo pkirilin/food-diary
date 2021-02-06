@@ -22,7 +22,7 @@ const MealsListItem: React.FC<MealsListItemProps> = ({ mealType }: MealsListItem
         <Typography variant="h2">{mealName}</Typography>
       </AccordionSummary>
       <AccordionDetails>
-        <NotesTable></NotesTable>
+        <NotesTable mealType={mealType}></NotesTable>
       </AccordionDetails>
     </Accordion>
   );

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   Box,
   Button,
@@ -11,42 +11,23 @@ import {
   Typography,
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
-import { MealType, NoteItem } from '../models';
+import { MealType } from '../models';
 import NotesTableRow from './NotesTableRow';
+import { useTypedSelector } from '../../__shared__/hooks';
 
-const noteItems: NoteItem[] = [
-  {
-    id: 1,
-    mealType: MealType.Breakfast,
-    displayOrder: 0,
-    productId: 1,
-    productName: 'Product 1',
-    productQuantity: 100,
-    calories: 100,
-  },
-  {
-    id: 2,
-    mealType: MealType.Breakfast,
-    displayOrder: 0,
-    productId: 1,
-    productName: 'Product 1',
-    productQuantity: 100,
-    calories: 100,
-  },
-  {
-    id: 3,
-    mealType: MealType.Breakfast,
-    displayOrder: 0,
-    productId: 1,
-    productName: 'Product 1',
-    productQuantity: 100,
-    calories: 100,
-  },
-];
+type NotesTableProps = {
+  mealType: MealType;
+};
 
-const totalCalories = noteItems.reduce((sum, note) => sum + note.calories, 0);
+const NotesTable: React.FC<NotesTableProps> = ({ mealType }: NotesTableProps) => {
+  const noteItems = useTypedSelector(state =>
+    state.notes.noteItems.filter(n => n.mealType === mealType),
+  );
 
-const NotesTable: React.FC = () => {
+  const totalCalories = useMemo(() => noteItems.reduce((sum, note) => sum + note.calories, 0), [
+    noteItems,
+  ]);
+
   return (
     <TableContainer>
       <Table size="small">
