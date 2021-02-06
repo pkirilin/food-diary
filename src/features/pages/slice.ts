@@ -12,6 +12,8 @@ export type PagesState = {
   totalPagesCount: number;
   filter: PageItemsFilter;
   current?: Page;
+  previous?: Page;
+  next?: Page;
 };
 
 export interface SelectPagePayload extends SelectionPayload {
@@ -68,6 +70,8 @@ const pagesSlice = createSlice({
           id: payload.id,
           date: payload.date,
         };
+        state.previous = payload.previousPage;
+        state.next = payload.nextPage;
       })
       .addCase(deletePages.fulfilled, state => {
         state.selectedPageIds = [];
