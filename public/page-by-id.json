@@ -1,0 +1,13 @@
+{
+  "id": 1,
+  "date": "2021-02-06",
+  "previousPage": {
+    "id": 2,
+    "date": "2021-02-05"
+  },
+  "nextPage": {
+    "id": 3,
+    "date": "2021-02-07"
+  },
+  "noteItems": []
+}

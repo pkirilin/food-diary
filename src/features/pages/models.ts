@@ -20,3 +20,9 @@ export interface PageItemsFilter extends ItemsFilterBase {
   pageNumber: number;
   pageSize: number;
 }
+
+// TODO: use in PageItem
+export type Page = {
+  id: number;
+  date: Date;
+};

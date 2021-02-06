@@ -1,3 +1,4 @@
+import { NoteItem } from '../notes/models';
 import config from '../__shared__/config';
 import { SortOrder } from '../__shared__/models';
 import { createApiCallAsyncThunk, createUrl, handleEmptyResponse } from '../__shared__/utils';
@@ -16,11 +17,31 @@ export type EditPageRequest = {
   page: PageCreateEdit;
 };
 
+export interface PageResponse {
+  id: number;
+  date: Date;
+}
+
+export interface PageByIdResponse extends PageResponse {
+  noteItems: NoteItem[];
+  previousPage: PageResponse;
+  nextPage: PageResponse;
+}
+
 export const getPages = createApiCallAsyncThunk<PagesSearchResult, GetPagesRequest>(
   'pages/getPages',
   params => createUrl(`${config.apiUrl}/v1/pages`, params),
   response => response.json(),
   'Failed to get pages',
+);
+
+// TODO: implement endpoint on backend
+export const getPageById = createApiCallAsyncThunk<PageByIdResponse, number>(
+  'pages/getPageById',
+  // id => `${config.apiUrl}/v1/page/${id}`,
+  () => '/page-by-id.json',
+  response => response.json(),
+  'Failed to get page',
 );
 
 export const createPage = createApiCallAsyncThunk<number, PageCreateEdit>(
