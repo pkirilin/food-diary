@@ -65,6 +65,29 @@ namespace FoodDiary.API.Controllers.v1
             return Ok(pagesListResponse);
         }
 
+        [HttpGet("{id}")]
+        [ProducesResponseType(typeof(PageContentDto), (int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        public async Task<IActionResult> GetPageById([FromRoute] int id, CancellationToken cancellationToken)
+        {
+            var pageContent = await _mediator.Send(new GetPageContentByIdRequest(id), cancellationToken);
+
+            if (pageContent == null)
+            {
+                return NotFound();
+            }
+
+            var pageContentDto = new PageContentDto()
+            {
+                CurrentPage = _mapper.Map<PageDto>(pageContent.CurrentPage),
+                PreviousPage = _mapper.Map<PageDto>(pageContent.PreviousPage),
+                NextPage = _mapper.Map<PageDto>(pageContent.NextPage),
+                NoteItems = _mapper.Map<IEnumerable<NoteItemDto>>(pageContent.CurrentPage.Notes),
+            };
+            
+            return Ok(pageContentDto);
+        }
+
         /// <summary>
         /// Creates new page if page with the same date doesn't exist
         /// </summary>
