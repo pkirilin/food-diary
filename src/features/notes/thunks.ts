@@ -1,7 +1,6 @@
-import { NoteCreateEdit } from '../../__legacy__/models';
 import config from '../__shared__/config';
 import { createApiCallAsyncThunk, createUrl, handleEmptyResponse } from '../__shared__/utils';
-import { MealType, NoteItem } from './models';
+import { MealType, NoteCreateEdit, NoteItem } from './models';
 
 export type GetNotesRequest = {
   pageId: number;
