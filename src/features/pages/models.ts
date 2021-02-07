@@ -1,8 +1,11 @@
 import { ItemsFilterBase } from '../__shared__/models';
 
-export interface PageItem {
+export interface Page {
   id: number;
   date: string;
+}
+
+export interface PageItem extends Page {
   countNotes: number;
   countCalories: number;
 }
@@ -20,9 +23,3 @@ export interface PageItemsFilter extends ItemsFilterBase {
   pageNumber: number;
   pageSize: number;
 }
-
-// TODO: use in PageItem
-export type Page = {
-  id: number;
-  date: Date;
-};

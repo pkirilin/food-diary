@@ -34,8 +34,7 @@ export const getPages = createApiCallAsyncThunk<PagesSearchResult, GetPagesReque
 // TODO: implement endpoint on backend
 export const getPageById = createApiCallAsyncThunk<PageByIdResponse, number>(
   'pages/getPageById',
-  // id => `${config.apiUrl}/v1/page/${id}`,
-  () => '/page-by-id.json',
+  id => `${config.apiUrl}/v1/pages/${id}`,
   response => response.json(),
   'Failed to get page',
 );

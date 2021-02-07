@@ -12,9 +12,15 @@ const PageContentHeader: React.FC = () => {
   const classes = useStyles();
   const page = useTypedSelector(state => state.pages.current);
 
+  if (!page) {
+    return null;
+  }
+
+  const currentPageDate = new Date(page.date).toLocaleDateString();
+
   return (
     <Typography variant="h1" align="center" className={classes.root}>
-      {page?.date || ''}
+      {currentPageDate}
     </Typography>
   );
 };
