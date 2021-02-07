@@ -15,6 +15,8 @@ namespace FoodDiary.Domain.Repositories
 
         Task<Page> GetPageByIdWithNotesAsync(int pageId, CancellationToken cancellationToken);
 
-        Task<Page[]> GetAdjacentPagesAsync(DateTime curDate, CancellationToken cancellationToken);
+        Task<Page> GetPreviousPageAsync(DateTime curDate, CancellationToken cancellationToken);
+        
+        Task<Page> GetNextPageAsync(DateTime curDate, CancellationToken cancellationToken);
     }
 }

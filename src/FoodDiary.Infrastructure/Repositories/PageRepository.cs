@@ -34,11 +34,14 @@ namespace FoodDiary.Infrastructure.Repositories
                 .FirstOrDefaultAsync(cancellationToken);
         }
 
-        public Task<Page[]> GetAdjacentPagesAsync(DateTime curDate, CancellationToken cancellationToken)
+        public Task<Page> GetPreviousPageAsync(DateTime curDate, CancellationToken cancellationToken)
         {
-            var previousPageTask = TargetDbSet.FirstOrDefaultAsync(p => p.Date < curDate, cancellationToken);
-            var nextPageTask = TargetDbSet.FirstOrDefaultAsync(p => p.Date > curDate, cancellationToken);
-            return Task.WhenAll(previousPageTask, nextPageTask);
+            return TargetDbSet.FirstOrDefaultAsync(p => p.Date < curDate, cancellationToken);
+        }
+
+        public Task<Page> GetNextPageAsync(DateTime curDate, CancellationToken cancellationToken)
+        {
+            return TargetDbSet.FirstOrDefaultAsync(p => p.Date > curDate, cancellationToken);
         }
 
         public Task<Dictionary<DateTime, Page>> GetDictionaryByQueryAsync(IQueryable<Page> query, CancellationToken cancellationToken)

@@ -25,17 +25,9 @@ namespace FoodDiary.Application.Pages.Handlers
             {
                 return null;
             }
-            
-            var adjacentPages = await _pageRepository.GetAdjacentPagesAsync(currentPage.Date, cancellationToken);
 
-            if (adjacentPages.Length != 2)
-            {
-                throw new InvalidOperationException(
-                    $"Received adjacent pages of length = {adjacentPages.Length}, but expected length 2");
-            }
-            
-            var previousPage = adjacentPages[0];
-            var nextPage = adjacentPages[1];
+            var previousPage = await _pageRepository.GetPreviousPageAsync(currentPage.Date, cancellationToken);
+            var nextPage = await _pageRepository.GetNextPageAsync(currentPage.Date, cancellationToken);
 
             return new PageContent(currentPage, previousPage, nextPage);
         }
