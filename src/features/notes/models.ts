@@ -39,3 +39,11 @@ export interface NoteItem {
   productQuantity: number;
   calories: number;
 }
+
+export interface NoteCreateEdit {
+  mealType: MealType;
+  productId: number;
+  pageId: number;
+  productQuantity: number;
+  displayOrder: number;
+}
