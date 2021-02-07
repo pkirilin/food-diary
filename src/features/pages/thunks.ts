@@ -2,7 +2,7 @@ import { NoteItem } from '../notes/models';
 import config from '../__shared__/config';
 import { SortOrder } from '../__shared__/models';
 import { createApiCallAsyncThunk, createUrl, handleEmptyResponse } from '../__shared__/utils';
-import { PageCreateEdit, PagesSearchResult } from './models';
+import { Page, PageCreateEdit, PagesSearchResult } from './models';
 
 export type GetPagesRequest = {
   startDate?: string;
@@ -17,15 +17,11 @@ export type EditPageRequest = {
   page: PageCreateEdit;
 };
 
-export interface PageResponse {
-  id: number;
-  date: Date;
-}
-
-export interface PageByIdResponse extends PageResponse {
+export interface PageByIdResponse {
+  currentPage: Page;
+  previousPage: Page;
+  nextPage: Page;
   noteItems: NoteItem[];
-  previousPage: PageResponse;
-  nextPage: PageResponse;
 }
 
 export const getPages = createApiCallAsyncThunk<PagesSearchResult, GetPagesRequest>(

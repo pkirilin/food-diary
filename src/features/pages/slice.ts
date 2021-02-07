@@ -66,10 +66,7 @@ const pagesSlice = createSlice({
         state.totalPagesCount = payload.totalPagesCount;
       })
       .addCase(getPageById.fulfilled, (state, { payload }) => {
-        state.current = {
-          id: payload.id,
-          date: payload.date,
-        };
+        state.current = payload.currentPage;
         state.previous = payload.previousPage;
         state.next = payload.nextPage;
       })

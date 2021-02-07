@@ -1,6 +1,8 @@
 {
-  "id": 1,
-  "date": "2021-02-06",
+  "currentPage": {
+    "id": 1,
+    "date": "2021-02-06"
+  },
   "previousPage": null,
   "nextPage": {
     "id": 3,
