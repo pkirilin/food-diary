@@ -77,10 +77,16 @@ const NoteCreateEditDialog: React.FC<NoteCreateEditDialogProps> = ({
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
         <Box>
-          <ProductAutocomplete></ProductAutocomplete>
+          <ProductAutocomplete {...productInput.binding}></ProductAutocomplete>
         </Box>
         <Box mt={2}>
-          <TextField type="number" label="Quantity" placeholder="Product quantity, g"></TextField>
+          <TextField
+            {...quantityInput.binding}
+            type="number"
+            label="Quantity"
+            placeholder="Product quantity, g"
+            fullWidth
+          ></TextField>
         </Box>
       </DialogContent>
       <DialogActions>

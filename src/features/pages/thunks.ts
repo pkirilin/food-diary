@@ -1,4 +1,3 @@
-import { NoteItem } from '../notes/models';
 import config from '../__shared__/config';
 import { SortOrder } from '../__shared__/models';
 import { createApiCallAsyncThunk, createUrl, handleEmptyResponse } from '../__shared__/utils';
@@ -21,7 +20,6 @@ export interface PageByIdResponse {
   currentPage: Page;
   previousPage: Page;
   nextPage: Page;
-  noteItems: NoteItem[];
 }
 
 export const getPages = createApiCallAsyncThunk<PagesSearchResult, GetPagesRequest>(

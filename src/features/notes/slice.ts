@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { getPageById } from '../pages/thunks';
 import { OperationStatus } from '../__shared__/models';
 import { AnyAsyncThunk, createAsyncThunkMatcher } from '../__shared__/utils';
 import { NoteItem } from './models';
@@ -23,14 +22,12 @@ const notesSlice = createSlice({
   reducers: {},
   extraReducers: builder =>
     builder
-      .addCase(getPageById.fulfilled, (state, { payload }) => {
-        state.noteItems = payload.noteItems;
-      })
       .addCase(getNotes.fulfilled, (state, { payload, meta }) => {
-        state.noteItems = [
-          ...state.noteItems.filter(n => n.mealType !== meta.arg.mealType),
-          ...payload,
-        ];
+        const isRequestForAllMeals = meta.arg.mealType === undefined;
+
+        state.noteItems = isRequestForAllMeals
+          ? payload
+          : [...state.noteItems.filter(n => n.mealType !== meta.arg.mealType), ...payload];
       })
       .addMatcher(createAsyncThunkMatcher(noteItemsChangingThunks, 'pending'), state => {
         state.noteItemsChangingStatus = 'pending';

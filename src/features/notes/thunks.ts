@@ -4,7 +4,7 @@ import { MealType, NoteCreateEdit, NoteItem } from './models';
 
 export type GetNotesRequest = {
   pageId: number;
-  mealType: MealType;
+  mealType?: MealType;
 };
 
 export type EditNoteRequest = {

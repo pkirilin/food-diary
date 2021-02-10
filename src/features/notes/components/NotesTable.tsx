@@ -1,4 +1,5 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
+import { useDispatch } from 'react-redux';
 import {
   Box,
   Button,
@@ -11,25 +12,57 @@ import {
   Typography,
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
-import { MealType } from '../models';
+import { MealType, NoteCreateEdit } from '../models';
 import NotesTableRow from './NotesTableRow';
-import { useTypedSelector } from '../../__shared__/hooks';
+import NoteCreateEditDialog from './NoteCreateEditDialog';
+import { useDialog, useRouterId, useTypedSelector } from '../../__shared__/hooks';
+import { createNote, getNotes } from '../thunks';
 
 type NotesTableProps = {
   mealType: MealType;
 };
 
 const NotesTable: React.FC<NotesTableProps> = ({ mealType }: NotesTableProps) => {
+  const pageId = useRouterId('id');
+
   const noteItems = useTypedSelector(state =>
     state.notes.noteItems.filter(n => n.mealType === mealType),
   );
+
+  const status = useTypedSelector(state => state.notes.noteItemsChangingStatus);
 
   const totalCalories = useMemo(() => noteItems.reduce((sum, note) => sum + note.calories, 0), [
     noteItems,
   ]);
 
+  const dispatch = useDispatch();
+
+  const noteCreateDialog = useDialog<NoteCreateEdit>(note => {
+    dispatch(createNote(note));
+  });
+
+  useEffect(() => {
+    if (status === 'succeeded') {
+      dispatch(
+        getNotes({
+          pageId,
+          mealType,
+        }),
+      );
+    }
+  }, [pageId, mealType, status]);
+
+  const handleAddNoteClick = (): void => {
+    noteCreateDialog.show();
+  };
+
   return (
     <TableContainer>
+      <NoteCreateEditDialog
+        {...noteCreateDialog.binding}
+        mealType={mealType}
+        pageId={pageId}
+      ></NoteCreateEditDialog>
       <Table size="small">
         <TableHead>
           <TableRow>
@@ -46,7 +79,13 @@ const NotesTable: React.FC<NotesTableProps> = ({ mealType }: NotesTableProps) =>
         </TableBody>
       </Table>
       <Box mt={1}>
-        <Button variant="text" size="medium" fullWidth startIcon={<AddIcon></AddIcon>}>
+        <Button
+          variant="text"
+          size="medium"
+          fullWidth
+          startIcon={<AddIcon></AddIcon>}
+          onClick={handleAddNoteClick}
+        >
           Add note
         </Button>
       </Box>
