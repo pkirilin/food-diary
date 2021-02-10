@@ -1,5 +1,5 @@
 import { CategoryAutocompleteOption } from '../categories/models';
-import { ItemsFilterBase } from '../__shared__/models';
+import { AutocompleteOption, ItemsFilterBase } from '../__shared__/models';
 
 export interface ProductItem {
   id: number;
@@ -28,3 +28,5 @@ export interface ProductItemsFilter extends ItemsFilterBase {
 }
 
 export type ProductsFilterUpdatedData = Pick<ProductItemsFilter, 'productSearchName' | 'category'>;
+
+export type ProductAutocompleteOption = AutocompleteOption;

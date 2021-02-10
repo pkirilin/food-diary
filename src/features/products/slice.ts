@@ -2,8 +2,19 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { OperationStatus } from '../__shared__/models';
 import { SelectionPayload } from '../__shared__/types';
 import { AnyAsyncThunk, createAsyncThunkMatcher } from '../__shared__/utils';
-import { ProductItem, ProductItemsFilter, ProductsFilterUpdatedData } from './models';
-import { createProduct, deleteProducts, editProduct, getProducts } from './thunks';
+import {
+  ProductAutocompleteOption,
+  ProductItem,
+  ProductItemsFilter,
+  ProductsFilterUpdatedData,
+} from './models';
+import {
+  createProduct,
+  deleteProducts,
+  editProduct,
+  getProducts,
+  getProductsAutocomplete,
+} from './thunks';
 
 export type ProductsState = {
   productItems: ProductItem[];
@@ -11,6 +22,7 @@ export type ProductsState = {
   productItemsChangingStatus: OperationStatus;
   selectedProductIds: number[];
   filter: ProductItemsFilter;
+  autocompleteOptions: ProductAutocompleteOption[];
 };
 
 export interface SelectProductPayload extends SelectionPayload {
@@ -30,6 +42,7 @@ const initialState: ProductsState = {
     pageSize: 10,
     category: null,
   },
+  autocompleteOptions: [],
 };
 
 const productItemsChangingThunks: AnyAsyncThunk[] = [createProduct, editProduct, deleteProducts];
@@ -61,6 +74,9 @@ const productsSlice = createSlice({
         ...payload,
       };
     },
+    autocompleteOptionsDisposed: state => {
+      state.autocompleteOptions = [];
+    },
   },
   extraReducers: builder =>
     builder
@@ -70,6 +86,12 @@ const productsSlice = createSlice({
       })
       .addCase(deleteProducts.fulfilled, state => {
         state.selectedProductIds = [];
+      })
+      .addCase(getProductsAutocomplete.fulfilled, (state, { payload, meta }) => {
+        const isAutocompleteActive = meta.arg;
+        if (isAutocompleteActive) {
+          state.autocompleteOptions = payload;
+        }
       })
       .addMatcher(createAsyncThunkMatcher(productItemsChangingThunks, 'pending'), state => {
         state.productItemsChangingStatus = 'pending';
@@ -88,6 +110,7 @@ export const {
   pageNumberChanged,
   pageSizeChanged,
   filterUpdated,
+  autocompleteOptionsDisposed,
 } = productsSlice.actions;
 
 export default productsSlice.reducer;

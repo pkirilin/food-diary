@@ -1,6 +1,6 @@
 import config from '../__shared__/config';
 import { createApiCallAsyncThunk, createUrl, handleEmptyResponse } from '../__shared__/utils';
-import { ProductCreateEdit, ProductsSearchResult } from './models';
+import { ProductAutocompleteOption, ProductCreateEdit, ProductsSearchResult } from './models';
 
 export type GetProductsRequest = {
   pageNumber: number;
@@ -52,4 +52,14 @@ export const deleteProducts = createApiCallAsyncThunk<void, number[]>(
     method: 'DELETE',
     bodyCreator: ids => JSON.stringify(ids),
   },
+);
+
+export const getProductsAutocomplete = createApiCallAsyncThunk<
+  ProductAutocompleteOption[],
+  boolean
+>(
+  'products/getProductsAutocomplete',
+  () => `${config.apiUrl}/v1/products/dropdown`,
+  response => response.json(),
+  'Failed to get products',
 );
