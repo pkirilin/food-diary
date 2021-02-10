@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using FoodDiary.Application.Models;
 using FoodDiary.Application.Pages.Requests;
@@ -8,6 +7,7 @@ using MediatR;
 
 namespace FoodDiary.Application.Pages.Handlers
 {
+    // ReSharper disable once UnusedType.Global
     class GetPageContentByIdRequestHandler : IRequestHandler<GetPageContentByIdRequest, PageContent>
     {
         private readonly IPageRepository _pageRepository;
