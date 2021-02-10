@@ -82,7 +82,8 @@ namespace FoodDiary.API.Controllers.v1
                 CurrentPage = _mapper.Map<PageDto>(pageContent.CurrentPage),
                 PreviousPage = _mapper.Map<PageDto>(pageContent.PreviousPage),
                 NextPage = _mapper.Map<PageDto>(pageContent.NextPage),
-                NoteItems = _mapper.Map<IEnumerable<NoteItemDto>>(pageContent.CurrentPage.Notes.AsEnumerable()),
+                NoteItems =
+                    _mapper.Map<IEnumerable<Note>, IEnumerable<NoteItemDto>>(pageContent.CurrentPage.Notes.ToList()),
             };
             
             return Ok(pageContentDto);
