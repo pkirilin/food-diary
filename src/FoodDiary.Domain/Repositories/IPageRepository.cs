@@ -13,8 +13,6 @@ namespace FoodDiary.Domain.Repositories
 
         IQueryable<Page> LoadNotesWithProductsAndCategories(IQueryable<Page> query);
 
-        Task<Page> GetPageByIdWithNotesAsync(int pageId, CancellationToken cancellationToken);
-
         Task<Page> GetPreviousPageAsync(DateTime curDate, CancellationToken cancellationToken);
         
         Task<Page> GetNextPageAsync(DateTime curDate, CancellationToken cancellationToken);

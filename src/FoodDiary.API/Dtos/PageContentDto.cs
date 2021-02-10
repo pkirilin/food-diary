@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace FoodDiary.API.Dtos
+﻿namespace FoodDiary.API.Dtos
 {
     public class PageContentDto
     {
@@ -9,7 +7,5 @@ namespace FoodDiary.API.Dtos
         public PageDto PreviousPage { get; set; }
         
         public PageDto NextPage { get; set; }
-
-        public IEnumerable<NoteItemDto> NoteItems { get; set; }
     }
 }

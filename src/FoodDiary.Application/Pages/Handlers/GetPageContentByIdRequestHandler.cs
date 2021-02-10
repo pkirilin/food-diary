@@ -19,7 +19,7 @@ namespace FoodDiary.Application.Pages.Handlers
 
         public async Task<PageContent> Handle(GetPageContentByIdRequest request, CancellationToken cancellationToken)
         {
-            var currentPage = await _pageRepository.GetPageByIdWithNotesAsync(request.PageId, cancellationToken);
+            var currentPage = await _pageRepository.GetByIdAsync(request.PageId, cancellationToken);
 
             if (currentPage == null)
             {
