@@ -7,10 +7,22 @@ export type GetNotesRequest = {
   mealType?: MealType;
 };
 
-export type EditNoteRequest = {
+export interface NoteOperationPayload {
+  mealType: MealType;
+}
+
+export interface CreateNotePayload extends NoteOperationPayload {
+  note: NoteCreateEdit;
+}
+
+export interface EditNotePayload extends NoteOperationPayload {
   id: number;
   note: NoteCreateEdit;
-};
+}
+
+export interface DeleteNotePayload extends NoteOperationPayload {
+  id: number;
+}
 
 export const getNotes = createApiCallAsyncThunk<NoteItem[], GetNotesRequest>(
   'notes/getNotes',
@@ -19,7 +31,7 @@ export const getNotes = createApiCallAsyncThunk<NoteItem[], GetNotesRequest>(
   'Failed to get notes',
 );
 
-export const createNote = createApiCallAsyncThunk<void, NoteCreateEdit>(
+export const createNote = createApiCallAsyncThunk<void, CreateNotePayload>(
   'notes/createNote',
   () => `${config.apiUrl}/v1/notes`,
   handleEmptyResponse,
@@ -30,7 +42,7 @@ export const createNote = createApiCallAsyncThunk<void, NoteCreateEdit>(
   },
 );
 
-export const editNote = createApiCallAsyncThunk<void, EditNoteRequest>(
+export const editNote = createApiCallAsyncThunk<void, EditNotePayload>(
   'notes/editNote',
   ({ id }) => `${config.apiUrl}/v1/notes/${id}`,
   handleEmptyResponse,
@@ -41,7 +53,7 @@ export const editNote = createApiCallAsyncThunk<void, EditNoteRequest>(
   },
 );
 
-export const deleteNote = createApiCallAsyncThunk<void, number>(
+export const deleteNote = createApiCallAsyncThunk<void, DeleteNotePayload>(
   'notes/deleteNote',
   id => `${config.apiUrl}/v1/notes/${id}`,
   handleEmptyResponse,

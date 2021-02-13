@@ -33,12 +33,18 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({ note }: NotesTableRowProp
       editNote({
         id: note.id,
         note: { ...noteData },
+        mealType: noteData.mealType,
       }),
     );
   });
 
   const noteDeleteDialog = useDialog(() => {
-    dispatch(deleteNote(note.id));
+    dispatch(
+      deleteNote({
+        id: note.id,
+        mealType: note.mealType,
+      }),
+    );
   });
 
   const handleEditClick = (): void => {

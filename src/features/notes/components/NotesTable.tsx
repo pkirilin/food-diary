@@ -36,11 +36,16 @@ const NotesTable: React.FC<NotesTableProps> = ({ mealType }: NotesTableProps) =>
   const dispatch = useDispatch();
 
   const noteCreateDialog = useDialog<NoteCreateEdit>(note => {
-    dispatch(createNote(note));
+    dispatch(
+      createNote({
+        mealType,
+        note,
+      }),
+    );
   });
 
   useRefreshEffect(
-    state => state.notes.operationStatus,
+    state => state.notes.operationStatusesByMealType[mealType],
     () => {
       dispatch(
         getNotes({
