@@ -18,7 +18,7 @@ const CategoriesList: React.FC = () => {
   const classes = useStyles();
 
   useRefreshEffect(
-    state => state.categories.categoryItemsChangingStatus,
+    state => state.categories.operationStatus,
     () => {
       dispatch(getCategories());
     },

@@ -40,7 +40,7 @@ const NotesTable: React.FC<NotesTableProps> = ({ mealType }: NotesTableProps) =>
   });
 
   useRefreshEffect(
-    state => state.notes.noteItemsChangingStatus,
+    state => state.notes.operationStatus,
     () => {
       dispatch(
         getNotes({

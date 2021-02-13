@@ -11,7 +11,7 @@ describe('App component', () => {
     const createStateMock = (jest.fn() as jest.Mock<TestRootState>).mockReturnValue({
       pages: {
         pageItems: [],
-        pageItemsChangingStatus: 'idle',
+        operationStatus: 'idle',
         selectedPageIds: [],
         totalPagesCount: 0,
         filter: {

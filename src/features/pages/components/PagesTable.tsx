@@ -26,7 +26,7 @@ const PagesTable: React.FC = () => {
   const dispatch = useDispatch();
 
   useRefreshEffect(
-    state => state.pages.pageItemsChangingStatus,
+    state => state.pages.operationStatus,
     () => {
       const { pageNumber, pageSize } = pageItemsFilter;
 

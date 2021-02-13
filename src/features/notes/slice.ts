@@ -6,15 +6,15 @@ import { createNote, deleteNote, editNote, getNotes } from './thunks';
 
 export type NotesState = {
   noteItems: NoteItem[];
-  noteItemsChangingStatus: OperationStatus;
+  operationStatus: OperationStatus;
 };
 
 const initialState: NotesState = {
   noteItems: [],
-  noteItemsChangingStatus: 'idle',
+  operationStatus: 'idle',
 };
 
-const noteItemsChangingThunks: AnyAsyncThunk[] = [createNote, editNote, deleteNote];
+const operationThunks: AnyAsyncThunk[] = [createNote, editNote, deleteNote];
 
 const notesSlice = createSlice({
   name: 'notes',
@@ -29,14 +29,14 @@ const notesSlice = createSlice({
           ? payload
           : [...state.noteItems.filter(n => n.mealType !== meta.arg.mealType), ...payload];
       })
-      .addMatcher(createAsyncThunkMatcher(noteItemsChangingThunks, 'pending'), state => {
-        state.noteItemsChangingStatus = 'pending';
+      .addMatcher(createAsyncThunkMatcher(operationThunks, 'pending'), state => {
+        state.operationStatus = 'pending';
       })
-      .addMatcher(createAsyncThunkMatcher(noteItemsChangingThunks, 'fulfilled'), state => {
-        state.noteItemsChangingStatus = 'succeeded';
+      .addMatcher(createAsyncThunkMatcher(operationThunks, 'fulfilled'), state => {
+        state.operationStatus = 'succeeded';
       })
-      .addMatcher(createAsyncThunkMatcher(noteItemsChangingThunks, 'rejected'), state => {
-        state.noteItemsChangingStatus = 'failed';
+      .addMatcher(createAsyncThunkMatcher(operationThunks, 'rejected'), state => {
+        state.operationStatus = 'failed';
       }),
 });
 

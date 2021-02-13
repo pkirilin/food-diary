@@ -19,7 +19,7 @@ import {
 export type ProductsState = {
   productItems: ProductItem[];
   totalProductsCount: number;
-  productItemsChangingStatus: OperationStatus;
+  operationStatus: OperationStatus;
   selectedProductIds: number[];
   filter: ProductItemsFilter;
   autocompleteOptions: ProductAutocompleteOption[];
@@ -34,7 +34,7 @@ export type SelectAllProductsPayload = SelectionPayload;
 const initialState: ProductsState = {
   productItems: [],
   totalProductsCount: 0,
-  productItemsChangingStatus: 'idle',
+  operationStatus: 'idle',
   selectedProductIds: [],
   filter: {
     changed: false,
@@ -45,7 +45,7 @@ const initialState: ProductsState = {
   autocompleteOptions: [],
 };
 
-const productItemsChangingThunks: AnyAsyncThunk[] = [createProduct, editProduct, deleteProducts];
+const operationThunks: AnyAsyncThunk[] = [createProduct, editProduct, deleteProducts];
 
 const productsSlice = createSlice({
   name: 'products',
@@ -93,14 +93,14 @@ const productsSlice = createSlice({
           state.autocompleteOptions = payload;
         }
       })
-      .addMatcher(createAsyncThunkMatcher(productItemsChangingThunks, 'pending'), state => {
-        state.productItemsChangingStatus = 'pending';
+      .addMatcher(createAsyncThunkMatcher(operationThunks, 'pending'), state => {
+        state.operationStatus = 'pending';
       })
-      .addMatcher(createAsyncThunkMatcher(productItemsChangingThunks, 'fulfilled'), state => {
-        state.productItemsChangingStatus = 'succeeded';
+      .addMatcher(createAsyncThunkMatcher(operationThunks, 'fulfilled'), state => {
+        state.operationStatus = 'succeeded';
       })
-      .addMatcher(createAsyncThunkMatcher(productItemsChangingThunks, 'rejected'), state => {
-        state.productItemsChangingStatus = 'failed';
+      .addMatcher(createAsyncThunkMatcher(operationThunks, 'rejected'), state => {
+        state.operationStatus = 'failed';
       }),
 });
 

@@ -13,16 +13,16 @@ import {
 export type CategoriesState = {
   categoryItems: CategoryItem[];
   autocompleteOptions: CategoryAutocompleteOption[];
-  categoryItemsChangingStatus: OperationStatus;
+  operationStatus: OperationStatus;
 };
 
 const initialState: CategoriesState = {
   categoryItems: [],
   autocompleteOptions: [],
-  categoryItemsChangingStatus: 'idle',
+  operationStatus: 'idle',
 };
 
-const categoryItemsChangingThunks: AnyAsyncThunk[] = [createCategory, editCategory, deleteCategory];
+const operationThunks: AnyAsyncThunk[] = [createCategory, editCategory, deleteCategory];
 
 const categoriesSlice = createSlice({
   name: 'categories',
@@ -43,14 +43,14 @@ const categoriesSlice = createSlice({
           state.autocompleteOptions = payload;
         }
       })
-      .addMatcher(createAsyncThunkMatcher(categoryItemsChangingThunks, 'pending'), state => {
-        state.categoryItemsChangingStatus = 'pending';
+      .addMatcher(createAsyncThunkMatcher(operationThunks, 'pending'), state => {
+        state.operationStatus = 'pending';
       })
-      .addMatcher(createAsyncThunkMatcher(categoryItemsChangingThunks, 'fulfilled'), state => {
-        state.categoryItemsChangingStatus = 'succeeded';
+      .addMatcher(createAsyncThunkMatcher(operationThunks, 'fulfilled'), state => {
+        state.operationStatus = 'succeeded';
       })
-      .addMatcher(createAsyncThunkMatcher(categoryItemsChangingThunks, 'rejected'), state => {
-        state.categoryItemsChangingStatus = 'failed';
+      .addMatcher(createAsyncThunkMatcher(operationThunks, 'rejected'), state => {
+        state.operationStatus = 'failed';
       }),
 });
 

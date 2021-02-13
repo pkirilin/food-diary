@@ -26,7 +26,7 @@ const ProductsTable: React.FC = () => {
   const dispatch = useDispatch();
 
   useRefreshEffect(
-    state => state.products.productItemsChangingStatus,
+    state => state.products.operationStatus,
     () => {
       const { pageNumber, pageSize, productSearchName, category } = productsFilter;
 

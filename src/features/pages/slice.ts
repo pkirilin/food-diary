@@ -7,7 +7,8 @@ import { createPage, deletePages, editPage, getPageById, getPages } from './thun
 
 export type PagesState = {
   pageItems: PageItem[];
-  pageItemsChangingStatus: OperationStatus;
+  operationStatus: OperationStatus;
+  // TODO: add loadingState
   selectedPageIds: number[];
   totalPagesCount: number;
   filter: PageItemsFilter;
@@ -24,7 +25,7 @@ export type SelectAllPagesPayload = SelectionPayload;
 
 const initialState: PagesState = {
   pageItems: [],
-  pageItemsChangingStatus: 'idle',
+  operationStatus: 'idle',
   selectedPageIds: [],
   totalPagesCount: 0,
   filter: {
@@ -34,7 +35,7 @@ const initialState: PagesState = {
   },
 };
 
-const pageItemsChangingThunks: AnyAsyncThunk[] = [createPage, editPage, deletePages];
+const operationThunks: AnyAsyncThunk[] = [createPage, editPage, deletePages];
 
 const pagesSlice = createSlice({
   name: 'pages',
@@ -73,14 +74,14 @@ const pagesSlice = createSlice({
       .addCase(deletePages.fulfilled, state => {
         state.selectedPageIds = [];
       })
-      .addMatcher(createAsyncThunkMatcher(pageItemsChangingThunks, 'pending'), state => {
-        state.pageItemsChangingStatus = 'pending';
+      .addMatcher(createAsyncThunkMatcher(operationThunks, 'pending'), state => {
+        state.operationStatus = 'pending';
       })
-      .addMatcher(createAsyncThunkMatcher(pageItemsChangingThunks, 'fulfilled'), state => {
-        state.pageItemsChangingStatus = 'succeeded';
+      .addMatcher(createAsyncThunkMatcher(operationThunks, 'fulfilled'), state => {
+        state.operationStatus = 'succeeded';
       })
-      .addMatcher(createAsyncThunkMatcher(pageItemsChangingThunks, 'rejected'), state => {
-        state.pageItemsChangingStatus = 'failed';
+      .addMatcher(createAsyncThunkMatcher(operationThunks, 'rejected'), state => {
+        state.operationStatus = 'failed';
       }),
 });
 
