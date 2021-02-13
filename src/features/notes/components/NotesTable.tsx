@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 import {
   Box,
@@ -15,7 +15,7 @@ import AddIcon from '@material-ui/icons/Add';
 import { MealType, NoteCreateEdit } from '../models';
 import NotesTableRow from './NotesTableRow';
 import NoteCreateEditDialog from './NoteCreateEditDialog';
-import { useDialog, useRouterId, useTypedSelector } from '../../__shared__/hooks';
+import { useDialog, useRefreshEffect, useRouterId, useTypedSelector } from '../../__shared__/hooks';
 import { createNote, getNotes } from '../thunks';
 
 type NotesTableProps = {
@@ -29,8 +29,6 @@ const NotesTable: React.FC<NotesTableProps> = ({ mealType }: NotesTableProps) =>
     state.notes.noteItems.filter(n => n.mealType === mealType),
   );
 
-  const status = useTypedSelector(state => state.notes.noteItemsChangingStatus);
-
   const totalCalories = useMemo(() => noteItems.reduce((sum, note) => sum + note.calories, 0), [
     noteItems,
   ]);
@@ -41,16 +39,19 @@ const NotesTable: React.FC<NotesTableProps> = ({ mealType }: NotesTableProps) =>
     dispatch(createNote(note));
   });
 
-  useEffect(() => {
-    if (status === 'succeeded') {
+  useRefreshEffect(
+    state => state.notes.noteItemsChangingStatus,
+    () => {
       dispatch(
         getNotes({
           pageId,
           mealType,
         }),
       );
-    }
-  }, [pageId, mealType, status]);
+    },
+    [pageId, mealType],
+    false,
+  );
 
   const handleAddNoteClick = (): void => {
     noteCreateDialog.show();

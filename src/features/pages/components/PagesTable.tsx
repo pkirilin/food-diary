@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useDispatch } from 'react-redux';
 import {
   Checkbox,
@@ -13,19 +13,21 @@ import {
 import PagesTableRow from './PagesTableRow';
 import { selectAllPages } from '../slice';
 import { getPages } from '../thunks';
-import { useTypedSelector } from '../../__shared__/hooks';
+import { useRefreshEffect, useTypedSelector } from '../../__shared__/hooks';
 import { SortOrder } from '../../__shared__/models';
 
 const PagesTable: React.FC = () => {
   const pageItems = useTypedSelector(state => state.pages.pageItems);
   const selectedPagesCount = useTypedSelector(state => state.pages.selectedPageIds.length);
-  const pageItemsChangingStatus = useTypedSelector(state => state.pages.pageItemsChangingStatus);
   const pageItemsFilter = useTypedSelector(state => state.pages.filter);
+
   const areAllPagesSelected = pageItems.length > 0 && pageItems.length === selectedPagesCount;
+
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    if (pageItemsChangingStatus === 'idle' || pageItemsChangingStatus === 'succeeded') {
+  useRefreshEffect(
+    state => state.pages.pageItemsChangingStatus,
+    () => {
       const { pageNumber, pageSize } = pageItemsFilter;
 
       dispatch(
@@ -35,8 +37,9 @@ const PagesTable: React.FC = () => {
           pageSize,
         }),
       );
-    }
-  }, [pageItemsChangingStatus, pageItemsFilter]);
+    },
+    [pageItemsFilter],
+  );
 
   const handleSelectAllPages = (): void => {
     dispatch(

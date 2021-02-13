@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useDispatch } from 'react-redux';
 import {
   Checkbox,
@@ -11,13 +11,12 @@ import {
   Typography,
 } from '@material-ui/core';
 import ProductsTableRow from './ProductsTableRow';
-import { useTypedSelector } from '../../__shared__/hooks';
+import { useRefreshEffect, useTypedSelector } from '../../__shared__/hooks';
 import { getProducts } from '../thunks';
 import { allProductsSelected } from '../slice';
 
 const ProductsTable: React.FC = () => {
   const productItems = useTypedSelector(state => state.products.productItems);
-  const changingStatus = useTypedSelector(state => state.products.productItemsChangingStatus);
   const productsFilter = useTypedSelector(state => state.products.filter);
   const selectedProductsCount = useTypedSelector(state => state.products.selectedProductIds.length);
 
@@ -26,8 +25,9 @@ const ProductsTable: React.FC = () => {
 
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    if (changingStatus === 'idle' || changingStatus === 'succeeded') {
+  useRefreshEffect(
+    state => state.products.productItemsChangingStatus,
+    () => {
       const { pageNumber, pageSize, productSearchName, category } = productsFilter;
 
       dispatch(
@@ -38,8 +38,9 @@ const ProductsTable: React.FC = () => {
           categoryId: category?.id,
         }),
       );
-    }
-  }, [changingStatus, productsFilter]);
+    },
+    [productsFilter],
+  );
 
   const handleSelectAllProducts = (): void => {
     dispatch(allProductsSelected({ selected: !areAllProductsSelected }));

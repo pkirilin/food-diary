@@ -14,9 +14,6 @@ export function useRefreshEffect<TState = RootState>(
   const status = useSelector(statusSelector);
 
   useEffect(() => {
-    // if (status === 'idle' || status === 'succeeded') {
-    //   effect();
-    // }
     if ((activateOnInit && status === 'idle') || status === 'succeeded') {
       effect();
     }

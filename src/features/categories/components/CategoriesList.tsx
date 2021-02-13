@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useDispatch } from 'react-redux';
 import { Divider, List, makeStyles, Typography } from '@material-ui/core';
 import CategoriesListItem from './CategoriesListItem';
 import { getCategories } from '../thunks';
-import { useTypedSelector } from '../../__shared__/hooks';
+import { useRefreshEffect, useTypedSelector } from '../../__shared__/hooks';
 
 const useStyles = makeStyles(theme => ({
   emptyItems: {
@@ -13,17 +13,16 @@ const useStyles = makeStyles(theme => ({
 
 const CategoriesList: React.FC = () => {
   const categoryItems = useTypedSelector(state => state.categories.categoryItems);
-  const categoryItemsChangingStatus = useTypedSelector(
-    state => state.categories.categoryItemsChangingStatus,
-  );
+
   const dispatch = useDispatch();
   const classes = useStyles();
 
-  useEffect(() => {
-    if (categoryItemsChangingStatus === 'idle' || categoryItemsChangingStatus === 'succeeded') {
+  useRefreshEffect(
+    state => state.categories.categoryItemsChangingStatus,
+    () => {
       dispatch(getCategories());
-    }
-  }, [categoryItemsChangingStatus]);
+    },
+  );
 
   if (categoryItems.length === 0) {
     return (
