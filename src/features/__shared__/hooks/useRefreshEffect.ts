@@ -1,12 +1,12 @@
 import { DependencyList, EffectCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../store';
-import { OperationStatus } from '../models';
+import { Status } from '../models';
 
-type OperationStatusSelector<TState> = (state: TState) => OperationStatus;
+type StatusSelector<TState> = (state: TState) => Status;
 
 export function useRefreshEffect<TState = RootState>(
-  statusSelector: OperationStatusSelector<TState>,
+  statusSelector: StatusSelector<TState>,
   effect: EffectCallback,
   deps: DependencyList = [],
   activateOnInit = true,

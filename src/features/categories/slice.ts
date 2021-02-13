@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { OperationStatus } from '../__shared__/models';
+import { Status } from '../__shared__/models';
 import { AnyAsyncThunk, createAsyncThunkMatcher } from '../__shared__/utils';
 import { CategoryAutocompleteOption, CategoryItem } from './models';
 import {
@@ -13,7 +13,7 @@ import {
 export type CategoriesState = {
   categoryItems: CategoryItem[];
   autocompleteOptions: CategoryAutocompleteOption[];
-  operationStatus: OperationStatus;
+  operationStatus: Status;
 };
 
 const initialState: CategoriesState = {

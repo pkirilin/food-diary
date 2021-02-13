@@ -2,28 +2,28 @@ import React, { DependencyList, EffectCallback } from 'react';
 import { Action, createStore, Reducer } from 'redux';
 import { Provider } from 'react-redux';
 import { act, render } from '@testing-library/react';
-import { OperationStatus } from '../../models';
+import { Status } from '../../models';
 import { useRefreshEffect } from '../useRefreshEffect';
 
 const STATUS_CHANGED = 'STATUS_CHANGED';
 
 type StatusChangeAction = Action<string> & {
-  status: OperationStatus;
+  status: Status;
 };
 
-const statusChanged = (status: OperationStatus) => ({
+const statusChanged = (status: Status) => ({
   type: STATUS_CHANGED,
   status,
 });
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const reducer: Reducer<OperationStatus, StatusChangeAction> = (state = 'idle', action) => {
+const reducer: Reducer<Status, StatusChangeAction> = (state = 'idle', action) => {
   return action.type === STATUS_CHANGED ? action.status : 'idle';
 };
 
 const store = createStore(reducer);
 
-const transientStatuses: OperationStatus[] = ['pending', 'failed'];
+const transientStatuses: Status[] = ['pending', 'failed'];
 
 type TestWrapperProps = {
   effect: EffectCallback;
@@ -36,7 +36,7 @@ const TestWrapper: React.FC<TestWrapperProps> = ({
   deps = [],
   activateOnInit = true,
 }: TestWrapperProps) => {
-  useRefreshEffect<OperationStatus>(state => state, effect, deps, activateOnInit);
+  useRefreshEffect<Status>(state => state, effect, deps, activateOnInit);
   return null;
 };
 

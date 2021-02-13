@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { OperationStatus } from '../__shared__/models';
+import { Status } from '../__shared__/models';
 import { SelectionPayload } from '../__shared__/types';
 import { AnyAsyncThunk, createAsyncThunkMatcher } from '../__shared__/utils';
 import {
@@ -19,7 +19,7 @@ import {
 export type ProductsState = {
   productItems: ProductItem[];
   totalProductsCount: number;
-  operationStatus: OperationStatus;
+  operationStatus: Status;
   selectedProductIds: number[];
   filter: ProductItemsFilter;
   autocompleteOptions: ProductAutocompleteOption[];

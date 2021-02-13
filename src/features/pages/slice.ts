@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { OperationStatus } from '../__shared__/models';
+import { Status } from '../__shared__/models';
 import { SelectionPayload } from '../__shared__/types';
 import { AnyAsyncThunk, createAsyncThunkMatcher } from '../__shared__/utils';
 import { Page, PageItem, PageItemsFilter } from './models';
@@ -7,7 +7,7 @@ import { createPage, deletePages, editPage, getPageById, getPages } from './thun
 
 export type PagesState = {
   pageItems: PageItem[];
-  operationStatus: OperationStatus;
+  operationStatus: Status;
   // TODO: add loadingState
   selectedPageIds: number[];
   totalPagesCount: number;

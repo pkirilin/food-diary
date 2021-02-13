@@ -3,7 +3,7 @@ export enum SortOrder {
   Descending = 1,
 }
 
-export type OperationStatus = 'idle' | 'pending' | 'succeeded' | 'failed';
+export type Status = 'idle' | 'pending' | 'succeeded' | 'failed';
 
 export interface ItemsFilterBase {
   changed: boolean;

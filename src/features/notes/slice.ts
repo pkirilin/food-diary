@@ -1,12 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { OperationStatus } from '../__shared__/models';
+import { Status } from '../__shared__/models';
 import { AnyAsyncThunk, createAsyncThunkMatcher } from '../__shared__/utils';
 import { NoteItem } from './models';
 import { createNote, deleteNote, editNote, getNotes } from './thunks';
 
 export type NotesState = {
   noteItems: NoteItem[];
-  operationStatus: OperationStatus;
+  operationStatus: Status;
 };
 
 const initialState: NotesState = {
