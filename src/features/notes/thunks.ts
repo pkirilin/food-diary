@@ -38,7 +38,7 @@ export const createNote = createApiCallAsyncThunk<void, CreateNotePayload>(
   'Failed to create note',
   {
     method: 'POST',
-    bodyCreator: note => JSON.stringify(note),
+    bodyCreator: ({ note }) => JSON.stringify(note),
   },
 );
 
@@ -55,7 +55,7 @@ export const editNote = createApiCallAsyncThunk<void, EditNotePayload>(
 
 export const deleteNote = createApiCallAsyncThunk<void, DeleteNotePayload>(
   'notes/deleteNote',
-  id => `${config.apiUrl}/v1/notes/${id}`,
+  ({ id }) => `${config.apiUrl}/v1/notes/${id}`,
   handleEmptyResponse,
   'Failed to delete note',
   {
