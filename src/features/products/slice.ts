@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Status } from '../__shared__/models';
 import { SelectionPayload } from '../__shared__/types';
-import { AnyAsyncThunk, createAsyncThunkMatcher } from '../__shared__/utils';
+import { createAsyncThunkMatcher } from '../__shared__/utils';
 import {
   ProductAutocompleteOption,
   ProductItem,
@@ -45,7 +45,7 @@ const initialState: ProductsState = {
   autocompleteOptions: [],
 };
 
-const operationThunks: AnyAsyncThunk[] = [createProduct, editProduct, deleteProducts];
+const operationThunks = [createProduct, editProduct, deleteProducts];
 
 const productsSlice = createSlice({
   name: 'products',

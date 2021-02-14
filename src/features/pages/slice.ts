@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Status } from '../__shared__/models';
 import { SelectionPayload } from '../__shared__/types';
-import { AnyAsyncThunk, createAsyncThunkMatcher } from '../__shared__/utils';
+import { createAsyncThunkMatcher } from '../__shared__/utils';
 import { Page, PageItem, PageItemsFilter } from './models';
 import { createPage, deletePages, editPage, getPageById, getPages } from './thunks';
 
@@ -35,7 +35,7 @@ const initialState: PagesState = {
   },
 };
 
-const operationThunks: AnyAsyncThunk[] = [createPage, editPage, deletePages];
+const operationThunks = [createPage, editPage, deletePages];
 
 const pagesSlice = createSlice({
   name: 'pages',

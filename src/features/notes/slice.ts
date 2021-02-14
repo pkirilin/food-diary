@@ -1,4 +1,4 @@
-import { AsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { Status } from '../__shared__/models';
 import { AnyAsyncThunk, createAsyncThunkMatcher } from '../__shared__/utils';
 import { Meals, MealType, NoteItem } from './models';
@@ -21,13 +21,18 @@ function getInitialOperationStatuses(): Record<MealType, Status> {
   }, {} as Record<MealType, Status>);
 }
 
-const operationThunks: AnyAsyncThunk[] = [createNote, editNote, deleteNote];
+const operationThunks = [createNote, editNote, deleteNote];
 
-type OperationAsyncThunk = AsyncThunk<unknown, NoteOperationPayload, Record<string, unknown>>;
+type NoteOperationAsyncThunk = AnyAsyncThunk<NoteOperationPayload>;
 
-type PendingOperationAction = ReturnType<OperationAsyncThunk['pending']>;
-type FulfilledOperationAction = ReturnType<OperationAsyncThunk['fulfilled']>;
-type RejectedOperationAction = ReturnType<OperationAsyncThunk['rejected']>;
+type NotePendingOperationAction = ReturnType<NoteOperationAsyncThunk['pending']>;
+type NoteFulfilledOperationAction = ReturnType<NoteOperationAsyncThunk['fulfilled']>;
+type NoteRejectedOperationAction = ReturnType<NoteOperationAsyncThunk['rejected']>;
+
+type NoteOperationAction =
+  | NotePendingOperationAction
+  | NoteFulfilledOperationAction
+  | NoteRejectedOperationAction;
 
 const notesSlice = createSlice({
   name: 'notes',
@@ -42,19 +47,19 @@ const notesSlice = createSlice({
           ? payload
           : [...state.noteItems.filter(n => n.mealType !== meta.arg.mealType), ...payload];
       })
-      .addMatcher<PendingOperationAction>(
+      .addMatcher<NoteOperationAction>(
         createAsyncThunkMatcher(operationThunks, 'pending'),
         (state, action) => {
           state.operationStatusesByMealType[action.meta.arg.mealType] = 'pending';
         },
       )
-      .addMatcher<FulfilledOperationAction>(
+      .addMatcher<NoteOperationAction>(
         createAsyncThunkMatcher(operationThunks, 'fulfilled'),
         (state, action) => {
           state.operationStatusesByMealType[action.meta.arg.mealType] = 'succeeded';
         },
       )
-      .addMatcher<RejectedOperationAction>(
+      .addMatcher<NoteOperationAction>(
         createAsyncThunkMatcher(operationThunks, 'rejected'),
         (state, action) => {
           state.operationStatusesByMealType[action.meta.arg.mealType] = 'failed';

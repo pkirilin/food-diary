@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Status } from '../__shared__/models';
-import { AnyAsyncThunk, createAsyncThunkMatcher } from '../__shared__/utils';
+import { createAsyncThunkMatcher } from '../__shared__/utils';
 import { CategoryAutocompleteOption, CategoryItem } from './models';
 import {
   createCategory,
@@ -22,7 +22,7 @@ const initialState: CategoriesState = {
   operationStatus: 'idle',
 };
 
-const operationThunks: AnyAsyncThunk[] = [createCategory, editCategory, deleteCategory];
+const operationThunks = [createCategory, editCategory, deleteCategory];
 
 const categoriesSlice = createSlice({
   name: 'categories',

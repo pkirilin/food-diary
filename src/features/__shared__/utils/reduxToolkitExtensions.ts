@@ -65,15 +65,16 @@ export const handleEmptyResponse: ApiResponseHandler<void> = async () => {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type AnyAsyncThunk = AsyncThunk<any, any, Record<string, unknown>>;
-export type AnyAsyncThunkActionProperties = keyof Pick<
+export type AnyAsyncThunk<TArgument = any> = AsyncThunk<any, TArgument, Record<string, unknown>>;
+
+type AnyAsyncThunkActionProperties = keyof Pick<
   AnyAsyncThunk,
   'pending' | 'fulfilled' | 'rejected'
 >;
 
-export function createAsyncThunkMatcher<TAction extends AnyAction = AnyAction>(
-  thunks: AnyAsyncThunk[],
-  actionProp: AnyAsyncThunkActionProperties,
-): (action: TAction) => boolean {
+export function createAsyncThunkMatcher<
+  TAsyncThunk extends AnyAsyncThunk,
+  TAction extends AnyAction = AnyAction
+>(thunks: TAsyncThunk[], actionProp: AnyAsyncThunkActionProperties): (action: TAction) => boolean {
   return action => thunks.some(t => t[actionProp].type === action.type);
 }
