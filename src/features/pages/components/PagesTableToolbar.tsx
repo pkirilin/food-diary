@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { IconButton, Toolbar, Tooltip, Typography } from '@material-ui/core';
+import { IconButton, Popover, Toolbar, Tooltip, Typography } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import PublishIcon from '@material-ui/icons/Publish';
@@ -8,6 +8,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import { useDialog, useTypedSelector } from '../../__shared__/hooks';
 import PageCreateEditDialog from './PageCreateEditDialog';
+import PagesFilter from './PagesFilter';
 import { PageCreateEdit } from '../models';
 import { createPage, deletePages } from '../thunks';
 import { ConfirmationDialog } from '../../__shared__/components';
@@ -15,8 +16,13 @@ import { useToolbarStyles } from '../../__shared__/styles';
 
 const PagesTableToolbar: React.FC = () => {
   const classes = useToolbarStyles();
+
   const selectedPageIds = useTypedSelector(state => state.pages.selectedPageIds);
+
   const dispatch = useDispatch();
+
+  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
+  const open = Boolean(anchorEl);
 
   const pageCreateDialog = useDialog<PageCreateEdit>(page => {
     dispatch(createPage(page));
@@ -32,6 +38,14 @@ const PagesTableToolbar: React.FC = () => {
 
   const handleDeleteClick = (): void => {
     pagesDeleteDialog.show();
+  };
+
+  const handleFilterClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleFilterClose = () => {
+    setAnchorEl(null);
   };
 
   return (
@@ -74,7 +88,7 @@ const PagesTableToolbar: React.FC = () => {
           </Tooltip>
           <Tooltip title="Filter pages">
             <span>
-              <IconButton disabled>
+              <IconButton onClick={handleFilterClick}>
                 <FilterListIcon />
               </IconButton>
             </span>
@@ -88,6 +102,21 @@ const PagesTableToolbar: React.FC = () => {
           </Tooltip>
         </React.Fragment>
       )}
+      <Popover
+        open={open}
+        anchorEl={anchorEl}
+        onClose={handleFilterClose}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+      >
+        <PagesFilter></PagesFilter>
+      </Popover>
     </Toolbar>
   );
 };
