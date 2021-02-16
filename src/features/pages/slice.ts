@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Status } from '../__shared__/models';
+import { SortOrder, Status } from '../__shared__/models';
 import { SelectionPayload } from '../__shared__/types';
 import { createAsyncThunkMatcher } from '../__shared__/utils';
 import { Page, PageItem, PageItemsFilter } from './models';
@@ -23,6 +23,8 @@ export interface SelectPagePayload extends SelectionPayload {
 
 export type SelectAllPagesPayload = SelectionPayload;
 
+export type FilterChangedPayload = Pick<PageItemsFilter, 'startDate' | 'endDate' | 'sortOrder'>;
+
 const initialState: PagesState = {
   pageItems: [],
   operationStatus: 'idle',
@@ -32,6 +34,7 @@ const initialState: PagesState = {
     changed: false,
     pageNumber: 1,
     pageSize: 10,
+    sortOrder: SortOrder.Descending,
   },
 };
 
@@ -58,6 +61,15 @@ const pagesSlice = createSlice({
     },
     pageSizeChanged: (state, { payload }: PayloadAction<number>) => {
       state.filter.pageSize = payload;
+    },
+    startDateChanged: (state, { payload }: PayloadAction<string | undefined>) => {
+      state.filter.startDate = payload;
+    },
+    endDateChanged: (state, { payload }: PayloadAction<string | undefined>) => {
+      state.filter.endDate = payload;
+    },
+    sortOrderChanged: (state, { payload }: PayloadAction<SortOrder>) => {
+      state.filter.sortOrder = payload;
     },
   },
   extraReducers: builder =>
@@ -90,6 +102,9 @@ export const {
   selectAllPages,
   pageNumberChanged,
   pageSizeChanged,
+  startDateChanged,
+  endDateChanged,
+  sortOrderChanged,
 } = pagesSlice.actions;
 
 export default pagesSlice.reducer;

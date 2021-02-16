@@ -1,4 +1,4 @@
-import { ItemsFilterBase } from '../__shared__/models';
+import { ItemsFilterBase, SortOrder } from '../__shared__/models';
 
 export interface Page {
   id: number;
@@ -22,4 +22,7 @@ export interface PageCreateEdit {
 export interface PageItemsFilter extends ItemsFilterBase {
   pageNumber: number;
   pageSize: number;
+  sortOrder: SortOrder;
+  startDate?: string;
+  endDate?: string;
 }

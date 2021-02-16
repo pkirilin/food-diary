@@ -14,7 +14,6 @@ import PagesTableRow from './PagesTableRow';
 import { selectAllPages } from '../slice';
 import { getPages } from '../thunks';
 import { useRefreshEffect, useTypedSelector } from '../../__shared__/hooks';
-import { SortOrder } from '../../__shared__/models';
 
 const PagesTable: React.FC = () => {
   const pageItems = useTypedSelector(state => state.pages.pageItems);
@@ -28,13 +27,15 @@ const PagesTable: React.FC = () => {
   useRefreshEffect(
     state => state.pages.operationStatus,
     () => {
-      const { pageNumber, pageSize } = pageItemsFilter;
+      const { pageNumber, pageSize, startDate, endDate, sortOrder } = pageItemsFilter;
 
       dispatch(
         getPages({
-          sortOrder: SortOrder.Descending,
+          sortOrder,
           pageNumber,
           pageSize,
+          startDate,
+          endDate,
         }),
       );
     },

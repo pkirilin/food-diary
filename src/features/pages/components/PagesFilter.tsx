@@ -1,7 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { Box, Button, makeStyles, Paper } from '@material-ui/core';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
+import { useTypedSelector } from '../../__shared__/hooks';
+import { endDateChanged, startDateChanged } from '../slice';
 
 const useStyles = makeStyles(theme => ({
   controls: {
@@ -16,9 +19,23 @@ const useStyles = makeStyles(theme => ({
 const PagesFilter: React.FC = () => {
   const classes = useStyles();
 
+  const filter = useTypedSelector(state => state.pages.filter);
+
+  const dispatch = useDispatch();
+
+  const initialStartDate = filter.startDate || null;
+  const initialEndDate = filter.endDate || null;
+  const initialSortOrder = filter.sortOrder;
+
+  const [startDate, setStartDate] = useState(initialStartDate);
+  const [endDate, setEndDate] = useState(initialEndDate);
+  const [, setSortOrder] = useState(initialSortOrder);
+
   useEffect(() => {
-    return;
-  }, []);
+    setStartDate(initialStartDate);
+    setEndDate(initialEndDate);
+    setSortOrder(initialSortOrder);
+  }, [initialStartDate, initialEndDate, initialSortOrder]);
 
   return (
     <Box p={2} component={Paper}>
@@ -30,9 +47,9 @@ const PagesFilter: React.FC = () => {
           format="dd.MM.yyyy"
           margin="normal"
           label="Start date"
-          value={new Date()}
-          onChange={() => {
-            //
+          value={startDate}
+          onChange={date => {
+            dispatch(startDateChanged(date?.toISOString()));
           }}
         />
         <KeyboardDatePicker
@@ -42,17 +59,14 @@ const PagesFilter: React.FC = () => {
           format="dd.MM.yyyy"
           margin="normal"
           label="End date"
-          value={new Date()}
-          onChange={() => {
-            //
+          value={endDate}
+          onChange={date => {
+            dispatch(endDateChanged(date?.toISOString()));
           }}
         />
       </MuiPickersUtilsProvider>
       <Box mt={2} className={classes.controls}>
-        <Button variant="contained" color="primary">
-          Apply
-        </Button>
-        <Button variant="text" color="default">
+        <Button variant="text" color="default" disabled>
           Reset
         </Button>
       </Box>
