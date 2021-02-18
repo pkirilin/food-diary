@@ -4,7 +4,7 @@ import { Box, Button, makeStyles, Paper } from '@material-ui/core';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import { useTypedSelector } from '../../__shared__/hooks';
-import { endDateChanged, startDateChanged } from '../slice';
+import { endDateChanged, filterReset, startDateChanged } from '../slice';
 
 const useStyles = makeStyles(theme => ({
   controls: {
@@ -37,6 +37,10 @@ const PagesFilter: React.FC = () => {
     setSortOrder(initialSortOrder);
   }, [initialStartDate, initialEndDate, initialSortOrder]);
 
+  const handleResetClick = (): void => {
+    dispatch(filterReset());
+  };
+
   return (
     <Box p={2} component={Paper}>
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -66,7 +70,12 @@ const PagesFilter: React.FC = () => {
         />
       </MuiPickersUtilsProvider>
       <Box mt={2} className={classes.controls}>
-        <Button variant="text" color="default" disabled>
+        <Button
+          variant="text"
+          color="default"
+          disabled={!filter.changed}
+          onClick={handleResetClick}
+        >
           Reset
         </Button>
       </Box>
