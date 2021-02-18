@@ -79,12 +79,9 @@ const PagesTable: React.FC = () => {
               />
             </TableCell>
             <TableCell>
-              <span>Date</span>
-              <TableSortLabel
-                active
-                direction={sortDirectionByDate}
-                onClick={handleReorder}
-              ></TableSortLabel>
+              <TableSortLabel active direction={sortDirectionByDate} onClick={handleReorder}>
+                Date
+              </TableSortLabel>
             </TableCell>
             <TableCell>Total calories</TableCell>
             <TableCell>Count notes</TableCell>
