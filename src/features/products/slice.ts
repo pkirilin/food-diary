@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { CategoryAutocompleteOption } from '../categories/models';
 import { Status } from '../__shared__/models';
 import { SelectionPayload } from '../__shared__/types';
 import { createAsyncThunkMatcher } from '../__shared__/utils';
@@ -74,6 +75,22 @@ const productsSlice = createSlice({
         ...payload,
       };
     },
+    productSearchNameChanged: (state, { payload }: PayloadAction<string>) => {
+      state.filter.productSearchName = payload;
+      state.filter.changed = true;
+    },
+    filterByCategoryChanged: (
+      state,
+      { payload }: PayloadAction<CategoryAutocompleteOption | null>,
+    ) => {
+      state.filter.category = payload;
+      state.filter.changed = true;
+    },
+    filterReset: state => {
+      state.filter.productSearchName = undefined;
+      state.filter.category = null;
+      state.filter.changed = false;
+    },
     autocompleteOptionsDisposed: state => {
       state.autocompleteOptions = [];
     },
@@ -110,6 +127,9 @@ export const {
   pageNumberChanged,
   pageSizeChanged,
   filterUpdated,
+  productSearchNameChanged,
+  filterByCategoryChanged,
+  filterReset,
   autocompleteOptionsDisposed,
 } = productsSlice.actions;
 
