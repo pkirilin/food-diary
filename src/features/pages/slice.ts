@@ -23,20 +23,6 @@ export interface SelectPagePayload extends SelectionPayload {
 
 export type SelectAllPagesPayload = SelectionPayload;
 
-export type FilterChangedPayload = Pick<PageItemsFilter, 'startDate' | 'endDate' | 'sortOrder'>;
-
-function changeFilter(
-  state: PagesState,
-  filterParams: Partial<Omit<PageItemsFilter, 'changed'>>,
-  changed = true,
-): void {
-  state.filter = {
-    ...state.filter,
-    ...filterParams,
-    changed,
-  };
-}
-
 const initialState: PagesState = {
   pageItems: [],
   operationStatus: 'idle',
@@ -65,23 +51,25 @@ const pagesSlice = createSlice({
       }
     },
     selectAllPages: (state, { payload }: PayloadAction<SelectAllPagesPayload>) => {
-      const { selected } = payload;
-      state.selectedPageIds = selected ? state.pageItems.map(p => p.id) : [];
+      state.selectedPageIds = payload.selected ? state.pageItems.map(p => p.id) : [];
     },
     pageNumberChanged: (state, { payload }: PayloadAction<number>) => {
-      changeFilter(state, { pageNumber: payload }, false);
+      state.filter.pageNumber = payload;
     },
     pageSizeChanged: (state, { payload }: PayloadAction<number>) => {
-      changeFilter(state, { pageSize: payload }, false);
+      state.filter.pageSize = payload;
     },
     startDateChanged: (state, { payload }: PayloadAction<string | undefined>) => {
-      changeFilter(state, { startDate: payload });
+      state.filter.startDate = payload;
+      state.filter.changed = true;
     },
     endDateChanged: (state, { payload }: PayloadAction<string | undefined>) => {
-      changeFilter(state, { endDate: payload });
+      state.filter.endDate = payload;
+      state.filter.changed = true;
     },
     sortOrderChanged: (state, { payload }: PayloadAction<SortOrder>) => {
-      changeFilter(state, { sortOrder: payload });
+      state.filter.sortOrder = payload;
+      state.filter.changed = true;
     },
     filterReset: state => {
       state.filter.changed = false;
