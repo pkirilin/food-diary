@@ -3,12 +3,7 @@ import { CategoryAutocompleteOption } from '../categories/models';
 import { Status } from '../__shared__/models';
 import { SelectionPayload } from '../__shared__/types';
 import { createAsyncThunkMatcher } from '../__shared__/utils';
-import {
-  ProductAutocompleteOption,
-  ProductItem,
-  ProductItemsFilter,
-  ProductsFilterUpdatedData,
-} from './models';
+import { ProductAutocompleteOption, ProductItem, ProductItemsFilter } from './models';
 import {
   createProduct,
   deleteProducts,
@@ -69,12 +64,6 @@ const productsSlice = createSlice({
     pageSizeChanged: (state, { payload }: PayloadAction<number>) => {
       state.filter.pageSize = payload;
     },
-    filterUpdated: (state, { payload }: PayloadAction<ProductsFilterUpdatedData>) => {
-      state.filter = {
-        ...state.filter,
-        ...payload,
-      };
-    },
     productSearchNameChanged: (state, { payload }: PayloadAction<string>) => {
       state.filter.productSearchName = payload;
       state.filter.changed = true;
@@ -126,7 +115,6 @@ export const {
   allProductsSelected,
   pageNumberChanged,
   pageSizeChanged,
-  filterUpdated,
   productSearchNameChanged,
   filterByCategoryChanged,
   filterReset,

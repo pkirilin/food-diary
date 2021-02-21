@@ -27,6 +27,4 @@ export interface ProductItemsFilter extends ItemsFilterBase {
   category: CategoryAutocompleteOption | null;
 }
 
-export type ProductsFilterUpdatedData = Pick<ProductItemsFilter, 'productSearchName' | 'category'>;
-
 export type ProductAutocompleteOption = AutocompleteOption;
