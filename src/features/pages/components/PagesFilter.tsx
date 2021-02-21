@@ -28,7 +28,7 @@ const PagesFilter: React.FC = () => {
   }, [filterEndDate]);
 
   return (
-    <Box p={2} component={Paper} className={classes.root}>
+    <Box component={Paper} className={classes.root}>
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <KeyboardDatePicker
           disableToolbar
@@ -55,7 +55,7 @@ const PagesFilter: React.FC = () => {
           }}
         />
       </MuiPickersUtilsProvider>
-      <Box mt={2} className={classes.controls}>
+      <Box className={classes.controls}>
         <Button
           variant="text"
           color="default"

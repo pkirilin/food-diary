@@ -29,27 +29,24 @@ const ProductsFilter: React.FC = () => {
   }, [filterCategory]);
 
   return (
-    <Box p={2} component={Paper} className={classes.root}>
-      <Box>
-        <TextField
-          {...productSearchNameInput.binding}
-          label="Search by name"
-          placeholder="Enter product name"
-          fullWidth
-          onBlur={event => {
-            dispatch(productSearchNameChanged(event.target.value));
-          }}
-        ></TextField>
-      </Box>
-      <Box mt={2}>
-        <CategoryAutocomplete
-          value={category}
-          onChange={(event, option) => {
-            dispatch(filterByCategoryChanged(option));
-          }}
-        ></CategoryAutocomplete>
-      </Box>
-      <Box mt={2} className={classes.controls}>
+    <Box component={Paper} className={classes.root}>
+      <TextField
+        {...productSearchNameInput.binding}
+        label="Search by name"
+        placeholder="Enter product name"
+        fullWidth
+        margin="normal"
+        onBlur={event => {
+          dispatch(productSearchNameChanged(event.target.value));
+        }}
+      ></TextField>
+      <CategoryAutocomplete
+        value={category}
+        onChange={(event, option) => {
+          dispatch(filterByCategoryChanged(option));
+        }}
+      ></CategoryAutocomplete>
+      <Box className={classes.controls}>
         <Button
           variant="text"
           color="default"

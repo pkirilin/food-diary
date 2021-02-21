@@ -36,6 +36,7 @@ const ProductAutocomplete: React.FC<ProductAutocompleteProps> = ({
           {...params}
           label="Product"
           placeholder="Select a product"
+          margin="normal"
           InputProps={{
             ...params.InputProps,
             endAdornment: (

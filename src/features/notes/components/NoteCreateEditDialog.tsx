@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import {
-  Box,
   Button,
   Dialog,
   DialogActions,
@@ -76,18 +75,15 @@ const NoteCreateEditDialog: React.FC<NoteCreateEditDialogProps> = ({
     <Dialog maxWidth="xs" fullWidth {...dialogProps}>
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
-        <Box>
-          <ProductAutocomplete {...productInput.binding}></ProductAutocomplete>
-        </Box>
-        <Box mt={2}>
-          <TextField
-            {...quantityInput.binding}
-            type="number"
-            label="Quantity"
-            placeholder="Product quantity, g"
-            fullWidth
-          ></TextField>
-        </Box>
+        <ProductAutocomplete {...productInput.binding}></ProductAutocomplete>
+        <TextField
+          {...quantityInput.binding}
+          type="number"
+          label="Quantity"
+          placeholder="Product quantity, g"
+          margin="normal"
+          fullWidth
+        ></TextField>
       </DialogContent>
       <DialogActions>
         <Button variant="contained" color="primary" onClick={handleSubmitClick}>

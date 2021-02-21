@@ -36,6 +36,7 @@ const CategoryAutocomplete: React.FC<CategoryAutocompleteProps> = ({
           {...params}
           label="Category"
           placeholder="Select a category"
+          margin="normal"
           InputProps={{
             ...params.InputProps,
             endAdornment: (
