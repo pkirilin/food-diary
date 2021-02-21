@@ -6,7 +6,7 @@ import { useAsyncAutocomplete } from '../../__shared__/hooks';
 import { AutocompleteCustomBaseProps } from '../../__shared__/types';
 import { AutocompleteEndAdornment } from '../../__shared__/components';
 import { ProductAutocompleteOption } from '../models';
-import { autocompleteOptionsDisposed } from '../slice';
+import { autocompleteCleared } from '../slice';
 import { getProductsAutocomplete } from '../thunks';
 
 type ProductAutocompleteProps = AutocompleteCustomBaseProps<ProductAutocompleteOption>;
@@ -24,7 +24,7 @@ const ProductAutocomplete: React.FC<ProductAutocompleteProps> = ({
       dispatch(getProductsAutocomplete(active));
     },
     () => {
-      dispatch(autocompleteOptionsDisposed());
+      dispatch(autocompleteCleared());
     },
   );
 

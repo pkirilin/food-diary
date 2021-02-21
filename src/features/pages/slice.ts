@@ -42,7 +42,7 @@ const pagesSlice = createSlice({
   name: 'pages',
   initialState,
   reducers: {
-    selectPage: (state, { payload }: PayloadAction<SelectPagePayload>) => {
+    pageSelected: (state, { payload }: PayloadAction<SelectPagePayload>) => {
       const { pageId, selected } = payload;
       if (selected) {
         state.selectedPageIds.push(pageId);
@@ -50,7 +50,7 @@ const pagesSlice = createSlice({
         state.selectedPageIds = state.selectedPageIds.filter(id => id !== pageId);
       }
     },
-    selectAllPages: (state, { payload }: PayloadAction<SelectAllPagesPayload>) => {
+    allPagesSelected: (state, { payload }: PayloadAction<SelectAllPagesPayload>) => {
       state.selectedPageIds = payload.selected ? state.pageItems.map(p => p.id) : [];
     },
     pageNumberChanged: (state, { payload }: PayloadAction<number>) => {
@@ -104,8 +104,8 @@ const pagesSlice = createSlice({
 });
 
 export const {
-  selectPage,
-  selectAllPages,
+  pageSelected,
+  allPagesSelected,
   pageNumberChanged,
   pageSizeChanged,
   startDateChanged,

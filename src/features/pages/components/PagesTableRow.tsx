@@ -5,7 +5,7 @@ import { TableRow, TableCell, Checkbox, Tooltip, IconButton, Link } from '@mater
 import EditIcon from '@material-ui/icons/Edit';
 import { PageCreateEdit, PageItem } from '../models';
 import { useDialog, useTypedSelector } from '../../__shared__/hooks';
-import { selectPage } from '../slice';
+import { pageSelected } from '../slice';
 import PageCreateEditDialog from './PageCreateEditDialog';
 import { editPage } from '../thunks';
 
@@ -31,7 +31,7 @@ const PagesTableRow: React.FC<PagesTableRowProps> = ({ page }: PagesTableRowProp
 
   const handleSelectPage = (): void => {
     dispatch(
-      selectPage({
+      pageSelected({
         pageId: page.id,
         selected: !isPageSelected,
       }),

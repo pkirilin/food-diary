@@ -6,7 +6,7 @@ import { AutocompleteEndAdornment } from '../../__shared__/components';
 import { useAsyncAutocomplete } from '../../__shared__/hooks';
 import { AutocompleteCustomBaseProps } from '../../__shared__/types';
 import { getCategoriesAutocomplete } from '../thunks';
-import { clearAutocompleteOptions } from '../slice';
+import { autocompleteCleared } from '../slice';
 import { CategoryAutocompleteOption } from '../models';
 
 type CategoryAutocompleteProps = AutocompleteCustomBaseProps<CategoryAutocompleteOption>;
@@ -24,7 +24,7 @@ const CategoryAutocomplete: React.FC<CategoryAutocompleteProps> = ({
       dispatch(getCategoriesAutocomplete(active));
     },
     () => {
-      dispatch(clearAutocompleteOptions());
+      dispatch(autocompleteCleared());
     },
   );
 

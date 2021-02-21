@@ -12,7 +12,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import PagesTableRow from './PagesTableRow';
-import { selectAllPages, sortOrderChanged } from '../slice';
+import { allPagesSelected, sortOrderChanged } from '../slice';
 import { getPages } from '../thunks';
 import { useRefreshEffect, useTypedSelector } from '../../__shared__/hooks';
 import { SortOrder } from '../../__shared__/models';
@@ -52,7 +52,7 @@ const PagesTable: React.FC = () => {
 
   const handleSelectAllPages = (): void => {
     dispatch(
-      selectAllPages({
+      allPagesSelected({
         selected: !areAllPagesSelected,
       }),
     );

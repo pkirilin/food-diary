@@ -28,7 +28,7 @@ const categoriesSlice = createSlice({
   name: 'categories',
   initialState,
   reducers: {
-    clearAutocompleteOptions: state => {
+    autocompleteCleared: state => {
       state.autocompleteOptions = [];
     },
   },
@@ -54,6 +54,6 @@ const categoriesSlice = createSlice({
       }),
 });
 
-export const { clearAutocompleteOptions } = categoriesSlice.actions;
+export const { autocompleteCleared } = categoriesSlice.actions;
 
 export default categoriesSlice.reducer;

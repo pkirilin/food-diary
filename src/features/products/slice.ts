@@ -80,7 +80,7 @@ const productsSlice = createSlice({
       state.filter.category = null;
       state.filter.changed = false;
     },
-    autocompleteOptionsDisposed: state => {
+    autocompleteCleared: state => {
       state.autocompleteOptions = [];
     },
   },
@@ -118,7 +118,7 @@ export const {
   productSearchNameChanged,
   filterByCategoryChanged,
   filterReset,
-  autocompleteOptionsDisposed,
+  autocompleteCleared,
 } = productsSlice.actions;
 
 export default productsSlice.reducer;
