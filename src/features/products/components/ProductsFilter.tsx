@@ -1,42 +1,32 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { Box, Button, makeStyles, Paper, TextField } from '@material-ui/core';
-import { useInput, useTypedSelector } from '../../__shared__/hooks';
-import { CategoryAutocomplete } from '../../categories/components';
+import { Box, Button, Paper, TextField } from '@material-ui/core';
 import { filterByCategoryChanged, filterReset, productSearchNameChanged } from '../slice';
-
-// TODO: reuse these styles
-const useStyles = makeStyles(theme => ({
-  root: {
-    width: '450px',
-  },
-  controls: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    '& > :not(:first-child)': {
-      marginLeft: theme.spacing(1),
-    },
-  },
-}));
+import { CategoryAutocomplete } from '../../categories/components';
+import { useInput, useTypedSelector } from '../../__shared__/hooks';
+import { useFilterStyles } from '../../__shared__/styles';
 
 const ProductsFilter: React.FC = () => {
-  const classes = useStyles();
+  const classes = useFilterStyles();
 
-  const filter = useTypedSelector(state => state.products.filter);
-  const currentProductSearchName = filter.productSearchName || '';
+  const filterProductName = useTypedSelector(
+    state => state.products.filter.productSearchName || '',
+  );
+  const filterCategory = useTypedSelector(state => state.products.filter.category);
+  const filterChanged = useTypedSelector(state => state.products.filter.changed);
 
   const dispatch = useDispatch();
 
-  const productSearchNameInput = useInput(currentProductSearchName);
-  const [category, setCategory] = useState(filter.category);
+  const productSearchNameInput = useInput(filterProductName);
+  const [category, setCategory] = useState(filterCategory);
 
   useEffect(() => {
-    productSearchNameInput.setValue(currentProductSearchName);
-  }, [filter.productSearchName]);
+    productSearchNameInput.setValue(filterProductName);
+  }, [filterProductName]);
 
   useEffect(() => {
-    setCategory(filter.category);
-  }, [filter.category]);
+    setCategory(filterCategory);
+  }, [filterCategory]);
 
   return (
     <Box p={2} component={Paper} className={classes.root}>
@@ -63,7 +53,7 @@ const ProductsFilter: React.FC = () => {
         <Button
           variant="text"
           color="default"
-          disabled={!filter.changed}
+          disabled={!filterChanged}
           onClick={() => {
             dispatch(filterReset());
           }}

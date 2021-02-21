@@ -1,48 +1,34 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { Box, Button, makeStyles, Paper } from '@material-ui/core';
+import { Box, Button, Paper } from '@material-ui/core';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
-import { useTypedSelector } from '../../__shared__/hooks';
 import { endDateChanged, filterReset, startDateChanged } from '../slice';
-
-const useStyles = makeStyles(theme => ({
-  controls: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    '& > :not(:first-child)': {
-      marginLeft: theme.spacing(1),
-    },
-  },
-}));
+import { useTypedSelector } from '../../__shared__/hooks';
+import { useFilterStyles } from '../../__shared__/styles';
 
 const PagesFilter: React.FC = () => {
-  const classes = useStyles();
+  const classes = useFilterStyles();
 
-  const filter = useTypedSelector(state => state.pages.filter);
+  const filterStartDate = useTypedSelector(state => state.pages.filter.startDate || null);
+  const filterEndDate = useTypedSelector(state => state.pages.filter.endDate || null);
+  const filterChanged = useTypedSelector(state => state.pages.filter.changed);
 
   const dispatch = useDispatch();
 
-  const initialStartDate = filter.startDate || null;
-  const initialEndDate = filter.endDate || null;
-  const initialSortOrder = filter.sortOrder;
-
-  const [startDate, setStartDate] = useState(initialStartDate);
-  const [endDate, setEndDate] = useState(initialEndDate);
-  const [, setSortOrder] = useState(initialSortOrder);
+  const [startDate, setStartDate] = useState(filterStartDate);
+  const [endDate, setEndDate] = useState(filterEndDate);
 
   useEffect(() => {
-    setStartDate(initialStartDate);
-    setEndDate(initialEndDate);
-    setSortOrder(initialSortOrder);
-  }, [initialStartDate, initialEndDate, initialSortOrder]);
+    setStartDate(filterStartDate);
+  }, [filterStartDate]);
 
-  const handleResetClick = (): void => {
-    dispatch(filterReset());
-  };
+  useEffect(() => {
+    setEndDate(filterEndDate);
+  }, [filterEndDate]);
 
   return (
-    <Box p={2} component={Paper}>
+    <Box p={2} component={Paper} className={classes.root}>
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <KeyboardDatePicker
           disableToolbar
@@ -73,8 +59,10 @@ const PagesFilter: React.FC = () => {
         <Button
           variant="text"
           color="default"
-          disabled={!filter.changed}
-          onClick={handleResetClick}
+          disabled={!filterChanged}
+          onClick={() => {
+            dispatch(filterReset());
+          }}
         >
           Reset
         </Button>
