@@ -6,12 +6,12 @@ import FilterListIcon from '@material-ui/icons/FilterList';
 import PublishIcon from '@material-ui/icons/Publish';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
-import { useDialog, useTypedSelector } from '../../__shared__/hooks';
 import PageCreateEditDialog from './PageCreateEditDialog';
 import PagesFilter from './PagesFilter';
 import { PageCreateEdit } from '../models';
 import { createPage, deletePages } from '../thunks';
 import { ConfirmationDialog } from '../../__shared__/components';
+import { useDialog, usePopover, useTypedSelector } from '../../__shared__/hooks';
 import { useToolbarStyles } from '../../__shared__/styles';
 
 const PagesTableToolbar: React.FC = () => {
@@ -21,8 +21,7 @@ const PagesTableToolbar: React.FC = () => {
 
   const dispatch = useDispatch();
 
-  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
-  const open = Boolean(anchorEl);
+  const [filter, showFilter] = usePopover();
 
   const pageCreateDialog = useDialog<PageCreateEdit>(page => {
     dispatch(createPage(page));
@@ -38,14 +37,6 @@ const PagesTableToolbar: React.FC = () => {
 
   const handleDeleteClick = (): void => {
     pagesDeleteDialog.show();
-  };
-
-  const handleFilterClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleFilterClose = () => {
-    setAnchorEl(null);
   };
 
   return (
@@ -88,7 +79,11 @@ const PagesTableToolbar: React.FC = () => {
           </Tooltip>
           <Tooltip title="Filter pages">
             <span>
-              <IconButton onClick={handleFilterClick}>
+              <IconButton
+                onClick={event => {
+                  showFilter(event);
+                }}
+              >
                 <FilterListIcon />
               </IconButton>
             </span>
@@ -103,9 +98,7 @@ const PagesTableToolbar: React.FC = () => {
         </React.Fragment>
       )}
       <Popover
-        open={open}
-        anchorEl={anchorEl}
-        onClose={handleFilterClose}
+        {...filter}
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'right',

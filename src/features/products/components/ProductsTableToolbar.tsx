@@ -4,9 +4,9 @@ import { IconButton, Popover, Toolbar, Tooltip, Typography } from '@material-ui/
 import AddIcon from '@material-ui/icons/Add';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { useDialog, useTypedSelector } from '../../__shared__/hooks';
-import { useToolbarStyles } from '../../__shared__/styles';
 import { ConfirmationDialog } from '../../__shared__/components';
+import { useDialog, usePopover, useTypedSelector } from '../../__shared__/hooks';
+import { useToolbarStyles } from '../../__shared__/styles';
 import ProductCreateEditDialog from './ProductCreateEditDialog';
 import { ProductCreateEdit } from '../models';
 import { createProduct, deleteProducts } from '../thunks';
@@ -14,11 +14,12 @@ import ProductsFilter from './ProductsFilter';
 
 const ProductsTableToolbar: React.FC = () => {
   const classes = useToolbarStyles();
+
   const selectedProductIds = useTypedSelector(state => state.products.selectedProductIds);
+
   const dispatch = useDispatch();
 
-  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
-  const open = Boolean(anchorEl);
+  const [filter, showFilter] = usePopover();
 
   const productCreateDialog = useDialog<ProductCreateEdit>(product => {
     dispatch(createProduct(product));
@@ -30,14 +31,6 @@ const ProductsTableToolbar: React.FC = () => {
 
   const handleAddClick = (): void => {
     productCreateDialog.show();
-  };
-
-  const handleFilterClick = (event: React.MouseEvent<HTMLButtonElement>): void => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleFilterClose = (): void => {
-    setAnchorEl(null);
   };
 
   const handleDeleteClick = (): void => {
@@ -77,7 +70,11 @@ const ProductsTableToolbar: React.FC = () => {
           </Tooltip>
           <Tooltip title="Filter products">
             <span>
-              <IconButton onClick={handleFilterClick}>
+              <IconButton
+                onClick={event => {
+                  showFilter(event);
+                }}
+              >
                 <FilterListIcon></FilterListIcon>
               </IconButton>
             </span>
@@ -85,9 +82,7 @@ const ProductsTableToolbar: React.FC = () => {
         </React.Fragment>
       )}
       <Popover
-        open={open}
-        anchorEl={anchorEl}
-        onClose={handleFilterClose}
+        {...filter}
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'right',
