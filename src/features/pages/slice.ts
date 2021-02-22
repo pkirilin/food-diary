@@ -3,7 +3,7 @@ import { SortOrder, Status } from '../__shared__/models';
 import { SelectionPayload } from '../__shared__/types';
 import { createAsyncThunkMatcher } from '../__shared__/utils';
 import { Page, PageItem, PageItemsFilter } from './models';
-import { createPage, deletePages, editPage, getPageById, getPages } from './thunks';
+import { createPage, deletePages, editPage, getPageById, getPages, importPages } from './thunks';
 
 export type PagesState = {
   pageItems: PageItem[];
@@ -36,7 +36,7 @@ const initialState: PagesState = {
   },
 };
 
-const operationThunks = [createPage, editPage, deletePages];
+const operationThunks = [createPage, editPage, deletePages, importPages];
 
 const pagesSlice = createSlice({
   name: 'pages',

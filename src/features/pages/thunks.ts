@@ -69,3 +69,19 @@ export const deletePages = createApiCallAsyncThunk<void, number[]>(
     bodyCreator: pageids => JSON.stringify(pageids),
   },
 );
+
+export const importPages = createApiCallAsyncThunk<void, File>(
+  'pages/importPages',
+  () => `${config.apiUrl}/v1/imports/json`,
+  handleEmptyResponse,
+  'Failed to import pages',
+  {
+    method: 'POST',
+    contentType: 'none',
+    bodyCreator: importFile => {
+      const formData = new FormData();
+      formData.append('importFile', importFile, importFile.name);
+      return formData;
+    },
+  },
+);

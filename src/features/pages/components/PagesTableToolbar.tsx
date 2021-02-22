@@ -9,10 +9,13 @@ import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import PageCreateEditDialog from './PageCreateEditDialog';
 import PagesFilter from './PagesFilter';
 import { PageCreateEdit } from '../models';
-import { createPage, deletePages } from '../thunks';
+import { createPage, deletePages, importPages } from '../thunks';
 import { ConfirmationDialog } from '../../__shared__/components';
 import { useDialog, usePopover, useTypedSelector } from '../../__shared__/hooks';
 import { useToolbarStyles } from '../../__shared__/styles';
+
+const importWarningMessage =
+  'Pages import is going to be started. Import may update or overwrite existing data from file and may cause data loss. Continue?';
 
 const PagesTableToolbar: React.FC = () => {
   const classes = useToolbarStyles();
@@ -31,6 +34,13 @@ const PagesTableToolbar: React.FC = () => {
     dispatch(deletePages(selectedPageIds));
   });
 
+  const pagesImportDialog = useDialog(() => {
+    // TODO: implement
+    const importFile = new File([], '');
+
+    dispatch(importPages(importFile));
+  });
+
   const handleAddClick = (): void => {
     pageCreateDialog.show();
   };
@@ -39,13 +49,23 @@ const PagesTableToolbar: React.FC = () => {
     pagesDeleteDialog.show();
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const handleImportFileChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    return;
+  };
+
   return (
     <Toolbar className={classes.root}>
       <PageCreateEditDialog {...pageCreateDialog.binding}></PageCreateEditDialog>
       <ConfirmationDialog
+        {...pagesDeleteDialog.binding}
         dialogTitle="Delete pages confirmation"
         dialogMessage="Do you really want to delete all selected pages?"
-        {...pagesDeleteDialog.binding}
+      ></ConfirmationDialog>
+      <ConfirmationDialog
+        {...pagesImportDialog.binding}
+        dialogTitle="Import warning"
+        dialogMessage={importWarningMessage}
       ></ConfirmationDialog>
       {selectedPageIds.length > 0 ? (
         <React.Fragment>
@@ -89,11 +109,12 @@ const PagesTableToolbar: React.FC = () => {
             </span>
           </Tooltip>
           <Tooltip title="Import pages">
-            <span>
-              <IconButton disabled>
+            <label>
+              <IconButton component="span">
                 <PublishIcon />
               </IconButton>
-            </span>
+              <input type="file" name="importFile" hidden onChange={handleImportFileChange} />
+            </label>
           </Tooltip>
         </React.Fragment>
       )}
