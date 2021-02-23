@@ -17,8 +17,9 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import PageCreateEditDialog from './PageCreateEditDialog';
 import PagesFilter from './PagesFilter';
+import PagesExportDialog from './PagesExportDialog';
 import { PageCreateEdit } from '../models';
-import { createPage, deletePages, importPages } from '../thunks';
+import { createPage, deletePages, exportPages, ExportPagesRequest, importPages } from '../thunks';
 import { ConfirmationDialog } from '../../__shared__/components';
 import { useDialog, usePopover, useTypedSelector } from '../../__shared__/hooks';
 import { useToolbarStyles } from '../../__shared__/styles';
@@ -50,6 +51,10 @@ const PagesTableToolbar: React.FC = () => {
     if (importFile) {
       dispatch(importPages(importFile));
     }
+  });
+
+  const exportDialog = useDialog<ExportPagesRequest>(exportParams => {
+    dispatch(exportPages(exportParams));
   });
 
   useEffect(() => {
@@ -86,6 +91,7 @@ const PagesTableToolbar: React.FC = () => {
   return (
     <Toolbar className={classes.root}>
       <PageCreateEditDialog {...pageCreateDialog.binding}></PageCreateEditDialog>
+      <PagesExportDialog {...exportDialog.binding}></PagesExportDialog>
       <ConfirmationDialog
         {...pagesDeleteDialog.binding}
         dialogTitle="Delete pages confirmation"
@@ -178,10 +184,18 @@ const PagesTableToolbar: React.FC = () => {
         }}
       >
         <List subheader={<ListSubheader>Export pages</ListSubheader>}>
-          <ListItem button disabled={selectedPageIds.length === 0}>
+          {/* TODO: implement */}
+          {/* <ListItem button disabled={selectedPageIds.length === 0}>
             Export selected
+          </ListItem> */}
+          <ListItem
+            button
+            onClick={() => {
+              exportDialog.show();
+            }}
+          >
+            Export by filter parameters
           </ListItem>
-          <ListItem button>Export by filter parameters</ListItem>
         </List>
       </Popover>
     </Toolbar>

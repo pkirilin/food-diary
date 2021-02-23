@@ -3,6 +3,11 @@ export enum SortOrder {
   Descending = 1,
 }
 
+export enum ExportFormat {
+  Json = 'json',
+  Pdf = 'pdf',
+}
+
 export type Status = 'idle' | 'pending' | 'succeeded' | 'failed';
 
 export interface ItemsFilterBase {

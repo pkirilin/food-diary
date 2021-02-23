@@ -1,4 +1,5 @@
 import { AnyAction, AsyncThunk, createAsyncThunk } from '@reduxjs/toolkit';
+import { downloadFile } from './fileHelper';
 
 export type ApiCallAsyncThunk<TData, TArgument> = AsyncThunk<
   TData,
@@ -62,6 +63,12 @@ export function createApiCallAsyncThunk<TData, TArgument>(
 
 export const handleEmptyResponse: ApiResponseHandler<void> = async () => {
   return;
+};
+
+export const handleDownloadFile: ApiResponseHandler<void> = async response => {
+  const blob = await response.blob();
+  // TODO: add details to file name (e.g. date range), fix format
+  downloadFile(blob, 'FoodDiary.json');
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

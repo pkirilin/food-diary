@@ -1,6 +1,11 @@
 import config from '../__shared__/config';
-import { SortOrder } from '../__shared__/models';
-import { createApiCallAsyncThunk, createUrl, handleEmptyResponse } from '../__shared__/utils';
+import { ExportFormat, SortOrder } from '../__shared__/models';
+import {
+  createApiCallAsyncThunk,
+  createUrl,
+  handleDownloadFile,
+  handleEmptyResponse,
+} from '../__shared__/utils';
 import { Page, PageCreateEdit, PagesSearchResult } from './models';
 
 export type GetPagesRequest = {
@@ -20,6 +25,12 @@ export interface PageByIdResponse {
   currentPage: Page;
   previousPage: Page;
   nextPage: Page;
+}
+
+export interface ExportPagesRequest {
+  startDate: string;
+  endDate: string;
+  format: ExportFormat;
 }
 
 export const getPages = createApiCallAsyncThunk<PagesSearchResult, GetPagesRequest>(
@@ -68,6 +79,13 @@ export const deletePages = createApiCallAsyncThunk<void, number[]>(
     method: 'DELETE',
     bodyCreator: pageids => JSON.stringify(pageids),
   },
+);
+
+export const exportPages = createApiCallAsyncThunk<void, ExportPagesRequest>(
+  'pages/exportPages',
+  ({ format, ...params }) => createUrl(`${config.apiUrl}/v1/exports/${format}`, { ...params }),
+  handleDownloadFile,
+  'Failed to export pages',
 );
 
 export const importPages = createApiCallAsyncThunk<void, File>(
