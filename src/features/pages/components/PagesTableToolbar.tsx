@@ -1,6 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { IconButton, Popover, Toolbar, Tooltip, Typography } from '@material-ui/core';
+import {
+  IconButton,
+  List,
+  ListItem,
+  ListSubheader,
+  Popover,
+  Toolbar,
+  Tooltip,
+  Typography,
+} from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import PublishIcon from '@material-ui/icons/Publish';
@@ -27,6 +36,7 @@ const PagesTableToolbar: React.FC = () => {
   const [importFile, setImportFile] = useState<File>();
 
   const [filter, showFilter] = usePopover();
+  const [exportOptions, showExportOptions] = usePopover();
 
   const pageCreateDialog = useDialog<PageCreateEdit>(page => {
     dispatch(createPage(page));
@@ -89,13 +99,6 @@ const PagesTableToolbar: React.FC = () => {
       {selectedPageIds.length > 0 ? (
         <React.Fragment>
           <Typography className={classes.title}>{selectedPageIds.length} selected</Typography>
-          <Tooltip title="Export selected pages">
-            <span>
-              <IconButton disabled>
-                <CloudDownloadIcon />
-              </IconButton>
-            </span>
-          </Tooltip>
           <Tooltip title="Delete selected pages">
             <span>
               <IconButton onClick={handleDeleteClick}>
@@ -138,6 +141,17 @@ const PagesTableToolbar: React.FC = () => {
           </Tooltip>
         </React.Fragment>
       )}
+      <Tooltip title="Export pages">
+        <span>
+          <IconButton
+            onClick={event => {
+              showExportOptions(event);
+            }}
+          >
+            <CloudDownloadIcon />
+          </IconButton>
+        </span>
+      </Tooltip>
       <Popover
         {...filter}
         anchorOrigin={{
@@ -150,6 +164,25 @@ const PagesTableToolbar: React.FC = () => {
         }}
       >
         <PagesFilter></PagesFilter>
+      </Popover>
+      <Popover
+        {...exportOptions}
+        keepMounted
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+      >
+        <List subheader={<ListSubheader>Export pages</ListSubheader>}>
+          <ListItem button disabled={selectedPageIds.length === 0}>
+            Export selected
+          </ListItem>
+          <ListItem button>Export by filter parameters</ListItem>
+        </List>
       </Popover>
     </Toolbar>
   );
