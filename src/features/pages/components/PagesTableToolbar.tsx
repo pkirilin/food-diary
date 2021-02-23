@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { IconButton, Popover, Toolbar, Tooltip, Typography } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
@@ -24,6 +24,8 @@ const PagesTableToolbar: React.FC = () => {
 
   const dispatch = useDispatch();
 
+  const [importFile, setImportFile] = useState<File>();
+
   const [filter, showFilter] = usePopover();
 
   const pageCreateDialog = useDialog<PageCreateEdit>(page => {
@@ -35,11 +37,16 @@ const PagesTableToolbar: React.FC = () => {
   });
 
   const pagesImportDialog = useDialog(() => {
-    // TODO: implement
-    const importFile = new File([], '');
-
-    dispatch(importPages(importFile));
+    if (importFile) {
+      dispatch(importPages(importFile));
+    }
   });
+
+  useEffect(() => {
+    if (importFile) {
+      pagesImportDialog.show();
+    }
+  }, [importFile]);
 
   const handleAddClick = (): void => {
     pageCreateDialog.show();
@@ -49,9 +56,21 @@ const PagesTableToolbar: React.FC = () => {
     pagesDeleteDialog.show();
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleImportFileChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    return;
+    const target = event.target;
+
+    try {
+      const file = event.target.files?.item(0);
+      if (file) {
+        setImportFile(file);
+      }
+    } finally {
+      // Cleaning file input value. Without this change handler will not be executed
+      // if user tries to load file with the same name multiple times
+      if (target) {
+        target.value = '';
+      }
+    }
   };
 
   return (
@@ -109,6 +128,7 @@ const PagesTableToolbar: React.FC = () => {
             </span>
           </Tooltip>
           <Tooltip title="Import pages">
+            {/* TODO: move this part with file change handler to reusable component */}
             <label>
               <IconButton component="span">
                 <PublishIcon />
