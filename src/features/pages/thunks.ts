@@ -3,7 +3,7 @@ import { ExportFormat, SortOrder } from '../__shared__/models';
 import {
   createApiCallAsyncThunk,
   createUrl,
-  handleDownloadFile,
+  downloadFile,
   handleEmptyResponse,
 } from '../__shared__/utils';
 import { Page, PageCreateEdit, PagesSearchResult } from './models';
@@ -84,7 +84,10 @@ export const deletePages = createApiCallAsyncThunk<void, number[]>(
 export const exportPages = createApiCallAsyncThunk<void, ExportPagesRequest>(
   'pages/exportPages',
   ({ format, ...params }) => createUrl(`${config.apiUrl}/v1/exports/${format}`, { ...params }),
-  handleDownloadFile,
+  async (response, { startDate, endDate, format }) => {
+    const blob = await response.blob();
+    downloadFile(blob, `FoodDiary_${startDate}_${endDate}.${format}`);
+  },
   'Failed to export pages',
 );
 

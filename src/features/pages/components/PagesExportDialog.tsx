@@ -30,11 +30,15 @@ const PagesExportDialog: React.FC<PagesExportDialogProps> = ({
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [format, setFormat] = useState(ExportFormat.Json);
 
+  const getDateStringWithoutTime = (date: Date): string => {
+    return date.toISOString().slice(0, 10);
+  };
+
   const handleConfirmClick = (): void => {
     if (startDate && endDate) {
       onDialogConfirm({
-        startDate: startDate.toISOString(),
-        endDate: endDate.toISOString(),
+        startDate: getDateStringWithoutTime(startDate),
+        endDate: getDateStringWithoutTime(endDate),
         format,
       });
     }
