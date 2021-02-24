@@ -55,7 +55,7 @@ describe('createApiCallAsyncThunk', () => {
         },
         body,
       });
-      expect(getDataMock).toHaveBeenCalledWith(response);
+      expect(getDataMock).toHaveBeenCalledWith(response, arg);
       expect(bodyCreatorMock).toHaveBeenCalledWith(arg);
     });
   });
