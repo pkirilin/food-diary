@@ -106,3 +106,10 @@ export const importPages = createApiCallAsyncThunk<void, File>(
     },
   },
 );
+
+export const getDateForNewPage = createApiCallAsyncThunk<string, void>(
+  'pages/getDateForNewPage',
+  () => `${config.apiUrl}/v1/pages/date`,
+  response => response.text(),
+  'Failed to get date for new page',
+);

@@ -3,7 +3,15 @@ import { SortOrder, Status } from '../__shared__/models';
 import { SelectionPayload } from '../__shared__/types';
 import { createAsyncThunkMatcher } from '../__shared__/utils';
 import { Page, PageItem, PageItemsFilter } from './models';
-import { createPage, deletePages, editPage, getPageById, getPages, importPages } from './thunks';
+import {
+  createPage,
+  deletePages,
+  editPage,
+  getDateForNewPage,
+  getPageById,
+  getPages,
+  importPages,
+} from './thunks';
 
 export type PagesState = {
   pageItems: PageItem[];
@@ -15,6 +23,8 @@ export type PagesState = {
   current?: Page;
   previous?: Page;
   next?: Page;
+  dateForNewPage?: string;
+  dateForNewPageLoading: Status;
 };
 
 export interface SelectPagePayload extends SelectionPayload {
@@ -34,6 +44,7 @@ const initialState: PagesState = {
     pageSize: 10,
     sortOrder: SortOrder.Descending,
   },
+  dateForNewPageLoading: 'idle',
 };
 
 const operationThunks = [createPage, editPage, deletePages, importPages];
@@ -91,6 +102,16 @@ const pagesSlice = createSlice({
       })
       .addCase(deletePages.fulfilled, state => {
         state.selectedPageIds = [];
+      })
+      .addCase(getDateForNewPage.pending, state => {
+        state.dateForNewPageLoading = 'pending';
+      })
+      .addCase(getDateForNewPage.fulfilled, (state, { payload }) => {
+        state.dateForNewPage = payload;
+        state.dateForNewPageLoading = 'succeeded';
+      })
+      .addCase(getDateForNewPage.rejected, state => {
+        state.dateForNewPageLoading = 'failed';
       })
       .addMatcher(createAsyncThunkMatcher(operationThunks, 'pending'), state => {
         state.operationStatus = 'pending';

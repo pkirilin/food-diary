@@ -1,5 +1,6 @@
 import 'date-fns';
 import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import {
   Dialog,
   DialogTitle,
@@ -12,6 +13,8 @@ import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/picker
 import DateFnsUtils from '@date-io/date-fns';
 import { PageCreateEdit } from '../models';
 import { DialogCustomActionProps } from '../../__shared__/types';
+import { getDateForNewPage } from '../thunks';
+import { useTypedSelector } from '../../__shared__/hooks';
 
 interface PageCreateEditDialogProps extends DialogProps, DialogCustomActionProps<PageCreateEdit> {
   page?: PageCreateEdit;
@@ -23,6 +26,14 @@ const PageCreateEditDialog: React.FC<PageCreateEditDialogProps> = ({
   onDialogCancel,
   ...dialogProps
 }: PageCreateEditDialogProps) => {
+  const dateForNewPage = useTypedSelector(state =>
+    state.pages.dateForNewPage ? new Date(state.pages.dateForNewPage) : null,
+  );
+
+  const dateForNewPageLoading = useTypedSelector(state => state.pages.dateForNewPageLoading);
+
+  const dispatch = useDispatch();
+
   const { title, submitText, initialDate } = page
     ? {
         title: 'Edit page',
@@ -38,10 +49,20 @@ const PageCreateEditDialog: React.FC<PageCreateEditDialogProps> = ({
   const [date, setDate] = useState<Date | null>(initialDate);
 
   useEffect(() => {
+    if (!page && dialogProps.open) {
+      dispatch(getDateForNewPage());
+    }
+
     return () => {
       setDate(initialDate);
     };
   }, [dialogProps.open]);
+
+  useEffect(() => {
+    if (dateForNewPageLoading === 'succeeded' && !page) {
+      setDate(dateForNewPage);
+    }
+  }, [dateForNewPageLoading]);
 
   const handleDateChange = (date: Date | null) => {
     setDate(date);
