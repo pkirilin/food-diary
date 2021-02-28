@@ -1,3 +1,5 @@
+import { AutocompleteProps } from '@material-ui/lab';
+
 export interface BindableHookResult<TBinding> {
   binding: TBinding;
 }
@@ -12,3 +14,8 @@ export type BindFunction<TBindingProps> = () => TBindingProps;
 export type InputHook<TValue, TBindingProps> = (
   initialValue: TValue,
 ) => [TValue, React.Dispatch<React.SetStateAction<TValue>>, BindFunction<TBindingProps>];
+
+export type AutocompleteBindingProps<TOption> = Omit<
+  AutocompleteProps<TOption, undefined, undefined, undefined>,
+  'renderInput'
+>;
