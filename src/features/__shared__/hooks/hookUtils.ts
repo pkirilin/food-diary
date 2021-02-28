@@ -1,15 +1,13 @@
 import { useState } from 'react';
-import { BindFunction } from './types';
+import { InputHook } from './types';
 
 export function createInputHook<TValue, TBindingProps>(
   createBinding: (
     value: TValue,
     setValue: React.Dispatch<React.SetStateAction<TValue>>,
   ) => TBindingProps,
-) {
-  return function (
-    initialValue: TValue,
-  ): [TValue, React.Dispatch<React.SetStateAction<TValue>>, BindFunction<TBindingProps>] {
+): InputHook<TValue, TBindingProps> {
+  return initialValue => {
     const [value, setValue] = useState(initialValue);
     return [value, setValue, () => createBinding(value, setValue)];
   };

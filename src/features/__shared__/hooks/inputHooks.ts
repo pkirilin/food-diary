@@ -1,6 +1,8 @@
 import { InputProps } from '@material-ui/core';
 import { KeyboardDatePickerProps } from '@material-ui/pickers';
+import { AutocompleteCustomBaseProps } from '../types';
 import { createInputHook } from './hookUtils';
+import { InputHook } from './types';
 
 export const useTextInput = createInputHook<string, InputProps>((value, setValue) => ({
   value,
@@ -24,3 +26,17 @@ export const useDateInput = createInputHook<Date | null, KeyboardDatePickerProps
     },
   }),
 );
+
+export function useAutocompleteInput<TOption>(): InputHook<
+  TOption | null,
+  AutocompleteCustomBaseProps<TOption>
+> {
+  return createInputHook<TOption | null, AutocompleteCustomBaseProps<TOption>>(
+    (value, setValue) => ({
+      value,
+      onChange: (event, selectedOption) => {
+        setValue(selectedOption);
+      },
+    }),
+  );
+}

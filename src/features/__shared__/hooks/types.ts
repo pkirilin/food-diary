@@ -7,4 +7,8 @@ export interface BindableValueHookResult<TValue, TBinding> extends BindableHookR
   setValue: React.Dispatch<React.SetStateAction<TValue>>;
 }
 
-export type BindFunction<TProps> = () => TProps;
+export type BindFunction<TBindingProps> = () => TBindingProps;
+
+export type InputHook<TValue, TBindingProps> = (
+  initialValue: TValue,
+) => [TValue, React.Dispatch<React.SetStateAction<TValue>>, BindFunction<TBindingProps>];
