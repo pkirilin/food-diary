@@ -8,6 +8,8 @@ import {
   DialogActions,
   Button,
   DialogProps,
+  TextField,
+  Input,
 } from '@material-ui/core';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
@@ -93,6 +95,8 @@ const PageCreateEditDialog: React.FC<PageCreateEditDialogProps> = ({
           />
         </MuiPickersUtilsProvider>
       </DialogContent>
+      <Input type="number"></Input>
+      <TextField type="number"></TextField>
       <DialogActions>
         <Button variant="contained" color="primary" onClick={handleSubmitClick}>
           {submitText}

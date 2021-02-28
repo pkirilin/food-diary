@@ -6,3 +6,5 @@ export interface BindableValueHookResult<TValue, TBinding> extends BindableHookR
   value: TValue;
   setValue: React.Dispatch<React.SetStateAction<TValue>>;
 }
+
+export type BindFunction<TProps> = () => TProps;
