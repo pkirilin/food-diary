@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Box, Button, Paper, TextField } from '@material-ui/core';
 import { filterByCategoryChanged, filterReset, productSearchNameChanged } from '../slice';
-import { CategoryAutocomplete } from '../../categories/components';
 import { useInput, useTypedSelector } from '../../__shared__/hooks';
 import { useFilterStyles } from '../../__shared__/styles';
+import { SimpleAutocomplete } from '../../__shared__/components';
+import { useCategoryAutocompleteInput } from '../../categories/hooks';
 
 const ProductsFilter: React.FC = () => {
   const classes = useFilterStyles();
@@ -18,7 +19,8 @@ const ProductsFilter: React.FC = () => {
   const dispatch = useDispatch();
 
   const productSearchNameInput = useInput(filterProductName);
-  const [category, setCategory] = useState(filterCategory);
+  const [, setCategory, bindCategory] = useCategoryAutocompleteInput(filterCategory);
+  const categoryBinding = bindCategory();
 
   useEffect(() => {
     productSearchNameInput.setValue(filterProductName);
@@ -40,12 +42,18 @@ const ProductsFilter: React.FC = () => {
           dispatch(productSearchNameChanged(event.target.value));
         }}
       ></TextField>
-      <CategoryAutocomplete
-        value={category}
-        onChange={(event, option) => {
-          dispatch(filterByCategoryChanged(option));
+      <SimpleAutocomplete
+        {...categoryBinding}
+        onChange={(event, option, reason) => {
+          const { onChange } = categoryBinding;
+          if (onChange) {
+            onChange(event, option, reason);
+            dispatch(filterByCategoryChanged(option));
+          }
         }}
-      ></CategoryAutocomplete>
+        inputLabel="Filter by category"
+        inputPlaceholder="Select a category"
+      ></SimpleAutocomplete>
       <Box className={classes.controls}>
         <Button
           variant="text"

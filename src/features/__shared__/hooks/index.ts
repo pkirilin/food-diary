@@ -1,4 +1,3 @@
-import { useAsyncAutocomplete } from './useAsyncAutocomplete';
 import { useDialog } from './useDialog';
 import { useInput } from './useInput';
 import { useInputAutocomplete } from './useInputAutocomplete';
@@ -13,9 +12,9 @@ export {
   useInputAutocomplete,
   useDialog,
   usePopover,
-  useAsyncAutocomplete,
   useRouterId,
   useRefreshEffect,
 };
 
 export * from './inputHooks';
+export * from './hookUtils';

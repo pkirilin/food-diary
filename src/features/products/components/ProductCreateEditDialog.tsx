@@ -10,8 +10,9 @@ import {
 } from '@material-ui/core';
 import { ProductCreateEdit, ProductItem } from '../models';
 import { DialogCustomActionProps } from '../../__shared__/types';
-import { useInput, useInputAutocomplete } from '../../__shared__/hooks';
-import { CategoryAutocomplete } from '../../categories/components';
+import { useInput } from '../../__shared__/hooks';
+import { SimpleAutocomplete } from '../../__shared__/components';
+import { useCategoryAutocompleteInput } from '../../categories/hooks';
 
 interface ProductCreateEditDialogProps
   extends DialogProps,
@@ -46,26 +47,27 @@ const ProductCreateEditDialog: React.FC<ProductCreateEditDialogProps> = ({
 
   const productNameInput = useInput(initialProductName);
   const caloriesCostInput = useInput(initialCaloriesCost);
-  const categoryInput = useInputAutocomplete(initialCategory);
+  const [category, setCategory, bindCategory] = useCategoryAutocompleteInput(initialCategory);
+  // const categoryInput = useInputAutocomplete(initialCategory);
 
   useEffect(() => {
     if (dialogProps.open) {
-      categoryInput.setValue(initialCategory);
+      setCategory(initialCategory);
     }
 
     return () => {
       productNameInput.setValue(initialProductName);
       caloriesCostInput.setValue(initialCaloriesCost);
-      categoryInput.setValue(initialCategory);
+      setCategory(initialCategory);
     };
   }, [dialogProps.open]);
 
   const handleSubmitClick = (): void => {
-    if (categoryInput.value) {
+    if (category) {
       onDialogConfirm({
         name: productNameInput.value,
         caloriesCost: caloriesCostInput.value,
-        categoryId: categoryInput.value.id,
+        categoryId: category.id,
       });
     }
   };
@@ -90,7 +92,11 @@ const ProductCreateEditDialog: React.FC<ProductCreateEditDialogProps> = ({
           margin="normal"
           fullWidth
         ></TextField>
-        <CategoryAutocomplete {...categoryInput.binding}></CategoryAutocomplete>
+        <SimpleAutocomplete
+          {...bindCategory()}
+          inputLabel="Category"
+          inputPlaceholder="Select a category"
+        ></SimpleAutocomplete>
       </DialogContent>
       <DialogActions>
         <Button variant="contained" color="primary" onClick={handleSubmitClick}>

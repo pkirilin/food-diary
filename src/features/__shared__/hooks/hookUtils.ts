@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { InputHook } from './types';
+import { AutocompleteBindingProps, InputHook } from './types';
 
 export function createInputHook<TValue, TBindingProps>(
   createBinding: (
@@ -11,4 +11,10 @@ export function createInputHook<TValue, TBindingProps>(
     const [value, setValue] = useState(initialValue);
     return [value, setValue, () => createBinding(value, setValue)];
   };
+}
+
+export function createAsyncAutocompleteInputHook<TOption>(
+  createHook: () => ReturnType<InputHook<TOption | null, AutocompleteBindingProps<TOption>>>,
+): InputHook<TOption | null, AutocompleteBindingProps<TOption>> {
+  return createHook;
 }
