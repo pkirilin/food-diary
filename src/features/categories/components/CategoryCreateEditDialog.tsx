@@ -10,7 +10,7 @@ import {
 } from '@material-ui/core';
 import { CategoryCreateEdit } from '../models';
 import { DialogCustomActionProps } from '../../__shared__/types';
-import { useInput } from '../../__shared__/hooks';
+import { useTextInput } from '../../__shared__/hooks';
 
 interface CategoryCreateEditDialogProps
   extends DialogProps,
@@ -36,17 +36,17 @@ const CategoryCreateEditDialog: React.FC<CategoryCreateEditDialogProps> = ({
         initialCategoryName: '',
       };
 
-  const categoryNameInput = useInput(initialCategoryName);
+  const [categoryName, setCategoryName, bindCategoryName] = useTextInput(initialCategoryName);
 
   useEffect(() => {
     return () => {
-      categoryNameInput.setValue(initialCategoryName);
+      setCategoryName(initialCategoryName);
     };
   }, [dialogProps.open]);
 
   const handleSubmitClick = (): void => {
     onDialogConfirm({
-      name: categoryNameInput.value,
+      name: categoryName,
     });
   };
 
@@ -55,7 +55,7 @@ const CategoryCreateEditDialog: React.FC<CategoryCreateEditDialogProps> = ({
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
         <TextField
-          {...categoryNameInput.binding}
+          {...bindCategoryName()}
           label="Category name"
           placeholder="Enter category name"
           fullWidth

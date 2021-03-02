@@ -10,7 +10,7 @@ import {
 } from '@material-ui/core';
 import { ProductCreateEdit, ProductItem } from '../models';
 import { DialogCustomActionProps } from '../../__shared__/types';
-import { useInput } from '../../__shared__/hooks';
+import { useNumericInput, useTextInput } from '../../__shared__/hooks';
 import { SimpleAutocomplete } from '../../__shared__/components';
 import { useCategoryAutocompleteInput } from '../../categories/hooks';
 
@@ -45,10 +45,9 @@ const ProductCreateEditDialog: React.FC<ProductCreateEditDialogProps> = ({
         initialCategory: null,
       };
 
-  const productNameInput = useInput(initialProductName);
-  const caloriesCostInput = useInput(initialCaloriesCost);
+  const [productName, setProductName, bindProductName] = useTextInput(initialProductName);
+  const [caloriesCost, setCaloriesCost, bindCaloriesCost] = useNumericInput(initialCaloriesCost);
   const [category, setCategory, bindCategory] = useCategoryAutocompleteInput(initialCategory);
-  // const categoryInput = useInputAutocomplete(initialCategory);
 
   useEffect(() => {
     if (dialogProps.open) {
@@ -56,8 +55,8 @@ const ProductCreateEditDialog: React.FC<ProductCreateEditDialogProps> = ({
     }
 
     return () => {
-      productNameInput.setValue(initialProductName);
-      caloriesCostInput.setValue(initialCaloriesCost);
+      setProductName(initialProductName);
+      setCaloriesCost(initialCaloriesCost);
       setCategory(initialCategory);
     };
   }, [dialogProps.open]);
@@ -65,8 +64,8 @@ const ProductCreateEditDialog: React.FC<ProductCreateEditDialogProps> = ({
   const handleSubmitClick = (): void => {
     if (category) {
       onDialogConfirm({
-        name: productNameInput.value,
-        caloriesCost: caloriesCostInput.value,
+        name: productName,
+        caloriesCost,
         categoryId: category.id,
       });
     }
@@ -77,7 +76,7 @@ const ProductCreateEditDialog: React.FC<ProductCreateEditDialogProps> = ({
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
         <TextField
-          {...productNameInput.binding}
+          {...bindProductName()}
           label="Product name"
           placeholder="Enter product name"
           margin="normal"
@@ -85,7 +84,7 @@ const ProductCreateEditDialog: React.FC<ProductCreateEditDialogProps> = ({
           autoFocus
         ></TextField>
         <TextField
-          {...caloriesCostInput.binding}
+          {...bindCaloriesCost()}
           type="number"
           label="Calories cost"
           placeholder="Enter calories cost"

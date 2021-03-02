@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Box, Button, Paper, TextField } from '@material-ui/core';
 import { filterByCategoryChanged, filterReset, productSearchNameChanged } from '../slice';
-import { useInput, useTypedSelector } from '../../__shared__/hooks';
+import { useTextInput, useTypedSelector } from '../../__shared__/hooks';
 import { useFilterStyles } from '../../__shared__/styles';
 import { SimpleAutocomplete } from '../../__shared__/components';
 import { useCategoryAutocompleteInput } from '../../categories/hooks';
@@ -18,12 +18,11 @@ const ProductsFilter: React.FC = () => {
 
   const dispatch = useDispatch();
 
-  const productSearchNameInput = useInput(filterProductName);
+  const [, setProductSearchName, bindProductSearchName] = useTextInput(filterProductName);
   const [, setCategory, bindCategory] = useCategoryAutocompleteInput(filterCategory);
-  const categoryBinding = bindCategory();
 
   useEffect(() => {
-    productSearchNameInput.setValue(filterProductName);
+    setProductSearchName(filterProductName);
   }, [filterProductName]);
 
   useEffect(() => {
@@ -33,7 +32,7 @@ const ProductsFilter: React.FC = () => {
   return (
     <Box component={Paper} className={classes.root}>
       <TextField
-        {...productSearchNameInput.binding}
+        {...bindProductSearchName()}
         label="Search by name"
         placeholder="Enter product name"
         fullWidth
@@ -43,9 +42,9 @@ const ProductsFilter: React.FC = () => {
         }}
       ></TextField>
       <SimpleAutocomplete
-        {...categoryBinding}
+        {...bindCategory()}
         onChange={(event, option, reason) => {
-          const { onChange } = categoryBinding;
+          const { onChange } = bindCategory();
           if (onChange) {
             onChange(event, option, reason);
             dispatch(filterByCategoryChanged(option));

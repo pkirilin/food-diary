@@ -11,7 +11,11 @@ import {
 } from '@material-ui/core';
 import { MealType, NoteCreateEdit, NoteItem } from '../models';
 import { DialogCustomActionProps } from '../../__shared__/types';
-import { useAsyncAutocompleteInput, useInput, useTypedSelector } from '../../__shared__/hooks';
+import {
+  useAsyncAutocompleteInput,
+  useNumericInput,
+  useTypedSelector,
+} from '../../__shared__/hooks';
 import { SimpleAutocomplete } from '../../__shared__/components';
 import { getProductsAutocomplete } from '../../products/thunks';
 import { autocompleteCleared } from '../../products/slice';
@@ -54,7 +58,7 @@ const NoteCreateEditDialog: React.FC<NoteCreateEditDialogProps> = ({
     },
   );
 
-  const quantityInput = useInput(initialQuantity);
+  const [quantity, setQuantity, bindQuantity] = useNumericInput(initialQuantity);
 
   const maxDisplayOrderForNotesGroup = useTypedSelector(state =>
     state.notes.noteItems
@@ -69,7 +73,7 @@ const NoteCreateEditDialog: React.FC<NoteCreateEditDialogProps> = ({
 
     return () => {
       setProduct(initialProduct);
-      quantityInput.setValue(initialQuantity);
+      setQuantity(initialQuantity);
     };
   }, [dialogProps.open]);
 
@@ -79,7 +83,7 @@ const NoteCreateEditDialog: React.FC<NoteCreateEditDialogProps> = ({
         mealType,
         productId: product.id,
         pageId,
-        productQuantity: quantityInput.value,
+        productQuantity: quantity,
         displayOrder: note ? note.displayOrder : maxDisplayOrderForNotesGroup,
       });
     }
@@ -95,7 +99,7 @@ const NoteCreateEditDialog: React.FC<NoteCreateEditDialogProps> = ({
           inputPlaceholder="Select a product"
         ></SimpleAutocomplete>
         <TextField
-          {...quantityInput.binding}
+          {...bindQuantity()}
           type="number"
           label="Quantity"
           placeholder="Product quantity, g"

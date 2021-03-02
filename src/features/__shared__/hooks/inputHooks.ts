@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { InputProps } from '@material-ui/core';
+import { TextFieldProps } from '@material-ui/core';
 import { KeyboardDatePickerProps } from '@material-ui/pickers';
 import { RootState } from '../../../store';
 import { AutocompleteOption } from '../models';
@@ -7,14 +7,14 @@ import { createInputHook } from './hookUtils';
 import { AutocompleteBindingProps, InputHook } from './types';
 import useTypedSelector from './useTypedSelector';
 
-export const useTextInput = createInputHook<string, InputProps>((value, setValue) => ({
+export const useTextInput = createInputHook<string, TextFieldProps>((value, setValue) => ({
   value,
   onChange: event => {
     setValue(event.target.value);
   },
 }));
 
-export const useNumericInput = createInputHook<number, InputProps>((value, setValue) => ({
+export const useNumericInput = createInputHook<number, TextFieldProps>((value, setValue) => ({
   value,
   onChange: event => {
     setValue(Number(event.target.value));
