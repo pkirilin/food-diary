@@ -51,14 +51,10 @@ const ProductCreateEditDialog: React.FC<ProductCreateEditDialogProps> = ({
 
   useEffect(() => {
     if (dialogProps.open) {
-      setCategory(initialCategory);
-    }
-
-    return () => {
       setProductName(initialProductName);
       setCaloriesCost(initialCaloriesCost);
       setCategory(initialCategory);
-    };
+    }
   }, [dialogProps.open]);
 
   const handleSubmitClick = (): void => {

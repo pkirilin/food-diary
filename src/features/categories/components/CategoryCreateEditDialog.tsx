@@ -39,9 +39,9 @@ const CategoryCreateEditDialog: React.FC<CategoryCreateEditDialogProps> = ({
   const [categoryName, setCategoryName, bindCategoryName] = useTextInput(initialCategoryName);
 
   useEffect(() => {
-    return () => {
+    if (dialogProps.open) {
       setCategoryName(initialCategoryName);
-    };
+    }
   }, [dialogProps.open]);
 
   const handleSubmitClick = (): void => {

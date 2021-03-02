@@ -69,12 +69,8 @@ const NoteCreateEditDialog: React.FC<NoteCreateEditDialogProps> = ({
   useEffect(() => {
     if (dialogProps.open) {
       setProduct(initialProduct);
-    }
-
-    return () => {
-      setProduct(initialProduct);
       setQuantity(initialQuantity);
-    };
+    }
   }, [dialogProps.open]);
 
   const handleSubmitClick = (): void => {

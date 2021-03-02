@@ -49,13 +49,13 @@ const PageCreateEditDialog: React.FC<PageCreateEditDialogProps> = ({
   const [date, setDate, bindDate] = useDateInput(initialDate);
 
   useEffect(() => {
-    if (!page && dialogProps.open) {
-      dispatch(getDateForNewPage());
-    }
-
-    return () => {
+    if (dialogProps.open) {
       setDate(initialDate);
-    };
+
+      if (!page) {
+        dispatch(getDateForNewPage());
+      }
+    }
   }, [dialogProps.open]);
 
   useEffect(() => {

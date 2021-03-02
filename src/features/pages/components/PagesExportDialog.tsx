@@ -46,11 +46,11 @@ const PagesExportDialog: React.FC<PagesExportDialogProps> = ({
   };
 
   useEffect(() => {
-    return () => {
+    if (dialogProps.open) {
       setStartDate(null);
       setEndDate(null);
       setFormat(initialFormat);
-    };
+    }
   }, [dialogProps.open]);
 
   return (
