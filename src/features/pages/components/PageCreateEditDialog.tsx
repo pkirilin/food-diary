@@ -1,5 +1,5 @@
 import 'date-fns';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import {
   Dialog,
@@ -8,15 +8,13 @@ import {
   DialogActions,
   Button,
   DialogProps,
-  TextField,
-  Input,
 } from '@material-ui/core';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import { PageCreateEdit } from '../models';
 import { DialogCustomActionProps } from '../../__shared__/types';
 import { getDateForNewPage } from '../thunks';
-import { useTypedSelector } from '../../__shared__/hooks';
+import { useDateInput, useTypedSelector } from '../../__shared__/hooks';
 
 interface PageCreateEditDialogProps extends DialogProps, DialogCustomActionProps<PageCreateEdit> {
   page?: PageCreateEdit;
@@ -48,7 +46,7 @@ const PageCreateEditDialog: React.FC<PageCreateEditDialogProps> = ({
         initialDate: new Date(),
       };
 
-  const [date, setDate] = useState<Date | null>(initialDate);
+  const [date, setDate, bindDate] = useDateInput(initialDate);
 
   useEffect(() => {
     if (!page && dialogProps.open) {
@@ -66,10 +64,6 @@ const PageCreateEditDialog: React.FC<PageCreateEditDialogProps> = ({
     }
   }, [dateForNewPageLoading]);
 
-  const handleDateChange = (date: Date | null) => {
-    setDate(date);
-  };
-
   const handleSubmitClick = (): void => {
     if (date) {
       onDialogConfirm({
@@ -84,19 +78,16 @@ const PageCreateEditDialog: React.FC<PageCreateEditDialogProps> = ({
       <DialogContent>
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
           <KeyboardDatePicker
+            {...bindDate()}
             disableToolbar
             autoFocus
             fullWidth
             variant="inline"
             format="dd.MM.yyyy"
             margin="normal"
-            value={date}
-            onChange={handleDateChange}
           />
         </MuiPickersUtilsProvider>
       </DialogContent>
-      <Input type="number"></Input>
-      <TextField type="number"></TextField>
       <DialogActions>
         <Button variant="contained" color="primary" onClick={handleSubmitClick}>
           {submitText}

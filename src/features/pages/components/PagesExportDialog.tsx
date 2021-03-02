@@ -13,8 +13,9 @@ import {
 } from '@material-ui/core';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
-import { DialogCustomActionProps } from '../../__shared__/types';
+import { useDateInput } from '../../__shared__/hooks';
 import { ExportFormat } from '../../__shared__/models';
+import { DialogCustomActionProps } from '../../__shared__/types';
 import { ExportPagesRequest } from '../thunks';
 
 interface PagesExportDialogProps extends DialogProps, DialogCustomActionProps<ExportPagesRequest> {}
@@ -26,8 +27,8 @@ const PagesExportDialog: React.FC<PagesExportDialogProps> = ({
   onDialogConfirm,
   ...dialogProps
 }: PagesExportDialogProps) => {
-  const [startDate, setStartDate] = useState<Date | null>(null);
-  const [endDate, setEndDate] = useState<Date | null>(null);
+  const [startDate, setStartDate, bindStartDate] = useDateInput(null);
+  const [endDate, setEndDate, bindEndDate] = useDateInput(null);
   const [format, setFormat] = useState(ExportFormat.Json);
 
   const getDateStringWithoutTime = (date: Date): string => {
@@ -59,27 +60,21 @@ const PagesExportDialog: React.FC<PagesExportDialogProps> = ({
         {/* TODO: move utils provider to app-level */}
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
           <KeyboardDatePicker
+            {...bindStartDate()}
             disableToolbar
             fullWidth
             variant="inline"
             format="dd.MM.yyyy"
             label="Start date"
-            value={startDate}
-            onChange={date => {
-              setStartDate(date);
-            }}
           />
           <KeyboardDatePicker
+            {...bindEndDate()}
             disableToolbar
             fullWidth
             variant="inline"
             format="dd.MM.yyyy"
             margin="normal"
             label="End date"
-            value={endDate}
-            onChange={date => {
-              setEndDate(date);
-            }}
           />
         </MuiPickersUtilsProvider>
         <Box mt={2}>
