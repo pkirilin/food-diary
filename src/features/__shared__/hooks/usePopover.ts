@@ -3,7 +3,7 @@ import { PopoverProps } from '@material-ui/core';
 
 export type ShowPopoverFn<TAnchorElement> = (event: React.MouseEvent<TAnchorElement>) => void;
 
-export function usePopover<TAnchorElement extends Element>(): [
+export default function usePopover<TAnchorElement extends Element>(): [
   PopoverProps,
   ShowPopoverFn<TAnchorElement>,
 ] {

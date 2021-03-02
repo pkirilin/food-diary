@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { fireEvent, render } from '@testing-library/react';
-import { useDialog } from '../useDialog';
+import useDialog from '../useDialog';
 import { Button, Dialog, DialogActions, DialogContent, DialogProps } from '@material-ui/core';
 import { DialogCustomActionProps } from '../../types';
 

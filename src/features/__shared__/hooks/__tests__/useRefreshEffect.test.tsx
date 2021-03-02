@@ -3,7 +3,7 @@ import { Action, createStore, Reducer } from 'redux';
 import { Provider } from 'react-redux';
 import { act, render } from '@testing-library/react';
 import { Status } from '../../models';
-import { useRefreshEffect } from '../useRefreshEffect';
+import useRefreshEffect from '../useRefreshEffect';
 
 const STATUS_CHANGED = 'STATUS_CHANGED';
 

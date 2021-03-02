@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 
-export function useRouterId(paramName: string): number {
+export default function useRouterId(paramName: string): number {
   const routerParams = useParams<Record<string, string>>();
   const targetParam = routerParams[paramName];
 

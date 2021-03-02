@@ -5,7 +5,7 @@ import { Status } from '../models';
 
 type StatusSelector<TState> = (state: TState) => Status;
 
-export function useRefreshEffect<TState = RootState>(
+export default function useRefreshEffect<TState = RootState>(
   statusSelector: StatusSelector<TState>,
   effect: EffectCallback,
   deps: DependencyList = [],
