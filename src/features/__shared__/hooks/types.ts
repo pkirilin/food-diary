@@ -10,9 +10,11 @@ export interface BindableValueHookResult<TValue, TBinding> extends BindableHookR
 }
 
 export type BindFunction<TBindingProps> = () => TBindingProps;
+export type ValidatorFunction<TValue> = (value: TValue) => boolean;
 
-export type InputHook<TValue, TBindingProps> = (
+export type InputHook<TValue, TBindingProps, TArg = void> = (
   initialValue: TValue,
+  arg: TArg,
 ) => [TValue, React.Dispatch<React.SetStateAction<TValue>>, BindFunction<TBindingProps>];
 
 export type AutocompleteBindingProps<TOption> = Omit<

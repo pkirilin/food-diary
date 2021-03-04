@@ -3,7 +3,7 @@ import { TextFieldProps } from '@material-ui/core';
 import { KeyboardDatePickerProps } from '@material-ui/pickers';
 import { RootState } from '../../../store';
 import { AutocompleteOption } from '../models';
-import { createInputHook } from './hookUtils';
+import { createInputHook, createValidatedInputHook } from './hookUtils';
 import { AutocompleteBindingProps, InputHook } from './types';
 import useTypedSelector from './useTypedSelector';
 
@@ -28,6 +28,16 @@ export const useDateInput = createInputHook<Date | null, KeyboardDatePickerProps
       setValue(newDate);
     },
   }),
+);
+
+export const useValidatedTextInput = createValidatedInputHook<string, TextFieldProps>(useTextInput);
+
+export const useValidatedNumericInput = createValidatedInputHook<number, TextFieldProps>(
+  useNumericInput,
+);
+
+export const useValidatedDateInput = createValidatedInputHook<Date | null, KeyboardDatePickerProps>(
+  useDateInput,
 );
 
 export function useAsyncAutocompleteInput<TOption extends AutocompleteOption>(
