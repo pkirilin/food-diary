@@ -14,7 +14,8 @@ import DateFnsUtils from '@date-io/date-fns';
 import { PageCreateEdit } from '../models';
 import { DialogCustomActionProps } from '../../__shared__/types';
 import { getDateForNewPage } from '../thunks';
-import { useDateInput, useTypedSelector } from '../../__shared__/hooks';
+import { useTypedSelector, useValidatedDateInput } from '../../__shared__/hooks';
+import { dateValidator } from '../../__shared__/validators';
 
 interface PageCreateEditDialogProps extends DialogProps, DialogCustomActionProps<PageCreateEdit> {
   page?: PageCreateEdit;
@@ -46,7 +47,12 @@ const PageCreateEditDialog: React.FC<PageCreateEditDialogProps> = ({
         initialDate: new Date(),
       };
 
-  const [date, setDate, bindDate] = useDateInput(initialDate);
+  const [date, setDate, bindDate, isValidDate] = useValidatedDateInput(initialDate, {
+    validate: dateValidator,
+    errorHelperText: 'Date is required',
+  });
+
+  const isSubmitDisabled = !isValidDate;
 
   useEffect(() => {
     if (dialogProps.open) {
@@ -80,16 +86,22 @@ const PageCreateEditDialog: React.FC<PageCreateEditDialogProps> = ({
           <KeyboardDatePicker
             {...bindDate()}
             disableToolbar
-            autoFocus
-            fullWidth
-            variant="inline"
+            label="Page date"
+            placeholder="01.01.2021"
             format="dd.MM.yyyy"
             margin="normal"
+            fullWidth
+            autoFocus
           />
         </MuiPickersUtilsProvider>
       </DialogContent>
       <DialogActions>
-        <Button variant="contained" color="primary" onClick={handleSubmitClick}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleSubmitClick}
+          disabled={isSubmitDisabled}
+        >
           {submitText}
         </Button>
         <Button variant="text" onClick={onDialogCancel}>
