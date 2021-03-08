@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Box, Button, Paper, TextField } from '@material-ui/core';
 import { filterByCategoryChanged, filterReset, productSearchNameChanged } from '../slice';
-import { useTextInput, useTypedSelector } from '../../__shared__/hooks';
+import { useTypedSelector, useValidatedTextInput } from '../../__shared__/hooks';
 import { useFilterStyles } from '../../__shared__/styles';
 import { SimpleAutocomplete } from '../../__shared__/components';
 import { useCategoryAutocompleteInput } from '../../categories/hooks';
@@ -18,7 +18,11 @@ const ProductsFilter: React.FC = () => {
 
   const dispatch = useDispatch();
 
-  const [, setProductSearchName, bindProductSearchName] = useTextInput(filterProductName);
+  const [, setProductSearchName, bindProductSearchName] = useValidatedTextInput(filterProductName, {
+    validate: productName => productName.length >= 0 && productName.length <= 50,
+    errorHelperText: 'Product search name is invalid',
+  });
+
   const [, setCategory, bindCategory] = useCategoryAutocompleteInput(filterCategory);
 
   useEffect(() => {

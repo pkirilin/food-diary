@@ -10,7 +10,7 @@ import {
 } from '@material-ui/core';
 import { CategoryCreateEdit } from '../models';
 import { DialogCustomActionProps } from '../../__shared__/types';
-import { useTextInput } from '../../__shared__/hooks';
+import { useValidatedTextInput } from '../../__shared__/hooks';
 
 interface CategoryCreateEditDialogProps
   extends DialogProps,
@@ -36,7 +36,17 @@ const CategoryCreateEditDialog: React.FC<CategoryCreateEditDialogProps> = ({
         initialCategoryName: '',
       };
 
-  const [categoryName, setCategoryName, bindCategoryName] = useTextInput(initialCategoryName);
+  const [
+    categoryName,
+    setCategoryName,
+    bindCategoryName,
+    isValidCategoryName,
+  ] = useValidatedTextInput(initialCategoryName, {
+    validate: categoryName => categoryName.length >= 3 && categoryName.length <= 50,
+    errorHelperText: 'Category name is invalid',
+  });
+
+  const isSubmitDisabled = !isValidCategoryName;
 
   useEffect(() => {
     if (dialogProps.open) {
@@ -63,7 +73,12 @@ const CategoryCreateEditDialog: React.FC<CategoryCreateEditDialogProps> = ({
         ></TextField>
       </DialogContent>
       <DialogActions>
-        <Button variant="contained" color="primary" onClick={handleSubmitClick}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleSubmitClick}
+          disabled={isSubmitDisabled}
+        >
           {submitText}
         </Button>
         <Button variant="text" onClick={onDialogCancel}>

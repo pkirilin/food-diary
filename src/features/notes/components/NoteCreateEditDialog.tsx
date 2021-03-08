@@ -13,8 +13,8 @@ import { MealType, NoteCreateEdit, NoteItem } from '../models';
 import { DialogCustomActionProps } from '../../__shared__/types';
 import {
   useAsyncAutocompleteInput,
-  useNumericInput,
   useTypedSelector,
+  useValidatedNumericInput,
 } from '../../__shared__/hooks';
 import { SimpleAutocomplete } from '../../__shared__/components';
 import { getProductsAutocomplete } from '../../products/thunks';
@@ -58,7 +58,15 @@ const NoteCreateEditDialog: React.FC<NoteCreateEditDialogProps> = ({
     },
   );
 
-  const [quantity, setQuantity, bindQuantity] = useNumericInput(initialQuantity);
+  const [quantity, setQuantity, bindQuantity, isValidQuantity] = useValidatedNumericInput(
+    initialQuantity,
+    {
+      validate: quantity => quantity > 0 && quantity < 1000,
+      errorHelperText: 'Quantity is invalid',
+    },
+  );
+
+  const isSubmitDisabled = !product || !isValidQuantity;
 
   const maxDisplayOrderForNotesGroup = useTypedSelector(state =>
     state.notes.noteItems
@@ -104,7 +112,12 @@ const NoteCreateEditDialog: React.FC<NoteCreateEditDialogProps> = ({
         ></TextField>
       </DialogContent>
       <DialogActions>
-        <Button variant="contained" color="primary" onClick={handleSubmitClick}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleSubmitClick}
+          disabled={isSubmitDisabled}
+        >
           {submitText}
         </Button>
         <Button variant="text" onClick={onDialogCancel}>

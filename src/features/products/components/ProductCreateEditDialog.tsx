@@ -10,7 +10,7 @@ import {
 } from '@material-ui/core';
 import { ProductCreateEdit, ProductItem } from '../models';
 import { DialogCustomActionProps } from '../../__shared__/types';
-import { useNumericInput, useTextInput } from '../../__shared__/hooks';
+import { useValidatedNumericInput, useValidatedTextInput } from '../../__shared__/hooks';
 import { SimpleAutocomplete } from '../../__shared__/components';
 import { useCategoryAutocompleteInput } from '../../categories/hooks';
 
@@ -45,9 +45,27 @@ const ProductCreateEditDialog: React.FC<ProductCreateEditDialogProps> = ({
         initialCategory: null,
       };
 
-  const [productName, setProductName, bindProductName] = useTextInput(initialProductName);
-  const [caloriesCost, setCaloriesCost, bindCaloriesCost] = useNumericInput(initialCaloriesCost);
+  const [productName, setProductName, bindProductName, isValidProductName] = useValidatedTextInput(
+    initialProductName,
+    {
+      validate: productName => productName.length >= 3 && productName.length <= 50,
+      errorHelperText: 'Product name is invalid',
+    },
+  );
+
+  const [
+    caloriesCost,
+    setCaloriesCost,
+    bindCaloriesCost,
+    isValidCaloriesCost,
+  ] = useValidatedNumericInput(initialCaloriesCost, {
+    validate: caloriesCost => caloriesCost > 0 && caloriesCost < 5000,
+    errorHelperText: 'Calories cost is invalid',
+  });
+
   const [category, setCategory, bindCategory] = useCategoryAutocompleteInput(initialCategory);
+
+  const isSubmitDisabled = !isValidProductName || !isValidCaloriesCost || !category;
 
   useEffect(() => {
     if (dialogProps.open) {
@@ -94,7 +112,12 @@ const ProductCreateEditDialog: React.FC<ProductCreateEditDialogProps> = ({
         ></SimpleAutocomplete>
       </DialogContent>
       <DialogActions>
-        <Button variant="contained" color="primary" onClick={handleSubmitClick}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleSubmitClick}
+          disabled={isSubmitDisabled}
+        >
           {submitText}
         </Button>
         <Button variant="text" onClick={onDialogCancel}>
