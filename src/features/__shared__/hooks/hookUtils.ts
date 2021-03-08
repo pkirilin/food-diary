@@ -13,29 +13,53 @@ type BindingCreatorFunction<TValue, TBindingProps> = (
   setValue: React.Dispatch<React.SetStateAction<TValue>>,
 ) => TBindingProps;
 
-type ValidatedInputOptions<TValue> = {
+interface InputOptions<TValue> {
+  afterChange?: (value: TValue) => void;
+}
+
+interface ValidatedInputOptions<TValue> extends InputOptions<TValue> {
   validate: ValidatorFunction<TValue>;
   errorHelperText?: string;
-};
+}
 
 type ValidatedInputProps = TextFieldProps | KeyboardDatePickerProps;
 
 export function createInputHook<TValue, TBindingProps>(
   createBinding: BindingCreatorFunction<TValue, TBindingProps>,
-): InputHook<TValue, TBindingProps> {
-  return initialValue => {
+): InputHook<TValue, TBindingProps, InputOptions<TValue>> {
+  return (initialValue, options = {}) => {
     const [value, setValue] = useState(initialValue);
+    const [isInitialized, setIsInitialized] = useState(false);
+    const { afterChange } = options;
+
+    useEffect(() => {
+      setIsInitialized(true);
+    }, []);
+
+    useEffect(() => {
+      if (isInitialized && afterChange) {
+        afterChange(value);
+      }
+    }, [value]);
+
     return [value, setValue, () => createBinding(value, setValue)];
   };
 }
 
 export function createValidatedInputHook<TValue, TBindingProps extends ValidatedInputProps>(
-  useInputBase: InputHook<TValue, TBindingProps>,
+  useInputBase: InputHook<TValue, TBindingProps, InputOptions<TValue>>,
 ): ValidatedInputHook<TValue, TBindingProps, ValidatedInputOptions<TValue>> {
-  return (initialValue, { validate, errorHelperText = '' }) => {
-    const [value, setValue, bindValue] = useInputBase(initialValue);
+  return (
+    initialValue,
+    options = {
+      validate: () => true,
+    },
+  ) => {
+    const [value, setValue, bindValue] = useInputBase(initialValue, options);
     const [error, setError] = useState(false);
     const [helperText, setHelperText] = useState('');
+
+    const { validate, errorHelperText = '' } = options;
 
     useEffect(() => {
       const isInputValid = validate(value);

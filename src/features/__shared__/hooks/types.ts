@@ -14,7 +14,7 @@ export type ValidatorFunction<TValue> = (value: TValue) => boolean;
 
 export type BaseInputHook<TValue, TResult extends Array<unknown>, TArg = void> = (
   initialValue: TValue,
-  arg: TArg,
+  arg?: TArg,
 ) => TResult;
 
 export type InputHook<TValue, TBindingProps, TArg = void> = BaseInputHook<
