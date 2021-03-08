@@ -4,7 +4,7 @@ ENV PATH /app/node_modules/.bin:$PATH
 
 COPY package.json ./
 COPY yarn.lock ./
-RUN yarn install
+RUN yarn install --prefer-offline
 RUN yarn add react-scripts@4.0.1 -g
 COPY . ./
 RUN yarn build
