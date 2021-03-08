@@ -15,7 +15,7 @@ import { PageCreateEdit } from '../models';
 import { DialogCustomActionProps } from '../../__shared__/types';
 import { getDateForNewPage } from '../thunks';
 import { useTypedSelector, useValidatedDateInput } from '../../__shared__/hooks';
-import { dateValidator } from '../../__shared__/validators';
+import { createDateValidator } from '../../__shared__/validators';
 
 interface PageCreateEditDialogProps extends DialogProps, DialogCustomActionProps<PageCreateEdit> {
   page?: PageCreateEdit;
@@ -48,7 +48,7 @@ const PageCreateEditDialog: React.FC<PageCreateEditDialogProps> = ({
       };
 
   const [date, setDate, bindDate, isValidDate] = useValidatedDateInput(initialDate, {
-    validate: dateValidator,
+    validate: createDateValidator(true),
     errorHelperText: 'Date is required',
   });
 
@@ -88,6 +88,7 @@ const PageCreateEditDialog: React.FC<PageCreateEditDialogProps> = ({
             disableToolbar
             label="Page date"
             placeholder="01.01.2021"
+            variant="inline"
             format="dd.MM.yyyy"
             margin="normal"
             fullWidth
