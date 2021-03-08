@@ -56,15 +56,25 @@ export function createValidatedInputHook<TValue, TBindingProps extends Validated
     },
   ) => {
     const [value, setValue, bindValue] = useInputBase(initialValue, options);
+    const [isValid, setIsValid] = useState(false);
     const [error, setError] = useState(false);
+    const [isInitialized, setIsInitialized] = useState(false);
     const [helperText, setHelperText] = useState('');
 
     const { validate, errorHelperText = '' } = options;
 
     useEffect(() => {
+      setIsInitialized(true);
+    }, []);
+
+    useEffect(() => {
       const isInputValid = validate(value);
-      setError(!isInputValid);
-      setHelperText(isInputValid ? '' : errorHelperText);
+      setIsValid(isInputValid);
+
+      if (isInitialized) {
+        setError(!isInputValid);
+        setHelperText(isInputValid ? '' : errorHelperText);
+      }
     }, [value]);
 
     return [
@@ -75,7 +85,7 @@ export function createValidatedInputHook<TValue, TBindingProps extends Validated
         error,
         helperText,
       }),
-      !error,
+      isValid,
     ];
   };
 }
