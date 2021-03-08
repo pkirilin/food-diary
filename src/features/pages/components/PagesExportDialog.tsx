@@ -22,7 +22,7 @@ import { createDateValidator } from '../../__shared__/validators';
 interface PagesExportDialogProps extends DialogProps, DialogCustomActionProps<ExportPagesRequest> {}
 
 const initialFormat = ExportFormat.Json;
-const validateDate = createDateValidator(false);
+const validateDate = createDateValidator(true);
 
 const PagesExportDialog: React.FC<PagesExportDialogProps> = ({
   onDialogCancel,
@@ -33,10 +33,12 @@ const PagesExportDialog: React.FC<PagesExportDialogProps> = ({
     validate: validateDate,
     errorHelperText: 'Start date is invalid',
   });
+
   const [endDate, setEndDate, bindEndDate, isValidEndDate] = useValidatedDateInput(null, {
     validate: validateDate,
     errorHelperText: 'End date is invalid',
   });
+
   const [format, setFormat] = useState(ExportFormat.Json);
 
   const isExportDisabled = !isValidStartDate || !isValidEndDate;
