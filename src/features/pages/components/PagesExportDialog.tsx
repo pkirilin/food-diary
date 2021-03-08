@@ -13,23 +13,33 @@ import {
 } from '@material-ui/core';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
-import { useDateInput } from '../../__shared__/hooks';
+import { useValidatedDateInput } from '../../__shared__/hooks';
 import { ExportFormat } from '../../__shared__/models';
 import { DialogCustomActionProps } from '../../__shared__/types';
 import { ExportPagesRequest } from '../thunks';
+import { createDateValidator } from '../../__shared__/validators';
 
 interface PagesExportDialogProps extends DialogProps, DialogCustomActionProps<ExportPagesRequest> {}
 
 const initialFormat = ExportFormat.Json;
+const validateDate = createDateValidator(false);
 
 const PagesExportDialog: React.FC<PagesExportDialogProps> = ({
   onDialogCancel,
   onDialogConfirm,
   ...dialogProps
 }: PagesExportDialogProps) => {
-  const [startDate, setStartDate, bindStartDate] = useDateInput(null);
-  const [endDate, setEndDate, bindEndDate] = useDateInput(null);
+  const [startDate, setStartDate, bindStartDate, isValidStartDate] = useValidatedDateInput(null, {
+    validate: validateDate,
+    errorHelperText: 'Start date is invalid',
+  });
+  const [endDate, setEndDate, bindEndDate, isValidEndDate] = useValidatedDateInput(null, {
+    validate: validateDate,
+    errorHelperText: 'End date is invalid',
+  });
   const [format, setFormat] = useState(ExportFormat.Json);
+
+  const isExportDisabled = !isValidStartDate || !isValidEndDate;
 
   const getDateStringWithoutTime = (date: Date): string => {
     return date.toISOString().slice(0, 10);
@@ -93,7 +103,12 @@ const PagesExportDialog: React.FC<PagesExportDialogProps> = ({
         </Box>
       </DialogContent>
       <DialogActions>
-        <Button variant="contained" color="primary" onClick={handleConfirmClick}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleConfirmClick}
+          disabled={isExportDisabled}
+        >
           Export
         </Button>
         <Button variant="text" onClick={onDialogCancel}>
