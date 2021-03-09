@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 import { Container, makeStyles } from '@material-ui/core';
 import Navbar from './Navbar';
 import { PageContent, Pages } from './features/pages/components';
@@ -17,6 +18,9 @@ const App: React.FC = () => {
 
   return (
     <Router>
+      <Helmet>
+        <title>Food diary</title>
+      </Helmet>
       <Navbar></Navbar>
       <Container className={classes.content}>
         <Switch>
