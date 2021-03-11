@@ -9,7 +9,7 @@ import { Categories } from './features/categories/components';
 
 const useStyles = makeStyles(theme => ({
   content: {
-    marginTop: theme.spacing(2),
+    margin: `${theme.spacing(2)}px 0`,
   },
 }));
 
@@ -22,7 +22,7 @@ const App: React.FC = () => {
         <title>Food diary</title>
       </Helmet>
       <Navbar></Navbar>
-      <Container className={classes.content}>
+      <Container maxWidth="xl" className={classes.content}>
         <Switch>
           <Route exact path="/pages" component={Pages}></Route>
           <Route exact path="/pages/:id" component={PageContent}></Route>
