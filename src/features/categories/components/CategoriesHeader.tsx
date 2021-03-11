@@ -30,7 +30,7 @@ const CategoriesHeader: React.FC = () => {
       <CategoryCreateEditDialog {...categoryCreateDialog.binding}></CategoryCreateEditDialog>
       <Typography variant="h1">Categories</Typography>
       <Tooltip title="Add new category">
-        <Fab color="primary" size="small" onClick={handleAddClick}>
+        <Fab color="default" size="small" onClick={handleAddClick}>
           <AddIcon />
         </Fab>
       </Tooltip>
