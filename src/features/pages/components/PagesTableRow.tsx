@@ -1,7 +1,15 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { Link as RouterLink } from 'react-router-dom';
-import { TableRow, TableCell, Checkbox, Tooltip, IconButton, Link } from '@material-ui/core';
+import {
+  TableRow,
+  TableCell,
+  Checkbox,
+  Tooltip,
+  IconButton,
+  Link,
+  makeStyles,
+} from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import { PageCreateEdit, PageItem } from '../models';
 import { useDialog, useTypedSelector } from '../../__shared__/hooks';
@@ -13,7 +21,16 @@ type PagesTableRowProps = {
   page: PageItem;
 };
 
+const useStyles = makeStyles(theme => ({
+  pageDateLink: {
+    fontWeight: theme.typography.fontWeightMedium,
+  },
+}));
+
 const PagesTableRow: React.FC<PagesTableRowProps> = ({ page }: PagesTableRowProps) => {
+  const classes = useStyles();
+  const pageDate = new Date(page.date).toLocaleDateString();
+
   const isPageSelected = useTypedSelector(state =>
     state.pages.selectedPageIds.some(id => id === page.id),
   );
@@ -49,8 +66,14 @@ const PagesTableRow: React.FC<PagesTableRowProps> = ({ page }: PagesTableRowProp
         <Checkbox color="primary" checked={isPageSelected} onChange={handleSelectPage} />
       </TableCell>
       <TableCell>
-        <Link component={RouterLink} to={`/pages/${page.id}`}>
-          {page.date}
+        <Link
+          component={RouterLink}
+          to={`/pages/${page.id}`}
+          variant="body1"
+          color="primary"
+          className={classes.pageDateLink}
+        >
+          {pageDate}
         </Link>
       </TableCell>
       <TableCell>{page.countCalories}</TableCell>
