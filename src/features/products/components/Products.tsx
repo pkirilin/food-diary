@@ -4,6 +4,7 @@ import { Paper } from '@material-ui/core';
 import ProductsTableToolbar from './ProductsTableToolbar';
 import ProductsTable from './ProductsTable';
 import ProductsTablePagination from './ProductsTablePagination';
+import ProductsFilterAppliedParams from './ProductsFilterAppliedParams';
 
 const Products: React.FC = () => {
   return (
@@ -12,6 +13,7 @@ const Products: React.FC = () => {
         <title>Food diary | Products</title>
       </Helmet>
       <ProductsTableToolbar></ProductsTableToolbar>
+      <ProductsFilterAppliedParams></ProductsFilterAppliedParams>
       <ProductsTable></ProductsTable>
       <ProductsTablePagination></ProductsTablePagination>
     </Paper>

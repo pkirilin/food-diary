@@ -1,28 +1,18 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { Box, Chip, makeStyles, Tooltip } from '@material-ui/core';
+import { Box, Chip, Tooltip } from '@material-ui/core';
 import TodayIcon from '@material-ui/icons/Today';
 import EventIcon from '@material-ui/icons/Event';
-import { useTypedSelector } from '../../__shared__/hooks';
 import { endDateChanged, startDateChanged } from '../slice';
-
-const useStyles = makeStyles(theme => ({
-  root: {
-    display: 'flex',
-    margin: theme.spacing(2),
-
-    '& > :not(:first-child)': {
-      marginLeft: theme.spacing(1),
-    },
-  },
-}));
+import { useTypedSelector } from '../../__shared__/hooks';
+import { useFilterAppliedParamsStyles } from '../../__shared__/styles';
 
 function formatDate(date: string) {
   return new Date(date).toLocaleDateString();
 }
 
 const PagesFilterAppliedParams: React.FC = () => {
-  const classes = useStyles();
+  const classes = useFilterAppliedParamsStyles();
 
   const filter = useTypedSelector(state => state.pages.filter);
   const { startDate, endDate } = filter;
