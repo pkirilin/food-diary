@@ -14,8 +14,8 @@ function formatDate(date: string) {
 const PagesFilterAppliedParams: React.FC = () => {
   const classes = useFilterAppliedParamsStyles();
 
-  const filter = useTypedSelector(state => state.pages.filter);
-  const { startDate, endDate } = filter;
+  const startDate = useTypedSelector(state => state.pages.filter.startDate);
+  const endDate = useTypedSelector(state => state.pages.filter.endDate);
 
   const dispatch = useDispatch();
 
