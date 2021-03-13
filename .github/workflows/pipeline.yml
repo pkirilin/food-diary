@@ -1,4 +1,4 @@
-name: Check food-diary-client
+name: Build
 on:
   push:
     branches: [master, develop]
@@ -7,23 +7,20 @@ on:
 
 jobs:
   check:
-    name: Check on node ${{ matrix.node_version }} and ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        node_version: ['14']
-        os: [ubuntu-latest]
+    name: Build, lint and test
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-      - name: Use Node.js ${{ matrix.node_version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node_version }}
+      - name: Checkout
+        uses: actions/checkout@v2
+
       - name: Install packages
         run: yarn install --prefer-offline
+
       - name: Lint
         run: yarn run lint
+
       - name: Build
         run: yarn build
+
       - name: Test
         run: yarn test
