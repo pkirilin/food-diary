@@ -5,14 +5,14 @@ networks:
         driver: bridge
 services:
     food-diary-client:
-        image: pkirilin/food-diary-client:latest
+        image: pkirilin/food-diary-client:2.0.0
         ports:
             - "3000:3000"
         networks:
             - food-diary-network
 
     food-diary-server:
-        image: pkirilin/food-diary-server:1.0.0
+        image: pkirilin/food-diary-server:2.0.0
         depends_on:
             - "food-diary-db"
         ports:
