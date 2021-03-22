@@ -97,8 +97,14 @@ const pagesSlice = createSlice({
       })
       .addCase(getPageById.fulfilled, (state, { payload }) => {
         state.current = payload.currentPage;
-        state.previous = payload.previousPage;
-        state.next = payload.nextPage;
+
+        if (state.filter.sortOrder === SortOrder.Ascending) {
+          state.previous = payload.previousPage;
+          state.next = payload.nextPage;
+        } else {
+          state.previous = payload.nextPage;
+          state.next = payload.previousPage;
+        }
       })
       .addCase(deletePages.fulfilled, state => {
         state.selectedPageIds = [];
