@@ -46,6 +46,6 @@ Stop and remove server-side containers:
 docker-compose down
 ```
 
-_It is supposed that started API container can be accessed at localhost. If not, **apiUrl** property should be changed in **src/config.ts**_.
+_It is supposed that started API container can be accessed at localhost. If not, **apiUrl** property should be changed in [config](src/features/__shared__/config.ts)_.
 
 Server part can also be [started locally](https://github.com/pkirilin/food-diary-server), without using docker.
