@@ -45,12 +45,6 @@ namespace FoodDiary.API
             services.AddApplicationDependencies();
 
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
-
-            var clientAppUrl = Configuration.GetValue<string>("ClientAppUrl");
-            services.AddCors(options => options.AddPolicy("AllowClientApp", builder =>
-                 builder.WithOrigins(clientAppUrl)
-                     .AllowAnyHeader()
-                     .AllowAnyMethod()));
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -66,7 +60,7 @@ namespace FoodDiary.API
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
             app.UseRouting();
-            app.UseCors("AllowClientApp");
+            app.UseHttpsRedirection();
 
             app.UseEndpoints(endpoints =>
             {
