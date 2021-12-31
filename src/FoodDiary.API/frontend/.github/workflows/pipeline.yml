@@ -1,0 +1,26 @@
+name: Check food-diary-client
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  check:
+    name: Build, lint and test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install packages
+        run: yarn install --prefer-offline
+
+      - name: Lint
+        run: yarn run lint
+
+      - name: Build
+        run: yarn build
+
+      - name: Test
+        run: yarn test

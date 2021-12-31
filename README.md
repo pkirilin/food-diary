@@ -1,51 +1,49 @@
-# food-diary-client
+# food-diary-server
 
-![Check food-diary-client](https://github.com/pkirilin/food-diary-client/workflows/Check%20food-diary-client/badge.svg?branch=master)
+![Check food-diary-server](https://github.com/pkirilin/food-diary-server/workflows/Check%20food-diary-server/badge.svg?branch=master)
 
-**food-diary-client** is the client part of [food-diary](https://github.com/pkirilin/food-diary) application.
-It is written on React & Redux.
+**food-diary-server** is the server part of [food-diary](https://github.com/pkirilin/food-diary) application. It is written on C#, ASP.NET Core (Web API) and using Entity Framework Core connected to PostgreSQL database.
 
-The application is divided into 3 sections:
+## Structure
 
-- **Pages**: manages diary pages with notes about eaten products and their quantities, displays calories count for day/meal/product
-- **Products**: manages products info used in notes
-- **Categories**: groups products by categories and manages those categories
+Currently, server part consists of the following projects:
 
-## Run client app
+| Project | Description
+| --- | --- |
+| FoodDiary.API | Executable web API project with API controllers, mappers and data transfer objects |
+| FoodDiary.Application | Application layer project with requests and request handlers |
+| FoodDiary.Domain | Domain layer project with entities, repository contracts and business logic objects |
+| FoodDiary.Infrastructure | Infrastructure layer project with repositories and database context |
+| FoodDiary.Import | Library for importing diary objects with import file parser and import engine |
+| FoodDiary.PdfGenerator | Library for generating PDF document from diary objects. Based on PdfSharp & MigraDoc |
 
-Requirements:
+## Running the application
 
-- Node.js
-- yarn
+### Using .NET Core CLI
 
-```shell
-yarn install
-yarn start
-```
+In order to run the application locally _.NET Core SDK 3.1+_ and _PostgreSQL 12_ should be installed.
 
-After that, client app should be available at <http://localhost:3000>.
+Note: _ensure, that database parameters (username, password, host and port) are correct in **src/FoodDiary.API/appsettings.Development.json** inside **ConnectionStrings** section_.
 
-## Run server part (docker)
-
-For correct application work, both client and server parts should be started. Server part is containerized and can be launched with Docker.
-
-Requirements:
-
-- Docker
-
-Run server-side containers (API and database):
+Start application:
 
 ```shell
-docker-compose pull
-docker-compose up
+dotnet run -p src/FoodDiary.API
 ```
 
-Stop and remove server-side containers:
+### Using docker-compose
+
+Start application:
+
+```shell
+docker-compose build
+docker-compose up -d
+```
+
+Stop application:
 
 ```shell
 docker-compose down
 ```
 
-_It is supposed that started API container can be accessed at localhost. If not, **apiUrl** property should be changed in [config](src/features/__shared__/config.ts)_.
-
-Server part can also be [started locally](https://github.com/pkirilin/food-diary-server), without using docker.
+Application should be available at <http://localhost:5000>.
