@@ -26,6 +26,14 @@ namespace FoodDiary.API
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddControllers();
+            services.AddFoodDiarySwagger();
+            
+            services.AddSpaStaticFiles(configuration =>
+            {
+                configuration.RootPath = "frontend/build";
+            });
+            
             services.Configure<ImportOptions>(Configuration.GetSection("Import"));
 
             services.AddDbContext<FoodDiaryContext>();
@@ -43,9 +51,6 @@ namespace FoodDiary.API
                  builder.WithOrigins(clientAppUrl)
                      .AllowAnyHeader()
                      .AllowAnyMethod()));
-
-            services.AddControllers();
-            services.AddFoodDiarySwagger();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -53,21 +58,29 @@ namespace FoodDiary.API
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseFoodDiarySwagger();
             }
 
             app.MigrateDatabase();
-
-            app.UseCors("AllowClientApp");
-
-            app.UseRouting();
-
             app.UseMiddleware<ExceptionHandlerMiddleware>();
-
-            app.UseFoodDiarySwagger();
+            app.UseStaticFiles();
+            app.UseSpaStaticFiles();
+            app.UseRouting();
+            app.UseCors("AllowClientApp");
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+            });
+            
+            app.UseSpa(spa =>
+            {
+                spa.Options.SourcePath = "frontend";
+
+                if (env.IsDevelopment())
+                {
+                    spa.UseProxyToSpaDevelopmentServer("http://localhost:3000");
+                }
             });
         }
     }

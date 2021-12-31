@@ -29,7 +29,6 @@ namespace FoodDiary.API.Extensions
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "FoodDiary API v1");
-                c.RoutePrefix = String.Empty;
             });
         }
     }

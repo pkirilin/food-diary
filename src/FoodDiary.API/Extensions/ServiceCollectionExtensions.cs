@@ -40,16 +40,16 @@ namespace FoodDiary.API.Extensions
                 var commonApiInfo = new OpenApiInfo
                 {
                     Title = "FoodDiary API",
-                    Description = "This document describes API for FoodDiary server-side application",
+                    Description = "This document describes API for FoodDiary application",
                     Contact = new OpenApiContact()
                     {
                         Name = "Pavel Kirilin",
                         Email = "kirilin.pav@gmail.com",
-                        Url = new Uri("https://github.com/pkirilin/food-diary-server")
-                    }
+                        Url = new Uri("https://github.com/pkirilin/food-diary")
+                    },
+                    Version = "v1"
                 };
 
-                commonApiInfo.Version = "v1";
                 c.SwaggerDoc("v1", commonApiInfo);
             });
         }
