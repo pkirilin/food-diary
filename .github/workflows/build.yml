@@ -1,4 +1,4 @@
-name: Check food-diary-server
+name: food-diary
 on:
   push:
     branches: [master]
@@ -6,8 +6,8 @@ on:
     branches: [master]
 
 jobs:
-  check:
-    name: Check on dotnet ${{ matrix.dotnet-version }} and ${{ matrix.os }}
+  backend:
+    name: backend - dotnet ${{ matrix.dotnet-version }} and os ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -25,3 +25,19 @@ jobs:
         run: dotnet build --configuration Release --no-restore
       - name: Test
         run: dotnet test --no-restore --verbosity normal
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: 'src/FoodDiary/frontend'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install packages
+        run: yarn install --prefer-offline
+      - name: Lint
+        run: yarn run lint
+      - name: Build
+        run: yarn build
+      - name: Test
+        run: yarn test
