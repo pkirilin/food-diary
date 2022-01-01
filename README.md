@@ -1,49 +1,51 @@
-# food-diary-server
+# food-diary
 
-![Check food-diary-server](https://github.com/pkirilin/food-diary-server/workflows/Check%20food-diary-server/badge.svg?branch=master)
+![build]()
 
-**food-diary-server** is the server part of [food-diary](https://github.com/pkirilin/food-diary) application. It is written on C#, ASP.NET Core (Web API) and using Entity Framework Core connected to PostgreSQL database.
+## Introduction
 
-## Structure
+**food-diary** is a web application for tracking calories count for meals eaten daily. It represents an interactive diary, which is able to record notes about products and their quantities and calculate calories for each note (or group of notes) recorded.
 
-Currently, server part consists of the following projects:
+## Main idea and goal
 
-| Project | Description
-| --- | --- |
-| FoodDiary.API | Executable web API project with API controllers, mappers and data transfer objects |
-| FoodDiary.Application | Application layer project with requests and request handlers |
-| FoodDiary.Domain | Domain layer project with entities, repository contracts and business logic objects |
-| FoodDiary.Infrastructure | Infrastructure layer project with repositories and database context |
-| FoodDiary.Import | Library for importing diary objects with import file parser and import engine |
-| FoodDiary.PdfGenerator | Library for generating PDF document from diary objects. Based on PdfSharp & MigraDoc |
+The diary consists of **pages**. Each page is associated with some date and contains **notes** grouped by meal types (_breakfast, lunch etc._). Note contains information about **product** and its quantity. Products are grouped by **categories**. Each product has _name_ and _calories cost_ per 100 g of product's quantity recorded. Using this information the application is capable of calculating calories count of:
 
-## Running the application
+- single note
+- notes group (e.g. for specific meal type)
+- the entire page.
 
-### Using .NET Core CLI
+This information can be extremely useful for people who want to keep track of energy value of meals they eat every day.
 
-In order to run the application locally _.NET Core SDK 3.1+_ and _PostgreSQL 12_ should be installed.
+## Local start
 
-Note: _ensure, that database parameters (username, password, host and port) are correct in **src/FoodDiary.API/appsettings.Development.json** inside **ConnectionStrings** section_.
+1. Start PostgreSQL database:
 
-Start application:
+    ```shell
+    docker run -p 5432:5432 --name postgres -e POSTGRES_PASSWORD=postgres -e -d postgres:12.2-alpine
+    ```
 
-```shell
-dotnet run -p src/FoodDiary.API
-```
+    *Optional*: PgAdmin can be started like this:
 
-### Using docker-compose
+    ```shell
+    docker run -p 5050:80 --name pgadmin -e "PGADMIN_DEFAULT_EMAIL=name@example.com" -e "PGADMIN_DEFAULT_PASSWORD=postgres" -d dpage/pgadmin4
+    ```
 
-Start application:
+1. Install .NET Core SDK 3.1 or higher
 
-```shell
-docker-compose build
-docker-compose up -d
-```
+1. Install Node.js and yarn package manager
 
-Stop application:
+1. Start backend application:
 
-```shell
-docker-compose down
-```
+    ```shell
+    dotnet run --project src/FoodDiary.API
+    ```
 
-Application should be available at <http://localhost:5000>.
+1. Start frontend application:
+
+    ```shell
+    cd src/FoodDiary.API/frontend
+    yarn
+    yarn start
+    ```
+
+1. Navigate to <https://localhost:5001>
