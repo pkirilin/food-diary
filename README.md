@@ -1,6 +1,6 @@
 # food-diary
 
-![build]()
+[![food-diary](https://github.com/pkirilin/food-diary/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/pkirilin/food-diary/actions/workflows/build.yml)
 
 ## Introduction
 
