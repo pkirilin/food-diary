@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using AutoMapper;
 using FoodDiary.API;
 using FoodDiary.API.Controllers.v1;
 using FoodDiary.API.Extensions;

@@ -1,4 +1,3 @@
-using System;
 using FoodDiary.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;

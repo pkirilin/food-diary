@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net;
 using FluentAssertions;
 using FoodDiary.Domain.Enums;
 using FoodDiary.Import.Models;

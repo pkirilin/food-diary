@@ -17,7 +17,6 @@ using System.Collections.Generic;
 using System;
 using MediatR;
 using FoodDiary.Application.Pages.Requests;
-using FoodDiary.Application.Enums;
 using AutoFixture;
 using FoodDiary.Application.Models;
 

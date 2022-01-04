@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using FluentAssertions;
 using FoodDiary.API.Dtos;
-using Microsoft.EntityFrameworkCore.Internal;
 using Xunit;
 
 namespace FoodDiary.IntegrationTests
