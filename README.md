@@ -30,7 +30,7 @@ This information can be extremely useful for people who want to keep track of en
     docker run -p 5050:80 --name pgadmin -e "PGADMIN_DEFAULT_EMAIL=name@example.com" -e "PGADMIN_DEFAULT_PASSWORD=postgres" -d dpage/pgadmin4
     ```
 
-1. Install .NET Core SDK 3.1 or higher
+1. Install .NET SDK 6.0.100 or higher
 
 1. Install Node.js and yarn package manager
 

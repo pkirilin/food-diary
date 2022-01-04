@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using AutoMapper;
 using FoodDiary.API.Extensions;
 using FoodDiary.API.Middlewares;
 using FoodDiary.API.Options;
