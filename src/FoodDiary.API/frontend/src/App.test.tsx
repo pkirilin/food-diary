@@ -1,5 +1,6 @@
 import React from 'react';
 import App from './App';
+import { SortOrder } from './features/__shared__/models';
 import { renderExtended, TestRootState } from './features/__shared__/utils';
 
 describe('App component', () => {
@@ -11,6 +12,7 @@ describe('App component', () => {
     const createStateMock = (jest.fn() as jest.Mock<TestRootState>).mockReturnValue({
       pages: {
         pageItems: [],
+        dateForNewPageLoading: 'idle',
         operationStatus: 'idle',
         selectedPageIds: [],
         totalPagesCount: 0,
@@ -18,6 +20,7 @@ describe('App component', () => {
           changed: false,
           pageNumber: 1,
           pageSize: 10,
+          sortOrder: SortOrder.Ascending,
         },
       },
     });
