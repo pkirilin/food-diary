@@ -28,7 +28,7 @@ const PagesTablePagination: React.FC = () => {
       count={totalPagesCount}
       page={pageNumber - 1}
       rowsPerPage={pageSize}
-      onChangePage={handleChangePage}
+      onPageChange={handleChangePage}
       onChangeRowsPerPage={handleChangeRowsPerPage}
     />
   );

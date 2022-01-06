@@ -21,9 +21,10 @@ type PagesTableRowProps = {
   page: PageItem;
 };
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
   pageDateLink: {
-    fontWeight: theme.typography.fontWeightMedium,
+    // TODO: use theme value after Material 5 migration
+    fontWeight: 'bold',
   },
 }));
 
