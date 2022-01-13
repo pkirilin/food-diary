@@ -14,6 +14,7 @@
     <ProjectReference Include="..\FoodDiary.Domain\FoodDiary.Domain.csproj" />
     <ProjectReference Include="..\FoodDiary.Import\FoodDiary.Import.csproj" />
     <ProjectReference Include="..\FoodDiary.Infrastructure\FoodDiary.Infrastructure.csproj" />
+    <ProjectReference Include="..\FoodDiary.Integrations.Google\FoodDiary.Integrations.Google.csproj" />
   </ItemGroup>
 
 </Project>
