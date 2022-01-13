@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 
 namespace FoodDiary.IntegrationTests
 {
+    // TODO: remove in favor of System.Net.Http.Json
     public static class HttpClientExtensions
     {
         public static async Task<TData> GetDataAsync<TData>(this HttpClient client, string requestUri, CancellationToken cancellationToken = default)

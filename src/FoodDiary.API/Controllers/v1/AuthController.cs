@@ -17,7 +17,7 @@ public class AuthController : ControllerBase
         _sender = sender;
     }
     
-    [HttpGet("google")]
+    [HttpPost("google")]
     public async Task<IActionResult> Google([FromBody] SignInWithGoogleRequest request,
         CancellationToken cancellationToken)
     {
