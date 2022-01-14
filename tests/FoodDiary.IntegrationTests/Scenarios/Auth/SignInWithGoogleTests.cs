@@ -22,10 +22,26 @@ public class SignInWithGoogleTests : IClassFixture<FoodDiaryApplicationFactory>
         };
         
         var response = await client.PostAsJsonAsync("/api/v1/auth/google", request);
+        
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
         var authResponseData = await response.Content.ReadFromJsonAsync<SuccessfulAuthResponseDto>();
-
-        response.Should().Be(HttpStatusCode.OK);
         authResponseData.Should().NotBeNull();
         authResponseData?.AccessToken.Should().NotBeNull();
+    }
+
+    [Fact]
+    public async Task Denies_access_for_not_whitelisted_users_with_valid_google_token_id()
+    {
+        var client = _applicationFactory.CreateClient();
+        var request = new SignInWithGoogleRequest
+        {
+            GoogleTokenId = "test_google_token_id"
+        };
+        
+        var response = await client.PostAsJsonAsync("/api/v1/auth/google", request);
+
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        var authResponseMessage = await response.Content.ReadFromJsonAsync<string>();
+        authResponseMessage.Should().NotBeNull();
     }
 }
