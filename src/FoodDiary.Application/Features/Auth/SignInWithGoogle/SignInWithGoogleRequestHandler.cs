@@ -32,6 +32,11 @@ internal class SignInWithGoogleRequestHandler : IRequestHandler<SignInWithGoogle
     {
         var tokenInfo = await _googleOAuthClient.ValidateTokenAsync(request.GoogleTokenId, cancellationToken);
 
+        if (tokenInfo == null)
+        {
+            throw new AccessDeniedException("Google token is invalid");
+        }
+
         if (!_authOptions.Value.AllowedEmails.Contains(tokenInfo.Email))
         {
             throw new AccessDeniedException($"Access denied - email '{tokenInfo.Email}' is not allowed");

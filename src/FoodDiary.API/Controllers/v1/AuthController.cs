@@ -21,7 +21,7 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> Google([FromBody] SignInWithGoogleRequest request,
         CancellationToken cancellationToken)
     {
-        await _sender.Send(request, cancellationToken);
-        return Ok();
+        var authResponseDto = await _sender.Send(request, cancellationToken);
+        return Ok(authResponseDto);
     }
 }

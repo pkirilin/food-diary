@@ -19,7 +19,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FoodDiary.Configuration\FoodDiary.Configuration.csproj" />
-    <ProjectReference Include="..\FoodDiary.Domain\FoodDiary.Domain.csproj" />
   </ItemGroup>
 
 </Project>

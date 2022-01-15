@@ -1,5 +1,4 @@
 using System.Net.Http.Json;
-using FoodDiary.Domain.Exceptions;
 using FoodDiary.Integrations.Google.Contracts;
 
 namespace FoodDiary.Integrations.Google;
@@ -15,12 +14,11 @@ internal class GoogleOAuthClient : IGoogleOAuthClient
     
     public async Task<GoogleTokenInfoDto> ValidateTokenAsync(string tokenId, CancellationToken cancellationToken)
     {
-        var response = await _httpClient.GetAsync("/oauth2/v3/tokeninfo", cancellationToken);
+        var path = $"/oauth2/v3/tokeninfo?id_token={tokenId}";
+        var response = await _httpClient.GetAsync(path, cancellationToken);
 
         if (!response.IsSuccessStatusCode)
-        {
-            throw new AccessDeniedException("Google token is invalid");
-        }
+            return null;
 
         return await response.Content.ReadFromJsonAsync<GoogleTokenInfoDto>(cancellationToken: cancellationToken);
     }

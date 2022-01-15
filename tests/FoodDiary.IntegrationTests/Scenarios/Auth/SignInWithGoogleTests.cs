@@ -1,17 +1,29 @@
 using System.Net;
 using System.Net.Http.Json;
+using System.Text.Json;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FoodDiary.Application.Features.Auth.SignInWithGoogle;
 using FoodDiary.Contracts.Auth;
+using FoodDiary.IntegrationTests.MockApis;
+using WireMock.RequestBuilders;
+using WireMock.ResponseBuilders;
 using Xunit;
 
 namespace FoodDiary.IntegrationTests.Scenarios.Auth;
 
-public class SignInWithGoogleTests : IClassFixture<FoodDiaryApplicationFactory>
+[Collection("Tests with WireMock")]
+public class SignInWithGoogleTests : IClassFixture<FoodDiaryApplicationFactory>, IClassFixture<GoogleMockApi>
 {
-    private readonly FoodDiaryApplicationFactory _applicationFactory = new();
-    
+    private readonly FoodDiaryApplicationFactory _applicationFactory;
+    private readonly GoogleMockApi _googleMockApi;
+
+    public SignInWithGoogleTests(FoodDiaryApplicationFactory applicationFactory, GoogleMockApi googleMockApi)
+    {
+        _applicationFactory = applicationFactory;
+        _googleMockApi = googleMockApi;
+    }
+
     [Fact]
     public async Task Authenticates_allowed_user_with_valid_google_token_id_and_provides_access_token()
     {
@@ -20,6 +32,7 @@ public class SignInWithGoogleTests : IClassFixture<FoodDiaryApplicationFactory>
         {
             GoogleTokenId = "test_google_token_id"
         };
+        Setup_GoogleApi_to_validate_test_token_successfully("test_google_token_id", "test@example.com");
         
         var response = await client.PostAsJsonAsync("/api/v1/auth/google", request);
         
@@ -39,9 +52,28 @@ public class SignInWithGoogleTests : IClassFixture<FoodDiaryApplicationFactory>
         };
         
         var response = await client.PostAsJsonAsync("/api/v1/auth/google", request);
-
+        
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         var authResponseMessage = await response.Content.ReadFromJsonAsync<string>();
         authResponseMessage.Should().NotBeNull();
+    }
+    
+    private void Setup_GoogleApi_to_validate_test_token_successfully(string googleTokenId, string returnedEmail)
+    {
+        var responseBody = JsonSerializer.Serialize(new
+        {
+            email = returnedEmail
+        });
+        
+        _googleMockApi.Server
+            .Given(Request.Create()
+                .UsingGet()
+                .WithPath("/oauth2/v3/tokeninfo")
+                .WithParam("id_token", googleTokenId)
+            )
+            .RespondWith(Response.Create()
+                .WithSuccess()
+                .WithBody(responseBody)
+            );
     }
 }
