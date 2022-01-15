@@ -16,11 +16,15 @@ internal class SignInWithGoogleRequestHandler : IRequestHandler<SignInWithGoogle
 {
     private readonly IGoogleOAuthClient _googleOAuthClient;
     private readonly IOptions<AuthOptions> _authOptions;
+    private readonly IJwtTokenGenerator _jwtTokenGenerator;
 
-    public SignInWithGoogleRequestHandler(IGoogleOAuthClient googleOAuthClient, IOptions<AuthOptions> authOptions)
+    public SignInWithGoogleRequestHandler(IGoogleOAuthClient googleOAuthClient,
+        IOptions<AuthOptions> authOptions,
+        IJwtTokenGenerator jwtTokenGenerator)
     {
         _googleOAuthClient = googleOAuthClient;
         _authOptions = authOptions;
+        _jwtTokenGenerator = jwtTokenGenerator;
     }
     
     public async Task<SuccessfulAuthResponseDto> Handle(SignInWithGoogleRequest request,
@@ -33,6 +37,11 @@ internal class SignInWithGoogleRequestHandler : IRequestHandler<SignInWithGoogle
             throw new AccessDeniedException($"Access denied - email '{tokenInfo.Email}' is not allowed");
         }
 
-        throw new System.NotImplementedException();
+        var accessToken = _jwtTokenGenerator.GenerateToken(tokenInfo.Email);
+
+        return new SuccessfulAuthResponseDto
+        {
+            AccessToken = accessToken
+        };
     }
 }
