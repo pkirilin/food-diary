@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoodDiary.Contracts", "src\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoodDiary.Integrations.Google", "src\FoodDiary.Integrations.Google\FoodDiary.Integrations.Google.csproj", "{962CC4A3-4630-4897-816A-4E4DD06A3B0A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoodDiary.Configuration", "src\FoodDiary.Configuration\FoodDiary.Configuration.csproj", "{A083DE9E-A2E6-4203-B7EE-1871AD53BC25}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -171,6 +173,18 @@ Global
 		{962CC4A3-4630-4897-816A-4E4DD06A3B0A}.Release|x64.Build.0 = Release|Any CPU
 		{962CC4A3-4630-4897-816A-4E4DD06A3B0A}.Release|x86.ActiveCfg = Release|Any CPU
 		{962CC4A3-4630-4897-816A-4E4DD06A3B0A}.Release|x86.Build.0 = Release|Any CPU
+		{A083DE9E-A2E6-4203-B7EE-1871AD53BC25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A083DE9E-A2E6-4203-B7EE-1871AD53BC25}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A083DE9E-A2E6-4203-B7EE-1871AD53BC25}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A083DE9E-A2E6-4203-B7EE-1871AD53BC25}.Debug|x64.Build.0 = Debug|Any CPU
+		{A083DE9E-A2E6-4203-B7EE-1871AD53BC25}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A083DE9E-A2E6-4203-B7EE-1871AD53BC25}.Debug|x86.Build.0 = Debug|Any CPU
+		{A083DE9E-A2E6-4203-B7EE-1871AD53BC25}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A083DE9E-A2E6-4203-B7EE-1871AD53BC25}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A083DE9E-A2E6-4203-B7EE-1871AD53BC25}.Release|x64.ActiveCfg = Release|Any CPU
+		{A083DE9E-A2E6-4203-B7EE-1871AD53BC25}.Release|x64.Build.0 = Release|Any CPU
+		{A083DE9E-A2E6-4203-B7EE-1871AD53BC25}.Release|x86.ActiveCfg = Release|Any CPU
+		{A083DE9E-A2E6-4203-B7EE-1871AD53BC25}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -187,6 +201,7 @@ Global
 		{59054BC3-4329-4B91-BF7B-8A59DB28B1D7} = {8D097EA1-B4F0-42EC-8914-37C308AC9700}
 		{CE935EBD-DACE-4E3C-9667-045522FFDB0A} = {8D097EA1-B4F0-42EC-8914-37C308AC9700}
 		{962CC4A3-4630-4897-816A-4E4DD06A3B0A} = {8D097EA1-B4F0-42EC-8914-37C308AC9700}
+		{A083DE9E-A2E6-4203-B7EE-1871AD53BC25} = {8D097EA1-B4F0-42EC-8914-37C308AC9700}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {865BF919-AA96-4CA9-9D91-CFD16926FB89}

@@ -3,8 +3,10 @@ using FoodDiary.API.Extensions;
 using FoodDiary.API.Middlewares;
 using FoodDiary.API.Options;
 using FoodDiary.Application.Extensions;
+using FoodDiary.Configuration.Extensions;
 using FoodDiary.Import.Extensions;
 using FoodDiary.Infrastructure;
+using FoodDiary.Integrations.Google.Extensions;
 using FoodDiary.PdfGenerator.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -33,6 +35,7 @@ namespace FoodDiary.API
                 configuration.RootPath = "frontend/build";
             });
             
+            services.ConfigureCustomOptions(Configuration);
             services.Configure<ImportOptions>(Configuration.GetSection("Import"));
 
             services.AddDbContext<FoodDiaryContext>();
@@ -42,6 +45,7 @@ namespace FoodDiary.API
             services.AddPagesPdfGenerator();
             services.AddPagesJsonImportServices();
             services.AddApplicationDependencies();
+            services.AddGoogleIntegration();
 
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
         }
@@ -54,7 +58,12 @@ namespace FoodDiary.API
                 app.UseFoodDiarySwagger();
             }
 
-            app.MigrateDatabase();
+            if (!env.IsEnvironment("Test"))
+            {
+                // TODO: add migrator instead
+                app.MigrateDatabase();
+            }
+            
             app.UseMiddleware<ExceptionHandlerMiddleware>();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();

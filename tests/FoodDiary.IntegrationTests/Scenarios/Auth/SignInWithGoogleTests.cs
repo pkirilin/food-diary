@@ -13,7 +13,7 @@ public class SignInWithGoogleTests : IClassFixture<FoodDiaryApplicationFactory>
     private readonly FoodDiaryApplicationFactory _applicationFactory = new();
     
     [Fact]
-    public async Task Authenticates_whitelisted_user_with_valid_google_token_id_and_provides_access_token()
+    public async Task Authenticates_allowed_user_with_valid_google_token_id_and_provides_access_token()
     {
         var client = _applicationFactory.CreateClient();
         var request = new SignInWithGoogleRequest
@@ -30,7 +30,7 @@ public class SignInWithGoogleTests : IClassFixture<FoodDiaryApplicationFactory>
     }
 
     [Fact]
-    public async Task Denies_access_for_not_whitelisted_users_with_valid_google_token_id()
+    public async Task Denies_access_for_not_allowed_users_with_valid_google_token_id()
     {
         var client = _applicationFactory.CreateClient();
         var request = new SignInWithGoogleRequest
