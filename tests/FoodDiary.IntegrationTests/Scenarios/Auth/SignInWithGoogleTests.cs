@@ -1,3 +1,4 @@
+using System;
 using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
@@ -13,7 +14,9 @@ using Xunit;
 namespace FoodDiary.IntegrationTests.Scenarios.Auth;
 
 [Collection("Tests with WireMock")]
-public class SignInWithGoogleTests : IClassFixture<FoodDiaryApplicationFactory>, IClassFixture<GoogleMockApi>
+public class SignInWithGoogleTests : IDisposable,
+    IClassFixture<FoodDiaryApplicationFactory>,
+    IClassFixture<GoogleMockApi>
 {
     private readonly FoodDiaryApplicationFactory _applicationFactory;
     private readonly GoogleMockApi _googleMockApi;
@@ -22,6 +25,11 @@ public class SignInWithGoogleTests : IClassFixture<FoodDiaryApplicationFactory>,
     {
         _applicationFactory = applicationFactory;
         _googleMockApi = googleMockApi;
+    }
+    
+    public void Dispose()
+    {
+        _googleMockApi.Server.Reset();
     }
 
     [Fact]
@@ -50,6 +58,7 @@ public class SignInWithGoogleTests : IClassFixture<FoodDiaryApplicationFactory>,
         {
             GoogleTokenId = "test_google_token_id"
         };
+        Setup_GoogleApi_to_validate_test_token_successfully("test_google_token_id", "test2@example.com");
         
         var response = await client.PostAsJsonAsync("/api/v1/auth/google", request);
         
@@ -57,7 +66,7 @@ public class SignInWithGoogleTests : IClassFixture<FoodDiaryApplicationFactory>,
         var authResponseMessage = await response.Content.ReadFromJsonAsync<string>();
         authResponseMessage.Should().NotBeNull();
     }
-    
+
     private void Setup_GoogleApi_to_validate_test_token_successfully(string googleTokenId, string returnedEmail)
     {
         var responseBody = JsonSerializer.Serialize(new
