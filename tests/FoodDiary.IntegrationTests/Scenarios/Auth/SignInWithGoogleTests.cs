@@ -63,7 +63,7 @@ public class SignInWithGoogleTests : IDisposable,
         var response = await client.PostAsJsonAsync("/api/v1/auth/google", request);
 
         response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
-        var authResponseMessage = await response.Content.ReadFromJsonAsync<string>();
+        var authResponseMessage = await response.Content.ReadAsStringAsync();
         authResponseMessage.Should().NotBeNull();
     }
 
@@ -80,7 +80,7 @@ public class SignInWithGoogleTests : IDisposable,
         var response = await client.PostAsJsonAsync("/api/v1/auth/google", request);
         
         response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
-        var authResponseMessage = await response.Content.ReadFromJsonAsync<string>();
+        var authResponseMessage = await response.Content.ReadAsStringAsync();
         authResponseMessage.Should().NotBeNull();
     }
 
