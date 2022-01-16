@@ -51,6 +51,23 @@ public class SignInWithGoogleTests : IDisposable,
     }
 
     [Fact]
+    public async Task Denies_access_for_all_requests_with_invalid_google_token_id()
+    {
+        var client = _applicationFactory.CreateClient();
+        var request = new SignInWithGoogleRequest
+        {
+            GoogleTokenId = "test_google_token_id"
+        };
+        Setup_GoogleApi_to_validate_test_token_with_error("test_google_token_id");
+        
+        var response = await client.PostAsJsonAsync("/api/v1/auth/google", request);
+
+        response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+        var authResponseMessage = await response.Content.ReadFromJsonAsync<string>();
+        authResponseMessage.Should().NotBeNull();
+    }
+
+    [Fact]
     public async Task Denies_access_for_not_allowed_users_with_valid_google_token_id()
     {
         var client = _applicationFactory.CreateClient();
@@ -62,7 +79,7 @@ public class SignInWithGoogleTests : IDisposable,
         
         var response = await client.PostAsJsonAsync("/api/v1/auth/google", request);
         
-        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
         var authResponseMessage = await response.Content.ReadFromJsonAsync<string>();
         authResponseMessage.Should().NotBeNull();
     }
@@ -82,6 +99,25 @@ public class SignInWithGoogleTests : IDisposable,
             )
             .RespondWith(Response.Create()
                 .WithSuccess()
+                .WithBody(responseBody)
+            );
+    }
+    
+    private void Setup_GoogleApi_to_validate_test_token_with_error(string googleTokenId)
+    {
+        var responseBody = JsonSerializer.Serialize(new
+        {
+            error_description = "some error message"
+        });
+        
+        _googleMockApi.Server
+            .Given(Request.Create()
+                .UsingGet()
+                .WithPath("/oauth2/v3/tokeninfo")
+                .WithParam("id_token", googleTokenId)
+            )
+            .RespondWith(Response.Create()
+                .WithStatusCode(HttpStatusCode.BadRequest)
                 .WithBody(responseBody)
             );
     }
