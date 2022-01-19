@@ -1,7 +1,7 @@
-import { createMuiTheme } from '@material-ui/core';
+import { createTheme } from '@material-ui/core';
 import { green, lightGreen } from '@material-ui/core/colors';
 
-export default createMuiTheme({
+export default createTheme({
   palette: {
     type: 'light',
     primary: {
