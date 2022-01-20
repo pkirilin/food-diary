@@ -1,4 +1,6 @@
+import { TextFieldProps } from '@material-ui/core';
 import { AutocompleteProps } from '@material-ui/lab';
+import { KeyboardDatePickerProps } from '@material-ui/pickers';
 
 export interface BindableHookResult<TBinding> {
   binding: TBinding;
@@ -33,3 +35,19 @@ export type AutocompleteBindingProps<TOption> = Omit<
   AutocompleteProps<TOption, undefined, undefined, undefined>,
   'renderInput'
 >;
+
+export type BindingCreatorFunction<TValue, TBindingProps> = (
+  value: TValue,
+  setValue: React.Dispatch<React.SetStateAction<TValue>>,
+) => TBindingProps;
+
+export interface InputOptions<TValue> {
+  afterChange?: (value: TValue) => void;
+}
+
+export interface ValidatedInputOptions<TValue> extends InputOptions<TValue> {
+  validate: ValidatorFunction<TValue>;
+  errorHelperText?: string;
+}
+
+export type ValidatedInputProps = TextFieldProps | KeyboardDatePickerProps;

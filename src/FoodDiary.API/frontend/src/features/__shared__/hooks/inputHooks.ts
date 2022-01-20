@@ -3,9 +3,10 @@ import { TextFieldProps } from '@material-ui/core';
 import { KeyboardDatePickerProps } from '@material-ui/pickers';
 import { RootState } from '../../../store';
 import { AutocompleteOption } from '../models';
-import { createInputHook, createValidatedInputHook } from './hookUtils';
 import { AutocompleteBindingProps, InputHook } from './types';
 import useTypedSelector from './useTypedSelector';
+import createInputHook from './createInputHook';
+import createValidatedInputHook from './createValidatedInputHook';
 
 export const useTextInput = createInputHook<string, TextFieldProps>((value, setValue) => ({
   value,
