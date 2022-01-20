@@ -28,7 +28,7 @@ const ProductsTablePagination: React.FC = () => {
       page={pageNumber - 1}
       rowsPerPage={pageSize}
       onPageChange={handleChangePage}
-      onChangeRowsPerPage={handleChangeRowsPerPage}
+      onRowsPerPageChange={handleChangeRowsPerPage}
     />
   );
 };
