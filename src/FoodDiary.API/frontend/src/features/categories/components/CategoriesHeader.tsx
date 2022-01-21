@@ -26,7 +26,7 @@ const CategoriesHeader: React.FC = () => {
   };
 
   return (
-    <Grid container justify="space-between" alignItems="center" className={classes.root}>
+    <Grid container justifyContent="space-between" alignItems="center" className={classes.root}>
       <CategoryCreateEditDialog {...categoryCreateDialog.binding}></CategoryCreateEditDialog>
       <Typography variant="h1">Categories</Typography>
       <Tooltip title="Add new category">

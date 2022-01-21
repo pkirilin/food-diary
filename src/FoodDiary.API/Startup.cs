@@ -34,6 +34,13 @@ namespace FoodDiary.API
             {
                 configuration.RootPath = "frontend/build";
             });
+
+            services.AddCors(options => options.AddPolicy("Dev frontend", builder =>
+                builder.WithOrigins("http://localhost:3000")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                )
+            );
             
             services.ConfigureCustomOptions(Configuration);
             services.Configure<ImportOptions>(Configuration.GetSection("Import"));
@@ -56,6 +63,8 @@ namespace FoodDiary.API
             {
                 app.UseDeveloperExceptionPage();
                 app.UseFoodDiarySwagger();
+
+                app.UseCors("Dev frontend");
             }
 
             if (!env.IsEnvironment("Test"))
