@@ -22,4 +22,6 @@ const authApi = createApi({
   }),
 });
 
+export const { useLazySignInWithGoogleQuery } = authApi;
+
 export default authApi;
