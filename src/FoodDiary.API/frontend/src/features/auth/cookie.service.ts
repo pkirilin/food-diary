@@ -3,9 +3,9 @@ import { AuthResult } from './models';
 
 const TOKEN_KEY = 'food-diary-token';
 
-export function saveAccessToken({ accessToken }: AuthResult) {
+export function saveAccessToken({ accessToken, tokenExpirationDays }: AuthResult) {
   Cookies.set(TOKEN_KEY, accessToken, {
-    // expires: 0,
+    expires: tokenExpirationDays,
   });
 }
 
