@@ -9,5 +9,5 @@ public class AuthOptions
     
     public string JwtSecret { get; set; }
 
-    public string JwtExpiration { get; set; }
+    public int JwtExpirationDays { get; set; }
 }

@@ -21,7 +21,7 @@ internal class JwtTokenGenerator : IJwtTokenGenerator
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(_authOptions.Value.JwtSecret);
-        var expirationTimeSpan = TimeSpan.Parse(_authOptions.Value.JwtExpiration);
+        var expirationDate = DateTime.UtcNow.AddDays(_authOptions.Value.JwtExpirationDays);
         
         var claims = new[]
         {
@@ -32,7 +32,7 @@ internal class JwtTokenGenerator : IJwtTokenGenerator
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.UtcNow.Add(expirationTimeSpan),
+            Expires = expirationDate,
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
                 SecurityAlgorithms.HmacSha256Signature)
         };

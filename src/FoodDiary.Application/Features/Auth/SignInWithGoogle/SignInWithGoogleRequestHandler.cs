@@ -46,7 +46,8 @@ internal class SignInWithGoogleRequestHandler : IRequestHandler<SignInWithGoogle
 
         return new SuccessfulAuthResponseDto
         {
-            AccessToken = accessToken
+            AccessToken = accessToken,
+            TokenExpirationDays = _authOptions.Value.JwtExpirationDays,
         };
     }
 }

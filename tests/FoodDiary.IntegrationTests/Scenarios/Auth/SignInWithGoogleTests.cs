@@ -48,6 +48,7 @@ public class SignInWithGoogleTests : IDisposable,
         var authResponseData = await response.Content.ReadFromJsonAsync<SuccessfulAuthResponseDto>();
         authResponseData.Should().NotBeNull();
         authResponseData?.AccessToken.Should().NotBeNull();
+        authResponseData?.TokenExpirationDays.Should().Be(2);
     }
 
     [Fact]
