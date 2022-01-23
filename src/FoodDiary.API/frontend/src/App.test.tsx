@@ -10,6 +10,9 @@ describe('App component', () => {
 
   test('should render without errors', () => {
     const createStateMock = (jest.fn() as jest.Mock<TestRootState>).mockReturnValue({
+      auth: {
+        isAuthenticated: true,
+      },
       pages: {
         pageItems: [],
         dateForNewPageLoading: 'idle',
