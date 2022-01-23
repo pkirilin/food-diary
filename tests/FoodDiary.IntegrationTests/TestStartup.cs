@@ -72,8 +72,10 @@ namespace FoodDiary.IntegrationTests
 
             SeedDatabaseForIntegrationTests(app);
 
-            app.UseRouting();
             app.UseMiddleware<ExceptionHandlerMiddleware>();
+            app.UseRouting();
+            app.UseAuthentication();
+            app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
@@ -82,7 +84,7 @@ namespace FoodDiary.IntegrationTests
 
         private void SeedDatabaseForIntegrationTests(IApplicationBuilder app)
         {
-            var context = app.ApplicationServices.GetService<FoodDiaryContext>();
+            var context = app.ApplicationServices.GetRequiredService<FoodDiaryContext>();
             context.Database.EnsureCreated();
 
             context.Categories.AddRange(GetTestCategories());
