@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Text;
 using FoodDiary.API.Extensions;
 using FoodDiary.API.Middlewares;
 using FoodDiary.API.Options;
@@ -8,11 +9,13 @@ using FoodDiary.Import.Extensions;
 using FoodDiary.Infrastructure;
 using FoodDiary.Integrations.Google.Extensions;
 using FoodDiary.PdfGenerator.Extensions;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 
 namespace FoodDiary.API
 {
@@ -41,7 +44,22 @@ namespace FoodDiary.API
                     .AllowAnyMethod()
                 )
             );
-            
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    var jwtSecret = Configuration["Auth:JwtSecret"];
+                    options.RequireHttpsMetadata = false;
+                    options.SaveToken = true;
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret)),
+                        ValidateIssuer = false,
+                        ValidateAudience = false
+                    };
+                });
+
             services.ConfigureCustomOptions(Configuration);
             services.Configure<ImportOptions>(Configuration.GetSection("Import"));
 
@@ -77,6 +95,8 @@ namespace FoodDiary.API
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
             app.UseRouting();
+            app.UseAuthentication();
+            app.UseAuthorization();
             app.UseHttpsRedirection();
 
             app.UseEndpoints(endpoints =>

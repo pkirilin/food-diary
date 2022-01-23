@@ -2,6 +2,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using FoodDiary.Application.Features.Auth.SignInWithGoogle;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FoodDiary.API.Controllers.v1;
@@ -18,6 +19,7 @@ public class AuthController : ControllerBase
     }
     
     [HttpPost("google")]
+    [AllowAnonymous]
     public async Task<IActionResult> Google([FromBody] SignInWithGoogleRequest request,
         CancellationToken cancellationToken)
     {
