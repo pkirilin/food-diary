@@ -1,4 +1,5 @@
 import { AnyAction, AsyncThunk, createAsyncThunk } from '@reduxjs/toolkit';
+import { getAccessToken } from '../../auth/cookie.service';
 
 export type ApiCallAsyncThunk<TData, TArgument> = AsyncThunk<
   TData,
@@ -21,9 +22,13 @@ type RequestBodyFragment = Pick<RequestInit, 'body'>;
 export interface ApiCallOptions<TArgument> {
   method?: ApiMethod;
   contentType?: ApiContentType;
+  bearerToken?: string;
   bodyCreator?: ApiCallBodyCreator<TArgument>;
 }
 
+/**
+ * @deprecated TODO: remove in favor of RTK Query
+ */
 export function createApiCallAsyncThunk<TData, TArgument>(
   typePrefix: string,
   getUrl: (arg: TArgument) => string,
@@ -32,14 +37,28 @@ export function createApiCallAsyncThunk<TData, TArgument>(
   options: ApiCallOptions<TArgument> = {
     method: 'GET',
     contentType: 'application/json',
+    bearerToken: getAccessToken(),
   },
 ): ApiCallAsyncThunk<TData, TArgument> {
-  const { method = 'GET', contentType = 'application/json', bodyCreator } = options;
+  const {
+    method = 'GET',
+    contentType = 'application/json',
+    bearerToken = getAccessToken(),
+    bodyCreator,
+  } = options;
 
   function getHeaders(): RequestHeadersFragment {
-    return contentType && contentType !== 'none'
-      ? { headers: { 'Content-Type': contentType } }
-      : {};
+    const headers: RequestHeadersFragment['headers'] = {};
+
+    if (contentType && contentType !== 'none') {
+      headers['Content-Type'] = contentType;
+    }
+
+    if (bearerToken) {
+      headers['Authorization'] = `Bearer ${bearerToken}`;
+    }
+
+    return { headers };
   }
 
   function getBody(arg: TArgument): RequestBodyFragment {
@@ -79,7 +98,7 @@ type AnyAsyncThunkActionProperties = keyof Pick<
 
 export function createAsyncThunkMatcher<
   TAsyncThunk extends AnyAsyncThunk,
-  TAction extends AnyAction = AnyAction
+  TAction extends AnyAction = AnyAction,
 >(thunks: TAsyncThunk[], actionProp: AnyAsyncThunkActionProperties): (action: TAction) => boolean {
   return action => thunks.some(t => t[actionProp].type === action.type);
 }
