@@ -11,11 +11,14 @@ using System.Text.Json;
 using FoodDiary.Domain.Exceptions;
 using MediatR;
 using FoodDiary.Application.Imports.Requests;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FoodDiary.API.Controllers.v1
 {
     [ApiController]
     [Route("v1/imports")]
+    [Route("api/v1/imports")]
+    [Authorize]
     [ApiExplorerSettings(GroupName = "v1")]
     public class ImportsController : ControllerBase
     {

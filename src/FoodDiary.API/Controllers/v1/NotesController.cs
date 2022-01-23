@@ -11,11 +11,14 @@ using FoodDiary.API.Requests;
 using MediatR;
 using FoodDiary.Application.Notes.Requests;
 using FoodDiary.Application.Products.Requests;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FoodDiary.API.Controllers.v1
 {
     [ApiController]
     [Route("v1/notes")]
+    [Route("api/v1/notes")]
+    [Authorize]
     [ApiExplorerSettings(GroupName = "v1")]
     public class NotesController : ControllerBase
     {

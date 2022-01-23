@@ -11,11 +11,14 @@ using FoodDiary.API.Requests;
 using MediatR;
 using FoodDiary.Application.Pages.Requests;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FoodDiary.API.Controllers.v1
 {
     [ApiController]
     [Route("v1/pages")]
+    [Route("api/v1/pages")]
+    [Authorize]
     [ApiExplorerSettings(GroupName = "v1")]
     public class PagesController : ControllerBase
     {
