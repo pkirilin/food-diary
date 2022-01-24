@@ -13,5 +13,9 @@
       "version": "detect"
     }
   },
-  "ignorePatterns": ["node_modules/", "build/", "src/serviceWorker.ts"]
+  "rules": {
+    "react/react-in-jsx-scope": "off",
+    "@typescript-eslint/no-empty-function": "warn",
+    "@typescript-eslint/no-empty-interface": "warn"
+  }
 }

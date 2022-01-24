@@ -6,13 +6,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="8.1.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.15.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\FoodDiary.Configuration\FoodDiary.Configuration.csproj" />
+    <ProjectReference Include="..\FoodDiary.Contracts\FoodDiary.Contracts.csproj" />
     <ProjectReference Include="..\FoodDiary.Domain\FoodDiary.Domain.csproj" />
     <ProjectReference Include="..\FoodDiary.Import\FoodDiary.Import.csproj" />
     <ProjectReference Include="..\FoodDiary.Infrastructure\FoodDiary.Infrastructure.csproj" />
+    <ProjectReference Include="..\FoodDiary.Integrations.Google\FoodDiary.Integrations.Google.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using System.Runtime.CompilerServices;
+using FoodDiary.Application.Features.Auth.SignInWithGoogle;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,6 +13,8 @@ namespace FoodDiary.Application.Extensions
         public static void AddApplicationDependencies(this IServiceCollection services)
         {
             services.AddMediatR(Assembly.GetExecutingAssembly());
+
+            services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
         }
     }
 }

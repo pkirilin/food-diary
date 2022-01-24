@@ -13,11 +13,14 @@ using System.Text.Encodings.Web;
 using MediatR;
 using FoodDiary.Application.Pages.Requests;
 using FoodDiary.Application.Enums;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FoodDiary.API.Controllers.v1
 {
     [ApiController]
     [Route("v1/exports")]
+    [Route("api/v1/exports")]
+    [Authorize]
     [ApiExplorerSettings(GroupName = "v1")]
     public class ExportsController : ControllerBase
     {

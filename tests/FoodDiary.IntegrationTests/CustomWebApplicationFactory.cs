@@ -1,7 +1,11 @@
-﻿using Microsoft.AspNetCore;
+﻿using FoodDiary.IntegrationTests.MockAuth;
+using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace FoodDiary.IntegrationTests
 {
@@ -23,6 +27,15 @@ namespace FoodDiary.IntegrationTests
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             builder.UseContentRoot(".");
+            
+            builder.ConfigureTestServices(services =>
+            {
+                services.AddAuthentication("Test")
+                    .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", _ =>
+                    {
+                    });
+            });
+            
             base.ConfigureWebHost(builder);
         }
     }

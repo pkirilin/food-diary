@@ -1,11 +1,10 @@
 import React from 'react';
-import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { Container, makeStyles } from '@material-ui/core';
 import Navbar from './Navbar';
-import { PageContent, Pages } from './features/pages/components';
-import { Products } from './features/products/components';
-import { Categories } from './features/categories/components';
+import { useAuth } from './features/auth/hooks';
+import { useRoutes } from './features/__shared__/hooks';
 
 const useStyles = makeStyles(theme => ({
   content: {
@@ -15,21 +14,17 @@ const useStyles = makeStyles(theme => ({
 
 const App: React.FC = () => {
   const classes = useStyles();
+  const { isAuthenticated } = useAuth();
+  const routes = useRoutes(isAuthenticated);
 
   return (
     <Router>
       <Helmet>
         <title>Food diary</title>
       </Helmet>
-      <Navbar></Navbar>
+      {isAuthenticated && <Navbar></Navbar>}
       <Container maxWidth="xl" className={classes.content}>
-        <Switch>
-          <Route exact path="/pages" component={Pages}></Route>
-          <Route exact path="/pages/:id" component={PageContent}></Route>
-          <Route exact path="/products" component={Products}></Route>
-          <Route exact path="/categories" component={Categories}></Route>
-          <Redirect exact from="/" to="/pages"></Redirect>
-        </Switch>
+        {routes}
       </Container>
     </Router>
   );
