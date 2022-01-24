@@ -34,6 +34,20 @@ This information can be extremely useful for people who want to keep track of en
 
 1. Install Node.js and yarn package manager
 
+1. Fill nessesary secrets:
+
+    ```shell
+    dotnet user-secrets --project src/FoodDiary.API set "Auth:AllowedEmails:0" "<your_email>"
+    ```
+
+    *Allowed email should be compatible with Google Identity Provider*
+
+    ```shell
+    dotnet user-secrets --project src/FoodDiary.API set "Auth:JwtSecret" "<some_strong_secret_key>"
+    ```
+
+    *Secret can be generated [here](https://passwordsgenerator.net). It should be a minimum of 128 bits (16 bytes).*
+
 1. Start backend application:
 
     ```shell
