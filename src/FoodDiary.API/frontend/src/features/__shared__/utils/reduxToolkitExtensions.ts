@@ -22,8 +22,8 @@ type RequestBodyFragment = Pick<RequestInit, 'body'>;
 export interface ApiCallOptions<TArgument> {
   method?: ApiMethod;
   contentType?: ApiContentType;
-  bearerToken?: string;
   bodyCreator?: ApiCallBodyCreator<TArgument>;
+  getBearerToken?: () => string | undefined;
 }
 
 /**
@@ -37,14 +37,14 @@ export function createApiCallAsyncThunk<TData, TArgument>(
   options: ApiCallOptions<TArgument> = {
     method: 'GET',
     contentType: 'application/json',
-    bearerToken: getAccessToken(),
+    getBearerToken: getAccessToken,
   },
 ): ApiCallAsyncThunk<TData, TArgument> {
   const {
     method = 'GET',
     contentType = 'application/json',
-    bearerToken = getAccessToken(),
     bodyCreator,
+    getBearerToken = getAccessToken,
   } = options;
 
   function getHeaders(): RequestHeadersFragment {
@@ -53,6 +53,8 @@ export function createApiCallAsyncThunk<TData, TArgument>(
     if (contentType && contentType !== 'none') {
       headers['Content-Type'] = contentType;
     }
+
+    const bearerToken = getBearerToken();
 
     if (bearerToken) {
       headers['Authorization'] = `Bearer ${bearerToken}`;
