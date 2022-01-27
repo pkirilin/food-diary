@@ -10,6 +10,7 @@ namespace FoodDiary.Domain.Entities
     {
         public int Id { get; set; }
 
+        // TODO: migrate to DateOnly
         /// <summary>
         /// Date on diary page
         /// </summary>

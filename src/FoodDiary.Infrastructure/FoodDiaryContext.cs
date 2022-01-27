@@ -1,4 +1,6 @@
-﻿using FoodDiary.Domain.Abstractions;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
+using FoodDiary.Domain.Abstractions;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Infrastructure.EntityConfigurations;
 using Microsoft.EntityFrameworkCore;
@@ -6,12 +8,14 @@ using Microsoft.Extensions.Configuration;
 
 namespace FoodDiary.Infrastructure
 {
+    [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
     public class FoodDiaryContext : DbContext, IUnitOfWork
     {
         private readonly IConfiguration _configuration;
 
         public FoodDiaryContext(DbContextOptions options, IConfiguration configuration) : base(options)
         {
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
             _configuration = configuration;
         }
 
