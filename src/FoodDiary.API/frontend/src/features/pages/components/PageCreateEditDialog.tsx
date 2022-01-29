@@ -9,8 +9,8 @@ import {
   Button,
   DialogProps,
 } from '@material-ui/core';
-import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
-import DateFnsUtils from '@date-io/date-fns';
+import { KeyboardDatePicker } from '@material-ui/pickers';
+import dateFnsFormat from 'date-fns/format';
 import { PageCreateEdit } from '../models';
 import { DialogCustomActionProps } from '../../__shared__/types';
 import { getDateForNewPage } from '../thunks';
@@ -71,30 +71,28 @@ const PageCreateEditDialog: React.FC<PageCreateEditDialogProps> = ({
   }, [dateForNewPageLoading]);
 
   const handleSubmitClick = (): void => {
-    if (date) {
-      onDialogConfirm({
-        date: date.toISOString().slice(0, 10),
-      });
+    if (!date) {
+      return;
     }
+
+    onDialogConfirm({
+      date: dateFnsFormat(date, 'yyyy-MM-dd'),
+    });
   };
 
   return (
     <Dialog maxWidth="xs" fullWidth {...dialogProps}>
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-          <KeyboardDatePicker
-            {...bindDate()}
-            disableToolbar
-            label="Page date"
-            placeholder="01.01.2021"
-            variant="inline"
-            format="dd.MM.yyyy"
-            margin="normal"
-            fullWidth
-            autoFocus
-          />
-        </MuiPickersUtilsProvider>
+        <KeyboardDatePicker
+          {...bindDate()}
+          label="Page date"
+          placeholder="dd.MM.yyyy"
+          format="dd.MM.yyyy"
+          margin="normal"
+          fullWidth
+          autoFocus
+        />
       </DialogContent>
       <DialogActions>
         <Button

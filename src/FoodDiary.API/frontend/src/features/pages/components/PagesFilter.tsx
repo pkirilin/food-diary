@@ -1,8 +1,8 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { Box, Button, Paper } from '@material-ui/core';
-import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
-import DateFnsUtils from '@date-io/date-fns';
+import { KeyboardDatePicker } from '@material-ui/pickers';
+import dateFnsFormat from 'date-fns/format';
 import { endDateChanged, filterReset, startDateChanged } from '../slice';
 import { useTypedSelector, useValidatedDateInput } from '../../__shared__/hooks';
 import { useFilterStyles } from '../../__shared__/styles';
@@ -23,9 +23,16 @@ const PagesFilter: React.FC = () => {
     filterStartDate ? new Date(filterStartDate) : null,
     {
       afterChange: date => {
-        if (validateFilterDate(date)) {
-          dispatch(startDateChanged(date?.toISOString()));
+        if (!validateFilterDate(date)) {
+          return;
         }
+
+        if (date === null) {
+          dispatch(startDateChanged());
+          return;
+        }
+
+        dispatch(startDateChanged(dateFnsFormat(date, 'yyyy-MM-dd')));
       },
       validate: validateFilterDate,
       errorHelperText: 'Start date is invalid',
@@ -34,9 +41,16 @@ const PagesFilter: React.FC = () => {
 
   const [, , bindEndDate] = useValidatedDateInput(filterEndDate ? new Date(filterEndDate) : null, {
     afterChange: date => {
-      if (validateFilterDate(date)) {
-        dispatch(endDateChanged(date?.toISOString()));
+      if (!validateFilterDate(date)) {
+        return;
       }
+
+      if (date === null) {
+        dispatch(endDateChanged());
+        return;
+      }
+
+      dispatch(endDateChanged(dateFnsFormat(date, 'yyyy-MM-dd')));
     },
     validate: validateFilterDate,
     errorHelperText: 'End date is invalid',
@@ -44,26 +58,20 @@ const PagesFilter: React.FC = () => {
 
   return (
     <Box component={Paper} className={classes.root}>
-      <MuiPickersUtilsProvider utils={DateFnsUtils}>
-        <KeyboardDatePicker
-          {...bindStartDate()}
-          disableToolbar
-          fullWidth
-          variant="inline"
-          format="dd.MM.yyyy"
-          margin="normal"
-          label="Start date"
-        />
-        <KeyboardDatePicker
-          {...bindEndDate()}
-          disableToolbar
-          fullWidth
-          variant="inline"
-          format="dd.MM.yyyy"
-          margin="normal"
-          label="End date"
-        />
-      </MuiPickersUtilsProvider>
+      <KeyboardDatePicker
+        {...bindStartDate()}
+        fullWidth
+        format="dd.MM.yyyy"
+        margin="normal"
+        label="Start date"
+      />
+      <KeyboardDatePicker
+        {...bindEndDate()}
+        fullWidth
+        format="dd.MM.yyyy"
+        margin="normal"
+        label="End date"
+      />
       <Box className={classes.controls}>
         <Button
           variant="text"

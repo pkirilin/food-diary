@@ -11,6 +11,7 @@ import {
   makeStyles,
 } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
+import dateFnsFormat from 'date-fns/format';
 import { PageCreateEdit, PageItem } from '../models';
 import { useDialog, useTypedSelector } from '../../__shared__/hooks';
 import { pageSelected } from '../slice';
@@ -30,7 +31,7 @@ const useStyles = makeStyles(() => ({
 
 const PagesTableRow: React.FC<PagesTableRowProps> = ({ page }: PagesTableRowProps) => {
   const classes = useStyles();
-  const pageDate = new Date(page.date).toLocaleDateString();
+  const pageDate = dateFnsFormat(new Date(page.date), 'dd.MM.yyyy');
 
   const isPageSelected = useTypedSelector(state =>
     state.pages.selectedPageIds.some(id => id === page.id),
