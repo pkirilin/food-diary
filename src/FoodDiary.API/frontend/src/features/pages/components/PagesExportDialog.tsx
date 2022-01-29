@@ -11,8 +11,7 @@ import {
   MenuItem,
   Select,
 } from '@material-ui/core';
-import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
-import DateFnsUtils from '@date-io/date-fns';
+import { KeyboardDatePicker } from '@material-ui/pickers';
 import dateFnsFormat from 'date-fns/format';
 import { useValidatedDateInput } from '../../__shared__/hooks';
 import { ExportFormat } from '../../__shared__/models';
@@ -68,22 +67,14 @@ const PagesExportDialog: React.FC<PagesExportDialogProps> = ({
     <Dialog {...dialogProps}>
       <DialogTitle>Export pages</DialogTitle>
       <DialogContent>
-        {/* TODO: move utils provider to app-level */}
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-          <KeyboardDatePicker
-            {...bindStartDate()}
-            fullWidth
-            format="dd.MM.yyyy"
-            label="Start date"
-          />
-          <KeyboardDatePicker
-            {...bindEndDate()}
-            fullWidth
-            format="dd.MM.yyyy"
-            margin="normal"
-            label="End date"
-          />
-        </MuiPickersUtilsProvider>
+        <KeyboardDatePicker {...bindStartDate()} fullWidth format="dd.MM.yyyy" label="Start date" />
+        <KeyboardDatePicker
+          {...bindEndDate()}
+          fullWidth
+          format="dd.MM.yyyy"
+          margin="normal"
+          label="End date"
+        />
         <Box mt={2}>
           <InputLabel id="format-select-label">Format</InputLabel>
           <Select

@@ -9,8 +9,7 @@ import {
   Button,
   DialogProps,
 } from '@material-ui/core';
-import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
-import DateFnsUtils from '@date-io/date-fns';
+import { KeyboardDatePicker } from '@material-ui/pickers';
 import dateFnsFormat from 'date-fns/format';
 import { PageCreateEdit } from '../models';
 import { DialogCustomActionProps } from '../../__shared__/types';
@@ -85,17 +84,15 @@ const PageCreateEditDialog: React.FC<PageCreateEditDialogProps> = ({
     <Dialog maxWidth="xs" fullWidth {...dialogProps}>
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-          <KeyboardDatePicker
-            {...bindDate()}
-            label="Page date"
-            placeholder="dd.MM.yyyy"
-            format="dd.MM.yyyy"
-            margin="normal"
-            fullWidth
-            autoFocus
-          />
-        </MuiPickersUtilsProvider>
+        <KeyboardDatePicker
+          {...bindDate()}
+          label="Page date"
+          placeholder="dd.MM.yyyy"
+          format="dd.MM.yyyy"
+          margin="normal"
+          fullWidth
+          autoFocus
+        />
       </DialogContent>
       <DialogActions>
         <Button

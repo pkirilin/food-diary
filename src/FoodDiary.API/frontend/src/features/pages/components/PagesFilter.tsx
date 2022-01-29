@@ -1,8 +1,7 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { Box, Button, Paper } from '@material-ui/core';
-import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
-import DateFnsUtils from '@date-io/date-fns';
+import { KeyboardDatePicker } from '@material-ui/pickers';
 import dateFnsFormat from 'date-fns/format';
 import { endDateChanged, filterReset, startDateChanged } from '../slice';
 import { useTypedSelector, useValidatedDateInput } from '../../__shared__/hooks';
@@ -59,22 +58,20 @@ const PagesFilter: React.FC = () => {
 
   return (
     <Box component={Paper} className={classes.root}>
-      <MuiPickersUtilsProvider utils={DateFnsUtils}>
-        <KeyboardDatePicker
-          {...bindStartDate()}
-          fullWidth
-          format="dd.MM.yyyy"
-          margin="normal"
-          label="Start date"
-        />
-        <KeyboardDatePicker
-          {...bindEndDate()}
-          fullWidth
-          format="dd.MM.yyyy"
-          margin="normal"
-          label="End date"
-        />
-      </MuiPickersUtilsProvider>
+      <KeyboardDatePicker
+        {...bindStartDate()}
+        fullWidth
+        format="dd.MM.yyyy"
+        margin="normal"
+        label="Start date"
+      />
+      <KeyboardDatePicker
+        {...bindEndDate()}
+        fullWidth
+        format="dd.MM.yyyy"
+        margin="normal"
+        label="End date"
+      />
       <Box className={classes.controls}>
         <Button
           variant="text"
