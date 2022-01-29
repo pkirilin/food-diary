@@ -13,6 +13,7 @@ import {
 } from '@material-ui/core';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
+import dateFnsFormat from 'date-fns/format';
 import { useValidatedDateInput } from '../../__shared__/hooks';
 import { ExportFormat } from '../../__shared__/models';
 import { DialogCustomActionProps } from '../../__shared__/types';
@@ -39,29 +40,27 @@ const PagesExportDialog: React.FC<PagesExportDialogProps> = ({
     errorHelperText: 'End date is invalid',
   });
 
-  const [format, setFormat] = useState(ExportFormat.Json);
+  const [exportFormat, setExportFormat] = useState(ExportFormat.Json);
 
   const isExportDisabled = !isValidStartDate || !isValidEndDate;
 
-  const getDateStringWithoutTime = (date: Date): string => {
-    return date.toISOString().slice(0, 10);
-  };
-
   const handleConfirmClick = (): void => {
-    if (startDate && endDate) {
-      onDialogConfirm({
-        startDate: getDateStringWithoutTime(startDate),
-        endDate: getDateStringWithoutTime(endDate),
-        format,
-      });
+    if (!startDate || !endDate) {
+      return;
     }
+
+    onDialogConfirm({
+      startDate: dateFnsFormat(startDate, 'yyyy-MM-dd'),
+      endDate: dateFnsFormat(endDate, 'yyyy-MM-dd'),
+      format: exportFormat,
+    });
   };
 
   useEffect(() => {
     if (dialogProps.open) {
       setStartDate(null);
       setEndDate(null);
-      setFormat(initialFormat);
+      setExportFormat(initialFormat);
     }
   }, [dialogProps.open]);
 
@@ -73,17 +72,13 @@ const PagesExportDialog: React.FC<PagesExportDialogProps> = ({
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
           <KeyboardDatePicker
             {...bindStartDate()}
-            disableToolbar
             fullWidth
-            variant="inline"
             format="dd.MM.yyyy"
             label="Start date"
           />
           <KeyboardDatePicker
             {...bindEndDate()}
-            disableToolbar
             fullWidth
-            variant="inline"
             format="dd.MM.yyyy"
             margin="normal"
             label="End date"
@@ -94,9 +89,9 @@ const PagesExportDialog: React.FC<PagesExportDialogProps> = ({
           <Select
             labelId="format-select-label"
             fullWidth
-            value={format}
+            value={exportFormat}
             onChange={event => {
-              setFormat(event.target.value as ExportFormat);
+              setExportFormat(event.target.value as ExportFormat);
             }}
           >
             <MenuItem value={ExportFormat.Json}>JSON</MenuItem>
