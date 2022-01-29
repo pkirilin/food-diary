@@ -32,7 +32,7 @@ const PagesFilterAppliedParams: React.FC = () => {
             icon={<TodayIcon></TodayIcon>}
             label={formatDate(startDate)}
             onDelete={() => {
-              dispatch(startDateChanged(undefined));
+              dispatch(startDateChanged());
             }}
           ></Chip>
         </Tooltip>
@@ -44,7 +44,7 @@ const PagesFilterAppliedParams: React.FC = () => {
             icon={<EventIcon></EventIcon>}
             label={formatDate(endDate)}
             onDelete={() => {
-              dispatch(endDateChanged(undefined));
+              dispatch(endDateChanged());
             }}
           ></Chip>
         </Tooltip>
