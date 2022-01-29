@@ -2,6 +2,7 @@ import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Breadcrumbs, Link, makeStyles, Typography } from '@material-ui/core';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
+import dateFnsFormat from 'date-fns/format';
 import { useTypedSelector } from '../../__shared__/hooks';
 
 const useStyles = makeStyles(() => ({
@@ -19,7 +20,7 @@ const PageContentHeader: React.FC = () => {
     return null;
   }
 
-  const currentPageDate = new Date(page.date).toLocaleDateString();
+  const currentPageDate = dateFnsFormat(new Date(page.date), 'dd.MM.yyyy');
 
   return (
     <Breadcrumbs separator={<NavigateNextIcon></NavigateNextIcon>} className={classes.root}>

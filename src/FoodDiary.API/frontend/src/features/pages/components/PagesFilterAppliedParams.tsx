@@ -3,12 +3,13 @@ import { useDispatch } from 'react-redux';
 import { Box, Chip, Tooltip } from '@material-ui/core';
 import TodayIcon from '@material-ui/icons/Today';
 import EventIcon from '@material-ui/icons/Event';
+import dateFnsFormat from 'date-fns/format';
 import { endDateChanged, startDateChanged } from '../slice';
 import { useTypedSelector } from '../../__shared__/hooks';
 import { useFilterAppliedParamsStyles } from '../../__shared__/styles';
 
 function formatDate(date: string) {
-  return new Date(date).toLocaleDateString();
+  return dateFnsFormat(new Date(date), 'dd.MM.yyyy');
 }
 
 const PagesFilterAppliedParams: React.FC = () => {

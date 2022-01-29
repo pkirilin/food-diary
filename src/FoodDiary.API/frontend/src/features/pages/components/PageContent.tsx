@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Helmet } from 'react-helmet';
+import dateFnsFormat from 'date-fns/format';
 import PageContentHeader from './PageContentHeader';
 import PageContentFooter from './PageContentFooter';
 import { MealsList } from '../../notes/components';
@@ -23,7 +24,7 @@ const PageContent: React.FC = () => {
       <Helmet>
         <title>
           {currentDate
-            ? `Food diary | ${new Date(currentDate).toLocaleDateString()}`
+            ? `Food diary | ${dateFnsFormat(new Date(currentDate), 'dd.MM.yyyy')}`
             : 'Food diary'}
         </title>
       </Helmet>
