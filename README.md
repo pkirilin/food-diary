@@ -48,6 +48,12 @@ This information can be extremely useful for people who want to keep track of en
 
     *Secret can be generated [here](https://passwordsgenerator.net). It should be a minimum of 128 bits (16 bytes).*
 
+1. Run migrations:
+
+    ```shell
+    dotnet run --project src/FoodDiary.Migrator
+    ```
+
 1. Start backend application:
 
     ```shell

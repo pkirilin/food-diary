@@ -6,7 +6,7 @@ using FoodDiary.API.Options;
 using FoodDiary.Application.Extensions;
 using FoodDiary.Configuration.Extensions;
 using FoodDiary.Import.Extensions;
-using FoodDiary.Infrastructure;
+using FoodDiary.Infrastructure.Extensions;
 using FoodDiary.Integrations.Google.Extensions;
 using FoodDiary.PdfGenerator.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -26,7 +26,7 @@ namespace FoodDiary.API
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
@@ -63,7 +63,7 @@ namespace FoodDiary.API
             services.ConfigureCustomOptions(Configuration);
             services.Configure<ImportOptions>(Configuration.GetSection("Import"));
 
-            services.AddDbContext<FoodDiaryContext>();
+            services.AddInfrastructure();
 
             services.AddRepositories();
             services.AddUtils();
@@ -80,17 +80,15 @@ namespace FoodDiary.API
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseFoodDiarySwagger();
+                app.UseSwagger();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "FoodDiary API v1");
+                });
 
                 app.UseCors("Dev frontend");
             }
 
-            if (!env.IsEnvironment("Test"))
-            {
-                // TODO: add migrator instead
-                app.MigrateDatabase();
-            }
-            
             app.UseMiddleware<ExceptionHandlerMiddleware>();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
