@@ -13,6 +13,11 @@ namespace FoodDiary.Infrastructure
     {
         private readonly IConfiguration _configuration;
 
+        public FoodDiaryContext(DbContextOptions options) : base(options)
+        {
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+        }
+        
         public FoodDiaryContext(DbContextOptions options, IConfiguration configuration) : base(options)
         {
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
@@ -29,7 +34,7 @@ namespace FoodDiary.Infrastructure
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseNpgsql(_configuration.GetConnectionString("FoodDiaryContext"));
+            // optionsBuilder.UseNpgsql(_configuration.GetConnectionString("FoodDiaryContext"));
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

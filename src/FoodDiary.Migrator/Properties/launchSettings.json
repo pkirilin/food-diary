@@ -3,7 +3,9 @@
   "profiles": {
     "FoodDiary.Migrator": {
       "commandName": "Project",
-      "environmentVariables": {}
+      "environmentVariables": {
+        "ENV": "Development"
+      }
     }
   }
 }
