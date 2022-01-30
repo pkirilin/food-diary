@@ -80,17 +80,15 @@ namespace FoodDiary.API
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseFoodDiarySwagger();
+                app.UseSwagger();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "FoodDiary API v1");
+                });
 
                 app.UseCors("Dev frontend");
             }
 
-            if (!env.IsEnvironment("Test"))
-            {
-                // TODO: add migrator instead
-                app.MigrateDatabase();
-            }
-            
             app.UseMiddleware<ExceptionHandlerMiddleware>();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
