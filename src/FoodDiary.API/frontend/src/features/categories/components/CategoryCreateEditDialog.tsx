@@ -36,15 +36,11 @@ const CategoryCreateEditDialog: React.FC<CategoryCreateEditDialogProps> = ({
         initialCategoryName: '',
       };
 
-  const [
-    categoryName,
-    setCategoryName,
-    bindCategoryName,
-    isValidCategoryName,
-  ] = useValidatedTextInput(initialCategoryName, {
-    validate: categoryName => categoryName.length >= 3 && categoryName.length <= 50,
-    errorHelperText: 'Category name is invalid',
-  });
+  const [categoryName, setCategoryName, bindCategoryName, isValidCategoryName] =
+    useValidatedTextInput(initialCategoryName, {
+      validate: categoryName => categoryName.length >= 3 && categoryName.length <= 50,
+      errorHelperText: 'Category name is invalid',
+    });
 
   const isSubmitDisabled = !isValidCategoryName;
 
