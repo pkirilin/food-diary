@@ -1,4 +1,3 @@
-import React from 'react';
 import App from './App';
 import { SortOrder } from './features/__shared__/models';
 import { renderExtended, TestRootState } from './features/__shared__/utils';

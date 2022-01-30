@@ -29,9 +29,10 @@ const NotesTable: React.FC<NotesTableProps> = ({ mealType }: NotesTableProps) =>
     state.notes.noteItems.filter(n => n.mealType === mealType),
   );
 
-  const totalCalories = useMemo(() => noteItems.reduce((sum, note) => sum + note.calories, 0), [
-    noteItems,
-  ]);
+  const totalCalories = useMemo(
+    () => noteItems.reduce((sum, note) => sum + note.calories, 0),
+    [noteItems],
+  );
 
   const dispatch = useDispatch();
 

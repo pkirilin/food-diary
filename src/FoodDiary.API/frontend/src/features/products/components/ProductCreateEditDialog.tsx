@@ -53,15 +53,11 @@ const ProductCreateEditDialog: React.FC<ProductCreateEditDialogProps> = ({
     },
   );
 
-  const [
-    caloriesCost,
-    setCaloriesCost,
-    bindCaloriesCost,
-    isValidCaloriesCost,
-  ] = useValidatedNumericInput(initialCaloriesCost, {
-    validate: caloriesCost => caloriesCost > 0 && caloriesCost < 5000,
-    errorHelperText: 'Calories cost is invalid',
-  });
+  const [caloriesCost, setCaloriesCost, bindCaloriesCost, isValidCaloriesCost] =
+    useValidatedNumericInput(initialCaloriesCost, {
+      validate: caloriesCost => caloriesCost > 0 && caloriesCost < 5000,
+      errorHelperText: 'Calories cost is invalid',
+    });
 
   const [category, setCategory, bindCategory] = useCategoryAutocompleteInput(initialCategory);
 

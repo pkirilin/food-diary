@@ -1,2 +1,6 @@
-node_modules/
-build/
+.vscode/launch.json
+.yarn
+build
+node_modules
+public/index.html
+tsconfig.json
