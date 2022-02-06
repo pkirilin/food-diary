@@ -1,6 +1,8 @@
 using System.IO;
 using FoodDiary.API;
 using FoodDiary.Infrastructure;
+using FoodDiary.IntegrationTests.MockAuth;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -29,6 +31,11 @@ public class FoodDiaryWebApplicationFactory : WebApplicationFactory<Startup>
         {
             // TODO: replace InMemory provider with SQLite (https://docs.microsoft.com/en-us/ef/core/testing/testing-without-the-database#in-memory-provider)
             services.AddDbContext<FoodDiaryContext>(options => options.UseInMemoryDatabase("FoodDiaryDatabase"));
+            
+            services.AddAuthentication("Test")
+                .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", _ =>
+                {
+                });
         });
     }
 }
