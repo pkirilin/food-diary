@@ -130,39 +130,6 @@ namespace FoodDiary.IntegrationTests
             }
         }
 
-        public static IEnumerable<object[]> MemberData_GetProductsDropdown
-        {
-            get
-            {
-                var product1 = new ProductDropdownItemDto()
-                {
-                    Id = 1,
-                    Name = "First product"
-                };
-
-                var product2 = new ProductDropdownItemDto()
-                {
-                    Id = 2,
-                    Name = "Second product"
-                };
-
-                var product3 = new ProductDropdownItemDto()
-                {
-                    Id = 3,
-                    Name = "Third product"
-                };
-
-                var request1 = Endpoints.GetProductsDropdown;
-                var request2 = $"{Endpoints.GetProductsDropdown}?productNameFilter=First";
-
-                var result1 = new List<ProductDropdownItemDto>() { product1, product2, product3 };
-                var result2 = new List<ProductDropdownItemDto>() { product1 };
-
-                yield return new object[] { request1, result1 };
-                yield return new object[] { request2, result2 };
-            }
-        }
-
         public static IEnumerable<object[]> MemberData_GetCategories
         {
             get
@@ -250,17 +217,6 @@ namespace FoodDiary.IntegrationTests
         {
             // Act
             var result = await _client.GetDataAsync<ProductsSearchResultDto>(requestUri);
-
-            // Assert
-            result.Should().BeEquivalentTo(expectedResult);
-        }
-
-        [Theory]
-        [MemberData(nameof(MemberData_GetProductsDropdown))]
-        public async void GetProductsDropdown_ReceivesProductsInCorrectFormat(string requestUri, IEnumerable<ProductDropdownItemDto> expectedResult)
-        {
-            // Act
-            var result = await _client.GetDataAsync<IEnumerable<ProductDropdownItemDto>>(requestUri);
 
             // Assert
             result.Should().BeEquivalentTo(expectedResult);

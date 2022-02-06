@@ -11,6 +11,7 @@ using FoodDiary.API.Requests;
 using MediatR;
 using FoodDiary.Application.Products.Requests;
 using System.Linq;
+using FoodDiary.Application.Services.Products;
 using Microsoft.AspNetCore.Authorization;
 
 namespace FoodDiary.API.Controllers.v1
@@ -24,11 +25,13 @@ namespace FoodDiary.API.Controllers.v1
     {
         private readonly IMapper _mapper;
         private readonly IMediator _mediator;
+        private readonly IProductsService _productsService;
 
-        public ProductsController(IMapper mapper, IMediator mediator)
+        public ProductsController(IMapper mapper, IMediator mediator, IProductsService productsService)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+            _productsService = productsService;
         }
 
         /// <summary>
@@ -159,24 +162,12 @@ namespace FoodDiary.API.Controllers.v1
             await _mediator.Send(new DeleteProductsRequest(productsForDelete), cancellationToken);
             return Ok();
         }
-
-        /// <summary>
-        /// Gets all available products for dropdown list
-        /// </summary>
-        /// <param name="productsDropdownRequest">Search parameters for products dropdown</param>
-        /// <param name="cancellationToken"></param>
+        
         [HttpGet("dropdown")]
-        [ProducesResponseType(typeof(IEnumerable<ProductDropdownItemDto>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetProductsDropdown([FromQuery] ProductDropdownSearchRequest productsDropdownRequest, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetProductsDropdown(CancellationToken cancellationToken)
         {
-            var getProductsRequest = new GetProductsRequest()
-            {
-                ProductName = productsDropdownRequest.ProductNameFilter
-            };
-
-            var searchResult = await _mediator.Send(getProductsRequest, cancellationToken);
-            var productsDropdownListResponse = _mapper.Map<IEnumerable<ProductDropdownItemDto>>(searchResult.FoundProducts);
-            return Ok(productsDropdownListResponse);
+            var dropdownItems = await _productsService.GetDropdownItemsAsync(cancellationToken);
+            return Ok(dropdownItems);
         }
     }
 }

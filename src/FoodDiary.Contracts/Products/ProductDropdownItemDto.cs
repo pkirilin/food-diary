@@ -1,4 +1,4 @@
-﻿namespace FoodDiary.API.Dtos
+﻿namespace FoodDiary.Contracts.Products
 {
     public class ProductDropdownItemDto
     {

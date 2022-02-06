@@ -16,13 +16,15 @@ using MediatR;
 using FoodDiary.Application.Products.Requests;
 using FoodDiary.Application.Models;
 using AutoFixture;
+using FoodDiary.Application.Services.Products;
 
 namespace FoodDiary.UnitTests.Controllers
 {
     public class ProductsControllerTests
     {
         private readonly IMapper _mapper;
-        private readonly Mock<IMediator> _mediatorMock = new Mock<IMediator>();
+        private readonly Mock<IMediator> _mediatorMock = new();
+        private readonly Mock<IProductsService> _productsServiceMock = new();
 
         public ProductsControllerTests()
         {
@@ -33,7 +35,8 @@ namespace FoodDiary.UnitTests.Controllers
             _mapper = serviceProvider.GetService<IMapper>();
         }
 
-        public ProductsController Sut => new ProductsController(_mapper, _mediatorMock.Object);
+        // ReSharper disable once MemberCanBePrivate.Global
+        public ProductsController Sut => new(_mapper, _mediatorMock.Object, _productsServiceMock.Object);
 
         [Theory]
         [CustomAutoData]
@@ -239,34 +242,6 @@ namespace FoodDiary.UnitTests.Controllers
             _mediatorMock.Verify(m => m.Send(It.Is<GetProductsByIdsRequest>(r => r.Ids == productsIds), default), Times.Once);
             _mediatorMock.Verify(m => m.Send(It.Is<DeleteProductsRequest>(r => r.Entities == productsForDelete), default), Times.Once);
             result.Should().BeOfType<OkResult>();
-        }
-
-        [Theory]
-        [CustomAutoData]
-        public async void GetProductsDropdown_ReturnsRequestedProducts(
-            ProductDropdownSearchRequest request,
-            ProductsSearchResult productsSearchResult)
-        {
-            _mediatorMock.Setup(m => m.Send(It.Is<GetProductsRequest>(r =>
-                    r.PageNumber == 1
-                    && r.PageSize == 10
-                    && r.ProductName == request.ProductNameFilter
-                    && r.CategoryId == null
-                    && r.LoadCategory == false
-                    && r.CalculateTotalProductsCount == false), default))
-                .ReturnsAsync(productsSearchResult);
-
-            var result = await Sut.GetProductsDropdown(request, default);
-
-            _mediatorMock.Verify(m => m.Send(It.Is<GetProductsRequest>(r =>
-                    r.PageNumber == 1
-                    && r.PageSize == 10
-                    && r.ProductName == request.ProductNameFilter
-                    && r.CategoryId == null
-                    && r.LoadCategory == false
-                    && r.CalculateTotalProductsCount == false), default),
-                Times.Once);
-            result.Should().BeOfType<OkObjectResult>();
         }
 
         #region Test data
