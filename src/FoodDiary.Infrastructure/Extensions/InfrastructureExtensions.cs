@@ -1,3 +1,4 @@
+using FoodDiary.Domain.Abstractions.v2;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,5 +19,7 @@ public static class InfrastructureExtensions
                 builder.UseNpgsql(connectionString);
             });
         }
+
+        services.AddScoped<IFoodDiaryUnitOfWork, FoodDiaryUnitOfWork>();
     }
 }

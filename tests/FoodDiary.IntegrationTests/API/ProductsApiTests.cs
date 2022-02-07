@@ -24,19 +24,16 @@ public class ProductApiTests : IClassFixture<FoodDiaryWebApplicationFactory>
     public async Task Gets_product_dropdown_items_ordered_by_name()
     {
         var context = _webApplicationFactory.Services.GetRequiredService<FoodDiaryContext>();
-        context.Products.AddRange(new []
-        {
+        context.Products.AddRange(
             new Product
             {
                 Id = 1,
                 Name = "Milk",
-            },
-            new Product
+            }, new Product
             {
                 Id = 2,
                 Name = "Bread",
-            }
-        });
+            });
         await context.SaveChangesAsync();
         
         var client = _webApplicationFactory.CreateClient();
@@ -45,7 +42,10 @@ public class ProductApiTests : IClassFixture<FoodDiaryWebApplicationFactory>
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var dropdownItems = await response.Content.ReadFromJsonAsync<ProductDropdownItemDto[]>();
-        dropdownItems.Should().ContainInOrder(
+
+        dropdownItems.Should().HaveCount(2);
+        dropdownItems.Should().BeEquivalentTo(new[]
+        {
             new ProductDropdownItemDto
             {
                 Id = 2,
@@ -56,6 +56,6 @@ public class ProductApiTests : IClassFixture<FoodDiaryWebApplicationFactory>
                 Id = 1,
                 Name = "Milk"
             }
-        );
+        });
     }
 }
