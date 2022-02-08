@@ -39,23 +39,12 @@ public class ProductApiTests : IClassFixture<FoodDiaryWebApplicationFactory>
         var client = _webApplicationFactory.CreateClient();
         
         var response = await client.GetAsync("/api/v1/products/dropdown", CancellationToken.None);
-
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
         var dropdownItems = await response.Content.ReadFromJsonAsync<ProductDropdownItemDto[]>();
-
+        
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
         dropdownItems.Should().HaveCount(2);
-        dropdownItems.Should().BeEquivalentTo(new[]
-        {
-            new ProductDropdownItemDto
-            {
-                Id = 2,
-                Name = "Bread"
-            },
-            new ProductDropdownItemDto
-            {
-                Id = 1,
-                Name = "Milk"
-            }
-        });
+        dropdownItems.Should().Contain(p => p.Name == "Bread");
+        dropdownItems.Should().Contain(p => p.Name == "Milk");
+        dropdownItems.Should().BeInAscendingOrder(p => p.Name);
     }
 }
