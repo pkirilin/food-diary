@@ -6,7 +6,7 @@ using FoodDiary.Infrastructure.Repositories.v2;
 
 namespace FoodDiary.Infrastructure;
 
-internal class FoodDiaryUnitOfWork : IFoodDiaryUnitOfWork
+public class FoodDiaryUnitOfWork : IFoodDiaryUnitOfWork
 {
     private readonly FoodDiaryContext _context;
 
