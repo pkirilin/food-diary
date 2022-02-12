@@ -1,6 +1,6 @@
 ﻿namespace FoodDiary.Contracts.Products
 {
-    public class ProductDropdownItemDto
+    public class ProductAutocompleteItemDto
     {
         public int Id { get; set; }
 

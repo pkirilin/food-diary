@@ -15,17 +15,17 @@ internal class ProductsService : IProductsService
         _unitOfWork = unitOfWork;
     }
     
-    public async Task<ProductDropdownItemDto[]> GetDropdownItemsAsync(CancellationToken cancellationToken)
+    public async Task<ProductAutocompleteItemDto[]> GetAutocompleteItemsAsync(CancellationToken cancellationToken)
     {
-        var products = await _unitOfWork.Products.GetAllOrderedByNameAsync(cancellationToken);
+        var productsFromDb = await _unitOfWork.Products.GetAllOrderedByNameAsync(cancellationToken);
 
-        var dropdownItems = products.Select(p => new ProductDropdownItemDto
+        var productsForAutocomplete = productsFromDb.Select(p => new ProductAutocompleteItemDto
             {
                 Id = p.Id,
                 Name = p.Name
             })
             .ToArray();
 
-        return dropdownItems;
+        return productsForAutocomplete;
     }
 }

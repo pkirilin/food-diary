@@ -163,11 +163,11 @@ namespace FoodDiary.API.Controllers.v1
             return Ok();
         }
         
-        [HttpGet("dropdown")]
-        public async Task<IActionResult> GetProductsDropdown(CancellationToken cancellationToken)
+        [HttpGet("autocomplete")]
+        public async Task<IActionResult> GetProductsForAutocomplete(CancellationToken cancellationToken)
         {
-            var dropdownItems = await _productsService.GetDropdownItemsAsync(cancellationToken);
-            return Ok(dropdownItems);
+            var products = await _productsService.GetAutocompleteItemsAsync(cancellationToken);
+            return Ok(products);
         }
     }
 }

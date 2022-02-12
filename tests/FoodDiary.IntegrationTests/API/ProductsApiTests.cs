@@ -19,7 +19,7 @@ public class ProductApiTests : IClassFixture<FoodDiaryWebApplicationFactory>
     }
 
     [Fact]
-    public async Task Gets_product_dropdown_items_ordered_by_name()
+    public async Task Gets_product_autocomplete_items_ordered_by_name()
     {
         await _webApplicationFactory.PrepareDatabase()
             .AddProduct(1, "Milk")
@@ -28,13 +28,13 @@ public class ProductApiTests : IClassFixture<FoodDiaryWebApplicationFactory>
         
         var client = _webApplicationFactory.CreateClient();
         
-        var response = await client.GetAsync("/api/v1/products/dropdown", CancellationToken.None);
-        var dropdownItems = await response.Content.ReadFromJsonAsync<ProductDropdownItemDto[]>();
+        var response = await client.GetAsync("/api/v1/products/autocomplete", CancellationToken.None);
+        var productsForAutocomplete = await response.Content.ReadFromJsonAsync<ProductAutocompleteItemDto[]>();
         
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        dropdownItems.Should().HaveCount(2);
-        dropdownItems.Should().Contain(p => p.Name == "Bread");
-        dropdownItems.Should().Contain(p => p.Name == "Milk");
-        dropdownItems.Should().BeInAscendingOrder(p => p.Name);
+        productsForAutocomplete.Should().HaveCount(2);
+        productsForAutocomplete.Should().Contain(p => p.Name == "Bread");
+        productsForAutocomplete.Should().Contain(p => p.Name == "Milk");
+        productsForAutocomplete.Should().BeInAscendingOrder(p => p.Name);
     }
 }

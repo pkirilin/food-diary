@@ -6,5 +6,5 @@ namespace FoodDiary.Application.Services.Products;
 
 public interface IProductsService
 {
-    Task<ProductDropdownItemDto[]> GetDropdownItemsAsync(CancellationToken cancellationToken);
+    Task<ProductAutocompleteItemDto[]> GetAutocompleteItemsAsync(CancellationToken cancellationToken);
 }
