@@ -15,9 +15,7 @@
         public static string GetPages { get; } = PagesBaseUrl;
         public static string GetNotes { get; } = NotesBaseUrl;
         public static string GetProducts { get; } = ProductsBaseUrl;
-        public static string GetProductsDropdown { get; } = $"{ProductsBaseUrl}/dropdown";
         public static string GetCategories { get; } = CategoriesBaseUrl;
-        public static string GetCategoriesDropdown { get; } = $"{CategoriesBaseUrl}/dropdown";
         public static string GetDateForNewPage { get; } = $"{PagesBaseUrl}/date";
 
         public static string CreatePage { get; } = PagesBaseUrl;

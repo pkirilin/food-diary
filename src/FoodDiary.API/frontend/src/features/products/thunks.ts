@@ -59,7 +59,7 @@ export const getProductsAutocomplete = createApiCallAsyncThunk<
   boolean
 >(
   'products/getProductsAutocomplete',
-  () => `${config.apiUrl}/v1/products/dropdown`,
+  () => `${config.apiUrl}/api/v1/products/autocomplete`,
   response => response.json(),
   'Failed to get products',
 );

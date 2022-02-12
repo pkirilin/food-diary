@@ -15,15 +15,15 @@ namespace FoodDiary.IntegrationTests.Scenarios.Auth;
 
 [Collection("Tests with WireMock")]
 public class SignInWithGoogleTests : IDisposable,
-    IClassFixture<FoodDiaryApplicationFactory>,
+    IClassFixture<FoodDiaryWebApplicationFactory>,
     IClassFixture<GoogleMockApi>
 {
-    private readonly FoodDiaryApplicationFactory _applicationFactory;
+    private readonly FoodDiaryWebApplicationFactory _webApplicationFactory;
     private readonly GoogleMockApi _googleMockApi;
 
-    public SignInWithGoogleTests(FoodDiaryApplicationFactory applicationFactory, GoogleMockApi googleMockApi)
+    public SignInWithGoogleTests(FoodDiaryWebApplicationFactory webApplicationFactory, GoogleMockApi googleMockApi)
     {
-        _applicationFactory = applicationFactory;
+        _webApplicationFactory = webApplicationFactory;
         _googleMockApi = googleMockApi;
     }
     
@@ -35,7 +35,7 @@ public class SignInWithGoogleTests : IDisposable,
     [Fact]
     public async Task Authenticates_allowed_user_with_valid_google_token_id_and_provides_access_token()
     {
-        var client = _applicationFactory.CreateClient();
+        var client = _webApplicationFactory.CreateClient();
         var request = new SignInWithGoogleRequest
         {
             GoogleTokenId = "test_google_token_id"
@@ -54,7 +54,7 @@ public class SignInWithGoogleTests : IDisposable,
     [Fact]
     public async Task Denies_access_for_all_requests_with_invalid_google_token_id()
     {
-        var client = _applicationFactory.CreateClient();
+        var client = _webApplicationFactory.CreateClient();
         var request = new SignInWithGoogleRequest
         {
             GoogleTokenId = "test_google_token_id"
@@ -71,7 +71,7 @@ public class SignInWithGoogleTests : IDisposable,
     [Fact]
     public async Task Denies_access_for_not_allowed_users_with_valid_google_token_id()
     {
-        var client = _applicationFactory.CreateClient();
+        var client = _webApplicationFactory.CreateClient();
         var request = new SignInWithGoogleRequest
         {
             GoogleTokenId = "test_google_token_id"

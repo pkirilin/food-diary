@@ -70,8 +70,6 @@ namespace FoodDiary.API
                     dest => dest.CategoryName,
                     o => o.MapFrom(src => src.Category.Name));
 
-            CreateMap<Product, ProductDropdownItemDto>();
-
             CreateMap<ProductCreateEditRequest, Product>();
         }
 

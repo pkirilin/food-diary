@@ -21,12 +21,15 @@ namespace FoodDiary.API
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IHostEnvironment env)
         {
             Configuration = configuration;
+            Env = env;
         }
 
         private IConfiguration Configuration { get; }
+        
+        private IHostEnvironment Env { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
@@ -63,7 +66,7 @@ namespace FoodDiary.API
             services.ConfigureCustomOptions(Configuration);
             services.Configure<ImportOptions>(Configuration.GetSection("Import"));
 
-            services.AddInfrastructure();
+            services.AddInfrastructure(Env);
 
             services.AddRepositories();
             services.AddUtils();
