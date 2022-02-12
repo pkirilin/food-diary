@@ -1,5 +1,7 @@
 using System.IO;
+using System.Threading.Tasks;
 using FoodDiary.API;
+using FoodDiary.Domain.Entities;
 using FoodDiary.Infrastructure;
 using FoodDiary.IntegrationTests.Dsl.Builders;
 using FoodDiary.IntegrationTests.MockAuth;
@@ -22,6 +24,8 @@ public class FoodDiaryWebApplicationFactory : WebApplicationFactory<Startup>
     private FoodDiaryContext _dbContext;
     
     public SeedDataForDbContextBuilder SeedDatabase() => new(DbContext);
+
+    public void ClearDatabase() => ClearDatabaseAsync().Wait();
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
@@ -75,5 +79,19 @@ public class FoodDiaryWebApplicationFactory : WebApplicationFactory<Startup>
             _dbContext.Database.EnsureCreated();
             return _dbContext;
         }
+    }
+    
+    private async Task ClearDatabaseAsync()
+    {
+        await RemoveAllAsync<Product>(DbContext);
+        await RemoveAllAsync<Category>(DbContext);
+        await DbContext.SaveChangesAsync();
+    }
+
+    private static async Task RemoveAllAsync<TEntity>(FoodDiaryContext context) where TEntity : class
+    {
+        var set = context.Set<TEntity>();
+        var entities = await set.ToArrayAsync();
+        set.RemoveRange(entities);
     }
 }
