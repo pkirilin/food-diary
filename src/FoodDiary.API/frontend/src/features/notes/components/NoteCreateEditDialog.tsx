@@ -71,7 +71,7 @@ const NoteCreateEditDialog: React.FC<NoteCreateEditDialogProps> = ({
   const maxDisplayOrderForNotesGroup = useTypedSelector(state =>
     state.notes.noteItems
       .filter(n => n.mealType === mealType)
-      .reduce((max, note) => (note.displayOrder > max ? note.displayOrder : max), 0),
+      .reduce((max, note) => (note.displayOrder > max ? note.displayOrder : max), -1),
   );
 
   useEffect(() => {
@@ -88,7 +88,7 @@ const NoteCreateEditDialog: React.FC<NoteCreateEditDialogProps> = ({
         productId: product.id,
         pageId,
         productQuantity: quantity,
-        displayOrder: note ? note.displayOrder : maxDisplayOrderForNotesGroup,
+        displayOrder: note ? note.displayOrder : maxDisplayOrderForNotesGroup + 1,
       });
     }
   };
