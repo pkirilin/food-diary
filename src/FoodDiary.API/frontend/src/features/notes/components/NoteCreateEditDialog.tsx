@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Button,
   Dialog,
@@ -11,11 +11,7 @@ import {
 } from '@material-ui/core';
 import { MealType, NoteCreateEdit, NoteItem } from '../models';
 import { DialogCustomActionProps } from '../../__shared__/types';
-import {
-  useAsyncAutocompleteInput,
-  useTypedSelector,
-  useValidatedNumericInput,
-} from '../../__shared__/hooks';
+import { useAsyncAutocompleteInput, useValidatedNumericInput } from '../../__shared__/hooks';
 import { SimpleAutocomplete } from '../../__shared__/components';
 import { getProductsAutocomplete } from '../../products/thunks';
 import { autocompleteCleared } from '../../products/slice';
@@ -68,10 +64,13 @@ const NoteCreateEditDialog: React.FC<NoteCreateEditDialogProps> = ({
 
   const isSubmitDisabled = !product || !isValidQuantity;
 
-  const maxDisplayOrderForNotesGroup = useTypedSelector(state =>
+  const maxDisplayOrderForNotesGroup = useSelector(state =>
     state.notes.noteItems
-      .filter(n => n.mealType === mealType)
-      .reduce((max, note) => (note.displayOrder > max ? note.displayOrder : max), -1),
+      .filter(note => note.mealType === mealType)
+      .reduce(
+        (maxOrder, note) => (note.displayOrder > maxOrder ? note.displayOrder : maxOrder),
+        -1,
+      ),
   );
 
   useEffect(() => {
