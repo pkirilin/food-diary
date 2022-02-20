@@ -17,4 +17,5 @@ RUN apt-get update && apt-get install -y --allow-unauthenticated libxml2 libc6-d
 COPY --from=backend app/publish .
 COPY --from=frontend app/build frontend/build
 EXPOSE 80
+ENV Logging__Console__FormatterName=Simple
 CMD ASPNETCORE_URLS=http://*:$PORT dotnet FoodDiary.API.dll
