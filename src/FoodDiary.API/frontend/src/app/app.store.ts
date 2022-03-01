@@ -4,8 +4,9 @@ import pagesReducer from '@features/pages/slice';
 import categoriesReducer from '@features/categories/slice';
 import productsReducer from '@features/products/slice';
 import notesReducer from '@features/notes/slice';
+import { ConfigureStoreOptions } from '@reduxjs/toolkit';
 
-export default {
+export const appReducer = {
   auth: authReducer,
   [authApi.reducerPath]: authApi.reducer,
 
@@ -14,3 +15,6 @@ export default {
   products: productsReducer,
   notes: notesReducer,
 };
+
+export const appMiddleware: ConfigureStoreOptions['middleware'] = getDefaultMiddleware =>
+  getDefaultMiddleware().concat(authApi.middleware);
