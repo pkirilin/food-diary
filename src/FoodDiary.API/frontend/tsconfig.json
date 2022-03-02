@@ -23,6 +23,7 @@
     "paths": {
       "@app/*": ["src/app/*"],
       "@features/*": ["src/features/*"],
+      "@testUtils/*": ["src/testUtils/*"],
     }
   },
   "include": [

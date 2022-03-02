@@ -1,32 +1,19 @@
+import { render, screen } from '@testing-library/react';
+import create from '@testUtils/dsl';
 import App from './App';
-import { SortOrder } from './features/__shared__/models';
-import { renderExtended, TestRootState } from './features/__shared__/utils';
 
-describe('App component', () => {
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
+describe('App', () => {
+  describe('when user authenticated', () => {
+    test('should render navbar with pages list', () => {
+      const ui = create
+        .component(<App></App>)
+        .withReduxStore(store => store.withAuthenticatedUser())
+        .please();
 
-  test('should render without errors', () => {
-    const createStateMock = (jest.fn() as jest.Mock<TestRootState>).mockReturnValue({
-      auth: {
-        isAuthenticated: true,
-      },
-      pages: {
-        pageItems: [],
-        dateForNewPageLoading: 'idle',
-        operationStatus: 'idle',
-        selectedPageIds: [],
-        totalPagesCount: 0,
-        filter: {
-          changed: false,
-          pageNumber: 1,
-          pageSize: 10,
-          sortOrder: SortOrder.Ascending,
-        },
-      },
+      render(ui);
+
+      expect(screen.getByRole('navigation')).toBeInTheDocument();
+      expect(screen.getByText(/Pages/)).toBeInTheDocument();
     });
-
-    renderExtended(<App></App>, createStateMock);
   });
 });
