@@ -1,3 +1,5 @@
+import React from 'react';
+import { Provider } from 'react-redux';
 import { createTestStore, TestStoreBuilder } from './storeBuilder';
 
 export interface TestComponentBuilder {
@@ -9,15 +11,23 @@ export interface TestComponentBuilder {
 }
 
 const createComponentBuilder = (component: React.ReactElement) => {
+  const components: React.ComponentType[] = [];
+
   const builder: TestComponentBuilder = {
     withReduxStore: (configure): TestComponentBuilder => {
       const storeBuilder = createTestStore();
-      configure(storeBuilder).please();
+      const store = configure(storeBuilder).please();
+      components.push(({ children }) => <Provider store={store}>{children}</Provider>);
       return builder;
     },
 
     please: (): React.ReactElement => {
-      throw new Error('Function not implemented.');
+      const ui = components.reduceRight(
+        (element, Wrapper) => <Wrapper>{element}</Wrapper>,
+        component,
+      );
+
+      return ui;
     },
   };
 
