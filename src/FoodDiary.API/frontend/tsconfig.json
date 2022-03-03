@@ -18,13 +18,7 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "noFallthroughCasesInSwitch": true,
-    "baseUrl": ".",
-    "paths": {
-      "@app/*": ["src/app/*"],
-      "@features/*": ["src/features/*"],
-      "@testUtils/*": ["src/testUtils/*"],
-    }
+    "noFallthroughCasesInSwitch": true
   },
   "include": [
     "src"

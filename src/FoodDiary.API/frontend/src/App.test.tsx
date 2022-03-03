@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import create from '@testUtils/dsl';
+import create from './testUtils/dsl';
 import App from './App';
 
 describe('App', () => {
