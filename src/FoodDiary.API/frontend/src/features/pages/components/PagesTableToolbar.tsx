@@ -115,7 +115,7 @@ const PagesTableToolbar: React.FC = () => {
         </React.Fragment>
       ) : (
         <React.Fragment>
-          <Typography variant="h1" className={classes.title}>
+          <Typography variant="h1" className={classes.title} role="heading">
             Pages
           </Typography>
           <Tooltip title="Add new page">

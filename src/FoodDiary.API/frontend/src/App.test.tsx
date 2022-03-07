@@ -16,7 +16,8 @@ describe('App', () => {
       render(ui);
 
       expect(screen.getByRole('navigation')).toBeInTheDocument();
-      expect(screen.getByText(/Pages/)).toBeInTheDocument();
+      expect(screen.getByRole('heading')).toBeInTheDocument();
+      expect(screen.getByRole('heading').textContent).toMatch(/Pages/);
     });
   });
 });
