@@ -4,7 +4,7 @@ import { createTestStore, TestStoreBuilder } from './storeBuilder';
 
 export interface TestComponentBuilder {
   withReduxStore: (
-    configure: (builder: TestStoreBuilder) => TestStoreBuilder,
+    configure?: (builder: TestStoreBuilder) => TestStoreBuilder,
   ) => TestComponentBuilder;
 
   please: () => React.ReactElement;
@@ -14,7 +14,7 @@ const createComponentBuilder = (component: React.ReactElement) => {
   const components: React.ComponentType[] = [];
 
   const builder: TestComponentBuilder = {
-    withReduxStore: (configure): TestComponentBuilder => {
+    withReduxStore: (configure = builder => builder): TestComponentBuilder => {
       const storeBuilder = createTestStore();
       const store = configure(storeBuilder).please();
       components.push(({ children }) => <Provider store={store}>{children}</Provider>);
