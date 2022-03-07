@@ -3,6 +3,8 @@ import create from './testUtils/dsl';
 import App from './App';
 import Cookies from 'js-cookie';
 
+jest.mock('js-cookie');
+
 describe('App', () => {
   describe('when user authenticated', () => {
     test('should render navbar with pages list', () => {

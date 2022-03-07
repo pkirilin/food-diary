@@ -3,7 +3,3 @@
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom/extend-expect';
-import Cookies from 'js-cookie';
-
-jest.mock('js-cookie');
-jest.mocked(Cookies).get = jest.fn().mockReturnValue('test_access_token');
