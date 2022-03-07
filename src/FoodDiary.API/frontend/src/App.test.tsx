@@ -22,4 +22,17 @@ describe('App', () => {
       expect(screen.getByRole('heading').textContent).toMatch(/Pages/);
     });
   });
+
+  describe('when user not authenticated', () => {
+    test('should render sign in page', () => {
+      const ui = create
+        .component(<App></App>)
+        .withReduxStore()
+        .please();
+
+      render(ui);
+
+      expect(screen.getByText(/Sign in/)).toBeInTheDocument();
+    });
+  });
 });
