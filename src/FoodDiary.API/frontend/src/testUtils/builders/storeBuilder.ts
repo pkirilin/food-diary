@@ -1,4 +1,4 @@
-import { AppStore, configureAppStore } from '../../../store';
+import { AppStore, configureAppStore } from '../../store';
 
 export interface TestStoreBuilder {
   please: () => AppStore;
