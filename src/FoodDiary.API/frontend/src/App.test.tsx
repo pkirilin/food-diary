@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import create from './testUtils';
+import create from './test-utils';
 import App from './App';
 import Cookies from 'js-cookie';
 
