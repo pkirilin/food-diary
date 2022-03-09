@@ -1,10 +1,7 @@
 import { render, screen } from '@testing-library/react';
-import Cookies from 'js-cookie';
 import { create } from '../../../../test-utils';
 import { PagesSearchResult } from '../../models';
 import Pages from '../Pages';
-
-jest.mock('js-cookie');
 
 describe('Pages', () => {
   describe('when mounted', () => {
@@ -20,8 +17,6 @@ describe('Pages', () => {
     });
 
     test('should render page items if server has data', async () => {
-      jest.mocked(Cookies).get = jest.fn().mockResolvedValue('test_access_token');
-
       const fetchMock = jest.spyOn(global, 'fetch').mockResolvedValue({
         ...new Response(),
         json: (jest.fn() as jest.Mock<Promise<PagesSearchResult>>).mockResolvedValue({
