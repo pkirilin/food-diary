@@ -17,20 +17,22 @@ describe('Pages', () => {
     });
 
     test('should render page items if server has data', async () => {
-      const fetchMock = jest.spyOn(global, 'fetch').mockResolvedValue({
-        ...new Response(),
-        json: (jest.fn() as jest.Mock<Promise<PagesSearchResult>>).mockResolvedValue({
-          totalPagesCount: 1,
-          pageItems: [
-            {
-              id: 1,
-              date: '2022-03-01',
-              countNotes: 1,
-              countCalories: 1000,
-            },
-          ],
-        }),
-      });
+      const fetchMock = jest.spyOn(global, 'fetch').mockResolvedValue(
+        create
+          .response()
+          .withJsonData<PagesSearchResult>({
+            totalPagesCount: 1,
+            pageItems: [
+              {
+                id: 1,
+                date: '2022-03-01',
+                countNotes: 1,
+                countCalories: 1000,
+              },
+            ],
+          })
+          .please(),
+      );
 
       const ui = create
         .component(<Pages></Pages>)

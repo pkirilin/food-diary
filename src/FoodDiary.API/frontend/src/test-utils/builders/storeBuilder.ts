@@ -4,7 +4,7 @@ export interface TestStoreBuilder {
   please: () => AppStore;
 }
 
-export const createTestStore = (): TestStoreBuilder => {
+export const createTestStore = () => {
   const store = configureAppStore();
 
   const builder: TestStoreBuilder = {
