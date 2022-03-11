@@ -18,7 +18,7 @@ export default function createResponseBuilder() {
     },
 
     withJsonData: <TData>(data: TData): TestResponseBuilder => {
-      props.json = (jest.fn() as jest.Mock<Promise<TData>>).mockResolvedValue(data);
+      props.json = jest.fn().mockResolvedValue(data);
       return builder;
     },
   };
