@@ -1,23 +1,28 @@
 import { createSlice } from '@reduxjs/toolkit';
 import authApi from './auth.api';
-import { getAccessToken } from './cookie.service';
 
 export type AuthState = {
-  isAuthenticated?: boolean;
+  isAuthenticated: boolean;
 };
 
 const initialState: AuthState = {
-  isAuthenticated: !!getAccessToken(),
+  isAuthenticated: false,
 };
 
 const authSlice = createSlice({
   name: 'auth',
   initialState,
-  reducers: {},
+  reducers: {
+    userLoggedIn: state => {
+      state.isAuthenticated = true;
+    },
+  },
   extraReducers: builder =>
     builder.addMatcher(authApi.endpoints.signInWithGoogle.matchFulfilled, state => {
       state.isAuthenticated = true;
     }),
 });
+
+export const { userLoggedIn } = authSlice.actions;
 
 export default authSlice.reducer;

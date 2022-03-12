@@ -1,32 +1,38 @@
+import { render, screen } from '@testing-library/react';
+import create from './test-utils';
 import App from './App';
-import { SortOrder } from './features/__shared__/models';
-import { renderExtended, TestRootState } from './features/__shared__/utils';
+import Cookies from 'js-cookie';
 
-describe('App component', () => {
-  afterEach(() => {
-    jest.clearAllMocks();
+jest.mock('js-cookie');
+
+describe('App', () => {
+  describe('when user authenticated', () => {
+    test('should render navbar with pages list', () => {
+      jest.mocked(Cookies).get = jest.fn().mockReturnValue('test_access_token');
+
+      const ui = create
+        .component(<App></App>)
+        .withReduxStore()
+        .please();
+
+      render(ui);
+
+      expect(screen.getByRole('navigation')).toBeInTheDocument();
+      expect(screen.getByRole('heading')).toBeInTheDocument();
+      expect(screen.getByRole('heading').textContent).toMatch(/Pages/);
+    });
   });
 
-  test('should render without errors', () => {
-    const createStateMock = (jest.fn() as jest.Mock<TestRootState>).mockReturnValue({
-      auth: {
-        isAuthenticated: true,
-      },
-      pages: {
-        pageItems: [],
-        dateForNewPageLoading: 'idle',
-        operationStatus: 'idle',
-        selectedPageIds: [],
-        totalPagesCount: 0,
-        filter: {
-          changed: false,
-          pageNumber: 1,
-          pageSize: 10,
-          sortOrder: SortOrder.Ascending,
-        },
-      },
-    });
+  describe('when user not authenticated', () => {
+    test('should render sign in page', () => {
+      const ui = create
+        .component(<App></App>)
+        .withReduxStore()
+        .please();
 
-    renderExtended(<App></App>, createStateMock);
+      render(ui);
+
+      expect(screen.getByText(/Sign in/)).toBeInTheDocument();
+    });
   });
 });
