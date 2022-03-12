@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { create } from '../../../../test-utils';
 import Pages from '../Pages';
 
@@ -16,21 +16,16 @@ describe('Pages', () => {
     });
 
     test('should render page items if server has data', async () => {
-      const fetchMock = jest
+      const pagesSearchResult = create
+        .pagesSearchResultModel()
+        .withPageItem('2022-03-01')
+        .withPageItem('2022-03-02')
+        .withPageItem('2022-03-03')
+        .please();
+
+      jest
         .spyOn(global, 'fetch')
-        .mockResolvedValue(
-          create
-            .response()
-            .withJsonData(
-              create
-                .pagesSearchResultModel()
-                .withPageItem('2022-03-01')
-                .withPageItem('2022-03-02')
-                .withPageItem('2022-03-03')
-                .please(),
-            )
-            .please(),
-        );
+        .mockResolvedValue(create.response().withJsonData(pagesSearchResult).please());
 
       const ui = create
         .component(<Pages></Pages>)
@@ -40,12 +35,7 @@ describe('Pages', () => {
 
       render(ui);
 
-      expect(fetchMock).toHaveBeenCalledTimes(1);
-      await waitFor(async () => {
-        expect(await screen.findByText('01.03.2022')).toBeInTheDocument();
-        expect(await screen.findByText('02.03.2022')).toBeInTheDocument();
-        expect(await screen.findByText('03.03.2022')).toBeInTheDocument();
-      });
+      await expect(screen).toContainPageItems('01.03.2022', '02.03.2022', '03.03.2022');
     });
   });
 });
