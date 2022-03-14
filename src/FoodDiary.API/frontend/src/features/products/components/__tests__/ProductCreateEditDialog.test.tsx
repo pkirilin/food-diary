@@ -63,7 +63,48 @@ describe('ProductCreateEditDialog', () => {
       expect(options[1]).toHaveTextContent('Category 2');
     });
 
-    test('displays loaded options matching input value', () => {});
+    test('displays loaded options matching input value', async () => {
+      jest.spyOn(global, 'fetch').mockResolvedValue(
+        create
+          .response()
+          .withJsonData<CategoryAutocompleteOption[]>([
+            {
+              id: 1,
+              name: 'My first category',
+            },
+            {
+              id: 2,
+              name: 'My second category',
+            },
+            {
+              id: 3,
+              name: 'Another category',
+            },
+          ])
+          .please(),
+      );
+
+      const ui = create
+        .component(
+          <ProductCreateEditDialog
+            open
+            onDialogConfirm={jest.fn()}
+            onDialogCancel={jest.fn()}
+          ></ProductCreateEditDialog>,
+        )
+        .withReduxStore()
+        .please();
+
+      render(ui);
+      const input = screen.getByRole('textbox', { name: /category/i });
+      userEvent.click(input);
+      userEvent.type(input, 'My');
+
+      const options = await screen.findAllByRole('option');
+      expect(options).toHaveLength(2);
+      expect(options[0]).toHaveTextContent('My first category');
+      expect(options[1]).toHaveTextContent('My second category');
+    });
 
     test('displays empty message for empty autocomplete', () => {});
 
