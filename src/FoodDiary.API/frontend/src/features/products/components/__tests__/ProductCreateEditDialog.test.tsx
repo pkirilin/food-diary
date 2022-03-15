@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitForElementToBeRemoved } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import create from '../../../../test-utils';
 import { CategoryAutocompleteOption } from '../../../categories/models';
@@ -108,6 +108,42 @@ describe('ProductCreateEditDialog', () => {
 
     test('displays empty message for empty autocomplete', () => {});
 
-    test('displays empty message if input value does not match any loaded option', () => {});
+    test('displays empty message if input value does not match any loaded option', async () => {
+      jest.spyOn(global, 'fetch').mockResolvedValue(
+        create
+          .response()
+          .withJsonData<CategoryAutocompleteOption[]>([
+            {
+              id: 1,
+              name: 'My first category',
+            },
+            {
+              id: 2,
+              name: 'My second category',
+            },
+          ])
+          .please(),
+      );
+
+      const ui = create
+        .component(
+          <ProductCreateEditDialog
+            open
+            onDialogConfirm={jest.fn()}
+            onDialogCancel={jest.fn()}
+          ></ProductCreateEditDialog>,
+        )
+        .withReduxStore()
+        .please();
+
+      render(ui);
+      const input = screen.getByRole('textbox', { name: /category/i });
+      userEvent.click(input);
+      userEvent.type(input, 'test');
+      await waitForElementToBeRemoved(screen.getByRole('progressbar'));
+
+      const options = screen.queryAllByRole('option');
+      expect(options).toHaveLength(0);
+    });
   });
 });
