@@ -1,7 +1,6 @@
 import { render, screen, waitForElementToBeRemoved } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import create from '../../../../test-utils';
-import { CategoryAutocompleteOption } from '../../../categories/models';
 import ProductCreateEditDialog from '../ProductCreateEditDialog';
 
 describe('ProductCreateEditDialog', () => {
@@ -26,21 +25,20 @@ describe('ProductCreateEditDialog', () => {
     });
 
     test('displays all options on open', async () => {
-      jest.spyOn(global, 'fetch').mockResolvedValue(
-        create
-          .response()
-          .withJsonData<CategoryAutocompleteOption[]>([
-            {
-              id: 1,
-              name: 'Category 1',
-            },
-            {
-              id: 2,
-              name: 'Category 2',
-            },
-          ])
-          .please(),
-      );
+      jest
+        .spyOn(global, 'fetch')
+        .mockResolvedValue(
+          create
+            .response()
+            .withJsonData(
+              create
+                .categoryAutocompleteResult()
+                .withOption('Category 1')
+                .withOption('Category 2')
+                .please(),
+            )
+            .please(),
+        );
 
       const ui = create
         .component(
@@ -56,33 +54,30 @@ describe('ProductCreateEditDialog', () => {
       render(ui);
       const input = screen.getByRole('textbox', { name: /category/i });
       userEvent.click(input);
+      await waitForElementToBeRemoved(screen.getByRole('progressbar'));
 
-      const options = await screen.findAllByRole('option');
+      const options = screen.getAllByRole('option');
       expect(options).toHaveLength(2);
       expect(options[0]).toHaveTextContent('Category 1');
       expect(options[1]).toHaveTextContent('Category 2');
     });
 
-    test('displays loaded options matching input value', async () => {
-      jest.spyOn(global, 'fetch').mockResolvedValue(
-        create
-          .response()
-          .withJsonData<CategoryAutocompleteOption[]>([
-            {
-              id: 1,
-              name: 'My first category',
-            },
-            {
-              id: 2,
-              name: 'My second category',
-            },
-            {
-              id: 3,
-              name: 'Another category',
-            },
-          ])
-          .please(),
-      );
+    test('displays options matching input value', async () => {
+      jest
+        .spyOn(global, 'fetch')
+        .mockResolvedValue(
+          create
+            .response()
+            .withJsonData(
+              create
+                .categoryAutocompleteResult()
+                .withOption('My first category')
+                .withOption('My second category')
+                .withOption('Another category')
+                .please(),
+            )
+            .please(),
+        );
 
       const ui = create
         .component(
@@ -99,8 +94,9 @@ describe('ProductCreateEditDialog', () => {
       const input = screen.getByRole('textbox', { name: /category/i });
       userEvent.click(input);
       userEvent.type(input, 'My');
+      await waitForElementToBeRemoved(screen.getByRole('progressbar'));
 
-      const options = await screen.findAllByRole('option');
+      const options = screen.getAllByRole('option');
       expect(options).toHaveLength(2);
       expect(options[0]).toHaveTextContent('My first category');
       expect(options[1]).toHaveTextContent('My second category');
@@ -109,21 +105,20 @@ describe('ProductCreateEditDialog', () => {
     test('displays empty message for empty autocomplete', () => {});
 
     test('displays empty message if input value does not match any loaded option', async () => {
-      jest.spyOn(global, 'fetch').mockResolvedValue(
-        create
-          .response()
-          .withJsonData<CategoryAutocompleteOption[]>([
-            {
-              id: 1,
-              name: 'My first category',
-            },
-            {
-              id: 2,
-              name: 'My second category',
-            },
-          ])
-          .please(),
-      );
+      jest
+        .spyOn(global, 'fetch')
+        .mockResolvedValue(
+          create
+            .response()
+            .withJsonData(
+              create
+                .categoryAutocompleteResult()
+                .withOption('My first category')
+                .withOption('My second category')
+                .please(),
+            )
+            .please(),
+        );
 
       const ui = create
         .component(
