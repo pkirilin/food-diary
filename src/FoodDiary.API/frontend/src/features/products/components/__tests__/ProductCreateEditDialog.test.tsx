@@ -102,8 +102,6 @@ describe('ProductCreateEditDialog', () => {
       expect(options[1]).toHaveTextContent('My second category');
     });
 
-    test('displays empty message for empty autocomplete', () => {});
-
     test('displays empty message if input value does not match any loaded option', async () => {
       jest
         .spyOn(global, 'fetch')
@@ -140,5 +138,49 @@ describe('ProductCreateEditDialog', () => {
       const options = screen.queryAllByRole('option');
       expect(options).toHaveLength(0);
     });
+
+    test('displays all options when input cleared', async () => {
+      jest
+        .mocked(global.fetch)
+        .mockResolvedValue(
+          create
+            .response()
+            .withJsonData(
+              create
+                .categoryAutocompleteResult()
+                .withOption('My category 1')
+                .withOption('My category 2')
+                .withOption('Some category')
+                .please(),
+            )
+            .please(),
+        );
+
+      const ui = create
+        .component(
+          <ProductCreateEditDialog
+            open
+            onDialogConfirm={jest.fn()}
+            onDialogCancel={jest.fn()}
+          ></ProductCreateEditDialog>,
+        )
+        .withReduxStore()
+        .please();
+
+      render(ui);
+      const input = screen.getByRole('textbox', { name: /category/i });
+      userEvent.click(input);
+      userEvent.type(input, 'My');
+      await waitForElementToBeRemoved(screen.getByRole('progressbar'));
+      userEvent.click(screen.getByLabelText(/clear/i));
+
+      const options = await screen.findAllByRole('option');
+      expect(options).toHaveLength(3);
+      expect(options[0]).toHaveTextContent('My category 1');
+      expect(options[1]).toHaveTextContent('My category 2');
+      expect(options[2]).toHaveTextContent('Some category');
+    });
+
+    test('displays empty message for empty autocomplete', () => {});
   });
 });
