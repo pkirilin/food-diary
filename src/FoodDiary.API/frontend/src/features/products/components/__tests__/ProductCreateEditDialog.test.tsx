@@ -181,6 +181,31 @@ describe('ProductCreateEditDialog', () => {
       expect(options[2]).toHaveTextContent('Some category');
     });
 
-    test('displays empty message for empty autocomplete', () => {});
+    test('displays empty message if autocomplete has no options', async () => {
+      jest
+        .mocked(global.fetch)
+        .mockResolvedValue(
+          create.response().withJsonData(create.categoryAutocompleteResult().please()).please(),
+        );
+
+      const ui = create
+        .component(
+          <ProductCreateEditDialog
+            open
+            onDialogConfirm={jest.fn()}
+            onDialogCancel={jest.fn()}
+          ></ProductCreateEditDialog>,
+        )
+        .withReduxStore()
+        .please();
+
+      render(ui);
+      const input = screen.getByRole('textbox', { name: /category/i });
+      userEvent.click(input);
+      await waitForElementToBeRemoved(screen.getByRole('progressbar'));
+
+      const options = screen.queryAllByRole('option');
+      expect(options).toHaveLength(0);
+    });
   });
 });
