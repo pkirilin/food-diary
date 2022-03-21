@@ -13,12 +13,14 @@ import {
 export type CategoriesState = {
   categoryItems: CategoryItem[];
   autocompleteOptions: CategoryAutocompleteOption[];
+  autocompleteOptionsLoading: boolean;
   operationStatus: Status;
 };
 
 const initialState: CategoriesState = {
   categoryItems: [],
   autocompleteOptions: [],
+  autocompleteOptionsLoading: false,
   operationStatus: 'idle',
 };
 
@@ -37,11 +39,18 @@ const categoriesSlice = createSlice({
       .addCase(getCategories.fulfilled, (state, { payload }: PayloadAction<CategoryItem[]>) => {
         state.categoryItems = payload;
       })
+      .addCase(getCategoriesAutocomplete.pending, state => {
+        state.autocompleteOptionsLoading = true;
+      })
       .addCase(getCategoriesAutocomplete.fulfilled, (state, { payload, meta }) => {
         const isAutocompleteActive = meta.arg;
         if (isAutocompleteActive) {
           state.autocompleteOptions = payload;
         }
+        state.autocompleteOptionsLoading = false;
+      })
+      .addCase(getCategoriesAutocomplete.rejected, state => {
+        state.autocompleteOptionsLoading = false;
       })
       .addMatcher(createAsyncThunkMatcher(operationThunks, 'pending'), state => {
         state.operationStatus = 'pending';

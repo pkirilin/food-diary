@@ -7,16 +7,16 @@ import { CustomAutocomplete } from '../../__shared__/components';
 
 export type CategorySelectProps = {
   category: CategoryAutocompleteOption | null;
+  setCategory: (value: CategoryAutocompleteOption | null) => void;
 };
 
-export default function CategorySelect({ category }: CategorySelectProps) {
+export default function CategorySelect({ category, setCategory }: CategorySelectProps) {
   const [options, setOptions] = useState<CategoryAutocompleteOption[]>([]);
-  const [selectedOption, setSelectedOption] = useState(category);
   const [isOpen, setIsOpen] = useState(false);
-  const [isLoading] = useState(false);
 
   // TODO: use local state or RTK Query cache
   const optionsGlobal = useSelector(state => state.categories.autocompleteOptions);
+  const isLoading = useSelector(state => state.categories.autocompleteOptionsLoading);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -24,22 +24,9 @@ export default function CategorySelect({ category }: CategorySelectProps) {
   }, [optionsGlobal]);
 
   useEffect(() => {
-    // TODO: can be removed if RTK Query is used
-    let active = true;
-
-    if (!isLoading) {
-      return;
-    }
-
-    dispatch(getCategoriesAutocomplete(active));
-
-    return () => {
-      active = false;
-    };
-  }, [isLoading]);
-
-  useEffect(() => {
-    if (!isOpen) {
+    if (isOpen) {
+      dispatch(getCategoriesAutocomplete(isOpen));
+    } else {
       dispatch(autocompleteCleared());
     }
   }, [isOpen]);
@@ -49,10 +36,10 @@ export default function CategorySelect({ category }: CategorySelectProps) {
       options={options}
       open={isOpen}
       loading={isLoading}
-      value={selectedOption}
+      value={category}
       getOptionSelected={(option, value) => option.name === value.name}
       getOptionLabel={option => option.name}
-      onChange={(event, value) => setSelectedOption(value)}
+      onChange={(event, value) => setCategory(value)}
       onOpen={() => setIsOpen(true)}
       onClose={() => setIsOpen(false)}
       label="Category"
