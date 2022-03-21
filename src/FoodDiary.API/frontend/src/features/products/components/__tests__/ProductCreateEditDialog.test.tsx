@@ -207,5 +207,45 @@ describe('ProductCreateEditDialog', () => {
       const options = screen.queryAllByRole('option');
       expect(options).toHaveLength(0);
     });
+
+    test('displays all options if closed and then opened again', async () => {
+      jest
+        .mocked(global.fetch)
+        .mockResolvedValue(
+          create
+            .response()
+            .withJsonData(
+              create
+                .categoryAutocompleteResult()
+                .withOption('My category 1')
+                .withOption('My category 2')
+                .please(),
+            )
+            .please(),
+        );
+
+      const ui = create
+        .component(
+          <ProductCreateEditDialog
+            open
+            onDialogConfirm={jest.fn()}
+            onDialogCancel={jest.fn()}
+          ></ProductCreateEditDialog>,
+        )
+        .withReduxStore()
+        .please();
+
+      render(ui);
+
+      userEvent.click(screen.getByRole('textbox', { name: /category/i }));
+      userEvent.tab();
+      userEvent.click(screen.getByRole('textbox', { name: /category/i }));
+      await waitForElementToBeRemoved(screen.getByRole('progressbar'));
+
+      const options = screen.queryAllByRole('option');
+      expect(options).toHaveLength(2);
+      expect(options[0]).toHaveTextContent('My category 1');
+      expect(options[1]).toHaveTextContent('My category 2');
+    });
   });
 });
