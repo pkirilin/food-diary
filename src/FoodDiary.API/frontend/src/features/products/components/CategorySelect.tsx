@@ -6,11 +6,11 @@ import { getCategoriesAutocomplete } from '../../categories/thunks';
 import { CustomAutocomplete } from '../../__shared__/components';
 
 export type CategorySelectProps = {
-  category: CategoryAutocompleteOption | null;
   setCategory: (value: CategoryAutocompleteOption | null) => void;
+  category?: CategoryAutocompleteOption | null;
 };
 
-export default function CategorySelect({ category, setCategory }: CategorySelectProps) {
+export default function CategorySelect({ setCategory, category = null }: CategorySelectProps) {
   const [options, setOptions] = useState<CategoryAutocompleteOption[]>([]);
   const [isOpen, setIsOpen] = useState(false);
 
