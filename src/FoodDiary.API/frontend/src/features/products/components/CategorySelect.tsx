@@ -24,7 +24,7 @@ export default function CategorySelect({ setCategory, category = null }: Categor
 
   useEffect(() => {
     if (isOpen) {
-      dispatch(getCategoriesAutocomplete(isOpen));
+      dispatch(getCategoriesAutocomplete());
     }
   }, [isOpen]);
 

@@ -51,7 +51,7 @@ export const deleteCategory = createApiCallAsyncThunk<void, number>(
 
 export const getCategoriesAutocomplete = createApiCallAsyncThunk<
   CategoryAutocompleteOption[],
-  boolean
+  void
 >(
   'categories/getCategoriesAutocomplete',
   () => `${config.apiUrl}/v1/categories/dropdown`,

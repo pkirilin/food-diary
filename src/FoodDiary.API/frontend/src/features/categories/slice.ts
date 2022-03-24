@@ -38,11 +38,8 @@ const categoriesSlice = createSlice({
       .addCase(getCategoriesAutocomplete.pending, state => {
         state.autocompleteOptionsLoading = true;
       })
-      .addCase(getCategoriesAutocomplete.fulfilled, (state, { payload, meta }) => {
-        const isAutocompleteActive = meta.arg;
-        if (isAutocompleteActive) {
-          state.autocompleteOptions = payload;
-        }
+      .addCase(getCategoriesAutocomplete.fulfilled, (state, { payload }) => {
+        state.autocompleteOptions = payload;
         state.autocompleteOptionsLoading = false;
       })
       .addCase(getCategoriesAutocomplete.rejected, state => {
