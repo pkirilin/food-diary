@@ -204,4 +204,23 @@ describe('CategorySelect', () => {
     expect(options[0]).toHaveTextContent('My category 1');
     expect(options[1]).toHaveTextContent('My category 2');
   });
+
+  test('initializes selected category if it specified', async () => {
+    const ui = create
+      .component(
+        <CategorySelect
+          category={{
+            id: 1,
+            name: 'Test category',
+          }}
+          setCategory={jest.fn()}
+        ></CategorySelect>,
+      )
+      .withReduxStore()
+      .please();
+
+    render(ui);
+
+    expect(screen.getByDisplayValue('Test category')).toBeInTheDocument();
+  });
 });
