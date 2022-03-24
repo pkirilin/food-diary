@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { CategoryAutocompleteOption } from '../../categories/models';
-import { autocompleteCleared } from '../../categories/slice';
 import { getCategoriesAutocomplete } from '../../categories/thunks';
 import { CustomAutocomplete } from '../../__shared__/components';
 
@@ -26,8 +25,6 @@ export default function CategorySelect({ setCategory, category = null }: Categor
   useEffect(() => {
     if (isOpen) {
       dispatch(getCategoriesAutocomplete(isOpen));
-    } else {
-      dispatch(autocompleteCleared());
     }
   }, [isOpen]);
 

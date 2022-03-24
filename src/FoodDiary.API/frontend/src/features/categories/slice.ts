@@ -29,11 +29,7 @@ const operationThunks = [createCategory, editCategory, deleteCategory];
 const categoriesSlice = createSlice({
   name: 'categories',
   initialState,
-  reducers: {
-    autocompleteCleared: state => {
-      state.autocompleteOptions = [];
-    },
-  },
+  reducers: {},
   extraReducers: builder =>
     builder
       .addCase(getCategories.fulfilled, (state, { payload }: PayloadAction<CategoryItem[]>) => {
@@ -63,6 +59,6 @@ const categoriesSlice = createSlice({
       }),
 });
 
-export const { autocompleteCleared } = categoriesSlice.actions;
+export const {} = categoriesSlice.actions;
 
 export default categoriesSlice.reducer;

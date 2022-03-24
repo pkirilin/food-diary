@@ -194,9 +194,12 @@ describe('CategorySelect', () => {
 
     render(ui);
 
-    userEvent.click(screen.getByRole('textbox', { name: /category/i }));
+    const input = screen.getByRole('textbox', { name: /category/i });
+    userEvent.click(input);
+    userEvent.type(input, '1');
+    await waitForElementToBeRemoved(screen.getByRole('progressbar'));
     userEvent.tab();
-    userEvent.click(screen.getByRole('textbox', { name: /category/i }));
+    userEvent.click(input);
     await waitForElementToBeRemoved(screen.getByRole('progressbar'));
 
     const options = screen.queryAllByRole('option');
