@@ -10,17 +10,12 @@ export type CategorySelectProps = {
 };
 
 export default function CategorySelect({ setCategory, category = null }: CategorySelectProps) {
-  const [options, setOptions] = useState<CategoryAutocompleteOption[]>([]);
-  const [isOpen, setIsOpen] = useState(false);
-
   // TODO: use local state or RTK Query cache
-  const optionsGlobal = useSelector(state => state.categories.autocompleteOptions);
+  const options = useSelector(state => state.categories.autocompleteOptions);
   const isLoading = useSelector(state => state.categories.autocompleteOptionsLoading);
-  const dispatch = useDispatch();
 
-  useEffect(() => {
-    setOptions(optionsGlobal);
-  }, [optionsGlobal]);
+  const [isOpen, setIsOpen] = useState(false);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (isOpen) {
