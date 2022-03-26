@@ -101,8 +101,8 @@ const ProductCreateEditDialog: React.FC<ProductCreateEditDialogProps> = ({
           fullWidth
         ></TextField>
         <CategorySelect
-          category={initialCategory}
-          setCategory={value => setCategory(value)}
+          value={initialCategory}
+          setValue={value => setCategory(value)}
         ></CategorySelect>
       </DialogContent>
       <DialogActions>
