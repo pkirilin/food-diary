@@ -54,10 +54,7 @@ export const deleteProducts = createApiCallAsyncThunk<void, number[]>(
   },
 );
 
-export const getProductsAutocomplete = createApiCallAsyncThunk<
-  ProductAutocompleteOption[],
-  boolean
->(
+export const getProductsAutocomplete = createApiCallAsyncThunk<ProductAutocompleteOption[], void>(
   'products/getProductsAutocomplete',
   () => `${config.apiUrl}/api/v1/products/autocomplete`,
   response => response.json(),
