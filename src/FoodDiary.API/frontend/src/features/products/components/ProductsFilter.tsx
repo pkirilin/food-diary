@@ -1,11 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Box, Button, Paper, TextField } from '@material-ui/core';
-import { filterByCategoryChanged, filterReset, productSearchNameChanged } from '../slice';
+
 import { useTypedSelector, useValidatedTextInput } from '../../__shared__/hooks';
 import { useFilterStyles } from '../../__shared__/styles';
-import { SimpleAutocomplete } from '../../__shared__/components';
-import { useCategoryAutocompleteInput } from '../../categories/hooks';
+
+import { filterByCategoryChanged, filterReset, productSearchNameChanged } from '../slice';
+import CategorySelect from './CategorySelect';
 
 const ProductsFilter: React.FC = () => {
   const classes = useFilterStyles();
@@ -23,7 +24,7 @@ const ProductsFilter: React.FC = () => {
     errorHelperText: 'Product search name is invalid',
   });
 
-  const [, setCategory, bindCategory] = useCategoryAutocompleteInput(filterCategory);
+  const [category, setCategory] = useState(filterCategory);
 
   useEffect(() => {
     setProductSearchName(filterProductName);
@@ -41,30 +42,23 @@ const ProductsFilter: React.FC = () => {
         placeholder="Enter product name"
         fullWidth
         margin="normal"
-        onBlur={event => {
-          dispatch(productSearchNameChanged(event.target.value));
-        }}
+        onBlur={event => dispatch(productSearchNameChanged(event.target.value))}
       ></TextField>
-      <SimpleAutocomplete
-        {...bindCategory()}
-        onChange={(event, option, reason) => {
-          const { onChange } = bindCategory();
-          if (onChange) {
-            onChange(event, option, reason);
-            dispatch(filterByCategoryChanged(option));
-          }
+      <CategorySelect
+        label="Filter by category"
+        placeholder="Select a category"
+        value={category}
+        setValue={value => {
+          setCategory(value);
+          dispatch(filterByCategoryChanged(value));
         }}
-        inputLabel="Filter by category"
-        inputPlaceholder="Select a category"
-      ></SimpleAutocomplete>
+      ></CategorySelect>
       <Box className={classes.controls}>
         <Button
           variant="text"
           color="default"
           disabled={!filterChanged}
-          onClick={() => {
-            dispatch(filterReset());
-          }}
+          onClick={() => dispatch(filterReset())}
         >
           Reset
         </Button>
