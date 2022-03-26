@@ -1,23 +1,11 @@
 import { render, screen, waitForElementToBeRemoved } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+
 import create from '../../../../test-utils';
 import CategorySelect from '../CategorySelect';
 
 describe('CategorySelect', () => {
-  test('starts loading options on open', () => {
-    const ui = create
-      .component(<CategorySelect setCategory={jest.fn()}></CategorySelect>)
-      .withReduxStore()
-      .please();
-
-    render(ui);
-    const input = screen.getByRole('textbox', { name: /category/i });
-    userEvent.click(input);
-
-    expect(screen.getByRole('progressbar')).toBeInTheDocument();
-  });
-
-  test('displays all options on open', async () => {
+  test('shows all options after clicking on input', async () => {
     jest
       .spyOn(global, 'fetch')
       .mockResolvedValue(
@@ -49,7 +37,7 @@ describe('CategorySelect', () => {
     expect(options[1]).toHaveTextContent('Category 2');
   });
 
-  test('displays options matching input value', async () => {
+  test('shows options matching input value', async () => {
     jest
       .spyOn(global, 'fetch')
       .mockResolvedValue(
@@ -83,7 +71,7 @@ describe('CategorySelect', () => {
     expect(options[1]).toHaveTextContent('My second category');
   });
 
-  test('displays empty message if input value does not match any loaded option', async () => {
+  test('shows no options if input value does not match any existing option', async () => {
     jest
       .spyOn(global, 'fetch')
       .mockResolvedValue(
@@ -114,7 +102,7 @@ describe('CategorySelect', () => {
     expect(options).toHaveLength(0);
   });
 
-  test('displays all options after input cleared', async () => {
+  test('shows all options after input cleared', async () => {
     jest
       .mocked(global.fetch)
       .mockResolvedValue(
@@ -150,7 +138,7 @@ describe('CategorySelect', () => {
     expect(options[2]).toHaveTextContent('Some category');
   });
 
-  test('displays empty message if autocomplete has no options', async () => {
+  test('shows no options after clicking on input if autocomplete has no options', async () => {
     jest
       .mocked(global.fetch)
       .mockResolvedValue(
@@ -171,7 +159,7 @@ describe('CategorySelect', () => {
     expect(options).toHaveLength(0);
   });
 
-  test('displays all options if closed and then opened again', async () => {
+  test('shows all options if closed with filtered options and then opened again', async () => {
     jest
       .mocked(global.fetch)
       .mockResolvedValue(
@@ -208,7 +196,7 @@ describe('CategorySelect', () => {
     expect(options[1]).toHaveTextContent('My category 2');
   });
 
-  test('initializes selected category if it specified', async () => {
+  test('initializes selected value if it specified', async () => {
     const ui = create
       .component(
         <CategorySelect
