@@ -86,7 +86,7 @@ const NoteCreateEditDialog: React.FC<NoteCreateEditDialogProps> = ({
     <Dialog maxWidth="xs" fullWidth {...dialogProps}>
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
-        <ProductSelect product={product} setProduct={value => setProduct(value)}></ProductSelect>
+        <ProductSelect value={product} setValue={value => setProduct(value)}></ProductSelect>
         <TextField
           {...bindQuantity()}
           type="number"
