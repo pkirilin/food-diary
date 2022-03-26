@@ -82,9 +82,6 @@ const productsSlice = createSlice({
       state.filter.category = null;
       state.filter.changed = false;
     },
-    autocompleteCleared: state => {
-      state.autocompleteOptions = [];
-    },
   },
   extraReducers: builder =>
     builder
@@ -126,7 +123,6 @@ export const {
   productSearchNameChanged,
   filterByCategoryChanged,
   filterReset,
-  autocompleteCleared,
 } = productsSlice.actions;
 
 export default productsSlice.reducer;
