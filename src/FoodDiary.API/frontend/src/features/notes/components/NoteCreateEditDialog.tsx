@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import {
   Button,
   Dialog,
@@ -9,12 +9,12 @@ import {
   DialogTitle,
   TextField,
 } from '@material-ui/core';
-import { MealType, NoteCreateEdit, NoteItem } from '../models';
+
 import { DialogCustomActionProps } from '../../__shared__/types';
-import { useAsyncAutocompleteInput, useValidatedNumericInput } from '../../__shared__/hooks';
-import { SimpleAutocomplete } from '../../__shared__/components';
-import { getProductsAutocomplete } from '../../products/thunks';
-import { autocompleteCleared } from '../../products/slice';
+import { useValidatedNumericInput } from '../../__shared__/hooks';
+
+import { MealType, NoteCreateEdit, NoteItem } from '../models';
+import ProductSelect from '../../products/components/ProductSelect';
 
 interface NoteCreateEditDialogProps extends DialogProps, DialogCustomActionProps<NoteCreateEdit> {
   mealType: MealType;
@@ -42,17 +42,7 @@ const NoteCreateEditDialog: React.FC<NoteCreateEditDialogProps> = ({
       }
     : { title: 'New note', submitText: 'Create', initialProduct: null, initialQuantity: 100 };
 
-  const dispatch = useDispatch();
-
-  const [product, setProduct, bindProduct] = useAsyncAutocompleteInput(
-    state => state.products.autocompleteOptions,
-    active => {
-      dispatch(getProductsAutocomplete(active));
-    },
-    () => {
-      dispatch(autocompleteCleared());
-    },
-  );
+  const [product, setProduct] = useState(initialProduct);
 
   const [quantity, setQuantity, bindQuantity, isValidQuantity] = useValidatedNumericInput(
     initialQuantity,
@@ -96,11 +86,7 @@ const NoteCreateEditDialog: React.FC<NoteCreateEditDialogProps> = ({
     <Dialog maxWidth="xs" fullWidth {...dialogProps}>
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
-        <SimpleAutocomplete
-          {...bindProduct()}
-          inputLabel="Product"
-          inputPlaceholder="Select a product"
-        ></SimpleAutocomplete>
+        <ProductSelect product={product} setProduct={value => setProduct(value)}></ProductSelect>
         <TextField
           {...bindQuantity()}
           type="number"
