@@ -2835,6 +2835,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/testing-library__jest-dom@npm:^5.14.3":
+  version: 5.14.3
+  resolution: "@types/testing-library__jest-dom@npm:5.14.3"
+  dependencies:
+    "@types/jest": "*"
+  checksum: 203443d0e7e5929fbc9e441146f92d85efa033b4697e427ed0164df1c40b720b6bb9bbd96a3171ea5fd8d9301b538fd0f49d4f35594d142afd0f6d2ecac25785
+  languageName: node
+  linkType: hard
+
 "@types/testing-library__jest-dom@npm:^5.9.1":
   version: 5.14.2
   resolution: "@types/testing-library__jest-dom@npm:5.14.2"
@@ -6154,6 +6163,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "food-diary@workspace:."
   dependencies:
+    "@babel/plugin-proposal-private-property-in-object": ^7.16.7
     "@date-io/core": ^1.3.6
     "@date-io/date-fns": ^1.3.6
     "@material-ui/core": ^4.12.3
@@ -6176,6 +6186,7 @@ __metadata:
     "@types/react-redux": ^7.1.21
     "@types/react-router-dom": ^5.1.5
     "@types/redux-mock-store": ^1.0.3
+    "@types/testing-library__jest-dom": ^5.14.3
     "@typescript-eslint/eslint-plugin": ^5.9.0
     "@typescript-eslint/parser": ^5.9.0
     date-fns: ^2.16.1
