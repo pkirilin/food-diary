@@ -13,12 +13,14 @@ import {
 export type CategoriesState = {
   categoryItems: CategoryItem[];
   autocompleteOptions: CategoryAutocompleteOption[];
+  autocompleteOptionsLoading: boolean;
   operationStatus: Status;
 };
 
 const initialState: CategoriesState = {
   categoryItems: [],
   autocompleteOptions: [],
+  autocompleteOptionsLoading: false,
   operationStatus: 'idle',
 };
 
@@ -27,21 +29,21 @@ const operationThunks = [createCategory, editCategory, deleteCategory];
 const categoriesSlice = createSlice({
   name: 'categories',
   initialState,
-  reducers: {
-    autocompleteCleared: state => {
-      state.autocompleteOptions = [];
-    },
-  },
+  reducers: {},
   extraReducers: builder =>
     builder
       .addCase(getCategories.fulfilled, (state, { payload }: PayloadAction<CategoryItem[]>) => {
         state.categoryItems = payload;
       })
-      .addCase(getCategoriesAutocomplete.fulfilled, (state, { payload, meta }) => {
-        const isAutocompleteActive = meta.arg;
-        if (isAutocompleteActive) {
-          state.autocompleteOptions = payload;
-        }
+      .addCase(getCategoriesAutocomplete.pending, state => {
+        state.autocompleteOptionsLoading = true;
+      })
+      .addCase(getCategoriesAutocomplete.fulfilled, (state, { payload }) => {
+        state.autocompleteOptions = payload;
+        state.autocompleteOptionsLoading = false;
+      })
+      .addCase(getCategoriesAutocomplete.rejected, state => {
+        state.autocompleteOptionsLoading = false;
       })
       .addMatcher(createAsyncThunkMatcher(operationThunks, 'pending'), state => {
         state.operationStatus = 'pending';
@@ -54,6 +56,6 @@ const categoriesSlice = createSlice({
       }),
 });
 
-export const { autocompleteCleared } = categoriesSlice.actions;
+export const {} = categoriesSlice.actions;
 
 export default categoriesSlice.reducer;

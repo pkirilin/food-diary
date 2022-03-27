@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Button,
   Dialog,
@@ -11,8 +11,7 @@ import {
 import { ProductCreateEdit, ProductItem } from '../models';
 import { DialogCustomActionProps } from '../../__shared__/types';
 import { useValidatedNumericInput, useValidatedTextInput } from '../../__shared__/hooks';
-import { SimpleAutocomplete } from '../../__shared__/components';
-import { useCategoryAutocompleteInput } from '../../categories/hooks';
+import CategorySelect from './CategorySelect';
 
 interface ProductCreateEditDialogProps
   extends DialogProps,
@@ -59,7 +58,7 @@ const ProductCreateEditDialog: React.FC<ProductCreateEditDialogProps> = ({
       errorHelperText: 'Calories cost is invalid',
     });
 
-  const [category, setCategory, bindCategory] = useCategoryAutocompleteInput(initialCategory);
+  const [category, setCategory] = useState(initialCategory);
 
   const isSubmitDisabled = !isValidProductName || !isValidCaloriesCost || !category;
 
@@ -101,11 +100,10 @@ const ProductCreateEditDialog: React.FC<ProductCreateEditDialogProps> = ({
           margin="normal"
           fullWidth
         ></TextField>
-        <SimpleAutocomplete
-          {...bindCategory()}
-          inputLabel="Category"
-          inputPlaceholder="Select a category"
-        ></SimpleAutocomplete>
+        <CategorySelect
+          value={initialCategory}
+          setValue={value => setCategory(value)}
+        ></CategorySelect>
       </DialogContent>
       <DialogActions>
         <Button

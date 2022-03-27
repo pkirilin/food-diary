@@ -19,6 +19,7 @@ export type ProductsState = {
   selectedProductIds: number[];
   filter: ProductItemsFilter;
   autocompleteOptions: ProductAutocompleteOption[];
+  autocompleteOptionsLoading: boolean;
 };
 
 export interface SelectProductPayload extends SelectionPayload {
@@ -39,6 +40,7 @@ const initialState: ProductsState = {
     category: null,
   },
   autocompleteOptions: [],
+  autocompleteOptionsLoading: false,
 };
 
 const operationThunks = [createProduct, editProduct, deleteProducts];
@@ -80,9 +82,6 @@ const productsSlice = createSlice({
       state.filter.category = null;
       state.filter.changed = false;
     },
-    autocompleteCleared: state => {
-      state.autocompleteOptions = [];
-    },
   },
   extraReducers: builder =>
     builder
@@ -93,12 +92,18 @@ const productsSlice = createSlice({
       .addCase(deleteProducts.fulfilled, state => {
         state.selectedProductIds = [];
       })
-      .addCase(getProductsAutocomplete.fulfilled, (state, { payload, meta }) => {
-        const isAutocompleteActive = meta.arg;
-        if (isAutocompleteActive) {
-          state.autocompleteOptions = payload;
-        }
+
+      .addCase(getProductsAutocomplete.pending, state => {
+        state.autocompleteOptionsLoading = true;
       })
+      .addCase(getProductsAutocomplete.fulfilled, (state, { payload }) => {
+        state.autocompleteOptions = payload;
+        state.autocompleteOptionsLoading = false;
+      })
+      .addCase(getProductsAutocomplete.rejected, state => {
+        state.autocompleteOptionsLoading = false;
+      })
+
       .addMatcher(createAsyncThunkMatcher(operationThunks, 'pending'), state => {
         state.operationStatus = 'pending';
       })
@@ -118,7 +123,6 @@ export const {
   productSearchNameChanged,
   filterByCategoryChanged,
   filterReset,
-  autocompleteCleared,
 } = productsSlice.actions;
 
 export default productsSlice.reducer;

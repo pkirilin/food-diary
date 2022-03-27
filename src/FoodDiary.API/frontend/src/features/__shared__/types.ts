@@ -1,5 +1,3 @@
-import { AutocompleteProps } from '@material-ui/lab';
-
 export interface SelectionPayload {
   selected: boolean;
 }
@@ -17,7 +15,9 @@ export interface DialogCustomActionProps<TConfirmedData = unknown> {
   onDialogCancel: DialogActionFn;
 }
 
-export type AutocompleteCustomBaseProps<TOption> = Pick<
-  AutocompleteProps<TOption, undefined, undefined, undefined>,
-  'value' | 'onChange'
->;
+export interface SelectProps<TOption> {
+  label?: string;
+  placeholder?: string;
+  value?: TOption | null;
+  setValue: (value: TOption | null) => void;
+}

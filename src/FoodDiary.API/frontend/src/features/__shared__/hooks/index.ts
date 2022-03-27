@@ -1,8 +1,6 @@
-import createAsyncAutocompleteInputHook from './createAsyncAutocompleteInputHook';
 import createInputHook from './createInputHook';
 import createValidatedInputHook from './createValidatedInputHook';
 import {
-  useAsyncAutocompleteInput,
   useValidatedDateInput,
   useValidatedNumericInput,
   useValidatedTextInput,
@@ -16,11 +14,6 @@ import useTypedSelector from './useTypedSelector';
 
 export { useTypedSelector, useDialog, usePopover, useRouterId, useRefreshEffect, useRoutes };
 
-export {
-  useValidatedTextInput,
-  useValidatedNumericInput,
-  useValidatedDateInput,
-  useAsyncAutocompleteInput,
-};
+export { useValidatedTextInput, useValidatedNumericInput, useValidatedDateInput };
 
-export { createAsyncAutocompleteInputHook, createInputHook, createValidatedInputHook };
+export { createInputHook, createValidatedInputHook };
