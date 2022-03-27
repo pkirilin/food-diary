@@ -48,7 +48,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/history", "npm:4.7.9"],\
             ["@types/jest", "npm:27.4.0"],\
             ["@types/js-cookie", "npm:3.0.1"],\
-            ["@types/node", "npm:14.18.5"],\
+            ["@types/node", "npm:16.11.26"],\
             ["@types/react", "npm:17.0.38"],\
             ["@types/react-dom", "npm:17.0.11"],\
             ["@types/react-helmet", "npm:6.1.5"],\
@@ -4362,10 +4362,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["@types/node", [\
-        ["npm:14.18.5", {\
-          "packageLocation": "./.yarn/cache/@types-node-npm-14.18.5-b34dd2c452-5ad7090e4c.zip/node_modules/@types/node/",\
+        ["npm:16.11.26", {\
+          "packageLocation": "./.yarn/cache/@types-node-npm-16.11.26-6163d95b7d-57757caaba.zip/node_modules/@types/node/",\
           "packageDependencies": [\
-            ["@types/node", "npm:14.18.5"]\
+            ["@types/node", "npm:16.11.26"]\
           ],\
           "linkType": "HARD"\
         }],\
@@ -9005,7 +9005,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/history", "npm:4.7.9"],\
             ["@types/jest", "npm:27.4.0"],\
             ["@types/js-cookie", "npm:3.0.1"],\
-            ["@types/node", "npm:14.18.5"],\
+            ["@types/node", "npm:16.11.26"],\
             ["@types/react", "npm:17.0.38"],\
             ["@types/react-dom", "npm:17.0.11"],\
             ["@types/react-helmet", "npm:6.1.5"],\

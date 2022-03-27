@@ -2672,10 +2672,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^14.14.19":
-  version: 14.18.5
-  resolution: "@types/node@npm:14.18.5"
-  checksum: 5ad7090e4cd1d7cd9efa4915cc8b4f69503a1d2070b1998a55fce776ae03fef6c0703d6940197af2cd31b3516b41b552d9fced92d2a0837c28b8ed8b5ca0872c
+"@types/node@npm:^16.11.26":
+  version: 16.11.26
+  resolution: "@types/node@npm:16.11.26"
+  checksum: 57757caaba3f0d95de82198cb276a1002c49b710108c932a1d02d7c91ff2fa57cfe2dd19fde60853b6dd90b0964b3cf35557981d2628e20aed6a909057aedfe6
   languageName: node
   linkType: hard
 
@@ -6277,7 +6277,7 @@ __metadata:
     "@types/history": ^4.7.6
     "@types/jest": ^27.4.0
     "@types/js-cookie": ^3.0.1
-    "@types/node": ^14.14.19
+    "@types/node": ^16.11.26
     "@types/react": ^17.0.38
     "@types/react-dom": ^17.0.11
     "@types/react-helmet": ^6.1.0
