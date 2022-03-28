@@ -5,7 +5,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-scripts test --runInBand",
     "eject": "react-scripts eject",
     "prettier": "prettier --write .",
     "prettier:check": "prettier --check .",
@@ -41,13 +41,14 @@
     "@types/history": "^4.7.6",
     "@types/jest": "^27.4.0",
     "@types/js-cookie": "^3.0.1",
-    "@types/node": "^14.14.19",
+    "@types/node": "^16.11.26",
     "@types/react": "^17.0.38",
     "@types/react-dom": "^17.0.11",
     "@types/react-helmet": "^6.1.0",
     "@types/react-redux": "^7.1.21",
     "@types/react-router-dom": "^5.1.5",
     "@types/redux-mock-store": "^1.0.3",
+    "@types/testing-library__jest-dom": "^5.14.3",
     "@typescript-eslint/eslint-plugin": "^5.9.0",
     "@typescript-eslint/parser": "^5.9.0",
     "eslint": "^8.6.0",
@@ -74,5 +75,5 @@
       "last 1 safari version"
     ]
   },
-  "packageManager": "yarn@3.1.1"
+  "packageManager": "yarn@3.2.0"
 }

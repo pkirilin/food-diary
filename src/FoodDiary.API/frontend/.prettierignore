@@ -1,5 +1,8 @@
-.vscode/launch.json
+.vscode
 .yarn
+.pnp.cjs
+.pnp.loader.mjs
+
 build
 node_modules
 public/index.html

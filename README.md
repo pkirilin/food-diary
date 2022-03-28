@@ -24,7 +24,7 @@ This information can be extremely useful for people who want to keep track of en
     docker run -p 5432:5432 --name postgres -e POSTGRES_PASSWORD=postgres -e -d postgres:12.2-alpine
     ```
 
-    *Optional*: PgAdmin can be started like this:
+    _Optional_: PgAdmin can be started like this:
 
     ```shell
     docker run -p 5050:80 --name pgadmin -e "PGADMIN_DEFAULT_EMAIL=name@example.com" -e "PGADMIN_DEFAULT_PASSWORD=postgres" -d dpage/pgadmin4
@@ -32,7 +32,7 @@ This information can be extremely useful for people who want to keep track of en
 
 1. Install .NET SDK 6.0.100 or higher
 
-1. Install Node.js and yarn package manager
+1. Install Node.js (16.x.x+) and yarn package manager (3.x.x+)
 
 1. Fill nessesary secrets:
 
@@ -40,13 +40,13 @@ This information can be extremely useful for people who want to keep track of en
     dotnet user-secrets --project src/FoodDiary.API set "Auth:AllowedEmails:0" "<your_email>"
     ```
 
-    *Allowed email should be compatible with Google Identity Provider*
+    _Allowed email should be compatible with Google Identity Provider_
 
     ```shell
     dotnet user-secrets --project src/FoodDiary.API set "Auth:JwtSecret" "<some_strong_secret_key>"
     ```
 
-    *Secret can be generated [here](https://passwordsgenerator.net). It should be a minimum of 128 bits (16 bytes).*
+    _Secret can be generated [here](https://passwordsgenerator.net). It should be a minimum of 128 bits (16 bytes)._
 
 1. Run migrations:
 
@@ -64,7 +64,6 @@ This information can be extremely useful for people who want to keep track of en
 
     ```shell
     cd src/FoodDiary.API/frontend
-    yarn
     yarn start
     ```
 
