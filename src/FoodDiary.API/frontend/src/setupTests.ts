@@ -3,6 +3,12 @@
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom/extend-expect';
-import './test-utils/customExpects';
 
-global.fetch = jest.fn();
+import 'src/test-utils/customExpects';
+import { server } from 'src/test-utils';
+
+beforeAll(() => server.listen());
+
+afterEach(() => server.resetHandlers());
+
+afterAll(() => server.close());
