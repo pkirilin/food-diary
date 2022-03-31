@@ -4,7 +4,7 @@ import { setupServer } from 'msw/node';
 import create from './create';
 import config from 'src/features/__shared__/config';
 
-function api(path: string) {
+export function api(path: string) {
   return config.apiUrl + path;
 }
 
@@ -18,6 +18,18 @@ const handlers = [
       .please();
 
     return res(ctx.json(pages));
+  }),
+
+  rest.get(api('/api/v1/products/autocomplete'), (req, res, ctx) => {
+    const products = create
+      .productAutocompleteResult()
+      .withOption('Bread')
+      .withOption('Cheese')
+      .withOption('Eggs')
+      .withOption('Meat')
+      .please();
+
+    return res(ctx.json(products));
   }),
 ];
 

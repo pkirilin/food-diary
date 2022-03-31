@@ -2,7 +2,8 @@ import { ReactElement } from 'react';
 import { render, screen, waitForElementToBeRemoved } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import create from '../../../../test-utils';
+import { create, server, rest, api } from 'src/test-utils';
+
 import ProductSelect from '../ProductSelect';
 
 let ui: ReactElement;
@@ -23,79 +24,29 @@ describe('ProductSelect', () => {
     });
 
     test('shows all options after clicking on input', async () => {
-      jest
-        .mocked(global.fetch)
-        .mockResolvedValue(
-          create
-            .response()
-            .withJsonData(
-              create
-                .productAutocompleteResult()
-                .withOption('Product 1')
-                .withOption('Product 2')
-                .please(),
-            )
-            .please(),
-        );
-
       render(ui);
+
       const input = screen.getByRole('textbox', { name: /product/i });
       userEvent.click(input);
       await waitForElementToBeRemoved(screen.getByRole('progressbar'));
 
-      const options = screen.getAllByRole('option');
-      expect(options).toHaveLength(2);
-      expect(options[0]).toHaveTextContent('Product 1');
-      expect(options[1]).toHaveTextContent('Product 2');
+      expect(screen).toContainOptions('Bread', 'Cheese', 'Eggs', 'Meat');
     });
 
     test('shows options matching input value', async () => {
-      jest
-        .mocked(global.fetch)
-        .mockResolvedValue(
-          create
-            .response()
-            .withJsonData(
-              create
-                .productAutocompleteResult()
-                .withOption('My first product')
-                .withOption('My second product')
-                .withOption('Another product')
-                .please(),
-            )
-            .please(),
-        );
-
       render(ui);
+
       const input = screen.getByRole('textbox', { name: /product/i });
       userEvent.click(input);
-      userEvent.type(input, 'My');
+      userEvent.type(input, 'ea');
       await waitForElementToBeRemoved(screen.getByRole('progressbar'));
 
-      const options = screen.getAllByRole('option');
-      expect(options).toHaveLength(2);
-      expect(options[0]).toHaveTextContent('My first product');
-      expect(options[1]).toHaveTextContent('My second product');
+      expect(screen).toContainOptions('Bread', 'Meat');
     });
 
     test('shows no options if input value does not match any existing option', async () => {
-      jest
-        .mocked(global.fetch)
-        .mockResolvedValue(
-          create
-            .response()
-            .withJsonData(
-              create
-                .productAutocompleteResult()
-                .withOption('My first product')
-                .withOption('My second product')
-                .withOption('Another product')
-                .please(),
-            )
-            .please(),
-        );
-
       render(ui);
+
       const input = screen.getByRole('textbox', { name: /product/i });
       userEvent.click(input);
       userEvent.type(input, 'test');
@@ -106,68 +57,31 @@ describe('ProductSelect', () => {
     });
 
     test('shows all options after input cleared', async () => {
-      jest
-        .mocked(global.fetch)
-        .mockResolvedValue(
-          create
-            .response()
-            .withJsonData(
-              create
-                .productAutocompleteResult()
-                .withOption('My product 1')
-                .withOption('My product 2')
-                .withOption('Some product')
-                .please(),
-            )
-            .please(),
-        );
-
       render(ui);
+
       const input = screen.getByRole('textbox', { name: /product/i });
       userEvent.click(input);
-      userEvent.type(input, 'My');
+      userEvent.type(input, 'ea');
       await waitForElementToBeRemoved(screen.getByRole('progressbar'));
       userEvent.click(screen.getByLabelText(/clear/i));
 
-      const options = await screen.findAllByRole('option');
-      expect(options).toHaveLength(3);
-      expect(options[0]).toHaveTextContent('My product 1');
-      expect(options[1]).toHaveTextContent('My product 2');
-      expect(options[2]).toHaveTextContent('Some product');
+      expect(screen).toContainOptions('Bread', 'Cheese', 'Eggs', 'Meat');
     });
 
     test('shows no options after clicking on input if autocomplete has no options', async () => {
-      jest
-        .mocked(global.fetch)
-        .mockResolvedValue(
-          create.response().withJsonData(create.productAutocompleteResult().please()).please(),
-        );
+      server.use(
+        rest.get(api('/api/v1/products/autocomplete'), (req, res, ctx) => res(ctx.json([]))),
+      );
 
       render(ui);
       const input = screen.getByRole('textbox', { name: /product/i });
       userEvent.click(input);
       await waitForElementToBeRemoved(screen.getByRole('progressbar'));
 
-      const options = screen.queryAllByRole('option');
-      expect(options).toHaveLength(0);
+      expect(screen).toContainEmptyOptions();
     });
 
     test('shows all options if closed with filtered options and then opened again', async () => {
-      jest
-        .mocked(global.fetch)
-        .mockResolvedValue(
-          create
-            .response()
-            .withJsonData(
-              create
-                .productAutocompleteResult()
-                .withOption('My product 1')
-                .withOption('My product 2')
-                .please(),
-            )
-            .please(),
-        );
-
       render(ui);
 
       const input = screen.getByRole('textbox', { name: /product/i });
@@ -178,10 +92,7 @@ describe('ProductSelect', () => {
       userEvent.click(input);
       await waitForElementToBeRemoved(screen.getByRole('progressbar'));
 
-      const options = screen.queryAllByRole('option');
-      expect(options).toHaveLength(2);
-      expect(options[0]).toHaveTextContent('My product 1');
-      expect(options[1]).toHaveTextContent('My product 2');
+      expect(screen).toContainOptions('Bread', 'Cheese', 'Eggs', 'Meat');
     });
   });
 
