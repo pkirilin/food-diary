@@ -16,17 +16,6 @@ describe('Pages', () => {
     });
 
     test('should render page items if server has data', async () => {
-      const pagesSearchResult = create
-        .pagesSearchResultModel()
-        .withPageItem('2022-03-01')
-        .withPageItem('2022-03-02')
-        .withPageItem('2022-03-03')
-        .please();
-
-      jest
-        .spyOn(global, 'fetch')
-        .mockResolvedValue(create.response().withJsonData(pagesSearchResult).please());
-
       const ui = create
         .component(<Pages></Pages>)
         .withReduxStore()
