@@ -31,6 +31,18 @@ const handlers = [
 
     return res(ctx.json(products));
   }),
+
+  rest.get(api('/v1/categories/dropdown'), (req, res, ctx) => {
+    const categories = create
+      .categoryAutocompleteResult()
+      .withOption('Bakery')
+      .withOption('Cereals')
+      .withOption('Dairy')
+      .withOption('Frozen Foods')
+      .please();
+
+    return res(ctx.json(categories));
+  }),
 ];
 
 const server = setupServer(...handlers);
