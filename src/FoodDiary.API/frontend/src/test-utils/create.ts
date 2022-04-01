@@ -1,14 +1,13 @@
-import React from 'react';
+import { ReactElement } from 'react';
+
 import createComponentBuilder from './builders/componentBuilder';
-import createResponseBuilder from './builders/responseBuilder';
-import createPagesSearchResultModelBuilder from './builders/pagesSearchResultModelBuilder';
+import createPagesSearchResultBuilder from './builders/pagesSearchResultBuilder';
 import createCategoryAutocompleteResultBuilder from './builders/categoryAutocompleteResultBuilder';
 import createProductAutocompleteResultBuilder from './builders/productAutocompleteResultBuilder';
 
 const create = {
-  component: (ui: React.ReactElement) => createComponentBuilder(ui),
-  response: () => createResponseBuilder(),
-  pagesSearchResultModel: () => createPagesSearchResultModelBuilder(),
+  component: (ui: ReactElement) => createComponentBuilder(ui),
+  pagesSearchResult: () => createPagesSearchResultBuilder(),
   categoryAutocompleteResult: () => createCategoryAutocompleteResultBuilder(),
   productAutocompleteResult: () => createProductAutocompleteResultBuilder(),
 };

@@ -11,7 +11,7 @@ export function api(path: string) {
 const handlers = [
   rest.get(api('/v1/pages'), (req, res, ctx) => {
     const pages = create
-      .pagesSearchResultModel()
+      .pagesSearchResult()
       .withPageItem('2022-03-01')
       .withPageItem('2022-03-02')
       .withPageItem('2022-03-03')

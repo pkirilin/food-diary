@@ -1,23 +1,22 @@
-import { PageItem, PagesSearchResult } from '../../features/pages/models';
+import { PageItem, PagesSearchResult } from 'src/features/pages/models';
 
-export interface PagesSearchResultModelBuilder {
+export interface PagesSearchResultBuilder {
   please: () => PagesSearchResult;
-
-  withPageItem: (date: string) => PagesSearchResultModelBuilder;
+  withPageItem: (date: string) => PagesSearchResultBuilder;
 }
 
-export default function createPagesSearchResultModel() {
+export default function createPagesSearchResultBuilder() {
   const pageItems: PageItem[] = [];
   let totalPagesCount = 0;
   let id = -1;
 
-  const builder: PagesSearchResultModelBuilder = {
+  const builder: PagesSearchResultBuilder = {
     please: () => ({
       totalPagesCount,
       pageItems,
     }),
 
-    withPageItem: (date: string): PagesSearchResultModelBuilder => {
+    withPageItem: (date: string): PagesSearchResultBuilder => {
       pageItems.push({
         id: ++id,
         date,
