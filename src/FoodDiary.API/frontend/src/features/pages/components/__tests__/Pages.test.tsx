@@ -1,5 +1,7 @@
 import { render, screen } from '@testing-library/react';
-import { create } from '../../../../test-utils';
+
+import { create } from 'src/test-utils';
+
 import Pages from '../Pages';
 
 describe('Pages', () => {
@@ -12,7 +14,7 @@ describe('Pages', () => {
 
       render(ui);
 
-      expect(screen.getByTestId('empty-pages-text')).toBeInTheDocument();
+      expect(screen.getByText(/no pages found/i)).toBeInTheDocument();
     });
 
     test('should render page items if server has data', async () => {

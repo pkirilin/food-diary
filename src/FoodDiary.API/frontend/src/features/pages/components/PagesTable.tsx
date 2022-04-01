@@ -92,9 +92,7 @@ const PagesTable: React.FC = () => {
           {pageItems.length === 0 && (
             <TableRow>
               <TableCell colSpan={5} align="center">
-                <Typography color="textSecondary" data-testid="empty-pages-text">
-                  No pages found
-                </Typography>
+                <Typography color="textSecondary">No pages found</Typography>
               </TableCell>
             </TableRow>
           )}
