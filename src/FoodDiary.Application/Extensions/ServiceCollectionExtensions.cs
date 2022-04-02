@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using FoodDiary.Application.Features.Auth.SignInWithGoogle;
+using FoodDiary.Application.Services.Categories;
 using FoodDiary.Application.Services.Products;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,6 +24,7 @@ namespace FoodDiary.Application.Extensions
         private static void AddApplicationServices(this IServiceCollection services)
         {
             services.AddScoped<IProductsService, ProductsService>();
+            services.AddScoped<ICategoriesService, CategoriesService>();
         }
     }
 }

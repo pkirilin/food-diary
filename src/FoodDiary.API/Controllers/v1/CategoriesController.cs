@@ -11,6 +11,7 @@ using FoodDiary.API.Requests;
 using MediatR;
 using FoodDiary.Application.Categories.Requests;
 using System.Linq;
+using FoodDiary.Application.Services.Categories;
 using FoodDiary.Contracts.Categories;
 using Microsoft.AspNetCore.Authorization;
 
@@ -25,11 +26,13 @@ namespace FoodDiary.API.Controllers.v1
     {
         private readonly IMapper _mapper;
         private readonly IMediator _mediator;
+        private readonly ICategoriesService _categoriesService;
 
-        public CategoriesController(IMapper mapper, IMediator mediator)
+        public CategoriesController(IMapper mapper, IMediator mediator, ICategoriesService categoriesService)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+            _categoriesService = categoriesService;
         }
 
         /// <summary>
@@ -142,7 +145,9 @@ namespace FoodDiary.API.Controllers.v1
         [HttpGet("autocomplete")]
         public async Task<IActionResult> GetCategoriesForAutocomplete(CancellationToken cancellationToken)
         {
-            return Ok();
+            var categories = await _categoriesService.GetAutocompleteItemsAsync(cancellationToken);
+            
+            return Ok(categories);
         }
     }
 }

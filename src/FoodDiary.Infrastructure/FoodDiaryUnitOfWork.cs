@@ -16,7 +16,9 @@ public class FoodDiaryUnitOfWork : IFoodDiaryUnitOfWork
     }
 
     public IProductsRepository Products => new ProductsRepository(_context.Products);
-    
+
+    public ICategoriesRepository Categories => new CategoriesRepository(_context.Categories);
+
     public async Task SaveChangesAsync(CancellationToken cancellationToken)
     {
         await _context.SaveChangesAsync(cancellationToken);

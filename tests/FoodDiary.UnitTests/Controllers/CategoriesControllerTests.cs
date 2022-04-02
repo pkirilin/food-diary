@@ -8,6 +8,7 @@ using FoodDiary.API;
 using FoodDiary.API.Controllers.v1;
 using FoodDiary.API.Requests;
 using FoodDiary.Application.Categories.Requests;
+using FoodDiary.Application.Services.Categories;
 using FoodDiary.Domain.Entities;
 using FoodDiary.UnitTests.Attributes;
 using MediatR;
@@ -21,7 +22,8 @@ namespace FoodDiary.UnitTests.Controllers
     public class CategoriesControllerTests
     {
         private readonly IMapper _mapper;
-        private readonly Mock<IMediator> _mediatorMock = new Mock<IMediator>();
+        private readonly Mock<IMediator> _mediatorMock = new();
+        private readonly Mock<ICategoriesService> _categoriesServiceMock = new();
 
         public CategoriesControllerTests()
         {
@@ -32,7 +34,7 @@ namespace FoodDiary.UnitTests.Controllers
             _mapper = serviceProvider.GetService<IMapper>();
         }
 
-        public CategoriesController Sut => new CategoriesController(_mapper, _mediatorMock.Object);
+        public CategoriesController Sut => new(_mapper, _mediatorMock.Object, _categoriesServiceMock.Object);
 
         [Theory]
         [CustomAutoData]

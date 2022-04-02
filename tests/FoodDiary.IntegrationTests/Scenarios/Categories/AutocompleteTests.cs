@@ -6,7 +6,6 @@ using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
-using FoodDiary.API.Dtos;
 using FoodDiary.Contracts.Categories;
 using Xunit;
 
@@ -38,7 +37,7 @@ public class AutocompleteTests : IClassFixture<FoodDiaryWebApplicationFactory>, 
             .AddCategory("Bakery")
             .PleaseAsync();
         
-        var response = await _client.GetAsync("/api/v1/products/autocomplete", CancellationToken.None);
+        var response = await _client.GetAsync("/api/v1/categories/autocomplete", CancellationToken.None);
         var autocompleteItems = await response.Content.ReadFromJsonAsync<CategoryAutocompleteItemDto[]>();
         var categories = autocompleteItems?.Select(item => item.Name).ToArray();
 
