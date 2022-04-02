@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using FluentAssertions;
 using FoodDiary.API.Dtos;
+using FoodDiary.Contracts.Categories;
 using FoodDiary.Domain.Enums;
 using Xunit;
 
@@ -158,19 +159,19 @@ namespace FoodDiary.IntegrationTests
         {
             get
             {
-                var category1 = new CategoryDropdownItemDto()
+                var category1 = new CategoryAutocompleteItemDto()
                 {
                     Id = 1,
                     Name = "First category"
                 };
 
-                var category2 = new CategoryDropdownItemDto()
+                var category2 = new CategoryAutocompleteItemDto()
                 {
                     Id = 2,
                     Name = "Second category"
                 };
 
-                var expectedResult = new List<CategoryDropdownItemDto>() { category1, category2 };
+                var expectedResult = new List<CategoryAutocompleteItemDto>() { category1, category2 };
 
                 yield return new object[] { Endpoints.GetCategories, expectedResult };
             }
@@ -235,10 +236,10 @@ namespace FoodDiary.IntegrationTests
 
         [Theory]
         [MemberData(nameof(MemberData_GetCategoriesDropdown))]
-        public async void GetCategoriesDropdown_ReceivesCategoriesInCorrectFormat(string requestUri, IEnumerable<CategoryDropdownItemDto> expectedResult)
+        public async void GetCategoriesDropdown_ReceivesCategoriesInCorrectFormat(string requestUri, IEnumerable<CategoryAutocompleteItemDto> expectedResult)
         {
             // Act
-            var result = await _client.GetDataAsync<IEnumerable<CategoryDropdownItemDto>>(requestUri);
+            var result = await _client.GetDataAsync<IEnumerable<CategoryAutocompleteItemDto>>(requestUri);
 
             // Assert
             result.Should().BeEquivalentTo(expectedResult);

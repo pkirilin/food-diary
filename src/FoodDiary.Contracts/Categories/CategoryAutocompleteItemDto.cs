@@ -1,6 +1,6 @@
-﻿namespace FoodDiary.API.Dtos
+namespace FoodDiary.Contracts.Categories
 {
-    public class CategoryDropdownItemDto
+    public class CategoryAutocompleteItemDto
     {
         public int Id { get; set; }
 

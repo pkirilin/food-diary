@@ -4,6 +4,7 @@ using FoodDiary.API.Mapping;
 using FoodDiary.API.Dtos;
 using FoodDiary.Domain.Entities;
 using FoodDiary.API.Requests;
+using FoodDiary.Contracts.Categories;
 using FoodDiary.Import.Models;
 
 namespace FoodDiary.API
@@ -58,7 +59,7 @@ namespace FoodDiary.API
                     o => o.MapFrom(src => src.Products.Count)
                 );
 
-            CreateMap<Category, CategoryDropdownItemDto>();
+            CreateMap<Category, CategoryAutocompleteItemDto>();
 
             CreateMap<CategoryCreateEditRequest, Category>();
         }

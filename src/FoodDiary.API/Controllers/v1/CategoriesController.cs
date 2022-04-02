@@ -11,6 +11,7 @@ using FoodDiary.API.Requests;
 using MediatR;
 using FoodDiary.Application.Categories.Requests;
 using System.Linq;
+using FoodDiary.Contracts.Categories;
 using Microsoft.AspNetCore.Authorization;
 
 namespace FoodDiary.API.Controllers.v1
@@ -130,7 +131,7 @@ namespace FoodDiary.API.Controllers.v1
         /// <param name="categoriesDropdownRequest">Search parameters for categories dropdown</param>
         /// <param name="cancellationToken"></param>
         [HttpGet("dropdown")]
-        [ProducesResponseType(typeof(IEnumerable<CategoryDropdownItemDto>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(IEnumerable<CategoryAutocompleteItemDto>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetCategoriesDropdown([FromQuery] CategoryDropdownSearchRequest categoriesDropdownRequest, CancellationToken cancellationToken)
         {
             var categories = await _mediator.Send(new GetCategoriesRequest(categoriesDropdownRequest.CategoryNameFilter), cancellationToken);
