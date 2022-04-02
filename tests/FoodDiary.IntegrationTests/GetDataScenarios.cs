@@ -155,28 +155,6 @@ namespace FoodDiary.IntegrationTests
             }
         }
 
-        public static IEnumerable<object[]> MemberData_GetCategoriesDropdown
-        {
-            get
-            {
-                var category1 = new CategoryAutocompleteItemDto()
-                {
-                    Id = 1,
-                    Name = "First category"
-                };
-
-                var category2 = new CategoryAutocompleteItemDto()
-                {
-                    Id = 2,
-                    Name = "Second category"
-                };
-
-                var expectedResult = new List<CategoryAutocompleteItemDto>() { category1, category2 };
-
-                yield return new object[] { Endpoints.GetCategories, expectedResult };
-            }
-        }
-
         #endregion
 
         [Theory]
@@ -229,17 +207,6 @@ namespace FoodDiary.IntegrationTests
         {
             // Act
             var result = await _client.GetDataAsync<IEnumerable<CategoryItemDto>>(requestUri);
-
-            // Assert
-            result.Should().BeEquivalentTo(expectedResult);
-        }
-
-        [Theory]
-        [MemberData(nameof(MemberData_GetCategoriesDropdown))]
-        public async void GetCategoriesDropdown_ReceivesCategoriesInCorrectFormat(string requestUri, IEnumerable<CategoryAutocompleteItemDto> expectedResult)
-        {
-            // Act
-            var result = await _client.GetDataAsync<IEnumerable<CategoryAutocompleteItemDto>>(requestUri);
 
             // Assert
             result.Should().BeEquivalentTo(expectedResult);

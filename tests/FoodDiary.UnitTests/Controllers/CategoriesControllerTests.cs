@@ -214,29 +214,6 @@ namespace FoodDiary.UnitTests.Controllers
             result.Should().BeOfType<NotFoundResult>();
         }
 
-        [Theory]
-        [CustomAutoData]
-        public async void GetCategoriesDropdown_ReturnsRequestedCategories(
-            CategoryDropdownSearchRequest request,
-            List<Category> categories)
-        {
-            _mediatorMock.Setup(m => m.Send(
-                It.Is<GetCategoriesRequest>(r =>
-                    r.CategoryNameFilter == request.CategoryNameFilter
-                    && r.LoadProducts == false), default))
-                .ReturnsAsync(categories);
-
-            var result = await Sut.GetCategoriesDropdown(request, default);
-
-            _mediatorMock.Verify(m => m.Send(
-                It.Is<GetCategoriesRequest>(r =>
-                    r.CategoryNameFilter == request.CategoryNameFilter
-                    && r.LoadProducts == false), default),
-                Times.Once);
-
-            result.Should().BeOfType<OkObjectResult>();
-        }
-
         #region Test data
 
         public static IEnumerable<object[]> MemberData_EditCategory_ValidUpdatedCategory

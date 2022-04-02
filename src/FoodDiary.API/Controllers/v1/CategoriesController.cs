@@ -12,7 +12,6 @@ using MediatR;
 using FoodDiary.Application.Categories.Requests;
 using System.Linq;
 using FoodDiary.Application.Services.Categories;
-using FoodDiary.Contracts.Categories;
 using Microsoft.AspNetCore.Authorization;
 
 namespace FoodDiary.API.Controllers.v1
@@ -126,20 +125,6 @@ namespace FoodDiary.API.Controllers.v1
 
             await _mediator.Send(new DeleteCategoryRequest(categoryForDelete), cancellationToken);
             return Ok();
-        }
-
-        /// <summary>
-        /// Gets all available categories for dropdown list
-        /// </summary>
-        /// <param name="categoriesDropdownRequest">Search parameters for categories dropdown</param>
-        /// <param name="cancellationToken"></param>
-        [HttpGet("dropdown")]
-        [ProducesResponseType(typeof(IEnumerable<CategoryAutocompleteItemDto>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetCategoriesDropdown([FromQuery] CategoryDropdownSearchRequest categoriesDropdownRequest, CancellationToken cancellationToken)
-        {
-            var categories = await _mediator.Send(new GetCategoriesRequest(categoriesDropdownRequest.CategoryNameFilter), cancellationToken);
-            var categoriesDropdownListResponse = _mapper.Map<IEnumerable<Category>>(categories);
-            return Ok(categoriesDropdownListResponse);
         }
 
         [HttpGet("autocomplete")]
