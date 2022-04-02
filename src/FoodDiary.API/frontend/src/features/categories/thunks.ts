@@ -54,7 +54,7 @@ export const getCategoriesAutocomplete = createApiCallAsyncThunk<
   void
 >(
   'categories/getCategoriesAutocomplete',
-  () => `${config.apiUrl}/v1/categories/dropdown`,
+  () => `${config.apiUrl}/api/v1/categories/autocomplete`,
   response => response.json(),
   'Failed to get categories',
 );

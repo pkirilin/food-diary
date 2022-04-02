@@ -69,7 +69,9 @@ describe('CategorySelect', () => {
     });
 
     test('shows no options after clicking on input if autocomplete has no options', async () => {
-      server.use(rest.get(api('/v1/categories/dropdown'), (req, res, ctx) => res(ctx.json([]))));
+      server.use(
+        rest.get(api('/api/v1/categories/autocomplete'), (req, res, ctx) => res(ctx.json([]))),
+      );
 
       render(ui);
 

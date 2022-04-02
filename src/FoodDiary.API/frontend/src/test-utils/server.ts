@@ -32,7 +32,7 @@ const handlers = [
     return res(ctx.json(products));
   }),
 
-  rest.get(api('/v1/categories/dropdown'), (req, res, ctx) => {
+  rest.get(api('/api/v1/categories/autocomplete'), (req, res, ctx) => {
     const categories = create
       .categoryAutocompleteResult()
       .withOption('Bakery')
