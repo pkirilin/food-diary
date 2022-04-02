@@ -137,5 +137,11 @@ namespace FoodDiary.API.Controllers.v1
             var categoriesDropdownListResponse = _mapper.Map<IEnumerable<Category>>(categories);
             return Ok(categoriesDropdownListResponse);
         }
+
+        [HttpGet("autocomplete")]
+        public async Task<IActionResult> GetCategoriesForAutocomplete(CancellationToken cancellationToken)
+        {
+            return Ok();
+        }
     }
 }
