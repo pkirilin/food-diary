@@ -8,6 +8,7 @@ import authReducer from './features/auth/auth.slice';
 
 import authApi from './features/auth/auth.api';
 import categoriesApi from './features/categories/categoriesApi';
+import productsApi from './features/products/productsApi';
 
 export function configureAppStore() {
   return configureStore({
@@ -20,10 +21,15 @@ export function configureAppStore() {
 
       [authApi.reducerPath]: authApi.reducer,
       [categoriesApi.reducerPath]: categoriesApi.reducer,
+      [productsApi.reducerPath]: productsApi.reducer,
     },
 
     middleware: getDefaultMiddleware =>
-      getDefaultMiddleware().concat(authApi.middleware, categoriesApi.middleware),
+      getDefaultMiddleware().concat(
+        authApi.middleware,
+        categoriesApi.middleware,
+        productsApi.middleware,
+      ),
   });
 }
 
