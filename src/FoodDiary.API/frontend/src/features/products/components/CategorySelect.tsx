@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { useLazyCategoriesAutocompleteQuery } from 'src/api';
+import { useLazyGetCategoriesAutocompleteQuery } from 'src/api';
 import { CustomAutocomplete } from 'src/features/__shared__/components';
 import { SelectProps } from 'src/features/__shared__/types';
 import { CategoryAutocompleteOption } from 'src/features/categories/models';
@@ -14,10 +14,10 @@ export default function CategorySelect({
   setValue,
 }: CategorySelectProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [getAutocompleteItems, autocomplete] = useLazyCategoriesAutocompleteQuery();
+  const [getCategoriesAutocomplete, autocomplete] = useLazyGetCategoriesAutocompleteQuery();
 
   useEffect(() => {
-    getAutocompleteItems(isOpen);
+    getCategoriesAutocomplete(isOpen);
   }, [isOpen]);
 
   return (

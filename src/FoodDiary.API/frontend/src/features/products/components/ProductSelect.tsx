@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { useLazyProductsAutocompleteQuery } from 'src/api';
+import { useLazyGetProductsAutocompleteQuery } from 'src/api';
 import { CustomAutocomplete } from 'src/features/__shared__/components';
 import { SelectProps } from 'src/features/__shared__/types';
 import { ProductAutocompleteOption } from 'src/features/products/models';
@@ -14,10 +14,10 @@ export default function ProductSelect({
   setValue,
 }: ProductSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [getAutocompleteItems, autocomplete] = useLazyProductsAutocompleteQuery();
+  const [getProductsAutocomplete, autocomplete] = useLazyGetProductsAutocompleteQuery();
 
   useEffect(() => {
-    getAutocompleteItems(isOpen);
+    getProductsAutocomplete(isOpen);
   }, [isOpen]);
 
   return (

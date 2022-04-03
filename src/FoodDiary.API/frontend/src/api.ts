@@ -22,11 +22,11 @@ const api = createApi({
       },
     }),
 
-    productsAutocomplete: builder.query<ProductAutocompleteOption[], boolean>({
+    getProductsAutocomplete: builder.query<ProductAutocompleteOption[], boolean>({
       query: () => `/api/v1/products/autocomplete`,
     }),
 
-    categoriesAutocomplete: builder.query<CategoryAutocompleteOption[], boolean>({
+    getCategoriesAutocomplete: builder.query<CategoryAutocompleteOption[], boolean>({
       query: () => `/api/v1/categories/autocomplete`,
     }),
   }),
@@ -34,8 +34,8 @@ const api = createApi({
 
 export const {
   useLazySignInWithGoogleQuery,
-  useLazyProductsAutocompleteQuery,
-  useLazyCategoriesAutocompleteQuery,
+  useLazyGetProductsAutocompleteQuery,
+  useLazyGetCategoriesAutocompleteQuery,
 } = api;
 
 export default api;
