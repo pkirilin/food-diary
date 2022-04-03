@@ -87,11 +87,10 @@ describe('CategorySelect', () => {
 
       const input = screen.getByRole('textbox', { name: /category/i });
       userEvent.click(input);
-      userEvent.type(input, '1');
       await waitForElementToBeRemoved(screen.getByRole('progressbar'));
+      userEvent.type(input, 'ry');
       userEvent.tab();
       userEvent.click(input);
-      await waitForElementToBeRemoved(screen.getByRole('progressbar'));
 
       expect(screen).toContainOptions('Bakery', 'Cereals', 'Dairy', 'Frozen Foods');
     });
