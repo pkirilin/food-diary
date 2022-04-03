@@ -1,14 +1,16 @@
 import { render, screen } from '@testing-library/react';
-import create from './test-utils';
-import App from './App';
-import Cookies from 'js-cookie';
 
-jest.mock('js-cookie');
+import { create } from 'src/test-utils';
+import * as cookieService from 'src/features/auth/cookie.service';
+
+import App from './App';
+
+jest.mock('src/features/auth/cookie.service');
 
 describe('App', () => {
   describe('when user authenticated', () => {
     test('should render navbar with pages list', () => {
-      jest.mocked(Cookies).get = jest.fn().mockReturnValue('test_access_token');
+      jest.spyOn(cookieService, 'getAccessToken').mockReturnValue('test_access_token');
 
       const ui = create
         .component(<App></App>)

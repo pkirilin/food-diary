@@ -12,11 +12,22 @@ public class SeedDataForDbContextBuilder
     private readonly FoodDiaryContext _context;
 
     private readonly List<Product> _products;
+    private readonly List<Category> _categories;
+
+    private int _categoryId;
 
     public SeedDataForDbContextBuilder(FoodDiaryContext context)
     {
         _context = context;
         _products = new List<Product>();
+        _categories = new List<Category>();
+    }
+    
+    public async Task PleaseAsync(CancellationToken cancellationToken = default)
+    {
+        _context.Products.AddRange(_products);
+        _context.Categories.AddRange(_categories);
+        await _context.SaveChangesAsync(cancellationToken);
     }
     
     public SeedDataForDbContextBuilder AddProduct(int id, string name)
@@ -34,9 +45,14 @@ public class SeedDataForDbContextBuilder
         return this;
     }
 
-    public async Task PleaseAsync(CancellationToken cancellationToken = default)
+    public SeedDataForDbContextBuilder AddCategory(string name)
     {
-        _context.Products.AddRange(_products);
-        await _context.SaveChangesAsync(cancellationToken);
+        _categories.Add(new Category
+        {
+            Id = ++_categoryId,
+            Name = name
+        });
+        
+        return this;
     }
 }

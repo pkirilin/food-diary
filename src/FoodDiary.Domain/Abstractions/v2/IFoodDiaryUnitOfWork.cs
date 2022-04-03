@@ -8,5 +8,7 @@ public interface IFoodDiaryUnitOfWork
 {
     IProductsRepository Products { get; }
     
+    ICategoriesRepository Categories { get; }
+    
     Task SaveChangesAsync(CancellationToken cancellationToken);
 }

@@ -1,5 +1,7 @@
 import { render, screen } from '@testing-library/react';
-import { create } from '../../../../test-utils';
+
+import { create } from 'src/test-utils';
+
 import Pages from '../Pages';
 
 describe('Pages', () => {
@@ -12,21 +14,10 @@ describe('Pages', () => {
 
       render(ui);
 
-      expect(screen.getByTestId('empty-pages-text')).toBeInTheDocument();
+      expect(screen.getByText(/no pages found/i)).toBeInTheDocument();
     });
 
     test('should render page items if server has data', async () => {
-      const pagesSearchResult = create
-        .pagesSearchResultModel()
-        .withPageItem('2022-03-01')
-        .withPageItem('2022-03-02')
-        .withPageItem('2022-03-03')
-        .please();
-
-      jest
-        .spyOn(global, 'fetch')
-        .mockResolvedValue(create.response().withJsonData(pagesSearchResult).please());
-
       const ui = create
         .component(<Pages></Pages>)
         .withReduxStore()

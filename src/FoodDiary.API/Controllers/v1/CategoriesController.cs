@@ -11,6 +11,7 @@ using FoodDiary.API.Requests;
 using MediatR;
 using FoodDiary.Application.Categories.Requests;
 using System.Linq;
+using FoodDiary.Application.Services.Categories;
 using Microsoft.AspNetCore.Authorization;
 
 namespace FoodDiary.API.Controllers.v1
@@ -24,11 +25,13 @@ namespace FoodDiary.API.Controllers.v1
     {
         private readonly IMapper _mapper;
         private readonly IMediator _mediator;
+        private readonly ICategoriesService _categoriesService;
 
-        public CategoriesController(IMapper mapper, IMediator mediator)
+        public CategoriesController(IMapper mapper, IMediator mediator, ICategoriesService categoriesService)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+            _categoriesService = categoriesService;
         }
 
         /// <summary>
@@ -124,18 +127,12 @@ namespace FoodDiary.API.Controllers.v1
             return Ok();
         }
 
-        /// <summary>
-        /// Gets all available categories for dropdown list
-        /// </summary>
-        /// <param name="categoriesDropdownRequest">Search parameters for categories dropdown</param>
-        /// <param name="cancellationToken"></param>
-        [HttpGet("dropdown")]
-        [ProducesResponseType(typeof(IEnumerable<CategoryDropdownItemDto>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetCategoriesDropdown([FromQuery] CategoryDropdownSearchRequest categoriesDropdownRequest, CancellationToken cancellationToken)
+        [HttpGet("autocomplete")]
+        public async Task<IActionResult> GetCategoriesForAutocomplete(CancellationToken cancellationToken)
         {
-            var categories = await _mediator.Send(new GetCategoriesRequest(categoriesDropdownRequest.CategoryNameFilter), cancellationToken);
-            var categoriesDropdownListResponse = _mapper.Map<IEnumerable<Category>>(categories);
-            return Ok(categoriesDropdownListResponse);
+            var categories = await _categoriesService.GetAutocompleteItemsAsync(cancellationToken);
+            
+            return Ok(categories);
         }
     }
 }
