@@ -1,11 +1,9 @@
 import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 
-import { CustomAutocomplete } from '../../__shared__/components';
-import { SelectProps } from '../../__shared__/types';
-
-import { ProductAutocompleteOption } from '../models';
-import { getProductsAutocomplete } from '../thunks';
+import { useLazyGetProductsAutocompleteQuery } from 'src/api';
+import { CustomAutocomplete } from 'src/features/__shared__/components';
+import { SelectProps } from 'src/features/__shared__/types';
+import { ProductAutocompleteOption } from 'src/features/products/models';
 
 export type ProductSelectProps = SelectProps<ProductAutocompleteOption>;
 
@@ -15,26 +13,20 @@ export default function ProductSelect({
   value = null,
   setValue,
 }: ProductSelectProps) {
-  // TODO: use local state or RTK Query cache
-  const options = useSelector(state => state.products.autocompleteOptions);
-  const isLoading = useSelector(state => state.products.autocompleteOptionsLoading);
-
   const [isOpen, setIsOpen] = useState(false);
-  const dispatch = useDispatch();
+  const [getProductsAutocomplete, autocomplete] = useLazyGetProductsAutocompleteQuery();
 
   useEffect(() => {
-    if (isOpen) {
-      dispatch(getProductsAutocomplete());
-    }
+    getProductsAutocomplete(isOpen);
   }, [isOpen]);
 
   return (
     <CustomAutocomplete
       label={label}
       placeholder={placeholder}
-      options={options}
+      options={autocomplete.data ?? []}
+      loading={autocomplete.isLoading}
       open={isOpen}
-      loading={isLoading}
       value={value}
       getOptionSelected={(option, value) => option.name === value.name}
       getOptionLabel={option => option.name}

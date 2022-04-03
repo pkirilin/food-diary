@@ -3,14 +3,8 @@ import { CategoryAutocompleteOption } from '../categories/models';
 import { Status } from '../__shared__/models';
 import { SelectionPayload } from '../__shared__/types';
 import { createAsyncThunkMatcher } from '../__shared__/utils';
-import { ProductAutocompleteOption, ProductItem, ProductItemsFilter } from './models';
-import {
-  createProduct,
-  deleteProducts,
-  editProduct,
-  getProducts,
-  getProductsAutocomplete,
-} from './thunks';
+import { ProductItem, ProductItemsFilter } from './models';
+import { createProduct, deleteProducts, editProduct, getProducts } from './thunks';
 
 export type ProductsState = {
   productItems: ProductItem[];
@@ -18,8 +12,6 @@ export type ProductsState = {
   operationStatus: Status;
   selectedProductIds: number[];
   filter: ProductItemsFilter;
-  autocompleteOptions: ProductAutocompleteOption[];
-  autocompleteOptionsLoading: boolean;
 };
 
 export interface SelectProductPayload extends SelectionPayload {
@@ -39,8 +31,6 @@ const initialState: ProductsState = {
     pageSize: 10,
     category: null,
   },
-  autocompleteOptions: [],
-  autocompleteOptionsLoading: false,
 };
 
 const operationThunks = [createProduct, editProduct, deleteProducts];
@@ -91,17 +81,6 @@ const productsSlice = createSlice({
       })
       .addCase(deleteProducts.fulfilled, state => {
         state.selectedProductIds = [];
-      })
-
-      .addCase(getProductsAutocomplete.pending, state => {
-        state.autocompleteOptionsLoading = true;
-      })
-      .addCase(getProductsAutocomplete.fulfilled, (state, { payload }) => {
-        state.autocompleteOptions = payload;
-        state.autocompleteOptionsLoading = false;
-      })
-      .addCase(getProductsAutocomplete.rejected, state => {
-        state.autocompleteOptionsLoading = false;
       })
 
       .addMatcher(createAsyncThunkMatcher(operationThunks, 'pending'), state => {

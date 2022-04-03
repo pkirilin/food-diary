@@ -1,5 +1,5 @@
 import GoogleLogin, { GoogleLoginResponse } from 'react-google-login';
-import { useLazySignInWithGoogleQuery } from '../auth.api';
+import { useLazySignInWithGoogleQuery } from 'src/api';
 
 const Auth = () => {
   const [signInWithGoogle] = useLazySignInWithGoogleQuery();

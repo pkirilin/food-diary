@@ -1,24 +1,24 @@
 import { configureStore } from '@reduxjs/toolkit';
+
+import api from './api';
 import pagesReducer from './features/pages/slice';
 import categoriesReducer from './features/categories/slice';
 import productsReducer from './features/products/slice';
 import notesReducer from './features/notes/slice';
-import authApi from './features/auth/auth.api';
 import authReducer from './features/auth/auth.slice';
 
 export function configureAppStore() {
   return configureStore({
     reducer: {
+      [api.reducerPath]: api.reducer,
       auth: authReducer,
-      [authApi.reducerPath]: authApi.reducer,
-
       pages: pagesReducer,
       categories: categoriesReducer,
       products: productsReducer,
       notes: notesReducer,
     },
 
-    middleware: getDefaultMiddleware => getDefaultMiddleware().concat(authApi.middleware),
+    middleware: getDefaultMiddleware => getDefaultMiddleware().concat(api.middleware),
   });
 }
 
