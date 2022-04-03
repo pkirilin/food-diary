@@ -1,6 +1,6 @@
 import config from '../__shared__/config';
 import { createApiCallAsyncThunk, handleEmptyResponse } from '../__shared__/utils';
-import { CategoryAutocompleteOption, CategoryCreateEdit, CategoryItem } from './models';
+import { CategoryCreateEdit, CategoryItem } from './models';
 
 export type CategoryEditRequest = {
   id: number;
@@ -47,14 +47,4 @@ export const deleteCategory = createApiCallAsyncThunk<void, number>(
   {
     method: 'DELETE',
   },
-);
-
-export const getCategoriesAutocomplete = createApiCallAsyncThunk<
-  CategoryAutocompleteOption[],
-  void
->(
-  'categories/getCategoriesAutocomplete',
-  () => `${config.apiUrl}/api/v1/categories/autocomplete`,
-  response => response.json(),
-  'Failed to get categories',
 );

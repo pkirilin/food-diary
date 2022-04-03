@@ -5,6 +5,7 @@ import config from 'src/features/__shared__/config';
 import { ProductAutocompleteOption } from './models';
 
 const productsApi = createApi({
+  reducerPath: 'productsApi',
   baseQuery: fetchBaseQuery({ baseUrl: config.apiUrl }),
   endpoints: builder => ({
     getAutocompleteItems: builder.query<ProductAutocompleteOption[], boolean>({

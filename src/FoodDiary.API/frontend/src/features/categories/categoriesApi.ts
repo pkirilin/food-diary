@@ -5,6 +5,7 @@ import config from 'src/features/__shared__/config';
 import { CategoryAutocompleteOption } from './models';
 
 const categoriesApi = createApi({
+  reducerPath: 'categoriesApi',
   baseQuery: fetchBaseQuery({ baseUrl: config.apiUrl }),
   endpoints: builder => ({
     getAutocompleteItems: builder.query<CategoryAutocompleteOption[], boolean>({
