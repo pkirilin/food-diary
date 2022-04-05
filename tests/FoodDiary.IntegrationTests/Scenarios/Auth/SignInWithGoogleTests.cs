@@ -33,9 +33,6 @@ public class SignInWithGoogleTests : IClassFixture<FoodDiaryWebApplicationFactor
             .WithWebHostBuilder(builder => builder.ConfigureTestServices(services =>
             {
                 var handler = new FakeHttpMessageHandler()
-                    .WithGetMethod()
-                    .WithPath("/oauth2/v3/tokeninfo")
-                    .WithQueryParameter("id_token", request.GoogleTokenId)
                     .WithSuccessStatusCode()
                     .WithJsonResponse(new { email = "test@example.com" });
                 
@@ -64,9 +61,6 @@ public class SignInWithGoogleTests : IClassFixture<FoodDiaryWebApplicationFactor
             .WithWebHostBuilder(builder => builder.ConfigureTestServices(services =>
             {
                 var handler = new FakeHttpMessageHandler()
-                    .WithGetMethod()
-                    .WithPath("/oauth2/v3/tokeninfo")
-                    .WithQueryParameter("id_token", request.GoogleTokenId)
                     .WithBadRequestStatusCode();
                 
                 services.AddGoogleOAuthClient().ConfigurePrimaryHttpMessageHandler(() => handler);
@@ -92,11 +86,8 @@ public class SignInWithGoogleTests : IClassFixture<FoodDiaryWebApplicationFactor
             .WithWebHostBuilder(builder => builder.ConfigureTestServices(services =>
             {
                 var handler = new FakeHttpMessageHandler()
-                    .WithGetMethod()
-                    .WithPath("/oauth2/v3/tokeninfo")
-                    .WithQueryParameter("id_token", request.GoogleTokenId)
                     .WithSuccessStatusCode()
-                    .WithJsonResponse(new { email = "test@example.com" });
+                    .WithJsonResponse(new { email = "not_allowed_email@example.com" });
 
                 services.AddGoogleOAuthClient().ConfigurePrimaryHttpMessageHandler(() => handler);
             }))
