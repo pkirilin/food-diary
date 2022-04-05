@@ -6,9 +6,9 @@ namespace FoodDiary.Integrations.Google.Extensions;
 
 public static class GoogleIntegrationExtensions
 {
-    public static void AddGoogleIntegration(this IServiceCollection services)
+    public static IHttpClientBuilder AddGoogleOAuthClient(this IServiceCollection services)
     {
-        services.AddHttpClient<IGoogleOAuthClient, GoogleOAuthClient>((provider, client) =>
+        return services.AddHttpClient<IGoogleOAuthClient, GoogleOAuthClient>((provider, client) =>
         {
             var options = provider.GetRequiredService<IOptions<GoogleApiOptions>>();
             client.BaseAddress = new Uri(options.Value.BaseUrl);
