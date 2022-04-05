@@ -3,7 +3,9 @@ using System.Threading.Tasks;
 using FoodDiary.API;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Infrastructure;
+using FoodDiary.Integrations.Google.Extensions;
 using FoodDiary.IntegrationTests.Dsl.Builders;
+using FoodDiary.IntegrationTests.Fakes;
 using FoodDiary.IntegrationTests.MockAuth;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
@@ -52,6 +54,9 @@ public class FoodDiaryWebApplicationFactory : WebApplicationFactory<Startup>
                 .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", _ =>
                 {
                 });
+
+            services.AddGoogleOAuthClient()
+                .ConfigurePrimaryHttpMessageHandler(() => new FakeHttpMessageHandler());
         });
     }
     
