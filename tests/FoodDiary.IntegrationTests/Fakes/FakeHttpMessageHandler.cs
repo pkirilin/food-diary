@@ -11,23 +11,20 @@ public class FakeHttpMessageHandler : HttpMessageHandler
     private HttpStatusCode _statusCode = HttpStatusCode.OK;
     private HttpContent _responseContent;
 
-    public FakeHttpMessageHandler WithSuccessStatusCode()
+    public void WithSuccessStatusCode()
     {
         _statusCode = HttpStatusCode.OK;
-        return this;
     }
     
-    public FakeHttpMessageHandler WithBadRequestStatusCode()
+    public void WithBadRequestStatusCode()
     {
         _statusCode = HttpStatusCode.BadRequest;
-        return this;
     }
 
-    public FakeHttpMessageHandler WithJsonResponse(object responseObject)
+    public void WithJsonResponse(object responseObject)
     {
         var json = JsonSerializer.Serialize(responseObject);
         _responseContent = new StringContent(json);
-        return this;
     }
     
     protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)

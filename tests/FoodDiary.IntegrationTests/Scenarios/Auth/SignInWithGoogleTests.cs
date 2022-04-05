@@ -4,10 +4,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using FoodDiary.Application.Features.Auth.SignInWithGoogle;
 using FoodDiary.Contracts.Auth;
-using FoodDiary.Integrations.Google.Extensions;
-using FoodDiary.IntegrationTests.Fakes;
-using Microsoft.AspNetCore.TestHost;
-using Microsoft.Extensions.DependencyInjection;
+using FoodDiary.IntegrationTests.Extensions;
 using Xunit;
 
 namespace FoodDiary.IntegrationTests.Scenarios.Auth;
@@ -28,16 +25,9 @@ public class SignInWithGoogleTests : IClassFixture<FoodDiaryWebApplicationFactor
         {
             GoogleTokenId = "test_google_token_id"
         };
-
+        
         var client = _webApplicationFactory
-            .WithWebHostBuilder(builder => builder.ConfigureTestServices(services =>
-            {
-                var handler = new FakeHttpMessageHandler()
-                    .WithSuccessStatusCode()
-                    .WithJsonResponse(new { email = "test@example.com" });
-                
-                services.AddGoogleOAuthClient().ConfigurePrimaryHttpMessageHandler(() => handler);
-            }))
+            .SetupGoogleOAuthClient(_ => _.ToValidateTokenSuccessfullyFor("test@example.com"))
             .CreateClient();
         
         var response = await client.PostAsJsonAsync("/api/v1/auth/google", request);
@@ -58,13 +48,7 @@ public class SignInWithGoogleTests : IClassFixture<FoodDiaryWebApplicationFactor
         };
         
         var client = _webApplicationFactory
-            .WithWebHostBuilder(builder => builder.ConfigureTestServices(services =>
-            {
-                var handler = new FakeHttpMessageHandler()
-                    .WithBadRequestStatusCode();
-                
-                services.AddGoogleOAuthClient().ConfigurePrimaryHttpMessageHandler(() => handler);
-            }))
+            .SetupGoogleOAuthClient(_ => _.ToValidateTokenWithError())
             .CreateClient();
         
         var response = await client.PostAsJsonAsync("/api/v1/auth/google", request);
@@ -81,16 +65,9 @@ public class SignInWithGoogleTests : IClassFixture<FoodDiaryWebApplicationFactor
         {
             GoogleTokenId = "test_google_token_id"
         };
-
+        
         var client = _webApplicationFactory
-            .WithWebHostBuilder(builder => builder.ConfigureTestServices(services =>
-            {
-                var handler = new FakeHttpMessageHandler()
-                    .WithSuccessStatusCode()
-                    .WithJsonResponse(new { email = "not_allowed_email@example.com" });
-
-                services.AddGoogleOAuthClient().ConfigurePrimaryHttpMessageHandler(() => handler);
-            }))
+            .SetupGoogleOAuthClient(_ => _.ToValidateTokenSuccessfullyFor("not_allowed_email@example.com"))
             .CreateClient();
 
         var response = await client.PostAsJsonAsync("/api/v1/auth/google", request);
