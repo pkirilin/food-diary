@@ -73,7 +73,7 @@ namespace FoodDiary.API
             services.AddPagesPdfGenerator();
             services.AddPagesJsonImportServices();
             services.AddApplicationDependencies();
-            services.AddGoogleIntegration();
+            services.AddGoogleOAuthClient();
 
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
         }

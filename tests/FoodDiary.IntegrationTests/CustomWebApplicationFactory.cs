@@ -1,4 +1,4 @@
-﻿using FoodDiary.IntegrationTests.MockAuth;
+﻿using FoodDiary.IntegrationTests.Fakes;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace FoodDiary.IntegrationTests
 {
+    // ReSharper disable once ClassNeverInstantiated.Global
     public class CustomWebApplicationFactory<TStartup> : WebApplicationFactory<TStartup> where TStartup : class
     {
         protected override IWebHostBuilder CreateWebHostBuilder()
@@ -31,9 +32,7 @@ namespace FoodDiary.IntegrationTests
             builder.ConfigureTestServices(services =>
             {
                 services.AddAuthentication("Test")
-                    .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", _ =>
-                    {
-                    });
+                    .AddScheme<AuthenticationSchemeOptions, FakeAuthHandler>("Test", _ => {});
             });
             
             base.ConfigureWebHost(builder);

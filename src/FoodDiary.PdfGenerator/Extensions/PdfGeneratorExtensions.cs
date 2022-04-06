@@ -16,7 +16,11 @@ namespace FoodDiary.PdfGenerator.Extensions
             services.AddTransient<IPagePdfWriter, PagePdfWriter>();
             services.AddTransient<INotesTablePdfWriter, NotesTablePdfWriter>();
             services.AddTransient<INotePdfWriter, NotePdfWriter>();
-            GlobalFontSettings.FontResolver = new FoodDiaryFontResolver();
+
+            if (GlobalFontSettings.FontResolver is not FoodDiaryFontResolver)
+            {
+                GlobalFontSettings.FontResolver = new FoodDiaryFontResolver();
+            }
         }
     }
 }
