@@ -1,6 +1,10 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
+
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import DateFnsUtils from '@date-io/date-fns';
+
 import { createTestStore, TestStoreBuilder } from './storeBuilder';
 
 export interface TestComponentBuilder {
@@ -11,6 +15,8 @@ export interface TestComponentBuilder {
   ) => TestComponentBuilder;
 
   withRouter: () => TestComponentBuilder;
+
+  withMuiPickersUtils: () => TestComponentBuilder;
 }
 
 const createComponentBuilder = (component: React.ReactElement) => {
@@ -35,6 +41,13 @@ const createComponentBuilder = (component: React.ReactElement) => {
 
     withRouter: (): TestComponentBuilder => {
       wrappers.push(({ children }) => <BrowserRouter>{children}</BrowserRouter>);
+      return builder;
+    },
+
+    withMuiPickersUtils: (): TestComponentBuilder => {
+      wrappers.push(({ children }) => (
+        <MuiPickersUtilsProvider utils={DateFnsUtils}>{children}</MuiPickersUtilsProvider>
+      ));
       return builder;
     },
   };
