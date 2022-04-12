@@ -67,18 +67,26 @@ const PagesExportDialog: React.FC<PagesExportDialogProps> = ({
     <Dialog {...dialogProps}>
       <DialogTitle>Export pages</DialogTitle>
       <DialogContent>
-        <KeyboardDatePicker {...bindStartDate()} fullWidth format="dd.MM.yyyy" label="Start date" />
+        <KeyboardDatePicker
+          {...bindStartDate()}
+          fullWidth
+          format="dd.MM.yyyy"
+          label="Start date"
+          inputProps={{ 'aria-label': 'Export start date' }}
+        />
         <KeyboardDatePicker
           {...bindEndDate()}
           fullWidth
           format="dd.MM.yyyy"
           margin="normal"
           label="End date"
+          inputProps={{ 'aria-label': 'Export end date' }}
         />
         <Box mt={2}>
           <InputLabel id="format-select-label">Format</InputLabel>
           <Select
             labelId="format-select-label"
+            inputProps={{ 'aria-label': 'export format' }}
             fullWidth
             value={exportFormat}
             onChange={event => {
@@ -87,10 +95,11 @@ const PagesExportDialog: React.FC<PagesExportDialogProps> = ({
           >
             <MenuItem value={ExportFormat.Json}>JSON</MenuItem>
             <MenuItem value={ExportFormat.Pdf}>PDF</MenuItem>
+            <MenuItem value="google-docs">Google docs</MenuItem>
           </Select>
         </Box>
       </DialogContent>
-      <DialogActions>
+      <DialogActions aria-label="Export dialog actions">
         <Button
           variant="contained"
           color="primary"

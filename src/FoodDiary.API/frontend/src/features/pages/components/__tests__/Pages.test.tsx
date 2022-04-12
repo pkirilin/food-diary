@@ -1,6 +1,6 @@
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import { ReactElement } from 'react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 import { create } from 'src/test-utils';
 
@@ -38,16 +38,29 @@ describe('Pages', () => {
         .component(<Pages></Pages>)
         .withReduxStore()
         .withRouter()
+        .withMuiPickersUtils()
         .please();
     });
 
-    test('shows export menu on click', () => {
+    test('exports pages to Google Docs by filter parameters', async () => {
       render(ui);
 
       userEvent.click(screen.getByTitle('Export pages'));
+      userEvent.click(screen.getByText('Export by filter parameters'));
 
-      // TODO
-      expect(false).toBeTruthy();
+      const startDate = screen.getByLabelText(/export start date/i);
+      userEvent.type(startDate, '01.01.2022');
+
+      const endDate = screen.getByLabelText(/export end date/i);
+      userEvent.type(endDate, '05.01.2022');
+
+      const format = screen.getByLabelText(/export format/i);
+      fireEvent.mouseDown(format);
+      const formatListbox = within(screen.getByRole('listbox'));
+      userEvent.click(formatListbox.getByText(/google docs/i));
+
+      const actions = within(screen.getByLabelText(/export dialog actions/i));
+      userEvent.click(actions.getByText(/export/i));
     });
   });
 });
