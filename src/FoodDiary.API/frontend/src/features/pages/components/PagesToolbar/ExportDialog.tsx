@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import dateFnsFormat from 'date-fns/format';
+
 import {
   Box,
   Button,
@@ -12,19 +14,19 @@ import {
   Select,
 } from '@material-ui/core';
 import { KeyboardDatePicker } from '@material-ui/pickers';
-import dateFnsFormat from 'date-fns/format';
-import { useValidatedDateInput } from '../../__shared__/hooks';
-import { ExportFormat } from '../../__shared__/models';
-import { DialogCustomActionProps } from '../../__shared__/types';
-import { ExportPagesRequest } from '../thunks';
-import { createDateValidator } from '../../__shared__/validators';
+
+import { useValidatedDateInput } from 'src/features/__shared__/hooks';
+import { ExportFormat } from 'src/features/__shared__/models';
+import { DialogCustomActionProps } from 'src/features/__shared__/types';
+import { ExportPagesRequest } from 'src/features/pages/thunks';
+import { createDateValidator } from 'src/features/__shared__/validators';
 
 interface PagesExportDialogProps extends DialogProps, DialogCustomActionProps<ExportPagesRequest> {}
 
 const initialFormat = ExportFormat.Json;
 const validateDate = createDateValidator(true);
 
-const PagesExportDialog: React.FC<PagesExportDialogProps> = ({
+const ExportDialog: React.FC<PagesExportDialogProps> = ({
   onDialogCancel,
   onDialogConfirm,
   ...dialogProps
@@ -99,12 +101,13 @@ const PagesExportDialog: React.FC<PagesExportDialogProps> = ({
           </Select>
         </Box>
       </DialogContent>
-      <DialogActions aria-label="Export dialog actions">
+      <DialogActions>
         <Button
           variant="contained"
           color="primary"
           onClick={handleConfirmClick}
           disabled={isExportDisabled}
+          aria-label="Export dialog action - confirm"
         >
           Export
         </Button>
@@ -116,4 +119,4 @@ const PagesExportDialog: React.FC<PagesExportDialogProps> = ({
   );
 };
 
-export default PagesExportDialog;
+export default ExportDialog;

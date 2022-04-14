@@ -7,7 +7,7 @@ import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import { useDialog, usePopover } from 'src/features/__shared__/hooks';
 import { exportPages, ExportPagesRequest } from 'src/features/pages/thunks';
 
-import PagesExportDialog from '../PagesExportDialog';
+import ExportDialog from './ExportDialog';
 
 export default function ExportMenu() {
   const [exportOptions, showExportOptions] = usePopover();
@@ -21,7 +21,7 @@ export default function ExportMenu() {
 
   return (
     <Fragment>
-      <PagesExportDialog {...exportDialogProps}></PagesExportDialog>
+      <ExportDialog {...exportDialogProps}></ExportDialog>
       <Tooltip title="Export pages">
         <span>
           <IconButton onClick={event => showExportOptions(event)}>
