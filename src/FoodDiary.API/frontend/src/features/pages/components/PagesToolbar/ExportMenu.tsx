@@ -1,36 +1,29 @@
-import { Fragment } from 'react';
-import { useDispatch } from 'react-redux';
-
+import { Fragment, useState } from 'react';
 import { IconButton, List, ListItem, ListSubheader, Popover, Tooltip } from '@material-ui/core';
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 
-import { useDialog, usePopover } from 'src/features/__shared__/hooks';
-import { exportPages, ExportPagesRequest } from 'src/features/pages/thunks';
-
+import { usePopover } from 'src/features/__shared__/hooks';
 import ExportDialog from './ExportDialog';
 
 export default function ExportMenu() {
-  const [exportOptions, showExportOptions] = usePopover();
-  const dispatch = useDispatch();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const handleDialogOpen = () => setIsDialogOpen(true);
+  const handleDialogClose = () => setIsDialogOpen(false);
 
-  const { binding: exportDialogProps, show: showExportDialog } = useDialog<ExportPagesRequest>(
-    exportParams => {
-      dispatch(exportPages(exportParams));
-    },
-  );
+  const [menuProps, showMenu] = usePopover();
 
   return (
     <Fragment>
-      <ExportDialog {...exportDialogProps}></ExportDialog>
+      <ExportDialog isOpen={isDialogOpen} onClose={handleDialogClose}></ExportDialog>
       <Tooltip title="Export pages">
         <span>
-          <IconButton onClick={event => showExportOptions(event)}>
+          <IconButton onClick={event => showMenu(event)}>
             <CloudDownloadIcon />
           </IconButton>
         </span>
       </Tooltip>
       <Popover
-        {...exportOptions}
+        {...menuProps}
         keepMounted
         anchorOrigin={{
           vertical: 'bottom',
@@ -42,7 +35,7 @@ export default function ExportMenu() {
         }}
       >
         <List subheader={<ListSubheader>Export pages</ListSubheader>}>
-          <ListItem button onClick={() => showExportDialog()}>
+          <ListItem button onClick={handleDialogOpen}>
             Export by filter parameters
           </ListItem>
         </List>

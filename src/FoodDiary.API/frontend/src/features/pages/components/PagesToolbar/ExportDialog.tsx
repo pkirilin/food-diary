@@ -1,36 +1,33 @@
 import React, { useEffect, useState } from 'react';
-import dateFnsFormat from 'date-fns/format';
-
 import {
   Box,
   Button,
   Dialog,
   DialogActions,
   DialogContent,
-  DialogProps,
   DialogTitle,
   InputLabel,
   MenuItem,
   Select,
 } from '@material-ui/core';
 import { KeyboardDatePicker } from '@material-ui/pickers';
+import format from 'date-fns/format';
 
 import { useValidatedDateInput } from 'src/features/__shared__/hooks';
 import { ExportFormat } from 'src/features/__shared__/models';
-import { DialogCustomActionProps } from 'src/features/__shared__/types';
-import { ExportPagesRequest } from 'src/features/pages/thunks';
 import { createDateValidator } from 'src/features/__shared__/validators';
-
-interface PagesExportDialogProps extends DialogProps, DialogCustomActionProps<ExportPagesRequest> {}
+import { useDispatch } from 'react-redux';
+import { exportPages } from '../../thunks';
 
 const initialFormat = ExportFormat.Json;
 const validateDate = createDateValidator(true);
 
-const ExportDialog: React.FC<PagesExportDialogProps> = ({
-  onDialogCancel,
-  onDialogConfirm,
-  ...dialogProps
-}: PagesExportDialogProps) => {
+type ExportDialogProps = {
+  isOpen: boolean;
+  onClose: () => void;
+};
+
+const ExportDialog: React.FC<ExportDialogProps> = ({ isOpen, onClose }) => {
   const [startDate, setStartDate, bindStartDate, isValidStartDate] = useValidatedDateInput(null, {
     validate: validateDate,
     errorHelperText: 'Start date is invalid',
@@ -43,6 +40,8 @@ const ExportDialog: React.FC<PagesExportDialogProps> = ({
 
   const [exportFormat, setExportFormat] = useState(ExportFormat.Json);
 
+  const dispatch = useDispatch();
+
   const isExportDisabled = !isValidStartDate || !isValidEndDate;
 
   const handleConfirmClick = (): void => {
@@ -50,23 +49,27 @@ const ExportDialog: React.FC<PagesExportDialogProps> = ({
       return;
     }
 
-    onDialogConfirm({
-      startDate: dateFnsFormat(startDate, 'yyyy-MM-dd'),
-      endDate: dateFnsFormat(endDate, 'yyyy-MM-dd'),
-      format: exportFormat,
-    });
+    onClose();
+
+    dispatch(
+      exportPages({
+        startDate: format(startDate, 'yyyy-MM-dd'),
+        endDate: format(endDate, 'yyyy-MM-dd'),
+        format: exportFormat,
+      }),
+    );
   };
 
   useEffect(() => {
-    if (dialogProps.open) {
+    if (isOpen) {
       setStartDate(null);
       setEndDate(null);
       setExportFormat(initialFormat);
     }
-  }, [dialogProps.open]);
+  }, [isOpen]);
 
   return (
-    <Dialog {...dialogProps}>
+    <Dialog open={isOpen} onClose={onClose}>
       <DialogTitle>Export pages</DialogTitle>
       <DialogContent>
         <KeyboardDatePicker
@@ -107,11 +110,11 @@ const ExportDialog: React.FC<PagesExportDialogProps> = ({
           color="primary"
           onClick={handleConfirmClick}
           disabled={isExportDisabled}
-          aria-label="Export dialog action - confirm"
+          aria-label="Confirm export and continue"
         >
           Export
         </Button>
-        <Button variant="text" onClick={onDialogCancel}>
+        <Button variant="text" onClick={onClose}>
           Cancel
         </Button>
       </DialogActions>
