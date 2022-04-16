@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import {
   Box,
   Button,
@@ -14,12 +15,31 @@ import { KeyboardDatePicker } from '@material-ui/pickers';
 import format from 'date-fns/format';
 
 import { useValidatedDateInput } from 'src/features/__shared__/hooks';
-import { ExportFormat } from 'src/features/__shared__/models';
 import { createDateValidator } from 'src/features/__shared__/validators';
-import { useDispatch } from 'react-redux';
 import { exportPages } from '../../thunks';
+import { ExportFormat } from '../../models';
 
-const initialFormat = ExportFormat.Json;
+type MenuItemMeta = {
+  name: string;
+  value: ExportFormat;
+};
+
+const menuItems: MenuItemMeta[] = [
+  {
+    name: 'JSON',
+    value: 'json',
+  },
+  {
+    name: 'PDF',
+    value: 'pdf',
+  },
+  {
+    name: 'Google Docs',
+    value: 'google docs',
+  },
+];
+
+const initialFormat: ExportFormat = 'json';
 const validateDate = createDateValidator(true);
 
 export type ExportDialogProps = {
@@ -38,18 +58,20 @@ export default function ExportDialog({ isOpen, onClose }: ExportDialogProps) {
     errorHelperText: 'End date is invalid',
   });
 
-  const [exportFormat, setExportFormat] = useState(ExportFormat.Json);
+  const [exportFormat, setExportFormat] = useState(initialFormat);
+  const isExportDisabled = !isValidStartDate || !isValidEndDate;
 
   const dispatch = useDispatch();
-
-  const isExportDisabled = !isValidStartDate || !isValidEndDate;
 
   const handleConfirmClick = (): void => {
     if (!startDate || !endDate) {
       return;
     }
 
-    onClose();
+    if (exportFormat === 'google docs') {
+      // TODO: implement
+      return;
+    }
 
     dispatch(
       exportPages({
@@ -58,6 +80,9 @@ export default function ExportDialog({ isOpen, onClose }: ExportDialogProps) {
         format: exportFormat,
       }),
     );
+
+    // TODO: close if success
+    onClose();
   };
 
   useEffect(() => {
@@ -98,9 +123,11 @@ export default function ExportDialog({ isOpen, onClose }: ExportDialogProps) {
               setExportFormat(event.target.value as ExportFormat);
             }}
           >
-            <MenuItem value={ExportFormat.Json}>JSON</MenuItem>
-            <MenuItem value={ExportFormat.Pdf}>PDF</MenuItem>
-            <MenuItem value="google-docs">Google docs</MenuItem>
+            {menuItems.map(({ name, value }) => (
+              <MenuItem key={value} value={value}>
+                {name}
+              </MenuItem>
+            ))}
           </Select>
         </Box>
       </DialogContent>

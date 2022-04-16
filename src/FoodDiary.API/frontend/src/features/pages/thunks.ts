@@ -1,12 +1,12 @@
 import config from '../__shared__/config';
-import { ExportFormat, SortOrder } from '../__shared__/models';
+import { SortOrder } from '../__shared__/models';
 import {
   createApiCallAsyncThunk,
   createUrl,
   downloadFile,
   handleEmptyResponse,
 } from '../__shared__/utils';
-import { Page, PageCreateEdit, PagesSearchResult } from './models';
+import { Page, PageCreateEdit, PagesSearchResult, ExportFormat } from './models';
 
 export type GetPagesRequest = {
   startDate?: string;

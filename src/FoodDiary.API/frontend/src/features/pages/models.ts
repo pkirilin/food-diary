@@ -26,3 +26,5 @@ export interface PageItemsFilter extends ItemsFilterBase {
   startDate?: string;
   endDate?: string;
 }
+
+export type ExportFormat = 'json' | 'pdf' | 'google docs';
