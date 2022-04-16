@@ -3,7 +3,7 @@ import { IconButton, List, ListItem, ListSubheader, Popover, Tooltip } from '@ma
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 
 import { usePopover } from 'src/features/__shared__/hooks';
-import ExportDialog from './ExportDialog';
+import ExportDialog from '../ExportDialog';
 
 export default function ExportMenu() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);

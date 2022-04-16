@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Box,
   Button,
@@ -22,12 +22,12 @@ import { exportPages } from '../../thunks';
 const initialFormat = ExportFormat.Json;
 const validateDate = createDateValidator(true);
 
-type ExportDialogProps = {
+export type ExportDialogProps = {
   isOpen: boolean;
   onClose: () => void;
 };
 
-const ExportDialog: React.FC<ExportDialogProps> = ({ isOpen, onClose }) => {
+export default function ExportDialog({ isOpen, onClose }: ExportDialogProps) {
   const [startDate, setStartDate, bindStartDate, isValidStartDate] = useValidatedDateInput(null, {
     validate: validateDate,
     errorHelperText: 'Start date is invalid',
@@ -120,6 +120,4 @@ const ExportDialog: React.FC<ExportDialogProps> = ({ isOpen, onClose }) => {
       </DialogActions>
     </Dialog>
   );
-};
-
-export default ExportDialog;
+}
