@@ -1,7 +1,27 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { GoogleLoginResponse, useGoogleLogin } from 'react-google-login';
+
 import { create } from 'src/test-utils';
 import ExportDialog from './ExportDialog';
+
+type MockedReactGoogleLogin = {
+  useGoogleLogin: typeof useGoogleLogin;
+};
+
+// TODO: figure out how to do typesafe mock better
+jest.mock(
+  'react-google-login',
+  (): MockedReactGoogleLogin => ({
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    useGoogleLogin: ({ onSuccess = () => {} }) => ({
+      signIn: () => {
+        onSuccess({ accessToken: 'test_access_token' } as GoogleLoginResponse);
+      },
+      loaded: true,
+    }),
+  }),
+);
 
 test('exports pages to Google Docs with valid period', () => {
   const onCloseFn = jest.fn();
@@ -15,7 +35,8 @@ test('exports pages to Google Docs with valid period', () => {
   render(ui);
   userEvent.type(screen.getByLabelText(/export start date/i), '01.01.2022');
   userEvent.type(screen.getByLabelText(/export end date/i), '01.01.2022');
-  userEvent.click(screen.getByLabelText('Confirm export and continue'));
+  userEvent.click(screen.getByLabelText(/sign in with google/i));
+  userEvent.click(screen.getByLabelText(/confirm export and continue/i));
 
   expect(onCloseFn).toHaveBeenCalled();
 });

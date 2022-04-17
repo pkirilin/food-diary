@@ -1,5 +1,6 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { GoogleLoginResponse, useGoogleLogin } from 'react-google-login';
 import {
   Box,
   Button,
@@ -16,6 +17,7 @@ import { useValidatedDateInput } from 'src/features/__shared__/hooks';
 import { createDateValidator } from 'src/features/__shared__/validators';
 import { exportPagesToJson } from '../../thunks';
 import { ExportFormat } from '../../models';
+import config from 'src/features/__shared__/config';
 
 const validateDate = createDateValidator(true);
 
@@ -37,6 +39,17 @@ export type ExportDialogProps = {
 };
 
 export default function ExportDialog({ format: exportFormat, isOpen, onClose }: ExportDialogProps) {
+  const [googleAccessToken, setGoogleAccessToken] = useState('');
+
+  const { signIn } = useGoogleLogin({
+    clientId: config.googleClientId,
+    onSuccess: response => {
+      const { accessToken } = response as GoogleLoginResponse;
+      setGoogleAccessToken(accessToken);
+    },
+    scope: 'https://www.googleapis.com/auth/documents https://www.googleapis.com/auth/drive',
+  });
+
   const [startDate, setStartDate, bindStartDate, isValidStartDate] = useValidatedDateInput(null, {
     validate: validateDate,
     errorHelperText: 'Start date is invalid',
@@ -56,6 +69,9 @@ export default function ExportDialog({ format: exportFormat, isOpen, onClose }: 
       return;
     }
 
+    // TODO: close if success
+    onClose();
+
     if (exportFormat === 'google docs') {
       // TODO: implement
       return;
@@ -67,9 +83,6 @@ export default function ExportDialog({ format: exportFormat, isOpen, onClose }: 
         endDate: format(endDate, 'yyyy-MM-dd'),
       }),
     );
-
-    // TODO: close if success
-    onClose();
   };
 
   useEffect(() => {
@@ -111,15 +124,26 @@ export default function ExportDialog({ format: exportFormat, isOpen, onClose }: 
         />
       </DialogContent>
       <DialogActions>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleConfirmClick}
-          disabled={isExportDisabled}
-          aria-label="Confirm export and continue"
-        >
-          Export
-        </Button>
+        {googleAccessToken ? (
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleConfirmClick}
+            disabled={isExportDisabled}
+            aria-label="Confirm export and continue"
+          >
+            Export
+          </Button>
+        ) : (
+          <Button
+            variant="outlined"
+            color="primary"
+            aria-label="Sign in with Google"
+            onClick={signIn}
+          >
+            Sign in with Google
+          </Button>
+        )}
         <Button variant="text" onClick={onClose}>
           Cancel
         </Button>
