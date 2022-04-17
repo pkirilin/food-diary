@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import {
   Box,
@@ -7,9 +7,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  InputLabel,
-  MenuItem,
-  Select,
+  TextField,
 } from '@material-ui/core';
 import { KeyboardDatePicker } from '@material-ui/pickers';
 import format from 'date-fns/format';
@@ -19,35 +17,26 @@ import { createDateValidator } from 'src/features/__shared__/validators';
 import { exportPages } from '../../thunks';
 import { ExportFormat } from '../../models';
 
-type MenuItemMeta = {
-  name: string;
-  value: ExportFormat;
-};
-
-const menuItems: MenuItemMeta[] = [
-  {
-    name: 'JSON',
-    value: 'json',
-  },
-  {
-    name: 'PDF',
-    value: 'pdf',
-  },
-  {
-    name: 'Google Docs',
-    value: 'google docs',
-  },
-];
-
-const initialFormat: ExportFormat = 'json';
 const validateDate = createDateValidator(true);
 
+function toFormatDisplayText(format: ExportFormat) {
+  switch (format) {
+    case 'json':
+      return 'JSON';
+    case 'google docs':
+      return 'Google Docs';
+    default:
+      throw new Error(`Export format '${format}' is not supported`);
+  }
+}
+
 export type ExportDialogProps = {
+  format: ExportFormat;
   isOpen: boolean;
   onClose: () => void;
 };
 
-export default function ExportDialog({ isOpen, onClose }: ExportDialogProps) {
+export default function ExportDialog({ format: exportFormat, isOpen, onClose }: ExportDialogProps) {
   const [startDate, setStartDate, bindStartDate, isValidStartDate] = useValidatedDateInput(null, {
     validate: validateDate,
     errorHelperText: 'Start date is invalid',
@@ -58,7 +47,6 @@ export default function ExportDialog({ isOpen, onClose }: ExportDialogProps) {
     errorHelperText: 'End date is invalid',
   });
 
-  const [exportFormat, setExportFormat] = useState(initialFormat);
   const isExportDisabled = !isValidStartDate || !isValidEndDate;
 
   const dispatch = useDispatch();
@@ -89,7 +77,6 @@ export default function ExportDialog({ isOpen, onClose }: ExportDialogProps) {
     if (isOpen) {
       setStartDate(null);
       setEndDate(null);
-      setExportFormat(initialFormat);
     }
   }, [isOpen]);
 
@@ -97,6 +84,17 @@ export default function ExportDialog({ isOpen, onClose }: ExportDialogProps) {
     <Dialog open={isOpen} onClose={onClose}>
       <DialogTitle>Export pages</DialogTitle>
       <DialogContent>
+        <Box mt={2}>
+          <TextField
+            label="Format"
+            defaultValue={toFormatDisplayText(exportFormat)}
+            InputProps={{
+              readOnly: true,
+              'aria-readonly': 'true',
+              'aria-label': 'Format',
+            }}
+          />
+        </Box>
         <KeyboardDatePicker
           {...bindStartDate()}
           fullWidth
@@ -112,24 +110,6 @@ export default function ExportDialog({ isOpen, onClose }: ExportDialogProps) {
           label="End date"
           inputProps={{ 'aria-label': 'Export end date' }}
         />
-        <Box mt={2}>
-          <InputLabel id="format-select-label">Format</InputLabel>
-          <Select
-            labelId="format-select-label"
-            inputProps={{ 'aria-label': 'export format' }}
-            fullWidth
-            value={exportFormat}
-            onChange={event => {
-              setExportFormat(event.target.value as ExportFormat);
-            }}
-          >
-            {menuItems.map(({ name, value }) => (
-              <MenuItem key={value} value={value}>
-                {name}
-              </MenuItem>
-            ))}
-          </Select>
-        </Box>
       </DialogContent>
       <DialogActions>
         <Button

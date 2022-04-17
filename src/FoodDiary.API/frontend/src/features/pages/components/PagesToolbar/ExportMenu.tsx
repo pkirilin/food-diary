@@ -1,20 +1,32 @@
 import { Fragment, useState } from 'react';
-import { IconButton, List, ListItem, ListSubheader, Popover, Tooltip } from '@material-ui/core';
+import { IconButton, List, ListItem, Popover, Tooltip } from '@material-ui/core';
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 
 import { usePopover } from 'src/features/__shared__/hooks';
 import ExportDialog from '../ExportDialog';
+import { ExportFormat } from '../../models';
 
 export default function ExportMenu() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const handleDialogOpen = () => setIsDialogOpen(true);
-  const handleDialogClose = () => setIsDialogOpen(false);
-
+  const [exportFormat, setExportFormat] = useState<ExportFormat>('json');
   const [menuProps, showMenu] = usePopover();
+
+  function openExportDialog(format: ExportFormat) {
+    setExportFormat(format);
+    setIsDialogOpen(true);
+  }
+
+  function handleDialogClose() {
+    return setIsDialogOpen(false);
+  }
 
   return (
     <Fragment>
-      <ExportDialog isOpen={isDialogOpen} onClose={handleDialogClose}></ExportDialog>
+      <ExportDialog
+        format={exportFormat}
+        isOpen={isDialogOpen}
+        onClose={handleDialogClose}
+      ></ExportDialog>
       <Tooltip title="Export pages">
         <span>
           <IconButton onClick={event => showMenu(event)}>
@@ -34,9 +46,12 @@ export default function ExportMenu() {
           horizontal: 'right',
         }}
       >
-        <List subheader={<ListSubheader>Export pages</ListSubheader>}>
-          <ListItem button onClick={handleDialogOpen}>
-            Export by filter parameters
+        <List>
+          <ListItem button onClick={() => openExportDialog('json')}>
+            Export to JSON
+          </ListItem>
+          <ListItem button onClick={() => openExportDialog('google docs')}>
+            Export to Google Docs
           </ListItem>
         </List>
       </Popover>

@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { create } from 'src/test-utils';
 import PagesToolbar from './PagesToolbar';
 
-test('shows export dialog when "export by filter parameters" clicked', () => {
+test('shows export dialog when "export to json" clicked', () => {
   const ui = create
     .component(<PagesToolbar></PagesToolbar>)
     .withReduxStore()
@@ -12,9 +12,11 @@ test('shows export dialog when "export by filter parameters" clicked', () => {
     .please();
 
   render(ui);
-  userEvent.click(screen.getByTitle('Export pages'));
-  userEvent.click(screen.getByText('Export by filter parameters'));
+  userEvent.click(screen.getByTitle(/export pages/i));
+  userEvent.click(screen.getByText(/export to json/i));
 
   const exportDialog = screen.getByRole('dialog');
   expect(within(exportDialog).getByText(/export pages/i)).toBeInTheDocument();
+  expect(within(exportDialog).getByLabelText(/format/i)).toBeInTheDocument();
+  expect(within(exportDialog).getByDisplayValue(/json/i)).toBeInTheDocument();
 });
