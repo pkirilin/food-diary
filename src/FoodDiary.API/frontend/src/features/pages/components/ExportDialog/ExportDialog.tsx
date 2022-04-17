@@ -14,7 +14,7 @@ import format from 'date-fns/format';
 
 import { useValidatedDateInput } from 'src/features/__shared__/hooks';
 import { createDateValidator } from 'src/features/__shared__/validators';
-import { exportPages } from '../../thunks';
+import { exportPagesToJson } from '../../thunks';
 import { ExportFormat } from '../../models';
 
 const validateDate = createDateValidator(true);
@@ -62,10 +62,9 @@ export default function ExportDialog({ format: exportFormat, isOpen, onClose }: 
     }
 
     dispatch(
-      exportPages({
+      exportPagesToJson({
         startDate: format(startDate, 'yyyy-MM-dd'),
         endDate: format(endDate, 'yyyy-MM-dd'),
-        format: exportFormat,
       }),
     );
 

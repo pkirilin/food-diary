@@ -6,7 +6,7 @@ import {
   downloadFile,
   handleEmptyResponse,
 } from '../__shared__/utils';
-import { Page, PageCreateEdit, PagesSearchResult, ExportFormat } from './models';
+import { ExportPagesRequest, Page, PageCreateEdit, PagesSearchResult } from './models';
 
 export type GetPagesRequest = {
   startDate?: string;
@@ -25,12 +25,6 @@ export interface PageByIdResponse {
   currentPage: Page;
   previousPage: Page;
   nextPage: Page;
-}
-
-export interface ExportPagesRequest {
-  startDate: string;
-  endDate: string;
-  format: ExportFormat;
 }
 
 export const getPages = createApiCallAsyncThunk<PagesSearchResult, GetPagesRequest>(
@@ -80,12 +74,12 @@ export const deletePages = createApiCallAsyncThunk<void, number[]>(
   },
 );
 
-export const exportPages = createApiCallAsyncThunk<void, ExportPagesRequest>(
-  'pages/exportPages',
-  ({ format, ...params }) => createUrl(`${config.apiUrl}/v1/exports/${format}`, { ...params }),
-  async (response, { startDate, endDate, format }) => {
+export const exportPagesToJson = createApiCallAsyncThunk<void, ExportPagesRequest>(
+  'pages/exportToJson',
+  params => createUrl(`${config.apiUrl}/v1/exports/json`, { ...params }),
+  async (response, { startDate, endDate }) => {
     const blob = await response.blob();
-    downloadFile(blob, `FoodDiary_${startDate}_${endDate}.${format}`);
+    downloadFile(blob, `FoodDiary_${startDate}_${endDate}.json`);
   },
   'Failed to export pages',
 );

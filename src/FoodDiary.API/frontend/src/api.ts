@@ -4,9 +4,9 @@ import config from './features/__shared__/config';
 import { saveAccessToken } from './features/auth/cookie.service';
 
 import { AuthResult } from './features/auth/models';
+import { ExportPagesRequest } from './features/pages/models';
 import { ProductAutocompleteOption } from './features/products/models';
 import { CategoryAutocompleteOption } from './features/categories/models';
-import { ExportPagesRequest } from './features/pages/thunks';
 
 const api = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: config.apiUrl }),
