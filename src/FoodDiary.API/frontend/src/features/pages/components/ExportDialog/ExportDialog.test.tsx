@@ -23,7 +23,24 @@ jest.mock(
   }),
 );
 
-test('exports pages to Google Docs with valid period', () => {
+test('exports pages to JSON', () => {
+  const onCloseFn = jest.fn();
+
+  const ui = create
+    .component(<ExportDialog format="json" isOpen={true} onClose={onCloseFn}></ExportDialog>)
+    .withReduxStore()
+    .withMuiPickersUtils()
+    .please();
+
+  render(ui);
+  userEvent.type(screen.getByLabelText(/export start date/i), '01.01.2022');
+  userEvent.type(screen.getByLabelText(/export end date/i), '31.01.2022');
+  userEvent.click(screen.getByText(/export to json/i));
+
+  expect(onCloseFn).toHaveBeenCalled();
+});
+
+test('exports pages to Google Docs', () => {
   const onCloseFn = jest.fn();
 
   const ui = create
@@ -34,9 +51,8 @@ test('exports pages to Google Docs with valid period', () => {
 
   render(ui);
   userEvent.type(screen.getByLabelText(/export start date/i), '01.01.2022');
-  userEvent.type(screen.getByLabelText(/export end date/i), '01.01.2022');
-  userEvent.click(screen.getByLabelText(/sign in with google/i));
-  userEvent.click(screen.getByLabelText(/confirm export and continue/i));
+  userEvent.type(screen.getByLabelText(/export end date/i), '31.01.2022');
+  userEvent.click(screen.getByText(/export to google docs/i));
 
   expect(onCloseFn).toHaveBeenCalled();
 });

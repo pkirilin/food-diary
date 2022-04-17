@@ -15,8 +15,7 @@ test('shows export dialog when "export to json" clicked', () => {
   userEvent.click(screen.getByTitle(/export pages/i));
   userEvent.click(screen.getByText(/export to json/i));
 
-  const exportDialog = screen.getByRole('dialog');
-  expect(within(exportDialog).getByText(/export pages/i)).toBeInTheDocument();
-  expect(within(exportDialog).getByLabelText(/format/i)).toBeInTheDocument();
-  expect(within(exportDialog).getByDisplayValue(/json/i)).toBeInTheDocument();
+  const exportDialog = within(screen.getByRole('dialog'));
+  expect(exportDialog.getByText(/export pages/i)).toBeInTheDocument();
+  expect(exportDialog.getByText(/export to json/i)).toBeInTheDocument();
 });

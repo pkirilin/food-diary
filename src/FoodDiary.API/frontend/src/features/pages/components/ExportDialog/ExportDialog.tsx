@@ -1,36 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { GoogleLoginResponse, useGoogleLogin } from 'react-google-login';
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  TextField,
-} from '@material-ui/core';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/core';
 import { KeyboardDatePicker } from '@material-ui/pickers';
 import format from 'date-fns/format';
 
+import config from 'src/features/__shared__/config';
 import { useValidatedDateInput } from 'src/features/__shared__/hooks';
 import { createDateValidator } from 'src/features/__shared__/validators';
 import { exportPagesToJson } from '../../thunks';
 import { ExportFormat } from '../../models';
-import config from 'src/features/__shared__/config';
 
 const validateDate = createDateValidator(true);
-
-function toFormatDisplayText(format: ExportFormat) {
-  switch (format) {
-    case 'json':
-      return 'JSON';
-    case 'google docs':
-      return 'Google Docs';
-    default:
-      throw new Error(`Export format '${format}' is not supported`);
-  }
-}
 
 export type ExportDialogProps = {
   format: ExportFormat;
@@ -39,13 +20,12 @@ export type ExportDialogProps = {
 };
 
 export default function ExportDialog({ format: exportFormat, isOpen, onClose }: ExportDialogProps) {
-  const [googleAccessToken, setGoogleAccessToken] = useState('');
-
   const { signIn } = useGoogleLogin({
     clientId: config.googleClientId,
     onSuccess: response => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { accessToken } = response as GoogleLoginResponse;
-      setGoogleAccessToken(accessToken);
+      // TODO: implement
     },
     scope: 'https://www.googleapis.com/auth/documents https://www.googleapis.com/auth/drive',
   });
@@ -64,16 +44,8 @@ export default function ExportDialog({ format: exportFormat, isOpen, onClose }: 
 
   const dispatch = useDispatch();
 
-  const handleConfirmClick = (): void => {
+  function handleExportToJsonClick() {
     if (!startDate || !endDate) {
-      return;
-    }
-
-    // TODO: close if success
-    onClose();
-
-    if (exportFormat === 'google docs') {
-      // TODO: implement
       return;
     }
 
@@ -83,7 +55,21 @@ export default function ExportDialog({ format: exportFormat, isOpen, onClose }: 
         endDate: format(endDate, 'yyyy-MM-dd'),
       }),
     );
-  };
+
+    // TODO: close if success
+    onClose();
+  }
+
+  function handleExportToGoogleDocsClick() {
+    if (!startDate || !endDate) {
+      return;
+    }
+
+    signIn();
+
+    // TODO: close if success
+    onClose();
+  }
 
   useEffect(() => {
     if (isOpen) {
@@ -96,17 +82,6 @@ export default function ExportDialog({ format: exportFormat, isOpen, onClose }: 
     <Dialog open={isOpen} onClose={onClose}>
       <DialogTitle>Export pages</DialogTitle>
       <DialogContent>
-        <Box mt={2}>
-          <TextField
-            label="Format"
-            defaultValue={toFormatDisplayText(exportFormat)}
-            InputProps={{
-              readOnly: true,
-              'aria-readonly': 'true',
-              'aria-label': 'Format',
-            }}
-          />
-        </Box>
         <KeyboardDatePicker
           {...bindStartDate()}
           fullWidth
@@ -124,24 +99,23 @@ export default function ExportDialog({ format: exportFormat, isOpen, onClose }: 
         />
       </DialogContent>
       <DialogActions>
-        {googleAccessToken ? (
+        {exportFormat === 'json' ? (
           <Button
             variant="contained"
             color="primary"
-            onClick={handleConfirmClick}
+            onClick={handleExportToJsonClick}
             disabled={isExportDisabled}
-            aria-label="Confirm export and continue"
           >
-            Export
+            Export to JSON
           </Button>
         ) : (
           <Button
-            variant="outlined"
+            variant="contained"
             color="primary"
-            aria-label="Sign in with Google"
-            onClick={signIn}
+            onClick={handleExportToGoogleDocsClick}
+            disabled={isExportDisabled}
           >
-            Sign in with Google
+            Export to Google Docs
           </Button>
         )}
         <Button variant="text" onClick={onClose}>
