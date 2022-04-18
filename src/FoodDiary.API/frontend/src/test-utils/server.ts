@@ -43,6 +43,10 @@ const handlers = [
 
     return res(ctx.json(categories));
   }),
+
+  rest.get(api('/v1/exports/json'), (req, res, ctx) => {
+    return res(ctx.body(new Blob()));
+  }),
 ];
 
 const server = setupServer(...handlers);
