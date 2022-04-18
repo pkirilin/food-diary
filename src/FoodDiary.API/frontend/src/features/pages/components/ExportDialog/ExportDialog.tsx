@@ -12,6 +12,7 @@ import { createDateValidator } from 'src/features/__shared__/validators';
 import { exportPagesToJson } from '../../thunks';
 import { ExportFormat } from '../../models';
 import LoadingButton from './LoadingButton';
+import { useLazyExportPagesToGoogleDocsQuery } from 'src/api';
 
 const validateDate = createDateValidator(true);
 
@@ -22,18 +23,6 @@ export type ExportDialogProps = {
 };
 
 export default function ExportDialog({ format: exportFormat, isOpen, onClose }: ExportDialogProps) {
-  const { signIn } = useGoogleLogin({
-    clientId: config.googleClientId,
-    onSuccess: response => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { accessToken } = response as GoogleLoginResponse;
-      // TODO: implement
-    },
-    scope: 'https://www.googleapis.com/auth/documents https://www.googleapis.com/auth/drive',
-  });
-
-  const isExportToJsonLoading = useSelector(state => state.pages.isExportToJsonLoading);
-
   const [startDate, setStartDate, bindStartDate, isValidStartDate] = useValidatedDateInput(null, {
     validate: validateDate,
     errorHelperText: 'Start date is invalid',
@@ -43,6 +32,29 @@ export default function ExportDialog({ format: exportFormat, isOpen, onClose }: 
     validate: validateDate,
     errorHelperText: 'End date is invalid',
   });
+
+  const [exportToGoogleDocs, { isLoading: isExportToGoogleDocsLoading }] =
+    useLazyExportPagesToGoogleDocsQuery();
+
+  const { signIn } = useGoogleLogin({
+    clientId: config.googleClientId,
+    onSuccess: response => {
+      if (!startDate || !endDate) {
+        return;
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { accessToken } = response as GoogleLoginResponse;
+
+      exportToGoogleDocs({
+        startDate: format(startDate, 'yyyy-MM-dd'),
+        endDate: format(endDate, 'yyyy-MM-dd'),
+      });
+    },
+    scope: 'https://www.googleapis.com/auth/documents https://www.googleapis.com/auth/drive',
+  });
+
+  const isExportToJsonLoading = useSelector(state => state.pages.isExportToJsonLoading);
 
   const isExportDisabled = !isValidStartDate || !isValidEndDate;
 
@@ -115,7 +127,7 @@ export default function ExportDialog({ format: exportFormat, isOpen, onClose }: 
           </LoadingButton>
         ) : (
           <LoadingButton
-            isLoading={false}
+            isLoading={isExportToGoogleDocsLoading}
             variant="contained"
             color="primary"
             onClick={handleExportToGoogleDocsClick}

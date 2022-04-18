@@ -47,6 +47,10 @@ const handlers = [
   rest.get(api('/v1/exports/json'), (req, res, ctx) => {
     return res(ctx.body(new Blob()));
   }),
+
+  rest.get(api('/api/v1/export/google-docs'), (req, res, ctx) => {
+    return res(ctx.status(200));
+  }),
 ];
 
 const server = setupServer(...handlers);

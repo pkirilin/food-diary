@@ -54,6 +54,7 @@ test('exports pages to Google Docs', async () => {
   userEvent.type(screen.getByLabelText(/export start date/i), '01.01.2022');
   userEvent.type(screen.getByLabelText(/export end date/i), '31.01.2022');
   userEvent.click(screen.getByText(/export to google docs/i));
+  await waitForElementToBeRemoved(screen.getByRole('progressbar'));
 
   expect(onCloseFn).toHaveBeenCalled();
 });
