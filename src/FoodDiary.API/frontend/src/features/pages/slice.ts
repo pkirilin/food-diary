@@ -7,6 +7,7 @@ import {
   createPage,
   deletePages,
   editPage,
+  exportPagesToJson,
   getDateForNewPage,
   getPageById,
   getPages,
@@ -25,6 +26,7 @@ export type PagesState = {
   next?: Page;
   dateForNewPage?: string;
   dateForNewPageLoading: Status;
+  isExportToJsonLoading: boolean;
 };
 
 export interface SelectPagePayload extends SelectionPayload {
@@ -45,6 +47,7 @@ const initialState: PagesState = {
     sortOrder: SortOrder.Descending,
   },
   dateForNewPageLoading: 'idle',
+  isExportToJsonLoading: false,
 };
 
 const operationThunks = [createPage, editPage, deletePages, importPages];
@@ -119,6 +122,17 @@ const pagesSlice = createSlice({
       .addCase(getDateForNewPage.rejected, state => {
         state.dateForNewPageLoading = 'failed';
       })
+
+      .addCase(exportPagesToJson.pending, state => {
+        state.isExportToJsonLoading = true;
+      })
+      .addCase(exportPagesToJson.fulfilled, state => {
+        state.isExportToJsonLoading = false;
+      })
+      .addCase(exportPagesToJson.rejected, state => {
+        state.isExportToJsonLoading = false;
+      })
+
       .addMatcher(createAsyncThunkMatcher(operationThunks, 'pending'), state => {
         state.operationStatus = 'pending';
       })

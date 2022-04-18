@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { GoogleLoginResponse, useGoogleLogin } from 'react-google-login';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/core';
 import { KeyboardDatePicker } from '@material-ui/pickers';
@@ -31,6 +31,8 @@ export default function ExportDialog({ format: exportFormat, isOpen, onClose }: 
     },
     scope: 'https://www.googleapis.com/auth/documents https://www.googleapis.com/auth/drive',
   });
+
+  const isExportToJsonLoading = useSelector(state => state.pages.isExportToJsonLoading);
 
   const [startDate, setStartDate, bindStartDate, isValidStartDate] = useValidatedDateInput(null, {
     validate: validateDate,
@@ -103,7 +105,7 @@ export default function ExportDialog({ format: exportFormat, isOpen, onClose }: 
       <DialogActions>
         {exportFormat === 'json' ? (
           <LoadingButton
-            isLoading={false}
+            isLoading={isExportToJsonLoading}
             variant="contained"
             color="primary"
             onClick={handleExportToJsonClick}

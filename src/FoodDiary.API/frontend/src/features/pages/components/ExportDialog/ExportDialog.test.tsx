@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitForElementToBeRemoved } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { GoogleLoginResponse, useGoogleLogin } from 'react-google-login';
 
@@ -23,7 +23,7 @@ jest.mock(
   }),
 );
 
-test('exports pages to JSON', () => {
+test('exports pages to JSON', async () => {
   const onCloseFn = jest.fn();
 
   const ui = create
@@ -36,11 +36,12 @@ test('exports pages to JSON', () => {
   userEvent.type(screen.getByLabelText(/export start date/i), '01.01.2022');
   userEvent.type(screen.getByLabelText(/export end date/i), '31.01.2022');
   userEvent.click(screen.getByText(/export to json/i));
+  await waitForElementToBeRemoved(screen.getByRole('progressbar'));
 
   expect(onCloseFn).toHaveBeenCalled();
 });
 
-test('exports pages to Google Docs', () => {
+test('exports pages to Google Docs', async () => {
   const onCloseFn = jest.fn();
 
   const ui = create
