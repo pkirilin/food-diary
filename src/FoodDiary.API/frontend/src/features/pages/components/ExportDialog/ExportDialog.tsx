@@ -8,8 +8,10 @@ import format from 'date-fns/format';
 import config from 'src/features/__shared__/config';
 import { useValidatedDateInput } from 'src/features/__shared__/hooks';
 import { createDateValidator } from 'src/features/__shared__/validators';
+
 import { exportPagesToJson } from '../../thunks';
 import { ExportFormat } from '../../models';
+import LoadingButton from './LoadingButton';
 
 const validateDate = createDateValidator(true);
 
@@ -100,23 +102,25 @@ export default function ExportDialog({ format: exportFormat, isOpen, onClose }: 
       </DialogContent>
       <DialogActions>
         {exportFormat === 'json' ? (
-          <Button
+          <LoadingButton
+            isLoading={false}
             variant="contained"
             color="primary"
             onClick={handleExportToJsonClick}
             disabled={isExportDisabled}
           >
             Export to JSON
-          </Button>
+          </LoadingButton>
         ) : (
-          <Button
+          <LoadingButton
+            isLoading={false}
             variant="contained"
             color="primary"
             onClick={handleExportToGoogleDocsClick}
             disabled={isExportDisabled}
           >
             Export to Google Docs
-          </Button>
+          </LoadingButton>
         )}
         <Button variant="text" onClick={onClose}>
           Cancel
