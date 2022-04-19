@@ -23,6 +23,34 @@ jest.mock(
   }),
 );
 
+test('export to JSON button is disabled for incorrect date periods', async () => {
+  const ui = create
+    .component(<ExportDialog format="json" isOpen={true} onClose={jest.fn()}></ExportDialog>)
+    .withReduxStore()
+    .withMuiPickersUtils()
+    .please();
+
+  render(ui);
+
+  userEvent.type(screen.getByLabelText(/export end date/i), '01.01.2022');
+
+  expect(screen.getByText(/export to json/i).parentElement).toBeDisabled();
+});
+
+test('export to Google Docs button is disabled for incorrect date periods', () => {
+  const ui = create
+    .component(<ExportDialog format="google docs" isOpen={true} onClose={jest.fn()}></ExportDialog>)
+    .withReduxStore()
+    .withMuiPickersUtils()
+    .please();
+
+  render(ui);
+
+  userEvent.type(screen.getByLabelText(/export start date/i), '01.01.2022');
+
+  expect(screen.getByText(/export to google docs/i).parentElement).toBeDisabled();
+});
+
 test('exports pages to JSON', async () => {
   const onCloseFn = jest.fn();
 
