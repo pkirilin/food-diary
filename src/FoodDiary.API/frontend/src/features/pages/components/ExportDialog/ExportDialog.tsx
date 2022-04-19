@@ -33,8 +33,10 @@ export default function ExportDialog({ format: exportFormat, isOpen, onClose }: 
     errorHelperText: 'End date is invalid',
   });
 
-  const [exportToGoogleDocs, { isLoading: isExportToGoogleDocsLoading }] =
-    useLazyExportPagesToGoogleDocsQuery();
+  const [
+    exportToGoogleDocs,
+    { isLoading: isExportToGoogleDocsLoading, isSuccess: isExportToGoogleDocsSuccess },
+  ] = useLazyExportPagesToGoogleDocsQuery();
 
   const { signIn } = useGoogleLogin({
     clientId: config.googleClientId,
@@ -60,6 +62,12 @@ export default function ExportDialog({ format: exportFormat, isOpen, onClose }: 
 
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    if (isExportToGoogleDocsSuccess) {
+      onClose();
+    }
+  }, [isExportToGoogleDocsSuccess, onClose]);
+
   function handleExportToJsonClick() {
     if (!startDate || !endDate) {
       return;
@@ -82,9 +90,6 @@ export default function ExportDialog({ format: exportFormat, isOpen, onClose }: 
     }
 
     signIn();
-
-    // TODO: close if success
-    onClose();
   }
 
   useEffect(() => {
@@ -92,7 +97,7 @@ export default function ExportDialog({ format: exportFormat, isOpen, onClose }: 
       setStartDate(null);
       setEndDate(null);
     }
-  }, [isOpen]);
+  }, [isOpen, setEndDate, setStartDate]);
 
   return (
     <Dialog open={isOpen} onClose={onClose}>
