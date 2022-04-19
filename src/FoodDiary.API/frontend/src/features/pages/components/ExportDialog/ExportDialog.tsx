@@ -57,10 +57,17 @@ export default function ExportDialog({ format: exportFormat, isOpen, onClose }: 
   });
 
   const isExportToJsonLoading = useSelector(state => state.pages.isExportToJsonLoading);
+  const isExportToJsonSuccess = useSelector(state => state.pages.isExportToJsonSuccess);
 
   const isExportDisabled = !isValidStartDate || !isValidEndDate;
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (isExportToJsonSuccess) {
+      onClose();
+    }
+  }, [isExportToJsonSuccess, onClose]);
 
   useEffect(() => {
     if (isExportToGoogleDocsSuccess) {
@@ -79,9 +86,6 @@ export default function ExportDialog({ format: exportFormat, isOpen, onClose }: 
         endDate: format(endDate, 'yyyy-MM-dd'),
       }),
     );
-
-    // TODO: close if success
-    onClose();
   }
 
   function handleExportToGoogleDocsClick() {
