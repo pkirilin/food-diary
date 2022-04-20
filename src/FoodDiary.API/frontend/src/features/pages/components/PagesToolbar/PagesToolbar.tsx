@@ -47,7 +47,7 @@ const PagesToolbar: React.FC = () => {
     if (importFile) {
       pagesImportDialog.show();
     }
-  }, [importFile]);
+  }, [importFile, pagesImportDialog]);
 
   const handleAddClick = (): void => {
     pageCreateDialog.show();
