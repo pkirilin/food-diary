@@ -6,7 +6,7 @@ import {
   downloadFile,
   handleEmptyResponse,
 } from '../__shared__/utils';
-import { ExportPagesRequest, Page, PageCreateEdit, PagesSearchResult } from './models';
+import { ExportPagesToJsonRequest, Page, PageCreateEdit, PagesSearchResult } from './models';
 
 export type GetPagesRequest = {
   startDate?: string;
@@ -74,7 +74,7 @@ export const deletePages = createApiCallAsyncThunk<void, number[]>(
   },
 );
 
-export const exportPagesToJson = createApiCallAsyncThunk<void, ExportPagesRequest>(
+export const exportPagesToJson = createApiCallAsyncThunk<void, ExportPagesToJsonRequest>(
   'pages/exportToJson',
   params => createUrl(`${config.apiUrl}/v1/exports/json`, { ...params }),
   async (response, { startDate, endDate }) => {

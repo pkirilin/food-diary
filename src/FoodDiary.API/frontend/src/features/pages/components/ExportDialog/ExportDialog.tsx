@@ -45,12 +45,12 @@ export default function ExportDialog({ format: exportFormat, isOpen, onClose }: 
         return;
       }
 
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { accessToken } = response as GoogleLoginResponse;
 
       exportToGoogleDocs({
         startDate: format(startDate, 'yyyy-MM-dd'),
         endDate: format(endDate, 'yyyy-MM-dd'),
+        accessToken,
       });
     },
     scope: 'https://www.googleapis.com/auth/documents https://www.googleapis.com/auth/drive',

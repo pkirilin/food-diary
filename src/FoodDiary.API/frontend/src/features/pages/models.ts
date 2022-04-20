@@ -29,7 +29,13 @@ export interface PageItemsFilter extends ItemsFilterBase {
 
 export type ExportFormat = 'json' | 'google docs';
 
-export type ExportPagesRequest = {
+export type ExportPagesToJsonRequest = {
   startDate: string;
   endDate: string;
+};
+
+export type ExportPagesToGoogleDocsRequest = {
+  startDate: string;
+  endDate: string;
+  accessToken: string;
 };

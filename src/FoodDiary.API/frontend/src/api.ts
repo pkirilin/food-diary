@@ -4,7 +4,7 @@ import config from './features/__shared__/config';
 import { saveAccessToken } from './features/auth/cookie.service';
 
 import { AuthResult } from './features/auth/models';
-import { ExportPagesRequest } from './features/pages/models';
+import { ExportPagesToGoogleDocsRequest } from './features/pages/models';
 import { ProductAutocompleteOption } from './features/products/models';
 import { CategoryAutocompleteOption } from './features/categories/models';
 
@@ -24,7 +24,7 @@ const api = createApi({
       },
     }),
 
-    exportPagesToGoogleDocs: builder.query<void, ExportPagesRequest>({
+    exportPagesToGoogleDocs: builder.query<void, ExportPagesToGoogleDocsRequest>({
       query: () => '/api/v1/export/google-docs',
     }),
 
