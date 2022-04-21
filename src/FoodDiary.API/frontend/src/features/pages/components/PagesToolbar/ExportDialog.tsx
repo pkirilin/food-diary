@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { GoogleLoginResponse, useGoogleLogin } from 'react-google-login';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/core';
 import { KeyboardDatePicker } from '@material-ui/pickers';
@@ -9,10 +8,11 @@ import config from 'src/features/__shared__/config';
 import { useValidatedDateInput } from 'src/features/__shared__/hooks';
 import { createDateValidator } from 'src/features/__shared__/validators';
 
-import { exportPagesToJson } from '../../thunks';
 import { ExportFormat } from '../../models';
 import LoadingButton from './LoadingButton';
 import { useLazyExportPagesToGoogleDocsQuery } from 'src/api';
+
+import { useExportToJson } from './useExportToJson';
 
 const validateDate = createDateValidator(true);
 
@@ -56,37 +56,19 @@ export default function ExportDialog({ format: exportFormat, isOpen, onClose }: 
     scope: 'https://www.googleapis.com/auth/documents https://www.googleapis.com/auth/drive',
   });
 
-  const isExportToJsonLoading = useSelector(state => state.pages.isExportToJsonLoading);
-  const isExportToJsonSuccess = useSelector(state => state.pages.isExportToJsonSuccess);
+  const {
+    isLoading: isExportToJsonLoading,
+    isSuccess: isExportToJsonSuccess,
+    start: startExportToJson,
+  } = useExportToJson(startDate, endDate);
 
   const isExportDisabled = !isValidStartDate || !isValidEndDate;
 
-  const dispatch = useDispatch();
-
   useEffect(() => {
-    if (isExportToJsonSuccess) {
+    if (isExportToJsonSuccess || isExportToGoogleDocsSuccess) {
       onClose();
     }
-  }, [isExportToJsonSuccess, onClose]);
-
-  useEffect(() => {
-    if (isExportToGoogleDocsSuccess) {
-      onClose();
-    }
-  }, [isExportToGoogleDocsSuccess, onClose]);
-
-  function handleExportToJsonClick() {
-    if (!startDate || !endDate) {
-      return;
-    }
-
-    dispatch(
-      exportPagesToJson({
-        startDate: format(startDate, 'yyyy-MM-dd'),
-        endDate: format(endDate, 'yyyy-MM-dd'),
-      }),
-    );
-  }
+  }, [isExportToJsonSuccess, isExportToGoogleDocsSuccess, onClose]);
 
   function handleExportToGoogleDocsClick() {
     if (!startDate || !endDate) {
@@ -129,7 +111,7 @@ export default function ExportDialog({ format: exportFormat, isOpen, onClose }: 
             isLoading={isExportToJsonLoading}
             variant="contained"
             color="primary"
-            onClick={handleExportToJsonClick}
+            onClick={() => startExportToJson()}
             disabled={isExportDisabled}
           >
             Export to JSON
