@@ -1,17 +1,9 @@
 import { useDispatch, useSelector } from 'react-redux';
 import format from 'date-fns/format';
+import { UseExportResult } from './types';
 import { exportPagesToJson } from '../../thunks';
 
-export type UseExportToJsonResult = {
-  isLoading: boolean;
-  isSuccess: boolean;
-  start: () => void;
-};
-
-export function useExportToJson(
-  startDate: Date | null,
-  endDate: Date | null,
-): UseExportToJsonResult {
+export function useExportToJson(startDate: Date | null, endDate: Date | null): UseExportResult {
   const isLoading = useSelector(state => state.pages.isExportToJsonLoading);
   const isSuccess = useSelector(state => state.pages.isExportToJsonSuccess);
   const dispatch = useDispatch();

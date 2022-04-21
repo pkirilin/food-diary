@@ -1,18 +1,14 @@
 import { useEffect } from 'react';
-import { GoogleLoginResponse, useGoogleLogin } from 'react-google-login';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/core';
 import { KeyboardDatePicker } from '@material-ui/pickers';
-import format from 'date-fns/format';
 
-import config from 'src/features/__shared__/config';
 import { useValidatedDateInput } from 'src/features/__shared__/hooks';
 import { createDateValidator } from 'src/features/__shared__/validators';
-
 import { ExportFormat } from '../../models';
-import LoadingButton from './LoadingButton';
-import { useLazyExportPagesToGoogleDocsQuery } from 'src/api';
 
+import LoadingButton from './LoadingButton';
 import { useExportToJson } from './useExportToJson';
+import { useExportToGoogleDocs } from './useExportToGoogleDocs';
 
 const validateDate = createDateValidator(true);
 
@@ -33,34 +29,17 @@ export default function ExportDialog({ format: exportFormat, isOpen, onClose }: 
     errorHelperText: 'End date is invalid',
   });
 
-  const [
-    exportToGoogleDocs,
-    { isLoading: isExportToGoogleDocsLoading, isSuccess: isExportToGoogleDocsSuccess },
-  ] = useLazyExportPagesToGoogleDocsQuery();
-
-  const { signIn } = useGoogleLogin({
-    clientId: config.googleClientId,
-    onSuccess: response => {
-      if (!startDate || !endDate) {
-        return;
-      }
-
-      const { accessToken } = response as GoogleLoginResponse;
-
-      exportToGoogleDocs({
-        startDate: format(startDate, 'yyyy-MM-dd'),
-        endDate: format(endDate, 'yyyy-MM-dd'),
-        accessToken,
-      });
-    },
-    scope: 'https://www.googleapis.com/auth/documents https://www.googleapis.com/auth/drive',
-  });
-
   const {
     isLoading: isExportToJsonLoading,
     isSuccess: isExportToJsonSuccess,
     start: startExportToJson,
   } = useExportToJson(startDate, endDate);
+
+  const {
+    isLoading: isExportToGoogleDocsLoading,
+    isSuccess: isExportToGoogleDocsSuccess,
+    start: startExportToGoogleDocs,
+  } = useExportToGoogleDocs(startDate, endDate);
 
   const isExportDisabled = !isValidStartDate || !isValidEndDate;
 
@@ -69,14 +48,6 @@ export default function ExportDialog({ format: exportFormat, isOpen, onClose }: 
       onClose();
     }
   }, [isExportToJsonSuccess, isExportToGoogleDocsSuccess, onClose]);
-
-  function handleExportToGoogleDocsClick() {
-    if (!startDate || !endDate) {
-      return;
-    }
-
-    signIn();
-  }
 
   useEffect(() => {
     if (isOpen) {
@@ -121,7 +92,7 @@ export default function ExportDialog({ format: exportFormat, isOpen, onClose }: 
             isLoading={isExportToGoogleDocsLoading}
             variant="contained"
             color="primary"
-            onClick={handleExportToGoogleDocsClick}
+            onClick={() => startExportToGoogleDocs()}
             disabled={isExportDisabled}
           >
             Export to Google Docs
