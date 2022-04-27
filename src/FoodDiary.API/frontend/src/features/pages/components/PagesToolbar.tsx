@@ -5,20 +5,20 @@ import AddIcon from '@material-ui/icons/Add';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import PublishIcon from '@material-ui/icons/Publish';
 import DeleteIcon from '@material-ui/icons/Delete';
-import PageCreateEditDialog from '../PageCreateEditDialog';
-import PagesFilter from '../PagesFilter';
-import { PageCreateEdit } from '../../models';
-import { createPage, deletePages, importPages } from '../../thunks';
-import { ConfirmationDialog } from '../../../__shared__/components';
-import { useDialog, usePopover, useTypedSelector } from '../../../__shared__/hooks';
-import { useToolbarStyles } from '../../../__shared__/styles';
-
-import ExportMenu from './ExportMenu';
+import PageCreateEditDialog from './PageCreateEditDialog';
+import PagesFilter from './PagesFilter';
+import { PageCreateEdit } from '../models';
+import { createPage, deletePages, importPages } from '../thunks';
+import { ConfirmationDialog } from '../../__shared__/components';
+import { useDialog, usePopover, useTypedSelector } from '../../__shared__/hooks';
+import { useToolbarStyles } from '../../__shared__/styles';
 
 const importWarningMessage =
   'Pages import is going to be started. Import may update or overwrite existing data from file and may cause data loss. Continue?';
 
-const PagesToolbar: React.FC = () => {
+export type PagesToolbarProps = React.PropsWithChildren<unknown>;
+
+export default function PagesToolbar({ children }: PagesToolbarProps) {
   const classes = useToolbarStyles();
 
   const selectedPageIds = useTypedSelector(state => state.pages.selectedPageIds);
@@ -132,7 +132,6 @@ const PagesToolbar: React.FC = () => {
           </Tooltip>
         </React.Fragment>
       )}
-      <ExportMenu></ExportMenu>
       <Popover
         {...filter}
         anchorOrigin={{
@@ -146,8 +145,7 @@ const PagesToolbar: React.FC = () => {
       >
         <PagesFilter></PagesFilter>
       </Popover>
+      {children}
     </Toolbar>
   );
-};
-
-export default PagesToolbar;
+}

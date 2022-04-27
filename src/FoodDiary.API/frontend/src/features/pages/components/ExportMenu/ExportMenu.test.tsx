@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { GoogleLoginResponse, useGoogleLogin } from 'react-google-login';
 
 import { create } from 'src/test-utils';
-import PagesToolbar from './PagesToolbar';
+import ExportMenu from './ExportMenu';
 
 type MockedReactGoogleLogin = {
   useGoogleLogin: typeof useGoogleLogin;
@@ -25,7 +25,7 @@ jest.mock(
 
 test('pages can be exported to JSON if start/end dates specified', async () => {
   const ui = create
-    .component(<PagesToolbar></PagesToolbar>)
+    .component(<ExportMenu></ExportMenu>)
     .withReduxStore()
     .withMuiPickersUtils()
     .please();
@@ -45,7 +45,7 @@ test('pages can be exported to JSON if start/end dates specified', async () => {
 
 test('pages can be exported to Google Docs if start/end dates specified', async () => {
   const ui = create
-    .component(<PagesToolbar></PagesToolbar>)
+    .component(<ExportMenu></ExportMenu>)
     .withReduxStore()
     .withMuiPickersUtils()
     .please();
@@ -65,7 +65,7 @@ test('pages can be exported to Google Docs if start/end dates specified', async 
 
 test('pages cannot be exported if start/end dates not specified', async () => {
   const ui = create
-    .component(<PagesToolbar></PagesToolbar>)
+    .component(<ExportMenu></ExportMenu>)
     .withReduxStore()
     .withMuiPickersUtils()
     .please();
