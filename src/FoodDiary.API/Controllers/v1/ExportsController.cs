@@ -13,6 +13,8 @@ using System.Text.Encodings.Web;
 using MediatR;
 using FoodDiary.Application.Pages.Requests;
 using FoodDiary.Application.Enums;
+using FoodDiary.Application.Services.Export;
+using FoodDiary.Application.Services.Export.GoogleDocs;
 using Microsoft.AspNetCore.Authorization;
 
 namespace FoodDiary.API.Controllers.v1
@@ -27,15 +29,18 @@ namespace FoodDiary.API.Controllers.v1
         private readonly IMapper _mapper;
         private readonly IMediator _mediator;
         private readonly IPagesPdfGenerator _pagesPdfGenerator;
+        private readonly IExportService _exportService;
 
         public ExportsController(
             IMapper mapper,
             IMediator mediator,
-            IPagesPdfGenerator pagesPdfGenerator)
+            IPagesPdfGenerator pagesPdfGenerator,
+            IExportService exportService)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
             _pagesPdfGenerator = pagesPdfGenerator ?? throw new ArgumentNullException(nameof(pagesPdfGenerator));
+            _exportService = exportService;
         }
 
         /// <summary>
@@ -103,6 +108,15 @@ namespace FoodDiary.API.Controllers.v1
             }
 
             return File(fileContents, "application/json");
+        }
+
+        [HttpPost("google-docs")]
+        public async Task<IActionResult> ExportToGoogleDocs([FromQuery] ExportGoogleDocsRequestDto request,
+            CancellationToken cancellationToken)
+        {
+            await _exportService.ExportToGoogleDocsAsync(request, cancellationToken);
+            
+            return Ok();
         }
     }
 }
