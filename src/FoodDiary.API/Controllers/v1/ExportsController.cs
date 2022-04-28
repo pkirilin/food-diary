@@ -14,7 +14,6 @@ using MediatR;
 using FoodDiary.Application.Pages.Requests;
 using FoodDiary.Application.Enums;
 using FoodDiary.Application.Services.Export;
-using FoodDiary.Application.Services.Export.GoogleDocs;
 using Microsoft.AspNetCore.Authorization;
 
 namespace FoodDiary.API.Controllers.v1
@@ -111,7 +110,7 @@ namespace FoodDiary.API.Controllers.v1
         }
 
         [HttpPost("google-docs")]
-        public async Task<IActionResult> ExportToGoogleDocs([FromQuery] ExportGoogleDocsRequestDto request,
+        public async Task<IActionResult> ExportToGoogleDocs([FromQuery] ExportToGoogleDocsRequestDto request,
             CancellationToken cancellationToken)
         {
             await _exportService.ExportToGoogleDocsAsync(request, cancellationToken);
