@@ -15,6 +15,8 @@ public class FoodDiaryUnitOfWork : IFoodDiaryUnitOfWork
         _context = context;
     }
 
+    public IPagesRepository Pages => new PagesRepository(_context.Pages);
+    
     public IProductsRepository Products => new ProductsRepository(_context.Products);
 
     public ICategoriesRepository Categories => new CategoriesRepository(_context.Categories);
