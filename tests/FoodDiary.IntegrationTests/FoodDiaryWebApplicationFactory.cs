@@ -28,6 +28,11 @@ public class FoodDiaryWebApplicationFactory : WebApplicationFactory<Startup>
 
     public void ClearDatabase() => ClearDatabaseAsync().Wait();
 
+    public FakeGoogleDriveClient CreateFakeGoogleDriveClient()
+    {
+        return new FakeGoogleDriveClient();
+    }
+
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         _connection = new SqliteConnection("Filename=:memory:");

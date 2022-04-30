@@ -110,7 +110,7 @@ namespace FoodDiary.API.Controllers.v1
         }
 
         [HttpPost("google-docs")]
-        public async Task<IActionResult> ExportToGoogleDocs([FromQuery] ExportToGoogleDocsRequestDto request,
+        public async Task<IActionResult> ExportToGoogleDocs([FromBody] ExportToGoogleDocsRequestDto request,
             CancellationToken cancellationToken)
         {
             await _exportService.ExportToGoogleDocsAsync(request, cancellationToken);
