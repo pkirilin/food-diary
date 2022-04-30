@@ -31,6 +31,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoodDiary.Migrator", "src\F
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{CF9D0D23-CA8E-4DC8-8E10-E15B4A42A680}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoodDiary.Export.GoogleDocs", "src\FoodDiary.Export.GoogleDocs\FoodDiary.Export.GoogleDocs.csproj", "{87976F60-4108-40F7-9E52-259BA90C48A2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -197,6 +199,18 @@ Global
 		{333DD704-39C2-42AA-9B05-E7A7F41BAB0C}.Release|x64.Build.0 = Release|Any CPU
 		{333DD704-39C2-42AA-9B05-E7A7F41BAB0C}.Release|x86.ActiveCfg = Release|Any CPU
 		{333DD704-39C2-42AA-9B05-E7A7F41BAB0C}.Release|x86.Build.0 = Release|Any CPU
+		{87976F60-4108-40F7-9E52-259BA90C48A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87976F60-4108-40F7-9E52-259BA90C48A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87976F60-4108-40F7-9E52-259BA90C48A2}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{87976F60-4108-40F7-9E52-259BA90C48A2}.Debug|x64.Build.0 = Debug|Any CPU
+		{87976F60-4108-40F7-9E52-259BA90C48A2}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{87976F60-4108-40F7-9E52-259BA90C48A2}.Debug|x86.Build.0 = Debug|Any CPU
+		{87976F60-4108-40F7-9E52-259BA90C48A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87976F60-4108-40F7-9E52-259BA90C48A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87976F60-4108-40F7-9E52-259BA90C48A2}.Release|x64.ActiveCfg = Release|Any CPU
+		{87976F60-4108-40F7-9E52-259BA90C48A2}.Release|x64.Build.0 = Release|Any CPU
+		{87976F60-4108-40F7-9E52-259BA90C48A2}.Release|x86.ActiveCfg = Release|Any CPU
+		{87976F60-4108-40F7-9E52-259BA90C48A2}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

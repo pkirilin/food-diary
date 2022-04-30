@@ -1,7 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
-using FoodDiary.Application.Services.Export.GoogleDocs;
 using FoodDiary.Domain.Abstractions.v2;
+using FoodDiary.Export.GoogleDocs;
 
 namespace FoodDiary.Application.Services.Export;
 

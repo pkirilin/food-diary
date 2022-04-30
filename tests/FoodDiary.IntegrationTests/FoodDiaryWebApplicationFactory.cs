@@ -2,6 +2,7 @@ using System.IO;
 using System.Threading.Tasks;
 using FoodDiary.API;
 using FoodDiary.Domain.Entities;
+using FoodDiary.Export.GoogleDocs.Extensions;
 using FoodDiary.Infrastructure;
 using FoodDiary.Integrations.Google.Extensions;
 using FoodDiary.IntegrationTests.Dsl.Builders;
@@ -59,6 +60,9 @@ public class FoodDiaryWebApplicationFactory : WebApplicationFactory<Startup>
 
             services.AddGoogleOAuthClient()
                 .ConfigurePrimaryHttpMessageHandler(() => new FakeHttpMessageHandler());
+
+            services.AddGoogleDocsExportService()
+                .ConfigureDocsServiceHttpMessageHandler(new FakeHttpMessageHandler());
         });
     }
     
