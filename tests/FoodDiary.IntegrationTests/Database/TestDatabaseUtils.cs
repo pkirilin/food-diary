@@ -4,8 +4,7 @@ namespace FoodDiary.IntegrationTests.Database;
 
 public static class TestDatabaseUtils
 {
-    public static void Clear(FoodDiaryContext context)
+    public static void Initialize(FoodDiaryContext context)
     {
-        context.Database.EnsureDeleted();
     }
 }

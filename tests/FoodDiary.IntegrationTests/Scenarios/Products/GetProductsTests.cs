@@ -12,25 +12,24 @@ namespace FoodDiary.IntegrationTests.Scenarios.Products;
 
 public class GetProductsTests : IDisposable, IClassFixture<FoodDiaryWebApplicationFactory>
 {
-    private readonly FoodDiaryWebApplicationFactory _webApplicationFactory;
+    private readonly FoodDiaryWebApplicationFactory _factory;
     private readonly HttpClient _client;
 
-    public GetProductsTests(FoodDiaryWebApplicationFactory webApplicationFactory)
+    public GetProductsTests(FoodDiaryWebApplicationFactory factory)
     {
-        _webApplicationFactory = webApplicationFactory;
-        _client = _webApplicationFactory.CreateClient();
+        _factory = factory;
+        _client = _factory.CreateClient();
     }
 
     public void Dispose()
     {
-        _client?.Dispose();
-        _webApplicationFactory.ClearDatabase();
+        _factory.ClearDatabase();
     }
 
     [Fact]
     public async Task Gets_product_autocomplete_items_ordered_by_name()
     {
-        await _webApplicationFactory.SeedDatabase()
+        await _factory.SeedDatabase()
             .AddProduct(1, "Milk")
             .AddProduct(2, "Bread")
             .PleaseAsync();

@@ -34,7 +34,10 @@ public class FoodDiaryWebApplicationFactory : WebApplicationFactory<Startup>
 
     public void ClearDatabase()
     {
-        TestDatabaseUtils.Clear(DbContext);
+        _connection?.Close();
+        _connection?.Open();
+        DbContext.ChangeTracker.Clear();
+        DbContext.Database.EnsureCreated();
     }
 
     public FakeGoogleDriveClient CreateFakeGoogleDriveClient()
@@ -108,6 +111,7 @@ public class FoodDiaryWebApplicationFactory : WebApplicationFactory<Startup>
             _scope = serviceScopeFactory.CreateScope();
             _dbContext = _scope.ServiceProvider.GetRequiredService<FoodDiaryContext>();
             _dbContext.Database.EnsureCreated();
+            TestDatabaseUtils.Initialize(_dbContext);
             return _dbContext;
         }
     }
