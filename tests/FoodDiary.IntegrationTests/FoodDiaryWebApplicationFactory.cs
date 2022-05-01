@@ -61,8 +61,9 @@ public class FoodDiaryWebApplicationFactory : WebApplicationFactory<Startup>
             services.AddGoogleOAuthClient()
                 .ConfigurePrimaryHttpMessageHandler(() => new FakeHttpMessageHandler());
 
-            services.AddGoogleDocsExportService()
-                .ConfigureDocsServiceHttpMessageHandler(new FakeHttpMessageHandler());
+            services.AddGoogleDocsExportService(b => b
+                .ConfigureDocsServiceHttpMessageHandler(new FakeHttpMessageHandler())
+            );
         });
     }
     
