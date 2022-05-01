@@ -41,8 +41,11 @@ public class FoodDiaryWebApplicationFactory : WebApplicationFactory<Startup>
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        _connection = new SqliteConnection("Filename=:memory:");
-        _connection.Open();
+        if (_connection == null)
+        {
+            _connection = new SqliteConnection("Filename=:memory:");
+            _connection.Open();
+        }
 
         builder.UseEnvironment("Test");
 
