@@ -24,6 +24,11 @@ public class FoodDiaryWebApplicationFactory : WebApplicationFactory<Startup>
     private SqliteConnection _connection;
     private IServiceScope _scope;
     private FoodDiaryContext _dbContext;
+
+    public FoodDiaryWebApplicationFactory()
+    {
+        _dbContext = DbContext;
+    }
     
     public SeedDataForDbContextBuilder SeedDatabase() => new(DbContext);
 
