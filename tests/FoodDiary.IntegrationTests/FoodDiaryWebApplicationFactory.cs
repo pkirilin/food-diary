@@ -7,6 +7,7 @@ using FoodDiary.Infrastructure;
 using FoodDiary.Integrations.Google.Extensions;
 using FoodDiary.IntegrationTests.Dsl.Builders;
 using FoodDiary.IntegrationTests.Fakes;
+using Google.Apis.Docs.v1.Data;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -69,9 +70,17 @@ public class FoodDiaryWebApplicationFactory : WebApplicationFactory<Startup>
             services.AddGoogleOAuthClient()
                 .ConfigurePrimaryHttpMessageHandler(() => new FakeHttpMessageHandler());
 
-            services.AddGoogleDocsExportService(b => b
-                .ConfigureDocsServiceHttpMessageHandler(new FakeHttpMessageHandler())
-            );
+            services.AddGoogleDocsExportService(exportBuilder =>
+            {
+                var handler = new FakeHttpMessageHandler();
+                handler.WithSuccessStatusCode();
+                handler.WithJsonResponse(new Document
+                {
+                    DocumentId = "test_google_document_id"
+                });
+                
+                return exportBuilder.ConfigureDocsServiceHttpMessageHandler(handler);
+            });
         });
     }
     
