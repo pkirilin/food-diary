@@ -5,7 +5,6 @@ using FoodDiary.Export.GoogleDocs.Extensions;
 using FoodDiary.Infrastructure;
 using FoodDiary.Integrations.Google.Extensions;
 using FoodDiary.IntegrationTests.Database;
-using FoodDiary.IntegrationTests.Dsl.Builders;
 using FoodDiary.IntegrationTests.Fakes;
 using Google.Apis.Docs.v1.Data;
 using Microsoft.AspNetCore.Authentication;
@@ -34,17 +33,8 @@ public class FoodDiaryWebApplicationFactory : WebApplicationFactory<Startup>
     public new HttpClient CreateClient()
     {
         ClearDatabase();
+        TestDatabaseUtils.Initialize(DbContext);
         return base.CreateClient();
-    }
-    
-    public SeedDataForDbContextBuilder SeedDatabase() => new(DbContext);
-
-    private void ClearDatabase()
-    {
-        _connection?.Close();
-        _connection?.Open();
-        DbContext.ChangeTracker.Clear();
-        DbContext.Database.EnsureCreated();
     }
 
     public FakeGoogleDriveClient CreateFakeGoogleDriveClient()
@@ -118,8 +108,15 @@ public class FoodDiaryWebApplicationFactory : WebApplicationFactory<Startup>
             _scope = serviceScopeFactory.CreateScope();
             _dbContext = _scope.ServiceProvider.GetRequiredService<FoodDiaryContext>();
             _dbContext.Database.EnsureCreated();
-            TestDatabaseUtils.Initialize(_dbContext);
             return _dbContext;
         }
+    }
+    
+    private void ClearDatabase()
+    {
+        _connection?.Close();
+        _connection?.Open();
+        DbContext.ChangeTracker.Clear();
+        DbContext.Database.EnsureCreated();
     }
 }

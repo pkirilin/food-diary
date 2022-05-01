@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Net;
 using System.Net.Http.Json;
 using System.Threading;
@@ -21,19 +22,12 @@ public class GetProductsTests : IClassFixture<FoodDiaryWebApplicationFactory>
     public async Task Gets_product_autocomplete_items_ordered_by_name()
     {
         var client = _factory.CreateClient();
-        
-        await _factory.SeedDatabase()
-            .AddProduct(1, "Milk")
-            .AddProduct(2, "Bread")
-            .PleaseAsync();
 
         var response = await client.GetAsync("/api/v1/products/autocomplete", CancellationToken.None);
-        var productsForAutocomplete = await response.Content.ReadFromJsonAsync<ProductAutocompleteItemDto[]>();
+        var autocompleteItems = await response.Content.ReadFromJsonAsync<ProductAutocompleteItemDto[]>();
+        var products = autocompleteItems?.Select(p => p.Name);
         
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        productsForAutocomplete.Should().HaveCount(2)
-            .And.Contain(p => p.Name == "Milk")
-            .And.Contain(p => p.Name == "Bread")
-            .And.BeInAscendingOrder(p => p.Name);
+        products.Should().ContainInOrder("Bread", "Milk");
     }
 }

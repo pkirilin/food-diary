@@ -9,11 +9,11 @@ using Xunit;
 
 namespace FoodDiary.IntegrationTests.Scenarios.Categories;
 
-public class AutocompleteTests : IClassFixture<FoodDiaryWebApplicationFactory>
+public class GetCategoriesTests : IClassFixture<FoodDiaryWebApplicationFactory>
 {
     private readonly FoodDiaryWebApplicationFactory _factory;
 
-    public AutocompleteTests(FoodDiaryWebApplicationFactory factory)
+    public GetCategoriesTests(FoodDiaryWebApplicationFactory factory)
     {
         _factory = factory;
     }
@@ -22,13 +22,6 @@ public class AutocompleteTests : IClassFixture<FoodDiaryWebApplicationFactory>
     public async Task Gets_category_autocomplete_items_ordered_by_name()
     {
         var client = _factory.CreateClient();
-        
-        await _factory.SeedDatabase()
-            .AddCategory("Cereals")
-            .AddCategory("Dairy")
-            .AddCategory("Frozen Foods")
-            .AddCategory("Bakery")
-            .PleaseAsync();
         
         var response = await client.GetAsync("/api/v1/categories/autocomplete", CancellationToken.None);
         var autocompleteItems = await response.Content.ReadFromJsonAsync<CategoryAutocompleteItemDto[]>();
