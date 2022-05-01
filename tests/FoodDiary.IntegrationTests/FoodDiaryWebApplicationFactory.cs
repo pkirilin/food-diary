@@ -1,4 +1,5 @@
 using System.IO;
+using System.Net.Http;
 using FoodDiary.API;
 using FoodDiary.Export.GoogleDocs.Extensions;
 using FoodDiary.Infrastructure;
@@ -29,10 +30,16 @@ public class FoodDiaryWebApplicationFactory : WebApplicationFactory<Startup>
     {
         _dbContext = DbContext;
     }
+
+    public new HttpClient CreateClient()
+    {
+        ClearDatabase();
+        return base.CreateClient();
+    }
     
     public SeedDataForDbContextBuilder SeedDatabase() => new(DbContext);
 
-    public void ClearDatabase()
+    private void ClearDatabase()
     {
         _connection?.Close();
         _connection?.Open();

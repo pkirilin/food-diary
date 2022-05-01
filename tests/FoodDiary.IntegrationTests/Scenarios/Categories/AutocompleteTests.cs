@@ -1,7 +1,5 @@
-using System;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,25 +9,20 @@ using Xunit;
 
 namespace FoodDiary.IntegrationTests.Scenarios.Categories;
 
-public class AutocompleteTests : IClassFixture<FoodDiaryWebApplicationFactory>, IDisposable
+public class AutocompleteTests : IClassFixture<FoodDiaryWebApplicationFactory>
 {
     private readonly FoodDiaryWebApplicationFactory _factory;
-    private readonly HttpClient _client;
 
     public AutocompleteTests(FoodDiaryWebApplicationFactory factory)
     {
         _factory = factory;
-        _client = _factory.CreateClient();
-    }
-
-    public void Dispose()
-    {
-        _factory.ClearDatabase();
     }
 
     [Fact]
     public async Task Gets_category_autocomplete_items_ordered_by_name()
     {
+        var client = _factory.CreateClient();
+        
         await _factory.SeedDatabase()
             .AddCategory("Cereals")
             .AddCategory("Dairy")
@@ -37,7 +30,7 @@ public class AutocompleteTests : IClassFixture<FoodDiaryWebApplicationFactory>, 
             .AddCategory("Bakery")
             .PleaseAsync();
         
-        var response = await _client.GetAsync("/api/v1/categories/autocomplete", CancellationToken.None);
+        var response = await client.GetAsync("/api/v1/categories/autocomplete", CancellationToken.None);
         var autocompleteItems = await response.Content.ReadFromJsonAsync<CategoryAutocompleteItemDto[]>();
         var categories = autocompleteItems?.Select(item => item.Name).ToArray();
 
