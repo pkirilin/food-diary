@@ -42,6 +42,11 @@ public class FoodDiaryWebApplicationFactory : WebApplicationFactory<Startup>
         return new FakeGoogleDriveClient();
     }
 
+    public FakeGoogleDocsClient CreateFakeGoogleDocsClient()
+    {
+        return new FakeGoogleDocsClient();
+    }
+
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         if (_connection == null)

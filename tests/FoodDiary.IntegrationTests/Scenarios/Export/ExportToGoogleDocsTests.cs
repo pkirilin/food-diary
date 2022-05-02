@@ -21,6 +21,7 @@ public class ExportToGoogleDocsTests : IClassFixture<FoodDiaryWebApplicationFact
     {
         var client = _factory.CreateClient();
         var googleDriveClient = _factory.CreateFakeGoogleDriveClient();
+        var googleDocsClient = _factory.CreateFakeGoogleDocsClient();
 
         var exportRequest = new ExportToGoogleDocsRequestDto
         {
@@ -30,10 +31,11 @@ public class ExportToGoogleDocsTests : IClassFixture<FoodDiaryWebApplicationFact
         };
         
         var response = await client.PostAsJsonAsync("api/v1/exports/google-docs", exportRequest);
-        var exportFileOnDrive = googleDriveClient.GetFiles()
-            .FirstOrDefault(f => f.Name == "FoodDiary_20220423_20220430");
+        var exportFileOnDrive = googleDriveClient.GetFiles().FirstOrDefault(f => f.Name == "FoodDiary_20220423_20220430");
+        var exportDocument = googleDocsClient.GetDocumentById(exportFileOnDrive?.Id);
 
         response.IsSuccessStatusCode.Should().BeTrue();
         exportFileOnDrive.Should().NotBeNull();
+        exportDocument.Should().NotBeNull();
     }
 }
