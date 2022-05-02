@@ -1,9 +1,11 @@
+using Google.Apis.Drive.v3.Data;
+
 namespace FoodDiary.IntegrationTests.Fakes;
 
 public class FakeGoogleDriveClient
 {
-    public string[] GetFiles()
+    public File[] GetFiles()
     {
-        return new string[0];
+        return new File[0];
     }
 }

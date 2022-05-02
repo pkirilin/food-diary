@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Net.Http.Json;
 using FluentAssertions;
 using FoodDiary.Application.Services.Export;
@@ -29,9 +30,10 @@ public class ExportToGoogleDocsTests : IClassFixture<FoodDiaryWebApplicationFact
         };
         
         var response = await client.PostAsJsonAsync("api/v1/exports/google-docs", exportRequest);
-        var googleDriveFiles = googleDriveClient.GetFiles();
+        var exportFileOnDrive = googleDriveClient.GetFiles()
+            .FirstOrDefault(f => f.Name == "FoodDiary_20220423_20220430");
 
         response.IsSuccessStatusCode.Should().BeTrue();
-        googleDriveFiles.Should().Contain("FoodDiary_20220423_20220430");
+        exportFileOnDrive.Should().NotBeNull();
     }
 }
