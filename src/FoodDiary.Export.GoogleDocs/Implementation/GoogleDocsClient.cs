@@ -1,12 +1,8 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using FoodDiary.Export.GoogleDocs;
 using Google.Apis.Docs.v1.Data;
 
-namespace FoodDiary.IntegrationTests.Fakes;
+namespace FoodDiary.Export.GoogleDocs.Implementation;
 
-public class FakeGoogleDocsClient : IGoogleDocsClient
+internal class GoogleDocsClient : IGoogleDocsClient
 {
     public Task<Document?> GetDocumentAsync(string? documentId, CancellationToken cancellationToken)
     {

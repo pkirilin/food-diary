@@ -1,12 +1,11 @@
 using System.IO;
 using System.Net.Http;
 using FoodDiary.API;
-using FoodDiary.Export.GoogleDocs.Extensions;
+using FoodDiary.Export.GoogleDocs;
 using FoodDiary.Infrastructure;
 using FoodDiary.Integrations.Google.Extensions;
 using FoodDiary.IntegrationTests.Database;
 using FoodDiary.IntegrationTests.Fakes;
-using Google.Apis.Docs.v1.Data;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -37,14 +36,14 @@ public class FoodDiaryWebApplicationFactory : WebApplicationFactory<Startup>
         return base.CreateClient();
     }
 
-    public FakeGoogleDriveClient CreateFakeGoogleDriveClient()
+    public IGoogleDriveClient GetGoogleDriveClient()
     {
-        return new FakeGoogleDriveClient();
+        return Services.GetRequiredService<IGoogleDriveClient>();
     }
 
-    public FakeGoogleDocsClient CreateFakeGoogleDocsClient()
+    public IGoogleDocsClient GetGoogleDocsClient()
     {
-        return new FakeGoogleDocsClient();
+        return Services.GetRequiredService<IGoogleDocsClient>();
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -77,22 +76,8 @@ public class FoodDiaryWebApplicationFactory : WebApplicationFactory<Startup>
             services.AddGoogleOAuthClient()
                 .ConfigurePrimaryHttpMessageHandler(() => new FakeHttpMessageHandler());
 
-            services.AddGoogleDocsExportService(exportBuilder =>
-            {
-                var docsHandler = new FakeHttpMessageHandler();
-                docsHandler.WithSuccessStatusCode();
-                docsHandler.WithJsonResponse(new Document
-                {
-                    DocumentId = "test_google_document_id"
-                });
-
-                var driveHandler = new FakeHttpMessageHandler();
-                driveHandler.WithSuccessStatusCode();
-                
-                return exportBuilder
-                    .ConfigureDocsServiceHttpMessageHandler(docsHandler)
-                    .ConfigureDriveServiceHttpMessageHandler(driveHandler);
-            });
+            services.AddSingleton<IGoogleDriveClient, FakeGoogleDriveClient>();
+            services.AddSingleton<IGoogleDocsClient, FakeGoogleDocsClient>();
         });
     }
     

@@ -1,11 +1,20 @@
+using System.Threading;
+using System.Threading.Tasks;
+using FoodDiary.Export.GoogleDocs;
+using Google.Apis.Docs.v1.Data;
 using Google.Apis.Drive.v3.Data;
 
 namespace FoodDiary.IntegrationTests.Fakes;
 
-public class FakeGoogleDriveClient
+public class FakeGoogleDriveClient : IGoogleDriveClient
 {
-    public File[] GetFiles()
+    public Task<File?> GetFileAsync(string fileId, CancellationToken cancellationToken)
     {
-        return new File[0];
+        throw new System.NotImplementedException();
+    }
+
+    public Task SaveDocumentAsync(Document document, string accessToken, CancellationToken cancellationToken)
+    {
+        throw new System.NotImplementedException();
     }
 }
