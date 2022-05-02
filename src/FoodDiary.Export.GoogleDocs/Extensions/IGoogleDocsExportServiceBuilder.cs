@@ -5,4 +5,5 @@ public interface IGoogleDocsExportServiceBuilder
     IGoogleDocsExportService Build();
     
     IGoogleDocsExportServiceBuilder ConfigureDocsServiceHttpMessageHandler(HttpMessageHandler handler);
+    IGoogleDocsExportServiceBuilder ConfigureDriveServiceHttpMessageHandler(HttpMessageHandler handler);
 }

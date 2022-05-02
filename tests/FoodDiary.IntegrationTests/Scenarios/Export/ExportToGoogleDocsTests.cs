@@ -23,8 +23,8 @@ public class ExportToGoogleDocsTests : IClassFixture<FoodDiaryWebApplicationFact
 
         var exportRequest = new ExportToGoogleDocsRequestDto
         {
-            StartDate = DateTime.Parse("2022-04-23"),
-            EndDate = DateTime.Parse("2022-04-30"),
+            StartDate = DateTime.Parse("2022-05-01"),
+            EndDate = DateTime.Parse("2022-05-11"),
             AccessToken = "test"
         };
         

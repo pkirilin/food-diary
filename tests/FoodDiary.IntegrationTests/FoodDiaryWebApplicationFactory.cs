@@ -74,14 +74,19 @@ public class FoodDiaryWebApplicationFactory : WebApplicationFactory<Startup>
 
             services.AddGoogleDocsExportService(exportBuilder =>
             {
-                var handler = new FakeHttpMessageHandler();
-                handler.WithSuccessStatusCode();
-                handler.WithJsonResponse(new Document
+                var docsHandler = new FakeHttpMessageHandler();
+                docsHandler.WithSuccessStatusCode();
+                docsHandler.WithJsonResponse(new Document
                 {
                     DocumentId = "test_google_document_id"
                 });
+
+                var driveHandler = new FakeHttpMessageHandler();
+                driveHandler.WithSuccessStatusCode();
                 
-                return exportBuilder.ConfigureDocsServiceHttpMessageHandler(handler);
+                return exportBuilder
+                    .ConfigureDocsServiceHttpMessageHandler(docsHandler)
+                    .ConfigureDriveServiceHttpMessageHandler(driveHandler);
             });
         });
     }
