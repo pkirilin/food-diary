@@ -2,14 +2,13 @@ using System;
 using System.Net.Http.Json;
 using FluentAssertions;
 using FoodDiary.Application.Services.Export;
+using FoodDiary.IntegrationTests.Fakes;
 using Xunit;
 
 namespace FoodDiary.IntegrationTests.Scenarios.Export;
 
 public class ExportToGoogleDocsTests : IClassFixture<FoodDiaryWebApplicationFactory>
 {
-    private const string ExportFileId = "";
-    
     private readonly FoodDiaryWebApplicationFactory _factory;
 
     public ExportToGoogleDocsTests(FoodDiaryWebApplicationFactory factory)
@@ -32,7 +31,7 @@ public class ExportToGoogleDocsTests : IClassFixture<FoodDiaryWebApplicationFact
         };
         
         var response = await client.PostAsJsonAsync("api/v1/exports/google-docs", exportRequest);
-        var exportFile = await googleDriveClient.GetFileAsync(ExportFileId, exportRequest.AccessToken, default);
+        var exportFile = await googleDriveClient.GetFileAsync(FakeGoogleDocsClient.NewDocId, exportRequest.AccessToken, default);
         var exportDocument = await googleDocsClient.GetDocumentAsync(exportFile?.Id, exportRequest.AccessToken, default);
 
         response.IsSuccessStatusCode.Should().BeTrue();

@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FoodDiary.Export.GoogleDocs;
@@ -8,13 +10,23 @@ namespace FoodDiary.IntegrationTests.Fakes;
 
 public class FakeGoogleDriveClient : IGoogleDriveClient
 {
+    private readonly List<File> _files = new();
+    
     public Task<File?> GetFileAsync(string fileId, string accessToken, CancellationToken cancellationToken)
     {
-        throw new System.NotImplementedException();
+        var file = _files.FirstOrDefault(f => f.Id == fileId);
+        
+        return Task.FromResult(file);
     }
 
     public Task SaveDocumentAsync(Document document, string accessToken, CancellationToken cancellationToken)
     {
-        throw new System.NotImplementedException();
+        _files.Add(new File
+        {
+            Id = document.DocumentId,
+            Name = document.Title
+        });
+        
+        return Task.CompletedTask;
     }
 }
