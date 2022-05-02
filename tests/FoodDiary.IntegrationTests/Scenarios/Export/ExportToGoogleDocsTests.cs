@@ -32,8 +32,8 @@ public class ExportToGoogleDocsTests : IClassFixture<FoodDiaryWebApplicationFact
         };
         
         var response = await client.PostAsJsonAsync("api/v1/exports/google-docs", exportRequest);
-        var exportFile = await googleDriveClient.GetFileAsync(ExportFileId, default);
-        var exportDocument = await googleDocsClient.GetDocumentAsync(exportFile?.Id, default);
+        var exportFile = await googleDriveClient.GetFileAsync(ExportFileId, exportRequest.AccessToken, default);
+        var exportDocument = await googleDocsClient.GetDocumentAsync(exportFile?.Id, exportRequest.AccessToken, default);
 
         response.IsSuccessStatusCode.Should().BeTrue();
         exportFile.Should().NotBeNull();

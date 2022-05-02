@@ -5,7 +5,7 @@ namespace FoodDiary.Export.GoogleDocs;
 
 public interface IGoogleDriveClient
 {
-    Task<File?> GetFileAsync(string fileId, CancellationToken cancellationToken);
+    Task<File?> GetFileAsync(string fileId, string accessToken, CancellationToken cancellationToken);
 
     Task SaveDocumentAsync(Document document, string accessToken, CancellationToken cancellationToken);
 }
