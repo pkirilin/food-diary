@@ -1,5 +1,3 @@
-using FoodDiary.Domain.Entities;
-
 namespace FoodDiary.Export.GoogleDocs.Implementation;
 
 internal class GoogleDocsExportService : IGoogleDocsExportService
@@ -13,10 +11,16 @@ internal class GoogleDocsExportService : IGoogleDocsExportService
         _driveClient = driveClient;
     }
     
-    public async Task ExportAsync(IEnumerable<Page> pages, string accessToken, CancellationToken cancellationToken)
+    public async Task ExportAsync(GoogleDocsExportData exportData, CancellationToken cancellationToken)
     {
-        var exportDocument = await _docsClient.CreateDocumentAsync("test", accessToken, cancellationToken);
+        var title = GenerateExportFileName(exportData.StartDate, exportData.EndDate);
+        var exportDocument = await _docsClient.CreateDocumentAsync(title, exportData.AccessToken, cancellationToken);
         
-        await _driveClient.SaveDocumentAsync(exportDocument, accessToken, cancellationToken);
+        await _driveClient.SaveDocumentAsync(exportDocument, exportData.AccessToken, cancellationToken);
+    }
+
+    private static string GenerateExportFileName(DateTime startDate, DateTime endDate)
+    {
+        return $"FoodDiary_{startDate:yyyyMMdd}_{endDate:yyyyMMdd}";
     }
 }

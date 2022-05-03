@@ -36,7 +36,7 @@ public class ExportToGoogleDocsTests : IClassFixture<FoodDiaryWebApplicationFact
 
         response.IsSuccessStatusCode.Should().BeTrue();
         exportFile.Should().NotBeNull();
-        exportFile?.Name.Should().Be("FoodDiary_20220423_20220430");
+        exportFile?.Name.Should().Be("FoodDiary_20220501_20220511");
         exportDocument.Should().NotBeNull();
     }
 }
