@@ -29,4 +29,9 @@ public class FakeGoogleDriveClient : IGoogleDriveClient
         
         return Task.CompletedTask;
     }
+
+    public void Dispose()
+    {
+        _files.Clear();
+    }
 }

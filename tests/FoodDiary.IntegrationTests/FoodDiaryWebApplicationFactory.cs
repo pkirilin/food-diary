@@ -29,6 +29,9 @@ public class FoodDiaryWebApplicationFactory : WebApplicationFactory<Startup>
         var dbContext = Services.GetRequiredService<FoodDiaryContext>();
         TestDatabaseUtils.Clear(dbContext, _connection);
         TestDatabaseUtils.Initialize(dbContext);
+        
+        GetGoogleDriveClient().Dispose();
+        GetGoogleDocsClient().Dispose();
 
         return client;
     }

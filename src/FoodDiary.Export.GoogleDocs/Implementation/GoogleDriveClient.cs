@@ -39,6 +39,10 @@ internal class GoogleDriveClient : IGoogleDriveClient
             .ExecuteAsync(cancellationToken);
     }
     
+    public void Dispose()
+    {
+    }
+    
     private static DriveService CreateService(string accessToken)
     {
         return new DriveService(new BaseClientService.Initializer

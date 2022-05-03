@@ -32,6 +32,10 @@ internal class GoogleDocsClient : IGoogleDocsClient
             .ExecuteAsync(cancellationToken);
     }
     
+    public void Dispose()
+    {
+    }
+    
     private static DocsService CreateService(string accessToken)
     {
         return new DocsService(new BaseClientService.Initializer

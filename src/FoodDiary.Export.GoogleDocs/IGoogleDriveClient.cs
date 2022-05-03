@@ -3,7 +3,7 @@ using File = Google.Apis.Drive.v3.Data.File;
 
 namespace FoodDiary.Export.GoogleDocs;
 
-public interface IGoogleDriveClient
+public interface IGoogleDriveClient : IDisposable
 {
     Task<File?> GetFileAsync(string fileId, string accessToken, CancellationToken cancellationToken);
 

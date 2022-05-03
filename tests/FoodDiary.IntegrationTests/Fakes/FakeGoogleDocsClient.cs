@@ -32,4 +32,9 @@ public class FakeGoogleDocsClient : IGoogleDocsClient
         
         return Task.FromResult(document);
     }
+
+    public void Dispose()
+    {
+        _documents.Clear();
+    }
 }
