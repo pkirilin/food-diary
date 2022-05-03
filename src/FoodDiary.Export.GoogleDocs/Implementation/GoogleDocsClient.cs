@@ -8,15 +8,6 @@ namespace FoodDiary.Export.GoogleDocs.Implementation;
 internal class GoogleDocsClient : IGoogleDocsClient
 {
     private const string ApplicationName = "food-diary";
-    
-    public Task<Document?> GetDocumentAsync(string? documentId, string accessToken, CancellationToken cancellationToken)
-    {
-        var service = CreateService(accessToken);
-
-        return service.Documents
-            .Get(documentId)
-            .ExecuteAsync(cancellationToken);
-    }
 
     public Task<Document> CreateDocumentAsync(string title, string accessToken, CancellationToken cancellationToken)
     {
@@ -32,7 +23,7 @@ internal class GoogleDocsClient : IGoogleDocsClient
             .ExecuteAsync(cancellationToken);
     }
 
-    public void InsertH1Text(Document document, string title)
+    public void InsertH1Text(Document document, string text)
     {
         throw new NotImplementedException();
     }
@@ -42,10 +33,6 @@ internal class GoogleDocsClient : IGoogleDocsClient
         throw new NotImplementedException();
     }
 
-    public void Dispose()
-    {
-    }
-    
     private static DocsService CreateService(string accessToken)
     {
         return new DocsService(new BaseClientService.Initializer

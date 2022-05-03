@@ -21,8 +21,7 @@ public class ExportToGoogleDocsTests : IClassFixture<FoodDiaryWebApplicationFact
     {
         var client = _factory.CreateClient();
         var googleDriveClient = _factory.GetGoogleDriveClient();
-        var googleDocsClient = _factory.GetGoogleDocsClient();
-        var googleDocsReader = _factory.GetGoogleDocsReader();
+        var googleDocsStorage = _factory.GetFakeGoogleDocsStorage();
 
         var exportRequest = new ExportToGoogleDocsRequestDto
         {
@@ -33,14 +32,12 @@ public class ExportToGoogleDocsTests : IClassFixture<FoodDiaryWebApplicationFact
         
         var response = await client.PostAsJsonAsync("api/v1/exports/google-docs", exportRequest);
         var exportFile = await googleDriveClient.GetFileAsync(FakeGoogleDocsClient.NewDocId, exportRequest.AccessToken, default);
-        var exportDocument = await googleDocsClient.GetDocumentAsync(exportFile?.Id, exportRequest.AccessToken, default);
+        var exportDocument = googleDocsStorage.Get(exportFile?.Id);
 
         response.IsSuccessStatusCode.Should().BeTrue();
         exportFile.Should().NotBeNull();
-        exportFile?.Name.Should().Be("FoodDiary_20220501_20220511");
         exportDocument.Should().NotBeNull();
-        googleDocsReader.GetHeaders(exportDocument?.DocumentId)
-            .Should().HaveCount(3)
-            .And.Contain("01.05.2022", "02.05.2022", "03.05.2022");
+        exportDocument!.Title.Should().Be("FoodDiary_20220501_20220511");
+        exportDocument.Headers.Should().ContainInOrder("01.05.2022", "02.05.2022", "03.05.2022");
     }
 }

@@ -31,8 +31,7 @@ public class FoodDiaryWebApplicationFactory : WebApplicationFactory<Startup>
         TestDatabaseUtils.Initialize(dbContext);
         
         GetGoogleDriveClient().Dispose();
-        GetGoogleDocsClient().Dispose();
-        GetGoogleDocsReader().Dispose();
+        GetFakeGoogleDocsStorage().Dispose();
 
         return client;
     }
@@ -42,14 +41,9 @@ public class FoodDiaryWebApplicationFactory : WebApplicationFactory<Startup>
         return Services.GetRequiredService<IGoogleDriveClient>();
     }
 
-    public IGoogleDocsClient GetGoogleDocsClient()
+    public FakeGoogleDocsStorage GetFakeGoogleDocsStorage()
     {
-        return Services.GetRequiredService<IGoogleDocsClient>();
-    }
-
-    public FakeGoogleDocsReader GetGoogleDocsReader()
-    {
-        return Services.GetRequiredService<FakeGoogleDocsReader>();
+        return Services.GetRequiredService<FakeGoogleDocsStorage>();
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -84,7 +78,7 @@ public class FoodDiaryWebApplicationFactory : WebApplicationFactory<Startup>
 
             services.AddSingleton<IGoogleDriveClient, FakeGoogleDriveClient>();
             services.AddSingleton<IGoogleDocsClient, FakeGoogleDocsClient>();
-            services.AddSingleton<FakeGoogleDocsReader>();
+            services.AddSingleton<FakeGoogleDocsStorage>();
         });
     }
     
