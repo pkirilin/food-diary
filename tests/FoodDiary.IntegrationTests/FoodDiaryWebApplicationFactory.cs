@@ -32,6 +32,7 @@ public class FoodDiaryWebApplicationFactory : WebApplicationFactory<Startup>
         
         GetGoogleDriveClient().Dispose();
         GetGoogleDocsClient().Dispose();
+        GetGoogleDocsReader().Dispose();
 
         return client;
     }
@@ -44,6 +45,11 @@ public class FoodDiaryWebApplicationFactory : WebApplicationFactory<Startup>
     public IGoogleDocsClient GetGoogleDocsClient()
     {
         return Services.GetRequiredService<IGoogleDocsClient>();
+    }
+
+    public FakeGoogleDocsReader GetGoogleDocsReader()
+    {
+        return Services.GetRequiredService<FakeGoogleDocsReader>();
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -78,6 +84,7 @@ public class FoodDiaryWebApplicationFactory : WebApplicationFactory<Startup>
 
             services.AddSingleton<IGoogleDriveClient, FakeGoogleDriveClient>();
             services.AddSingleton<IGoogleDocsClient, FakeGoogleDocsClient>();
+            services.AddSingleton<FakeGoogleDocsReader>();
         });
     }
     

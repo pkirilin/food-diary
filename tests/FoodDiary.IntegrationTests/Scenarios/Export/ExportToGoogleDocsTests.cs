@@ -22,6 +22,7 @@ public class ExportToGoogleDocsTests : IClassFixture<FoodDiaryWebApplicationFact
         var client = _factory.CreateClient();
         var googleDriveClient = _factory.GetGoogleDriveClient();
         var googleDocsClient = _factory.GetGoogleDocsClient();
+        var googleDocsReader = _factory.GetGoogleDocsReader();
 
         var exportRequest = new ExportToGoogleDocsRequestDto
         {
@@ -38,5 +39,8 @@ public class ExportToGoogleDocsTests : IClassFixture<FoodDiaryWebApplicationFact
         exportFile.Should().NotBeNull();
         exportFile?.Name.Should().Be("FoodDiary_20220501_20220511");
         exportDocument.Should().NotBeNull();
+        googleDocsReader.GetHeaders(exportDocument?.DocumentId)
+            .Should().HaveCount(3)
+            .And.Contain("01.05.2022", "02.05.2022", "03.05.2022");
     }
 }

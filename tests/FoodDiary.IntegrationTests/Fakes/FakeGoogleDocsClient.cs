@@ -9,9 +9,15 @@ namespace FoodDiary.IntegrationTests.Fakes;
 
 public class FakeGoogleDocsClient : IGoogleDocsClient
 {
-    public const string NewDocId = "mTruDIuO4GigKXm0";
-    
+    private readonly FakeGoogleDocsReader _reader;
     private readonly List<Document> _documents = new();
+    
+    public const string NewDocId = "mTruDIuO4GigKXm0";
+
+    public FakeGoogleDocsClient(FakeGoogleDocsReader reader)
+    {
+        _reader = reader;
+    }
 
     public Task<Document?> GetDocumentAsync(string? documentId, string accessToken, CancellationToken cancellationToken)
     {
@@ -31,6 +37,16 @@ public class FakeGoogleDocsClient : IGoogleDocsClient
         _documents.Add(document);
         
         return Task.FromResult(document);
+    }
+
+    public void InsertH1Text(Document document, string title)
+    {
+        _reader.LoadTitle(document.DocumentId, title);
+    }
+
+    public Task BatchUpdateDocumentAsync(string documentId, CancellationToken cancellationToken)
+    {
+        return Task.CompletedTask;
     }
 
     public void Dispose()

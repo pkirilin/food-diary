@@ -31,7 +31,17 @@ internal class GoogleDocsClient : IGoogleDocsClient
             .Create(doc)
             .ExecuteAsync(cancellationToken);
     }
-    
+
+    public void InsertH1Text(Document document, string title)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task BatchUpdateDocumentAsync(string documentId, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
     public void Dispose()
     {
     }

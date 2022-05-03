@@ -1,3 +1,4 @@
+using System;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Infrastructure;
 using Microsoft.Data.Sqlite;
@@ -29,9 +30,17 @@ public static class TestDatabaseUtils
             new Product { Id = 1, Name = "Milk", CategoryId = 2 },
             new Product { Id = 2, Name = "Bread", CategoryId = 4 },
         };
+
+        var pages = new[]
+        {
+            new Page { Id = 1, Date = DateTime.Parse("2022-05-01") },
+            new Page { Id = 2, Date = DateTime.Parse("2022-05-02") },
+            new Page { Id = 3, Date = DateTime.Parse("2022-05-03") },
+        };
         
         context.Categories.AddRange(categories);
         context.Products.AddRange(products);
+        context.Pages.AddRange(pages);
         context.SaveChanges();
     }
 }
