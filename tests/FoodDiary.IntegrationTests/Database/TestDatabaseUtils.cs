@@ -1,10 +1,19 @@
 using FoodDiary.Domain.Entities;
 using FoodDiary.Infrastructure;
+using Microsoft.Data.Sqlite;
 
 namespace FoodDiary.IntegrationTests.Database;
 
 public static class TestDatabaseUtils
 {
+    public static void Clear(FoodDiaryContext context, SqliteConnection? connection)
+    {
+        connection?.Close();
+        connection?.Open();
+        context.ChangeTracker.Clear();
+        context.Database.EnsureCreated();
+    }
+    
     public static void Initialize(FoodDiaryContext context)
     {
         var categories = new []

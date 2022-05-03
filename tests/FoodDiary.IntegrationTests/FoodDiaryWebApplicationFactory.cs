@@ -20,20 +20,17 @@ namespace FoodDiary.IntegrationTests;
 // ReSharper disable once ClassNeverInstantiated.Global
 public class FoodDiaryWebApplicationFactory : WebApplicationFactory<Startup>
 {
-    private SqliteConnection _connection;
-    private IServiceScope _scope;
-    private FoodDiaryContext _dbContext;
-
-    public FoodDiaryWebApplicationFactory()
-    {
-        _dbContext = DbContext;
-    }
+    private SqliteConnection? _connection;
 
     public new HttpClient CreateClient()
     {
-        ClearDatabase();
-        TestDatabaseUtils.Initialize(DbContext);
-        return base.CreateClient();
+        var client = base.CreateClient();
+        
+        var dbContext = Services.GetRequiredService<FoodDiaryContext>();
+        TestDatabaseUtils.Clear(dbContext, _connection);
+        TestDatabaseUtils.Initialize(dbContext);
+
+        return client;
     }
 
     public IGoogleDriveClient GetGoogleDriveClient()
@@ -86,32 +83,8 @@ public class FoodDiaryWebApplicationFactory : WebApplicationFactory<Startup>
         if (disposing)
         {
             _connection?.Close();
-            _scope?.Dispose();
         }
         
         base.Dispose(disposing);
-    }
-
-    private FoodDiaryContext DbContext
-    {
-        get
-        {
-            if (_dbContext != null)
-                return _dbContext;
-
-            var serviceScopeFactory = Services.GetRequiredService<IServiceScopeFactory>();
-            _scope = serviceScopeFactory.CreateScope();
-            _dbContext = _scope.ServiceProvider.GetRequiredService<FoodDiaryContext>();
-            _dbContext.Database.EnsureCreated();
-            return _dbContext;
-        }
-    }
-    
-    private void ClearDatabase()
-    {
-        _connection?.Close();
-        _connection?.Open();
-        DbContext.ChangeTracker.Clear();
-        DbContext.Database.EnsureCreated();
     }
 }
