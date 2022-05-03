@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Google.Apis.Docs.v1.Data;
 
 namespace FoodDiary.IntegrationTests.Fakes;
 
@@ -9,18 +8,14 @@ public class FakeGoogleDocsStorage : IDisposable
 {
     private readonly List<FakeGoogleDocument> _fakeDocuments = new();
 
-    public FakeGoogleDocument? Get(string? documentId)
+    public FakeGoogleDocument? GetDocument(string? documentId)
     {
         return _fakeDocuments.FirstOrDefault(d => d.Id == documentId);
     }
     
-    public void Save(Document document)
+    public void Save(FakeGoogleDocument document)
     {
-        _fakeDocuments.Add(new FakeGoogleDocument
-        {
-            Id = document.DocumentId,
-            Title = document.Title
-        });
+        _fakeDocuments.Add(document);
     }
 
     public void Dispose()

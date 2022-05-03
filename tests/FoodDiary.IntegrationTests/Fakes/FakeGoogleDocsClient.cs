@@ -24,14 +24,18 @@ public class FakeGoogleDocsClient : IGoogleDocsClient
             Title = title
         };
         
-        _storage.Save(document);
+        _storage.Save(new FakeGoogleDocument
+        {
+            Id = NewDocId,
+            Title = title
+        });
         
         return Task.FromResult(document);
     }
 
     public void InsertH1Text(Document document, string text)
     {
-        var fakeDoc = _storage.Get(document.DocumentId);
+        var fakeDoc = _storage.GetDocument(document.DocumentId);
         fakeDoc?.RenderHeader(text);
     }
 

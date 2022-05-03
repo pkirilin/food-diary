@@ -10,15 +10,6 @@ internal class GoogleDriveClient : IGoogleDriveClient
 {
     private const string ApplicationName = "food-diary";
     private const string FolderId = "";
-    
-    public Task<File?> GetFileAsync(string fileId, string accessToken, CancellationToken cancellationToken)
-    {
-        var service = CreateService(accessToken);
-
-        return service.Files
-            .Get(fileId)
-            .ExecuteAsync(cancellationToken);
-    }
 
     public async Task SaveDocumentAsync(Document document, string accessToken, CancellationToken cancellationToken)
     {
@@ -38,11 +29,7 @@ internal class GoogleDriveClient : IGoogleDriveClient
             .Delete(document.DocumentId)
             .ExecuteAsync(cancellationToken);
     }
-    
-    public void Dispose()
-    {
-    }
-    
+
     private static DriveService CreateService(string accessToken)
     {
         return new DriveService(new BaseClientService.Initializer

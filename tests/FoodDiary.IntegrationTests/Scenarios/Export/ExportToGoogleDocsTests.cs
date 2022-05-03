@@ -20,7 +20,7 @@ public class ExportToGoogleDocsTests : IClassFixture<FoodDiaryWebApplicationFact
     public async void Export_data_is_saved_to_google_drive_folder_as_google_doc()
     {
         var client = _factory.CreateClient();
-        var googleDriveClient = _factory.GetGoogleDriveClient();
+        var googleDriveStorage = _factory.GetFakeGoogleDriveStorage();
         var googleDocsStorage = _factory.GetFakeGoogleDocsStorage();
 
         var exportRequest = new ExportToGoogleDocsRequestDto
@@ -31,8 +31,8 @@ public class ExportToGoogleDocsTests : IClassFixture<FoodDiaryWebApplicationFact
         };
         
         var response = await client.PostAsJsonAsync("api/v1/exports/google-docs", exportRequest);
-        var exportFile = await googleDriveClient.GetFileAsync(FakeGoogleDocsClient.NewDocId, exportRequest.AccessToken, default);
-        var exportDocument = googleDocsStorage.Get(exportFile?.Id);
+        var exportFile = googleDriveStorage.GetFile(FakeGoogleDocsClient.NewDocId);
+        var exportDocument = googleDocsStorage.GetDocument(exportFile?.Id);
 
         response.IsSuccessStatusCode.Should().BeTrue();
         exportFile.Should().NotBeNull();

@@ -30,20 +30,19 @@ public class FoodDiaryWebApplicationFactory : WebApplicationFactory<Startup>
         TestDatabaseUtils.Clear(dbContext, _connection);
         TestDatabaseUtils.Initialize(dbContext);
         
-        GetGoogleDriveClient().Dispose();
         GetFakeGoogleDocsStorage().Dispose();
 
         return client;
     }
 
-    public IGoogleDriveClient GetGoogleDriveClient()
-    {
-        return Services.GetRequiredService<IGoogleDriveClient>();
-    }
-
     public FakeGoogleDocsStorage GetFakeGoogleDocsStorage()
     {
         return Services.GetRequiredService<FakeGoogleDocsStorage>();
+    }
+
+    public FakeGoogleDriveStorage GetFakeGoogleDriveStorage()
+    {
+        return Services.GetRequiredService<FakeGoogleDriveStorage>();
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -79,6 +78,7 @@ public class FoodDiaryWebApplicationFactory : WebApplicationFactory<Startup>
             services.AddSingleton<IGoogleDriveClient, FakeGoogleDriveClient>();
             services.AddSingleton<IGoogleDocsClient, FakeGoogleDocsClient>();
             services.AddSingleton<FakeGoogleDocsStorage>();
+            services.AddSingleton<FakeGoogleDriveStorage>();
         });
     }
     
