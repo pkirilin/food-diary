@@ -28,6 +28,6 @@ public class GetProductsTests : IClassFixture<FoodDiaryWebApplicationFactory>
         var products = autocompleteItems?.Select(p => p.Name);
         
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        products.Should().ContainInOrder("Bread", "Milk");
+        products.Should().ContainInOrder("Bread", "Chicken", "Rice", "Scrambled eggs");
     }
 }

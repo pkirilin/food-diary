@@ -28,6 +28,6 @@ public class GetCategoriesTests : IClassFixture<FoodDiaryWebApplicationFactory>
         var categories = autocompleteItems?.Select(item => item.Name).ToArray();
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        categories.Should().ContainInOrder("Bakery", "Cereals", "Dairy", "Frozen Foods");
+        categories.Should().ContainInOrder("Bakery", "Cereals", "Eggs", "Meat");
     }
 }
