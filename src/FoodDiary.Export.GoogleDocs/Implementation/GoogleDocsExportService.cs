@@ -23,8 +23,6 @@ internal class GoogleDocsExportService : IGoogleDocsExportService
         var title = GenerateExportFileName(exportData.StartDate, exportData.EndDate);
         var exportDocument = await _docsClient.CreateDocumentAsync(title, exportData.AccessToken, cancellationToken);
         
-        await _driveClient.SaveDocumentAsync(exportDocument, exportData.AccessToken, cancellationToken);
-        
         foreach (var page in exportData.Pages)
         {
             var cells = new List<List<string>>
@@ -85,6 +83,7 @@ internal class GoogleDocsExportService : IGoogleDocsExportService
         }
 
         await _docsClient.BatchUpdateDocumentAsync(exportDocument.DocumentId, exportData.AccessToken, cancellationToken);
+        await _driveClient.SaveDocumentAsync(exportDocument, exportData.AccessToken, cancellationToken);
     }
 
     private static string GenerateExportFileName(DateTime startDate, DateTime endDate)

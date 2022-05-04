@@ -9,7 +9,7 @@ namespace FoodDiary.Export.GoogleDocs.Implementation;
 internal class GoogleDriveClient : IGoogleDriveClient
 {
     private const string ApplicationName = "food-diary";
-    private const string FolderId = "";
+    private const string FolderId = "126eWwd7qUmoG3Jy1SbcpcxZMm9zLBwSe";
 
     public async Task SaveDocumentAsync(Document document, string accessToken, CancellationToken cancellationToken)
     {
