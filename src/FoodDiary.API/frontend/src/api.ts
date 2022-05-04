@@ -31,7 +31,14 @@ const api = createApi({
     }),
 
     exportPagesToGoogleDocs: builder.query<void, ExportPagesToGoogleDocsRequest>({
-      query: () => '/api/v1/export/google-docs',
+      query: payload => ({
+        url: '/api/v1/exports/google-docs',
+        method: 'POST',
+        body: payload,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }),
     }),
 
     getProductsAutocomplete: builder.query<ProductAutocompleteOption[], boolean>({
