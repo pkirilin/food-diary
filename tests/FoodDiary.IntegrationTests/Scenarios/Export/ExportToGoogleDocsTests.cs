@@ -39,11 +39,11 @@ public class ExportToGoogleDocsTests : IClassFixture<FoodDiaryWebApplicationFact
         exportDocument.Should().NotBeNull();
         exportDocument!.Title.Should().Be("FoodDiary_20220501_20220511");
         exportDocument.Headers.Should().ContainInOrder("01.05.2022", "02.05.2022", "03.05.2022");
-        exportDocument.Tables[0][1].Should().Contain("Chicken", "180", "244", "555");
-        exportDocument.Tables[0][2].Should().Contain("Rice", "90", "117");
-        exportDocument.Tables[0][3].Should().Contain("Bread", "75", "194");
-        exportDocument.Tables[0][4].Should().Contain("Scrambled eggs", "160", "246", "375");
-        exportDocument.Tables[0][5].Should().Contain("Bread", "50", "129");
-        exportDocument.Tables[0][6].Should().Contain("930");
+        exportDocument.Tables[0][1].Should().Contain(new[] { "Chicken", "180", "244", "555" });
+        exportDocument.Tables[0][2].Should().Contain(new[] { "Rice", "90", "117" });
+        exportDocument.Tables[0][3].Should().Contain(new[] { "Bread", "75", "194" });
+        exportDocument.Tables[0][4].Should().Contain(new[] { "Scrambled eggs", "160", "246", "375" });
+        exportDocument.Tables[0][5].Should().Contain(new[] { "Bread", "50", "129" });
+        exportDocument.Tables[0][6].Should().Contain(new[] { "930" });
     }
 }
