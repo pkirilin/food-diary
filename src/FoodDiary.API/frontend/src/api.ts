@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
 
 import config from './features/__shared__/config';
-import { saveAccessToken } from './features/auth/cookie.service';
+import { getAccessToken, saveAccessToken } from './features/auth/cookie.service';
 
 import { AuthResult } from './features/auth/models';
 import { ExportPagesToGoogleDocsRequest } from './features/pages/models';
@@ -9,7 +9,13 @@ import { ProductAutocompleteOption } from './features/products/models';
 import { CategoryAutocompleteOption } from './features/categories/models';
 
 const api = createApi({
-  baseQuery: fetchBaseQuery({ baseUrl: config.apiUrl }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: config.apiUrl,
+    prepareHeaders: headers => {
+      headers.append('Authorization', `Bearer ${getAccessToken()}`);
+      return headers;
+    },
+  }),
   endpoints: builder => ({
     signInWithGoogle: builder.query<void, string>({
       query: googleTokenId => ({
