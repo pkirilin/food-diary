@@ -16,4 +16,9 @@ public class FakeGoogleDocument
     {
         Headers.Add(text);
     }
+
+    public void RenderTable(string[][] cells)
+    {
+        Tables.Add(cells);
+    }
 }

@@ -35,8 +35,12 @@ public class FakeGoogleDocsClient : IGoogleDocsClient
 
     public void InsertH1Text(Document document, string text)
     {
-        var fakeDoc = _storage.GetDocument(document.DocumentId);
-        fakeDoc?.RenderHeader(text);
+        _storage.GetDocument(document.DocumentId)?.RenderHeader(text);
+    }
+
+    public void InsertTable(Document document, InsertTableOptions options)
+    {
+        _storage.GetDocument(document.DocumentId)?.RenderTable(options.Cells);
     }
 
     public Task BatchUpdateDocumentAsync(string documentId, CancellationToken cancellationToken)

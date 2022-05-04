@@ -28,6 +28,11 @@ internal class GoogleDocsClient : IGoogleDocsClient
         throw new NotImplementedException();
     }
 
+    public void InsertTable(Document document, InsertTableOptions options)
+    {
+        throw new NotImplementedException();
+    }
+
     public Task BatchUpdateDocumentAsync(string documentId, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
