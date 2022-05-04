@@ -10,6 +10,8 @@ public class FakeGoogleDocument
 
     public List<string> Headers { get; } = new();
 
+    public List<string[][]> Tables { get; } = new();
+
     public void RenderHeader(string text)
     {
         Headers.Add(text);
