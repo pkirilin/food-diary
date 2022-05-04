@@ -9,6 +9,8 @@ internal class GoogleDocsClient : IGoogleDocsClient
 {
     private const string ApplicationName = "food-diary";
 
+    private readonly List<Request> _batchUpdateRequests = new();
+
     public Task<Document> CreateDocumentAsync(string title, string accessToken, CancellationToken cancellationToken)
     {
         var service = CreateService(accessToken);
@@ -33,9 +35,16 @@ internal class GoogleDocsClient : IGoogleDocsClient
         throw new NotImplementedException();
     }
 
-    public Task BatchUpdateDocumentAsync(string documentId, CancellationToken cancellationToken)
+    public async Task BatchUpdateDocumentAsync(string documentId, string accessToken, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var service = CreateService(accessToken);
+        var request = new BatchUpdateDocumentRequest { Requests = _batchUpdateRequests };
+        
+        await service.Documents
+            .BatchUpdate(request, documentId)
+            .ExecuteAsync(cancellationToken);
+        
+        _batchUpdateRequests.Clear();
     }
 
     private static DocsService CreateService(string accessToken)

@@ -10,5 +10,5 @@ public interface IGoogleDocsClient
 
     void InsertTable(Document document, InsertTableOptions options);
     
-    Task BatchUpdateDocumentAsync(string documentId, CancellationToken cancellationToken);
+    Task BatchUpdateDocumentAsync(string documentId, string accessToken, CancellationToken cancellationToken);
 }

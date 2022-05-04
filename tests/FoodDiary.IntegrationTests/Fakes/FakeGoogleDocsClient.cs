@@ -43,7 +43,7 @@ public class FakeGoogleDocsClient : IGoogleDocsClient
         _storage.GetDocument(document.DocumentId)?.RenderTable(options.Cells);
     }
 
-    public Task BatchUpdateDocumentAsync(string documentId, CancellationToken cancellationToken)
+    public Task BatchUpdateDocumentAsync(string documentId, string accessToken, CancellationToken cancellationToken)
     {
         return Task.CompletedTask;
     }
