@@ -30,7 +30,7 @@ const api = createApi({
       },
     }),
 
-    exportPagesToGoogleDocs: builder.query<void, ExportPagesToGoogleDocsRequest>({
+    exportPagesToGoogleDocs: builder.mutation<void, ExportPagesToGoogleDocsRequest>({
       query: payload => ({
         url: '/api/v1/exports/google-docs',
         method: 'POST',
@@ -53,9 +53,9 @@ const api = createApi({
 
 export const {
   useLazySignInWithGoogleQuery,
-  useLazyExportPagesToGoogleDocsQuery,
   useLazyGetProductsAutocompleteQuery,
   useLazyGetCategoriesAutocompleteQuery,
+  useExportPagesToGoogleDocsMutation,
 } = api;
 
 export default api;

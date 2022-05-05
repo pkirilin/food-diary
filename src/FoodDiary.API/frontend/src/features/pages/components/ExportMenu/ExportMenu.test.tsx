@@ -79,3 +79,47 @@ test('pages cannot be exported if start/end dates not specified', async () => {
 
   expect(within(dialog).getByText(/export to json/i).parentElement).toBeDisabled();
 });
+
+test('export dialog is openable again after google docs export finished', async () => {
+  const ui = create
+    .component(<ExportMenu></ExportMenu>)
+    .withReduxStore()
+    .withMuiPickersUtils()
+    .please();
+
+  render(ui);
+  userEvent.click(screen.getByTitle(/export pages/i));
+  userEvent.click(screen.getByText(/export to google docs/i));
+
+  const dialog = screen.getByRole('dialog');
+  userEvent.type(within(dialog).getByLabelText(/export start date/i), '01.01.2022');
+  userEvent.type(within(dialog).getByLabelText(/export end date/i), '31.01.2022');
+  userEvent.click(within(dialog).getByText(/export to google docs/i));
+
+  await waitForElementToBeRemoved(dialog);
+  userEvent.click(screen.getByText(/export to google docs/i));
+
+  expect(screen.getByRole('dialog')).toBeInTheDocument();
+});
+
+test('export dialog is openable again after json export finished', async () => {
+  const ui = create
+    .component(<ExportMenu></ExportMenu>)
+    .withReduxStore()
+    .withMuiPickersUtils()
+    .please();
+
+  render(ui);
+  userEvent.click(screen.getByTitle(/export pages/i));
+  userEvent.click(screen.getByText(/export to json/i));
+
+  const dialog = screen.getByRole('dialog');
+  userEvent.type(within(dialog).getByLabelText(/export start date/i), '01.01.2022');
+  userEvent.type(within(dialog).getByLabelText(/export end date/i), '31.01.2022');
+  userEvent.click(within(dialog).getByText(/export to json/i));
+
+  await waitForElementToBeRemoved(dialog);
+  userEvent.click(screen.getByText(/export to json/i));
+
+  expect(screen.getByRole('dialog')).toBeInTheDocument();
+});

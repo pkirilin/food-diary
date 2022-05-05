@@ -29,25 +29,10 @@ export default function ExportDialog({ format: exportFormat, isOpen, onClose }: 
     errorHelperText: 'End date is invalid',
   });
 
-  const {
-    isLoading: isExportToJsonLoading,
-    isSuccess: isExportToJsonSuccess,
-    start: startExportToJson,
-  } = useExportToJson(startDate, endDate);
-
-  const {
-    isLoading: isExportToGoogleDocsLoading,
-    isSuccess: isExportToGoogleDocsSuccess,
-    start: startExportToGoogleDocs,
-  } = useExportToGoogleDocs(startDate, endDate);
+  const exportToJson = useExportToJson(startDate, endDate, onClose);
+  const exportToGoogleDocs = useExportToGoogleDocs(startDate, endDate, onClose);
 
   const isExportDisabled = !isValidStartDate || !isValidEndDate;
-
-  useEffect(() => {
-    if (isExportToJsonSuccess || isExportToGoogleDocsSuccess) {
-      onClose();
-    }
-  }, [isExportToJsonSuccess, isExportToGoogleDocsSuccess, onClose]);
 
   useEffect(() => {
     if (isOpen) {
@@ -79,20 +64,20 @@ export default function ExportDialog({ format: exportFormat, isOpen, onClose }: 
       <DialogActions>
         {exportFormat === 'json' ? (
           <LoadingButton
-            isLoading={isExportToJsonLoading}
+            isLoading={exportToJson.isLoading}
             variant="contained"
             color="primary"
-            onClick={() => startExportToJson()}
+            onClick={exportToJson.start}
             disabled={isExportDisabled}
           >
             Export to JSON
           </LoadingButton>
         ) : (
           <LoadingButton
-            isLoading={isExportToGoogleDocsLoading}
+            isLoading={exportToGoogleDocs.isLoading}
             variant="contained"
             color="primary"
-            onClick={() => startExportToGoogleDocs()}
+            onClick={exportToGoogleDocs.start}
             disabled={isExportDisabled}
           >
             Export to Google Docs

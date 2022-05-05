@@ -93,6 +93,10 @@ const pagesSlice = createSlice({
       state.filter.endDate = undefined;
       state.filter.sortOrder = SortOrder.Descending;
     },
+    exportToJsonFinished: state => {
+      state.isExportToJsonLoading = false;
+      state.isExportToJsonSuccess = false;
+    },
   },
   extraReducers: builder =>
     builder
@@ -157,6 +161,7 @@ export const {
   endDateChanged,
   sortOrderChanged,
   filterReset,
+  exportToJsonFinished,
 } = pagesSlice.actions;
 
 export default pagesSlice.reducer;

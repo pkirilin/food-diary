@@ -48,7 +48,7 @@ const handlers = [
     return res(ctx.body(new Blob()));
   }),
 
-  rest.get(api('/api/v1/export/google-docs'), (req, res, ctx) => {
+  rest.post(api('/api/v1/exports/google-docs'), (req, res, ctx) => {
     return res(ctx.status(200));
   }),
 ];

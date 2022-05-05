@@ -17,7 +17,7 @@ export default function ExportMenu() {
   }
 
   function handleDialogClose() {
-    return setIsDialogOpen(false);
+    setIsDialogOpen(false);
   }
 
   return (

@@ -1,14 +1,16 @@
+import { useEffect } from 'react';
 import { GoogleLoginResponse, useGoogleLogin } from 'react-google-login';
 import format from 'date-fns/format';
 import { UseExportResult } from './types';
-import { useLazyExportPagesToGoogleDocsQuery } from 'src/api';
+import { useExportPagesToGoogleDocsMutation } from 'src/api';
 import config from 'src/features/__shared__/config';
 
 export function useExportToGoogleDocs(
   startDate: Date | null,
   endDate: Date | null,
+  onSuccess: () => void,
 ): UseExportResult {
-  const [startExport, { isLoading, isSuccess }] = useLazyExportPagesToGoogleDocsQuery();
+  const [startExport, { isLoading, isSuccess, reset }] = useExportPagesToGoogleDocsMutation();
 
   const { signIn } = useGoogleLogin({
     clientId: config.googleClientId,
@@ -25,13 +27,19 @@ export function useExportToGoogleDocs(
     scope: 'https://www.googleapis.com/auth/documents https://www.googleapis.com/auth/drive',
   });
 
+  useEffect(() => {
+    if (isSuccess) {
+      onSuccess();
+      reset();
+    }
+  }, [isSuccess, onSuccess, reset]);
+
   function start() {
     signIn();
   }
 
   return {
     isLoading,
-    isSuccess,
     start,
   };
 }
