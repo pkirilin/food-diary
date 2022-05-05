@@ -22,6 +22,7 @@ internal class GoogleDocsExportService : IGoogleDocsExportService
     {
         var title = GenerateExportFileName(exportData.StartDate, exportData.EndDate);
         var exportDocument = await _docsClient.CreateDocumentAsync(title, exportData.AccessToken, cancellationToken);
+        var i = 0;
         
         foreach (var page in exportData.Pages)
         {
@@ -74,12 +75,19 @@ internal class GoogleDocsExportService : IGoogleDocsExportService
             });
             
             _docsClient.InsertH1Text(exportDocument, page.Date.ToString("dd.MM.yyyy"));
-            
+
             _docsClient.InsertTable(exportDocument, new InsertTableOptions
             {
                 Cells = cells,
                 MergedCells = mergedCells
             });
+
+            if (i < exportData.Pages.Length - 1)
+            {
+                _docsClient.InsertPageBreak(exportDocument);
+            }
+
+            i++;
         }
 
         await _docsClient.BatchUpdateDocumentAsync(exportDocument.DocumentId, exportData.AccessToken, cancellationToken);

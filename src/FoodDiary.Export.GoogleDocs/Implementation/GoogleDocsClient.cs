@@ -10,7 +10,7 @@ internal class GoogleDocsClient : IGoogleDocsClient
     private const string ApplicationName = "food-diary";
 
     private readonly List<Request> _batchUpdateRequests = new();
-    private int _currentLocationIndex;
+    private int _currentLocationIndex = 1;
 
     public async Task<Document> CreateDocumentAsync(string title, string accessToken, CancellationToken cancellationToken)
     {
@@ -33,17 +33,15 @@ internal class GoogleDocsClient : IGoogleDocsClient
             InsertText = new InsertTextRequest
             {
                 Text = text,
-                EndOfSegmentLocation = new EndOfSegmentLocation()
+                Location = new Location { Index = _currentLocationIndex }
             }
         });
-
+        
         _currentLocationIndex += text.Length;
     }
 
     public void InsertTable(Document document, InsertTableOptions options)
     {
-        _currentLocationIndex++;
-
         _batchUpdateRequests.Add(new Request
         {
             InsertTable = new InsertTableRequest
@@ -80,6 +78,19 @@ internal class GoogleDocsClient : IGoogleDocsClient
             }
         }
 
+        _currentLocationIndex += 2;
+    }
+
+    public void InsertPageBreak(Document document)
+    {
+        _batchUpdateRequests.Add(new Request
+        {
+            InsertPageBreak = new InsertPageBreakRequest
+            {
+                Location = new Location { Index = _currentLocationIndex }
+            }
+        });
+        
         _currentLocationIndex++;
     }
 
@@ -93,7 +104,7 @@ internal class GoogleDocsClient : IGoogleDocsClient
             .ExecuteAsync(cancellationToken);
         
         _batchUpdateRequests.Clear();
-        _currentLocationIndex = 0;
+        _currentLocationIndex = 1;
     }
 
     private static DocsService CreateService(string accessToken)

@@ -9,6 +9,8 @@ public interface IGoogleDocsClient
     void InsertH1Text(Document document, string text);
 
     void InsertTable(Document document, InsertTableOptions options);
+
+    void InsertPageBreak(Document document);
     
     Task BatchUpdateDocumentAsync(string documentId, string accessToken, CancellationToken cancellationToken);
 }
