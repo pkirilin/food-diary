@@ -165,6 +165,30 @@ internal class GoogleDocsClient : IGoogleDocsClient
                 }
             });
         }
+
+        var updateColumnPropertiesRequests = options.ColumnWidths.Select((magnutude, columnIndex) => new Request
+        {
+            UpdateTableColumnProperties = new UpdateTableColumnPropertiesRequest
+            {
+                Fields = "*",
+                ColumnIndices = new List<int?> { columnIndex },
+                TableColumnProperties = new TableColumnProperties
+                {
+                    Width = new Dimension
+                    {
+                        Magnitude = magnutude,
+                        Unit = "PT"
+                    },
+                    WidthType = "FIXED_WIDTH"
+                },
+                TableStartLocation = new Location
+                {
+                    Index = tableStartLocationIndex
+                }
+            }
+        });
+        
+        _batchUpdateRequests.AddRange(updateColumnPropertiesRequests);
     }
 
     public void InsertPageBreak(Document document)

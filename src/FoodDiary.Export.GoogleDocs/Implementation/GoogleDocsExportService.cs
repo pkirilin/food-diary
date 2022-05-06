@@ -100,7 +100,8 @@ internal class GoogleDocsExportService : IGoogleDocsExportService
             _docsClient.InsertTable(exportDocument, new InsertTableOptions
             {
                 Cells = cells,
-                MergeCellsInfo = mergeCellsInfo
+                MergeCellsInfo = mergeCellsInfo,
+                ColumnWidths = GetTableColumnWidths()
             });
 
             if (i < exportData.Pages.Length - 1)
@@ -155,5 +156,10 @@ internal class GoogleDocsExportService : IGoogleDocsExportService
             IsBold = true,
             IsItalic = true
         }).ToList();
+    }
+
+    private static List<double> GetTableColumnWidths()
+    {
+        return new List<double> { 84.75, 165.75, 85.5, 51, 63.75 };
     }
 }
