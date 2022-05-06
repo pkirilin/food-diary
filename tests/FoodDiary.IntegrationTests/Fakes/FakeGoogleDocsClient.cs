@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FoodDiary.Export.GoogleDocs;
@@ -40,7 +41,11 @@ public class FakeGoogleDocsClient : IGoogleDocsClient
 
     public void InsertTable(Document document, InsertTableOptions options)
     {
-        _storage.GetDocument(document.DocumentId)?.RenderTable(options.Cells);
+        var cellTextValues = options.Cells
+            .Select(cellsRow => cellsRow.Select(cell => cell.Text).ToList())
+            .ToList();
+        
+        _storage.GetDocument(document.DocumentId)?.RenderTable(cellTextValues);
     }
 
     public void InsertPageBreak(Document document)

@@ -26,11 +26,11 @@ internal class GoogleDocsExportService : IGoogleDocsExportService
         
         foreach (var page in exportData.Pages)
         {
-            var cells = new List<List<string>>
+            var cells = new List<List<TableCell>>
             {
-                new() { "Прием пищи", "Продукт/блюдо", "Кол-во (г, мл)", "Ккал", "Общее\nкол-во\nкалорий" }
+                GetTableHeaderCells()
             };
-            
+
             var mergeCellsInfo = new List<MergeTableCellsData>();
             
             var groups = page.Notes.GroupBy(n => n.MealType)
@@ -48,14 +48,14 @@ internal class GoogleDocsExportService : IGoogleDocsExportService
                 foreach (var note in group)
                 {
                     var calories = _caloriesCalculator.Calculate(note);
-
-                    cells.Add(new List<string>
+                    
+                    cells.Add(new List<TableCell>
                     {
-                        noteIndex == 0 ? GetMealName(note.MealType) : "",
-                        note.Product.Name,
-                        note.ProductQuantity.ToString(),
-                        calories.ToString(),
-                        noteIndex == 0 ? totalCaloriesPerGroup.ToString() : ""
+                        new() { Text = noteIndex == 0 ? GetMealName(note.MealType) : "" },
+                        new() { Text = note.Product.Name },
+                        new() { Text = note.ProductQuantity.ToString() },
+                        new() { Text = calories.ToString() },
+                        new() { Text = noteIndex == 0 ? totalCaloriesPerGroup.ToString() : "" },
                     });
 
                     noteIndex++;
@@ -85,10 +85,7 @@ internal class GoogleDocsExportService : IGoogleDocsExportService
                 totalCalories += totalCaloriesPerGroup;
             }
             
-            cells.Add(new List<string>
-            {
-                "Всего за день:", "", "", "", totalCalories.ToString()
-            });
+            cells.Add(GetTotalCaloriesCells(totalCalories));
 
             mergeCellsInfo.Add(new MergeTableCellsData
             {
@@ -134,5 +131,29 @@ internal class GoogleDocsExportService : IGoogleDocsExportService
             MealType.Dinner => "Ужин",
             _ => throw new ArgumentOutOfRangeException(nameof(mealType), mealType, null)
         };
+    }
+
+    private static List<TableCell> GetTableHeaderCells()
+    {
+        var texts = new[] { "Прием пищи", "Продукт/блюдо", "Кол-во (г, мл)", "Ккал", "Общее\nкол-во\nкалорий" };
+        
+        return texts.Select(text => new TableCell
+        {
+            Text = text,
+            IsBold = true,
+            IsItalic = true
+        }).ToList();
+    }
+
+    private static List<TableCell> GetTotalCaloriesCells(int totalCalories)
+    {
+        var texts = new[] { "Всего за день:", "", "", "", totalCalories.ToString() };
+
+        return texts.Select(text => new TableCell
+        {
+            Text = text,
+            IsBold = true,
+            IsItalic = true
+        }).ToList();
     }
 }

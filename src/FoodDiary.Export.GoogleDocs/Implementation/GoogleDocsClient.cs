@@ -79,26 +79,63 @@ internal class GoogleDocsClient : IGoogleDocsClient
         _currentLocationIndex++;
         var tableStartLocationIndex = _currentLocationIndex;
 
-        foreach (var row in options.Cells)
+        foreach (var cellsRow in options.Cells)
         {
             _currentLocationIndex++;
             
-            foreach (var cellText in row)
+            foreach (var cell in cellsRow)
             {
                 _currentLocationIndex += 2;
 
-                if (!string.IsNullOrWhiteSpace(cellText))
+                if (!string.IsNullOrWhiteSpace(cell.Text))
                 {
-                    _batchUpdateRequests.Add(new Request
+                    _batchUpdateRequests.AddRange(new []
                     {
-                        InsertText = new InsertTextRequest
+                        new Request
                         {
-                            Text = cellText,
-                            Location = new Location { Index = _currentLocationIndex }
+                            InsertText = new InsertTextRequest
+                            {
+                                Text = cell.Text,
+                                Location = new Location { Index = _currentLocationIndex }
+                            }
+                        },
+                        new Request
+                        {
+                            UpdateParagraphStyle = new UpdateParagraphStyleRequest
+                            {
+                                Fields = "*",
+                                Range = new Range
+                                {
+                                    StartIndex = _currentLocationIndex,
+                                    EndIndex = _currentLocationIndex + cell.Text.Length
+                                },
+                                ParagraphStyle = new ParagraphStyle
+                                {
+                                    Alignment = "CENTER",
+                                    NamedStyleType = "NORMAL_TEXT"
+                                }
+                            }
+                        },
+                        new Request
+                        {
+                            UpdateTextStyle = new UpdateTextStyleRequest
+                            {
+                                Fields = "*",
+                                Range = new Range
+                                {
+                                    StartIndex = _currentLocationIndex,
+                                    EndIndex = _currentLocationIndex + cell.Text.Length
+                                },
+                                TextStyle = new TextStyle
+                                {
+                                    Bold = cell.IsBold,
+                                    Italic = cell.IsItalic,
+                                }
+                            }
                         }
                     });
 
-                    _currentLocationIndex += cellText.Length;
+                    _currentLocationIndex += cell.Text.Length;
                 }
             }
         }
