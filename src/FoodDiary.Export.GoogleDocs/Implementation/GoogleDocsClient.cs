@@ -2,6 +2,7 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Docs.v1;
 using Google.Apis.Docs.v1.Data;
 using Google.Apis.Services;
+using Range = Google.Apis.Docs.v1.Data.Range;
 
 namespace FoodDiary.Export.GoogleDocs.Implementation;
 
@@ -28,15 +29,35 @@ internal class GoogleDocsClient : IGoogleDocsClient
 
     public void InsertH1Text(Document document, string text)
     {
-        _batchUpdateRequests.Add(new Request
+        _batchUpdateRequests.AddRange(new []
         {
-            InsertText = new InsertTextRequest
+            new Request
             {
-                Text = text,
-                Location = new Location { Index = _currentLocationIndex }
+                InsertText = new InsertTextRequest
+                {
+                    Text = text,
+                    Location = new Location { Index = _currentLocationIndex }
+                }
+            },
+            new Request
+            {
+                UpdateParagraphStyle = new UpdateParagraphStyleRequest
+                {
+                    Fields = "*",
+                    ParagraphStyle = new ParagraphStyle
+                    {
+                        NamedStyleType = "HEADING_1",
+                        Alignment = "CENTER"
+                    },
+                    Range = new Range
+                    {
+                        StartIndex = _currentLocationIndex,
+                        EndIndex = _currentLocationIndex + text.Length
+                    }
+                }
             }
         });
-        
+
         _currentLocationIndex += text.Length;
     }
 
