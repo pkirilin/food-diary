@@ -43,18 +43,42 @@ internal class GoogleDocsExportService : IGoogleDocsExportService
             foreach (var group in groups)
             {
                 var totalCaloriesPerGroup = _caloriesCalculator.Calculate(group);
-                
+                var noteIndex = 0;
+
                 foreach (var note in group)
                 {
                     var calories = _caloriesCalculator.Calculate(note);
 
                     cells.Add(new List<string>
                     {
-                        GetMealName(note.MealType),
+                        noteIndex == 0 ? GetMealName(note.MealType) : "",
                         note.Product.Name,
                         note.ProductQuantity.ToString(),
                         calories.ToString(),
-                        totalCaloriesPerGroup.ToString()
+                        noteIndex == 0 ? totalCaloriesPerGroup.ToString() : ""
+                    });
+
+                    noteIndex++;
+                }
+                
+                if (group.Any())
+                {
+                    var groupStartRowIndex = cells.Count - group.Length;
+                    
+                    mergeCellsInfo.Add(new MergeTableCellsData
+                    {
+                        RowIndex = groupStartRowIndex,
+                        ColumnIndex = 0,
+                        RowSpan = group.Length,
+                        ColumnSpan = 1
+                    });
+                
+                    mergeCellsInfo.Add(new MergeTableCellsData
+                    {
+                        RowIndex = groupStartRowIndex,
+                        ColumnIndex = 4,
+                        RowSpan = group.Length,
+                        ColumnSpan = 1
                     });
                 }
 
