@@ -31,7 +31,7 @@ internal class GoogleDocsExportService : IGoogleDocsExportService
                 new() { "Прием пищи", "Продукт/блюдо", "Кол-во (г, мл)", "Ккал", "Общее\nкол-во\nкалорий" }
             };
             
-            var mergedCells = new List<List<(int, int)>>();
+            var mergeCellsInfo = new List<MergeTableCellsData>();
             
             var groups = page.Notes.GroupBy(n => n.MealType)
                 .OrderBy(g => g.Key)
@@ -65,13 +65,13 @@ internal class GoogleDocsExportService : IGoogleDocsExportService
             {
                 "Всего за день:", "", "", "", totalCalories.ToString()
             });
-            
-            mergedCells.Add(new List<(int, int)>
+
+            mergeCellsInfo.Add(new MergeTableCellsData
             {
-                (cells.Count - 1, 0),
-                (cells.Count - 1, 1),
-                (cells.Count - 1, 2),
-                (cells.Count - 1, 3),
+                RowIndex = cells.Count - 1,
+                ColumnIndex = 0,
+                RowSpan = 1,
+                ColumnSpan = 4
             });
             
             _docsClient.InsertH1Text(exportDocument, page.Date.ToString("dd.MM.yyyy"));
@@ -79,7 +79,7 @@ internal class GoogleDocsExportService : IGoogleDocsExportService
             _docsClient.InsertTable(exportDocument, new InsertTableOptions
             {
                 Cells = cells,
-                MergedCells = mergedCells
+                MergeCellsInfo = mergeCellsInfo
             });
 
             if (i < exportData.Pages.Length - 1)

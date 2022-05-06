@@ -48,11 +48,15 @@ internal class GoogleDocsClient : IGoogleDocsClient
             {
                 Rows = options.Cells.Count,
                 Columns = options.Cells.Max(c => c.Count),
-                Location = new Location { Index = _currentLocationIndex }
+                Location = new Location
+                {
+                    Index = _currentLocationIndex
+                }
             }
         });
-        
+
         _currentLocationIndex++;
+        var tableStartLocationIndex = _currentLocationIndex;
 
         foreach (var row in options.Cells)
         {
@@ -79,6 +83,30 @@ internal class GoogleDocsClient : IGoogleDocsClient
         }
 
         _currentLocationIndex += 2;
+
+        foreach (var mergedCellsInfo in options.MergeCellsInfo)
+        {
+            _batchUpdateRequests.Add(new Request
+            {
+                MergeTableCells = new MergeTableCellsRequest
+                {
+                    TableRange = new TableRange
+                    {
+                        RowSpan = mergedCellsInfo.RowSpan,
+                        ColumnSpan = mergedCellsInfo.ColumnSpan,
+                        TableCellLocation = new TableCellLocation
+                        {
+                            RowIndex = mergedCellsInfo.RowIndex,
+                            ColumnIndex = mergedCellsInfo.ColumnIndex,
+                            TableStartLocation = new Location
+                            {
+                                Index = tableStartLocationIndex
+                            }
+                        }
+                    }
+                }
+            });
+        }
     }
 
     public void InsertPageBreak(Document document)
