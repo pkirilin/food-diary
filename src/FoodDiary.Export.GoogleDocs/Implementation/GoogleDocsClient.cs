@@ -77,7 +77,11 @@ internal class GoogleDocsClient : IGoogleDocsClient
         });
 
         _currentLocationIndex++;
-        var tableStartLocationIndex = _currentLocationIndex;
+        
+        var tableStartLocation = new Location
+        {
+            Index = _currentLocationIndex
+        };
 
         foreach (var cellsRow in options.Cells)
         {
@@ -156,10 +160,7 @@ internal class GoogleDocsClient : IGoogleDocsClient
                         {
                             RowIndex = mergedCellsInfo.RowIndex,
                             ColumnIndex = mergedCellsInfo.ColumnIndex,
-                            TableStartLocation = new Location
-                            {
-                                Index = tableStartLocationIndex
-                            }
+                            TableStartLocation = tableStartLocation
                         }
                     }
                 }
@@ -181,14 +182,25 @@ internal class GoogleDocsClient : IGoogleDocsClient
                     },
                     WidthType = "FIXED_WIDTH"
                 },
-                TableStartLocation = new Location
-                {
-                    Index = tableStartLocationIndex
-                }
+                TableStartLocation = tableStartLocation
             }
         });
+
+        var alignCellsContentToMiddleRequest = new Request
+        {
+            UpdateTableCellStyle = new UpdateTableCellStyleRequest
+            {
+                Fields = "*",
+                TableStartLocation = tableStartLocation,
+                TableCellStyle = new TableCellStyle
+                {
+                    ContentAlignment = "MIDDLE"
+                }
+            }
+        };
         
         _batchUpdateRequests.AddRange(updateColumnPropertiesRequests);
+        _batchUpdateRequests.Add(alignCellsContentToMiddleRequest);
     }
 
     public void InsertPageBreak(Document document)
