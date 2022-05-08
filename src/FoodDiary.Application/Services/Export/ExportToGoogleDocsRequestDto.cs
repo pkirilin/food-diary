@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace FoodDiary.Application.Services.Export;
 
-[SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
+[SuppressMessage("ReSharper", "PropertyCanBeMadeInitOnly.Global")]
 public class ExportToGoogleDocsRequestDto
 {
     public DateTime StartDate { get; set; }

@@ -8,7 +8,7 @@ using FoodDiary.Domain.Abstractions.v2;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Utils;
 
-namespace FoodDiary.Application.Services.Export;
+namespace FoodDiary.Application.Services.Export.DataLoader;
 
 internal class ExportDataLoader : IExportDataLoader
 {
@@ -32,7 +32,7 @@ internal class ExportDataLoader : IExportDataLoader
         var exportPages = pages.Select(page => new ExportPageDto
         {
             FormattedDate = page.Date.ToString("dd.MM.yyyy"),
-            TotalCalories = _caloriesCalculator.Calculate(page.Notes),
+            TotalCalories = _caloriesCalculator.Calculate((ICollection<Note>)page.Notes),
             NoteGroups = GetNoteGroups(page.Notes)
         }).ToArray();
 

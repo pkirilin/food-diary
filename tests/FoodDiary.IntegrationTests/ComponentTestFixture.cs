@@ -2,6 +2,7 @@ using System;
 using FoodDiary.API.Extensions;
 using FoodDiary.Application.Extensions;
 using FoodDiary.Application.Services.Export;
+using FoodDiary.Application.Services.Export.DataLoader;
 using FoodDiary.Infrastructure;
 using FoodDiary.Infrastructure.Extensions;
 using FoodDiary.IntegrationTests.Database;
