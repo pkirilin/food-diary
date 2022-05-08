@@ -1,4 +1,3 @@
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FoodDiary.Export.GoogleDocs;
@@ -8,14 +7,7 @@ namespace FoodDiary.IntegrationTests.Fakes;
 
 public class FakeGoogleDocsClient : IGoogleDocsClient
 {
-    private readonly FakeGoogleDocsStorage _storage;
-
     public const string NewDocId = "mTruDIuO4GigKXm0";
-
-    public FakeGoogleDocsClient(FakeGoogleDocsStorage storage)
-    {
-        _storage = storage;
-    }
 
     public Task<Document> CreateDocumentAsync(string title, string accessToken, CancellationToken cancellationToken)
     {
@@ -25,27 +17,15 @@ public class FakeGoogleDocsClient : IGoogleDocsClient
             Title = title
         };
         
-        _storage.Save(new FakeGoogleDocument
-        {
-            Id = NewDocId,
-            Title = title
-        });
-        
         return Task.FromResult(document);
     }
 
     public void InsertH1Text(Document document, string text)
     {
-        _storage.GetDocument(document.DocumentId)?.RenderHeader(text);
     }
 
     public void InsertTable(Document document, InsertTableOptions options)
     {
-        var cellTextValues = options.Cells
-            .Select(cellsRow => cellsRow.Select(cell => cell.Text).ToList())
-            .ToList();
-        
-        _storage.GetDocument(document.DocumentId)?.RenderTable(cellTextValues);
     }
 
     public void InsertPageBreak(Document document)
