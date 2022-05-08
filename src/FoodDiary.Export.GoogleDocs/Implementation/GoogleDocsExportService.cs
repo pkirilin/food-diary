@@ -1,5 +1,4 @@
-using FoodDiary.Domain.Enums;
-using FoodDiary.Domain.Utils;
+using FoodDiary.Contracts.Export;
 
 namespace FoodDiary.Export.GoogleDocs.Implementation;
 
@@ -7,86 +6,67 @@ internal class GoogleDocsExportService : IGoogleDocsExportService
 {
     private readonly IGoogleDocsClient _docsClient;
     private readonly IGoogleDriveClient _driveClient;
-    private readonly ICaloriesCalculator _caloriesCalculator;
 
-    public GoogleDocsExportService(IGoogleDocsClient docsClient,
-        IGoogleDriveClient driveClient,
-        ICaloriesCalculator caloriesCalculator)
+    public GoogleDocsExportService(IGoogleDocsClient docsClient, IGoogleDriveClient driveClient)
     {
         _docsClient = docsClient;
         _driveClient = driveClient;
-        _caloriesCalculator = caloriesCalculator;
     }
     
-    public async Task ExportAsync(GoogleDocsExportData exportData, CancellationToken cancellationToken)
+    public async Task ExportAsync(ExportFileDto exportFileDto, string accessToken, CancellationToken cancellationToken)
     {
-        var title = GenerateExportFileName(exportData.StartDate, exportData.EndDate);
-        var exportDocument = await _docsClient.CreateDocumentAsync(title, exportData.AccessToken, cancellationToken);
-        var i = 0;
-        
-        foreach (var page in exportData.Pages)
+        var exportDocument = await _docsClient.CreateDocumentAsync(exportFileDto.FileName, accessToken, cancellationToken);
+        var pageIndex = 0;
+
+        foreach (var page in exportFileDto.Pages)
         {
-            var cells = new List<List<TableCell>>
-            {
-                GetTableHeaderCells()
-            };
-
+            var cells = new List<List<TableCell>> { GetTableHeaderCells() };
             var mergeCellsInfo = new List<MergeTableCellsData>();
-            
-            var groups = page.Notes.GroupBy(n => n.MealType)
-                .OrderBy(g => g.Key)
-                .Select(g => g.OrderBy(n => n.DisplayOrder).ToArray())
-                .ToArray();
 
-            var totalCalories = 0;
-
-            foreach (var group in groups)
+            foreach (var noteGroup in page.NoteGroups)
             {
-                var totalCaloriesPerGroup = _caloriesCalculator.Calculate(group);
                 var noteIndex = 0;
-
-                foreach (var note in group)
+                
+                foreach (var note in noteGroup.Notes)
                 {
-                    var calories = _caloriesCalculator.Calculate(note);
-                    
                     cells.Add(new List<TableCell>
                     {
-                        new() { Text = noteIndex == 0 ? GetMealName(note.MealType) : "" },
-                        new() { Text = note.Product.Name },
+                        new() { Text = noteIndex == 0 ? noteGroup.MealName : "" },
+                        new() { Text = note.ProductName },
                         new() { Text = note.ProductQuantity.ToString() },
-                        new() { Text = calories.ToString() },
-                        new() { Text = noteIndex == 0 ? totalCaloriesPerGroup.ToString() : "" },
+                        new() { Text = note.Calories.ToString() },
+                        new() { Text = noteIndex == 0 ? noteGroup.TotalCalories.ToString() : "" }
                     });
 
                     noteIndex++;
                 }
+
+                if (!noteGroup.Notes.Any())
+                    continue;
                 
-                if (group.Any())
+                var groupStartRowIndex = cells.Count - noteGroup.Notes.Length;
+
+                mergeCellsInfo.AddRange(new []
                 {
-                    var groupStartRowIndex = cells.Count - group.Length;
-                    
-                    mergeCellsInfo.Add(new MergeTableCellsData
+                    new MergeTableCellsData
                     {
                         RowIndex = groupStartRowIndex,
                         ColumnIndex = 0,
-                        RowSpan = group.Length,
+                        RowSpan = noteGroup.Notes.Length,
                         ColumnSpan = 1
-                    });
-                
-                    mergeCellsInfo.Add(new MergeTableCellsData
+                    },
+                    new MergeTableCellsData
                     {
                         RowIndex = groupStartRowIndex,
                         ColumnIndex = 4,
-                        RowSpan = group.Length,
+                        RowSpan = noteGroup.Notes.Length,
                         ColumnSpan = 1
-                    });
-                }
-
-                totalCalories += totalCaloriesPerGroup;
+                    }
+                });
             }
             
-            cells.Add(GetTotalCaloriesCells(totalCalories));
-
+            cells.Add(GetTotalCaloriesCells(page.TotalCalories));
+            
             mergeCellsInfo.Add(new MergeTableCellsData
             {
                 RowIndex = cells.Count - 1,
@@ -95,43 +75,23 @@ internal class GoogleDocsExportService : IGoogleDocsExportService
                 ColumnSpan = 4
             });
             
-            _docsClient.InsertH1Text(exportDocument, page.Date.ToString("dd.MM.yyyy"));
-
+            _docsClient.InsertH1Text(exportDocument, page.FormattedDate);
+            
             _docsClient.InsertTable(exportDocument, new InsertTableOptions
             {
                 Cells = cells,
                 MergeCellsInfo = mergeCellsInfo,
                 ColumnWidths = GetTableColumnWidths()
             });
-
-            if (i < exportData.Pages.Length - 1)
-            {
+            
+            if (pageIndex < exportFileDto.Pages.Length - 1)
                 _docsClient.InsertPageBreak(exportDocument);
-            }
 
-            i++;
+            pageIndex++;
         }
 
-        await _docsClient.BatchUpdateDocumentAsync(exportDocument.DocumentId, exportData.AccessToken, cancellationToken);
-        await _driveClient.SaveDocumentAsync(exportDocument, exportData.AccessToken, cancellationToken);
-    }
-
-    private static string GenerateExportFileName(DateTime startDate, DateTime endDate)
-    {
-        return $"FoodDiary_{startDate:yyyyMMdd}_{endDate:yyyyMMdd}";
-    }
-
-    private static string GetMealName(MealType mealType)
-    {
-        return mealType switch
-        {
-            MealType.Breakfast => "Завтрак",
-            MealType.SecondBreakfast => "Ланч",
-            MealType.Lunch => "Обед",
-            MealType.AfternoonSnack => "Полдник",
-            MealType.Dinner => "Ужин",
-            _ => throw new ArgumentOutOfRangeException(nameof(mealType), mealType, null)
-        };
+        await _docsClient.BatchUpdateDocumentAsync(exportDocument.DocumentId, accessToken, cancellationToken);
+        await _driveClient.SaveDocumentAsync(exportDocument, accessToken, cancellationToken);
     }
 
     private static List<TableCell> GetTableHeaderCells()
