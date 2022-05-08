@@ -17,6 +17,7 @@ internal class GoogleDocsExportService : IGoogleDocsExportService
         CancellationToken cancellationToken)
     {
         var exportDocument = await _docsClient.CreateDocumentAsync(exportFileDto.FileName, accessToken, cancellationToken);
+        var documentUpdates = new DocumentUpdatesBuilder();
         var pageIndex = 0;
 
         foreach (var page in exportFileDto.Pages)
@@ -76,9 +77,9 @@ internal class GoogleDocsExportService : IGoogleDocsExportService
                 ColumnSpan = 4
             });
             
-            _docsClient.InsertH1Text(exportDocument, page.FormattedDate);
+            documentUpdates.AddHeader(page.FormattedDate);
             
-            _docsClient.InsertTable(exportDocument, new InsertTableOptions
+            documentUpdates.AddTable(new InsertTableOptions
             {
                 Cells = cells,
                 MergeCellsInfo = mergeCellsInfo,
@@ -86,13 +87,15 @@ internal class GoogleDocsExportService : IGoogleDocsExportService
             });
             
             if (pageIndex < exportFileDto.Pages.Length - 1)
-                _docsClient.InsertPageBreak(exportDocument);
+                documentUpdates.AddPageBreak();
 
             pageIndex++;
         }
 
-        await _docsClient.BatchUpdateDocumentAsync(exportDocument.DocumentId, accessToken, cancellationToken);
+        var updateRequests = documentUpdates.GetBatchUpdateRequests();
+        await _docsClient.BatchUpdateDocumentAsync(exportDocument.DocumentId, updateRequests, accessToken, cancellationToken);
         await _driveClient.SaveDocumentAsync(exportDocument, accessToken, cancellationToken);
+        
         return exportDocument.DocumentId;
     }
 

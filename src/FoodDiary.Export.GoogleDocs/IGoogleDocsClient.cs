@@ -6,11 +6,8 @@ public interface IGoogleDocsClient
 {
     Task<Document> CreateDocumentAsync(string title, string accessToken, CancellationToken cancellationToken);
 
-    void InsertH1Text(Document document, string text);
-
-    void InsertTable(Document document, InsertTableOptions options);
-
-    void InsertPageBreak(Document document);
-    
-    Task BatchUpdateDocumentAsync(string documentId, string accessToken, CancellationToken cancellationToken);
+    Task BatchUpdateDocumentAsync(string documentId,
+        IList<Request> requests,
+        string accessToken,
+        CancellationToken cancellationToken);
 }

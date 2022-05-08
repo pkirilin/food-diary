@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using FoodDiary.Export.GoogleDocs;
@@ -20,19 +21,8 @@ public class FakeGoogleDocsClient : IGoogleDocsClient
         return Task.FromResult(document);
     }
 
-    public void InsertH1Text(Document document, string text)
-    {
-    }
-
-    public void InsertTable(Document document, InsertTableOptions options)
-    {
-    }
-
-    public void InsertPageBreak(Document document)
-    {
-    }
-
-    public Task BatchUpdateDocumentAsync(string documentId, string accessToken, CancellationToken cancellationToken)
+    public Task BatchUpdateDocumentAsync(string documentId, IList<Request> requests, string accessToken,
+        CancellationToken cancellationToken)
     {
         return Task.CompletedTask;
     }
