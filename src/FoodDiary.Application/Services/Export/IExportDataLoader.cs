@@ -7,5 +7,5 @@ namespace FoodDiary.Application.Services.Export;
 
 public interface IExportDataLoader
 {
-    Task<ExportFileDto> LoadAsync(DateTime startDate, DateTime endDate, CancellationToken cancellationToken);
+    Task<ExportFileDto> GetExportDataAsync(DateTime startDate, DateTime endDate, CancellationToken cancellationToken);
 }

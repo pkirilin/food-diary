@@ -25,7 +25,7 @@ internal class ExportDataLoader : IExportDataLoader
         _mealNameResolver = mealNameResolver;
     }
     
-    public async Task<ExportFileDto> LoadAsync(DateTime startDate, DateTime endDate, CancellationToken cancellationToken)
+    public async Task<ExportFileDto> GetExportDataAsync(DateTime startDate, DateTime endDate, CancellationToken cancellationToken)
     {
         var pages = await _unitOfWork.Pages.GetAsync(startDate, endDate, cancellationToken);
 
