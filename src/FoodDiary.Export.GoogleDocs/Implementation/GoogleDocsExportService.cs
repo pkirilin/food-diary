@@ -13,7 +13,8 @@ internal class GoogleDocsExportService : IGoogleDocsExportService
         _driveClient = driveClient;
     }
     
-    public async Task ExportAsync(ExportFileDto exportFileDto, string accessToken, CancellationToken cancellationToken)
+    public async Task<string> ExportAsync(ExportFileDto exportFileDto, string accessToken,
+        CancellationToken cancellationToken)
     {
         var exportDocument = await _docsClient.CreateDocumentAsync(exportFileDto.FileName, accessToken, cancellationToken);
         var pageIndex = 0;
@@ -92,6 +93,7 @@ internal class GoogleDocsExportService : IGoogleDocsExportService
 
         await _docsClient.BatchUpdateDocumentAsync(exportDocument.DocumentId, accessToken, cancellationToken);
         await _driveClient.SaveDocumentAsync(exportDocument, accessToken, cancellationToken);
+        return exportDocument.DocumentId;
     }
 
     private static List<TableCell> GetTableHeaderCells()

@@ -16,10 +16,18 @@ internal class ExportService : IExportService
         _googleDocs = googleDocs;
     }
     
-    public async Task ExportToGoogleDocsAsync(ExportToGoogleDocsRequestDto request, CancellationToken cancellationToken)
+    public async Task<ExportToGoogleDocsResponseDto> ExportToGoogleDocsAsync(ExportToGoogleDocsRequestDto request,
+        CancellationToken cancellationToken)
     {
-        var exportFileDto = await _exportDataLoader.GetExportDataAsync(request.StartDate, request.EndDate, cancellationToken);
+        var exportFileDto = await _exportDataLoader.GetExportDataAsync(request.StartDate,
+            request.EndDate,
+            cancellationToken);
 
-        await _googleDocs.ExportAsync(exportFileDto, request.AccessToken, cancellationToken);
+        var documentId = await _googleDocs.ExportAsync(exportFileDto, request.AccessToken, cancellationToken);
+
+        return new ExportToGoogleDocsResponseDto
+        {
+            DocumentId = documentId
+        };
     }
 }

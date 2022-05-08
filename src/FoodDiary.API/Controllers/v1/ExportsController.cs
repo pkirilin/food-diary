@@ -113,9 +113,9 @@ namespace FoodDiary.API.Controllers.v1
         public async Task<IActionResult> ExportToGoogleDocs([FromBody] ExportToGoogleDocsRequestDto request,
             CancellationToken cancellationToken)
         {
-            await _exportService.ExportToGoogleDocsAsync(request, cancellationToken);
+            var exportResponse = await _exportService.ExportToGoogleDocsAsync(request, cancellationToken);
             
-            return Ok();
+            return Ok(exportResponse);
         }
     }
 }

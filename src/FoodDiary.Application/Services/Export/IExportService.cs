@@ -5,5 +5,6 @@ namespace FoodDiary.Application.Services.Export;
 
 public interface IExportService
 {
-    Task ExportToGoogleDocsAsync(ExportToGoogleDocsRequestDto request, CancellationToken cancellationToken);
+    Task<ExportToGoogleDocsResponseDto> ExportToGoogleDocsAsync(ExportToGoogleDocsRequestDto request,
+        CancellationToken cancellationToken);
 }
