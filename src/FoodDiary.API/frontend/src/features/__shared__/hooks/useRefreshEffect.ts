@@ -17,5 +17,6 @@ export default function useRefreshEffect<TState = RootState>(
     if ((activateOnInit && status === 'idle') || status === 'succeeded') {
       effect();
     }
-  }, [status, ...deps]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activateOnInit, effect, status, ...deps]);
 }

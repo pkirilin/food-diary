@@ -17,7 +17,7 @@ const PageContent: React.FC = () => {
   useEffect(() => {
     dispatch(getPageById(pageId));
     dispatch(getNotes({ pageId }));
-  }, [pageId]);
+  }, [dispatch, pageId]);
 
   return (
     <React.Fragment>

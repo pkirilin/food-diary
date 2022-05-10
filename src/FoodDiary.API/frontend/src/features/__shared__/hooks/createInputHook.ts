@@ -17,7 +17,7 @@ export default function createInputHook<TValue, TBindingProps>(
       if (isInitialized && afterChange) {
         afterChange(value);
       }
-    }, [value]);
+    }, [afterChange, isInitialized, value]);
 
     return [value, setValue, () => createBinding(value, setValue)];
   };

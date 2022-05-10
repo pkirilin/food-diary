@@ -28,7 +28,7 @@ const ProductsFilter: React.FC = () => {
 
   useEffect(() => {
     setProductSearchName(filterProductName);
-  }, [filterProductName]);
+  }, [filterProductName, setProductSearchName]);
 
   useEffect(() => {
     setCategory(filterCategory);
