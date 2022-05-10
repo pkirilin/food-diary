@@ -31,21 +31,8 @@ internal class GoogleDocsExportService : IGoogleDocsExportService
 
             foreach (var noteGroup in page.NoteGroups)
             {
-                var noteIndex = 0;
-                
-                foreach (var note in noteGroup.Notes)
-                {
-                    tableBuilder.AddRow(new []
-                    {
-                        noteIndex == 0 ? noteGroup.MealName : "",
-                        note.ProductName,
-                        note.ProductQuantity.ToString(),
-                        note.Calories.ToString(),
-                        noteIndex == 0 ? noteGroup.TotalCalories.ToString() : ""
-                    });
-
-                    noteIndex++;
-                }
+                var rows = GetNotesTableRows(noteGroup);
+                tableBuilder.AddRows(rows);
 
                 if (!noteGroup.Notes.Any())
                     continue;
@@ -79,6 +66,21 @@ internal class GoogleDocsExportService : IGoogleDocsExportService
     {
         "Прием пищи", "Продукт/блюдо", "Кол-во (г, мл)", "Ккал", "Общее\nкол-во\nкалорий"
     };
+
+    private static IEnumerable<string[]> GetNotesTableRows(ExportNoteGroupDto noteGroup)
+    {
+        return noteGroup.Notes.Select((note, index) =>
+        {
+            return new []
+            {
+                index == 0 ? noteGroup.MealName : "",
+                note.ProductName,
+                note.ProductQuantity.ToString(),
+                note.Calories.ToString(),
+                index == 0 ? noteGroup.TotalCalories.ToString() : ""
+            };
+        });
+    }
 
     private static IEnumerable<string> GetTotalCaloriesRow(int totalCalories) => new[]
     {

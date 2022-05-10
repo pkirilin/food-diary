@@ -71,6 +71,14 @@ internal class TableBuilder
             _currentLocationIndex.Value += cell.Text.Length;
         }
     }
+    
+    public void AddRows(IEnumerable<IEnumerable<string>> rows)
+    {
+        foreach (var row in rows)
+        {
+            AddRow(row);
+        }
+    }
 
     public void MergeCells(int rowIndex, int columnIndex, int rowSpan, int columnSpan)
     {

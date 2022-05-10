@@ -17,11 +17,14 @@ public class DocumentBuilderTests
         
         var tableBuilder = documentBuilder.AddTable();
         tableBuilder.AddRow(new [] { "Прием пищи", "Продукт/блюдо", "Кол-во (г, мл)", "Ккал", "Общее\nкол-во\nкалорий" });
-        tableBuilder.AddRow(new [] { "Завтрак", "Chicken", "180", "244", "555" });
-        tableBuilder.AddRow(new [] { "", "Rice", "90", "117", "" });
-        tableBuilder.AddRow(new [] { "", "Bread", "75", "194", "" });
-        tableBuilder.AddRow(new [] { "Обед", "Scrambled eggs", "160", "246", "375" });
-        tableBuilder.AddRow(new [] { "", "Bread", "50", "129", "" });
+        tableBuilder.AddRows(new []
+        {
+            new [] { "Завтрак", "Chicken", "180", "244", "555" },
+            new [] { "", "Rice", "90", "117", "" },
+            new [] { "", "Bread", "75", "194", "" },
+            new [] { "Обед", "Scrambled eggs", "160", "246", "375" },
+            new [] { "", "Bread", "50", "129", "" }
+        });
         tableBuilder.AddRow(new [] { "Всего за день:", "", "", "", "930" });
         tableBuilder.AttachToDocument();
         
