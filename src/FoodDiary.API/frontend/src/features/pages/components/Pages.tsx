@@ -2,9 +2,10 @@ import React from 'react';
 import { Helmet } from 'react-helmet';
 import { Paper } from '@material-ui/core';
 import PagesTable from './PagesTable';
-import PagesTableToolbar from './PagesTableToolbar';
+import PagesToolbar from './PagesToolbar';
 import PagesTablePagination from './PagesTablePagination';
 import PagesFilterAppliedParams from './PagesFilterAppliedParams';
+import ExportMenu from './ExportMenu';
 
 const Pages: React.FC = () => {
   return (
@@ -12,7 +13,9 @@ const Pages: React.FC = () => {
       <Helmet>
         <title>Food diary | Pages</title>
       </Helmet>
-      <PagesTableToolbar></PagesTableToolbar>
+      <PagesToolbar>
+        <ExportMenu></ExportMenu>
+      </PagesToolbar>
       <PagesFilterAppliedParams></PagesFilterAppliedParams>
       <PagesTable></PagesTable>
       <PagesTablePagination></PagesTablePagination>

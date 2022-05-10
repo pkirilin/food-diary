@@ -43,6 +43,14 @@ const handlers = [
 
     return res(ctx.json(categories));
   }),
+
+  rest.get(api('/v1/exports/json'), (req, res, ctx) => {
+    return res(ctx.body(new Blob()));
+  }),
+
+  rest.post(api('/api/v1/exports/google-docs'), (req, res, ctx) => {
+    return res(ctx.status(200));
+  }),
 ];
 
 const server = setupServer(...handlers);

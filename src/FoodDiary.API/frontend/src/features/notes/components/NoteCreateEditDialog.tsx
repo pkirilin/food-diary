@@ -68,7 +68,7 @@ const NoteCreateEditDialog: React.FC<NoteCreateEditDialogProps> = ({
       setProduct(initialProduct);
       setQuantity(initialQuantity);
     }
-  }, [dialogProps.open]);
+  }, [dialogProps.open, initialProduct, initialQuantity, setQuantity]);
 
   const handleSubmitClick = (): void => {
     if (product) {
@@ -86,7 +86,11 @@ const NoteCreateEditDialog: React.FC<NoteCreateEditDialogProps> = ({
     <Dialog maxWidth="xs" fullWidth {...dialogProps}>
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
-        <ProductSelect value={product} setValue={value => setProduct(value)}></ProductSelect>
+        <ProductSelect
+          label="Product"
+          value={product}
+          setValue={value => setProduct(value)}
+        ></ProductSelect>
         <TextField
           {...bindQuantity()}
           type="number"

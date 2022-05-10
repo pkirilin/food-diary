@@ -7,6 +7,7 @@ import {
   createPage,
   deletePages,
   editPage,
+  exportPagesToJson,
   getDateForNewPage,
   getPageById,
   getPages,
@@ -25,6 +26,8 @@ export type PagesState = {
   next?: Page;
   dateForNewPage?: string;
   dateForNewPageLoading: Status;
+  isExportToJsonLoading: boolean;
+  isExportToJsonSuccess: boolean;
 };
 
 export interface SelectPagePayload extends SelectionPayload {
@@ -45,6 +48,8 @@ const initialState: PagesState = {
     sortOrder: SortOrder.Descending,
   },
   dateForNewPageLoading: 'idle',
+  isExportToJsonLoading: false,
+  isExportToJsonSuccess: false,
 };
 
 const operationThunks = [createPage, editPage, deletePages, importPages];
@@ -88,6 +93,10 @@ const pagesSlice = createSlice({
       state.filter.endDate = undefined;
       state.filter.sortOrder = SortOrder.Descending;
     },
+    exportToJsonFinished: state => {
+      state.isExportToJsonLoading = false;
+      state.isExportToJsonSuccess = false;
+    },
   },
   extraReducers: builder =>
     builder
@@ -119,6 +128,19 @@ const pagesSlice = createSlice({
       .addCase(getDateForNewPage.rejected, state => {
         state.dateForNewPageLoading = 'failed';
       })
+
+      .addCase(exportPagesToJson.pending, state => {
+        state.isExportToJsonLoading = true;
+      })
+      .addCase(exportPagesToJson.fulfilled, state => {
+        state.isExportToJsonLoading = false;
+        state.isExportToJsonSuccess = true;
+      })
+      .addCase(exportPagesToJson.rejected, state => {
+        state.isExportToJsonLoading = false;
+        state.isExportToJsonSuccess = false;
+      })
+
       .addMatcher(createAsyncThunkMatcher(operationThunks, 'pending'), state => {
         state.operationStatus = 'pending';
       })
@@ -139,6 +161,7 @@ export const {
   endDateChanged,
   sortOrderChanged,
   filterReset,
+  exportToJsonFinished,
 } = pagesSlice.actions;
 
 export default pagesSlice.reducer;

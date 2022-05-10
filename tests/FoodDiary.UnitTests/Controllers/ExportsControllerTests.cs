@@ -41,7 +41,8 @@ namespace FoodDiary.UnitTests.Controllers
         public ExportsController Sut => new ExportsController(
             _mapper, 
             _mediatorMock.Object, 
-            _pagesPdfGeneratorMock.Object);
+            _pagesPdfGeneratorMock.Object,
+            null);
 
         [Theory]
         [InlineData("2020-05-06", "2020-05-07")]

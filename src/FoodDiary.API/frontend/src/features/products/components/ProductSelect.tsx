@@ -18,7 +18,7 @@ export default function ProductSelect({
 
   useEffect(() => {
     getProductsAutocomplete(isOpen);
-  }, [isOpen]);
+  }, [getProductsAutocomplete, isOpen]);
 
   return (
     <CustomAutocomplete

@@ -1,13 +1,21 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
 
 import config from './features/__shared__/config';
+import { getAccessToken, saveAccessToken } from './features/auth/cookie.service';
+
 import { AuthResult } from './features/auth/models';
-import { saveAccessToken } from './features/auth/cookie.service';
+import { ExportPagesToGoogleDocsRequest } from './features/pages/models';
 import { ProductAutocompleteOption } from './features/products/models';
 import { CategoryAutocompleteOption } from './features/categories/models';
 
 const api = createApi({
-  baseQuery: fetchBaseQuery({ baseUrl: config.apiUrl }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: config.apiUrl,
+    prepareHeaders: headers => {
+      headers.append('Authorization', `Bearer ${getAccessToken()}`);
+      return headers;
+    },
+  }),
   endpoints: builder => ({
     signInWithGoogle: builder.query<void, string>({
       query: googleTokenId => ({
@@ -22,12 +30,23 @@ const api = createApi({
       },
     }),
 
+    exportPagesToGoogleDocs: builder.mutation<void, ExportPagesToGoogleDocsRequest>({
+      query: payload => ({
+        url: '/api/v1/exports/google-docs',
+        method: 'POST',
+        body: payload,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }),
+    }),
+
     getProductsAutocomplete: builder.query<ProductAutocompleteOption[], boolean>({
-      query: () => `/api/v1/products/autocomplete`,
+      query: () => '/api/v1/products/autocomplete',
     }),
 
     getCategoriesAutocomplete: builder.query<CategoryAutocompleteOption[], boolean>({
-      query: () => `/api/v1/categories/autocomplete`,
+      query: () => '/api/v1/categories/autocomplete',
     }),
   }),
 });
@@ -36,6 +55,7 @@ export const {
   useLazySignInWithGoogleQuery,
   useLazyGetProductsAutocompleteQuery,
   useLazyGetCategoriesAutocompleteQuery,
+  useExportPagesToGoogleDocsMutation,
 } = api;
 
 export default api;

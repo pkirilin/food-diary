@@ -36,7 +36,7 @@ export default function createValidatedInputHook<TValue, TBindingProps extends V
         setError(!isInputValid);
         setHelperText(isInputValid ? '' : errorHelperText);
       }
-    }, [value]);
+    }, [errorHelperText, isInitialized, validate, value]);
 
     return [
       value,

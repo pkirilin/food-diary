@@ -1,12 +1,13 @@
 import GoogleLogin, { GoogleLoginResponse } from 'react-google-login';
 import { useLazySignInWithGoogleQuery } from 'src/api';
+import config from 'src/features/__shared__/config';
 
 const Auth = () => {
   const [signInWithGoogle] = useLazySignInWithGoogleQuery();
 
   return (
     <GoogleLogin
-      clientId="772368064111-19hqh3c6ksu56ke45nm24etn7qoma88v.apps.googleusercontent.com"
+      clientId={config.googleClientId}
       onSuccess={response => {
         const { tokenId } = response as GoogleLoginResponse;
         signInWithGoogle(tokenId);

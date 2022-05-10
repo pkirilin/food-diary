@@ -1,10 +1,10 @@
 using System.IO;
-using System.Threading.Tasks;
+using System.Net.Http;
 using FoodDiary.API;
-using FoodDiary.Domain.Entities;
+using FoodDiary.Export.GoogleDocs;
 using FoodDiary.Infrastructure;
 using FoodDiary.Integrations.Google.Extensions;
-using FoodDiary.IntegrationTests.Dsl.Builders;
+using FoodDiary.IntegrationTests.Database;
 using FoodDiary.IntegrationTests.Fakes;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
@@ -20,18 +20,26 @@ namespace FoodDiary.IntegrationTests;
 // ReSharper disable once ClassNeverInstantiated.Global
 public class FoodDiaryWebApplicationFactory : WebApplicationFactory<Startup>
 {
-    private SqliteConnection _connection;
-    private IServiceScope _scope;
-    private FoodDiaryContext _dbContext;
-    
-    public SeedDataForDbContextBuilder SeedDatabase() => new(DbContext);
+    private SqliteConnection? _connection;
 
-    public void ClearDatabase() => ClearDatabaseAsync().Wait();
+    public new HttpClient CreateClient()
+    {
+        var client = base.CreateClient();
+        
+        var dbContext = Services.GetRequiredService<FoodDiaryContext>();
+        TestDatabaseUtils.Clear(dbContext, _connection);
+        TestDatabaseUtils.Initialize(dbContext);
+
+        return client;
+    }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        _connection = new SqliteConnection("Filename=:memory:");
-        _connection.Open();
+        if (_connection == null)
+        {
+            _connection = new SqliteConnection("Filename=:memory:");
+            _connection.Open();
+        }
 
         builder.UseEnvironment("Test");
 
@@ -54,6 +62,9 @@ public class FoodDiaryWebApplicationFactory : WebApplicationFactory<Startup>
 
             services.AddGoogleOAuthClient()
                 .ConfigurePrimaryHttpMessageHandler(() => new FakeHttpMessageHandler());
+
+            services.AddSingleton<IGoogleDriveClient, FakeGoogleDriveClient>();
+            services.AddSingleton<IGoogleDocsClient, FakeGoogleDocsClient>();
         });
     }
     
@@ -62,38 +73,8 @@ public class FoodDiaryWebApplicationFactory : WebApplicationFactory<Startup>
         if (disposing)
         {
             _connection?.Close();
-            _scope?.Dispose();
         }
         
         base.Dispose(disposing);
-    }
-
-    private FoodDiaryContext DbContext
-    {
-        get
-        {
-            if (_dbContext != null)
-                return _dbContext;
-
-            var serviceScopeFactory = Services.GetRequiredService<IServiceScopeFactory>();
-            _scope = serviceScopeFactory.CreateScope();
-            _dbContext = _scope.ServiceProvider.GetRequiredService<FoodDiaryContext>();
-            _dbContext.Database.EnsureCreated();
-            return _dbContext;
-        }
-    }
-    
-    private async Task ClearDatabaseAsync()
-    {
-        await RemoveAllAsync<Product>(DbContext);
-        await RemoveAllAsync<Category>(DbContext);
-        await DbContext.SaveChangesAsync();
-    }
-
-    private static async Task RemoveAllAsync<TEntity>(FoodDiaryContext context) where TEntity : class
-    {
-        var set = context.Set<TEntity>();
-        var entities = await set.ToArrayAsync();
-        set.RemoveRange(entities);
     }
 }

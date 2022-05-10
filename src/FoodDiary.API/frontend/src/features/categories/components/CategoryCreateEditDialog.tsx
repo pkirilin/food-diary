@@ -48,7 +48,7 @@ const CategoryCreateEditDialog: React.FC<CategoryCreateEditDialogProps> = ({
     if (dialogProps.open) {
       setCategoryName(initialCategoryName);
     }
-  }, [dialogProps.open]);
+  }, [dialogProps.open, initialCategoryName, setCategoryName]);
 
   const handleSubmitClick = (): void => {
     onDialogConfirm({

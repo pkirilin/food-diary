@@ -26,3 +26,16 @@ export interface PageItemsFilter extends ItemsFilterBase {
   startDate?: string;
   endDate?: string;
 }
+
+export type ExportFormat = 'json' | 'google docs';
+
+export type ExportPagesToJsonRequest = {
+  startDate: string;
+  endDate: string;
+};
+
+export type ExportPagesToGoogleDocsRequest = {
+  startDate: string;
+  endDate: string;
+  accessToken: string;
+};

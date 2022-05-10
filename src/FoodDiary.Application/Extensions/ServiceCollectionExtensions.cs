@@ -2,7 +2,10 @@
 using System.Runtime.CompilerServices;
 using FoodDiary.Application.Features.Auth.SignInWithGoogle;
 using FoodDiary.Application.Services.Categories;
+using FoodDiary.Application.Services.Export;
+using FoodDiary.Application.Services.Export.DataLoader;
 using FoodDiary.Application.Services.Products;
+using FoodDiary.Export.GoogleDocs.Extensions;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -25,6 +28,10 @@ namespace FoodDiary.Application.Extensions
         {
             services.AddScoped<IProductsService, ProductsService>();
             services.AddScoped<ICategoriesService, CategoriesService>();
+
+            services.AddScoped<IExportService, ExportService>();
+            services.AddScoped<IExportDataLoader, ExportDataLoader>();
+            services.AddGoogleDocsExportService();
         }
     }
 }

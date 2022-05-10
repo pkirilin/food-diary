@@ -18,7 +18,7 @@ export default function useAuth(): UseAuthHookResult {
     if (!isAuthenticated && token) {
       dispatch(userLoggedIn());
     }
-  }, [isAuthenticated]);
+  }, [dispatch, isAuthenticated]);
 
   return { isAuthenticated };
 }

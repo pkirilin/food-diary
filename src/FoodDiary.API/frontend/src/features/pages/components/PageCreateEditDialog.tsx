@@ -62,13 +62,13 @@ const PageCreateEditDialog: React.FC<PageCreateEditDialogProps> = ({
         dispatch(getDateForNewPage());
       }
     }
-  }, [dialogProps.open]);
+  }, [dialogProps.open, dispatch, initialDate, page, setDate]);
 
   useEffect(() => {
     if (dateForNewPageLoading === 'succeeded' && !page) {
       setDate(dateForNewPage);
     }
-  }, [dateForNewPageLoading]);
+  }, [dateForNewPage, dateForNewPageLoading, page, setDate]);
 
   const handleSubmitClick = (): void => {
     if (!date) {

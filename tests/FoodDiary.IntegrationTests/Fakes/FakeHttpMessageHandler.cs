@@ -21,7 +21,7 @@ public class FakeHttpMessageHandler : HttpMessageHandler
         _statusCode = HttpStatusCode.BadRequest;
     }
 
-    public void WithJsonResponse(object responseObject)
+    public void WithJsonResponse<T>(T responseObject)
     {
         var json = JsonSerializer.Serialize(responseObject);
         _responseContent = new StringContent(json);

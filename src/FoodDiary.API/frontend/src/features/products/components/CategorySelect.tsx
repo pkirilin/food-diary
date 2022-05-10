@@ -18,7 +18,7 @@ export default function CategorySelect({
 
   useEffect(() => {
     getCategoriesAutocomplete(isOpen);
-  }, [isOpen]);
+  }, [getCategoriesAutocomplete, isOpen]);
 
   return (
     <CustomAutocomplete
