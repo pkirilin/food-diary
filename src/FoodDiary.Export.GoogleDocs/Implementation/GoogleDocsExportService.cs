@@ -26,7 +26,7 @@ internal class GoogleDocsExportService : IGoogleDocsExportService
             documentBuilder.AddHeader(page.FormattedDate);
             
             var tableBuilder = documentBuilder.AddTable();
-            tableBuilder.AddRow(GetTableHeaderCells().Select(c => c.Text));
+            tableBuilder.AddRow(GetTableHeaderRow());
             tableBuilder.SetBoldAndItalic(0, 0, tableBuilder.RowCount, tableBuilder.ColumnCount);
 
             foreach (var noteGroup in page.NoteGroups)
@@ -56,7 +56,7 @@ internal class GoogleDocsExportService : IGoogleDocsExportService
                 tableBuilder.MergeCells(groupStartRowIndex, 4, noteGroup.Notes.Length, 1);
             }
             
-            tableBuilder.AddRow(GetTotalCaloriesCells(page.TotalCalories).Select(c => c.Text));
+            tableBuilder.AddRow(GetTotalCaloriesRow(page.TotalCalories));
             tableBuilder.SetBoldAndItalic(tableBuilder.RowCount- 1, 0, 1, 1);
             tableBuilder.MergeCells(tableBuilder.RowCount - 1, 0, 1, 4);
             tableBuilder.SetColumnWidths(GetTableColumnWidths());
@@ -75,32 +75,18 @@ internal class GoogleDocsExportService : IGoogleDocsExportService
         return exportDocument.DocumentId;
     }
 
-    private static List<TableCell> GetTableHeaderCells()
+    private static IEnumerable<string> GetTableHeaderRow() => new[]
     {
-        var texts = new[] { "Прием пищи", "Продукт/блюдо", "Кол-во (г, мл)", "Ккал", "Общее\nкол-во\nкалорий" };
-        
-        return texts.Select(text => new TableCell
-        {
-            Text = text,
-            IsBold = true,
-            IsItalic = true
-        }).ToList();
-    }
+        "Прием пищи", "Продукт/блюдо", "Кол-во (г, мл)", "Ккал", "Общее\nкол-во\nкалорий"
+    };
 
-    private static List<TableCell> GetTotalCaloriesCells(int totalCalories)
+    private static IEnumerable<string> GetTotalCaloriesRow(int totalCalories) => new[]
     {
-        var texts = new[] { "Всего за день:", "", "", "", totalCalories.ToString() };
+        "Всего за день:", "", "", "", totalCalories.ToString()
+    };
 
-        return texts.Select(text => new TableCell
-        {
-            Text = text,
-            IsBold = true,
-            IsItalic = true
-        }).ToList();
-    }
-
-    private static List<double> GetTableColumnWidths()
+    private static IEnumerable<double> GetTableColumnWidths() => new[]
     {
-        return new List<double> { 84.75, 165.75, 85.5, 51, 63.75 };
-    }
+        84.75, 165.75, 85.5, 51, 63.75
+    };
 }
