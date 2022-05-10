@@ -16,4 +16,8 @@
     <ProjectReference Include="..\FoodDiary.Contracts\FoodDiary.Contracts.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="Implementation\DocumentUpdatesBuilder.cs" />
+  </ItemGroup>
+
 </Project>

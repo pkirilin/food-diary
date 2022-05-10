@@ -1,4 +1,5 @@
 using FoodDiary.Contracts.Export;
+using FoodDiary.Export.GoogleDocs.Builders;
 
 namespace FoodDiary.Export.GoogleDocs.Implementation;
 
@@ -17,13 +18,16 @@ internal class GoogleDocsExportService : IGoogleDocsExportService
         CancellationToken cancellationToken)
     {
         var exportDocument = await _docsClient.CreateDocumentAsync(exportFileDto.FileName, accessToken, cancellationToken);
-        var documentUpdates = new DocumentUpdatesBuilder();
+        var documentBuilder = new DocumentBuilder();
         var pageIndex = 0;
 
         foreach (var page in exportFileDto.Pages)
         {
-            var cells = new List<List<TableCell>> { GetTableHeaderCells() };
-            var mergeCellsInfo = new List<MergeTableCellsData>();
+            documentBuilder.AddHeader(page.FormattedDate);
+            
+            var tableBuilder = documentBuilder.AddTable();
+            tableBuilder.AddRow(GetTableHeaderCells().Select(c => c.Text));
+            tableBuilder.SetBoldAndItalic(0, 0, tableBuilder.RowCount, tableBuilder.ColumnCount);
 
             foreach (var noteGroup in page.NoteGroups)
             {
@@ -31,13 +35,13 @@ internal class GoogleDocsExportService : IGoogleDocsExportService
                 
                 foreach (var note in noteGroup.Notes)
                 {
-                    cells.Add(new List<TableCell>
+                    tableBuilder.AddRow(new []
                     {
-                        new() { Text = noteIndex == 0 ? noteGroup.MealName : "" },
-                        new() { Text = note.ProductName },
-                        new() { Text = note.ProductQuantity.ToString() },
-                        new() { Text = note.Calories.ToString() },
-                        new() { Text = noteIndex == 0 ? noteGroup.TotalCalories.ToString() : "" }
+                        noteIndex == 0 ? noteGroup.MealName : "",
+                        note.ProductName,
+                        note.ProductQuantity.ToString(),
+                        note.Calories.ToString(),
+                        noteIndex == 0 ? noteGroup.TotalCalories.ToString() : ""
                     });
 
                     noteIndex++;
@@ -46,53 +50,25 @@ internal class GoogleDocsExportService : IGoogleDocsExportService
                 if (!noteGroup.Notes.Any())
                     continue;
                 
-                var groupStartRowIndex = cells.Count - noteGroup.Notes.Length;
-
-                mergeCellsInfo.AddRange(new []
-                {
-                    new MergeTableCellsData
-                    {
-                        RowIndex = groupStartRowIndex,
-                        ColumnIndex = 0,
-                        RowSpan = noteGroup.Notes.Length,
-                        ColumnSpan = 1
-                    },
-                    new MergeTableCellsData
-                    {
-                        RowIndex = groupStartRowIndex,
-                        ColumnIndex = 4,
-                        RowSpan = noteGroup.Notes.Length,
-                        ColumnSpan = 1
-                    }
-                });
+                var groupStartRowIndex = tableBuilder.RowCount - noteGroup.Notes.Length;
+                
+                tableBuilder.MergeCells(groupStartRowIndex, 0, noteGroup.Notes.Length, 1);
+                tableBuilder.MergeCells(groupStartRowIndex, 4, noteGroup.Notes.Length, 1);
             }
             
-            cells.Add(GetTotalCaloriesCells(page.TotalCalories));
-            
-            mergeCellsInfo.Add(new MergeTableCellsData
-            {
-                RowIndex = cells.Count - 1,
-                ColumnIndex = 0,
-                RowSpan = 1,
-                ColumnSpan = 4
-            });
-            
-            documentUpdates.AddHeader(page.FormattedDate);
-            
-            documentUpdates.AddTable(new InsertTableOptions
-            {
-                Cells = cells,
-                MergeCellsInfo = mergeCellsInfo,
-                ColumnWidths = GetTableColumnWidths()
-            });
-            
+            tableBuilder.AddRow(GetTotalCaloriesCells(page.TotalCalories).Select(c => c.Text));
+            tableBuilder.SetBoldAndItalic(tableBuilder.RowCount- 1, 0, 1, 1);
+            tableBuilder.MergeCells(tableBuilder.RowCount - 1, 0, 1, 4);
+            tableBuilder.SetColumnWidths(GetTableColumnWidths());
+            tableBuilder.AttachToDocument();
+
             if (pageIndex < exportFileDto.Pages.Length - 1)
-                documentUpdates.AddPageBreak();
+                documentBuilder.AddPageBreak();
 
             pageIndex++;
         }
 
-        var updateRequests = documentUpdates.GetBatchUpdateRequests();
+        var updateRequests = documentBuilder.GetBatchUpdateRequests();
         await _docsClient.BatchUpdateDocumentAsync(exportDocument.DocumentId, updateRequests, accessToken, cancellationToken);
         await _driveClient.SaveDocumentAsync(exportDocument, accessToken, cancellationToken);
         

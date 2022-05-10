@@ -12,7 +12,7 @@ internal class GoogleDocsClient : IGoogleDocsClient
     public async Task<Document> CreateDocumentAsync(string title, string accessToken, CancellationToken cancellationToken)
     {
         var service = CreateService(accessToken);
-
+        
         var doc = new Document
         {
             Title = title
