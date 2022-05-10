@@ -25,7 +25,7 @@ internal class GoogleDocsExportService : IGoogleDocsExportService
         {
             documentBuilder.AddHeader(page.FormattedDate);
             
-            var tableBuilder = documentBuilder.AddTable();
+            var tableBuilder = documentBuilder.StartTable();
             tableBuilder.AddRow(GetTableHeaderRow());
             tableBuilder.SetBoldAndItalic(0, 0, tableBuilder.RowCount, tableBuilder.ColumnCount);
 
@@ -38,16 +38,15 @@ internal class GoogleDocsExportService : IGoogleDocsExportService
                     continue;
                 
                 var groupStartRowIndex = tableBuilder.RowCount - noteGroup.Notes.Length;
-                
                 tableBuilder.MergeCells(groupStartRowIndex, 0, noteGroup.Notes.Length, 1);
                 tableBuilder.MergeCells(groupStartRowIndex, 4, noteGroup.Notes.Length, 1);
             }
             
             tableBuilder.AddRow(GetTotalCaloriesRow(page.TotalCalories));
-            tableBuilder.SetBoldAndItalic(tableBuilder.RowCount- 1, 0, 1, 1);
+            tableBuilder.SetBoldAndItalic(tableBuilder.RowCount - 1, 0, 1, 1);
             tableBuilder.MergeCells(tableBuilder.RowCount - 1, 0, 1, 4);
             tableBuilder.SetColumnWidths(GetTableColumnWidths());
-            tableBuilder.AttachToDocument();
+            tableBuilder.EndTable();
 
             if (pageIndex < exportFileDto.Pages.Length - 1)
                 documentBuilder.AddPageBreak();
@@ -71,7 +70,7 @@ internal class GoogleDocsExportService : IGoogleDocsExportService
     {
         return noteGroup.Notes.Select((note, index) =>
         {
-            return new []
+            return new[]
             {
                 index == 0 ? noteGroup.MealName : "",
                 note.ProductName,

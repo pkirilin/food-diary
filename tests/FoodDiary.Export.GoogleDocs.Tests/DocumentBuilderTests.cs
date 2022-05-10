@@ -15,7 +15,7 @@ public class DocumentBuilderTests
         
         documentBuilder.AddHeader("01.05.2022");
         
-        var tableBuilder = documentBuilder.AddTable();
+        var tableBuilder = documentBuilder.StartTable();
         tableBuilder.AddRow(new [] { "Прием пищи", "Продукт/блюдо", "Кол-во (г, мл)", "Ккал", "Общее\nкол-во\nкалорий" });
         tableBuilder.AddRows(new []
         {
@@ -26,7 +26,7 @@ public class DocumentBuilderTests
             new [] { "", "Bread", "50", "129", "" }
         });
         tableBuilder.AddRow(new [] { "Всего за день:", "", "", "", "930" });
-        tableBuilder.AttachToDocument();
+        tableBuilder.EndTable();
         
         documentBuilder.AddPageBreak();
 

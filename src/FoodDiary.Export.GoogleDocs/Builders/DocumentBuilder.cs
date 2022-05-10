@@ -48,7 +48,7 @@ internal class DocumentBuilder
         _currentLocationIndex.Value += text.Length;
     }
 
-    public TableBuilder AddTable()
+    public TableBuilder StartTable()
     {
         return new TableBuilder(_currentLocationIndex, _requests);
     }

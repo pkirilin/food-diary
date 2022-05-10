@@ -152,7 +152,7 @@ internal class TableBuilder
         }
     }
 
-    public void AttachToDocument()
+    public void EndTable()
     {
         AddTable();
         AlignCellsVertical();
