@@ -10,7 +10,7 @@ public static class GoogleIntegrationExtensions
     {
         return services.AddHttpClient<IGoogleOAuthClient, GoogleOAuthClient>((provider, client) =>
         {
-            var options = provider.GetRequiredService<IOptions<GoogleApiOptions>>();
+            var options = provider.GetRequiredService<IOptions<GoogleOptions>>();
             client.BaseAddress = new Uri(options.Value.BaseUrl);
         });
     }
