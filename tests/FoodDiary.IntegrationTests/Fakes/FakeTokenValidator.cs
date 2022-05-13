@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using FoodDiary.Application.Services.Auth;
-using FoodDiary.Integrations.Google.Contracts;
 
 namespace FoodDiary.IntegrationTests.Fakes;
 

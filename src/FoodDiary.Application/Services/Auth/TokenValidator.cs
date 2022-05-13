@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using FoodDiary.Integrations.Google.Contracts;
 using Google.Apis.Auth;
 
 namespace FoodDiary.Application.Services.Auth;
