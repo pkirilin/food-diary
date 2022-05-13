@@ -19,9 +19,9 @@ public class AuthController : ControllerBase
     
     [HttpPost("google")]
     [AllowAnonymous]
-    public async Task<IActionResult> Google([FromBody] SignInWithGoogleRequestDto body, CancellationToken cancellationToken)
+    public async Task<IActionResult> Google([FromBody] SignInWithGoogleRequestDto request, CancellationToken cancellationToken)
     {
-        var response = await _authService.SignInWithGoogleAsync(body, cancellationToken);
+        var response = await _authService.SignInWithGoogleAsync(request, cancellationToken);
         
         return Ok(response);
     }

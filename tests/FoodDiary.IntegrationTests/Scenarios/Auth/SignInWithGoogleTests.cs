@@ -2,33 +2,31 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using FluentAssertions;
-using FoodDiary.Application.Features.Auth.SignInWithGoogle;
+using FoodDiary.Application.Services.Auth;
 using FoodDiary.Contracts.Auth;
-using FoodDiary.IntegrationTests.Extensions;
+using FoodDiary.IntegrationTests.Fakes;
 using Xunit;
 
 namespace FoodDiary.IntegrationTests.Scenarios.Auth;
 
 public class SignInWithGoogleTests : IClassFixture<FoodDiaryWebApplicationFactory>
 {
-    private readonly FoodDiaryWebApplicationFactory _webApplicationFactory;
+    private readonly FoodDiaryWebApplicationFactory _factory;
 
-    public SignInWithGoogleTests(FoodDiaryWebApplicationFactory webApplicationFactory)
+    public SignInWithGoogleTests(FoodDiaryWebApplicationFactory factory)
     {
-        _webApplicationFactory = webApplicationFactory;
+        _factory = factory;
     }
 
     [Fact]
     public async Task Authenticates_allowed_user_with_valid_google_token_id_and_provides_access_token()
     {
-        var request = new SignInWithGoogleRequest
+        var request = new SignInWithGoogleRequestDto
         {
-            GoogleTokenId = "test_google_token_id"
+            GoogleTokenId = FakeTokenValidator.TargetUserToken
         };
         
-        var client = _webApplicationFactory
-            .SetupGoogleOAuthClient(_ => _.ToValidateTokenSuccessfullyFor("test@example.com"))
-            .CreateClient();
+        var client = _factory.CreateClient();
         
         var response = await client.PostAsJsonAsync("/api/v1/auth/google", request);
         
@@ -42,14 +40,12 @@ public class SignInWithGoogleTests : IClassFixture<FoodDiaryWebApplicationFactor
     [Fact]
     public async Task Denies_access_for_all_requests_with_invalid_google_token_id()
     {
-        var request = new SignInWithGoogleRequest
+        var request = new SignInWithGoogleRequestDto
         {
-            GoogleTokenId = "test_google_token_id"
+            GoogleTokenId = "..."
         };
         
-        var client = _webApplicationFactory
-            .SetupGoogleOAuthClient(_ => _.ToValidateTokenWithError())
-            .CreateClient();
+        var client = _factory.CreateClient();
         
         var response = await client.PostAsJsonAsync("/api/v1/auth/google", request);
 
@@ -61,14 +57,12 @@ public class SignInWithGoogleTests : IClassFixture<FoodDiaryWebApplicationFactor
     [Fact]
     public async Task Denies_access_for_not_allowed_users_with_valid_google_token_id()
     {
-        var request = new SignInWithGoogleRequest
+        var request = new SignInWithGoogleRequestDto
         {
-            GoogleTokenId = "test_google_token_id"
+            GoogleTokenId = FakeTokenValidator.AnotherUserToken
         };
         
-        var client = _webApplicationFactory
-            .SetupGoogleOAuthClient(_ => _.ToValidateTokenSuccessfullyFor("not_allowed_email@example.com"))
-            .CreateClient();
+        var client = _factory.CreateClient();
 
         var response = await client.PostAsJsonAsync("/api/v1/auth/google", request);
         
