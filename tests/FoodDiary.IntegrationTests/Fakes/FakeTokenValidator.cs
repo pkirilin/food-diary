@@ -8,24 +8,21 @@ public class FakeTokenValidator : ITokenValidator
     public const string TargetUserToken = "test_google_token_id";
     public const string AnotherUserToken = "test_google_token_id2";
     
-    public Task<GoogleTokenInfoDto> ValidateAsync(string idToken)
+    public Task<GoogleTokenInfoDto?> ValidateAsync(string idToken)
     {
-        if (idToken == TargetUserToken)
+        return idToken switch
         {
-            return Task.FromResult(new GoogleTokenInfoDto
+            TargetUserToken => Task.FromResult<GoogleTokenInfoDto?>(new GoogleTokenInfoDto
             {
                 Email = "test@example.com"
-            });
-        }
-
-        if (idToken == AnotherUserToken)
-        {
-            return Task.FromResult(new GoogleTokenInfoDto
+            }),
+            
+            AnotherUserToken => Task.FromResult<GoogleTokenInfoDto?>(new GoogleTokenInfoDto
             {
                 Email = "test2@example.com"
-            });
-        }
-        
-        return Task.FromResult<GoogleTokenInfoDto>(null!);
+            }),
+            
+            _ => Task.FromResult<GoogleTokenInfoDto?>(null)
+        };
     }
 }
