@@ -1,7 +1,6 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using FoodDiary.Application.Features.Auth.SignInWithGoogle;
 using FoodDiary.Configuration;
 using FoodDiary.Domain.Exceptions;
 using Microsoft.Extensions.Options;

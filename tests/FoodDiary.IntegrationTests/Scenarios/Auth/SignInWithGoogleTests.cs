@@ -3,7 +3,6 @@ using System.Net.Http.Json;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FoodDiary.Application.Services.Auth;
-using FoodDiary.Contracts.Auth;
 using FoodDiary.IntegrationTests.Fakes;
 using Xunit;
 
@@ -31,7 +30,7 @@ public class SignInWithGoogleTests : IClassFixture<FoodDiaryWebApplicationFactor
         var response = await client.PostAsJsonAsync("/api/v1/auth/google", request);
         
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        var authResponseData = await response.Content.ReadFromJsonAsync<SuccessfulAuthResponseDto>();
+        var authResponseData = await response.Content.ReadFromJsonAsync<AuthResponseDto>();
         authResponseData.Should().NotBeNull();
         authResponseData?.AccessToken.Should().NotBeNull();
         authResponseData?.TokenExpirationDays.Should().Be(2);

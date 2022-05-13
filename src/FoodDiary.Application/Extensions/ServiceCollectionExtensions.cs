@@ -1,6 +1,5 @@
 ﻿using System.Reflection;
 using System.Runtime.CompilerServices;
-using FoodDiary.Application.Features.Auth.SignInWithGoogle;
 using FoodDiary.Application.Services.Auth;
 using FoodDiary.Application.Services.Categories;
 using FoodDiary.Application.Services.Export;
