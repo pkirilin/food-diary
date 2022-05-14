@@ -60,8 +60,7 @@ public class FoodDiaryWebApplicationFactory : WebApplicationFactory<Startup>
             services.AddAuthentication("Test")
                 .AddScheme<AuthenticationSchemeOptions, FakeAuthHandler>("Test", _ => {});
 
-            services.AddSingleton<ITokenValidator, FakeTokenValidator>();
-
+            services.AddSingleton<IGoogleTokenValidator, FakeGoogleTokenValidator>();
             services.AddSingleton<IGoogleDriveClient, FakeGoogleDriveClient>();
             services.AddSingleton<IGoogleDocsClient, FakeGoogleDocsClient>();
         });

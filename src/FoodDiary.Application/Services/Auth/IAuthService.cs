@@ -5,5 +5,6 @@ namespace FoodDiary.Application.Services.Auth;
 
 public interface IAuthService
 {
-    Task<AuthResponseDto> SignInWithGoogleAsync(SignInWithGoogleRequestDto request, CancellationToken cancellationToken);
+    Task<SignInWithGoogleResponseDto> SignInWithGoogleAsync(SignInWithGoogleRequestDto request,
+        CancellationToken cancellationToken);
 }

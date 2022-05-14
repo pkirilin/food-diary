@@ -3,7 +3,7 @@ using FoodDiary.Application.Services.Auth;
 
 namespace FoodDiary.IntegrationTests.Fakes;
 
-public class FakeTokenValidator : ITokenValidator
+public class FakeGoogleTokenValidator : IGoogleTokenValidator
 {
     public const string TargetUserToken = "test_google_token_id";
     public const string AnotherUserToken = "test_google_token_id2";

@@ -1,11 +1,12 @@
+#nullable enable
 using System.Threading.Tasks;
 using Google.Apis.Auth;
 
 namespace FoodDiary.Application.Services.Auth;
 
-internal class TokenValidator : ITokenValidator
+internal class GoogleTokenValidator : IGoogleTokenValidator
 {
-    public async Task<GoogleTokenInfoDto> ValidateAsync(string idToken)
+    public async Task<GoogleTokenInfoDto?> ValidateAsync(string idToken)
     {
         try
         {

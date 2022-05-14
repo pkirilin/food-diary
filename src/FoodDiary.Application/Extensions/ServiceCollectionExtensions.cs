@@ -24,7 +24,7 @@ namespace FoodDiary.Application.Extensions
         private static void AddApplicationServices(this IServiceCollection services)
         {
             services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
-            services.AddSingleton<ITokenValidator, TokenValidator>();
+            services.AddSingleton<IGoogleTokenValidator, GoogleTokenValidator>();
             services.AddSingleton<IAuthService, AuthService>();
             
             services.AddScoped<IProductsService, ProductsService>();

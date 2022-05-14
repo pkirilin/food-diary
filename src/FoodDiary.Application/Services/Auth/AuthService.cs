@@ -11,18 +11,21 @@ internal class AuthService : IAuthService
 {
     private readonly IOptions<AuthOptions> _options;
     private readonly IJwtTokenGenerator _jwtTokenGenerator;
-    private readonly ITokenValidator _tokenValidator;
+    private readonly IGoogleTokenValidator _googleTokenValidator;
 
-    public AuthService(IOptions<AuthOptions> options, IJwtTokenGenerator jwtTokenGenerator, ITokenValidator tokenValidator)
+    public AuthService(IOptions<AuthOptions> options,
+        IJwtTokenGenerator jwtTokenGenerator,
+        IGoogleTokenValidator googleTokenValidator)
     {
         _options = options;
         _jwtTokenGenerator = jwtTokenGenerator;
-        _tokenValidator = tokenValidator;
+        _googleTokenValidator = googleTokenValidator;
     }
     
-    public async Task<AuthResponseDto> SignInWithGoogleAsync(SignInWithGoogleRequestDto request, CancellationToken cancellationToken)
+    public async Task<SignInWithGoogleResponseDto> SignInWithGoogleAsync(SignInWithGoogleRequestDto request,
+        CancellationToken cancellationToken)
     {
-        var tokenInfo = await _tokenValidator.ValidateAsync(request.GoogleTokenId);
+        var tokenInfo = await _googleTokenValidator.ValidateAsync(request.GoogleTokenId);
 
         if (tokenInfo == null)
         {
@@ -36,7 +39,7 @@ internal class AuthService : IAuthService
             
         var accessToken = _jwtTokenGenerator.GenerateToken(tokenInfo.Email);
 
-        return new AuthResponseDto
+        return new SignInWithGoogleResponseDto
         {
             AccessToken = accessToken,
             TokenExpirationDays = _options.Value.JwtExpirationDays,

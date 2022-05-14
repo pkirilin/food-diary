@@ -22,7 +22,7 @@ public class SignInWithGoogleTests : IClassFixture<FoodDiaryWebApplicationFactor
     {
         var request = new SignInWithGoogleRequestDto
         {
-            GoogleTokenId = FakeTokenValidator.TargetUserToken
+            GoogleTokenId = FakeGoogleTokenValidator.TargetUserToken
         };
         
         var client = _factory.CreateClient();
@@ -30,7 +30,7 @@ public class SignInWithGoogleTests : IClassFixture<FoodDiaryWebApplicationFactor
         var response = await client.PostAsJsonAsync("/api/v1/auth/google", request);
         
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        var authResponseData = await response.Content.ReadFromJsonAsync<AuthResponseDto>();
+        var authResponseData = await response.Content.ReadFromJsonAsync<SignInWithGoogleResponseDto>();
         authResponseData.Should().NotBeNull();
         authResponseData?.AccessToken.Should().NotBeNull();
         authResponseData?.TokenExpirationDays.Should().Be(2);
@@ -58,7 +58,7 @@ public class SignInWithGoogleTests : IClassFixture<FoodDiaryWebApplicationFactor
     {
         var request = new SignInWithGoogleRequestDto
         {
-            GoogleTokenId = FakeTokenValidator.AnotherUserToken
+            GoogleTokenId = FakeGoogleTokenValidator.AnotherUserToken
         };
         
         var client = _factory.CreateClient();

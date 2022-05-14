@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace FoodDiary.Application.Services.Auth;
 
-public interface ITokenValidator
+public interface IGoogleTokenValidator
 {
     Task<GoogleTokenInfoDto?> ValidateAsync(string idToken);
 }
