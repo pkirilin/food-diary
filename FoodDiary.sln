@@ -23,8 +23,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoodDiary.Application", "sr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoodDiary.Contracts", "src\FoodDiary.Contracts\FoodDiary.Contracts.csproj", "{CE935EBD-DACE-4E3C-9667-045522FFDB0A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoodDiary.Integrations.Google", "src\FoodDiary.Integrations.Google\FoodDiary.Integrations.Google.csproj", "{962CC4A3-4630-4897-816A-4E4DD06A3B0A}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoodDiary.Configuration", "src\FoodDiary.Configuration\FoodDiary.Configuration.csproj", "{A083DE9E-A2E6-4203-B7EE-1871AD53BC25}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoodDiary.Migrator", "src\FoodDiary.Migrator\FoodDiary.Migrator.csproj", "{333DD704-39C2-42AA-9B05-E7A7F41BAB0C}"
@@ -165,18 +163,6 @@ Global
 		{CE935EBD-DACE-4E3C-9667-045522FFDB0A}.Release|x64.Build.0 = Release|Any CPU
 		{CE935EBD-DACE-4E3C-9667-045522FFDB0A}.Release|x86.ActiveCfg = Release|Any CPU
 		{CE935EBD-DACE-4E3C-9667-045522FFDB0A}.Release|x86.Build.0 = Release|Any CPU
-		{962CC4A3-4630-4897-816A-4E4DD06A3B0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{962CC4A3-4630-4897-816A-4E4DD06A3B0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{962CC4A3-4630-4897-816A-4E4DD06A3B0A}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{962CC4A3-4630-4897-816A-4E4DD06A3B0A}.Debug|x64.Build.0 = Debug|Any CPU
-		{962CC4A3-4630-4897-816A-4E4DD06A3B0A}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{962CC4A3-4630-4897-816A-4E4DD06A3B0A}.Debug|x86.Build.0 = Debug|Any CPU
-		{962CC4A3-4630-4897-816A-4E4DD06A3B0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{962CC4A3-4630-4897-816A-4E4DD06A3B0A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{962CC4A3-4630-4897-816A-4E4DD06A3B0A}.Release|x64.ActiveCfg = Release|Any CPU
-		{962CC4A3-4630-4897-816A-4E4DD06A3B0A}.Release|x64.Build.0 = Release|Any CPU
-		{962CC4A3-4630-4897-816A-4E4DD06A3B0A}.Release|x86.ActiveCfg = Release|Any CPU
-		{962CC4A3-4630-4897-816A-4E4DD06A3B0A}.Release|x86.Build.0 = Release|Any CPU
 		{A083DE9E-A2E6-4203-B7EE-1871AD53BC25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A083DE9E-A2E6-4203-B7EE-1871AD53BC25}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A083DE9E-A2E6-4203-B7EE-1871AD53BC25}.Debug|x64.ActiveCfg = Debug|Any CPU

@@ -1,9 +1,9 @@
 using System.IO;
 using System.Net.Http;
 using FoodDiary.API;
+using FoodDiary.Application.Services.Auth;
 using FoodDiary.Export.GoogleDocs;
 using FoodDiary.Infrastructure;
-using FoodDiary.Integrations.Google.Extensions;
 using FoodDiary.IntegrationTests.Database;
 using FoodDiary.IntegrationTests.Fakes;
 using Microsoft.AspNetCore.Authentication;
@@ -60,9 +60,7 @@ public class FoodDiaryWebApplicationFactory : WebApplicationFactory<Startup>
             services.AddAuthentication("Test")
                 .AddScheme<AuthenticationSchemeOptions, FakeAuthHandler>("Test", _ => {});
 
-            services.AddGoogleOAuthClient()
-                .ConfigurePrimaryHttpMessageHandler(() => new FakeHttpMessageHandler());
-
+            services.AddSingleton<IGoogleTokenValidator, FakeGoogleTokenValidator>();
             services.AddSingleton<IGoogleDriveClient, FakeGoogleDriveClient>();
             services.AddSingleton<IGoogleDocsClient, FakeGoogleDocsClient>();
         });

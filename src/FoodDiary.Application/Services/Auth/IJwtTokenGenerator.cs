@@ -1,4 +1,4 @@
-namespace FoodDiary.Application.Features.Auth.SignInWithGoogle;
+namespace FoodDiary.Application.Services.Auth;
 
 public interface IJwtTokenGenerator
 {

@@ -6,7 +6,7 @@ using FoodDiary.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
-namespace FoodDiary.Application.Features.Auth.SignInWithGoogle;
+namespace FoodDiary.Application.Services.Auth;
 
 internal class JwtTokenGenerator : IJwtTokenGenerator
 {

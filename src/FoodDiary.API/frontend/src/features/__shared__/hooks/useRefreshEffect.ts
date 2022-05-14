@@ -18,5 +18,5 @@ export default function useRefreshEffect<TState = RootState>(
       effect();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activateOnInit, effect, status, ...deps]);
+  }, [status, ...deps]);
 }

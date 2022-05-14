@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 using System.Runtime.CompilerServices;
-using FoodDiary.Application.Features.Auth.SignInWithGoogle;
+using FoodDiary.Application.Services.Auth;
 using FoodDiary.Application.Services.Categories;
 using FoodDiary.Application.Services.Export;
 using FoodDiary.Application.Services.Export.DataLoader;
@@ -18,14 +18,15 @@ namespace FoodDiary.Application.Extensions
         public static void AddApplicationDependencies(this IServiceCollection services)
         {
             services.AddMediatR(Assembly.GetExecutingAssembly());
-
-            services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
-            
             services.AddApplicationServices();
         }
 
         private static void AddApplicationServices(this IServiceCollection services)
         {
+            services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
+            services.AddSingleton<IGoogleTokenValidator, GoogleTokenValidator>();
+            services.AddSingleton<IAuthService, AuthService>();
+            
             services.AddScoped<IProductsService, ProductsService>();
             services.AddScoped<ICategoriesService, CategoriesService>();
 
