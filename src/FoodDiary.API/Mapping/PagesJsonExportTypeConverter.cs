@@ -1,17 +1,17 @@
 ﻿using System.Collections.Generic;
 using AutoMapper;
+using FoodDiary.Contracts.Export.Json;
 using FoodDiary.Domain.Entities;
-using FoodDiary.Import.Models;
 
 namespace FoodDiary.API.Mapping
 {
-    public class PagesJsonExportTypeConverter : ITypeConverter<IEnumerable<Page>, PagesJsonObject>
+    public class PagesJsonExportTypeConverter : ITypeConverter<IEnumerable<Page>, JsonExportFileDto>
     {
-        public PagesJsonObject Convert(IEnumerable<Page> source, PagesJsonObject destination, ResolutionContext context)
+        public JsonExportFileDto Convert(IEnumerable<Page> source, JsonExportFileDto destination, ResolutionContext context)
         {
-            return new PagesJsonObject
+            return new JsonExportFileDto
             {
-                Pages = context.Mapper.Map<IEnumerable<PageJsonItem>>(source)
+                Pages = context.Mapper.Map<IEnumerable<JsonExportPageDto>>(source)
             };
         }
     }

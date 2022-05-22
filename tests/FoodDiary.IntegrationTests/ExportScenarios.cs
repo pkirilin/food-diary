@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using FluentAssertions;
-using FoodDiary.Domain.Enums;
-using FoodDiary.Import.Models;
+using FoodDiary.Contracts.Export.Json;
 using Newtonsoft.Json;
 using Xunit;
 
@@ -20,73 +19,73 @@ namespace FoodDiary.IntegrationTests
             {
                 var requestUri = $"{Endpoints.ExportPagesJson}?startDate=2020-08-01&endDate=2020-08-02";
 
-                var product1 = new ProductJsonItem()
+                var product1 = new JsonExportProductDto()
                 {
                     Name = "First product",
                     CaloriesCost = 120,
                     Category = "First category"
                 };
 
-                var product2 = new ProductJsonItem()
+                var product2 = new JsonExportProductDto()
                 {
                     Name = "Second product",
                     CaloriesCost = 150,
                     Category = "Second category"
                 };
 
-                var note1 = new NoteJsonItem()
+                var note1 = new JsonExportNoteDto()
                 {
-                    MealType = MealType.Breakfast,
+                    MealType = 1,
                     ProductQuantity = 170,
                     DisplayOrder = 0,
                     Product = product1
                 };
 
-                var note2 = new NoteJsonItem()
+                var note2 = new JsonExportNoteDto()
                 {
-                    MealType = MealType.Dinner,
+                    MealType = 5,
                     ProductQuantity = 50,
                     DisplayOrder = 0,
                     Product = product2
                 };
 
-                var note3 = new NoteJsonItem()
+                var note3 = new JsonExportNoteDto()
                 {
-                    MealType = MealType.Breakfast,
+                    MealType = 1,
                     ProductQuantity = 200,
                     DisplayOrder = 0,
                     Product = product1
                 };
 
-                var note4 = new NoteJsonItem()
+                var note4 = new JsonExportNoteDto()
                 {
-                    MealType = MealType.Breakfast,
+                    MealType = 1,
                     ProductQuantity = 300,
                     DisplayOrder = 1,
                     Product = product2
                 };
 
-                var note5 = new NoteJsonItem()
+                var note5 = new JsonExportNoteDto()
                 {
-                    MealType = MealType.Lunch,
+                    MealType = 3,
                     ProductQuantity = 250,
                     DisplayOrder = 0,
                     Product = product2
                 };
 
-                var expectedJsonObj = new PagesJsonObject()
+                var expectedJsonObj = new JsonExportFileDto()
                 {
-                    Pages = new List<PageJsonItem>()
+                    Pages = new List<JsonExportPageDto>()
                     {
-                        new PageJsonItem()
+                        new JsonExportPageDto()
                         {
                             Date = DateTime.Parse("2020-08-01"),
-                            Notes = new List<NoteJsonItem>() { note1, note2 }
+                            Notes = new List<JsonExportNoteDto>() { note1, note2 }
                         },
-                        new PageJsonItem()
+                        new JsonExportPageDto()
                         {
                             Date = DateTime.Parse("2020-08-02"),
-                            Notes = new List<NoteJsonItem>() { note3, note4, note5 }
+                            Notes = new List<JsonExportNoteDto>() { note3, note4, note5 }
                         },
                     }
                 };
@@ -110,11 +109,11 @@ namespace FoodDiary.IntegrationTests
 
         [Theory]
         [MemberData(nameof(MemberData_ExportPagesJson))]
-        public async void ExportPagesJson_DownloadsExistingPages(string requestUri, PagesJsonObject expectedJsonObj)
+        public async void ExportPagesJson_DownloadsExistingPages(string requestUri, JsonExportFileDto expectedJsonObj)
         {
             // Act
             var jsonString = await _client.GetStringAsync(requestUri);
-            var jsonObj = JsonConvert.DeserializeObject<PagesJsonObject>(jsonString);
+            var jsonObj = JsonConvert.DeserializeObject<JsonExportFileDto>(jsonString);
 
             // Assert
             jsonObj.Should().BeEquivalentTo(expectedJsonObj);

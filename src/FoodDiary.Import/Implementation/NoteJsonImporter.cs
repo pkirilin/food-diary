@@ -1,6 +1,7 @@
 ﻿using System;
+using FoodDiary.Contracts.Export.Json;
 using FoodDiary.Domain.Entities;
-using FoodDiary.Import.Models;
+using FoodDiary.Domain.Enums;
 using FoodDiary.Import.Services;
 
 namespace FoodDiary.Import.Implementation
@@ -14,16 +15,16 @@ namespace FoodDiary.Import.Implementation
             _productImporter = productImporter ?? throw new ArgumentNullException(nameof(productImporter));
         }
 
-        public Note ImportNote(NoteJsonItem noteFromJson)
+        public Note ImportNote(JsonExportNoteDto noteFromJson)
         {
             if (noteFromJson == null)
                 throw new ArgumentNullException(nameof(noteFromJson));
 
             var importedProduct = _productImporter.ImportProduct(noteFromJson.Product);
 
-            return new Note()
+            return new Note
             {
-                MealType = noteFromJson.MealType,
+                MealType = (MealType)noteFromJson.MealType,
                 DisplayOrder = noteFromJson.DisplayOrder,
                 ProductQuantity = noteFromJson.ProductQuantity,
                 Product = importedProduct

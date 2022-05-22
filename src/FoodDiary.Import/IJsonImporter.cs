@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using FoodDiary.Contracts.Export.Json;
 using FoodDiary.Domain.Entities;
-using FoodDiary.Import.Models;
 
 namespace FoodDiary.Import
 {
@@ -16,6 +16,6 @@ namespace FoodDiary.Import
         /// <param name="jsonObj">Valid pages JSON object</param>
         /// <param name="createdPages">Pages that has been created during import</param>
         /// <exception cref="ArgumentNullException"></exception>
-        void Import(PagesJsonObject jsonObj, out List<Page> createdPages);
+        void Import(JsonExportFileDto jsonObj, out List<Page> createdPages);
     }
 }

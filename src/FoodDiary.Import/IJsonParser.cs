@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using FoodDiary.Contracts.Export.Json;
 using FoodDiary.Domain.Exceptions;
-using FoodDiary.Import.Models;
 
 namespace FoodDiary.Import
 {
@@ -15,24 +15,24 @@ namespace FoodDiary.Import
         /// </summary>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ImportException"></exception>
-        IEnumerable<PageJsonItem> ParsePages(PagesJsonObject jsonObj);
+        IEnumerable<JsonExportPageDto> ParsePages(JsonExportFileDto jsonObj);
 
         /// <summary>
         /// Reads and validates notes data from sequence of valid pages from JSON
         /// </summary>
         /// <exception cref="ImportException"></exception>
-        IEnumerable<NoteJsonItem> ParseNotes(IEnumerable<PageJsonItem> pagesFromJson);
+        IEnumerable<JsonExportNoteDto> ParseNotes(IEnumerable<JsonExportPageDto> pagesFromJson);
 
         /// <summary>
         /// Reads and validates products data from sequence of valid notes from JSON
         /// </summary>
         /// <exception cref="ImportException"></exception>
-        IEnumerable<string> ParseProducts(IEnumerable<NoteJsonItem> notesFromJson);
+        IEnumerable<string> ParseProducts(IEnumerable<JsonExportNoteDto> notesFromJson);
 
         /// <summary>
         /// Reads and validates categories data from sequence of valid notes from JSON
         /// </summary>
         /// <exception cref="ImportException"></exception>
-        IEnumerable<string> ParseCategories(IEnumerable<NoteJsonItem> notesFromJson);
+        IEnumerable<string> ParseCategories(IEnumerable<JsonExportNoteDto> notesFromJson);
     }
 }

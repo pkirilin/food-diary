@@ -1,8 +1,9 @@
 ﻿using AutoFixture;
 using FluentAssertions;
+using FoodDiary.Contracts.Export.Json;
 using FoodDiary.Domain.Entities;
+using FoodDiary.Domain.Enums;
 using FoodDiary.Import.Implementation;
-using FoodDiary.Import.Models;
 using FoodDiary.Import.Services;
 using Moq;
 using Xunit;
@@ -25,7 +26,7 @@ namespace FoodDiary.Import.UnitTests.Services
         [Fact]
         public void ImportNote_CreatesNoteEntityFromJson()
         {
-            var noteFromJson = _fixture.Create<NoteJsonItem>();
+            var noteFromJson = _fixture.Create<JsonExportNoteDto>();
             var importedProductEntity = _fixture.Create<Product>();
 
             _productJsonImporterMock.Setup(i => i.ImportProduct(noteFromJson.Product))
@@ -36,7 +37,7 @@ namespace FoodDiary.Import.UnitTests.Services
             _productJsonImporterMock.Verify(i => i.ImportProduct(noteFromJson.Product), Times.Once);
 
             importedNote.Id.Should().Be(default);
-            importedNote.MealType.Should().Be(noteFromJson.MealType);
+            importedNote.MealType.Should().Be((MealType)noteFromJson.MealType);
             importedNote.DisplayOrder.Should().Be(noteFromJson.DisplayOrder);
             importedNote.ProductQuantity.Should().Be(noteFromJson.ProductQuantity);
             importedNote.Product.Should().Be(importedProductEntity);

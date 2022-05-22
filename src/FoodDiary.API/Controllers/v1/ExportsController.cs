@@ -8,12 +8,12 @@ using AutoMapper;
 using FoodDiary.PdfGenerator;
 using Microsoft.AspNetCore.Mvc;
 using FoodDiary.API.Requests;
-using FoodDiary.Import.Models;
 using System.Text.Encodings.Web;
 using MediatR;
 using FoodDiary.Application.Pages.Requests;
 using FoodDiary.Application.Enums;
 using FoodDiary.Application.Services.Export;
+using FoodDiary.Contracts.Export.Json;
 using Microsoft.AspNetCore.Authorization;
 
 namespace FoodDiary.API.Controllers.v1
@@ -90,7 +90,7 @@ namespace FoodDiary.API.Controllers.v1
                 PagesLoadRequestType.All);
 
             var pagesForExport = await _mediator.Send(pagesRequest, cancellationToken);
-            var pagesJsonExportObject = _mapper.Map<PagesJsonObject>(pagesForExport);
+            var pagesJsonExportObject = _mapper.Map<JsonExportFileDto>(pagesForExport);
 
             byte[] fileContents;
             using (var stream = new MemoryStream())

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using FoodDiary.Contracts.Export.Json;
 using FoodDiary.Domain.Enums;
 using FoodDiary.Domain.Exceptions;
-using FoodDiary.Import.Models;
 
 [assembly: InternalsVisibleTo("FoodDiary.Import.UnitTests")]
 
@@ -12,7 +12,7 @@ namespace FoodDiary.Import.Core
 {
     class JsonParser : IJsonParser
     {
-        public IEnumerable<PageJsonItem> ParsePages(PagesJsonObject jsonObj)
+        public IEnumerable<JsonExportPageDto> ParsePages(JsonExportFileDto jsonObj)
         {
             if (jsonObj == null)
                 throw new ArgumentNullException(nameof(jsonObj));
@@ -30,7 +30,7 @@ namespace FoodDiary.Import.Core
             return jsonPagesGroupedByDates.Select(g => g.First());
         }
 
-        public IEnumerable<NoteJsonItem> ParseNotes(IEnumerable<PageJsonItem> pagesFromJson)
+        public IEnumerable<JsonExportNoteDto> ParseNotes(IEnumerable<JsonExportPageDto> pagesFromJson)
         {
             var notesForEachPage = pagesFromJson.Select(p => p.Notes);
 
@@ -63,7 +63,7 @@ namespace FoodDiary.Import.Core
             return notesFromJson;
         }
 
-        public IEnumerable<string> ParseProducts(IEnumerable<NoteJsonItem> notesFromJson)
+        public IEnumerable<string> ParseProducts(IEnumerable<JsonExportNoteDto> notesFromJson)
         {
             var productsFromJson = notesFromJson.Select(n => n.Product);
 
@@ -77,7 +77,7 @@ namespace FoodDiary.Import.Core
             return productsFromJson.Select(p => p.Name).Distinct();
         }
 
-        public IEnumerable<string> ParseCategories(IEnumerable<NoteJsonItem> notesFromJson)
+        public IEnumerable<string> ParseCategories(IEnumerable<JsonExportNoteDto> notesFromJson)
         {
             var categoryNamesFromJson = notesFromJson.Select(n => n.Product.Category);
 

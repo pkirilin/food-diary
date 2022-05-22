@@ -1,5 +1,5 @@
-﻿using FoodDiary.Domain.Entities;
-using FoodDiary.Import.Models;
+﻿using FoodDiary.Contracts.Export.Json;
+using FoodDiary.Domain.Entities;
 
 namespace FoodDiary.Import.Services
 {
@@ -9,6 +9,6 @@ namespace FoodDiary.Import.Services
         /// Creates note from JSON
         /// </summary>
         /// <returns>Imported note entity</returns>
-        Note ImportNote(NoteJsonItem noteFromJson);
+        Note ImportNote(JsonExportNoteDto noteFromJson);
     }
 }

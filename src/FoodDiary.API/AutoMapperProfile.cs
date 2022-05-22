@@ -5,7 +5,7 @@ using FoodDiary.API.Dtos;
 using FoodDiary.Domain.Entities;
 using FoodDiary.API.Requests;
 using FoodDiary.Contracts.Categories;
-using FoodDiary.Import.Models;
+using FoodDiary.Contracts.Export.Json;
 
 namespace FoodDiary.API
 {
@@ -76,16 +76,16 @@ namespace FoodDiary.API
 
         private void CreateExportMappings()
         {
-            CreateMap<Page, PageJsonItem>();
+            CreateMap<Page, JsonExportPageDto>();
 
-            CreateMap<Note, NoteJsonItem>();
+            CreateMap<Note, JsonExportNoteDto>();
 
-            CreateMap<Product, ProductJsonItem>()
+            CreateMap<Product, JsonExportProductDto>()
                 .ForMember(
                     dest => dest.Category,
                     o => o.MapFrom(src => src.Category.Name));
 
-            CreateMap<IEnumerable<Page>, PagesJsonObject>()
+            CreateMap<IEnumerable<Page>, JsonExportFileDto>()
                 .ConvertUsing<PagesJsonExportTypeConverter>();
         }
     }
