@@ -7,19 +7,19 @@ namespace FoodDiary.Application.Services.Export;
 
 internal class ExportService : IExportService
 {
-    private readonly IExportDataLoader _dataLoader;
+    private readonly IExportDataLoader _exportDataLoader;
     private readonly IGoogleDocsExportService _googleDocsService;
 
-    public ExportService(IExportDataLoader dataLoader, IGoogleDocsExportService googleDocsService)
+    public ExportService(IExportDataLoader exportDataLoader, IGoogleDocsExportService googleDocsService)
     {
-        _dataLoader = dataLoader;
+        _exportDataLoader = exportDataLoader;
         _googleDocsService = googleDocsService;
     }
     
     public async Task<ExportToGoogleDocsResponseDto> ExportToGoogleDocsAsync(ExportToGoogleDocsRequestDto request,
         CancellationToken cancellationToken)
     {
-        var exportFileDto = await _dataLoader.GetExportDataAsync(request.StartDate,
+        var exportFileDto = await _exportDataLoader.GetDataAsync(request.StartDate,
             request.EndDate,
             cancellationToken);
 

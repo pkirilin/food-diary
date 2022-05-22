@@ -22,7 +22,7 @@ public class ExportDataLoaderTests : IClassFixture<ComponentTestFixture>
         var startDate = DateTime.Parse("2022-05-01");
         var endDate = DateTime.Parse("2022-05-11");
 
-        var exportFileDto = await exportDataLoader.GetExportDataAsync(startDate, endDate, default);
+        var exportFileDto = await exportDataLoader.GetDataAsync(startDate, endDate, default);
         var exportedDates = exportFileDto.Pages.Select(p => p.FormattedDate);
         var exportedNotes = exportFileDto.Pages.SelectMany(p => p.NoteGroups).SelectMany(ng => ng.Notes);
         var exportedNoteGroupsTotalCalories = exportFileDto.Pages.SelectMany(p => p.NoteGroups).Select(ng => ng.TotalCalories);
@@ -40,5 +40,22 @@ public class ExportDataLoaderTests : IClassFixture<ComponentTestFixture>
             new() { ProductName = "Scrambled eggs", ProductQuantity = 160, Calories = 246 },
             new() { ProductName = "Bread", ProductQuantity = 50, Calories = 129 },
         });
+    }
+
+    [Fact]
+    public async void Pages_are_loaded_and_transformed_to_export_data_for_json()
+    {
+        var exportDataLoader = _fixture.CreateExportDataLoader();
+        var startDate = DateTime.Parse("2022-05-01");
+        var endDate = DateTime.Parse("2022-05-11");
+
+        var exportFileDto = await exportDataLoader.GetJsonDataAsync(startDate, endDate, default);
+        var exportedDates = exportFileDto.Pages.Select(p => p.Date.ToString("yyyy-MM-dd"));
+        var exportedProductNames = exportFileDto.Pages.SelectMany(p => p.Notes).Select(n => n.Product.Name);
+        var exportedCategoryNames = exportFileDto.Pages.SelectMany(p => p.Notes).Select(n => n.Product.Category);
+
+        exportedDates.Should().ContainInOrder("2022-05-01", "2022-05-02", "2022-05-03");
+        exportedProductNames.Should().Contain(new[] { "Chicken", "Rice", "Bread" });
+        exportedCategoryNames.Should().Contain(new[] { "Meat", "Cereals" });
     }
 }
