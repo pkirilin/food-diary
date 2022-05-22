@@ -44,9 +44,31 @@ internal class ExportDataLoader : IExportDataLoader
         };
     }
 
-    public Task<JsonExportFileDto> GetJsonDataAsync(DateTime startDate, DateTime endDate, CancellationToken cancellationToken)
+    public async Task<JsonExportFileDto> GetJsonDataAsync(DateTime startDate, DateTime endDate, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var pages = await _unitOfWork.Pages.GetAsync(startDate, endDate, cancellationToken);
+
+        var exportPages = pages.Select(page => new JsonExportPageDto
+        {
+            Date = page.Date,
+            Notes = page.Notes.Select(note => new JsonExportNoteDto
+            {
+                MealType = (int)note.MealType,
+                DisplayOrder = note.DisplayOrder,
+                ProductQuantity = note.ProductQuantity,
+                Product = new JsonExportProductDto
+                {
+                    Name = note.Product.Name,
+                    CaloriesCost = note.Product.CaloriesCost,
+                    Category = note.Product.Category.Name
+                }
+            })
+        });
+
+        return new JsonExportFileDto
+        {
+            Pages = exportPages
+        };
     }
 
     private static string GenerateExportFileName(DateTime startDate, DateTime endDate)

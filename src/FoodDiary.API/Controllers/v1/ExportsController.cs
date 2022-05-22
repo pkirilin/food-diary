@@ -73,7 +73,7 @@ namespace FoodDiary.API.Controllers.v1
         /// </summary>
         /// <param name="exportRequest">Parameters to determine which pages should be exported</param>
         /// <param name="cancellationToken"></param>
-        [HttpGet("json")]
+        [HttpGet("json-old")]
         [ProducesResponseType(typeof(byte[]), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> ExportPagesJson([FromQuery] PagesExportRequest exportRequest, CancellationToken cancellationToken)
@@ -109,7 +109,7 @@ namespace FoodDiary.API.Controllers.v1
             return File(fileContents, "application/json");
         }
 
-        [HttpGet("json-new")]
+        [HttpGet("json")]
         public async Task<IActionResult> ExportToJson([FromQuery] ExportRequestDto request,
             CancellationToken cancellationToken)
         {

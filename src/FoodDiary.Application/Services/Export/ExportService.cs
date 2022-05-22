@@ -1,3 +1,6 @@
+using System.IO;
+using System.Text.Encodings.Web;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using FoodDiary.Application.Services.Export.DataLoader;
@@ -31,8 +34,22 @@ internal class ExportService : IExportService
         };
     }
 
-    public Task<byte[]> ExportToJsonAsync(ExportRequestDto request, CancellationToken cancellationToken)
+    public async Task<byte[]> ExportToJsonAsync(ExportRequestDto request, CancellationToken cancellationToken)
     {
-        throw new System.NotImplementedException();
+        var exportFileDto = await _exportDataLoader.GetJsonDataAsync(request.StartDate,
+            request.EndDate,
+            cancellationToken);
+
+        using var stream = new MemoryStream();
+        
+        var serializerOptions = new JsonSerializerOptions
+        { 
+            WriteIndented = true, 
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+        };
+
+        await JsonSerializer.SerializeAsync(stream, exportFileDto, serializerOptions, cancellationToken);
+        return stream.ToArray();
     }
 }

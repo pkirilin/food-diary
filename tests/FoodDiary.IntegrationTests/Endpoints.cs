@@ -35,7 +35,7 @@
         public static string DeleteCategory { get; } = CategoriesBaseUrl;
 
         public static string ExportPagesPdf { get; } = $"{ExportsBaseUrl}/pdf";
-        public static string ExportPagesJson { get; } = $"{ExportsBaseUrl}/json";
+        public static string ExportPagesJson { get; } = $"{ExportsBaseUrl}/json-old";
 
         public static string ImportPagesJson { get; } = $"{ImportsBaseUrl}/json";
     }

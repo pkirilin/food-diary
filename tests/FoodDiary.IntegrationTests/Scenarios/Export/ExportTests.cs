@@ -40,7 +40,7 @@ public class ExportTests : IClassFixture<FoodDiaryWebApplicationFactory>
     public async void Data_is_exported_to_json()
     {
         var client = _factory.CreateClient();
-        const string url = "api/v1/exports/json-new?startDate=2022-05-01&endDate=2022-05-11";
+        const string url = "api/v1/exports/json?startDate=2022-05-01&endDate=2022-05-11";
 
         var response = await client.GetAsync(url);
         var content = await response.Content.ReadAsByteArrayAsync();
