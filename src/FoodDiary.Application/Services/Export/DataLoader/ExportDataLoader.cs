@@ -32,7 +32,7 @@ internal class ExportDataLoader : IExportDataLoader
         var exportPages = pages.Select(page => new ExportPageDto
         {
             FormattedDate = page.Date.ToString("dd.MM.yyyy"),
-            TotalCalories = _caloriesCalculator.Calculate((ICollection<Note>)page.Notes),
+            TotalCalories = _caloriesCalculator.Calculate(page.Notes),
             NoteGroups = GetNoteGroups(page.Notes)
         }).ToArray();
 

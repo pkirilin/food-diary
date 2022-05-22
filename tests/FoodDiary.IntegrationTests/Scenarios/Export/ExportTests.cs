@@ -7,17 +7,17 @@ using Xunit;
 
 namespace FoodDiary.IntegrationTests.Scenarios.Export;
 
-public class ExportToGoogleDocsTests : IClassFixture<FoodDiaryWebApplicationFactory>
+public class ExportTests : IClassFixture<FoodDiaryWebApplicationFactory>
 {
     private readonly FoodDiaryWebApplicationFactory _factory;
 
-    public ExportToGoogleDocsTests(FoodDiaryWebApplicationFactory factory)
+    public ExportTests(FoodDiaryWebApplicationFactory factory)
     {
         _factory = factory;
     }
 
     [Fact]
-    public async void Export_data_is_saved_to_google_drive_folder_as_google_doc()
+    public async void Data_is_saved_to_google_drive_as_google_doc()
     {
         var client = _factory.CreateClient();
 
@@ -34,5 +34,18 @@ public class ExportToGoogleDocsTests : IClassFixture<FoodDiaryWebApplicationFact
         response.IsSuccessStatusCode.Should().BeTrue();
         exportResponse.Should().NotBeNull();
         exportResponse!.DocumentId.Should().Be(FakeGoogleDocsClient.NewDocId);
+    }
+    
+    [Fact]
+    public async void Data_is_exported_to_json()
+    {
+        var client = _factory.CreateClient();
+        const string url = "api/v1/exports/json-new?startDate=2022-05-01&endDate=2022-05-11";
+
+        var response = await client.GetAsync(url);
+        var content = await response.Content.ReadAsByteArrayAsync();
+
+        response.IsSuccessStatusCode.Should().BeTrue();
+        content.Should().NotBeNull().And.NotBeEmpty();
     }
 }

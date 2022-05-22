@@ -7,27 +7,32 @@ namespace FoodDiary.Application.Services.Export;
 
 internal class ExportService : IExportService
 {
-    private readonly IExportDataLoader _exportDataLoader;
-    private readonly IGoogleDocsExportService _googleDocs;
+    private readonly IExportDataLoader _dataLoader;
+    private readonly IGoogleDocsExportService _googleDocsService;
 
-    public ExportService(IExportDataLoader exportDataLoader, IGoogleDocsExportService googleDocs)
+    public ExportService(IExportDataLoader dataLoader, IGoogleDocsExportService googleDocsService)
     {
-        _exportDataLoader = exportDataLoader;
-        _googleDocs = googleDocs;
+        _dataLoader = dataLoader;
+        _googleDocsService = googleDocsService;
     }
     
     public async Task<ExportToGoogleDocsResponseDto> ExportToGoogleDocsAsync(ExportToGoogleDocsRequestDto request,
         CancellationToken cancellationToken)
     {
-        var exportFileDto = await _exportDataLoader.GetExportDataAsync(request.StartDate,
+        var exportFileDto = await _dataLoader.GetExportDataAsync(request.StartDate,
             request.EndDate,
             cancellationToken);
 
-        var documentId = await _googleDocs.ExportAsync(exportFileDto, request.AccessToken, cancellationToken);
+        var documentId = await _googleDocsService.ExportAsync(exportFileDto, request.AccessToken, cancellationToken);
 
         return new ExportToGoogleDocsResponseDto
         {
             DocumentId = documentId
         };
+    }
+
+    public Task<byte[]> ExportToJsonAsync(ExportRequestDto request, CancellationToken cancellationToken)
+    {
+        throw new System.NotImplementedException();
     }
 }
