@@ -4,11 +4,12 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FoodDiary.Contracts.Export;
+using FoodDiary.Contracts.Export.Json;
 using FoodDiary.Domain.Abstractions.v2;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Utils;
 
-namespace FoodDiary.Application.Services.Export.DataLoader;
+namespace FoodDiary.Application.Services.Export;
 
 internal class ExportDataLoader : IExportDataLoader
 {
@@ -25,14 +26,16 @@ internal class ExportDataLoader : IExportDataLoader
         _mealNameResolver = mealNameResolver;
     }
     
-    public async Task<ExportFileDto> GetExportDataAsync(DateTime startDate, DateTime endDate, CancellationToken cancellationToken)
+    public async Task<ExportFileDto> GetDataAsync(DateTime startDate,
+        DateTime endDate,
+        CancellationToken cancellationToken)
     {
         var pages = await _unitOfWork.Pages.GetAsync(startDate, endDate, cancellationToken);
 
         var exportPages = pages.Select(page => new ExportPageDto
         {
             FormattedDate = page.Date.ToString("dd.MM.yyyy"),
-            TotalCalories = _caloriesCalculator.Calculate((ICollection<Note>)page.Notes),
+            TotalCalories = _caloriesCalculator.Calculate(page.Notes),
             NoteGroups = GetNoteGroups(page.Notes)
         }).ToArray();
 
@@ -42,7 +45,36 @@ internal class ExportDataLoader : IExportDataLoader
             Pages = exportPages
         };
     }
-    
+
+    public async Task<JsonExportFileDto> GetJsonDataAsync(DateTime startDate,
+        DateTime endDate,
+        CancellationToken cancellationToken)
+    {
+        var pages = await _unitOfWork.Pages.GetAsync(startDate, endDate, cancellationToken);
+
+        var exportPages = pages.Select(page => new JsonExportPageDto
+        {
+            Date = page.Date,
+            Notes = page.Notes.Select(note => new JsonExportNoteDto
+            {
+                MealType = (int)note.MealType,
+                DisplayOrder = note.DisplayOrder,
+                ProductQuantity = note.ProductQuantity,
+                Product = new JsonExportProductDto
+                {
+                    Name = note.Product.Name,
+                    CaloriesCost = note.Product.CaloriesCost,
+                    Category = note.Product.Category.Name
+                }
+            })
+        });
+
+        return new JsonExportFileDto
+        {
+            Pages = exportPages
+        };
+    }
+
     private static string GenerateExportFileName(DateTime startDate, DateTime endDate)
     {
         return $"FoodDiary_{startDate:yyyyMMdd}_{endDate:yyyyMMdd}";

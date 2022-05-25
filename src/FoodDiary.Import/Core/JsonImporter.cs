@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using FoodDiary.Contracts.Export.Json;
 using FoodDiary.Domain.Entities;
-using FoodDiary.Import.Models;
 using FoodDiary.Import.Services;
 
 [assembly: InternalsVisibleTo("FoodDiary.Import.UnitTests")]
@@ -18,7 +18,7 @@ namespace FoodDiary.Import.Core
             _pageImporter = pageImporter ?? throw new ArgumentNullException(nameof(pageImporter));
         }
 
-        public void Import(PagesJsonObject jsonObj, out List<Page> createdPages)
+        public void Import(JsonExportFileDto jsonObj, out List<Page> createdPages)
         {
             if (jsonObj == null)
                 throw new ArgumentNullException(nameof(jsonObj));

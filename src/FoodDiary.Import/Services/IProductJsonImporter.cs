@@ -1,5 +1,5 @@
-﻿using FoodDiary.Domain.Entities;
-using FoodDiary.Import.Models;
+﻿using FoodDiary.Contracts.Export.Json;
+using FoodDiary.Domain.Entities;
 
 namespace FoodDiary.Import.Services
 {
@@ -9,6 +9,6 @@ namespace FoodDiary.Import.Services
         /// Creates or updates product from JSON
         /// </summary>
         /// <returns>Imported product entity</returns>
-        Product ImportProduct(ProductJsonItem productFromJson);
+        Product ImportProduct(JsonExportProductDto productFromJson);
     }
 }

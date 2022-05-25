@@ -1,6 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
+using FoodDiary.Contracts.Export.Json;
 using FoodDiary.Domain.Entities;
-using FoodDiary.Import.Models;
 
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 
@@ -13,6 +13,6 @@ namespace FoodDiary.Import.Services
         /// </summary>
         /// <param name="pageFromJson"></param>
         /// <param name="createdPage">Imported page entity</param>
-        void ImportPage(PageJsonItem pageFromJson, out Page createdPage);
+        void ImportPage(JsonExportPageDto pageFromJson, out Page createdPage);
     }
 }

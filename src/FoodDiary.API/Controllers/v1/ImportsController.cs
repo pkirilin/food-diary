@@ -5,12 +5,12 @@ using FoodDiary.API.Options;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using FoodDiary.Import.Models;
 using System.Net;
 using System.Text.Json;
 using FoodDiary.Domain.Exceptions;
 using MediatR;
 using FoodDiary.Application.Imports.Requests;
+using FoodDiary.Contracts.Export.Json;
 using Microsoft.AspNetCore.Authorization;
 
 namespace FoodDiary.API.Controllers.v1
@@ -55,13 +55,13 @@ namespace FoodDiary.API.Controllers.v1
             }
 
             var serializerOptions = new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
-            PagesJsonObject pagesJsonObject;
+            JsonExportFileDto jsonExportFileDto;
 
             using (var importFileStream = importFile.OpenReadStream())
             {
                 try
                 {
-                    pagesJsonObject = await JsonSerializer.DeserializeAsync<PagesJsonObject>(importFileStream, serializerOptions, cancellationToken);
+                    jsonExportFileDto = await JsonSerializer.DeserializeAsync<JsonExportFileDto>(importFileStream, serializerOptions, cancellationToken);
                 }
                 catch (JsonException)
                 {
@@ -69,7 +69,7 @@ namespace FoodDiary.API.Controllers.v1
                 }
             }
 
-            await _mediator.Send(new PagesJsonImportRequest(pagesJsonObject), cancellationToken);
+            await _mediator.Send(new PagesJsonImportRequest(jsonExportFileDto), cancellationToken);
             return Ok();
         }
     }

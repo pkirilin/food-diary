@@ -3,7 +3,6 @@ using System.Runtime.CompilerServices;
 using FoodDiary.Application.Services.Auth;
 using FoodDiary.Application.Services.Categories;
 using FoodDiary.Application.Services.Export;
-using FoodDiary.Application.Services.Export.DataLoader;
 using FoodDiary.Application.Services.Products;
 using FoodDiary.Export.GoogleDocs.Extensions;
 using MediatR;

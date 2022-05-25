@@ -8,11 +8,11 @@ using FoodDiary.Domain.Repositories;
 using FoodDiary.Import;
 using Moq;
 using Xunit;
-using FoodDiary.Import.Models;
 using System;
 using MediatR;
 using FoodDiary.Application.Imports.Requests;
 using FoodDiary.Application.Imports.Handlers;
+using FoodDiary.Contracts.Export.Json;
 
 namespace FoodDiary.UnitTests.Handlers
 {
@@ -27,7 +27,7 @@ namespace FoodDiary.UnitTests.Handlers
 
         private readonly IFixture _fixture = Fixtures.Custom;
 
-        delegate void JsonImporterMockingCallback(PagesJsonObject jsonObj, out List<Page> createdPages);
+        delegate void JsonImporterMockingCallback(JsonExportFileDto jsonObj, out List<Page> createdPages);
 
         public ImportsRequestHandlersTests()
         {
@@ -55,9 +55,9 @@ namespace FoodDiary.UnitTests.Handlers
         [Theory]
         [MemberData(nameof(RunPagesJsonImportTestData))]
         public async void RunPagesJsonImport_ImportsEntities(
-            PagesJsonObject jsonObj,
-            List<PageJsonItem> pagesFromJson,
-            List<NoteJsonItem> notesFromJson,
+            JsonExportFileDto jsonObj,
+            List<JsonExportPageDto> pagesFromJson,
+            List<JsonExportNoteDto> notesFromJson,
             List<string> productNamesFromJson,
             List<string> categoryNamesFromJson,
             List<Page> sourcePages,
@@ -104,7 +104,7 @@ namespace FoodDiary.UnitTests.Handlers
                 .ReturnsAsync(existingCategoriesDictionary);
 
             _jsonImporterMock.Setup(i => i.Import(jsonObj, out createdPagesBeforeImport))
-                .Callback(new JsonImporterMockingCallback((PagesJsonObject jsonObj, out List<Page> createdPages) =>
+                .Callback(new JsonImporterMockingCallback((JsonExportFileDto jsonObj, out List<Page> createdPages) =>
                 {
                     createdPages = createdPagesAfterImport;
                 }));
@@ -153,10 +153,10 @@ namespace FoodDiary.UnitTests.Handlers
                     .With(p => p.Date, DateTime.Parse("2020-05-21"))
                     .Create();
 
-                var pageJson1 = fixture.Build<PageJsonItem>()
+                var pageJson1 = fixture.Build<JsonExportPageDto>()
                     .With(p => p.Date, DateTime.Parse("2020-05-19"))
                     .Create();
-                var pageJson2 = fixture.Build<PageJsonItem>()
+                var pageJson2 = fixture.Build<JsonExportPageDto>()
                     .With(p => p.Date, DateTime.Parse("2020-05-20"))
                     .Create();
 
@@ -184,8 +184,8 @@ namespace FoodDiary.UnitTests.Handlers
                 var sourceProducts = new List<Product>() { product1, product2, product3 };
                 var sourceCategories = new List<Category>() { category1, category2, category3 };
 
-                var pagesFromJson = new List<PageJsonItem>() { pageJson1, pageJson2 };
-                var notesFromJson = fixture.CreateMany<NoteJsonItem>().ToList();
+                var pagesFromJson = new List<JsonExportPageDto>() { pageJson1, pageJson2 };
+                var notesFromJson = fixture.CreateMany<JsonExportNoteDto>().ToList();
                 var productNamesFromJson = new List<string>() { "Product 1", "Product 2" };
                 var categoryNamesFromJson = new List<string>() { "Category 1", "Category 2" };
 
@@ -197,7 +197,7 @@ namespace FoodDiary.UnitTests.Handlers
                 var existingProductsDictionary = fixture.Create<Dictionary<string, Product>>();
                 var existingCategoriesDictionary = fixture.Create<Dictionary<string, Category>>();
 
-                var pagesJsonObj = fixture.Create<PagesJsonObject>();
+                var pagesJsonObj = fixture.Create<JsonExportFileDto>();
                 var createdPagesAfterImport = fixture.CreateMany<Page>().ToList();
 
                 yield return new object[]

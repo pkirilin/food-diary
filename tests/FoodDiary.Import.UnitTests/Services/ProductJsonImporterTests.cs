@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using AutoFixture;
 using FluentAssertions;
+using FoodDiary.Contracts.Export.Json;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Import.Implementation;
-using FoodDiary.Import.Models;
 using FoodDiary.Import.Services;
 using FoodDiary.Import.UnitTests.Attributes;
 using Moq;
@@ -30,7 +30,7 @@ namespace FoodDiary.Import.UnitTests.Services
 
         [Theory]
         [ImportNotExistingProductAutoData]
-        public void ImportProduct_CreatesNewProduct_WhenProductDoesNotExist(Dictionary<string, Product> existingProductsDictionary, ProductJsonItem productFromJson)
+        public void ImportProduct_CreatesNewProduct_WhenProductDoesNotExist(Dictionary<string, Product> existingProductsDictionary, JsonExportProductDto productFromJson)
         {
             var importedCategory = _fixture.Create<Category>();
 
@@ -53,7 +53,7 @@ namespace FoodDiary.Import.UnitTests.Services
 
         [Theory]
         [ImportExistingProductAutoData]
-        public void ImportProduct_UpdatesExistingProduct_WhenProductExists(Dictionary<string, Product> existingProductsDictionary, ProductJsonItem productFromJson)
+        public void ImportProduct_UpdatesExistingProduct_WhenProductExists(Dictionary<string, Product> existingProductsDictionary, JsonExportProductDto productFromJson)
         {
             var importedCategory = _fixture.Create<Category>();
 

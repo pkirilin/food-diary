@@ -1,15 +1,10 @@
 ﻿using System;
-using System.IO;
 using System.Net;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoMapper;
 using FoodDiary.PdfGenerator;
 using Microsoft.AspNetCore.Mvc;
 using FoodDiary.API.Requests;
-using FoodDiary.Import.Models;
-using System.Text.Encodings.Web;
 using MediatR;
 using FoodDiary.Application.Pages.Requests;
 using FoodDiary.Application.Enums;
@@ -25,18 +20,12 @@ namespace FoodDiary.API.Controllers.v1
     [ApiExplorerSettings(GroupName = "v1")]
     public class ExportsController : ControllerBase
     {
-        private readonly IMapper _mapper;
         private readonly IMediator _mediator;
         private readonly IPagesPdfGenerator _pagesPdfGenerator;
         private readonly IExportService _exportService;
 
-        public ExportsController(
-            IMapper mapper,
-            IMediator mediator,
-            IPagesPdfGenerator pagesPdfGenerator,
-            IExportService exportService)
+        public ExportsController(IMediator mediator, IPagesPdfGenerator pagesPdfGenerator, IExportService exportService)
         {
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
             _pagesPdfGenerator = pagesPdfGenerator ?? throw new ArgumentNullException(nameof(pagesPdfGenerator));
             _exportService = exportService;
@@ -68,44 +57,18 @@ namespace FoodDiary.API.Controllers.v1
             return File(fileContents, "application/pdf");
         }
 
-        /// <summary>
-        /// Exports diary pages with notes, products and categories to JSON file
-        /// </summary>
-        /// <param name="exportRequest">Parameters to determine which pages should be exported</param>
-        /// <param name="cancellationToken"></param>
         [HttpGet("json")]
-        [ProducesResponseType(typeof(byte[]), (int)HttpStatusCode.OK)]
-        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> ExportPagesJson([FromQuery] PagesExportRequest exportRequest, CancellationToken cancellationToken)
+        public async Task<IActionResult> ExportToJson([FromQuery] ExportRequestDto request,
+            CancellationToken cancellationToken)
         {
-            if (exportRequest.StartDate > exportRequest.EndDate)
+            if (request.StartDate > request.EndDate)
             {
-                ModelState.AddModelError(nameof(exportRequest.StartDate), "Start date cannot be greater than end date");
+                ModelState.AddModelError(nameof(request.StartDate), "Start date cannot be greater than end date");
                 return BadRequest(ModelState);
             }
-
-            var pagesRequest = new GetPagesForExportRequest(
-                exportRequest.StartDate,
-                exportRequest.EndDate,
-                PagesLoadRequestType.All);
-
-            var pagesForExport = await _mediator.Send(pagesRequest, cancellationToken);
-            var pagesJsonExportObject = _mapper.Map<PagesJsonObject>(pagesForExport);
-
-            byte[] fileContents;
-            using (var stream = new MemoryStream())
-            {
-                var options = new JsonSerializerOptions
-                { 
-                    WriteIndented = true, 
-                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                    Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-                };
-
-                await JsonSerializer.SerializeAsync(stream, pagesJsonExportObject, options, cancellationToken);
-                fileContents = stream.ToArray();
-            }
-
+            
+            var fileContents = await _exportService.ExportToJsonAsync(request, cancellationToken);
+            
             return File(fileContents, "application/json");
         }
 

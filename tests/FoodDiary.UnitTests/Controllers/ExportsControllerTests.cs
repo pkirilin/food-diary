@@ -23,9 +23,8 @@ namespace FoodDiary.UnitTests.Controllers
 {
     public class ExportsControllerTests
     {
-        private readonly IMapper _mapper;
-        private readonly Mock<IMediator> _mediatorMock = new Mock<IMediator>();
-        private readonly Mock<IPagesPdfGenerator> _pagesPdfGeneratorMock = new Mock<IPagesPdfGenerator>();
+        private readonly Mock<IMediator> _mediatorMock = new();
+        private readonly Mock<IPagesPdfGenerator> _pagesPdfGeneratorMock = new();
 
         private readonly IFixture _fixture = Fixtures.Custom;
 
@@ -35,14 +34,10 @@ namespace FoodDiary.UnitTests.Controllers
                 .AddAutoMapper(Assembly.GetAssembly(typeof(AutoMapperProfile)))
                 .BuildServiceProvider();
 
-            _mapper = serviceProvider.GetService<IMapper>();
+            serviceProvider.GetService<IMapper>();
         }
 
-        public ExportsController Sut => new ExportsController(
-            _mapper, 
-            _mediatorMock.Object, 
-            _pagesPdfGeneratorMock.Object,
-            null);
+        public ExportsController Sut => new(_mediatorMock.Object, _pagesPdfGeneratorMock.Object, null);
 
         [Theory]
         [InlineData("2020-05-06", "2020-05-07")]
@@ -85,48 +80,6 @@ namespace FoodDiary.UnitTests.Controllers
 
             _mediatorMock.Verify(m => m.Send(It.IsAny<GetPagesForExportRequest>(), default), Times.Never);
             _pagesPdfGeneratorMock.Verify(g => g.GeneratePdfForPages(It.IsAny<IEnumerable<Page>>()), Times.Never);
-            result.Should().BeOfType<BadRequestObjectResult>();
-        }
-
-        [Theory]
-        [InlineData("2020-05-06", "2020-05-07")]
-        [InlineData("2020-05-06", "2020-05-06")]
-        public async void ExportPagesJson_ReturnsExportFileContent_WhenStartDateLessThanOrEqualEndDate(string startDateStr, string endDateStr)
-        {
-            var request = _fixture.Build<PagesExportRequest>()
-                .With(r => r.StartDate, DateTime.Parse(startDateStr))
-                .With(r => r.EndDate, DateTime.Parse(endDateStr))
-                .Create();
-            var pagesForExport = _fixture.CreateMany<Page>().ToList();
-
-            _mediatorMock.Setup(m => m.Send(It.Is<GetPagesForExportRequest>(r =>
-                    r.StartDate == request.StartDate
-                    && r.EndDate == request.EndDate
-                    && r.LoadType == PagesLoadRequestType.All), default))
-                .ReturnsAsync(pagesForExport);
-
-            var result = await Sut.ExportPagesJson(request, CancellationToken.None);
-
-            _mediatorMock.Verify(m => m.Send(It.Is<GetPagesForExportRequest>(r =>
-                    r.StartDate == request.StartDate
-                    && r.EndDate == request.EndDate
-                    && r.LoadType == PagesLoadRequestType.All), default)
-                , Times.Once);
-            result.Should().BeOfType<FileContentResult>();
-        }
-
-        [Theory]
-        [InlineData("2020-05-07", "2020-05-06")]
-        public async void ExportPagesJson_ReturnsBadRequest_WhenStartDateGreaterThanEndDate(string startDateStr, string endDateStr)
-        {
-            var request = _fixture.Build<PagesExportRequest>()
-                .With(r => r.StartDate, DateTime.Parse(startDateStr))
-                .With(r => r.EndDate, DateTime.Parse(endDateStr))
-                .Create();
-
-            var result = await Sut.ExportPagesJson(request, CancellationToken.None);
-
-            _mediatorMock.Verify(m => m.Send(It.IsAny<GetPagesForExportRequest>(), default), Times.Never);
             result.Should().BeOfType<BadRequestObjectResult>();
         }
     }

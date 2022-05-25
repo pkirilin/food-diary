@@ -7,4 +7,6 @@ public interface IExportService
 {
     Task<ExportToGoogleDocsResponseDto> ExportToGoogleDocsAsync(ExportToGoogleDocsRequestDto request,
         CancellationToken cancellationToken);
+
+    Task<byte[]> ExportToJsonAsync(ExportRequestDto request, CancellationToken cancellationToken);
 }

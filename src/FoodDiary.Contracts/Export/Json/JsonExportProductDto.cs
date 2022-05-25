@@ -1,6 +1,6 @@
-﻿namespace FoodDiary.Import.Models
+﻿namespace FoodDiary.Contracts.Export.Json
 {
-    public class ProductJsonItem
+    public class JsonExportProductDto
     {
         public string Name { get; set; }
 

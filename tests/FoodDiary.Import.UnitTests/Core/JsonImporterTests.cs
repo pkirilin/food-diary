@@ -1,9 +1,9 @@
 ﻿using System.Linq;
 using AutoFixture;
 using FluentAssertions;
+using FoodDiary.Contracts.Export.Json;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Import.Core;
-using FoodDiary.Import.Models;
 using FoodDiary.Import.Services;
 using FoodDiary.Import.UnitTests.Attributes;
 using Moq;
@@ -22,21 +22,21 @@ namespace FoodDiary.Import.UnitTests.Core
             _pageJsonImporterMock = new Mock<IPageJsonImporter>();
         }
 
-        delegate void PageJsonImporterMockingCallback(PageJsonItem pageFromJson, out Page createdPage);
+        delegate void PageJsonImporterMockingCallback(JsonExportPageDto pageFromJson, out Page createdPage);
 
         public IJsonImporter Sut => new JsonImporter(_pageJsonImporterMock.Object);
 
         [Theory]
         [JsonObjectWithUniquePagesAutoData]
-        public void Import_CreatesAndUpdatesPages(PagesJsonObject jsonObj)
+        public void Import_CreatesAndUpdatesPages(JsonExportFileDto jsonObj)
         {
             var createdPageBeforeImport = _fixture.Create<Page>();
             var createdPageAfterImport = _fixture.Create<Page>();
             var expectedCreatedPages = Enumerable.Repeat(createdPageAfterImport, jsonObj.Pages.Count())
                 .ToList();
 
-            _pageJsonImporterMock.Setup(i => i.ImportPage(It.IsNotNull<PageJsonItem>(), out createdPageBeforeImport))
-                .Callback(new PageJsonImporterMockingCallback((PageJsonItem pageFromJson, out Page createdPage) =>
+            _pageJsonImporterMock.Setup(i => i.ImportPage(It.IsNotNull<JsonExportPageDto>(), out createdPageBeforeImport))
+                .Callback(new PageJsonImporterMockingCallback((JsonExportPageDto pageFromJson, out Page createdPage) =>
                 {
                     createdPage = createdPageAfterImport;
                 }));
