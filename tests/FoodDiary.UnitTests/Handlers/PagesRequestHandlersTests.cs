@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using AutoFixture;
 using FluentAssertions;
-using FoodDiary.Application.Enums;
 using FoodDiary.Application.Pages.Handlers;
 using FoodDiary.Application.Pages.Requests;
 using FoodDiary.Domain.Abstractions;
@@ -16,7 +14,7 @@ namespace FoodDiary.UnitTests.Handlers
 {
     public class PagesRequestHandlersTests
     {
-        private readonly Mock<IPageRepository> _pageRepositoryMock = new Mock<IPageRepository>();
+        private readonly Mock<IPageRepository> _pageRepositoryMock = new();
 
         public PagesRequestHandlersTests()
         {
@@ -31,6 +29,7 @@ namespace FoodDiary.UnitTests.Handlers
 
             _pageRepositoryMock.Setup(r => r.Add(request.Entity)).Returns(expectedPage);
 
+            // ReSharper disable once UnusedVariable
             var result = await handler.Handle(request, default);
 
             _pageRepositoryMock.Verify(r => r.Add(request.Entity), Times.Once);
@@ -114,37 +113,6 @@ namespace FoodDiary.UnitTests.Handlers
         }
 
         [Theory]
-        [MemberData(nameof(MemberData_GetPagesForExportRequestHandler))]
-        public async void GetPagesForExportRequestHandler_ReturnsRequestedPages(
-            GetPagesForExportRequest request,
-            List<Page> expectedResult,
-            int expectedLoadNotesWithProductsCallCount,
-            int expectedLoadNotesWithProductsAndCategoriesCallCount)
-        {
-            var handler = new GetPagesForExportRequestHandler(_pageRepositoryMock.Object);
-            var pagesQuery = expectedResult.AsQueryable();
-
-            _pageRepositoryMock.Setup(r => r.GetQueryWithoutTracking()).Returns(pagesQuery);
-            _pageRepositoryMock.Setup(r => r.GetByQueryAsync(It.IsNotNull<IQueryable<Page>>(), default))
-                .ReturnsAsync(expectedResult);
-
-            var result = await handler.Handle(request, default);
-
-            _pageRepositoryMock.Verify(r => r.GetQueryWithoutTracking(), Times.Once);
-            _pageRepositoryMock.Verify(r => r.LoadNotesWithProducts(
-                It.IsNotNull<IQueryable<Page>>()),
-                Times.Exactly(expectedLoadNotesWithProductsCallCount)
-            );
-            _pageRepositoryMock.Verify(r => r.LoadNotesWithProductsAndCategories(
-                It.IsNotNull<IQueryable<Page>>()),
-                Times.Exactly(expectedLoadNotesWithProductsAndCategoriesCallCount)
-            );
-            _pageRepositoryMock.Verify(r => r.GetByQueryAsync(It.IsNotNull<IQueryable<Page>>(), default), Times.Once);
-
-            result.Should().BeEquivalentTo(expectedResult);
-        }
-
-        [Theory]
         [CustomAutoData]
         public async void GetPageByIdRequestHandler_ReturnsRequestedPage(GetPageByIdRequest request, Page expectedResult)
         {
@@ -153,6 +121,7 @@ namespace FoodDiary.UnitTests.Handlers
             _pageRepositoryMock.Setup(r => r.GetByIdAsync(request.Id, default))
                 .ReturnsAsync(expectedResult);
 
+            // ReSharper disable once UnusedVariable
             var result = await handler.Handle(request, default);
 
             _pageRepositoryMock.Verify(r => r.GetByIdAsync(request.Id, default), Times.Once);
@@ -169,38 +138,11 @@ namespace FoodDiary.UnitTests.Handlers
             _pageRepositoryMock.Setup(r => r.GetByQueryAsync(It.IsNotNull<IQueryable<Page>>(), default))
                 .ReturnsAsync(expectedResult);
 
+            // ReSharper disable once UnusedVariable
             var result = await handler.Handle(request, default);
 
             _pageRepositoryMock.Verify(r => r.GetQuery(), Times.Once);
             _pageRepositoryMock.Verify(r => r.GetByQueryAsync(It.IsNotNull<IQueryable<Page>>(), default), Times.Once);
         }
-
-        #region Test data
-
-        public static IEnumerable<object[]> MemberData_GetPagesForExportRequestHandler
-        {
-            get
-            {
-                var fixture = Fixtures.Custom;
-
-                var request1 = fixture.Build<GetPagesForExportRequest>()
-                    .With(r => r.LoadType, PagesLoadRequestType.OnlyNotesWithProducts)
-                    .Create();
-                var request2 = fixture.Build<GetPagesForExportRequest>()
-                    .With(r => r.LoadType, PagesLoadRequestType.All)
-                    .Create();
-                var request3 = fixture.Build<GetPagesForExportRequest>()
-                    .With(r => r.LoadType, PagesLoadRequestType.None)
-                    .Create();
-
-                var expectedResult = fixture.CreateMany<Page>().ToList();
-
-                yield return new object[] { request1, expectedResult, 1, 0 };
-                yield return new object[] { request2, expectedResult, 0, 1 };
-                yield return new object[] { request3, expectedResult, 0, 0 };
-            }
-        }
-
-        #endregion
     }
 }

@@ -76,7 +76,7 @@ export const deletePages = createApiCallAsyncThunk<void, number[]>(
 
 export const exportPagesToJson = createApiCallAsyncThunk<void, ExportPagesToJsonRequest>(
   'pages/exportToJson',
-  params => createUrl(`${config.apiUrl}/v1/exports/json`, { ...params }),
+  params => createUrl(`${config.apiUrl}/api/v1/exports/json`, { ...params }),
   async (response, { startDate, endDate }) => {
     const blob = await response.blob();
     downloadFile(blob, `FoodDiary_${startDate}_${endDate}.json`);
