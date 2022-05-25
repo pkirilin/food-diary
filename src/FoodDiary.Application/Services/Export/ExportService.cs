@@ -3,7 +3,6 @@ using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using FoodDiary.Application.Services.Export.DataLoader;
 using FoodDiary.Export.GoogleDocs;
 
 namespace FoodDiary.Application.Services.Export;

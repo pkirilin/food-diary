@@ -9,7 +9,7 @@ using FoodDiary.Domain.Abstractions.v2;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Utils;
 
-namespace FoodDiary.Application.Services.Export.DataLoader;
+namespace FoodDiary.Application.Services.Export;
 
 internal class ExportDataLoader : IExportDataLoader
 {
@@ -26,7 +26,9 @@ internal class ExportDataLoader : IExportDataLoader
         _mealNameResolver = mealNameResolver;
     }
     
-    public async Task<ExportFileDto> GetDataAsync(DateTime startDate, DateTime endDate, CancellationToken cancellationToken)
+    public async Task<ExportFileDto> GetDataAsync(DateTime startDate,
+        DateTime endDate,
+        CancellationToken cancellationToken)
     {
         var pages = await _unitOfWork.Pages.GetAsync(startDate, endDate, cancellationToken);
 
@@ -44,7 +46,9 @@ internal class ExportDataLoader : IExportDataLoader
         };
     }
 
-    public async Task<JsonExportFileDto> GetJsonDataAsync(DateTime startDate, DateTime endDate, CancellationToken cancellationToken)
+    public async Task<JsonExportFileDto> GetJsonDataAsync(DateTime startDate,
+        DateTime endDate,
+        CancellationToken cancellationToken)
     {
         var pages = await _unitOfWork.Pages.GetAsync(startDate, endDate, cancellationToken);
 

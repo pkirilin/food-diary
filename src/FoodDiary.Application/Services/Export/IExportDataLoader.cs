@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using FoodDiary.Contracts.Export;
 using FoodDiary.Contracts.Export.Json;
 
-namespace FoodDiary.Application.Services.Export.DataLoader;
+namespace FoodDiary.Application.Services.Export;
 
 public interface IExportDataLoader
 {
