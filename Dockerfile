@@ -12,8 +12,6 @@ RUN yarn build
 
 FROM mcr.microsoft.com/dotnet/aspnet:6.0
 WORKDIR /app
-# For correct work of GDI+ on linux
-RUN apt-get update && apt-get install -y --allow-unauthenticated libxml2 libc6-dev libgdiplus && rm -rf /var/lib/apt/lists/*
 COPY --from=backend app/publish .
 COPY --from=frontend app/build frontend/build
 EXPOSE 80
