@@ -7,18 +7,13 @@ on:
 
 jobs:
   backend:
-    name: backend - dotnet ${{ matrix.dotnet-version }} and os ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        dotnet-version: [6.0.100]
-        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - name: Setup .NET Core
+      - name: Setup .NET
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: ${{ matrix.dotnet-version }}
+          dotnet-version: 6.0.100
       - name: Install dependencies
         run: dotnet restore
       - name: Build
