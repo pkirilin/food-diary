@@ -7,7 +7,6 @@ using FoodDiary.Application.Extensions;
 using FoodDiary.Configuration.Extensions;
 using FoodDiary.Import.Extensions;
 using FoodDiary.Infrastructure.Extensions;
-using FoodDiary.PdfGenerator.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -69,7 +68,6 @@ namespace FoodDiary.API
 
             services.AddRepositories();
             services.AddUtils();
-            services.AddPagesPdfGenerator();
             services.AddPagesJsonImportServices();
             services.AddApplicationDependencies();
 
