@@ -9,8 +9,6 @@ namespace FoodDiary.Domain.Repositories
 {
     public interface IPageRepository : IRepository<Page>, ILookupRepository<DateTime, Page>
     {
-        IQueryable<Page> LoadNotesWithProducts(IQueryable<Page> query);
-
         IQueryable<Page> LoadNotesWithProductsAndCategories(IQueryable<Page> query);
 
         Task<Page> GetPreviousPageAsync(DateTime curDate, CancellationToken cancellationToken);

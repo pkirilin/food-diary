@@ -15,11 +15,6 @@ namespace FoodDiary.Infrastructure.Repositories
         {
         }
 
-        public IQueryable<Page> LoadNotesWithProducts(IQueryable<Page> query)
-        {
-            return query.Include(p => p.Notes).ThenInclude(n => n.Product);
-        }
-
         public IQueryable<Page> LoadNotesWithProductsAndCategories(IQueryable<Page> query)
         {
             return query.Include(p => p.Notes)
@@ -39,7 +34,7 @@ namespace FoodDiary.Infrastructure.Repositories
 
         public Task<Dictionary<DateTime, Page>> GetDictionaryByQueryAsync(IQueryable<Page> query, CancellationToken cancellationToken)
         {
-            return query.ToDictionaryAsync(p => p.Date);
+            return query.ToDictionaryAsync(p => p.Date, cancellationToken);
         }
     }
 }

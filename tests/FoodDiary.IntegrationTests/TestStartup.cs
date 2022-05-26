@@ -11,7 +11,6 @@ using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Enums;
 using FoodDiary.Import.Extensions;
 using FoodDiary.Infrastructure;
-using FoodDiary.PdfGenerator.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -47,7 +46,6 @@ namespace FoodDiary.IntegrationTests
 
             services.AddRepositories();
             services.AddUtils();
-            services.AddPagesPdfGenerator();
             services.AddPagesJsonImportServices();
 
             services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);

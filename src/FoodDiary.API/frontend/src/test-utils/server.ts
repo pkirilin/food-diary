@@ -44,7 +44,7 @@ const handlers = [
     return res(ctx.json(categories));
   }),
 
-  rest.get(api('/v1/exports/json'), (req, res, ctx) => {
+  rest.get(api('/api/v1/exports/json'), (req, res, ctx) => {
     return res(ctx.body(new Blob()));
   }),
 
