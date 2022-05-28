@@ -49,21 +49,21 @@
     "@types/react-router-dom": "^5.3.3",
     "@types/redux-mock-store": "^1.0.3",
     "@types/testing-library__jest-dom": "^5.14.3",
-    "@typescript-eslint/eslint-plugin": "^5.9.0",
-    "@typescript-eslint/parser": "^5.9.0",
-    "eslint": "^8.6.0",
-    "eslint-config-prettier": "^8.3.0",
+    "@typescript-eslint/eslint-plugin": "^5.26.0",
+    "@typescript-eslint/parser": "^5.26.0",
+    "eslint": "^8.16.0",
+    "eslint-config-prettier": "^8.5.0",
     "eslint-config-react": "^1.1.7",
     "eslint-plugin-prettier": "^4.0.0",
-    "eslint-plugin-react": "^7.28.0",
-    "eslint-plugin-react-hooks": "^4.4.0",
+    "eslint-plugin-react": "^7.30.0",
+    "eslint-plugin-react-hooks": "^4.5.0",
     "msw": "^0.39.2",
-    "prettier": "^2.5.1",
+    "prettier": "^2.6.2",
     "react-scripts": "^5.0.1",
     "react-test-renderer": "^17.0.2",
     "redux-mock-store": "^1.5.4",
     "redux-thunk": "^2.4.1",
-    "typescript": "^4.5.4"
+    "typescript": "^4.7.2"
   },
   "browserslist": {
     "production": [
@@ -77,5 +77,5 @@
       "last 1 safari version"
     ]
   },
-  "packageManager": "yarn@3.2.0"
+  "packageManager": "yarn@3.2.1"
 }
