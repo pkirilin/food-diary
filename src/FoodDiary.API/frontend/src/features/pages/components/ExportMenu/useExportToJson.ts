@@ -1,17 +1,18 @@
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import format from 'date-fns/format';
 import { UseExportResult } from './types';
 import { exportPagesToJson } from '../../thunks';
 import { exportToJsonFinished } from '../../slice';
+import { useTypedSelector } from 'src/features/__shared__/hooks';
 
 export function useExportToJson(
   startDate: Date | null,
   endDate: Date | null,
   onSuccess: () => void,
 ): UseExportResult {
-  const isLoading = useSelector(state => state.pages.isExportToJsonLoading);
-  const isSuccess = useSelector(state => state.pages.isExportToJsonSuccess);
+  const isLoading = useTypedSelector(state => state.pages.isExportToJsonLoading);
+  const isSuccess = useTypedSelector(state => state.pages.isExportToJsonSuccess);
   const dispatch = useDispatch();
 
   useEffect(() => {

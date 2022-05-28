@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 import {
   Button,
   Dialog,
@@ -11,7 +10,7 @@ import {
 } from '@material-ui/core';
 
 import { DialogCustomActionProps } from '../../__shared__/types';
-import { useValidatedNumericInput } from '../../__shared__/hooks';
+import { useTypedSelector, useValidatedNumericInput } from '../../__shared__/hooks';
 
 import { MealType, NoteCreateEdit, NoteItem } from '../models';
 import ProductSelect from '../../products/components/ProductSelect';
@@ -54,7 +53,7 @@ const NoteCreateEditDialog: React.FC<NoteCreateEditDialogProps> = ({
 
   const isSubmitDisabled = !product || !isValidQuantity;
 
-  const maxDisplayOrderForNotesGroup = useSelector(state =>
+  const maxDisplayOrderForNotesGroup = useTypedSelector(state =>
     state.notes.noteItems
       .filter(note => note.mealType === mealType)
       .reduce(
