@@ -1,10 +1,9 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
 import { IconButton, makeStyles, TableCell, TableRow, Tooltip } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { NoteCreateEdit, NoteItem } from '../models';
-import { useDialog, useRouterId } from '../../__shared__/hooks';
+import { useAppDispatch, useDialog, useRouterId } from '../../__shared__/hooks';
 import NoteCreateEditDialog from './NoteCreateEditDialog';
 import { ConfirmationDialog } from '../../__shared__/components';
 import { deleteNote, editNote } from '../thunks';
@@ -26,7 +25,7 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({ note }: NotesTableRowProp
   const classes = useStyles();
   const pageId = useRouterId('id');
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const noteEditDialog = useDialog<NoteCreateEdit>(noteData => {
     dispatch(

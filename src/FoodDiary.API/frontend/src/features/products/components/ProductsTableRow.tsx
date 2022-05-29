@@ -1,11 +1,10 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
 import { Checkbox, IconButton, TableCell, TableRow, Tooltip } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import { ProductCreateEdit, ProductItem } from '../models';
 import ProductCreateEditDialog from './ProductCreateEditDialog';
 import { editProduct } from '../thunks';
-import { useDialog, useTypedSelector } from '../../__shared__/hooks';
+import { useAppDispatch, useDialog, useTypedSelector } from '../../__shared__/hooks';
 import { productSelected } from '../slice';
 
 type ProductsTableRowProps = {
@@ -17,7 +16,7 @@ const ProductsTableRow: React.FC<ProductsTableRowProps> = ({ product }: Products
     state.products.selectedProductIds.some(id => id === product.id),
   );
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const productEditDialog = useDialog<ProductCreateEdit>(productInfo => {
     dispatch(

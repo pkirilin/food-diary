@@ -1,10 +1,9 @@
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 import format from 'date-fns/format';
 import { UseExportResult } from './types';
 import { exportPagesToJson } from '../../thunks';
 import { exportToJsonFinished } from '../../slice';
-import { useTypedSelector } from 'src/features/__shared__/hooks';
+import { useAppDispatch, useTypedSelector } from 'src/features/__shared__/hooks';
 
 export function useExportToJson(
   startDate: Date | null,
@@ -13,7 +12,7 @@ export function useExportToJson(
 ): UseExportResult {
   const isLoading = useTypedSelector(state => state.pages.isExportToJsonLoading);
   const isSuccess = useTypedSelector(state => state.pages.isExportToJsonSuccess);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (isSuccess) {

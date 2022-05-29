@@ -1,11 +1,10 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
 import { IconButton, Popover, Toolbar, Tooltip, Typography } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { ConfirmationDialog } from '../../__shared__/components';
-import { useDialog, usePopover, useTypedSelector } from '../../__shared__/hooks';
+import { useAppDispatch, useDialog, usePopover, useTypedSelector } from '../../__shared__/hooks';
 import { useToolbarStyles } from '../../__shared__/styles';
 import ProductCreateEditDialog from './ProductCreateEditDialog';
 import { ProductCreateEdit } from '../models';
@@ -17,7 +16,7 @@ const ProductsTableToolbar: React.FC = () => {
 
   const selectedProductIds = useTypedSelector(state => state.products.selectedProductIds);
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const [filter, showFilter] = usePopover();
 

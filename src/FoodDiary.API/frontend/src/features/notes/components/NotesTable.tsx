@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import { useDispatch } from 'react-redux';
 import {
   Box,
   Button,
@@ -15,7 +14,13 @@ import AddIcon from '@material-ui/icons/Add';
 import { MealType, NoteCreateEdit } from '../models';
 import NotesTableRow from './NotesTableRow';
 import NoteCreateEditDialog from './NoteCreateEditDialog';
-import { useDialog, useRefreshEffect, useRouterId, useTypedSelector } from '../../__shared__/hooks';
+import {
+  useAppDispatch,
+  useDialog,
+  useRefreshEffect,
+  useRouterId,
+  useTypedSelector,
+} from '../../__shared__/hooks';
 import { createNote, getNotes } from '../thunks';
 
 type NotesTableProps = {
@@ -34,7 +39,7 @@ const NotesTable: React.FC<NotesTableProps> = ({ mealType }: NotesTableProps) =>
     [noteItems],
   );
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const noteCreateDialog = useDialog<NoteCreateEdit>(note => {
     dispatch(

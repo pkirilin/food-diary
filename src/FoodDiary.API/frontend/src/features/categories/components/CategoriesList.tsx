@@ -1,9 +1,8 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
 import { Divider, List, makeStyles, Typography } from '@material-ui/core';
 import CategoriesListItem from './CategoriesListItem';
 import { getCategories } from '../thunks';
-import { useRefreshEffect, useTypedSelector } from '../../__shared__/hooks';
+import { useAppDispatch, useRefreshEffect, useTypedSelector } from '../../__shared__/hooks';
 
 const useStyles = makeStyles(theme => ({
   emptyItems: {
@@ -14,7 +13,7 @@ const useStyles = makeStyles(theme => ({
 const CategoriesList: React.FC = () => {
   const categoryItems = useTypedSelector(state => state.categories.categoryItems);
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const classes = useStyles();
 
   useRefreshEffect(

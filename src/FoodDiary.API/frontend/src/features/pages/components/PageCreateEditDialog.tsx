@@ -1,6 +1,5 @@
 import 'date-fns';
 import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 import {
   Dialog,
   DialogTitle,
@@ -14,7 +13,7 @@ import dateFnsFormat from 'date-fns/format';
 import { PageCreateEdit } from '../models';
 import { DialogCustomActionProps } from '../../__shared__/types';
 import { getDateForNewPage } from '../thunks';
-import { useTypedSelector, useValidatedDateInput } from '../../__shared__/hooks';
+import { useAppDispatch, useTypedSelector, useValidatedDateInput } from '../../__shared__/hooks';
 import { createDateValidator } from '../../__shared__/validators';
 
 interface PageCreateEditDialogProps extends DialogProps, DialogCustomActionProps<PageCreateEdit> {
@@ -33,7 +32,7 @@ const PageCreateEditDialog: React.FC<PageCreateEditDialogProps> = ({
 
   const dateForNewPageLoading = useTypedSelector(state => state.pages.dateForNewPageLoading);
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const { title, submitText, initialDate } = page
     ? {

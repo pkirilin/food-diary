@@ -1,5 +1,4 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
 import {
   Chip,
   Grid,
@@ -16,7 +15,7 @@ import { CategoryCreateEdit, CategoryItem } from '../models';
 import CategoryCreateEditDialog from './CategoryCreateEditDialog';
 import { ConfirmationDialog } from '../../__shared__/components';
 import { deleteCategory, editCategory } from '../thunks';
-import { useDialog } from '../../__shared__/hooks';
+import { useAppDispatch, useDialog } from '../../__shared__/hooks';
 
 type CategoriesListItemProps = {
   category: CategoryItem;
@@ -32,7 +31,7 @@ const CategoriesListItem: React.FC<CategoriesListItemProps> = ({
   category,
 }: CategoriesListItemProps) => {
   const classes = useStyles();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const categoryEditDialog = useDialog<CategoryCreateEdit>(categoryInfo => {
     dispatch(
