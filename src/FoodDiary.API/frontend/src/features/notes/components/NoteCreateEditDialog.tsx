@@ -10,7 +10,7 @@ import {
 } from '@material-ui/core';
 
 import { DialogCustomActionProps } from '../../__shared__/types';
-import { useTypedSelector, useValidatedNumericInput } from '../../__shared__/hooks';
+import { useAppSelector, useValidatedNumericInput } from '../../__shared__/hooks';
 
 import { MealType, NoteCreateEdit, NoteItem } from '../models';
 import ProductSelect from '../../products/components/ProductSelect';
@@ -53,7 +53,7 @@ const NoteCreateEditDialog: React.FC<NoteCreateEditDialogProps> = ({
 
   const isSubmitDisabled = !product || !isValidQuantity;
 
-  const maxDisplayOrderForNotesGroup = useTypedSelector(state =>
+  const maxDisplayOrderForNotesGroup = useAppSelector(state =>
     state.notes.noteItems
       .filter(note => note.mealType === mealType)
       .reduce(

@@ -4,14 +4,14 @@ import { Box, Chip, Tooltip } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import CategoryIcon from '@material-ui/icons/Category';
 import { useFilterAppliedParamsStyles } from '../../__shared__/styles';
-import { useTypedSelector } from '../../__shared__/hooks';
+import { useAppSelector } from '../../__shared__/hooks';
 import { filterByCategoryChanged, productSearchNameChanged } from '../slice';
 
 const ProductsFilterAppliedParams: React.FC = () => {
   const classes = useFilterAppliedParamsStyles();
 
-  const productSearchName = useTypedSelector(state => state.products.filter.productSearchName);
-  const category = useTypedSelector(state => state.products.filter.category);
+  const productSearchName = useAppSelector(state => state.products.filter.productSearchName);
+  const category = useAppSelector(state => state.products.filter.category);
 
   const dispatch = useDispatch();
 

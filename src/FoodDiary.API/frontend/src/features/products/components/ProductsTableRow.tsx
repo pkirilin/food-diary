@@ -4,7 +4,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import { ProductCreateEdit, ProductItem } from '../models';
 import ProductCreateEditDialog from './ProductCreateEditDialog';
 import { editProduct } from '../thunks';
-import { useAppDispatch, useDialog, useTypedSelector } from '../../__shared__/hooks';
+import { useAppDispatch, useDialog, useAppSelector } from '../../__shared__/hooks';
 import { productSelected } from '../slice';
 
 type ProductsTableRowProps = {
@@ -12,7 +12,7 @@ type ProductsTableRowProps = {
 };
 
 const ProductsTableRow: React.FC<ProductsTableRowProps> = ({ product }: ProductsTableRowProps) => {
-  const isProductSelected = useTypedSelector(state =>
+  const isProductSelected = useAppSelector(state =>
     state.products.selectedProductIds.some(id => id === product.id),
   );
 

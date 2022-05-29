@@ -12,7 +12,7 @@ import {
 import EditIcon from '@material-ui/icons/Edit';
 import dateFnsFormat from 'date-fns/format';
 import { PageCreateEdit, PageItem } from '../models';
-import { useAppDispatch, useDialog, useTypedSelector } from '../../__shared__/hooks';
+import { useAppDispatch, useDialog, useAppSelector } from '../../__shared__/hooks';
 import { pageSelected } from '../slice';
 import PageCreateEditDialog from './PageCreateEditDialog';
 import { editPage } from '../thunks';
@@ -32,7 +32,7 @@ const PagesTableRow: React.FC<PagesTableRowProps> = ({ page }: PagesTableRowProp
   const classes = useStyles();
   const pageDate = dateFnsFormat(new Date(page.date), 'dd.MM.yyyy');
 
-  const isPageSelected = useTypedSelector(state =>
+  const isPageSelected = useAppSelector(state =>
     state.pages.selectedPageIds.some(id => id === page.id),
   );
 

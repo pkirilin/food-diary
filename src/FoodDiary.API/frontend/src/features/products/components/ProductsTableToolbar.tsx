@@ -4,7 +4,7 @@ import AddIcon from '@material-ui/icons/Add';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { ConfirmationDialog } from '../../__shared__/components';
-import { useAppDispatch, useDialog, usePopover, useTypedSelector } from '../../__shared__/hooks';
+import { useAppDispatch, useDialog, usePopover, useAppSelector } from '../../__shared__/hooks';
 import { useToolbarStyles } from '../../__shared__/styles';
 import ProductCreateEditDialog from './ProductCreateEditDialog';
 import { ProductCreateEdit } from '../models';
@@ -14,7 +14,7 @@ import ProductsFilter from './ProductsFilter';
 const ProductsTableToolbar: React.FC = () => {
   const classes = useToolbarStyles();
 
-  const selectedProductIds = useTypedSelector(state => state.products.selectedProductIds);
+  const selectedProductIds = useAppSelector(state => state.products.selectedProductIds);
 
   const dispatch = useAppDispatch();
 

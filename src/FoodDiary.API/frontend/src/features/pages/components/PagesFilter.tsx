@@ -4,7 +4,7 @@ import { Box, Button, Paper } from '@material-ui/core';
 import { KeyboardDatePicker } from '@material-ui/pickers';
 import dateFnsFormat from 'date-fns/format';
 import { endDateChanged, filterReset, startDateChanged } from '../slice';
-import { useTypedSelector, useValidatedDateInput } from '../../__shared__/hooks';
+import { useAppSelector, useValidatedDateInput } from '../../__shared__/hooks';
 import { useFilterStyles } from '../../__shared__/styles';
 import { createDateValidator } from '../../__shared__/validators';
 
@@ -13,9 +13,9 @@ const validateFilterDate = createDateValidator(false);
 const PagesFilter: React.FC = () => {
   const classes = useFilterStyles();
 
-  const filterStartDate = useTypedSelector(state => state.pages.filter.startDate || null);
-  const filterEndDate = useTypedSelector(state => state.pages.filter.endDate || null);
-  const filterChanged = useTypedSelector(state => state.pages.filter.changed);
+  const filterStartDate = useAppSelector(state => state.pages.filter.startDate || null);
+  const filterEndDate = useAppSelector(state => state.pages.filter.endDate || null);
+  const filterChanged = useAppSelector(state => state.pages.filter.changed);
 
   const dispatch = useDispatch();
 

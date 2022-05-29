@@ -5,13 +5,13 @@ import PageContentHeader from './PageContentHeader';
 import PageContentFooter from './PageContentFooter';
 import { MealsList } from '../../notes/components';
 import { getPageById } from '../thunks';
-import { useAppDispatch, useRouterId, useTypedSelector } from '../../__shared__/hooks';
+import { useAppDispatch, useRouterId, useAppSelector } from '../../__shared__/hooks';
 import { getNotes } from '../../notes/thunks';
 
 const PageContent: React.FC = () => {
   const pageId = useRouterId('id');
   const dispatch = useAppDispatch();
-  const currentDate = useTypedSelector(state => state.pages.current?.date);
+  const currentDate = useAppSelector(state => state.pages.current?.date);
 
   useEffect(() => {
     dispatch(getPageById(pageId));

@@ -2,7 +2,7 @@ import React from 'react';
 import { Divider, List, makeStyles, Typography } from '@material-ui/core';
 import CategoriesListItem from './CategoriesListItem';
 import { getCategories } from '../thunks';
-import { useAppDispatch, useRefreshEffect, useTypedSelector } from '../../__shared__/hooks';
+import { useAppDispatch, useRefreshEffect, useAppSelector } from '../../__shared__/hooks';
 
 const useStyles = makeStyles(theme => ({
   emptyItems: {
@@ -11,7 +11,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const CategoriesList: React.FC = () => {
-  const categoryItems = useTypedSelector(state => state.categories.categoryItems);
+  const categoryItems = useAppSelector(state => state.categories.categoryItems);
 
   const dispatch = useAppDispatch();
   const classes = useStyles();

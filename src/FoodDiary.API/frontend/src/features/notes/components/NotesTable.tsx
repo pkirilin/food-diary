@@ -19,7 +19,7 @@ import {
   useDialog,
   useRefreshEffect,
   useRouterId,
-  useTypedSelector,
+  useAppSelector,
 } from '../../__shared__/hooks';
 import { createNote, getNotes } from '../thunks';
 
@@ -30,7 +30,7 @@ type NotesTableProps = {
 const NotesTable: React.FC<NotesTableProps> = ({ mealType }: NotesTableProps) => {
   const pageId = useRouterId('id');
 
-  const noteItems = useTypedSelector(state =>
+  const noteItems = useAppSelector(state =>
     state.notes.noteItems.filter(n => n.mealType === mealType),
   );
 
