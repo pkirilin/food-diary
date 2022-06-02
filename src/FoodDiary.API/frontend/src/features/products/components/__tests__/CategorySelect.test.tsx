@@ -27,7 +27,7 @@ describe('CategorySelect', () => {
       render(ui);
 
       const input = screen.getByRole('textbox', { name: /category/i });
-      userEvent.click(input);
+      await userEvent.click(input);
       await waitForElementToBeRemoved(screen.getByRole('progressbar'));
 
       expect(screen).toContainOptions('Bakery', 'Cereals', 'Dairy', 'Frozen Foods');
@@ -37,8 +37,8 @@ describe('CategorySelect', () => {
       render(ui);
 
       const input = screen.getByRole('textbox', { name: /category/i });
-      userEvent.click(input);
-      userEvent.type(input, 'ry');
+      await userEvent.click(input);
+      await userEvent.type(input, 'ry');
       await waitForElementToBeRemoved(screen.getByRole('progressbar'));
 
       expect(screen).toContainOptions('Bakery', 'Dairy');
@@ -48,8 +48,8 @@ describe('CategorySelect', () => {
       render(ui);
 
       const input = screen.getByRole('textbox', { name: /category/i });
-      userEvent.click(input);
-      userEvent.type(input, 'test');
+      await userEvent.click(input);
+      await userEvent.type(input, 'test');
       await waitForElementToBeRemoved(screen.getByRole('progressbar'));
 
       const options = screen.queryAllByRole('option');
@@ -60,10 +60,10 @@ describe('CategorySelect', () => {
       render(ui);
 
       const input = screen.getByRole('textbox', { name: /category/i });
-      userEvent.click(input);
-      userEvent.type(input, 'frozen');
+      await userEvent.click(input);
+      await userEvent.type(input, 'frozen');
       await waitForElementToBeRemoved(screen.getByRole('progressbar'));
-      userEvent.click(screen.getByLabelText(/clear/i));
+      await userEvent.click(screen.getByLabelText(/clear/i));
 
       expect(screen).toContainOptions('Bakery', 'Cereals', 'Dairy', 'Frozen Foods');
     });
@@ -76,7 +76,7 @@ describe('CategorySelect', () => {
       render(ui);
 
       const input = screen.getByRole('textbox', { name: /category/i });
-      userEvent.click(input);
+      await userEvent.click(input);
       await waitForElementToBeRemoved(screen.getByRole('progressbar'));
 
       expect(screen).toContainEmptyOptions();
@@ -86,11 +86,11 @@ describe('CategorySelect', () => {
       render(ui);
 
       const input = screen.getByRole('textbox', { name: /category/i });
-      userEvent.click(input);
+      await userEvent.click(input);
       await waitForElementToBeRemoved(screen.getByRole('progressbar'));
-      userEvent.type(input, 'ry');
-      userEvent.tab();
-      userEvent.click(input);
+      await userEvent.type(input, 'ry');
+      await userEvent.tab();
+      await userEvent.click(input);
 
       expect(screen).toContainOptions('Bakery', 'Cereals', 'Dairy', 'Frozen Foods');
     });

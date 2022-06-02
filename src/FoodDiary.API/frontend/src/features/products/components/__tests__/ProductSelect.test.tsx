@@ -27,7 +27,7 @@ describe('ProductSelect', () => {
       render(ui);
 
       const input = screen.getByRole('textbox', { name: /product/i });
-      userEvent.click(input);
+      await userEvent.click(input);
       await waitForElementToBeRemoved(screen.getByRole('progressbar'));
 
       expect(screen).toContainOptions('Bread', 'Cheese', 'Eggs', 'Meat');
@@ -37,8 +37,8 @@ describe('ProductSelect', () => {
       render(ui);
 
       const input = screen.getByRole('textbox', { name: /product/i });
-      userEvent.click(input);
-      userEvent.type(input, 'ea');
+      await userEvent.click(input);
+      await userEvent.type(input, 'ea');
       await waitForElementToBeRemoved(screen.getByRole('progressbar'));
 
       expect(screen).toContainOptions('Bread', 'Meat');
@@ -48,8 +48,8 @@ describe('ProductSelect', () => {
       render(ui);
 
       const input = screen.getByRole('textbox', { name: /product/i });
-      userEvent.click(input);
-      userEvent.type(input, 'test');
+      await userEvent.click(input);
+      await userEvent.type(input, 'test');
       await waitForElementToBeRemoved(screen.getByRole('progressbar'));
 
       const options = screen.queryAllByRole('option');
@@ -60,10 +60,10 @@ describe('ProductSelect', () => {
       render(ui);
 
       const input = screen.getByRole('textbox', { name: /product/i });
-      userEvent.click(input);
-      userEvent.type(input, 'ea');
+      await userEvent.click(input);
+      await userEvent.type(input, 'ea');
       await waitForElementToBeRemoved(screen.getByRole('progressbar'));
-      userEvent.click(screen.getByLabelText(/clear/i));
+      await userEvent.click(screen.getByLabelText(/clear/i));
 
       expect(screen).toContainOptions('Bread', 'Cheese', 'Eggs', 'Meat');
     });
@@ -75,7 +75,7 @@ describe('ProductSelect', () => {
 
       render(ui);
       const input = screen.getByRole('textbox', { name: /product/i });
-      userEvent.click(input);
+      await userEvent.click(input);
       await waitForElementToBeRemoved(screen.getByRole('progressbar'));
 
       expect(screen).toContainEmptyOptions();
@@ -85,11 +85,11 @@ describe('ProductSelect', () => {
       render(ui);
 
       const input = screen.getByRole('textbox', { name: /product/i });
-      userEvent.click(input);
+      await userEvent.click(input);
       await waitForElementToBeRemoved(screen.getByRole('progressbar'));
-      userEvent.type(input, 'ea');
-      userEvent.tab();
-      userEvent.click(input);
+      await userEvent.type(input, 'ea');
+      await userEvent.tab();
+      await userEvent.click(input);
 
       expect(screen).toContainOptions('Bread', 'Cheese', 'Eggs', 'Meat');
     });
