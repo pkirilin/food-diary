@@ -39,7 +39,6 @@ describe('CategorySelect', () => {
       const input = screen.getByRole('textbox', { name: /category/i });
       await userEvent.click(input);
       await userEvent.type(input, 'ry');
-      await waitForElementToBeRemoved(screen.getByRole('progressbar'));
 
       expect(screen).toContainOptions('Bakery', 'Dairy');
     });
@@ -50,7 +49,6 @@ describe('CategorySelect', () => {
       const input = screen.getByRole('textbox', { name: /category/i });
       await userEvent.click(input);
       await userEvent.type(input, 'test');
-      await waitForElementToBeRemoved(screen.getByRole('progressbar'));
 
       const options = screen.queryAllByRole('option');
       expect(options).toHaveLength(0);
@@ -62,7 +60,6 @@ describe('CategorySelect', () => {
       const input = screen.getByRole('textbox', { name: /category/i });
       await userEvent.click(input);
       await userEvent.type(input, 'frozen');
-      await waitForElementToBeRemoved(screen.getByRole('progressbar'));
       await userEvent.click(screen.getByLabelText(/clear/i));
 
       expect(screen).toContainOptions('Bakery', 'Cereals', 'Dairy', 'Frozen Foods');
