@@ -6119,10 +6119,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           ],\
           "linkType": "SOFT"\
         }],\
-        ["virtual:83ba06e3eededf50c22d14f2306ef7682f396ba243e99186afc1bcd6d01d6a1d9fe8dc949ce2cf94fb904a9c46d03d713aed9f5217ba904c13b784e5a1479300#npm:10.4.7", {\
-          "packageLocation": "./.yarn/__virtual__/autoprefixer-virtual-c11fcfecd0/0/cache/autoprefixer-npm-10.4.7-463a114196-0e55d0d198.zip/node_modules/autoprefixer/",\
+        ["virtual:c3adc712174930127dafefdbebf478503ef1b17fcf917dfd88fcdf058b78bd76acd780ba7d507840ff4911f47f486a773f543b8d7f0823469dbaa6fc13bf6869#npm:10.4.7", {\
+          "packageLocation": "./.yarn/__virtual__/autoprefixer-virtual-0e5f19428d/0/cache/autoprefixer-npm-10.4.7-463a114196-0e55d0d198.zip/node_modules/autoprefixer/",\
           "packageDependencies": [\
-            ["autoprefixer", "virtual:83ba06e3eededf50c22d14f2306ef7682f396ba243e99186afc1bcd6d01d6a1d9fe8dc949ce2cf94fb904a9c46d03d713aed9f5217ba904c13b784e5a1479300#npm:10.4.7"],\
+            ["autoprefixer", "virtual:c3adc712174930127dafefdbebf478503ef1b17fcf917dfd88fcdf058b78bd76acd780ba7d507840ff4911f47f486a773f543b8d7f0823469dbaa6fc13bf6869#npm:10.4.7"],\
             ["@types/postcss", null],\
             ["browserslist", "npm:4.20.3"],\
             ["caniuse-lite", "npm:1.0.30001344"],\
@@ -14857,7 +14857,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@csstools/postcss-trigonometric-functions", "virtual:c3adc712174930127dafefdbebf478503ef1b17fcf917dfd88fcdf058b78bd76acd780ba7d507840ff4911f47f486a773f543b8d7f0823469dbaa6fc13bf6869#npm:1.0.1"],\
             ["@csstools/postcss-unset-value", "virtual:c3adc712174930127dafefdbebf478503ef1b17fcf917dfd88fcdf058b78bd76acd780ba7d507840ff4911f47f486a773f543b8d7f0823469dbaa6fc13bf6869#npm:1.0.1"],\
             ["@types/postcss", null],\
-            ["autoprefixer", "virtual:83ba06e3eededf50c22d14f2306ef7682f396ba243e99186afc1bcd6d01d6a1d9fe8dc949ce2cf94fb904a9c46d03d713aed9f5217ba904c13b784e5a1479300#npm:10.4.7"],\
+            ["autoprefixer", "virtual:c3adc712174930127dafefdbebf478503ef1b17fcf917dfd88fcdf058b78bd76acd780ba7d507840ff4911f47f486a773f543b8d7f0823469dbaa6fc13bf6869#npm:10.4.7"],\
             ["browserslist", "npm:4.20.3"],\
             ["css-blank-pseudo", "virtual:c3adc712174930127dafefdbebf478503ef1b17fcf917dfd88fcdf058b78bd76acd780ba7d507840ff4911f47f486a773f543b8d7f0823469dbaa6fc13bf6869#npm:3.0.3"],\
             ["css-has-pseudo", "virtual:c3adc712174930127dafefdbebf478503ef1b17fcf917dfd88fcdf058b78bd76acd780ba7d507840ff4911f47f486a773f543b8d7f0823469dbaa6fc13bf6869#npm:3.0.4"],\
@@ -15376,7 +15376,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["react-dev-utils", "npm:12.0.1"],\
             ["@babel/code-frame", "npm:7.16.7"],\
             ["address", "npm:1.2.0"],\
-            ["autoprefixer", "virtual:83ba06e3eededf50c22d14f2306ef7682f396ba243e99186afc1bcd6d01d6a1d9fe8dc949ce2cf94fb904a9c46d03d713aed9f5217ba904c13b784e5a1479300#npm:10.4.7"],\
             ["browserslist", "npm:4.20.3"],\
             ["chalk", "npm:4.1.2"],\
             ["cross-spawn", "npm:7.0.3"],\
@@ -15393,7 +15392,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["loader-utils", "npm:3.2.0"],\
             ["open", "npm:8.4.0"],\
             ["pkg-up", "npm:3.1.0"],\
-            ["postcss", "npm:8.4.14"],\
             ["prompts", "npm:2.4.2"],\
             ["react-error-overlay", "npm:6.0.11"],\
             ["recursive-readdir", "npm:2.2.2"],\
@@ -15674,7 +15672,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@svgr/webpack", "npm:5.5.0"],\
             ["@types/react", "npm:18.0.10"],\
             ["@types/typescript", null],\
-            ["autoprefixer", "virtual:83ba06e3eededf50c22d14f2306ef7682f396ba243e99186afc1bcd6d01d6a1d9fe8dc949ce2cf94fb904a9c46d03d713aed9f5217ba904c13b784e5a1479300#npm:10.4.7"],\
             ["babel-jest", "virtual:7a40f6f744b6519c880cc1d73462e8acd76c4e2dafb7a81fc49b61714490562ef6b3fd25382888b5ac3083dacc788be999055f08143a5847ad7f2e3a3c10952f#npm:27.5.1"],\
             ["babel-loader", "virtual:7a40f6f744b6519c880cc1d73462e8acd76c4e2dafb7a81fc49b61714490562ef6b3fd25382888b5ac3083dacc788be999055f08143a5847ad7f2e3a3c10952f#npm:8.2.5"],\
             ["babel-plugin-named-asset-import", "virtual:7a40f6f744b6519c880cc1d73462e8acd76c4e2dafb7a81fc49b61714490562ef6b3fd25382888b5ac3083dacc788be999055f08143a5847ad7f2e3a3c10952f#npm:0.3.8"],\
