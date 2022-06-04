@@ -1,4 +1,4 @@
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { ThemeProvider, CssBaseline } from '@material-ui/core';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
@@ -8,7 +8,10 @@ import App from './App';
 import store from './store';
 import theme from './theme';
 
-ReactDOM.render(
+const container = document.getElementById('root') as HTMLElement;
+const root = createRoot(container);
+
+root.render(
   <Provider store={store}>
     <ThemeProvider theme={theme}>
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -17,7 +20,6 @@ ReactDOM.render(
       </MuiPickersUtilsProvider>
     </ThemeProvider>
   </Provider>,
-  document.getElementById('root'),
 );
 
 serviceWorker.unregister();

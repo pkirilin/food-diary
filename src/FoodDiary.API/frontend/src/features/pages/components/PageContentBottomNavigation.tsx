@@ -4,7 +4,7 @@ import { BottomNavigation, BottomNavigationAction, makeStyles } from '@material-
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
-import { useTypedSelector } from '../../__shared__/hooks';
+import { useAppSelector } from '../../__shared__/hooks';
 
 const currentPageValue = 'current';
 
@@ -25,8 +25,8 @@ const PageContentBottomNavigation: React.FC = () => {
   const history = useHistory();
   const classes = useStyles();
 
-  const previousPageId = useTypedSelector(state => state.pages.previous?.id);
-  const nextPageId = useTypedSelector(state => state.pages.next?.id);
+  const previousPageId = useAppSelector(state => state.pages.previous?.id);
+  const nextPageId = useAppSelector(state => state.pages.next?.id);
 
   const getNavigationRoute = (pageId?: number): string => {
     return `/pages/${pageId}`;

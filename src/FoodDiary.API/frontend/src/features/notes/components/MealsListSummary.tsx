@@ -1,9 +1,9 @@
 import React from 'react';
 import { Box, Typography } from '@material-ui/core';
-import { useTypedSelector } from '../../__shared__/hooks';
+import { useAppSelector } from '../../__shared__/hooks';
 
 const MealsListSummary: React.FC = () => {
-  const totalCalories = useTypedSelector(state =>
+  const totalCalories = useAppSelector(state =>
     state.notes.noteItems.reduce((sum, note) => sum + note.calories, 0),
   );
 

@@ -1,5 +1,4 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
 import {
   Checkbox,
   Table,
@@ -11,19 +10,19 @@ import {
   Typography,
 } from '@material-ui/core';
 import ProductsTableRow from './ProductsTableRow';
-import { useRefreshEffect, useTypedSelector } from '../../__shared__/hooks';
+import { useAppDispatch, useRefreshEffect, useAppSelector } from '../../__shared__/hooks';
 import { getProducts } from '../thunks';
 import { allProductsSelected } from '../slice';
 
 const ProductsTable: React.FC = () => {
-  const productItems = useTypedSelector(state => state.products.productItems);
-  const productsFilter = useTypedSelector(state => state.products.filter);
-  const selectedProductsCount = useTypedSelector(state => state.products.selectedProductIds.length);
+  const productItems = useAppSelector(state => state.products.productItems);
+  const productsFilter = useAppSelector(state => state.products.filter);
+  const selectedProductsCount = useAppSelector(state => state.products.selectedProductIds.length);
 
   const areAllProductsSelected =
     productItems.length > 0 && productItems.length === selectedProductsCount;
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   useRefreshEffect(
     state => state.products.operationStatus,

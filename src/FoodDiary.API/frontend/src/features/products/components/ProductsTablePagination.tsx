@@ -2,11 +2,11 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { TablePagination } from '@material-ui/core';
 import { pageNumberChanged, pageSizeChanged } from '../slice';
-import { useTypedSelector } from '../../__shared__/hooks';
+import { useAppSelector } from '../../__shared__/hooks';
 
 const ProductsTablePagination: React.FC = () => {
-  const totalProductsCount = useTypedSelector(state => state.products.totalProductsCount);
-  const { pageNumber, pageSize } = useTypedSelector(state => state.products.filter);
+  const totalProductsCount = useAppSelector(state => state.products.totalProductsCount);
+  const { pageNumber, pageSize } = useAppSelector(state => state.products.filter);
   const dispatch = useDispatch();
 
   const handleChangePage = (

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Box, Button, Paper, TextField } from '@material-ui/core';
 
-import { useTypedSelector, useValidatedTextInput } from '../../__shared__/hooks';
+import { useAppSelector, useValidatedTextInput } from '../../__shared__/hooks';
 import { useFilterStyles } from '../../__shared__/styles';
 
 import { filterByCategoryChanged, filterReset, productSearchNameChanged } from '../slice';
@@ -11,11 +11,9 @@ import CategorySelect from './CategorySelect';
 const ProductsFilter: React.FC = () => {
   const classes = useFilterStyles();
 
-  const filterProductName = useTypedSelector(
-    state => state.products.filter.productSearchName || '',
-  );
-  const filterCategory = useTypedSelector(state => state.products.filter.category);
-  const filterChanged = useTypedSelector(state => state.products.filter.changed);
+  const filterProductName = useAppSelector(state => state.products.filter.productSearchName || '');
+  const filterCategory = useAppSelector(state => state.products.filter.category);
+  const filterChanged = useAppSelector(state => state.products.filter.changed);
 
   const dispatch = useDispatch();
 

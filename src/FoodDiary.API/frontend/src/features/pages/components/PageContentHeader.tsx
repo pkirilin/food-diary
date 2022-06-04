@@ -3,7 +3,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import { Breadcrumbs, Link, makeStyles, Typography } from '@material-ui/core';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import dateFnsFormat from 'date-fns/format';
-import { useTypedSelector } from '../../__shared__/hooks';
+import { useAppSelector } from '../../__shared__/hooks';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -14,7 +14,7 @@ const useStyles = makeStyles(() => ({
 
 const PageContentHeader: React.FC = () => {
   const classes = useStyles();
-  const page = useTypedSelector(state => state.pages.current);
+  const page = useAppSelector(state => state.pages.current);
 
   if (!page) {
     return null;

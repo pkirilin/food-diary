@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import {
   Checkbox,
   Table,
@@ -14,19 +13,19 @@ import {
 import PagesTableRow from './PagesTableRow';
 import { allPagesSelected, sortOrderChanged } from '../slice';
 import { getPages } from '../thunks';
-import { useRefreshEffect, useTypedSelector } from '../../__shared__/hooks';
+import { useAppDispatch, useRefreshEffect, useAppSelector } from '../../__shared__/hooks';
 import { SortOrder } from '../../__shared__/models';
 
 const PagesTable: React.FC = () => {
-  const pageItems = useTypedSelector(state => state.pages.pageItems);
-  const selectedPagesCount = useTypedSelector(state => state.pages.selectedPageIds.length);
-  const pageItemsFilter = useTypedSelector(state => state.pages.filter);
+  const pageItems = useAppSelector(state => state.pages.pageItems);
+  const selectedPagesCount = useAppSelector(state => state.pages.selectedPageIds.length);
+  const pageItemsFilter = useAppSelector(state => state.pages.filter);
 
   const [sortDirectionByDate, setSortDirectionByDate] = useState<'asc' | 'desc'>();
 
   const areAllPagesSelected = pageItems.length > 0 && pageItems.length === selectedPagesCount;
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   useRefreshEffect(
     state => state.pages.operationStatus,

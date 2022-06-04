@@ -1,5 +1,4 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
 import { Link as RouterLink } from 'react-router-dom';
 import {
   TableRow,
@@ -13,7 +12,7 @@ import {
 import EditIcon from '@material-ui/icons/Edit';
 import dateFnsFormat from 'date-fns/format';
 import { PageCreateEdit, PageItem } from '../models';
-import { useDialog, useTypedSelector } from '../../__shared__/hooks';
+import { useAppDispatch, useDialog, useAppSelector } from '../../__shared__/hooks';
 import { pageSelected } from '../slice';
 import PageCreateEditDialog from './PageCreateEditDialog';
 import { editPage } from '../thunks';
@@ -33,11 +32,11 @@ const PagesTableRow: React.FC<PagesTableRowProps> = ({ page }: PagesTableRowProp
   const classes = useStyles();
   const pageDate = dateFnsFormat(new Date(page.date), 'dd.MM.yyyy');
 
-  const isPageSelected = useTypedSelector(state =>
+  const isPageSelected = useAppSelector(state =>
     state.pages.selectedPageIds.some(id => id === page.id),
   );
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const pageEditDialog = useDialog<PageCreateEdit>(pageInfo => {
     dispatch(

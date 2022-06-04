@@ -19,8 +19,10 @@ export interface TestComponentBuilder {
   withMuiPickersUtils: () => TestComponentBuilder;
 }
 
+type WrapperType = React.ComponentType<React.PropsWithChildren<unknown>>;
+
 const createComponentBuilder = (component: React.ReactElement) => {
-  const wrappers: React.ComponentType[] = [];
+  const wrappers: WrapperType[] = [];
 
   const builder: TestComponentBuilder = {
     please: (): React.ReactElement => {

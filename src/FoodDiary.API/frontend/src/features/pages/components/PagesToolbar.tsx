@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { IconButton, Popover, Toolbar, Tooltip, Typography } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import FilterListIcon from '@material-ui/icons/FilterList';
@@ -10,7 +9,7 @@ import PagesFilter from './PagesFilter';
 import { PageCreateEdit } from '../models';
 import { createPage, deletePages, importPages } from '../thunks';
 import { ConfirmationDialog } from '../../__shared__/components';
-import { useDialog, usePopover, useTypedSelector } from '../../__shared__/hooks';
+import { useAppDispatch, useDialog, usePopover, useAppSelector } from '../../__shared__/hooks';
 import { useToolbarStyles } from '../../__shared__/styles';
 
 const importWarningMessage =
@@ -21,9 +20,9 @@ export type PagesToolbarProps = React.PropsWithChildren<unknown>;
 export default function PagesToolbar({ children }: PagesToolbarProps) {
   const classes = useToolbarStyles();
 
-  const selectedPageIds = useTypedSelector(state => state.pages.selectedPageIds);
+  const selectedPageIds = useAppSelector(state => state.pages.selectedPageIds);
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const [importFile, setImportFile] = useState<File>();
 
