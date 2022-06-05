@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Button,
   Dialog,
@@ -13,6 +13,7 @@ import { DialogCustomActionProps } from 'src/features/__shared__/types';
 import { useAppSelector, useValidatedNumericInput } from 'src/features/__shared__/hooks';
 import { MealType, NoteCreateEdit, NoteItem } from 'src/features/notes/models';
 import ProductSelect from 'src/features/products/components/ProductSelect';
+import { ProductAutocompleteOption } from 'src/features/products/models';
 
 interface NoteCreateEditDialogProps extends DialogProps, DialogCustomActionProps<NoteCreateEdit> {
   mealType: MealType;
@@ -28,17 +29,20 @@ const NoteCreateEditDialog: React.FC<NoteCreateEditDialogProps> = ({
   onDialogConfirm,
   ...dialogProps
 }: NoteCreateEditDialogProps) => {
-  const { title, submitText, initialProduct, initialQuantity } = note
-    ? {
-        title: 'Edit note',
-        submitText: 'Save',
-        initialProduct: {
-          id: note.productId,
-          name: note.productName,
-        },
-        initialQuantity: note.productQuantity,
-      }
-    : { title: 'New note', submitText: 'Create', initialProduct: null, initialQuantity: 100 };
+  const title = note ? 'Edit note' : 'New note';
+  const submitText = note ? 'Save' : 'Create';
+  const initialQuantity = note ? note.productQuantity : 100;
+
+  const initialProduct = useMemo<ProductAutocompleteOption | null>(
+    () =>
+      note
+        ? {
+            id: note.productId,
+            name: note.productName,
+          }
+        : null,
+    [note],
+  );
 
   const [product, setProduct] = useState(initialProduct);
 
@@ -86,6 +90,7 @@ const NoteCreateEditDialog: React.FC<NoteCreateEditDialogProps> = ({
       <DialogContent>
         <ProductSelect
           label="Product"
+          placeholder="Select a product"
           value={product}
           setValue={value => setProduct(value)}
         ></ProductSelect>
