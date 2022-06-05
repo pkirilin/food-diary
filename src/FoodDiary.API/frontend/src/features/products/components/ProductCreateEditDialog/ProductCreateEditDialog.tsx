@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Button,
   Dialog,
@@ -12,6 +12,7 @@ import { ProductCreateEdit, ProductItem } from '../../models';
 import { DialogCustomActionProps } from '../../../__shared__/types';
 import { useValidatedNumericInput, useValidatedTextInput } from '../../../__shared__/hooks';
 import CategorySelect from '../CategorySelect';
+import { CategoryAutocompleteOption } from 'src/features/categories/models';
 
 interface ProductCreateEditDialogProps
   extends DialogProps,
@@ -25,24 +26,30 @@ const ProductCreateEditDialog: React.FC<ProductCreateEditDialogProps> = ({
   onDialogConfirm,
   ...dialogProps
 }: ProductCreateEditDialogProps) => {
-  const { title, submitText, initialProductName, initialCaloriesCost, initialCategory } = product
+  const { title, submitText, initialProductName, initialCaloriesCost } = product
     ? {
         title: 'Edit product',
         submitText: 'Save',
         initialProductName: product.name,
         initialCaloriesCost: product.caloriesCost,
-        initialCategory: {
-          id: product.categoryId,
-          name: product.categoryName,
-        },
       }
     : {
         title: 'New product',
         submitText: 'Create',
         initialProductName: '',
         initialCaloriesCost: 100,
-        initialCategory: null,
       };
+
+  const initialCategory = useMemo<CategoryAutocompleteOption | null>(
+    () =>
+      product
+        ? {
+            id: product.categoryId,
+            name: product.categoryName,
+          }
+        : null,
+    [product],
+  );
 
   const [productName, setProductName, bindProductName, isValidProductName] = useValidatedTextInput(
     initialProductName,
@@ -70,11 +77,11 @@ const ProductCreateEditDialog: React.FC<ProductCreateEditDialogProps> = ({
     }
   }, [
     dialogProps.open,
+    setProductName,
+    setCaloriesCost,
+    initialProductName,
     initialCaloriesCost,
     initialCategory,
-    initialProductName,
-    setCaloriesCost,
-    setProductName,
   ]);
 
   const handleSubmitClick = (): void => {
@@ -93,7 +100,8 @@ const ProductCreateEditDialog: React.FC<ProductCreateEditDialogProps> = ({
       <DialogContent>
         <TextField
           {...bindProductName()}
-          label="Product name"
+          label="Product"
+          aria-label="Product"
           placeholder="Enter product name"
           margin="normal"
           fullWidth
@@ -103,12 +111,14 @@ const ProductCreateEditDialog: React.FC<ProductCreateEditDialogProps> = ({
           {...bindCaloriesCost()}
           type="number"
           label="Calories cost"
+          aria-label="Calories cost"
           placeholder="Enter calories cost"
           margin="normal"
           fullWidth
         ></TextField>
         <CategorySelect
-          value={initialCategory}
+          label="Category"
+          value={category}
           setValue={value => setCategory(value)}
         ></CategorySelect>
       </DialogContent>
