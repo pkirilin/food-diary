@@ -8,10 +8,10 @@ import {
   DialogTitle,
   TextField,
 } from '@material-ui/core';
-import { ProductCreateEdit, ProductItem } from '../models';
-import { DialogCustomActionProps } from '../../__shared__/types';
-import { useValidatedNumericInput, useValidatedTextInput } from '../../__shared__/hooks';
-import CategorySelect from './CategorySelect';
+import { ProductCreateEdit, ProductItem } from '../../models';
+import { DialogCustomActionProps } from '../../../__shared__/types';
+import { useValidatedNumericInput, useValidatedTextInput } from '../../../__shared__/hooks';
+import CategorySelect from '../CategorySelect';
 
 interface ProductCreateEditDialogProps
   extends DialogProps,
