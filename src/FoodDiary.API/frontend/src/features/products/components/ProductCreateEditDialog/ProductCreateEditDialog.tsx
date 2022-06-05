@@ -26,19 +26,10 @@ const ProductCreateEditDialog: React.FC<ProductCreateEditDialogProps> = ({
   onDialogConfirm,
   ...dialogProps
 }: ProductCreateEditDialogProps) => {
-  const { title, submitText, initialProductName, initialCaloriesCost } = product
-    ? {
-        title: 'Edit product',
-        submitText: 'Save',
-        initialProductName: product.name,
-        initialCaloriesCost: product.caloriesCost,
-      }
-    : {
-        title: 'New product',
-        submitText: 'Create',
-        initialProductName: '',
-        initialCaloriesCost: 100,
-      };
+  const title = product ? 'Edit product' : 'New product';
+  const submitText = product ? 'Save' : 'Create';
+  const initialProductName = product ? product.name : '';
+  const initialCaloriesCost = product ? product.caloriesCost : 100;
 
   const initialCategory = useMemo<CategoryAutocompleteOption | null>(
     () =>
