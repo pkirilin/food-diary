@@ -8,9 +8,9 @@ import {
   DialogTitle,
   TextField,
 } from '@material-ui/core';
-import { ProductCreateEdit, ProductItem } from '../../models';
-import { DialogCustomActionProps } from '../../../__shared__/types';
-import { useValidatedNumericInput, useValidatedTextInput } from '../../../__shared__/hooks';
+import { ProductCreateEdit, ProductItem } from 'src/features/products/models';
+import { DialogCustomActionProps } from 'src/features/__shared__/types';
+import { useValidatedNumericInput, useValidatedTextInput } from 'src/features/__shared__/hooks';
 import CategorySelect from '../CategorySelect';
 import { CategoryAutocompleteOption } from 'src/features/categories/models';
 
@@ -92,7 +92,6 @@ const ProductCreateEditDialog: React.FC<ProductCreateEditDialogProps> = ({
         <TextField
           {...bindProductName()}
           label="Product"
-          aria-label="Product"
           placeholder="Enter product name"
           margin="normal"
           fullWidth
@@ -102,13 +101,13 @@ const ProductCreateEditDialog: React.FC<ProductCreateEditDialogProps> = ({
           {...bindCaloriesCost()}
           type="number"
           label="Calories cost"
-          aria-label="Calories cost"
           placeholder="Enter calories cost"
           margin="normal"
           fullWidth
         ></TextField>
         <CategorySelect
           label="Category"
+          placeholder="Select a category"
           value={category}
           setValue={value => setCategory(value)}
         ></CategorySelect>

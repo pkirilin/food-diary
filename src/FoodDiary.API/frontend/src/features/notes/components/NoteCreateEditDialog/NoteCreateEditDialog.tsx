@@ -9,11 +9,10 @@ import {
   TextField,
 } from '@material-ui/core';
 
-import { DialogCustomActionProps } from '../../__shared__/types';
-import { useAppSelector, useValidatedNumericInput } from '../../__shared__/hooks';
-
-import { MealType, NoteCreateEdit, NoteItem } from '../models';
-import ProductSelect from '../../products/components/ProductSelect';
+import { DialogCustomActionProps } from 'src/features/__shared__/types';
+import { useAppSelector, useValidatedNumericInput } from 'src/features/__shared__/hooks';
+import { MealType, NoteCreateEdit, NoteItem } from 'src/features/notes/models';
+import ProductSelect from 'src/features/products/components/ProductSelect';
 
 interface NoteCreateEditDialogProps extends DialogProps, DialogCustomActionProps<NoteCreateEdit> {
   mealType: MealType;
