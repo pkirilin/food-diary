@@ -1,5 +1,5 @@
 import 'date-fns';
-import React, { useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -24,63 +24,59 @@ interface PageCreateEditDialogProps extends DialogProps, DialogCustomActionProps
   page?: PageCreateEdit;
 }
 
-const PageCreateEditDialog: React.FC<PageCreateEditDialogProps> = ({
-  page,
-  onDialogConfirm,
-  onDialogCancel,
-  ...dialogProps
-}: PageCreateEditDialogProps) => {
+function useInitialDate(isDialogOpened: boolean, page?: PageCreateEdit) {
   const dateForNewPage = useAppSelector(state => state.pages.dateForNewPage);
   const dateForNewPageLoading = useAppSelector(state => state.pages.dateForNewPageLoading);
-
   const dispatch = useAppDispatch();
+  const isNewPage = !page;
 
-  const initialDate = useMemo(() => {
-    if (page) {
+  useEffect(() => {
+    if (isDialogOpened && isNewPage) {
+      dispatch(getDateForNewPage());
+    }
+  }, [dispatch, isDialogOpened, isNewPage]);
+
+  return useMemo(() => {
+    if (!isNewPage) {
       return new Date(page.date);
     }
 
-    if (dateForNewPage) {
+    if (dateForNewPageLoading === 'succeeded' && dateForNewPage) {
       return new Date(dateForNewPage);
     }
 
     return new Date();
-  }, [page, dateForNewPage]);
+  }, [dateForNewPage, dateForNewPageLoading, isNewPage, page]);
+}
 
-  const title = page ? 'Edit page' : 'New page';
-  const submitText = page ? 'Save' : 'Create';
-
-  const [date, setDate, bindDate, isValidDate] = useValidatedDateInput(initialDate, {
+export default function PageCreateEditDialog({
+  page,
+  onDialogConfirm,
+  onDialogCancel,
+  ...dialogProps
+}: PageCreateEditDialogProps) {
+  const [date, setDate, bindDate, isValidDate] = useValidatedDateInput(null, {
     validate: createDateValidator(true),
     errorHelperText: 'Date is required',
   });
 
-  const isSubmitDisabled = !isValidDate;
+  const { open: isDialogOpened } = dialogProps;
+  const initialDate = useInitialDate(isDialogOpened, page);
+  const title = page ? 'Edit page' : 'New page';
+  const submitText = page ? 'Save' : 'Create';
 
   useEffect(() => {
-    if (dialogProps.open) {
+    if (isDialogOpened) {
       setDate(initialDate);
-
-      if (!page) {
-        dispatch(getDateForNewPage());
-      }
     }
-  }, [dialogProps.open, initialDate, setDate, page, dispatch]);
-
-  useEffect(() => {
-    if (dateForNewPageLoading === 'succeeded' && !page) {
-      setDate(dateForNewPage ? new Date(dateForNewPage) : null);
-    }
-  }, [dateForNewPage, dateForNewPageLoading, page, setDate]);
+  }, [initialDate, isDialogOpened, setDate]);
 
   const handleSubmitClick = (): void => {
-    if (!date) {
-      return;
+    if (date) {
+      onDialogConfirm({
+        date: dateFnsFormat(date, 'yyyy-MM-dd'),
+      });
     }
-
-    onDialogConfirm({
-      date: dateFnsFormat(date, 'yyyy-MM-dd'),
-    });
   };
 
   return (
@@ -103,7 +99,7 @@ const PageCreateEditDialog: React.FC<PageCreateEditDialogProps> = ({
           variant="contained"
           color="primary"
           onClick={handleSubmitClick}
-          disabled={isSubmitDisabled}
+          disabled={!isValidDate}
         >
           {submitText}
         </Button>
@@ -113,6 +109,4 @@ const PageCreateEditDialog: React.FC<PageCreateEditDialogProps> = ({
       </DialogActions>
     </Dialog>
   );
-};
-
-export default PageCreateEditDialog;
+}
