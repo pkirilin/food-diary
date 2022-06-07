@@ -61,9 +61,10 @@ export default function PageCreateEditDialog({
   });
 
   const { open: isDialogOpened } = dialogProps;
+  const isNewPage = !page;
   const initialDate = useInitialDate(isDialogOpened, page);
-  const title = page ? 'Edit page' : 'New page';
-  const submitText = page ? 'Save' : 'Create';
+  const title = isNewPage ? 'New page' : 'Edit page';
+  const submitText = isNewPage ? 'Create' : 'Save';
 
   useEffect(() => {
     if (isDialogOpened) {
