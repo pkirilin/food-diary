@@ -1,4 +1,3 @@
-import 'date-fns';
 import { useEffect, useMemo } from 'react';
 import {
   Dialog,
