@@ -19,8 +19,10 @@ test('product can be created', async () => {
 
   render(ui);
   await userEvent.type(screen.getByPlaceholderText(/product/i), 'Yoghurt');
+
   await userEvent.clear(screen.getByPlaceholderText(/calories cost/i));
   await userEvent.type(screen.getByPlaceholderText(/calories cost/i), '75');
+
   await userEvent.click(screen.getByRole('textbox', { name: /category/i }));
   await userEvent.click(within(screen.getByRole('listbox')).getByText(/dairy/i));
 

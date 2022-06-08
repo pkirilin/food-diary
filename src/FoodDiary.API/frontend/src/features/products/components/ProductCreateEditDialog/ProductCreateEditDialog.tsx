@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   Button,
   Dialog,
@@ -20,27 +20,33 @@ interface ProductCreateEditDialogProps
   product?: ProductItem;
 }
 
-const ProductCreateEditDialog: React.FC<ProductCreateEditDialogProps> = ({
+function useInitialCategory(product?: ProductItem) {
+  const isNewProduct = !product;
+
+  return useMemo<CategoryAutocompleteOption | null>(() => {
+    if (isNewProduct) {
+      return null;
+    }
+
+    return {
+      id: product.categoryId,
+      name: product.categoryName,
+    };
+  }, [isNewProduct, product]);
+}
+
+export default function ProductCreateEditDialog({
   product,
   onDialogCancel,
   onDialogConfirm,
   ...dialogProps
-}: ProductCreateEditDialogProps) => {
-  const title = product ? 'Edit product' : 'New product';
-  const submitText = product ? 'Save' : 'Create';
-  const initialProductName = product ? product.name : '';
-  const initialCaloriesCost = product ? product.caloriesCost : 100;
-
-  const initialCategory = useMemo<CategoryAutocompleteOption | null>(
-    () =>
-      product
-        ? {
-            id: product.categoryId,
-            name: product.categoryName,
-          }
-        : null,
-    [product],
-  );
+}: ProductCreateEditDialogProps) {
+  const isNewProduct = !product;
+  const initialProductName = isNewProduct ? '' : product.name;
+  const initialCaloriesCost = isNewProduct ? 100 : product.caloriesCost;
+  const initialCategory = useInitialCategory(product);
+  const title = isNewProduct ? 'New product' : 'Edit product';
+  const submitText = isNewProduct ? 'Create' : 'Save';
 
   const [productName, setProductName, bindProductName, isValidProductName] = useValidatedTextInput(
     initialProductName,
@@ -68,11 +74,11 @@ const ProductCreateEditDialog: React.FC<ProductCreateEditDialogProps> = ({
     }
   }, [
     dialogProps.open,
-    setProductName,
-    setCaloriesCost,
-    initialProductName,
     initialCaloriesCost,
     initialCategory,
+    initialProductName,
+    setCaloriesCost,
+    setProductName,
   ]);
 
   const handleSubmitClick = (): void => {
@@ -127,6 +133,4 @@ const ProductCreateEditDialog: React.FC<ProductCreateEditDialogProps> = ({
       </DialogActions>
     </Dialog>
   );
-};
-
-export default ProductCreateEditDialog;
+}
