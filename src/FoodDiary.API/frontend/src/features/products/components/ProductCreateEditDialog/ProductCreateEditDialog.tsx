@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   Button,
   Dialog,
@@ -8,10 +8,11 @@ import {
   DialogTitle,
   TextField,
 } from '@material-ui/core';
-import { ProductCreateEdit, ProductItem } from '../models';
-import { DialogCustomActionProps } from '../../__shared__/types';
-import { useValidatedNumericInput, useValidatedTextInput } from '../../__shared__/hooks';
-import CategorySelect from './CategorySelect';
+import { ProductCreateEdit, ProductItem } from 'src/features/products/models';
+import { DialogCustomActionProps } from 'src/features/__shared__/types';
+import { useValidatedNumericInput, useValidatedTextInput } from 'src/features/__shared__/hooks';
+import CategorySelect from '../CategorySelect';
+import { CategoryAutocompleteOption } from 'src/features/categories/models';
 
 interface ProductCreateEditDialogProps
   extends DialogProps,
@@ -19,30 +20,33 @@ interface ProductCreateEditDialogProps
   product?: ProductItem;
 }
 
-const ProductCreateEditDialog: React.FC<ProductCreateEditDialogProps> = ({
+function useInitialCategory(product?: ProductItem) {
+  const isNewProduct = !product;
+
+  return useMemo<CategoryAutocompleteOption | null>(() => {
+    if (isNewProduct) {
+      return null;
+    }
+
+    return {
+      id: product.categoryId,
+      name: product.categoryName,
+    };
+  }, [isNewProduct, product]);
+}
+
+export default function ProductCreateEditDialog({
   product,
   onDialogCancel,
   onDialogConfirm,
   ...dialogProps
-}: ProductCreateEditDialogProps) => {
-  const { title, submitText, initialProductName, initialCaloriesCost, initialCategory } = product
-    ? {
-        title: 'Edit product',
-        submitText: 'Save',
-        initialProductName: product.name,
-        initialCaloriesCost: product.caloriesCost,
-        initialCategory: {
-          id: product.categoryId,
-          name: product.categoryName,
-        },
-      }
-    : {
-        title: 'New product',
-        submitText: 'Create',
-        initialProductName: '',
-        initialCaloriesCost: 100,
-        initialCategory: null,
-      };
+}: ProductCreateEditDialogProps) {
+  const isNewProduct = !product;
+  const initialProductName = isNewProduct ? '' : product.name;
+  const initialCaloriesCost = isNewProduct ? 100 : product.caloriesCost;
+  const initialCategory = useInitialCategory(product);
+  const title = isNewProduct ? 'New product' : 'Edit product';
+  const submitText = isNewProduct ? 'Create' : 'Save';
 
   const [productName, setProductName, bindProductName, isValidProductName] = useValidatedTextInput(
     initialProductName,
@@ -93,7 +97,7 @@ const ProductCreateEditDialog: React.FC<ProductCreateEditDialogProps> = ({
       <DialogContent>
         <TextField
           {...bindProductName()}
-          label="Product name"
+          label="Product"
           placeholder="Enter product name"
           margin="normal"
           fullWidth
@@ -108,7 +112,9 @@ const ProductCreateEditDialog: React.FC<ProductCreateEditDialogProps> = ({
           fullWidth
         ></TextField>
         <CategorySelect
-          value={initialCategory}
+          label="Category"
+          placeholder="Select a category"
+          value={category}
           setValue={value => setCategory(value)}
         ></CategorySelect>
       </DialogContent>
@@ -127,6 +133,4 @@ const ProductCreateEditDialog: React.FC<ProductCreateEditDialogProps> = ({
       </DialogActions>
     </Dialog>
   );
-};
-
-export default ProductCreateEditDialog;
+}

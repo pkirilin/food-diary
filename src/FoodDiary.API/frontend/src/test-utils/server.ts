@@ -20,6 +20,10 @@ const handlers = [
     return res(ctx.json(pages));
   }),
 
+  rest.get(api('/v1/pages/date'), (req, res, ctx) => {
+    return res(ctx.json('2022-06-05'));
+  }),
+
   rest.get(api('/api/v1/products/autocomplete'), (req, res, ctx) => {
     const products = create
       .productAutocompleteResult()

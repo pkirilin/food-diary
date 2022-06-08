@@ -6,7 +6,7 @@ export interface CategoryAutocompleteResultBuilder {
 }
 
 export default function createCategoryAutocompleteResultBuilder() {
-  let id = -1;
+  let id = 0;
   const options: CategoryAutocompleteOption[] = [];
 
   const builder: CategoryAutocompleteResultBuilder = {

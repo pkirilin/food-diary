@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   Button,
   Dialog,
@@ -9,11 +9,11 @@ import {
   TextField,
 } from '@material-ui/core';
 
-import { DialogCustomActionProps } from '../../__shared__/types';
-import { useAppSelector, useValidatedNumericInput } from '../../__shared__/hooks';
-
-import { MealType, NoteCreateEdit, NoteItem } from '../models';
-import ProductSelect from '../../products/components/ProductSelect';
+import { DialogCustomActionProps } from 'src/features/__shared__/types';
+import { useAppSelector, useValidatedNumericInput } from 'src/features/__shared__/hooks';
+import { MealType, NoteCreateEdit, NoteItem } from 'src/features/notes/models';
+import ProductSelect from 'src/features/products/components/ProductSelect';
+import { ProductAutocompleteOption } from 'src/features/products/models';
 
 interface NoteCreateEditDialogProps extends DialogProps, DialogCustomActionProps<NoteCreateEdit> {
   mealType: MealType;
@@ -21,25 +21,50 @@ interface NoteCreateEditDialogProps extends DialogProps, DialogCustomActionProps
   note?: NoteItem;
 }
 
-const NoteCreateEditDialog: React.FC<NoteCreateEditDialogProps> = ({
+function useInitialProduct(note?: NoteItem) {
+  const isNewNote = !note;
+
+  return useMemo<ProductAutocompleteOption | null>(() => {
+    if (isNewNote) {
+      return null;
+    }
+
+    return {
+      id: note.productId,
+      name: note.productName,
+    };
+  }, [isNewNote, note]);
+}
+
+function useDisplayOrder(mealType: MealType, note?: NoteItem) {
+  const maxDisplayOrderForNotesGroup = useAppSelector(state =>
+    state.notes.noteItems
+      .filter(note => note.mealType === mealType)
+      .reduce(
+        (maxOrder, note) => (note.displayOrder > maxOrder ? note.displayOrder : maxOrder),
+        -1,
+      ),
+  );
+
+  const isNewNote = !note;
+
+  return isNewNote ? maxDisplayOrderForNotesGroup + 1 : note.displayOrder;
+}
+
+export default function NoteCreateEditDialog({
   mealType,
   pageId,
   note,
   onDialogCancel,
   onDialogConfirm,
   ...dialogProps
-}: NoteCreateEditDialogProps) => {
-  const { title, submitText, initialProduct, initialQuantity } = note
-    ? {
-        title: 'Edit note',
-        submitText: 'Save',
-        initialProduct: {
-          id: note.productId,
-          name: note.productName,
-        },
-        initialQuantity: note.productQuantity,
-      }
-    : { title: 'New note', submitText: 'Create', initialProduct: null, initialQuantity: 100 };
+}: NoteCreateEditDialogProps) {
+  const isNewNote = !note;
+  const displayOrder = useDisplayOrder(mealType, note);
+  const initialProduct = useInitialProduct(note);
+  const initialQuantity = isNewNote ? 100 : note.productQuantity;
+  const title = isNewNote ? 'New note' : 'Edit note';
+  const submitText = isNewNote ? 'Create' : 'Save';
 
   const [product, setProduct] = useState(initialProduct);
 
@@ -52,15 +77,6 @@ const NoteCreateEditDialog: React.FC<NoteCreateEditDialogProps> = ({
   );
 
   const isSubmitDisabled = !product || !isValidQuantity;
-
-  const maxDisplayOrderForNotesGroup = useAppSelector(state =>
-    state.notes.noteItems
-      .filter(note => note.mealType === mealType)
-      .reduce(
-        (maxOrder, note) => (note.displayOrder > maxOrder ? note.displayOrder : maxOrder),
-        -1,
-      ),
-  );
 
   useEffect(() => {
     if (dialogProps.open) {
@@ -76,7 +92,7 @@ const NoteCreateEditDialog: React.FC<NoteCreateEditDialogProps> = ({
         productId: product.id,
         pageId,
         productQuantity: quantity,
-        displayOrder: note ? note.displayOrder : maxDisplayOrderForNotesGroup + 1,
+        displayOrder,
       });
     }
   };
@@ -87,6 +103,7 @@ const NoteCreateEditDialog: React.FC<NoteCreateEditDialogProps> = ({
       <DialogContent>
         <ProductSelect
           label="Product"
+          placeholder="Select a product"
           value={product}
           setValue={value => setProduct(value)}
         ></ProductSelect>
@@ -114,6 +131,4 @@ const NoteCreateEditDialog: React.FC<NoteCreateEditDialogProps> = ({
       </DialogActions>
     </Dialog>
   );
-};
-
-export default NoteCreateEditDialog;
+}
