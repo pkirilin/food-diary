@@ -55,6 +55,10 @@ const handlers = [
   rest.post(api('/api/v1/exports/google-docs'), (req, res, ctx) => {
     return res(ctx.status(200));
   }),
+
+  rest.post(api('/v1/imports/json'), (req, res, ctx) => {
+    return res(ctx.status(200));
+  }),
 ];
 
 const server = setupServer(...handlers);
