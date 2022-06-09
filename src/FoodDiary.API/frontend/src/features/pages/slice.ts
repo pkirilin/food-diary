@@ -55,7 +55,7 @@ const initialState: PagesState = {
   isImportSuccess: false,
 };
 
-const operationThunks = [createPage, editPage, deletePages];
+const operationThunks = [createPage, editPage, deletePages, importPages];
 
 const pagesSlice = createSlice({
   name: 'pages',

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { IconButton, Popover, Toolbar, Tooltip, Typography } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import FilterListIcon from '@material-ui/icons/FilterList';
@@ -21,14 +21,47 @@ import { useToolbarStyles } from 'src/features/__shared__/styles';
 const importWarningMessage =
   'Pages import is going to be started. Import may update or overwrite existing data from file and may cause data loss. Continue?';
 
+function useImport(file?: File) {
+  const isSuccess = useAppSelector(state => state.pages.isImportSuccess);
+  const dispatch = useAppDispatch();
+
+  const { setOpen, binding: dialogProps } = useDialog(() => {
+    if (file) {
+      dispatch(importPages(file));
+    }
+  });
+
+  const openDialog = useCallback(() => {
+    setOpen(true);
+  }, [setOpen]);
+
+  const closeDialog = useCallback(() => {
+    setOpen(false);
+  }, [setOpen]);
+
+  useEffect(() => {
+    if (file) {
+      openDialog();
+    }
+  }, [file, openDialog]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      closeDialog();
+    }
+  }, [closeDialog, isSuccess]);
+
+  return dialogProps;
+}
+
 export type PagesToolbarProps = React.PropsWithChildren<unknown>;
 
 export default function PagesToolbar({ children }: PagesToolbarProps) {
   const classes = useToolbarStyles();
   const selectedPageIds = useAppSelector(state => state.pages.selectedPageIds);
-  const isImportSuccess = useAppSelector(state => state.pages.isImportSuccess);
   const dispatch = useAppDispatch();
   const [importFile, setImportFile] = useState<File>();
+  const importDialogProps = useImport(importFile);
   const [filter, showFilter] = usePopover();
 
   const pageCreateDialog = useDialog<PageCreateEdit>(page => {
@@ -38,24 +71,6 @@ export default function PagesToolbar({ children }: PagesToolbarProps) {
   const pagesDeleteDialog = useDialog(() => {
     dispatch(deletePages(selectedPageIds));
   });
-
-  const pagesImportDialog = useDialog(() => {
-    if (importFile) {
-      dispatch(importPages(importFile));
-    }
-  });
-
-  useEffect(() => {
-    if (importFile) {
-      pagesImportDialog.show();
-    }
-  }, [importFile, pagesImportDialog]);
-
-  useEffect(() => {
-    if (isImportSuccess) {
-      pagesImportDialog.setOpen(false);
-    }
-  }, [isImportSuccess, pagesImportDialog]);
 
   const handleAddClick = (): void => {
     pageCreateDialog.show();
@@ -91,7 +106,7 @@ export default function PagesToolbar({ children }: PagesToolbarProps) {
         dialogMessage="Do you really want to delete all selected pages?"
       ></ConfirmationDialog>
       <ConfirmationDialog
-        {...pagesImportDialog.binding}
+        {...importDialogProps}
         dialogTitle="Import warning"
         dialogMessage={importWarningMessage}
       ></ConfirmationDialog>
