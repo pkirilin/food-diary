@@ -4,13 +4,19 @@ import AddIcon from '@material-ui/icons/Add';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import PublishIcon from '@material-ui/icons/Publish';
 import DeleteIcon from '@material-ui/icons/Delete';
-import PageCreateEditDialog from './PageCreateEditDialog';
-import PagesFilter from './PagesFilter';
-import { PageCreateEdit } from '../models';
-import { createPage, deletePages, importPages } from '../thunks';
-import { ConfirmationDialog } from '../../__shared__/components';
-import { useAppDispatch, useDialog, usePopover, useAppSelector } from '../../__shared__/hooks';
-import { useToolbarStyles } from '../../__shared__/styles';
+
+import PageCreateEditDialog from '../PageCreateEditDialog';
+import PagesFilter from '../PagesFilter';
+import { PageCreateEdit } from 'src/features/pages/models';
+import { createPage, deletePages, importPages } from 'src/features/pages/thunks';
+import { ConfirmationDialog } from 'src/features/__shared__/components';
+import {
+  useAppDispatch,
+  useDialog,
+  usePopover,
+  useAppSelector,
+} from 'src/features/__shared__/hooks';
+import { useToolbarStyles } from 'src/features/__shared__/styles';
 
 const importWarningMessage =
   'Pages import is going to be started. Import may update or overwrite existing data from file and may cause data loss. Continue?';
@@ -126,7 +132,13 @@ export default function PagesToolbar({ children }: PagesToolbarProps) {
               <IconButton component="span">
                 <PublishIcon />
               </IconButton>
-              <input type="file" name="importFile" hidden onChange={handleImportFileChange} />
+              <input
+                aria-label="Import file"
+                type="file"
+                name="importFile"
+                hidden
+                onChange={handleImportFileChange}
+              />
             </label>
           </Tooltip>
         </React.Fragment>
