@@ -17,7 +17,6 @@ import {
 export type PagesState = {
   pageItems: PageItem[];
   operationStatus: Status;
-  // TODO: add loadingState
   selectedPageIds: number[];
   totalPagesCount: number;
   filter: PageItemsFilter;
@@ -28,6 +27,8 @@ export type PagesState = {
   dateForNewPageLoading: Status;
   isExportToJsonLoading: boolean;
   isExportToJsonSuccess: boolean;
+  isImportLoading: boolean;
+  isImportSuccess: boolean;
 };
 
 export interface SelectPagePayload extends SelectionPayload {
@@ -50,9 +51,11 @@ const initialState: PagesState = {
   dateForNewPageLoading: 'idle',
   isExportToJsonLoading: false,
   isExportToJsonSuccess: false,
+  isImportLoading: false,
+  isImportSuccess: false,
 };
 
-const operationThunks = [createPage, editPage, deletePages, importPages];
+const operationThunks = [createPage, editPage, deletePages];
 
 const pagesSlice = createSlice({
   name: 'pages',
@@ -139,6 +142,19 @@ const pagesSlice = createSlice({
       .addCase(exportPagesToJson.rejected, state => {
         state.isExportToJsonLoading = false;
         state.isExportToJsonSuccess = false;
+      })
+
+      .addCase(importPages.pending, state => {
+        state.isImportLoading = true;
+        state.isImportSuccess = false;
+      })
+      .addCase(importPages.fulfilled, state => {
+        state.isImportLoading = false;
+        state.isImportSuccess = true;
+      })
+      .addCase(importPages.rejected, state => {
+        state.isImportLoading = false;
+        state.isImportSuccess = false;
       })
 
       .addMatcher(createAsyncThunkMatcher(operationThunks, 'pending'), state => {

@@ -25,13 +25,10 @@ export type PagesToolbarProps = React.PropsWithChildren<unknown>;
 
 export default function PagesToolbar({ children }: PagesToolbarProps) {
   const classes = useToolbarStyles();
-
   const selectedPageIds = useAppSelector(state => state.pages.selectedPageIds);
-
+  const isImportSuccess = useAppSelector(state => state.pages.isImportSuccess);
   const dispatch = useAppDispatch();
-
   const [importFile, setImportFile] = useState<File>();
-
   const [filter, showFilter] = usePopover();
 
   const pageCreateDialog = useDialog<PageCreateEdit>(page => {
@@ -53,6 +50,12 @@ export default function PagesToolbar({ children }: PagesToolbarProps) {
       pagesImportDialog.show();
     }
   }, [importFile, pagesImportDialog]);
+
+  useEffect(() => {
+    if (isImportSuccess) {
+      pagesImportDialog.setOpen(false);
+    }
+  }, [isImportSuccess, pagesImportDialog]);
 
   const handleAddClick = (): void => {
     pageCreateDialog.show();
