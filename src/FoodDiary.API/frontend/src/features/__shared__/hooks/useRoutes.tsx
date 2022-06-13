@@ -19,14 +19,15 @@ export default function useRoutes(isAuthenticated: boolean): React.ReactElement 
       <Route exact path="/categories">
         <Categories></Categories>
       </Route>
-      <Redirect exact from="/" to="/pages"></Redirect>
-      <Redirect to="/pages"></Redirect>
+      <Route exact path="/" render={() => <Redirect to="/pages"></Redirect>}></Route>
+      <Route render={() => <Redirect to="/pages"></Redirect>}></Route>
     </Switch>
   ) : (
     <Switch>
       <Route exact path="/auth">
         <Auth></Auth>
       </Route>
+      <Route render={() => <Redirect to="/auth"></Redirect>}></Route>
     </Switch>
   );
 }
