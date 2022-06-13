@@ -7,17 +7,26 @@ import { Categories } from '../../categories/components';
 export default function useRoutes(isAuthenticated: boolean): React.ReactElement {
   return isAuthenticated ? (
     <Switch>
-      <Route exact path="/pages" component={Pages}></Route>
-      <Route exact path="/pages/:id" component={PageContent}></Route>
-      <Route exact path="/products" component={Products}></Route>
-      <Route exact path="/categories" component={Categories}></Route>
+      <Route exact path="/pages">
+        <Pages></Pages>
+      </Route>
+      <Route exact path="/pages/:id">
+        <PageContent></PageContent>
+      </Route>
+      <Route exact path="/products">
+        <Products></Products>
+      </Route>
+      <Route exact path="/categories">
+        <Categories></Categories>
+      </Route>
       <Redirect exact from="/" to="/pages"></Redirect>
       <Redirect to="/pages"></Redirect>
     </Switch>
   ) : (
     <Switch>
-      <Route exact path="/auth" component={Auth}></Route>
-      <Redirect to="/auth"></Redirect>
+      <Route exact path="/auth">
+        <Auth></Auth>
+      </Route>
     </Switch>
   );
 }
