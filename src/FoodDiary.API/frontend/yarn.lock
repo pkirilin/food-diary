@@ -2834,7 +2834,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/history@npm:^4.7.11, @types/history@npm:^4.7.6":
+"@types/history@npm:^4.7.11":
   version: 4.7.11
   resolution: "@types/history@npm:4.7.11"
   checksum: c92e2ba407dcab0581a9afdf98f533aa41b61a71133420a6d92b1ca9839f741ab1f9395b17454ba5b88cb86020b70b22d74a1950ccfbdfd9beeaa5459fdc3464
@@ -6608,7 +6608,6 @@ __metadata:
     "@testing-library/jest-dom": ^5.16.4
     "@testing-library/react": ^13.3.0
     "@testing-library/user-event": ^14.2.0
-    "@types/history": ^4.7.6
     "@types/jest": ^27.4.0
     "@types/js-cookie": ^3.0.1
     "@types/node": ^16.11.26
@@ -6628,7 +6627,6 @@ __metadata:
     eslint-plugin-prettier: ^4.0.0
     eslint-plugin-react: ^7.30.0
     eslint-plugin-react-hooks: ^4.5.0
-    history: ^5.0.0
     js-cookie: ^3.0.1
     msw: ^0.39.2
     prettier: ^2.6.2
@@ -7098,7 +7096,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"history@npm:^5.0.0, history@npm:^5.2.0":
+"history@npm:^5.2.0":
   version: 5.3.0
   resolution: "history@npm:5.3.0"
   dependencies:

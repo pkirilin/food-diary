@@ -44,7 +44,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@testing-library/jest-dom", "npm:5.16.4"],\
             ["@testing-library/react", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:13.3.0"],\
             ["@testing-library/user-event", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:14.2.0"],\
-            ["@types/history", "npm:4.7.11"],\
             ["@types/jest", "npm:27.5.1"],\
             ["@types/js-cookie", "npm:3.0.2"],\
             ["@types/node", "npm:16.11.37"],\
@@ -64,7 +63,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["eslint-plugin-prettier", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:4.0.0"],\
             ["eslint-plugin-react", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:7.30.0"],\
             ["eslint-plugin-react-hooks", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:4.5.0"],\
-            ["history", "npm:5.3.0"],\
             ["js-cookie", "npm:3.0.1"],\
             ["msw", "npm:0.39.2"],\
             ["prettier", "npm:2.6.2"],\
@@ -9519,7 +9517,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@testing-library/jest-dom", "npm:5.16.4"],\
             ["@testing-library/react", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:13.3.0"],\
             ["@testing-library/user-event", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:14.2.0"],\
-            ["@types/history", "npm:4.7.11"],\
             ["@types/jest", "npm:27.5.1"],\
             ["@types/js-cookie", "npm:3.0.2"],\
             ["@types/node", "npm:16.11.37"],\
@@ -9539,7 +9536,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["eslint-plugin-prettier", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:4.0.0"],\
             ["eslint-plugin-react", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:7.30.0"],\
             ["eslint-plugin-react-hooks", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:4.5.0"],\
-            ["history", "npm:5.3.0"],\
             ["js-cookie", "npm:3.0.1"],\
             ["msw", "npm:0.39.2"],\
             ["prettier", "npm:2.6.2"],\
