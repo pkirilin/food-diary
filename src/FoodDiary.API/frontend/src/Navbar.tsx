@@ -52,8 +52,9 @@ const Navbar: React.FC = () => {
             <NavLink
               key={index}
               to={path}
-              className={classes.navLink}
-              activeClassName={classes.navLinkActive}
+              className={({ isActive }) =>
+                classes.navLink.concat(isActive ? ` ${classes.navLinkActive}` : '')
+              }
             >
               <ListItem button>
                 <ListItemText primary={title}></ListItemText>
