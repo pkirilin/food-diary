@@ -1,9 +1,24 @@
+import { useEffect } from 'react';
 import GoogleLogin, { GoogleLoginResponse } from 'react-google-login';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useLazySignInWithGoogleQuery } from 'src/api';
 import config from 'src/features/__shared__/config';
+import { useAuth } from '../hooks';
 
 const Auth = () => {
   const [signInWithGoogle] = useLazySignInWithGoogleQuery();
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const redirectUrl = (location.state as any)?.from?.pathname || '/';
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate(redirectUrl, { replace: true });
+    }
+  }, [redirectUrl, isAuthenticated, navigate]);
 
   return (
     <GoogleLogin
