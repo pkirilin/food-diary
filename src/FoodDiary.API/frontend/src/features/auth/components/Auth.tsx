@@ -11,7 +11,7 @@ const Auth = () => {
   const isAuthenticated = useAppSelector(state => state.auth.isAuthenticated);
   const navigate = useNavigate();
   const location = useLocation();
-  const redirectUrl = (location.state as NavigationState).from?.pathname || '/';
+  const redirectUrl = (location.state as NavigationState)?.from?.pathname || '/';
 
   useEffect(() => {
     if (isAuthenticated) {
