@@ -1,11 +1,11 @@
 import { Fragment, PropsWithChildren } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../hooks';
+import { useAppSelector } from 'src/features/__shared__/hooks';
 
 type RequireAuthProps = PropsWithChildren<unknown>;
 
 export default function RequireAuth({ children }: RequireAuthProps) {
-  const { isAuthenticated } = useAuth();
+  const isAuthenticated = useAppSelector(state => state.auth.isAuthenticated);
   const location = useLocation();
 
   if (!isAuthenticated) {
