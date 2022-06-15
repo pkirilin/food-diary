@@ -3,6 +3,7 @@ import { Auth, RequireAuth } from 'src/features/auth/components';
 import { PageContent, Pages } from 'src/features/pages/components';
 import { Products } from 'src/features/products/components';
 import { Categories } from 'src/features/categories/components';
+import NotFound from './NotFound';
 
 export default function AppRoutes() {
   return (
@@ -41,6 +42,7 @@ export default function AppRoutes() {
           </RequireAuth>
         }
       ></Route>
+      <Route path="*" element={<NotFound></NotFound>}></Route>
     </Routes>
   );
 }
