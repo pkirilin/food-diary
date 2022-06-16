@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet';
 import { Container, makeStyles } from '@material-ui/core';
 import Navbar from './Navbar';
 import { AppRoutes } from './routes';
-import { useAppSelector } from './features/__shared__/hooks';
+import { useAuth } from './features/auth/hooks';
 
 const useStyles = makeStyles(theme => ({
   content: {
@@ -14,7 +14,7 @@ const useStyles = makeStyles(theme => ({
 
 const App: React.FC = () => {
   const classes = useStyles();
-  const isAuthenticated = useAppSelector(state => state.auth.isAuthenticated);
+  const { isAuthenticated } = useAuth();
 
   return (
     <Router>

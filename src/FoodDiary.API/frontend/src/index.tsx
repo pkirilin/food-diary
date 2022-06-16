@@ -8,6 +8,7 @@ import * as serviceWorker from './serviceWorker';
 import App from './App';
 import store from './store';
 import theme from './theme';
+import AuthProvider from './features/auth/AuthProvider';
 
 const container = document.getElementById('root') as HTMLElement;
 const root = createRoot(container);
@@ -16,8 +17,10 @@ root.render(
   <Provider store={store}>
     <ThemeProvider theme={theme}>
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
-        <CssBaseline></CssBaseline>
-        <App></App>
+        <AuthProvider>
+          <CssBaseline></CssBaseline>
+          <App></App>
+        </AuthProvider>
       </MuiPickersUtilsProvider>
     </ThemeProvider>
   </Provider>,
