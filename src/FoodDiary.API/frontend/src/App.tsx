@@ -3,8 +3,8 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { Container, makeStyles } from '@material-ui/core';
 import Navbar from './Navbar';
-import { useAuth } from './features/auth/hooks';
-import { useRoutes } from './features/__shared__/hooks';
+import { AppRoutes } from './routes';
+import { useAppSelector } from './features/__shared__/hooks';
 
 const useStyles = makeStyles(theme => ({
   content: {
@@ -14,8 +14,7 @@ const useStyles = makeStyles(theme => ({
 
 const App: React.FC = () => {
   const classes = useStyles();
-  const { isAuthenticated } = useAuth();
-  const routes = useRoutes(isAuthenticated);
+  const isAuthenticated = useAppSelector(state => state.auth.isAuthenticated);
 
   return (
     <Router>
@@ -24,7 +23,7 @@ const App: React.FC = () => {
       </Helmet>
       {isAuthenticated && <Navbar></Navbar>}
       <Container maxWidth="xl" className={classes.content}>
-        {routes}
+        <AppRoutes></AppRoutes>
       </Container>
     </Router>
   );

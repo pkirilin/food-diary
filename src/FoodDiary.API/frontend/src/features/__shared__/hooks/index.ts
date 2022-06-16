@@ -9,11 +9,10 @@ import useDialog from './useDialog';
 import usePopover from './usePopover';
 import useRefreshEffect from './useRefreshEffect';
 import useRouterId from './useRouterId';
-import useRoutes from './useRoutes';
 import useAppSelector from './useAppSelector';
 import useAppDispatch from './useAppDispatch';
 
 export { useAppSelector, useAppDispatch };
-export { useDialog, usePopover, useRouterId, useRefreshEffect, useRoutes };
+export { useDialog, usePopover, useRouterId, useRefreshEffect };
 export { useValidatedTextInput, useValidatedNumericInput, useValidatedDateInput };
 export { createInputHook, createValidatedInputHook };

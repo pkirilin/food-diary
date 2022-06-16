@@ -1,5 +1,5 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { BottomNavigation, BottomNavigationAction, makeStyles } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
@@ -22,7 +22,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const PageContentBottomNavigation: React.FC = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const classes = useStyles();
 
   const previousPageId = useAppSelector(state => state.pages.previous?.id);
@@ -41,7 +41,7 @@ const PageContentBottomNavigation: React.FC = () => {
 
   const handleNavigationChange = (event: React.SyntheticEvent<unknown>, newValue: string): void => {
     if ([previousPageValue, nextPageValue].find(v => v === newValue)) {
-      history.push(newValue);
+      navigate(newValue);
     } else if (newValue === currentPageValue) {
       const anchor = ((event.target as HTMLDivElement).ownerDocument || document).querySelector(
         '#back-to-top-anchor',
