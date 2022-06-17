@@ -9,6 +9,7 @@ import App from './App';
 import store from './store';
 import theme from './theme';
 import AuthProvider from './features/auth/AuthProvider';
+import { getAccessToken } from './features/auth/cookie.service';
 
 const container = document.getElementById('root') as HTMLElement;
 const root = createRoot(container);
@@ -17,7 +18,7 @@ root.render(
   <Provider store={store}>
     <ThemeProvider theme={theme}>
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
-        <AuthProvider>
+        <AuthProvider token={getAccessToken()}>
           <CssBaseline></CssBaseline>
           <App></App>
         </AuthProvider>

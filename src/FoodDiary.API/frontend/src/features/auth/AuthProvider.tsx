@@ -1,12 +1,11 @@
 import { PropsWithChildren, useState } from 'react';
 import AuthContext from './AuthContext';
-import { getAccessToken } from './cookie.service';
 
-const token = getAccessToken();
+interface AuthProviderProps extends PropsWithChildren<unknown> {
+  token?: string;
+}
 
-type AuthProviderProps = PropsWithChildren<unknown>;
-
-export default function AuthProvider({ children }: AuthProviderProps) {
+export default function AuthProvider({ children, token }: AuthProviderProps) {
   const [isAuthenticated, setIsAuthenticated] = useState(!!token);
 
   function signIn() {
