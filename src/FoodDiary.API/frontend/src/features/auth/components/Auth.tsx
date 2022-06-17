@@ -7,8 +7,8 @@ import { useAuth } from '../hooks';
 import { NavigationState } from '../types';
 
 const Auth = () => {
-  const [signInWithGoogle] = useLazySignInWithGoogleQuery();
-  const { isAuthenticated } = useAuth();
+  const [signInWithGoogle, { isSuccess }] = useLazySignInWithGoogleQuery();
+  const { isAuthenticated, signIn } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const redirectUrl = (location.state as NavigationState)?.from?.pathname || '/';
@@ -18,6 +18,12 @@ const Auth = () => {
       navigate(redirectUrl, { replace: true });
     }
   }, [redirectUrl, isAuthenticated, navigate]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      signIn();
+    }
+  }, [isSuccess, signIn]);
 
   return (
     <GoogleLogin
