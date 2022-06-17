@@ -5,13 +5,11 @@ import pagesReducer from './features/pages/slice';
 import categoriesReducer from './features/categories/slice';
 import productsReducer from './features/products/slice';
 import notesReducer from './features/notes/slice';
-import authReducer from './features/auth/auth.slice';
 
 export function configureAppStore() {
   return configureStore({
     reducer: {
       [api.reducerPath]: api.reducer,
-      auth: authReducer,
       pages: pagesReducer,
       categories: categoriesReducer,
       products: productsReducer,

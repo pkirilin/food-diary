@@ -6,17 +6,17 @@ import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 
 import { createTestStore, TestStoreBuilder } from './storeBuilder';
+import AuthProvider from 'src/features/auth/AuthProvider';
 
 export interface TestComponentBuilder {
   please: () => React.ReactElement;
-
   withReduxStore: (
     configure?: (builder: TestStoreBuilder) => TestStoreBuilder,
   ) => TestComponentBuilder;
-
   withRouter: () => TestComponentBuilder;
-
   withMuiPickersUtils: () => TestComponentBuilder;
+  withAuthToken: (token: string) => TestComponentBuilder;
+  withoutAuthToken: () => TestComponentBuilder;
 }
 
 type WrapperType = React.ComponentType<React.PropsWithChildren<unknown>>;
@@ -50,6 +50,16 @@ const createComponentBuilder = (component: React.ReactElement) => {
       wrappers.push(({ children }) => (
         <MuiPickersUtilsProvider utils={DateFnsUtils}>{children}</MuiPickersUtilsProvider>
       ));
+      return builder;
+    },
+
+    withAuthToken: (token: string): TestComponentBuilder => {
+      wrappers.push(({ children }) => <AuthProvider token={token}>{children}</AuthProvider>);
+      return builder;
+    },
+
+    withoutAuthToken: (): TestComponentBuilder => {
+      wrappers.push(({ children }) => <AuthProvider>{children}</AuthProvider>);
       return builder;
     },
   };

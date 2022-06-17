@@ -1,5 +1,5 @@
 import { AnyAction, AsyncThunk, createAsyncThunk } from '@reduxjs/toolkit';
-import { getAccessToken } from '../../auth/cookie.service';
+import { getToken } from 'src/features/auth/utils';
 
 export type ApiCallAsyncThunk<TData, TArgument> = AsyncThunk<
   TData,
@@ -37,14 +37,14 @@ export function createApiCallAsyncThunk<TData, TArgument>(
   options: ApiCallOptions<TArgument> = {
     method: 'GET',
     contentType: 'application/json',
-    getBearerToken: getAccessToken,
+    getBearerToken: getToken,
   },
 ): ApiCallAsyncThunk<TData, TArgument> {
   const {
     method = 'GET',
     contentType = 'application/json',
     bodyCreator,
-    getBearerToken = getAccessToken,
+    getBearerToken = getToken,
   } = options;
 
   function getHeaders(): RequestHeadersFragment {
