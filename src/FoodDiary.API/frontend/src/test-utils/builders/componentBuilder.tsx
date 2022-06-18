@@ -1,12 +1,12 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
-
+import { StyledEngineProvider, ThemeProvider } from '@mui/material';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
-
 import { createTestStore, TestStoreBuilder } from './storeBuilder';
 import AuthProvider from 'src/features/auth/AuthProvider';
+import theme from 'src/theme';
 
 export interface TestComponentBuilder {
   please: () => React.ReactElement;
@@ -31,7 +31,11 @@ const createComponentBuilder = (component: React.ReactElement) => {
         component,
       );
 
-      return ui;
+      return (
+        <StyledEngineProvider injectFirst>
+          <ThemeProvider theme={theme}>{ui}</ThemeProvider>
+        </StyledEngineProvider>
+      );
     },
 
     withReduxStore: (configure = builder => builder): TestComponentBuilder => {
