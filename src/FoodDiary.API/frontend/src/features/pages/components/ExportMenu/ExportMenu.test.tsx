@@ -31,7 +31,7 @@ test('pages can be exported to JSON if start/end dates specified', async () => {
     .please();
 
   render(ui);
-  await userEvent.click(screen.getByTitle(/export pages/i));
+  await userEvent.click(screen.getByLabelText(/export pages/i));
   await userEvent.click(screen.getByText(/export to json/i));
 
   const dialog = screen.getByRole('dialog');
@@ -51,7 +51,7 @@ test('pages can be exported to Google Docs if start/end dates specified', async 
     .please();
 
   render(ui);
-  await userEvent.click(screen.getByTitle(/export pages/i));
+  await userEvent.click(screen.getByLabelText(/export pages/i));
   await userEvent.click(screen.getByText(/export to google docs/i));
 
   const dialog = screen.getByRole('dialog');
@@ -71,13 +71,12 @@ test('pages cannot be exported if start/end dates not specified', async () => {
     .please();
 
   render(ui);
-  await userEvent.click(screen.getByTitle(/export pages/i));
+  await userEvent.click(screen.getByLabelText(/export pages/i));
   await userEvent.click(screen.getByText(/export to json/i));
-
   const dialog = screen.getByRole('dialog');
   await userEvent.type(within(dialog).getByLabelText(/export end date/i), '01.01.2022');
 
-  expect(within(dialog).getByText(/export to json/i).parentElement).toBeDisabled();
+  expect(within(dialog).getByText(/export to json/i)).toBeDisabled();
 });
 
 test('export dialog is openable again after google docs export finished', async () => {
@@ -88,7 +87,7 @@ test('export dialog is openable again after google docs export finished', async 
     .please();
 
   render(ui);
-  await userEvent.click(screen.getByTitle(/export pages/i));
+  await userEvent.click(screen.getByLabelText(/export pages/i));
   await userEvent.click(screen.getByText(/export to google docs/i));
 
   const dialog = screen.getByRole('dialog');
@@ -110,7 +109,7 @@ test('export dialog is openable again after json export finished', async () => {
     .please();
 
   render(ui);
-  await userEvent.click(screen.getByTitle(/export pages/i));
+  await userEvent.click(screen.getByLabelText(/export pages/i));
   await userEvent.click(screen.getByText(/export to json/i));
 
   const dialog = screen.getByRole('dialog');

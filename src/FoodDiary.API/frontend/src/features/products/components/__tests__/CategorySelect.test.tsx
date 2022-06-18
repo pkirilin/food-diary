@@ -28,7 +28,7 @@ function categorySelectWithValue(value: string) {
 test('shows all options after clicking on input', async () => {
   render(categorySelectWithoutValue());
 
-  const input = screen.getByRole('textbox', { name: /category/i });
+  const input = screen.getByPlaceholderText(/select a category/i);
   await userEvent.click(input);
   await waitForElementToBeRemoved(screen.getByRole('progressbar'));
 
@@ -38,7 +38,7 @@ test('shows all options after clicking on input', async () => {
 test('shows options matching input value', async () => {
   render(categorySelectWithoutValue());
 
-  const input = screen.getByRole('textbox', { name: /category/i });
+  const input = screen.getByPlaceholderText(/select a category/i);
   await userEvent.click(input);
   await userEvent.type(input, 'ry');
 
@@ -48,7 +48,7 @@ test('shows options matching input value', async () => {
 test('shows no options if input value does not match any existing option', async () => {
   render(categorySelectWithoutValue());
 
-  const input = screen.getByRole('textbox', { name: /category/i });
+  const input = screen.getByPlaceholderText(/select a category/i);
   await userEvent.click(input);
   await userEvent.type(input, 'test');
 
@@ -56,15 +56,15 @@ test('shows no options if input value does not match any existing option', async
   expect(options).toHaveLength(0);
 });
 
-test('shows all options after input cleared', async () => {
+test('shows no options after input closed', async () => {
   render(categorySelectWithoutValue());
 
-  const input = screen.getByRole('textbox', { name: /category/i });
+  const input = screen.getByPlaceholderText(/select a category/i);
   await userEvent.click(input);
   await userEvent.type(input, 'frozen');
-  await userEvent.click(screen.getByLabelText(/clear/i));
+  await userEvent.click(screen.getByLabelText(/close/i));
 
-  expect(screen).toContainOptions('Bakery', 'Cereals', 'Dairy', 'Frozen Foods');
+  expect(screen.queryAllByRole('option')).toHaveLength(0);
 });
 
 test('shows no options after clicking on input if autocomplete has no options', async () => {
@@ -73,9 +73,7 @@ test('shows no options after clicking on input if autocomplete has no options', 
   );
 
   render(categorySelectWithoutValue());
-
-  const input = screen.getByRole('textbox', { name: /category/i });
-  await userEvent.click(input);
+  await userEvent.click(screen.getByPlaceholderText(/select a category/i));
   await waitForElementToBeRemoved(screen.getByRole('progressbar'));
 
   expect(screen).toContainEmptyOptions();
@@ -84,7 +82,7 @@ test('shows no options after clicking on input if autocomplete has no options', 
 test('shows all options if closed with filtered options and then opened again', async () => {
   render(categorySelectWithoutValue());
 
-  const input = screen.getByRole('textbox', { name: /category/i });
+  const input = screen.getByPlaceholderText(/select a category/i);
   await userEvent.click(input);
   await waitForElementToBeRemoved(screen.getByRole('progressbar'));
   await userEvent.type(input, 'ry');
