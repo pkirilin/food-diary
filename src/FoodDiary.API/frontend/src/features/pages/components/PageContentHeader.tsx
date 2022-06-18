@@ -25,7 +25,7 @@ const PageContentHeader: React.FC = () => {
 
   return (
     <Breadcrumbs separator={<NavigateNextIcon></NavigateNextIcon>} className={classes.root}>
-      <Link variant="h1" component={RouterLink} to="/pages">
+      <Link variant="h1" component={RouterLink} to="/pages" underline="hover">
         Pages
       </Link>
       <Typography variant="h1">{currentPageDate}</Typography>

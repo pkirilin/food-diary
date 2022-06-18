@@ -66,6 +66,7 @@ const PagesTableRow: React.FC<PagesTableRowProps> = ({ page }: PagesTableRowProp
           variant="body1"
           color="primary"
           className={classes.pageDateLink}
+          underline="hover"
         >
           {pageDate}
         </Link>
