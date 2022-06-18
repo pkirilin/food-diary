@@ -73,7 +73,8 @@ const ProductsTableToolbar: React.FC = () => {
                 onClick={event => {
                   showFilter(event);
                 }}
-                size="large">
+                size="large"
+              >
                 <FilterListIcon></FilterListIcon>
               </IconButton>
             </span>

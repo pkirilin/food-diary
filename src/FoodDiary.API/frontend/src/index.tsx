@@ -11,12 +11,10 @@ import theme from './theme';
 import AuthProvider from './features/auth/AuthProvider';
 import { getToken } from './features/auth/utils';
 
-
 declare module '@mui/styles/defaultTheme' {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface DefaultTheme extends Theme {}
 }
-
 
 const container = document.getElementById('root') as HTMLElement;
 const root = createRoot(container);

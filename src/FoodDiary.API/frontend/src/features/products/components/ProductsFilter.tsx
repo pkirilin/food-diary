@@ -52,10 +52,7 @@ const ProductsFilter: React.FC = () => {
         }}
       ></CategorySelect>
       <Box className={classes.controls}>
-        <Button
-          variant="text"
-          disabled={!filterChanged}
-          onClick={() => dispatch(filterReset())}>
+        <Button variant="text" disabled={!filterChanged} onClick={() => dispatch(filterReset())}>
           Reset
         </Button>
       </Box>
