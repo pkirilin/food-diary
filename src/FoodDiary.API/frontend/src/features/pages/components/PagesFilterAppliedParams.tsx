@@ -1,8 +1,8 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { Box, Chip, Tooltip } from '@material-ui/core';
-import TodayIcon from '@material-ui/icons/Today';
-import EventIcon from '@material-ui/icons/Event';
+import { Box, Chip, Tooltip } from '@mui/material';
+import TodayIcon from '@mui/icons-material/Today';
+import EventIcon from '@mui/icons-material/Event';
 import dateFnsFormat from 'date-fns/format';
 import { endDateChanged, startDateChanged } from '../slice';
 import { useAppSelector } from '../../__shared__/hooks';

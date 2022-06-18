@@ -7,7 +7,7 @@ import {
   DialogProps,
   DialogTitle,
   TextField,
-} from '@material-ui/core';
+} from '@mui/material';
 import { ProductCreateEdit, ProductItem } from 'src/features/products/models';
 import { DialogCustomActionProps } from 'src/features/__shared__/types';
 import { useValidatedNumericInput, useValidatedTextInput } from 'src/features/__shared__/hooks';

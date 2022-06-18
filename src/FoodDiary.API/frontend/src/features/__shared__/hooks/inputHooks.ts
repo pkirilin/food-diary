@@ -1,4 +1,4 @@
-import { TextFieldProps } from '@material-ui/core';
+import { TextFieldProps } from '@mui/material';
 import { KeyboardDatePickerProps } from '@material-ui/pickers';
 
 import createInputHook from './createInputHook';

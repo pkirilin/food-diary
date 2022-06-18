@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { Breadcrumbs, Link, makeStyles, Typography } from '@material-ui/core';
-import NavigateNextIcon from '@material-ui/icons/NavigateNext';
+import { Breadcrumbs, Link, Typography } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import dateFnsFormat from 'date-fns/format';
 import { useAppSelector } from '../../__shared__/hooks';
 

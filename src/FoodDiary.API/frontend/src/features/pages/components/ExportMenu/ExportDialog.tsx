@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/core';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import { KeyboardDatePicker } from '@material-ui/pickers';
 
 import { useValidatedDateInput } from 'src/features/__shared__/hooks';

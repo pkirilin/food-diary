@@ -7,7 +7,7 @@ import {
   DialogProps,
   DialogTitle,
   Typography,
-} from '@material-ui/core';
+} from '@mui/material';
 import { DialogCustomActionProps, MessageDialogProps } from '../types';
 
 interface ConfirmationDialogProps

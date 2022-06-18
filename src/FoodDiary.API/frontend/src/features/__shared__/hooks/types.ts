@@ -1,5 +1,4 @@
-import { TextFieldProps } from '@material-ui/core';
-import { AutocompleteProps } from '@material-ui/lab';
+import { TextFieldProps, AutocompleteProps } from '@mui/material';
 import { KeyboardDatePickerProps } from '@material-ui/pickers';
 
 export interface BindableHookResult<TBinding> {

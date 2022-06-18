@@ -1,5 +1,4 @@
-import { CircularProgress, TextField } from '@material-ui/core';
-import { AutocompleteRenderInputParams } from '@material-ui/lab';
+import { CircularProgress, TextField, AutocompleteRenderInputParams } from '@mui/material';
 import { Fragment } from 'react';
 
 type CustomAutocompleteInputProps = {

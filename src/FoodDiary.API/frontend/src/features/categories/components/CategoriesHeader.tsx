@@ -1,6 +1,7 @@
 import React from 'react';
-import { Fab, Grid, makeStyles, Tooltip, Typography } from '@material-ui/core';
-import AddIcon from '@material-ui/icons/Add';
+import { Fab, Grid, Tooltip, Typography } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import AddIcon from '@mui/icons-material/Add';
 import CategoryCreateEditDialog from './CategoryCreateEditDialog';
 import { createCategory } from '../thunks';
 import { CategoryCreateEdit } from '../models';

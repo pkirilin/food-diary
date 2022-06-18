@@ -6,7 +6,7 @@ import {
   DialogActions,
   Button,
   DialogProps,
-} from '@material-ui/core';
+} from '@mui/material';
 import { KeyboardDatePicker } from '@material-ui/pickers';
 import dateFnsFormat from 'date-fns/format';
 import { PageCreateEdit } from 'src/features/pages/models';

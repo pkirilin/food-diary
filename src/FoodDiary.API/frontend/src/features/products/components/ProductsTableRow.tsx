@@ -1,6 +1,6 @@
 import React from 'react';
-import { Checkbox, IconButton, TableCell, TableRow, Tooltip } from '@material-ui/core';
-import EditIcon from '@material-ui/icons/Edit';
+import { Checkbox, IconButton, TableCell, TableRow, Tooltip } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
 import { ProductCreateEdit, ProductItem } from '../models';
 import ProductCreateEditDialog from './ProductCreateEditDialog';
 import { editProduct } from '../thunks';
@@ -59,7 +59,7 @@ const ProductsTableRow: React.FC<ProductsTableRowProps> = ({ product }: Products
       <TableCell>
         <Tooltip title="Edit product">
           <span>
-            <IconButton onClick={handleEditClick}>
+            <IconButton onClick={handleEditClick} size="large">
               <EditIcon></EditIcon>
             </IconButton>
           </span>

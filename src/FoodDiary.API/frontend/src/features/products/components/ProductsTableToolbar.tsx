@@ -1,8 +1,8 @@
 import React from 'react';
-import { IconButton, Popover, Toolbar, Tooltip, Typography } from '@material-ui/core';
-import AddIcon from '@material-ui/icons/Add';
-import FilterListIcon from '@material-ui/icons/FilterList';
-import DeleteIcon from '@material-ui/icons/Delete';
+import { IconButton, Popover, Toolbar, Tooltip, Typography } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import FilterListIcon from '@mui/icons-material/FilterList';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { ConfirmationDialog } from '../../__shared__/components';
 import { useAppDispatch, useDialog, usePopover, useAppSelector } from '../../__shared__/hooks';
 import { useToolbarStyles } from '../../__shared__/styles';
@@ -49,7 +49,7 @@ const ProductsTableToolbar: React.FC = () => {
           <Typography className={classes.title}>{selectedProductIds.length} selected</Typography>
           <Tooltip title="Delete product">
             <span>
-              <IconButton onClick={handleDeleteClick}>
+              <IconButton onClick={handleDeleteClick} size="large">
                 <DeleteIcon></DeleteIcon>
               </IconButton>
             </span>
@@ -62,7 +62,7 @@ const ProductsTableToolbar: React.FC = () => {
           </Typography>
           <Tooltip title="Add new product">
             <span>
-              <IconButton onClick={handleAddClick}>
+              <IconButton onClick={handleAddClick} size="large">
                 <AddIcon></AddIcon>
               </IconButton>
             </span>
@@ -73,7 +73,7 @@ const ProductsTableToolbar: React.FC = () => {
                 onClick={event => {
                   showFilter(event);
                 }}
-              >
+                size="large">
                 <FilterListIcon></FilterListIcon>
               </IconButton>
             </span>

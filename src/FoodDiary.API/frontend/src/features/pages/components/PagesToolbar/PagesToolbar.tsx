@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { IconButton, Popover, Toolbar, Tooltip, Typography } from '@material-ui/core';
-import AddIcon from '@material-ui/icons/Add';
-import FilterListIcon from '@material-ui/icons/FilterList';
-import PublishIcon from '@material-ui/icons/Publish';
-import DeleteIcon from '@material-ui/icons/Delete';
+import { IconButton, Popover, Toolbar, Tooltip, Typography } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import FilterListIcon from '@mui/icons-material/FilterList';
+import PublishIcon from '@mui/icons-material/Publish';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 import PageCreateEditDialog from '../PageCreateEditDialog';
 import PagesFilter from '../PagesFilter';
@@ -115,7 +115,7 @@ export default function PagesToolbar({ children }: PagesToolbarProps) {
           <Typography className={classes.title}>{selectedPageIds.length} selected</Typography>
           <Tooltip title="Delete selected pages">
             <span>
-              <IconButton onClick={handleDeleteClick}>
+              <IconButton onClick={handleDeleteClick} size="large">
                 <DeleteIcon />
               </IconButton>
             </span>
@@ -128,7 +128,7 @@ export default function PagesToolbar({ children }: PagesToolbarProps) {
           </Typography>
           <Tooltip title="Add new page">
             <span>
-              <IconButton onClick={handleAddClick}>
+              <IconButton onClick={handleAddClick} size="large">
                 <AddIcon />
               </IconButton>
             </span>
@@ -139,6 +139,7 @@ export default function PagesToolbar({ children }: PagesToolbarProps) {
                 onClick={event => {
                   showFilter(event);
                 }}
+                size="large"
               >
                 <FilterListIcon />
               </IconButton>
@@ -147,7 +148,7 @@ export default function PagesToolbar({ children }: PagesToolbarProps) {
           <Tooltip title="Import pages">
             {/* TODO: move this part with file change handler to reusable component */}
             <label>
-              <IconButton component="span">
+              <IconButton component="span" size="large">
                 <PublishIcon />
               </IconButton>
               <input

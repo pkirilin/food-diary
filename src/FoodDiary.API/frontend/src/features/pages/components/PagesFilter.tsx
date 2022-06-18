@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { Box, Button, Paper } from '@material-ui/core';
+import { Box, Button, Paper } from '@mui/material';
 import { KeyboardDatePicker } from '@material-ui/pickers';
 import dateFnsFormat from 'date-fns/format';
 import { endDateChanged, filterReset, startDateChanged } from '../slice';
@@ -75,7 +75,6 @@ const PagesFilter: React.FC = () => {
       <Box className={classes.controls}>
         <Button
           variant="text"
-          color="default"
           disabled={!filterChanged}
           onClick={() => {
             dispatch(filterReset());

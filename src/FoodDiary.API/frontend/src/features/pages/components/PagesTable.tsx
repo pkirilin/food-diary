@@ -9,7 +9,7 @@ import {
   TableRow,
   TableSortLabel,
   Typography,
-} from '@material-ui/core';
+} from '@mui/material';
 import PagesTableRow from './PagesTableRow';
 import { allPagesSelected, sortOrderChanged } from '../slice';
 import { getPages } from '../thunks';

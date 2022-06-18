@@ -1,9 +1,9 @@
-import { createTheme } from '@material-ui/core';
-import { green, lightGreen } from '@material-ui/core/colors';
+import { createTheme, adaptV4Theme } from '@mui/material';
+import { green, lightGreen } from '@mui/material/colors';
 
-export default createTheme({
+export default createTheme(adaptV4Theme({
   palette: {
-    type: 'light',
+    mode: 'light',
     primary: {
       main: lightGreen[800],
       contrastText: lightGreen[50],
@@ -23,4 +23,4 @@ export default createTheme({
       fontWeight: 350,
     },
   },
-});
+}));

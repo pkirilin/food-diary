@@ -1,8 +1,8 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { Box, Chip, Tooltip } from '@material-ui/core';
-import SearchIcon from '@material-ui/icons/Search';
-import CategoryIcon from '@material-ui/icons/Category';
+import { Box, Chip, Tooltip } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
+import CategoryIcon from '@mui/icons-material/Category';
 import { useFilterAppliedParamsStyles } from '../../__shared__/styles';
 import { useAppSelector } from '../../__shared__/hooks';
 import { filterByCategoryChanged, productSearchNameChanged } from '../slice';

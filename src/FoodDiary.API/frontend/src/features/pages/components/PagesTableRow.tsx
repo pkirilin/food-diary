@@ -1,15 +1,8 @@
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import {
-  TableRow,
-  TableCell,
-  Checkbox,
-  Tooltip,
-  IconButton,
-  Link,
-  makeStyles,
-} from '@material-ui/core';
-import EditIcon from '@material-ui/icons/Edit';
+import { TableRow, TableCell, Checkbox, Tooltip, IconButton, Link } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import EditIcon from '@mui/icons-material/Edit';
 import dateFnsFormat from 'date-fns/format';
 import { PageCreateEdit, PageItem } from '../models';
 import { useAppDispatch, useDialog, useAppSelector } from '../../__shared__/hooks';
@@ -81,7 +74,7 @@ const PagesTableRow: React.FC<PagesTableRowProps> = ({ page }: PagesTableRowProp
       <TableCell>{page.countNotes}</TableCell>
       <TableCell width="30px">
         <Tooltip title="Edit page">
-          <IconButton onClick={handleEditClick}>
+          <IconButton onClick={handleEditClick} size="large">
             <EditIcon></EditIcon>
           </IconButton>
         </Tooltip>

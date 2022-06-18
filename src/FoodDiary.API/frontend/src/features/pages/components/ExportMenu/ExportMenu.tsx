@@ -1,6 +1,6 @@
 import { Fragment, useState } from 'react';
-import { IconButton, List, ListItem, Popover, Tooltip } from '@material-ui/core';
-import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
+import { IconButton, List, ListItem, Popover, Tooltip } from '@mui/material';
+import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 
 import { usePopover } from 'src/features/__shared__/hooks';
 import ExportDialog from './ExportDialog';
@@ -29,7 +29,7 @@ export default function ExportMenu() {
       ></ExportDialog>
       <Tooltip title="Export pages">
         <span>
-          <IconButton onClick={event => showMenu(event)}>
+          <IconButton onClick={event => showMenu(event)} size="large">
             <CloudDownloadIcon />
           </IconButton>
         </span>

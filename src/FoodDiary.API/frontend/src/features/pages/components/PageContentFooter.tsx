@@ -1,5 +1,6 @@
 import React from 'react';
-import { makeStyles, Grid, AppBar } from '@material-ui/core';
+import { Grid, AppBar } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import { MealsListSummary } from '../../notes/components';
 import PageContentBottomNavigation from './PageContentBottomNavigation';
 
@@ -10,7 +11,7 @@ const useStyles = makeStyles(theme => ({
     marginTop: theme.spacing(2),
   },
   footerContent: {
-    padding: `0 ${theme.spacing(2)}px`,
+    padding: `0 ${theme.spacing(2)}`,
   },
   summaryContainer: {
     display: 'flex',

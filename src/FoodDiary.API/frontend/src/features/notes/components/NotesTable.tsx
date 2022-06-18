@@ -9,8 +9,8 @@ import {
   TableHead,
   TableRow,
   Typography,
-} from '@material-ui/core';
-import AddIcon from '@material-ui/icons/Add';
+} from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 import { MealType, NoteCreateEdit } from '../models';
 import NotesTableRow from './NotesTableRow';
 import NoteCreateEditDialog from './NoteCreateEditDialog';

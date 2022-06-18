@@ -7,7 +7,7 @@ import {
   DialogProps,
   DialogTitle,
   TextField,
-} from '@material-ui/core';
+} from '@mui/material';
 import { CategoryCreateEdit } from '../models';
 import { DialogCustomActionProps } from '../../__shared__/types';
 import { useValidatedTextInput } from '../../__shared__/hooks';
