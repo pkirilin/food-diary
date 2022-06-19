@@ -9,11 +9,11 @@ import {
   TextField,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
-import format from 'date-fns/format';
 import { PageCreateEdit } from 'src/features/pages/models';
 import { DialogCustomActionProps } from 'src/features/__shared__/types';
 import { getDateForNewPage } from 'src/features/pages/thunks';
 import { useAppDispatch, useAppSelector } from 'src/features/__shared__/hooks';
+import { formatDate } from 'src/utils';
 
 interface PageCreateEditDialogProps extends DialogProps, DialogCustomActionProps<PageCreateEdit> {
   page?: PageCreateEdit;
@@ -66,7 +66,7 @@ export default function PageCreateEditDialog({
   const handleSubmitClick = (): void => {
     if (date) {
       onDialogConfirm({
-        date: format(date, 'yyyy-MM-dd'),
+        date: formatDate(date),
       });
     }
   };
