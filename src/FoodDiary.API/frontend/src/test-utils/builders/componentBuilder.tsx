@@ -2,6 +2,8 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import { StyledEngineProvider, ThemeProvider } from '@mui/material';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import { createTestStore, TestStoreBuilder } from './storeBuilder';
@@ -33,7 +35,9 @@ const createComponentBuilder = (component: React.ReactElement) => {
 
       return (
         <StyledEngineProvider injectFirst>
-          <ThemeProvider theme={theme}>{ui}</ThemeProvider>
+          <ThemeProvider theme={theme}>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>{ui}</LocalizationProvider>
+          </ThemeProvider>
         </StyledEngineProvider>
       );
     },

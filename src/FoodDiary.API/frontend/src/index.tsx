@@ -2,8 +2,8 @@ import 'date-fns';
 import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { ThemeProvider, Theme, StyledEngineProvider, CssBaseline } from '@mui/material';
-import { MuiPickersUtilsProvider } from '@material-ui/pickers';
-import DateFnsUtils from '@date-io/date-fns';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import * as serviceWorker from './serviceWorker';
 import App from './App';
 import store from './store';
@@ -23,12 +23,12 @@ root.render(
   <Provider store={store}>
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={theme}>
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
           <AuthProvider token={getToken()}>
             <CssBaseline></CssBaseline>
             <App></App>
           </AuthProvider>
-        </MuiPickersUtilsProvider>
+        </LocalizationProvider>
       </ThemeProvider>
     </StyledEngineProvider>
   </Provider>,
