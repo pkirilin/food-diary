@@ -56,6 +56,7 @@ export default function PageCreateEditDialog({
   const title = isNewPage ? 'New page' : 'Edit page';
   const submitText = isNewPage ? 'Create' : 'Save';
   const [date, setDate] = useState<Date | null>(null);
+  const isDateValid = date !== null;
 
   useEffect(() => {
     if (isDialogOpened) {
@@ -87,13 +88,20 @@ export default function PageCreateEditDialog({
               autoFocus
               name="Page date"
               placeholder="Select page date"
+              error={!isDateValid}
+              helperText={isDateValid ? '' : 'Date is required'}
             ></TextField>
           )}
           inputFormat="dd.MM.yyyy"
         ></DatePicker>
       </DialogContent>
       <DialogActions>
-        <Button variant="contained" color="primary" onClick={handleSubmitClick} disabled={!date}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleSubmitClick}
+          disabled={!isDateValid}
+        >
           {submitText}
         </Button>
         <Button variant="text" onClick={onDialogCancel}>
