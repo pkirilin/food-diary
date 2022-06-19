@@ -1651,7 +1651,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@date-io/core@npm:1.x, @date-io/core@npm:^1.3.13, @date-io/core@npm:^1.3.6":
+"@date-io/core@npm:1.x":
   version: 1.3.13
   resolution: "@date-io/core@npm:1.3.13"
   checksum: 5a9e9d1de20f0346a3c7d2d5946190caef4bfb0b64d82ba1f4c566657a9192667c94ebe7f438d11d4286d9c190974daad4fb2159294225cd8af4d9a140239879
@@ -1662,17 +1662,6 @@ __metadata:
   version: 2.14.0
   resolution: "@date-io/core@npm:2.14.0"
   checksum: 495d6086366778590a10b554aeeaf0f22e8d7ad7eb2eeffcd16bd2864f68e9f41d956e4d5469a5f012b8bd4ff300409e5649d33bdd5d599a20296738d4f6ed12
-  languageName: node
-  linkType: hard
-
-"@date-io/date-fns@npm:^1.3.6":
-  version: 1.3.13
-  resolution: "@date-io/date-fns@npm:1.3.13"
-  dependencies:
-    "@date-io/core": ^1.3.13
-  peerDependencies:
-    date-fns: ^2.0.0
-  checksum: 0026c0e538ea4add57a11936ff6bdb07e99f25275f8bb28c4702bbb7e82c3a41b3e8124132aa719180d462c01a26a3b4801e41b7349cdb73813749d4bf5e8fbd
   languageName: node
   linkType: hard
 
@@ -3583,7 +3572,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:*, @types/react@npm:^18.0.9":
+"@types/react@npm:*":
   version: 18.0.10
   resolution: "@types/react@npm:18.0.10"
   dependencies:
@@ -3591,6 +3580,17 @@ __metadata:
     "@types/scheduler": "*"
     csstype: ^3.0.2
   checksum: 333c99bd46cc2190ec6f6e4f3fa6cdee07e1d4d028fb2bd895d3927d9de6e86ede57befdc79d9acbfb7b1c058091bf3b38b8de3703f83e0f8cd8d15d7457b3d8
+  languageName: node
+  linkType: hard
+
+"@types/react@npm:^18.0.14":
+  version: 18.0.14
+  resolution: "@types/react@npm:18.0.14"
+  dependencies:
+    "@types/prop-types": "*"
+    "@types/scheduler": "*"
+    csstype: ^3.0.2
+  checksum: 608eb57a383eedc54c79949673e5e8314f6b0c61542bff58721c8c47a18c23e2832e77c656050c2c2c004b62cf25582136c7c56fe1b6263a285c065fae31dbcf
   languageName: node
   linkType: hard
 
@@ -5815,7 +5815,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"date-fns@npm:^2.16.1":
+"date-fns@npm:^2.28.0":
   version: 2.28.0
   resolution: "date-fns@npm:2.28.0"
   checksum: a0516b2e4f99b8bffc6cc5193349f185f195398385bdcaf07f17c2c4a24473c99d933eb0018be4142a86a6d46cb0b06be6440ad874f15e795acbedd6fd727a1f
@@ -7145,8 +7145,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "food-diary@workspace:."
   dependencies:
-    "@date-io/core": ^1.3.6
-    "@date-io/date-fns": ^1.3.6
+    "@date-io/core": ^2.14.0
+    "@date-io/date-fns": ^2.14.0
     "@emotion/react": ^11.9.3
     "@emotion/styled": ^11.9.3
     "@material-ui/core": ^4.12.3
@@ -7166,7 +7166,7 @@ __metadata:
     "@types/jest": ^27.4.0
     "@types/js-cookie": ^3.0.1
     "@types/node": ^16.11.26
-    "@types/react": ^18.0.9
+    "@types/react": ^18.0.14
     "@types/react-dom": ^18.0.5
     "@types/react-helmet": ^6.1.5
     "@types/react-redux": ^7.1.24
@@ -7175,7 +7175,7 @@ __metadata:
     "@types/testing-library__jest-dom": ^5.14.3
     "@typescript-eslint/eslint-plugin": ^5.26.0
     "@typescript-eslint/parser": ^5.26.0
-    date-fns: ^2.16.1
+    date-fns: ^2.28.0
     eslint: ^8.16.0
     eslint-config-prettier: ^8.5.0
     eslint-config-react: ^1.1.7
