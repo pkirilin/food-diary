@@ -1,16 +1,10 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
-import { KeyboardDatePicker } from '@material-ui/pickers';
-
-import { useValidatedDateInput } from 'src/features/__shared__/hooks';
-import { createDateValidator } from 'src/features/__shared__/validators';
 import { ExportFormat } from '../../models';
-
 import LoadingButton from './LoadingButton';
 import { useExportToJson } from './useExportToJson';
 import { useExportToGoogleDocs } from './useExportToGoogleDocs';
-
-const validateDate = createDateValidator(true);
+import { DatePicker } from 'src/components';
 
 export type ExportDialogProps = {
   format: ExportFormat;
@@ -19,20 +13,13 @@ export type ExportDialogProps = {
 };
 
 export default function ExportDialog({ format: exportFormat, isOpen, onClose }: ExportDialogProps) {
-  const [startDate, setStartDate, bindStartDate, isValidStartDate] = useValidatedDateInput(null, {
-    validate: validateDate,
-    errorHelperText: 'Start date is invalid',
-  });
-
-  const [endDate, setEndDate, bindEndDate, isValidEndDate] = useValidatedDateInput(null, {
-    validate: validateDate,
-    errorHelperText: 'End date is invalid',
-  });
-
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
   const exportToJson = useExportToJson(startDate, endDate, onClose);
   const exportToGoogleDocs = useExportToGoogleDocs(startDate, endDate, onClose);
-
-  const isExportDisabled = !isValidStartDate || !isValidEndDate;
+  const isStartDateValid = startDate !== null;
+  const isEndDateValid = endDate !== null;
+  const isExportDisabled = !isStartDateValid || !isEndDateValid;
 
   useEffect(() => {
     if (isOpen) {
@@ -45,21 +32,20 @@ export default function ExportDialog({ format: exportFormat, isOpen, onClose }: 
     <Dialog open={isOpen} onClose={onClose}>
       <DialogTitle>Export pages</DialogTitle>
       <DialogContent>
-        <KeyboardDatePicker
-          {...bindStartDate()}
-          fullWidth
-          format="dd.MM.yyyy"
+        <DatePicker
           label="Start date"
-          inputProps={{ 'aria-label': 'Export start date' }}
-        />
-        <KeyboardDatePicker
-          {...bindEndDate()}
-          fullWidth
-          format="dd.MM.yyyy"
-          margin="normal"
+          placeholder="Select start date"
+          date={startDate}
+          onChange={value => setStartDate(value)}
+          isValid={isStartDateValid}
+        ></DatePicker>
+        <DatePicker
           label="End date"
-          inputProps={{ 'aria-label': 'Export end date' }}
-        />
+          placeholder="Select end date"
+          date={endDate}
+          onChange={value => setEndDate(value)}
+          isValid={isEndDateValid}
+        ></DatePicker>
       </DialogContent>
       <DialogActions>
         {exportFormat === 'json' ? (
