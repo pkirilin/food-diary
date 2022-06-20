@@ -6,9 +6,8 @@ import {
   DialogActions,
   Button,
   DialogProps,
-  TextField,
 } from '@mui/material';
-import { DatePicker } from '@mui/x-date-pickers';
+import { DatePicker } from 'src/components';
 import { PageCreateEdit } from 'src/features/pages/models';
 import { DialogCustomActionProps } from 'src/features/__shared__/types';
 import { getDateForNewPage } from 'src/features/pages/thunks';
@@ -78,21 +77,12 @@ export default function PageCreateEditDialog({
       <DialogContent>
         <DatePicker
           label="Page date"
-          value={date}
+          placeholder="Select page date"
+          date={date}
           onChange={value => setDate(value)}
-          renderInput={params => (
-            <TextField
-              {...params}
-              margin="normal"
-              fullWidth
-              autoFocus
-              name="Page date"
-              placeholder="Select page date"
-              error={!isDateValid}
-              helperText={isDateValid ? '' : 'Date is required'}
-            ></TextField>
-          )}
-          inputFormat="dd.MM.yyyy"
+          isValid={isDateValid}
+          helperText={isDateValid ? '' : 'Date is required'}
+          autoFocus
         ></DatePicker>
       </DialogContent>
       <DialogActions>
