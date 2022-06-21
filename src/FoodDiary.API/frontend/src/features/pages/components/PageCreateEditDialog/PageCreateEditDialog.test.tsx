@@ -18,9 +18,8 @@ test('page can be created', async () => {
     .please();
 
   render(ui);
-  await waitFor(() =>
-    expect(screen.getByPlaceholderText(/select page date/i)).toHaveDisplayValue('05.06.2022'),
-  );
+  const pageDate = screen.getByRole('textbox', { name: /page date/i });
+  await waitFor(() => expect(pageDate).toHaveDisplayValue('05.06.2022'));
   await userEvent.click(screen.getByText(/create/i));
 
   expect(submitFn).toHaveBeenCalledWith({

@@ -1,26 +1,43 @@
-// import { render, screen } from '@testing-library/react';
-// import userEvent from '@testing-library/user-event';
-// import { create } from 'src/test-utils';
-// import DatePicker from './DatePicker';
-export {};
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { useState } from 'react';
+import { create } from 'src/test-utils';
+import DatePicker from './DatePicker';
 
-// TODO: fix tests after Material 5 migration
-// https://github.com/mui/material-ui/issues/27038
-// https://github.com/mui/material-ui-pickers/issues/2073
+type DatePickerTestProps = {
+  label: string;
+  placeholder: string;
+  date?: Date | null;
+};
+
+function DatePickerTest({ label, placeholder, date: initialDate = null }: DatePickerTestProps) {
+  const [date, setDate] = useState<Date | null>(initialDate);
+
+  return (
+    <DatePicker
+      label={label}
+      placeholder={placeholder}
+      date={date}
+      onChange={value => setDate(value)}
+    ></DatePicker>
+  );
+}
 
 test('date can be changed', async () => {
-  // const onChangeMock = jest.fn();
-  // const ui = create
-  //   .component(
-  //     <DatePicker
-  //       label="Test date"
-  //       placeholder="Select test date"
-  //       date={new Date('2022-06-20')}
-  //       onChange={onChangeMock}
-  //     ></DatePicker>,
-  //   )
-  //   .please();
-  // render(ui);
-  // await userEvent.type(screen.getByPlaceholderText(/select test date/i), '19.06.2022');
-  // expect(onChangeMock).toHaveBeenCalledWith(new Date('2022-06-19'));
+  const ui = create
+    .component(
+      <DatePickerTest
+        label="Test date"
+        placeholder="Select test date"
+        date={new Date('2022-06-20')}
+      ></DatePickerTest>,
+    )
+    .please();
+
+  render(ui);
+  const date = screen.getByRole('textbox', { name: /test date/i });
+  await userEvent.clear(date);
+  await userEvent.type(date, '19062022');
+
+  expect(date).toHaveDisplayValue('19.06.2022');
 });

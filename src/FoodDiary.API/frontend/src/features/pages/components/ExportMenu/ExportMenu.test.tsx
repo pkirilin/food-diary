@@ -1,9 +1,8 @@
-// import { render, screen, waitForElementToBeRemoved, within } from '@testing-library/react';
-// import userEvent from '@testing-library/user-event';
+import { render, screen, waitForElementToBeRemoved, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { GoogleLoginResponse, useGoogleLogin } from 'react-google-login';
-
-// import { create } from 'src/test-utils';
-// import ExportMenu from './ExportMenu';
+import { create } from 'src/test-utils';
+import ExportMenu from './ExportMenu';
 
 type MockedReactGoogleLogin = {
   useGoogleLogin: typeof useGoogleLogin;
@@ -23,110 +22,124 @@ jest.mock(
   }),
 );
 
-// TODO: fix tests after Material 5 migration
-// https://github.com/mui/material-ui/issues/27038
-// https://github.com/mui/material-ui-pickers/issues/2073
+test('pages can be exported to JSON if start/end dates specified', async () => {
+  const ui = create
+    .component(<ExportMenu></ExportMenu>)
+    .withReduxStore()
+    .please();
 
-test('', () => {
-  //
+  render(ui);
+  await userEvent.click(screen.getByLabelText(/export pages/i));
+  await userEvent.click(screen.getByText(/export to json/i));
+
+  const dialog = screen.getByRole('dialog');
+
+  const startDate = within(dialog).getByRole('textbox', { name: /start date/i });
+  await userEvent.clear(startDate);
+  await userEvent.type(startDate, '01012022');
+
+  const endDate = within(dialog).getByRole('textbox', { name: /end date/i });
+  await userEvent.clear(endDate);
+  await userEvent.type(endDate, '31012022');
+
+  await userEvent.click(within(dialog).getByText(/export to json/i));
+  await waitForElementToBeRemoved(within(dialog).getByRole('progressbar'));
+  await waitForElementToBeRemoved(dialog);
 });
 
-// test('pages can be exported to JSON if start/end dates specified', async () => {
-//   const ui = create
-//     .component(<ExportMenu></ExportMenu>)
-//     .withReduxStore()
-//     .withMuiPickersUtils()
-//     .please();
+test('pages can be exported to Google Docs if start/end dates specified', async () => {
+  const ui = create
+    .component(<ExportMenu></ExportMenu>)
+    .withReduxStore()
+    .please();
 
-//   render(ui);
-//   await userEvent.click(screen.getByLabelText(/export pages/i));
-//   await userEvent.click(screen.getByText(/export to json/i));
+  render(ui);
+  await userEvent.click(screen.getByLabelText(/export pages/i));
+  await userEvent.click(screen.getByText(/export to google docs/i));
 
-//   const dialog = screen.getByRole('dialog');
-//   await userEvent.type(within(dialog).getByLabelText(/export start date/i), '01.01.2022');
-//   await userEvent.type(within(dialog).getByLabelText(/export end date/i), '31.01.2022');
-//   await userEvent.click(within(dialog).getByText(/export to json/i));
+  const dialog = screen.getByRole('dialog');
 
-//   await waitForElementToBeRemoved(within(dialog).getByRole('progressbar'));
-//   await waitForElementToBeRemoved(dialog);
-// });
+  const startDate = within(dialog).getByRole('textbox', { name: /start date/i });
+  await userEvent.clear(startDate);
+  await userEvent.type(startDate, '01012022');
 
-// test('pages can be exported to Google Docs if start/end dates specified', async () => {
-//   const ui = create
-//     .component(<ExportMenu></ExportMenu>)
-//     .withReduxStore()
-//     .withMuiPickersUtils()
-//     .please();
+  const endDate = within(dialog).getByRole('textbox', { name: /end date/i });
+  await userEvent.clear(endDate);
+  await userEvent.type(endDate, '31012022');
 
-//   render(ui);
-//   await userEvent.click(screen.getByLabelText(/export pages/i));
-//   await userEvent.click(screen.getByText(/export to google docs/i));
+  await userEvent.click(within(dialog).getByText(/export to google docs/i));
+  await waitForElementToBeRemoved(within(dialog).getByRole('progressbar'));
+  await waitForElementToBeRemoved(dialog);
+});
 
-//   const dialog = screen.getByRole('dialog');
-//   await userEvent.type(within(dialog).getByLabelText(/export start date/i), '01.01.2022');
-//   await userEvent.type(within(dialog).getByLabelText(/export end date/i), '31.01.2022');
-//   await userEvent.click(within(dialog).getByText(/export to google docs/i));
+test('pages cannot be exported if start/end dates not specified', async () => {
+  const ui = create
+    .component(<ExportMenu></ExportMenu>)
+    .withReduxStore()
+    .please();
 
-//   await waitForElementToBeRemoved(within(dialog).getByRole('progressbar'));
-//   await waitForElementToBeRemoved(dialog);
-// });
+  render(ui);
+  await userEvent.click(screen.getByLabelText(/export pages/i));
+  await userEvent.click(screen.getByText(/export to json/i));
 
-// test('pages cannot be exported if start/end dates not specified', async () => {
-//   const ui = create
-//     .component(<ExportMenu></ExportMenu>)
-//     .withReduxStore()
-//     .withMuiPickersUtils()
-//     .please();
+  const dialog = screen.getByRole('dialog');
+  const endDate = within(dialog).getByRole('textbox', { name: /end date/i });
+  await userEvent.clear(endDate);
+  await userEvent.type(endDate, '01012022');
 
-//   render(ui);
-//   await userEvent.click(screen.getByLabelText(/export pages/i));
-//   await userEvent.click(screen.getByText(/export to json/i));
-//   const dialog = screen.getByRole('dialog');
-//   await userEvent.type(within(dialog).getByLabelText(/export end date/i), '01.01.2022');
+  expect(within(dialog).getByText(/export to json/i)).toBeDisabled();
+});
 
-//   expect(within(dialog).getByText(/export to json/i)).toBeDisabled();
-// });
+test('export dialog is openable again after google docs export finished', async () => {
+  const ui = create
+    .component(<ExportMenu></ExportMenu>)
+    .withReduxStore()
+    .please();
 
-// test('export dialog is openable again after google docs export finished', async () => {
-//   const ui = create
-//     .component(<ExportMenu></ExportMenu>)
-//     .withReduxStore()
-//     .withMuiPickersUtils()
-//     .please();
+  render(ui);
+  await userEvent.click(screen.getByLabelText(/export pages/i));
+  await userEvent.click(screen.getByText(/export to google docs/i));
 
-//   render(ui);
-//   await userEvent.click(screen.getByLabelText(/export pages/i));
-//   await userEvent.click(screen.getByText(/export to google docs/i));
+  const dialog = screen.getByRole('dialog');
 
-//   const dialog = screen.getByRole('dialog');
-//   await userEvent.type(within(dialog).getByLabelText(/export start date/i), '01.01.2022');
-//   await userEvent.type(within(dialog).getByLabelText(/export end date/i), '31.01.2022');
-//   await userEvent.click(within(dialog).getByText(/export to google docs/i));
+  const startDate = within(dialog).getByRole('textbox', { name: /start date/i });
+  await userEvent.clear(startDate);
+  await userEvent.type(startDate, '01012022');
 
-//   await waitForElementToBeRemoved(dialog);
-//   await userEvent.click(screen.getByText(/export to google docs/i));
+  const endDate = within(dialog).getByRole('textbox', { name: /end date/i });
+  await userEvent.clear(endDate);
+  await userEvent.type(endDate, '31012022');
 
-//   expect(screen.getByRole('dialog')).toBeInTheDocument();
-// });
+  await userEvent.click(within(dialog).getByText(/export to google docs/i));
+  await waitForElementToBeRemoved(dialog);
+  await userEvent.click(screen.getByText(/export to google docs/i));
 
-// test('export dialog is openable again after json export finished', async () => {
-//   const ui = create
-//     .component(<ExportMenu></ExportMenu>)
-//     .withReduxStore()
-//     .withMuiPickersUtils()
-//     .please();
+  expect(screen.getByRole('dialog')).toBeInTheDocument();
+});
 
-//   render(ui);
-//   await userEvent.click(screen.getByLabelText(/export pages/i));
-//   await userEvent.click(screen.getByText(/export to json/i));
+test('export dialog is openable again after json export finished', async () => {
+  const ui = create
+    .component(<ExportMenu></ExportMenu>)
+    .withReduxStore()
+    .please();
 
-//   const dialog = screen.getByRole('dialog');
-//   await userEvent.type(within(dialog).getByLabelText(/export start date/i), '01.01.2022');
-//   await userEvent.type(within(dialog).getByLabelText(/export end date/i), '31.01.2022');
-//   await userEvent.click(within(dialog).getByText(/export to json/i));
+  render(ui);
+  await userEvent.click(screen.getByLabelText(/export pages/i));
+  await userEvent.click(screen.getByText(/export to json/i));
 
-//   await waitForElementToBeRemoved(dialog);
-//   await userEvent.click(screen.getByText(/export to json/i));
+  const dialog = screen.getByRole('dialog');
 
-//   expect(screen.getByRole('dialog')).toBeInTheDocument();
-// });
+  const startDate = within(dialog).getByRole('textbox', { name: /start date/i });
+  await userEvent.clear(startDate);
+  await userEvent.type(startDate, '01012022');
+
+  const endDate = within(dialog).getByRole('textbox', { name: /end date/i });
+  await userEvent.clear(endDate);
+  await userEvent.type(endDate, '31012022');
+
+  await userEvent.click(within(dialog).getByText(/export to json/i));
+  await waitForElementToBeRemoved(dialog);
+  await userEvent.click(screen.getByText(/export to json/i));
+
+  expect(screen.getByRole('dialog')).toBeInTheDocument();
+});
