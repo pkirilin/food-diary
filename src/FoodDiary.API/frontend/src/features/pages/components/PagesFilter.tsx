@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Box, Button, Paper } from '@mui/material';
 import dateFnsFormat from 'date-fns/format';
 import isValid from 'date-fns/isValid';
@@ -36,8 +36,15 @@ function useFilter() {
     setIsInitialized(true);
   }, []);
 
-  const initialStartDate = filterStartDate ? new Date(filterStartDate) : null;
-  const initialEndDate = filterEndDate ? new Date(filterEndDate) : null;
+  const initialStartDate = useMemo(
+    () => (filterStartDate ? new Date(filterStartDate) : null),
+    [filterStartDate],
+  );
+
+  const initialEndDate = useMemo(
+    () => (filterEndDate ? new Date(filterEndDate) : null),
+    [filterEndDate],
+  );
 
   function reset() {
     dispatch(filterReset());
@@ -75,13 +82,18 @@ function useFilter() {
 const PagesFilter: React.FC = () => {
   const classes = useFilterStyles();
   const { initialStartDate, initialEndDate, isChanged, applyToDatePart, reset } = useFilter();
-  const [startDate, setStartDate] = useState<Date | null>(initialStartDate);
-  const [endDate, setEndDate] = useState<Date | null>(initialEndDate);
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
 
   useEffect(() => {
     applyToDatePart(startDate, startDateChanged);
     applyToDatePart(endDate, endDateChanged);
   }, [applyToDatePart, startDate, endDate]);
+
+  useEffect(() => {
+    setStartDate(initialStartDate);
+    setEndDate(initialEndDate);
+  }, [initialStartDate, initialEndDate]);
 
   return (
     <Box component={Paper} className={classes.root}>
