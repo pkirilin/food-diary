@@ -1,14 +1,27 @@
-import React from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useEffect, useState } from 'react';
 import { Box, Button, Paper } from '@mui/material';
-import { KeyboardDatePicker } from '@material-ui/pickers';
 import dateFnsFormat from 'date-fns/format';
+import isValid from 'date-fns/isValid';
 import { endDateChanged, filterReset, startDateChanged } from '../slice';
-import { useAppSelector, useValidatedDateInput } from '../../__shared__/hooks';
+import { useAppDispatch, useAppSelector } from '../../__shared__/hooks';
 import { useFilterStyles } from '../../__shared__/styles';
-import { createDateValidator } from '../../__shared__/validators';
+import { DatePicker } from 'src/components';
 
-const validateFilterDate = createDateValidator(false);
+function validateFilterDate(date: Date | null) {
+  if (date === null) {
+    return false;
+  }
+
+  if (!isValid(date)) {
+    return false;
+  }
+
+  if (date.getFullYear().toString().length < 4) {
+    return false;
+  }
+
+  return true;
+}
 
 const PagesFilter: React.FC = () => {
   const classes = useFilterStyles();
@@ -16,62 +29,66 @@ const PagesFilter: React.FC = () => {
   const filterStartDate = useAppSelector(state => state.pages.filter.startDate || null);
   const filterEndDate = useAppSelector(state => state.pages.filter.endDate || null);
   const filterChanged = useAppSelector(state => state.pages.filter.changed);
+  const dispatch = useAppDispatch();
 
-  const dispatch = useDispatch();
+  const initialStartDate = filterStartDate ? new Date(filterStartDate) : null;
+  const initialEndDate = filterEndDate ? new Date(filterEndDate) : null;
+  const [startDate, setStartDate] = useState<Date | null>(initialStartDate);
+  const [endDate, setEndDate] = useState<Date | null>(initialEndDate);
+  const [isInitialized, setIsInitialized] = useState(false);
 
-  const [, , bindStartDate] = useValidatedDateInput(
-    filterStartDate ? new Date(filterStartDate) : null,
-    {
-      afterChange: date => {
-        if (!validateFilterDate(date)) {
-          return;
-        }
+  useEffect(() => {
+    setIsInitialized(true);
+  }, []);
 
-        if (date === null) {
-          dispatch(startDateChanged());
-          return;
-        }
+  useEffect(() => {
+    if (!isInitialized) {
+      return;
+    }
 
-        dispatch(startDateChanged(dateFnsFormat(date, 'yyyy-MM-dd')));
-      },
-      validate: validateFilterDate,
-      errorHelperText: 'Start date is invalid',
-    },
-  );
+    if (!validateFilterDate(startDate)) {
+      return;
+    }
 
-  const [, , bindEndDate] = useValidatedDateInput(filterEndDate ? new Date(filterEndDate) : null, {
-    afterChange: date => {
-      if (!validateFilterDate(date)) {
-        return;
-      }
+    if (startDate === null) {
+      dispatch(startDateChanged());
+      return;
+    }
 
-      if (date === null) {
-        dispatch(endDateChanged());
-        return;
-      }
+    dispatch(startDateChanged(dateFnsFormat(startDate, 'yyyy-MM-dd')));
+  }, [dispatch, isInitialized, startDate]);
 
-      dispatch(endDateChanged(dateFnsFormat(date, 'yyyy-MM-dd')));
-    },
-    validate: validateFilterDate,
-    errorHelperText: 'End date is invalid',
-  });
+  useEffect(() => {
+    if (!isInitialized) {
+      return;
+    }
+
+    if (!validateFilterDate(endDate)) {
+      return;
+    }
+
+    if (endDate === null) {
+      dispatch(endDateChanged());
+      return;
+    }
+
+    dispatch(endDateChanged(dateFnsFormat(endDate, 'yyyy-MM-dd')));
+  }, [dispatch, isInitialized, endDate]);
 
   return (
     <Box component={Paper} className={classes.root}>
-      <KeyboardDatePicker
-        {...bindStartDate()}
-        fullWidth
-        format="dd.MM.yyyy"
-        margin="normal"
+      <DatePicker
         label="Start date"
-      />
-      <KeyboardDatePicker
-        {...bindEndDate()}
-        fullWidth
-        format="dd.MM.yyyy"
-        margin="normal"
+        placeholder="Select start date"
+        date={startDate}
+        onChange={value => setStartDate(value)}
+      ></DatePicker>
+      <DatePicker
         label="End date"
-      />
+        placeholder="Select end date"
+        date={endDate}
+        onChange={value => setEndDate(value)}
+      ></DatePicker>
       <Box className={classes.controls}>
         <Button
           variant="text"
