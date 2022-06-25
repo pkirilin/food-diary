@@ -133,7 +133,16 @@ const PagesFilter: React.FC = () => {
     validatorFunction: validateFilterDate,
   });
 
-  const [endDate, setEndDate] = useState<Date | null>(null);
+  const {
+    value: endDate,
+    setValue: setEndDate,
+    isInvalid: isEndDateInvalid,
+    helperText: endDateHelperText,
+  } = useValidatedState<Date | null>({
+    initialValue: null,
+    errorHelperText: 'End date is required',
+    validatorFunction: validateFilterDate,
+  });
 
   useEffect(() => {
     applyToDatePart(startDate, startDateChanged);
@@ -145,8 +154,10 @@ const PagesFilter: React.FC = () => {
       setStartDate(initialStartDate);
     }
 
-    setEndDate(initialEndDate);
-  }, [initialStartDate, initialEndDate, setStartDate]);
+    if (initialEndDate) {
+      setEndDate(initialEndDate);
+    }
+  }, [initialStartDate, initialEndDate, setStartDate, setEndDate]);
 
   return (
     <Box component={Paper} className={classes.root}>
@@ -163,6 +174,8 @@ const PagesFilter: React.FC = () => {
         placeholder="Select end date"
         date={endDate}
         onChange={value => setEndDate(value)}
+        isValid={!isEndDateInvalid}
+        helperText={endDateHelperText}
       ></DatePicker>
       <Box className={classes.controls}>
         <Button variant="text" disabled={!isChanged} onClick={reset}>
