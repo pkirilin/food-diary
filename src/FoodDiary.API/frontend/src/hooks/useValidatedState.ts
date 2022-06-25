@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { ValidatorFunction } from 'src/types';
 
 type UseValidatedStateOptions<T> = {
@@ -17,6 +17,14 @@ export default function useValidatedState<T>({
   const [isInvalid, setIsInvalid] = useState(false);
   const [isTouched, setIsTouched] = useState(false);
 
+  const setValue = useCallback(
+    (newValue: T) => {
+      originalSetValue(newValue);
+      setIsTouched(true);
+    },
+    [originalSetValue, setIsTouched],
+  );
+
   useEffect(() => {
     if (isTouched) {
       const isInvalid = !validatorFunction(value);
@@ -25,11 +33,6 @@ export default function useValidatedState<T>({
       setHelperText(helperText);
     }
   }, [errorHelperText, isTouched, validatorFunction, value]);
-
-  function setValue(newValue: T) {
-    originalSetValue(newValue);
-    setIsTouched(true);
-  }
 
   return {
     value,

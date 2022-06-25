@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -12,7 +12,8 @@ import { PageCreateEdit } from 'src/features/pages/models';
 import { DialogCustomActionProps } from 'src/features/__shared__/types';
 import { getDateForNewPage } from 'src/features/pages/thunks';
 import { useAppDispatch, useAppSelector } from 'src/features/__shared__/hooks';
-import { formatDate } from 'src/utils';
+import { formatDate, validateDate } from 'src/utils';
+import { useValidatedState } from 'src/hooks';
 
 interface PageCreateEditDialogProps extends DialogProps, DialogCustomActionProps<PageCreateEdit> {
   page?: PageCreateEdit;
@@ -54,14 +55,23 @@ export default function PageCreateEditDialog({
   const isNewPage = !page;
   const title = isNewPage ? 'New page' : 'Edit page';
   const submitText = isNewPage ? 'Create' : 'Save';
-  const [date, setDate] = useState<Date | null>(null);
-  const isDateValid = date !== null;
+
+  const {
+    value: date,
+    setValue: setDate,
+    isInvalid: isDateInvalid,
+    helperText: dateHelperText,
+  } = useValidatedState<Date | null>({
+    initialValue: null,
+    errorHelperText: 'Date is required',
+    validatorFunction: validateDate,
+  });
 
   useEffect(() => {
-    if (isDialogOpened) {
+    if (isDialogOpened && initialDate) {
       setDate(initialDate);
     }
-  }, [initialDate, isDialogOpened]);
+  }, [initialDate, isDialogOpened, setDate]);
 
   const handleSubmitClick = (): void => {
     if (date) {
@@ -80,8 +90,8 @@ export default function PageCreateEditDialog({
           placeholder="Select page date"
           date={date}
           onChange={value => setDate(value)}
-          isValid={isDateValid}
-          helperText={isDateValid ? '' : 'Date is required'}
+          isValid={!isDateInvalid}
+          helperText={dateHelperText}
           autoFocus
         ></DatePicker>
       </DialogContent>
@@ -90,7 +100,7 @@ export default function PageCreateEditDialog({
           variant="contained"
           color="primary"
           onClick={handleSubmitClick}
-          disabled={!isDateValid}
+          disabled={isDateInvalid}
         >
           {submitText}
         </Button>
