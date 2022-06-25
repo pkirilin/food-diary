@@ -85,6 +85,23 @@ const PagesFilter: React.FC = () => {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
 
+  const [isStartDateInvalid, setIsStartDateInvalid] = useState(false);
+  const [isStartDateTouched, setIsStartDateTouched] = useState(false);
+  const [startDateHelperText, setStartDateHelperText] = useState('');
+
+  function handleStartDateChange(value: Date | null) {
+    setStartDate(value);
+    setIsStartDateTouched(true);
+  }
+
+  useEffect(() => {
+    if (isStartDateTouched) {
+      const isInvalid = !validateFilterDate(startDate);
+      setIsStartDateInvalid(isInvalid);
+      setStartDateHelperText(isInvalid ? 'error' : '');
+    }
+  }, [startDate, isStartDateTouched]);
+
   useEffect(() => {
     applyToDatePart(startDate, startDateChanged);
     applyToDatePart(endDate, endDateChanged);
@@ -101,7 +118,9 @@ const PagesFilter: React.FC = () => {
         label="Start date"
         placeholder="Select start date"
         date={startDate}
-        onChange={value => setStartDate(value)}
+        onChange={handleStartDateChange}
+        isValid={!isStartDateInvalid}
+        helperText={startDateHelperText}
       ></DatePicker>
       <DatePicker
         label="End date"
