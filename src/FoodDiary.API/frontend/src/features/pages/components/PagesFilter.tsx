@@ -6,6 +6,7 @@ import { endDateChanged, filterReset, startDateChanged } from '../slice';
 import { useAppDispatch, useAppSelector } from '../../__shared__/hooks';
 import { useFilterStyles } from '../../__shared__/styles';
 import { DatePicker } from 'src/components';
+import { useValidatedState } from 'src/hooks';
 
 function validateFilterDate(date: Date | null) {
   if (date === null) {
@@ -76,45 +77,6 @@ function useFilter() {
     isChanged,
     applyToDatePart,
     reset,
-  };
-}
-
-type UseValidatedStateOptions<T> = {
-  initialValue: T;
-  errorHelperText: string;
-  validatorFunction: (value: T) => boolean;
-};
-
-function useValidatedState<T>({
-  initialValue,
-  errorHelperText,
-  validatorFunction,
-}: UseValidatedStateOptions<T>) {
-  const [value, originalSetValue] = useState<T>(initialValue);
-  const [helperText, setHelperText] = useState('');
-  const [isInvalid, setIsInvalid] = useState(false);
-  const [isTouched, setIsTouched] = useState(false);
-
-  useEffect(() => {
-    if (isTouched) {
-      const isInvalid = !validatorFunction(value);
-      const helperText = isInvalid ? errorHelperText : '';
-      setIsInvalid(isInvalid);
-      setHelperText(helperText);
-    }
-  }, [errorHelperText, isTouched, validatorFunction, value]);
-
-  function setValue(newValue: T) {
-    originalSetValue(newValue);
-    setIsTouched(true);
-  }
-
-  return {
-    value,
-    setValue,
-    helperText,
-    isInvalid,
-    isTouched,
   };
 }
 
