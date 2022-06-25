@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
+import { ValidatorFunction } from 'src/types';
 
 type UseValidatedStateOptions<T> = {
   initialValue: T;
   errorHelperText: string;
-  validatorFunction: (value: T) => boolean;
+  validatorFunction: ValidatorFunction<T>;
 };
 
 export default function useValidatedState<T>({

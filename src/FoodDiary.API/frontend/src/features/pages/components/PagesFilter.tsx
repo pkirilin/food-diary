@@ -1,28 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Box, Button, Paper } from '@mui/material';
 import dateFnsFormat from 'date-fns/format';
-import isValid from 'date-fns/isValid';
 import { endDateChanged, filterReset, startDateChanged } from '../slice';
 import { useAppDispatch, useAppSelector } from '../../__shared__/hooks';
 import { useFilterStyles } from '../../__shared__/styles';
 import { DatePicker } from 'src/components';
 import { useValidatedState } from 'src/hooks';
-
-function validateFilterDate(date: Date | null) {
-  if (date === null) {
-    return false;
-  }
-
-  if (!isValid(date)) {
-    return false;
-  }
-
-  if (date.getFullYear().toString().length < 4) {
-    return false;
-  }
-
-  return true;
-}
+import { validateDate } from 'src/utils';
 
 type DateChangedAction = typeof startDateChanged | typeof endDateChanged;
 
@@ -57,7 +41,7 @@ function useFilter() {
         return;
       }
 
-      if (!validateFilterDate(date)) {
+      if (!validateDate(date)) {
         return;
       }
 
@@ -92,7 +76,7 @@ const PagesFilter: React.FC = () => {
   } = useValidatedState<Date | null>({
     initialValue: null,
     errorHelperText: 'Start date is required',
-    validatorFunction: validateFilterDate,
+    validatorFunction: validateDate,
   });
 
   const {
@@ -103,7 +87,7 @@ const PagesFilter: React.FC = () => {
   } = useValidatedState<Date | null>({
     initialValue: null,
     errorHelperText: 'End date is required',
-    validatorFunction: validateFilterDate,
+    validatorFunction: validateDate,
   });
 
   useEffect(() => {
