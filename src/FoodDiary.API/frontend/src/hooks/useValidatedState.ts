@@ -27,6 +27,8 @@ export default function useValidatedState<T>({
 
   const clearValue = useCallback(() => {
     originalSetValue(initialValue);
+    setHelperText('');
+    setIsInvalid(false);
     setIsTouched(false);
   }, [initialValue, originalSetValue, setIsTouched]);
 
