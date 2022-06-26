@@ -27,8 +27,10 @@ const PageContentFooter: React.FC = () => {
       component="footer"
       position="sticky"
       color="default"
-      variant="outlined"
       className={classes.root}
+      variant="outlined"
+      // Used to fix error https://github.com/mui/material-ui/issues/24606
+      elevation={0}
     >
       <Grid container className={classes.footerContent}>
         <Grid item xs>
