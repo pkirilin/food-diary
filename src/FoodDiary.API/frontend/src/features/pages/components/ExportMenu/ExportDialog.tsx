@@ -20,6 +20,7 @@ export default function ExportDialog({ format: exportFormat, isOpen, onClose }: 
     setValue: setStartDate,
     clearValue: clearStartDate,
     isInvalid: isStartDateInvalid,
+    isTouched: isStartDateTouched,
     helperText: startDateHelperText,
   } = useValidatedState<Date | null>({
     initialValue: null,
@@ -32,6 +33,7 @@ export default function ExportDialog({ format: exportFormat, isOpen, onClose }: 
     setValue: setEndDate,
     clearValue: clearEndDate,
     isInvalid: isEndDateInvalid,
+    isTouched: isEndDateTouched,
     helperText: endDateHelperText,
   } = useValidatedState<Date | null>({
     initialValue: null,
@@ -41,10 +43,11 @@ export default function ExportDialog({ format: exportFormat, isOpen, onClose }: 
 
   const exportToJson = useExportToJson(startDate, endDate, onClose);
   const exportToGoogleDocs = useExportToGoogleDocs(startDate, endDate, onClose);
-  const isExportDisabled = isStartDateInvalid || isEndDateInvalid;
+  const isExportDisabled =
+    isStartDateInvalid || isEndDateInvalid || !isStartDateTouched || !isEndDateTouched;
 
   useEffect(() => {
-    if (!isOpen) {
+    if (isOpen) {
       clearStartDate();
       clearEndDate();
     }
