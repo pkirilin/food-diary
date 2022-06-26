@@ -90,7 +90,7 @@ export default function PageCreateEditDialog({
           placeholder="Select page date"
           date={date}
           onChange={value => setDate(value)}
-          isValid={!isDateInvalid}
+          isInvalid={isDateInvalid}
           helperText={dateHelperText}
           autoFocus
         ></DatePicker>

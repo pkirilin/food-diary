@@ -6,7 +6,7 @@ type DatePickerProps = {
   placeholder: string;
   date: Date | null;
   autoFocus?: boolean;
-  isValid?: boolean;
+  isInvalid?: boolean;
   helperText?: string;
   onChange: (value: Date | null) => void;
 };
@@ -16,7 +16,7 @@ export default function DatePicker({
   placeholder,
   date,
   autoFocus,
-  isValid = false,
+  isInvalid,
   helperText,
   onChange,
 }: DatePickerProps) {
@@ -33,7 +33,7 @@ export default function DatePicker({
           fullWidth
           autoFocus={autoFocus}
           placeholder={placeholder}
-          error={!isValid}
+          error={isInvalid}
           helperText={helperText}
         ></TextField>
       )}

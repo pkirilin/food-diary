@@ -59,7 +59,7 @@ export default function ExportDialog({ format: exportFormat, isOpen, onClose }: 
           placeholder="Select start date"
           date={startDate}
           onChange={value => setStartDate(value)}
-          isValid={!isStartDateInvalid}
+          isInvalid={isStartDateInvalid}
           helperText={startDateHelperText}
         ></DatePicker>
         <DatePicker
@@ -67,7 +67,7 @@ export default function ExportDialog({ format: exportFormat, isOpen, onClose }: 
           placeholder="Select end date"
           date={endDate}
           onChange={value => setEndDate(value)}
-          isValid={!isEndDateInvalid}
+          isInvalid={isEndDateInvalid}
           helperText={endDateHelperText}
         ></DatePicker>
       </DialogContent>
