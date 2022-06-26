@@ -1,10 +1,6 @@
 import createInputHook from './createInputHook';
 import createValidatedInputHook from './createValidatedInputHook';
-import {
-  useValidatedDateInput,
-  useValidatedNumericInput,
-  useValidatedTextInput,
-} from './inputHooks';
+import { useValidatedNumericInput, useValidatedTextInput } from './inputHooks';
 import useDialog from './useDialog';
 import usePopover from './usePopover';
 import useRefreshEffect from './useRefreshEffect';
@@ -14,5 +10,5 @@ import useAppDispatch from './useAppDispatch';
 
 export { useAppSelector, useAppDispatch };
 export { useDialog, usePopover, useRouterId, useRefreshEffect };
-export { useValidatedTextInput, useValidatedNumericInput, useValidatedDateInput };
+export { useValidatedTextInput, useValidatedNumericInput };
 export { createInputHook, createValidatedInputHook };

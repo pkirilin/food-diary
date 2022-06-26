@@ -4,8 +4,6 @@ import { BrowserRouter } from 'react-router-dom';
 import { StyledEngineProvider, ThemeProvider } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { MuiPickersUtilsProvider } from '@material-ui/pickers';
-import DateFnsUtils from '@date-io/date-fns';
 import { createTestStore, TestStoreBuilder } from './storeBuilder';
 import AuthProvider from 'src/features/auth/AuthProvider';
 import theme from 'src/theme';
@@ -16,7 +14,6 @@ export interface TestComponentBuilder {
     configure?: (builder: TestStoreBuilder) => TestStoreBuilder,
   ) => TestComponentBuilder;
   withRouter: () => TestComponentBuilder;
-  withMuiPickersUtils: () => TestComponentBuilder;
   withAuthToken: (token: string) => TestComponentBuilder;
   withoutAuthToken: () => TestComponentBuilder;
 }
@@ -51,13 +48,6 @@ const createComponentBuilder = (component: React.ReactElement) => {
 
     withRouter: (): TestComponentBuilder => {
       wrappers.push(({ children }) => <BrowserRouter>{children}</BrowserRouter>);
-      return builder;
-    },
-
-    withMuiPickersUtils: (): TestComponentBuilder => {
-      wrappers.push(({ children }) => (
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>{children}</MuiPickersUtilsProvider>
-      ));
       return builder;
     },
 

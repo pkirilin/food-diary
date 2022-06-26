@@ -1,5 +1,4 @@
 import { TextFieldProps, AutocompleteProps } from '@mui/material';
-import { KeyboardDatePickerProps } from '@material-ui/pickers';
 
 export interface BindableHookResult<TBinding> {
   binding: TBinding;
@@ -49,4 +48,4 @@ export interface ValidatedInputOptions<TValue> extends InputOptions<TValue> {
   errorHelperText?: string;
 }
 
-export type ValidatedInputProps = TextFieldProps | KeyboardDatePickerProps;
+export type ValidatedInputProps = TextFieldProps;
