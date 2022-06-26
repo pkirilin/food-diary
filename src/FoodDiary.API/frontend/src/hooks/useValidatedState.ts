@@ -25,6 +25,11 @@ export default function useValidatedState<T>({
     [originalSetValue, setIsTouched],
   );
 
+  const clearValue = useCallback(() => {
+    originalSetValue(initialValue);
+    setIsTouched(false);
+  }, [initialValue, originalSetValue, setIsTouched]);
+
   useEffect(() => {
     if (isTouched) {
       const isInvalid = !validatorFunction(value);
@@ -37,6 +42,7 @@ export default function useValidatedState<T>({
   return {
     value,
     setValue,
+    clearValue,
     helperText,
     isInvalid,
     isTouched,

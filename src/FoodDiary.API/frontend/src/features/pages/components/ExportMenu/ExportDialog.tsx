@@ -18,6 +18,7 @@ export default function ExportDialog({ format: exportFormat, isOpen, onClose }: 
   const {
     value: startDate,
     setValue: setStartDate,
+    clearValue: clearStartDate,
     isInvalid: isStartDateInvalid,
     helperText: startDateHelperText,
   } = useValidatedState<Date | null>({
@@ -29,6 +30,7 @@ export default function ExportDialog({ format: exportFormat, isOpen, onClose }: 
   const {
     value: endDate,
     setValue: setEndDate,
+    clearValue: clearEndDate,
     isInvalid: isEndDateInvalid,
     helperText: endDateHelperText,
   } = useValidatedState<Date | null>({
@@ -42,11 +44,11 @@ export default function ExportDialog({ format: exportFormat, isOpen, onClose }: 
   const isExportDisabled = isStartDateInvalid || isEndDateInvalid;
 
   useEffect(() => {
-    if (isOpen) {
-      setStartDate(null);
-      setEndDate(null);
+    if (!isOpen) {
+      clearStartDate();
+      clearEndDate();
     }
-  }, [isOpen, setEndDate, setStartDate]);
+  }, [isOpen, clearStartDate, clearEndDate]);
 
   return (
     <Dialog open={isOpen} onClose={onClose}>
