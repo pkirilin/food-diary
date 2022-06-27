@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { Box, Button, Paper, TextField } from '@material-ui/core';
+import { Box, Button, Paper, TextField } from '@mui/material';
 
 import { useAppSelector, useValidatedTextInput } from '../../__shared__/hooks';
 import { useFilterStyles } from '../../__shared__/styles';
@@ -52,12 +52,7 @@ const ProductsFilter: React.FC = () => {
         }}
       ></CategorySelect>
       <Box className={classes.controls}>
-        <Button
-          variant="text"
-          color="default"
-          disabled={!filterChanged}
-          onClick={() => dispatch(filterReset())}
-        >
+        <Button variant="text" disabled={!filterChanged} onClick={() => dispatch(filterReset())}>
           Reset
         </Button>
       </Box>

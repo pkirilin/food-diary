@@ -1,86 +1,130 @@
-import React from 'react';
-import { useDispatch } from 'react-redux';
-import { Box, Button, Paper } from '@material-ui/core';
-import { KeyboardDatePicker } from '@material-ui/pickers';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { Box, Button, Paper } from '@mui/material';
 import dateFnsFormat from 'date-fns/format';
 import { endDateChanged, filterReset, startDateChanged } from '../slice';
-import { useAppSelector, useValidatedDateInput } from '../../__shared__/hooks';
+import { useAppDispatch, useAppSelector } from '../../__shared__/hooks';
 import { useFilterStyles } from '../../__shared__/styles';
-import { createDateValidator } from '../../__shared__/validators';
+import { DatePicker } from 'src/components';
+import { useValidatedState } from 'src/hooks';
+import { validateDate } from 'src/utils';
 
-const validateFilterDate = createDateValidator(false);
+type DateChangedAction = typeof startDateChanged | typeof endDateChanged;
 
-const PagesFilter: React.FC = () => {
-  const classes = useFilterStyles();
-
+function useFilter() {
+  const [isInitialized, setIsInitialized] = useState(false);
   const filterStartDate = useAppSelector(state => state.pages.filter.startDate || null);
   const filterEndDate = useAppSelector(state => state.pages.filter.endDate || null);
-  const filterChanged = useAppSelector(state => state.pages.filter.changed);
+  const isChanged = useAppSelector(state => state.pages.filter.changed);
+  const dispatch = useAppDispatch();
 
-  const dispatch = useDispatch();
+  useEffect(() => {
+    setIsInitialized(true);
+  }, []);
 
-  const [, , bindStartDate] = useValidatedDateInput(
-    filterStartDate ? new Date(filterStartDate) : null,
-    {
-      afterChange: date => {
-        if (!validateFilterDate(date)) {
-          return;
-        }
-
-        if (date === null) {
-          dispatch(startDateChanged());
-          return;
-        }
-
-        dispatch(startDateChanged(dateFnsFormat(date, 'yyyy-MM-dd')));
-      },
-      validate: validateFilterDate,
-      errorHelperText: 'Start date is invalid',
-    },
+  const initialStartDate = useMemo(
+    () => (filterStartDate ? new Date(filterStartDate) : null),
+    [filterStartDate],
   );
 
-  const [, , bindEndDate] = useValidatedDateInput(filterEndDate ? new Date(filterEndDate) : null, {
-    afterChange: date => {
-      if (!validateFilterDate(date)) {
+  const initialEndDate = useMemo(
+    () => (filterEndDate ? new Date(filterEndDate) : null),
+    [filterEndDate],
+  );
+
+  function reset() {
+    dispatch(filterReset());
+  }
+
+  const applyToDatePart = useCallback(
+    (date: Date | null, dateChangedAction: DateChangedAction) => {
+      if (!isInitialized) {
+        return;
+      }
+
+      if (!validateDate(date)) {
         return;
       }
 
       if (date === null) {
-        dispatch(endDateChanged());
+        dispatch(dateChangedAction());
         return;
       }
 
-      dispatch(endDateChanged(dateFnsFormat(date, 'yyyy-MM-dd')));
+      dispatch(dateChangedAction(dateFnsFormat(date, 'yyyy-MM-dd')));
     },
-    validate: validateFilterDate,
-    errorHelperText: 'End date is invalid',
+    [dispatch, isInitialized],
+  );
+
+  return {
+    initialStartDate,
+    initialEndDate,
+    isChanged,
+    applyToDatePart,
+    reset,
+  };
+}
+
+const PagesFilter: React.FC = () => {
+  const classes = useFilterStyles();
+  const { initialStartDate, initialEndDate, isChanged, applyToDatePart, reset } = useFilter();
+
+  const {
+    value: startDate,
+    setValue: setStartDate,
+    isInvalid: isStartDateInvalid,
+    helperText: startDateHelperText,
+  } = useValidatedState<Date | null>({
+    initialValue: null,
+    errorHelperText: 'Start date is required',
+    validatorFunction: validateDate,
   });
+
+  const {
+    value: endDate,
+    setValue: setEndDate,
+    isInvalid: isEndDateInvalid,
+    helperText: endDateHelperText,
+  } = useValidatedState<Date | null>({
+    initialValue: null,
+    errorHelperText: 'End date is required',
+    validatorFunction: validateDate,
+  });
+
+  useEffect(() => {
+    applyToDatePart(startDate, startDateChanged);
+    applyToDatePart(endDate, endDateChanged);
+  }, [applyToDatePart, startDate, endDate]);
+
+  useEffect(() => {
+    if (initialStartDate) {
+      setStartDate(initialStartDate);
+    }
+
+    if (initialEndDate) {
+      setEndDate(initialEndDate);
+    }
+  }, [initialStartDate, initialEndDate, setStartDate, setEndDate]);
 
   return (
     <Box component={Paper} className={classes.root}>
-      <KeyboardDatePicker
-        {...bindStartDate()}
-        fullWidth
-        format="dd.MM.yyyy"
-        margin="normal"
+      <DatePicker
         label="Start date"
-      />
-      <KeyboardDatePicker
-        {...bindEndDate()}
-        fullWidth
-        format="dd.MM.yyyy"
-        margin="normal"
+        placeholder="Select start date"
+        date={startDate}
+        onChange={value => setStartDate(value)}
+        isInvalid={isStartDateInvalid}
+        helperText={startDateHelperText}
+      ></DatePicker>
+      <DatePicker
         label="End date"
-      />
+        placeholder="Select end date"
+        date={endDate}
+        onChange={value => setEndDate(value)}
+        isInvalid={isEndDateInvalid}
+        helperText={endDateHelperText}
+      ></DatePicker>
       <Box className={classes.controls}>
-        <Button
-          variant="text"
-          color="default"
-          disabled={!filterChanged}
-          onClick={() => {
-            dispatch(filterReset());
-          }}
-        >
+        <Button variant="text" disabled={!isChanged} onClick={reset}>
           Reset
         </Button>
       </Box>

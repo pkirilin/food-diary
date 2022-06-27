@@ -1,9 +1,10 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { BottomNavigation, BottomNavigationAction, makeStyles } from '@material-ui/core';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
-import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
+import { BottomNavigation, BottomNavigationAction } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import { useAppSelector } from '../../__shared__/hooks';
 
 const currentPageValue = 'current';

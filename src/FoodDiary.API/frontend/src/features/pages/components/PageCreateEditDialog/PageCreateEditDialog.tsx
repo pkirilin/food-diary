@@ -6,18 +6,14 @@ import {
   DialogActions,
   Button,
   DialogProps,
-} from '@material-ui/core';
-import { KeyboardDatePicker } from '@material-ui/pickers';
-import dateFnsFormat from 'date-fns/format';
+} from '@mui/material';
+import { DatePicker } from 'src/components';
 import { PageCreateEdit } from 'src/features/pages/models';
 import { DialogCustomActionProps } from 'src/features/__shared__/types';
 import { getDateForNewPage } from 'src/features/pages/thunks';
-import {
-  useAppDispatch,
-  useAppSelector,
-  useValidatedDateInput,
-} from 'src/features/__shared__/hooks';
-import { createDateValidator } from 'src/features/__shared__/validators';
+import { useAppDispatch, useAppSelector } from 'src/features/__shared__/hooks';
+import { formatDate, validateDate } from 'src/utils';
+import { useValidatedState } from 'src/hooks';
 
 interface PageCreateEditDialogProps extends DialogProps, DialogCustomActionProps<PageCreateEdit> {
   page?: PageCreateEdit;
@@ -54,19 +50,25 @@ export default function PageCreateEditDialog({
   onDialogCancel,
   ...dialogProps
 }: PageCreateEditDialogProps) {
-  const [date, setDate, bindDate, isValidDate] = useValidatedDateInput(null, {
-    validate: createDateValidator(true),
-    errorHelperText: 'Date is required',
-  });
-
   const { open: isDialogOpened } = dialogProps;
-  const isNewPage = !page;
   const initialDate = useInitialDate(isDialogOpened, page);
+  const isNewPage = !page;
   const title = isNewPage ? 'New page' : 'Edit page';
   const submitText = isNewPage ? 'Create' : 'Save';
 
+  const {
+    value: date,
+    setValue: setDate,
+    isInvalid: isDateInvalid,
+    helperText: dateHelperText,
+  } = useValidatedState<Date | null>({
+    initialValue: null,
+    errorHelperText: 'Date is required',
+    validatorFunction: validateDate,
+  });
+
   useEffect(() => {
-    if (isDialogOpened) {
+    if (isDialogOpened && initialDate) {
       setDate(initialDate);
     }
   }, [initialDate, isDialogOpened, setDate]);
@@ -74,7 +76,7 @@ export default function PageCreateEditDialog({
   const handleSubmitClick = (): void => {
     if (date) {
       onDialogConfirm({
-        date: dateFnsFormat(date, 'yyyy-MM-dd'),
+        date: formatDate(date),
       });
     }
   };
@@ -83,23 +85,22 @@ export default function PageCreateEditDialog({
     <Dialog maxWidth="xs" fullWidth {...dialogProps}>
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
-        <KeyboardDatePicker
-          {...bindDate()}
+        <DatePicker
           label="Page date"
-          inputProps={{ 'aria-label': 'Page date' }}
-          placeholder="dd.MM.yyyy"
-          format="dd.MM.yyyy"
-          margin="normal"
-          fullWidth
+          placeholder="Select page date"
+          date={date}
+          onChange={value => setDate(value)}
+          isInvalid={isDateInvalid}
+          helperText={dateHelperText}
           autoFocus
-        />
+        ></DatePicker>
       </DialogContent>
       <DialogActions>
         <Button
           variant="contained"
           color="primary"
           onClick={handleSubmitClick}
-          disabled={!isValidDate}
+          disabled={isDateInvalid}
         >
           {submitText}
         </Button>

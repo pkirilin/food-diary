@@ -1,6 +1,6 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import { Paper } from '@material-ui/core';
+import { Paper } from '@mui/material';
 import ProductsTableToolbar from './ProductsTableToolbar';
 import ProductsTable from './ProductsTable';
 import ProductsTablePagination from './ProductsTablePagination';

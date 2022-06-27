@@ -1,6 +1,8 @@
 import React from 'react';
 import { NavLink, Link as RouterLink } from 'react-router-dom';
-import { AppBar, List, ListItem, ListItemText, makeStyles, Toolbar } from '@material-ui/core';
+import { AppBar, List, ListItem, ListItemText, Toolbar } from '@mui/material';
+
+import makeStyles from '@mui/styles/makeStyles';
 
 const navLinks = [
   {

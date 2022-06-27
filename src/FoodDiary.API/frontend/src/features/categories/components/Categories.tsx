@@ -1,6 +1,6 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import { Divider, Paper } from '@material-ui/core';
+import { Divider, Paper } from '@mui/material';
 import CategoriesList from './CategoriesList';
 import CategoriesHeader from './CategoriesHeader';
 

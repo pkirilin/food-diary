@@ -28,7 +28,7 @@ export default function ProductSelect({
       loading={autocomplete.isLoading}
       open={isOpen}
       value={value}
-      getOptionSelected={(option, value) => option.name === value.name}
+      isOptionEqualToValue={(option, value) => option.name === value.name}
       getOptionLabel={option => option.name}
       onChange={(event, value) => setValue(value)}
       onOpen={() => setIsOpen(true)}

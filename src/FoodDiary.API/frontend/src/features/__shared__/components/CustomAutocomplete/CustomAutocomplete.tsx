@@ -1,4 +1,4 @@
-import { Autocomplete } from '@material-ui/lab';
+import { Autocomplete } from '@mui/material';
 import { AutocompleteBindingProps } from '../../hooks/types';
 import CustomAutocompleteInput from './CustomAutocompleteInput';
 

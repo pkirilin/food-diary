@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { DialogProps } from '@material-ui/core';
+import { DialogProps } from '@mui/material';
 import { BindableHookResult } from './types';
 import { DialogCustomActionProps, DialogConfirmActionFn, DialogActionFn } from '../types';
 

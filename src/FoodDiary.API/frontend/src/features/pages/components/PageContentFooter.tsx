@@ -1,5 +1,6 @@
 import React from 'react';
-import { makeStyles, Grid, AppBar } from '@material-ui/core';
+import { Grid, AppBar } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import { MealsListSummary } from '../../notes/components';
 import PageContentBottomNavigation from './PageContentBottomNavigation';
 
@@ -10,7 +11,7 @@ const useStyles = makeStyles(theme => ({
     marginTop: theme.spacing(2),
   },
   footerContent: {
-    padding: `0 ${theme.spacing(2)}px`,
+    padding: `0 ${theme.spacing(2)}`,
   },
   summaryContainer: {
     display: 'flex',
@@ -26,8 +27,10 @@ const PageContentFooter: React.FC = () => {
       component="footer"
       position="sticky"
       color="default"
-      variant="outlined"
       className={classes.root}
+      variant="outlined"
+      // Used to fix error https://github.com/mui/material-ui/issues/24606
+      elevation={0}
     >
       <Grid container className={classes.footerContent}>
         <Grid item xs>

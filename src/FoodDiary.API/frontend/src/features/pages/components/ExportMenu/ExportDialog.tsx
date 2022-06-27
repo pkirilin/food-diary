@@ -1,16 +1,12 @@
 import { useEffect } from 'react';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/core';
-import { KeyboardDatePicker } from '@material-ui/pickers';
-
-import { useValidatedDateInput } from 'src/features/__shared__/hooks';
-import { createDateValidator } from 'src/features/__shared__/validators';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import { ExportFormat } from '../../models';
-
 import LoadingButton from './LoadingButton';
 import { useExportToJson } from './useExportToJson';
 import { useExportToGoogleDocs } from './useExportToGoogleDocs';
-
-const validateDate = createDateValidator(true);
+import { DatePicker } from 'src/components';
+import { useValidatedState } from 'src/hooks';
+import { validateDate } from 'src/utils';
 
 export type ExportDialogProps = {
   format: ExportFormat;
@@ -19,47 +15,64 @@ export type ExportDialogProps = {
 };
 
 export default function ExportDialog({ format: exportFormat, isOpen, onClose }: ExportDialogProps) {
-  const [startDate, setStartDate, bindStartDate, isValidStartDate] = useValidatedDateInput(null, {
-    validate: validateDate,
-    errorHelperText: 'Start date is invalid',
+  const {
+    value: startDate,
+    setValue: setStartDate,
+    clearValue: clearStartDate,
+    isInvalid: isStartDateInvalid,
+    isTouched: isStartDateTouched,
+    helperText: startDateHelperText,
+  } = useValidatedState<Date | null>({
+    initialValue: null,
+    errorHelperText: 'Start date is required',
+    validatorFunction: validateDate,
   });
 
-  const [endDate, setEndDate, bindEndDate, isValidEndDate] = useValidatedDateInput(null, {
-    validate: validateDate,
-    errorHelperText: 'End date is invalid',
+  const {
+    value: endDate,
+    setValue: setEndDate,
+    clearValue: clearEndDate,
+    isInvalid: isEndDateInvalid,
+    isTouched: isEndDateTouched,
+    helperText: endDateHelperText,
+  } = useValidatedState<Date | null>({
+    initialValue: null,
+    errorHelperText: 'End date is required',
+    validatorFunction: validateDate,
   });
 
   const exportToJson = useExportToJson(startDate, endDate, onClose);
   const exportToGoogleDocs = useExportToGoogleDocs(startDate, endDate, onClose);
-
-  const isExportDisabled = !isValidStartDate || !isValidEndDate;
+  const isExportDisabled =
+    isStartDateInvalid || isEndDateInvalid || !isStartDateTouched || !isEndDateTouched;
 
   useEffect(() => {
     if (isOpen) {
-      setStartDate(null);
-      setEndDate(null);
+      clearStartDate();
+      clearEndDate();
     }
-  }, [isOpen, setEndDate, setStartDate]);
+  }, [isOpen, clearStartDate, clearEndDate]);
 
   return (
     <Dialog open={isOpen} onClose={onClose}>
       <DialogTitle>Export pages</DialogTitle>
       <DialogContent>
-        <KeyboardDatePicker
-          {...bindStartDate()}
-          fullWidth
-          format="dd.MM.yyyy"
+        <DatePicker
           label="Start date"
-          inputProps={{ 'aria-label': 'Export start date' }}
-        />
-        <KeyboardDatePicker
-          {...bindEndDate()}
-          fullWidth
-          format="dd.MM.yyyy"
-          margin="normal"
+          placeholder="Select start date"
+          date={startDate}
+          onChange={value => setStartDate(value)}
+          isInvalid={isStartDateInvalid}
+          helperText={startDateHelperText}
+        ></DatePicker>
+        <DatePicker
           label="End date"
-          inputProps={{ 'aria-label': 'Export end date' }}
-        />
+          placeholder="Select end date"
+          date={endDate}
+          onChange={value => setEndDate(value)}
+          isInvalid={isEndDateInvalid}
+          helperText={endDateHelperText}
+        ></DatePicker>
       </DialogContent>
       <DialogActions>
         {exportFormat === 'json' ? (

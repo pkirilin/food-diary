@@ -8,7 +8,7 @@ import {
   TableHead,
   TableRow,
   Typography,
-} from '@material-ui/core';
+} from '@mui/material';
 import ProductsTableRow from './ProductsTableRow';
 import { useAppDispatch, useRefreshEffect, useAppSelector } from '../../__shared__/hooks';
 import { getProducts } from '../thunks';

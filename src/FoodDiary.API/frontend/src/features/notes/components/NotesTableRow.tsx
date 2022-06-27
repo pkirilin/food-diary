@@ -1,7 +1,8 @@
 import React from 'react';
-import { IconButton, makeStyles, TableCell, TableRow, Tooltip } from '@material-ui/core';
-import EditIcon from '@material-ui/icons/Edit';
-import DeleteIcon from '@material-ui/icons/Delete';
+import { IconButton, TableCell, TableRow, Tooltip } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { NoteCreateEdit, NoteItem } from '../models';
 import { useAppDispatch, useDialog, useRouterId } from '../../__shared__/hooks';
 import NoteCreateEditDialog from './NoteCreateEditDialog';

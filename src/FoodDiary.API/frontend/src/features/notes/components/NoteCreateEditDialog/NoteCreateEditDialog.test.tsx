@@ -20,7 +20,7 @@ test('note can be created', async () => {
     .please();
 
   render(ui);
-  await userEvent.click(screen.getByRole('textbox', { name: /product/i }));
+  await userEvent.click(screen.getByPlaceholderText(/select a product/i));
   await waitForElementToBeRemoved(screen.getByRole('progressbar'));
   await userEvent.click(within(screen.getByRole('listbox')).getByText(/meat/i));
 

@@ -1,14 +1,15 @@
 import React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import { Container, makeStyles } from '@material-ui/core';
+import { Container } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import Navbar from './Navbar';
 import { AppRoutes } from './routes';
 import { useAuth } from './features/auth/hooks';
 
 const useStyles = makeStyles(theme => ({
   content: {
-    margin: `${theme.spacing(2)}px 0`,
+    margin: `${theme.spacing(2)} 0`,
   },
 }));
 
