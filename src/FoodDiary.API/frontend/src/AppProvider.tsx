@@ -3,6 +3,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { PropsWithChildren } from 'react';
 import { Provider } from 'react-redux';
+import { BrowserRouter } from 'react-router-dom';
 import { Store } from 'redux';
 import AuthProvider from './features/auth/AuthProvider';
 import theme from './theme';
@@ -29,7 +30,7 @@ export default function AppProvider({
           <Provider store={store}>
             <AuthProvider token={authToken}>
               <CssBaseline></CssBaseline>
-              {children}
+              <BrowserRouter>{children}</BrowserRouter>
             </AuthProvider>
           </Provider>
         </LocalizationProvider>
