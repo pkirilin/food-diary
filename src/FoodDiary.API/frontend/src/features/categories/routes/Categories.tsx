@@ -1,3 +1,5 @@
+import CategoriesListNew from '../components/CategoriesListNew';
+
 export default function Categories() {
-  return <div>categories new</div>;
+  return <CategoriesListNew></CategoriesListNew>;
 }
