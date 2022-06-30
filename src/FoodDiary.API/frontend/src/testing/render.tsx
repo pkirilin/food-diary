@@ -11,8 +11,12 @@ const defaultOptions: RenderOptions = {
   authToken: 'test_token',
 };
 
-export default function render(ui: ReactElement, options: RenderOptions = defaultOptions) {
-  const { authToken } = options;
+export default function render(ui: ReactElement, options?: RenderOptions) {
+  const { authToken } = {
+    ...defaultOptions,
+    ...options,
+  };
+
   const store = configureAppStore();
 
   const result = rtlRender(
