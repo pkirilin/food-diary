@@ -2,7 +2,7 @@ import { screen } from '@testing-library/dom';
 import { render } from 'src/testing';
 import Categories from './Categories';
 
-test('first test', () => {
+test('categories are displayed with their product counts', () => {
   render(<Categories></Categories>);
 
   expect(screen.getByText(/dairy/i));
