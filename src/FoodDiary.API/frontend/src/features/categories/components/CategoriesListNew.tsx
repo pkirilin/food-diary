@@ -1,3 +1,4 @@
+import { styled } from '@mui/material';
 import { Category } from '../types';
 import CategoryListItemNew from './CategoryListItemNew';
 
@@ -24,12 +25,18 @@ const MOCK_CATEGORIES: Category[] = [
   },
 ];
 
+const StyledCategoriesList = styled('section')(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: theme.spacing(2),
+}));
+
 export default function CategoriesListNew() {
   return (
-    <div>
+    <StyledCategoriesList>
       {MOCK_CATEGORIES.map(category => (
         <CategoryListItemNew key={category.id} category={category}></CategoryListItemNew>
       ))}
-    </div>
+    </StyledCategoriesList>
   );
 }
