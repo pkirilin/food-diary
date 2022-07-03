@@ -1,4 +1,4 @@
-import { styled } from '@mui/material';
+import { Grid } from '@mui/material';
 import { Category } from '../types';
 import CategoryListItemNew from './CategoryListItemNew';
 
@@ -25,18 +25,14 @@ const MOCK_CATEGORIES: Category[] = [
   },
 ];
 
-const StyledCategoriesList = styled('section')(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: theme.spacing(2),
-}));
-
 export default function CategoriesListNew() {
   return (
-    <StyledCategoriesList>
+    <Grid container spacing={2}>
       {MOCK_CATEGORIES.map(category => (
-        <CategoryListItemNew key={category.id} category={category}></CategoryListItemNew>
+        <Grid item xs={12} sm={6} lg={4} xl={3} key={category.id}>
+          <CategoryListItemNew category={category}></CategoryListItemNew>
+        </Grid>
       ))}
-    </StyledCategoriesList>
+    </Grid>
   );
 }
