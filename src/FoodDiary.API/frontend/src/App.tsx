@@ -22,7 +22,7 @@ const App: React.FC = () => {
         <title>Food diary</title>
       </Helmet>
       {isAuthenticated && <Navbar></Navbar>}
-      <Container maxWidth="xl" className={classes.content}>
+      <Container maxWidth={false} className={classes.content}>
         <AppRoutes></AppRoutes>
       </Container>
     </Fragment>
