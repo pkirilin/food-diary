@@ -1,10 +1,9 @@
 import { useEffect } from 'react';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import { ExportFormat } from '../../models';
-import LoadingButton from './LoadingButton';
 import { useExportToJson } from './useExportToJson';
 import { useExportToGoogleDocs } from './useExportToGoogleDocs';
-import { DatePicker } from 'src/components';
+import { AppButton, DatePicker } from 'src/components';
 import { useValidatedState } from 'src/hooks';
 import { validateDate } from 'src/utils';
 
@@ -76,7 +75,7 @@ export default function ExportDialog({ format: exportFormat, isOpen, onClose }: 
       </DialogContent>
       <DialogActions>
         {exportFormat === 'json' ? (
-          <LoadingButton
+          <AppButton
             isLoading={exportToJson.isLoading}
             variant="contained"
             color="primary"
@@ -84,9 +83,9 @@ export default function ExportDialog({ format: exportFormat, isOpen, onClose }: 
             disabled={isExportDisabled}
           >
             Export to JSON
-          </LoadingButton>
+          </AppButton>
         ) : (
-          <LoadingButton
+          <AppButton
             isLoading={exportToGoogleDocs.isLoading}
             variant="contained"
             color="primary"
@@ -94,7 +93,7 @@ export default function ExportDialog({ format: exportFormat, isOpen, onClose }: 
             disabled={isExportDisabled}
           >
             Export to Google Docs
-          </LoadingButton>
+          </AppButton>
         )}
         <Button variant="text" onClick={onClose}>
           Cancel
