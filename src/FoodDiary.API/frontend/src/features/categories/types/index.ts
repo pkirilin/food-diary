@@ -3,3 +3,7 @@ export type Category = {
   name: string;
   countProducts: number;
 };
+
+export type CategoryCreateEdit = {
+  name: string;
+};

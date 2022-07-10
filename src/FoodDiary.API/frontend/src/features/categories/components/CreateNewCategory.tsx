@@ -1,5 +1,7 @@
 import { styled, Fab, Tooltip } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import { Fragment, useState } from 'react';
+import CreateEditCategoryDialog from './CreateEditCategoryDialog';
 
 const StyledFab = styled(Fab)(({ theme }) => ({
   position: 'fixed',
@@ -8,11 +10,21 @@ const StyledFab = styled(Fab)(({ theme }) => ({
 }));
 
 export default function CreateNewCategory() {
+  const [isCreateDialogOpened, setIsCreateDialogOpened] = useState(false);
+
   return (
-    <Tooltip title="Create new category">
-      <StyledFab color="primary" aria-label="add">
-        <AddIcon />
-      </StyledFab>
-    </Tooltip>
+    <Fragment>
+      <Tooltip title="Create new category">
+        <StyledFab color="primary" onClick={() => setIsCreateDialogOpened(true)}>
+          <AddIcon />
+        </StyledFab>
+      </Tooltip>
+      <CreateEditCategoryDialog
+        isOpened={isCreateDialogOpened}
+        setIsOpened={setIsCreateDialogOpened}
+        title="Create category"
+        submitText="Create"
+      ></CreateEditCategoryDialog>
+    </Fragment>
   );
 }

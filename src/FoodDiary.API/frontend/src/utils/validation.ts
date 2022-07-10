@@ -1,18 +1,22 @@
 import isValid from 'date-fns/isValid';
 import { ValidatorFunction } from 'src/types';
 
-export const validateDate: ValidatorFunction<Date | null> = date => {
-  if (date === null) {
+export const validateDate: ValidatorFunction<Date | null> = value => {
+  if (value === null) {
     return false;
   }
 
-  if (!isValid(date)) {
+  if (!isValid(value)) {
     return false;
   }
 
-  if (date.getFullYear().toString().length < 4) {
+  if (value.getFullYear().toString().length < 4) {
     return false;
   }
 
   return true;
+};
+
+export const validateCategoryName: ValidatorFunction<string> = value => {
+  return value.length >= 3 && value.length <= 50;
 };
