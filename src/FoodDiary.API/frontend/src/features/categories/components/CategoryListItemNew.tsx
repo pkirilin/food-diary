@@ -1,7 +1,9 @@
+import React, { useState } from 'react';
 import { Card, CardHeader, CardActions, Button } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Category } from '../types';
+import CreateEditCategoryDialog from './CreateEditCategoryDialog';
 
 type CategoryListItemNewProps = {
   category: Category;
@@ -17,8 +19,13 @@ function getCountProductsText(countProducts: number) {
   return `${countProducts} ${suffix}`;
 }
 
-export default function CategoryListItemNew({ category }: CategoryListItemNewProps) {
+const CategoryListItemNew: React.FC<CategoryListItemNewProps> = ({ category }) => {
   const countProductsText = getCountProductsText(category.countProducts);
+  const [isEditDialogOpened, setIsEditDialogOpened] = useState(false);
+
+  const handleEdit = () => {
+    setIsEditDialogOpened(true);
+  };
 
   return (
     <Card>
@@ -31,11 +38,22 @@ export default function CategoryListItemNew({ category }: CategoryListItemNewPro
         }}
       />
       <CardActions sx={{ margin: '0 0.5rem' }}>
-        <Button startIcon={<EditIcon />}>Edit</Button>
+        <Button startIcon={<EditIcon />} onClick={handleEdit}>
+          Edit
+        </Button>
         <Button color="error" startIcon={<DeleteIcon />}>
           Delete
         </Button>
       </CardActions>
+      <CreateEditCategoryDialog
+        isOpened={isEditDialogOpened}
+        setIsOpened={setIsEditDialogOpened}
+        title="Edit category"
+        submitText="Save"
+        category={{ name: category.name }}
+      />
     </Card>
   );
-}
+};
+
+export default CategoryListItemNew;
