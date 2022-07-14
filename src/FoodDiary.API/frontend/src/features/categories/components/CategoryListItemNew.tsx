@@ -4,6 +4,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Category } from '../types';
 import CreateEditCategoryDialog from './CreateEditCategoryDialog';
+import DeleteCategoryDialog from './DeleteCategoryDialog';
 
 type CategoryListItemNewProps = {
   category: Category;
@@ -22,9 +23,14 @@ function getCountProductsText(countProducts: number) {
 const CategoryListItemNew: React.FC<CategoryListItemNewProps> = ({ category }) => {
   const countProductsText = getCountProductsText(category.countProducts);
   const [isEditDialogOpened, setIsEditDialogOpened] = useState(false);
+  const [isDeleteDialogOpened, setIsDeleteDialogOpened] = useState(false);
 
   const handleEdit = () => {
     setIsEditDialogOpened(true);
+  };
+
+  const handleDelete = () => {
+    setIsDeleteDialogOpened(true);
   };
 
   return (
@@ -41,7 +47,7 @@ const CategoryListItemNew: React.FC<CategoryListItemNewProps> = ({ category }) =
         <Button startIcon={<EditIcon />} onClick={handleEdit}>
           Edit
         </Button>
-        <Button color="error" startIcon={<DeleteIcon />}>
+        <Button color="error" startIcon={<DeleteIcon />} onClick={handleDelete}>
           Delete
         </Button>
       </CardActions>
@@ -51,6 +57,11 @@ const CategoryListItemNew: React.FC<CategoryListItemNewProps> = ({ category }) =
         title="Edit category"
         submitText="Save"
         category={{ name: category.name }}
+      />
+      <DeleteCategoryDialog
+        isOpened={isDeleteDialogOpened}
+        setIsOpened={setIsDeleteDialogOpened}
+        category={category}
       />
     </Card>
   );
