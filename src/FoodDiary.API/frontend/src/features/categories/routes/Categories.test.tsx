@@ -3,8 +3,10 @@ import userEvent from '@testing-library/user-event';
 import { render } from 'src/testing';
 import Categories from './Categories';
 
-test('categories are displayed with their product counts', () => {
+test('categories are displayed with their product counts', async () => {
   render(<Categories />);
+
+  await waitForElementToBeRemoved(screen.getByRole('progressbar'));
 
   expect(screen.getByText(/dairy/i));
   expect(screen.getByText(/bakery/i));
@@ -17,6 +19,7 @@ test('categories are displayed with their product counts', () => {
 test('category can be created', async () => {
   render(<Categories />);
 
+  await waitForElementToBeRemoved(screen.getByRole('progressbar'));
   await userEvent.click(screen.getByLabelText(/create new category/i));
 
   const dialog = within(screen.getByRole('dialog'));
@@ -32,6 +35,7 @@ test('category can be created', async () => {
 test('category can be edited', async () => {
   render(<Categories />);
 
+  await waitForElementToBeRemoved(screen.getByRole('progressbar'));
   await userEvent.click(screen.getByLabelText(/edit bakery/i));
 
   const dialog = within(screen.getByRole('dialog'));
