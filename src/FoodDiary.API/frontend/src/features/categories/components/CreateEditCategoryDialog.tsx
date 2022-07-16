@@ -79,7 +79,7 @@ export default function CreateEditCategoryDialog({
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
         <Button
-          aria-label={`Create category ${categoryName} and close dialog`}
+          aria-label={`${category ? 'Save' : 'Create'} ${categoryName} and close dialog`}
           variant="contained"
           disabled={isSubmitDisabled}
           onClick={handleSubmit}

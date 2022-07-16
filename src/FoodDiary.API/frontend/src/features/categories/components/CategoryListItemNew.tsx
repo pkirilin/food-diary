@@ -25,13 +25,13 @@ const CategoryListItemNew: React.FC<CategoryListItemNewProps> = ({ category }) =
   const [isEditDialogOpened, setIsEditDialogOpened] = useState(false);
   const [isDeleteDialogOpened, setIsDeleteDialogOpened] = useState(false);
 
-  const handleEdit = () => {
+  function handleEdit() {
     setIsEditDialogOpened(true);
-  };
+  }
 
-  const handleDelete = () => {
+  function handleDelete() {
     setIsDeleteDialogOpened(true);
-  };
+  }
 
   return (
     <Card>
@@ -44,7 +44,7 @@ const CategoryListItemNew: React.FC<CategoryListItemNewProps> = ({ category }) =
         }}
       />
       <CardActions sx={{ margin: '0 0.5rem' }}>
-        <Button startIcon={<EditIcon />} onClick={handleEdit}>
+        <Button aria-label={`Edit ${category.name}`} startIcon={<EditIcon />} onClick={handleEdit}>
           Edit
         </Button>
         <Button color="error" startIcon={<DeleteIcon />} onClick={handleDelete}>
