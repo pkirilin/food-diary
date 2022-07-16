@@ -69,6 +69,7 @@ export default function CreateEditCategoryDialog({
           margin="dense"
           fullWidth
           label="Category name"
+          placeholder="Enter category name"
           value={categoryName}
           onChange={event => setCategoryName(event.target.value)}
           helperText={categoryNameHelperText}
@@ -77,7 +78,12 @@ export default function CreateEditCategoryDialog({
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
-        <Button variant="contained" disabled={isSubmitDisabled} onClick={handleSubmit}>
+        <Button
+          aria-label={`Create category ${categoryName} and close dialog`}
+          variant="contained"
+          disabled={isSubmitDisabled}
+          onClick={handleSubmit}
+        >
           {submitText}
         </Button>
       </DialogActions>
