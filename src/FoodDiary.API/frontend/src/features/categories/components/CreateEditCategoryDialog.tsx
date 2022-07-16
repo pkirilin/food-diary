@@ -1,12 +1,6 @@
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  TextField,
-  DialogActions,
-  Button,
-} from '@mui/material';
-import { Dispatch, SetStateAction, useEffect } from 'react';
+import { Dialog, DialogTitle, DialogContent, TextField, DialogActions } from '@mui/material';
+import React, { Dispatch, SetStateAction, useEffect } from 'react';
+import { AppButton } from 'src/components';
 import { useValidatedState } from 'src/hooks';
 import { validateCategoryName } from 'src/utils/validation';
 import { CategoryCreateEdit } from '../types';
@@ -16,16 +10,20 @@ type CreateEditCategoryDialogProps = {
   setIsOpened: Dispatch<SetStateAction<boolean>>;
   title: string;
   submitText: string;
+  onSubmit: (data: CategoryCreateEdit) => void;
+  isLoading: boolean;
   category?: CategoryCreateEdit;
 };
 
-export default function CreateEditCategoryDialog({
+const CreateEditCategoryDialog: React.FC<CreateEditCategoryDialogProps> = ({
   isOpened: isDialogOpened,
   setIsOpened: setIsDialogOpened,
   title,
   submitText,
+  onSubmit,
+  isLoading,
   category,
-}: CreateEditCategoryDialogProps) {
+}) => {
   const {
     value: categoryName,
     setValue: setCategoryName,
@@ -56,8 +54,7 @@ export default function CreateEditCategoryDialog({
   }
 
   function handleSubmit() {
-    // eslint-disable-next-line no-console
-    console.log(categoryName);
+    onSubmit({ name: categoryName });
   }
 
   return (
@@ -77,16 +74,21 @@ export default function CreateEditCategoryDialog({
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose}>Cancel</Button>
-        <Button
+        <AppButton disabled={isLoading} onClick={handleClose}>
+          Cancel
+        </AppButton>
+        <AppButton
           aria-label={`${category ? 'Save' : 'Create'} ${categoryName} and close dialog`}
           variant="contained"
           disabled={isSubmitDisabled}
           onClick={handleSubmit}
+          isLoading={isLoading}
         >
           {submitText}
-        </Button>
+        </AppButton>
       </DialogActions>
     </Dialog>
   );
-}
+};
+
+export default CreateEditCategoryDialog;

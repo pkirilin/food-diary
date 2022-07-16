@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
 import config from 'src/features/__shared__/config';
+import { CategoryCreateEdit } from '../types';
 import { Category } from '../types';
 
 const MOCK_CATEGORIES: Category[] = [
@@ -35,6 +36,18 @@ export default createApi({
   endpoints: builder => ({
     categories: builder.query<Category[], void>({
       queryFn: () => ({ data: MOCK_CATEGORIES }),
+    }),
+
+    createCategory: builder.mutation<unknown, CategoryCreateEdit>({
+      queryFn: () => ({
+        data: {},
+      }),
+    }),
+
+    editCategory: builder.mutation<unknown, CategoryCreateEdit>({
+      queryFn: () => ({
+        data: {},
+      }),
     }),
   }),
 });

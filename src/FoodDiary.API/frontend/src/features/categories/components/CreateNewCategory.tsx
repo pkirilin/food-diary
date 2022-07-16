@@ -1,7 +1,9 @@
 import { styled, Fab, Tooltip } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import { Fragment, useState } from 'react';
+import React, { useState } from 'react';
 import CreateEditCategoryDialog from './CreateEditCategoryDialog';
+import { useCreateCategoryMutation } from '../api';
+import { CategoryCreateEdit } from '../types';
 
 const StyledFab = styled(Fab)(({ theme }) => ({
   position: 'fixed',
@@ -9,13 +11,22 @@ const StyledFab = styled(Fab)(({ theme }) => ({
   bottom: theme.spacing(3),
 }));
 
-export default function CreateNewCategory() {
+const CreateNewCategory: React.FC = () => {
   const [isCreateDialogOpened, setIsCreateDialogOpened] = useState(false);
+  const [createCategory, { isLoading: isCreateCategoryLoading }] = useCreateCategoryMutation();
+
+  function handleCreate() {
+    setIsCreateDialogOpened(true);
+  }
+
+  function handleDialogSubmit(category: CategoryCreateEdit) {
+    createCategory(category);
+  }
 
   return (
-    <Fragment>
+    <React.Fragment>
       <Tooltip title="Create new category">
-        <StyledFab color="primary" onClick={() => setIsCreateDialogOpened(true)}>
+        <StyledFab color="primary" onClick={handleCreate}>
           <AddIcon />
         </StyledFab>
       </Tooltip>
@@ -24,7 +35,11 @@ export default function CreateNewCategory() {
         setIsOpened={setIsCreateDialogOpened}
         title="Create category"
         submitText="Create"
+        onSubmit={handleDialogSubmit}
+        isLoading={isCreateCategoryLoading}
       ></CreateEditCategoryDialog>
-    </Fragment>
+    </React.Fragment>
   );
-}
+};
+
+export default CreateNewCategory;

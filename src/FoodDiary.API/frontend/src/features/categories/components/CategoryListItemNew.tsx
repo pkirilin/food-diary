@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { Card, CardHeader, CardActions, Button } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Category } from '../types';
+import { Category, CategoryCreateEdit } from '../types';
 import CreateEditCategoryDialog from './CreateEditCategoryDialog';
 import DeleteCategoryDialog from './DeleteCategoryDialog';
+import { useEditCategoryMutation } from '../api';
 
 type CategoryListItemNewProps = {
   category: Category;
@@ -24,6 +25,7 @@ const CategoryListItemNew: React.FC<CategoryListItemNewProps> = ({ category }) =
   const countProductsText = getCountProductsText(category.countProducts);
   const [isEditDialogOpened, setIsEditDialogOpened] = useState(false);
   const [isDeleteDialogOpened, setIsDeleteDialogOpened] = useState(false);
+  const [editCategory, { isLoading: isEditCategoryLoading }] = useEditCategoryMutation();
 
   function handleEdit() {
     setIsEditDialogOpened(true);
@@ -31,6 +33,10 @@ const CategoryListItemNew: React.FC<CategoryListItemNewProps> = ({ category }) =
 
   function handleDelete() {
     setIsDeleteDialogOpened(true);
+  }
+
+  function handleEditDialogSubmit(category: CategoryCreateEdit) {
+    editCategory(category);
   }
 
   return (
@@ -56,6 +62,8 @@ const CategoryListItemNew: React.FC<CategoryListItemNewProps> = ({ category }) =
         setIsOpened={setIsEditDialogOpened}
         title="Edit category"
         submitText="Save"
+        onSubmit={handleEditDialogSubmit}
+        isLoading={isEditCategoryLoading}
         category={{ name: category.name }}
       />
       <DeleteCategoryDialog
