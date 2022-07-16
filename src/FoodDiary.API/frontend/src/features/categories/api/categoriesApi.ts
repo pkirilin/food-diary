@@ -1,52 +1,43 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
+import { getToken } from 'src/features/auth';
 import config from 'src/features/__shared__/config';
+import { EditRequest } from 'src/types';
 import { CategoryCreateEdit } from '../types';
 import { Category } from '../types';
-
-const MOCK_CATEGORIES: Category[] = [
-  {
-    id: 1,
-    name: 'Bakery',
-    countProducts: 1,
-  },
-  {
-    id: 2,
-    name: 'Cereals',
-    countProducts: 5,
-  },
-  {
-    id: 3,
-    name: 'Dairy',
-    countProducts: 2,
-  },
-  {
-    id: 4,
-    name: 'Frozen Foods',
-    countProducts: 0,
-  },
-];
 
 export default createApi({
   reducerPath: 'api.categories',
 
   baseQuery: fetchBaseQuery({
     baseUrl: `${config.apiUrl}/api/v1/categories`,
+
+    prepareHeaders: headers => {
+      headers.append('Authorization', `Bearer ${getToken()}`);
+      return headers;
+    },
   }),
 
   endpoints: builder => ({
     categories: builder.query<Category[], void>({
-      queryFn: () => ({ data: MOCK_CATEGORIES }),
-    }),
-
-    createCategory: builder.mutation<unknown, CategoryCreateEdit>({
-      queryFn: () => ({
-        data: {},
+      query: () => ({
+        method: 'GET',
+        url: '/',
       }),
     }),
 
-    editCategory: builder.mutation<unknown, CategoryCreateEdit>({
-      queryFn: () => ({
-        data: {},
+    createCategory: builder.mutation<unknown, CategoryCreateEdit>({
+      query: category => ({
+        method: 'POST',
+        url: '/',
+        body: category,
+      }),
+    }),
+
+    editCategory: builder.mutation<unknown, EditRequest<CategoryCreateEdit>>({
+      query: ({ id, payload }) => ({
+        method: 'PUT',
+        url: `/${id}`,
+        body: payload,
       }),
     }),
   }),

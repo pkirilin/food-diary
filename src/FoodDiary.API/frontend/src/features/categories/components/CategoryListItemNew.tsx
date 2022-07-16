@@ -35,8 +35,8 @@ const CategoryListItemNew: React.FC<CategoryListItemNewProps> = ({ category }) =
     setIsDeleteDialogOpened(true);
   }
 
-  function handleEditDialogSubmit(category: CategoryCreateEdit) {
-    editCategory(category);
+  function handleEditDialogSubmit(payload: CategoryCreateEdit) {
+    editCategory({ id: category.id, payload });
   }
 
   return (
