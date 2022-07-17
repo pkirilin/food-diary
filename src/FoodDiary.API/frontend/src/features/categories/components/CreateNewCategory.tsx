@@ -25,8 +25,8 @@ const CreateNewCategory: React.FC = () => {
     setIsCreateDialogOpened(true);
   }
 
-  function handleDialogSubmit(categoryFormData: CategoryFormData) {
-    createCategory(categoryFormData);
+  function handleDialogSubmit({ name }: CategoryFormData) {
+    createCategory({ name });
   }
 
   useEffect(() => {

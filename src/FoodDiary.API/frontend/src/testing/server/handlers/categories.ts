@@ -16,7 +16,8 @@ export const categoriesHandlers = [
   }),
 
   rest.put(`${config.apiUrl}/api/v1/categories/:id`, (req, res, ctx) => {
-    categories.update(1, {
+    categories.update({
+      id: 1,
       name: 'Modified Bakery',
     });
 
@@ -24,7 +25,9 @@ export const categoriesHandlers = [
   }),
 
   rest.delete(`${config.apiUrl}/api/v1/categories/:id`, (req, res, ctx) => {
-    categories.delete(1);
+    categories.delete({
+      id: 1,
+    });
 
     return res(ctx.status(200));
   }),

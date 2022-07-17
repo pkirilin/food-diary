@@ -34,7 +34,7 @@ const DeleteCategoryDialog: React.FC<DeleteCategoryDialogProps> = ({
   }
 
   function handleSubmit() {
-    deleteCategory(category.id);
+    deleteCategory({ id: category.id });
   }
 
   return (

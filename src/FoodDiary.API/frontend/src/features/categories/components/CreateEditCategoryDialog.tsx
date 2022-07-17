@@ -10,7 +10,7 @@ type CreateEditCategoryDialogProps = {
   setIsOpened: Dispatch<SetStateAction<boolean>>;
   title: string;
   submitText: string;
-  onSubmit: (data: CategoryFormData) => void;
+  onSubmit: (category: CategoryFormData) => void;
   isLoading: boolean;
   category?: Category;
 };

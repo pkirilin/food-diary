@@ -1,4 +1,9 @@
-import { Category, CategoryFormData } from 'src/features/categories';
+import { Category } from 'src/features/categories';
+import {
+  CreateCategoryRequest,
+  DeleteCategoryRequest,
+  EditCategoryRequest,
+} from 'src/features/categories/api/contracts';
 
 const INITIAL_CATEGORIES: Category[] = [
   {
@@ -28,28 +33,28 @@ let storedCategories: Category[] = INITIAL_CATEGORIES;
 const categories = {
   get: () => storedCategories,
 
-  create: (category: CategoryFormData) => {
+  create: ({ name }: CreateCategoryRequest) => {
     storedCategories.push({
       id: 5,
-      name: category.name,
+      name,
       countProducts: 0,
     });
   },
 
-  update: (id: number, payload: CategoryFormData) => {
+  update: ({ id, name }: EditCategoryRequest) => {
     const categoryToUpdate = storedCategories.find(category => category.id === id);
 
     storedCategories = [
       ...storedCategories.filter(category => category.id !== id),
       {
         id,
-        name: payload.name,
+        name,
         countProducts: categoryToUpdate?.countProducts || 0,
       },
     ];
   },
 
-  delete: (id: number) => {
+  delete: ({ id }: DeleteCategoryRequest) => {
     storedCategories = storedCategories.filter(category => category.id !== id);
   },
 

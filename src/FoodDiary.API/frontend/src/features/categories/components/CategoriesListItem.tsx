@@ -46,10 +46,10 @@ const CategoriesListItem: React.FC<CategoriesListItemProps> = ({ category }) => 
     setIsDeleteDialogOpened(true);
   }
 
-  function handleEditDialogSubmit(categoryFormData: CategoryFormData) {
+  function handleEditDialogSubmit({ name }: CategoryFormData) {
     editCategory({
       id: category.id,
-      payload: categoryFormData,
+      name,
     });
   }
 

@@ -1,9 +1,8 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
 import { getToken } from 'src/features/auth';
 import config from 'src/features/__shared__/config';
-import { EditRequest } from 'src/types';
-import { CategoryFormData } from '../types';
 import { Category } from '../types';
+import { CreateCategoryRequest, DeleteCategoryRequest, EditCategoryRequest } from './contracts';
 
 export default createApi({
   reducerPath: 'api.categories',
@@ -25,7 +24,7 @@ export default createApi({
       }),
     }),
 
-    createCategory: builder.mutation<void, CategoryFormData>({
+    createCategory: builder.mutation<void, CreateCategoryRequest>({
       query: category => ({
         method: 'POST',
         url: '/',
@@ -33,15 +32,15 @@ export default createApi({
       }),
     }),
 
-    editCategory: builder.mutation<void, EditRequest<CategoryFormData>>({
-      query: ({ id, payload }) => ({
+    editCategory: builder.mutation<void, EditCategoryRequest>({
+      query: ({ id, name }) => ({
         method: 'PUT',
         url: `/${id}`,
-        body: payload,
+        body: { name },
       }),
     }),
 
-    deleteCategory: builder.mutation<void, number>({
+    deleteCategory: builder.mutation<void, DeleteCategoryRequest>({
       query: id => ({
         method: 'DELETE',
         url: `/${id}`,
