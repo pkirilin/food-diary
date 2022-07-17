@@ -1,4 +1,4 @@
-import { Category, CategoryCreateEdit } from 'src/features/categories';
+import { Category, CategoryFormData } from 'src/features/categories';
 
 const INITIAL_CATEGORIES: Category[] = [
   {
@@ -28,7 +28,7 @@ let storedCategories: Category[] = INITIAL_CATEGORIES;
 const categories = {
   get: () => storedCategories,
 
-  create: (category: CategoryCreateEdit) => {
+  create: (category: CategoryFormData) => {
     storedCategories.push({
       id: 5,
       name: category.name,
@@ -36,7 +36,7 @@ const categories = {
     });
   },
 
-  update: (id: number, payload: CategoryCreateEdit) => {
+  update: (id: number, payload: CategoryFormData) => {
     const categoryToUpdate = storedCategories.find(category => category.id === id);
 
     storedCategories = [

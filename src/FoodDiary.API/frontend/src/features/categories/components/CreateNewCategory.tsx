@@ -3,7 +3,7 @@ import AddIcon from '@mui/icons-material/Add';
 import React, { useEffect, useState } from 'react';
 import CreateEditCategoryDialog from './CreateEditCategoryDialog';
 import { useCategoriesQuery, useCreateCategoryMutation } from '../api';
-import { CategoryCreateEdit } from '../types';
+import { CategoryFormData } from '../types';
 
 const StyledFab = styled(Fab)(({ theme }) => ({
   position: 'fixed',
@@ -25,8 +25,8 @@ const CreateNewCategory: React.FC = () => {
     setIsCreateDialogOpened(true);
   }
 
-  function handleDialogSubmit(category: CategoryCreateEdit) {
-    createCategory(category);
+  function handleDialogSubmit(categoryFormData: CategoryFormData) {
+    createCategory(categoryFormData);
   }
 
   useEffect(() => {

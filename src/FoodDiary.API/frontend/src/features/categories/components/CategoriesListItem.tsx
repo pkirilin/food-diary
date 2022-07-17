@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Card, CardHeader, CardActions, Button } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Category, CategoryCreateEdit } from '../types';
+import { Category, CategoryFormData } from '../types';
 import CreateEditCategoryDialog from './CreateEditCategoryDialog';
 import DeleteCategoryDialog from './DeleteCategoryDialog';
 import { useCategoriesQuery, useEditCategoryMutation } from '../api';
@@ -46,8 +46,11 @@ const CategoriesListItem: React.FC<CategoriesListItemProps> = ({ category }) => 
     setIsDeleteDialogOpened(true);
   }
 
-  function handleEditDialogSubmit(payload: CategoryCreateEdit) {
-    editCategory({ id: category.id, payload });
+  function handleEditDialogSubmit(categoryFormData: CategoryFormData) {
+    editCategory({
+      id: category.id,
+      payload: categoryFormData,
+    });
   }
 
   return (

@@ -3,14 +3,14 @@ import React, { Dispatch, SetStateAction, useEffect } from 'react';
 import { AppButton } from 'src/components';
 import { useValidatedState } from 'src/hooks';
 import { validateCategoryName } from 'src/utils/validation';
-import { Category, CategoryCreateEdit } from '../types';
+import { Category, CategoryFormData } from '../types';
 
 type CreateEditCategoryDialogProps = {
   isOpened: boolean;
   setIsOpened: Dispatch<SetStateAction<boolean>>;
   title: string;
   submitText: string;
-  onSubmit: (data: CategoryCreateEdit) => void;
+  onSubmit: (data: CategoryFormData) => void;
   isLoading: boolean;
   category?: Category;
 };

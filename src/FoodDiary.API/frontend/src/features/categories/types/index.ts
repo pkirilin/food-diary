@@ -4,6 +4,6 @@ export type Category = {
   countProducts: number;
 };
 
-export type CategoryCreateEdit = {
+export type CategoryFormData = {
   name: string;
 };

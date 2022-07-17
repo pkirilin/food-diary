@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
 import { getToken } from 'src/features/auth';
 import config from 'src/features/__shared__/config';
 import { EditRequest } from 'src/types';
-import { CategoryCreateEdit } from '../types';
+import { CategoryFormData } from '../types';
 import { Category } from '../types';
 
 export default createApi({
@@ -25,7 +25,7 @@ export default createApi({
       }),
     }),
 
-    createCategory: builder.mutation<void, CategoryCreateEdit>({
+    createCategory: builder.mutation<void, CategoryFormData>({
       query: category => ({
         method: 'POST',
         url: '/',
@@ -33,7 +33,7 @@ export default createApi({
       }),
     }),
 
-    editCategory: builder.mutation<void, EditRequest<CategoryCreateEdit>>({
+    editCategory: builder.mutation<void, EditRequest<CategoryFormData>>({
       query: ({ id, payload }) => ({
         method: 'PUT',
         url: `/${id}`,
