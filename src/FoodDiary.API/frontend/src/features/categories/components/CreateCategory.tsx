@@ -11,7 +11,7 @@ const StyledFab = styled(Fab)(({ theme }) => ({
   bottom: theme.spacing(3),
 }));
 
-const CreateNewCategory: React.FC = () => {
+const CreateCategory: React.FC = () => {
   const [isCreateDialogOpened, setIsCreateDialogOpened] = useState(false);
 
   const [
@@ -55,4 +55,4 @@ const CreateNewCategory: React.FC = () => {
   );
 };
 
-export default CreateNewCategory;
+export default CreateCategory;

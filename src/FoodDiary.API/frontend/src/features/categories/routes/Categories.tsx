@@ -2,7 +2,7 @@ import { Typography } from '@mui/material';
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import CategoriesList from '../components/CategoriesList';
-import CreateNewCategory from '../components/CreateNewCategory';
+import CreateCategory from '../components/CreateCategory';
 
 const Categories: React.FC = () => {
   return (
@@ -14,7 +14,7 @@ const Categories: React.FC = () => {
         Categories
       </Typography>
       <CategoriesList></CategoriesList>
-      <CreateNewCategory></CreateNewCategory>
+      <CreateCategory></CreateCategory>
     </React.Fragment>
   );
 };
