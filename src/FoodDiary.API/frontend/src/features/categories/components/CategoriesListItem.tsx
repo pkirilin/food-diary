@@ -4,7 +4,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useCategoriesQuery, useEditCategoryMutation } from '../api';
 import { Category, CategoryFormData } from '../types';
-import CreateEditCategoryDialog from './CreateEditCategoryDialog';
+import CategoryInputDialog from './CategoryInputDialog';
 import DeleteCategoryDialog from './DeleteCategoryDialog';
 import ProductsCount from './ProductsCount';
 
@@ -63,7 +63,8 @@ const CategoriesListItem: React.FC<CategoriesListItemProps> = ({ category }) => 
           Delete
         </Button>
       </CardActions>
-      <CreateEditCategoryDialog
+
+      <CategoryInputDialog
         isOpened={isEditDialogOpened}
         setIsOpened={setIsEditDialogOpened}
         title="Edit category"
@@ -72,6 +73,7 @@ const CategoriesListItem: React.FC<CategoriesListItemProps> = ({ category }) => 
         isLoading={isEditCategoryLoading}
         category={category}
       />
+
       <DeleteCategoryDialog
         isOpened={isDeleteDialogOpened}
         setIsOpened={setIsDeleteDialogOpened}

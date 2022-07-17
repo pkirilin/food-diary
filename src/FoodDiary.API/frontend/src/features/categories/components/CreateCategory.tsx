@@ -1,6 +1,6 @@
 import AddIcon from '@mui/icons-material/Add';
 import React, { useEffect, useState } from 'react';
-import CreateEditCategoryDialog from './CreateEditCategoryDialog';
+import CategoryInputDialog from './CategoryInputDialog';
 import { useCategoriesQuery, useCreateCategoryMutation } from '../api';
 import { CategoryFormData } from '../types';
 import { AppFab } from 'src/components';
@@ -40,14 +40,15 @@ const CreateCategory: React.FC = () => {
       >
         <AddIcon />
       </AppFab>
-      <CreateEditCategoryDialog
+
+      <CategoryInputDialog
         isOpened={isCreateDialogOpened}
         setIsOpened={setIsCreateDialogOpened}
         title="Create category"
         submitText="Create"
         onSubmit={handleDialogSubmit}
         isLoading={isCreateCategoryLoading}
-      ></CreateEditCategoryDialog>
+      />
     </React.Fragment>
   );
 };

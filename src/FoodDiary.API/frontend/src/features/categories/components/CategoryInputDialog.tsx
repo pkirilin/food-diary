@@ -15,7 +15,7 @@ type CreateEditCategoryDialogProps = {
   category?: Category;
 };
 
-const CreateEditCategoryDialog: React.FC<CreateEditCategoryDialogProps> = ({
+const CategoryInputDialog: React.FC<CreateEditCategoryDialogProps> = ({
   isOpened: isDialogOpened,
   setIsOpened: setIsDialogOpened,
   title,
@@ -60,6 +60,7 @@ const CreateEditCategoryDialog: React.FC<CreateEditCategoryDialogProps> = ({
   return (
     <Dialog open={isDialogOpened} onClose={handleClose} fullWidth>
       <DialogTitle>{title}</DialogTitle>
+
       <DialogContent>
         <TextField
           autoFocus
@@ -73,10 +74,12 @@ const CreateEditCategoryDialog: React.FC<CreateEditCategoryDialogProps> = ({
           error={isCategoryNameInvalid}
         />
       </DialogContent>
+
       <DialogActions>
         <AppButton disabled={isLoading} onClick={handleClose}>
           Cancel
         </AppButton>
+
         <AppButton
           aria-label={`${category ? 'Save' : 'Create'} ${categoryName} and close dialog`}
           variant="contained"
@@ -91,4 +94,4 @@ const CreateEditCategoryDialog: React.FC<CreateEditCategoryDialogProps> = ({
   );
 };
 
-export default CreateEditCategoryDialog;
+export default CategoryInputDialog;
