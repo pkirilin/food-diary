@@ -1,7 +1,7 @@
 import { Typography } from '@mui/material';
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import CategoriesListNew from '../components/CategoriesListNew';
+import CategoriesList from '../components/CategoriesList';
 import CreateNewCategory from '../components/CreateNewCategory';
 
 const Categories: React.FC = () => {
@@ -13,7 +13,7 @@ const Categories: React.FC = () => {
       <Typography variant="h1" gutterBottom>
         Categories
       </Typography>
-      <CategoriesListNew></CategoriesListNew>
+      <CategoriesList></CategoriesList>
       <CreateNewCategory></CreateNewCategory>
     </React.Fragment>
   );
