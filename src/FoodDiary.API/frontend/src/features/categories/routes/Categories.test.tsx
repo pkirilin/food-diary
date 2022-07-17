@@ -29,7 +29,7 @@ test('category can be created', async () => {
   await waitForElementToBeRemoved(screen.getByRole('dialog'));
 
   expect(screen.getByText(/new fancy category/i));
-  expect(screen.getByLabelText(/0 products in new fancy category/i));
+  expect(screen.getByLabelText(/no products in new fancy category/i));
 });
 
 test('category can be edited', async () => {

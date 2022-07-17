@@ -1,8 +1,8 @@
 import { styled, Fab, Tooltip } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import CreateEditCategoryDialog from './CreateEditCategoryDialog';
-import { useCreateCategoryMutation } from '../api';
+import { useCategoriesQuery, useCreateCategoryMutation } from '../api';
 import { CategoryCreateEdit } from '../types';
 
 const StyledFab = styled(Fab)(({ theme }) => ({
@@ -13,7 +13,13 @@ const StyledFab = styled(Fab)(({ theme }) => ({
 
 const CreateNewCategory: React.FC = () => {
   const [isCreateDialogOpened, setIsCreateDialogOpened] = useState(false);
-  const [createCategory, { isLoading: isCreateCategoryLoading }] = useCreateCategoryMutation();
+
+  const [
+    createCategory,
+    { isLoading: isCreateCategoryLoading, isSuccess: isCreateCategorySuccess },
+  ] = useCreateCategoryMutation();
+
+  const { refetch: refetchCategories } = useCategoriesQuery();
 
   function handleCreate() {
     setIsCreateDialogOpened(true);
@@ -22,6 +28,13 @@ const CreateNewCategory: React.FC = () => {
   function handleDialogSubmit(category: CategoryCreateEdit) {
     createCategory(category);
   }
+
+  useEffect(() => {
+    if (isCreateCategorySuccess) {
+      setIsCreateDialogOpened(false);
+      refetchCategories();
+    }
+  }, [isCreateCategorySuccess, refetchCategories]);
 
   return (
     <React.Fragment>

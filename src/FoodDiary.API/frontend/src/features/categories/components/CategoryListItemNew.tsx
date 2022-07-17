@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardHeader, CardActions, Button } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Category, CategoryCreateEdit } from '../types';
 import CreateEditCategoryDialog from './CreateEditCategoryDialog';
 import DeleteCategoryDialog from './DeleteCategoryDialog';
-import { useEditCategoryMutation } from '../api';
+import { useCategoriesQuery, useEditCategoryMutation } from '../api';
 
 type CategoryListItemNewProps = {
   category: Category;
@@ -25,7 +25,18 @@ const CategoryListItemNew: React.FC<CategoryListItemNewProps> = ({ category }) =
   const countProductsText = getCountProductsText(category.countProducts);
   const [isEditDialogOpened, setIsEditDialogOpened] = useState(false);
   const [isDeleteDialogOpened, setIsDeleteDialogOpened] = useState(false);
-  const [editCategory, { isLoading: isEditCategoryLoading }] = useEditCategoryMutation();
+
+  const [editCategory, { isLoading: isEditCategoryLoading, isSuccess: isEditCategorySuccess }] =
+    useEditCategoryMutation();
+
+  const { refetch: refetchCategories } = useCategoriesQuery();
+
+  useEffect(() => {
+    if (isEditCategorySuccess) {
+      setIsEditDialogOpened(false);
+      refetchCategories();
+    }
+  }, [isEditCategorySuccess, refetchCategories]);
 
   function handleEdit() {
     setIsEditDialogOpened(true);
