@@ -80,7 +80,7 @@ const CategoriesListItem: React.FC<CategoriesListItemProps> = ({ category }) => 
         submitText="Save"
         onSubmit={handleEditDialogSubmit}
         isLoading={isEditCategoryLoading}
-        category={{ name: category.name }}
+        category={category}
       />
       <DeleteCategoryDialog
         isOpened={isDeleteDialogOpened}

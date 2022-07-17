@@ -3,7 +3,7 @@ import React, { Dispatch, SetStateAction, useEffect } from 'react';
 import { AppButton } from 'src/components';
 import { useValidatedState } from 'src/hooks';
 import { validateCategoryName } from 'src/utils/validation';
-import { CategoryCreateEdit } from '../types';
+import { Category, CategoryCreateEdit } from '../types';
 
 type CreateEditCategoryDialogProps = {
   isOpened: boolean;
@@ -12,7 +12,7 @@ type CreateEditCategoryDialogProps = {
   submitText: string;
   onSubmit: (data: CategoryCreateEdit) => void;
   isLoading: boolean;
-  category?: CategoryCreateEdit;
+  category?: Category;
 };
 
 const CreateEditCategoryDialog: React.FC<CreateEditCategoryDialogProps> = ({
