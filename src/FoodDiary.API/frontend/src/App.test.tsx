@@ -1,15 +1,9 @@
-import { render, screen } from '@testing-library/react';
-import { create } from 'src/test-utils';
+import { screen } from '@testing-library/react';
 import App from './App';
+import { render } from './testing';
 
 test('authenticated user can navigate and view private content', () => {
-  const ui = create
-    .component(<App></App>)
-    .withReduxStore()
-    .withAuthToken('test_access_token')
-    .please();
-
-  render(ui);
+  render(<App></App>);
 
   expect(screen.getByRole('navigation')).toBeInTheDocument();
   expect(screen.getByRole('heading')).toBeInTheDocument();
@@ -17,13 +11,7 @@ test('authenticated user can navigate and view private content', () => {
 });
 
 test('unauthenticated user must sign in to access private content', () => {
-  const ui = create
-    .component(<App></App>)
-    .withReduxStore()
-    .withoutAuthToken()
-    .please();
-
-  render(ui);
+  render(<App></App>, { authToken: '' });
 
   expect(screen.getByText(/Sign in/)).toBeInTheDocument();
 });

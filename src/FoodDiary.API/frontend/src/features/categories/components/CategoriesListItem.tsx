@@ -1,99 +1,85 @@
-import React from 'react';
-import {
-  Chip,
-  Grid,
-  IconButton,
-  ListItem,
-  ListItemSecondaryAction,
-  ListItemText,
-  Tooltip,
-} from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
+import React, { useEffect, useState } from 'react';
+import { Card, CardHeader, CardActions, Button } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { CategoryCreateEdit, CategoryItem } from '../models';
-import CategoryCreateEditDialog from './CategoryCreateEditDialog';
-import { ConfirmationDialog } from '../../__shared__/components';
-import { deleteCategory, editCategory } from '../thunks';
-import { useAppDispatch, useDialog } from '../../__shared__/hooks';
+import { useCategoriesQuery, useEditCategoryMutation } from '../api';
+import { Category, CategoryFormData } from '../types';
+import CategoryInputDialog from './CategoryInputDialog';
+import DeleteCategoryDialog from './DeleteCategoryDialog';
+import ProductsCount from './ProductsCount';
 
 type CategoriesListItemProps = {
-  category: CategoryItem;
+  category: Category;
 };
 
-const useStyles = makeStyles(() => ({
-  root: {
-    height: '100px',
-  },
-}));
+const CategoriesListItem: React.FC<CategoriesListItemProps> = ({ category }) => {
+  const [isEditDialogOpened, setIsEditDialogOpened] = useState(false);
+  const [isDeleteDialogOpened, setIsDeleteDialogOpened] = useState(false);
 
-const CategoriesListItem: React.FC<CategoriesListItemProps> = ({
-  category,
-}: CategoriesListItemProps) => {
-  const classes = useStyles();
-  const dispatch = useAppDispatch();
+  const [editCategory, { isLoading: isEditCategoryLoading, isSuccess: isEditCategorySuccess }] =
+    useEditCategoryMutation();
 
-  const categoryEditDialog = useDialog<CategoryCreateEdit>(categoryInfo => {
-    dispatch(
-      editCategory({
-        id: category.id,
-        category: categoryInfo,
-      }),
-    );
-  });
+  const { refetch: refetchCategories } = useCategoriesQuery();
 
-  const categoryDeleteDialog = useDialog(() => {
-    dispatch(deleteCategory(category.id));
-  });
+  useEffect(() => {
+    if (isEditCategorySuccess) {
+      setIsEditDialogOpened(false);
+      refetchCategories();
+    }
+  }, [isEditCategorySuccess, refetchCategories]);
 
-  const handleEditClick = (): void => {
-    categoryEditDialog.show();
-  };
+  function handleEdit() {
+    setIsEditDialogOpened(true);
+  }
 
-  const handleDeleteClick = (): void => {
-    categoryDeleteDialog.show();
-  };
+  function handleDelete() {
+    setIsDeleteDialogOpened(true);
+  }
+
+  function handleEditDialogSubmit({ name }: CategoryFormData) {
+    editCategory({
+      id: category.id,
+      name,
+    });
+  }
 
   return (
-    <ListItem className={classes.root}>
-      <CategoryCreateEditDialog
-        {...categoryEditDialog.binding}
+    <Card>
+      <CardHeader
+        sx={{ paddingBottom: 0 }}
+        title={category.name}
+        subheader={<ProductsCount category={category} />}
+      />
+      <CardActions sx={{ margin: '0 0.5rem' }}>
+        <Button aria-label={`Edit ${category.name}`} startIcon={<EditIcon />} onClick={handleEdit}>
+          Edit
+        </Button>
+        <Button
+          aria-label={`Delete ${category.name}`}
+          color="error"
+          startIcon={<DeleteIcon />}
+          onClick={handleDelete}
+        >
+          Delete
+        </Button>
+      </CardActions>
+
+      <CategoryInputDialog
+        isOpened={isEditDialogOpened}
+        setIsOpened={setIsEditDialogOpened}
+        title="Edit category"
+        submitText="Save"
+        onSubmit={handleEditDialogSubmit}
+        isLoading={isEditCategoryLoading}
         category={category}
-      ></CategoryCreateEditDialog>
-      <ConfirmationDialog
-        dialogTitle="Delete category confirmation"
-        dialogMessage={`Are you sure you want to delete category '${category.name}' and all its products?`}
-        {...categoryDeleteDialog.binding}
-      ></ConfirmationDialog>
-      <ListItemText>
-        <Grid container spacing={2}>
-          <Grid item>{category.name}</Grid>
-          <Grid item>
-            {category.countProducts > 0 ? (
-              <Chip
-                label={`products: ${category.countProducts}`}
-                variant="outlined"
-                size="small"
-              ></Chip>
-            ) : (
-              <Chip label="empty" size="small"></Chip>
-            )}
-          </Grid>
-        </Grid>
-      </ListItemText>
-      <ListItemSecondaryAction>
-        <Tooltip title="Edit category">
-          <IconButton onClick={handleEditClick} size="large">
-            <EditIcon></EditIcon>
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Delete category">
-          <IconButton edge="end" onClick={handleDeleteClick} size="large">
-            <DeleteIcon></DeleteIcon>
-          </IconButton>
-        </Tooltip>
-      </ListItemSecondaryAction>
-    </ListItem>
+      />
+
+      <DeleteCategoryDialog
+        isOpened={isDeleteDialogOpened}
+        setIsOpened={setIsDeleteDialogOpened}
+        category={category}
+      />
+    </Card>
   );
 };
 

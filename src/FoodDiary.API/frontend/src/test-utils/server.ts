@@ -1,14 +1,14 @@
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
-
 import create from './create';
 import config from 'src/features/__shared__/config';
+import { handlers } from 'src/testing/server/handlers';
 
 export function api(path: string) {
   return config.apiUrl + path;
 }
 
-const handlers = [
+const handlersLegacy = [
   rest.get(api('/v1/pages'), (req, res, ctx) => {
     const pages = create
       .pagesSearchResult()
@@ -61,6 +61,6 @@ const handlers = [
   }),
 ];
 
-const server = setupServer(...handlers);
+const server = setupServer(...handlersLegacy, ...handlers);
 
 export default server;

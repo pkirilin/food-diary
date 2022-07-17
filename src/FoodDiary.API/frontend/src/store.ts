@@ -1,8 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
-
 import api from './api';
+import { categoriesApi } from 'src/features/categories';
 import pagesReducer from './features/pages/slice';
-import categoriesReducer from './features/categories/slice';
 import productsReducer from './features/products/slice';
 import notesReducer from './features/notes/slice';
 
@@ -10,13 +9,14 @@ export function configureAppStore() {
   return configureStore({
     reducer: {
       [api.reducerPath]: api.reducer,
+      [categoriesApi.reducerPath]: categoriesApi.reducer,
       pages: pagesReducer,
-      categories: categoriesReducer,
       products: productsReducer,
       notes: notesReducer,
     },
 
-    middleware: getDefaultMiddleware => getDefaultMiddleware().concat(api.middleware),
+    middleware: getDefaultMiddleware =>
+      getDefaultMiddleware().concat(api.middleware, categoriesApi.middleware),
   });
 }
 

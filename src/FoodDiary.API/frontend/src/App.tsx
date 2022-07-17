@@ -1,5 +1,4 @@
-import React from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
+import React, { Fragment } from 'react';
 import { Helmet } from 'react-helmet';
 import { Container } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
@@ -18,15 +17,15 @@ const App: React.FC = () => {
   const { isAuthenticated } = useAuth();
 
   return (
-    <Router>
+    <Fragment>
       <Helmet>
         <title>Food diary</title>
       </Helmet>
       {isAuthenticated && <Navbar></Navbar>}
-      <Container maxWidth="xl" className={classes.content}>
+      <Container maxWidth={false} className={classes.content}>
         <AppRoutes></AppRoutes>
       </Container>
-    </Router>
+    </Fragment>
   );
 };
 
