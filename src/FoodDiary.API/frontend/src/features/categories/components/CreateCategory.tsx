@@ -1,15 +1,10 @@
-import { styled, Fab, Tooltip } from '@mui/material';
+import { Tooltip } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import React, { useEffect, useState } from 'react';
 import CreateEditCategoryDialog from './CreateEditCategoryDialog';
 import { useCategoriesQuery, useCreateCategoryMutation } from '../api';
 import { CategoryFormData } from '../types';
-
-const StyledFab = styled(Fab)(({ theme }) => ({
-  position: 'fixed',
-  right: theme.spacing(3),
-  bottom: theme.spacing(3),
-}));
+import { AppFab } from 'src/components';
 
 const CreateCategory: React.FC = () => {
   const [isCreateDialogOpened, setIsCreateDialogOpened] = useState(false);
@@ -39,9 +34,9 @@ const CreateCategory: React.FC = () => {
   return (
     <React.Fragment>
       <Tooltip title="Create new category">
-        <StyledFab color="primary" onClick={handleCreate}>
+        <AppFab color="primary" onClick={handleCreate}>
           <AddIcon />
-        </StyledFab>
+        </AppFab>
       </Tooltip>
       <CreateEditCategoryDialog
         isOpened={isCreateDialogOpened}
