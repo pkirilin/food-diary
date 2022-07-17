@@ -1,4 +1,3 @@
-import { Tooltip } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import React, { useEffect, useState } from 'react';
 import CreateEditCategoryDialog from './CreateEditCategoryDialog';
@@ -14,7 +13,7 @@ const CreateCategory: React.FC = () => {
     { isLoading: isCreateCategoryLoading, isSuccess: isCreateCategorySuccess },
   ] = useCreateCategoryMutation();
 
-  const { refetch: refetchCategories } = useCategoriesQuery();
+  const { isLoading: isCategoriesListLoading, refetch: refetchCategories } = useCategoriesQuery();
 
   function handleCreate() {
     setIsCreateDialogOpened(true);
@@ -33,11 +32,14 @@ const CreateCategory: React.FC = () => {
 
   return (
     <React.Fragment>
-      <Tooltip title="Create new category">
-        <AppFab color="primary" onClick={handleCreate}>
-          <AddIcon />
-        </AppFab>
-      </Tooltip>
+      <AppFab
+        aria-label="Create new category"
+        color="primary"
+        onClick={handleCreate}
+        disabled={isCategoriesListLoading}
+      >
+        <AddIcon />
+      </AppFab>
       <CreateEditCategoryDialog
         isOpened={isCreateDialogOpened}
         setIsOpened={setIsCreateDialogOpened}

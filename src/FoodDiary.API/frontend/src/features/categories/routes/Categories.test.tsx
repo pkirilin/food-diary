@@ -62,3 +62,10 @@ test('category can be deleted', async () => {
 
   expect(screen.queryByText(/bakery/i)).toBeNull();
 });
+
+test('category cannot be created while categories list is loading', async () => {
+  render(<Categories />);
+
+  expect(screen.getByRole('progressbar')).toBeVisible();
+  expect(screen.getByLabelText(/create new category/i)).toBeDisabled();
+});
