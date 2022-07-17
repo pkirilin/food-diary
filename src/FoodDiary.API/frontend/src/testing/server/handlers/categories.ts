@@ -22,4 +22,10 @@ export const categoriesHandlers = [
 
     return res(ctx.status(200));
   }),
+
+  rest.delete(`${config.apiUrl}/api/v1/categories/:id`, (req, res, ctx) => {
+    categories.delete(1);
+
+    return res(ctx.status(200));
+  }),
 ];

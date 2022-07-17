@@ -49,6 +49,10 @@ const categories = {
     ];
   },
 
+  delete: (id: number) => {
+    storedCategories = storedCategories.filter(category => category.id !== id);
+  },
+
   reset: () => {
     storedCategories = INITIAL_CATEGORIES;
   },

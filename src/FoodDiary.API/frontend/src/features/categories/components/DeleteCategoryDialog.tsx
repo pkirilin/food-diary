@@ -1,17 +1,12 @@
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  Typography,
-  DialogActions,
-  Button,
-} from '@mui/material';
-import React, { Dispatch, SetStateAction } from 'react';
+import { Dialog, DialogTitle, DialogContent, Typography, DialogActions } from '@mui/material';
+import React, { useEffect } from 'react';
+import { AppButton } from 'src/components';
+import { useCategoriesQuery, useDeleteCategoryMutation } from '../api';
 import { Category } from '../types';
 
 type DeleteCategoryDialogProps = {
   isOpened: boolean;
-  setIsOpened: Dispatch<SetStateAction<boolean>>;
+  setIsOpened: React.Dispatch<React.SetStateAction<boolean>>;
   category: Category;
 };
 
@@ -20,13 +15,26 @@ const DeleteCategoryDialog: React.FC<DeleteCategoryDialogProps> = ({
   setIsOpened: setIsDialogOpened,
   category,
 }) => {
+  const [
+    deleteCategory,
+    { isLoading: isDeleteCategoryLoading, isSuccess: isDeleteCategorySuccess },
+  ] = useDeleteCategoryMutation();
+
+  const { refetch: refetchCategories } = useCategoriesQuery();
+
+  useEffect(() => {
+    if (isDeleteCategorySuccess) {
+      setIsDialogOpened(false);
+      refetchCategories();
+    }
+  }, [isDeleteCategorySuccess, refetchCategories, setIsDialogOpened]);
+
   function handleClose() {
     setIsDialogOpened(false);
   }
 
-  function handleConfirm() {
-    // eslint-disable-next-line no-console
-    console.log(`delete category ${category.name}`);
+  function handleSubmit() {
+    deleteCategory(category.id);
   }
 
   return (
@@ -36,12 +44,18 @@ const DeleteCategoryDialog: React.FC<DeleteCategoryDialogProps> = ({
         <Typography>{`Delete category "${category.name}"?`}</Typography>
       </DialogContent>
       <DialogActions>
-        <Button variant="text" onClick={handleClose}>
+        <AppButton disabled={isDeleteCategoryLoading} variant="text" onClick={handleClose}>
           No
-        </Button>
-        <Button variant="contained" color="primary" onClick={handleConfirm}>
+        </AppButton>
+        <AppButton
+          aria-label={`Delete ${category.name}`}
+          variant="contained"
+          color="primary"
+          onClick={handleSubmit}
+          isLoading={isDeleteCategoryLoading}
+        >
           Yes
-        </Button>
+        </AppButton>
       </DialogActions>
     </Dialog>
   );

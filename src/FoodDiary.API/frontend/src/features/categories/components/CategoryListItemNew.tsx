@@ -64,7 +64,12 @@ const CategoryListItemNew: React.FC<CategoryListItemNewProps> = ({ category }) =
         <Button aria-label={`Edit ${category.name}`} startIcon={<EditIcon />} onClick={handleEdit}>
           Edit
         </Button>
-        <Button color="error" startIcon={<DeleteIcon />} onClick={handleDelete}>
+        <Button
+          aria-label={`Delete ${category.name}`}
+          color="error"
+          startIcon={<DeleteIcon />}
+          onClick={handleDelete}
+        >
           Delete
         </Button>
       </CardActions>

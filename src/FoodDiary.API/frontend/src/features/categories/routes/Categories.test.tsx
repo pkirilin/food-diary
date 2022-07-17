@@ -48,3 +48,17 @@ test('category can be edited', async () => {
 
   expect(screen.getByText(/modified bakery/i));
 });
+
+test('category can be deleted', async () => {
+  render(<Categories />);
+
+  await waitForElementToBeRemoved(screen.getByRole('progressbar'));
+  await userEvent.click(screen.getByLabelText(/delete bakery/i));
+
+  const dialog = within(screen.getByRole('dialog'));
+  await userEvent.click(dialog.getByLabelText(/delete bakery/i));
+  await waitForElementToBeRemoved(dialog.getByRole('progressbar'));
+  await waitForElementToBeRemoved(screen.getByRole('dialog'));
+
+  expect(screen.queryByText(/bakery/i)).toBeNull();
+});

@@ -25,7 +25,7 @@ export default createApi({
       }),
     }),
 
-    createCategory: builder.mutation<unknown, CategoryCreateEdit>({
+    createCategory: builder.mutation<void, CategoryCreateEdit>({
       query: category => ({
         method: 'POST',
         url: '/',
@@ -33,11 +33,18 @@ export default createApi({
       }),
     }),
 
-    editCategory: builder.mutation<unknown, EditRequest<CategoryCreateEdit>>({
+    editCategory: builder.mutation<void, EditRequest<CategoryCreateEdit>>({
       query: ({ id, payload }) => ({
         method: 'PUT',
         url: `/${id}`,
         body: payload,
+      }),
+    }),
+
+    deleteCategory: builder.mutation<void, number>({
+      query: id => ({
+        method: 'DELETE',
+        url: `/${id}`,
       }),
     }),
   }),
