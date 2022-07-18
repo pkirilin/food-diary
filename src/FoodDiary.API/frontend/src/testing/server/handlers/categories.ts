@@ -1,32 +1,46 @@
 import { rest } from 'msw';
+import { CategoryFormData } from 'src/features/categories';
 import config from 'src/features/__shared__/config';
-import { categories } from 'src/testing/server/data';
+import { db } from '../db';
 
 export const categoriesHandlers = [
   rest.get(`${config.apiUrl}/api/v1/categories`, (req, res, ctx) => {
-    return res(ctx.json(categories.get()));
+    const categories = db.category.getAll();
+    return res(ctx.json(categories));
   }),
 
-  rest.post(`${config.apiUrl}/api/v1/categories`, (req, res, ctx) => {
-    categories.create({
-      name: 'New fancy category',
+  rest.post<CategoryFormData>(`${config.apiUrl}/api/v1/categories`, (req, res, ctx) => {
+    db.category.create({
+      id: 5,
+      name: req.body.name,
     });
 
     return res(ctx.status(200));
   }),
 
-  rest.put(`${config.apiUrl}/api/v1/categories/:id`, (req, res, ctx) => {
-    categories.update({
-      id: 1,
-      name: 'Modified Bakery',
+  rest.put<CategoryFormData>(`${config.apiUrl}/api/v1/categories/:id`, (req, res, ctx) => {
+    db.category.update({
+      where: {
+        id: {
+          equals: +req.params['id'],
+        },
+      },
+
+      data: {
+        name: req.body.name,
+      },
     });
 
     return res(ctx.status(200));
   }),
 
   rest.delete(`${config.apiUrl}/api/v1/categories/:id`, (req, res, ctx) => {
-    categories.delete({
-      id: 1,
+    db.category.delete({
+      where: {
+        id: {
+          equals: +req.params['id'],
+        },
+      },
     });
 
     return res(ctx.status(200));
