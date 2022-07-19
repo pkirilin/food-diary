@@ -7,6 +7,4 @@ export type EditCategoryRequest = {
   name: string;
 };
 
-export type DeleteCategoryRequest = {
-  id: number;
-};
+export type DeleteCategoryRequest = number;

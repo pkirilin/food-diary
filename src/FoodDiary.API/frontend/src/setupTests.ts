@@ -7,7 +7,7 @@
 import '@testing-library/jest-dom/extend-expect';
 import 'src/test-utils/customExpects';
 import { server } from 'src/test-utils';
-import { categories } from 'src/testing/server/data';
+import { initializeDb } from 'src/testing/server/db';
 
 beforeAll(() => {
   // For MUI Date picker to work in tests
@@ -29,9 +29,8 @@ beforeAll(() => {
 
 beforeAll(() => server.listen());
 
-afterEach(() => {
-  server.resetHandlers();
-  categories.reset();
-});
+beforeEach(() => initializeDb());
+
+afterEach(() => server.resetHandlers());
 
 afterAll(() => server.close());
