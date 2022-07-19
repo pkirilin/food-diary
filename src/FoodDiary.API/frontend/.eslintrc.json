@@ -1,6 +1,7 @@
 {
   "root": true,
   "extends": [
+    "eslint:recommended",
     "plugin:react/recommended",
     "plugin:react/jsx-runtime",
     "plugin:@typescript-eslint/recommended",
@@ -19,7 +20,7 @@
       "version": "detect"
     }
   },
-  "plugins": ["prettier", "react-hooks"],
+  "plugins": ["prettier", "react", "react-hooks"],
   "rules": {
     "prettier/prettier": 2,
     "react/jsx-uses-react": "off",
