@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Button,
   Dialog,
@@ -51,14 +51,14 @@ function useDisplayOrder(mealType: MealType, note?: NoteItem) {
   return isNewNote ? maxDisplayOrderForNotesGroup + 1 : note.displayOrder;
 }
 
-export default function NoteCreateEditDialog({
+const NoteCreateEditDialog: React.FC<NoteCreateEditDialogProps> = ({
   mealType,
   pageId,
   note,
   onDialogCancel,
   onDialogConfirm,
   ...dialogProps
-}: NoteCreateEditDialogProps) {
+}) => {
   const isNewNote = !note;
   const displayOrder = useDisplayOrder(mealType, note);
   const initialProduct = useInitialProduct(note);
@@ -131,4 +131,6 @@ export default function NoteCreateEditDialog({
       </DialogActions>
     </Dialog>
   );
-}
+};
+
+export default NoteCreateEditDialog;

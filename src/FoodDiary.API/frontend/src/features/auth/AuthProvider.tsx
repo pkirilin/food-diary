@@ -1,11 +1,11 @@
-import { PropsWithChildren, useState } from 'react';
+import React, { useState } from 'react';
 import AuthContext from './AuthContext';
 
-interface AuthProviderProps extends PropsWithChildren<unknown> {
+interface AuthProviderProps extends React.PropsWithChildren<unknown> {
   token?: string;
 }
 
-export default function AuthProvider({ children, token }: AuthProviderProps) {
+const AuthProvider: React.FC<AuthProviderProps> = ({ children, token }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(!!token);
 
   function signIn() {
@@ -22,4 +22,6 @@ export default function AuthProvider({ children, token }: AuthProviderProps) {
       {children}
     </AuthContext.Provider>
   );
-}
+};
+
+export default AuthProvider;

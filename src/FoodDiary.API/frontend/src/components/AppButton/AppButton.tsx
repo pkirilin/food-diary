@@ -1,11 +1,12 @@
+import React from 'react';
 import { Button, ButtonProps } from '@mui/material';
 import { AppButtonProgress, AppButtonRoot, AppButtonWrapper } from './AppButton.styles';
 
-export interface AppButtonProps extends ButtonProps {
+interface AppButtonProps extends ButtonProps {
   isLoading?: boolean;
 }
 
-export default function AppButton({ isLoading, disabled, ...props }: AppButtonProps) {
+const AppButton: React.FC<AppButtonProps> = ({ isLoading, disabled, ...props }) => {
   return (
     <AppButtonRoot>
       <AppButtonWrapper>
@@ -14,4 +15,6 @@ export default function AppButton({ isLoading, disabled, ...props }: AppButtonPr
       </AppButtonWrapper>
     </AppButtonRoot>
   );
-}
+};
+
+export default AppButton;

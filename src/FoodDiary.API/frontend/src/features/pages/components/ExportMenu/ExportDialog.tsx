@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import { ExportFormat } from '../../models';
 import { useExportToJson } from './useExportToJson';
@@ -7,13 +7,13 @@ import { AppButton, DatePicker } from 'src/components';
 import { useValidatedState } from 'src/hooks';
 import { validateDate } from 'src/utils';
 
-export type ExportDialogProps = {
+type ExportDialogProps = {
   format: ExportFormat;
   isOpen: boolean;
   onClose: () => void;
 };
 
-export default function ExportDialog({ format: exportFormat, isOpen, onClose }: ExportDialogProps) {
+const ExportDialog: React.FC<ExportDialogProps> = ({ format: exportFormat, isOpen, onClose }) => {
   const {
     value: startDate,
     setValue: setStartDate,
@@ -101,4 +101,6 @@ export default function ExportDialog({ format: exportFormat, isOpen, onClose }: 
       </DialogActions>
     </Dialog>
   );
-}
+};
+
+export default ExportDialog;

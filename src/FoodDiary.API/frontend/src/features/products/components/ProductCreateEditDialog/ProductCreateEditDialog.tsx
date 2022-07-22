@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Button,
   Dialog,
@@ -35,12 +35,12 @@ function useInitialCategory(product?: ProductItem) {
   }, [isNewProduct, product]);
 }
 
-export default function ProductCreateEditDialog({
+const ProductCreateEditDialog: React.FC<ProductCreateEditDialogProps> = ({
   product,
   onDialogCancel,
   onDialogConfirm,
   ...dialogProps
-}: ProductCreateEditDialogProps) {
+}) => {
   const isNewProduct = !product;
   const initialProductName = isNewProduct ? '' : product.name;
   const initialCaloriesCost = isNewProduct ? 100 : product.caloriesCost;
@@ -133,4 +133,6 @@ export default function ProductCreateEditDialog({
       </DialogActions>
     </Dialog>
   );
-}
+};
+
+export default ProductCreateEditDialog;

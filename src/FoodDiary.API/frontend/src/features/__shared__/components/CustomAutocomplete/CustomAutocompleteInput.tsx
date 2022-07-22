@@ -1,5 +1,5 @@
 import { CircularProgress, TextField, AutocompleteRenderInputParams } from '@mui/material';
-import { Fragment } from 'react';
+import React, { Fragment } from 'react';
 
 type CustomAutocompleteInputProps = {
   renderInputParams: AutocompleteRenderInputParams;
@@ -8,12 +8,12 @@ type CustomAutocompleteInputProps = {
   placeholder?: string;
 };
 
-export default function CustomAutocompleteInput({
+const CustomAutocompleteInput: React.FC<CustomAutocompleteInputProps> = ({
   renderInputParams,
   isLoading,
   label,
   placeholder,
-}: CustomAutocompleteInputProps) {
+}) => {
   return (
     <TextField
       {...renderInputParams}
@@ -31,4 +31,6 @@ export default function CustomAutocompleteInput({
       }}
     />
   );
-}
+};
+
+export default CustomAutocompleteInput;

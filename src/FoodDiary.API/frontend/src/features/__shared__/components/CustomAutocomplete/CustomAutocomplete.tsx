@@ -7,11 +7,11 @@ interface CustomAutocompleteProps<TOption> extends AutocompleteBindingProps<TOpt
   placeholder?: string;
 }
 
-export default function CustomAutocomplete<TOption>({
+const CustomAutocomplete = <TOption,>({
   label,
   placeholder,
   ...props
-}: CustomAutocompleteProps<TOption>) {
+}: CustomAutocompleteProps<TOption>) => {
   return (
     <Autocomplete
       {...props}
@@ -25,4 +25,6 @@ export default function CustomAutocomplete<TOption>({
       )}
     />
   );
-}
+};
+
+export default CustomAutocomplete;

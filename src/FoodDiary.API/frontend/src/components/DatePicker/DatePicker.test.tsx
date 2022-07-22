@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { Fragment } from 'react';
+import React from 'react';
 import { useValidatedState } from 'src/hooks';
 import { create } from 'src/test-utils';
 import { validateDate } from 'src/utils';
@@ -13,12 +13,12 @@ type DatePickerTestProps = {
   errorHelperText?: string;
 };
 
-function DatePickerTest({
+const DatePickerTest: React.FC<DatePickerTestProps> = ({
   label,
   placeholder,
   date: initialDate = null,
   errorHelperText = '',
-}: DatePickerTestProps) {
+}) => {
   const { value, setValue, isInvalid, helperText } = useValidatedState<Date | null>({
     initialValue: initialDate,
     errorHelperText,
@@ -35,7 +35,7 @@ function DatePickerTest({
       helperText={helperText}
     />
   );
-}
+};
 
 test('date can be changed', async () => {
   const ui = create
@@ -59,7 +59,7 @@ test('date can be changed', async () => {
 test('date can be validated', async () => {
   const ui = create
     .component(
-      <Fragment>
+      <React.Fragment>
         <DatePickerTest
           label="First"
           placeholder="Select first"
@@ -72,7 +72,7 @@ test('date can be validated', async () => {
           date={new Date('2022-06-26')}
           errorHelperText="Second is invalid"
         />
-      </Fragment>,
+      </React.Fragment>,
     )
     .please();
 

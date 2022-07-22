@@ -1,7 +1,7 @@
 import { CssBaseline, StyledEngineProvider, Theme, ThemeProvider } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { PropsWithChildren } from 'react';
+import React from 'react';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import { Store } from 'redux';
@@ -18,11 +18,11 @@ type AppProviderProps = {
   authToken?: string;
 };
 
-export default function AppProvider({
+const AppProvider: React.FC<React.PropsWithChildren<AppProviderProps>> = ({
   children,
   store,
   authToken,
-}: PropsWithChildren<AppProviderProps>) {
+}) => {
   return (
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={theme}>
@@ -37,4 +37,6 @@ export default function AppProvider({
       </ThemeProvider>
     </StyledEngineProvider>
   );
-}
+};
+
+export default AppProvider;

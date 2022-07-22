@@ -4,7 +4,6 @@ import AddIcon from '@mui/icons-material/Add';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import PublishIcon from '@mui/icons-material/Publish';
 import DeleteIcon from '@mui/icons-material/Delete';
-
 import PageCreateEditDialog from '../PageCreateEditDialog';
 import PagesFilter from '../PagesFilter';
 import { PageCreateEdit } from 'src/features/pages/models';
@@ -54,9 +53,9 @@ function useImport(file?: File) {
   return dialogProps;
 }
 
-export type PagesToolbarProps = React.PropsWithChildren<unknown>;
+type PagesToolbarProps = React.PropsWithChildren<unknown>;
 
-export default function PagesToolbar({ children }: PagesToolbarProps) {
+const PagesToolbar: React.FC<PagesToolbarProps> = ({ children }) => {
   const classes = useToolbarStyles();
   const selectedPageIds = useAppSelector(state => state.pages.selectedPageIds);
   const dispatch = useAppDispatch();
@@ -178,4 +177,6 @@ export default function PagesToolbar({ children }: PagesToolbarProps) {
       {children}
     </Toolbar>
   );
-}
+};
+
+export default PagesToolbar;

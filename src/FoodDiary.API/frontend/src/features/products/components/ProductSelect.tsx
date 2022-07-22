@@ -1,18 +1,17 @@
-import { useEffect, useState } from 'react';
-
+import React, { useEffect, useState } from 'react';
 import { useLazyGetProductsAutocompleteQuery } from 'src/api';
 import { CustomAutocomplete } from 'src/features/__shared__/components';
 import { SelectProps } from 'src/features/__shared__/types';
 import { ProductAutocompleteOption } from 'src/features/products/models';
 
-export type ProductSelectProps = SelectProps<ProductAutocompleteOption>;
+type ProductSelectProps = SelectProps<ProductAutocompleteOption>;
 
-export default function ProductSelect({
+const ProductSelect: React.FC<ProductSelectProps> = ({
   label,
   placeholder,
   value = null,
   setValue,
-}: ProductSelectProps) {
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [getProductsAutocomplete, autocomplete] = useLazyGetProductsAutocompleteQuery();
 
@@ -35,4 +34,6 @@ export default function ProductSelect({
       onClose={() => setIsOpen(false)}
     />
   );
-}
+};
+
+export default ProductSelect;

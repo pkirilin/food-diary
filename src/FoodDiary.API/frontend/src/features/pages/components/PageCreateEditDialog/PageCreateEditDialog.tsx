@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -44,12 +44,12 @@ function useInitialDate(isDialogOpened: boolean, page?: PageCreateEdit) {
   }, [dateForNewPage, dateForNewPageLoading, isNewPage, page]);
 }
 
-export default function PageCreateEditDialog({
+const PageCreateEditDialog: React.FC<PageCreateEditDialogProps> = ({
   page,
   onDialogConfirm,
   onDialogCancel,
   ...dialogProps
-}: PageCreateEditDialogProps) {
+}) => {
   const { open: isDialogOpened } = dialogProps;
   const initialDate = useInitialDate(isDialogOpened, page);
   const isNewPage = !page;
@@ -110,4 +110,6 @@ export default function PageCreateEditDialog({
       </DialogActions>
     </Dialog>
   );
-}
+};
+
+export default PageCreateEditDialog;
