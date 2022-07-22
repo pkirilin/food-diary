@@ -14,11 +14,11 @@ const Pages: React.FC = () => {
         <title>Food diary | Pages</title>
       </Helmet>
       <PagesToolbar>
-        <ExportMenu></ExportMenu>
+        <ExportMenu />
       </PagesToolbar>
-      <PagesFilterAppliedParams></PagesFilterAppliedParams>
-      <PagesTable></PagesTable>
-      <PagesTablePagination></PagesTablePagination>
+      <PagesFilterAppliedParams />
+      <PagesTable />
+      <PagesTablePagination />
     </Paper>
   );
 };

@@ -9,8 +9,8 @@ export default function AppButton({ isLoading, disabled, ...props }: AppButtonPr
   return (
     <AppButtonRoot>
       <AppButtonWrapper>
-        <Button {...props} disabled={disabled || isLoading}></Button>
-        {isLoading && <AppButtonProgress size={24} color="primary"></AppButtonProgress>}
+        <Button {...props} disabled={disabled || isLoading} />
+        {isLoading && <AppButtonProgress size={24} color="primary" />}
       </AppButtonWrapper>
     </AppButtonRoot>
   );

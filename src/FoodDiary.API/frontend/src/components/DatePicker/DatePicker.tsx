@@ -35,8 +35,8 @@ export default function DatePicker({
           placeholder={placeholder}
           error={isInvalid}
           helperText={helperText}
-        ></TextField>
+        />
       )}
-    ></MuiDatePicker>
+    />
   );
 }

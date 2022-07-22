@@ -22,11 +22,7 @@ export default function ExportMenu() {
 
   return (
     <Fragment>
-      <ExportDialog
-        format={exportFormat}
-        isOpen={isDialogOpen}
-        onClose={handleDialogClose}
-      ></ExportDialog>
+      <ExportDialog format={exportFormat} isOpen={isDialogOpen} onClose={handleDialogClose} />
       <Tooltip title="Export pages">
         <span>
           <IconButton onClick={event => showMenu(event)} size="large">

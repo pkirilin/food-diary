@@ -33,7 +33,7 @@ const Auth = () => {
         signInWithGoogle(tokenId);
       }}
       cookiePolicy={'single_host_origin'}
-    ></GoogleLogin>
+    />
   );
 };
 

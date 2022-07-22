@@ -29,6 +29,6 @@ export default function CustomAutocompleteInput({
           </Fragment>
         ),
       }}
-    ></TextField>
+    />
   );
 }

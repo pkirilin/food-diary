@@ -99,17 +99,17 @@ export default function PagesToolbar({ children }: PagesToolbarProps) {
 
   return (
     <Toolbar className={classes.root}>
-      <PageCreateEditDialog {...pageCreateDialog.binding}></PageCreateEditDialog>
+      <PageCreateEditDialog {...pageCreateDialog.binding} />
       <ConfirmationDialog
         {...pagesDeleteDialog.binding}
         dialogTitle="Delete pages confirmation"
         dialogMessage="Do you really want to delete all selected pages?"
-      ></ConfirmationDialog>
+      />
       <ConfirmationDialog
         {...importDialogProps}
         dialogTitle="Import warning"
         dialogMessage={importWarningMessage}
-      ></ConfirmationDialog>
+      />
       {selectedPageIds.length > 0 ? (
         <React.Fragment>
           <Typography className={classes.title}>{selectedPageIds.length} selected</Typography>
@@ -173,7 +173,7 @@ export default function PagesToolbar({ children }: PagesToolbarProps) {
           horizontal: 'right',
         }}
       >
-        <PagesFilter></PagesFilter>
+        <PagesFilter />
       </Popover>
       {children}
     </Toolbar>

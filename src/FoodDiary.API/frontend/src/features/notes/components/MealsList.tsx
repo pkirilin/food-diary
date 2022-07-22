@@ -6,7 +6,7 @@ const MealsList: React.FC = () => {
   return (
     <React.Fragment>
       {Meals.get().map((mealType, index) => (
-        <MealsListItem key={index} mealType={mealType}></MealsListItem>
+        <MealsListItem key={index} mealType={mealType} />
       ))}
     </React.Fragment>
   );

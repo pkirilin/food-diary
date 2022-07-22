@@ -33,7 +33,7 @@ function DatePickerTest({
       onChange={value => setValue(value)}
       isInvalid={isInvalid}
       helperText={helperText}
-    ></DatePicker>
+    />
   );
 }
 
@@ -44,7 +44,7 @@ test('date can be changed', async () => {
         label="Test date"
         placeholder="Select test date"
         date={new Date('2022-06-20')}
-      ></DatePickerTest>,
+      />,
     )
     .please();
 
@@ -65,13 +65,13 @@ test('date can be validated', async () => {
           placeholder="Select first"
           date={new Date('2022-06-26')}
           errorHelperText="First is invalid"
-        ></DatePickerTest>
+        />
         <DatePickerTest
           label="Second"
           placeholder="Select second"
           date={new Date('2022-06-26')}
           errorHelperText="Second is invalid"
-        ></DatePickerTest>
+        />
       </Fragment>,
     )
     .please();

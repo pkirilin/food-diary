@@ -30,24 +30,24 @@ const PagesFilterAppliedParams: React.FC = () => {
         <Tooltip title="Applied filter: start date">
           <Chip
             variant="outlined"
-            icon={<TodayIcon></TodayIcon>}
+            icon={<TodayIcon />}
             label={formatDate(startDate)}
             onDelete={() => {
               dispatch(startDateChanged());
             }}
-          ></Chip>
+          />
         </Tooltip>
       )}
       {endDate && (
         <Tooltip title="Applied filter: end date">
           <Chip
             variant="outlined"
-            icon={<EventIcon></EventIcon>}
+            icon={<EventIcon />}
             label={formatDate(endDate)}
             onDelete={() => {
               dispatch(endDateChanged());
             }}
-          ></Chip>
+          />
         </Tooltip>
       )}
     </Box>

@@ -18,11 +18,11 @@ const MealsListItem: React.FC<MealsListItemProps> = ({ mealType }: MealsListItem
 
   return (
     <Accordion variant="outlined" square expanded={expanded} onChange={handleAccordionChange}>
-      <AccordionSummary expandIcon={<ExpandMoreIcon></ExpandMoreIcon>}>
+      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
         <Typography variant="h2">{mealName}</Typography>
       </AccordionSummary>
       <AccordionDetails>
-        <NotesTable mealType={mealType}></NotesTable>
+        <NotesTable mealType={mealType} />
       </AccordionDetails>
     </Accordion>
   );

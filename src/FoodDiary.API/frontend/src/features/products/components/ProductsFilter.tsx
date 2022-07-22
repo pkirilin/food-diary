@@ -41,7 +41,7 @@ const ProductsFilter: React.FC = () => {
         fullWidth
         margin="normal"
         onBlur={event => dispatch(productSearchNameChanged(event.target.value))}
-      ></TextField>
+      />
       <CategorySelect
         label="Filter by category"
         placeholder="Select a category"
@@ -50,7 +50,7 @@ const ProductsFilter: React.FC = () => {
           setCategory(value);
           dispatch(filterByCategoryChanged(value));
         }}
-      ></CategorySelect>
+      />
       <Box className={classes.controls}>
         <Button variant="text" disabled={!filterChanged} onClick={() => dispatch(filterReset())}>
           Reset

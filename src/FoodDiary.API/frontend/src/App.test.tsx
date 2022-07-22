@@ -3,7 +3,7 @@ import App from './App';
 import { render } from './testing';
 
 test('authenticated user can navigate and view private content', () => {
-  render(<App></App>);
+  render(<App />);
 
   expect(screen.getByRole('navigation')).toBeInTheDocument();
   expect(screen.getByRole('heading')).toBeInTheDocument();
@@ -11,7 +11,7 @@ test('authenticated user can navigate and view private content', () => {
 });
 
 test('unauthenticated user must sign in to access private content', () => {
-  render(<App></App>, { authToken: '' });
+  render(<App />, { authToken: '' });
 
   expect(screen.getByText(/Sign in/)).toBeInTheDocument();
 });

@@ -59,7 +59,7 @@ const Navbar: React.FC = () => {
               }
             >
               <ListItem button>
-                <ListItemText primary={title}></ListItemText>
+                <ListItemText primary={title} />
               </ListItem>
             </NavLink>
           ))}

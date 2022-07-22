@@ -33,6 +33,6 @@ export default function CategorySelect({
       onChange={(event, value) => setValue(value)}
       onOpen={() => setIsOpen(true)}
       onClose={() => setIsOpen(false)}
-    ></CustomAutocomplete>
+    />
   );
 }

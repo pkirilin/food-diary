@@ -8,30 +8,30 @@ import NotFound from './NotFound';
 const PUBLIC_ROUTES: RouteObject[] = [
   {
     path: '/',
-    element: <Navigate to="/pages"></Navigate>,
+    element: <Navigate to="/pages" />,
   },
   {
     path: '/auth',
-    element: <Auth></Auth>,
+    element: <Auth />,
   },
 ];
 
 const PRIVATE_ROUTES: RouteObject[] = [
   {
     path: '/pages',
-    element: <Pages></Pages>,
+    element: <Pages />,
   },
   {
     path: '/pages/:id',
-    element: <PageContent></PageContent>,
+    element: <PageContent />,
   },
   {
     path: '/products',
-    element: <Products></Products>,
+    element: <Products />,
   },
   {
     path: '/categories',
-    element: <Categories></Categories>,
+    element: <Categories />,
   },
 ];
 
@@ -44,7 +44,7 @@ export default function AppRoutes() {
     })),
     {
       path: '*',
-      element: <NotFound></NotFound>,
+      element: <NotFound />,
     },
   ]);
 

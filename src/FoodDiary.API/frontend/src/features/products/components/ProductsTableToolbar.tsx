@@ -38,19 +38,19 @@ const ProductsTableToolbar: React.FC = () => {
 
   return (
     <Toolbar className={classes.root}>
-      <ProductCreateEditDialog {...productCreateDialog.binding}></ProductCreateEditDialog>
+      <ProductCreateEditDialog {...productCreateDialog.binding} />
       <ConfirmationDialog
         {...productsDeleteDialog.binding}
         dialogTitle="Delete products confirmation"
         dialogMessage="Do you really want to delete selected products?"
-      ></ConfirmationDialog>
+      />
       {selectedProductIds.length > 0 ? (
         <React.Fragment>
           <Typography className={classes.title}>{selectedProductIds.length} selected</Typography>
           <Tooltip title="Delete product">
             <span>
               <IconButton onClick={handleDeleteClick} size="large">
-                <DeleteIcon></DeleteIcon>
+                <DeleteIcon />
               </IconButton>
             </span>
           </Tooltip>
@@ -63,7 +63,7 @@ const ProductsTableToolbar: React.FC = () => {
           <Tooltip title="Add new product">
             <span>
               <IconButton onClick={handleAddClick} size="large">
-                <AddIcon></AddIcon>
+                <AddIcon />
               </IconButton>
             </span>
           </Tooltip>
@@ -75,7 +75,7 @@ const ProductsTableToolbar: React.FC = () => {
                 }}
                 size="large"
               >
-                <FilterListIcon></FilterListIcon>
+                <FilterListIcon />
               </IconButton>
             </span>
           </Tooltip>
@@ -92,7 +92,7 @@ const ProductsTableToolbar: React.FC = () => {
           horizontal: 'right',
         }}
       >
-        <ProductsFilter></ProductsFilter>
+        <ProductsFilter />
       </Popover>
     </Toolbar>
   );

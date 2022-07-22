@@ -12,10 +12,10 @@ const Products: React.FC = () => {
       <Helmet>
         <title>Food diary | Products</title>
       </Helmet>
-      <ProductsTableToolbar></ProductsTableToolbar>
-      <ProductsFilterAppliedParams></ProductsFilterAppliedParams>
-      <ProductsTable></ProductsTable>
-      <ProductsTablePagination></ProductsTablePagination>
+      <ProductsTableToolbar />
+      <ProductsFilterAppliedParams />
+      <ProductsTable />
+      <ProductsTablePagination />
     </Paper>
   );
 };

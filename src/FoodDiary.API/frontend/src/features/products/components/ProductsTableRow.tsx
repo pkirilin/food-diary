@@ -42,16 +42,9 @@ const ProductsTableRow: React.FC<ProductsTableRowProps> = ({ product }: Products
 
   return (
     <TableRow>
-      <ProductCreateEditDialog
-        {...productEditDialog.binding}
-        product={product}
-      ></ProductCreateEditDialog>
+      <ProductCreateEditDialog {...productEditDialog.binding} product={product} />
       <TableCell padding="checkbox">
-        <Checkbox
-          color="primary"
-          checked={isProductSelected}
-          onChange={handleSelectProduct}
-        ></Checkbox>
+        <Checkbox color="primary" checked={isProductSelected} onChange={handleSelectProduct} />
       </TableCell>
       <TableCell>{product.name}</TableCell>
       <TableCell>{product.caloriesCost}</TableCell>
@@ -60,7 +53,7 @@ const ProductsTableRow: React.FC<ProductsTableRowProps> = ({ product }: Products
         <Tooltip title="Edit product">
           <span>
             <IconButton onClick={handleEditClick} size="large">
-              <EditIcon></EditIcon>
+              <EditIcon />
             </IconButton>
           </span>
         </Tooltip>

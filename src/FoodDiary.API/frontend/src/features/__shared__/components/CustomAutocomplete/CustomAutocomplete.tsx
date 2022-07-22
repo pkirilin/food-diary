@@ -21,8 +21,8 @@ export default function CustomAutocomplete<TOption>({
           isLoading={props.loading}
           label={label}
           placeholder={placeholder}
-        ></CustomAutocompleteInput>
+        />
       )}
-    ></Autocomplete>
+    />
   );
 }

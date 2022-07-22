@@ -11,7 +11,7 @@ const root = createRoot(container);
 
 root.render(
   <AppProvider store={store} authToken={getToken()}>
-    <App></App>
+    <App />
   </AppProvider>,
 );
 

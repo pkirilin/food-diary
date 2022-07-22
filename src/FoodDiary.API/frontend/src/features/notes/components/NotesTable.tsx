@@ -70,23 +70,19 @@ const NotesTable: React.FC<NotesTableProps> = ({ mealType }: NotesTableProps) =>
 
   return (
     <TableContainer>
-      <NoteCreateEditDialog
-        {...noteCreateDialog.binding}
-        mealType={mealType}
-        pageId={pageId}
-      ></NoteCreateEditDialog>
+      <NoteCreateEditDialog {...noteCreateDialog.binding} mealType={mealType} pageId={pageId} />
       <Table size="small">
         <TableHead>
           <TableRow>
             <TableCell>Product</TableCell>
             <TableCell>Quantity</TableCell>
             <TableCell>Calories</TableCell>
-            <TableCell padding="checkbox"></TableCell>
+            <TableCell padding="checkbox" />
           </TableRow>
         </TableHead>
         <TableBody>
           {noteItems.map(note => (
-            <NotesTableRow key={note.id} note={note}></NotesTableRow>
+            <NotesTableRow key={note.id} note={note} />
           ))}
         </TableBody>
       </Table>
@@ -95,7 +91,7 @@ const NotesTable: React.FC<NotesTableProps> = ({ mealType }: NotesTableProps) =>
           variant="text"
           size="medium"
           fullWidth
-          startIcon={<AddIcon></AddIcon>}
+          startIcon={<AddIcon />}
           onClick={handleAddNoteClick}
         >
           Add note

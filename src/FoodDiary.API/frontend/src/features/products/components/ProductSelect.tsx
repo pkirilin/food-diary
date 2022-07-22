@@ -33,6 +33,6 @@ export default function ProductSelect({
       onChange={(event, value) => setValue(value)}
       onOpen={() => setIsOpen(true)}
       onClose={() => setIsOpen(false)}
-    ></CustomAutocomplete>
+    />
   );
 }

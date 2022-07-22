@@ -93,7 +93,7 @@ export default function PageCreateEditDialog({
           isInvalid={isDateInvalid}
           helperText={dateHelperText}
           autoFocus
-        ></DatePicker>
+        />
       </DialogContent>
       <DialogActions>
         <Button

@@ -84,7 +84,7 @@ const PagesTable: React.FC = () => {
             </TableCell>
             <TableCell>Total calories</TableCell>
             <TableCell>Count notes</TableCell>
-            <TableCell></TableCell>
+            <TableCell />
           </TableRow>
         </TableHead>
         <TableBody>
@@ -96,7 +96,7 @@ const PagesTable: React.FC = () => {
             </TableRow>
           )}
           {pageItems.map(page => (
-            <PagesTableRow key={page.id} page={page}></PagesTableRow>
+            <PagesTableRow key={page.id} page={page} />
           ))}
         </TableBody>
       </Table>

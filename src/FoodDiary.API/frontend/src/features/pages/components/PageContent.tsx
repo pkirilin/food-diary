@@ -27,9 +27,9 @@ const PageContent: React.FC = () => {
             : 'Food diary'}
         </title>
       </Helmet>
-      <PageContentHeader></PageContentHeader>
-      <MealsList></MealsList>
-      <PageContentFooter></PageContentFooter>
+      <PageContentHeader />
+      <MealsList />
+      <PageContentFooter />
     </React.Fragment>
   );
 };

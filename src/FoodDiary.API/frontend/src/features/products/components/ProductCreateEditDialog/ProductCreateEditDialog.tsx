@@ -102,7 +102,7 @@ export default function ProductCreateEditDialog({
           margin="normal"
           fullWidth
           autoFocus
-        ></TextField>
+        />
         <TextField
           {...bindCaloriesCost()}
           type="number"
@@ -110,13 +110,13 @@ export default function ProductCreateEditDialog({
           placeholder="Enter calories cost"
           margin="normal"
           fullWidth
-        ></TextField>
+        />
         <CategorySelect
           label="Category"
           placeholder="Select a category"
           value={category}
           setValue={value => setCategory(value)}
-        ></CategorySelect>
+        />
       </DialogContent>
       <DialogActions>
         <Button

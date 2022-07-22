@@ -25,24 +25,24 @@ const ProductsFilterAppliedParams: React.FC = () => {
         <Tooltip title="Applied filter: product search name">
           <Chip
             variant="outlined"
-            icon={<SearchIcon></SearchIcon>}
+            icon={<SearchIcon />}
             label={productSearchName}
             onDelete={() => {
               dispatch(productSearchNameChanged(''));
             }}
-          ></Chip>
+          />
         </Tooltip>
       )}
       {category && (
         <Tooltip title="Applied filter: category">
           <Chip
             variant="outlined"
-            icon={<CategoryIcon></CategoryIcon>}
+            icon={<CategoryIcon />}
             label={category.name}
             onDelete={() => {
               dispatch(filterByCategoryChanged(null));
             }}
-          ></Chip>
+          />
         </Tooltip>
       )}
     </Box>

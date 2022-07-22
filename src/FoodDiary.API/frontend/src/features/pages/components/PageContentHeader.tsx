@@ -24,7 +24,7 @@ const PageContentHeader: React.FC = () => {
   const currentPageDate = dateFnsFormat(new Date(page.date), 'dd.MM.yyyy');
 
   return (
-    <Breadcrumbs separator={<NavigateNextIcon></NavigateNextIcon>} className={classes.root}>
+    <Breadcrumbs separator={<NavigateNextIcon />} className={classes.root}>
       <Link variant="h1" component={RouterLink} to="/pages" underline="hover">
         Pages
       </Link>

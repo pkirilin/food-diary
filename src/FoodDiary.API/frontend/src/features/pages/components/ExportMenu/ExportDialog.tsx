@@ -63,7 +63,7 @@ export default function ExportDialog({ format: exportFormat, isOpen, onClose }: 
           onChange={value => setStartDate(value)}
           isInvalid={isStartDateInvalid}
           helperText={startDateHelperText}
-        ></DatePicker>
+        />
         <DatePicker
           label="End date"
           placeholder="Select end date"
@@ -71,7 +71,7 @@ export default function ExportDialog({ format: exportFormat, isOpen, onClose }: 
           onChange={value => setEndDate(value)}
           isInvalid={isEndDateInvalid}
           helperText={endDateHelperText}
-        ></DatePicker>
+        />
       </DialogContent>
       <DialogActions>
         {exportFormat === 'json' ? (

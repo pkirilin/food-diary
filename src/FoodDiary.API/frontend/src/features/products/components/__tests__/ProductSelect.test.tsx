@@ -6,11 +6,7 @@ import ProductSelect from '../ProductSelect';
 function productSelectWithoutValue() {
   return create
     .component(
-      <ProductSelect
-        label="Product"
-        placeholder="Select a product"
-        setValue={jest.fn()}
-      ></ProductSelect>,
+      <ProductSelect label="Product" placeholder="Select a product" setValue={jest.fn()} />,
     )
     .withReduxStore()
     .please();
@@ -18,7 +14,7 @@ function productSelectWithoutValue() {
 
 function productSelectWithValue(value: string) {
   return create
-    .component(<ProductSelect value={{ id: 1, name: value }} setValue={jest.fn()}></ProductSelect>)
+    .component(<ProductSelect value={{ id: 1, name: value }} setValue={jest.fn()} />)
     .withReduxStore()
     .please();
 }

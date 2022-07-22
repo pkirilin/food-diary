@@ -106,7 +106,7 @@ export default function NoteCreateEditDialog({
           placeholder="Select a product"
           value={product}
           setValue={value => setProduct(value)}
-        ></ProductSelect>
+        />
         <TextField
           {...bindQuantity()}
           type="number"
@@ -114,7 +114,7 @@ export default function NoteCreateEditDialog({
           placeholder="Product quantity, g"
           margin="normal"
           fullWidth
-        ></TextField>
+        />
       </DialogContent>
       <DialogActions>
         <Button

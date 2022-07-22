@@ -62,24 +62,24 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({ note }: NotesTableRowProp
         mealType={note.mealType}
         pageId={pageId}
         note={note}
-      ></NoteCreateEditDialog>
+      />
       <ConfirmationDialog
         {...noteDeleteDialog.binding}
         dialogTitle="Delete note"
         dialogMessage={`Are you sure you want to delete this note: ${note.productName}, ${note.productQuantity} g, ${note.calories} cal?`}
-      ></ConfirmationDialog>
+      />
       <TableCell>{note.productName}</TableCell>
       <TableCell>{note.productQuantity}</TableCell>
       <TableCell>{note.calories}</TableCell>
       <TableCell className={classes.rowActions}>
         <Tooltip title="Edit note">
           <IconButton size="small" onClick={handleEditClick}>
-            <EditIcon fontSize="small"></EditIcon>
+            <EditIcon fontSize="small" />
           </IconButton>
         </Tooltip>
         <Tooltip title="Delete note">
           <IconButton size="small" onClick={handleDeleteClick}>
-            <DeleteIcon fontSize="small"></DeleteIcon>
+            <DeleteIcon fontSize="small" />
           </IconButton>
         </Tooltip>
       </TableCell>

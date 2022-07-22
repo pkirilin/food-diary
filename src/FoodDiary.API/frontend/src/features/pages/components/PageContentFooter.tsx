@@ -34,10 +34,10 @@ const PageContentFooter: React.FC = () => {
     >
       <Grid container className={classes.footerContent}>
         <Grid item xs>
-          <PageContentBottomNavigation></PageContentBottomNavigation>
+          <PageContentBottomNavigation />
         </Grid>
         <Grid item className={classes.summaryContainer}>
-          <MealsListSummary></MealsListSummary>
+          <MealsListSummary />
         </Grid>
       </Grid>
     </AppBar>

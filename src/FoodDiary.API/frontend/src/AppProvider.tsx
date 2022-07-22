@@ -29,7 +29,7 @@ export default function AppProvider({
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <Provider store={store}>
             <AuthProvider token={authToken}>
-              <CssBaseline></CssBaseline>
+              <CssBaseline />
               <BrowserRouter>{children}</BrowserRouter>
             </AuthProvider>
           </Provider>

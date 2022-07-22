@@ -55,7 +55,7 @@ const PagesTableRow: React.FC<PagesTableRowProps> = ({ page }: PagesTableRowProp
 
   return (
     <TableRow hover>
-      <PageCreateEditDialog {...pageEditDialog.binding} page={page}></PageCreateEditDialog>
+      <PageCreateEditDialog {...pageEditDialog.binding} page={page} />
       <TableCell padding="checkbox">
         <Checkbox color="primary" checked={isPageSelected} onChange={handleSelectPage} />
       </TableCell>
@@ -76,7 +76,7 @@ const PagesTableRow: React.FC<PagesTableRowProps> = ({ page }: PagesTableRowProp
       <TableCell width="30px">
         <Tooltip title="Edit page">
           <IconButton onClick={handleEditClick} size="large">
-            <EditIcon></EditIcon>
+            <EditIcon />
           </IconButton>
         </Tooltip>
       </TableCell>

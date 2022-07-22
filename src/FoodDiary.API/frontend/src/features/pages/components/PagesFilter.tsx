@@ -114,7 +114,7 @@ const PagesFilter: React.FC = () => {
         onChange={value => setStartDate(value)}
         isInvalid={isStartDateInvalid}
         helperText={startDateHelperText}
-      ></DatePicker>
+      />
       <DatePicker
         label="End date"
         placeholder="Select end date"
@@ -122,7 +122,7 @@ const PagesFilter: React.FC = () => {
         onChange={value => setEndDate(value)}
         isInvalid={isEndDateInvalid}
         helperText={endDateHelperText}
-      ></DatePicker>
+      />
       <Box className={classes.controls}>
         <Button variant="text" disabled={!isChanged} onClick={reset}>
           Reset

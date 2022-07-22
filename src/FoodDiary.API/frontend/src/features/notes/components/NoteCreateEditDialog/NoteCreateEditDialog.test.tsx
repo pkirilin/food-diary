@@ -14,7 +14,7 @@ test('note can be created', async () => {
         mealType={MealType.Breakfast}
         onDialogConfirm={submitFn}
         onDialogCancel={jest.fn()}
-      ></NoteCreateEditDialog>,
+      />,
     )
     .withReduxStore()
     .please();
