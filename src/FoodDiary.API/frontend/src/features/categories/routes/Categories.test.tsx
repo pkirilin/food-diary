@@ -60,7 +60,7 @@ test('category can be deleted', async () => {
   await waitForElementToBeRemoved(dialog.queryByRole('progressbar'));
   await waitForElementToBeRemoved(screen.queryByRole('dialog'));
 
-  expect(screen.queryByText(/bakery/i)).toBeNull();
+  expect(screen.queryByText(/bakery/i)).not.toBeInTheDocument();
 });
 
 test('category cannot be created while categories list is loading', async () => {
