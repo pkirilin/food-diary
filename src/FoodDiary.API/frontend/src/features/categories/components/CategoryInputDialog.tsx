@@ -49,6 +49,12 @@ const CategoryInputDialog: React.FC<CreateEditCategoryDialogProps> = ({
     }
   }, [isDialogOpened, clearCategoryName, category, setCategoryName]);
 
+  function handleCategoryNameChange(
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) {
+    setCategoryName(event.target.value);
+  }
+
   function handleClose() {
     setIsDialogOpened(false);
   }
@@ -69,7 +75,7 @@ const CategoryInputDialog: React.FC<CreateEditCategoryDialogProps> = ({
           label="Category name"
           placeholder="Enter category name"
           value={categoryName}
-          onChange={event => setCategoryName(event.target.value)}
+          onChange={handleCategoryNameChange}
           helperText={categoryNameHelperText}
           error={isCategoryNameInvalid}
         />
