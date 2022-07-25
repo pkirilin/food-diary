@@ -22,7 +22,7 @@
       "version": "detect"
     }
   },
-  "plugins": ["prettier", "import", "react", "react-hooks"],
+  "plugins": ["prettier", "import", "react", "react-hooks", "testing-library"],
   "rules": {
     "prettier/prettier": 2,
     "react/jsx-uses-react": "off",
