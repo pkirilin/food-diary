@@ -1,6 +1,6 @@
 import { rest } from 'msw';
-import { CategoryFormData } from 'src/features/categories';
 import config from 'src/features/__shared__/config';
+import { CategoryFormData } from 'src/features/categories';
 import { db } from '../db';
 
 export const categoriesHandlers = [

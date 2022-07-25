@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { fireEvent, render } from '@testing-library/react';
-import useDialog from '../useDialog';
 import { Button, Dialog, DialogActions, DialogContent, DialogProps } from '@mui/material';
+import { fireEvent, render } from '@testing-library/react';
+import React, { useState } from 'react';
 import { DialogCustomActionProps } from '../../types';
+import useDialog from '../useDialog';
 
 type TestDialogProps = DialogProps & DialogCustomActionProps<string>;
 

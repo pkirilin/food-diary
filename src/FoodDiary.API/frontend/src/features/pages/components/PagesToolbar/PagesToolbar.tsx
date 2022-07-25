@@ -1,13 +1,9 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { IconButton, Popover, Toolbar, Tooltip, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import PublishIcon from '@mui/icons-material/Publish';
-import DeleteIcon from '@mui/icons-material/Delete';
-import PageCreateEditDialog from '../PageCreateEditDialog';
-import PagesFilter from '../PagesFilter';
-import { PageCreateEdit } from 'src/features/pages/models';
-import { createPage, deletePages, importPages } from 'src/features/pages/thunks';
+import { IconButton, Popover, Toolbar, Tooltip, Typography } from '@mui/material';
+import React, { useCallback, useEffect, useState } from 'react';
 import { ConfirmationDialog } from 'src/features/__shared__/components';
 import {
   useAppDispatch,
@@ -16,6 +12,10 @@ import {
   useAppSelector,
 } from 'src/features/__shared__/hooks';
 import { useToolbarStyles } from 'src/features/__shared__/styles';
+import { PageCreateEdit } from 'src/features/pages/models';
+import { createPage, deletePages, importPages } from 'src/features/pages/thunks';
+import PageCreateEditDialog from '../PageCreateEditDialog';
+import PagesFilter from '../PagesFilter';
 
 const importWarningMessage =
   'Pages import is going to be started. Import may update or overwrite existing data from file and may cause data loss. Continue?';

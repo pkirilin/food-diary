@@ -1,13 +1,13 @@
-import React from 'react';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 import { IconButton, TableCell, TableRow, Tooltip } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { NoteCreateEdit, NoteItem } from '../models';
-import { useAppDispatch, useDialog, useRouterId } from '../../__shared__/hooks';
-import NoteCreateEditDialog from './NoteCreateEditDialog';
+import React from 'react';
 import { ConfirmationDialog } from '../../__shared__/components';
+import { useAppDispatch, useDialog, useRouterId } from '../../__shared__/hooks';
+import { NoteCreateEdit, NoteItem } from '../models';
 import { deleteNote, editNote } from '../thunks';
+import NoteCreateEditDialog from './NoteCreateEditDialog';
 
 type NotesTableRowProps = {
   note: NoteItem;

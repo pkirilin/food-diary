@@ -1,8 +1,8 @@
 import { ReactElement } from 'react';
 
+import createCategoryAutocompleteResultBuilder from './builders/categoryAutocompleteResultBuilder';
 import createComponentBuilder from './builders/componentBuilder';
 import createPagesSearchResultBuilder from './builders/pagesSearchResultBuilder';
-import createCategoryAutocompleteResultBuilder from './builders/categoryAutocompleteResultBuilder';
 import createProductAutocompleteResultBuilder from './builders/productAutocompleteResultBuilder';
 
 const create = {

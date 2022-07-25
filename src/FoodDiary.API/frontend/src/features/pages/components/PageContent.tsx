@@ -1,12 +1,12 @@
+import dateFnsFormat from 'date-fns/format';
 import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
-import dateFnsFormat from 'date-fns/format';
-import PageContentHeader from './PageContentHeader';
-import PageContentFooter from './PageContentFooter';
-import { MealsList } from '../../notes/components';
-import { getPageById } from '../thunks';
 import { useAppDispatch, useRouterId, useAppSelector } from '../../__shared__/hooks';
+import { MealsList } from '../../notes/components';
 import { getNotes } from '../../notes/thunks';
+import { getPageById } from '../thunks';
+import PageContentFooter from './PageContentFooter';
+import PageContentHeader from './PageContentHeader';
 
 const PageContent: React.FC = () => {
   const pageId = useRouterId('id');

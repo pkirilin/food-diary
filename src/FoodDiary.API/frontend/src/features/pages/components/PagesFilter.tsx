@@ -1,12 +1,12 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Box, Button, Paper } from '@mui/material';
 import dateFnsFormat from 'date-fns/format';
-import { endDateChanged, filterReset, startDateChanged } from '../slice';
-import { useAppDispatch, useAppSelector } from '../../__shared__/hooks';
-import { useFilterStyles } from '../../__shared__/styles';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { DatePicker } from 'src/components';
 import { useValidatedState } from 'src/hooks';
 import { validateDate } from 'src/utils';
+import { useAppDispatch, useAppSelector } from '../../__shared__/hooks';
+import { useFilterStyles } from '../../__shared__/styles';
+import { endDateChanged, filterReset, startDateChanged } from '../slice';
 
 type DateChangedAction = typeof startDateChanged | typeof endDateChanged;
 

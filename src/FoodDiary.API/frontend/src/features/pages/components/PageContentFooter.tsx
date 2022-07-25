@@ -1,6 +1,6 @@
-import React from 'react';
 import { Grid, AppBar } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
+import React from 'react';
 import { MealsListSummary } from '../../notes/components';
 import PageContentBottomNavigation from './PageContentBottomNavigation';
 

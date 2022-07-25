@@ -1,6 +1,6 @@
+import { TablePagination } from '@mui/material';
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { TablePagination } from '@mui/material';
 import { useAppSelector } from '../../__shared__/hooks';
 import { pageNumberChanged, pageSizeChanged } from '../slice';
 

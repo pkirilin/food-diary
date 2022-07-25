@@ -1,5 +1,5 @@
-import React from 'react';
 import { Button, ButtonProps } from '@mui/material';
+import React from 'react';
 import { AppButtonProgress, AppButtonRoot, AppButtonWrapper } from './AppButton.styles';
 
 interface AppButtonProps extends ButtonProps {

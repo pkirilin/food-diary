@@ -1,8 +1,8 @@
-import React, { useMemo, useState } from 'react';
-import { Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import NotesTable from './NotesTable';
+import { Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/material';
+import React, { useMemo, useState } from 'react';
 import { Meals, MealType } from '../models';
+import NotesTable from './NotesTable';
 
 type MealsListItemProps = {
   mealType: MealType;

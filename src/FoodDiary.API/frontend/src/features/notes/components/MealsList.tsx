@@ -1,6 +1,6 @@
 import React from 'react';
-import MealsListItem from './MealsListItem';
 import { Meals } from '../models';
+import MealsListItem from './MealsListItem';
 
 const MealsList: React.FC = () => {
   return (

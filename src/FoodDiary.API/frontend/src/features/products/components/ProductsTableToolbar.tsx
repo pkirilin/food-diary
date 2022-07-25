@@ -1,14 +1,14 @@
-import React from 'react';
-import { IconButton, Popover, Toolbar, Tooltip, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import FilterListIcon from '@mui/icons-material/FilterList';
 import DeleteIcon from '@mui/icons-material/Delete';
+import FilterListIcon from '@mui/icons-material/FilterList';
+import { IconButton, Popover, Toolbar, Tooltip, Typography } from '@mui/material';
+import React from 'react';
 import { ConfirmationDialog } from '../../__shared__/components';
 import { useAppDispatch, useDialog, usePopover, useAppSelector } from '../../__shared__/hooks';
 import { useToolbarStyles } from '../../__shared__/styles';
-import ProductCreateEditDialog from './ProductCreateEditDialog';
 import { ProductCreateEdit } from '../models';
 import { createProduct, deleteProducts } from '../thunks';
+import ProductCreateEditDialog from './ProductCreateEditDialog';
 import ProductsFilter from './ProductsFilter';
 
 const ProductsTableToolbar: React.FC = () => {

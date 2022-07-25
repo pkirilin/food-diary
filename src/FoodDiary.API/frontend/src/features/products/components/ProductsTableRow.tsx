@@ -1,11 +1,11 @@
-import React from 'react';
-import { Checkbox, IconButton, TableCell, TableRow, Tooltip } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
-import { ProductCreateEdit, ProductItem } from '../models';
-import ProductCreateEditDialog from './ProductCreateEditDialog';
-import { editProduct } from '../thunks';
+import { Checkbox, IconButton, TableCell, TableRow, Tooltip } from '@mui/material';
+import React from 'react';
 import { useAppDispatch, useDialog, useAppSelector } from '../../__shared__/hooks';
+import { ProductCreateEdit, ProductItem } from '../models';
 import { productSelected } from '../slice';
+import { editProduct } from '../thunks';
+import ProductCreateEditDialog from './ProductCreateEditDialog';
 
 type ProductsTableRowProps = {
   product: ProductItem;

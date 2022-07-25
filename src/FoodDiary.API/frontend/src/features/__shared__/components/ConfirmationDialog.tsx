@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Button,
   Dialog,
@@ -8,6 +7,7 @@ import {
   DialogTitle,
   Typography,
 } from '@mui/material';
+import React from 'react';
 import { DialogCustomActionProps, MessageDialogProps } from '../types';
 
 interface ConfirmationDialogProps

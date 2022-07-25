@@ -1,10 +1,10 @@
+import CategoryIcon from '@mui/icons-material/Category';
+import SearchIcon from '@mui/icons-material/Search';
+import { Box, Chip, Tooltip } from '@mui/material';
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { Box, Chip, Tooltip } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
-import CategoryIcon from '@mui/icons-material/Category';
-import { useFilterAppliedParamsStyles } from '../../__shared__/styles';
 import { useAppSelector } from '../../__shared__/hooks';
+import { useFilterAppliedParamsStyles } from '../../__shared__/styles';
 import { filterByCategoryChanged, productSearchNameChanged } from '../slice';
 
 const ProductsFilterAppliedParams: React.FC = () => {

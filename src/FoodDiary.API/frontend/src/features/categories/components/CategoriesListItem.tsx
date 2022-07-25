@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { Card, CardHeader, CardActions, Button } from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import { Card, CardHeader, CardActions, Button } from '@mui/material';
+import React, { useEffect, useState } from 'react';
 import { useCategoriesQuery, useEditCategoryMutation } from '../api';
 import { Category, CategoryFormData } from '../types';
 import CategoryInputDialog from './CategoryInputDialog';

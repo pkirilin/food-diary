@@ -1,14 +1,14 @@
-import React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import EditIcon from '@mui/icons-material/Edit';
 import { TableRow, TableCell, Checkbox, Tooltip, IconButton, Link } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
-import EditIcon from '@mui/icons-material/Edit';
 import dateFnsFormat from 'date-fns/format';
-import { PageCreateEdit, PageItem } from '../models';
+import React from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 import { useAppDispatch, useDialog, useAppSelector } from '../../__shared__/hooks';
+import { PageCreateEdit, PageItem } from '../models';
 import { pageSelected } from '../slice';
-import PageCreateEditDialog from './PageCreateEditDialog';
 import { editPage } from '../thunks';
+import PageCreateEditDialog from './PageCreateEditDialog';
 
 type PagesTableRowProps = {
   page: PageItem;

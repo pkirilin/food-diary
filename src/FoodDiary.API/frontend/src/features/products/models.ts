@@ -1,5 +1,5 @@
-import { CategoryAutocompleteOption } from '../categories/models';
 import { AutocompleteOption, ItemsFilterBase } from '../__shared__/models';
+import { CategoryAutocompleteOption } from '../categories/models';
 
 export interface ProductItem {
   id: number;

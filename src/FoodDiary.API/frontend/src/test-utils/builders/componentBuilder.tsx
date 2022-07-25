@@ -1,12 +1,12 @@
-import React from 'react';
-import { Provider } from 'react-redux';
-import { BrowserRouter } from 'react-router-dom';
 import { StyledEngineProvider, ThemeProvider } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { createTestStore, TestStoreBuilder } from './storeBuilder';
+import React from 'react';
+import { Provider } from 'react-redux';
+import { BrowserRouter } from 'react-router-dom';
 import AuthProvider from 'src/features/auth/AuthProvider';
 import theme from 'src/theme';
+import { createTestStore, TestStoreBuilder } from './storeBuilder';
 
 export interface TestComponentBuilder {
   please: () => React.ReactElement;

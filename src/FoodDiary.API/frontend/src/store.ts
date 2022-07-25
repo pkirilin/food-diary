@@ -1,9 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit';
-import api from './api';
 import { categoriesApi } from 'src/features/categories';
+import api from './api';
+import notesReducer from './features/notes/slice';
 import pagesReducer from './features/pages/slice';
 import productsReducer from './features/products/slice';
-import notesReducer from './features/notes/slice';
 
 export function configureAppStore() {
   return configureStore({

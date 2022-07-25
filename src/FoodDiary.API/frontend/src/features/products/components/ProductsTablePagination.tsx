@@ -1,8 +1,8 @@
+import { TablePagination } from '@mui/material';
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { TablePagination } from '@mui/material';
-import { pageNumberChanged, pageSizeChanged } from '../slice';
 import { useAppSelector } from '../../__shared__/hooks';
+import { pageNumberChanged, pageSizeChanged } from '../slice';
 
 const ProductsTablePagination: React.FC = () => {
   const totalProductsCount = useAppSelector(state => state.products.totalProductsCount);

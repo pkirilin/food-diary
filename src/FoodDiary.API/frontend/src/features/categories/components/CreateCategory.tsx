@@ -1,9 +1,9 @@
 import AddIcon from '@mui/icons-material/Add';
 import React, { useEffect, useState } from 'react';
-import CategoryInputDialog from './CategoryInputDialog';
+import { AppFab } from 'src/components';
 import { useCategoriesQuery, useCreateCategoryMutation } from '../api';
 import { CategoryFormData } from '../types';
-import { AppFab } from 'src/components';
+import CategoryInputDialog from './CategoryInputDialog';
 
 const CreateCategory: React.FC = () => {
   const [isCreateDialogOpened, setIsCreateDialogOpened] = useState(false);

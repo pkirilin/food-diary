@@ -1,6 +1,6 @@
+import { Box, Button, Paper, TextField } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { Box, Button, Paper, TextField } from '@mui/material';
 
 import { useAppSelector, useValidatedTextInput } from '../../__shared__/hooks';
 import { useFilterStyles } from '../../__shared__/styles';

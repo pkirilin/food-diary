@@ -1,4 +1,3 @@
-import React, { useEffect, useMemo, useState } from 'react';
 import {
   Button,
   Dialog,
@@ -8,11 +7,12 @@ import {
   DialogTitle,
   TextField,
 } from '@mui/material';
-import { ProductCreateEdit, ProductItem } from 'src/features/products/models';
-import { DialogCustomActionProps } from 'src/features/__shared__/types';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useValidatedNumericInput, useValidatedTextInput } from 'src/features/__shared__/hooks';
-import CategorySelect from '../CategorySelect';
+import { DialogCustomActionProps } from 'src/features/__shared__/types';
 import { CategoryAutocompleteOption } from 'src/features/categories/models';
+import { ProductCreateEdit, ProductItem } from 'src/features/products/models';
+import CategorySelect from '../CategorySelect';
 
 interface ProductCreateEditDialogProps
   extends DialogProps,

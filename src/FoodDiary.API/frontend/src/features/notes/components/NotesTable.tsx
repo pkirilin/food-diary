@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import AddIcon from '@mui/icons-material/Add';
 import {
   Box,
   Button,
@@ -10,10 +10,7 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
-import { MealType, NoteCreateEdit } from '../models';
-import NotesTableRow from './NotesTableRow';
-import NoteCreateEditDialog from './NoteCreateEditDialog';
+import React, { useMemo } from 'react';
 import {
   useAppDispatch,
   useDialog,
@@ -21,7 +18,10 @@ import {
   useRouterId,
   useAppSelector,
 } from '../../__shared__/hooks';
+import { MealType, NoteCreateEdit } from '../models';
 import { createNote, getNotes } from '../thunks';
+import NoteCreateEditDialog from './NoteCreateEditDialog';
+import NotesTableRow from './NotesTableRow';
 
 type NotesTableProps = {
   mealType: MealType;

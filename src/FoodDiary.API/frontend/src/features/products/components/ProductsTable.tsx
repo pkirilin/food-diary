@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Checkbox,
   Table,
@@ -9,10 +8,11 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
-import ProductsTableRow from './ProductsTableRow';
+import React from 'react';
 import { useAppDispatch, useRefreshEffect, useAppSelector } from '../../__shared__/hooks';
-import { getProducts } from '../thunks';
 import { allProductsSelected } from '../slice';
+import { getProducts } from '../thunks';
+import ProductsTableRow from './ProductsTableRow';
 
 const ProductsTable: React.FC = () => {
   const productItems = useAppSelector(state => state.products.productItems);
