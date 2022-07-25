@@ -2,6 +2,7 @@
   "root": true,
   "extends": [
     "eslint:recommended",
+    "plugin:import/typescript",
     "plugin:react/recommended",
     "plugin:react/jsx-runtime",
     "plugin:@typescript-eslint/eslint-recommended",
@@ -21,7 +22,7 @@
       "version": "detect"
     }
   },
-  "plugins": ["prettier", "react", "react-hooks"],
+  "plugins": ["prettier", "import", "react", "react-hooks"],
   "rules": {
     "prettier/prettier": 2,
     "react/jsx-uses-react": "off",
