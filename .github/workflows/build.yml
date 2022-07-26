@@ -27,7 +27,10 @@ jobs:
         working-directory: 'src/FoodDiary.API/frontend'
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16.16.0'
       - name: Install
         run: yarn install --immutable --immutable-cache
       - name: Lint
