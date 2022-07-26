@@ -6,11 +6,7 @@ import CategorySelect from '../CategorySelect';
 function categorySelectWithoutValue() {
   return create
     .component(
-      <CategorySelect
-        label="Category"
-        placeholder="Select a category"
-        setValue={jest.fn()}
-      ></CategorySelect>,
+      <CategorySelect label="Category" placeholder="Select a category" setValue={jest.fn()} />,
     )
     .withReduxStore()
     .please();
@@ -18,9 +14,7 @@ function categorySelectWithoutValue() {
 
 function categorySelectWithValue(value: string) {
   return create
-    .component(
-      <CategorySelect value={{ id: 1, name: value }} setValue={jest.fn()}></CategorySelect>,
-    )
+    .component(<CategorySelect value={{ id: 1, name: value }} setValue={jest.fn()} />)
     .withReduxStore()
     .please();
 }

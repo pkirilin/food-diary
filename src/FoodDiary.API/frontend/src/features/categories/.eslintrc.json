@@ -1,0 +1,23 @@
+{
+  "root": false,
+  "extends": [
+    "../../../.eslintrc.json",
+    "plugin:testing-library/react",
+    "plugin:jest-dom/recommended"
+  ],
+  "rules": {
+    "no-restricted-imports": [
+      "error",
+      {
+        "patterns": ["src/features/*/*"]
+      }
+    ],
+    "react/jsx-no-bind": [
+      "warn",
+      {
+        "allowFunctions": true,
+        "allowArrowFunctions": false
+      }
+    ]
+  }
+}

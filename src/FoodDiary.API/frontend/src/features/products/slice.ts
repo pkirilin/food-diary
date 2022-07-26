@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { CategoryAutocompleteOption } from '../categories/models';
 import { Status } from '../__shared__/models';
 import { SelectionPayload } from '../__shared__/types';
 import { createAsyncThunkMatcher } from '../__shared__/utils';
+import { CategoryAutocompleteOption } from '../categories/models';
 import { ProductItem, ProductItemsFilter } from './models';
 import { createProduct, deleteProducts, editProduct, getProducts } from './thunks';
 

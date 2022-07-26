@@ -1,37 +1,37 @@
 import { Navigate, RouteObject, useRoutes } from 'react-router-dom';
 import { Auth, RequireAuth } from 'src/features/auth/components';
+import { Categories } from 'src/features/categories';
 import { PageContent, Pages } from 'src/features/pages/components';
 import { Products } from 'src/features/products/components';
-import { Categories } from 'src/features/categories';
 import NotFound from './NotFound';
 
 const PUBLIC_ROUTES: RouteObject[] = [
   {
     path: '/',
-    element: <Navigate to="/pages"></Navigate>,
+    element: <Navigate to="/pages" />,
   },
   {
     path: '/auth',
-    element: <Auth></Auth>,
+    element: <Auth />,
   },
 ];
 
 const PRIVATE_ROUTES: RouteObject[] = [
   {
     path: '/pages',
-    element: <Pages></Pages>,
+    element: <Pages />,
   },
   {
     path: '/pages/:id',
-    element: <PageContent></PageContent>,
+    element: <PageContent />,
   },
   {
     path: '/products',
-    element: <Products></Products>,
+    element: <Products />,
   },
   {
     path: '/categories',
-    element: <Categories></Categories>,
+    element: <Categories />,
   },
 ];
 
@@ -44,7 +44,7 @@ export default function AppRoutes() {
     })),
     {
       path: '*',
-      element: <NotFound></NotFound>,
+      element: <NotFound />,
     },
   ]);
 

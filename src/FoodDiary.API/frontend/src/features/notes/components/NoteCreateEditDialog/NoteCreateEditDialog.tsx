@@ -1,4 +1,3 @@
-import { useEffect, useMemo, useState } from 'react';
 import {
   Button,
   Dialog,
@@ -8,9 +7,9 @@ import {
   DialogTitle,
   TextField,
 } from '@mui/material';
-
-import { DialogCustomActionProps } from 'src/features/__shared__/types';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useAppSelector, useValidatedNumericInput } from 'src/features/__shared__/hooks';
+import { DialogCustomActionProps } from 'src/features/__shared__/types';
 import { MealType, NoteCreateEdit, NoteItem } from 'src/features/notes/models';
 import ProductSelect from 'src/features/products/components/ProductSelect';
 import { ProductAutocompleteOption } from 'src/features/products/models';
@@ -51,14 +50,14 @@ function useDisplayOrder(mealType: MealType, note?: NoteItem) {
   return isNewNote ? maxDisplayOrderForNotesGroup + 1 : note.displayOrder;
 }
 
-export default function NoteCreateEditDialog({
+const NoteCreateEditDialog: React.FC<NoteCreateEditDialogProps> = ({
   mealType,
   pageId,
   note,
   onDialogCancel,
   onDialogConfirm,
   ...dialogProps
-}: NoteCreateEditDialogProps) {
+}) => {
   const isNewNote = !note;
   const displayOrder = useDisplayOrder(mealType, note);
   const initialProduct = useInitialProduct(note);
@@ -106,7 +105,7 @@ export default function NoteCreateEditDialog({
           placeholder="Select a product"
           value={product}
           setValue={value => setProduct(value)}
-        ></ProductSelect>
+        />
         <TextField
           {...bindQuantity()}
           type="number"
@@ -114,7 +113,7 @@ export default function NoteCreateEditDialog({
           placeholder="Product quantity, g"
           margin="normal"
           fullWidth
-        ></TextField>
+        />
       </DialogContent>
       <DialogActions>
         <Button
@@ -131,4 +130,6 @@ export default function NoteCreateEditDialog({
       </DialogActions>
     </Dialog>
   );
-}
+};
+
+export default NoteCreateEditDialog;

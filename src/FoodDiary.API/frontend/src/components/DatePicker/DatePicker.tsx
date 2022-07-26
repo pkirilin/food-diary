@@ -1,5 +1,6 @@
 import { TextField } from '@mui/material';
 import { DatePicker as MuiDatePicker } from '@mui/x-date-pickers';
+import React from 'react';
 
 type DatePickerProps = {
   label: string;
@@ -11,7 +12,7 @@ type DatePickerProps = {
   onChange: (value: Date | null) => void;
 };
 
-export default function DatePicker({
+const DatePicker: React.FC<DatePickerProps> = ({
   label,
   placeholder,
   date,
@@ -19,7 +20,7 @@ export default function DatePicker({
   isInvalid,
   helperText,
   onChange,
-}: DatePickerProps) {
+}) => {
   return (
     <MuiDatePicker
       label={label}
@@ -35,8 +36,10 @@ export default function DatePicker({
           placeholder={placeholder}
           error={isInvalid}
           helperText={helperText}
-        ></TextField>
+        />
       )}
-    ></MuiDatePicker>
+    />
   );
-}
+};
+
+export default DatePicker;

@@ -1,14 +1,14 @@
-import React from 'react';
-import { IconButton, Popover, Toolbar, Tooltip, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import FilterListIcon from '@mui/icons-material/FilterList';
 import DeleteIcon from '@mui/icons-material/Delete';
+import FilterListIcon from '@mui/icons-material/FilterList';
+import { IconButton, Popover, Toolbar, Tooltip, Typography } from '@mui/material';
+import React from 'react';
 import { ConfirmationDialog } from '../../__shared__/components';
 import { useAppDispatch, useDialog, usePopover, useAppSelector } from '../../__shared__/hooks';
 import { useToolbarStyles } from '../../__shared__/styles';
-import ProductCreateEditDialog from './ProductCreateEditDialog';
 import { ProductCreateEdit } from '../models';
 import { createProduct, deleteProducts } from '../thunks';
+import ProductCreateEditDialog from './ProductCreateEditDialog';
 import ProductsFilter from './ProductsFilter';
 
 const ProductsTableToolbar: React.FC = () => {
@@ -38,19 +38,19 @@ const ProductsTableToolbar: React.FC = () => {
 
   return (
     <Toolbar className={classes.root}>
-      <ProductCreateEditDialog {...productCreateDialog.binding}></ProductCreateEditDialog>
+      <ProductCreateEditDialog {...productCreateDialog.binding} />
       <ConfirmationDialog
         {...productsDeleteDialog.binding}
         dialogTitle="Delete products confirmation"
         dialogMessage="Do you really want to delete selected products?"
-      ></ConfirmationDialog>
+      />
       {selectedProductIds.length > 0 ? (
         <React.Fragment>
           <Typography className={classes.title}>{selectedProductIds.length} selected</Typography>
           <Tooltip title="Delete product">
             <span>
               <IconButton onClick={handleDeleteClick} size="large">
-                <DeleteIcon></DeleteIcon>
+                <DeleteIcon />
               </IconButton>
             </span>
           </Tooltip>
@@ -63,7 +63,7 @@ const ProductsTableToolbar: React.FC = () => {
           <Tooltip title="Add new product">
             <span>
               <IconButton onClick={handleAddClick} size="large">
-                <AddIcon></AddIcon>
+                <AddIcon />
               </IconButton>
             </span>
           </Tooltip>
@@ -75,7 +75,7 @@ const ProductsTableToolbar: React.FC = () => {
                 }}
                 size="large"
               >
-                <FilterListIcon></FilterListIcon>
+                <FilterListIcon />
               </IconButton>
             </span>
           </Tooltip>
@@ -92,7 +92,7 @@ const ProductsTableToolbar: React.FC = () => {
           horizontal: 'right',
         }}
       >
-        <ProductsFilter></ProductsFilter>
+        <ProductsFilter />
       </Popover>
     </Toolbar>
   );

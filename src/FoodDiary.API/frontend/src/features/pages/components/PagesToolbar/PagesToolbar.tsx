@@ -1,14 +1,9 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { IconButton, Popover, Toolbar, Tooltip, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import PublishIcon from '@mui/icons-material/Publish';
-import DeleteIcon from '@mui/icons-material/Delete';
-
-import PageCreateEditDialog from '../PageCreateEditDialog';
-import PagesFilter from '../PagesFilter';
-import { PageCreateEdit } from 'src/features/pages/models';
-import { createPage, deletePages, importPages } from 'src/features/pages/thunks';
+import { IconButton, Popover, Toolbar, Tooltip, Typography } from '@mui/material';
+import React, { useCallback, useEffect, useState } from 'react';
 import { ConfirmationDialog } from 'src/features/__shared__/components';
 import {
   useAppDispatch,
@@ -17,6 +12,10 @@ import {
   useAppSelector,
 } from 'src/features/__shared__/hooks';
 import { useToolbarStyles } from 'src/features/__shared__/styles';
+import { PageCreateEdit } from 'src/features/pages/models';
+import { createPage, deletePages, importPages } from 'src/features/pages/thunks';
+import PageCreateEditDialog from '../PageCreateEditDialog';
+import PagesFilter from '../PagesFilter';
 
 const importWarningMessage =
   'Pages import is going to be started. Import may update or overwrite existing data from file and may cause data loss. Continue?';
@@ -54,9 +53,9 @@ function useImport(file?: File) {
   return dialogProps;
 }
 
-export type PagesToolbarProps = React.PropsWithChildren<unknown>;
+type PagesToolbarProps = React.PropsWithChildren<unknown>;
 
-export default function PagesToolbar({ children }: PagesToolbarProps) {
+const PagesToolbar: React.FC<PagesToolbarProps> = ({ children }) => {
   const classes = useToolbarStyles();
   const selectedPageIds = useAppSelector(state => state.pages.selectedPageIds);
   const dispatch = useAppDispatch();
@@ -99,17 +98,17 @@ export default function PagesToolbar({ children }: PagesToolbarProps) {
 
   return (
     <Toolbar className={classes.root}>
-      <PageCreateEditDialog {...pageCreateDialog.binding}></PageCreateEditDialog>
+      <PageCreateEditDialog {...pageCreateDialog.binding} />
       <ConfirmationDialog
         {...pagesDeleteDialog.binding}
         dialogTitle="Delete pages confirmation"
         dialogMessage="Do you really want to delete all selected pages?"
-      ></ConfirmationDialog>
+      />
       <ConfirmationDialog
         {...importDialogProps}
         dialogTitle="Import warning"
         dialogMessage={importWarningMessage}
-      ></ConfirmationDialog>
+      />
       {selectedPageIds.length > 0 ? (
         <React.Fragment>
           <Typography className={classes.title}>{selectedPageIds.length} selected</Typography>
@@ -173,9 +172,11 @@ export default function PagesToolbar({ children }: PagesToolbarProps) {
           horizontal: 'right',
         }}
       >
-        <PagesFilter></PagesFilter>
+        <PagesFilter />
       </Popover>
       {children}
     </Toolbar>
   );
-}
+};
+
+export default PagesToolbar;

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import AddIcon from '@mui/icons-material/Add';
 import {
   Box,
   Button,
@@ -10,10 +10,7 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
-import { MealType, NoteCreateEdit } from '../models';
-import NotesTableRow from './NotesTableRow';
-import NoteCreateEditDialog from './NoteCreateEditDialog';
+import React, { useMemo } from 'react';
 import {
   useAppDispatch,
   useDialog,
@@ -21,7 +18,10 @@ import {
   useRouterId,
   useAppSelector,
 } from '../../__shared__/hooks';
+import { MealType, NoteCreateEdit } from '../models';
 import { createNote, getNotes } from '../thunks';
+import NoteCreateEditDialog from './NoteCreateEditDialog';
+import NotesTableRow from './NotesTableRow';
 
 type NotesTableProps = {
   mealType: MealType;
@@ -70,23 +70,19 @@ const NotesTable: React.FC<NotesTableProps> = ({ mealType }: NotesTableProps) =>
 
   return (
     <TableContainer>
-      <NoteCreateEditDialog
-        {...noteCreateDialog.binding}
-        mealType={mealType}
-        pageId={pageId}
-      ></NoteCreateEditDialog>
+      <NoteCreateEditDialog {...noteCreateDialog.binding} mealType={mealType} pageId={pageId} />
       <Table size="small">
         <TableHead>
           <TableRow>
             <TableCell>Product</TableCell>
             <TableCell>Quantity</TableCell>
             <TableCell>Calories</TableCell>
-            <TableCell padding="checkbox"></TableCell>
+            <TableCell padding="checkbox" />
           </TableRow>
         </TableHead>
         <TableBody>
           {noteItems.map(note => (
-            <NotesTableRow key={note.id} note={note}></NotesTableRow>
+            <NotesTableRow key={note.id} note={note} />
           ))}
         </TableBody>
       </Table>
@@ -95,7 +91,7 @@ const NotesTable: React.FC<NotesTableProps> = ({ mealType }: NotesTableProps) =>
           variant="text"
           size="medium"
           fullWidth
-          startIcon={<AddIcon></AddIcon>}
+          startIcon={<AddIcon />}
           onClick={handleAddNoteClick}
         >
           Add note

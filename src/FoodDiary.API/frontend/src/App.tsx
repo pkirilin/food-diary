@@ -1,10 +1,10 @@
-import React, { Fragment } from 'react';
-import { Helmet } from 'react-helmet';
 import { Container } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
+import React, { Fragment } from 'react';
+import { Helmet } from 'react-helmet';
+import { useAuth } from './features/auth/hooks';
 import Navbar from './Navbar';
 import { AppRoutes } from './routes';
-import { useAuth } from './features/auth/hooks';
 
 const useStyles = makeStyles(theme => ({
   content: {
@@ -21,9 +21,9 @@ const App: React.FC = () => {
       <Helmet>
         <title>Food diary</title>
       </Helmet>
-      {isAuthenticated && <Navbar></Navbar>}
+      {isAuthenticated && <Navbar />}
       <Container maxWidth={false} className={classes.content}>
-        <AppRoutes></AppRoutes>
+        <AppRoutes />
       </Container>
     </Fragment>
   );

@@ -1,9 +1,9 @@
-import React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import { Breadcrumbs, Link, Typography } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
-import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import dateFnsFormat from 'date-fns/format';
+import React from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 import { useAppSelector } from '../../__shared__/hooks';
 
 const useStyles = makeStyles(() => ({
@@ -24,7 +24,7 @@ const PageContentHeader: React.FC = () => {
   const currentPageDate = dateFnsFormat(new Date(page.date), 'dd.MM.yyyy');
 
   return (
-    <Breadcrumbs separator={<NavigateNextIcon></NavigateNextIcon>} className={classes.root}>
+    <Breadcrumbs separator={<NavigateNextIcon />} className={classes.root}>
       <Link variant="h1" component={RouterLink} to="/pages" underline="hover">
         Pages
       </Link>

@@ -1,6 +1,6 @@
-import React from 'react';
 import { Grid, AppBar } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
+import React from 'react';
 import { MealsListSummary } from '../../notes/components';
 import PageContentBottomNavigation from './PageContentBottomNavigation';
 
@@ -34,10 +34,10 @@ const PageContentFooter: React.FC = () => {
     >
       <Grid container className={classes.footerContent}>
         <Grid item xs>
-          <PageContentBottomNavigation></PageContentBottomNavigation>
+          <PageContentBottomNavigation />
         </Grid>
         <Grid item className={classes.summaryContainer}>
-          <MealsListSummary></MealsListSummary>
+          <MealsListSummary />
         </Grid>
       </Grid>
     </AppBar>

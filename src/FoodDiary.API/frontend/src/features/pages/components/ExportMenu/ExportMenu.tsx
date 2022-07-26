@@ -1,12 +1,11 @@
-import { Fragment, useState } from 'react';
-import { IconButton, List, ListItem, Popover, Tooltip } from '@mui/material';
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
-
+import { IconButton, List, ListItem, Popover, Tooltip } from '@mui/material';
+import React, { useState } from 'react';
 import { usePopover } from 'src/features/__shared__/hooks';
-import ExportDialog from './ExportDialog';
 import { ExportFormat } from '../../models';
+import ExportDialog from './ExportDialog';
 
-export default function ExportMenu() {
+const ExportMenu: React.FC = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [exportFormat, setExportFormat] = useState<ExportFormat>('json');
   const [menuProps, showMenu] = usePopover();
@@ -21,12 +20,8 @@ export default function ExportMenu() {
   }
 
   return (
-    <Fragment>
-      <ExportDialog
-        format={exportFormat}
-        isOpen={isDialogOpen}
-        onClose={handleDialogClose}
-      ></ExportDialog>
+    <React.Fragment>
+      <ExportDialog format={exportFormat} isOpen={isDialogOpen} onClose={handleDialogClose} />
       <Tooltip title="Export pages">
         <span>
           <IconButton onClick={event => showMenu(event)} size="large">
@@ -55,6 +50,8 @@ export default function ExportMenu() {
           </ListItem>
         </List>
       </Popover>
-    </Fragment>
+    </React.Fragment>
   );
-}
+};
+
+export default ExportMenu;

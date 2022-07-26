@@ -5,7 +5,7 @@ import Pages from '../Pages';
 // TODO: fix this test, add waiting for spinner to disappear
 test('shows empty page items message if server has no data', () => {
   const ui = create
-    .component(<Pages></Pages>)
+    .component(<Pages />)
     .withReduxStore()
     .withRouter()
     .please();
@@ -17,7 +17,7 @@ test('shows empty page items message if server has no data', () => {
 
 test('shows page items if server has data', async () => {
   const ui = create
-    .component(<Pages></Pages>)
+    .component(<Pages />)
     .withReduxStore()
     .withRouter()
     .please();

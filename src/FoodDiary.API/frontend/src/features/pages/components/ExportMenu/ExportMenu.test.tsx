@@ -24,7 +24,7 @@ jest.mock(
 
 test('pages can be exported to JSON if start/end dates specified', async () => {
   const ui = create
-    .component(<ExportMenu></ExportMenu>)
+    .component(<ExportMenu />)
     .withReduxStore()
     .please();
 
@@ -49,7 +49,7 @@ test('pages can be exported to JSON if start/end dates specified', async () => {
 
 test('pages can be exported to Google Docs if start/end dates specified', async () => {
   const ui = create
-    .component(<ExportMenu></ExportMenu>)
+    .component(<ExportMenu />)
     .withReduxStore()
     .please();
 
@@ -74,7 +74,7 @@ test('pages can be exported to Google Docs if start/end dates specified', async 
 
 test('pages cannot be exported if start/end dates not specified', async () => {
   const ui = create
-    .component(<ExportMenu></ExportMenu>)
+    .component(<ExportMenu />)
     .withReduxStore()
     .please();
 
@@ -92,7 +92,7 @@ test('pages cannot be exported if start/end dates not specified', async () => {
 
 test('export dialog is openable again after google docs export finished', async () => {
   const ui = create
-    .component(<ExportMenu></ExportMenu>)
+    .component(<ExportMenu />)
     .withReduxStore()
     .please();
 
@@ -119,7 +119,7 @@ test('export dialog is openable again after google docs export finished', async 
 
 test('export dialog is openable again after json export finished', async () => {
   const ui = create
-    .component(<ExportMenu></ExportMenu>)
+    .component(<ExportMenu />)
     .withReduxStore()
     .please();
 

@@ -1,4 +1,3 @@
-import { useEffect, useMemo, useState } from 'react';
 import {
   Button,
   Dialog,
@@ -8,11 +7,12 @@ import {
   DialogTitle,
   TextField,
 } from '@mui/material';
-import { ProductCreateEdit, ProductItem } from 'src/features/products/models';
-import { DialogCustomActionProps } from 'src/features/__shared__/types';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useValidatedNumericInput, useValidatedTextInput } from 'src/features/__shared__/hooks';
-import CategorySelect from '../CategorySelect';
+import { DialogCustomActionProps } from 'src/features/__shared__/types';
 import { CategoryAutocompleteOption } from 'src/features/categories/models';
+import { ProductCreateEdit, ProductItem } from 'src/features/products/models';
+import CategorySelect from '../CategorySelect';
 
 interface ProductCreateEditDialogProps
   extends DialogProps,
@@ -35,12 +35,12 @@ function useInitialCategory(product?: ProductItem) {
   }, [isNewProduct, product]);
 }
 
-export default function ProductCreateEditDialog({
+const ProductCreateEditDialog: React.FC<ProductCreateEditDialogProps> = ({
   product,
   onDialogCancel,
   onDialogConfirm,
   ...dialogProps
-}: ProductCreateEditDialogProps) {
+}) => {
   const isNewProduct = !product;
   const initialProductName = isNewProduct ? '' : product.name;
   const initialCaloriesCost = isNewProduct ? 100 : product.caloriesCost;
@@ -102,7 +102,7 @@ export default function ProductCreateEditDialog({
           margin="normal"
           fullWidth
           autoFocus
-        ></TextField>
+        />
         <TextField
           {...bindCaloriesCost()}
           type="number"
@@ -110,13 +110,13 @@ export default function ProductCreateEditDialog({
           placeholder="Enter calories cost"
           margin="normal"
           fullWidth
-        ></TextField>
+        />
         <CategorySelect
           label="Category"
           placeholder="Select a category"
           value={category}
           setValue={value => setCategory(value)}
-        ></CategorySelect>
+        />
       </DialogContent>
       <DialogActions>
         <Button
@@ -133,4 +133,6 @@ export default function ProductCreateEditDialog({
       </DialogActions>
     </Dialog>
   );
-}
+};
+
+export default ProductCreateEditDialog;

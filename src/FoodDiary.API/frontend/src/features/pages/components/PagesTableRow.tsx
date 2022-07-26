@@ -1,14 +1,14 @@
-import React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import EditIcon from '@mui/icons-material/Edit';
 import { TableRow, TableCell, Checkbox, Tooltip, IconButton, Link } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
-import EditIcon from '@mui/icons-material/Edit';
 import dateFnsFormat from 'date-fns/format';
-import { PageCreateEdit, PageItem } from '../models';
+import React from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 import { useAppDispatch, useDialog, useAppSelector } from '../../__shared__/hooks';
+import { PageCreateEdit, PageItem } from '../models';
 import { pageSelected } from '../slice';
-import PageCreateEditDialog from './PageCreateEditDialog';
 import { editPage } from '../thunks';
+import PageCreateEditDialog from './PageCreateEditDialog';
 
 type PagesTableRowProps = {
   page: PageItem;
@@ -55,7 +55,7 @@ const PagesTableRow: React.FC<PagesTableRowProps> = ({ page }: PagesTableRowProp
 
   return (
     <TableRow hover>
-      <PageCreateEditDialog {...pageEditDialog.binding} page={page}></PageCreateEditDialog>
+      <PageCreateEditDialog {...pageEditDialog.binding} page={page} />
       <TableCell padding="checkbox">
         <Checkbox color="primary" checked={isPageSelected} onChange={handleSelectPage} />
       </TableCell>
@@ -76,7 +76,7 @@ const PagesTableRow: React.FC<PagesTableRowProps> = ({ page }: PagesTableRowProp
       <TableCell width="30px">
         <Tooltip title="Edit page">
           <IconButton onClick={handleEditClick} size="large">
-            <EditIcon></EditIcon>
+            <EditIcon />
           </IconButton>
         </Tooltip>
       </TableCell>

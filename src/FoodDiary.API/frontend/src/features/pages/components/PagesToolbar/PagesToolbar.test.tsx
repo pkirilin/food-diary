@@ -6,7 +6,7 @@ import PagesToolbar from '../PagesToolbar';
 test('pages can be imported', async () => {
   const file = new File([], 'importFile');
   const ui = create
-    .component(<PagesToolbar></PagesToolbar>)
+    .component(<PagesToolbar />)
     .withReduxStore()
     .please();
 

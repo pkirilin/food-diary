@@ -8,11 +8,7 @@ test('page can be created', async () => {
   const submitFn = jest.fn();
   const ui = create
     .component(
-      <PageCreateEditDialog
-        open={true}
-        onDialogConfirm={submitFn}
-        onDialogCancel={jest.fn()}
-      ></PageCreateEditDialog>,
+      <PageCreateEditDialog open={true} onDialogConfirm={submitFn} onDialogCancel={jest.fn()} />,
     )
     .withReduxStore()
     .please();

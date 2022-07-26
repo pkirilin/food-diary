@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Checkbox,
   Table,
@@ -9,10 +8,11 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
-import ProductsTableRow from './ProductsTableRow';
+import React from 'react';
 import { useAppDispatch, useRefreshEffect, useAppSelector } from '../../__shared__/hooks';
-import { getProducts } from '../thunks';
 import { allProductsSelected } from '../slice';
+import { getProducts } from '../thunks';
+import ProductsTableRow from './ProductsTableRow';
 
 const ProductsTable: React.FC = () => {
   const productItems = useAppSelector(state => state.products.productItems);
@@ -59,12 +59,12 @@ const ProductsTable: React.FC = () => {
                 checked={areAllProductsSelected}
                 onChange={handleSelectAllProducts}
                 disabled={productItems.length === 0}
-              ></Checkbox>
+              />
             </TableCell>
             <TableCell>Name</TableCell>
             <TableCell>Calories cost</TableCell>
             <TableCell>Category</TableCell>
-            <TableCell padding="checkbox"></TableCell>
+            <TableCell padding="checkbox" />
           </TableRow>
         </TableHead>
         <TableBody>
@@ -76,7 +76,7 @@ const ProductsTable: React.FC = () => {
             </TableRow>
           )}
           {productItems.map(product => (
-            <ProductsTableRow key={product.id} product={product}></ProductsTableRow>
+            <ProductsTableRow key={product.id} product={product} />
           ))}
         </TableBody>
       </Table>

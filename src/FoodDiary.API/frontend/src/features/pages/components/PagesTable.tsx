@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from 'react';
 import {
   Checkbox,
   Table,
@@ -10,11 +9,12 @@ import {
   TableSortLabel,
   Typography,
 } from '@mui/material';
-import PagesTableRow from './PagesTableRow';
-import { allPagesSelected, sortOrderChanged } from '../slice';
-import { getPages } from '../thunks';
+import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useRefreshEffect, useAppSelector } from '../../__shared__/hooks';
 import { SortOrder } from '../../__shared__/models';
+import { allPagesSelected, sortOrderChanged } from '../slice';
+import { getPages } from '../thunks';
+import PagesTableRow from './PagesTableRow';
 
 const PagesTable: React.FC = () => {
   const pageItems = useAppSelector(state => state.pages.pageItems);
@@ -84,7 +84,7 @@ const PagesTable: React.FC = () => {
             </TableCell>
             <TableCell>Total calories</TableCell>
             <TableCell>Count notes</TableCell>
-            <TableCell></TableCell>
+            <TableCell />
           </TableRow>
         </TableHead>
         <TableBody>
@@ -96,7 +96,7 @@ const PagesTable: React.FC = () => {
             </TableRow>
           )}
           {pageItems.map(page => (
-            <PagesTableRow key={page.id} page={page}></PagesTableRow>
+            <PagesTableRow key={page.id} page={page} />
           ))}
         </TableBody>
       </Table>

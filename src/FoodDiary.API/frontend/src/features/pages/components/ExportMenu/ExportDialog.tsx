@@ -1,19 +1,19 @@
-import { useEffect } from 'react';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
-import { ExportFormat } from '../../models';
-import { useExportToJson } from './useExportToJson';
-import { useExportToGoogleDocs } from './useExportToGoogleDocs';
+import React, { useEffect } from 'react';
 import { AppButton, DatePicker } from 'src/components';
 import { useValidatedState } from 'src/hooks';
 import { validateDate } from 'src/utils';
+import { ExportFormat } from '../../models';
+import { useExportToGoogleDocs } from './useExportToGoogleDocs';
+import { useExportToJson } from './useExportToJson';
 
-export type ExportDialogProps = {
+type ExportDialogProps = {
   format: ExportFormat;
   isOpen: boolean;
   onClose: () => void;
 };
 
-export default function ExportDialog({ format: exportFormat, isOpen, onClose }: ExportDialogProps) {
+const ExportDialog: React.FC<ExportDialogProps> = ({ format: exportFormat, isOpen, onClose }) => {
   const {
     value: startDate,
     setValue: setStartDate,
@@ -63,7 +63,7 @@ export default function ExportDialog({ format: exportFormat, isOpen, onClose }: 
           onChange={value => setStartDate(value)}
           isInvalid={isStartDateInvalid}
           helperText={startDateHelperText}
-        ></DatePicker>
+        />
         <DatePicker
           label="End date"
           placeholder="Select end date"
@@ -71,7 +71,7 @@ export default function ExportDialog({ format: exportFormat, isOpen, onClose }: 
           onChange={value => setEndDate(value)}
           isInvalid={isEndDateInvalid}
           helperText={endDateHelperText}
-        ></DatePicker>
+        />
       </DialogContent>
       <DialogActions>
         {exportFormat === 'json' ? (
@@ -101,4 +101,6 @@ export default function ExportDialog({ format: exportFormat, isOpen, onClose }: 
       </DialogActions>
     </Dialog>
   );
-}
+};
+
+export default ExportDialog;

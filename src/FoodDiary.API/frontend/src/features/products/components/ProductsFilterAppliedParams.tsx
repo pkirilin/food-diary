@@ -1,10 +1,10 @@
+import CategoryIcon from '@mui/icons-material/Category';
+import SearchIcon from '@mui/icons-material/Search';
+import { Box, Chip, Tooltip } from '@mui/material';
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { Box, Chip, Tooltip } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
-import CategoryIcon from '@mui/icons-material/Category';
-import { useFilterAppliedParamsStyles } from '../../__shared__/styles';
 import { useAppSelector } from '../../__shared__/hooks';
+import { useFilterAppliedParamsStyles } from '../../__shared__/styles';
 import { filterByCategoryChanged, productSearchNameChanged } from '../slice';
 
 const ProductsFilterAppliedParams: React.FC = () => {
@@ -25,24 +25,24 @@ const ProductsFilterAppliedParams: React.FC = () => {
         <Tooltip title="Applied filter: product search name">
           <Chip
             variant="outlined"
-            icon={<SearchIcon></SearchIcon>}
+            icon={<SearchIcon />}
             label={productSearchName}
             onDelete={() => {
               dispatch(productSearchNameChanged(''));
             }}
-          ></Chip>
+          />
         </Tooltip>
       )}
       {category && (
         <Tooltip title="Applied filter: category">
           <Chip
             variant="outlined"
-            icon={<CategoryIcon></CategoryIcon>}
+            icon={<CategoryIcon />}
             label={category.name}
             onDelete={() => {
               dispatch(filterByCategoryChanged(null));
             }}
-          ></Chip>
+          />
         </Tooltip>
       )}
     </Box>

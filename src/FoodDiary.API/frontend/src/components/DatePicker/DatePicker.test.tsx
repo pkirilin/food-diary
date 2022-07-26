@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { Fragment } from 'react';
+import React from 'react';
 import { useValidatedState } from 'src/hooks';
 import { create } from 'src/test-utils';
 import { validateDate } from 'src/utils';
@@ -13,12 +13,12 @@ type DatePickerTestProps = {
   errorHelperText?: string;
 };
 
-function DatePickerTest({
+const DatePickerTest: React.FC<DatePickerTestProps> = ({
   label,
   placeholder,
   date: initialDate = null,
   errorHelperText = '',
-}: DatePickerTestProps) {
+}) => {
   const { value, setValue, isInvalid, helperText } = useValidatedState<Date | null>({
     initialValue: initialDate,
     errorHelperText,
@@ -33,9 +33,9 @@ function DatePickerTest({
       onChange={value => setValue(value)}
       isInvalid={isInvalid}
       helperText={helperText}
-    ></DatePicker>
+    />
   );
-}
+};
 
 test('date can be changed', async () => {
   const ui = create
@@ -44,7 +44,7 @@ test('date can be changed', async () => {
         label="Test date"
         placeholder="Select test date"
         date={new Date('2022-06-20')}
-      ></DatePickerTest>,
+      />,
     )
     .please();
 
@@ -59,20 +59,20 @@ test('date can be changed', async () => {
 test('date can be validated', async () => {
   const ui = create
     .component(
-      <Fragment>
+      <React.Fragment>
         <DatePickerTest
           label="First"
           placeholder="Select first"
           date={new Date('2022-06-26')}
           errorHelperText="First is invalid"
-        ></DatePickerTest>
+        />
         <DatePickerTest
           label="Second"
           placeholder="Select second"
           date={new Date('2022-06-26')}
           errorHelperText="Second is invalid"
-        ></DatePickerTest>
-      </Fragment>,
+        />
+      </React.Fragment>,
     )
     .please();
 

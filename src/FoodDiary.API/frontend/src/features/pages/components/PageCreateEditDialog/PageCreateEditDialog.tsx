@@ -1,4 +1,3 @@
-import { useEffect, useMemo } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -7,13 +6,14 @@ import {
   Button,
   DialogProps,
 } from '@mui/material';
+import React, { useEffect, useMemo } from 'react';
 import { DatePicker } from 'src/components';
-import { PageCreateEdit } from 'src/features/pages/models';
-import { DialogCustomActionProps } from 'src/features/__shared__/types';
-import { getDateForNewPage } from 'src/features/pages/thunks';
 import { useAppDispatch, useAppSelector } from 'src/features/__shared__/hooks';
-import { formatDate, validateDate } from 'src/utils';
+import { DialogCustomActionProps } from 'src/features/__shared__/types';
+import { PageCreateEdit } from 'src/features/pages/models';
+import { getDateForNewPage } from 'src/features/pages/thunks';
 import { useValidatedState } from 'src/hooks';
+import { formatDate, validateDate } from 'src/utils';
 
 interface PageCreateEditDialogProps extends DialogProps, DialogCustomActionProps<PageCreateEdit> {
   page?: PageCreateEdit;
@@ -44,12 +44,12 @@ function useInitialDate(isDialogOpened: boolean, page?: PageCreateEdit) {
   }, [dateForNewPage, dateForNewPageLoading, isNewPage, page]);
 }
 
-export default function PageCreateEditDialog({
+const PageCreateEditDialog: React.FC<PageCreateEditDialogProps> = ({
   page,
   onDialogConfirm,
   onDialogCancel,
   ...dialogProps
-}: PageCreateEditDialogProps) {
+}) => {
   const { open: isDialogOpened } = dialogProps;
   const initialDate = useInitialDate(isDialogOpened, page);
   const isNewPage = !page;
@@ -93,7 +93,7 @@ export default function PageCreateEditDialog({
           isInvalid={isDateInvalid}
           helperText={dateHelperText}
           autoFocus
-        ></DatePicker>
+        />
       </DialogContent>
       <DialogActions>
         <Button
@@ -110,4 +110,6 @@ export default function PageCreateEditDialog({
       </DialogActions>
     </Dialog>
   );
-}
+};
+
+export default PageCreateEditDialog;

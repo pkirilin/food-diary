@@ -1,8 +1,8 @@
-import React, { useMemo, useState } from 'react';
-import { Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import NotesTable from './NotesTable';
+import { Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/material';
+import React, { useMemo, useState } from 'react';
 import { Meals, MealType } from '../models';
+import NotesTable from './NotesTable';
 
 type MealsListItemProps = {
   mealType: MealType;
@@ -18,11 +18,11 @@ const MealsListItem: React.FC<MealsListItemProps> = ({ mealType }: MealsListItem
 
   return (
     <Accordion variant="outlined" square expanded={expanded} onChange={handleAccordionChange}>
-      <AccordionSummary expandIcon={<ExpandMoreIcon></ExpandMoreIcon>}>
+      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
         <Typography variant="h2">{mealName}</Typography>
       </AccordionSummary>
       <AccordionDetails>
-        <NotesTable mealType={mealType}></NotesTable>
+        <NotesTable mealType={mealType} />
       </AccordionDetails>
     </Accordion>
   );

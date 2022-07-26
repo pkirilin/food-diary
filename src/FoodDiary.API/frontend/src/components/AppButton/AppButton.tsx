@@ -1,17 +1,20 @@
 import { Button, ButtonProps } from '@mui/material';
+import React from 'react';
 import { AppButtonProgress, AppButtonRoot, AppButtonWrapper } from './AppButton.styles';
 
-export interface AppButtonProps extends ButtonProps {
+interface AppButtonProps extends ButtonProps {
   isLoading?: boolean;
 }
 
-export default function AppButton({ isLoading, disabled, ...props }: AppButtonProps) {
+const AppButton: React.FC<AppButtonProps> = ({ isLoading, disabled, ...props }) => {
   return (
     <AppButtonRoot>
       <AppButtonWrapper>
-        <Button {...props} disabled={disabled || isLoading}></Button>
-        {isLoading && <AppButtonProgress size={24} color="primary"></AppButtonProgress>}
+        <Button {...props} disabled={disabled || isLoading} />
+        {isLoading && <AppButtonProgress size={24} color="primary" />}
       </AppButtonWrapper>
     </AppButtonRoot>
   );
-}
+};
+
+export default AppButton;

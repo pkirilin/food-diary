@@ -1,8 +1,8 @@
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
-import create from './create';
 import config from 'src/features/__shared__/config';
 import { handlers } from 'src/testing/server/handlers';
+import create from './create';
 
 export function api(path: string) {
   return config.apiUrl + path;

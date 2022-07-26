@@ -1,7 +1,7 @@
-import { useState } from 'react';
 import { DialogProps } from '@mui/material';
-import { BindableHookResult } from './types';
+import { useState } from 'react';
 import { DialogCustomActionProps, DialogConfirmActionFn, DialogActionFn } from '../types';
+import { BindableHookResult } from './types';
 
 export type DialogBinding<TConfirmedData> = DialogProps & DialogCustomActionProps<TConfirmedData>;
 

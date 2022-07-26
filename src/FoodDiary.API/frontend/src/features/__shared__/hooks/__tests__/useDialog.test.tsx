@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { fireEvent, render } from '@testing-library/react';
-import useDialog from '../useDialog';
 import { Button, Dialog, DialogActions, DialogContent, DialogProps } from '@mui/material';
+import { fireEvent, render } from '@testing-library/react';
+import React, { useState } from 'react';
 import { DialogCustomActionProps } from '../../types';
+import useDialog from '../useDialog';
 
 type TestDialogProps = DialogProps & DialogCustomActionProps<string>;
 
@@ -51,7 +51,7 @@ const TestDialogWrapper: React.FC = () => {
       >
         Show dialog
       </button>
-      <TestDialog {...dialog.binding}></TestDialog>
+      <TestDialog {...dialog.binding} />
     </React.Fragment>
   );
 };
@@ -60,7 +60,7 @@ describe('useDialog hook', () => {
   describe('when result binded to dialog component', () => {
     test('should not show dialog', () => {
       // Act
-      const { queryByText } = render(<TestDialogWrapper></TestDialogWrapper>);
+      const { queryByText } = render(<TestDialogWrapper />);
 
       // Assert
       expect(queryByText('Dialog content')).not.toBeInTheDocument();
@@ -70,7 +70,7 @@ describe('useDialog hook', () => {
   describe('when result binded to dialog component and show button clicked', () => {
     test('should show dialog', () => {
       // Act
-      const { getByText, queryByText } = render(<TestDialogWrapper></TestDialogWrapper>);
+      const { getByText, queryByText } = render(<TestDialogWrapper />);
       fireEvent.click(getByText('Show dialog'));
 
       // Assert
@@ -81,7 +81,7 @@ describe('useDialog hook', () => {
   describe('when result binded to dialog component and cancel button clicked', () => {
     test('should close dialog', () => {
       // Act
-      const { getByText, queryByText } = render(<TestDialogWrapper></TestDialogWrapper>);
+      const { getByText, queryByText } = render(<TestDialogWrapper />);
       fireEvent.click(getByText('Show dialog'));
       fireEvent.click(getByText('Cancel'));
 
@@ -93,7 +93,7 @@ describe('useDialog hook', () => {
   describe('when result binded to dialog component and confirm button clicked', () => {
     test('should close dialog and set confirmation data', () => {
       // Act
-      const { getByText, queryByText } = render(<TestDialogWrapper></TestDialogWrapper>);
+      const { getByText, queryByText } = render(<TestDialogWrapper />);
       fireEvent.click(getByText('Show dialog'));
       fireEvent.click(getByText('Confirm'));
 

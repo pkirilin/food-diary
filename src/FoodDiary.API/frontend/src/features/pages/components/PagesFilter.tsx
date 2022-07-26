@@ -1,12 +1,12 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Box, Button, Paper } from '@mui/material';
 import dateFnsFormat from 'date-fns/format';
-import { endDateChanged, filterReset, startDateChanged } from '../slice';
-import { useAppDispatch, useAppSelector } from '../../__shared__/hooks';
-import { useFilterStyles } from '../../__shared__/styles';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { DatePicker } from 'src/components';
 import { useValidatedState } from 'src/hooks';
 import { validateDate } from 'src/utils';
+import { useAppDispatch, useAppSelector } from '../../__shared__/hooks';
+import { useFilterStyles } from '../../__shared__/styles';
+import { endDateChanged, filterReset, startDateChanged } from '../slice';
 
 type DateChangedAction = typeof startDateChanged | typeof endDateChanged;
 
@@ -114,7 +114,7 @@ const PagesFilter: React.FC = () => {
         onChange={value => setStartDate(value)}
         isInvalid={isStartDateInvalid}
         helperText={startDateHelperText}
-      ></DatePicker>
+      />
       <DatePicker
         label="End date"
         placeholder="Select end date"
@@ -122,7 +122,7 @@ const PagesFilter: React.FC = () => {
         onChange={value => setEndDate(value)}
         isInvalid={isEndDateInvalid}
         helperText={endDateHelperText}
-      ></DatePicker>
+      />
       <Box className={classes.controls}>
         <Button variant="text" disabled={!isChanged} onClick={reset}>
           Reset

@@ -13,8 +13,8 @@ const Categories: React.FC = () => {
       <Typography variant="h1" gutterBottom>
         Categories
       </Typography>
-      <CategoriesList></CategoriesList>
-      <CreateCategory></CreateCategory>
+      <CategoriesList />
+      <CreateCategory />
     </React.Fragment>
   );
 };

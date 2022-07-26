@@ -1,11 +1,11 @@
-import React from 'react';
-import { Checkbox, IconButton, TableCell, TableRow, Tooltip } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
-import { ProductCreateEdit, ProductItem } from '../models';
-import ProductCreateEditDialog from './ProductCreateEditDialog';
-import { editProduct } from '../thunks';
+import { Checkbox, IconButton, TableCell, TableRow, Tooltip } from '@mui/material';
+import React from 'react';
 import { useAppDispatch, useDialog, useAppSelector } from '../../__shared__/hooks';
+import { ProductCreateEdit, ProductItem } from '../models';
 import { productSelected } from '../slice';
+import { editProduct } from '../thunks';
+import ProductCreateEditDialog from './ProductCreateEditDialog';
 
 type ProductsTableRowProps = {
   product: ProductItem;
@@ -42,16 +42,9 @@ const ProductsTableRow: React.FC<ProductsTableRowProps> = ({ product }: Products
 
   return (
     <TableRow>
-      <ProductCreateEditDialog
-        {...productEditDialog.binding}
-        product={product}
-      ></ProductCreateEditDialog>
+      <ProductCreateEditDialog {...productEditDialog.binding} product={product} />
       <TableCell padding="checkbox">
-        <Checkbox
-          color="primary"
-          checked={isProductSelected}
-          onChange={handleSelectProduct}
-        ></Checkbox>
+        <Checkbox color="primary" checked={isProductSelected} onChange={handleSelectProduct} />
       </TableCell>
       <TableCell>{product.name}</TableCell>
       <TableCell>{product.caloriesCost}</TableCell>
@@ -60,7 +53,7 @@ const ProductsTableRow: React.FC<ProductsTableRowProps> = ({ product }: Products
         <Tooltip title="Edit product">
           <span>
             <IconButton onClick={handleEditClick} size="large">
-              <EditIcon></EditIcon>
+              <EditIcon />
             </IconButton>
           </span>
         </Tooltip>

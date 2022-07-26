@@ -1,12 +1,12 @@
+import EventIcon from '@mui/icons-material/Event';
+import TodayIcon from '@mui/icons-material/Today';
+import { Box, Chip, Tooltip } from '@mui/material';
+import dateFnsFormat from 'date-fns/format';
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { Box, Chip, Tooltip } from '@mui/material';
-import TodayIcon from '@mui/icons-material/Today';
-import EventIcon from '@mui/icons-material/Event';
-import dateFnsFormat from 'date-fns/format';
-import { endDateChanged, startDateChanged } from '../slice';
 import { useAppSelector } from '../../__shared__/hooks';
 import { useFilterAppliedParamsStyles } from '../../__shared__/styles';
+import { endDateChanged, startDateChanged } from '../slice';
 
 function formatDate(date: string) {
   return dateFnsFormat(new Date(date), 'dd.MM.yyyy');
@@ -30,24 +30,24 @@ const PagesFilterAppliedParams: React.FC = () => {
         <Tooltip title="Applied filter: start date">
           <Chip
             variant="outlined"
-            icon={<TodayIcon></TodayIcon>}
+            icon={<TodayIcon />}
             label={formatDate(startDate)}
             onDelete={() => {
               dispatch(startDateChanged());
             }}
-          ></Chip>
+          />
         </Tooltip>
       )}
       {endDate && (
         <Tooltip title="Applied filter: end date">
           <Chip
             variant="outlined"
-            icon={<EventIcon></EventIcon>}
+            icon={<EventIcon />}
             label={formatDate(endDate)}
             onDelete={() => {
               dispatch(endDateChanged());
             }}
-          ></Chip>
+          />
         </Tooltip>
       )}
     </Box>

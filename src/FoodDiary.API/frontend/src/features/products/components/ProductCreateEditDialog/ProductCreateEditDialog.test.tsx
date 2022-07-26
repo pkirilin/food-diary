@@ -8,11 +8,7 @@ test('product can be created', async () => {
   const submitFn = jest.fn();
   const ui = create
     .component(
-      <ProductCreateEditDialog
-        open={true}
-        onDialogConfirm={submitFn}
-        onDialogCancel={jest.fn()}
-      ></ProductCreateEditDialog>,
+      <ProductCreateEditDialog open={true} onDialogConfirm={submitFn} onDialogCancel={jest.fn()} />,
     )
     .withReduxStore()
     .please();
