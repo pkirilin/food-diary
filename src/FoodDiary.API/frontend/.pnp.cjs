@@ -73,7 +73,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["eslint-plugin-react-hooks", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:4.6.0"],\
             ["eslint-plugin-testing-library", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:5.5.1"],\
             ["js-cookie", "npm:3.0.1"],\
-            ["msw", "npm:0.39.2"],\
+            ["msw", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:0.44.2"],\
             ["prettier", "npm:2.7.1"],\
             ["prop-types", "npm:15.8.1"],\
             ["react", "npm:18.1.0"],\
@@ -3914,15 +3914,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["@mswjs/cookies", [\
-        ["npm:0.2.1", {\
-          "packageLocation": "./.yarn/cache/@mswjs-cookies-npm-0.2.1-072b6d4e0f-c8226a41b2.zip/node_modules/@mswjs/cookies/",\
-          "packageDependencies": [\
-            ["@mswjs/cookies", "npm:0.2.1"],\
-            ["@types/set-cookie-parser", "npm:2.4.2"],\
-            ["set-cookie-parser", "npm:2.4.8"]\
-          ],\
-          "linkType": "HARD"\
-        }],\
         ["npm:0.2.2", {\
           "packageLocation": "./.yarn/cache/@mswjs-cookies-npm-0.2.2-fdd3f4ab67-23b1ef56d5.zip/node_modules/@mswjs/cookies/",\
           "packageDependencies": [\
@@ -3957,19 +3948,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["@mswjs/interceptors", [\
-        ["npm:0.15.3", {\
-          "packageLocation": "./.yarn/cache/@mswjs-interceptors-npm-0.15.3-de94373949-4c8e1d16f4.zip/node_modules/@mswjs/interceptors/",\
-          "packageDependencies": [\
-            ["@mswjs/interceptors", "npm:0.15.3"],\
-            ["@open-draft/until", "npm:1.0.3"],\
-            ["@xmldom/xmldom", "npm:0.7.5"],\
-            ["debug", "virtual:f4296e0fa2446bc2fc5db6ce4c6478e0ffc214bf6109a4ef16edc78cf0f73e0b9dadbf4def098137b5a9ec8165e320059c103b5ee871bbf51c031832e9b1396f#npm:4.3.4"],\
-            ["headers-polyfill", "npm:3.0.7"],\
-            ["outvariant", "npm:1.3.0"],\
-            ["strict-event-emitter", "npm:0.2.4"]\
-          ],\
-          "linkType": "HARD"\
-        }],\
         ["npm:0.17.3", {\
           "packageLocation": "./.yarn/cache/@mswjs-interceptors-npm-0.17.3-8b87d33316-1c879fe78e.zip/node_modules/@mswjs/interceptors/",\
           "packageDependencies": [\
@@ -10839,7 +10817,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["eslint-plugin-react-hooks", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:4.6.0"],\
             ["eslint-plugin-testing-library", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:5.5.1"],\
             ["js-cookie", "npm:3.0.1"],\
-            ["msw", "npm:0.39.2"],\
+            ["msw", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:0.44.2"],\
             ["prettier", "npm:2.7.1"],\
             ["prop-types", "npm:15.8.1"],\
             ["react", "npm:18.1.0"],\
@@ -13979,15 +13957,30 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["msw", [\
-        ["npm:0.39.2", {\
-          "packageLocation": "./.yarn/unplugged/msw-npm-0.39.2-2a4aa5f1bc/node_modules/msw/",\
+        ["npm:0.44.1", {\
+          "packageLocation": "./.yarn/unplugged/msw-virtual-690cd28911/node_modules/msw/",\
           "packageDependencies": [\
-            ["msw", "npm:0.39.2"],\
-            ["@mswjs/cookies", "npm:0.2.1"],\
-            ["@mswjs/interceptors", "npm:0.15.3"],\
+            ["msw", "npm:0.44.1"]\
+          ],\
+          "linkType": "SOFT"\
+        }],\
+        ["npm:0.44.2", {\
+          "packageLocation": "./.yarn/unplugged/msw-virtual-10a1e4a49e/node_modules/msw/",\
+          "packageDependencies": [\
+            ["msw", "npm:0.44.2"]\
+          ],\
+          "linkType": "SOFT"\
+        }],\
+        ["virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:0.44.2", {\
+          "packageLocation": "./.yarn/unplugged/msw-virtual-10a1e4a49e/node_modules/msw/",\
+          "packageDependencies": [\
+            ["msw", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:0.44.2"],\
+            ["@mswjs/cookies", "npm:0.2.2"],\
+            ["@mswjs/interceptors", "npm:0.17.3"],\
             ["@open-draft/until", "npm:1.0.3"],\
             ["@types/cookie", "npm:0.4.1"],\
             ["@types/js-levenshtein", "npm:1.1.1"],\
+            ["@types/typescript", null],\
             ["chalk", "npm:4.1.1"],\
             ["chokidar", "npm:3.5.3"],\
             ["cookie", "npm:0.4.2"],\
@@ -13997,20 +13990,19 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["is-node-process", "npm:1.0.1"],\
             ["js-levenshtein", "npm:1.1.6"],\
             ["node-fetch", "virtual:690cd289113cce8384f527365a8c4a1feb371be3f2cf15dc030da360ee421c971dc767ee206c264eb3732bd47b24be6a9176dd4863c0bc1f3b53852b8fd6d9f4#npm:2.6.7"],\
+            ["outvariant", "npm:1.3.0"],\
             ["path-to-regexp", "npm:6.2.1"],\
             ["statuses", "npm:2.0.1"],\
             ["strict-event-emitter", "npm:0.2.4"],\
             ["type-fest", "npm:1.4.0"],\
+            ["typescript", "patch:typescript@npm%3A4.7.2#~builtin<compat/typescript>::version=4.7.2&hash=7ad353"],\
             ["yargs", "npm:17.5.1"]\
           ],\
-          "linkType": "HARD"\
-        }],\
-        ["npm:0.44.1", {\
-          "packageLocation": "./.yarn/unplugged/msw-virtual-690cd28911/node_modules/msw/",\
-          "packageDependencies": [\
-            ["msw", "npm:0.44.1"]\
+          "packagePeers": [\
+            "@types/typescript",\
+            "typescript"\
           ],\
-          "linkType": "SOFT"\
+          "linkType": "HARD"\
         }],\
         ["virtual:f4296e0fa2446bc2fc5db6ce4c6478e0ffc214bf6109a4ef16edc78cf0f73e0b9dadbf4def098137b5a9ec8165e320059c103b5ee871bbf51c031832e9b1396f#npm:0.44.1", {\
           "packageLocation": "./.yarn/unplugged/msw-virtual-690cd28911/node_modules/msw/",\
