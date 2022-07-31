@@ -66,7 +66,7 @@ namespace FoodDiary.API
                 {
                     builder.AddAuthenticationSchemes(Constants.Schemes.GoogleJwt)
                         .RequireAuthenticatedUser()
-                        .RequireClaim(Constants.ClaimNames.Email, _authOptions.AllowedEmails);
+                        .RequireClaim(Constants.ClaimTypes.Email, _authOptions.AllowedEmails);
                 });
             });
 
