@@ -57,10 +57,7 @@ namespace FoodDiary.API
                     options.Audience = _googleAuthOptions.ClientId;
                     options.RequireHttpsMetadata = Env.IsProduction();
                     options.TokenValidationParameters.AuthenticationType = Constants.Schemes.GoogleJwt;
-                    options.TokenValidationParameters.ValidIssuers = new[]
-                    {
-                        _googleAuthOptions.Authority
-                    };
+                    options.TokenValidationParameters.ValidIssuers = _googleAuthOptions.ValidIssuers;
                 });
 
             services.AddAuthorization(options =>

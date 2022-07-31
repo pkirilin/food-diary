@@ -34,6 +34,7 @@ const Auth: React.FC = () => {
       clientId={GOOGLE_CLIENT_ID}
       onSuccess={handleGoogleLoginSuccess}
       cookiePolicy={'single_host_origin'}
+      scope="openid profile email"
     />
   );
 };
