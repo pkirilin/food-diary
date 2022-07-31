@@ -4,6 +4,7 @@ using FoodDiary.API.Extensions;
 using FoodDiary.API.Middlewares;
 using FoodDiary.API.Options;
 using FoodDiary.Application.Extensions;
+using FoodDiary.Configuration;
 using FoodDiary.Configuration.Extensions;
 using FoodDiary.Import.Extensions;
 using FoodDiary.Infrastructure.Extensions;
@@ -17,10 +18,13 @@ namespace FoodDiary.API
 {
     public class Startup
     {
+        private readonly AuthOptions _authOptions;
+        
         public Startup(IConfiguration configuration, IHostEnvironment env)
         {
             Configuration = configuration;
             Env = env;
+            _authOptions = Configuration.GetSection("Auth").Get<AuthOptions>();
         }
 
         private IConfiguration Configuration { get; }
@@ -62,7 +66,8 @@ namespace FoodDiary.API
                 options.AddPolicy(Constants.Policies.GoogleJwt, builder =>
                 {
                     builder.AddAuthenticationSchemes(Constants.Schemes.GoogleJwt)
-                        .RequireAuthenticatedUser();
+                        .RequireAuthenticatedUser()
+                        .RequireClaim(Constants.ClaimNames.Email, _authOptions.AllowedEmails);
                 });
             });
 
