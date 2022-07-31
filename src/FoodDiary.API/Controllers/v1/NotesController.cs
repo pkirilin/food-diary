@@ -4,6 +4,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using FoodDiary.API.Auth;
 using FoodDiary.API.Dtos;
 using FoodDiary.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -18,7 +19,7 @@ namespace FoodDiary.API.Controllers.v1
     [ApiController]
     [Route("v1/notes")]
     [Route("api/v1/notes")]
-    [Authorize]
+    [Authorize(Constants.Policies.GoogleJwt)]
     [ApiExplorerSettings(GroupName = "v1")]
     public class NotesController : ControllerBase
     {

@@ -1,28 +1,32 @@
 ﻿using System.Reflection;
-using System.Text;
+using FoodDiary.API.Auth;
 using FoodDiary.API.Extensions;
 using FoodDiary.API.Middlewares;
 using FoodDiary.API.Options;
 using FoodDiary.Application.Extensions;
+using FoodDiary.Configuration;
 using FoodDiary.Configuration.Extensions;
 using FoodDiary.Import.Extensions;
 using FoodDiary.Infrastructure.Extensions;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Tokens;
 
 namespace FoodDiary.API
 {
     public class Startup
     {
+        private readonly AuthOptions _authOptions;
+        private readonly GoogleAuthOptions _googleAuthOptions;
+        
         public Startup(IConfiguration configuration, IHostEnvironment env)
         {
             Configuration = configuration;
             Env = env;
+            _authOptions = Configuration.GetSection("Auth").Get<AuthOptions>();
+            _googleAuthOptions = Configuration.GetSection("GoogleAuth").Get<GoogleAuthOptions>();
         }
 
         private IConfiguration Configuration { get; }
@@ -46,20 +50,25 @@ namespace FoodDiary.API
                 )
             );
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
+            services.AddAuthentication(Constants.Schemes.GoogleJwt)
+                .AddJwtBearer(Constants.Schemes.GoogleJwt, options =>
                 {
-                    var jwtSecret = Configuration["Auth:JwtSecret"];
-                    options.RequireHttpsMetadata = false;
-                    options.SaveToken = true;
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret)),
-                        ValidateIssuer = false,
-                        ValidateAudience = false
-                    };
+                    options.Authority = _googleAuthOptions.Authority;
+                    options.Audience = _googleAuthOptions.ClientId;
+                    options.RequireHttpsMetadata = Env.IsProduction();
+                    options.TokenValidationParameters.AuthenticationType = Constants.Schemes.GoogleJwt;
+                    options.TokenValidationParameters.ValidIssuers = _googleAuthOptions.ValidIssuers;
                 });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(Constants.Policies.GoogleJwt, builder =>
+                {
+                    builder.AddAuthenticationSchemes(Constants.Schemes.GoogleJwt)
+                        .RequireAuthenticatedUser()
+                        .RequireClaim(Constants.ClaimTypes.Email, _authOptions.AllowedEmails);
+                });
+            });
 
             services.ConfigureCustomOptions(Configuration);
             services.Configure<ImportOptions>(Configuration.GetSection("Import"));

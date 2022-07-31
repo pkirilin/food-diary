@@ -1,18 +1,19 @@
 import { render as rtlRender } from '@testing-library/react';
-import { ReactElement } from 'react';
-import AppProvider from 'src/AppProvider';
+import React from 'react';
 import { configureAppStore } from 'src/store';
+import TestEnvironment from './TestEnvironment';
 
 type RenderOptions = {
   authToken?: string;
+  removeTokenAfterMilliseconds?: number;
 };
 
 const defaultOptions: RenderOptions = {
   authToken: 'test_token',
 };
 
-export default function render(ui: ReactElement, options?: RenderOptions) {
-  const { authToken } = {
+export default function render(ui: React.ReactElement, options?: RenderOptions) {
+  const { authToken, removeTokenAfterMilliseconds } = {
     ...defaultOptions,
     ...options,
   };
@@ -20,9 +21,13 @@ export default function render(ui: ReactElement, options?: RenderOptions) {
   const store = configureAppStore();
 
   const result = rtlRender(
-    <AppProvider store={store} authToken={authToken}>
+    <TestEnvironment
+      store={store}
+      authToken={authToken}
+      removeTokenAfterMilliseconds={removeTokenAfterMilliseconds}
+    >
       {ui}
-    </AppProvider>,
+    </TestEnvironment>,
   );
 
   return result;

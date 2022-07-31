@@ -31,8 +31,7 @@ namespace FoodDiary.IntegrationTests
             
             builder.ConfigureTestServices(services =>
             {
-                services.AddAuthentication("Test")
-                    .AddScheme<AuthenticationSchemeOptions, FakeAuthHandler>("Test", _ => {});
+                services.AddSingleton<IAuthenticationSchemeProvider, FakeAuthenticationSchemeProvider>();
             });
             
             base.ConfigureWebHost(builder);
