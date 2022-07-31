@@ -1,12 +1,12 @@
-import { useEffect } from 'react';
-import GoogleLogin, { GoogleLoginResponse } from 'react-google-login';
+import React, { useEffect } from 'react';
+import GoogleLogin, { GoogleLoginResponse, GoogleLoginResponseOffline } from 'react-google-login';
 import { useLocation, useNavigate } from 'react-router-dom';
-import config from 'src/features/__shared__/config';
+import { GOOGLE_CLIENT_ID } from 'src/config';
 import { useAuth } from '../hooks';
 import { NavigationState } from '../types';
 import { saveToken } from '../utils';
 
-const Auth = () => {
+const Auth: React.FC = () => {
   const { isAuthenticated, signIn } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -18,19 +18,21 @@ const Auth = () => {
     }
   }, [isAuthenticated, location.state, navigate]);
 
+  function handleGoogleLoginSuccess(response: GoogleLoginResponse | GoogleLoginResponseOffline) {
+    const { tokenId, tokenObj } = response as GoogleLoginResponse;
+
+    saveToken({
+      token: tokenId,
+      expiresAtUnixMilliseconds: tokenObj.expires_at,
+    });
+
+    signIn();
+  }
+
   return (
     <GoogleLogin
-      clientId={config.googleClientId}
-      onSuccess={response => {
-        const { tokenId, tokenObj } = response as GoogleLoginResponse;
-
-        saveToken({
-          token: tokenId,
-          expiresAtUnixMilliseconds: tokenObj.expires_at,
-        });
-
-        signIn();
-      }}
+      clientId={GOOGLE_CLIENT_ID}
+      onSuccess={handleGoogleLoginSuccess}
       cookiePolicy={'single_host_origin'}
     />
   );

@@ -7,12 +7,15 @@ type SaveTokenOptions = {
   expiresAtUnixMilliseconds: number;
 };
 
-export function saveToken({ token, expiresAtUnixMilliseconds }: SaveTokenOptions) {
+export const saveToken: (options: SaveTokenOptions) => void = ({
+  token,
+  expiresAtUnixMilliseconds,
+}) => {
   Cookies.set(TOKEN_KEY, token, {
     expires: new Date(expiresAtUnixMilliseconds),
   });
-}
+};
 
-export function getToken() {
+export const getToken: () => void = () => {
   return Cookies.get(TOKEN_KEY);
-}
+};
