@@ -19,12 +19,14 @@ namespace FoodDiary.API
     public class Startup
     {
         private readonly AuthOptions _authOptions;
+        private readonly GoogleAuthOptions _googleAuthOptions;
         
         public Startup(IConfiguration configuration, IHostEnvironment env)
         {
             Configuration = configuration;
             Env = env;
             _authOptions = Configuration.GetSection("Auth").Get<AuthOptions>();
+            _googleAuthOptions = Configuration.GetSection("GoogleAuth").Get<GoogleAuthOptions>();
         }
 
         private IConfiguration Configuration { get; }
@@ -51,13 +53,13 @@ namespace FoodDiary.API
             services.AddAuthentication(Constants.Schemes.GoogleJwt)
                 .AddJwtBearer(Constants.Schemes.GoogleJwt, options =>
                 {
-                    options.Authority = "https://accounts.google.com";
-                    options.Audience = "772368064111-19hqh3c6ksu56ke45nm24etn7qoma88v.apps.googleusercontent.com";
+                    options.Authority = _googleAuthOptions.Authority;
+                    options.Audience = _googleAuthOptions.ClientId;
                     options.RequireHttpsMetadata = Env.IsProduction();
                     options.TokenValidationParameters.AuthenticationType = Constants.Schemes.GoogleJwt;
                     options.TokenValidationParameters.ValidIssuers = new[]
                     {
-                        "https://accounts.google.com"
+                        _googleAuthOptions.Authority
                     };
                 });
 
