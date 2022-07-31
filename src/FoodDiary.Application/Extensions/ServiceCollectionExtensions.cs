@@ -1,6 +1,5 @@
 ﻿using System.Reflection;
 using System.Runtime.CompilerServices;
-using FoodDiary.Application.Services.Auth;
 using FoodDiary.Application.Services.Categories;
 using FoodDiary.Application.Services.Export;
 using FoodDiary.Application.Services.Products;
@@ -22,10 +21,6 @@ namespace FoodDiary.Application.Extensions
 
         private static void AddApplicationServices(this IServiceCollection services)
         {
-            services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
-            services.AddSingleton<IGoogleTokenValidator, GoogleTokenValidator>();
-            services.AddSingleton<IAuthService, AuthService>();
-            
             services.AddScoped<IProductsService, ProductsService>();
             services.AddScoped<ICategoriesService, CategoriesService>();
 
