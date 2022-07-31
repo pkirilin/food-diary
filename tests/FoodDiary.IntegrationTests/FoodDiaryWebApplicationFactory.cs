@@ -57,9 +57,7 @@ public class FoodDiaryWebApplicationFactory : WebApplicationFactory<Startup>
                 options => options.UseSqlite(_connection),
                 ServiceLifetime.Singleton);
             
-            services.AddAuthentication("Test")
-                .AddScheme<AuthenticationSchemeOptions, FakeAuthHandler>("Test", _ => {});
-
+            services.AddSingleton<IAuthenticationSchemeProvider, FakeAuthenticationSchemeProvider>();
             services.AddSingleton<IGoogleTokenValidator, FakeGoogleTokenValidator>();
             services.AddSingleton<IGoogleDriveClient, FakeGoogleDriveClient>();
             services.AddSingleton<IGoogleDocsClient, FakeGoogleDocsClient>();

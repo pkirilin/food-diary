@@ -7,9 +7,9 @@ using Microsoft.Extensions.Options;
 
 namespace FoodDiary.IntegrationTests.Fakes;
 
-public class FakeAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
+public class FakeAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
 {
-    public FakeAuthHandler(IOptionsMonitor<AuthenticationSchemeOptions> options,
+    public FakeAuthenticationHandler(IOptionsMonitor<AuthenticationSchemeOptions> options,
         ILoggerFactory logger,
         UrlEncoder encoder,
         ISystemClock clock) : base(options, logger, encoder, clock)
