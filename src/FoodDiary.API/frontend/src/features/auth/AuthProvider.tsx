@@ -12,11 +12,16 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children, token }) => {
     setIsAuthenticated(true);
   }
 
+  function signOut() {
+    setIsAuthenticated(false);
+  }
+
   return (
     <AuthContext.Provider
       value={{
         isAuthenticated,
         signIn,
+        signOut,
       }}
     >
       {children}

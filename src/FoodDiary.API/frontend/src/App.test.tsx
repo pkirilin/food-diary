@@ -1,6 +1,9 @@
-import { screen } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import App from './App';
+import { TOKEN_CHECK_INTERVAL } from './config';
 import { render } from './testing';
+
+jest.useFakeTimers();
 
 test('authenticated user can navigate and view private content', () => {
   render(<App />);
@@ -13,5 +16,16 @@ test('authenticated user can navigate and view private content', () => {
 test('unauthenticated user must sign in to access private content', () => {
   render(<App />, { authToken: '' });
 
-  expect(screen.getByText(/Sign in/)).toBeInTheDocument();
+  expect(screen.getByText(/sign in/i)).toBeInTheDocument();
+});
+
+test('user must login again in case of expired token', async () => {
+  render(<App />, { authToken: 'test_token', removeTokenAfterMilliseconds: 1000 });
+
+  act(() => {
+    jest.advanceTimersByTime(1000);
+    jest.advanceTimersByTime(TOKEN_CHECK_INTERVAL);
+  });
+
+  expect(screen.getByText(/sign in/i)).toBeInTheDocument();
 });
