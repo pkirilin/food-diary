@@ -1,5 +1,5 @@
 ﻿using System.Reflection;
-using System.Text;
+using FoodDiary.API.Auth;
 using FoodDiary.API.Extensions;
 using FoodDiary.API.Middlewares;
 using FoodDiary.API.Options;
@@ -7,13 +7,11 @@ using FoodDiary.Application.Extensions;
 using FoodDiary.Configuration.Extensions;
 using FoodDiary.Import.Extensions;
 using FoodDiary.Infrastructure.Extensions;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Tokens;
 
 namespace FoodDiary.API
 {
@@ -46,20 +44,27 @@ namespace FoodDiary.API
                 )
             );
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
+            services.AddAuthentication(Constants.Schemes.GoogleJwt)
+                .AddJwtBearer(Constants.Schemes.GoogleJwt, options =>
                 {
-                    var jwtSecret = Configuration["Auth:JwtSecret"];
-                    options.RequireHttpsMetadata = false;
-                    options.SaveToken = true;
-                    options.TokenValidationParameters = new TokenValidationParameters
+                    options.Authority = "https://accounts.google.com";
+                    options.Audience = "772368064111-19hqh3c6ksu56ke45nm24etn7qoma88v.apps.googleusercontent.com";
+                    options.RequireHttpsMetadata = Env.IsProduction();
+                    options.TokenValidationParameters.AuthenticationType = Constants.Schemes.GoogleJwt;
+                    options.TokenValidationParameters.ValidIssuers = new[]
                     {
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret)),
-                        ValidateIssuer = false,
-                        ValidateAudience = false
+                        "https://accounts.google.com"
                     };
                 });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(Constants.Policies.GoogleJwt, builder =>
+                {
+                    builder.AddAuthenticationSchemes(Constants.Schemes.GoogleJwt)
+                        .RequireAuthenticatedUser();
+                });
+            });
 
             services.ConfigureCustomOptions(Configuration);
             services.Configure<ImportOptions>(Configuration.GetSection("Import"));
