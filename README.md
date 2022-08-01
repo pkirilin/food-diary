@@ -30,11 +30,11 @@ This information can be extremely useful for people who want to keep track of en
     docker run -p 5050:80 --name pgadmin -e "PGADMIN_DEFAULT_EMAIL=name@example.com" -e "PGADMIN_DEFAULT_PASSWORD=postgres" -d dpage/pgadmin4
     ```
 
-1. Install .NET SDK 6.0.100 or higher
+1. Install .NET SDK 6.0.302 or higher
 
-1. Install Node.js (16.x.x+) and yarn package manager (3.x.x+)
+1. Install Node.js 16.16.0 or higher and yarn package manager 3.2.0 or higher
 
-1. Fill nessesary secrets:
+1. Fill necessary secrets:
 
     ```shell
     dotnet user-secrets --project src/FoodDiary.API set "Auth:AllowedEmails:0" "<your_email>"
