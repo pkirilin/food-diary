@@ -1,5 +1,4 @@
-import { AppBar, List, ListItem, ListItemText, Toolbar } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
+import { AppBar, Container, List, ListItem, ListItemButton, styled, Toolbar } from '@mui/material';
 import React from 'react';
 import { NavLink, Link as RouterLink } from 'react-router-dom';
 
@@ -18,52 +17,41 @@ const navLinks = [
   },
 ];
 
-const useStyles = makeStyles(theme => ({
-  brand: {
-    color: theme.palette.primary.contrastText,
-    textDecoration: `none`,
-    fontSize: theme.typography.h5.fontSize,
-    fontWeight: 'bold',
-    marginRight: theme.spacing(2),
-  },
-  navLinksContainer: {
-    display: 'flex',
-    justifyContent: 'space-between',
-  },
-  navLink: {
-    textDecoration: `none`,
-    color: theme.palette.primary.contrastText,
-  },
-  navLinkActive: {
-    borderBottom: `2px solid ${theme.palette.primary.contrastText}`,
-  },
+const StyledToolbar = styled(Toolbar)(({ theme }) => ({
+  display: 'flex',
+  gap: theme.spacing(2),
+}));
+
+const StyledNavBrandLink = styled(RouterLink)(({ theme }) => ({
+  color: theme.palette.primary.contrastText,
+  textDecoration: `none`,
+  fontSize: theme.typography.h5.fontSize,
+  fontWeight: 'bold',
+}));
+
+const StyledNavMenuList = styled(List)(() => ({
+  display: 'flex',
 }));
 
 const Navbar: React.FC = () => {
-  const classes = useStyles();
-
   return (
     <AppBar position="static">
-      <Toolbar id="back-to-top-anchor">
-        <RouterLink to="/" className={classes.brand}>
-          Food diary
-        </RouterLink>
-        <List component="nav" className={classes.navLinksContainer}>
-          {navLinks.map(({ title, path }, index) => (
-            <NavLink
-              key={index}
-              to={path}
-              className={({ isActive }) =>
-                classes.navLink.concat(isActive ? ` ${classes.navLinkActive}` : '')
-              }
-            >
-              <ListItem button>
-                <ListItemText primary={title} />
-              </ListItem>
-            </NavLink>
-          ))}
-        </List>
-      </Toolbar>
+      <Container maxWidth="xl">
+        <StyledToolbar disableGutters id="back-to-top-anchor">
+          <StyledNavBrandLink to="/">Food diary</StyledNavBrandLink>
+          <nav>
+            <StyledNavMenuList>
+              {navLinks.map(({ title, path }, index) => (
+                <ListItem key={index} disableGutters>
+                  <ListItemButton component={NavLink} to={path}>
+                    {title}
+                  </ListItemButton>
+                </ListItem>
+              ))}
+            </StyledNavMenuList>
+          </nav>
+        </StyledToolbar>
+      </Container>
     </AppBar>
   );
 };
