@@ -42,12 +42,6 @@ This information can be extremely useful for people who want to keep track of en
 
     _Allowed email should be compatible with Google Identity Provider_
 
-    ```shell
-    dotnet user-secrets --project src/FoodDiary.API set "Auth:JwtSecret" "<some_strong_secret_key>"
-    ```
-
-    _Secret can be generated [here](https://passwordsgenerator.net). It should be a minimum of 128 bits (16 bytes)._
-
 1. Run migrations:
 
     ```shell
