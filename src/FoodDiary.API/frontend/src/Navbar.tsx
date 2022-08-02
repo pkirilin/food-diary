@@ -1,7 +1,7 @@
-import { AppBar, Container, List, ListItem, ListItemButton, styled, Toolbar } from '@mui/material';
-import { lightGreen } from '@mui/material/colors';
+import { AppBar, Container, List, ListItem, styled, Toolbar } from '@mui/material';
 import React from 'react';
-import { NavLink, Link as RouterLink, useLocation } from 'react-router-dom';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
+import { AppNavLink } from './components';
 
 const navLinks = [
   {
@@ -46,26 +46,9 @@ const Navbar: React.FC = () => {
             <StyledNavMenuList>
               {navLinks.map(({ title, path }, index) => (
                 <ListItem key={index} disableGutters>
-                  {location.pathname === path ? (
-                    <ListItemButton
-                      component="a"
-                      selected
-                      disableRipple
-                      disableTouchRipple
-                      sx={{
-                        pointerEvents: 'none',
-                        '&.Mui-selected': {
-                          backgroundColor: lightGreen[700],
-                        },
-                      }}
-                    >
-                      {title}
-                    </ListItemButton>
-                  ) : (
-                    <ListItemButton component={NavLink} to={path}>
-                      {title}
-                    </ListItemButton>
-                  )}
+                  <AppNavLink isActive={location.pathname === path} path={path}>
+                    {title}
+                  </AppNavLink>
                 </ListItem>
               ))}
             </StyledNavMenuList>
