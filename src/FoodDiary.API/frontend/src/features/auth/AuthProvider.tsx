@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import AuthContext from './AuthContext';
-import { removeToken } from './utils';
+import AuthContext, { SignInOptions } from './AuthContext';
+import { removeToken, saveToken } from './utils';
 
 type AuthProviderProps = {
   token?: string;
@@ -12,7 +12,12 @@ const AuthProvider: React.FC<React.PropsWithChildren<AuthProviderProps>> = ({
 }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(!!token);
 
-  function signIn() {
+  function signIn({ token, expiresAtUnixMilliseconds }: SignInOptions) {
+    saveToken({
+      token,
+      expiresAtUnixMilliseconds,
+    });
+
     setIsAuthenticated(true);
   }
 

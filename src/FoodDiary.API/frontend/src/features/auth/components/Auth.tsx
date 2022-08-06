@@ -4,7 +4,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { GOOGLE_CLIENT_ID } from 'src/config';
 import { useAuth } from '../hooks';
 import { NavigationState } from '../types';
-import { saveToken } from '../utils';
 
 const Auth: React.FC = () => {
   const { isAuthenticated, signIn } = useAuth();
@@ -21,12 +20,10 @@ const Auth: React.FC = () => {
   function handleGoogleLoginSuccess(response: GoogleLoginResponse | GoogleLoginResponseOffline) {
     const { tokenId, tokenObj } = response as GoogleLoginResponse;
 
-    saveToken({
+    signIn({
       token: tokenId,
       expiresAtUnixMilliseconds: tokenObj.expires_at,
     });
-
-    signIn();
   }
 
   return (
