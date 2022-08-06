@@ -1,1 +1,1 @@
-export * from './tokenRetriever';
+export * from './token';
