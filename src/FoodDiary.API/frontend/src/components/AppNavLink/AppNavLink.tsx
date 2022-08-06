@@ -30,7 +30,7 @@ const AppNavLink: React.FC<React.PropsWithChildren<AppNavLinkProps>> = ({
       sx={{
         pointerEvents: 'none',
         '&.Mui-selected': {
-          backgroundColor: lightGreen[700],
+          backgroundColor: lightGreen[800],
         },
       }}
     >

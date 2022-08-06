@@ -5,7 +5,7 @@ export default createTheme({
   palette: {
     mode: 'light',
     primary: {
-      main: lightGreen[800],
+      main: lightGreen[700],
       contrastText: lightGreen[50],
     },
     secondary: {
