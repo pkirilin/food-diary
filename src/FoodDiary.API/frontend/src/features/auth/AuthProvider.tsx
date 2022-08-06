@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
 import AuthContext from './AuthContext';
+import { removeToken } from './utils';
 
-interface AuthProviderProps extends React.PropsWithChildren<unknown> {
+type AuthProviderProps = {
   token?: string;
-}
+};
 
-const AuthProvider: React.FC<AuthProviderProps> = ({ children, token }) => {
+const AuthProvider: React.FC<React.PropsWithChildren<AuthProviderProps>> = ({
+  children,
+  token,
+}) => {
   const [isAuthenticated, setIsAuthenticated] = useState(!!token);
 
   function signIn() {
@@ -13,6 +17,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children, token }) => {
   }
 
   function signOut() {
+    removeToken();
     setIsAuthenticated(false);
   }
 

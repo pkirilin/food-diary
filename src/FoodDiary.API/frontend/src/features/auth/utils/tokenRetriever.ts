@@ -19,3 +19,7 @@ export const saveToken: (options: SaveTokenOptions) => void = ({
 export const getToken: () => string | undefined = () => {
   return Cookies.get(TOKEN_KEY);
 };
+
+export const removeToken: () => void = () => {
+  Cookies.remove(TOKEN_KEY);
+};
