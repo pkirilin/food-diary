@@ -1,7 +1,8 @@
-import { AppBar, Container, List, ListItem, styled, Toolbar } from '@mui/material';
+import { AppBar, Box, Container, List, ListItem, styled, Toolbar } from '@mui/material';
 import React from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { AppNavLink } from './components';
+import { Logout } from './features/auth/components';
 
 const navLinks = [
   {
@@ -42,17 +43,20 @@ const Navbar: React.FC = () => {
       <Container maxWidth="xl">
         <StyledToolbar disableGutters id="back-to-top-anchor">
           <StyledNavBrandLink to="/">Food diary</StyledNavBrandLink>
-          <nav>
-            <StyledNavMenuList>
-              {navLinks.map(({ title, path }, index) => (
-                <ListItem key={index} disableGutters>
-                  <AppNavLink isActive={location.pathname === path} path={path}>
-                    {title}
-                  </AppNavLink>
-                </ListItem>
-              ))}
-            </StyledNavMenuList>
-          </nav>
+          <Box display="flex" flex={1} justifyContent="space-between" alignItems="center">
+            <nav>
+              <StyledNavMenuList>
+                {navLinks.map(({ title, path }, index) => (
+                  <ListItem key={index} disableGutters>
+                    <AppNavLink isActive={location.pathname === path} path={path}>
+                      {title}
+                    </AppNavLink>
+                  </ListItem>
+                ))}
+              </StyledNavMenuList>
+            </nav>
+            <Logout />
+          </Box>
         </StyledToolbar>
       </Container>
     </AppBar>
