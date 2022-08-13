@@ -1,12 +1,16 @@
 import { rest } from 'msw';
 import { API_URL } from 'src/config';
-import { ProductsSearchResult } from 'src/features/products/models';
+import { ProductsResponse } from 'src/features/products';
+
 import { db } from '../db';
 
 export const productsHandlers = [
-  rest.get(`${API_URL}/v1/products`, (req, res, ctx) => {
-    const productItems = db.product.getAll().slice(0, 10);
-    const response: ProductsSearchResult = {
+  rest.get(`${API_URL}/api/v1/products`, (req, res, ctx) => {
+    const pageNumber = Number(req.url.searchParams.get('pageNumber'));
+    const pageSize = Number(req.url.searchParams.get('pageSize'));
+    const productItems = db.product.getAll().slice(pageNumber - 1, pageSize);
+
+    const response: ProductsResponse = {
       productItems,
       totalProductsCount: 100,
     };

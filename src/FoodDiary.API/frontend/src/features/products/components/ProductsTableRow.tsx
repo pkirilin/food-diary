@@ -47,8 +47,12 @@ const ProductsTableRow: React.FC<ProductsTableRowProps> = ({ product }: Products
         <Checkbox color="primary" checked={isProductSelected} onChange={handleSelectProduct} />
       </TableCell>
       <TableCell>{product.name}</TableCell>
-      <TableCell>{product.caloriesCost}</TableCell>
-      <TableCell>{product.categoryName}</TableCell>
+      <TableCell aria-label={`${product.name} calories cost is ${product.caloriesCost}`}>
+        {product.caloriesCost}
+      </TableCell>
+      <TableCell aria-label={`${product.name} is in ${product.categoryName} category`}>
+        {product.categoryName}
+      </TableCell>
       <TableCell>
         <Tooltip title="Edit product">
           <span>

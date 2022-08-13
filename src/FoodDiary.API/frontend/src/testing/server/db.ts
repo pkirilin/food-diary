@@ -51,9 +51,9 @@ function initializeCategories() {
 function initializeProducts() {
   db.product.create({
     id: 1,
-    name: 'Test product',
-    caloriesCost: 100,
+    name: 'Bread',
+    caloriesCost: 250,
     categoryId: 1,
-    categoryName: 'Test category',
+    categoryName: 'Bakery',
   });
 }
