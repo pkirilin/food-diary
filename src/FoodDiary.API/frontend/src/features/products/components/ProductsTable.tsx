@@ -10,7 +10,7 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../__shared__/hooks';
 import { useProductsQuery } from '../api';
 import { allProductsSelected } from '../slice';
@@ -31,19 +31,30 @@ const ProductsTable: React.FC = () => {
     state => state.products.filter,
   );
 
-  const { data: products = EMPTY_PRODUCTS_RESPONSE, isLoading } = useProductsQuery({
+  const {
+    data: products = EMPTY_PRODUCTS_RESPONSE,
+    isLoading,
+    refetch: refetchProducts,
+  } = useProductsQuery({
     pageSize,
     pageNumber,
     productSearchName,
     categoryId: category?.id,
   });
 
+  const operationStatus = useAppSelector(state => state.products.operationStatus);
   const selectedProductsCount = useAppSelector(state => state.products.selectedProductIds.length);
 
   const areAllProductsSelected =
     products.productItems.length > 0 && products.productItems.length === selectedProductsCount;
 
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if (operationStatus === 'succeeded') {
+      refetchProducts();
+    }
+  }, [operationStatus, refetchProducts]);
 
   const handleSelectAllProducts = (): void => {
     dispatch(allProductsSelected({ selected: !areAllProductsSelected }));

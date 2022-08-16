@@ -1,6 +1,7 @@
 import { rest } from 'msw';
 import config from 'src/features/__shared__/config';
 import { CategoryFormData } from 'src/features/categories';
+import { CategoryAutocompleteOption } from 'src/features/categories/models';
 import { db } from '../db';
 
 export const categoriesHandlers = [
@@ -44,5 +45,14 @@ export const categoriesHandlers = [
     });
 
     return res(ctx.status(200));
+  }),
+
+  rest.get(`${config.apiUrl}/api/v1/categories/autocomplete`, (req, res, ctx) => {
+    const categories = db.category.getAll().map<CategoryAutocompleteOption>(({ id, name }) => ({
+      id,
+      name,
+    }));
+
+    return res(ctx.json(categories));
   }),
 ];

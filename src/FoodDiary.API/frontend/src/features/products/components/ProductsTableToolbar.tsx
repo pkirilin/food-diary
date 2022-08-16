@@ -60,9 +60,13 @@ const ProductsTableToolbar: React.FC = () => {
           <Typography variant="h1" className={classes.title}>
             Products
           </Typography>
-          <Tooltip title="Add new product">
+          <Tooltip title="Create new product">
             <span>
-              <IconButton onClick={handleAddClick} size="large">
+              <IconButton
+                onClick={handleAddClick}
+                size="large"
+                aria-label="Open create product dialog"
+              >
                 <AddIcon />
               </IconButton>
             </span>

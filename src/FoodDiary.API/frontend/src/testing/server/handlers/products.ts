@@ -1,7 +1,7 @@
 import { rest } from 'msw';
 import { API_URL } from 'src/config';
 import { ProductsResponse } from 'src/features/products';
-
+import { ProductCreateEdit } from 'src/features/products/models';
 import { db } from '../db';
 
 export const productsHandlers = [
@@ -16,5 +16,23 @@ export const productsHandlers = [
     };
 
     return res(ctx.json(response));
+  }),
+
+  rest.post(`${API_URL}/v1/products`, async (req, res, ctx) => {
+    const body = await req.json<ProductCreateEdit>();
+
+    const category = db.category.findFirst({
+      where: {
+        id: { equals: body.categoryId },
+      },
+    });
+
+    db.product.create({
+      ...body,
+      id: 2,
+      categoryName: category?.name,
+    });
+
+    return res(ctx.status(200));
   }),
 ];
