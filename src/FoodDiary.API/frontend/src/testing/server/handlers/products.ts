@@ -35,4 +35,24 @@ export const productsHandlers = [
 
     return res(ctx.status(200));
   }),
+
+  rest.put(`${API_URL}/v1/products/:id`, async (req, res, ctx) => {
+    const { name, caloriesCost, categoryId } = await req.json<ProductCreateEdit>();
+
+    db.product.update({
+      where: {
+        id: {
+          equals: +req.params['id'],
+        },
+      },
+
+      data: {
+        name,
+        caloriesCost,
+        categoryId,
+      },
+    });
+
+    return res(ctx.status(200));
+  }),
 ];

@@ -56,7 +56,11 @@ const ProductsTableRow: React.FC<ProductsTableRowProps> = ({ product }: Products
       <TableCell>
         <Tooltip title="Edit product">
           <span>
-            <IconButton onClick={handleEditClick} size="large">
+            <IconButton
+              onClick={handleEditClick}
+              size="large"
+              aria-label={`Open edit product dialog for ${product.name}`}
+            >
               <EditIcon />
             </IconButton>
           </span>
