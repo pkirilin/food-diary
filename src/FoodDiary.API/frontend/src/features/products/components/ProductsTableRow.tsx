@@ -44,7 +44,14 @@ const ProductsTableRow: React.FC<ProductsTableRowProps> = ({ product }: Products
     <TableRow>
       <ProductCreateEditDialog {...productEditDialog.binding} product={product} />
       <TableCell padding="checkbox">
-        <Checkbox color="primary" checked={isProductSelected} onChange={handleSelectProduct} />
+        <Checkbox
+          color="primary"
+          checked={isProductSelected}
+          onChange={handleSelectProduct}
+          inputProps={{
+            'aria-label': `Select ${product.name}`,
+          }}
+        />
       </TableCell>
       <TableCell>{product.name}</TableCell>
       <TableCell aria-label={`${product.name} calories cost is ${product.caloriesCost}`}>

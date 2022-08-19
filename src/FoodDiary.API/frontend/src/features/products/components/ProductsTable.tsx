@@ -75,6 +75,9 @@ const ProductsTable: React.FC = () => {
                 checked={areAllProductsSelected}
                 onChange={handleSelectAllProducts}
                 disabled={products.productItems.length === 0}
+                inputProps={{
+                  'aria-label': 'Select all',
+                }}
               />
             </TableCell>
             <TableCell>Name</TableCell>

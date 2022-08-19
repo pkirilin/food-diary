@@ -66,3 +66,21 @@ test('product can be edited', async () => {
   expect(screen.getByLabelText(/rye bread calories cost is 95/i));
   expect(screen.getByLabelText(/rye bread is in bakery category/i));
 });
+
+test('product can be selected', async () => {
+  render(<Products />);
+
+  await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
+  await userEvent.click(screen.getByLabelText(/select bread/i));
+
+  expect(screen.getByText(/1 selected/i));
+});
+
+test('all products can be selected', async () => {
+  render(<Products />);
+
+  await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
+  await userEvent.click(screen.getByLabelText(/select all/i));
+
+  expect(screen.getByText(/(\d)+ selected/i));
+});
