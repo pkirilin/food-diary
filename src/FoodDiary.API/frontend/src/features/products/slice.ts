@@ -3,6 +3,7 @@ import { Status } from '../__shared__/models';
 import { SelectionPayload } from '../__shared__/types';
 import { createAsyncThunkMatcher } from '../__shared__/utils';
 import { CategoryAutocompleteOption } from '../categories/models';
+import productsApi from './api';
 import { ProductItem, ProductItemsFilter } from './models';
 import { createProduct, deleteProducts, editProduct, getProducts } from './thunks';
 
@@ -91,6 +92,11 @@ const productsSlice = createSlice({
       })
       .addMatcher(createAsyncThunkMatcher(operationThunks, 'rejected'), state => {
         state.operationStatus = 'failed';
+      })
+
+      .addMatcher(productsApi.endpoints.products.matchFulfilled, (state, { payload }) => {
+        state.selectedProductIds = [];
+        state.productItems = payload.productItems;
       }),
 });
 
