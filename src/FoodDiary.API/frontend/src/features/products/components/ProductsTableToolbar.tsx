@@ -49,7 +49,11 @@ const ProductsTableToolbar: React.FC = () => {
           <Typography className={classes.title}>{selectedProductIds.length} selected</Typography>
           <Tooltip title="Delete product">
             <span>
-              <IconButton onClick={handleDeleteClick} size="large">
+              <IconButton
+                onClick={handleDeleteClick}
+                size="large"
+                aria-label="Delete selected products"
+              >
                 <DeleteIcon />
               </IconButton>
             </span>

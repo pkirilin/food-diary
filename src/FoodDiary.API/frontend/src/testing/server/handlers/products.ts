@@ -55,4 +55,18 @@ export const productsHandlers = [
 
     return res(ctx.status(200));
   }),
+
+  rest.delete(`${API_URL}/v1/products/batch`, async (req, res, ctx) => {
+    const productIds = await req.json<number[]>();
+
+    db.product.deleteMany({
+      where: {
+        id: {
+          in: productIds,
+        },
+      },
+    });
+
+    return res(ctx.status(200));
+  }),
 ];

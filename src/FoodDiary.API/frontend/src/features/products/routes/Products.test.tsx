@@ -84,3 +84,17 @@ test('all products can be selected', async () => {
 
   expect(screen.getByText(/(\d)+ selected/i));
 });
+
+test('products can be deleted', async () => {
+  render(<Products />);
+
+  await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
+  await userEvent.click(screen.getByLabelText(/select bread/i));
+  await userEvent.click(screen.getByLabelText(/delete selected products/i));
+  const dialog = screen.getByRole('dialog');
+  await userEvent.click(within(dialog).getByText(/ok/i));
+  await waitForElementToBeRemoved(screen.queryByRole('dialog'));
+
+  expect(screen.queryByText(/bread/i)).not.toBeInTheDocument();
+  expect(screen.queryByText(/(\d)+ selected/i)).not.toBeInTheDocument();
+});
