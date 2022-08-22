@@ -56,4 +56,28 @@ function initializeProducts() {
     categoryId: 1,
     categoryName: 'Bakery',
   });
+
+  db.product.create({
+    id: 2,
+    name: 'Chicken',
+    caloriesCost: 136,
+    categoryId: 3,
+    categoryName: 'Meat',
+  });
+
+  db.product.create({
+    id: 3,
+    name: 'Rice',
+    caloriesCost: 130,
+    categoryId: 2,
+    categoryName: 'Cereals',
+  });
+
+  db.product.create({
+    id: 4,
+    name: 'Scrambled eggs',
+    caloriesCost: 154,
+    categoryId: 4,
+    categoryName: 'Eggs',
+  });
 }

@@ -23,13 +23,15 @@ export const productsHandlers = [
 
     const category = db.category.findFirst({
       where: {
-        id: { equals: body.categoryId },
+        id: {
+          equals: body.categoryId,
+        },
       },
     });
 
     db.product.create({
       ...body,
-      id: 2,
+      id: 5,
       categoryName: category?.name,
     });
 
