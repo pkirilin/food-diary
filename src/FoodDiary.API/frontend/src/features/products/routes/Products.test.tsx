@@ -1,4 +1,4 @@
-import { screen, waitForElementToBeRemoved, within } from '@testing-library/react';
+import { screen, waitFor, waitForElementToBeRemoved, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { render } from 'src/testing';
 import { db } from 'src/testing/server/db';
@@ -97,4 +97,22 @@ test('products can be deleted', async () => {
 
   expect(screen.queryByText(/bread/i)).not.toBeInTheDocument();
   expect(screen.queryByText(/(\d)+ selected/i)).not.toBeInTheDocument();
+});
+
+test('products can be filtered by category', async () => {
+  render(<Products />);
+
+  await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
+  await userEvent.click(screen.getByLabelText(/open products filter/i));
+
+  const filterPopup = within(screen.getByRole('presentation'));
+  const category = filterPopup.getByPlaceholderText(/category/i);
+  await userEvent.click(category);
+  await userEvent.click(within(await screen.findByRole('listbox')).getByText(/cereals/i));
+  await userEvent.click(document.body);
+
+  await waitFor(() => expect(screen.queryByText(/bread/i)).not.toBeInTheDocument());
+  const filterChip = screen.getByLabelText(/applied filter: category/i);
+  expect(within(filterChip).queryByText(/cereals/i)).toBeVisible();
+  expect(screen.getByText(/rice/i));
 });

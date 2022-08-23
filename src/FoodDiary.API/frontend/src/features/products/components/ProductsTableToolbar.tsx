@@ -82,6 +82,7 @@ const ProductsTableToolbar: React.FC = () => {
                   showFilter(event);
                 }}
                 size="large"
+                aria-label="Open products filter"
               >
                 <FilterListIcon />
               </IconButton>
