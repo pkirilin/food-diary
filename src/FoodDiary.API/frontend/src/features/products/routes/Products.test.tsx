@@ -116,3 +116,20 @@ test('products can be filtered by category', async () => {
   expect(within(filterChip).queryByText(/cereals/i)).toBeVisible();
   expect(screen.getByText(/rice/i));
 });
+
+test('products can be filtered by name', async () => {
+  render(<Products />);
+
+  await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
+  await userEvent.click(screen.getByLabelText(/open products filter/i));
+
+  const filterPopup = within(screen.getByRole('presentation'));
+  const productName = filterPopup.getByPlaceholderText(/product name/i);
+  await userEvent.type(productName, 'bre');
+  await userEvent.click(document.body);
+
+  await waitFor(() => expect(screen.queryByText(/rice/i)).not.toBeInTheDocument());
+  const filterChip = screen.getByLabelText(/applied filter: product search name/i);
+  expect(within(filterChip).queryByText(/bre/i)).toBeVisible();
+  expect(screen.getByText(/bread/i));
+});

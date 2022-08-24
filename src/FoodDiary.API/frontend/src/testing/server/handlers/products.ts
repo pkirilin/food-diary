@@ -9,8 +9,9 @@ export const productsHandlers = [
     const pageNumber = Number(req.url.searchParams.get('pageNumber'));
     const pageSize = Number(req.url.searchParams.get('pageSize'));
     const categoryId = req.url.searchParams.get('categoryId');
+    const productSearchName = req.url.searchParams.get('productSearchName');
 
-    const productItems = db.product.findMany({
+    let productItems = db.product.findMany({
       where: {
         categoryId: categoryId ? { equals: Number(categoryId) } : {},
       },
@@ -18,6 +19,10 @@ export const productsHandlers = [
       skip: (pageNumber - 1) * pageSize,
       take: pageSize,
     });
+
+    if (productSearchName) {
+      productItems = productItems.filter(p => p.name.toLowerCase().startsWith(productSearchName));
+    }
 
     const totalProductsCount = db.product.count();
 
