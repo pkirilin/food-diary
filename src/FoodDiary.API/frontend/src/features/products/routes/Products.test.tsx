@@ -133,3 +133,22 @@ test('products can be filtered by name', async () => {
   expect(within(filterChip).queryByText(/bre/i)).toBeVisible();
   expect(screen.getByText(/bread/i));
 });
+
+test('products filter can be reset', async () => {
+  render(<Products />);
+
+  await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
+  await userEvent.click(screen.getByLabelText(/open products filter/i));
+
+  const filterPopup = within(screen.getByRole('presentation'));
+  const productName = filterPopup.getByPlaceholderText(/product name/i);
+  const category = filterPopup.getByPlaceholderText(/category/i);
+  await userEvent.type(productName, 'sfdsfwfegegrw');
+  await userEvent.click(category);
+  await userEvent.click(within(await screen.findByRole('listbox')).getByText(/dairy/i));
+  await waitFor(() => expect(screen.getByText(/no products found/i)));
+  await userEvent.click(filterPopup.getByRole('button', { name: /reset/i }));
+
+  expect(screen.getByText(/bread/i));
+  expect(screen.getByText(/rice/i));
+});
