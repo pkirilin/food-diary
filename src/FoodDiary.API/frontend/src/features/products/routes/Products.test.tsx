@@ -152,3 +152,13 @@ test('products filter can be reset', async () => {
   expect(screen.getByText(/bread/i));
   expect(screen.getByText(/rice/i));
 });
+
+test('products in table are split by pages', async () => {
+  render(<Products />, { pageSizeOverride: 2 });
+
+  await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
+  expect(screen.getByText(/1–.* of .*/i));
+
+  await userEvent.click(screen.getByLabelText(/go to next page/i));
+  expect(screen.getByText(/.*–.* of .*/i)).not.toHaveTextContent(/1–.* of .*/i);
+});

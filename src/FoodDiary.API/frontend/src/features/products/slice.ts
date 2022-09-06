@@ -97,6 +97,7 @@ const productsSlice = createSlice({
       .addMatcher(productsApi.endpoints.products.matchFulfilled, (state, { payload }) => {
         state.selectedProductIds = [];
         state.productItems = payload.productItems;
+        state.totalProductsCount = payload.totalProductsCount;
       }),
 });
 
