@@ -1,5 +1,7 @@
 import {
   Checkbox,
+  LinearProgress,
+  styled,
   Table,
   TableBody,
   TableCell,
@@ -8,38 +10,51 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
-import React from 'react';
-import { useAppDispatch, useRefreshEffect, useAppSelector } from '../../__shared__/hooks';
+import React, { useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from '../../__shared__/hooks';
+import { useProductsQuery } from '../api';
 import { allProductsSelected } from '../slice';
-import { getProducts } from '../thunks';
+import { ProductsResponse } from '../types';
 import ProductsTableRow from './ProductsTableRow';
 
+const TableLinearProgress = styled(LinearProgress)(() => ({
+  top: '61px',
+}));
+
+const EMPTY_PRODUCTS_RESPONSE: ProductsResponse = {
+  productItems: [],
+  totalProductsCount: 0,
+};
+
 const ProductsTable: React.FC = () => {
-  const productItems = useAppSelector(state => state.products.productItems);
-  const productsFilter = useAppSelector(state => state.products.filter);
+  const { pageSize, pageNumber, productSearchName, category } = useAppSelector(
+    state => state.products.filter,
+  );
+
+  const {
+    data: products = EMPTY_PRODUCTS_RESPONSE,
+    isLoading,
+    refetch: refetchProducts,
+  } = useProductsQuery({
+    pageSize,
+    pageNumber,
+    productSearchName,
+    categoryId: category?.id,
+  });
+
+  const operationStatus = useAppSelector(state => state.products.operationStatus);
   const selectedProductsCount = useAppSelector(state => state.products.selectedProductIds.length);
 
   const areAllProductsSelected =
-    productItems.length > 0 && productItems.length === selectedProductsCount;
+    products.productItems.length > 0 && products.productItems.length === selectedProductsCount;
 
   const dispatch = useAppDispatch();
 
-  useRefreshEffect(
-    state => state.products.operationStatus,
-    () => {
-      const { pageNumber, pageSize, productSearchName, category } = productsFilter;
-
-      dispatch(
-        getProducts({
-          pageNumber,
-          pageSize,
-          productSearchName,
-          categoryId: category?.id,
-        }),
-      );
-    },
-    [productsFilter],
-  );
+  useEffect(() => {
+    if (operationStatus === 'succeeded') {
+      refetchProducts();
+    }
+  }, [operationStatus, refetchProducts]);
 
   const handleSelectAllProducts = (): void => {
     dispatch(allProductsSelected({ selected: !areAllProductsSelected }));
@@ -47,6 +62,7 @@ const ProductsTable: React.FC = () => {
 
   return (
     <TableContainer>
+      {isLoading && <TableLinearProgress />}
       <Table>
         <TableHead>
           <TableRow>
@@ -54,11 +70,14 @@ const ProductsTable: React.FC = () => {
               <Checkbox
                 color="primary"
                 indeterminate={
-                  selectedProductsCount > 0 && selectedProductsCount < productItems.length
+                  selectedProductsCount > 0 && selectedProductsCount < products.productItems.length
                 }
                 checked={areAllProductsSelected}
                 onChange={handleSelectAllProducts}
-                disabled={productItems.length === 0}
+                disabled={products.productItems.length === 0}
+                inputProps={{
+                  'aria-label': 'Select all',
+                }}
               />
             </TableCell>
             <TableCell>Name</TableCell>
@@ -68,14 +87,14 @@ const ProductsTable: React.FC = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {productItems.length === 0 && (
+          {products.productItems.length === 0 && (
             <TableRow>
               <TableCell colSpan={4} align="center">
                 <Typography color="textSecondary">No products found</Typography>
               </TableCell>
             </TableRow>
           )}
-          {productItems.map(product => (
+          {products.productItems.map(product => (
             <ProductsTableRow key={product.id} product={product} />
           ))}
         </TableBody>

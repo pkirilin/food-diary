@@ -1,10 +1,10 @@
 import { Paper } from '@mui/material';
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import ProductsFilterAppliedParams from './ProductsFilterAppliedParams';
-import ProductsTable from './ProductsTable';
-import ProductsTablePagination from './ProductsTablePagination';
-import ProductsTableToolbar from './ProductsTableToolbar';
+import ProductsFilterAppliedParams from '../components/ProductsFilterAppliedParams';
+import ProductsTable from '../components/ProductsTable';
+import ProductsTablePagination from '../components/ProductsTablePagination';
+import ProductsTableToolbar from '../components/ProductsTableToolbar';
 
 const Products: React.FC = () => {
   return (

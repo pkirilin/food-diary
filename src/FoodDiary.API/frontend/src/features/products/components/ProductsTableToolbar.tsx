@@ -49,7 +49,11 @@ const ProductsTableToolbar: React.FC = () => {
           <Typography className={classes.title}>{selectedProductIds.length} selected</Typography>
           <Tooltip title="Delete product">
             <span>
-              <IconButton onClick={handleDeleteClick} size="large">
+              <IconButton
+                onClick={handleDeleteClick}
+                size="large"
+                aria-label="Delete selected products"
+              >
                 <DeleteIcon />
               </IconButton>
             </span>
@@ -60,9 +64,13 @@ const ProductsTableToolbar: React.FC = () => {
           <Typography variant="h1" className={classes.title}>
             Products
           </Typography>
-          <Tooltip title="Add new product">
+          <Tooltip title="Create new product">
             <span>
-              <IconButton onClick={handleAddClick} size="large">
+              <IconButton
+                onClick={handleAddClick}
+                size="large"
+                aria-label="Open create product dialog"
+              >
                 <AddIcon />
               </IconButton>
             </span>
@@ -74,6 +82,7 @@ const ProductsTableToolbar: React.FC = () => {
                   showFilter(event);
                 }}
                 size="large"
+                aria-label="Open products filter"
               >
                 <FilterListIcon />
               </IconButton>

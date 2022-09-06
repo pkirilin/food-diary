@@ -1,3 +1,4 @@
 import { categoriesHandlers } from './categories';
+import { productsHandlers } from './products';
 
-export const handlers = [...categoriesHandlers];
+export const handlers = [...categoriesHandlers, ...productsHandlers];
