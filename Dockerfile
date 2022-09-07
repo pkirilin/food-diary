@@ -3,10 +3,9 @@ WORKDIR /app
 COPY . .
 RUN dotnet publish -c Release -o publish src/FoodDiary.API/FoodDiary.API.csproj
 
-FROM node:16-alpine AS frontend
+FROM node:16.16.0-alpine AS frontend
 WORKDIR /app
 COPY src/FoodDiary.API/frontend .
-ENV NODE_VERSION 16.16.0
 RUN yarn install
 ENV PATH="./node_modules/.bin:$PATH"
 RUN yarn build
