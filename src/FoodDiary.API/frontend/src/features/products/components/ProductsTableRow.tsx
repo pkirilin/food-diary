@@ -27,18 +27,18 @@ const ProductsTableRow: React.FC<ProductsTableRowProps> = ({ product }: Products
     );
   });
 
-  const handleEditClick = (): void => {
+  function handleEditClick() {
     productEditDialog.show();
-  };
+  }
 
-  const handleSelectProduct = (): void => {
+  function handleSelectProduct() {
     dispatch(
       productSelected({
         productId: product.id,
         selected: !isProductSelected,
       }),
     );
-  };
+  }
 
   return (
     <TableRow>

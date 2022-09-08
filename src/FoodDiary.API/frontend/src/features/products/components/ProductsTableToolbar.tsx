@@ -28,13 +28,17 @@ const ProductsTableToolbar: React.FC = () => {
     dispatch(deleteProducts(selectedProductIds));
   });
 
-  const handleAddClick = (): void => {
+  function handleAddClick() {
     productCreateDialog.show();
-  };
+  }
 
-  const handleDeleteClick = (): void => {
+  function handleDeleteClick() {
     productsDeleteDialog.show();
-  };
+  }
+
+  function handleFilterClick(event: React.MouseEvent<HTMLButtonElement>) {
+    showFilter(event);
+  }
 
   return (
     <Toolbar className={classes.root}>
@@ -78,9 +82,7 @@ const ProductsTableToolbar: React.FC = () => {
           <Tooltip title="Filter products">
             <span>
               <IconButton
-                onClick={event => {
-                  showFilter(event);
-                }}
+                onClick={handleFilterClick}
                 size="large"
                 aria-label="Open products filter"
               >

@@ -56,9 +56,9 @@ const ProductsTable: React.FC = () => {
     }
   }, [operationStatus, refetchProducts]);
 
-  const handleSelectAllProducts = (): void => {
+  function handleSelectAllProducts(): void {
     dispatch(allProductsSelected({ selected: !areAllProductsSelected }));
-  };
+  }
 
   return (
     <TableContainer>

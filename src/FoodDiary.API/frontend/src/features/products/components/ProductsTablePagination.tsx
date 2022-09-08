@@ -9,17 +9,17 @@ const ProductsTablePagination: React.FC = () => {
   const { pageNumber, pageSize } = useAppSelector(state => state.products.filter);
   const dispatch = useDispatch();
 
-  const handleChangePage = (
+  function handleChangePage(
     event: React.MouseEvent<HTMLButtonElement, MouseEvent> | null,
     pageIndex: number,
-  ): void => {
+  ): void {
     dispatch(pageNumberChanged(pageIndex + 1));
-  };
+  }
 
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  function handleChangeRowsPerPage(event: React.ChangeEvent<HTMLInputElement>): void {
     const newPageSize = Number(event.target.value);
     dispatch(pageSizeChanged(newPageSize));
-  };
+  }
 
   return (
     <TablePagination

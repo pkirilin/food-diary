@@ -8,10 +8,10 @@ import {
   TextField,
 } from '@mui/material';
 import React, { useEffect, useMemo, useState } from 'react';
-import { useValidatedNumericInput, useValidatedTextInput } from 'src/features/__shared__/hooks';
-import { DialogCustomActionProps } from 'src/features/__shared__/types';
-import { CategoryAutocompleteOption } from 'src/features/categories/models';
-import { ProductCreateEdit, ProductItem } from 'src/features/products/models';
+import { CategoryAutocompleteOption } from 'src/features/categories';
+import { ProductCreateEdit, ProductItem } from 'src/features/products';
+import { useValidatedNumericInput, useValidatedTextInput } from 'src/hooks';
+import { AutocompleteOption, DialogCustomActionProps } from 'src/types';
 import CategorySelect from '../CategorySelect';
 
 interface ProductCreateEditDialogProps
@@ -81,7 +81,11 @@ const ProductCreateEditDialog: React.FC<ProductCreateEditDialogProps> = ({
     setProductName,
   ]);
 
-  const handleSubmitClick = (): void => {
+  function handleCategoryChange(value: AutocompleteOption | null) {
+    setCategory(value);
+  }
+
+  function handleSubmitClick() {
     if (category) {
       onDialogConfirm({
         name: productName,
@@ -89,7 +93,7 @@ const ProductCreateEditDialog: React.FC<ProductCreateEditDialogProps> = ({
         categoryId: category.id,
       });
     }
-  };
+  }
 
   return (
     <Dialog maxWidth="xs" fullWidth {...dialogProps}>
@@ -115,7 +119,7 @@ const ProductCreateEditDialog: React.FC<ProductCreateEditDialogProps> = ({
           label="Category"
           placeholder="Select a category"
           value={category}
-          setValue={value => setCategory(value)}
+          setValue={handleCategoryChange}
         />
       </DialogContent>
       <DialogActions>

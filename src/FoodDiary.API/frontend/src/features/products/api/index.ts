@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
 import { API_URL } from 'src/config';
-import { createUrl } from 'src/features/__shared__/utils';
 import { getToken } from 'src/features/auth';
+import { createUrl } from 'src/utils';
 import { ProductsResponse } from '../types';
 import { GetProductsRequest } from './contracts';
 
