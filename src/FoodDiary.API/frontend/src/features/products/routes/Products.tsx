@@ -1,6 +1,7 @@
 import { Paper, Typography } from '@mui/material';
 import React from 'react';
 import { Helmet } from 'react-helmet';
+import CreateProduct from '../components/CreateProduct';
 import ProductsFilterAppliedParams from '../components/ProductsFilterAppliedParams';
 import ProductsTable from '../components/ProductsTable';
 import ProductsTablePagination from '../components/ProductsTablePagination';
@@ -20,6 +21,7 @@ const Products: React.FC = () => {
         <ProductsFilterAppliedParams />
         <ProductsTable />
         <ProductsTablePagination />
+        <CreateProduct />
       </Paper>
     </React.Fragment>
   );

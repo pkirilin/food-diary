@@ -1,4 +1,3 @@
-import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { Box, IconButton, Popover, Tooltip, Typography } from '@mui/material';
@@ -24,10 +23,6 @@ const ProductsTableToolbar: React.FC = () => {
   const productsDeleteDialog = useDialog(() => {
     dispatch(deleteProducts(selectedProductIds));
   });
-
-  function handleAddClick() {
-    productCreateDialog.show();
-  }
 
   function handleDeleteClick() {
     productsDeleteDialog.show();
@@ -64,17 +59,6 @@ const ProductsTableToolbar: React.FC = () => {
         </Box>
       ) : (
         <React.Fragment>
-          <Tooltip title="Create new product">
-            <span>
-              <IconButton
-                onClick={handleAddClick}
-                size="large"
-                aria-label="Open create product dialog"
-              >
-                <AddIcon />
-              </IconButton>
-            </span>
-          </Tooltip>
           <Tooltip title="Filter products">
             <span>
               <IconButton
