@@ -1,19 +1,16 @@
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
-import { IconButton, Popover, Toolbar, Tooltip, Typography } from '@mui/material';
+import { Box, IconButton, Popover, Tooltip, Typography } from '@mui/material';
 import React from 'react';
 import { ConfirmationDialog } from '../../__shared__/components';
 import { useAppDispatch, useDialog, usePopover, useAppSelector } from '../../__shared__/hooks';
-import { useToolbarStyles } from '../../__shared__/styles';
 import { ProductCreateEdit } from '../models';
 import { createProduct, deleteProducts } from '../thunks';
 import ProductCreateEditDialog from './ProductCreateEditDialog';
 import ProductsFilter from './ProductsFilter';
 
 const ProductsTableToolbar: React.FC = () => {
-  const classes = useToolbarStyles();
-
   const selectedProductIds = useAppSelector(state => state.products.selectedProductIds);
 
   const dispatch = useAppDispatch();
@@ -41,7 +38,7 @@ const ProductsTableToolbar: React.FC = () => {
   }
 
   return (
-    <Toolbar className={classes.root}>
+    <Box paddingY={2}>
       <ProductCreateEditDialog {...productCreateDialog.binding} />
       <ConfirmationDialog
         {...productsDeleteDialog.binding}
@@ -49,10 +46,12 @@ const ProductsTableToolbar: React.FC = () => {
         dialogMessage="Do you really want to delete selected products?"
       />
       {selectedProductIds.length > 0 ? (
-        <React.Fragment>
-          <Typography className={classes.title}>{selectedProductIds.length} selected</Typography>
-          <Tooltip title="Delete product">
-            <span>
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Box paddingX={2}>
+            <Typography>{selectedProductIds.length} selected</Typography>
+          </Box>
+          <Box paddingX={2}>
+            <Tooltip title="Delete product">
               <IconButton
                 onClick={handleDeleteClick}
                 size="large"
@@ -60,14 +59,11 @@ const ProductsTableToolbar: React.FC = () => {
               >
                 <DeleteIcon />
               </IconButton>
-            </span>
-          </Tooltip>
-        </React.Fragment>
+            </Tooltip>
+          </Box>
+        </Box>
       ) : (
         <React.Fragment>
-          <Typography variant="h1" className={classes.title}>
-            Products
-          </Typography>
           <Tooltip title="Create new product">
             <span>
               <IconButton
@@ -105,7 +101,7 @@ const ProductsTableToolbar: React.FC = () => {
       >
         <ProductsFilter />
       </Popover>
-    </Toolbar>
+    </Box>
   );
 };
 

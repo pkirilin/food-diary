@@ -1,4 +1,4 @@
-import { Paper } from '@mui/material';
+import { Paper, Typography } from '@mui/material';
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import ProductsFilterAppliedParams from '../components/ProductsFilterAppliedParams';
@@ -8,15 +8,20 @@ import ProductsTableToolbar from '../components/ProductsTableToolbar';
 
 const Products: React.FC = () => {
   return (
-    <Paper variant="outlined" square>
+    <React.Fragment>
       <Helmet>
         <title>Food diary | Products</title>
       </Helmet>
-      <ProductsTableToolbar />
-      <ProductsFilterAppliedParams />
-      <ProductsTable />
-      <ProductsTablePagination />
-    </Paper>
+      <Typography variant="h1" gutterBottom>
+        Products
+      </Typography>
+      <Paper>
+        <ProductsTableToolbar />
+        <ProductsFilterAppliedParams />
+        <ProductsTable />
+        <ProductsTablePagination />
+      </Paper>
+    </React.Fragment>
   );
 };
 
