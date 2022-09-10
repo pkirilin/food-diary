@@ -39,7 +39,7 @@ test('product can be created', async () => {
   await userEvent.click(category);
   await userEvent.click(within(screen.getByRole('listbox')).getByText(/dairy/i));
 
-  await userEvent.click(dialog.getByText(/create/i));
+  await userEvent.click(dialog.getByLabelText(/create yoghurt/i));
   await waitForElementToBeRemoved(screen.queryByRole('dialog'));
 
   expect(await screen.findByText(/yoghurt/i));
@@ -60,11 +60,49 @@ test('product can be edited', async () => {
   await userEvent.type(productName, 'Rye bread');
   await userEvent.clear(caloriesCost);
   await userEvent.type(caloriesCost, '95');
-  await userEvent.click(dialog.getByText(/save/i));
+  await userEvent.click(dialog.getByLabelText(/save/i));
 
   expect(await screen.findByText(/rye bread/i));
   expect(screen.getByLabelText(/rye bread calories cost is 95/i));
   expect(screen.getByLabelText(/rye bread is in bakery category/i));
+});
+
+test('new product input is validated', async () => {
+  render(<Products />);
+
+  await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
+  await userEvent.click(screen.getByLabelText(/open create product dialog/i));
+  const dialog = within(screen.getByRole('dialog'));
+  const productName = dialog.getByPlaceholderText(/product name/i);
+  const caloriesCost = dialog.getByPlaceholderText(/calories cost/i);
+  await userEvent.clear(productName);
+  await userEvent.type(productName, 'b');
+  await userEvent.clear(caloriesCost);
+  await userEvent.type(caloriesCost, '5001');
+  await userEvent.click(productName);
+
+  expect(productName).toBeInvalid();
+  expect(caloriesCost).toBeInvalid();
+  expect(dialog.getByLabelText(/create b/i)).toBeDisabled();
+});
+
+test('existing product input is validated', async () => {
+  render(<Products />);
+
+  await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
+  await userEvent.click(screen.getByLabelText(/open edit product dialog for bread/i));
+  const dialog = within(screen.getByRole('dialog'));
+  const productName = dialog.getByPlaceholderText(/product name/i);
+  const caloriesCost = dialog.getByPlaceholderText(/calories cost/i);
+  await userEvent.clear(productName);
+  await userEvent.type(productName, 'a');
+  await userEvent.clear(caloriesCost);
+  await userEvent.type(caloriesCost, '5002');
+  await userEvent.click(productName);
+
+  expect(productName).toBeInvalid();
+  expect(caloriesCost).toBeInvalid();
+  expect(dialog.getByText(/save/i)).toBeDisabled();
 });
 
 test('product can be selected', async () => {

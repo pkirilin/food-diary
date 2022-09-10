@@ -24,11 +24,7 @@ const ProductInputDialog: React.FC<ProductInputDialogProps> = ({
   submitText,
   onSubmit,
   isLoading,
-  product = {
-    name: '',
-    caloriesCost: 100,
-    category: null,
-  },
+  product,
 }) => {
   const {
     value: productName,
@@ -38,7 +34,7 @@ const ProductInputDialog: React.FC<ProductInputDialogProps> = ({
     isInvalid: isProductNameInvalid,
     isTouched: isProductNameTouched,
   } = useValidatedState({
-    initialValue: product.name,
+    initialValue: product?.name || '',
     errorHelperText: 'Product name is invalid',
     validatorFunction: validateProductName,
   });
@@ -51,27 +47,30 @@ const ProductInputDialog: React.FC<ProductInputDialogProps> = ({
     isInvalid: isCaloriesCostInvalid,
     isTouched: isCaloriesCostTouched,
   } = useValidatedState({
-    initialValue: product.caloriesCost,
+    initialValue: product?.caloriesCost || 100,
     errorHelperText: 'Calories cost is invalid',
     validatorFunction: validateCaloriesCost,
   });
 
-  const [category, setCategory] = useState(product.category);
+  const [category, setCategory] = useState(product?.category || null);
 
   useEffect(() => {
     if (isDialogOpened) {
       clearProductName();
       clearCaloriesCost();
-      setCategory(product.category);
+
+      if (product?.category) {
+        setCategory(product.category);
+      }
     }
-  }, [clearCaloriesCost, clearProductName, isDialogOpened, product.category]);
+  }, [clearCaloriesCost, clearProductName, isDialogOpened, product]);
 
   function handleProductNameChange(event: React.ChangeEvent<HTMLInputElement>) {
     setProductName(event.target.value);
   }
 
   function handleCaloriesCostChange(event: React.ChangeEvent<HTMLInputElement>) {
-    setCaloriesCost(event.target.valueAsNumber);
+    setCaloriesCost(event.target.value ? Number(event.target.value) : 0);
   }
 
   function handleCategoryChange(category: CategoryAutocompleteOption | null) {
@@ -141,7 +140,7 @@ const ProductInputDialog: React.FC<ProductInputDialogProps> = ({
         </AppButton>
 
         <AppButton
-          aria-label={`${category ? 'Save' : 'Create'} ${productName} and close dialog`}
+          aria-label={`${product ? 'Save' : 'Create'} ${productName} and close dialog`}
           variant="contained"
           disabled={isSubmitDisabled}
           onClick={handleSubmit}

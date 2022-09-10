@@ -128,6 +128,7 @@ const ProductCreateEditDialog: React.FC<ProductCreateEditDialogProps> = ({
           color="primary"
           onClick={handleSubmitClick}
           disabled={isSubmitDisabled}
+          aria-label={`${product ? 'Save' : 'Create'} ${productName} and close dialog`}
         >
           {submitText}
         </Button>
