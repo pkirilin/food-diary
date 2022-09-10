@@ -20,3 +20,11 @@ export const validateDate: ValidatorFunction<Date | null> = value => {
 export const validateCategoryName: ValidatorFunction<string> = value => {
   return value.length >= 3 && value.length <= 50;
 };
+
+export const validateProductName: ValidatorFunction<string> = value => {
+  return value.length >= 3 && value.length <= 50;
+};
+
+export const validateCaloriesCost: ValidatorFunction<number> = value => {
+  return value > 0 && value < 5000;
+};

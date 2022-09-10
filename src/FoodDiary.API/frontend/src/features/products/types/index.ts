@@ -1,3 +1,5 @@
+import { CategoryAutocompleteOption } from 'src/features/categories';
+
 export type Product = {
   id: number;
   name: string;
@@ -9,4 +11,10 @@ export type Product = {
 export type ProductsResponse = {
   productItems: Product[];
   totalProductsCount: number;
+};
+
+export type ProductFormData = {
+  name: string;
+  caloriesCost: number;
+  category: CategoryAutocompleteOption | null;
 };
