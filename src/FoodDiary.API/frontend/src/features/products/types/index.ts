@@ -16,5 +16,5 @@ export type ProductsResponse = {
 export type ProductFormData = {
   name: string;
   caloriesCost: number;
-  category: CategoryAutocompleteOption | null;
+  category: CategoryAutocompleteOption;
 };

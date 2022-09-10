@@ -40,9 +40,10 @@ test('product can be created', async () => {
   await userEvent.click(within(screen.getByRole('listbox')).getByText(/dairy/i));
 
   await userEvent.click(dialog.getByLabelText(/create yoghurt/i));
+  await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
   await waitForElementToBeRemoved(screen.queryByRole('dialog'));
 
-  expect(await screen.findByText(/yoghurt/i));
+  expect(screen.getByText(/yoghurt/i));
   expect(screen.getByLabelText(/yoghurt calories cost is 105/i));
   expect(screen.getByLabelText(/yoghurt is in dairy category/i));
 });

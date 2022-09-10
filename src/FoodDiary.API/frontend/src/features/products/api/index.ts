@@ -3,7 +3,7 @@ import { API_URL } from 'src/config';
 import { getToken } from 'src/features/auth';
 import { createUrl } from 'src/utils';
 import { ProductsResponse } from '../types';
-import { GetProductsRequest } from './contracts';
+import { CreateProductRequest, GetProductsRequest } from './contracts';
 
 const productsApi = createApi({
   reducerPath: 'api.products',
@@ -24,9 +24,17 @@ const productsApi = createApi({
         url: createUrl('', request),
       }),
     }),
+
+    createProduct: builder.mutation<void, CreateProductRequest>({
+      query: product => ({
+        method: 'POST',
+        url: '/',
+        body: product,
+      }),
+    }),
   }),
 });
 
-export const { useProductsQuery } = productsApi;
+export const { useProductsQuery, useCreateProductMutation } = productsApi;
 
 export default productsApi;

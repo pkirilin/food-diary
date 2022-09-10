@@ -1,28 +1,66 @@
 import AddIcon from '@mui/icons-material/Add';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { AppFab } from 'src/components';
-import { useAppDispatch, useDialog } from 'src/hooks';
-import { ProductCreateEdit } from '../models';
-import { createProduct } from '../thunks';
-import ProductCreateEditDialog from './ProductCreateEditDialog';
+import { useAppSelector } from 'src/store';
+import { useCreateProductMutation, useProductsQuery } from '../api';
+import { ProductFormData } from '../types';
+import ProductInputDialog from './ProductInputDialog';
 
 const CreateProduct: React.FC = () => {
-  const dispatch = useAppDispatch();
+  const [isDialogOpened, setIsDialogOpened] = useState(false);
 
-  const productCreateDialog = useDialog<ProductCreateEdit>(product => {
-    dispatch(createProduct(product));
+  const [createProduct, { isLoading: isCreateProductLoading, isSuccess: isCreateProductSuccess }] =
+    useCreateProductMutation();
+
+  const { pageSize, pageNumber, productSearchName, category } = useAppSelector(
+    state => state.products.filter,
+  );
+
+  const { isLoading: isProductsListLoading, refetch: refetchProducts } = useProductsQuery({
+    pageSize,
+    pageNumber,
+    productSearchName,
+    categoryId: category?.id,
   });
 
+  useEffect(() => {
+    if (isCreateProductSuccess) {
+      refetchProducts();
+      setIsDialogOpened(false);
+    }
+  }, [isCreateProductSuccess, refetchProducts]);
+
   function handleCreate() {
-    productCreateDialog.show();
+    setIsDialogOpened(true);
+  }
+
+  function handleDialogSubmit({ name, caloriesCost, category }: ProductFormData) {
+    createProduct({
+      name,
+      caloriesCost,
+      categoryId: category?.id,
+    });
   }
 
   return (
     <React.Fragment>
-      <ProductCreateEditDialog {...productCreateDialog.binding} />
-      <AppFab aria-label="Open create product dialog" color="primary" onClick={handleCreate}>
+      <AppFab
+        aria-label="Open create product dialog"
+        color="primary"
+        onClick={handleCreate}
+        disabled={isProductsListLoading || isCreateProductLoading}
+      >
         <AddIcon />
       </AppFab>
+
+      <ProductInputDialog
+        isOpened={isDialogOpened}
+        setIsOpened={setIsDialogOpened}
+        title="Create product"
+        submitText="Create"
+        onSubmit={handleDialogSubmit}
+        isLoading={isCreateProductLoading}
+      />
     </React.Fragment>
   );
 };

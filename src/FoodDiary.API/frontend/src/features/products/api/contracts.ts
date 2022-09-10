@@ -4,3 +4,9 @@ export type GetProductsRequest = {
   productSearchName?: string;
   categoryId?: number;
 };
+
+export type CreateProductRequest = {
+  name: string;
+  caloriesCost: number;
+  categoryId: number;
+};

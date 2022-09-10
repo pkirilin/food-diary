@@ -82,11 +82,13 @@ const ProductInputDialog: React.FC<ProductInputDialogProps> = ({
   }
 
   function handleSubmit() {
-    onSubmit({
-      name: productName,
-      caloriesCost,
-      category,
-    });
+    if (category) {
+      onSubmit({
+        name: productName,
+        caloriesCost,
+        category,
+      });
+    }
   }
 
   const submitValidationResults = [
