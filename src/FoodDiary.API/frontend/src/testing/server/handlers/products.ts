@@ -1,8 +1,7 @@
 import { rest } from 'msw';
 import { API_URL } from 'src/config';
 import { ProductsResponse } from 'src/features/products';
-import { CreateProductRequest } from 'src/features/products/api/contracts';
-import { ProductCreateEdit } from 'src/features/products/models';
+import { CreateProductRequest, EditProductRequest } from 'src/features/products/api/contracts';
 import { db } from '../db';
 
 export const productsHandlers = [
@@ -55,8 +54,8 @@ export const productsHandlers = [
     return res(ctx.status(200));
   }),
 
-  rest.put(`${API_URL}/v1/products/:id`, async (req, res, ctx) => {
-    const { name, caloriesCost, categoryId } = await req.json<ProductCreateEdit>();
+  rest.put(`${API_URL}/api/v1/products/:id`, async (req, res, ctx) => {
+    const { name, caloriesCost, categoryId } = await req.json<EditProductRequest>();
 
     db.product.update({
       where: {

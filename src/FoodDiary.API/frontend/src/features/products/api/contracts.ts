@@ -10,3 +10,10 @@ export type CreateProductRequest = {
   caloriesCost: number;
   categoryId: number;
 };
+
+export type EditProductRequest = {
+  id: number;
+  name: string;
+  caloriesCost: number;
+  categoryId: number;
+};
