@@ -3,32 +3,22 @@ import React, { useEffect, useState } from 'react';
 import { AppFab } from 'src/components';
 import { useAppSelector } from 'src/store';
 import { useCreateProductMutation, useProductsQuery } from '../api';
+import { selectProductsQueryArg } from '../selectors';
 import { ProductFormData } from '../types';
 import ProductInputDialog from './ProductInputDialog';
 
 const CreateProduct: React.FC = () => {
   const [isDialogOpened, setIsDialogOpened] = useState(false);
-
-  const [createProduct, { isLoading: isCreateProductLoading, isSuccess: isCreateProductSuccess }] =
-    useCreateProductMutation();
-
-  const { pageSize, pageNumber, productSearchName, category } = useAppSelector(
-    state => state.products.filter,
-  );
-
-  const { isLoading: isProductsListLoading, refetch: refetchProducts } = useProductsQuery({
-    pageSize,
-    pageNumber,
-    productSearchName,
-    categoryId: category?.id,
-  });
+  const [createProduct, createProductResult] = useCreateProductMutation();
+  const productsQueryArg = useAppSelector(selectProductsQueryArg);
+  const productsQuery = useProductsQuery(productsQueryArg);
 
   useEffect(() => {
-    if (isCreateProductSuccess) {
-      refetchProducts();
+    if (createProductResult.isSuccess) {
+      productsQuery.refetch();
       setIsDialogOpened(false);
     }
-  }, [isCreateProductSuccess, refetchProducts]);
+  }, [createProductResult.isSuccess, productsQuery]);
 
   function handleCreate() {
     setIsDialogOpened(true);
@@ -48,7 +38,7 @@ const CreateProduct: React.FC = () => {
         aria-label="Open create product dialog"
         color="primary"
         onClick={handleCreate}
-        disabled={isProductsListLoading || isCreateProductLoading}
+        disabled={productsQuery.isLoading || createProductResult.isLoading}
       >
         <AddIcon />
       </AppFab>
@@ -59,7 +49,7 @@ const CreateProduct: React.FC = () => {
         title="Create product"
         submitText="Create"
         onSubmit={handleDialogSubmit}
-        isLoading={isCreateProductLoading}
+        isLoading={createProductResult.isLoading}
       />
     </React.Fragment>
   );

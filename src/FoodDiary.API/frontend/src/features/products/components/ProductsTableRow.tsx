@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../__shared__/hooks';
 import { useEditProductMutation, useProductsQuery } from '../api';
 import { ProductItem } from '../models';
+import { selectProductsQueryArg } from '../selectors';
 import { productSelected } from '../slice';
 import { ProductFormData } from '../types';
 import { toProductFormData } from '../utils';
@@ -15,18 +16,8 @@ type ProductsTableRowProps = {
 
 const ProductsTableRow: React.FC<ProductsTableRowProps> = ({ product }: ProductsTableRowProps) => {
   const [isEditDialogOpened, setIsEditDialogOpened] = useState(false);
-
-  const { pageNumber, pageSize, productSearchName, category } = useAppSelector(
-    state => state.products.filter,
-  );
-
-  const productsQuery = useProductsQuery({
-    pageNumber,
-    pageSize,
-    productSearchName,
-    categoryId: category?.id,
-  });
-
+  const productsQueryArg = useAppSelector(selectProductsQueryArg);
+  const productsQuery = useProductsQuery(productsQueryArg);
   const [editProduct, editProductResult] = useEditProductMutation();
 
   const isProductSelected = useAppSelector(state =>
