@@ -1,16 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Status } from '../__shared__/models';
 import { SelectionPayload } from '../__shared__/types';
-import { createAsyncThunkMatcher } from '../__shared__/utils';
 import { CategoryAutocompleteOption } from '../categories/models';
 import productsApi from './api';
 import { ProductItem, ProductItemsFilter } from './models';
-import { createProduct, deleteProducts, editProduct, getProducts } from './thunks';
 
 export type ProductsState = {
   productItems: ProductItem[];
-  totalProductsCount: number;
-  operationStatus: Status;
   selectedProductIds: number[];
   filter: ProductItemsFilter;
 };
@@ -23,8 +18,6 @@ export type SelectAllProductsPayload = SelectionPayload;
 
 const initialState: ProductsState = {
   productItems: [],
-  totalProductsCount: 0,
-  operationStatus: 'idle',
   selectedProductIds: [],
   filter: {
     changed: false,
@@ -33,8 +26,6 @@ const initialState: ProductsState = {
     category: null,
   },
 };
-
-const operationThunks = [createProduct, editProduct, deleteProducts];
 
 const productsSlice = createSlice({
   name: 'products',
@@ -76,28 +67,12 @@ const productsSlice = createSlice({
   },
   extraReducers: builder =>
     builder
-      .addCase(getProducts.fulfilled, (state, { payload }) => {
-        state.productItems = payload.productItems;
-        state.totalProductsCount = payload.totalProductsCount;
-      })
-      .addCase(deleteProducts.fulfilled, state => {
-        state.selectedProductIds = [];
-      })
-
-      .addMatcher(createAsyncThunkMatcher(operationThunks, 'pending'), state => {
-        state.operationStatus = 'pending';
-      })
-      .addMatcher(createAsyncThunkMatcher(operationThunks, 'fulfilled'), state => {
-        state.operationStatus = 'succeeded';
-      })
-      .addMatcher(createAsyncThunkMatcher(operationThunks, 'rejected'), state => {
-        state.operationStatus = 'failed';
-      })
-
       .addMatcher(productsApi.endpoints.products.matchFulfilled, (state, { payload }) => {
         state.selectedProductIds = [];
         state.productItems = payload.productItems;
-        state.totalProductsCount = payload.totalProductsCount;
+      })
+      .addMatcher(productsApi.endpoints.deleteProducts.matchFulfilled, state => {
+        state.selectedProductIds = [];
       }),
 });
 

@@ -2,10 +2,14 @@ import { TablePagination } from '@mui/material';
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '../../__shared__/hooks';
+import { useProductsQuery } from '../api';
+import { selectProductsQueryArg } from '../selectors';
 import { pageNumberChanged, pageSizeChanged } from '../slice';
 
 const ProductsTablePagination: React.FC = () => {
-  const totalProductsCount = useAppSelector(state => state.products.totalProductsCount);
+  const productsQueryArg = useAppSelector(selectProductsQueryArg);
+  const productsQuery = useProductsQuery(productsQueryArg);
+  const totalProductsCount = productsQuery.data ? productsQuery.data.totalProductsCount : 0;
   const { pageNumber, pageSize } = useAppSelector(state => state.products.filter);
   const dispatch = useDispatch();
 

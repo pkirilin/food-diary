@@ -10,7 +10,7 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useAppDispatch, useAppSelector } from '../../__shared__/hooks';
 import { useProductsQuery } from '../api';
 import { selectProductsQueryArg } from '../selectors';
@@ -24,17 +24,10 @@ const TableLinearProgress = styled(LinearProgress)(() => ({
 const ProductsTable: React.FC = () => {
   const productsQueryArg = useAppSelector(selectProductsQueryArg);
   const productsQuery = useProductsQuery(productsQueryArg);
-  const operationStatus = useAppSelector(state => state.products.operationStatus);
   const selectedProductsCount = useAppSelector(state => state.products.selectedProductIds.length);
   const dispatch = useAppDispatch();
   const products = productsQuery.data ? productsQuery.data.productItems : [];
   const areAllProductsSelected = products.length > 0 && products.length === selectedProductsCount;
-
-  useEffect(() => {
-    if (operationStatus === 'succeeded') {
-      productsQuery.refetch();
-    }
-  }, [operationStatus, productsQuery]);
 
   function handleSelectAllProducts(): void {
     dispatch(allProductsSelected({ selected: !areAllProductsSelected }));
