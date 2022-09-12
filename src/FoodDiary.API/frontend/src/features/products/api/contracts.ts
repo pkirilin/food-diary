@@ -17,3 +17,7 @@ export type EditProductRequest = {
   caloriesCost: number;
   categoryId: number;
 };
+
+export type DeleteProductsRequest = {
+  ids: number[];
+};

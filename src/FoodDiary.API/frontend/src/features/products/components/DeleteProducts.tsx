@@ -1,20 +1,15 @@
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Tooltip, IconButton } from '@mui/material';
-import React from 'react';
-import { ConfirmationDialog } from 'src/components';
-import { useAppDispatch, useAppSelector, useDialog } from 'src/hooks';
-import { deleteProducts } from '../thunks';
+import React, { useState } from 'react';
+import { useAppSelector } from 'src/hooks';
+import DeleteProductsDialog from './DeleteProductsDialog';
 
 const DeleteProducts: React.FC = () => {
+  const [isDeleteDialogOpened, setIsDeleteDialogOpened] = useState(false);
   const selectedProductIds = useAppSelector(state => state.products.selectedProductIds);
-  const dispatch = useAppDispatch();
-
-  const productsDeleteDialog = useDialog(() => {
-    dispatch(deleteProducts(selectedProductIds));
-  });
 
   function handleDeleteClick() {
-    productsDeleteDialog.show();
+    setIsDeleteDialogOpened(true);
   }
 
   return (
@@ -31,11 +26,7 @@ const DeleteProducts: React.FC = () => {
         </Tooltip>
       )}
 
-      <ConfirmationDialog
-        {...productsDeleteDialog.binding}
-        dialogTitle="Delete products confirmation"
-        dialogMessage="Do you really want to delete selected products?"
-      />
+      <DeleteProductsDialog isOpened={isDeleteDialogOpened} setIsOpened={setIsDeleteDialogOpened} />
     </React.Fragment>
   );
 };

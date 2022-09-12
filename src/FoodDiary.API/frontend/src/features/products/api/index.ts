@@ -3,7 +3,12 @@ import { API_URL } from 'src/config';
 import { getToken } from 'src/features/auth';
 import { createUrl } from 'src/utils';
 import { ProductsResponse } from '../types';
-import { CreateProductRequest, EditProductRequest, GetProductsRequest } from './contracts';
+import {
+  CreateProductRequest,
+  DeleteProductsRequest,
+  EditProductRequest,
+  GetProductsRequest,
+} from './contracts';
 
 const productsApi = createApi({
   reducerPath: 'api.products',
@@ -44,9 +49,22 @@ const productsApi = createApi({
         },
       }),
     }),
+
+    deleteProducts: builder.mutation<void, DeleteProductsRequest>({
+      query: ({ ids }) => ({
+        method: 'DELETE',
+        url: '/batch',
+        body: ids,
+      }),
+    }),
   }),
 });
 
-export const { useProductsQuery, useCreateProductMutation, useEditProductMutation } = productsApi;
+export const {
+  useProductsQuery,
+  useCreateProductMutation,
+  useEditProductMutation,
+  useDeleteProductsMutation,
+} = productsApi;
 
 export default productsApi;

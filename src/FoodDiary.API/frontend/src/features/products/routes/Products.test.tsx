@@ -130,8 +130,9 @@ test('products can be deleted', async () => {
   await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
   await userEvent.click(screen.getByLabelText(/select bread/i));
   await userEvent.click(screen.getByLabelText(/delete selected products/i));
-  const dialog = screen.getByRole('dialog');
-  await userEvent.click(within(dialog).getByText(/ok/i));
+  const dialog = within(screen.getByRole('dialog'));
+  await userEvent.click(dialog.getByText(/yes/i));
+  await waitForElementToBeRemoved(dialog.queryByRole('progressbar'));
   await waitForElementToBeRemoved(screen.queryByRole('dialog'));
 
   expect(screen.queryByText(/bread/i)).not.toBeInTheDocument();
