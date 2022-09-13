@@ -1,23 +1,14 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { SelectionPayload } from '../__shared__/types';
 import { CategoryAutocompleteOption } from '../categories/models';
 import productsApi from './api';
-import { ProductItem, ProductItemsFilter } from './models';
+import { ProductItemsFilter } from './models';
 
 export type ProductsState = {
-  productItems: ProductItem[];
   selectedProductIds: number[];
   filter: ProductItemsFilter;
 };
 
-export interface SelectProductPayload extends SelectionPayload {
-  productId: number;
-}
-
-export type SelectAllProductsPayload = SelectionPayload;
-
 const initialState: ProductsState = {
-  productItems: [],
   selectedProductIds: [],
   filter: {
     changed: false,
@@ -31,17 +22,24 @@ const productsSlice = createSlice({
   name: 'products',
   initialState,
   reducers: {
-    productSelected: (state, { payload }: PayloadAction<SelectProductPayload>) => {
-      const { productId, selected } = payload;
-      if (selected) {
-        state.selectedProductIds.push(productId);
-      } else {
-        state.selectedProductIds = state.selectedProductIds.filter(id => id !== productId);
-      }
+    productChecked: (state, { payload }: PayloadAction<number>) => {
+      state.selectedProductIds.push(payload);
     },
-    allProductsSelected: (state, { payload }: PayloadAction<SelectAllProductsPayload>) => {
-      state.selectedProductIds = payload.selected ? state.productItems.map(p => p.id) : [];
+
+    productUnchecked: (state, { payload }: PayloadAction<number>) => {
+      state.selectedProductIds = state.selectedProductIds.filter(id => id !== payload);
     },
+
+    productsChecked: (state, { payload }: PayloadAction<number[]>) => {
+      state.selectedProductIds = state.selectedProductIds
+        .filter(id => payload.includes(id))
+        .concat(payload);
+    },
+
+    productsUnchecked: (state, { payload }: PayloadAction<number[]>) => {
+      state.selectedProductIds = state.selectedProductIds.filter(id => !payload.includes(id));
+    },
+
     pageNumberChanged: (state, { payload }: PayloadAction<number>) => {
       state.filter.pageNumber = payload;
     },
@@ -67,9 +65,8 @@ const productsSlice = createSlice({
   },
   extraReducers: builder =>
     builder
-      .addMatcher(productsApi.endpoints.products.matchFulfilled, (state, { payload }) => {
+      .addMatcher(productsApi.endpoints.products.matchFulfilled, state => {
         state.selectedProductIds = [];
-        state.productItems = payload.productItems;
       })
       .addMatcher(productsApi.endpoints.deleteProducts.matchFulfilled, state => {
         state.selectedProductIds = [];
@@ -77,8 +74,10 @@ const productsSlice = createSlice({
 });
 
 export const {
-  productSelected,
-  allProductsSelected,
+  productChecked,
+  productUnchecked,
+  productsChecked,
+  productsUnchecked,
   pageNumberChanged,
   pageSizeChanged,
   productSearchNameChanged,

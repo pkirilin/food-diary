@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from '../../__shared__/hooks';
 import { useEditProductMutation, useProductsQuery } from '../api';
 import { ProductItem } from '../models';
 import { selectProductsQueryArg } from '../selectors';
-import { productSelected } from '../slice';
+import { productChecked, productUnchecked } from '../slice';
 import { ProductFormData } from '../types';
 import { toProductFormData } from '../utils';
 import ProductInputDialog from './ProductInputDialog';
@@ -20,7 +20,7 @@ const ProductsTableRow: React.FC<ProductsTableRowProps> = ({ product }: Products
   const productsQuery = useProductsQuery(productsQueryArg);
   const [editProduct, editProductResult] = useEditProductMutation();
 
-  const isProductSelected = useAppSelector(state =>
+  const isProductChecked = useAppSelector(state =>
     state.products.selectedProductIds.some(id => id === product.id),
   );
 
@@ -46,13 +46,12 @@ const ProductsTableRow: React.FC<ProductsTableRowProps> = ({ product }: Products
     });
   }
 
-  function handleSelectProduct() {
-    dispatch(
-      productSelected({
-        productId: product.id,
-        selected: !isProductSelected,
-      }),
-    );
+  function handleCheckedChange() {
+    if (isProductChecked) {
+      dispatch(productUnchecked(product.id));
+    } else {
+      dispatch(productChecked(product.id));
+    }
   }
 
   return (
@@ -61,8 +60,8 @@ const ProductsTableRow: React.FC<ProductsTableRowProps> = ({ product }: Products
         <TableCell padding="checkbox">
           <Checkbox
             color="primary"
-            checked={isProductSelected}
-            onChange={handleSelectProduct}
+            checked={isProductChecked}
+            onChange={handleCheckedChange}
             inputProps={{
               'aria-label': `Select ${product.name}`,
             }}

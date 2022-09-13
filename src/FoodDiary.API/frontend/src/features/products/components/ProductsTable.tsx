@@ -14,7 +14,7 @@ import React from 'react';
 import { useAppDispatch, useAppSelector } from '../../__shared__/hooks';
 import { useProductsQuery } from '../api';
 import { selectProductsQueryArg } from '../selectors';
-import { allProductsSelected } from '../slice';
+import { productsChecked, productsUnchecked } from '../slice';
 import ProductsTableRow from './ProductsTableRow';
 
 const TableLinearProgress = styled(LinearProgress)(() => ({
@@ -24,13 +24,17 @@ const TableLinearProgress = styled(LinearProgress)(() => ({
 const ProductsTable: React.FC = () => {
   const productsQueryArg = useAppSelector(selectProductsQueryArg);
   const productsQuery = useProductsQuery(productsQueryArg);
-  const selectedProductsCount = useAppSelector(state => state.products.selectedProductIds.length);
+  const checkedProductIds = useAppSelector(state => state.products.selectedProductIds);
   const dispatch = useAppDispatch();
   const products = productsQuery.data ? productsQuery.data.productItems : [];
-  const areAllProductsSelected = products.length > 0 && products.length === selectedProductsCount;
+  const allProductsChecked = products.length > 0 && products.length === checkedProductIds.length;
 
-  function handleSelectAllProducts(): void {
-    dispatch(allProductsSelected({ selected: !areAllProductsSelected }));
+  function handleCheckedChange() {
+    if (checkedProductIds.length > 0) {
+      dispatch(productsUnchecked(products.map(p => p.id)));
+    } else {
+      dispatch(productsChecked(products.map(p => p.id)));
+    }
   }
 
   function renderTableBody() {
@@ -64,9 +68,11 @@ const ProductsTable: React.FC = () => {
             <TableCell padding="checkbox">
               <Checkbox
                 color="primary"
-                indeterminate={selectedProductsCount > 0 && selectedProductsCount < products.length}
-                checked={areAllProductsSelected}
-                onChange={handleSelectAllProducts}
+                indeterminate={
+                  checkedProductIds.length > 0 && checkedProductIds.length < products.length
+                }
+                checked={allProductsChecked}
+                onChange={handleCheckedChange}
                 disabled={products.length === 0}
                 inputProps={{
                   'aria-label': 'Select all',
