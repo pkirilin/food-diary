@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from '../../__shared__/hooks';
 import { useEditProductMutation, useProductsQuery } from '../api';
 import { ProductItem } from '../models';
 import { selectCheckedProductIds, selectProductsQueryArg } from '../selectors';
-import { productChecked, productUnchecked } from '../slice';
+import { productChecked, productUnchecked } from '../store';
 import { ProductFormData } from '../types';
 import { toProductFormData } from '../utils';
 import ProductInputDialog from './ProductInputDialog';

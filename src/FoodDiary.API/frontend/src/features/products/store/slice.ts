@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { CategoryAutocompleteOption } from '../categories/models';
-import productsApi from './api';
-import { ProductItemsFilter } from './models';
+import { CategoryAutocompleteOption } from '../../categories/models';
+import productsApi from '../api';
+import { ProductItemsFilter } from '../models';
 
 export type ProductsState = {
   checkedProductIds: number[];
@@ -73,16 +73,4 @@ const productsSlice = createSlice({
       }),
 });
 
-export const {
-  productChecked,
-  productUnchecked,
-  productsChecked,
-  productsUnchecked,
-  pageNumberChanged,
-  pageSizeChanged,
-  productSearchNameChanged,
-  filterByCategoryChanged,
-  filterReset,
-} = productsSlice.actions;
-
-export default productsSlice.reducer;
+export default productsSlice;

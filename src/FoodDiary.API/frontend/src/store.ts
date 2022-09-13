@@ -4,8 +4,7 @@ import api from './api';
 import { useAppSelector } from './features/__shared__/hooks';
 import notesReducer from './features/notes/slice';
 import pagesReducer from './features/pages/slice';
-import { productsApi } from './features/products';
-import productsReducer from './features/products/slice';
+import { productsApi, productsReducer } from './features/products';
 
 export function configureAppStore() {
   return configureStore({

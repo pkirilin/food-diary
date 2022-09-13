@@ -14,7 +14,7 @@ import React from 'react';
 import { useAppDispatch, useAppSelector } from '../../__shared__/hooks';
 import { useProductsQuery } from '../api';
 import { selectCheckedProductIds, selectProductsQueryArg } from '../selectors';
-import { productsChecked, productsUnchecked } from '../slice';
+import { productsChecked, productsUnchecked } from '../store';
 import ProductsTableRow from './ProductsTableRow';
 
 const TableLinearProgress = styled(LinearProgress)(() => ({

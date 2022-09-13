@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { useAppSelector } from '../../__shared__/hooks';
 import { useProductsQuery } from '../api';
 import { selectProductsQueryArg } from '../selectors';
-import { pageNumberChanged, pageSizeChanged } from '../slice';
+import { pageNumberChanged, pageSizeChanged } from '../store';
 
 const ProductsTablePagination: React.FC = () => {
   const productsQueryArg = useAppSelector(selectProductsQueryArg);

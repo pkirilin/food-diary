@@ -5,7 +5,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '../../__shared__/hooks';
 import { useFilterAppliedParamsStyles } from '../../__shared__/styles';
-import { filterByCategoryChanged, productSearchNameChanged } from '../slice';
+import { filterByCategoryChanged, productSearchNameChanged } from '../store';
 
 const ProductsFilterAppliedParams: React.FC = () => {
   const classes = useFilterAppliedParamsStyles();

@@ -6,7 +6,7 @@ import { AutocompleteOption } from 'src/types';
 import { useAppSelector, useValidatedTextInput } from '../../__shared__/hooks';
 import { useFilterStyles } from '../../__shared__/styles';
 
-import { filterByCategoryChanged, filterReset, productSearchNameChanged } from '../slice';
+import { filterByCategoryChanged, filterReset, productSearchNameChanged } from '../store';
 import CategorySelect from './CategorySelect';
 
 const ProductsFilter: React.FC = () => {
