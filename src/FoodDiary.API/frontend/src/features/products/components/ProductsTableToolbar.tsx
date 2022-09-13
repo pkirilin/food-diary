@@ -2,11 +2,12 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import { Box, IconButton, Popover, Tooltip, Typography } from '@mui/material';
 import React from 'react';
 import { usePopover, useAppSelector } from '../../__shared__/hooks';
+import { selectCheckedProductIds } from '../selectors';
 import DeleteProducts from './DeleteProducts';
 import ProductsFilter from './ProductsFilter';
 
 const ProductsTableToolbar: React.FC = () => {
-  const selectedProductIds = useAppSelector(state => state.products.selectedProductIds);
+  const checkedProductIds = useAppSelector(selectCheckedProductIds);
   const [filter, showFilter] = usePopover();
 
   function handleFilterClick(event: React.MouseEvent<HTMLButtonElement>) {
@@ -16,12 +17,12 @@ const ProductsTableToolbar: React.FC = () => {
   return (
     <Box paddingY={2}>
       <Box paddingX={2} display="flex" justifyContent="space-between" alignItems="center">
-        {selectedProductIds.length > 0 && (
-          <Typography>{selectedProductIds.length} selected</Typography>
+        {checkedProductIds.length > 0 && (
+          <Typography>{checkedProductIds.length} selected</Typography>
         )}
         <DeleteProducts />
       </Box>
-      {selectedProductIds.length === 0 && (
+      {checkedProductIds.length === 0 && (
         <Box padding={0.5}>
           <Tooltip title="Filter products">
             <span>

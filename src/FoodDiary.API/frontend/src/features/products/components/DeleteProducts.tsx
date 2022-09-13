@@ -2,11 +2,12 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { Tooltip, IconButton } from '@mui/material';
 import React, { useState } from 'react';
 import { useAppSelector } from 'src/hooks';
+import { selectCheckedProductIds } from '../selectors';
 import DeleteProductsDialog from './DeleteProductsDialog';
 
 const DeleteProducts: React.FC = () => {
   const [isDeleteDialogOpened, setIsDeleteDialogOpened] = useState(false);
-  const selectedProductIds = useAppSelector(state => state.products.selectedProductIds);
+  const checkedProductIds = useAppSelector(selectCheckedProductIds);
 
   function handleDeleteClick() {
     setIsDeleteDialogOpened(true);
@@ -14,7 +15,7 @@ const DeleteProducts: React.FC = () => {
 
   return (
     <React.Fragment>
-      {selectedProductIds.length > 0 && (
+      {checkedProductIds.length > 0 && (
         <Tooltip title="Delete product">
           <IconButton
             onClick={handleDeleteClick}

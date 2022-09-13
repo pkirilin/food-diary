@@ -1,8 +1,10 @@
-import { createSelector } from '@reduxjs/toolkit';
+import { createDraftSafeSelector, createSelector } from '@reduxjs/toolkit';
 import { RootState } from 'src/store';
 import { GetProductsRequest } from '../api/contracts';
 
-const selectProductsFilter = (state: RootState) => state.products.filter;
+const selectProducts = (state: RootState) => state.products;
+
+const selectProductsFilter = createDraftSafeSelector(selectProducts, products => products.filter);
 
 export const selectProductsQueryArg = createSelector(
   selectProductsFilter,
@@ -12,4 +14,9 @@ export const selectProductsQueryArg = createSelector(
     productSearchName,
     categoryId: category?.id,
   }),
+);
+
+export const selectCheckedProductIds = createSelector(
+  selectProducts,
+  state => state.checkedProductIds,
 );

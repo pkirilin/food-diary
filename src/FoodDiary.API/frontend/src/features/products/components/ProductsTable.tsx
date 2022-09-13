@@ -13,7 +13,7 @@ import {
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '../../__shared__/hooks';
 import { useProductsQuery } from '../api';
-import { selectProductsQueryArg } from '../selectors';
+import { selectCheckedProductIds, selectProductsQueryArg } from '../selectors';
 import { productsChecked, productsUnchecked } from '../slice';
 import ProductsTableRow from './ProductsTableRow';
 
@@ -24,7 +24,7 @@ const TableLinearProgress = styled(LinearProgress)(() => ({
 const ProductsTable: React.FC = () => {
   const productsQueryArg = useAppSelector(selectProductsQueryArg);
   const productsQuery = useProductsQuery(productsQueryArg);
-  const checkedProductIds = useAppSelector(state => state.products.selectedProductIds);
+  const checkedProductIds = useAppSelector(selectCheckedProductIds);
   const dispatch = useAppDispatch();
   const products = productsQuery.data ? productsQuery.data.productItems : [];
   const allProductsChecked = products.length > 0 && products.length === checkedProductIds.length;

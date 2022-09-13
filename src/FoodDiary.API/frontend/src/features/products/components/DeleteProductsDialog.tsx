@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { AppButton } from 'src/components';
 import { useAppSelector } from 'src/store';
 import { useDeleteProductsMutation, useProductsQuery } from '../api';
-import { selectProductsQueryArg } from '../selectors';
+import { selectCheckedProductIds, selectProductsQueryArg } from '../selectors';
 
 type DeleteProductsDialogProps = {
   isOpened: boolean;
@@ -14,7 +14,7 @@ const DeleteProductsDialog: React.FC<DeleteProductsDialogProps> = ({
   isOpened: isDialogOpened,
   setIsOpened: setIsDialogOpened,
 }) => {
-  const selectedProductIds = useAppSelector(state => state.products.selectedProductIds);
+  const checkedProductIds = useAppSelector(selectCheckedProductIds);
   const [deleteProducts, deleteProductsResult] = useDeleteProductsMutation();
   const productsQueryArg = useAppSelector(selectProductsQueryArg);
   const productsQuery = useProductsQuery(productsQueryArg);
@@ -32,7 +32,7 @@ const DeleteProductsDialog: React.FC<DeleteProductsDialogProps> = ({
 
   function handleSubmit() {
     deleteProducts({
-      ids: selectedProductIds,
+      ids: checkedProductIds,
     });
   }
 

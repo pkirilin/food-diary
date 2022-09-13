@@ -4,12 +4,12 @@ import productsApi from './api';
 import { ProductItemsFilter } from './models';
 
 export type ProductsState = {
-  selectedProductIds: number[];
+  checkedProductIds: number[];
   filter: ProductItemsFilter;
 };
 
 const initialState: ProductsState = {
-  selectedProductIds: [],
+  checkedProductIds: [],
   filter: {
     changed: false,
     pageNumber: 1,
@@ -23,21 +23,21 @@ const productsSlice = createSlice({
   initialState,
   reducers: {
     productChecked: (state, { payload }: PayloadAction<number>) => {
-      state.selectedProductIds.push(payload);
+      state.checkedProductIds.push(payload);
     },
 
     productUnchecked: (state, { payload }: PayloadAction<number>) => {
-      state.selectedProductIds = state.selectedProductIds.filter(id => id !== payload);
+      state.checkedProductIds = state.checkedProductIds.filter(id => id !== payload);
     },
 
     productsChecked: (state, { payload }: PayloadAction<number[]>) => {
-      state.selectedProductIds = state.selectedProductIds
+      state.checkedProductIds = state.checkedProductIds
         .filter(id => payload.includes(id))
         .concat(payload);
     },
 
     productsUnchecked: (state, { payload }: PayloadAction<number[]>) => {
-      state.selectedProductIds = state.selectedProductIds.filter(id => !payload.includes(id));
+      state.checkedProductIds = state.checkedProductIds.filter(id => !payload.includes(id));
     },
 
     pageNumberChanged: (state, { payload }: PayloadAction<number>) => {
@@ -66,10 +66,10 @@ const productsSlice = createSlice({
   extraReducers: builder =>
     builder
       .addMatcher(productsApi.endpoints.products.matchFulfilled, state => {
-        state.selectedProductIds = [];
+        state.checkedProductIds = [];
       })
       .addMatcher(productsApi.endpoints.deleteProducts.matchFulfilled, state => {
-        state.selectedProductIds = [];
+        state.checkedProductIds = [];
       }),
 });
 
