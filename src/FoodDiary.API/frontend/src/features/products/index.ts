@@ -5,4 +5,3 @@ import productsReducer from './store';
 export { Products, productsApi, productsReducer };
 
 export * from './types';
-export * from './models';

@@ -1,12 +1,11 @@
-import { ProductItem } from '../models';
-import { ProductFormData } from '../types';
+import { Product, ProductFormData } from '../types';
 
 export function toProductFormData({
   name,
   caloriesCost,
   categoryId,
   categoryName,
-}: ProductItem): ProductFormData {
+}: Product): ProductFormData {
   return {
     name,
     caloriesCost,

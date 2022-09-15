@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { CategoryAutocompleteOption } from '../../categories/models';
 import productsApi from '../api';
-import { ProductItemsFilter } from '../models';
+import { ProductItemsFilter } from './types';
 
 export type ProductsState = {
   checkedProductIds: number[];

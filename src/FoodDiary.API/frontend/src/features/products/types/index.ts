@@ -1,4 +1,5 @@
 import { CategoryAutocompleteOption } from 'src/features/categories';
+import { AutocompleteOption } from 'src/types';
 
 export type Product = {
   id: number;
@@ -18,3 +19,5 @@ export type ProductFormData = {
   caloriesCost: number;
   category: CategoryAutocompleteOption;
 };
+
+export type ProductAutocompleteOption = AutocompleteOption;
