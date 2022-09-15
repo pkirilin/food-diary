@@ -1,10 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { categoriesApi } from 'src/features/categories';
+import { productsApi } from 'src/features/products';
+// TODO: fix 'cannot read property of undefined' error when importing reducer from 'src/features/products'
+import productsReducer from 'src/features/products/store';
 import api from './api';
 import { useAppSelector } from './features/__shared__/hooks';
 import notesReducer from './features/notes/slice';
 import pagesReducer from './features/pages/slice';
-import { productsApi, productsReducer } from './features/products';
 
 export function configureAppStore() {
   return configureStore({

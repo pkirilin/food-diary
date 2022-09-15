@@ -1,5 +1,7 @@
 import { createTestStore } from 'src/testing/store';
-import { productChecked, productsChecked, productsUnchecked, productUnchecked } from './actions';
+import { actions } from './slice';
+
+const { productChecked, productsChecked, productsUnchecked, productUnchecked } = actions;
 
 test('products can be checked and unchecked', () => {
   const store = createTestStore();

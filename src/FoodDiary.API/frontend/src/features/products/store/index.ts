@@ -1,5 +1,15 @@
-import slice from './slice';
+import reducer, { actions } from './slice';
 
-export * from './actions';
+export const {
+  productChecked,
+  productUnchecked,
+  productsChecked,
+  productsUnchecked,
+  pageNumberChanged,
+  pageSizeChanged,
+  productSearchNameChanged,
+  filterByCategoryChanged,
+  filterReset,
+} = actions;
 
-export default slice.reducer;
+export default reducer;
