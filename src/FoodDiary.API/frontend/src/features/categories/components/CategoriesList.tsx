@@ -5,11 +5,11 @@ import { useCategoriesQuery } from '../api';
 import CategoriesListItem from './CategoriesListItem';
 
 const CategoriesList: React.FC = () => {
-  const { data: categories, isLoading } = useCategoriesQuery();
+  const { data: categories, isFetching } = useCategoriesQuery();
 
   return (
     <React.Fragment>
-      {isLoading && <AppLinearProgress />}
+      {isFetching && <AppLinearProgress />}
       <Grid container spacing={2}>
         {categories?.map(category => (
           <Grid item xs={12} sm={6} lg={4} xl={3} key={category.id}>

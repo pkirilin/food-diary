@@ -61,7 +61,7 @@ const ProductsTable: React.FC = () => {
 
   return (
     <TableContainer>
-      {productsQuery.isLoading && <TableLinearProgress />}
+      {productsQuery.isFetching && <TableLinearProgress />}
       <Table>
         <TableHead>
           <TableRow>
