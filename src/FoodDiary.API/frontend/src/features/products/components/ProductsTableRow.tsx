@@ -52,7 +52,7 @@ const ProductsTableRow: React.FC<ProductsTableRowProps> = ({ product }: Products
 
   return (
     <React.Fragment>
-      <TableRow>
+      <TableRow hover selected={isChecked}>
         <TableCell padding="checkbox">
           <Checkbox
             color="primary"
