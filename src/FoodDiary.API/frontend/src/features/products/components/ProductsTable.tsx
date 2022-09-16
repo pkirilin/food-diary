@@ -80,7 +80,7 @@ const ProductsTable: React.FC = () => {
               />
             </TableCell>
             <TableCell>Name</TableCell>
-            <TableCell>Calories cost</TableCell>
+            <TableCell align="right">Calories cost</TableCell>
             <TableCell>Category</TableCell>
             <TableCell padding="checkbox" />
           </TableRow>

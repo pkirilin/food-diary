@@ -64,7 +64,10 @@ const ProductsTableRow: React.FC<ProductsTableRowProps> = ({ product }: Products
           />
         </TableCell>
         <TableCell>{product.name}</TableCell>
-        <TableCell aria-label={`${product.name} calories cost is ${product.caloriesCost}`}>
+        <TableCell
+          align="right"
+          aria-label={`${product.name} calories cost is ${product.caloriesCost}`}
+        >
           {product.caloriesCost}
         </TableCell>
         <TableCell aria-label={`${product.name} is in ${product.categoryName} category`}>
