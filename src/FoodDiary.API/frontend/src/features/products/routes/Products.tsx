@@ -1,4 +1,5 @@
 import { Paper, Typography } from '@mui/material';
+import { visuallyHidden } from '@mui/utils';
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import CreateProduct from '../components/CreateProduct';
@@ -13,7 +14,7 @@ const Products: React.FC = () => {
       <Helmet>
         <title>Food diary | Products</title>
       </Helmet>
-      <Typography variant="h1" gutterBottom>
+      <Typography sx={visuallyHidden} variant="h1" gutterBottom>
         Products
       </Typography>
       <Paper>

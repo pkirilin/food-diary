@@ -20,7 +20,7 @@ export default createTheme({
     },
     h2: {
       fontSize: '1.5rem',
-      fontWeight: 350,
+      fontWeight: 400,
     },
   },
 });
