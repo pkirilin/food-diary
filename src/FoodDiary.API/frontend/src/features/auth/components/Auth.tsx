@@ -1,3 +1,4 @@
+import { Box } from '@mui/material';
 import React, { useEffect } from 'react';
 import GoogleLogin, { GoogleLoginResponse, GoogleLoginResponseOffline } from 'react-google-login';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -27,12 +28,14 @@ const Auth: React.FC = () => {
   }
 
   return (
-    <GoogleLogin
-      clientId={GOOGLE_CLIENT_ID}
-      onSuccess={handleGoogleLoginSuccess}
-      cookiePolicy={'single_host_origin'}
-      scope="openid profile email"
-    />
+    <Box p={2}>
+      <GoogleLogin
+        clientId={GOOGLE_CLIENT_ID}
+        onSuccess={handleGoogleLoginSuccess}
+        cookiePolicy={'single_host_origin'}
+        scope="openid profile email"
+      />
+    </Box>
   );
 };
 
