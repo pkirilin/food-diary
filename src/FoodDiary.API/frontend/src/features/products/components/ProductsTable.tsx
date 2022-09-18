@@ -1,7 +1,5 @@
 import {
   Checkbox,
-  LinearProgress,
-  styled,
   Table,
   TableBody,
   TableCell,
@@ -11,15 +9,12 @@ import {
   Typography,
 } from '@mui/material';
 import React from 'react';
+import { AppLinearProgress } from 'src/components';
 import { useAppDispatch, useAppSelector } from '../../__shared__/hooks';
 import { useProductsQuery } from '../api';
 import { selectCheckedProductIds, selectProductsQueryArg } from '../selectors';
 import { productsChecked, productsUnchecked } from '../store';
 import ProductsTableRow from './ProductsTableRow';
-
-const TableLinearProgress = styled(LinearProgress)(() => ({
-  top: '61px',
-}));
 
 const ProductsTable: React.FC = () => {
   const productsQueryArg = useAppSelector(selectProductsQueryArg);
@@ -37,31 +32,23 @@ const ProductsTable: React.FC = () => {
     }
   }
 
-  function renderTableBody() {
+  function renderRows() {
     if (products.length === 0) {
       return (
-        <TableBody>
-          <TableRow>
-            <TableCell colSpan={4} align="center">
-              <Typography color="textSecondary">No products found</Typography>
-            </TableCell>
-          </TableRow>
-        </TableBody>
+        <TableRow>
+          <TableCell colSpan={4} align="center">
+            <Typography color="textSecondary">No products found</Typography>
+          </TableCell>
+        </TableRow>
       );
     }
 
-    return (
-      <TableBody>
-        {products.map(product => (
-          <ProductsTableRow key={product.id} product={product} />
-        ))}
-      </TableBody>
-    );
+    return products.map(product => <ProductsTableRow key={product.id} product={product} />);
   }
 
   return (
-    <TableContainer>
-      {productsQuery.isFetching && <TableLinearProgress />}
+    <TableContainer sx={{ position: 'relative' }}>
+      {productsQuery.isFetching && <AppLinearProgress />}
       <Table>
         <TableHead>
           <TableRow>
@@ -85,7 +72,7 @@ const ProductsTable: React.FC = () => {
             <TableCell padding="checkbox" />
           </TableRow>
         </TableHead>
-        {renderTableBody()}
+        <TableBody>{renderRows()}</TableBody>
       </Table>
     </TableContainer>
   );

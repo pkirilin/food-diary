@@ -40,7 +40,7 @@ const Navbar: React.FC = () => {
 
   return (
     <AppBar position="static">
-      <Container maxWidth="xl">
+      <Container>
         <StyledToolbar disableGutters id="back-to-top-anchor">
           <StyledNavBrandLink to="/">Food diary</StyledNavBrandLink>
           <Box display="flex" flex={1} justifyContent="space-between" alignItems="center">

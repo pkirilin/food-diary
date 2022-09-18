@@ -1,31 +1,23 @@
-import { Container } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
-import React, { Fragment } from 'react';
+import { Box } from '@mui/material';
+import React from 'react';
 import { Helmet } from 'react-helmet';
 import { useAuth } from './features/auth/hooks';
 import Navbar from './Navbar';
 import { AppRoutes } from './routes';
 
-const useStyles = makeStyles(theme => ({
-  content: {
-    margin: `${theme.spacing(2)} 0`,
-  },
-}));
-
 const App: React.FC = () => {
-  const classes = useStyles();
   const { isAuthenticated } = useAuth();
 
   return (
-    <Fragment>
+    <React.Fragment>
       <Helmet>
         <title>Food diary</title>
       </Helmet>
       {isAuthenticated && <Navbar />}
-      <Container maxWidth={false} className={classes.content}>
+      <Box component="main" position="relative">
         <AppRoutes />
-      </Container>
-    </Fragment>
+      </Box>
+    </React.Fragment>
   );
 };
 

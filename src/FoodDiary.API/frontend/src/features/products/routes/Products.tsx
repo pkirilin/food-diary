@@ -1,4 +1,4 @@
-import { Paper, Typography } from '@mui/material';
+import { Box, Container, Paper, Typography } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 import React from 'react';
 import { Helmet } from 'react-helmet';
@@ -10,21 +10,23 @@ import ProductsTableToolbar from '../components/ProductsTableToolbar';
 
 const Products: React.FC = () => {
   return (
-    <React.Fragment>
+    <Container>
       <Helmet>
         <title>Food diary | Products</title>
       </Helmet>
-      <Typography sx={visuallyHidden} variant="h1" gutterBottom>
-        Products
-      </Typography>
-      <Paper>
-        <ProductsTableToolbar />
-        <ProductsFilterAppliedParams />
-        <ProductsTable />
-        <ProductsTablePagination />
-        <CreateProduct />
-      </Paper>
-    </React.Fragment>
+      <Box py={3}>
+        <Typography sx={visuallyHidden} variant="h1" gutterBottom>
+          Products
+        </Typography>
+        <Paper>
+          <ProductsTableToolbar />
+          <ProductsFilterAppliedParams />
+          <ProductsTable />
+          <ProductsTablePagination />
+          <CreateProduct />
+        </Paper>
+      </Box>
+    </Container>
   );
 };
 

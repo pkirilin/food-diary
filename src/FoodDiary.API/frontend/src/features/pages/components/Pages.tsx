@@ -1,4 +1,4 @@
-import { Paper } from '@mui/material';
+import { Box, Container, Paper } from '@mui/material';
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import ExportMenu from './ExportMenu';
@@ -9,17 +9,21 @@ import PagesToolbar from './PagesToolbar';
 
 const Pages: React.FC = () => {
   return (
-    <Paper variant="outlined" square>
+    <Container>
       <Helmet>
         <title>Food diary | Pages</title>
       </Helmet>
-      <PagesToolbar>
-        <ExportMenu />
-      </PagesToolbar>
-      <PagesFilterAppliedParams />
-      <PagesTable />
-      <PagesTablePagination />
-    </Paper>
+      <Box py={3}>
+        <Paper variant="outlined" square>
+          <PagesToolbar>
+            <ExportMenu />
+          </PagesToolbar>
+          <PagesFilterAppliedParams />
+          <PagesTable />
+          <PagesTablePagination />
+        </Paper>
+      </Box>
+    </Container>
   );
 };
 
