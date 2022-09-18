@@ -1,79 +1,104 @@
 import EditIcon from '@mui/icons-material/Edit';
 import { Checkbox, IconButton, TableCell, TableRow, Tooltip } from '@mui/material';
-import React from 'react';
-import { useAppDispatch, useDialog, useAppSelector } from '../../__shared__/hooks';
-import { ProductCreateEdit, ProductItem } from '../models';
-import { productSelected } from '../slice';
-import { editProduct } from '../thunks';
-import ProductCreateEditDialog from './ProductCreateEditDialog';
+import React, { useEffect, useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../../__shared__/hooks';
+import { useEditProductMutation, useProductsQuery } from '../api';
+import { selectCheckedProductIds, selectProductsQueryArg } from '../selectors';
+import { productChecked, productUnchecked } from '../store';
+import { Product, ProductFormData } from '../types';
+import { toProductFormData } from '../utils';
+import ProductInputDialog from './ProductInputDialog';
 
 type ProductsTableRowProps = {
-  product: ProductItem;
+  product: Product;
 };
 
 const ProductsTableRow: React.FC<ProductsTableRowProps> = ({ product }: ProductsTableRowProps) => {
-  const isProductSelected = useAppSelector(state =>
-    state.products.selectedProductIds.some(id => id === product.id),
-  );
-
+  const [isEditDialogOpened, setIsEditDialogOpened] = useState(false);
+  const productsQueryArg = useAppSelector(selectProductsQueryArg);
+  const productsQuery = useProductsQuery(productsQueryArg);
+  const { refetch: refetchProducts } = productsQuery;
+  const [editProduct, editProductResult] = useEditProductMutation();
+  const checkedProductIds = useAppSelector(selectCheckedProductIds);
+  const isChecked = checkedProductIds.some(id => id === product.id);
   const dispatch = useAppDispatch();
 
-  const productEditDialog = useDialog<ProductCreateEdit>(productInfo => {
-    dispatch(
-      editProduct({
-        id: product.id,
-        product: productInfo,
-      }),
-    );
-  });
+  useEffect(() => {
+    if (editProductResult.isSuccess) {
+      refetchProducts();
+      setIsEditDialogOpened(false);
+    }
+  }, [editProductResult.isSuccess, refetchProducts]);
 
-  const handleEditClick = (): void => {
-    productEditDialog.show();
-  };
+  function handleEditClick() {
+    setIsEditDialogOpened(true);
+  }
 
-  const handleSelectProduct = (): void => {
-    dispatch(
-      productSelected({
-        productId: product.id,
-        selected: !isProductSelected,
-      }),
-    );
-  };
+  function handleEditDialogSubmit({ name, caloriesCost, category }: ProductFormData) {
+    editProduct({
+      id: product.id,
+      name,
+      caloriesCost,
+      categoryId: category.id,
+    });
+  }
+
+  function handleCheckedChange() {
+    if (isChecked) {
+      dispatch(productUnchecked(product.id));
+    } else {
+      dispatch(productChecked(product.id));
+    }
+  }
 
   return (
-    <TableRow>
-      <ProductCreateEditDialog {...productEditDialog.binding} product={product} />
-      <TableCell padding="checkbox">
-        <Checkbox
-          color="primary"
-          checked={isProductSelected}
-          onChange={handleSelectProduct}
-          inputProps={{
-            'aria-label': `Select ${product.name}`,
-          }}
-        />
-      </TableCell>
-      <TableCell>{product.name}</TableCell>
-      <TableCell aria-label={`${product.name} calories cost is ${product.caloriesCost}`}>
-        {product.caloriesCost}
-      </TableCell>
-      <TableCell aria-label={`${product.name} is in ${product.categoryName} category`}>
-        {product.categoryName}
-      </TableCell>
-      <TableCell>
-        <Tooltip title="Edit product">
-          <span>
-            <IconButton
-              onClick={handleEditClick}
-              size="large"
-              aria-label={`Open edit product dialog for ${product.name}`}
-            >
-              <EditIcon />
-            </IconButton>
-          </span>
-        </Tooltip>
-      </TableCell>
-    </TableRow>
+    <React.Fragment>
+      <TableRow hover selected={isChecked}>
+        <TableCell padding="checkbox">
+          <Checkbox
+            color="primary"
+            checked={isChecked}
+            onChange={handleCheckedChange}
+            inputProps={{
+              'aria-label': `Select ${product.name}`,
+            }}
+          />
+        </TableCell>
+        <TableCell>{product.name}</TableCell>
+        <TableCell
+          align="right"
+          aria-label={`${product.name} calories cost is ${product.caloriesCost}`}
+        >
+          {product.caloriesCost}
+        </TableCell>
+        <TableCell aria-label={`${product.name} is in ${product.categoryName} category`}>
+          {product.categoryName}
+        </TableCell>
+        <TableCell>
+          <Tooltip title="Edit product">
+            <span>
+              <IconButton
+                onClick={handleEditClick}
+                size="large"
+                aria-label={`Open edit product dialog for ${product.name}`}
+              >
+                <EditIcon />
+              </IconButton>
+            </span>
+          </Tooltip>
+        </TableCell>
+      </TableRow>
+
+      <ProductInputDialog
+        isOpened={isEditDialogOpened}
+        setIsOpened={setIsEditDialogOpened}
+        title="Edit product"
+        submitText="Save"
+        onSubmit={handleEditDialogSubmit}
+        isLoading={editProductResult.isLoading}
+        product={toProductFormData(product)}
+      />
+    </React.Fragment>
   );
 };
 

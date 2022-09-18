@@ -1,7 +1,5 @@
 import {
   Checkbox,
-  LinearProgress,
-  styled,
   Table,
   TableBody,
   TableCell,
@@ -10,59 +8,47 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
-import React, { useEffect } from 'react';
+import React from 'react';
+import { AppLinearProgress } from 'src/components';
 import { useAppDispatch, useAppSelector } from '../../__shared__/hooks';
 import { useProductsQuery } from '../api';
-import { allProductsSelected } from '../slice';
-import { ProductsResponse } from '../types';
+import { selectCheckedProductIds, selectProductsQueryArg } from '../selectors';
+import { productsChecked, productsUnchecked } from '../store';
 import ProductsTableRow from './ProductsTableRow';
 
-const TableLinearProgress = styled(LinearProgress)(() => ({
-  top: '61px',
-}));
-
-const EMPTY_PRODUCTS_RESPONSE: ProductsResponse = {
-  productItems: [],
-  totalProductsCount: 0,
-};
-
 const ProductsTable: React.FC = () => {
-  const { pageSize, pageNumber, productSearchName, category } = useAppSelector(
-    state => state.products.filter,
-  );
-
-  const {
-    data: products = EMPTY_PRODUCTS_RESPONSE,
-    isLoading,
-    refetch: refetchProducts,
-  } = useProductsQuery({
-    pageSize,
-    pageNumber,
-    productSearchName,
-    categoryId: category?.id,
-  });
-
-  const operationStatus = useAppSelector(state => state.products.operationStatus);
-  const selectedProductsCount = useAppSelector(state => state.products.selectedProductIds.length);
-
-  const areAllProductsSelected =
-    products.productItems.length > 0 && products.productItems.length === selectedProductsCount;
-
+  const productsQueryArg = useAppSelector(selectProductsQueryArg);
+  const productsQuery = useProductsQuery(productsQueryArg);
+  const checkedProductIds = useAppSelector(selectCheckedProductIds);
   const dispatch = useAppDispatch();
+  const products = productsQuery.data ? productsQuery.data.productItems : [];
+  const allProductsChecked = products.length > 0 && products.length === checkedProductIds.length;
 
-  useEffect(() => {
-    if (operationStatus === 'succeeded') {
-      refetchProducts();
+  function handleCheckedChange() {
+    if (checkedProductIds.length > 0) {
+      dispatch(productsUnchecked(products.map(p => p.id)));
+    } else {
+      dispatch(productsChecked(products.map(p => p.id)));
     }
-  }, [operationStatus, refetchProducts]);
+  }
 
-  const handleSelectAllProducts = (): void => {
-    dispatch(allProductsSelected({ selected: !areAllProductsSelected }));
-  };
+  function renderRows() {
+    if (products.length === 0) {
+      return (
+        <TableRow>
+          <TableCell colSpan={4} align="center">
+            <Typography color="textSecondary">No products found</Typography>
+          </TableCell>
+        </TableRow>
+      );
+    }
+
+    return products.map(product => <ProductsTableRow key={product.id} product={product} />);
+  }
 
   return (
-    <TableContainer>
-      {isLoading && <TableLinearProgress />}
+    <TableContainer sx={{ position: 'relative' }}>
+      {productsQuery.isFetching && <AppLinearProgress />}
       <Table>
         <TableHead>
           <TableRow>
@@ -70,34 +56,23 @@ const ProductsTable: React.FC = () => {
               <Checkbox
                 color="primary"
                 indeterminate={
-                  selectedProductsCount > 0 && selectedProductsCount < products.productItems.length
+                  checkedProductIds.length > 0 && checkedProductIds.length < products.length
                 }
-                checked={areAllProductsSelected}
-                onChange={handleSelectAllProducts}
-                disabled={products.productItems.length === 0}
+                checked={allProductsChecked}
+                onChange={handleCheckedChange}
+                disabled={products.length === 0}
                 inputProps={{
                   'aria-label': 'Select all',
                 }}
               />
             </TableCell>
             <TableCell>Name</TableCell>
-            <TableCell>Calories cost</TableCell>
+            <TableCell align="right">Calories cost</TableCell>
             <TableCell>Category</TableCell>
             <TableCell padding="checkbox" />
           </TableRow>
         </TableHead>
-        <TableBody>
-          {products.productItems.length === 0 && (
-            <TableRow>
-              <TableCell colSpan={4} align="center">
-                <Typography color="textSecondary">No products found</Typography>
-              </TableCell>
-            </TableRow>
-          )}
-          {products.productItems.map(product => (
-            <ProductsTableRow key={product.id} product={product} />
-          ))}
-        </TableBody>
+        <TableBody>{renderRows()}</TableBody>
       </Table>
     </TableContainer>
   );

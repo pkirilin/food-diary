@@ -1,7 +1,7 @@
 import { rest } from 'msw';
 import { API_URL } from 'src/config';
 import { ProductsResponse } from 'src/features/products';
-import { ProductCreateEdit } from 'src/features/products/models';
+import { CreateProductRequest, EditProductRequest } from 'src/features/products/api/contracts';
 import { db } from '../db';
 
 export const productsHandlers = [
@@ -34,8 +34,8 @@ export const productsHandlers = [
     return res(ctx.json(response));
   }),
 
-  rest.post(`${API_URL}/v1/products`, async (req, res, ctx) => {
-    const body = await req.json<ProductCreateEdit>();
+  rest.post(`${API_URL}/api/v1/products`, async (req, res, ctx) => {
+    const body = await req.json<CreateProductRequest>();
 
     const category = db.category.findFirst({
       where: {
@@ -54,8 +54,8 @@ export const productsHandlers = [
     return res(ctx.status(200));
   }),
 
-  rest.put(`${API_URL}/v1/products/:id`, async (req, res, ctx) => {
-    const { name, caloriesCost, categoryId } = await req.json<ProductCreateEdit>();
+  rest.put(`${API_URL}/api/v1/products/:id`, async (req, res, ctx) => {
+    const { name, caloriesCost, categoryId } = await req.json<EditProductRequest>();
 
     db.product.update({
       where: {
@@ -74,7 +74,7 @@ export const productsHandlers = [
     return res(ctx.status(200));
   }),
 
-  rest.delete(`${API_URL}/v1/products/batch`, async (req, res, ctx) => {
+  rest.delete(`${API_URL}/api/v1/products/batch`, async (req, res, ctx) => {
     const productIds = await req.json<number[]>();
 
     db.product.deleteMany({

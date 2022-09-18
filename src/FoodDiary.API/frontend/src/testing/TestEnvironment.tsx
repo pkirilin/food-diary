@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import AppProvider from 'src/AppProvider';
-import { pageSizeChanged } from 'src/features/products/slice';
+import { pageSizeChanged } from 'src/features/products/store';
 import { configureAppStore } from 'src/store';
 
 type TestEnvironmentProps = {

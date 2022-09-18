@@ -1,3 +1,4 @@
+import { Box, Container } from '@mui/material';
 import dateFnsFormat from 'date-fns/format';
 import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
@@ -19,7 +20,7 @@ const PageContent: React.FC = () => {
   }, [dispatch, pageId]);
 
   return (
-    <React.Fragment>
+    <Container>
       <Helmet>
         <title>
           {currentDate
@@ -27,10 +28,12 @@ const PageContent: React.FC = () => {
             : 'Food diary'}
         </title>
       </Helmet>
-      <PageContentHeader />
-      <MealsList />
-      <PageContentFooter />
-    </React.Fragment>
+      <Box py={3}>
+        <PageContentHeader />
+        <MealsList />
+        <PageContentFooter />
+      </Box>
+    </Container>
   );
 };
 

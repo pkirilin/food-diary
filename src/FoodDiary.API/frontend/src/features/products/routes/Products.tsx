@@ -1,6 +1,8 @@
-import { Paper } from '@mui/material';
+import { Box, Container, Paper, Typography } from '@mui/material';
+import { visuallyHidden } from '@mui/utils';
 import React from 'react';
 import { Helmet } from 'react-helmet';
+import CreateProduct from '../components/CreateProduct';
 import ProductsFilterAppliedParams from '../components/ProductsFilterAppliedParams';
 import ProductsTable from '../components/ProductsTable';
 import ProductsTablePagination from '../components/ProductsTablePagination';
@@ -8,15 +10,23 @@ import ProductsTableToolbar from '../components/ProductsTableToolbar';
 
 const Products: React.FC = () => {
   return (
-    <Paper variant="outlined" square>
+    <Container>
       <Helmet>
         <title>Food diary | Products</title>
       </Helmet>
-      <ProductsTableToolbar />
-      <ProductsFilterAppliedParams />
-      <ProductsTable />
-      <ProductsTablePagination />
-    </Paper>
+      <Box py={3}>
+        <Typography sx={visuallyHidden} variant="h1" gutterBottom>
+          Products
+        </Typography>
+        <Paper>
+          <ProductsTableToolbar />
+          <ProductsFilterAppliedParams />
+          <ProductsTable />
+          <ProductsTablePagination />
+          <CreateProduct />
+        </Paper>
+      </Box>
+    </Container>
   );
 };
 

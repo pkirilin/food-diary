@@ -2,24 +2,28 @@ import { TablePagination } from '@mui/material';
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '../../__shared__/hooks';
-import { pageNumberChanged, pageSizeChanged } from '../slice';
+import { useProductsQuery } from '../api';
+import { selectProductsQueryArg } from '../selectors';
+import { pageNumberChanged, pageSizeChanged } from '../store';
 
 const ProductsTablePagination: React.FC = () => {
-  const totalProductsCount = useAppSelector(state => state.products.totalProductsCount);
+  const productsQueryArg = useAppSelector(selectProductsQueryArg);
+  const productsQuery = useProductsQuery(productsQueryArg);
+  const totalProductsCount = productsQuery.data ? productsQuery.data.totalProductsCount : 0;
   const { pageNumber, pageSize } = useAppSelector(state => state.products.filter);
   const dispatch = useDispatch();
 
-  const handleChangePage = (
+  function handleChangePage(
     event: React.MouseEvent<HTMLButtonElement, MouseEvent> | null,
     pageIndex: number,
-  ): void => {
+  ): void {
     dispatch(pageNumberChanged(pageIndex + 1));
-  };
+  }
 
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  function handleChangeRowsPerPage(event: React.ChangeEvent<HTMLInputElement>): void {
     const newPageSize = Number(event.target.value);
     dispatch(pageSizeChanged(newPageSize));
-  };
+  }
 
   return (
     <TablePagination

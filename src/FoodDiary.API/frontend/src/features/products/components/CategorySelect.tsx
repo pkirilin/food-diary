@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useLazyGetCategoriesAutocompleteQuery } from 'src/api';
-import { CustomAutocomplete } from 'src/features/__shared__/components';
-import { SelectProps } from 'src/features/__shared__/types';
-import { CategoryAutocompleteOption } from 'src/features/categories/models';
+import { CustomAutocomplete } from 'src/components';
+import { CategoryAutocompleteOption } from 'src/features/categories';
+import { AutocompleteOption, SelectProps } from 'src/types';
 
 type CategorySelectProps = SelectProps<CategoryAutocompleteOption>;
 
@@ -19,6 +19,26 @@ const CategorySelect: React.FC<CategorySelectProps> = ({
     getCategoriesAutocomplete(isOpen);
   }, [getCategoriesAutocomplete, isOpen]);
 
+  function isOptionEqualToValue(option: AutocompleteOption, value: AutocompleteOption) {
+    return option.name === value.name;
+  }
+
+  function getOptionLabel(option: AutocompleteOption) {
+    return option.name;
+  }
+
+  function handleChange(event: React.SyntheticEvent, value: AutocompleteOption | null) {
+    setValue(value);
+  }
+
+  function handleOpen() {
+    setIsOpen(true);
+  }
+
+  function handleClose() {
+    setIsOpen(false);
+  }
+
   return (
     <CustomAutocomplete
       label={label}
@@ -27,11 +47,11 @@ const CategorySelect: React.FC<CategorySelectProps> = ({
       loading={autocomplete.isLoading}
       open={isOpen}
       value={value}
-      isOptionEqualToValue={(option, value) => option.name === value.name}
-      getOptionLabel={option => option.name}
-      onChange={(event, value) => setValue(value)}
-      onOpen={() => setIsOpen(true)}
-      onClose={() => setIsOpen(false)}
+      isOptionEqualToValue={isOptionEqualToValue}
+      getOptionLabel={getOptionLabel}
+      onChange={handleChange}
+      onOpen={handleOpen}
+      onClose={handleClose}
     />
   );
 };

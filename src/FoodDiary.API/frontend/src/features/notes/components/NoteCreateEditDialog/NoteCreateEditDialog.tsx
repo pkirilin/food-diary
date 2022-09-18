@@ -12,7 +12,7 @@ import { useAppSelector, useValidatedNumericInput } from 'src/features/__shared_
 import { DialogCustomActionProps } from 'src/features/__shared__/types';
 import { MealType, NoteCreateEdit, NoteItem } from 'src/features/notes/models';
 import ProductSelect from 'src/features/products/components/ProductSelect';
-import { ProductAutocompleteOption } from 'src/features/products/models';
+import { ProductAutocompleteOption } from 'src/features/products/types';
 
 interface NoteCreateEditDialogProps extends DialogProps, DialogCustomActionProps<NoteCreateEdit> {
   mealType: MealType;

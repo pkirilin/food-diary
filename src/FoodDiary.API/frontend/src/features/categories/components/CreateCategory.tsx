@@ -15,6 +15,13 @@ const CreateCategory: React.FC = () => {
 
   const { isLoading: isCategoriesListLoading, refetch: refetchCategories } = useCategoriesQuery();
 
+  useEffect(() => {
+    if (isCreateCategorySuccess) {
+      setIsCreateDialogOpened(false);
+      refetchCategories();
+    }
+  }, [isCreateCategorySuccess, refetchCategories]);
+
   function handleCreate() {
     setIsCreateDialogOpened(true);
   }
@@ -22,13 +29,6 @@ const CreateCategory: React.FC = () => {
   function handleDialogSubmit({ name }: CategoryFormData) {
     createCategory({ name });
   }
-
-  useEffect(() => {
-    if (isCreateCategorySuccess) {
-      setIsCreateDialogOpened(false);
-      refetchCategories();
-    }
-  }, [isCreateCategorySuccess, refetchCategories]);
 
   return (
     <React.Fragment>

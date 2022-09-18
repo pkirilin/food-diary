@@ -1,11 +1,12 @@
 import { Box, Button, Paper, TextField } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { AutocompleteOption } from 'src/types';
 
 import { useAppSelector, useValidatedTextInput } from '../../__shared__/hooks';
 import { useFilterStyles } from '../../__shared__/styles';
 
-import { filterByCategoryChanged, filterReset, productSearchNameChanged } from '../slice';
+import { filterByCategoryChanged, filterReset, productSearchNameChanged } from '../store';
 import CategorySelect from './CategorySelect';
 
 const ProductsFilter: React.FC = () => {
@@ -32,6 +33,19 @@ const ProductsFilter: React.FC = () => {
     setCategory(filterCategory);
   }, [filterCategory]);
 
+  function handleProductSearchNameBlur(event: React.FocusEvent<HTMLInputElement>) {
+    dispatch(productSearchNameChanged(event.target.value));
+  }
+
+  function handleCategoryChange(value: AutocompleteOption | null) {
+    setCategory(value);
+    dispatch(filterByCategoryChanged(value));
+  }
+
+  function handleReset() {
+    dispatch(filterReset());
+  }
+
   return (
     <Box component={Paper} className={classes.root}>
       <TextField
@@ -40,19 +54,16 @@ const ProductsFilter: React.FC = () => {
         placeholder="Enter product name"
         fullWidth
         margin="normal"
-        onBlur={event => dispatch(productSearchNameChanged(event.target.value))}
+        onBlur={handleProductSearchNameBlur}
       />
       <CategorySelect
         label="Filter by category"
         placeholder="Select a category"
         value={category}
-        setValue={value => {
-          setCategory(value);
-          dispatch(filterByCategoryChanged(value));
-        }}
+        setValue={handleCategoryChange}
       />
       <Box className={classes.controls}>
-        <Button variant="text" disabled={!filterChanged} onClick={() => dispatch(filterReset())}>
+        <Button variant="text" disabled={!filterChanged} onClick={handleReset}>
           Reset
         </Button>
       </Box>

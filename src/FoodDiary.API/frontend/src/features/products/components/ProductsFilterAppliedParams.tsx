@@ -5,7 +5,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '../../__shared__/hooks';
 import { useFilterAppliedParamsStyles } from '../../__shared__/styles';
-import { filterByCategoryChanged, productSearchNameChanged } from '../slice';
+import { filterByCategoryChanged, productSearchNameChanged } from '../store';
 
 const ProductsFilterAppliedParams: React.FC = () => {
   const classes = useFilterAppliedParamsStyles();
@@ -19,6 +19,14 @@ const ProductsFilterAppliedParams: React.FC = () => {
     return null;
   }
 
+  function handleProductSearchNameClear() {
+    dispatch(productSearchNameChanged(''));
+  }
+
+  function handleCategoryClear() {
+    dispatch(filterByCategoryChanged(null));
+  }
+
   return (
     <Box className={classes.root}>
       {productSearchName && (
@@ -27,9 +35,7 @@ const ProductsFilterAppliedParams: React.FC = () => {
             variant="outlined"
             icon={<SearchIcon />}
             label={productSearchName}
-            onDelete={() => {
-              dispatch(productSearchNameChanged(''));
-            }}
+            onDelete={handleProductSearchNameClear}
           />
         </Tooltip>
       )}
@@ -39,9 +45,7 @@ const ProductsFilterAppliedParams: React.FC = () => {
             variant="outlined"
             icon={<CategoryIcon />}
             label={category.name}
-            onDelete={() => {
-              dispatch(filterByCategoryChanged(null));
-            }}
+            onDelete={handleCategoryClear}
           />
         </Tooltip>
       )}

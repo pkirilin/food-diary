@@ -22,7 +22,7 @@ function productSelectWithValue(value: string) {
 test('shows all options after clicking on input', async () => {
   render(productSelectWithoutValue());
   await userEvent.click(screen.getByPlaceholderText(/select a product/i));
-  await waitForElementToBeRemoved(screen.getByRole('progressbar'));
+  await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
 
   expect(screen).toContainOptions('Bread', 'Cheese', 'Eggs', 'Meat');
 });
@@ -40,8 +40,8 @@ test('shows no options if input value does not match any existing option', async
   await userEvent.click(screen.getByPlaceholderText(/select a product/i));
   await userEvent.type(screen.getByPlaceholderText(/select a product/i), 'test');
 
-  const options = screen.queryAllByRole('option');
-  expect(options).toHaveLength(0);
+  const options = screen.queryByRole('option');
+  expect(options).not.toBeInTheDocument();
 });
 
 test('shows no options after input closed', async () => {
@@ -50,7 +50,7 @@ test('shows no options after input closed', async () => {
   await userEvent.type(screen.getByPlaceholderText(/select a product/i), 'ea');
   await userEvent.click(screen.getByLabelText(/close/i));
 
-  expect(screen.queryAllByRole('option')).toHaveLength(0);
+  expect(screen.queryByRole('option')).not.toBeInTheDocument();
 });
 
 test('shows no options after clicking on input if autocomplete has no options', async () => {
@@ -58,7 +58,7 @@ test('shows no options after clicking on input if autocomplete has no options', 
 
   render(productSelectWithoutValue());
   await userEvent.click(screen.getByPlaceholderText(/select a product/i));
-  await waitForElementToBeRemoved(screen.getByRole('progressbar'));
+  await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
 
   expect(screen).toContainEmptyOptions();
 });
@@ -67,7 +67,7 @@ test('shows all options if closed with filtered options and then opened again', 
   render(productSelectWithoutValue());
   const input = screen.getByPlaceholderText(/select a product/i);
   await userEvent.click(input);
-  await waitForElementToBeRemoved(screen.getByRole('progressbar'));
+  await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
   await userEvent.type(input, 'ea');
   await userEvent.tab();
   await userEvent.click(input);

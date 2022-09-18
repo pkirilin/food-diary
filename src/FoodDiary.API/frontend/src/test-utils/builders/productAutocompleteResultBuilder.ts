@@ -1,4 +1,4 @@
-import { ProductAutocompleteOption } from '../../features/products/models';
+import { ProductAutocompleteOption } from 'src/features/products';
 
 export interface ProductAutocompleteResultBuilder {
   please: () => ProductAutocompleteOption[];

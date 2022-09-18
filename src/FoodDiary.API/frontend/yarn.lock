@@ -7447,6 +7447,7 @@ __metadata:
     "@mui/material": ^5.9.1
     "@mui/styles": ^5.9.1
     "@mui/system": ^5.9.1
+    "@mui/utils": ^5.9.1
     "@mui/x-date-pickers": ^5.0.0-alpha.6
     "@reduxjs/toolkit": ^1.8.2
     "@testing-library/dom": ^8.13.0
