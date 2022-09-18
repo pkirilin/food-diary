@@ -18,13 +18,14 @@ const DeleteProductsDialog: React.FC<DeleteProductsDialogProps> = ({
   const [deleteProducts, deleteProductsResult] = useDeleteProductsMutation();
   const productsQueryArg = useAppSelector(selectProductsQueryArg);
   const productsQuery = useProductsQuery(productsQueryArg);
+  const { refetch: refetchProducts } = productsQuery;
 
   useEffect(() => {
     if (deleteProductsResult.isSuccess) {
+      refetchProducts();
       setIsDialogOpened(false);
-      productsQuery.refetch();
     }
-  }, [deleteProductsResult.isSuccess, productsQuery, setIsDialogOpened]);
+  }, [deleteProductsResult.isSuccess, refetchProducts, setIsDialogOpened]);
 
   function handleClose() {
     setIsDialogOpened(false);

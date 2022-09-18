@@ -17,6 +17,7 @@ const ProductsTableRow: React.FC<ProductsTableRowProps> = ({ product }: Products
   const [isEditDialogOpened, setIsEditDialogOpened] = useState(false);
   const productsQueryArg = useAppSelector(selectProductsQueryArg);
   const productsQuery = useProductsQuery(productsQueryArg);
+  const { refetch: refetchProducts } = productsQuery;
   const [editProduct, editProductResult] = useEditProductMutation();
   const checkedProductIds = useAppSelector(selectCheckedProductIds);
   const isChecked = checkedProductIds.some(id => id === product.id);
@@ -24,10 +25,10 @@ const ProductsTableRow: React.FC<ProductsTableRowProps> = ({ product }: Products
 
   useEffect(() => {
     if (editProductResult.isSuccess) {
-      productsQuery.refetch();
+      refetchProducts();
       setIsEditDialogOpened(false);
     }
-  }, [editProductResult.isSuccess, productsQuery]);
+  }, [editProductResult.isSuccess, refetchProducts]);
 
   function handleEditClick() {
     setIsEditDialogOpened(true);

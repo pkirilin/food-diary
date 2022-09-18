@@ -12,13 +12,14 @@ const CreateProduct: React.FC = () => {
   const [createProduct, createProductResult] = useCreateProductMutation();
   const productsQueryArg = useAppSelector(selectProductsQueryArg);
   const productsQuery = useProductsQuery(productsQueryArg);
+  const { refetch: refetchProducts } = productsQuery;
 
   useEffect(() => {
     if (createProductResult.isSuccess) {
-      productsQuery.refetch();
+      refetchProducts();
       setIsDialogOpened(false);
     }
-  }, [createProductResult.isSuccess, productsQuery]);
+  }, [createProductResult.isSuccess, refetchProducts]);
 
   function handleCreate() {
     setIsDialogOpened(true);
