@@ -15,17 +15,19 @@ const DeleteProductsDialog: React.FC<DeleteProductsDialogProps> = ({
   setIsOpened: setIsDialogOpened,
 }) => {
   const checkedProductIds = useAppSelector(selectCheckedProductIds);
-  const [deleteProducts, deleteProductsResult] = useDeleteProductsMutation();
   const productsQueryArg = useAppSelector(selectProductsQueryArg);
-  const productsQuery = useProductsQuery(productsQueryArg);
-  const { refetch: refetchProducts } = productsQuery;
+
+  const { refetch: refetchProducts } = useProductsQuery(productsQueryArg);
+
+  const [deleteProducts, { isLoading: isProductDeleting, isSuccess: isProductDeleted }] =
+    useDeleteProductsMutation();
 
   useEffect(() => {
-    if (deleteProductsResult.isSuccess) {
+    if (isProductDeleted) {
       refetchProducts();
       setIsDialogOpened(false);
     }
-  }, [deleteProductsResult.isSuccess, refetchProducts, setIsDialogOpened]);
+  }, [isProductDeleted, refetchProducts, setIsDialogOpened]);
 
   function handleClose() {
     setIsDialogOpened(false);
@@ -44,14 +46,14 @@ const DeleteProductsDialog: React.FC<DeleteProductsDialogProps> = ({
         <Typography>Do you really want to delete selected products?</Typography>
       </DialogContent>
       <DialogActions>
-        <AppButton disabled={deleteProductsResult.isLoading} variant="text" onClick={handleClose}>
+        <AppButton disabled={isProductDeleting} variant="text" onClick={handleClose}>
           No
         </AppButton>
         <AppButton
           variant="contained"
           color="primary"
           onClick={handleSubmit}
-          isLoading={deleteProductsResult.isLoading}
+          isLoading={isProductDeleting}
         >
           Yes
         </AppButton>

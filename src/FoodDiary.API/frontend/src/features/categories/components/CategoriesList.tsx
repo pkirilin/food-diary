@@ -4,8 +4,8 @@ import { useCategoriesQuery } from '../api';
 import CategoriesListItem from './CategoriesListItem';
 
 const CategoriesList: React.FC = () => {
-  const categoriesQuery = useCategoriesQuery();
-  const categories = categoriesQuery.data || [];
+  const { data: categoriesQueryData } = useCategoriesQuery();
+  const categories = categoriesQueryData || [];
 
   return (
     <Grid container spacing={2}>

@@ -8,8 +8,8 @@ import { pageNumberChanged, pageSizeChanged } from '../store';
 
 const ProductsTablePagination: React.FC = () => {
   const productsQueryArg = useAppSelector(selectProductsQueryArg);
-  const productsQuery = useProductsQuery(productsQueryArg);
-  const totalProductsCount = productsQuery.data ? productsQuery.data.totalProductsCount : 0;
+  const { data: productsQueryData } = useProductsQuery(productsQueryArg);
+  const totalProductsCount = productsQueryData ? productsQueryData.totalProductsCount : 0;
   const { pageNumber, pageSize } = useAppSelector(state => state.products.filter);
   const dispatch = useDispatch();
 

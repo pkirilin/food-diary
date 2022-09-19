@@ -18,10 +18,13 @@ import ProductsTableRow from './ProductsTableRow';
 
 const ProductsTable: React.FC = () => {
   const productsQueryArg = useAppSelector(selectProductsQueryArg);
-  const productsQuery = useProductsQuery(productsQueryArg);
   const checkedProductIds = useAppSelector(selectCheckedProductIds);
   const dispatch = useAppDispatch();
-  const products = productsQuery.data ? productsQuery.data.productItems : [];
+
+  const { data: productsQueryData, isFetching: isFetchingProducts } =
+    useProductsQuery(productsQueryArg);
+
+  const products = productsQueryData ? productsQueryData.productItems : [];
   const allProductsChecked = products.length > 0 && products.length === checkedProductIds.length;
 
   function handleCheckedChange() {
@@ -48,7 +51,7 @@ const ProductsTable: React.FC = () => {
 
   return (
     <TableContainer sx={{ position: 'relative' }}>
-      {productsQuery.isFetching && <AppLinearProgress />}
+      {isFetchingProducts && <AppLinearProgress />}
       <Table>
         <TableHead>
           <TableRow>

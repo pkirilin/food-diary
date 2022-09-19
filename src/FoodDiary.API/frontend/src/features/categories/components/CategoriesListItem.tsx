@@ -16,17 +16,17 @@ const CategoriesListItem: React.FC<CategoriesListItemProps> = ({ category }) => 
   const [isEditDialogOpened, setIsEditDialogOpened] = useState(false);
   const [isDeleteDialogOpened, setIsDeleteDialogOpened] = useState(false);
 
-  const [editCategory, { isLoading: isEditCategoryLoading, isSuccess: isEditCategorySuccess }] =
+  const [editCategory, { isLoading: isCategoryUpdating, isSuccess: isCategoryUpdated }] =
     useEditCategoryMutation();
 
   const { refetch: refetchCategories } = useCategoriesQuery();
 
   useEffect(() => {
-    if (isEditCategorySuccess) {
+    if (isCategoryUpdated) {
       setIsEditDialogOpened(false);
       refetchCategories();
     }
-  }, [isEditCategorySuccess, refetchCategories]);
+  }, [isCategoryUpdated, refetchCategories]);
 
   function handleEdit() {
     setIsEditDialogOpened(true);
@@ -70,7 +70,7 @@ const CategoriesListItem: React.FC<CategoriesListItemProps> = ({ category }) => 
         title="Edit category"
         submitText="Save"
         onSubmit={handleEditDialogSubmit}
-        isLoading={isEditCategoryLoading}
+        isLoading={isCategoryUpdating}
         category={category}
       />
 

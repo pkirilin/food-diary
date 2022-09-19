@@ -15,19 +15,17 @@ const DeleteCategoryDialog: React.FC<DeleteCategoryDialogProps> = ({
   setIsOpened: setIsDialogOpened,
   category,
 }) => {
-  const [
-    deleteCategory,
-    { isLoading: isDeleteCategoryLoading, isSuccess: isDeleteCategorySuccess },
-  ] = useDeleteCategoryMutation();
+  const [deleteCategory, { isLoading: isCategoryDeleting, isSuccess: isCategoryDeleted }] =
+    useDeleteCategoryMutation();
 
   const { refetch: refetchCategories } = useCategoriesQuery();
 
   useEffect(() => {
-    if (isDeleteCategorySuccess) {
+    if (isCategoryDeleted) {
       setIsDialogOpened(false);
       refetchCategories();
     }
-  }, [isDeleteCategorySuccess, refetchCategories, setIsDialogOpened]);
+  }, [isCategoryDeleted, refetchCategories, setIsDialogOpened]);
 
   function handleClose() {
     setIsDialogOpened(false);
@@ -44,7 +42,7 @@ const DeleteCategoryDialog: React.FC<DeleteCategoryDialogProps> = ({
         <Typography>{`Delete category "${category.name}"?`}</Typography>
       </DialogContent>
       <DialogActions>
-        <AppButton disabled={isDeleteCategoryLoading} variant="text" onClick={handleClose}>
+        <AppButton disabled={isCategoryDeleting} variant="text" onClick={handleClose}>
           No
         </AppButton>
         <AppButton
@@ -52,7 +50,7 @@ const DeleteCategoryDialog: React.FC<DeleteCategoryDialogProps> = ({
           variant="contained"
           color="primary"
           onClick={handleSubmit}
-          isLoading={isDeleteCategoryLoading}
+          isLoading={isCategoryDeleting}
         >
           Yes
         </AppButton>

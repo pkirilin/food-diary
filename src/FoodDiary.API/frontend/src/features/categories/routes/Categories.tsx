@@ -7,11 +7,11 @@ import CategoriesList from '../components/CategoriesList';
 import CreateCategory from '../components/CreateCategory';
 
 const Categories: React.FC = () => {
-  const categoriesQuery = useCategoriesQuery();
+  const { isFetching: isFetchingCategories } = useCategoriesQuery();
 
   return (
     <React.Fragment>
-      {categoriesQuery.isFetching && <AppLinearProgress />}
+      {isFetchingCategories && <AppLinearProgress />}
       <Container>
         <Helmet>
           <title>Food diary | Categories</title>

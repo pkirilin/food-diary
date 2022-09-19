@@ -16,19 +16,22 @@ type ProductsTableRowProps = {
 const ProductsTableRow: React.FC<ProductsTableRowProps> = ({ product }: ProductsTableRowProps) => {
   const [isEditDialogOpened, setIsEditDialogOpened] = useState(false);
   const productsQueryArg = useAppSelector(selectProductsQueryArg);
-  const productsQuery = useProductsQuery(productsQueryArg);
-  const { refetch: refetchProducts } = productsQuery;
-  const [editProduct, editProductResult] = useEditProductMutation();
   const checkedProductIds = useAppSelector(selectCheckedProductIds);
-  const isChecked = checkedProductIds.some(id => id === product.id);
   const dispatch = useAppDispatch();
 
+  const { refetch: refetchProducts } = useProductsQuery(productsQueryArg);
+
+  const [editProduct, { isLoading: isProductUpdating, isSuccess: isProductUpdated }] =
+    useEditProductMutation();
+
+  const isChecked = checkedProductIds.some(id => id === product.id);
+
   useEffect(() => {
-    if (editProductResult.isSuccess) {
+    if (isProductUpdated) {
       refetchProducts();
       setIsEditDialogOpened(false);
     }
-  }, [editProductResult.isSuccess, refetchProducts]);
+  }, [isProductUpdated, refetchProducts]);
 
   function handleEditClick() {
     setIsEditDialogOpened(true);
@@ -95,7 +98,7 @@ const ProductsTableRow: React.FC<ProductsTableRowProps> = ({ product }: Products
         title="Edit product"
         submitText="Save"
         onSubmit={handleEditDialogSubmit}
-        isLoading={editProductResult.isLoading}
+        isLoading={isProductUpdating}
         product={toProductFormData(product)}
       />
     </React.Fragment>

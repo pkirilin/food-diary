@@ -8,19 +8,17 @@ import CategoryInputDialog from './CategoryInputDialog';
 const CreateCategory: React.FC = () => {
   const [isCreateDialogOpened, setIsCreateDialogOpened] = useState(false);
 
-  const [
-    createCategory,
-    { isLoading: isCreateCategoryLoading, isSuccess: isCreateCategorySuccess },
-  ] = useCreateCategoryMutation();
+  const [createCategory, { isLoading: isCategoryCreating, isSuccess: isCategoryCreated }] =
+    useCreateCategoryMutation();
 
-  const { isLoading: isCategoriesListLoading, refetch: refetchCategories } = useCategoriesQuery();
+  const { isLoading: isLoadingCategories, refetch: refetchCategories } = useCategoriesQuery();
 
   useEffect(() => {
-    if (isCreateCategorySuccess) {
+    if (isCategoryCreated) {
       setIsCreateDialogOpened(false);
       refetchCategories();
     }
-  }, [isCreateCategorySuccess, refetchCategories]);
+  }, [isCategoryCreated, refetchCategories]);
 
   function handleCreate() {
     setIsCreateDialogOpened(true);
@@ -36,7 +34,7 @@ const CreateCategory: React.FC = () => {
         aria-label="Create new category"
         color="primary"
         onClick={handleCreate}
-        disabled={isCategoriesListLoading}
+        disabled={isLoadingCategories}
       >
         <AddIcon />
       </AppFab>
@@ -47,7 +45,7 @@ const CreateCategory: React.FC = () => {
         title="Create category"
         submitText="Create"
         onSubmit={handleDialogSubmit}
-        isLoading={isCreateCategoryLoading}
+        isLoading={isCategoryCreating}
       />
     </React.Fragment>
   );

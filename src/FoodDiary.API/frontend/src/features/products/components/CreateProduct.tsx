@@ -9,17 +9,20 @@ import ProductInputDialog from './ProductInputDialog';
 
 const CreateProduct: React.FC = () => {
   const [isDialogOpened, setIsDialogOpened] = useState(false);
-  const [createProduct, createProductResult] = useCreateProductMutation();
   const productsQueryArg = useAppSelector(selectProductsQueryArg);
-  const productsQuery = useProductsQuery(productsQueryArg);
-  const { refetch: refetchProducts } = productsQuery;
+
+  const { isLoading: isLoadingProducts, refetch: refetchProducts } =
+    useProductsQuery(productsQueryArg);
+
+  const [createProduct, { isLoading: isProductCreating, isSuccess: isProductCreated }] =
+    useCreateProductMutation();
 
   useEffect(() => {
-    if (createProductResult.isSuccess) {
+    if (isProductCreated) {
       refetchProducts();
       setIsDialogOpened(false);
     }
-  }, [createProductResult.isSuccess, refetchProducts]);
+  }, [isProductCreated, refetchProducts]);
 
   function handleCreate() {
     setIsDialogOpened(true);
@@ -39,7 +42,7 @@ const CreateProduct: React.FC = () => {
         aria-label="Open create product dialog"
         color="primary"
         onClick={handleCreate}
-        disabled={productsQuery.isLoading || createProductResult.isLoading}
+        disabled={isLoadingProducts || isProductCreating}
       >
         <AddIcon />
       </AppFab>
@@ -50,7 +53,7 @@ const CreateProduct: React.FC = () => {
         title="Create product"
         submitText="Create"
         onSubmit={handleDialogSubmit}
-        isLoading={createProductResult.isLoading}
+        isLoading={isProductCreating}
       />
     </React.Fragment>
   );
