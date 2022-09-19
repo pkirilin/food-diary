@@ -1,7 +1,6 @@
 import { rest } from 'msw';
 import config from 'src/features/__shared__/config';
-import { CategoryFormData } from 'src/features/categories';
-import { CategoryAutocompleteOption } from 'src/features/categories/models';
+import { CategoryAutocompleteOption, CategoryFormData } from 'src/features/categories';
 import { db } from '../db';
 
 export const categoriesHandlers = [

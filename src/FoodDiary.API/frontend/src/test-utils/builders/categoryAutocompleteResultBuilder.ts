@@ -1,4 +1,4 @@
-import { CategoryAutocompleteOption } from '../../features/categories/models';
+import { CategoryAutocompleteOption } from 'src/features/categories';
 
 export interface CategoryAutocompleteResultBuilder {
   please: () => CategoryAutocompleteOption[];

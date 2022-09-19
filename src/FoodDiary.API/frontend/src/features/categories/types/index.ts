@@ -1,3 +1,5 @@
+import { AutocompleteOption } from 'src/types';
+
 export type Category = {
   id: number;
   name: string;
@@ -7,3 +9,5 @@ export type Category = {
 export type CategoryFormData = {
   name: string;
 };
+
+export type CategoryAutocompleteOption = AutocompleteOption;

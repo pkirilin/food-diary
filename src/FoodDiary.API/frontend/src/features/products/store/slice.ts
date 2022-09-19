@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { CategoryAutocompleteOption } from '../../categories/models';
+import { CategoryAutocompleteOption } from 'src/features/categories';
 import productsApi from '../api';
 import { ProductItemsFilter } from './types';
 
