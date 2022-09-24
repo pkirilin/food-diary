@@ -16,4 +16,4 @@ COPY --from=backend app/publish .
 COPY --from=frontend app/build frontend/build
 EXPOSE 80
 ENV Logging__Console__FormatterName=Simple
-CMD ASPNETCORE_URLS=http://*:$PORT dotnet FoodDiary.API.dll
+ENTRYPOINT ["dotnet", "FoodDiary.API.dll"]
