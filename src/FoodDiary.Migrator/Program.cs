@@ -38,5 +38,6 @@ void Migrate(ILoggerFactory loggerFactory)
     catch (Exception e)
     {
         logger.LogError(e, "Error while applying migrations");
+        throw;
     }
 }

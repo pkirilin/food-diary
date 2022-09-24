@@ -42,10 +42,8 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 6.0.302
-      - name: Read database connection string
-        run: export ConnectionStrings__Default="{{ secrets.Migrator_DatabaseConnectionString }}"
       - name: Run migrator
-        run: dotnet run --configuration Release --project src/FoodDiary.Migrator/FoodDiary.Migrator.csproj
+        run: export ConnectionStrings__Default="{{ secrets.Migrator_DatabaseConnectionString }}" && dotnet run --configuration Release --project src/FoodDiary.Migrator/FoodDiary.Migrator.csproj
 
   deploy:
     runs-on: ubuntu-latest
