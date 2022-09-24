@@ -43,7 +43,7 @@ jobs:
         with:
           dotnet-version: 6.0.302
       - name: Run migrator
-        run: export ConnectionStrings__Default="{{ secrets.Migrator_DatabaseConnectionString }}" && dotnet run --configuration Release --project src/FoodDiary.Migrator/FoodDiary.Migrator.csproj
+        run: dotnet run --configuration Release --project src/FoodDiary.Migrator/FoodDiary.Migrator.csproj "{{ secrets.Migrator_DatabaseConnectionString }}"
 
   deploy:
     runs-on: ubuntu-latest

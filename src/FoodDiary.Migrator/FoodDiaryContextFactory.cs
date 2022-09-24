@@ -17,10 +17,20 @@ public class FoodDiaryContextFactory : IDesignTimeDbContextFactory<FoodDiaryCont
     public FoodDiaryContext CreateDbContext(string[] args)
     {
         var options = new DbContextOptionsBuilder()
-            .UseNpgsql(MigratorConfiguration.ConnectionString)
+            .UseNpgsql(GetConnectionString(args))
             .UseLoggerFactory(_loggerFactory)
             .Options;
 
         return new FoodDiaryContext(options);
+    }
+
+    private static string GetConnectionString(IReadOnlyList<string> args)
+    {
+        if (args.Count > 0 && !string.IsNullOrWhiteSpace(args[0]))
+        {
+            return args[0];
+        }
+        
+        return MigratorConfiguration.ConnectionString;
     }
 }

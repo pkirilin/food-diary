@@ -7,7 +7,7 @@ try
 {
     var serviceProvider = BuildServiceProvider();
     var logger = serviceProvider.GetRequiredService<ILoggerFactory>();
-    Migrate(logger);
+    Migrate(args, logger);
     return 0;
 }
 catch (Exception e)
@@ -25,14 +25,14 @@ IServiceProvider BuildServiceProvider()
     return services.BuildServiceProvider();
 }
 
-void Migrate(ILoggerFactory loggerFactory)
+void Migrate(string[] args, ILoggerFactory loggerFactory)
 {
     var logger = loggerFactory.CreateLogger<Program>();
     
     try
     {
         var factory = new FoodDiaryContextFactory(loggerFactory);
-        var context = factory.CreateDbContext(Array.Empty<string>());
+        var context = factory.CreateDbContext(args);
         context.Database.Migrate();
     }
     catch (Exception e)
