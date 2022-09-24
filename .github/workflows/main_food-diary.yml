@@ -30,7 +30,7 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         push: true
-        tags: index.docker.io/${{ secrets.AzureAppService_ContainerUsername_6ff515138c474569b14fb663d02b6c5d }}/pkirilin/food-diary:${{ github.sha }}
+        tags: index.docker.io/${{ secrets.AzureAppService_ContainerUsername_6ff515138c474569b14fb663d02b6c5d }}/food-diary:${{ github.sha }}
         file: ./Dockerfile
 
   deploy:
@@ -48,4 +48,4 @@ jobs:
         app-name: 'food-diary'
         slot-name: 'production'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_d39bb6452cd540d78f4dd9fe3526ed62 }}
-        images: 'index.docker.io/${{ secrets.AzureAppService_ContainerUsername_6ff515138c474569b14fb663d02b6c5d }}/pkirilin/food-diary:${{ github.sha }}'
+        images: 'index.docker.io/${{ secrets.AzureAppService_ContainerUsername_6ff515138c474569b14fb663d02b6c5d }}/food-diary:${{ github.sha }}'
