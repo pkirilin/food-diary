@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { useCategoriesQuery, useEditCategoryMutation } from '../api';
 import { Category, CategoryFormData } from '../types';
 import CategoryInputDialog from './CategoryInputDialog';
+import CategoryTitle from './CategoryTitle';
 import DeleteCategoryDialog from './DeleteCategoryDialog';
 import ProductsCount from './ProductsCount';
 
@@ -47,7 +48,7 @@ const CategoriesListItem: React.FC<CategoriesListItemProps> = ({ category }) => 
     <Card>
       <CardHeader
         sx={{ paddingBottom: 0 }}
-        title={category.name}
+        title={<CategoryTitle>{category.name}</CategoryTitle>}
         subheader={<ProductsCount category={category} />}
       />
       <CardActions sx={{ margin: '0 0.5rem' }}>
