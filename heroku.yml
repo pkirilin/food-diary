@@ -1,8 +1,0 @@
-build:
-  docker:
-    web: Dockerfile
-    migrator: Dockerfile.migrator
-release:
-  image: migrator
-  command:
-    - dotnet FoodDiary.Migrator.dll
