@@ -55,3 +55,10 @@ export const categoriesHandlers = [
     return res(ctx.json(categories));
   }),
 ];
+
+export const getEmptyCategories = rest.get(
+  `${config.apiUrl}/api/v1/categories`,
+  (req, res, ctx) => {
+    return res(ctx.json([]));
+  },
+);

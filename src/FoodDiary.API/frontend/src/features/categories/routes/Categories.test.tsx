@@ -1,7 +1,18 @@
 import { screen, waitForElementToBeRemoved, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { server } from 'src/test-utils';
 import { render } from 'src/testing';
+import { getEmptyCategories } from 'src/testing/server/handlers/categories';
 import Categories from './Categories';
+
+test('placeholder text is shown for empty categories list', async () => {
+  server.use(getEmptyCategories);
+  render(<Categories />);
+
+  await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
+
+  expect(screen.getByText(/no categories/i));
+});
 
 test('categories are displayed with their product counts', async () => {
   render(<Categories />);
