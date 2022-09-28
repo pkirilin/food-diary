@@ -28,12 +28,11 @@ const CategoryInputDialog: React.FC<CreateEditCategoryDialogProps> = ({
   const {
     inputProps: categoryNameInputProps,
     value: categoryName,
-    setValue: setCategoryName,
     clearValue: clearCategoryName,
     isInvalid: isCategoryNameInvalid,
     isTouched: isCategoryNameTouched,
   } = useInput({
-    initialValue: '',
+    initialValue: category?.name || '',
     errorHelperText: 'Category name is invalid',
     validate: validateCategoryName,
     mapToInputProps: mapToTextInputProps,
@@ -44,12 +43,8 @@ const CategoryInputDialog: React.FC<CreateEditCategoryDialogProps> = ({
   useEffect(() => {
     if (isDialogOpened) {
       clearCategoryName();
-
-      if (category) {
-        setCategoryName(category.name);
-      }
     }
-  }, [isDialogOpened, clearCategoryName, category, setCategoryName]);
+  }, [isDialogOpened, clearCategoryName, category]);
 
   function handleClose() {
     setIsDialogOpened(false);
