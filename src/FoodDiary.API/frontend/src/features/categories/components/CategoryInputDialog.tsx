@@ -1,7 +1,8 @@
 import { Dialog, DialogTitle, DialogContent, TextField, DialogActions } from '@mui/material';
 import React, { Dispatch, SetStateAction, useEffect } from 'react';
 import { AppButton } from 'src/components';
-import { useValidatedState } from 'src/hooks';
+import { useInput } from 'src/hooks';
+import { mapToTextInputProps } from 'src/utils/inputMapping';
 import { validateCategoryName } from 'src/utils/validation';
 import { Category, CategoryFormData } from '../types';
 
@@ -25,16 +26,17 @@ const CategoryInputDialog: React.FC<CreateEditCategoryDialogProps> = ({
   category,
 }) => {
   const {
+    inputProps: categoryNameInputProps,
     value: categoryName,
     setValue: setCategoryName,
     clearValue: clearCategoryName,
-    helperText: categoryNameHelperText,
     isInvalid: isCategoryNameInvalid,
     isTouched: isCategoryNameTouched,
-  } = useValidatedState({
+  } = useInput({
     initialValue: '',
     errorHelperText: 'Category name is invalid',
-    validatorFunction: validateCategoryName,
+    validate: validateCategoryName,
+    mapToInputProps: mapToTextInputProps,
   });
 
   const isSubmitDisabled = isCategoryNameInvalid || !isCategoryNameTouched;
@@ -48,12 +50,6 @@ const CategoryInputDialog: React.FC<CreateEditCategoryDialogProps> = ({
       }
     }
   }, [isDialogOpened, clearCategoryName, category, setCategoryName]);
-
-  function handleCategoryNameChange(
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) {
-    setCategoryName(event.target.value);
-  }
 
   function handleClose() {
     setIsDialogOpened(false);
@@ -69,15 +65,12 @@ const CategoryInputDialog: React.FC<CreateEditCategoryDialogProps> = ({
 
       <DialogContent>
         <TextField
+          {...categoryNameInputProps}
           autoFocus
           margin="dense"
           fullWidth
           label="Category name"
           placeholder="Enter category name"
-          value={categoryName}
-          onChange={handleCategoryNameChange}
-          helperText={categoryNameHelperText}
-          error={isCategoryNameInvalid}
         />
       </DialogContent>
 
