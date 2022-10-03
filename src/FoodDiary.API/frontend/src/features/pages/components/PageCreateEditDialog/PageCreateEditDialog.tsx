@@ -12,8 +12,10 @@ import { useAppDispatch, useAppSelector } from 'src/features/__shared__/hooks';
 import { DialogCustomActionProps } from 'src/features/__shared__/types';
 import { PageCreateEdit } from 'src/features/pages/models';
 import { getDateForNewPage } from 'src/features/pages/thunks';
-import { useValidatedState } from 'src/hooks';
-import { formatDate, validateDate } from 'src/utils';
+import { useInput } from 'src/hooks';
+import { formatDate } from 'src/utils';
+import { mapToDateInputProps } from 'src/utils/inputMapping';
+import { validateDate } from 'src/utils/validation';
 
 interface PageCreateEditDialogProps extends DialogProps, DialogCustomActionProps<PageCreateEdit> {
   page?: PageCreateEdit;
@@ -57,14 +59,15 @@ const PageCreateEditDialog: React.FC<PageCreateEditDialogProps> = ({
   const submitText = isNewPage ? 'Create' : 'Save';
 
   const {
+    inputProps: dateInputProps,
     value: date,
     setValue: setDate,
     isInvalid: isDateInvalid,
-    helperText: dateHelperText,
-  } = useValidatedState<Date | null>({
+  } = useInput({
     initialValue: null,
     errorHelperText: 'Date is required',
-    validatorFunction: validateDate,
+    validate: validateDate,
+    mapToInputProps: mapToDateInputProps,
   });
 
   useEffect(() => {
@@ -86,13 +89,10 @@ const PageCreateEditDialog: React.FC<PageCreateEditDialogProps> = ({
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
         <DatePicker
+          {...dateInputProps}
+          autoFocus
           label="Page date"
           placeholder="Select page date"
-          date={date}
-          onChange={value => setDate(value)}
-          isInvalid={isDateInvalid}
-          helperText={dateHelperText}
-          autoFocus
         />
       </DialogContent>
       <DialogActions>
