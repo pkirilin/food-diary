@@ -1,9 +1,10 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
-import { useValidatedState } from 'src/hooks';
+import { useInput } from 'src/hooks';
 import { create } from 'src/test-utils';
-import { validateDate } from 'src/utils';
+import { mapToDateInputProps } from 'src/utils/inputMapping';
+import { validateDate } from 'src/utils/validation';
 import DatePicker from './DatePicker';
 
 type DatePickerTestProps = {
@@ -19,22 +20,14 @@ const DatePickerTest: React.FC<DatePickerTestProps> = ({
   date: initialDate = null,
   errorHelperText = '',
 }) => {
-  const { value, setValue, isInvalid, helperText } = useValidatedState<Date | null>({
+  const { inputProps } = useInput({
     initialValue: initialDate,
     errorHelperText,
-    validatorFunction: validateDate,
+    validate: validateDate,
+    mapToInputProps: mapToDateInputProps,
   });
 
-  return (
-    <DatePicker
-      label={label}
-      placeholder={placeholder}
-      date={value}
-      onChange={value => setValue(value)}
-      isInvalid={isInvalid}
-      helperText={helperText}
-    />
-  );
+  return <DatePicker {...inputProps} label={label} placeholder={placeholder} />;
 };
 
 test('date can be changed', async () => {
