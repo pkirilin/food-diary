@@ -2,8 +2,9 @@ import { Box, Button, Paper } from '@mui/material';
 import dateFnsFormat from 'date-fns/format';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { DatePicker } from 'src/components';
-import { useValidatedState } from 'src/hooks';
-import { validateDate } from 'src/utils';
+import { useInput } from 'src/hooks';
+import { mapToDateInputProps } from 'src/utils/inputMapping';
+import { validateDate } from 'src/utils/validation';
 import { useAppDispatch, useAppSelector } from '../../__shared__/hooks';
 import { useFilterStyles } from '../../__shared__/styles';
 import { endDateChanged, filterReset, startDateChanged } from '../slice';
@@ -69,25 +70,25 @@ const PagesFilter: React.FC = () => {
   const { initialStartDate, initialEndDate, isChanged, applyToDatePart, reset } = useFilter();
 
   const {
+    inputProps: startDateInputProps,
     value: startDate,
     setValue: setStartDate,
-    isInvalid: isStartDateInvalid,
-    helperText: startDateHelperText,
-  } = useValidatedState<Date | null>({
+  } = useInput({
     initialValue: null,
     errorHelperText: 'Start date is required',
-    validatorFunction: validateDate,
+    validate: validateDate,
+    mapToInputProps: mapToDateInputProps,
   });
 
   const {
+    inputProps: endDateInputProps,
     value: endDate,
     setValue: setEndDate,
-    isInvalid: isEndDateInvalid,
-    helperText: endDateHelperText,
-  } = useValidatedState<Date | null>({
+  } = useInput({
     initialValue: null,
     errorHelperText: 'End date is required',
-    validatorFunction: validateDate,
+    validate: validateDate,
+    mapToInputProps: mapToDateInputProps,
   });
 
   useEffect(() => {
@@ -107,22 +108,8 @@ const PagesFilter: React.FC = () => {
 
   return (
     <Box component={Paper} className={classes.root}>
-      <DatePicker
-        label="Start date"
-        placeholder="Select start date"
-        date={startDate}
-        onChange={value => setStartDate(value)}
-        isInvalid={isStartDateInvalid}
-        helperText={startDateHelperText}
-      />
-      <DatePicker
-        label="End date"
-        placeholder="Select end date"
-        date={endDate}
-        onChange={value => setEndDate(value)}
-        isInvalid={isEndDateInvalid}
-        helperText={endDateHelperText}
-      />
+      <DatePicker {...startDateInputProps} label="Start date" placeholder="Select start date" />
+      <DatePicker {...endDateInputProps} label="End date" placeholder="Select end date" />
       <Box className={classes.controls}>
         <Button variant="text" disabled={!isChanged} onClick={reset}>
           Reset

@@ -1,5 +1,5 @@
-import useValidatedState from './useValidatedState';
+import useInput from './useInput';
 
-export { useValidatedState };
+export { useInput };
 
 export * from 'src/features/__shared__/hooks';

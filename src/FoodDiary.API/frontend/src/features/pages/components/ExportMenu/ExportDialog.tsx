@@ -1,8 +1,9 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import React, { useEffect } from 'react';
 import { AppButton, DatePicker } from 'src/components';
-import { useValidatedState } from 'src/hooks';
-import { validateDate } from 'src/utils';
+import { useInput } from 'src/hooks';
+import { mapToDateInputProps } from 'src/utils/inputMapping';
+import { validateDate } from 'src/utils/validation';
 import { ExportFormat } from '../../models';
 import { useExportToGoogleDocs } from './useExportToGoogleDocs';
 import { useExportToJson } from './useExportToJson';
@@ -15,29 +16,29 @@ type ExportDialogProps = {
 
 const ExportDialog: React.FC<ExportDialogProps> = ({ format: exportFormat, isOpen, onClose }) => {
   const {
+    inputProps: startDateInputProps,
     value: startDate,
-    setValue: setStartDate,
     clearValue: clearStartDate,
     isInvalid: isStartDateInvalid,
     isTouched: isStartDateTouched,
-    helperText: startDateHelperText,
-  } = useValidatedState<Date | null>({
+  } = useInput({
     initialValue: null,
     errorHelperText: 'Start date is required',
-    validatorFunction: validateDate,
+    validate: validateDate,
+    mapToInputProps: mapToDateInputProps,
   });
 
   const {
+    inputProps: endDateInputProps,
     value: endDate,
-    setValue: setEndDate,
     clearValue: clearEndDate,
     isInvalid: isEndDateInvalid,
     isTouched: isEndDateTouched,
-    helperText: endDateHelperText,
-  } = useValidatedState<Date | null>({
+  } = useInput({
     initialValue: null,
     errorHelperText: 'End date is required',
-    validatorFunction: validateDate,
+    validate: validateDate,
+    mapToInputProps: mapToDateInputProps,
   });
 
   const exportToJson = useExportToJson(startDate, endDate, onClose);
@@ -56,22 +57,8 @@ const ExportDialog: React.FC<ExportDialogProps> = ({ format: exportFormat, isOpe
     <Dialog open={isOpen} onClose={onClose}>
       <DialogTitle>Export pages</DialogTitle>
       <DialogContent>
-        <DatePicker
-          label="Start date"
-          placeholder="Select start date"
-          date={startDate}
-          onChange={value => setStartDate(value)}
-          isInvalid={isStartDateInvalid}
-          helperText={startDateHelperText}
-        />
-        <DatePicker
-          label="End date"
-          placeholder="Select end date"
-          date={endDate}
-          onChange={value => setEndDate(value)}
-          isInvalid={isEndDateInvalid}
-          helperText={endDateHelperText}
-        />
+        <DatePicker {...startDateInputProps} label="Start date" placeholder="Select start date" />
+        <DatePicker {...endDateInputProps} label="End date" placeholder="Select end date" />
       </DialogContent>
       <DialogActions>
         {exportFormat === 'json' ? (

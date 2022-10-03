@@ -2,7 +2,8 @@ import { Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@m
 import React, { useEffect, useState } from 'react';
 import { AppButton } from 'src/components';
 import { CategoryAutocompleteOption } from 'src/features/categories';
-import { useValidatedState } from 'src/hooks';
+import { useInput } from 'src/hooks';
+import { mapToNumericInputProps, mapToTextInputProps } from 'src/utils/inputMapping';
 import { validateCaloriesCost, validateProductName } from 'src/utils/validation';
 import { ProductFormData } from '../types';
 import CategorySelect from './CategorySelect';
@@ -27,29 +28,29 @@ const ProductInputDialog: React.FC<ProductInputDialogProps> = ({
   product,
 }) => {
   const {
+    inputProps: productNameinputProps,
     value: productName,
-    setValue: setProductName,
     clearValue: clearProductName,
-    helperText: productNameHelperText,
     isInvalid: isProductNameInvalid,
     isTouched: isProductNameTouched,
-  } = useValidatedState({
+  } = useInput({
     initialValue: product?.name || '',
     errorHelperText: 'Product name is invalid',
-    validatorFunction: validateProductName,
+    validate: validateProductName,
+    mapToInputProps: mapToTextInputProps,
   });
 
   const {
+    inputProps: caloriesCostInputProps,
     value: caloriesCost,
-    setValue: setCaloriesCost,
     clearValue: clearCaloriesCost,
-    helperText: caloriesCostHelperText,
     isInvalid: isCaloriesCostInvalid,
     isTouched: isCaloriesCostTouched,
-  } = useValidatedState({
+  } = useInput({
     initialValue: product?.caloriesCost || 100,
     errorHelperText: 'Calories cost is invalid',
-    validatorFunction: validateCaloriesCost,
+    validate: validateCaloriesCost,
+    mapToInputProps: mapToNumericInputProps,
   });
 
   const [category, setCategory] = useState(product?.category || null);
@@ -64,14 +65,6 @@ const ProductInputDialog: React.FC<ProductInputDialogProps> = ({
       }
     }
   }, [clearCaloriesCost, clearProductName, isDialogOpened, product]);
-
-  function handleProductNameChange(event: React.ChangeEvent<HTMLInputElement>) {
-    setProductName(event.target.value);
-  }
-
-  function handleCaloriesCostChange(event: React.ChangeEvent<HTMLInputElement>) {
-    setCaloriesCost(event.target.value ? Number(event.target.value) : 0);
-  }
 
   function handleCategoryChange(category: CategoryAutocompleteOption | null) {
     setCategory(category);
@@ -105,29 +98,21 @@ const ProductInputDialog: React.FC<ProductInputDialogProps> = ({
 
       <DialogContent>
         <TextField
+          {...productNameinputProps}
           autoFocus
           fullWidth
           margin="normal"
           label="Product"
           placeholder="Enter product name"
-          value={productName}
-          onChange={handleProductNameChange}
-          helperText={productNameHelperText}
-          error={isProductNameInvalid}
         />
-
         <TextField
+          {...caloriesCostInputProps}
           type="number"
           fullWidth
           margin="normal"
           label="Calories cost"
           placeholder="Enter calories cost"
-          value={caloriesCost}
-          onChange={handleCaloriesCostChange}
-          helperText={caloriesCostHelperText}
-          error={isCaloriesCostInvalid}
         />
-
         <CategorySelect
           label="Category"
           placeholder="Select a category"
