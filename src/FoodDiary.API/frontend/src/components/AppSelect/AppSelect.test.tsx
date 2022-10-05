@@ -1,6 +1,6 @@
-import { screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { render } from 'src/testing';
+import React from 'react';
 import { AutocompleteOption } from 'src/types';
 import AppSelect from './AppSelect';
 
@@ -19,7 +19,11 @@ const OPTIONS: AutocompleteOption[] = [
   },
 ];
 
-const AppSelectTest: React.FC = () => {
+type AppSelectTestProps = {
+  isLoading?: boolean;
+};
+
+const AppSelectTest: React.FC<AppSelectTestProps> = ({ isLoading }) => {
   function getDisplayName({ name }: AutocompleteOption) {
     return name;
   }
@@ -35,6 +39,7 @@ const AppSelectTest: React.FC = () => {
       areOptionsEqual={areOptionsEqual}
       label="Name"
       placeholder="Select name"
+      isLoading={isLoading}
     />
   );
 };
@@ -51,8 +56,12 @@ test('all options are visible if closed with filtered options and then opened ag
   expect(false).toBeTruthy();
 });
 
-test('options can be marked as loading', () => {
-  expect(false).toBeTruthy();
+test('options can be marked as loading', async () => {
+  render(<AppSelectTest isLoading />);
+
+  await userEvent.click(screen.getByPlaceholderText(/select name/i));
+
+  expect(screen.getByRole('progressbar'));
 });
 
 test('visible options match input value', () => {
