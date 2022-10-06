@@ -27,6 +27,7 @@ type AppSelectTestProps = {
 const AppSelectTest: React.FC<AppSelectTestProps> = ({ initialValue, allowEmptyOptions }) => {
   const [options, setOptions] = useState<AutocompleteOption[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [optionsLoaded, setOptionsLoaded] = useState(false);
 
   function getDisplayName({ name }: AutocompleteOption) {
     return name;
@@ -37,11 +38,16 @@ const AppSelectTest: React.FC<AppSelectTestProps> = ({ initialValue, allowEmptyO
   }
 
   function handleOpen() {
+    if (optionsLoaded) {
+      return;
+    }
+
     setIsLoading(true);
 
     setTimeout(() => {
       setOptions(allowEmptyOptions ? [] : TEST_OPTIONS);
       setIsLoading(false);
+      setOptionsLoaded(true);
     }, 50);
   }
 
@@ -69,7 +75,16 @@ test('all options are visible after clicking on input', async () => {
 });
 
 test('all options are visible if closed with filtered options and then opened again', async () => {
-  expect(false).toBeTruthy();
+  render(<AppSelectTest />);
+
+  const input = screen.getByPlaceholderText(/select name/i);
+  await userEvent.click(input);
+  await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
+  await userEvent.type(input, 'Jo');
+  await userEvent.click(screen.getByLabelText(/close/i));
+  await userEvent.click(screen.getByLabelText(/open/i));
+
+  expect(screen).toContainOptions('John');
 });
 
 test('visible options match input value', async () => {
