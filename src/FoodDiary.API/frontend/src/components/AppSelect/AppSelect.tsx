@@ -1,13 +1,14 @@
 import { Autocomplete, CircularProgress, TextField } from '@mui/material';
 import React from 'react';
 
-type AppSelectProps<TValue> = {
-  availableOptions: TValue[];
-  getDisplayName: (value: TValue) => string;
-  areOptionsEqual: (first: TValue, second: TValue) => boolean;
+type AppSelectProps<TOption> = {
+  availableOptions: TOption[];
+  getDisplayName: (value: TOption) => string;
+  areOptionsEqual: (first: TOption, second: TOption) => boolean;
   label?: string;
   placeholder?: string;
   isLoading?: boolean;
+  value?: TOption;
   onOpen?: () => void;
 };
 
@@ -18,10 +19,12 @@ const AppSelect = <TOption,>({
   label,
   placeholder,
   isLoading,
+  value,
   onOpen,
 }: AppSelectProps<TOption>): React.ReactElement => {
   return (
     <Autocomplete
+      value={value}
       options={availableOptions}
       getOptionLabel={getDisplayName}
       isOptionEqualToValue={areOptionsEqual}

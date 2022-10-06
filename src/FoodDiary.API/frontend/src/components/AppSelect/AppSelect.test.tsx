@@ -20,10 +20,11 @@ const TEST_OPTIONS: AutocompleteOption[] = [
 ];
 
 type AppSelectTestProps = {
+  initialValue?: AutocompleteOption;
   allowEmptyOptions?: boolean;
 };
 
-const AppSelectTest: React.FC<AppSelectTestProps> = ({ allowEmptyOptions }) => {
+const AppSelectTest: React.FC<AppSelectTestProps> = ({ initialValue, allowEmptyOptions }) => {
   const [options, setOptions] = useState<AutocompleteOption[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -52,6 +53,7 @@ const AppSelectTest: React.FC<AppSelectTestProps> = ({ allowEmptyOptions }) => {
       label="Name"
       placeholder="Select name"
       isLoading={isLoading}
+      value={initialValue}
       onOpen={handleOpen}
     />
   );
@@ -93,7 +95,9 @@ test('no options are visible if input value does not match any existing option',
 });
 
 test('initializes selected value if it specified', () => {
-  expect(false).toBeTruthy();
+  render(<AppSelectTest initialValue={TEST_OPTIONS[1]} />);
+
+  expect(screen.getByDisplayValue('Peter')).toBeInTheDocument();
 });
 
 test('no options are visible after input is closed', async () => {
