@@ -8,6 +8,7 @@ type AppSelectProps<TValue> = {
   label?: string;
   placeholder?: string;
   isLoading?: boolean;
+  onOpen?: () => void;
 };
 
 const AppSelect = <TOption,>({
@@ -17,12 +18,14 @@ const AppSelect = <TOption,>({
   label,
   placeholder,
   isLoading,
+  onOpen,
 }: AppSelectProps<TOption>): React.ReactElement => {
   return (
     <Autocomplete
       options={availableOptions}
       getOptionLabel={getDisplayName}
       isOptionEqualToValue={areOptionsEqual}
+      onOpen={onOpen}
       renderInput={params => (
         <TextField
           {...params}

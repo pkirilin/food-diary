@@ -1,10 +1,10 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitForElementToBeRemoved } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import React from 'react';
+import React, { useState } from 'react';
 import { AutocompleteOption } from 'src/types';
 import AppSelect from './AppSelect';
 
-const OPTIONS: AutocompleteOption[] = [
+const TEST_OPTIONS: AutocompleteOption[] = [
   {
     id: 1,
     name: 'John',
@@ -19,11 +19,10 @@ const OPTIONS: AutocompleteOption[] = [
   },
 ];
 
-type AppSelectTestProps = {
-  isLoading?: boolean;
-};
+const AppSelectTest: React.FC = () => {
+  const [options, setOptions] = useState<AutocompleteOption[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-const AppSelectTest: React.FC<AppSelectTestProps> = ({ isLoading }) => {
   function getDisplayName({ name }: AutocompleteOption) {
     return name;
   }
@@ -32,14 +31,24 @@ const AppSelectTest: React.FC<AppSelectTestProps> = ({ isLoading }) => {
     return first.name === second.name;
   }
 
+  function handleOpen() {
+    setIsLoading(true);
+
+    setTimeout(() => {
+      setOptions(TEST_OPTIONS);
+      setIsLoading(false);
+    }, 50);
+  }
+
   return (
     <AppSelect
-      availableOptions={OPTIONS}
+      availableOptions={options}
       getDisplayName={getDisplayName}
       areOptionsEqual={areOptionsEqual}
       label="Name"
       placeholder="Select name"
       isLoading={isLoading}
+      onOpen={handleOpen}
     />
   );
 };
@@ -48,20 +57,13 @@ test('all options are visible after clicking on input', async () => {
   render(<AppSelectTest />);
 
   await userEvent.click(screen.getByPlaceholderText(/select name/i));
+  await waitForElementToBeRemoved(screen.getByRole('progressbar'));
 
   expect(screen).toContainOptions('John', 'Peter', 'Kate');
 });
 
 test('all options are visible if closed with filtered options and then opened again', () => {
   expect(false).toBeTruthy();
-});
-
-test('options can be marked as loading', async () => {
-  render(<AppSelectTest isLoading />);
-
-  await userEvent.click(screen.getByPlaceholderText(/select name/i));
-
-  expect(screen.getByRole('progressbar'));
 });
 
 test('visible options match input value', () => {
