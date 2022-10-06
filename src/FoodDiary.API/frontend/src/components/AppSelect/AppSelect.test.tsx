@@ -19,7 +19,11 @@ const TEST_OPTIONS: AutocompleteOption[] = [
   },
 ];
 
-const AppSelectTest: React.FC = () => {
+type AppSelectTestProps = {
+  allowEmptyOptions?: boolean;
+};
+
+const AppSelectTest: React.FC<AppSelectTestProps> = ({ allowEmptyOptions }) => {
   const [options, setOptions] = useState<AutocompleteOption[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -35,7 +39,7 @@ const AppSelectTest: React.FC = () => {
     setIsLoading(true);
 
     setTimeout(() => {
-      setOptions(TEST_OPTIONS);
+      setOptions(allowEmptyOptions ? [] : TEST_OPTIONS);
       setIsLoading(false);
     }, 50);
   }
@@ -57,31 +61,60 @@ test('all options are visible after clicking on input', async () => {
   render(<AppSelectTest />);
 
   await userEvent.click(screen.getByPlaceholderText(/select name/i));
-  await waitForElementToBeRemoved(screen.getByRole('progressbar'));
+  await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
 
   expect(screen).toContainOptions('John', 'Peter', 'Kate');
 });
 
-test('all options are visible if closed with filtered options and then opened again', () => {
+test('all options are visible if closed with filtered options and then opened again', async () => {
   expect(false).toBeTruthy();
 });
 
-test('visible options match input value', () => {
-  expect(false).toBeTruthy();
+test('visible options match input value', async () => {
+  render(<AppSelectTest />);
+
+  const input = screen.getByPlaceholderText(/select name/i);
+  await userEvent.click(input);
+  await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
+  await userEvent.type(input, 'Jo');
+
+  expect(screen).toContainOptions('John');
+});
+
+test('no options are visible if input value does not match any existing option', async () => {
+  render(<AppSelectTest />);
+
+  const input = screen.getByPlaceholderText(/select name/i);
+  await userEvent.click(input);
+  await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
+  await userEvent.type(input, 'Jack');
+
+  expect(screen).toContainEmptyOptions();
 });
 
 test('initializes selected value if it specified', () => {
   expect(false).toBeTruthy();
 });
 
-test('no options are visible if input value does not match any existing option', () => {
-  expect(false).toBeTruthy();
+test('no options are visible after input is closed', async () => {
+  render(<AppSelectTest />);
+
+  const input = screen.getByPlaceholderText(/select name/i);
+  await userEvent.click(input);
+  await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
+  await userEvent.type(input, 'Jo');
+  await userEvent.click(screen.getByLabelText(/close/i));
+
+  expect(screen).toContainEmptyOptions();
 });
 
-test('no options are visible after input is closed', () => {
-  expect(false).toBeTruthy();
-});
+test('no options are visible after clicking on input if autocomplete has no options', async () => {
+  render(<AppSelectTest allowEmptyOptions />);
 
-test('no options are visible after clicking on input if autocomplete has no options', () => {
-  expect(false).toBeTruthy();
+  const input = screen.getByPlaceholderText(/select name/i);
+  await userEvent.click(input);
+  await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
+  await userEvent.type(input, 'Jo');
+
+  expect(screen).toContainEmptyOptions();
 });
