@@ -137,3 +137,15 @@ test('no options are visible after clicking on input if autocomplete has no opti
 
   expect(screen).toContainEmptyOptions();
 });
+
+test('value can be selected', async () => {
+  render(<AppSelectTest />);
+
+  const input = screen.getByPlaceholderText(/select name/i);
+  await userEvent.click(input);
+  await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
+  await userEvent.type(input, 'ter');
+  await userEvent.click(screen.queryAllByRole('option')[0]);
+
+  expect(input).toHaveValue('Peter');
+});
