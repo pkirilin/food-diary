@@ -71,7 +71,10 @@ test('all options are visible after clicking on input', async () => {
   await userEvent.click(screen.getByPlaceholderText(/select name/i));
   await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
 
-  expect(screen).toContainOptions('John', 'Peter', 'Kate');
+  const options = screen.queryAllByRole('option');
+  expect(options[0]).toHaveTextContent('John');
+  expect(options[1]).toHaveTextContent('Peter');
+  expect(options[2]).toHaveTextContent('Kate');
 });
 
 test('all options are visible if closed with filtered options and then opened again', async () => {
@@ -84,7 +87,7 @@ test('all options are visible if closed with filtered options and then opened ag
   await userEvent.click(screen.getByLabelText(/close/i));
   await userEvent.click(screen.getByLabelText(/open/i));
 
-  expect(screen).toContainOptions('John');
+  expect(screen.queryAllByRole('option')[0]).toHaveTextContent('John');
 });
 
 test('visible options match input value', async () => {
@@ -95,7 +98,7 @@ test('visible options match input value', async () => {
   await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
   await userEvent.type(input, 'Jo');
 
-  expect(screen).toContainOptions('John');
+  expect(screen.queryAllByRole('option')[0]).toHaveTextContent('John');
 });
 
 test('no options are visible if input value does not match any existing option', async () => {
@@ -106,7 +109,7 @@ test('no options are visible if input value does not match any existing option',
   await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
   await userEvent.type(input, 'Jack');
 
-  expect(screen).toContainEmptyOptions();
+  expect(screen.queryAllByRole('option')).toHaveLength(0);
 });
 
 test('initializes selected value if it specified', () => {
@@ -124,7 +127,7 @@ test('no options are visible after input is closed', async () => {
   await userEvent.type(input, 'Jo');
   await userEvent.click(screen.getByLabelText(/close/i));
 
-  expect(screen).toContainEmptyOptions();
+  expect(screen.queryAllByRole('option')).toHaveLength(0);
 });
 
 test('no options are visible after clicking on input if autocomplete has no options', async () => {
@@ -135,7 +138,7 @@ test('no options are visible after clicking on input if autocomplete has no opti
   await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
   await userEvent.type(input, 'Jo');
 
-  expect(screen).toContainEmptyOptions();
+  expect(screen.queryAllByRole('option')).toHaveLength(0);
 });
 
 test('value can be selected', async () => {
