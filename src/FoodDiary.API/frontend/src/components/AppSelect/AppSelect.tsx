@@ -5,29 +5,36 @@ type AppSelectProps<TOption> = {
   availableOptions: TOption[];
   getDisplayName: (value: TOption) => string;
   areOptionsEqual: (first: TOption, second: TOption) => boolean;
+  onChange: (newValue: TOption | null) => void;
+  onOpen?: () => void;
   label?: string;
   placeholder?: string;
   isLoading?: boolean;
-  value?: TOption;
-  onOpen?: () => void;
+  value?: TOption | null;
 };
 
 const AppSelect = <TOption,>({
   availableOptions,
   getDisplayName,
   areOptionsEqual,
+  onChange,
+  onOpen,
   label,
   placeholder,
   isLoading,
-  value,
-  onOpen,
+  value = null,
 }: AppSelectProps<TOption>): React.ReactElement => {
+  function handleChange(event: React.SyntheticEvent, newValue: TOption | null) {
+    onChange(newValue);
+  }
+
   return (
     <Autocomplete
       value={value}
       options={availableOptions}
       getOptionLabel={getDisplayName}
       isOptionEqualToValue={areOptionsEqual}
+      onChange={handleChange}
       onOpen={onOpen}
       renderInput={params => (
         <TextField

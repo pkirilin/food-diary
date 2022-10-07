@@ -20,11 +20,15 @@ const TEST_OPTIONS: AutocompleteOption[] = [
 ];
 
 type AppSelectTestProps = {
-  initialValue?: AutocompleteOption;
+  initialValue?: AutocompleteOption | null;
   allowEmptyOptions?: boolean;
 };
 
-const AppSelectTest: React.FC<AppSelectTestProps> = ({ initialValue, allowEmptyOptions }) => {
+const AppSelectTest: React.FC<AppSelectTestProps> = ({
+  initialValue = null,
+  allowEmptyOptions,
+}) => {
+  const [value, setValue] = useState<AutocompleteOption | null>(initialValue);
   const [options, setOptions] = useState<AutocompleteOption[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [optionsLoaded, setOptionsLoaded] = useState(false);
@@ -35,6 +39,10 @@ const AppSelectTest: React.FC<AppSelectTestProps> = ({ initialValue, allowEmptyO
 
   function areOptionsEqual(first: AutocompleteOption, second: AutocompleteOption) {
     return first.name === second.name;
+  }
+
+  function handleChange(newValue: AutocompleteOption | null) {
+    setValue(newValue);
   }
 
   function handleOpen() {
@@ -56,11 +64,12 @@ const AppSelectTest: React.FC<AppSelectTestProps> = ({ initialValue, allowEmptyO
       availableOptions={options}
       getDisplayName={getDisplayName}
       areOptionsEqual={areOptionsEqual}
+      onChange={handleChange}
+      onOpen={handleOpen}
       label="Name"
       placeholder="Select name"
       isLoading={isLoading}
-      value={initialValue}
-      onOpen={handleOpen}
+      value={value}
     />
   );
 };
@@ -147,6 +156,19 @@ test('value can be selected', async () => {
   const input = screen.getByPlaceholderText(/select name/i);
   await userEvent.click(input);
   await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
+  await userEvent.type(input, 'ter');
+  await userEvent.click(screen.queryAllByRole('option')[0]);
+
+  expect(input).toHaveValue('Peter');
+});
+
+test('value can be changed', async () => {
+  render(<AppSelectTest initialValue={TEST_OPTIONS[0]} />);
+
+  const input = screen.getByPlaceholderText(/select name/i);
+  await userEvent.click(input);
+  await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
+  await userEvent.clear(input);
   await userEvent.type(input, 'ter');
   await userEvent.click(screen.queryAllByRole('option')[0]);
 
