@@ -1,12 +1,12 @@
 import { Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { AppButton } from 'src/components';
+import { useLazyGetCategoriesAutocompleteQuery } from 'src/api';
+import { AppButton, AppSelect } from 'src/components';
 import { CategoryAutocompleteOption } from 'src/features/categories';
 import { useInput } from 'src/hooks';
 import { mapToNumericInputProps, mapToTextInputProps } from 'src/utils/inputMapping';
 import { validateCaloriesCost, validateProductName } from 'src/utils/validation';
 import { ProductFormData } from '../types';
-import CategorySelect from './CategorySelect';
 
 type ProductInputDialogProps = {
   isOpened: boolean;
@@ -55,6 +55,15 @@ const ProductInputDialog: React.FC<ProductInputDialogProps> = ({
 
   const [category, setCategory] = useState(product?.category || null);
 
+  const [
+    getCategoryOptions,
+    {
+      data: categoryOptions,
+      isLoading: isLoadingCategoryOptions,
+      isUninitialized: isUninitializedCategoryOptions,
+    },
+  ] = useLazyGetCategoriesAutocompleteQuery();
+
   useEffect(() => {
     if (isDialogOpened) {
       clearProductName();
@@ -65,6 +74,12 @@ const ProductInputDialog: React.FC<ProductInputDialogProps> = ({
       }
     }
   }, [clearCaloriesCost, clearProductName, isDialogOpened, product]);
+
+  function handleCategorySelectOpen() {
+    if (isUninitializedCategoryOptions) {
+      getCategoryOptions(false);
+    }
+  }
 
   function handleCategoryChange(category: CategoryAutocompleteOption | null) {
     setCategory(category);
@@ -113,11 +128,18 @@ const ProductInputDialog: React.FC<ProductInputDialogProps> = ({
           label="Calories cost"
           placeholder="Enter calories cost"
         />
-        <CategorySelect
+        <AppSelect
+          availableOptions={categoryOptions || []}
+          value={category}
+          // eslint-disable-next-line react/jsx-no-bind
+          getDisplayName={option => option?.name || ''}
+          // eslint-disable-next-line react/jsx-no-bind
+          areOptionsEqual={(first, second) => first?.name === second?.name}
+          onChange={handleCategoryChange}
+          onOpen={handleCategorySelectOpen}
+          isLoading={isLoadingCategoryOptions}
           label="Category"
           placeholder="Select a category"
-          value={category}
-          setValue={handleCategoryChange}
         />
       </DialogContent>
 
