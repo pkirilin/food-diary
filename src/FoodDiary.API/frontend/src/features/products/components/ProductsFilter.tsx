@@ -1,13 +1,11 @@
 import { Box, Button, Paper, TextField } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { CategorySelect } from 'src/features/categories';
 import { AutocompleteOption } from 'src/types';
-
 import { useAppSelector, useValidatedTextInput } from '../../__shared__/hooks';
 import { useFilterStyles } from '../../__shared__/styles';
-
 import { filterByCategoryChanged, filterReset, productSearchNameChanged } from '../store';
-import CategorySelect from './CategorySelect';
 
 const ProductsFilter: React.FC = () => {
   const classes = useFilterStyles();

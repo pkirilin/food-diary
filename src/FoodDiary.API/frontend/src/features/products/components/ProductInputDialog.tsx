@@ -1,12 +1,11 @@
 import { Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
 import React, { useEffect } from 'react';
 import { AppButton } from 'src/components';
-import { mapToCategorySelectProps } from 'src/features/categories';
+import { CategorySelect, mapToCategorySelectProps } from 'src/features/categories';
 import { useInput } from 'src/hooks';
 import { mapToNumericInputProps, mapToTextInputProps } from 'src/utils/inputMapping';
 import { validateCaloriesCost, validateProductName } from 'src/utils/validation';
 import { ProductFormData } from '../types';
-import CategorySelect from './CategorySelect';
 
 type ProductInputDialogProps = {
   isOpened: boolean;
