@@ -9,5 +9,10 @@ export type InputOptions<TValue> = {
 
 export type MapToInputPropsFunction<TValue, TProps> = (options: InputOptions<TValue>) => TProps;
 
+export interface SelectOption {
+  id: number;
+  name: string;
+}
+
 export * from 'src/features/__shared__/types';
 export * from 'src/features/__shared__/models';

@@ -1,10 +1,10 @@
 import React from 'react';
 import { AppSelect } from 'src/components';
-import { CategoryAutocompleteOption } from 'src/features/categories';
-import { AutocompleteOption, SelectProps } from 'src/types';
+import { CategorySelectOption } from 'src/features/categories';
+import { SelectProps } from 'src/types';
 import { useLazyCategorySelectOptionsQuery } from '../api';
 
-export type CategorySelectProps = SelectProps<CategoryAutocompleteOption>;
+export type CategorySelectProps = SelectProps<CategorySelectOption>;
 
 const CategorySelect: React.FC<CategorySelectProps> = ({
   label,
@@ -15,15 +15,15 @@ const CategorySelect: React.FC<CategorySelectProps> = ({
   const [fetchOptions, { data: options, isLoading, isUninitialized }] =
     useLazyCategorySelectOptionsQuery();
 
-  function getDisplayName(option: AutocompleteOption) {
+  function getDisplayName(option: CategorySelectOption) {
     return option.name;
   }
 
-  function areOptionsEqual(first: AutocompleteOption, second: AutocompleteOption) {
+  function areOptionsEqual(first: CategorySelectOption, second: CategorySelectOption) {
     return first.name === second.name;
   }
 
-  function handleChange(value: AutocompleteOption | null) {
+  function handleChange(value: CategorySelectOption | null) {
     setValue(value);
   }
 

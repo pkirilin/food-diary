@@ -1,5 +1,5 @@
-import { CategoryAutocompleteOption } from 'src/features/categories';
-import { AutocompleteOption } from 'src/types';
+import { CategorySelectOption } from 'src/features/categories';
+import { SelectOption } from 'src/types';
 
 export type Product = {
   id: number;
@@ -17,7 +17,7 @@ export type ProductsResponse = {
 export type ProductFormData = {
   name: string;
   caloriesCost: number;
-  category: CategoryAutocompleteOption;
+  category: CategorySelectOption;
 };
 
-export type ProductAutocompleteOption = AutocompleteOption;
+export type ProductSelectOption = SelectOption;

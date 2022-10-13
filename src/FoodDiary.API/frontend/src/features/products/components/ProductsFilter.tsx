@@ -1,8 +1,7 @@
 import { Box, Button, Paper, TextField } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { CategorySelect } from 'src/features/categories';
-import { AutocompleteOption } from 'src/types';
+import { CategorySelect, CategorySelectOption } from 'src/features/categories';
 import { useAppSelector, useValidatedTextInput } from '../../__shared__/hooks';
 import { useFilterStyles } from '../../__shared__/styles';
 import { filterByCategoryChanged, filterReset, productSearchNameChanged } from '../store';
@@ -35,7 +34,7 @@ const ProductsFilter: React.FC = () => {
     dispatch(productSearchNameChanged(event.target.value));
   }
 
-  function handleCategoryChange(value: AutocompleteOption | null) {
+  function handleCategoryChange(value: CategorySelectOption | null) {
     setCategory(value);
     dispatch(filterByCategoryChanged(value));
   }

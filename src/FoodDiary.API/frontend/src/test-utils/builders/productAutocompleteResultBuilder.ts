@@ -1,16 +1,16 @@
-import { ProductAutocompleteOption } from 'src/features/products';
+import { ProductSelectOption } from 'src/features/products';
 
 export interface ProductAutocompleteResultBuilder {
-  please: () => ProductAutocompleteOption[];
+  please: () => ProductSelectOption[];
   withOption: (name: string) => ProductAutocompleteResultBuilder;
 }
 
 export default function createProductAutocompleteResultBuilder() {
   let id = 0;
-  const options: ProductAutocompleteOption[] = [];
+  const options: ProductSelectOption[] = [];
 
   const builder: ProductAutocompleteResultBuilder = {
-    please: (): ProductAutocompleteOption[] => options,
+    please: (): ProductSelectOption[] => options,
 
     withOption: (name: string): ProductAutocompleteResultBuilder => {
       options.push({ id: ++id, name });

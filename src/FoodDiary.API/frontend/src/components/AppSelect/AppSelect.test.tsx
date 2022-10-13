@@ -1,10 +1,10 @@
 import { render, screen, waitForElementToBeRemoved } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React, { useState } from 'react';
-import { AutocompleteOption } from 'src/types';
+import { SelectOption } from 'src/types';
 import AppSelect from './AppSelect';
 
-const TEST_OPTIONS: AutocompleteOption[] = [
+const TEST_OPTIONS: SelectOption[] = [
   {
     id: 1,
     name: 'John',
@@ -20,7 +20,7 @@ const TEST_OPTIONS: AutocompleteOption[] = [
 ];
 
 type AppSelectTestProps = {
-  initialValue?: AutocompleteOption | null;
+  initialValue?: SelectOption | null;
   allowEmptyOptions?: boolean;
 };
 
@@ -28,20 +28,20 @@ const AppSelectTest: React.FC<AppSelectTestProps> = ({
   initialValue = null,
   allowEmptyOptions,
 }) => {
-  const [value, setValue] = useState<AutocompleteOption | null>(initialValue);
-  const [options, setOptions] = useState<AutocompleteOption[]>([]);
+  const [value, setValue] = useState<SelectOption | null>(initialValue);
+  const [options, setOptions] = useState<SelectOption[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [optionsLoaded, setOptionsLoaded] = useState(false);
 
-  function getDisplayName({ name }: AutocompleteOption) {
+  function getDisplayName({ name }: SelectOption) {
     return name;
   }
 
-  function areOptionsEqual(first: AutocompleteOption, second: AutocompleteOption) {
+  function areOptionsEqual(first: SelectOption, second: SelectOption) {
     return first.name === second.name;
   }
 
-  function handleChange(newValue: AutocompleteOption | null) {
+  function handleChange(newValue: SelectOption | null) {
     setValue(newValue);
   }
 

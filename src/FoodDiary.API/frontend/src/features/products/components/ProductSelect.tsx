@@ -1,10 +1,11 @@
 import React from 'react';
 import { AppSelect } from 'src/components';
-import { ProductAutocompleteOption } from 'src/features/products';
-import { AutocompleteOption, SelectProps } from 'src/types';
+import { CategorySelectOption } from 'src/features/categories';
+import { ProductSelectOption } from 'src/features/products';
+import { SelectProps } from 'src/types';
 import { useLazyProductSelectOptionsQuery } from '../api';
 
-export type ProductSelectProps = SelectProps<ProductAutocompleteOption>;
+export type ProductSelectProps = SelectProps<ProductSelectOption>;
 
 const ProductSelect: React.FC<ProductSelectProps> = ({
   label,
@@ -15,15 +16,15 @@ const ProductSelect: React.FC<ProductSelectProps> = ({
   const [fetchOptions, { data: options, isLoading, isUninitialized }] =
     useLazyProductSelectOptionsQuery();
 
-  function getDisplayName(option: AutocompleteOption) {
+  function getDisplayName(option: CategorySelectOption) {
     return option.name;
   }
 
-  function areOptionsEqual(first: AutocompleteOption, second: AutocompleteOption) {
+  function areOptionsEqual(first: CategorySelectOption, second: CategorySelectOption) {
     return first.name === second.name;
   }
 
-  function handleChange(value: AutocompleteOption | null) {
+  function handleChange(value: CategorySelectOption | null) {
     setValue(value);
   }
 

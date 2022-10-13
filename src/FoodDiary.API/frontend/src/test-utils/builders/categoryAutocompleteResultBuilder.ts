@@ -1,16 +1,16 @@
-import { CategoryAutocompleteOption } from 'src/features/categories';
+import { CategorySelectOption } from 'src/features/categories';
 
 export interface CategoryAutocompleteResultBuilder {
-  please: () => CategoryAutocompleteOption[];
+  please: () => CategorySelectOption[];
   withOption: (name: string) => CategoryAutocompleteResultBuilder;
 }
 
 export default function createCategoryAutocompleteResultBuilder() {
   let id = 0;
-  const options: CategoryAutocompleteOption[] = [];
+  const options: CategorySelectOption[] = [];
 
   const builder: CategoryAutocompleteResultBuilder = {
-    please: (): CategoryAutocompleteOption[] => options,
+    please: (): CategorySelectOption[] => options,
 
     withOption: (name: string): CategoryAutocompleteResultBuilder => {
       options.push({ id: ++id, name });

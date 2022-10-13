@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
 import { API_URL } from 'src/config';
 import { getToken } from 'src/features/auth';
-import { Category, CategoryAutocompleteOption } from '../types';
+import { Category, CategorySelectOption } from '../types';
 import { CreateCategoryRequest, DeleteCategoryRequest, EditCategoryRequest } from './contracts';
 
 const categoriesApi = createApi({
@@ -24,7 +24,7 @@ const categoriesApi = createApi({
       }),
     }),
 
-    categorySelectOptions: builder.query<CategoryAutocompleteOption[], void>({
+    categorySelectOptions: builder.query<CategorySelectOption[], void>({
       query: () => '/autocomplete',
     }),
 

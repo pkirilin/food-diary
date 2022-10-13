@@ -1,9 +1,9 @@
 import { MapToInputPropsFunction } from 'src/types';
 import { ProductSelectProps } from '../components/ProductSelect';
-import { ProductAutocompleteOption } from '../types';
+import { ProductSelectOption } from '../types';
 
 export const mapToProductSelectProps: MapToInputPropsFunction<
-  ProductAutocompleteOption | null,
+  ProductSelectOption | null,
   ProductSelectProps
 > = ({ value, setValue }) => ({
   value,
