@@ -7,12 +7,14 @@ import {
   DialogTitle,
   TextField,
 } from '@mui/material';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useAppSelector, useValidatedNumericInput } from 'src/features/__shared__/hooks';
 import { DialogCustomActionProps } from 'src/features/__shared__/types';
 import { MealType, NoteCreateEdit, NoteItem } from 'src/features/notes/models';
-import ProductSelect from 'src/features/products/components/ProductSelect';
+import { mapToProductSelectProps } from 'src/features/products';
+import { ProductSelect } from 'src/features/products';
 import { ProductAutocompleteOption } from 'src/features/products/types';
+import { useInput } from 'src/hooks';
 
 interface NoteCreateEditDialogProps extends DialogProps, DialogCustomActionProps<NoteCreateEdit> {
   mealType: MealType;
@@ -65,7 +67,16 @@ const NoteCreateEditDialog: React.FC<NoteCreateEditDialogProps> = ({
   const title = isNewNote ? 'New note' : 'Edit note';
   const submitText = isNewNote ? 'Create' : 'Save';
 
-  const [product, setProduct] = useState(initialProduct);
+  const {
+    inputProps: productSelectProps,
+    value: product,
+    clearValue: clearProduct,
+  } = useInput({
+    initialValue: initialProduct,
+    errorHelperText: '',
+    validate: () => true,
+    mapToInputProps: mapToProductSelectProps,
+  });
 
   const [quantity, setQuantity, bindQuantity, isValidQuantity] = useValidatedNumericInput(
     initialQuantity,
@@ -79,10 +90,10 @@ const NoteCreateEditDialog: React.FC<NoteCreateEditDialogProps> = ({
 
   useEffect(() => {
     if (dialogProps.open) {
-      setProduct(initialProduct);
+      clearProduct();
       setQuantity(initialQuantity);
     }
-  }, [dialogProps.open, initialProduct, initialQuantity, setQuantity]);
+  }, [clearProduct, dialogProps.open, initialQuantity, setQuantity]);
 
   const handleSubmitClick = (): void => {
     if (product) {
@@ -100,12 +111,7 @@ const NoteCreateEditDialog: React.FC<NoteCreateEditDialogProps> = ({
     <Dialog maxWidth="xs" fullWidth {...dialogProps}>
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
-        <ProductSelect
-          label="Product"
-          placeholder="Select a product"
-          value={product}
-          setValue={value => setProduct(value)}
-        />
+        <ProductSelect {...productSelectProps} label="Product" placeholder="Select a product" />
         <TextField
           {...bindQuantity()}
           type="number"

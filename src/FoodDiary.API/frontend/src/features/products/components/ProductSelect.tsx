@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useLazyGetProductsAutocompleteQuery } from 'src/api';
-import { CustomAutocomplete } from 'src/components';
+import { AppSelect } from 'src/components';
 import { ProductAutocompleteOption } from 'src/features/products';
 import { AutocompleteOption, SelectProps } from 'src/types';
 
-type ProductSelectProps = SelectProps<ProductAutocompleteOption>;
+export type ProductSelectProps = SelectProps<ProductAutocompleteOption>;
 
 const ProductSelect: React.FC<ProductSelectProps> = ({
   label,
@@ -12,46 +12,38 @@ const ProductSelect: React.FC<ProductSelectProps> = ({
   value = null,
   setValue,
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [getProductsAutocomplete, autocomplete] = useLazyGetProductsAutocompleteQuery();
+  const [fetchOptions, { data: options, isLoading, isUninitialized }] =
+    useLazyGetProductsAutocompleteQuery();
 
-  useEffect(() => {
-    getProductsAutocomplete(isOpen);
-  }, [getProductsAutocomplete, isOpen]);
-
-  function isOptionEqualToValue(option: AutocompleteOption, value: AutocompleteOption) {
-    return option.name === value.name;
-  }
-
-  function getOptionLabel(option: AutocompleteOption) {
+  function getDisplayName(option: AutocompleteOption) {
     return option.name;
   }
 
-  function handleChange(event: React.SyntheticEvent, value: AutocompleteOption | null) {
+  function areOptionsEqual(first: AutocompleteOption, second: AutocompleteOption) {
+    return first.name === second.name;
+  }
+
+  function handleChange(value: AutocompleteOption | null) {
     setValue(value);
   }
 
   function handleOpen() {
-    setIsOpen(true);
-  }
-
-  function handleClose() {
-    setIsOpen(false);
+    if (isUninitialized) {
+      fetchOptions(false);
+    }
   }
 
   return (
-    <CustomAutocomplete
-      label={label}
-      placeholder={placeholder}
-      options={autocomplete.data ?? []}
-      loading={autocomplete.isLoading}
-      open={isOpen}
+    <AppSelect
+      availableOptions={options || []}
       value={value}
-      isOptionEqualToValue={isOptionEqualToValue}
-      getOptionLabel={getOptionLabel}
+      getDisplayName={getDisplayName}
+      areOptionsEqual={areOptionsEqual}
       onChange={handleChange}
       onOpen={handleOpen}
-      onClose={handleClose}
+      isLoading={isLoading}
+      label={label}
+      placeholder={placeholder}
     />
   );
 };
