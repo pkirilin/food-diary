@@ -1,8 +1,8 @@
 import React from 'react';
-import { useLazyGetCategoriesAutocompleteQuery } from 'src/api';
 import { AppSelect } from 'src/components';
 import { CategoryAutocompleteOption } from 'src/features/categories';
 import { AutocompleteOption, SelectProps } from 'src/types';
+import { useLazyCategorySelectOptionsQuery } from '../api';
 
 export type CategorySelectProps = SelectProps<CategoryAutocompleteOption>;
 
@@ -13,7 +13,7 @@ const CategorySelect: React.FC<CategorySelectProps> = ({
   setValue,
 }) => {
   const [fetchOptions, { data: options, isLoading, isUninitialized }] =
-    useLazyGetCategoriesAutocompleteQuery();
+    useLazyCategorySelectOptionsQuery();
 
   function getDisplayName(option: AutocompleteOption) {
     return option.name;
@@ -29,7 +29,7 @@ const CategorySelect: React.FC<CategorySelectProps> = ({
 
   function handleOpen() {
     if (isUninitialized) {
-      fetchOptions(false);
+      fetchOptions();
     }
   }
 

@@ -1,8 +1,8 @@
 import React from 'react';
-import { useLazyGetProductsAutocompleteQuery } from 'src/api';
 import { AppSelect } from 'src/components';
 import { ProductAutocompleteOption } from 'src/features/products';
 import { AutocompleteOption, SelectProps } from 'src/types';
+import { useLazyProductSelectOptionsQuery } from '../api';
 
 export type ProductSelectProps = SelectProps<ProductAutocompleteOption>;
 
@@ -13,7 +13,7 @@ const ProductSelect: React.FC<ProductSelectProps> = ({
   setValue,
 }) => {
   const [fetchOptions, { data: options, isLoading, isUninitialized }] =
-    useLazyGetProductsAutocompleteQuery();
+    useLazyProductSelectOptionsQuery();
 
   function getDisplayName(option: AutocompleteOption) {
     return option.name;
@@ -29,7 +29,7 @@ const ProductSelect: React.FC<ProductSelectProps> = ({
 
   function handleOpen() {
     if (isUninitialized) {
-      fetchOptions(false);
+      fetchOptions();
     }
   }
 

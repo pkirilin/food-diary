@@ -1,9 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
 import config from './features/__shared__/config';
 import { getToken } from './features/auth/utils';
-import { CategoryAutocompleteOption } from './features/categories';
 import { ExportPagesToGoogleDocsRequest } from './features/pages/models';
-import { ProductAutocompleteOption } from './features/products/types';
 
 const api = createApi({
   baseQuery: fetchBaseQuery({
@@ -24,21 +22,9 @@ const api = createApi({
         },
       }),
     }),
-
-    getProductsAutocomplete: builder.query<ProductAutocompleteOption[], boolean>({
-      query: () => '/api/v1/products/autocomplete',
-    }),
-
-    getCategoriesAutocomplete: builder.query<CategoryAutocompleteOption[], boolean>({
-      query: () => '/api/v1/categories/autocomplete',
-    }),
   }),
 });
 
-export const {
-  useLazyGetProductsAutocompleteQuery,
-  useLazyGetCategoriesAutocompleteQuery,
-  useExportPagesToGoogleDocsMutation,
-} = api;
+export const { useExportPagesToGoogleDocsMutation } = api;
 
 export default api;
