@@ -1,25 +1,22 @@
-import { render, screen, waitForElementToBeRemoved, within } from '@testing-library/react';
+import { screen, waitForElementToBeRemoved, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { create } from 'src/test-utils';
+import { render } from 'src/testing';
 import { MealType, NoteCreateEdit } from '../../models';
 import NoteCreateEditDialog from './NoteCreateEditDialog';
 
 test('note can be created', async () => {
   const submitFn = jest.fn();
-  const ui = create
-    .component(
-      <NoteCreateEditDialog
-        open={true}
-        pageId={1}
-        mealType={MealType.Breakfast}
-        onDialogConfirm={submitFn}
-        onDialogCancel={jest.fn()}
-      />,
-    )
-    .withReduxStore()
-    .please();
 
-  render(ui);
+  render(
+    <NoteCreateEditDialog
+      open={true}
+      pageId={1}
+      mealType={MealType.Breakfast}
+      onDialogConfirm={submitFn}
+      onDialogCancel={jest.fn()}
+    />,
+  );
+
   await userEvent.click(screen.getByPlaceholderText(/select a product/i));
   await waitForElementToBeRemoved(screen.getByRole('progressbar'));
   await userEvent.click(within(screen.getByRole('listbox')).getByText(/meat/i));
@@ -36,4 +33,30 @@ test('note can be created', async () => {
     pageId: 1,
     productQuantity: 150,
   } as NoteCreateEdit);
+});
+
+test('note with empty product cannot be created', async () => {
+  render(
+    <NoteCreateEditDialog
+      open={true}
+      pageId={1}
+      mealType={MealType.Breakfast}
+      onDialogConfirm={jest.fn()}
+      onDialogCancel={jest.fn()}
+      note={{
+        id: 1,
+        mealType: MealType.Breakfast,
+        displayOrder: 0,
+        productId: 1,
+        productName: 'Bread',
+        productQuantity: 100,
+        calories: 100,
+      }}
+    />,
+  );
+
+  await userEvent.clear(screen.getByPlaceholderText(/select a product/i));
+
+  expect(screen.getByText(/save/i)).toBeDisabled();
+  expect(screen.getByText(/product is required/i)).toBeVisible();
 });
