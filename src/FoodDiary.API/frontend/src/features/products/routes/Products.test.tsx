@@ -37,6 +37,7 @@ test('product can be created', async () => {
   await userEvent.clear(caloriesCost);
   await userEvent.type(caloriesCost, '105');
   await userEvent.click(category);
+  await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
   await userEvent.click(within(screen.getByRole('listbox')).getByText(/dairy/i));
 
   await userEvent.click(dialog.getByLabelText(/create yoghurt/i));

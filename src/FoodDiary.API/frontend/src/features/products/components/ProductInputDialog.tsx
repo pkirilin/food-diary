@@ -1,12 +1,11 @@
 import { Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { AppButton } from 'src/components';
-import { CategoryAutocompleteOption } from 'src/features/categories';
+import { CategorySelect, mapToCategorySelectProps } from 'src/features/categories';
 import { useInput } from 'src/hooks';
 import { mapToNumericInputProps, mapToTextInputProps } from 'src/utils/inputMapping';
 import { validateCaloriesCost, validateProductName } from 'src/utils/validation';
 import { ProductFormData } from '../types';
-import CategorySelect from './CategorySelect';
 
 type ProductInputDialogProps = {
   isOpened: boolean;
@@ -53,22 +52,24 @@ const ProductInputDialog: React.FC<ProductInputDialogProps> = ({
     mapToInputProps: mapToNumericInputProps,
   });
 
-  const [category, setCategory] = useState(product?.category || null);
+  const {
+    inputProps: categorySelectProps,
+    value: category,
+    clearValue: clearCategory,
+  } = useInput({
+    initialValue: product?.category || null,
+    errorHelperText: '',
+    validate: () => true,
+    mapToInputProps: mapToCategorySelectProps,
+  });
 
   useEffect(() => {
     if (isDialogOpened) {
       clearProductName();
       clearCaloriesCost();
-
-      if (product?.category) {
-        setCategory(product.category);
-      }
+      clearCategory();
     }
-  }, [clearCaloriesCost, clearProductName, isDialogOpened, product]);
-
-  function handleCategoryChange(category: CategoryAutocompleteOption | null) {
-    setCategory(category);
-  }
+  }, [clearCaloriesCost, clearCategory, clearProductName, isDialogOpened]);
 
   function handleClose() {
     setIsDialogOpened(false);
@@ -113,12 +114,7 @@ const ProductInputDialog: React.FC<ProductInputDialogProps> = ({
           label="Calories cost"
           placeholder="Enter calories cost"
         />
-        <CategorySelect
-          label="Category"
-          placeholder="Select a category"
-          value={category}
-          setValue={handleCategoryChange}
-        />
+        <CategorySelect {...categorySelectProps} label="Category" placeholder="Select a category" />
       </DialogContent>
 
       <DialogActions>

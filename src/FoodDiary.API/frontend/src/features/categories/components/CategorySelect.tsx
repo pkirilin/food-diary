@@ -1,20 +1,19 @@
 import React from 'react';
 import { AppSelect } from 'src/components';
 import { CategorySelectOption } from 'src/features/categories';
-import { ProductSelectOption } from 'src/features/products';
 import { SelectProps } from 'src/types';
-import { useLazyProductSelectOptionsQuery } from '../api';
+import { useLazyCategorySelectOptionsQuery } from '../api';
 
-export type ProductSelectProps = SelectProps<ProductSelectOption>;
+export type CategorySelectProps = SelectProps<CategorySelectOption>;
 
-const ProductSelect: React.FC<ProductSelectProps> = ({
+const CategorySelect: React.FC<CategorySelectProps> = ({
   label,
   placeholder,
   value = null,
   setValue,
 }) => {
   const [fetchOptions, { data: options, isLoading, isUninitialized }] =
-    useLazyProductSelectOptionsQuery();
+    useLazyCategorySelectOptionsQuery();
 
   function getDisplayName(option: CategorySelectOption) {
     return option.name;
@@ -49,4 +48,4 @@ const ProductSelect: React.FC<ProductSelectProps> = ({
   );
 };
 
-export default ProductSelect;
+export default CategorySelect;

@@ -1,4 +1,4 @@
-import { TextFieldProps, AutocompleteProps } from '@mui/material';
+import { TextFieldProps } from '@mui/material';
 
 export interface BindableHookResult<TBinding> {
   binding: TBinding;
@@ -27,11 +27,6 @@ export type ValidatedInputHook<TValue, TBindingProps, TArg = void> = BaseInputHo
   TValue,
   [TValue, React.Dispatch<React.SetStateAction<TValue>>, BindFunction<TBindingProps>, boolean],
   TArg
->;
-
-export type AutocompleteBindingProps<TOption> = Omit<
-  AutocompleteProps<TOption, undefined, undefined, undefined>,
-  'renderInput'
 >;
 
 export type BindingCreatorFunction<TValue, TBindingProps> = (

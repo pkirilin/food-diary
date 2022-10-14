@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
 import { API_URL } from 'src/config';
 import { getToken } from 'src/features/auth';
 import { createUrl } from 'src/utils';
-import { ProductsResponse } from '../types';
+import { ProductSelectOption, ProductsResponse } from '../types';
 import {
   CreateProductRequest,
   DeleteProductsRequest,
@@ -28,6 +28,10 @@ const productsApi = createApi({
         method: 'GET',
         url: createUrl('', request),
       }),
+    }),
+
+    productSelectOptions: builder.query<ProductSelectOption[], void>({
+      query: () => '/autocomplete',
     }),
 
     createProduct: builder.mutation<void, CreateProductRequest>({
@@ -62,6 +66,7 @@ const productsApi = createApi({
 
 export const {
   useProductsQuery,
+  useLazyProductSelectOptionsQuery,
   useCreateProductMutation,
   useEditProductMutation,
   useDeleteProductsMutation,
