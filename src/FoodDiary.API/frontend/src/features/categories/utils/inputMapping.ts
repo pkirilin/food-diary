@@ -5,7 +5,9 @@ import { CategorySelectProps } from '../components/CategorySelect';
 export const mapToCategorySelectProps: MapToInputPropsFunction<
   CategorySelectOption | null,
   CategorySelectProps
-> = ({ value, setValue }) => ({
+> = ({ value, setValue, helperText, isInvalid }) => ({
   value,
   setValue,
+  helperText,
+  isInvalid,
 });

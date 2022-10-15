@@ -12,6 +12,8 @@ const ProductSelect: React.FC<ProductSelectProps> = ({
   placeholder,
   value = null,
   setValue,
+  helperText,
+  isInvalid,
 }) => {
   const [fetchOptions, { data: options, isLoading, isUninitialized }] =
     useLazyProductSelectOptionsQuery();
@@ -43,8 +45,10 @@ const ProductSelect: React.FC<ProductSelectProps> = ({
       onChange={handleChange}
       onOpen={handleOpen}
       isLoading={isLoading}
+      isInvalid={isInvalid}
       label={label}
       placeholder={placeholder}
+      helperText={helperText}
     />
   );
 };

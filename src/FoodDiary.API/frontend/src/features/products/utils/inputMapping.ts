@@ -5,7 +5,9 @@ import { ProductSelectOption } from '../types';
 export const mapToProductSelectProps: MapToInputPropsFunction<
   ProductSelectOption | null,
   ProductSelectProps
-> = ({ value, setValue }) => ({
+> = ({ value, setValue, helperText, isInvalid }) => ({
   value,
   setValue,
+  helperText,
+  isInvalid,
 });

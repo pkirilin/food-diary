@@ -1,6 +1,7 @@
 import { Product, ProductFormData } from '../types';
 
 export * from './inputMapping';
+export * from './validation';
 
 export function toProductFormData({
   name,

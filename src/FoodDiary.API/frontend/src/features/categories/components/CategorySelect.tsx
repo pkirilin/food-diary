@@ -11,6 +11,8 @@ const CategorySelect: React.FC<CategorySelectProps> = ({
   placeholder,
   value = null,
   setValue,
+  helperText,
+  isInvalid,
 }) => {
   const [fetchOptions, { data: options, isLoading, isUninitialized }] =
     useLazyCategorySelectOptionsQuery();
@@ -42,8 +44,10 @@ const CategorySelect: React.FC<CategorySelectProps> = ({
       onChange={handleChange}
       onOpen={handleOpen}
       isLoading={isLoading}
+      isInvalid={isInvalid}
       label={label}
       placeholder={placeholder}
+      helperText={helperText}
     />
   );
 };

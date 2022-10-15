@@ -11,7 +11,7 @@ import React, { useEffect, useMemo } from 'react';
 import { useAppSelector, useValidatedNumericInput } from 'src/features/__shared__/hooks';
 import { DialogCustomActionProps } from 'src/features/__shared__/types';
 import { MealType, NoteCreateEdit, NoteItem } from 'src/features/notes/models';
-import { mapToProductSelectProps } from 'src/features/products';
+import { mapToProductSelectProps, validateProductSelectOption } from 'src/features/products';
 import { ProductSelect } from 'src/features/products';
 import { ProductSelectOption } from 'src/features/products/types';
 import { useInput } from 'src/hooks';
@@ -73,8 +73,8 @@ const NoteCreateEditDialog: React.FC<NoteCreateEditDialogProps> = ({
     clearValue: clearProduct,
   } = useInput({
     initialValue: initialProduct,
-    errorHelperText: '',
-    validate: () => true,
+    errorHelperText: 'Product is required',
+    validate: validateProductSelectOption,
     mapToInputProps: mapToProductSelectProps,
   });
 
