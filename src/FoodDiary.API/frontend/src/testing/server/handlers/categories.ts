@@ -1,6 +1,7 @@
 import { rest } from 'msw';
 import config from 'src/features/__shared__/config';
-import { CategorySelectOption, CategoryFormData } from 'src/features/categories';
+import { CategoryFormData } from 'src/features/categories';
+import { SelectOption } from 'src/types';
 import { db } from '../db';
 
 export const categoriesHandlers = [
@@ -47,7 +48,7 @@ export const categoriesHandlers = [
   }),
 
   rest.get(`${config.apiUrl}/api/v1/categories/autocomplete`, (req, res, ctx) => {
-    const categories = db.category.getAll().map<CategorySelectOption>(({ id, name }) => ({
+    const categories = db.category.getAll().map<SelectOption>(({ id, name }) => ({
       id,
       name,
     }));

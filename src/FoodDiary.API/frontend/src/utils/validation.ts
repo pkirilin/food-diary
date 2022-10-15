@@ -1,5 +1,5 @@
 import isValid from 'date-fns/isValid';
-import { ValidatorFunction } from 'src/types';
+import { SelectOption, ValidatorFunction } from 'src/types';
 
 export const validateDate: ValidatorFunction<Date | null> = value => {
   if (value === null) {
@@ -27,4 +27,8 @@ export const validateProductName: ValidatorFunction<string> = value => {
 
 export const validateCaloriesCost: ValidatorFunction<number> = value => {
   return value > 0 && value < 5000;
+};
+
+export const validateSelectOption: ValidatorFunction<SelectOption | null> = value => {
+  return value !== null;
 };

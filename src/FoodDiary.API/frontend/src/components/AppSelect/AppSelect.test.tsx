@@ -22,11 +22,13 @@ const TEST_OPTIONS: SelectOption[] = [
 type AppSelectTestProps = {
   initialValue?: SelectOption | null;
   allowEmptyOptions?: boolean;
+  errorText?: string;
 };
 
 const AppSelectTest: React.FC<AppSelectTestProps> = ({
   initialValue = null,
   allowEmptyOptions,
+  errorText,
 }) => {
   const [value, setValue] = useState<SelectOption | null>(initialValue);
   const [options, setOptions] = useState<SelectOption[]>([]);
@@ -68,8 +70,10 @@ const AppSelectTest: React.FC<AppSelectTestProps> = ({
       onOpen={handleOpen}
       label="Name"
       placeholder="Select name"
-      isLoading={isLoading}
       value={value}
+      helperText={errorText}
+      isLoading={isLoading}
+      isInvalid={!!errorText}
     />
   );
 };
@@ -173,4 +177,11 @@ test('value can be changed', async () => {
   await userEvent.click(screen.queryAllByRole('option')[0]);
 
   expect(input).toHaveValue('Peter');
+});
+
+test('error text is visible if input invalid', async () => {
+  render(<AppSelectTest errorText="Name is invalid" />);
+
+  expect(screen.getByPlaceholderText(/select name/i)).toBeInvalid();
+  expect(screen.getByText(/name is invalid/i)).toBeVisible();
 });

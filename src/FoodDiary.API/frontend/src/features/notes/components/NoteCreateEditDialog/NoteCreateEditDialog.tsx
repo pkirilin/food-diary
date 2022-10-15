@@ -11,10 +11,11 @@ import React, { useEffect, useMemo } from 'react';
 import { useAppSelector, useValidatedNumericInput } from 'src/features/__shared__/hooks';
 import { DialogCustomActionProps } from 'src/features/__shared__/types';
 import { MealType, NoteCreateEdit, NoteItem } from 'src/features/notes/models';
-import { mapToProductSelectProps } from 'src/features/products';
 import { ProductSelect } from 'src/features/products';
-import { ProductSelectOption } from 'src/features/products/types';
 import { useInput } from 'src/hooks';
+import { SelectOption } from 'src/types';
+import { mapToSelectProps } from 'src/utils/inputMapping';
+import { validateSelectOption } from 'src/utils/validation';
 
 interface NoteCreateEditDialogProps extends DialogProps, DialogCustomActionProps<NoteCreateEdit> {
   mealType: MealType;
@@ -25,7 +26,7 @@ interface NoteCreateEditDialogProps extends DialogProps, DialogCustomActionProps
 function useInitialProduct(note?: NoteItem) {
   const isNewNote = !note;
 
-  return useMemo<ProductSelectOption | null>(() => {
+  return useMemo<SelectOption | null>(() => {
     if (isNewNote) {
       return null;
     }
@@ -73,9 +74,9 @@ const NoteCreateEditDialog: React.FC<NoteCreateEditDialogProps> = ({
     clearValue: clearProduct,
   } = useInput({
     initialValue: initialProduct,
-    errorHelperText: '',
-    validate: () => true,
-    mapToInputProps: mapToProductSelectProps,
+    errorHelperText: 'Product is required',
+    validate: validateSelectOption,
+    mapToInputProps: mapToSelectProps,
   });
 
   const [quantity, setQuantity, bindQuantity, isValidQuantity] = useValidatedNumericInput(

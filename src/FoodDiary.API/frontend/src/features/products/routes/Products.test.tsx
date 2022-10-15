@@ -203,3 +203,17 @@ test('products in table are split by pages', async () => {
   await userEvent.click(screen.getByLabelText(/go to next page/i));
   expect(screen.getByText(/.*–.* of .*/i)).not.toHaveTextContent(/1–.* of .*/i);
 });
+
+test('product with empty category cannot be saved', async () => {
+  render(<Products />);
+
+  await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
+  await userEvent.click(screen.getByLabelText(/open edit product dialog for bread/i));
+
+  const dialog = within(screen.getByRole('dialog'));
+  const category = dialog.getByPlaceholderText(/category/i);
+  await userEvent.clear(category);
+
+  expect(dialog.getByLabelText(/save/i)).toBeDisabled();
+  expect(dialog.getByText(/category is required/i)).toBeVisible();
+});

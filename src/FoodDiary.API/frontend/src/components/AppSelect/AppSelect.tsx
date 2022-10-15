@@ -9,8 +9,10 @@ type AppSelectProps<TOption> = {
   onOpen?: () => void;
   label?: string;
   placeholder?: string;
-  isLoading?: boolean;
   value?: TOption | null;
+  helperText?: string;
+  isLoading?: boolean;
+  isInvalid?: boolean;
 };
 
 const AppSelect = <TOption,>({
@@ -21,8 +23,10 @@ const AppSelect = <TOption,>({
   onOpen,
   label,
   placeholder,
-  isLoading,
   value = null,
+  helperText,
+  isLoading,
+  isInvalid,
 }: AppSelectProps<TOption>): React.ReactElement => {
   function handleChange(event: React.SyntheticEvent, newValue: TOption | null) {
     onChange(newValue);
@@ -41,6 +45,8 @@ const AppSelect = <TOption,>({
           {...params}
           label={label}
           placeholder={placeholder}
+          error={isInvalid}
+          helperText={helperText}
           margin="normal"
           InputProps={{
             ...params.InputProps,

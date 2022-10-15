@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { CategorySelectOption } from 'src/features/categories';
+import { SelectOption } from 'src/types';
 import productsApi from '../api';
 import { ProductItemsFilter } from './types';
 
@@ -50,7 +50,7 @@ const productsSlice = createSlice({
       state.filter.productSearchName = payload;
       state.filter.changed = true;
     },
-    filterByCategoryChanged: (state, { payload }: PayloadAction<CategorySelectOption | null>) => {
+    filterByCategoryChanged: (state, { payload }: PayloadAction<SelectOption | null>) => {
       state.filter.category = payload;
       state.filter.changed = true;
     },

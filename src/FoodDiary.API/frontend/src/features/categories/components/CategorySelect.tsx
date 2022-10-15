@@ -1,29 +1,28 @@
 import React from 'react';
 import { AppSelect } from 'src/components';
-import { CategorySelectOption } from 'src/features/categories';
-import { SelectProps } from 'src/types';
+import { SelectOption, SelectProps } from 'src/types';
 import { useLazyCategorySelectOptionsQuery } from '../api';
 
-export type CategorySelectProps = SelectProps<CategorySelectOption>;
-
-const CategorySelect: React.FC<CategorySelectProps> = ({
+const CategorySelect: React.FC<SelectProps<SelectOption>> = ({
   label,
   placeholder,
   value = null,
   setValue,
+  helperText,
+  isInvalid,
 }) => {
   const [fetchOptions, { data: options, isLoading, isUninitialized }] =
     useLazyCategorySelectOptionsQuery();
 
-  function getDisplayName(option: CategorySelectOption) {
+  function getDisplayName(option: SelectOption) {
     return option.name;
   }
 
-  function areOptionsEqual(first: CategorySelectOption, second: CategorySelectOption) {
+  function areOptionsEqual(first: SelectOption, second: SelectOption) {
     return first.name === second.name;
   }
 
-  function handleChange(value: CategorySelectOption | null) {
+  function handleChange(value: SelectOption | null) {
     setValue(value);
   }
 
@@ -42,8 +41,10 @@ const CategorySelect: React.FC<CategorySelectProps> = ({
       onChange={handleChange}
       onOpen={handleOpen}
       isLoading={isLoading}
+      isInvalid={isInvalid}
       label={label}
       placeholder={placeholder}
+      helperText={helperText}
     />
   );
 };

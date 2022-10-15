@@ -1,7 +1,5 @@
 import { Product, ProductFormData } from '../types';
 
-export * from './inputMapping';
-
 export function toProductFormData({
   name,
   caloriesCost,
