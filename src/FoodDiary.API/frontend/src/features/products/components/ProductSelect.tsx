@@ -1,11 +1,9 @@
 import React from 'react';
 import { AppSelect } from 'src/components';
-import { CategorySelectOption } from 'src/features/categories';
-import { ProductSelectOption } from 'src/features/products';
-import { SelectProps } from 'src/types';
+import { SelectOption, SelectProps } from 'src/types';
 import { useLazyProductSelectOptionsQuery } from '../api';
 
-export type ProductSelectProps = SelectProps<ProductSelectOption>;
+export type ProductSelectProps = SelectProps<SelectOption>;
 
 const ProductSelect: React.FC<ProductSelectProps> = ({
   label,
@@ -18,15 +16,15 @@ const ProductSelect: React.FC<ProductSelectProps> = ({
   const [fetchOptions, { data: options, isLoading, isUninitialized }] =
     useLazyProductSelectOptionsQuery();
 
-  function getDisplayName(option: CategorySelectOption) {
+  function getDisplayName(option: SelectOption) {
     return option.name;
   }
 
-  function areOptionsEqual(first: CategorySelectOption, second: CategorySelectOption) {
+  function areOptionsEqual(first: SelectOption, second: SelectOption) {
     return first.name === second.name;
   }
 
-  function handleChange(value: CategorySelectOption | null) {
+  function handleChange(value: SelectOption | null) {
     setValue(value);
   }
 

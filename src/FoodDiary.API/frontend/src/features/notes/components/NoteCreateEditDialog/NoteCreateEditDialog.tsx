@@ -13,8 +13,8 @@ import { DialogCustomActionProps } from 'src/features/__shared__/types';
 import { MealType, NoteCreateEdit, NoteItem } from 'src/features/notes/models';
 import { mapToProductSelectProps, validateProductSelectOption } from 'src/features/products';
 import { ProductSelect } from 'src/features/products';
-import { ProductSelectOption } from 'src/features/products/types';
 import { useInput } from 'src/hooks';
+import { SelectOption } from 'src/types';
 
 interface NoteCreateEditDialogProps extends DialogProps, DialogCustomActionProps<NoteCreateEdit> {
   mealType: MealType;
@@ -25,7 +25,7 @@ interface NoteCreateEditDialogProps extends DialogProps, DialogCustomActionProps
 function useInitialProduct(note?: NoteItem) {
   const isNewNote = !note;
 
-  return useMemo<ProductSelectOption | null>(() => {
+  return useMemo<SelectOption | null>(() => {
     if (isNewNote) {
       return null;
     }

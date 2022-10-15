@@ -1,5 +1,4 @@
-import { ValidatorFunction } from 'src/types';
-import { CategorySelectOption } from '../types';
+import { SelectOption, ValidatorFunction } from 'src/types';
 
-export const validateCategorySelectOption: ValidatorFunction<CategorySelectOption | null> = value =>
+export const validateCategorySelectOption: ValidatorFunction<SelectOption | null> = value =>
   value !== null;

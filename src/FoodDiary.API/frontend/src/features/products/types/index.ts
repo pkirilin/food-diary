@@ -1,4 +1,3 @@
-import { CategorySelectOption } from 'src/features/categories';
 import { SelectOption } from 'src/types';
 
 export type Product = {
@@ -17,7 +16,5 @@ export type ProductsResponse = {
 export type ProductFormData = {
   name: string;
   caloriesCost: number;
-  category: CategorySelectOption;
+  category: SelectOption;
 };
-
-export type ProductSelectOption = SelectOption;
