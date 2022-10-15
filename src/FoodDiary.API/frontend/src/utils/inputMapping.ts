@@ -1,6 +1,6 @@
 import { TextFieldProps } from '@mui/material';
 import { DatePickerProps } from 'src/components/DatePicker';
-import { MapToInputPropsFunction } from 'src/types';
+import { MapToInputPropsFunction, SelectOption, SelectProps } from 'src/types';
 
 export const mapToTextInputProps: MapToInputPropsFunction<string, TextFieldProps> = ({
   value,
@@ -42,4 +42,14 @@ export const mapToDateInputProps: MapToInputPropsFunction<Date | null, DatePicke
   onChange: newValue => {
     setValue(newValue);
   },
+});
+
+export const mapToSelectProps: MapToInputPropsFunction<
+  SelectOption | null,
+  SelectProps<SelectOption>
+> = ({ value, setValue, helperText, isInvalid }) => ({
+  value,
+  setValue,
+  helperText,
+  isInvalid,
 });

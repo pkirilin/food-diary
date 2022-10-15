@@ -11,10 +11,11 @@ import React, { useEffect, useMemo } from 'react';
 import { useAppSelector, useValidatedNumericInput } from 'src/features/__shared__/hooks';
 import { DialogCustomActionProps } from 'src/features/__shared__/types';
 import { MealType, NoteCreateEdit, NoteItem } from 'src/features/notes/models';
-import { mapToProductSelectProps, validateProductSelectOption } from 'src/features/products';
 import { ProductSelect } from 'src/features/products';
 import { useInput } from 'src/hooks';
 import { SelectOption } from 'src/types';
+import { mapToSelectProps } from 'src/utils/inputMapping';
+import { validateSelectOption } from 'src/utils/validation';
 
 interface NoteCreateEditDialogProps extends DialogProps, DialogCustomActionProps<NoteCreateEdit> {
   mealType: MealType;
@@ -74,8 +75,8 @@ const NoteCreateEditDialog: React.FC<NoteCreateEditDialogProps> = ({
   } = useInput({
     initialValue: initialProduct,
     errorHelperText: 'Product is required',
-    validate: validateProductSelectOption,
-    mapToInputProps: mapToProductSelectProps,
+    validate: validateSelectOption,
+    mapToInputProps: mapToSelectProps,
   });
 
   const [quantity, setQuantity, bindQuantity, isValidQuantity] = useValidatedNumericInput(

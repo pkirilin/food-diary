@@ -1,14 +1,18 @@
 import { Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
 import React, { useEffect } from 'react';
 import { AppButton } from 'src/components';
-import {
-  CategorySelect,
-  mapToCategorySelectProps,
-  validateCategorySelectOption,
-} from 'src/features/categories';
+import { CategorySelect } from 'src/features/categories';
 import { useInput } from 'src/hooks';
-import { mapToNumericInputProps, mapToTextInputProps } from 'src/utils/inputMapping';
-import { validateCaloriesCost, validateProductName } from 'src/utils/validation';
+import {
+  mapToNumericInputProps,
+  mapToSelectProps,
+  mapToTextInputProps,
+} from 'src/utils/inputMapping';
+import {
+  validateCaloriesCost,
+  validateProductName,
+  validateSelectOption,
+} from 'src/utils/validation';
 import { ProductFormData } from '../types';
 
 type ProductInputDialogProps = {
@@ -63,8 +67,8 @@ const ProductInputDialog: React.FC<ProductInputDialogProps> = ({
   } = useInput({
     initialValue: product?.category || null,
     errorHelperText: 'Category is required',
-    validate: validateCategorySelectOption,
-    mapToInputProps: mapToCategorySelectProps,
+    validate: validateSelectOption,
+    mapToInputProps: mapToSelectProps,
   });
 
   useEffect(() => {

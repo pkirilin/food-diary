@@ -3,9 +3,7 @@ import { AppSelect } from 'src/components';
 import { SelectOption, SelectProps } from 'src/types';
 import { useLazyCategorySelectOptionsQuery } from '../api';
 
-export type CategorySelectProps = SelectProps<SelectOption>;
-
-const CategorySelect: React.FC<CategorySelectProps> = ({
+const CategorySelect: React.FC<SelectProps<SelectOption>> = ({
   label,
   placeholder,
   value = null,
