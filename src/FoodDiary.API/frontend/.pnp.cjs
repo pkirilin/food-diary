@@ -3955,7 +3955,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@mswjs/interceptors", "npm:0.17.3"],\
             ["@open-draft/until", "npm:1.0.3"],\
             ["@types/debug", "npm:4.1.7"],\
-            ["@xmldom/xmldom", "npm:0.7.5"],\
+            ["@xmldom/xmldom", "npm:0.7.8"],\
             ["debug", "virtual:f4296e0fa2446bc2fc5db6ce4c6478e0ffc214bf6109a4ef16edc78cf0f73e0b9dadbf4def098137b5a9ec8165e320059c103b5ee871bbf51c031832e9b1396f#npm:4.3.4"],\
             ["headers-polyfill", "npm:3.0.7"],\
             ["outvariant", "npm:1.3.0"],\
@@ -6488,10 +6488,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["@xmldom/xmldom", [\
-        ["npm:0.7.5", {\
-          "packageLocation": "./.yarn/cache/@xmldom-xmldom-npm-0.7.5-f6fb7cf202-8d7ec35c1e.zip/node_modules/@xmldom/xmldom/",\
+        ["npm:0.7.8", {\
+          "packageLocation": "./.yarn/cache/@xmldom-xmldom-npm-0.7.8-a26f87a1cf-3bae232f9e.zip/node_modules/@xmldom/xmldom/",\
           "packageDependencies": [\
-            ["@xmldom/xmldom", "npm:0.7.5"]\
+            ["@xmldom/xmldom", "npm:0.7.8"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -8278,7 +8278,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
       ]],\
       ["core-js", [\
         ["npm:3.22.7", {\
-          "packageLocation": "./.yarn/unplugged/core-js-npm-3.22.7-33aacc1f9a/node_modules/core-js/",\
+          "packageLocation": "./.yarn/cache/core-js-npm-3.22.7-33aacc1f9a-c5f1d8a96b.zip/node_modules/core-js/",\
           "packageDependencies": [\
             ["core-js", "npm:3.22.7"]\
           ],\
@@ -8298,7 +8298,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
       ]],\
       ["core-js-pure", [\
         ["npm:3.22.7", {\
-          "packageLocation": "./.yarn/unplugged/core-js-pure-npm-3.22.7-0e5515fea4/node_modules/core-js-pure/",\
+          "packageLocation": "./.yarn/cache/core-js-pure-npm-3.22.7-0e5515fea4-6358882377.zip/node_modules/core-js-pure/",\
           "packageDependencies": [\
             ["core-js-pure", "npm:3.22.7"]\
           ],\
@@ -13960,21 +13960,21 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
       ]],\
       ["msw", [\
         ["npm:0.44.1", {\
-          "packageLocation": "./.yarn/unplugged/msw-virtual-690cd28911/node_modules/msw/",\
+          "packageLocation": "./.yarn/cache/msw-npm-0.44.1-a3c2573af0-1854dfc687.zip/node_modules/msw/",\
           "packageDependencies": [\
             ["msw", "npm:0.44.1"]\
           ],\
           "linkType": "SOFT"\
         }],\
         ["npm:0.44.2", {\
-          "packageLocation": "./.yarn/unplugged/msw-virtual-10a1e4a49e/node_modules/msw/",\
+          "packageLocation": "./.yarn/cache/msw-npm-0.44.2-e4e445215e-739d536ee0.zip/node_modules/msw/",\
           "packageDependencies": [\
             ["msw", "npm:0.44.2"]\
           ],\
           "linkType": "SOFT"\
         }],\
         ["virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:0.44.2", {\
-          "packageLocation": "./.yarn/unplugged/msw-virtual-10a1e4a49e/node_modules/msw/",\
+          "packageLocation": "./.yarn/__virtual__/msw-virtual-10a1e4a49e/0/cache/msw-npm-0.44.2-e4e445215e-739d536ee0.zip/node_modules/msw/",\
           "packageDependencies": [\
             ["msw", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:0.44.2"],\
             ["@mswjs/cookies", "npm:0.2.2"],\
@@ -14007,7 +14007,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }],\
         ["virtual:f4296e0fa2446bc2fc5db6ce4c6478e0ffc214bf6109a4ef16edc78cf0f73e0b9dadbf4def098137b5a9ec8165e320059c103b5ee871bbf51c031832e9b1396f#npm:0.44.1", {\
-          "packageLocation": "./.yarn/unplugged/msw-virtual-690cd28911/node_modules/msw/",\
+          "packageLocation": "./.yarn/__virtual__/msw-virtual-690cd28911/0/cache/msw-npm-0.44.1-a3c2573af0-1854dfc687.zip/node_modules/msw/",\
           "packageDependencies": [\
             ["msw", "virtual:f4296e0fa2446bc2fc5db6ce4c6478e0ffc214bf6109a4ef16edc78cf0f73e0b9dadbf4def098137b5a9ec8165e320059c103b5ee871bbf51c031832e9b1396f#npm:0.44.1"],\
             ["@mswjs/cookies", "npm:0.2.2"],\
