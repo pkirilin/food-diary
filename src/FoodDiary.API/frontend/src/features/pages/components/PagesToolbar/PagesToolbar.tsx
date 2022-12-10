@@ -122,7 +122,7 @@ const PagesToolbar: React.FC<PagesToolbarProps> = ({ children }) => {
         </React.Fragment>
       ) : (
         <React.Fragment>
-          <Typography variant="h1" className={classes.title} role="heading">
+          <Typography variant="h2" className={classes.title} role="heading">
             Pages
           </Typography>
           <Tooltip title="Add new page">
