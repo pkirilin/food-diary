@@ -1,6 +1,19 @@
 import { drop, factory, primaryKey } from '@mswjs/data';
 
 export const db = factory({
+  category: {
+    id: primaryKey(Number),
+    name: String,
+    countProducts: Number,
+  },
+
+  page: {
+    id: primaryKey(Number),
+    date: String,
+    countNotes: Number,
+    countCalories: Number,
+  },
+
   product: {
     id: primaryKey(Number),
     name: String,
@@ -8,17 +21,12 @@ export const db = factory({
     categoryId: Number,
     categoryName: String,
   },
-
-  category: {
-    id: primaryKey(Number),
-    name: String,
-    countProducts: Number,
-  },
 });
 
 export function initializeDb() {
   drop(db);
   initializeCategories();
+  initializePages();
   initializeProducts();
 }
 
@@ -45,6 +53,15 @@ function initializeCategories() {
     id: 4,
     name: 'Frozen Foods',
     countProducts: 0,
+  });
+}
+
+function initializePages() {
+  db.page.create({
+    id: 1,
+    date: '2022-01-01',
+    countNotes: 12,
+    countCalories: 1800,
   });
 }
 
