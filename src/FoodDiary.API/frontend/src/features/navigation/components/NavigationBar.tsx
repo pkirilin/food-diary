@@ -7,16 +7,13 @@ import {
   Divider,
   Drawer,
   IconButton,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemText,
   styled,
   Toolbar,
   Typography,
 } from '@mui/material';
 import React, { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
+import MenuLinks from './MenuLinks';
 
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({
   display: 'flex',
@@ -59,10 +56,6 @@ const StyledMobileMenuClose = styled(Box)(() => ({
   left: '0',
 }));
 
-const StyledListItemText = styled(ListItemText)(() => ({
-  textAlign: 'center',
-}));
-
 const StyledMenuOpenButton = styled(IconButton)(({ theme }) => ({
   [theme.breakpoints.up('sm')]: {
     display: 'none',
@@ -71,15 +64,9 @@ const StyledMenuOpenButton = styled(IconButton)(({ theme }) => ({
 
 const StyledMenuCloseButton = styled(IconButton)(() => ({}));
 
-const StyledMenuLinks = styled(Box)(({ theme }) => ({
+const StyledMenuLinksWrapper = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down('sm')]: {
     display: 'none',
-  },
-}));
-
-const StyledList = styled(List)(({ theme }) => ({
-  [theme.breakpoints.up('sm')]: {
-    display: 'flex',
   },
 }));
 
@@ -88,6 +75,8 @@ const StyledMenu = styled(Box)(({ theme }) => ({
   alignItems: 'center',
   gap: theme.spacing(2),
 }));
+
+const APP_NAME = 'Food diary';
 
 type NavigationBarProps = {
   renderLogout: () => React.ReactElement;
@@ -115,21 +104,10 @@ const NavigationBar: React.FC<NavigationBarProps> = ({ renderLogout }) => {
               <MenuIcon />
             </StyledMenuOpenButton>
             <StyledMenu>
-              <StyledNavBrandLink to="/">Food diary</StyledNavBrandLink>
-              <StyledMenuLinks>
-                <StyledList disablePadding>
-                  <ListItem>
-                    <ListItemButton selected>
-                      <StyledListItemText primary={'one'} />
-                    </ListItemButton>
-                  </ListItem>
-                  <ListItem>
-                    <ListItemButton>
-                      <StyledListItemText primary={'two'} />
-                    </ListItemButton>
-                  </ListItem>
-                </StyledList>
-              </StyledMenuLinks>
+              <StyledNavBrandLink to="/">{APP_NAME}</StyledNavBrandLink>
+              <StyledMenuLinksWrapper>
+                <MenuLinks />
+              </StyledMenuLinksWrapper>
             </StyledMenu>
             {renderLogout()}
           </StyledToolbar>
@@ -142,20 +120,9 @@ const NavigationBar: React.FC<NavigationBarProps> = ({ renderLogout }) => {
           onClose={handleDrawerToggle}
           ModalProps={{ keepMounted: true }}
         >
-          <StyledMobileMenuHeader>Food diary</StyledMobileMenuHeader>
+          <StyledMobileMenuHeader>{APP_NAME}</StyledMobileMenuHeader>
           <Divider variant="fullWidth" />
-          <StyledList disablePadding>
-            <ListItem key="one" divider disablePadding>
-              <ListItemButton selected>
-                <StyledListItemText primary={'one'} />
-              </ListItemButton>
-            </ListItem>
-            <ListItem key="two" divider disablePadding>
-              <ListItemButton>
-                <StyledListItemText primary={'two'} />
-              </ListItemButton>
-            </ListItem>
-          </StyledList>
+          <MenuLinks mobile />
           <StyledMobileMenuClose>
             <StyledMenuCloseButton
               size="large"
