@@ -35,14 +35,32 @@ const StyledNavBrandLink = styled(RouterLink)(({ theme }) => ({
 
 const StyledDrawer = styled(Drawer)(({ theme }) => ({
   display: 'block',
+  position: 'relative',
 
   '& .MuiDrawer-paper': {
-    width: '240px',
+    width: '75%',
   },
 
   [theme.breakpoints.up('sm')]: {
     display: 'none',
   },
+}));
+
+const StyledMobileMenuHeader = styled(Typography)(({ theme }) => ({
+  fontSize: theme.typography.h5.fontSize,
+  fontWeight: 'bold',
+  textAlign: 'center',
+  padding: theme.spacing(1),
+}));
+
+const StyledMobileMenuClose = styled(Box)(() => ({
+  position: 'absolute',
+  top: '0',
+  left: '0',
+}));
+
+const StyledListItemText = styled(ListItemText)(() => ({
+  textAlign: 'center',
 }));
 
 type NavigationBarProps = {
@@ -82,29 +100,25 @@ const NavigationBar: React.FC<NavigationBarProps> = ({ renderLogout }) => {
           onClose={handleDrawerToggle}
           ModalProps={{ keepMounted: true }}
         >
-          <Typography component={'div'}>Food diary</Typography>
-          <Divider sx={{ width: '100%' }} />
-          <List>
-            <ListItem key="one" disablePadding>
-              <ListItemButton>
-                <ListItemText primary={'one'} />
+          <StyledMobileMenuHeader>Food diary</StyledMobileMenuHeader>
+          <Divider variant="fullWidth" />
+          <List disablePadding>
+            <ListItem key="one" divider disablePadding>
+              <ListItemButton selected>
+                <StyledListItemText primary={'one'} />
               </ListItemButton>
             </ListItem>
-            <ListItem key="two" disablePadding>
+            <ListItem key="two" divider disablePadding>
               <ListItemButton>
-                <ListItemText primary={'two'} />
+                <StyledListItemText primary={'two'} />
               </ListItemButton>
             </ListItem>
           </List>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="Close menu"
-            onClick={handleDrawerToggle}
-          >
-            <CloseIcon />
-          </IconButton>
+          <StyledMobileMenuClose>
+            <IconButton size="large" aria-label="Close menu" onClick={handleDrawerToggle}>
+              <CloseIcon />
+            </IconButton>
+          </StyledMobileMenuClose>
         </StyledDrawer>
       </Box>
     </React.Fragment>
