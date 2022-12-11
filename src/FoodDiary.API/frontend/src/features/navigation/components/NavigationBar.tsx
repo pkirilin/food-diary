@@ -27,10 +27,10 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
 }));
 
 const StyledNavBrandLink = styled(RouterLink)(({ theme }) => ({
+  fontSize: theme.typography.h5.fontSize,
+  fontWeight: 800,
   color: theme.palette.primary.contrastText,
   textDecoration: 'none',
-  fontSize: theme.typography.h5.fontSize,
-  fontWeight: 'bold',
 }));
 
 const StyledDrawer = styled(Drawer)(({ theme }) => ({
@@ -48,7 +48,7 @@ const StyledDrawer = styled(Drawer)(({ theme }) => ({
 
 const StyledMobileMenuHeader = styled(Typography)(({ theme }) => ({
   fontSize: theme.typography.h5.fontSize,
-  fontWeight: 'bold',
+  fontWeight: 800,
   textAlign: 'center',
   padding: theme.spacing(1),
 }));
@@ -61,6 +61,32 @@ const StyledMobileMenuClose = styled(Box)(() => ({
 
 const StyledListItemText = styled(ListItemText)(() => ({
   textAlign: 'center',
+}));
+
+const StyledMenuOpenButton = styled(IconButton)(({ theme }) => ({
+  [theme.breakpoints.up('sm')]: {
+    display: 'none',
+  },
+}));
+
+const StyledMenuCloseButton = styled(IconButton)(() => ({}));
+
+const StyledMenuLinks = styled(Box)(({ theme }) => ({
+  [theme.breakpoints.down('sm')]: {
+    display: 'none',
+  },
+}));
+
+const StyledList = styled(List)(({ theme }) => ({
+  [theme.breakpoints.up('sm')]: {
+    display: 'flex',
+  },
+}));
+
+const StyledMenu = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  gap: theme.spacing(2),
 }));
 
 type NavigationBarProps = {
@@ -76,10 +102,10 @@ const NavigationBar: React.FC<NavigationBarProps> = ({ renderLogout }) => {
 
   return (
     <React.Fragment>
-      <AppBar position="static">
+      <AppBar position="static" component="nav">
         <Container>
           <StyledToolbar disableGutters id="back-to-top-anchor">
-            <IconButton
+            <StyledMenuOpenButton
               size="large"
               edge="start"
               color="inherit"
@@ -87,8 +113,24 @@ const NavigationBar: React.FC<NavigationBarProps> = ({ renderLogout }) => {
               onClick={handleDrawerToggle}
             >
               <MenuIcon />
-            </IconButton>
-            <StyledNavBrandLink to="/">Food diary</StyledNavBrandLink>
+            </StyledMenuOpenButton>
+            <StyledMenu>
+              <StyledNavBrandLink to="/">Food diary</StyledNavBrandLink>
+              <StyledMenuLinks>
+                <StyledList disablePadding>
+                  <ListItem>
+                    <ListItemButton selected>
+                      <StyledListItemText primary={'one'} />
+                    </ListItemButton>
+                  </ListItem>
+                  <ListItem>
+                    <ListItemButton>
+                      <StyledListItemText primary={'two'} />
+                    </ListItemButton>
+                  </ListItem>
+                </StyledList>
+              </StyledMenuLinks>
+            </StyledMenu>
             {renderLogout()}
           </StyledToolbar>
         </Container>
@@ -102,7 +144,7 @@ const NavigationBar: React.FC<NavigationBarProps> = ({ renderLogout }) => {
         >
           <StyledMobileMenuHeader>Food diary</StyledMobileMenuHeader>
           <Divider variant="fullWidth" />
-          <List disablePadding>
+          <StyledList disablePadding>
             <ListItem key="one" divider disablePadding>
               <ListItemButton selected>
                 <StyledListItemText primary={'one'} />
@@ -113,11 +155,15 @@ const NavigationBar: React.FC<NavigationBarProps> = ({ renderLogout }) => {
                 <StyledListItemText primary={'two'} />
               </ListItemButton>
             </ListItem>
-          </List>
+          </StyledList>
           <StyledMobileMenuClose>
-            <IconButton size="large" aria-label="Close menu" onClick={handleDrawerToggle}>
+            <StyledMenuCloseButton
+              size="large"
+              aria-label="Close menu"
+              onClick={handleDrawerToggle}
+            >
               <CloseIcon />
-            </IconButton>
+            </StyledMenuCloseButton>
           </StyledMobileMenuClose>
         </StyledDrawer>
       </Box>
