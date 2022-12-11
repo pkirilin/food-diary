@@ -90,51 +90,47 @@ const NavigationBar: React.FC<NavigationBarProps> = ({ renderLogout }) => {
   }
 
   return (
-    <React.Fragment>
-      <AppBar position="static" component="nav">
-        <Container>
-          <StyledToolbar disableGutters id="back-to-top-anchor">
-            <StyledMenuOpenButton
-              size="large"
-              edge="start"
-              color="inherit"
-              aria-label="Open menu"
-              onClick={handleDrawerToggle}
-            >
-              <MenuIcon />
-            </StyledMenuOpenButton>
-            <StyledMenu>
-              <StyledNavBrandLink to="/">{APP_NAME}</StyledNavBrandLink>
-              <StyledMenuLinksWrapper>
-                <MenuLinks />
-              </StyledMenuLinksWrapper>
-            </StyledMenu>
-            {renderLogout()}
-          </StyledToolbar>
-        </Container>
-      </AppBar>
-      <Box component="nav">
-        <StyledDrawer
-          variant="temporary"
-          open={isDrawerOpened}
-          onClose={handleDrawerToggle}
-          ModalProps={{ keepMounted: true }}
-        >
-          <StyledMobileMenuHeader>{APP_NAME}</StyledMobileMenuHeader>
-          <Divider variant="fullWidth" />
-          <MenuLinks mobile />
-          <StyledMobileMenuClose>
-            <StyledMenuCloseButton
-              size="large"
-              aria-label="Close menu"
-              onClick={handleDrawerToggle}
-            >
-              <CloseIcon />
-            </StyledMenuCloseButton>
-          </StyledMobileMenuClose>
-        </StyledDrawer>
-      </Box>
-    </React.Fragment>
+    <AppBar position="static" component="nav">
+      <Container>
+        <StyledToolbar disableGutters id="back-to-top-anchor">
+          <StyledMenuOpenButton
+            size="large"
+            edge="start"
+            color="inherit"
+            aria-label="Open menu"
+            onClick={handleDrawerToggle}
+          >
+            <MenuIcon />
+          </StyledMenuOpenButton>
+          <StyledDrawer
+            variant="temporary"
+            open={isDrawerOpened}
+            onClose={handleDrawerToggle}
+            ModalProps={{ keepMounted: true }}
+          >
+            <StyledMobileMenuHeader>{APP_NAME}</StyledMobileMenuHeader>
+            <Divider variant="fullWidth" />
+            <MenuLinks mobile />
+            <StyledMobileMenuClose>
+              <StyledMenuCloseButton
+                size="large"
+                aria-label="Close menu"
+                onClick={handleDrawerToggle}
+              >
+                <CloseIcon />
+              </StyledMenuCloseButton>
+            </StyledMobileMenuClose>
+          </StyledDrawer>
+          <StyledMenu>
+            <StyledNavBrandLink to="/">{APP_NAME}</StyledNavBrandLink>
+            <StyledMenuLinksWrapper>
+              <MenuLinks />
+            </StyledMenuLinksWrapper>
+          </StyledMenu>
+          {renderLogout()}
+        </StyledToolbar>
+      </Container>
+    </AppBar>
   );
 };
 

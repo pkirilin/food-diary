@@ -2,7 +2,7 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import PublishIcon from '@mui/icons-material/Publish';
-import { IconButton, Popover, Toolbar, Tooltip, Typography } from '@mui/material';
+import { Box, IconButton, Popover, styled, Toolbar, Tooltip, Typography } from '@mui/material';
 import React, { useCallback, useEffect, useState } from 'react';
 import { ConfirmationDialog } from 'src/features/__shared__/components';
 import {
@@ -16,6 +16,8 @@ import { PageCreateEdit } from 'src/features/pages/models';
 import { createPage, deletePages, importPages } from 'src/features/pages/thunks';
 import PageCreateEditDialog from '../PageCreateEditDialog';
 import PagesFilter from '../PagesFilter';
+
+const StyledTableHeader = styled(Typography)(({ theme }) => ({ ...theme.typography.h2 }));
 
 const importWarningMessage =
   'Pages import is going to be started. Import may update or overwrite existing data from file and may cause data loss. Continue?';
@@ -111,7 +113,9 @@ const PagesToolbar: React.FC<PagesToolbarProps> = ({ children }) => {
       />
       {selectedPageIds.length > 0 ? (
         <React.Fragment>
-          <Typography className={classes.title}>{selectedPageIds.length} selected</Typography>
+          <Box flexGrow={1}>
+            <Typography>{selectedPageIds.length} selected</Typography>
+          </Box>
           <Tooltip title="Delete selected pages">
             <span>
               <IconButton onClick={handleDeleteClick} size="large">
@@ -122,9 +126,9 @@ const PagesToolbar: React.FC<PagesToolbarProps> = ({ children }) => {
         </React.Fragment>
       ) : (
         <React.Fragment>
-          <Typography variant="h2" className={classes.title} role="heading">
-            Pages
-          </Typography>
+          <Box flexGrow={1}>
+            <StyledTableHeader>Pages</StyledTableHeader>
+          </Box>
           <Tooltip title="Add new page">
             <span>
               <IconButton onClick={handleAddClick} size="large">

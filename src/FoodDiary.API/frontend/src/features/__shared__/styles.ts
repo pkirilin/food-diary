@@ -5,9 +5,6 @@ export const useToolbarStyles = makeStyles(theme => ({
     paddingLeft: theme.spacing(2),
     paddingRight: theme.spacing(1),
   },
-  title: {
-    flex: '1 1 100%',
-  },
 }));
 
 export const useFilterStyles = makeStyles(theme => ({
