@@ -3,8 +3,6 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { BrowserRouter } from 'react-router-dom';
-import AuthProvider from 'src/features/auth/AuthProvider';
 import theme from 'src/theme';
 import { createTestStore, TestStoreBuilder } from './storeBuilder';
 
@@ -13,9 +11,6 @@ export interface TestComponentBuilder {
   withReduxStore: (
     configure?: (builder: TestStoreBuilder) => TestStoreBuilder,
   ) => TestComponentBuilder;
-  withRouter: () => TestComponentBuilder;
-  withAuthToken: (token: string) => TestComponentBuilder;
-  withoutAuthToken: () => TestComponentBuilder;
 }
 
 type WrapperType = React.ComponentType<React.PropsWithChildren<unknown>>;
@@ -43,21 +38,6 @@ const createComponentBuilder = (component: React.ReactElement) => {
       const storeBuilder = createTestStore();
       const store = configure(storeBuilder).please();
       wrappers.push(({ children }) => <Provider store={store}>{children}</Provider>);
-      return builder;
-    },
-
-    withRouter: (): TestComponentBuilder => {
-      wrappers.push(({ children }) => <BrowserRouter>{children}</BrowserRouter>);
-      return builder;
-    },
-
-    withAuthToken: (token: string): TestComponentBuilder => {
-      wrappers.push(({ children }) => <AuthProvider token={token}>{children}</AuthProvider>);
-      return builder;
-    },
-
-    withoutAuthToken: (): TestComponentBuilder => {
-      wrappers.push(({ children }) => <AuthProvider>{children}</AuthProvider>);
       return builder;
     },
   };
