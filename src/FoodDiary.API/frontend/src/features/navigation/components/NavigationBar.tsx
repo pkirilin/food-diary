@@ -1,134 +1,37 @@
-import CloseIcon from '@mui/icons-material/Close';
-import MenuIcon from '@mui/icons-material/Menu';
-import {
-  AppBar,
-  Box,
-  Container,
-  Divider,
-  Drawer,
-  IconButton,
-  styled,
-  Toolbar,
-  Typography,
-} from '@mui/material';
-import React, { useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
-import MenuLinks from './MenuLinks';
-
-const StyledToolbar = styled(Toolbar)(({ theme }) => ({
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  gap: theme.spacing(2),
-  width: '100%',
-}));
-
-const StyledNavBrandLink = styled(RouterLink)(({ theme }) => ({
-  fontSize: theme.typography.h5.fontSize,
-  fontWeight: 800,
-  color: theme.palette.primary.contrastText,
-  textDecoration: 'none',
-}));
-
-const StyledDrawer = styled(Drawer)(({ theme }) => ({
-  display: 'block',
-  position: 'relative',
-
-  '& .MuiDrawer-paper': {
-    width: '75%',
-  },
-
-  [theme.breakpoints.up('sm')]: {
-    display: 'none',
-  },
-}));
-
-const StyledMobileMenuHeader = styled(Typography)(({ theme }) => ({
-  fontSize: theme.typography.h5.fontSize,
-  fontWeight: 800,
-  textAlign: 'center',
-  padding: theme.spacing(1),
-}));
-
-const StyledMobileMenuClose = styled(Box)(() => ({
-  position: 'absolute',
-  top: '0',
-  left: '0',
-}));
-
-const StyledMenuOpenButton = styled(IconButton)(({ theme }) => ({
-  [theme.breakpoints.up('sm')]: {
-    display: 'none',
-  },
-}));
-
-const StyledMenuCloseButton = styled(IconButton)(() => ({}));
-
-const StyledMenuLinksWrapper = styled(Box)(({ theme }) => ({
-  [theme.breakpoints.down('sm')]: {
-    display: 'none',
-  },
-}));
-
-const StyledMenu = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  gap: theme.spacing(2),
-}));
-
-const APP_NAME = 'Food diary';
+import { AppBar, Box, Container, Toolbar } from '@mui/material';
+import React from 'react';
+import { APP_BAR_HEIGHT, APP_NAME } from '../constants';
+import BrandLink from './BrandLink';
+import Menu from './Menu';
+import MobileMenu from './MobileMenu';
 
 type NavigationBarProps = {
   renderLogout: () => React.ReactElement;
 };
 
 const NavigationBar: React.FC<NavigationBarProps> = ({ renderLogout }) => {
-  const [isDrawerOpened, setIsDrawerOpened] = useState(false);
-
-  function handleDrawerToggle() {
-    setIsDrawerOpened(isOpened => !isOpened);
-  }
-
   return (
-    <AppBar position="static" component="nav">
+    <AppBar component="nav" position="sticky">
       <Container>
-        <StyledToolbar disableGutters id="back-to-top-anchor">
-          <StyledMenuOpenButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="Open menu"
-            onClick={handleDrawerToggle}
-          >
-            <MenuIcon />
-          </StyledMenuOpenButton>
-          <StyledDrawer
-            variant="temporary"
-            open={isDrawerOpened}
-            onClose={handleDrawerToggle}
-            ModalProps={{ keepMounted: true }}
-          >
-            <StyledMobileMenuHeader>{APP_NAME}</StyledMobileMenuHeader>
-            <Divider variant="fullWidth" />
-            <MenuLinks mobile />
-            <StyledMobileMenuClose>
-              <StyledMenuCloseButton
-                size="large"
-                aria-label="Close menu"
-                onClick={handleDrawerToggle}
-              >
-                <CloseIcon />
-              </StyledMenuCloseButton>
-            </StyledMobileMenuClose>
-          </StyledDrawer>
-          <StyledMenu>
-            <StyledNavBrandLink to="/">{APP_NAME}</StyledNavBrandLink>
-            <StyledMenuLinksWrapper>
-              <MenuLinks />
-            </StyledMenuLinksWrapper>
-          </StyledMenu>
-          {renderLogout()}
-        </StyledToolbar>
+        <Box
+          id="back-to-top-anchor"
+          component={Toolbar}
+          disableGutters
+          display="flex"
+          gap={1}
+          height={APP_BAR_HEIGHT}
+        >
+          <MobileMenu />
+          <Box display="flex" justifyContent="space-between" gap={2} flexGrow={1}>
+            <Box display="flex" alignItems="center" gap={4}>
+              <BrandLink to="/" sx={theme => ({ color: theme.palette.primary.contrastText })}>
+                {APP_NAME}
+              </BrandLink>
+              <Menu />
+            </Box>
+            {renderLogout()}
+          </Box>
+        </Box>
       </Container>
     </AppBar>
   );
