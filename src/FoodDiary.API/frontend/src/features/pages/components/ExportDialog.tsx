@@ -4,9 +4,9 @@ import { AppButton, DatePicker } from 'src/components';
 import { useInput } from 'src/hooks';
 import { mapToDateInputProps } from 'src/utils/inputMapping';
 import { validateDate } from 'src/utils/validation';
-import { ExportFormat } from '../../models';
-import { useExportToGoogleDocs } from './useExportToGoogleDocs';
-import { useExportToJson } from './useExportToJson';
+import { useExportToGoogleDocs } from '../hooks/useExportToGoogleDocs';
+import { useExportToJson } from '../hooks/useExportToJson';
+import { ExportFormat } from '../models';
 
 type ExportDialogProps = {
   format: ExportFormat;

@@ -2,7 +2,6 @@ import { Paper, Typography } from '@mui/material';
 import { Container, Box } from '@mui/system';
 import visuallyHidden from '@mui/utils/visuallyHidden';
 import { Helmet } from 'react-helmet';
-import ExportMenu from '../components/ExportMenu';
 import PagesFilterAppliedParams from '../components/PagesFilterAppliedParams';
 import PagesTable from '../components/PagesTable';
 import PagesTablePagination from '../components/PagesTablePagination';
@@ -19,9 +18,7 @@ const Pages = () => {
           Pages
         </Typography>
         <Paper>
-          <PagesToolbar>
-            <ExportMenu />
-          </PagesToolbar>
+          <PagesToolbar />
           <PagesFilterAppliedParams />
           <PagesTable />
           <PagesTablePagination />

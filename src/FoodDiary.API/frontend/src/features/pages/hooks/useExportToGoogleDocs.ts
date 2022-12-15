@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { GoogleLoginResponse, useGoogleLogin } from 'react-google-login';
 import { useExportPagesToGoogleDocsMutation } from 'src/api';
 import config from 'src/features/__shared__/config';
-import { UseExportResult } from './types';
+import { UseExportResult } from '../types';
 
 export function useExportToGoogleDocs(
   startDate: Date | null,

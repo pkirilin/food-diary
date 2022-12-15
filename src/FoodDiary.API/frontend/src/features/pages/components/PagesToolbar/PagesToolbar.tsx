@@ -1,9 +1,8 @@
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
-import PublishIcon from '@mui/icons-material/Publish';
 import { Box, IconButton, Popover, styled, Toolbar, Tooltip, Typography } from '@mui/material';
-import React, { useCallback, useEffect, useState } from 'react';
+import React from 'react';
 import { ConfirmationDialog } from 'src/features/__shared__/components';
 import {
   useAppDispatch,
@@ -13,47 +12,12 @@ import {
 } from 'src/features/__shared__/hooks';
 import { useToolbarStyles } from 'src/features/__shared__/styles';
 import { PageCreateEdit } from 'src/features/pages/models';
-import { createPage, deletePages, importPages } from 'src/features/pages/thunks';
+import { createPage, deletePages } from 'src/features/pages/thunks';
 import PageCreateEditDialog from '../PageCreateEditDialog';
 import PagesFilter from '../PagesFilter';
+import ShowMoreTableOptions from '../ShowMoreTableOptions';
 
 const StyledTableHeader = styled(Typography)(({ theme }) => ({ ...theme.typography.h2 }));
-
-const importWarningMessage =
-  'Pages import is going to be started. Import may update or overwrite existing data from file and may cause data loss. Continue?';
-
-function useImport(file?: File) {
-  const isSuccess = useAppSelector(state => state.pages.isImportSuccess);
-  const dispatch = useAppDispatch();
-
-  const { setOpen, binding: dialogProps } = useDialog(() => {
-    if (file) {
-      dispatch(importPages(file));
-    }
-  });
-
-  const openDialog = useCallback(() => {
-    setOpen(true);
-  }, [setOpen]);
-
-  const closeDialog = useCallback(() => {
-    setOpen(false);
-  }, [setOpen]);
-
-  useEffect(() => {
-    if (file) {
-      openDialog();
-    }
-  }, [file, openDialog]);
-
-  useEffect(() => {
-    if (isSuccess) {
-      closeDialog();
-    }
-  }, [closeDialog, isSuccess]);
-
-  return dialogProps;
-}
 
 type PagesToolbarProps = React.PropsWithChildren<unknown>;
 
@@ -61,8 +25,7 @@ const PagesToolbar: React.FC<PagesToolbarProps> = ({ children }) => {
   const classes = useToolbarStyles();
   const selectedPageIds = useAppSelector(state => state.pages.selectedPageIds);
   const dispatch = useAppDispatch();
-  const [importFile, setImportFile] = useState<File>();
-  const importDialogProps = useImport(importFile);
+
   const [filter, showFilter] = usePopover();
 
   const pageCreateDialog = useDialog<PageCreateEdit>(page => {
@@ -81,23 +44,6 @@ const PagesToolbar: React.FC<PagesToolbarProps> = ({ children }) => {
     pagesDeleteDialog.show();
   };
 
-  const handleImportFileChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    const target = event.target;
-
-    try {
-      const file = event.target.files?.item(0);
-      if (file) {
-        setImportFile(file);
-      }
-    } finally {
-      // Cleaning file input value. Without this change handler will not be executed
-      // if user tries to load file with the same name multiple times
-      if (target) {
-        target.value = '';
-      }
-    }
-  };
-
   return (
     <Toolbar className={classes.root}>
       <PageCreateEditDialog {...pageCreateDialog.binding} />
@@ -105,11 +51,6 @@ const PagesToolbar: React.FC<PagesToolbarProps> = ({ children }) => {
         {...pagesDeleteDialog.binding}
         dialogTitle="Delete pages confirmation"
         dialogMessage="Do you really want to delete all selected pages?"
-      />
-      <ConfirmationDialog
-        {...importDialogProps}
-        dialogTitle="Import warning"
-        dialogMessage={importWarningMessage}
       />
       {selectedPageIds.length > 0 ? (
         <React.Fragment>
@@ -129,13 +70,6 @@ const PagesToolbar: React.FC<PagesToolbarProps> = ({ children }) => {
           <Box flexGrow={1}>
             <StyledTableHeader>Pages</StyledTableHeader>
           </Box>
-          <Tooltip title="Add new page">
-            <span>
-              <IconButton onClick={handleAddClick} size="large">
-                <AddIcon />
-              </IconButton>
-            </span>
-          </Tooltip>
           <Tooltip title="Filter pages">
             <span>
               <IconButton
@@ -148,21 +82,14 @@ const PagesToolbar: React.FC<PagesToolbarProps> = ({ children }) => {
               </IconButton>
             </span>
           </Tooltip>
-          <Tooltip title="Import pages">
-            {/* TODO: move this part with file change handler to reusable component */}
-            <label>
-              <IconButton component="span" size="large">
-                <PublishIcon />
+          <Tooltip title="Add new page">
+            <span>
+              <IconButton onClick={handleAddClick} size="large">
+                <AddIcon />
               </IconButton>
-              <input
-                aria-label="Import file"
-                type="file"
-                name="importFile"
-                hidden
-                onChange={handleImportFileChange}
-              />
-            </label>
+            </span>
           </Tooltip>
+          <ShowMoreTableOptions />
         </React.Fragment>
       )}
       <Popover

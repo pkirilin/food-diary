@@ -82,8 +82,8 @@ const PagesTable: React.FC = () => {
                 Date
               </TableSortLabel>
             </TableCell>
-            <TableCell>Total calories</TableCell>
-            <TableCell>Count notes</TableCell>
+            <TableCell align="right">Calories</TableCell>
+            <TableCell align="right">Notes</TableCell>
             <TableCell />
           </TableRow>
         </TableHead>
