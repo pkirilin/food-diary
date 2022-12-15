@@ -6,8 +6,9 @@ import { NAV_LINKS } from '../constants';
 const Menu: React.FC = () => {
   return (
     <Box component={List} disablePadding display={{ xs: 'none', sm: 'flex' }} gap={1}>
-      {NAV_LINKS.map(({ title, path }, index) => {
-        const isSelected = location.pathname.startsWith(path);
+      {NAV_LINKS.map(({ title, path, isRoot }, index) => {
+        const matchesRootPath = isRoot && location.pathname === '/';
+        const isSelected = location.pathname.startsWith(path) || matchesRootPath;
         return (
           <ListItem key={`${index}-${title}`} disableGutters>
             <ListItemButton

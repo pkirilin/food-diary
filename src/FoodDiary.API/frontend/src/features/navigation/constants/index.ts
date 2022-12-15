@@ -4,6 +4,7 @@ export const NAV_LINKS = [
   {
     title: 'Pages',
     path: '/pages',
+    isRoot: true,
   },
   {
     title: 'Products',
