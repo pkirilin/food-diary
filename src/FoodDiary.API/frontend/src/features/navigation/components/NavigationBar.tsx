@@ -1,15 +1,19 @@
-import { AppBar, Box, Container, Toolbar } from '@mui/material';
+import LogoutIcon from '@mui/icons-material/Logout';
+import { AppBar, Box, Container, IconButton, Toolbar, Tooltip } from '@mui/material';
 import React from 'react';
+import { useAuth } from 'src/features/auth';
 import { APP_BAR_HEIGHT, APP_NAME } from '../constants';
 import BrandLink from './BrandLink';
 import Menu from './Menu';
 import MobileMenu from './MobileMenu';
 
-type NavigationBarProps = {
-  renderLogout: () => React.ReactElement;
-};
+const NavigationBar: React.FC = () => {
+  const { signOut } = useAuth();
 
-const NavigationBar: React.FC<NavigationBarProps> = ({ renderLogout }) => {
+  function handleLogout() {
+    signOut();
+  }
+
   return (
     <AppBar component="nav" position="sticky">
       <Container>
@@ -29,7 +33,11 @@ const NavigationBar: React.FC<NavigationBarProps> = ({ renderLogout }) => {
               </BrandLink>
               <Menu />
             </Box>
-            {renderLogout()}
+            <Tooltip title="Logout">
+              <IconButton size="large" edge="end" onClick={handleLogout}>
+                <LogoutIcon sx={theme => ({ fill: theme.palette.primary.contrastText })} />
+              </IconButton>
+            </Tooltip>
           </Box>
         </Box>
       </Container>
