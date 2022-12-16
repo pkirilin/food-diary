@@ -1,9 +1,11 @@
 import { Box, List, ListItem, ListItemButton, ListItemText } from '@mui/material';
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { NAV_LINKS } from '../constants';
 
 const Menu: React.FC = () => {
+  const location = useLocation();
+
   return (
     <Box component={List} disablePadding display={{ xs: 'none', sm: 'flex' }} gap={1}>
       {NAV_LINKS.map(({ title, path, isRoot }, index) => {
@@ -19,8 +21,10 @@ const Menu: React.FC = () => {
               disableTouchRipple={isSelected}
               sx={theme => ({
                 borderRadius: theme.shape.borderRadius,
+                color: theme.palette.grey[300],
 
                 '&.Mui-selected': {
+                  color: theme.palette.primary.contrastText,
                   backgroundColor: theme.palette.action.selected,
                   pointerEvents: 'none',
                 },
