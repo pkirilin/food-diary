@@ -36,7 +36,18 @@ const ImportPagesMenuItem: React.FC<React.PropsWithChildren<ImportPagesMenuItemP
   return (
     <React.Fragment>
       <MenuItem onClick={onMenuClose}>
-        <Box component="label" display="inherit" width="100%">
+        <Box
+          component="label"
+          display="inherit"
+          width="100%"
+          sx={theme => ({
+            [theme.breakpoints.up('lg')]: {
+              '&:hover': {
+                cursor: 'pointer',
+              },
+            },
+          })}
+        >
           <ListItemIcon>
             <PublishIcon />
           </ListItemIcon>
