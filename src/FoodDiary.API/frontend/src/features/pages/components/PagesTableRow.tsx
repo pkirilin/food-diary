@@ -71,8 +71,8 @@ const PagesTableRow: React.FC<PagesTableRowProps> = ({ page }: PagesTableRowProp
           {pageDate}
         </Link>
       </TableCell>
-      <TableCell>{page.countCalories}</TableCell>
-      <TableCell>{page.countNotes}</TableCell>
+      <TableCell align="right">{page.countCalories}</TableCell>
+      <TableCell align="right">{page.countNotes}</TableCell>
       <TableCell width="30px">
         <Tooltip title="Edit page">
           <IconButton onClick={handleEditClick} size="large">

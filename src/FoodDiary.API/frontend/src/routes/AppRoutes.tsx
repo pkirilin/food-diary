@@ -1,7 +1,8 @@
 import { Navigate, RouteObject, useRoutes } from 'react-router-dom';
 import { Auth, RequireAuth } from 'src/features/auth/components';
 import { Categories } from 'src/features/categories';
-import { PageContent, Pages } from 'src/features/pages/components';
+import { Pages } from 'src/features/pages';
+import { PageContent } from 'src/features/pages/components';
 import { Products } from 'src/features/products';
 import NotFound from './NotFound';
 

@@ -16,7 +16,7 @@ const Logout: React.FC = () => {
 
   return (
     <Tooltip title="Logout">
-      <IconButton onClick={handleLogoutClick}>
+      <IconButton size="large" onClick={handleLogoutClick}>
         <StyledLogoutIcon />
       </IconButton>
     </Tooltip>
