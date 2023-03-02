@@ -29,21 +29,21 @@ export interface PageByIdResponse {
 
 export const getPages = createApiCallAsyncThunk<PagesSearchResult, GetPagesRequest>(
   'pages/getPages',
-  params => createUrl(`${config.apiUrl}/v1/pages`, params),
+  params => createUrl(`${config.apiUrl}/api/v1/pages`, params),
   response => response.json(),
   'Failed to get pages',
 );
 
 export const getPageById = createApiCallAsyncThunk<PageByIdResponse, number>(
   'pages/getPageById',
-  id => `${config.apiUrl}/v1/pages/${id}`,
+  id => `${config.apiUrl}/api/v1/pages/${id}`,
   response => response.json(),
   'Failed to get page',
 );
 
 export const createPage = createApiCallAsyncThunk<number, PageCreateEdit>(
   'pages/createPage',
-  () => `${config.apiUrl}/v1/pages`,
+  () => `${config.apiUrl}/api/v1/pages`,
   async response => Number(await response.text()),
   'Failed to create page',
   {
@@ -54,7 +54,7 @@ export const createPage = createApiCallAsyncThunk<number, PageCreateEdit>(
 
 export const editPage = createApiCallAsyncThunk<void, EditPageRequest>(
   'pages/editPage',
-  ({ id }) => `${config.apiUrl}/v1/pages/${id}`,
+  ({ id }) => `${config.apiUrl}/api/v1/pages/${id}`,
   handleEmptyResponse,
   'Failed to update page',
   {
@@ -65,7 +65,7 @@ export const editPage = createApiCallAsyncThunk<void, EditPageRequest>(
 
 export const deletePages = createApiCallAsyncThunk<void, number[]>(
   'pages/deletePages',
-  () => `${config.apiUrl}/v1/pages/batch`,
+  () => `${config.apiUrl}/api/v1/pages/batch`,
   handleEmptyResponse,
   'Failed to delete pages',
   {
@@ -86,7 +86,7 @@ export const exportPagesToJson = createApiCallAsyncThunk<void, ExportPagesToJson
 
 export const importPages = createApiCallAsyncThunk<void, File>(
   'pages/importPages',
-  () => `${config.apiUrl}/v1/imports/json`,
+  () => `${config.apiUrl}/api/v1/imports/json`,
   handleEmptyResponse,
   'Failed to import pages',
   {
@@ -102,7 +102,7 @@ export const importPages = createApiCallAsyncThunk<void, File>(
 
 export const getDateForNewPage = createApiCallAsyncThunk<string, void>(
   'pages/getDateForNewPage',
-  () => `${config.apiUrl}/v1/pages/date`,
+  () => `${config.apiUrl}/api/v1/pages/date`,
   response => response.text(),
   'Failed to get date for new page',
 );
