@@ -17,7 +17,6 @@ using Microsoft.AspNetCore.Authorization;
 namespace FoodDiary.API.Controllers.v1
 {
     [ApiController]
-    [Route("v1/notes")]
     [Route("api/v1/notes")]
     [Authorize(Constants.Policies.GoogleJwt)]
     [ApiExplorerSettings(GroupName = "v1")]
