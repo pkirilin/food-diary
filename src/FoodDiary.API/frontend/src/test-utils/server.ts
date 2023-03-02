@@ -9,7 +9,7 @@ export function api(path: string) {
 }
 
 const handlersLegacy = [
-  rest.get(api('/v1/pages'), (req, res, ctx) => {
+  rest.get(api('/api/v1/pages'), (req, res, ctx) => {
     const pages = create
       .pagesSearchResult()
       .withPageItem('2022-03-01')
@@ -20,7 +20,7 @@ const handlersLegacy = [
     return res(ctx.json(pages));
   }),
 
-  rest.get(api('/v1/pages/date'), (req, res, ctx) => {
+  rest.get(api('/api/v1/pages/date'), (req, res, ctx) => {
     return res(ctx.json('2022-06-05'));
   }),
 
@@ -56,7 +56,7 @@ const handlersLegacy = [
     return res(ctx.status(200));
   }),
 
-  rest.post(api('/v1/imports/json'), (req, res, ctx) => {
+  rest.post(api('/api/v1/imports/json'), (req, res, ctx) => {
     return res(ctx.status(200));
   }),
 ];

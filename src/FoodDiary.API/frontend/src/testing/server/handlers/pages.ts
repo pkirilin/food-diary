@@ -4,7 +4,7 @@ import { PagesSearchResult } from 'src/features/pages/models';
 import { db } from '../db';
 
 export const pagesHandlers = [
-  rest.get(`${config.apiUrl}/v1/pages`, (req, res, ctx) => {
+  rest.get(`${config.apiUrl}/api/v1/pages`, (req, res, ctx) => {
     const pageItems = db.page.getAll();
 
     const result: PagesSearchResult = {
