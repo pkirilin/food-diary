@@ -3,7 +3,7 @@ WORKDIR /app
 COPY . .
 RUN dotnet publish -c Release -o publish src/FoodDiary.API/FoodDiary.API.csproj
 
-FROM node:16.16.0-alpine AS frontend
+FROM node:18.14.2-alpine AS frontend
 WORKDIR /app
 COPY src/FoodDiary.API/frontend .
 RUN yarn install

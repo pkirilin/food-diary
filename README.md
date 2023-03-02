@@ -32,7 +32,9 @@ This information can be extremely useful for people who want to keep track of en
 
 1. Install .NET SDK 6.0.302 or higher
 
-1. Install Node.js 16.16.0 or higher and yarn package manager 3.2.0 or higher
+1. Install Node.js 18.6.x or higher
+
+1. Install [yarn](https://yarnpkg.com/getting-started/install) package manager
 
 1. Fill necessary secrets:
 
