@@ -20,11 +20,11 @@ test('unauthenticated user must sign in to access private content', () => {
 
 test('user must login again in case of expired token', async () => {
   jest.useFakeTimers();
-  const TOKEN_REmOVE_TIMEOUT = 1000;
-  render(<App />, { withAuthentication: true, removeTokenAfterMilliseconds: TOKEN_REmOVE_TIMEOUT });
+  const TOKEN_REMOVE_TIMEOUT = 1000;
+  render(<App />, { withAuthentication: true, removeTokenAfterMilliseconds: TOKEN_REMOVE_TIMEOUT });
 
   act(() => {
-    jest.advanceTimersByTime(TOKEN_REmOVE_TIMEOUT);
+    jest.advanceTimersByTime(TOKEN_REMOVE_TIMEOUT);
     jest.advanceTimersByTime(TOKEN_CHECK_INTERVAL);
   });
 
