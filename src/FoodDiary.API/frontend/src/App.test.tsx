@@ -13,7 +13,7 @@ test('authenticated user can navigate and view private content', () => {
 });
 
 test('unauthenticated user must sign in to access private content', () => {
-  render(<App />, { authToken: '' });
+  render(<App />, { withAuthentication: false });
 
   expect(screen.getByText(/sign in/i)).toBeInTheDocument();
 });
@@ -21,7 +21,7 @@ test('unauthenticated user must sign in to access private content', () => {
 test('user must login again in case of expired token', async () => {
   jest.useFakeTimers();
   const TOKEN_REmOVE_TIMEOUT = 1000;
-  render(<App />, { authToken: 'test_token', removeTokenAfterMilliseconds: TOKEN_REmOVE_TIMEOUT });
+  render(<App />, { withAuthentication: true, removeTokenAfterMilliseconds: TOKEN_REmOVE_TIMEOUT });
 
   act(() => {
     jest.advanceTimersByTime(TOKEN_REmOVE_TIMEOUT);
@@ -33,7 +33,7 @@ test('user must login again in case of expired token', async () => {
 });
 
 test('user can logout of the application', async () => {
-  render(<App />, { authToken: 'test_token' });
+  render(<App />, { withAuthentication: true });
 
   await userEvent.click(screen.getByLabelText(/logout/i));
 

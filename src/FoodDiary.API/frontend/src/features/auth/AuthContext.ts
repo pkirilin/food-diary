@@ -1,13 +1,8 @@
 import { createContext } from 'react';
 
-export type SignInOptions = {
-  token: string;
-  expiresAtUnixMilliseconds: number;
-};
-
 export type AuthContextValue = {
   isAuthenticated: boolean;
-  signIn: (options: SignInOptions) => void;
+  signIn: () => void;
   signOut: () => void;
 };
 

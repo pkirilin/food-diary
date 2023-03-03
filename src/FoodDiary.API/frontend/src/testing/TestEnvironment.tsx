@@ -4,7 +4,7 @@ import { pageSizeChanged } from 'src/features/products/store';
 import { configureAppStore } from 'src/store';
 
 type TestEnvironmentProps = {
-  authToken?: string;
+  withAuthentication?: boolean;
   removeTokenAfterMilliseconds?: number;
   pageSizeOverride?: number;
   store: ReturnType<typeof configureAppStore>;
@@ -13,18 +13,18 @@ type TestEnvironmentProps = {
 const TestEnvironment: React.FC<React.PropsWithChildren<TestEnvironmentProps>> = ({
   children,
   store,
-  authToken,
+  withAuthentication,
   removeTokenAfterMilliseconds,
   pageSizeOverride,
 }) => {
-  const [token, setToken] = useState(authToken);
+  const [isAuthenticated, setIsAuthenticated] = useState(withAuthentication);
 
   useEffect(() => {
     let timer: NodeJS.Timeout | null = null;
 
     if (removeTokenAfterMilliseconds) {
       timer = setTimeout(() => {
-        setToken(undefined);
+        setIsAuthenticated(false);
       }, removeTokenAfterMilliseconds);
     }
 
@@ -42,7 +42,7 @@ const TestEnvironment: React.FC<React.PropsWithChildren<TestEnvironmentProps>> =
   }, [pageSizeOverride, store]);
 
   return (
-    <AppProvider store={store} authToken={token}>
+    <AppProvider store={store} withAuthentication={isAuthenticated}>
       {children}
     </AppProvider>
   );

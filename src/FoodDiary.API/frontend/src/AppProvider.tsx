@@ -15,20 +15,20 @@ declare module '@mui/styles/defaultTheme' {
 
 type AppProviderProps = {
   store: Store;
-  authToken?: string;
+  withAuthentication?: boolean;
 };
 
 const AppProvider: React.FC<React.PropsWithChildren<AppProviderProps>> = ({
   children,
   store,
-  authToken,
+  withAuthentication,
 }) => {
   return (
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={theme}>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <Provider store={store}>
-            <AuthProvider token={authToken}>
+            <AuthProvider withAuthentication={withAuthentication}>
               <CssBaseline />
               <BrowserRouter>{children}</BrowserRouter>
             </AuthProvider>

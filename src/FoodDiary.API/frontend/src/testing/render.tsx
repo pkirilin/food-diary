@@ -4,17 +4,17 @@ import { configureAppStore } from 'src/store';
 import TestEnvironment from './TestEnvironment';
 
 type RenderOptions = {
-  authToken?: string;
+  withAuthentication?: boolean;
   removeTokenAfterMilliseconds?: number;
   pageSizeOverride?: number;
 };
 
 const defaultOptions: RenderOptions = {
-  authToken: 'test_token',
+  withAuthentication: true,
 };
 
 export default function render(ui: React.ReactElement, options?: RenderOptions) {
-  const { authToken, removeTokenAfterMilliseconds, pageSizeOverride } = {
+  const { withAuthentication, removeTokenAfterMilliseconds, pageSizeOverride } = {
     ...defaultOptions,
     ...options,
   };
@@ -24,7 +24,7 @@ export default function render(ui: React.ReactElement, options?: RenderOptions) 
   const result = rtlRender(
     <TestEnvironment
       store={store}
-      authToken={authToken}
+      withAuthentication={withAuthentication}
       removeTokenAfterMilliseconds={removeTokenAfterMilliseconds}
       pageSizeOverride={pageSizeOverride}
     >

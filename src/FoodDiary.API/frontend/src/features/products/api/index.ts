@@ -1,6 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
 import { API_URL } from 'src/config';
-import { getToken } from 'src/features/auth';
 import { SelectOption } from 'src/types';
 import { createUrl } from 'src/utils';
 import { ProductsResponse } from '../types';
@@ -16,11 +15,6 @@ const productsApi = createApi({
 
   baseQuery: fetchBaseQuery({
     baseUrl: `${API_URL}/api/v1/products`,
-
-    prepareHeaders: headers => {
-      headers.append('Authorization', `Bearer ${getToken()}`);
-      return headers;
-    },
   }),
 
   endpoints: builder => ({

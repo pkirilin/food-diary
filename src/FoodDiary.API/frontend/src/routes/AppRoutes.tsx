@@ -1,5 +1,5 @@
 import { Navigate, RouteObject, useRoutes } from 'react-router-dom';
-import { Auth, RequireAuth } from 'src/features/auth/components';
+import { Login, RequireAuth } from 'src/features/auth';
 import { Categories } from 'src/features/categories';
 import { Pages } from 'src/features/pages';
 import { PageContent } from 'src/features/pages/components';
@@ -12,8 +12,8 @@ const PUBLIC_ROUTES: RouteObject[] = [
     element: <Navigate to="/pages" />,
   },
   {
-    path: '/auth',
-    element: <Auth />,
+    path: '/login',
+    element: <Login />,
   },
 ];
 

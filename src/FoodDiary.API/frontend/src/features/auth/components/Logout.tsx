@@ -1,22 +1,16 @@
 import LogoutIcon from '@mui/icons-material/Logout';
 import { Tooltip, IconButton, styled } from '@mui/material';
 import React from 'react';
-import { useAuth } from '../hooks';
+import { API_URL } from 'src/config';
 
 const StyledLogoutIcon = styled(LogoutIcon)(({ theme }) => ({
   fill: theme.palette.background.default,
 }));
 
 const Logout: React.FC = () => {
-  const { signOut } = useAuth();
-
-  function handleLogoutClick() {
-    signOut();
-  }
-
   return (
     <Tooltip title="Logout">
-      <IconButton size="large" onClick={handleLogoutClick}>
+      <IconButton href={`${API_URL}/api/v1/account/logout`} size="large">
         <StyledLogoutIcon />
       </IconButton>
     </Tooltip>
