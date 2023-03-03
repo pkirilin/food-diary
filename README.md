@@ -64,3 +64,29 @@ This information can be extremely useful for people who want to keep track of en
     ```
 
 1. Navigate to <https://localhost:5001>
+
+## How to run frontend without backend
+
+Go to frontend project directory:
+
+```shell
+cd src/FoodDiary.API/frontend
+```
+
+Create local env config:
+
+```shell
+touch env.local
+```
+
+Fill `env.local` with this values:
+
+```text
+REACT_APP_MSW_ENABLED=true
+REACT_APP_TOKEN_CHECK_INTERVAL=50000000
+WDS_SOCKET_PORT=3000
+```
+
+- `REACT_APP_MSW_ENABLED`: enables mockServiceWorker to intercept and mock all API requests
+- `REACT_APP_TOKEN_CHECK_INTERVAL`: sets auth status check interval in milliseconds (set higher value to not get constantly logged out while developing app)
+- `WDS_SOCKET_PORT`: sets local server port for hot reload
