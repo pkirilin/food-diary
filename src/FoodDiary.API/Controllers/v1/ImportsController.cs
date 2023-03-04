@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Net;
 using System.Text.Json;
-using FoodDiary.API.Auth;
 using FoodDiary.Domain.Exceptions;
 using MediatR;
 using FoodDiary.Application.Imports.Requests;
@@ -18,7 +17,7 @@ namespace FoodDiary.API.Controllers.v1
 {
     [ApiController]
     [Route("api/v1/imports")]
-    [Authorize(Constants.Policies.GoogleJwt)]
+    [Authorize(Constants.AuthorizationPolicies.GoogleAllowedEmails)]
     [ApiExplorerSettings(GroupName = "v1")]
     public class ImportsController : ControllerBase
     {

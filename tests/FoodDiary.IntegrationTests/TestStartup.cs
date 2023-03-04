@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using FoodDiary.API;
-using FoodDiary.API.Auth;
 using FoodDiary.API.Controllers.v1;
 using FoodDiary.API.Extensions;
 using FoodDiary.API.Middlewares;
@@ -33,28 +32,6 @@ namespace FoodDiary.IntegrationTests
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<ImportOptions>(Configuration.GetSection("Import"));
-            
-            services.AddAuthentication(Constants.Schemes.GoogleJwt)
-                .AddJwtBearer(Constants.Schemes.GoogleJwt, options =>
-                {
-                    options.Authority = "https://accounts.google.com";
-                    options.Audience = "772368064111-19hqh3c6ksu56ke45nm24etn7qoma88v.apps.googleusercontent.com";
-                    options.RequireHttpsMetadata = false;
-                    options.TokenValidationParameters.AuthenticationType = Constants.Schemes.GoogleJwt;
-                    options.TokenValidationParameters.ValidIssuers = new[]
-                    {
-                        "https://accounts.google.com"
-                    };
-                });
-
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy(Constants.Policies.GoogleJwt, builder =>
-                {
-                    builder.AddAuthenticationSchemes(Constants.Schemes.GoogleJwt)
-                        .RequireAuthenticatedUser();
-                });
-            });
 
             // Injecting in-memory db context as a singleton to share stored data across multiple requests in single scenario
             services.AddDbContext<FoodDiaryContext>(options =>

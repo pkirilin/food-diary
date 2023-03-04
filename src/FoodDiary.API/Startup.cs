@@ -1,5 +1,6 @@
-﻿using System.Reflection;
-using FoodDiary.API.Auth;
+﻿using System;
+using System.Reflection;
+using System.Threading.Tasks;
 using FoodDiary.API.Extensions;
 using FoodDiary.API.Middlewares;
 using FoodDiary.API.Options;
@@ -10,6 +11,7 @@ using FoodDiary.Import.Extensions;
 using FoodDiary.Infrastructure.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -43,28 +45,40 @@ namespace FoodDiary.API
                 configuration.RootPath = "frontend/build";
             });
 
-            services.AddCors(options => options.AddPolicy("Dev frontend", builder =>
-                builder.WithOrigins("http://localhost:3000")
-                    .AllowAnyHeader()
-                    .AllowAnyMethod()
-                )
-            );
-
-            services.AddAuthentication(Constants.Schemes.GoogleJwt)
-                .AddJwtBearer(Constants.Schemes.GoogleJwt, options =>
+            services.AddAuthentication(Constants.AuthenticationSchemes.OAuthGoogle)
+                .AddCookie(Constants.AuthenticationSchemes.Cookie, options =>
                 {
-                    options.Authority = _googleAuthOptions.Authority;
-                    options.Audience = _googleAuthOptions.ClientId;
-                    options.RequireHttpsMetadata = Env.IsProduction();
-                    options.TokenValidationParameters.AuthenticationType = Constants.Schemes.GoogleJwt;
-                    options.TokenValidationParameters.ValidIssuers = _googleAuthOptions.ValidIssuers;
+                    options.SlidingExpiration = true;
+                    options.ExpireTimeSpan = TimeSpan.FromHours(1);
+                    options.ReturnUrlParameter = "returnUrl";
+                    options.Cookie.HttpOnly = true;
+                    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                    options.Cookie.SameSite = SameSiteMode.Lax;
+                    options.Cookie.MaxAge = TimeSpan.FromHours(1);
+
+                    options.Events.OnSigningOut = context =>
+                    {
+                        context.Response.Redirect("/");
+                        return Task.CompletedTask;
+                    };
+                })
+                .AddGoogle(Constants.AuthenticationSchemes.OAuthGoogle, options =>
+                {
+                    options.SignInScheme = Constants.AuthenticationSchemes.Cookie;
+                    options.ClientId = _googleAuthOptions.ClientId;
+                    options.ClientSecret = _googleAuthOptions.ClientSecret;
+                    options.SaveTokens = true;
+                    options.Scope.Add("openid");
+                    options.Scope.Add("profile");
+                    options.Scope.Add("email");
+                    options.ReturnUrlParameter = "returnUrl";
                 });
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy(Constants.Policies.GoogleJwt, builder =>
+                options.AddPolicy(Constants.AuthorizationPolicies.GoogleAllowedEmails, builder =>
                 {
-                    builder.AddAuthenticationSchemes(Constants.Schemes.GoogleJwt)
+                    builder.AddAuthenticationSchemes(Constants.AuthenticationSchemes.OAuthGoogle)
                         .RequireAuthenticatedUser()
                         .RequireClaim(Constants.ClaimTypes.Email, _authOptions.AllowedEmails);
                 });
@@ -93,8 +107,6 @@ namespace FoodDiary.API
                 {
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "FoodDiary API v1");
                 });
-
-                app.UseCors("Dev frontend");
             }
 
             app.UseMiddleware<ExceptionHandlerMiddleware>();

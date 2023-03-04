@@ -11,7 +11,6 @@ using FoodDiary.API.Requests;
 using MediatR;
 using FoodDiary.Application.Categories.Requests;
 using System.Linq;
-using FoodDiary.API.Auth;
 using FoodDiary.Application.Services.Categories;
 using Microsoft.AspNetCore.Authorization;
 
@@ -19,7 +18,7 @@ namespace FoodDiary.API.Controllers.v1
 {
     [ApiController]
     [Route("api/v1/categories")]
-    [Authorize(Constants.Policies.GoogleJwt)]
+    [Authorize(Constants.AuthorizationPolicies.GoogleAllowedEmails)]
     [ApiExplorerSettings(GroupName = "v1")]
     public class CategoriesController : ControllerBase
     {
