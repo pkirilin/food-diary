@@ -1,6 +1,7 @@
-import { screen } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import App from './App';
+import { AUTH_CHECK_INTERVAL } from './config';
 import { render } from './testing';
 
 test('authenticated user can navigate and view private content', () => {
@@ -17,20 +18,19 @@ test('unauthenticated user must sign in to access private content', () => {
   expect(screen.getByText(/sign in/i)).toBeInTheDocument();
 });
 
-// TODO: fix
-// test('user must login again in case of expired token', async () => {
-//   jest.useFakeTimers();
-//   const TOKEN_REMOVE_TIMEOUT = 1000;
-//   render(<App />, { withAuthentication: true, removeTokenAfterMilliseconds: TOKEN_REMOVE_TIMEOUT });
+test('user must login again if session expired', async () => {
+  const SIGN_OUT_TIMEOUT = 1000;
 
-//   act(() => {
-//     jest.advanceTimersByTime(TOKEN_REMOVE_TIMEOUT);
-//     jest.advanceTimersByTime(TOKEN_CHECK_INTERVAL);
-//   });
+  jest.useFakeTimers();
+  render(<App />, { withAuthentication: true, signOutAfterMilliseconds: SIGN_OUT_TIMEOUT });
+  act(() => {
+    jest.advanceTimersByTime(SIGN_OUT_TIMEOUT);
+    jest.advanceTimersByTime(AUTH_CHECK_INTERVAL);
+  });
+  jest.useRealTimers();
 
-//   expect(screen.getByText(/sign in/i)).toBeInTheDocument();
-//   jest.useRealTimers();
-// });
+  expect(screen.getByText(/sign in/i)).toBeInTheDocument();
+});
 
 test('user can logout of the application', async () => {
   render(<App />, { withAuthentication: true });

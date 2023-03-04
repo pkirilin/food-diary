@@ -1,11 +1,12 @@
 import { render as rtlRender } from '@testing-library/react';
 import React from 'react';
+import AppProvider from 'src/AppProvider';
 import { configureAppStore } from 'src/store';
 import TestEnvironment from './TestEnvironment';
 
 type RenderOptions = {
   withAuthentication?: boolean;
-  removeTokenAfterMilliseconds?: number;
+  signOutAfterMilliseconds?: number;
   pageSizeOverride?: number;
 };
 
@@ -14,7 +15,7 @@ const defaultOptions: RenderOptions = {
 };
 
 export default function render(ui: React.ReactElement, options?: RenderOptions) {
-  const { withAuthentication, removeTokenAfterMilliseconds, pageSizeOverride } = {
+  const { withAuthentication, signOutAfterMilliseconds, pageSizeOverride } = {
     ...defaultOptions,
     ...options,
   };
@@ -22,14 +23,15 @@ export default function render(ui: React.ReactElement, options?: RenderOptions) 
   const store: ReturnType<typeof configureAppStore> = configureAppStore();
 
   const result = rtlRender(
-    <TestEnvironment
-      store={store}
-      withAuthentication={withAuthentication}
-      removeTokenAfterMilliseconds={removeTokenAfterMilliseconds}
-      pageSizeOverride={pageSizeOverride}
-    >
-      {ui}
-    </TestEnvironment>,
+    <AppProvider store={store} withAuthentication={withAuthentication} useFakeAuth>
+      <TestEnvironment
+        store={store}
+        signOutAfterMilliseconds={signOutAfterMilliseconds}
+        pageSizeOverride={pageSizeOverride}
+      >
+        {ui}
+      </TestEnvironment>
+    </AppProvider>,
   );
 
   return result;

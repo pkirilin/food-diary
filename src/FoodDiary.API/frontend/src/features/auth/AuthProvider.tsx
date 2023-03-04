@@ -1,6 +1,6 @@
 import { skipToken } from '@reduxjs/toolkit/dist/query';
 import React, { useEffect, useState } from 'react';
-import { API_URL, TOKEN_CHECK_INTERVAL } from 'src/config';
+import { API_URL, AUTH_CHECK_INTERVAL } from 'src/config';
 import { useProfileQuery } from './api';
 import AuthContext from './AuthContext';
 
@@ -62,7 +62,7 @@ const AuthProviderWrapper: React.FC<React.PropsWithChildren<AuthProviderWrapperP
   useEffect(() => {
     const interval = setInterval(() => {
       refetchProfile();
-    }, TOKEN_CHECK_INTERVAL);
+    }, AUTH_CHECK_INTERVAL);
 
     return () => {
       clearInterval(interval);
