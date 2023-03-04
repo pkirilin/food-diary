@@ -16,7 +16,7 @@ const Login: React.FC = () => {
   return (
     <form action={`${API_URL}/api/v1/account/login`} method="POST">
       <input type="hidden" name="returnUrl" value={returnUrl} />
-      <input type="submit" value="Login with Google" />
+      <input type="submit" value="Sign in with Google" />
     </form>
   );
 };

@@ -28,7 +28,12 @@ const NavigationBar: React.FC = () => {
               <Menu />
             </Box>
             <Tooltip title="Logout">
-              <IconButton href={`${API_URL}/api/v1/account/logout`} size="large" edge="end">
+              <IconButton
+                href={`${API_URL}/api/v1/account/logout`}
+                size="large"
+                edge="end"
+                aria-label="Logout"
+              >
                 <LogoutIcon sx={theme => ({ fill: theme.palette.primary.contrastText })} />
               </IconButton>
             </Tooltip>
