@@ -18,6 +18,7 @@ namespace FoodDiary.IntegrationTests
                 .ConfigureAppConfiguration(builder =>
                 {
                     builder.AddJsonFile("appsettings.json", false);
+                    builder.AddJsonFile("appsettings.Test.json", true);
                     builder.AddEnvironmentVariables();
                 })
                 .UseStartup<TStartup>();
@@ -28,6 +29,7 @@ namespace FoodDiary.IntegrationTests
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             builder.UseContentRoot(".");
+            builder.UseEnvironment("Test");
             
             builder.ConfigureTestServices(services =>
             {

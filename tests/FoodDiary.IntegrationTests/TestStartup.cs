@@ -6,11 +6,14 @@ using FoodDiary.API.Extensions;
 using FoodDiary.API.Middlewares;
 using FoodDiary.API.Options;
 using FoodDiary.Application.Extensions;
+using FoodDiary.Configuration;
 using FoodDiary.Domain.Abstractions.v2;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Enums;
 using FoodDiary.Import.Extensions;
 using FoodDiary.Infrastructure;
+using FoodDiary.IntegrationTests.Fakes;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -22,15 +25,31 @@ namespace FoodDiary.IntegrationTests
 {
     public class TestStartup
     {
+        private readonly AuthOptions _authOptions;
+        
         public TestStartup(IConfiguration configuration)
         {
             Configuration = configuration;
+            _authOptions = Configuration.GetSection("Auth").Get<AuthOptions>();
         }
 
         public IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAuthentication("Test")
+                .AddScheme<AuthenticationSchemeOptions, FakeAuthenticationHandler>("Test", "Test", _ => {});
+            
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(Constants.AuthorizationPolicies.GoogleAllowedEmails, builder =>
+                {
+                    builder.AddAuthenticationSchemes("Test")
+                        .RequireAuthenticatedUser()
+                        .RequireClaim(Constants.ClaimTypes.Email, _authOptions.AllowedEmails);
+                });
+            });
+
             services.Configure<ImportOptions>(Configuration.GetSection("Import"));
 
             // Injecting in-memory db context as a singleton to share stored data across multiple requests in single scenario
