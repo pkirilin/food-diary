@@ -1,8 +1,12 @@
 import { createContext } from 'react';
 
+export type SignInContext = {
+  returnUrl?: string;
+};
+
 export type AuthContextValue = {
   isAuthenticated: boolean;
-  signIn: () => void;
+  signIn: (context: SignInContext) => void;
   signOut: () => void;
 };
 

@@ -12,8 +12,8 @@ namespace FoodDiary.API.Controllers.v1;
 [Route("api/v1/account")]
 public class AccountController : ControllerBase
 {
-    [HttpPost("login")]
-    public IActionResult Login([FromForm] string? returnUrl)
+    [HttpGet("login")]
+    public IActionResult Login([FromQuery] string? returnUrl)
     {
         var redirectUrl = Url.Action("LoginCallback", "Account", new { returnUrl });
         

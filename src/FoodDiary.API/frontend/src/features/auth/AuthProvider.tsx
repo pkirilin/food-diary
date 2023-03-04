@@ -1,8 +1,9 @@
 import { skipToken } from '@reduxjs/toolkit/dist/query';
 import React, { useEffect, useState } from 'react';
 import { API_URL, AUTH_CHECK_INTERVAL } from 'src/config';
+import { createUrl } from '../__shared__/utils';
 import { useProfileQuery } from './api';
-import AuthContext from './AuthContext';
+import AuthContext, { SignInContext } from './AuthContext';
 
 type AuthProviderProps = {
   isAuthenticated: boolean;
@@ -16,8 +17,13 @@ const AuthProvider: React.FC<React.PropsWithChildren<AuthProviderProps>> = ({
 }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(isAuthenticatedInitial);
 
-  function signIn() {
-    setIsAuthenticated(true);
+  function signIn({ returnUrl }: SignInContext) {
+    if (useFakeAuth) {
+      setIsAuthenticated(true);
+    } else {
+      const loginUrl = createUrl(`${API_URL}/api/v1/account/login`, { returnUrl });
+      window.location.href = loginUrl;
+    }
   }
 
   function signOut() {
