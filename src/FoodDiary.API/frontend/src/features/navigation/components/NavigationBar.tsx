@@ -8,10 +8,10 @@ import Menu from './Menu';
 import MobileMenu from './MobileMenu';
 
 const NavigationBar: React.FC = () => {
-  const { signOut } = useAuth();
+  const { logout } = useAuth();
 
   function handleLogout() {
-    signOut();
+    logout();
   }
 
   return (

@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using FoodDiary.Contracts.Account;
 using Microsoft.AspNetCore.Authentication;
@@ -29,7 +30,7 @@ public class AccountController : ControllerBase
     [HttpGet("login-callback")]
     public IActionResult LoginCallback(string returnUrl = "/")
     {
-        return Redirect(returnUrl);
+        return Redirect($"/post-login?returnUrl={Uri.EscapeDataString(returnUrl)}");
     }
     
     [HttpGet("logout")]

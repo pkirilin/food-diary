@@ -6,14 +6,14 @@ import { NavigationBar } from './features/navigation';
 import { AppRoutes } from './routes';
 
 const App: React.FC = () => {
-  const { isAuthenticated } = useAuth();
+  const { user } = useAuth();
 
   return (
     <React.Fragment>
       <Helmet>
         <title>Food diary</title>
       </Helmet>
-      {isAuthenticated && <NavigationBar />}
+      {user?.isAuthenticated && <NavigationBar />}
       <Box component="main" position="relative">
         <AppRoutes />
       </Box>

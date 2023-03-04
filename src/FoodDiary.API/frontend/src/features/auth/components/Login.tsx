@@ -4,14 +4,18 @@ import { useAuth, useReturnUrl } from '../hooks';
 
 const Login: React.FC = () => {
   const returnUrl = useReturnUrl();
-  const { isAuthenticated, signIn } = useAuth();
+  const { user, isLoggingIn, login } = useAuth();
 
   function handleSignInWithGoogle() {
-    signIn({ returnUrl });
+    login({ returnUrl });
   }
 
-  if (isAuthenticated) {
+  if (user && user.isAuthenticated) {
     return <Navigate to="/" />;
+  }
+
+  if (isLoggingIn) {
+    return <React.Fragment>Logging in...</React.Fragment>;
   }
 
   return <button onClick={handleSignInWithGoogle}>Sign in with Google</button>;

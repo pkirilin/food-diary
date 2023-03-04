@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import api from './api';
 import { useAppSelector } from './features/__shared__/hooks';
 import accountApi from './features/auth/api';
+import authReducer from './features/auth/store';
 import categoriesApi from './features/categories/api';
 import notesReducer from './features/notes/slice';
 import pagesReducer from './features/pages/slice';
@@ -15,6 +16,7 @@ export function configureAppStore() {
       [accountApi.reducerPath]: accountApi.reducer,
       [categoriesApi.reducerPath]: categoriesApi.reducer,
       [productsApi.reducerPath]: productsApi.reducer,
+      auth: authReducer,
       pages: pagesReducer,
       products: productsReducer,
       notes: notesReducer,

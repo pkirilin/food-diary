@@ -1,5 +1,5 @@
 import { Navigate, RouteObject, useRoutes } from 'react-router-dom';
-import { Login, RequireAuth } from 'src/features/auth';
+import { Login, PostLogin, PostLogout, RequireAuth } from 'src/features/auth';
 import { Categories } from 'src/features/categories';
 import { Pages } from 'src/features/pages';
 import { PageContent } from 'src/features/pages/components';
@@ -8,16 +8,24 @@ import NotFound from './NotFound';
 
 const PUBLIC_ROUTES: RouteObject[] = [
   {
-    path: '/',
-    element: <Navigate to="/pages" />,
-  },
-  {
     path: '/login',
     element: <Login />,
+  },
+  {
+    path: '/post-login',
+    element: <PostLogin />,
+  },
+  {
+    path: '/post-logout',
+    element: <PostLogout />,
   },
 ];
 
 const PRIVATE_ROUTES: RouteObject[] = [
+  {
+    path: '/',
+    element: <Navigate to="/pages" />,
+  },
   {
     path: '/pages',
     element: <Pages />,

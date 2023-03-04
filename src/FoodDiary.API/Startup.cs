@@ -58,7 +58,7 @@ namespace FoodDiary.API
 
                     options.Events.OnSigningOut = context =>
                     {
-                        context.Response.Redirect("/");
+                        context.Response.Redirect("/post-logout");
                         return Task.CompletedTask;
                     };
                 })

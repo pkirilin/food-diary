@@ -15,7 +15,7 @@ const TestEnvironment: React.FC<React.PropsWithChildren<TestEnvironmentProps>> =
   signOutAfterMilliseconds,
   pageSizeOverride,
 }) => {
-  const { signOut } = useAuth();
+  const { logout } = useAuth();
 
   useEffect(() => {
     if (!signOutAfterMilliseconds) {
@@ -23,13 +23,13 @@ const TestEnvironment: React.FC<React.PropsWithChildren<TestEnvironmentProps>> =
     }
 
     const timeout = setTimeout(() => {
-      signOut();
+      logout();
     }, signOutAfterMilliseconds);
 
     return () => {
       clearTimeout(timeout);
     };
-  }, [signOut, signOutAfterMilliseconds]);
+  }, [logout, signOutAfterMilliseconds]);
 
   useEffect(() => {
     if (pageSizeOverride) {
