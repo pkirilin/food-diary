@@ -83,10 +83,10 @@ Fill `env.local` with this values:
 
 ```text
 REACT_APP_MSW_ENABLED=true
-REACT_APP_TOKEN_CHECK_INTERVAL=50000000
+REACT_APP_AUTH_CHECK_INTERVAL=50000000
 WDS_SOCKET_PORT=3000
 ```
 
 - `REACT_APP_MSW_ENABLED`: enables mockServiceWorker to intercept and mock all API requests
-- `REACT_APP_TOKEN_CHECK_INTERVAL`: sets auth status check interval in milliseconds (set higher value to not get constantly logged out while developing app)
+- `REACT_APP_AUTH_CHECK_INTERVAL`: sets auth status check interval in milliseconds (set higher value to not get constantly logged out while developing app)
 - `WDS_SOCKET_PORT`: sets local server port for hot reload
