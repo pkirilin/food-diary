@@ -1,17 +1,20 @@
+import { skipToken } from '@reduxjs/toolkit/dist/query';
 import React, { useEffect, useState } from 'react';
-import { TOKEN_CHECK_INTERVAL } from 'src/config';
+import { API_URL, TOKEN_CHECK_INTERVAL } from 'src/config';
 import { useProfileQuery } from './api';
 import AuthContext from './AuthContext';
 
 type AuthProviderProps = {
-  withAuthentication?: boolean;
+  isAuthenticated: boolean;
+  useFakeAuth?: boolean;
 };
 
 const AuthProvider: React.FC<React.PropsWithChildren<AuthProviderProps>> = ({
   children,
-  withAuthentication,
+  isAuthenticated: isAuthenticatedInitial,
+  useFakeAuth,
 }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(!!withAuthentication);
+  const [isAuthenticated, setIsAuthenticated] = useState(isAuthenticatedInitial);
 
   function signIn() {
     setIsAuthenticated(true);
@@ -19,6 +22,10 @@ const AuthProvider: React.FC<React.PropsWithChildren<AuthProviderProps>> = ({
 
   function signOut() {
     setIsAuthenticated(false);
+
+    if (!useFakeAuth) {
+      window.location.href = `${API_URL}/api/v1/account/logout`;
+    }
   }
 
   return (
@@ -35,23 +42,22 @@ const AuthProvider: React.FC<React.PropsWithChildren<AuthProviderProps>> = ({
 };
 
 type AuthProviderWrapperProps = {
-  withAuthentication?: boolean;
+  isAuthenticated?: boolean;
+  useFakeAuth?: boolean;
 };
 
 const AuthProviderWrapper: React.FC<React.PropsWithChildren<AuthProviderWrapperProps>> = ({
-  withAuthentication,
+  isAuthenticated,
+  useFakeAuth,
   children,
 }) => {
+  const profileQueryArg = useFakeAuth ? skipToken : {};
+
   const {
-    data,
-    isSuccess,
+    data: profileQueryData,
+    isSuccess: isSuccessProfileQuery,
     refetch: refetchProfile,
-  } = useProfileQuery(
-    {},
-    {
-      skip: withAuthentication !== undefined,
-    },
-  );
+  } = useProfileQuery(profileQueryArg);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -63,15 +69,23 @@ const AuthProviderWrapper: React.FC<React.PropsWithChildren<AuthProviderWrapperP
     };
   }, [refetchProfile]);
 
-  if (withAuthentication !== undefined) {
-    return <AuthProvider withAuthentication={withAuthentication}>{children}</AuthProvider>;
+  if (useFakeAuth) {
+    return (
+      <AuthProvider isAuthenticated={!!isAuthenticated} useFakeAuth={useFakeAuth}>
+        {children}
+      </AuthProvider>
+    );
   }
 
-  if (!isSuccess) {
+  if (!isSuccessProfileQuery) {
     return <React.Fragment>Authenticating...</React.Fragment>;
   }
 
-  return <AuthProvider withAuthentication={data.isAuthenticated}>{children}</AuthProvider>;
+  return (
+    <AuthProvider isAuthenticated={profileQueryData.isAuthenticated} useFakeAuth={useFakeAuth}>
+      {children}
+    </AuthProvider>
+  );
 };
 
 export default AuthProviderWrapper;

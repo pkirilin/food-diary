@@ -42,7 +42,7 @@ const TestEnvironment: React.FC<React.PropsWithChildren<TestEnvironmentProps>> =
   }, [pageSizeOverride, store]);
 
   return (
-    <AppProvider store={store} withAuthentication={isAuthenticated}>
+    <AppProvider store={store} withAuthentication={isAuthenticated} useFakeAuth>
       {children}
     </AppProvider>
   );

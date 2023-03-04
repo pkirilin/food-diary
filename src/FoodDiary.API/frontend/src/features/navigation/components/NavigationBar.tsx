@@ -1,13 +1,19 @@
 import LogoutIcon from '@mui/icons-material/Logout';
 import { AppBar, Box, Container, IconButton, Toolbar, Tooltip } from '@mui/material';
 import React from 'react';
-import { API_URL } from 'src/config';
+import { useAuth } from 'src/features/auth';
 import { APP_BAR_HEIGHT, APP_NAME } from '../constants';
 import BrandLink from './BrandLink';
 import Menu from './Menu';
 import MobileMenu from './MobileMenu';
 
 const NavigationBar: React.FC = () => {
+  const { signOut } = useAuth();
+
+  function handleLogout() {
+    signOut();
+  }
+
   return (
     <AppBar component="nav" position="sticky">
       <Container>
@@ -28,12 +34,7 @@ const NavigationBar: React.FC = () => {
               <Menu />
             </Box>
             <Tooltip title="Logout">
-              <IconButton
-                href={`${API_URL}/api/v1/account/logout`}
-                size="large"
-                edge="end"
-                aria-label="Logout"
-              >
+              <IconButton size="large" edge="end" aria-label="Logout" onClick={handleLogout}>
                 <LogoutIcon sx={theme => ({ fill: theme.palette.primary.contrastText })} />
               </IconButton>
             </Tooltip>
