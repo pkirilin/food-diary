@@ -1,5 +1,6 @@
 import { skipToken } from '@reduxjs/toolkit/dist/query';
 import { useCallback, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { API_URL, AUTH_CHECK_INTERVAL } from 'src/config';
 import { useAppDispatch, useAppSelector } from 'src/hooks';
 import { createUrl } from 'src/utils';
@@ -20,13 +21,15 @@ type UseAuthHookResult = {
   executePostLogout: () => void;
 };
 
-const USE_FAKE_AUTH =
-  process.env.NODE_ENV === 'test' ||
-  (process.env.NODE_ENV === 'development' && process.env.REACT_APP_MSW_ENABLED === 'true');
+const USE_FAKE_AUTH_DEV =
+  process.env.NODE_ENV === 'development' && process.env.REACT_APP_MSW_ENABLED === 'true';
+
+const USE_FAKE_AUTH = process.env.NODE_ENV === 'test' || USE_FAKE_AUTH_DEV;
 
 export default function useAuth(): UseAuthHookResult {
   const user = useAppSelector(state => state.auth.user);
   const dispatch = useAppDispatch();
+  const location = useLocation();
 
   const {
     data: profile,
@@ -86,6 +89,16 @@ export default function useAuth(): UseAuthHookResult {
       signIn();
     }
   }, [isProfileError, isProfileSuccess, profile?.isAuthenticated, signIn, signOut]);
+
+  useEffect(() => {
+    if (USE_FAKE_AUTH_DEV) {
+      if (location.pathname.startsWith('/login')) {
+        signOut();
+      } else {
+        signIn();
+      }
+    }
+  }, [location, signIn, signOut]);
 
   return {
     user,
