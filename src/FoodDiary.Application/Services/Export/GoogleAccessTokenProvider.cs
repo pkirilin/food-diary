@@ -20,9 +20,8 @@ internal class GoogleAccessTokenProvider : IGoogleAccessTokenProvider
         {
             return null;
         }
-
-        // TODO: move to constants
-        var auth = await _httpContextAccessor.HttpContext.AuthenticateAsync("oauth-google");
+        
+        var auth = await _httpContextAccessor.HttpContext.AuthenticateAsync(Constants.AuthenticationSchemes.OAuthGoogle);
         var accessToken = auth.Properties?.GetTokenValue("access_token");
         return accessToken;
     }

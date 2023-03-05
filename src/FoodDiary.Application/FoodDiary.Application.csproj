@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FoodDiary.Configuration\FoodDiary.Configuration.csproj" />
+    <ProjectReference Include="..\FoodDiary.Constants\FoodDiary.Constants.csproj" />
     <ProjectReference Include="..\FoodDiary.Contracts\FoodDiary.Contracts.csproj" />
     <ProjectReference Include="..\FoodDiary.Domain\FoodDiary.Domain.csproj" />
     <ProjectReference Include="..\FoodDiary.Export.GoogleDocs\FoodDiary.Export.GoogleDocs.csproj" />

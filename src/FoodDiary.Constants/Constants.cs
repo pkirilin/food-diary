@@ -1,4 +1,4 @@
-namespace FoodDiary.API;
+﻿namespace FoodDiary;
 
 public static class Constants
 {
