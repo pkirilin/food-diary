@@ -1,6 +1,6 @@
 using System;
 using System.Threading.Tasks;
-using FoodDiary.Contracts.Account;
+using FoodDiary.Contracts.Auth;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -46,7 +46,7 @@ public class AuthController : ControllerBase
     {
         var auth = await HttpContext.AuthenticateAsync(Constants.AuthenticationSchemes.OAuthGoogle);
 
-        return Ok(new AccountProfileResponse
+        return Ok(new AuthProfileResponse
         {
             IsAuthenticated = auth.Succeeded
         });

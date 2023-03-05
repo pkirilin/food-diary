@@ -1,7 +1,7 @@
-namespace FoodDiary.Contracts.Account;
+namespace FoodDiary.Contracts.Auth;
 
 // ReSharper disable once UnusedAutoPropertyAccessor.Global
-public class AccountProfileResponse
+public class AuthProfileResponse
 {
     public bool IsAuthenticated { get; init; }
 }
