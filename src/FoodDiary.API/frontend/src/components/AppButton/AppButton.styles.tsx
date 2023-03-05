@@ -5,8 +5,7 @@ export const AppButtonRoot = styled('div')(() => ({
   alignItems: 'center',
 }));
 
-export const AppButtonWrapper = styled('div')(({ theme }) => ({
-  margin: theme.spacing(1),
+export const AppButtonWrapper = styled('div')(() => ({
   position: 'relative',
 }));
 
