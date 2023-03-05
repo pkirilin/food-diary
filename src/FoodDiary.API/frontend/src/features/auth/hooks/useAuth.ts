@@ -52,7 +52,7 @@ export default function useAuth(): UseAuthHookResult {
       if (USE_FAKE_AUTH) {
         signIn();
       } else {
-        const loginUrl = createUrl(`${API_URL}/api/v1/account/login`, { returnUrl });
+        const loginUrl = createUrl(`${API_URL}/api/v1/auth/login`, { returnUrl });
         window.location.href = loginUrl;
       }
     },
@@ -63,7 +63,7 @@ export default function useAuth(): UseAuthHookResult {
     if (USE_FAKE_AUTH) {
       signOut();
     } else {
-      const logoutUrl = `${API_URL}/api/v1/account/logout`;
+      const logoutUrl = `${API_URL}/api/v1/auth/logout`;
       window.location.href = logoutUrl;
     }
   }, [signOut]);

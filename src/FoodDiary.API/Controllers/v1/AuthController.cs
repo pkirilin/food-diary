@@ -10,13 +10,13 @@ using Microsoft.AspNetCore.Mvc;
 namespace FoodDiary.API.Controllers.v1;
 
 [ApiController]
-[Route("api/v1/account")]
-public class AccountController : ControllerBase
+[Route("api/v1/auth")]
+public class AuthController : ControllerBase
 {
     [HttpGet("login")]
     public IActionResult Login([FromQuery] string? returnUrl)
     {
-        var redirectUrl = Url.Action("LoginCallback", "Account", new { returnUrl });
+        var redirectUrl = Url.Action("LoginCallback", "Auth", new { returnUrl });
         
         var properties = new AuthenticationProperties
         {

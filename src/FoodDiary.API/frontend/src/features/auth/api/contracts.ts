@@ -1,3 +1,3 @@
-export type AccountProfileResponse = {
+export type AuthProfileResponse = {
   isAuthenticated: boolean;
 };

@@ -1,16 +1,16 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
 import { API_URL } from 'src/config';
-import { AccountProfileResponse } from './contracts';
+import { AuthProfileResponse } from './contracts';
 
-const accountApi = createApi({
-  reducerPath: 'api.account',
+const authApi = createApi({
+  reducerPath: 'api.auth',
 
   baseQuery: fetchBaseQuery({
-    baseUrl: `${API_URL}/api/v1/account`,
+    baseUrl: `${API_URL}/api/v1/auth`,
   }),
 
   endpoints: builder => ({
-    profile: builder.query<AccountProfileResponse, unknown>({
+    profile: builder.query<AuthProfileResponse, unknown>({
       query: () => ({
         method: 'GET',
         url: '/profile',
@@ -19,6 +19,6 @@ const accountApi = createApi({
   }),
 });
 
-export const { useProfileQuery } = accountApi;
+export const { useProfileQuery } = authApi;
 
-export default accountApi;
+export default authApi;
