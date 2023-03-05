@@ -35,10 +35,10 @@ export default function render(ui: React.ReactElement, options?: RenderOptions) 
   const store: ReturnType<typeof configureAppStore> = configureAppStore();
   prepareStore(store, optionsToApply);
 
-  const { withAuthentication, signOutAfterMilliseconds, pageSizeOverride } = optionsToApply;
+  const { signOutAfterMilliseconds, pageSizeOverride } = optionsToApply;
 
   const result = rtlRender(
-    <AppProvider store={store} withAuthentication={withAuthentication} useFakeAuth>
+    <AppProvider store={store}>
       <TestEnvironment
         store={store}
         signOutAfterMilliseconds={signOutAfterMilliseconds}

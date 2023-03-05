@@ -14,16 +14,9 @@ declare module '@mui/styles/defaultTheme' {
 
 type AppProviderProps = {
   store: Store;
-  withAuthentication?: boolean;
-  useFakeAuth?: boolean;
 };
 
-const AppProvider: React.FC<React.PropsWithChildren<AppProviderProps>> = ({
-  children,
-  store,
-  withAuthentication,
-  useFakeAuth,
-}) => {
+const AppProvider: React.FC<React.PropsWithChildren<AppProviderProps>> = ({ children, store }) => {
   return (
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={theme}>

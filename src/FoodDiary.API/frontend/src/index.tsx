@@ -7,14 +7,11 @@ import { initMocks } from './testing/server';
 
 initMocks();
 
-const useFakeAuth =
-  process.env.NODE_ENV === 'development' && process.env.REACT_APP_MSW_ENABLED === 'true';
-
 const container = document.getElementById('root') as HTMLElement;
 const root = createRoot(container);
 
 root.render(
-  <AppProvider store={store} useFakeAuth={useFakeAuth}>
+  <AppProvider store={store}>
     <App />
   </AppProvider>,
 );
