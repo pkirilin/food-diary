@@ -39,6 +39,7 @@ namespace FoodDiary.API
         {
             services.AddControllers();
             services.AddFoodDiarySwagger();
+            services.AddHttpContextAccessor();
             
             services.AddSpaStaticFiles(configuration =>
             {
@@ -71,6 +72,8 @@ namespace FoodDiary.API
                     options.Scope.Add("openid");
                     options.Scope.Add("profile");
                     options.Scope.Add("email");
+                    options.Scope.Add("https://www.googleapis.com/auth/documents");
+                    options.Scope.Add("https://www.googleapis.com/auth/drive");
                     options.ReturnUrlParameter = "returnUrl";
                 });
 

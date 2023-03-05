@@ -1,5 +1,6 @@
 using FoodDiary.Contracts.Export;
 using FoodDiary.Export.GoogleDocs.Builders;
+using FoodDiary.Export.GoogleDocs.Contracts;
 
 namespace FoodDiary.Export.GoogleDocs.Implementation;
 
@@ -14,14 +15,21 @@ internal class GoogleDocsExportService : IGoogleDocsExportService
         _driveClient = driveClient;
     }
     
-    public async Task<string> ExportAsync(ExportFileDto exportFileDto, string accessToken,
-        CancellationToken cancellationToken)
+    public async Task<string> ExportAsync(ExportRequest request, CancellationToken cancellationToken)
     {
-        var exportDocument = await _docsClient.CreateDocumentAsync(exportFileDto.FileName, accessToken, cancellationToken);
+        if (string.IsNullOrWhiteSpace(request.AccessToken))
+        {
+            throw new InvalidOperationException("Failed to export pages to Google Docs: access_token is empty");
+        }
+        
+        var exportDocument = await _docsClient.CreateDocumentAsync(request.File.FileName,
+            request.AccessToken,
+            cancellationToken);
+        
         var documentBuilder = new DocumentBuilder();
         var pageIndex = 0;
 
-        foreach (var page in exportFileDto.Pages)
+        foreach (var page in request.File.Pages)
         {
             documentBuilder.AddHeader(page.FormattedDate);
             
@@ -48,15 +56,20 @@ internal class GoogleDocsExportService : IGoogleDocsExportService
             tableBuilder.SetColumnWidths(GetTableColumnWidths());
             tableBuilder.EndTable();
 
-            if (pageIndex < exportFileDto.Pages.Length - 1)
+            if (pageIndex < request.File.Pages.Length - 1)
                 documentBuilder.AddPageBreak();
 
             pageIndex++;
         }
 
         var updateRequests = documentBuilder.GetBatchUpdateRequests();
-        await _docsClient.BatchUpdateDocumentAsync(exportDocument.DocumentId, updateRequests, accessToken, cancellationToken);
-        await _driveClient.SaveDocumentAsync(exportDocument, accessToken, cancellationToken);
+        
+        await _docsClient.BatchUpdateDocumentAsync(exportDocument.DocumentId,
+            updateRequests,
+            request.AccessToken,
+            cancellationToken);
+        
+        await _driveClient.SaveDocumentAsync(exportDocument, request.AccessToken, cancellationToken);
         
         return exportDocument.DocumentId;
     }

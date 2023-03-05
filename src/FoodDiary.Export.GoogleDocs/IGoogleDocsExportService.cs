@@ -1,8 +1,8 @@
-using FoodDiary.Contracts.Export;
+using FoodDiary.Export.GoogleDocs.Contracts;
 
 namespace FoodDiary.Export.GoogleDocs;
 
 public interface IGoogleDocsExportService
 {
-    Task<string> ExportAsync(ExportFileDto exportFileDto, string accessToken, CancellationToken cancellationToken);
+    Task<string> ExportAsync(ExportRequest request, CancellationToken cancellationToken);
 }

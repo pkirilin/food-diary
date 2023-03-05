@@ -24,8 +24,7 @@ public class ExportTests : IClassFixture<FoodDiaryWebApplicationFactory>
         var exportRequest = new ExportToGoogleDocsRequestDto
         {
             StartDate = DateTime.Parse("2022-05-01"),
-            EndDate = DateTime.Parse("2022-05-11"),
-            AccessToken = "test"
+            EndDate = DateTime.Parse("2022-05-11")
         };
         
         var response = await client.PostAsJsonAsync("api/v1/exports/google-docs", exportRequest);
