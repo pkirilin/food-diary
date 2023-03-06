@@ -4,11 +4,11 @@ import { useAuth } from '../hooks';
 import AuthCallbackProgress from './AuthCallbackProgress';
 
 const PostLogout: React.FC = () => {
-  const { user, executePostLogout } = useAuth();
+  const { user, completeLogout } = useAuth();
 
   useEffect(() => {
-    executePostLogout();
-  }, [executePostLogout]);
+    completeLogout();
+  }, [completeLogout]);
 
   if (user && !user.isAuthenticated) {
     return <Navigate to="/" />;

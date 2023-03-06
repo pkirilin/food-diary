@@ -4,12 +4,12 @@ import { useAuth } from '../hooks';
 import AuthCallbackProgress from './AuthCallbackProgress';
 
 const PostLogin: React.FC = () => {
-  const { user, executePostLogin } = useAuth();
+  const { user, completeLogin } = useAuth();
   const params = useParams();
 
   useEffect(() => {
-    executePostLogin();
-  }, [executePostLogin]);
+    completeLogin();
+  }, [completeLogin]);
 
   if (user && user.isAuthenticated) {
     const redirectUrl = params['returnUrl'] ?? '/';
