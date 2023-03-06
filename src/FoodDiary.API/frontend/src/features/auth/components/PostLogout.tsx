@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../hooks';
+import AuthCallbackProgress from './AuthCallbackProgress';
 
 const PostLogout: React.FC = () => {
   const { user, executePostLogout } = useAuth();
@@ -13,7 +14,7 @@ const PostLogout: React.FC = () => {
     return <Navigate to="/" />;
   }
 
-  return <React.Fragment>Logging out...</React.Fragment>;
+  return <AuthCallbackProgress label="Logging out..." />;
 };
 
 export default PostLogout;

@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 import { useAuth } from '../hooks';
+import AuthCallbackProgress from './AuthCallbackProgress';
 
 const PostLogin: React.FC = () => {
   const { user, executePostLogin } = useAuth();
@@ -15,7 +16,7 @@ const PostLogin: React.FC = () => {
     return <Navigate to={redirectUrl} />;
   }
 
-  return <React.Fragment>Logging in...</React.Fragment>;
+  return <AuthCallbackProgress label="Logging in..." />;
 };
 
 export default PostLogin;

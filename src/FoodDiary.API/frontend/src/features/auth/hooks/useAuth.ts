@@ -92,7 +92,10 @@ export default function useAuth(): UseAuthHookResult {
 
   useEffect(() => {
     if (USE_FAKE_AUTH_DEV) {
-      if (location.pathname.startsWith('/login')) {
+      const publicRoutes = ['/login', '/post-login'];
+      const isPublicRoute = publicRoutes.some(route => location.pathname.startsWith(route));
+
+      if (isPublicRoute) {
         signOut();
       } else {
         signIn();
