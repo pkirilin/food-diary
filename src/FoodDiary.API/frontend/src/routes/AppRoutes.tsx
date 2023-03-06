@@ -1,6 +1,7 @@
 import { Navigate, RouteObject, useRoutes } from 'react-router-dom';
 import { Login, PostLogin, PostLogout, RequireAuth } from 'src/features/auth';
 import { Categories } from 'src/features/categories';
+import { NavigationBar } from 'src/features/navigation';
 import { Pages } from 'src/features/pages';
 import { PageContent } from 'src/features/pages/components';
 import { Products } from 'src/features/products';
@@ -49,7 +50,12 @@ export default function AppRoutes() {
     ...PUBLIC_ROUTES,
     ...PRIVATE_ROUTES.map(route => ({
       ...route,
-      element: <RequireAuth>{route.element}</RequireAuth>,
+      element: (
+        <RequireAuth>
+          <NavigationBar />
+          {route.element}
+        </RequireAuth>
+      ),
     })),
     {
       path: '*',
