@@ -2,7 +2,7 @@ import { SetupWorkerApi } from 'msw';
 import { initializeDb } from './db';
 
 const IGNORED_HOSTNAMES = ['apis.google.com', 'fonts.gstatic.com'];
-const IGNORED_PATHNAMES = ['manifest.json', 'favicon.ico', 'main.*.hot-update.js'];
+const IGNORED_PATHNAMES = ['manifest.json', 'favicon.*', 'main.*.hot-update.js'];
 
 type Browser = {
   worker: SetupWorkerApi;
