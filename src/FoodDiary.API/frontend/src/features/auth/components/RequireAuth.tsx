@@ -1,33 +1,18 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { TOKEN_CHECK_INTERVAL } from 'src/config';
-import { useAuth } from '../hooks';
+import { useAuth, useAuthProfileCheck } from '../hooks';
 import { NavigationState } from '../types';
-import { getToken } from '../utils';
 
 type RequireAuthProps = React.PropsWithChildren<unknown>;
 
 const RequireAuth: React.FC<RequireAuthProps> = ({ children }) => {
-  const { isAuthenticated, signOut } = useAuth();
+  useAuthProfileCheck();
+  const { user } = useAuth();
   const location = useLocation();
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const token = getToken();
-
-      if (!token) {
-        signOut();
-      }
-    }, TOKEN_CHECK_INTERVAL);
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, [signOut]);
-
-  if (!isAuthenticated) {
+  if (user && !user.isAuthenticated) {
     const state: NavigationState = { from: location };
-    return <Navigate to="/auth" state={state} replace />;
+    return <Navigate to="/login" replace state={state} />;
   }
 
   return <React.Fragment>{children}</React.Fragment>;

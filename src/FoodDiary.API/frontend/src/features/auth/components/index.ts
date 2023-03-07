@@ -1,5 +1,6 @@
-import Auth from './Auth';
-import Logout from './Logout';
+import Login from './Login';
+import PostLogin from './PostLogin';
+import PostLogout from './PostLogout';
 import RequireAuth from './RequireAuth';
 
-export { Auth, RequireAuth, Logout };
+export { Login, RequireAuth, PostLogin, PostLogout };

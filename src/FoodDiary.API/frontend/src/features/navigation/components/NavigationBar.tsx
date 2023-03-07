@@ -8,10 +8,10 @@ import Menu from './Menu';
 import MobileMenu from './MobileMenu';
 
 const NavigationBar: React.FC = () => {
-  const { signOut } = useAuth();
+  const { logout } = useAuth();
 
   function handleLogout() {
-    signOut();
+    logout();
   }
 
   return (
@@ -34,7 +34,7 @@ const NavigationBar: React.FC = () => {
               <Menu />
             </Box>
             <Tooltip title="Logout">
-              <IconButton size="large" edge="end" onClick={handleLogout}>
+              <IconButton size="large" edge="end" aria-label="Logout" onClick={handleLogout}>
                 <LogoutIcon sx={theme => ({ fill: theme.palette.primary.contrastText })} />
               </IconButton>
             </Tooltip>

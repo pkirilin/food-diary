@@ -1,9 +1,11 @@
+#nullable enable
 using System.IO;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using FoodDiary.Export.GoogleDocs;
+using FoodDiary.Export.GoogleDocs.Contracts;
 
 namespace FoodDiary.Application.Services.Export;
 
@@ -11,11 +13,15 @@ internal class ExportService : IExportService
 {
     private readonly IExportDataLoader _exportDataLoader;
     private readonly IGoogleDocsExportService _googleDocsService;
+    private readonly IGoogleAccessTokenProvider _googleAccessTokenProvider;
 
-    public ExportService(IExportDataLoader exportDataLoader, IGoogleDocsExportService googleDocsService)
+    public ExportService(IExportDataLoader exportDataLoader,
+        IGoogleDocsExportService googleDocsService,
+        IGoogleAccessTokenProvider googleAccessTokenProvider)
     {
         _exportDataLoader = exportDataLoader;
         _googleDocsService = googleDocsService;
+        _googleAccessTokenProvider = googleAccessTokenProvider;
     }
     
     public async Task<ExportToGoogleDocsResponseDto> ExportToGoogleDocsAsync(ExportToGoogleDocsRequestDto request,
@@ -25,7 +31,9 @@ internal class ExportService : IExportService
             request.EndDate,
             cancellationToken);
 
-        var documentId = await _googleDocsService.ExportAsync(exportFileDto, request.AccessToken, cancellationToken);
+        var accessToken = await _googleAccessTokenProvider.GetAccessTokenAsync();
+        var exportRequest = new ExportRequest(accessToken, exportFileDto);
+        var documentId = await _googleDocsService.ExportAsync(exportRequest, cancellationToken);
 
         return new ExportToGoogleDocsResponseDto
         {

@@ -1,6 +1,5 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using FoodDiary.API.Auth;
 using Microsoft.AspNetCore.Mvc;
 using FoodDiary.Application.Services.Export;
 using Microsoft.AspNetCore.Authorization;
@@ -8,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace FoodDiary.API.Controllers.v1
 {
     [ApiController]
-    [Authorize(Constants.Policies.GoogleJwt)]
+    [Authorize(Constants.AuthorizationPolicies.GoogleAllowedEmails)]
     [Route("api/v1/exports")]
     public class ExportsController : ControllerBase
     {

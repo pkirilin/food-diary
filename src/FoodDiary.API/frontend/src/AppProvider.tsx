@@ -5,7 +5,6 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import { Store } from 'redux';
-import AuthProvider from './features/auth/AuthProvider';
 import theme from './theme';
 
 declare module '@mui/styles/defaultTheme' {
@@ -15,23 +14,16 @@ declare module '@mui/styles/defaultTheme' {
 
 type AppProviderProps = {
   store: Store;
-  authToken?: string;
 };
 
-const AppProvider: React.FC<React.PropsWithChildren<AppProviderProps>> = ({
-  children,
-  store,
-  authToken,
-}) => {
+const AppProvider: React.FC<React.PropsWithChildren<AppProviderProps>> = ({ children, store }) => {
   return (
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={theme}>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <Provider store={store}>
-            <AuthProvider token={authToken}>
-              <CssBaseline />
-              <BrowserRouter>{children}</BrowserRouter>
-            </AuthProvider>
+            <CssBaseline />
+            <BrowserRouter>{children}</BrowserRouter>
           </Provider>
         </LocalizationProvider>
       </ThemeProvider>

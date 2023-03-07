@@ -31,6 +31,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoodDiary.Export.GoogleDocs
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoodDiary.Export.GoogleDocs.Tests", "tests\FoodDiary.Export.GoogleDocs.Tests\FoodDiary.Export.GoogleDocs.Tests.csproj", "{97D09E96-52BA-4754-A3BD-EC4D147BE72C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoodDiary.Constants", "src\FoodDiary.Constants\FoodDiary.Constants.csproj", "{2ABD3714-CA9D-4B68-801E-C63BBC1EE520}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -197,6 +199,18 @@ Global
 		{97D09E96-52BA-4754-A3BD-EC4D147BE72C}.Release|x64.Build.0 = Release|Any CPU
 		{97D09E96-52BA-4754-A3BD-EC4D147BE72C}.Release|x86.ActiveCfg = Release|Any CPU
 		{97D09E96-52BA-4754-A3BD-EC4D147BE72C}.Release|x86.Build.0 = Release|Any CPU
+		{2ABD3714-CA9D-4B68-801E-C63BBC1EE520}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2ABD3714-CA9D-4B68-801E-C63BBC1EE520}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2ABD3714-CA9D-4B68-801E-C63BBC1EE520}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{2ABD3714-CA9D-4B68-801E-C63BBC1EE520}.Debug|x64.Build.0 = Debug|Any CPU
+		{2ABD3714-CA9D-4B68-801E-C63BBC1EE520}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2ABD3714-CA9D-4B68-801E-C63BBC1EE520}.Debug|x86.Build.0 = Debug|Any CPU
+		{2ABD3714-CA9D-4B68-801E-C63BBC1EE520}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2ABD3714-CA9D-4B68-801E-C63BBC1EE520}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2ABD3714-CA9D-4B68-801E-C63BBC1EE520}.Release|x64.ActiveCfg = Release|Any CPU
+		{2ABD3714-CA9D-4B68-801E-C63BBC1EE520}.Release|x64.Build.0 = Release|Any CPU
+		{2ABD3714-CA9D-4B68-801E-C63BBC1EE520}.Release|x86.ActiveCfg = Release|Any CPU
+		{2ABD3714-CA9D-4B68-801E-C63BBC1EE520}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

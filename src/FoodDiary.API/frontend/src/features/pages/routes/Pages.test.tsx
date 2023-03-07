@@ -1,27 +1,8 @@
 import { screen, waitForElementToBeRemoved, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { GoogleLoginResponse, useGoogleLogin } from 'react-google-login';
 import { render } from 'src/testing';
 import { db } from 'src/testing/server/db';
 import Pages from './Pages';
-
-type MockedReactGoogleLogin = {
-  useGoogleLogin: typeof useGoogleLogin;
-};
-
-// TODO: figure out how to do typesafe mock better
-jest.mock(
-  'react-google-login',
-  (): MockedReactGoogleLogin => ({
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    useGoogleLogin: ({ onSuccess = () => {} }) => ({
-      signIn: () => {
-        onSuccess({ accessToken: 'test_access_token' } as GoogleLoginResponse);
-      },
-      loaded: true,
-    }),
-  }),
-);
 
 // TODO: fix this test by adding progressbar
 // test('pages are loaded into table', async () => {

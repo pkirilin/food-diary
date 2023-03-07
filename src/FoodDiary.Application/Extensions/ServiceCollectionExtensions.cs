@@ -26,6 +26,7 @@ namespace FoodDiary.Application.Extensions
 
             services.AddScoped<IExportService, ExportService>();
             services.AddScoped<IExportDataLoader, ExportDataLoader>();
+            services.AddSingleton<IGoogleAccessTokenProvider, GoogleAccessTokenProvider>();
             services.AddGoogleDocsExportService();
         }
     }

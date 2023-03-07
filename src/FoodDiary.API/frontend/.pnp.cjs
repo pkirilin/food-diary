@@ -46,7 +46,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@testing-library/react", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:13.3.0"],\
             ["@testing-library/user-event", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:14.2.0"],\
             ["@types/jest", "npm:27.5.1"],\
-            ["@types/js-cookie", "npm:3.0.2"],\
             ["@types/node", "npm:16.11.37"],\
             ["@types/react", "npm:18.0.14"],\
             ["@types/react-dom", "npm:18.0.5"],\
@@ -68,13 +67,11 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["eslint-plugin-react", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:7.30.1"],\
             ["eslint-plugin-react-hooks", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:4.6.0"],\
             ["eslint-plugin-testing-library", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:5.5.1"],\
-            ["js-cookie", "npm:3.0.1"],\
             ["msw", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:0.44.2"],\
             ["prettier", "npm:2.7.1"],\
             ["prop-types", "npm:15.8.1"],\
             ["react", "npm:18.1.0"],\
             ["react-dom", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:18.1.0"],\
-            ["react-google-login", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:5.2.2"],\
             ["react-helmet", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:6.1.0"],\
             ["react-redux", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:8.0.2"],\
             ["react-router-dom", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:6.3.0"],\
@@ -5462,15 +5459,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
-      ["@types/js-cookie", [\
-        ["npm:3.0.2", {\
-          "packageLocation": "./.yarn/cache/@types-js-cookie-npm-3.0.2-0fde2a4d71-7ab964288d.zip/node_modules/@types/js-cookie/",\
-          "packageDependencies": [\
-            ["@types/js-cookie", "npm:3.0.2"]\
-          ],\
-          "linkType": "HARD"\
-        }]\
-      ]],\
       ["@types/js-levenshtein", [\
         ["npm:1.1.1", {\
           "packageLocation": "./.yarn/cache/@types-js-levenshtein-npm-1.1.1-304aa359d0-1d1ff1ee2a.zip/node_modules/@types/js-levenshtein/",\
@@ -10702,7 +10690,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@testing-library/react", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:13.3.0"],\
             ["@testing-library/user-event", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:14.2.0"],\
             ["@types/jest", "npm:27.5.1"],\
-            ["@types/js-cookie", "npm:3.0.2"],\
             ["@types/node", "npm:16.11.37"],\
             ["@types/react", "npm:18.0.14"],\
             ["@types/react-dom", "npm:18.0.5"],\
@@ -10724,13 +10711,11 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["eslint-plugin-react", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:7.30.1"],\
             ["eslint-plugin-react-hooks", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:4.6.0"],\
             ["eslint-plugin-testing-library", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:5.5.1"],\
-            ["js-cookie", "npm:3.0.1"],\
             ["msw", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:0.44.2"],\
             ["prettier", "npm:2.7.1"],\
             ["prop-types", "npm:15.8.1"],\
             ["react", "npm:18.1.0"],\
             ["react-dom", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:18.1.0"],\
-            ["react-google-login", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:5.2.2"],\
             ["react-helmet", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:6.1.0"],\
             ["react-redux", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:8.0.2"],\
             ["react-router-dom", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:6.3.0"],\
@@ -12911,15 +12896,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/node", "npm:17.0.37"],\
             ["merge-stream", "npm:2.0.0"],\
             ["supports-color", "npm:8.1.1"]\
-          ],\
-          "linkType": "HARD"\
-        }]\
-      ]],\
-      ["js-cookie", [\
-        ["npm:3.0.1", {\
-          "packageLocation": "./.yarn/cache/js-cookie-npm-3.0.1-04c7177de1-bb48de67e2.zip/node_modules/js-cookie/",\
-          "packageDependencies": [\
-            ["js-cookie", "npm:3.0.1"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -16717,33 +16693,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/react-fast-compare-npm-3.2.0-fbfa6627d9-8ef272c825.zip/node_modules/react-fast-compare/",\
           "packageDependencies": [\
             ["react-fast-compare", "npm:3.2.0"]\
-          ],\
-          "linkType": "HARD"\
-        }]\
-      ]],\
-      ["react-google-login", [\
-        ["npm:5.2.2", {\
-          "packageLocation": "./.yarn/cache/react-google-login-npm-5.2.2-b989308685-29199c7035.zip/node_modules/react-google-login/",\
-          "packageDependencies": [\
-            ["react-google-login", "npm:5.2.2"]\
-          ],\
-          "linkType": "SOFT"\
-        }],\
-        ["virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:5.2.2", {\
-          "packageLocation": "./.yarn/__virtual__/react-google-login-virtual-9130afa342/0/cache/react-google-login-npm-5.2.2-b989308685-29199c7035.zip/node_modules/react-google-login/",\
-          "packageDependencies": [\
-            ["react-google-login", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:5.2.2"],\
-            ["@types/react", "npm:18.0.14"],\
-            ["@types/react-dom", "npm:18.0.5"],\
-            ["prop-types", "npm:15.8.1"],\
-            ["react", "npm:18.1.0"],\
-            ["react-dom", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:18.1.0"]\
-          ],\
-          "packagePeers": [\
-            "@types/react-dom",\
-            "@types/react",\
-            "react-dom",\
-            "react"\
           ],\
           "linkType": "HARD"\
         }]\

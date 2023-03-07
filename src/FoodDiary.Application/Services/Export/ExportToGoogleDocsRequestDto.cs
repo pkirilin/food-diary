@@ -7,8 +7,5 @@ namespace FoodDiary.Application.Services.Export;
 public class ExportToGoogleDocsRequestDto
 {
     public DateTime StartDate { get; set; }
-
     public DateTime EndDate { get; set; }
-
-    public string AccessToken { get; set; }
 }

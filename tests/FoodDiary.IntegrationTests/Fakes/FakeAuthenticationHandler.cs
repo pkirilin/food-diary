@@ -1,7 +1,8 @@
+using System.Collections.Generic;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
-using FoodDiary.API.Auth;
+using FoodDiary.API;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -26,7 +27,13 @@ public class FakeAuthenticationHandler : AuthenticationHandler<AuthenticationSch
         
         var identity = new ClaimsIdentity(claims, "Test");
         var principal = new ClaimsPrincipal(identity);
-        var ticket = new AuthenticationTicket(principal, "Test");
+        
+        var properties = new AuthenticationProperties(new Dictionary<string, string?>
+        {
+            [".Token.access_token"] = "test_google_access_token"
+        });
+        
+        var ticket = new AuthenticationTicket(principal, properties, "Test");
         var result = AuthenticateResult.Success(ticket);
 
         return Task.FromResult(result);

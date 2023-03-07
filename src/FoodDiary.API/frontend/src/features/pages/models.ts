@@ -37,5 +37,4 @@ export type ExportPagesToJsonRequest = {
 export type ExportPagesToGoogleDocsRequest = {
   startDate: string;
   endDate: string;
-  accessToken: string;
 };

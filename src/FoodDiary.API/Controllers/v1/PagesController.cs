@@ -11,14 +11,13 @@ using FoodDiary.API.Requests;
 using MediatR;
 using FoodDiary.Application.Pages.Requests;
 using System.Linq;
-using FoodDiary.API.Auth;
 using Microsoft.AspNetCore.Authorization;
 
 namespace FoodDiary.API.Controllers.v1
 {
     [ApiController]
     [Route("api/v1/pages")]
-    [Authorize(Constants.Policies.GoogleJwt)]
+    [Authorize(Constants.AuthorizationPolicies.GoogleAllowedEmails)]
     [ApiExplorerSettings(GroupName = "v1")]
     public class PagesController : ControllerBase
     {

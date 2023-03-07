@@ -18,12 +18,13 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\FoodDiary.Application\FoodDiary.Application.csproj" />
+    <ProjectReference Include="..\FoodDiary.Constants\FoodDiary.Constants.csproj" />
     <ProjectReference Include="..\FoodDiary.Import\FoodDiary.Import.csproj" />
     <ProjectReference Include="..\FoodDiary.Infrastructure\FoodDiary.Infrastructure.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MediatR" Version="10.0.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="6.0.14" />
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="6.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.1">

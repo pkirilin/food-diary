@@ -1,39 +1,35 @@
-import React, { useState, useEffect } from 'react';
-import AppProvider from 'src/AppProvider';
+import React, { useEffect } from 'react';
+import { useAuth } from 'src/features/auth';
 import { pageSizeChanged } from 'src/features/products/store';
 import { configureAppStore } from 'src/store';
 
 type TestEnvironmentProps = {
-  authToken?: string;
-  removeTokenAfterMilliseconds?: number;
-  pageSizeOverride?: number;
   store: ReturnType<typeof configureAppStore>;
+  signOutAfterMilliseconds?: number;
+  pageSizeOverride?: number;
 };
 
 const TestEnvironment: React.FC<React.PropsWithChildren<TestEnvironmentProps>> = ({
   children,
   store,
-  authToken,
-  removeTokenAfterMilliseconds,
+  signOutAfterMilliseconds,
   pageSizeOverride,
 }) => {
-  const [token, setToken] = useState(authToken);
+  const { logout } = useAuth();
 
   useEffect(() => {
-    let timer: NodeJS.Timeout | null = null;
-
-    if (removeTokenAfterMilliseconds) {
-      timer = setTimeout(() => {
-        setToken(undefined);
-      }, removeTokenAfterMilliseconds);
+    if (!signOutAfterMilliseconds) {
+      return;
     }
 
+    const timeout = setTimeout(() => {
+      logout();
+    }, signOutAfterMilliseconds);
+
     return () => {
-      if (timer) {
-        clearTimeout(timer);
-      }
+      clearTimeout(timeout);
     };
-  }, [removeTokenAfterMilliseconds]);
+  }, [logout, signOutAfterMilliseconds]);
 
   useEffect(() => {
     if (pageSizeOverride) {
@@ -41,11 +37,7 @@ const TestEnvironment: React.FC<React.PropsWithChildren<TestEnvironmentProps>> =
     }
   }, [pageSizeOverride, store]);
 
-  return (
-    <AppProvider store={store} authToken={token}>
-      {children}
-    </AppProvider>
-  );
+  return <React.Fragment>{children}</React.Fragment>;
 };
 
 export default TestEnvironment;

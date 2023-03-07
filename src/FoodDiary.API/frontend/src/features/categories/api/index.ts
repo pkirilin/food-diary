@@ -1,6 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
 import { API_URL } from 'src/config';
-import { getToken } from 'src/features/auth';
 import { SelectOption } from 'src/types';
 import { Category } from '../types';
 import { CreateCategoryRequest, DeleteCategoryRequest, EditCategoryRequest } from './contracts';
@@ -10,11 +9,6 @@ const categoriesApi = createApi({
 
   baseQuery: fetchBaseQuery({
     baseUrl: `${API_URL}/api/v1/categories`,
-
-    prepareHeaders: headers => {
-      headers.append('Authorization', `Bearer ${getToken()}`);
-      return headers;
-    },
   }),
 
   endpoints: builder => ({

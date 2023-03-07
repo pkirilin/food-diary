@@ -1,5 +1,4 @@
 import { AnyAction, AsyncThunk, createAsyncThunk } from '@reduxjs/toolkit';
-import { getToken } from 'src/features/auth/utils';
 
 export type ApiCallAsyncThunk<TData, TArgument> = AsyncThunk<
   TData,
@@ -23,7 +22,6 @@ export interface ApiCallOptions<TArgument> {
   method?: ApiMethod;
   contentType?: ApiContentType;
   bodyCreator?: ApiCallBodyCreator<TArgument>;
-  getBearerToken?: () => string | undefined;
 }
 
 /**
@@ -37,27 +35,15 @@ export function createApiCallAsyncThunk<TData, TArgument>(
   options: ApiCallOptions<TArgument> = {
     method: 'GET',
     contentType: 'application/json',
-    getBearerToken: getToken,
   },
 ): ApiCallAsyncThunk<TData, TArgument> {
-  const {
-    method = 'GET',
-    contentType = 'application/json',
-    bodyCreator,
-    getBearerToken = getToken,
-  } = options;
+  const { method = 'GET', contentType = 'application/json', bodyCreator } = options;
 
   function getHeaders(): RequestHeadersFragment {
     const headers: RequestHeadersFragment['headers'] = {};
 
     if (contentType && contentType !== 'none') {
       headers['Content-Type'] = contentType;
-    }
-
-    const bearerToken = getBearerToken();
-
-    if (bearerToken) {
-      headers['Authorization'] = `Bearer ${bearerToken}`;
     }
 
     return { headers };

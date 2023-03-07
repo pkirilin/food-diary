@@ -1,4 +1,5 @@
 using FoodDiary.Domain.Abstractions.v2;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,6 +19,9 @@ public static class InfrastructureExtensions
                 var connectionString = configuration.GetConnectionString("Default");
                 builder.UseNpgsql(connectionString);
             });
+
+            services.AddDataProtection()
+                .PersistKeysToDbContext<FoodDiaryContext>();
         }
 
         services.AddScoped<IFoodDiaryUnitOfWork, FoodDiaryUnitOfWork>();
