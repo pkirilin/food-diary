@@ -14,8 +14,8 @@ const Menu: React.FC = () => {
         return (
           <ListItem key={`${index}-${title}`} disableGutters>
             <ListItemButton
-              href={isSelected ? '' : path}
-              LinkComponent={Link}
+              component={Link}
+              to={isSelected ? '' : path}
               selected={isSelected}
               disableRipple={isSelected}
               disableTouchRipple={isSelected}
