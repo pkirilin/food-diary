@@ -68,8 +68,8 @@ const MobileMenu: React.FC = () => {
             return (
               <ListItem key={`${index}-${title}`} disablePadding divider>
                 <ListItemButton
-                  href={isSelected ? '' : path}
-                  LinkComponent={Link}
+                  component={Link}
+                  to={isSelected ? '' : path}
                   selected={isSelected}
                   disableTouchRipple={isSelected}
                   sx={theme => ({
