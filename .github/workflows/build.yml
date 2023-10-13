@@ -6,6 +6,9 @@ on:
 jobs:
   backend:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: 'src/backend'
     steps:
       - uses: actions/checkout@v1
       - name: Setup .NET
@@ -22,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: 'src/FoodDiary.API/frontend'
+        working-directory: 'src/frontend'
     steps:
       - name: Checkout
         uses: actions/checkout@v3

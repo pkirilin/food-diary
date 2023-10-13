@@ -32,14 +32,14 @@ This information can be extremely useful for people who want to keep track of en
 
 1. Install .NET SDK 6.0.302 or higher
 
-1. Install Node.js 18.6.x or higher
+1. Install Node.js 18.14.x or higher
 
 1. Install [yarn](https://yarnpkg.com/getting-started/install) package manager
 
 1. Fill necessary secrets:
 
     ```shell
-    dotnet user-secrets --project src/FoodDiary.API set "Auth:AllowedEmails:0" "<your_email>"
+    dotnet user-secrets --project src/backend/FoodDiary.API set "Auth:AllowedEmails:0" "<your_email>"
     ```
 
     _Allowed email should be compatible with Google Identity Provider_
@@ -47,19 +47,19 @@ This information can be extremely useful for people who want to keep track of en
 1. Run migrations:
 
     ```shell
-    dotnet run --project src/FoodDiary.Migrator
+    dotnet run --project src/backend/FoodDiary.Migrator
     ```
 
 1. Start backend application:
 
     ```shell
-    dotnet run --project src/FoodDiary.API
+    dotnet run --project src/backend/FoodDiary.API
     ```
 
 1. Start frontend application:
 
     ```shell
-    cd src/FoodDiary.API/frontend
+    cd src/frontend
     yarn start
     ```
 
@@ -70,7 +70,7 @@ This information can be extremely useful for people who want to keep track of en
 Go to frontend project directory:
 
 ```shell
-cd src/FoodDiary.API/frontend
+cd src/frontend
 ```
 
 Create local env config:
@@ -95,6 +95,6 @@ WDS_SOCKET_PORT=3000
 
 ```shell
 dotnet ef migrations add <migration_name> \                 
--s src/FoodDiary.API \
--p src/FoodDiary.Infrastructure
+-s src/backend/FoodDiary.API \
+-p src/backend/FoodDiary.Infrastructure
 ```
