@@ -1,11 +1,11 @@
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS backend
 WORKDIR /app
-COPY . .
+COPY src/backend .
 RUN dotnet publish -c Release -o publish src/FoodDiary.API/FoodDiary.API.csproj
 
 FROM node:18.14.2-alpine AS frontend
 WORKDIR /app
-COPY src/FoodDiary.API/frontend .
+COPY src/frontend .
 RUN yarn install
 ENV PATH="./node_modules/.bin:$PATH"
 RUN yarn build
