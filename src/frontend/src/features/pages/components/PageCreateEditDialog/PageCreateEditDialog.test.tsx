@@ -1,6 +1,5 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { vi } from 'vitest';
 import { create } from 'src/test-utils';
 import { PageCreateEdit } from '../../models';
 import PageCreateEditDialog from './PageCreateEditDialog';

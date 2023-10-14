@@ -21,12 +21,18 @@ beforeAll(() => {
       dispatchEvent: () => false,
     }),
   });
+
+  server.listen();
 });
 
-beforeAll(() => server.listen());
+beforeEach(() => {
+  initializeDb();
+});
 
-beforeEach(() => initializeDb());
+afterEach(() => {
+  server.resetHandlers();
+});
 
-afterEach(() => server.resetHandlers());
-
-afterAll(() => server.close());
+afterAll(() => {
+  server.close();
+});

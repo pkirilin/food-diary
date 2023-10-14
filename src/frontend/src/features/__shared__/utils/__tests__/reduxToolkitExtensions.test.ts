@@ -1,7 +1,6 @@
 import { AnyAction, createAsyncThunk } from '@reduxjs/toolkit';
 import configureStore from 'redux-mock-store';
 import thunk, { ThunkDispatch } from 'redux-thunk';
-import { vi } from 'vitest';
 import { createApiCallAsyncThunk, createAsyncThunkMatcher } from '../reduxToolkitExtensions';
 
 type TestRecord = {
