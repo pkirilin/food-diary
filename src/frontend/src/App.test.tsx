@@ -1,5 +1,6 @@
 import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { vi } from 'vitest';
 import App from './App';
 import { AUTH_CHECK_INTERVAL } from './config';
 import { render } from './testing';
@@ -21,13 +22,13 @@ test('unauthenticated user must sign in to access private content', () => {
 test('user must login again if session expired', async () => {
   const SIGN_OUT_TIMEOUT = 1000;
 
-  jest.useFakeTimers();
+  vi.useFakeTimers();
   render(<App />, { withAuthentication: true, signOutAfterMilliseconds: SIGN_OUT_TIMEOUT });
   act(() => {
-    jest.advanceTimersByTime(SIGN_OUT_TIMEOUT);
-    jest.advanceTimersByTime(AUTH_CHECK_INTERVAL);
+    vi.advanceTimersByTime(SIGN_OUT_TIMEOUT);
+    vi.advanceTimersByTime(AUTH_CHECK_INTERVAL);
   });
-  jest.useRealTimers();
+  vi.useRealTimers();
 
   expect(screen.getByText(/sign in/i)).toBeInTheDocument();
 });
