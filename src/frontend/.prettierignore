@@ -5,6 +5,7 @@
 .pnp.loader.mjs
 
 dist
+public
 node_modules
-public/index.html
+index.html
 tsconfig.json
