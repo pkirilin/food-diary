@@ -1,4 +1,4 @@
 export const USE_FAKE_AUTH_DEV =
-  process.env.NODE_ENV === 'development' && process.env.REACT_APP_MSW_ENABLED === 'true';
+  import.meta.env.DEV && import.meta.env.VITE_APP_MSW_ENABLED === 'true';
 
-export const USE_FAKE_AUTH = process.env.NODE_ENV === 'test' || USE_FAKE_AUTH_DEV;
+export const USE_FAKE_AUTH = import.meta.env.MODE === 'test' || USE_FAKE_AUTH_DEV;
