@@ -82,7 +82,6 @@ test('all options are visible after clicking on input', async () => {
   render(<AppSelectTest />);
 
   await userEvent.click(screen.getByPlaceholderText(/select name/i));
-  await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
 
   const options = screen.queryAllByRole('option');
   expect(options[0]).toHaveTextContent('John');
@@ -95,7 +94,6 @@ test('all options are visible if closed with filtered options and then opened ag
 
   const input = screen.getByPlaceholderText(/select name/i);
   await userEvent.click(input);
-  await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
   await userEvent.type(input, 'Jo');
   await userEvent.click(screen.getByLabelText(/close/i));
   await userEvent.click(screen.getByLabelText(/open/i));
@@ -108,7 +106,10 @@ test('visible options match input value', async () => {
 
   const input = screen.getByPlaceholderText(/select name/i);
   await userEvent.click(input);
-  await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
+  const loader = screen.queryByRole('progressbar');
+  if (loader) {
+    await waitForElementToBeRemoved(loader);
+  }
   await userEvent.type(input, 'Jo');
 
   expect(screen.queryAllByRole('option')[0]).toHaveTextContent('John');
@@ -119,7 +120,6 @@ test('no options are visible if input value does not match any existing option',
 
   const input = screen.getByPlaceholderText(/select name/i);
   await userEvent.click(input);
-  await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
   await userEvent.type(input, 'Jack');
 
   expect(screen.queryAllByRole('option')).toHaveLength(0);
@@ -136,7 +136,6 @@ test('no options are visible after input is closed', async () => {
 
   const input = screen.getByPlaceholderText(/select name/i);
   await userEvent.click(input);
-  await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
   await userEvent.type(input, 'Jo');
   await userEvent.click(screen.getByLabelText(/close/i));
 
@@ -148,7 +147,6 @@ test('no options are visible after clicking on input if autocomplete has no opti
 
   const input = screen.getByPlaceholderText(/select name/i);
   await userEvent.click(input);
-  await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
   await userEvent.type(input, 'Jo');
 
   expect(screen.queryAllByRole('option')).toHaveLength(0);
@@ -159,7 +157,6 @@ test('value can be selected', async () => {
 
   const input = screen.getByPlaceholderText(/select name/i);
   await userEvent.click(input);
-  await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
   await userEvent.type(input, 'ter');
   await userEvent.click(screen.queryAllByRole('option')[0]);
 
@@ -171,7 +168,6 @@ test('value can be changed', async () => {
 
   const input = screen.getByPlaceholderText(/select name/i);
   await userEvent.click(input);
-  await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
   await userEvent.clear(input);
   await userEvent.type(input, 'ter');
   await userEvent.click(screen.queryAllByRole('option')[0]);

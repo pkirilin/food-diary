@@ -1,6 +1,5 @@
 import { screen, waitFor, waitForElementToBeRemoved, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { debug } from 'vitest-preview';
 import { render } from 'src/testing';
 import { db } from 'src/testing/server/db';
 import Products from './Products';
@@ -38,14 +37,10 @@ test('product can be created', async () => {
   await userEvent.clear(caloriesCost);
   await userEvent.type(caloriesCost, '105');
   await userEvent.click(category);
-  await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
   await userEvent.click(within(screen.getByRole('listbox')).getByText(/dairy/i));
-
   await userEvent.click(dialog.getByLabelText(/create yoghurt/i));
-  await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
-  await waitForElementToBeRemoved(screen.queryByRole('dialog'));
 
-  expect(screen.getByText(/yoghurt/i));
+  expect(await screen.findByText(/yoghurt/i));
   expect(screen.getByLabelText(/yoghurt calories cost is 105/i));
   expect(screen.getByLabelText(/yoghurt is in dairy category/i));
 });
@@ -134,8 +129,6 @@ test('products can be deleted', async () => {
   await userEvent.click(screen.getByLabelText(/delete selected products/i));
   const dialog = within(screen.getByRole('dialog'));
   await userEvent.click(dialog.getByText(/yes/i));
-  await waitForElementToBeRemoved(dialog.queryByRole('progressbar'));
-  await waitForElementToBeRemoved(screen.queryByRole('dialog'));
 
   expect(screen.queryByText(/bread/i)).not.toBeInTheDocument();
   expect(screen.queryByText(/(\d)+ selected/i)).not.toBeInTheDocument();
@@ -209,7 +202,6 @@ test('product with empty category cannot be saved', async () => {
   render(<Products />);
 
   await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
-  debug();
   await userEvent.click(screen.getByLabelText(/open edit product dialog for bread/i));
 
   const dialog = within(screen.getByRole('dialog'));

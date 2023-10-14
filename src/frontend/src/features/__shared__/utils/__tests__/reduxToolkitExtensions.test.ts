@@ -15,9 +15,6 @@ type TestState = {
 
 type TestDispatch = ThunkDispatch<TestState, unknown, AnyAction>;
 
-const fetchMock = vi.fn<unknown[], Promise<Response>>();
-global.fetch = fetchMock;
-
 const mockStore = configureStore<TestState, TestDispatch>([thunk]);
 const store = mockStore();
 
@@ -37,6 +34,7 @@ describe('createApiCallAsyncThunk', () => {
       const getUrlMock = vi.fn().mockReturnValue(url);
       const getDataMock = vi.fn();
       const bodyCreatorMock = vi.fn().mockReturnValue(body);
+      const fetchMock = vi.spyOn(global, 'fetch');
       fetchMock.mockResolvedValue(response);
 
       // Act
@@ -77,6 +75,7 @@ describe('createApiCallAsyncThunk', () => {
         },
       ];
       const getDataMock = vi.fn().mockResolvedValue(records);
+      const fetchMock = vi.spyOn(global, 'fetch');
       fetchMock.mockResolvedValue({ ...new Response(), ok: true });
 
       // Act
@@ -95,6 +94,7 @@ describe('createApiCallAsyncThunk', () => {
     test('should be rejected with default error message', async () => {
       // Arrange
       const arg = 1;
+      const fetchMock = vi.spyOn(global, 'fetch');
       fetchMock.mockResolvedValue({ ...new Response(), ok: false });
 
       // Act
@@ -114,6 +114,7 @@ describe('createApiCallAsyncThunk', () => {
       // Arrange
       const arg = 1;
       const errorMessage = 'test error message';
+      const fetchMock = vi.spyOn(global, 'fetch');
       fetchMock.mockRejectedValue({ ...new Response() });
 
       // Act

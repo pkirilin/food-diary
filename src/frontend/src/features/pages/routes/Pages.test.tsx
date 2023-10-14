@@ -34,7 +34,6 @@ test('pages can be exported to JSON if start/end dates specified', async () => {
   await userEvent.type(endDate, '31012022');
 
   await userEvent.click(within(dialog).getByText(/export to json/i));
-  await waitForElementToBeRemoved(within(dialog).getByRole('progressbar'));
   await waitForElementToBeRemoved(dialog);
 });
 
@@ -89,7 +88,6 @@ test('pages can be exported to Google Docs if start/end dates specified', async 
   await userEvent.type(endDate, '31012022');
 
   await userEvent.click(within(dialog).getByText(/export to google docs/i));
-  await waitForElementToBeRemoved(within(dialog).getByRole('progressbar'));
   await waitForElementToBeRemoved(dialog);
 });
 

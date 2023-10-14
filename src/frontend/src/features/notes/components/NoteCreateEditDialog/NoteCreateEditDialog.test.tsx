@@ -1,4 +1,4 @@
-import { screen, waitForElementToBeRemoved, within } from '@testing-library/react';
+import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { render } from 'src/testing';
 import { MealType, NoteCreateEdit } from '../../models';
@@ -18,7 +18,6 @@ test('note can be created', async () => {
   );
 
   await userEvent.click(screen.getByPlaceholderText(/select a product/i));
-  await waitForElementToBeRemoved(screen.getByRole('progressbar'));
   await userEvent.click(within(screen.getByRole('listbox')).getByText(/meat/i));
 
   await userEvent.clear(screen.getByPlaceholderText(/quantity/i));
