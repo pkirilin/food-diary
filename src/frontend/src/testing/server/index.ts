@@ -7,7 +7,7 @@ export async function initMocks() {
   if (import.meta.env.VITE_APP_MSW_ENABLED === 'true') {
     initializeDb();
     const { worker } = await import('./browser');
-    worker.start({
+    await worker.start({
       onUnhandledRequest(request, print) {
         if (IGNORED_HOSTNAMES.some(hostname => request.url.hostname.match(hostname))) {
           return;

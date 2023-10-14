@@ -1,5 +1,6 @@
 import { screen, waitFor, waitForElementToBeRemoved, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { debug } from 'vitest-preview';
 import { render } from 'src/testing';
 import { db } from 'src/testing/server/db';
 import Products from './Products';
@@ -208,6 +209,7 @@ test('product with empty category cannot be saved', async () => {
   render(<Products />);
 
   await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
+  debug();
   await userEvent.click(screen.getByLabelText(/open edit product dialog for bread/i));
 
   const dialog = within(screen.getByRole('dialog'));
