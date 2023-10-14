@@ -6,6 +6,7 @@
     "start": "vite",
     "build": "tsc && vite build",
     "test": "vitest",
+    "test:preview": "vitest-preview",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint .",
