@@ -15,15 +15,12 @@ type TestState = {
 
 type TestDispatch = ThunkDispatch<TestState, unknown, AnyAction>;
 
-const fetchMock = jest.fn() as jest.Mock<Promise<Response>>;
-global.fetch = fetchMock;
-
 const mockStore = configureStore<TestState, TestDispatch>([thunk]);
 const store = mockStore();
 
 describe('createApiCallAsyncThunk', () => {
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     store.clearActions();
   });
 
@@ -34,9 +31,10 @@ describe('createApiCallAsyncThunk', () => {
       const arg = 1;
       const response: Response = { ...new Response(), ok: true };
       const body = 'test body';
-      const getUrlMock = jest.fn().mockReturnValue(url);
-      const getDataMock = jest.fn();
-      const bodyCreatorMock = jest.fn().mockReturnValue(body);
+      const getUrlMock = vi.fn().mockReturnValue(url);
+      const getDataMock = vi.fn();
+      const bodyCreatorMock = vi.fn().mockReturnValue(body);
+      const fetchMock = vi.spyOn(global, 'fetch');
       fetchMock.mockResolvedValue(response);
 
       // Act
@@ -76,11 +74,12 @@ describe('createApiCallAsyncThunk', () => {
           age: 26,
         },
       ];
-      const getDataMock = jest.fn().mockResolvedValue(records);
+      const getDataMock = vi.fn().mockResolvedValue(records);
+      const fetchMock = vi.spyOn(global, 'fetch');
       fetchMock.mockResolvedValue({ ...new Response(), ok: true });
 
       // Act
-      const thunk = createApiCallAsyncThunk<TestRecord[], number>('test', jest.fn(), getDataMock);
+      const thunk = createApiCallAsyncThunk<TestRecord[], number>('test', vi.fn(), getDataMock);
       await store.dispatch(thunk(arg));
       const actions = store.getActions();
 
@@ -95,10 +94,11 @@ describe('createApiCallAsyncThunk', () => {
     test('should be rejected with default error message', async () => {
       // Arrange
       const arg = 1;
+      const fetchMock = vi.spyOn(global, 'fetch');
       fetchMock.mockResolvedValue({ ...new Response(), ok: false });
 
       // Act
-      const thunk = createApiCallAsyncThunk<void, number>('test', jest.fn(), jest.fn());
+      const thunk = createApiCallAsyncThunk<void, number>('test', vi.fn(), vi.fn());
       await store.dispatch(thunk(arg));
       const actions = store.getActions();
 
@@ -114,15 +114,11 @@ describe('createApiCallAsyncThunk', () => {
       // Arrange
       const arg = 1;
       const errorMessage = 'test error message';
+      const fetchMock = vi.spyOn(global, 'fetch');
       fetchMock.mockRejectedValue({ ...new Response() });
 
       // Act
-      const thunk = createApiCallAsyncThunk<void, number>(
-        'test',
-        jest.fn(),
-        jest.fn(),
-        errorMessage,
-      );
+      const thunk = createApiCallAsyncThunk<void, number>('test', vi.fn(), vi.fn(), errorMessage);
       await store.dispatch(thunk(arg));
       const actions = store.getActions();
 
@@ -136,15 +132,15 @@ describe('createApiCallAsyncThunk', () => {
 
 describe('createAsyncThunkMatcher', () => {
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('when thunks array contains at least one with matching type', () => {
     test('should return true', () => {
       // Arrange
-      const thunk1 = createAsyncThunk('thunk1', jest.fn());
-      const thunk2 = createAsyncThunk('thunk2', jest.fn());
-      const thunk3 = createAsyncThunk('thunk3', jest.fn());
+      const thunk1 = createAsyncThunk('thunk1', vi.fn<unknown[]>());
+      const thunk2 = createAsyncThunk('thunk2', vi.fn<unknown[]>());
+      const thunk3 = createAsyncThunk('thunk3', vi.fn<unknown[]>());
 
       // Act
       const matcher = createAsyncThunkMatcher([thunk1, thunk2, thunk3], 'pending');
@@ -157,9 +153,9 @@ describe('createAsyncThunkMatcher', () => {
   describe('when thunks array does not contain any with matching type', () => {
     test('should return false', () => {
       // Arrange
-      const thunk1 = createAsyncThunk('thunk1', jest.fn());
-      const thunk2 = createAsyncThunk('thunk2', jest.fn());
-      const thunk3 = createAsyncThunk('thunk3', jest.fn());
+      const thunk1 = createAsyncThunk('thunk1', vi.fn<unknown[]>());
+      const thunk2 = createAsyncThunk('thunk2', vi.fn<unknown[]>());
+      const thunk3 = createAsyncThunk('thunk3', vi.fn<unknown[]>());
 
       // Act
       const matcher = createAsyncThunkMatcher([thunk1, thunk2, thunk3], 'fulfilled');

@@ -5,10 +5,10 @@ import { PageCreateEdit } from '../../models';
 import PageCreateEditDialog from './PageCreateEditDialog';
 
 test('page can be created', async () => {
-  const submitFn = jest.fn();
+  const submitFn = vi.fn();
   const ui = create
     .component(
-      <PageCreateEditDialog open={true} onDialogConfirm={submitFn} onDialogCancel={jest.fn()} />,
+      <PageCreateEditDialog open={true} onDialogConfirm={submitFn} onDialogCancel={vi.fn()} />,
     )
     .withReduxStore()
     .please();

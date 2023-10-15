@@ -5,13 +5,15 @@ import AppProvider from './AppProvider';
 import store from './store';
 import { initMocks } from './testing/server';
 
-initMocks();
+(async () => {
+  await initMocks();
 
-const container = document.getElementById('root') as HTMLElement;
-const root = createRoot(container);
+  const container = document.getElementById('root') as HTMLElement;
+  const root = createRoot(container);
 
-root.render(
-  <AppProvider store={store}>
-    <App />
-  </AppProvider>,
-);
+  root.render(
+    <AppProvider store={store}>
+      <App />
+    </AppProvider>,
+  );
+})();

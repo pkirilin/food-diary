@@ -1,10 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 
-// jest-dom adds custom jest matchers for asserting on DOM nodes.
-// allows you to do things like:
-// expect(element).toHaveTextContent(/react/i)
-// learn more: https://github.com/testing-library/jest-dom
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import 'src/test-utils/customExpects';
 import { server } from 'src/test-utils';
 import { initializeDb } from 'src/testing/server/db';
@@ -25,12 +21,18 @@ beforeAll(() => {
       dispatchEvent: () => false,
     }),
   });
+
+  server.listen();
 });
 
-beforeAll(() => server.listen());
+beforeEach(() => {
+  initializeDb();
+});
 
-beforeEach(() => initializeDb());
+afterEach(() => {
+  server.resetHandlers();
+});
 
-afterEach(() => server.resetHandlers());
-
-afterAll(() => server.close());
+afterAll(() => {
+  server.close();
+});

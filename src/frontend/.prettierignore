@@ -4,7 +4,8 @@
 .pnp.cjs
 .pnp.loader.mjs
 
-build
+dist
+public
 node_modules
-public/index.html
+index.html
 tsconfig.json

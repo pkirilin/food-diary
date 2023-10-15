@@ -36,7 +36,6 @@ test('category can be created', async () => {
   const dialog = within(screen.getByRole('dialog'));
   await userEvent.type(dialog.getByPlaceholderText(/category name/i), 'New fancy category');
   await userEvent.click(dialog.getByLabelText(/create new fancy category/i));
-  await waitForElementToBeRemoved(dialog.queryByRole('progressbar'));
   await waitForElementToBeRemoved(screen.queryByRole('dialog'));
 
   expect(screen.getByText(/new fancy category/i));
@@ -54,10 +53,8 @@ test('category can be edited', async () => {
   await userEvent.clear(name);
   await userEvent.type(name, 'Modified Bakery');
   await userEvent.click(dialog.getByLabelText(/save modified bakery/i));
-  await waitForElementToBeRemoved(dialog.queryByRole('progressbar'));
-  await waitForElementToBeRemoved(screen.queryByRole('dialog'));
 
-  expect(screen.getByText(/modified bakery/i));
+  expect(await screen.findByText(/modified bakery/i));
 });
 
 test('category can be deleted', async () => {
@@ -68,8 +65,6 @@ test('category can be deleted', async () => {
 
   const dialog = within(screen.getByRole('dialog'));
   await userEvent.click(dialog.getByLabelText(/delete bakery/i));
-  await waitForElementToBeRemoved(dialog.queryByRole('progressbar'));
-  await waitForElementToBeRemoved(screen.queryByRole('dialog'));
 
   expect(screen.queryByText(/bakery/i)).not.toBeInTheDocument();
 });

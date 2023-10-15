@@ -5,7 +5,7 @@
  */
 export function downloadFile(blob: Blob, fileName: string): void {
   // do not download file while running tests
-  if (process.env.NODE_ENV === 'test') {
+  if (import.meta.env.MODE === 'test') {
     return;
   }
 
