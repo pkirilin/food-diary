@@ -43,7 +43,7 @@ namespace FoodDiary.API
             
             services.AddSpaStaticFiles(configuration =>
             {
-                configuration.RootPath = "frontend/build";
+                configuration.RootPath = "frontend/dist";
             });
 
             services.AddAuthentication(Constants.AuthenticationSchemes.OAuthGoogle)
@@ -131,7 +131,7 @@ namespace FoodDiary.API
 
                 if (env.IsDevelopment())
                 {
-                    spa.UseProxyToSpaDevelopmentServer("http://localhost:3000");
+                    spa.UseProxyToSpaDevelopmentServer("http://localhost:5173");
                 }
             });
         }
