@@ -1,6 +1,6 @@
 import { rest, RestHandler } from 'msw';
 import { API_URL } from 'src/config';
-import { ProductsResponse } from 'src/features/products';
+import { CreateProductRequest, EditProductRequest, ProductsResponse } from 'src/features/products';
 import { SelectOption } from 'src/types';
 import * as productsService from './products.service';
 
@@ -38,5 +38,34 @@ export const handlers: RestHandler[] = [
     const response: SelectOption[] = productsService.getAll().map(({ id, name }) => ({ id, name }));
 
     return res(ctx.json(response));
+  }),
+
+  rest.post(`${API_URL}/api/v1/products`, async (req, res, ctx) => {
+    const body = await req.json<CreateProductRequest>();
+    const result = productsService.create(body);
+
+    if (result === 'CategoryNotFound') {
+      return res(ctx.status(400));
+    }
+
+    return res(ctx.status(200));
+  }),
+
+  rest.put(`${API_URL}/api/v1/products/:id`, async (req, res, ctx) => {
+    const id = parseInt(req.params.id as string);
+    const body = await req.json<EditProductRequest>();
+    const result = productsService.update(id, body);
+
+    if (result === 'CategoryNotFound') {
+      return res(ctx.status(400));
+    }
+
+    return res(ctx.status(200));
+  }),
+
+  rest.delete(`${API_URL}/api/v1/products/batch`, async (req, res, ctx) => {
+    const productIds = await req.json<number[]>();
+    productsService.deleteMany(productIds);
+    return res(ctx.status(200));
   }),
 ];

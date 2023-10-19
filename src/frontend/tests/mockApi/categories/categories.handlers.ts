@@ -1,6 +1,6 @@
 import { rest, RestHandler } from 'msw';
 import { API_URL } from 'src/config';
-import { Category } from 'src/features/categories';
+import { Category, CategoryFormData } from 'src/features/categories';
 import { SelectOption } from 'src/types';
 import * as categoriesService from './categories.service';
 
@@ -22,5 +22,24 @@ export const handlers: RestHandler[] = [
     }));
 
     return res(ctx.json(categories));
+  }),
+
+  rest.post(`${API_URL}/api/v1/categories`, async (req, res, ctx) => {
+    const body = await req.json<CategoryFormData>();
+    categoriesService.create(body);
+    return res(ctx.status(200));
+  }),
+
+  rest.put(`${API_URL}/api/v1/categories/:id`, async (req, res, ctx) => {
+    const id = parseInt(req.params.id as string);
+    const body = await req.json<CategoryFormData>();
+    categoriesService.update(id, body);
+    return res(ctx.status(200));
+  }),
+
+  rest.delete(`${API_URL}/api/v1/categories/:id`, (req, res, ctx) => {
+    const id = parseInt(req.params.id as string);
+    categoriesService.deleteOne(id);
+    return res(ctx.status(200));
   }),
 ];
