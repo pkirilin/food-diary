@@ -1,39 +1,65 @@
 import { rest, RestHandler } from 'msw';
 import { API_URL } from 'src/config';
 import { PageByIdResponse, PagesSearchResult } from 'src/features/pages';
+import { SortOrder } from 'src/types';
+import { mapToPage } from './pages.mapper';
 import * as pagesService from './pages.service';
 
 export const handlers: RestHandler[] = [
   rest.get(`${API_URL}/api/v1/pages`, (req, res, ctx) => {
-    const dbPages = pagesService.getAll();
+    const pageNumber = Number(req.url.searchParams.get('pageNumber') ?? 1);
+    const pageSize = Number(req.url.searchParams.get('pageSize') ?? 10);
+    const sortOrder = Number(req.url.searchParams.get('sortOrder') ?? SortOrder.Descending);
+
+    const dbPages = pagesService.get({
+      pageNumber,
+      pageSize,
+      sortOrder,
+    });
+
+    const totalPagesCount = pagesService.count();
 
     const response: PagesSearchResult = {
-      pageItems: dbPages.map(({ id, date, notes }) => ({
-        id,
-        date,
-        countNotes: notes.length,
-        countCalories: 0,
-      })),
-      totalPagesCount: 100,
+      pageItems: dbPages.map(({ id, date, notes }) => {
+        const countCalories = notes.reduce(
+          (count, { quantity, product }) =>
+            product ? count + (quantity * product.caloriesCost) / 100 : count,
+          0,
+        );
+
+        return {
+          id,
+          date,
+          countNotes: notes.length,
+          countCalories: Math.floor(countCalories),
+        };
+      }),
+      totalPagesCount,
     };
 
     return res(ctx.json(response));
   }),
 
   rest.get(`${API_URL}/api/v1/pages/:id`, (req, res, ctx) => {
+    if (!req.params.id) {
+      return res(ctx.status(404));
+    }
+
+    const id = Number(req.params.id);
+
+    const currentDbPage = pagesService.getById(id);
+
+    if (!currentDbPage) {
+      return res(ctx.status(404));
+    }
+
+    const previousDbPage = pagesService.getPrevious(id);
+    const nextDbPage = pagesService.getNext(id);
+
     const response: PageByIdResponse = {
-      previousPage: {
-        id: 1,
-        date: '2022-01-01',
-      },
-      currentPage: {
-        id: 2,
-        date: '2022-01-02',
-      },
-      nextPage: {
-        id: 3,
-        date: '2022-01-03',
-      },
+      currentPage: mapToPage(currentDbPage),
+      previousPage: previousDbPage ? mapToPage(previousDbPage) : null,
+      nextPage: nextDbPage ? mapToPage(nextDbPage) : null,
     };
 
     return res(ctx.json(response));

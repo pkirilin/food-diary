@@ -7,15 +7,31 @@
         {
           "id": 1,
           "mealType": 1,
-          "displayOrder": 0,
-          "quantity": 100,
+          "displayOrder": 1,
+          "quantity": 200,
           "product": {
             "id": 1,
             "name": "Bread",
-            "caloriesCost": 100,
+            "caloriesCost": 50,
             "category": {
               "id": 1,
               "name": "Bakery"
+            }
+          },
+          "pageId": 1
+        },
+        {
+          "id": 2,
+          "mealType": 1,
+          "displayOrder": 0,
+          "quantity": 150,
+          "product": {
+            "id": 2,
+            "name": "Chicken",
+            "caloriesCost": 150,
+            "category": {
+              "id": 2,
+              "name": "Meat"
             }
           },
           "pageId": 1

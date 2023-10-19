@@ -28,3 +28,7 @@ export const db = factory({
     category: oneOf('category'),
   },
 });
+
+export type Db = typeof db;
+
+export type DbPage = NonNullable<ReturnType<Db['page']['findFirst']>>;
