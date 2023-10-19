@@ -6,9 +6,7 @@ export const getAll = () => db.category.getAll();
 export const getProductsCount = (categoryId: number) =>
   db.product.count({
     where: {
-      category: {
-        id: { equals: categoryId },
-      },
+      categoryId: { equals: categoryId },
     },
   });
 
@@ -39,11 +37,21 @@ export const update = (id: number, body: CategoryFormData) => {
 };
 
 export const deleteOne = (id: number) => {
+  const products = db.product.findMany({
+    where: {
+      categoryId: { equals: id },
+    },
+  });
+
+  db.note.deleteMany({
+    where: {
+      productId: { in: products.map(p => p.id) },
+    },
+  });
+
   db.product.deleteMany({
     where: {
-      category: {
-        id: { equals: id },
-      },
+      categoryId: { equals: id },
     },
   });
 

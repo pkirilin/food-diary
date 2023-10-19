@@ -1,5 +1,5 @@
 import { CreateProductRequest, EditProductRequest } from 'src/features/products';
-import { db } from '../db';
+import { db, DbProduct } from '../db';
 
 type GetProductsRequest = {
   pageNumber: number;
@@ -16,9 +16,7 @@ export const get = ({
 }: GetProductsRequest) => {
   let productItems = db.product.findMany({
     where: {
-      category: {
-        id: categoryId === null ? {} : { equals: categoryId },
-      },
+      categoryId: categoryId === null ? {} : { equals: categoryId },
     },
     skip: (pageNumber - 1) * pageSize,
     take: pageSize,
@@ -32,6 +30,28 @@ export const get = ({
 };
 
 export const getAll = () => db.product.getAll();
+
+export const getCategoryNames = (products: DbProduct[]): Map<number, string> => {
+  return products
+    .map(p => p.categoryId)
+    .reduce((map, id) => {
+      if (map.has(id)) {
+        return map;
+      }
+
+      const category = db.category.findFirst({
+        where: {
+          id: { equals: id },
+        },
+      });
+
+      if (category) {
+        map.set(id, category.name);
+      }
+
+      return map;
+    }, new Map<number, string>());
+};
 
 export const count = (): number => db.product.count();
 
@@ -66,7 +86,7 @@ export const create = ({
     id: maxId + 1,
     name,
     caloriesCost,
-    category,
+    categoryId,
   });
 
   return 'Success';
@@ -95,7 +115,7 @@ export const update = (
     data: {
       name,
       caloriesCost,
-      category,
+      categoryId,
     },
   });
 
@@ -103,6 +123,12 @@ export const update = (
 };
 
 export const deleteMany = (ids: number[]) => {
+  db.note.deleteMany({
+    where: {
+      productId: { in: ids },
+    },
+  });
+
   db.product.deleteMany({
     where: {
       id: { in: ids },

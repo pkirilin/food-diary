@@ -11,7 +11,7 @@ export const handlers: RestHandler[] = [
     const categoryId = req.url.searchParams.get('categoryId');
     const productSearchName = req.url.searchParams.get('productSearchName');
 
-    const dbProducts = productsService.get({
+    const products = productsService.get({
       pageNumber,
       pageSize,
       categoryId: categoryId ? Number(categoryId) : null,
@@ -19,14 +19,15 @@ export const handlers: RestHandler[] = [
     });
 
     const totalProductsCount = productsService.count();
+    const categoryNamesMap = productsService.getCategoryNames(products);
 
     const response: ProductsResponse = {
-      productItems: dbProducts.map(({ id, name, caloriesCost, category }) => ({
+      productItems: products.map(({ id, name, caloriesCost, categoryId }) => ({
         id,
         name,
         caloriesCost,
-        categoryId: category?.id ?? 0,
-        categoryName: category?.name ?? '',
+        categoryId,
+        categoryName: categoryNamesMap.get(categoryId) ?? 'NULL',
       })),
       totalProductsCount,
     };

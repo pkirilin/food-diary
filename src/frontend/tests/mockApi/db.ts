@@ -1,10 +1,9 @@
-import { factory, manyOf, oneOf, primaryKey } from '@mswjs/data';
+import { factory, primaryKey } from '@mswjs/data';
 
 export const db = factory({
   page: {
     id: primaryKey(Number),
     date: String,
-    notes: manyOf('note'),
   },
 
   note: {
@@ -13,7 +12,7 @@ export const db = factory({
     displayOrder: Number,
     quantity: Number,
     pageId: Number,
-    product: oneOf('product'),
+    productId: Number,
   },
 
   category: {
@@ -25,10 +24,12 @@ export const db = factory({
     id: primaryKey(Number),
     name: String,
     caloriesCost: Number,
-    category: oneOf('category'),
+    categoryId: Number,
   },
 });
 
 export type Db = typeof db;
 
 export type DbPage = NonNullable<ReturnType<Db['page']['findFirst']>>;
+export type DbNote = NonNullable<ReturnType<Db['note']['findFirst']>>;
+export type DbProduct = NonNullable<ReturnType<Db['product']['findFirst']>>;

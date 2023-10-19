@@ -1,0 +1,14 @@
+[
+  {
+    "id": 1,
+    "name": "Bread",
+    "caloriesCost": 50,
+    "categoryId": 1
+  },
+  {
+    "id": 2,
+    "name": "Chicken",
+    "caloriesCost": 150,
+    "categoryId": 2
+  }
+]

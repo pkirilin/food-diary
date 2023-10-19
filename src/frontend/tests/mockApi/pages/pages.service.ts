@@ -1,5 +1,5 @@
 import { SortOrder } from 'src/types';
-import { db } from '../db';
+import { db, DbNote, DbProduct } from '../db';
 
 type GetPagesParams = {
   pageNumber: number;
@@ -38,3 +38,47 @@ export const getNext = (id: number) =>
       id: { gt: id },
     },
   });
+
+export const getNotes = (pageId: number): DbNote[] => {
+  const notes = db.note.findMany({
+    where: {
+      pageId: { equals: pageId },
+    },
+  });
+
+  const compareNotes = (first: DbNote, second: DbNote) => {
+    const pageIdDiff = first.pageId - second.pageId;
+    return pageIdDiff === 0 ? first.displayOrder - second.displayOrder : pageIdDiff;
+  };
+
+  return notes.sort(compareNotes);
+};
+
+export const calculateCalories = (notes: DbNote[]): number => {
+  const productsMap = notes
+    .map(n => n.productId)
+    .reduce((map, id) => {
+      if (map.has(id)) {
+        return map;
+      }
+
+      const product = db.product.findFirst({
+        where: {
+          id: { equals: id },
+        },
+      });
+
+      if (product) {
+        map.set(id, product);
+      }
+
+      return map;
+    }, new Map<number, DbProduct>());
+
+  const countCalories = notes.reduce((count, { quantity, productId }) => {
+    const product = productsMap.get(productId);
+    return product ? count + (quantity * product.caloriesCost) / 100 : count;
+  }, 0);
+
+  return Math.floor(countCalories);
+};

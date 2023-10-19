@@ -1,4 +1,14 @@
-import { initDb } from './initDb';
+import { fillCategories } from './categories';
+import { fillNotes } from './notes';
+import { fillPages } from './pages';
+import { fillProducts } from './products';
+
+const initDb = () => {
+  fillPages();
+  fillNotes();
+  fillProducts();
+  fillCategories();
+};
 
 const IGNORED_HOSTNAMES = ['apis.google.com', 'fonts.gstatic.com'];
 const IGNORED_PATHNAMES = ['manifest.json', 'favicon.*', 'main.*.hot-update.js'];

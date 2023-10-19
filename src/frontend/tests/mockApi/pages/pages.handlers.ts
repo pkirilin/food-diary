@@ -11,7 +11,7 @@ export const handlers: RestHandler[] = [
     const pageSize = Number(req.url.searchParams.get('pageSize') ?? 10);
     const sortOrder = Number(req.url.searchParams.get('sortOrder') ?? SortOrder.Descending);
 
-    const dbPages = pagesService.get({
+    const pages = pagesService.get({
       pageNumber,
       pageSize,
       sortOrder,
@@ -20,18 +20,15 @@ export const handlers: RestHandler[] = [
     const totalPagesCount = pagesService.count();
 
     const response: PagesSearchResult = {
-      pageItems: dbPages.map(({ id, date, notes }) => {
-        const countCalories = notes.reduce(
-          (count, { quantity, product }) =>
-            product ? count + (quantity * product.caloriesCost) / 100 : count,
-          0,
-        );
+      pageItems: pages.map(({ id, date }) => {
+        const notes = pagesService.getNotes(id);
+        const countCalories = pagesService.calculateCalories(notes);
 
         return {
           id,
           date,
           countNotes: notes.length,
-          countCalories: Math.floor(countCalories),
+          countCalories: countCalories,
         };
       }),
       totalPagesCount,
@@ -46,7 +43,6 @@ export const handlers: RestHandler[] = [
     }
 
     const id = Number(req.params.id);
-
     const currentDbPage = pagesService.getById(id);
 
     if (!currentDbPage) {
