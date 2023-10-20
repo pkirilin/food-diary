@@ -3,7 +3,7 @@ import { factory, primaryKey } from '@mswjs/data';
 export const db = factory({
   page: {
     id: primaryKey(Number),
-    date: String,
+    date: Number,
   },
 
   note: {

@@ -1,21 +1,36 @@
-import { PageCreateEdit } from 'src/features/pages';
+import { NumberQuery } from '@mswjs/data/lib/query/queryTypes';
+import { GetPagesRequest, PageCreateEdit } from 'src/features/pages';
 import { SortOrder } from 'src/types';
 import { db, DbNote, DbProduct } from '../db';
 
-type GetPagesParams = {
-  pageNumber: number;
-  pageSize: number;
-  sortOrder: SortOrder;
+const buildQuery = (startDate: string | null, endDate: string | null): Partial<NumberQuery> => {
+  if (startDate && endDate) {
+    return { between: [Date.parse(startDate), Date.parse(endDate)] };
+  }
+
+  if (startDate) {
+    return { gte: Date.parse(startDate) };
+  }
+
+  if (endDate) {
+    return { lte: Date.parse(endDate) };
+  }
+
+  return {};
 };
 
-export const get = ({ pageNumber, pageSize, sortOrder }: GetPagesParams) =>
-  db.page.findMany({
+export const get = ({ pageNumber, pageSize, sortOrder, startDate, endDate }: GetPagesRequest) => {
+  const query = buildQuery(startDate, endDate);
+
+  return db.page.findMany({
+    where: { date: query },
     orderBy: {
       date: sortOrder === SortOrder.Ascending ? 'asc' : 'desc',
     },
     skip: (pageNumber - 1) * pageSize,
     take: pageSize,
   });
+};
 
 export const count = () => db.page.count();
 
@@ -95,7 +110,7 @@ export const create = ({ date }: PageCreateEdit): void => {
 
   db.page.create({
     id: maxId + 1,
-    date,
+    date: Date.parse(date),
   });
 };
 
@@ -105,7 +120,7 @@ export const update = (id: number, { date }: PageCreateEdit) => {
       id: { equals: id },
     },
     data: {
-      date,
+      date: Date.parse(date),
     },
   });
 };

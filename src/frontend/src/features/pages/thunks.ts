@@ -9,8 +9,8 @@ import {
 import { ExportPagesToJsonRequest, Page, PageCreateEdit, PagesSearchResult } from './models';
 
 export type GetPagesRequest = {
-  startDate?: string;
-  endDate?: string;
+  startDate: string | null;
+  endDate: string | null;
   sortOrder: SortOrder;
   pageNumber: number;
   pageSize: number;

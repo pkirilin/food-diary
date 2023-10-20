@@ -2,6 +2,7 @@ import { rest, RestHandler } from 'msw';
 import { API_URL } from 'src/config';
 import { PageByIdResponse, PageCreateEdit, PagesSearchResult } from 'src/features/pages';
 import { SortOrder } from 'src/types';
+import { formatDate } from 'src/utils';
 import { mapToPage } from './pages.mapper';
 import * as pagesService from './pages.service';
 
@@ -10,11 +11,15 @@ export const handlers: RestHandler[] = [
     const pageNumber = Number(req.url.searchParams.get('pageNumber') ?? 1);
     const pageSize = Number(req.url.searchParams.get('pageSize') ?? 10);
     const sortOrder = Number(req.url.searchParams.get('sortOrder') ?? SortOrder.Descending);
+    const startDate = req.url.searchParams.get('startDate');
+    const endDate = req.url.searchParams.get('endDate');
 
     const pages = pagesService.get({
       pageNumber,
       pageSize,
       sortOrder,
+      startDate,
+      endDate,
     });
 
     const totalPagesCount = pagesService.count();
@@ -26,7 +31,7 @@ export const handlers: RestHandler[] = [
 
         return {
           id,
-          date,
+          date: formatDate(new Date(date)),
           countNotes: notes.length,
           countCalories: countCalories,
         };

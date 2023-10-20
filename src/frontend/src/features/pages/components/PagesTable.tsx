@@ -37,8 +37,8 @@ const PagesTable: React.FC = () => {
           sortOrder,
           pageNumber,
           pageSize,
-          startDate,
-          endDate,
+          startDate: startDate ?? null,
+          endDate: endDate ?? null,
         }),
       );
     },
