@@ -5,11 +5,13 @@ import { ConfirmationDialog } from 'src/components';
 import { useImport } from '../hooks/useImport';
 
 type ImportPagesMenuItemProps = {
+  isDisabled: boolean;
   onMenuClose: () => void;
 };
 
 const ImportPagesMenuItem: React.FC<React.PropsWithChildren<ImportPagesMenuItemProps>> = ({
   children,
+  isDisabled,
   onMenuClose,
 }) => {
   const [importFile, setImportFile] = useState<File>();
@@ -35,7 +37,7 @@ const ImportPagesMenuItem: React.FC<React.PropsWithChildren<ImportPagesMenuItemP
 
   return (
     <React.Fragment>
-      <MenuItem onClick={onMenuClose}>
+      <MenuItem disabled={isDisabled} onClick={onMenuClose}>
         <Box
           component="label"
           display="inherit"

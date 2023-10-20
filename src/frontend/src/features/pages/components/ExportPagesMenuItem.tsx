@@ -6,6 +6,7 @@ import ExportDialog from './ExportDialog';
 type ExportPagesMenuItemProps = {
   format: ExportFormat;
   icon: React.ReactElement;
+  isDisabled: boolean;
   onMenuClose: () => void;
 };
 
@@ -13,6 +14,7 @@ const ExportPagesMenuItem: React.FC<React.PropsWithChildren<ExportPagesMenuItemP
   children,
   format,
   icon,
+  isDisabled,
   onMenuClose,
 }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -29,7 +31,7 @@ const ExportPagesMenuItem: React.FC<React.PropsWithChildren<ExportPagesMenuItemP
   return (
     <React.Fragment>
       <ExportDialog format={format} isOpen={isDialogOpen} onClose={handleDialogClose} />
-      <MenuItem onClick={handleExport}>
+      <MenuItem disabled={isDisabled} onClick={handleExport}>
         <ListItemIcon>{icon}</ListItemIcon>
         <ListItemText>{children}</ListItemText>
       </MenuItem>

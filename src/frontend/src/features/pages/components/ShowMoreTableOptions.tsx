@@ -3,6 +3,7 @@ import DataObjectIcon from '@mui/icons-material/DataObject';
 import ShowMoreIcon from '@mui/icons-material/MoreVert';
 import { Divider, IconButton, Menu } from '@mui/material';
 import React from 'react';
+import { DEMO_MODE_ENABLED } from 'src/config';
 import ExportPagesMenuItem from './ExportPagesMenuItem';
 import ImportPagesMenuItem from './ImportPagesMenuItem';
 
@@ -53,12 +54,20 @@ const ShowMoreTableOptions: React.FC = () => {
           },
         }}
       >
-        <ImportPagesMenuItem onMenuClose={handleMenuClose}>Import from JSON</ImportPagesMenuItem>
+        <ImportPagesMenuItem isDisabled={DEMO_MODE_ENABLED} onMenuClose={handleMenuClose}>
+          Import from JSON
+        </ImportPagesMenuItem>
         <Divider />
-        <ExportPagesMenuItem format="json" icon={<DataObjectIcon />} onMenuClose={handleMenuClose}>
+        <ExportPagesMenuItem
+          isDisabled={DEMO_MODE_ENABLED}
+          format="json"
+          icon={<DataObjectIcon />}
+          onMenuClose={handleMenuClose}
+        >
           Export to JSON
         </ExportPagesMenuItem>
         <ExportPagesMenuItem
+          isDisabled={DEMO_MODE_ENABLED}
           format="google docs"
           icon={<AddToDriveIcon />}
           onMenuClose={handleMenuClose}
