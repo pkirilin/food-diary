@@ -1,5 +1,6 @@
 import { rest, RestHandler } from 'msw';
 import { API_URL } from 'src/config';
+import { NoteCreateEdit } from 'src/features/notes';
 import { notesService } from '.';
 
 export const handlers: RestHandler[] = [
@@ -23,5 +24,34 @@ export const handlers: RestHandler[] = [
     });
 
     return res(ctx.json(response));
+  }),
+
+  rest.post(`${API_URL}/api/v1/notes`, async (req, res, ctx) => {
+    const body = await req.json<NoteCreateEdit>();
+    const result = notesService.create(body);
+
+    if (result === 'PageNotFound' || result === 'ProductNotFound') {
+      return res(ctx.status(400));
+    }
+
+    return res(ctx.status(200));
+  }),
+
+  rest.put(`${API_URL}/api/v1/notes/:id`, async (req, res, ctx) => {
+    const id = parseInt(req.params.id as string);
+    const body = await req.json<NoteCreateEdit>();
+    const result = notesService.update(id, body);
+
+    if (result === 'PageNotFound' || result === 'ProductNotFound') {
+      return res(ctx.status(400));
+    }
+
+    return res(ctx.status(200));
+  }),
+
+  rest.delete(`${API_URL}/api/v1/notes/:id`, (req, res, ctx) => {
+    const id = parseInt(req.params.id as string);
+    notesService.deleteOne(id);
+    return res(ctx.status(200));
   }),
 ];

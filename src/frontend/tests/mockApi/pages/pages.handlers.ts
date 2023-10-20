@@ -1,6 +1,6 @@
 import { rest, RestHandler } from 'msw';
 import { API_URL } from 'src/config';
-import { PageByIdResponse, PagesSearchResult } from 'src/features/pages';
+import { PageByIdResponse, PageCreateEdit, PagesSearchResult } from 'src/features/pages';
 import { SortOrder } from 'src/types';
 import { mapToPage } from './pages.mapper';
 import * as pagesService from './pages.service';
@@ -59,5 +59,24 @@ export const handlers: RestHandler[] = [
     };
 
     return res(ctx.json(response));
+  }),
+
+  rest.post(`${API_URL}/api/v1/pages`, async (req, res, ctx) => {
+    const body = await req.json<PageCreateEdit>();
+    pagesService.create(body);
+    return res(ctx.status(200));
+  }),
+
+  rest.put(`${API_URL}/api/v1/pages/:id`, async (req, res, ctx) => {
+    const id = parseInt(req.params.id as string);
+    const body = await req.json<PageCreateEdit>();
+    pagesService.update(id, body);
+    return res(ctx.status(200));
+  }),
+
+  rest.delete(`${API_URL}/api/v1/pages/batch`, async (req, res, ctx) => {
+    const pageIds = await req.json<number[]>();
+    pagesService.deleteMany(pageIds);
+    return res(ctx.status(200));
   }),
 ];

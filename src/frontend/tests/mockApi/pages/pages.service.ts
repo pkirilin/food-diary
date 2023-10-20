@@ -1,3 +1,4 @@
+import { PageCreateEdit } from 'src/features/pages';
 import { SortOrder } from 'src/types';
 import { db, DbNote, DbProduct } from '../db';
 
@@ -81,4 +82,44 @@ export const calculateCalories = (notes: DbNote[]): number => {
   }, 0);
 
   return Math.floor(countCalories);
+};
+
+export const create = ({ date }: PageCreateEdit): void => {
+  const maxId =
+    db.page
+      .findMany({
+        orderBy: { id: 'desc' },
+        take: 1,
+      })
+      .at(0)?.id ?? 0;
+
+  db.page.create({
+    id: maxId + 1,
+    date,
+  });
+};
+
+export const update = (id: number, { date }: PageCreateEdit) => {
+  db.page.update({
+    where: {
+      id: { equals: id },
+    },
+    data: {
+      date,
+    },
+  });
+};
+
+export const deleteMany = (pageIds: number[]) => {
+  db.note.deleteMany({
+    where: {
+      pageId: { in: pageIds },
+    },
+  });
+
+  db.page.deleteMany({
+    where: {
+      id: { in: pageIds },
+    },
+  });
 };
