@@ -35,6 +35,9 @@ export const getProducts = (notes: DbNote[]): Map<number, DbProduct> => {
     }, new Map<number, DbProduct>());
 };
 
+export const calculateCalories = (quantity: number, product: DbProduct): number =>
+  Math.floor((quantity * product.caloriesCost) / 100);
+
 export const create = ({
   mealType,
   productQuantity,

@@ -19,7 +19,7 @@ export const handlers: RestHandler[] = [
         productId: product?.id,
         productName: product?.name,
         productQuantity: quantity,
-        calories: product ? (quantity * product.caloriesCost) / 100 : 0,
+        calories: product ? notesService.calculateCalories(quantity, product) : 0,
       };
     });
 
