@@ -70,6 +70,24 @@ export const getNotes = (pageId: number): DbNote[] => {
   return notes.sort(compareNotes);
 };
 
+export const getNewPageDate = (): Date => {
+  const lastDatePage = db.page
+    .findMany({
+      orderBy: {
+        date: 'desc',
+      },
+      take: 1,
+    })
+    .at(0);
+
+  if (!lastDatePage) {
+    return new Date();
+  }
+
+  const nextDayDate = new Date(lastDatePage.date + 86400000);
+  return nextDayDate;
+};
+
 export const calculateCalories = (notes: DbNote[]): number => {
   const productsMap = notes
     .map(n => n.productId)

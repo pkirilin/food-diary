@@ -1,12 +1,9 @@
 import { screen, waitForElementToBeRemoved, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { server } from 'src/test-utils';
 import { render } from 'src/testing';
-import { getEmptyCategories } from 'src/testing/server/handlers/categories';
 import Categories from './Categories';
 
 test('placeholder text is shown for empty categories list', async () => {
-  server.use(getEmptyCategories);
   render(<Categories />);
 
   await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
@@ -46,27 +43,27 @@ test('category can be edited', async () => {
   render(<Categories />);
 
   await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
-  await userEvent.click(screen.getByLabelText(/edit bakery/i));
+  await userEvent.click(screen.getByLabelText(/edit cereals/i));
 
   const dialog = within(screen.getByRole('dialog'));
   const name = dialog.getByPlaceholderText(/category name/i);
   await userEvent.clear(name);
-  await userEvent.type(name, 'Modified Bakery');
-  await userEvent.click(dialog.getByLabelText(/save modified bakery/i));
+  await userEvent.type(name, 'Modified Cereals');
+  await userEvent.click(dialog.getByLabelText(/save modified cereals/i));
 
-  expect(await screen.findByText(/modified bakery/i));
+  expect(await screen.findByText(/modified cereals/i));
 });
 
 test('category can be deleted', async () => {
   render(<Categories />);
 
   await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
-  await userEvent.click(screen.getByLabelText(/delete bakery/i));
+  await userEvent.click(screen.getByLabelText(/delete cereals/i));
 
   const dialog = within(screen.getByRole('dialog'));
-  await userEvent.click(dialog.getByLabelText(/delete bakery/i));
+  await userEvent.click(dialog.getByLabelText(/delete cereals/i));
 
-  expect(screen.queryByText(/bakery/i)).not.toBeInTheDocument();
+  expect(screen.queryByText(/cereals/i)).not.toBeInTheDocument();
 });
 
 test('category cannot be created while categories list is loading', async () => {

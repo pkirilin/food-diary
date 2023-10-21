@@ -1,9 +1,12 @@
+import { drop } from '@mswjs/data';
 import { fillCategories } from './categories';
+import { db } from './db';
 import { fillNotes } from './notes';
 import { fillPages } from './pages';
 import { fillProducts } from './products';
 
-const initDb = () => {
+export const initMockApiDb = () => {
+  drop(db);
   fillPages();
   fillNotes();
   fillProducts();
@@ -15,6 +18,8 @@ const IGNORED_PATHNAMES = ['manifest.json', 'favicon.*', 'main.*.hot-update.js']
 
 export const initBrowserMockApi = async () => {
   const { worker } = await import('./browser');
+
+  initMockApiDb();
 
   await worker.start({
     onUnhandledRequest(request, print) {
@@ -29,6 +34,4 @@ export const initBrowserMockApi = async () => {
       print.warning();
     },
   });
-
-  initDb();
 };

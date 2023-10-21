@@ -18,5 +18,13 @@
   {
     "id": 5,
     "name": "Fruits"
+  },
+  {
+    "id": 6,
+    "name": "Bakery"
+  },
+  {
+    "id": 7,
+    "name": "Frozen foods"
   }
 ]

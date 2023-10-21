@@ -1,1 +1,1 @@
-export * from './initBrowserMockApi';
+export * from './init';

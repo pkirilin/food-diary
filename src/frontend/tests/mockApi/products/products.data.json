@@ -58,5 +58,11 @@
     "name": "Banana",
     "caloriesCost": 96,
     "categoryId": 5
+  },
+  {
+    "id": 11,
+    "name": "Chocolate cake",
+    "caloriesCost": 450,
+    "categoryId": 6
   }
 ]

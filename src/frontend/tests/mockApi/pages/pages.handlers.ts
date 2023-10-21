@@ -42,6 +42,12 @@ export const handlers: RestHandler[] = [
     return res(ctx.json(response));
   }),
 
+  rest.get(`${API_URL}/api/v1/pages/date`, (req, res, ctx) => {
+    const date = new Date(pagesService.getNewPageDate());
+    const response: string = formatDate(date);
+    return res(ctx.json(response));
+  }),
+
   rest.get(`${API_URL}/api/v1/pages/:id`, (req, res, ctx) => {
     if (!req.params.id) {
       return res(ctx.status(404));
@@ -82,6 +88,18 @@ export const handlers: RestHandler[] = [
   rest.delete(`${API_URL}/api/v1/pages/batch`, async (req, res, ctx) => {
     const pageIds = await req.json<number[]>();
     pagesService.deleteMany(pageIds);
+    return res(ctx.status(200));
+  }),
+
+  rest.post(`${API_URL}/api/v1/imports/json`, (req, res, ctx) => {
+    return res(ctx.status(200));
+  }),
+
+  rest.get(`${API_URL}/api/v1/exports/json`, (req, res, ctx) => {
+    return res(ctx.body(new Blob()));
+  }),
+
+  rest.post(`${API_URL}/api/v1/exports/google-docs`, (req, res, ctx) => {
     return res(ctx.status(200));
   }),
 ];
