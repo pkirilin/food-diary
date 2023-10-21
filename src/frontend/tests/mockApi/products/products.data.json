@@ -2,13 +2,61 @@
   {
     "id": 1,
     "name": "Bread",
-    "caloriesCost": 50,
+    "caloriesCost": 250,
     "categoryId": 1
   },
   {
     "id": 2,
-    "name": "Chicken",
-    "caloriesCost": 150,
+    "name": "Beef",
+    "caloriesCost": 500,
     "categoryId": 2
+  },
+  {
+    "id": 3,
+    "name": "Tomato",
+    "caloriesCost": 20,
+    "categoryId": 3
+  },
+  {
+    "id": 4,
+    "name": "Milk",
+    "caloriesCost": 60,
+    "categoryId": 4
+  },
+  {
+    "id": 5,
+    "name": "Apple",
+    "caloriesCost": 52,
+    "categoryId": 5
+  },
+  {
+    "id": 6,
+    "name": "Oats",
+    "caloriesCost": 379,
+    "categoryId": 1
+  },
+  {
+    "id": 7,
+    "name": "Chicken",
+    "caloriesCost": 239,
+    "categoryId": 2
+  },
+  {
+    "id": 8,
+    "name": "Spinach",
+    "caloriesCost": 23,
+    "categoryId": 3
+  },
+  {
+    "id": 9,
+    "name": "Cheese",
+    "caloriesCost": 402,
+    "categoryId": 4
+  },
+  {
+    "id": 10,
+    "name": "Banana",
+    "caloriesCost": 96,
+    "categoryId": 5
   }
 ]

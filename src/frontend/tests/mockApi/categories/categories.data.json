@@ -1,10 +1,22 @@
 [
   {
     "id": 1,
-    "name": "Bakery"
+    "name": "Cereals"
   },
   {
     "id": 2,
     "name": "Meat"
+  },
+  {
+    "id": 3,
+    "name": "Vegetables"
+  },
+  {
+    "id": 4,
+    "name": "Dairy"
+  },
+  {
+    "id": 5,
+    "name": "Fruits"
   }
 ]
