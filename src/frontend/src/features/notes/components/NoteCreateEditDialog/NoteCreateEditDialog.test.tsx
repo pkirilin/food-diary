@@ -18,7 +18,7 @@ test('note can be created', async () => {
   );
 
   await userEvent.click(screen.getByPlaceholderText(/select a product/i));
-  await userEvent.click(within(screen.getByRole('listbox')).getByText(/meat/i));
+  await userEvent.click(within(screen.getByRole('listbox')).getByText(/beef/i));
 
   await userEvent.clear(screen.getByPlaceholderText(/quantity/i));
   await userEvent.type(screen.getByPlaceholderText(/quantity/i), '150');
@@ -28,7 +28,7 @@ test('note can be created', async () => {
   expect(submitFn).toHaveBeenCalledWith({
     mealType: MealType.Breakfast,
     displayOrder: 0,
-    productId: 4,
+    productId: 2,
     pageId: 1,
     productQuantity: 150,
   } as NoteCreateEdit);

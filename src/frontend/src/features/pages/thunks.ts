@@ -9,8 +9,8 @@ import {
 import { ExportPagesToJsonRequest, Page, PageCreateEdit, PagesSearchResult } from './models';
 
 export type GetPagesRequest = {
-  startDate?: string;
-  endDate?: string;
+  startDate: string | null;
+  endDate: string | null;
   sortOrder: SortOrder;
   pageNumber: number;
   pageSize: number;
@@ -23,8 +23,8 @@ export type EditPageRequest = {
 
 export interface PageByIdResponse {
   currentPage: Page;
-  previousPage: Page;
-  nextPage: Page;
+  previousPage: Page | null;
+  nextPage: Page | null;
 }
 
 export const getPages = createApiCallAsyncThunk<PagesSearchResult, GetPagesRequest>(

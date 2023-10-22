@@ -1,12 +1,15 @@
 import 'date-fns';
+import { initBrowserMockApi } from 'tests/mockApi';
 import { createRoot } from 'react-dom/client';
 import App from './App';
 import AppProvider from './AppProvider';
+import { MSW_ENABLED } from './config';
 import store from './store';
-import { initMocks } from './testing/server';
 
 (async () => {
-  await initMocks();
+  if (MSW_ENABLED) {
+    await initBrowserMockApi();
+  }
 
   const container = document.getElementById('root') as HTMLElement;
   const root = createRoot(container);

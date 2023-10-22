@@ -15,10 +15,10 @@ test('page can be created', async () => {
 
   render(ui);
   const pageDate = screen.getByRole('textbox', { name: /page date/i });
-  await waitFor(() => expect(pageDate).toHaveDisplayValue('05.06.2022'));
+  await waitFor(() => expect(pageDate).toHaveDisplayValue('22.10.2023'));
   await userEvent.click(screen.getByText(/create/i));
 
   expect(submitFn).toHaveBeenCalledWith({
-    date: '2022-06-05',
+    date: '2023-10-22',
   } as PageCreateEdit);
 });

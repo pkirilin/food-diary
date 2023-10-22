@@ -1,7 +1,6 @@
 import { screen, waitForElementToBeRemoved, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { render } from 'src/testing';
-import { db } from 'src/testing/server/db';
 import Pages from './Pages';
 
 // TODO: fix this test by adding progressbar
@@ -10,13 +9,6 @@ import Pages from './Pages';
 
 //   await expect(screen).toContainPageItems('01.01.2022');
 // });
-
-test('pages table is showing message for empty data', () => {
-  db.page.deleteMany({ where: {} });
-  render(<Pages />);
-
-  expect(screen.getByText(/no pages found/i));
-});
 
 test('pages can be exported to JSON if start/end dates specified', async () => {
   render(<Pages />);
