@@ -40,12 +40,8 @@ const notesSlice = createSlice({
   reducers: {},
   extraReducers: builder =>
     builder
-      .addCase(getNotes.fulfilled, (state, { payload, meta }) => {
-        const isRequestForAllMeals = meta.arg.mealType === undefined;
-
-        state.noteItems = isRequestForAllMeals
-          ? payload
-          : [...state.noteItems.filter(n => n.mealType !== meta.arg.mealType), ...payload];
+      .addCase(getNotes.fulfilled, (state, { payload }) => {
+        state.noteItems = payload;
       })
       .addMatcher<NoteOperationAction>(
         createAsyncThunkMatcher(operationThunks, 'pending'),

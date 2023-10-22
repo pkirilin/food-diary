@@ -21,8 +21,8 @@ export type PagesState = {
   totalPagesCount: number;
   filter: PageItemsFilter;
   current?: Page;
-  previous?: Page;
-  next?: Page;
+  previous?: Page | null;
+  next?: Page | null;
   dateForNewPage?: string;
   dateForNewPageLoading: Status;
   isExportToJsonLoading: boolean;

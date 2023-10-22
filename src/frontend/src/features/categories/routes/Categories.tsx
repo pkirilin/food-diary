@@ -6,17 +6,17 @@ import CategoriesList from '../components/CategoriesList';
 import CreateCategory from '../components/CreateCategory';
 
 const Categories: React.FC = () => {
-  const { isFetching: isFetchingCategories } = useCategoriesQuery();
+  const categoriesQuery = useCategoriesQuery();
 
   return (
     <React.Fragment>
-      {isFetchingCategories && <AppLinearProgress />}
+      {categoriesQuery.isFetching && <AppLinearProgress />}
       <Container>
         <Box py={3}>
           <Typography variant="h1" gutterBottom>
             Categories
           </Typography>
-          <CategoriesList />
+          <CategoriesList categories={categoriesQuery.data ?? []} />
           <CreateCategory />
         </Box>
       </Container>

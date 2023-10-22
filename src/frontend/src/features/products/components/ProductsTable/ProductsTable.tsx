@@ -10,30 +10,27 @@ import {
 } from '@mui/material';
 import React from 'react';
 import { AppLinearProgress } from 'src/components';
-import { useAppDispatch, useAppSelector } from '../../__shared__/hooks';
-import { useProductsQuery } from '../api';
-import { selectCheckedProductIds, selectProductsQueryArg } from '../selectors';
-import { productsChecked, productsUnchecked } from '../store';
-import ProductsTableRow from './ProductsTableRow';
+import { Product } from '../../types';
+import ProductsTableRow from '../ProductsTableRow';
 
-const ProductsTable: React.FC = () => {
-  const productsQueryArg = useAppSelector(selectProductsQueryArg);
-  const checkedProductIds = useAppSelector(selectCheckedProductIds);
-  const dispatch = useAppDispatch();
+type ProductsTableProps = {
+  products: Product[];
+  isLoading: boolean;
+  checkedIds: number[];
+  onCheckedChange: (products: Product[], newCheckedIds: number[]) => void;
+};
 
-  const { data: productsQueryData, isFetching: isFetchingProducts } =
-    useProductsQuery(productsQueryArg);
+const ProductsTable: React.FC<ProductsTableProps> = ({
+  products,
+  isLoading,
+  checkedIds,
+  onCheckedChange,
+}) => {
+  const allProductsChecked = products.length > 0 && products.length === checkedIds.length;
 
-  const products = productsQueryData ? productsQueryData.productItems : [];
-  const allProductsChecked = products.length > 0 && products.length === checkedProductIds.length;
-
-  function handleCheckedChange() {
-    if (checkedProductIds.length > 0) {
-      dispatch(productsUnchecked(products.map(p => p.id)));
-    } else {
-      dispatch(productsChecked(products.map(p => p.id)));
-    }
-  }
+  const handleCheckedIdsChange = (): void => {
+    onCheckedChange(products, checkedIds);
+  };
 
   function renderRows() {
     if (products.length === 0) {
@@ -51,18 +48,16 @@ const ProductsTable: React.FC = () => {
 
   return (
     <TableContainer sx={{ position: 'relative' }}>
-      {isFetchingProducts && <AppLinearProgress />}
+      {isLoading && <AppLinearProgress />}
       <Table>
         <TableHead>
           <TableRow>
             <TableCell padding="checkbox">
               <Checkbox
                 color="primary"
-                indeterminate={
-                  checkedProductIds.length > 0 && checkedProductIds.length < products.length
-                }
+                indeterminate={checkedIds.length > 0 && checkedIds.length < products.length}
                 checked={allProductsChecked}
-                onChange={handleCheckedChange}
+                onChange={handleCheckedIdsChange}
                 disabled={products.length === 0}
                 inputProps={{
                   'aria-label': 'Select all',
