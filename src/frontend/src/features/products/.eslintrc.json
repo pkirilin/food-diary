@@ -12,13 +12,6 @@
         "patterns": ["src/features/*/*"]
       }
     ],
-    "react/jsx-no-bind": [
-      "warn",
-      {
-        "allowFunctions": true,
-        "allowArrowFunctions": false
-      }
-    ],
     "@typescript-eslint/explicit-module-boundary-types": "warn"
   }
 }

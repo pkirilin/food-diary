@@ -67,4 +67,6 @@ export const {
   useDeleteProductsMutation,
 } = productsApi;
 
+export * from './contracts';
+
 export default productsApi;

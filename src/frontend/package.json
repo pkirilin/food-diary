@@ -34,7 +34,7 @@
     "redux": "^4.2.0"
   },
   "devDependencies": {
-    "@mswjs/data": "^0.10.1",
+    "@mswjs/data": "^0.14.0",
     "@testing-library/dom": "^9.2.0",
     "@testing-library/jest-dom": "^6.1.4",
     "@testing-library/react": "^14.0.0",

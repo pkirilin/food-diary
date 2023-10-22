@@ -1128,9 +1128,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mswjs/data@npm:^0.10.1":
-  version: 0.10.1
-  resolution: "@mswjs/data@npm:0.10.1"
+"@mswjs/data@npm:^0.14.0":
+  version: 0.14.0
+  resolution: "@mswjs/data@npm:0.14.0"
   dependencies:
     "@types/lodash": ^4.14.172
     "@types/md5": ^2.3.0
@@ -1144,12 +1144,12 @@ __metadata:
     msw: latest
     outvariant: ^1.2.1
     pluralize: ^8.0.0
-    strict-event-emitter: ^0.2.0
+    strict-event-emitter: ^0.5.0
     uuid: ^8.3.1
   dependenciesMeta:
     msw:
       optional: true
-  checksum: 333415c2c445b34870496825f718ca44f6a9143810648cf6c047c5855b014ea0be8d3a31cfc2e8a7b7a96164a214bfae2030400df7041c8976236e3eb8b9659d
+  checksum: 8a9049059baa3635c5bf3d8ad3380fb3922c4643c6bdc7d60d643d86abc5d92028075d4e5bb41b3891d2606d95ed364c50ea081430af988e9806a8a92ac898c2
   languageName: node
   linkType: hard
 
@@ -4546,7 +4546,7 @@ __metadata:
     "@date-io/date-fns": ^2.14.0
     "@emotion/react": ^11.9.3
     "@emotion/styled": ^11.9.3
-    "@mswjs/data": ^0.10.1
+    "@mswjs/data": ^0.14.0
     "@mui/icons-material": ^5.14.13
     "@mui/lab": ^5.0.0-alpha.122
     "@mui/material": ^5.11.12
@@ -7632,6 +7632,13 @@ __metadata:
   version: 0.4.6
   resolution: "strict-event-emitter@npm:0.4.6"
   checksum: 4f4f2909613e7811de789991c06bfb770d6d6987e2ec5c66fa7485d0f07cc4e7e32eba0dcf26cee6d86af6c92946d7f4acdfaff57d0c4114df2cfa1bf0e3c091
+  languageName: node
+  linkType: hard
+
+"strict-event-emitter@npm:^0.5.0":
+  version: 0.5.1
+  resolution: "strict-event-emitter@npm:0.5.1"
+  checksum: 350480431bc1c28fdb601ef4976c2f8155fc364b4740f9692dd03e5bdd48aafc99a5e021fe655fbd986d0b803e9f3fc5c4b018b35cb838c4690d60f2a26f1cf3
   languageName: node
   linkType: hard
 

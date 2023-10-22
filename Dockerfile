@@ -12,7 +12,7 @@ RUN yarn build
 FROM mcr.microsoft.com/dotnet/aspnet:6.0
 WORKDIR /app
 COPY --from=backend app/publish .
-COPY --from=frontend app/build frontend/build
+COPY --from=frontend app/dist frontend/dist
 EXPOSE 80
 ENV Logging__Console__FormatterName=Simple
 ENTRYPOINT ["dotnet", "FoodDiary.API.dll"]
