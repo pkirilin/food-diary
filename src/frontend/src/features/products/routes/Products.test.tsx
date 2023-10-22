@@ -23,17 +23,16 @@ test('product can be created', async () => {
   const productName = dialog.getByPlaceholderText(/product name/i);
   const caloriesCost = dialog.getByPlaceholderText(/calories cost/i);
   const category = dialog.getByPlaceholderText(/category/i);
-  await userEvent.type(productName, 'Yoghurt');
+  await userEvent.type(productName, 'Cheesecake');
   await userEvent.clear(caloriesCost);
-  await userEvent.type(caloriesCost, '105');
+  await userEvent.type(caloriesCost, '321');
   await userEvent.click(category);
-  await userEvent.click(within(screen.getByRole('listbox')).getByText(/dairy/i));
-  await userEvent.click(dialog.getByLabelText(/create yoghurt/i));
-  await userEvent.click(screen.getByRole('button', { name: /go to next page/i }));
+  await userEvent.click(within(screen.getByRole('listbox')).getByText(/bakery/i));
+  await userEvent.click(dialog.getByLabelText(/create cheesecake/i));
 
-  expect(await screen.findByText(/yoghurt/i));
-  expect(screen.getByLabelText(/yoghurt calories cost is 105/i));
-  expect(screen.getByLabelText(/yoghurt is in dairy category/i));
+  expect(await screen.findByText(/cheesecake/i));
+  expect(screen.getByLabelText(/cheesecake calories cost is 321/i));
+  expect(screen.getByLabelText(/cheesecake is in bakery category/i));
 });
 
 test('product can be edited', async () => {

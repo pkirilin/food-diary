@@ -4,7 +4,6 @@ import React from 'react';
 import { useAppDispatch } from 'src/hooks';
 import { useAppSelector } from 'src/store';
 import { useProductsQuery } from '../api';
-import CreateProduct from '../components/CreateProduct';
 import ProductsFilterAppliedParams from '../components/ProductsFilterAppliedParams';
 import ProductsTable from '../components/ProductsTable';
 import ProductsTablePagination from '../components/ProductsTablePagination';
@@ -43,7 +42,6 @@ const Products: React.FC = () => {
             onCheckedChange={handleCheckedProductsChange}
           />
           <ProductsTablePagination />
-          <CreateProduct />
         </Paper>
       </Box>
     </Container>

@@ -1,6 +1,6 @@
 import AddIcon from '@mui/icons-material/Add';
+import { IconButton, Tooltip } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { AppFab } from 'src/components';
 import { useAppSelector } from 'src/store';
 import { useCreateProductMutation, useProductsQuery } from '../api';
 import { selectProductsQueryArg } from '../selectors';
@@ -38,14 +38,18 @@ const CreateProduct: React.FC = () => {
 
   return (
     <React.Fragment>
-      <AppFab
-        aria-label="Open create product dialog"
-        color="primary"
-        onClick={handleCreate}
-        disabled={isLoadingProducts || isProductCreating}
-      >
-        <AddIcon />
-      </AppFab>
+      <Tooltip title="Add new product">
+        <span>
+          <IconButton
+            size="large"
+            onClick={handleCreate}
+            disabled={isLoadingProducts || isProductCreating}
+            aria-label="Open create product dialog"
+          >
+            <AddIcon />
+          </IconButton>
+        </span>
+      </Tooltip>
 
       <ProductInputDialog
         isOpened={isDialogOpened}

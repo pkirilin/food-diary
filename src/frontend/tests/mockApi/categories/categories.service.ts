@@ -1,7 +1,10 @@
 import { CategoryFormData } from 'src/features/categories';
 import { db } from '../db';
 
-export const getAll = () => db.category.getAll();
+export const getAll = () =>
+  db.category.findMany({
+    orderBy: { name: 'asc' },
+  });
 
 export const getProductsCount = (categoryId: number) =>
   db.product.count({

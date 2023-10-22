@@ -18,6 +18,7 @@ export const get = ({
     where: {
       categoryId: categoryId === null ? {} : { equals: categoryId },
     },
+    orderBy: { name: 'asc' },
     skip: (pageNumber - 1) * pageSize,
     take: pageSize,
   });
