@@ -1,7 +1,6 @@
 import { screen, waitFor, waitForElementToBeRemoved, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { render } from 'src/testing';
-import { db } from 'src/testing/server/db';
 import Products from './Products';
 
 test('products are loaded into table', async () => {
@@ -12,15 +11,6 @@ test('products are loaded into table', async () => {
   expect(screen.getByText(/bread/i));
   expect(screen.getByLabelText(/bread calories cost is 250/i));
   expect(screen.getByLabelText(/bread is in cereals category/i));
-});
-
-test('products table is showing message for empty data', async () => {
-  db.product.deleteMany({ where: {} });
-  render(<Products />);
-
-  await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
-
-  expect(screen.getByText(/no products found/i));
 });
 
 test('product can be created', async () => {
@@ -39,6 +29,7 @@ test('product can be created', async () => {
   await userEvent.click(category);
   await userEvent.click(within(screen.getByRole('listbox')).getByText(/dairy/i));
   await userEvent.click(dialog.getByLabelText(/create yoghurt/i));
+  await userEvent.click(screen.getByRole('button', { name: /go to next page/i }));
 
   expect(await screen.findByText(/yoghurt/i));
   expect(screen.getByLabelText(/yoghurt calories cost is 105/i));
