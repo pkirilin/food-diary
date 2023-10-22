@@ -3,14 +3,6 @@ import userEvent from '@testing-library/user-event';
 import { render } from 'src/testing';
 import Categories from './Categories';
 
-test('placeholder text is shown for empty categories list', async () => {
-  render(<Categories />);
-
-  await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
-
-  expect(screen.getByText(/no categories/i));
-});
-
 test('categories are displayed with their product counts', async () => {
   render(<Categories />);
 

@@ -1,12 +1,13 @@
 import { Grid, Typography } from '@mui/material';
-import React from 'react';
-import { useCategoriesQuery } from '../api';
-import CategoriesListItem from './CategoriesListItem';
+import { FC } from 'react';
+import { Category } from '../../types';
+import CategoriesListItem from '../CategoriesListItem';
 
-const CategoriesList: React.FC = () => {
-  const { data: categoriesQueryData } = useCategoriesQuery();
-  const categories = categoriesQueryData || [];
+type CategoriesListProps = {
+  categories: Category[];
+};
 
+const CategoriesList: FC<CategoriesListProps> = ({ categories }) => {
   if (categories.length === 0) {
     return <Typography color="GrayText">No categories found</Typography>;
   }
