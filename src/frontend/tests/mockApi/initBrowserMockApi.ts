@@ -1,25 +1,11 @@
-import { drop } from '@mswjs/data';
-import { fillCategories } from './categories';
-import { db } from './db';
-import { fillNotes } from './notes';
-import { fillPages } from './pages';
-import { fillProducts } from './products';
-
-export const initMockApiDb = () => {
-  drop(db);
-  fillPages();
-  fillNotes();
-  fillProducts();
-  fillCategories();
-};
-
 const IGNORED_HOSTNAMES = ['apis.google.com', 'fonts.gstatic.com'];
 const IGNORED_PATHNAMES = ['manifest.json', 'favicon.*', 'main.*.hot-update.js'];
 
-export const initBrowserMockApi = async () => {
+export const initBrowserMockApi = async (): Promise<void> => {
   const { worker } = await import('./browser');
+  const { initMockApiDb } = await import('./initMockApiDb');
 
-  initMockApiDb();
+  await initMockApiDb();
 
   await worker.start({
     onUnhandledRequest(request, print) {

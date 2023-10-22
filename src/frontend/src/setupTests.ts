@@ -24,8 +24,8 @@ beforeAll(() => {
   server.listen();
 });
 
-beforeEach(() => {
-  initMockApiDb();
+beforeEach(async () => {
+  await initMockApiDb();
 });
 
 afterEach(() => {
