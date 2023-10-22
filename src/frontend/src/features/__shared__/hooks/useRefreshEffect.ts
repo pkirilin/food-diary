@@ -5,6 +5,9 @@ import { Status } from '../models';
 
 type StatusSelector<TState> = (state: TState) => Status;
 
+/**
+@deprecated Use RTK query's refetch instead
+ */
 export default function useRefreshEffect<TState = RootState>(
   statusSelector: StatusSelector<TState>,
   effect: EffectCallback,
