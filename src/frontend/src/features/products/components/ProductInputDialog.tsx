@@ -64,6 +64,8 @@ const ProductInputDialog: React.FC<ProductInputDialogProps> = ({
     inputProps: categorySelectProps,
     value: category,
     clearValue: clearCategory,
+    isInvalid: isCategoryInvalid,
+    isTouched: isCategoryTouched,
   } = useInput({
     initialValue: product?.category || null,
     errorHelperText: 'Category is required',
@@ -93,18 +95,12 @@ const ProductInputDialog: React.FC<ProductInputDialogProps> = ({
     }
   }
 
-  const submitValidationResults = [
-    isProductNameInvalid || !isProductNameTouched,
-    isCaloriesCostInvalid && isCaloriesCostTouched,
-    category === null,
-  ];
-
-  const isSubmitDisabled = submitValidationResults.some(isInvalid => isInvalid);
+  const isAnyValueInvalid = isProductNameInvalid || isCaloriesCostInvalid || isCategoryInvalid;
+  const isAnyValueChanged = isProductNameTouched || isCaloriesCostTouched || isCategoryTouched;
 
   return (
     <Dialog open={isDialogOpened} onClose={handleClose} fullWidth>
       <DialogTitle>{title}</DialogTitle>
-
       <DialogContent>
         <TextField
           {...productNameinputProps}
@@ -124,16 +120,14 @@ const ProductInputDialog: React.FC<ProductInputDialogProps> = ({
         />
         <CategorySelect {...categorySelectProps} label="Category" placeholder="Select a category" />
       </DialogContent>
-
       <DialogActions>
         <AppButton disabled={isLoading} onClick={handleClose}>
           Cancel
         </AppButton>
-
         <AppButton
           aria-label={`${product ? 'Save' : 'Create'} ${productName} and close dialog`}
           variant="contained"
-          disabled={isSubmitDisabled}
+          disabled={isAnyValueInvalid || !isAnyValueChanged}
           onClick={handleSubmit}
           isLoading={isLoading}
         >
