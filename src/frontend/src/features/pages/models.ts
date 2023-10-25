@@ -33,8 +33,3 @@ export type ExportPagesToJsonRequest = {
   startDate: string;
   endDate: string;
 };
-
-export type ExportPagesToGoogleDocsRequest = {
-  startDate: string;
-  endDate: string;
-};

@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
-import api from './api';
+import { api } from './api';
 import { useAppSelector } from './features/__shared__/hooks';
 import authApi from './features/auth/api';
 import authReducer from './features/auth/store';
