@@ -1,12 +1,12 @@
 import { Box, Container, Typography } from '@mui/material';
 import React from 'react';
 import { AppLinearProgress } from 'src/components';
-import { useCategoriesQuery } from '../api';
+import { categoriesApi } from '../api';
 import CategoriesList from '../components/CategoriesList';
 import CreateCategory from '../components/CreateCategory';
 
 const Categories: React.FC = () => {
-  const categoriesQuery = useCategoriesQuery();
+  const categoriesQuery = categoriesApi.useGetCategoriesQuery();
 
   return (
     <React.Fragment>

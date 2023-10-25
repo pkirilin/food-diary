@@ -3,7 +3,6 @@ import { api } from './api';
 import { useAppSelector } from './features/__shared__/hooks';
 import authApi from './features/auth/api';
 import authReducer from './features/auth/store';
-import categoriesApi from './features/categories/api';
 import notesReducer from './features/notes/slice';
 import pagesReducer from './features/pages/slice';
 import productsApi from './features/products/api';
@@ -14,7 +13,6 @@ export function configureAppStore() {
     reducer: {
       [api.reducerPath]: api.reducer,
       [authApi.reducerPath]: authApi.reducer,
-      [categoriesApi.reducerPath]: categoriesApi.reducer,
       [productsApi.reducerPath]: productsApi.reducer,
       auth: authReducer,
       pages: pagesReducer,
@@ -23,12 +21,7 @@ export function configureAppStore() {
     },
 
     middleware: getDefaultMiddleware =>
-      getDefaultMiddleware().concat(
-        api.middleware,
-        authApi.middleware,
-        categoriesApi.middleware,
-        productsApi.middleware,
-      ),
+      getDefaultMiddleware().concat(api.middleware, authApi.middleware, productsApi.middleware),
   });
 }
 

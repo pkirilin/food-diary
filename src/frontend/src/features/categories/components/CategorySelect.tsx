@@ -1,7 +1,7 @@
 import React from 'react';
 import { AppSelect } from 'src/components';
 import { SelectOption, SelectProps } from 'src/types';
-import { useLazyCategorySelectOptionsQuery } from '../api';
+import { categoriesApi } from '../api';
 
 const CategorySelect: React.FC<SelectProps<SelectOption>> = ({
   label,
@@ -11,8 +11,7 @@ const CategorySelect: React.FC<SelectProps<SelectOption>> = ({
   helperText,
   isInvalid,
 }) => {
-  const [fetchOptions, { data: options, isLoading, isUninitialized }] =
-    useLazyCategorySelectOptionsQuery();
+  const [getOptions, getOptionsRequest] = categoriesApi.useLazyGetCategorySelectOptionsQuery();
 
   function getDisplayName(option: SelectOption) {
     return option.name;
@@ -27,20 +26,20 @@ const CategorySelect: React.FC<SelectProps<SelectOption>> = ({
   }
 
   function handleOpen() {
-    if (isUninitialized) {
-      fetchOptions();
+    if (getOptionsRequest.isUninitialized) {
+      getOptions();
     }
   }
 
   return (
     <AppSelect
-      availableOptions={options || []}
+      availableOptions={getOptionsRequest.data || []}
       value={value}
       getDisplayName={getDisplayName}
       areOptionsEqual={areOptionsEqual}
       onChange={handleChange}
       onOpen={handleOpen}
-      isLoading={isLoading}
+      isLoading={getOptionsRequest.isLoading}
       isInvalid={isInvalid}
       label={label}
       placeholder={placeholder}
