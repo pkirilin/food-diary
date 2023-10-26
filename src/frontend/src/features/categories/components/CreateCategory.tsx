@@ -1,24 +1,20 @@
 import AddIcon from '@mui/icons-material/Add';
 import React, { useEffect, useState } from 'react';
 import { AppFab } from 'src/components';
-import { useCategoriesQuery, useCreateCategoryMutation } from '../api';
+import { categoriesApi } from '../api';
 import { CategoryFormData } from '../types';
 import CategoryInputDialog from './CategoryInputDialog';
 
 const CreateCategory: React.FC = () => {
   const [isCreateDialogOpened, setIsCreateDialogOpened] = useState(false);
-
-  const [createCategory, { isLoading: isCategoryCreating, isSuccess: isCategoryCreated }] =
-    useCreateCategoryMutation();
-
-  const { isLoading: isLoadingCategories, refetch: refetchCategories } = useCategoriesQuery();
+  const [createCategory, createCategoryRequest] = categoriesApi.useCreateCategoryMutation();
+  const categoriesQuery = categoriesApi.useGetCategoriesQuery();
 
   useEffect(() => {
-    if (isCategoryCreated) {
+    if (createCategoryRequest.isSuccess) {
       setIsCreateDialogOpened(false);
-      refetchCategories();
     }
-  }, [isCategoryCreated, refetchCategories]);
+  }, [createCategoryRequest.isSuccess]);
 
   function handleCreate() {
     setIsCreateDialogOpened(true);
@@ -34,7 +30,7 @@ const CreateCategory: React.FC = () => {
         aria-label="Create new category"
         color="primary"
         onClick={handleCreate}
-        disabled={isLoadingCategories}
+        disabled={categoriesQuery.isLoading}
       >
         <AddIcon />
       </AppFab>
@@ -45,7 +41,7 @@ const CreateCategory: React.FC = () => {
         title="Create category"
         submitText="Create"
         onSubmit={handleDialogSubmit}
-        isLoading={isCategoryCreating}
+        isLoading={createCategoryRequest.isLoading}
       />
     </React.Fragment>
   );

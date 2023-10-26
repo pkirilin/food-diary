@@ -2,27 +2,22 @@ import AddIcon from '@mui/icons-material/Add';
 import { IconButton, Tooltip } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useAppSelector } from 'src/store';
-import { useCreateProductMutation, useProductsQuery } from '../api';
+import { productsApi } from '../api';
 import { selectProductsQueryArg } from '../selectors';
 import { ProductFormData } from '../types';
 import ProductInputDialog from './ProductInputDialog';
 
 const CreateProduct: React.FC = () => {
   const [isDialogOpened, setIsDialogOpened] = useState(false);
-  const productsQueryArg = useAppSelector(selectProductsQueryArg);
-
-  const { isLoading: isLoadingProducts, refetch: refetchProducts } =
-    useProductsQuery(productsQueryArg);
-
-  const [createProduct, { isLoading: isProductCreating, isSuccess: isProductCreated }] =
-    useCreateProductMutation();
+  const getProductsQueryArg = useAppSelector(selectProductsQueryArg);
+  const getProductsQuery = productsApi.useGetProductsQuery(getProductsQueryArg);
+  const [createProduct, createProductRequest] = productsApi.useCreateProductMutation();
 
   useEffect(() => {
-    if (isProductCreated) {
-      refetchProducts();
+    if (createProductRequest.isSuccess) {
       setIsDialogOpened(false);
     }
-  }, [isProductCreated, refetchProducts]);
+  }, [createProductRequest.isSuccess]);
 
   function handleCreate() {
     setIsDialogOpened(true);
@@ -43,7 +38,7 @@ const CreateProduct: React.FC = () => {
           <IconButton
             size="large"
             onClick={handleCreate}
-            disabled={isLoadingProducts || isProductCreating}
+            disabled={getProductsQuery.isLoading || createProductRequest.isLoading}
             aria-label="Open create product dialog"
           >
             <AddIcon />
@@ -57,7 +52,7 @@ const CreateProduct: React.FC = () => {
         title="Create product"
         submitText="Create"
         onSubmit={handleDialogSubmit}
-        isLoading={isProductCreating}
+        isLoading={createProductRequest.isLoading}
       />
     </React.Fragment>
   );

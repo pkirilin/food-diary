@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { SelectOption } from 'src/types';
-import productsApi from '../api';
+import { productsApi } from '../api';
 import { ProductItemsFilter } from './types';
 
 export type ProductsState = {
@@ -62,7 +62,7 @@ const productsSlice = createSlice({
   },
   extraReducers: builder =>
     builder
-      .addMatcher(productsApi.endpoints.products.matchFulfilled, state => {
+      .addMatcher(productsApi.endpoints.getProducts.matchFulfilled, state => {
         state.checkedProductIds = [];
       })
       .addMatcher(productsApi.endpoints.deleteProducts.matchFulfilled, state => {

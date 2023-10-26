@@ -1,7 +1,7 @@
 import { Dialog, DialogTitle, DialogContent, Typography, DialogActions } from '@mui/material';
 import React, { useEffect } from 'react';
 import { AppButton } from 'src/components';
-import { useCategoriesQuery, useDeleteCategoryMutation } from '../api';
+import { categoriesApi } from '../api';
 import { Category } from '../types';
 
 type DeleteCategoryDialogProps = {
@@ -15,17 +15,13 @@ const DeleteCategoryDialog: React.FC<DeleteCategoryDialogProps> = ({
   setIsOpened: setIsDialogOpened,
   category,
 }) => {
-  const [deleteCategory, { isLoading: isCategoryDeleting, isSuccess: isCategoryDeleted }] =
-    useDeleteCategoryMutation();
-
-  const { refetch: refetchCategories } = useCategoriesQuery();
+  const [deleteCategory, deleteCategoryRequest] = categoriesApi.useDeleteCategoryMutation();
 
   useEffect(() => {
-    if (isCategoryDeleted) {
+    if (deleteCategoryRequest.isSuccess) {
       setIsDialogOpened(false);
-      refetchCategories();
     }
-  }, [isCategoryDeleted, refetchCategories, setIsDialogOpened]);
+  }, [deleteCategoryRequest.isSuccess, setIsDialogOpened]);
 
   function handleClose() {
     setIsDialogOpened(false);
@@ -42,7 +38,7 @@ const DeleteCategoryDialog: React.FC<DeleteCategoryDialogProps> = ({
         <Typography>{`Delete category "${category.name}"?`}</Typography>
       </DialogContent>
       <DialogActions>
-        <AppButton disabled={isCategoryDeleting} variant="text" onClick={handleClose}>
+        <AppButton disabled={deleteCategoryRequest.isLoading} variant="text" onClick={handleClose}>
           No
         </AppButton>
         <AppButton
@@ -50,7 +46,7 @@ const DeleteCategoryDialog: React.FC<DeleteCategoryDialogProps> = ({
           variant="contained"
           color="primary"
           onClick={handleSubmit}
-          isLoading={isCategoryDeleting}
+          isLoading={deleteCategoryRequest.isLoading}
         >
           Yes
         </AppButton>

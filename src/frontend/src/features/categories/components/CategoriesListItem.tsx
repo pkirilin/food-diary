@@ -2,7 +2,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { Card, CardHeader, CardActions, Button } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { useCategoriesQuery, useEditCategoryMutation } from '../api';
+import { categoriesApi } from '../api';
 import { Category, CategoryFormData } from '../types';
 import CategoryInputDialog from './CategoryInputDialog';
 import CategoryTitle from './CategoryTitle';
@@ -16,18 +16,13 @@ type CategoriesListItemProps = {
 const CategoriesListItem: React.FC<CategoriesListItemProps> = ({ category }) => {
   const [isEditDialogOpened, setIsEditDialogOpened] = useState(false);
   const [isDeleteDialogOpened, setIsDeleteDialogOpened] = useState(false);
-
-  const [editCategory, { isLoading: isCategoryUpdating, isSuccess: isCategoryUpdated }] =
-    useEditCategoryMutation();
-
-  const { refetch: refetchCategories } = useCategoriesQuery();
+  const [editCategory, editCategoryRequest] = categoriesApi.useEditCategoryMutation();
 
   useEffect(() => {
-    if (isCategoryUpdated) {
+    if (editCategoryRequest.isSuccess) {
       setIsEditDialogOpened(false);
-      refetchCategories();
     }
-  }, [isCategoryUpdated, refetchCategories]);
+  }, [editCategoryRequest.isSuccess]);
 
   function handleEdit() {
     setIsEditDialogOpened(true);
@@ -71,7 +66,7 @@ const CategoriesListItem: React.FC<CategoriesListItemProps> = ({ category }) => 
         title="Edit category"
         submitText="Save"
         onSubmit={handleEditDialogSubmit}
-        isLoading={isCategoryUpdating}
+        isLoading={editCategoryRequest.isLoading}
         category={category}
       />
 

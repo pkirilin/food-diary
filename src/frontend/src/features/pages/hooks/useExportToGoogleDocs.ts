@@ -1,6 +1,6 @@
 import format from 'date-fns/format';
 import { useEffect } from 'react';
-import { useExportPagesToGoogleDocsMutation } from 'src/api';
+import { pagesApi } from '../api/pagesApi';
 import { UseExportResult } from '../types';
 
 export function useExportToGoogleDocs(
@@ -8,14 +8,14 @@ export function useExportToGoogleDocs(
   endDate: Date | null,
   onSuccess: () => void,
 ): UseExportResult {
-  const [startExport, { isLoading, isSuccess, reset }] = useExportPagesToGoogleDocsMutation();
+  const [startExport, exportRequest] = pagesApi.useExportToGoogleDocsMutation();
 
   useEffect(() => {
-    if (isSuccess) {
+    if (exportRequest.isSuccess) {
       onSuccess();
-      reset();
+      exportRequest.reset();
     }
-  }, [isSuccess, onSuccess, reset]);
+  }, [exportRequest, onSuccess]);
 
   function start() {
     if (startDate && endDate) {
@@ -27,7 +27,7 @@ export function useExportToGoogleDocs(
   }
 
   return {
-    isLoading,
+    isLoading: exportRequest.isLoading,
     start,
   };
 }

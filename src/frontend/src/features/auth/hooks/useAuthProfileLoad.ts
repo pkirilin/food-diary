@@ -2,7 +2,7 @@ import { skipToken } from '@reduxjs/toolkit/dist/query';
 import { useEffect, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAppDispatch } from 'src/hooks';
-import { useProfileQuery } from '../api';
+import { authApi } from '../api';
 import { USE_FAKE_AUTH, USE_FAKE_AUTH_DEV } from '../constants';
 import { actions } from '../store';
 
@@ -11,12 +11,7 @@ const ROUTES_WITHOUT_AUTH = ['/login', '/post-login'];
 export default function useAuthProfileLoad(): void {
   const location = useLocation();
   const dispatch = useAppDispatch();
-
-  const {
-    data: profile,
-    isSuccess: isProfileSuccess,
-    isError: isProfileError,
-  } = useProfileQuery(USE_FAKE_AUTH ? skipToken : {});
+  const getProfileQuery = authApi.useGetProfileQuery(USE_FAKE_AUTH ? skipToken : {});
 
   const signIn = useCallback(() => {
     dispatch(actions.signIn());
@@ -27,12 +22,21 @@ export default function useAuthProfileLoad(): void {
   }, [dispatch]);
 
   useEffect(() => {
-    if (isProfileError || (isProfileSuccess && !profile.isAuthenticated)) {
+    if (
+      getProfileQuery.isError ||
+      (getProfileQuery.isSuccess && !getProfileQuery.data.isAuthenticated)
+    ) {
       signOut();
-    } else if (isProfileSuccess && profile.isAuthenticated) {
+    } else if (getProfileQuery.isSuccess && getProfileQuery.data.isAuthenticated) {
       signIn();
     }
-  }, [isProfileError, isProfileSuccess, profile?.isAuthenticated, signIn, signOut]);
+  }, [
+    getProfileQuery.data?.isAuthenticated,
+    getProfileQuery.isError,
+    getProfileQuery.isSuccess,
+    signIn,
+    signOut,
+  ]);
 
   useEffect(() => {
     if (USE_FAKE_AUTH_DEV) {
