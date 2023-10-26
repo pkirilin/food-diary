@@ -1,7 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { api } from './api';
 import { useAppSelector } from './features/__shared__/hooks';
-import authApi from './features/auth/api';
 import authReducer from './features/auth/store';
 import notesReducer from './features/notes/slice';
 import pagesReducer from './features/pages/slice';
@@ -11,15 +10,13 @@ export function configureAppStore() {
   return configureStore({
     reducer: {
       [api.reducerPath]: api.reducer,
-      [authApi.reducerPath]: authApi.reducer,
       auth: authReducer,
       pages: pagesReducer,
       products: productsReducer,
       notes: notesReducer,
     },
 
-    middleware: getDefaultMiddleware =>
-      getDefaultMiddleware().concat(api.middleware, authApi.middleware),
+    middleware: getDefaultMiddleware => getDefaultMiddleware().concat(api.middleware),
   });
 }
 

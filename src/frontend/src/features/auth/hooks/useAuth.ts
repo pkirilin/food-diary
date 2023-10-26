@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { API_URL } from 'src/config';
 import { useAppDispatch, useAppSelector } from 'src/hooks';
 import { createUrl } from 'src/utils';
-import { useProfileQuery } from '../api';
+import { authApi } from '../api';
 import { USE_FAKE_AUTH } from '../constants';
 import { actions } from '../store';
 import { AuthUserState } from '../store/types';
@@ -24,10 +24,7 @@ type UseAuthHookResult = {
 export default function useAuth(): UseAuthHookResult {
   const user = useAppSelector(state => state.auth.user);
   const dispatch = useAppDispatch();
-
-  const { isFetching: isProfileFetching, refetch: refetchProfile } = useProfileQuery(
-    USE_FAKE_AUTH ? skipToken : {},
-  );
+  const getProfileQuery = authApi.useGetProfileQuery(USE_FAKE_AUTH ? skipToken : {});
 
   const signIn = useCallback(() => {
     dispatch(actions.signIn());
@@ -60,10 +57,10 @@ export default function useAuth(): UseAuthHookResult {
 
   return {
     user,
-    isLoggingIn: isProfileFetching,
+    isLoggingIn: getProfileQuery.isFetching,
     login,
     logout,
-    completeLogin: refetchProfile,
-    completeLogout: refetchProfile,
+    completeLogin: getProfileQuery.refetch,
+    completeLogout: getProfileQuery.refetch,
   };
 }
