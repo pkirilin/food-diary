@@ -3,7 +3,7 @@ import { visuallyHidden } from '@mui/utils';
 import React from 'react';
 import { useAppDispatch } from 'src/hooks';
 import { useAppSelector } from 'src/store';
-import { useProductsQuery } from '../api';
+import { productsApi } from '../api';
 import ProductsFilterAppliedParams from '../components/ProductsFilterAppliedParams';
 import ProductsTable from '../components/ProductsTable';
 import ProductsTablePagination from '../components/ProductsTablePagination';
@@ -13,10 +13,10 @@ import { productsUnchecked, productsChecked } from '../store';
 import { Product } from '../types';
 
 const Products: React.FC = () => {
-  const productsQueryArg = useAppSelector(selectProductsQueryArg);
+  const getProductsQueryArg = useAppSelector(selectProductsQueryArg);
+  const getProductsQuery = productsApi.useGetProductsQuery(getProductsQueryArg);
   const checkedProductIds = useAppSelector(selectCheckedProductIds);
   const dispatch = useAppDispatch();
-  const productsQuery = useProductsQuery(productsQueryArg);
 
   const handleCheckedProductsChange = (products: Product[], newCheckedIds: number[]): void => {
     if (newCheckedIds.length > 0) {
@@ -36,8 +36,8 @@ const Products: React.FC = () => {
           <ProductsTableToolbar />
           <ProductsFilterAppliedParams />
           <ProductsTable
-            products={productsQuery.data?.productItems ?? []}
-            isLoading={productsQuery.isFetching}
+            products={getProductsQuery.data?.productItems ?? []}
+            isLoading={getProductsQuery.isFetching}
             checkedIds={checkedProductIds}
             onCheckedChange={handleCheckedProductsChange}
           />

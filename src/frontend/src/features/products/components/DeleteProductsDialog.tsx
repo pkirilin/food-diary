@@ -2,8 +2,8 @@ import { Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@
 import React, { useEffect } from 'react';
 import { AppButton } from 'src/components';
 import { useAppSelector } from 'src/store';
-import { useDeleteProductsMutation, useProductsQuery } from '../api';
-import { selectCheckedProductIds, selectProductsQueryArg } from '../selectors';
+import { productsApi } from '../api';
+import { selectCheckedProductIds } from '../selectors';
 
 type DeleteProductsDialogProps = {
   isOpened: boolean;
@@ -15,19 +15,13 @@ const DeleteProductsDialog: React.FC<DeleteProductsDialogProps> = ({
   setIsOpened: setIsDialogOpened,
 }) => {
   const checkedProductIds = useAppSelector(selectCheckedProductIds);
-  const productsQueryArg = useAppSelector(selectProductsQueryArg);
-
-  const { refetch: refetchProducts } = useProductsQuery(productsQueryArg);
-
-  const [deleteProducts, { isLoading: isProductDeleting, isSuccess: isProductDeleted }] =
-    useDeleteProductsMutation();
+  const [deleteProducts, deleteProductRequest] = productsApi.useDeleteProductsMutation();
 
   useEffect(() => {
-    if (isProductDeleted) {
-      refetchProducts();
+    if (deleteProductRequest.isSuccess) {
       setIsDialogOpened(false);
     }
-  }, [isProductDeleted, refetchProducts, setIsDialogOpened]);
+  }, [deleteProductRequest.isSuccess, setIsDialogOpened]);
 
   function handleClose() {
     setIsDialogOpened(false);
@@ -46,14 +40,14 @@ const DeleteProductsDialog: React.FC<DeleteProductsDialogProps> = ({
         <Typography>Do you really want to delete selected products?</Typography>
       </DialogContent>
       <DialogActions>
-        <AppButton disabled={isProductDeleting} variant="text" onClick={handleClose}>
+        <AppButton disabled={deleteProductRequest.isLoading} variant="text" onClick={handleClose}>
           No
         </AppButton>
         <AppButton
           variant="contained"
           color="primary"
           onClick={handleSubmit}
-          isLoading={isProductDeleting}
+          isLoading={deleteProductRequest.isLoading}
         >
           Yes
         </AppButton>

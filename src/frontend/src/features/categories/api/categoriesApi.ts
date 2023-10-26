@@ -38,7 +38,7 @@ export const categoriesApi = api.injectEndpoints({
         method: 'DELETE',
         url: `/api/v1/categories/${id}`,
       }),
-      invalidatesTags: ['category'],
+      invalidatesTags: ['category', 'product'],
     }),
   }),
 });

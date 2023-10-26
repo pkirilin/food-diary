@@ -2,8 +2,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import { Checkbox, IconButton, TableCell, TableRow, Tooltip } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../__shared__/hooks';
-import { useEditProductMutation, useProductsQuery } from '../api';
-import { selectCheckedProductIds, selectProductsQueryArg } from '../selectors';
+import { productsApi } from '../api';
+import { selectCheckedProductIds } from '../selectors';
 import { productChecked, productUnchecked } from '../store';
 import { Product, ProductFormData } from '../types';
 import { toProductFormData } from '../utils';
@@ -15,23 +15,16 @@ type ProductsTableRowProps = {
 
 const ProductsTableRow: React.FC<ProductsTableRowProps> = ({ product }: ProductsTableRowProps) => {
   const [isEditDialogOpened, setIsEditDialogOpened] = useState(false);
-  const productsQueryArg = useAppSelector(selectProductsQueryArg);
-  const checkedProductIds = useAppSelector(selectCheckedProductIds);
+  const [editProduct, editProductRequest] = productsApi.useEditProductMutation();
   const dispatch = useAppDispatch();
-
-  const { refetch: refetchProducts } = useProductsQuery(productsQueryArg);
-
-  const [editProduct, { isLoading: isProductUpdating, isSuccess: isProductUpdated }] =
-    useEditProductMutation();
-
+  const checkedProductIds = useAppSelector(selectCheckedProductIds);
   const isChecked = checkedProductIds.some(id => id === product.id);
 
   useEffect(() => {
-    if (isProductUpdated) {
-      refetchProducts();
+    if (editProductRequest.isSuccess) {
       setIsEditDialogOpened(false);
     }
-  }, [isProductUpdated, refetchProducts]);
+  }, [editProductRequest.isSuccess]);
 
   function handleEditClick() {
     setIsEditDialogOpened(true);
@@ -98,7 +91,7 @@ const ProductsTableRow: React.FC<ProductsTableRowProps> = ({ product }: Products
         title="Edit product"
         submitText="Save"
         onSubmit={handleEditDialogSubmit}
-        isLoading={isProductUpdating}
+        isLoading={editProductRequest.isLoading}
         product={toProductFormData(product)}
       />
     </React.Fragment>

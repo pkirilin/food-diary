@@ -5,7 +5,6 @@ import authApi from './features/auth/api';
 import authReducer from './features/auth/store';
 import notesReducer from './features/notes/slice';
 import pagesReducer from './features/pages/slice';
-import productsApi from './features/products/api';
 import productsReducer from './features/products/store';
 
 export function configureAppStore() {
@@ -13,7 +12,6 @@ export function configureAppStore() {
     reducer: {
       [api.reducerPath]: api.reducer,
       [authApi.reducerPath]: authApi.reducer,
-      [productsApi.reducerPath]: productsApi.reducer,
       auth: authReducer,
       pages: pagesReducer,
       products: productsReducer,
@@ -21,7 +19,7 @@ export function configureAppStore() {
     },
 
     middleware: getDefaultMiddleware =>
-      getDefaultMiddleware().concat(api.middleware, authApi.middleware, productsApi.middleware),
+      getDefaultMiddleware().concat(api.middleware, authApi.middleware),
   });
 }
 
