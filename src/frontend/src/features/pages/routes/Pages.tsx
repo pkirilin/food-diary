@@ -2,8 +2,10 @@ import { Paper, Typography } from '@mui/material';
 import { Container, Box } from '@mui/system';
 import visuallyHidden from '@mui/utils/visuallyHidden';
 import { FC, useCallback } from 'react';
+import { DEMO_MODE_ENABLED } from 'src/config';
 import { useAppSelector, useAppDispatch } from 'src/hooks';
 import { SortOrder } from 'src/types';
+import DemoPagesWarning from '../components/DemoPagesWarning';
 import PagesFilterAppliedParams from '../components/PagesFilterAppliedParams';
 import PagesTable from '../components/PagesTable';
 import PagesTablePagination from '../components/PagesTablePagination';
@@ -49,6 +51,11 @@ const Pages: FC = () => {
   return (
     <Container>
       <Box py={3}>
+        {DEMO_MODE_ENABLED && (
+          <Box pb={3}>
+            <DemoPagesWarning />
+          </Box>
+        )}
         <Typography sx={visuallyHidden} variant="h1" gutterBottom>
           Pages
         </Typography>
