@@ -1,6 +1,6 @@
-import { Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
+import { TextField } from '@mui/material';
 import React, { useEffect } from 'react';
-import { AppButton } from 'src/components';
+import { AppButton, AppDialog } from 'src/components';
 import { CategorySelect } from 'src/features/categories';
 import { useInput } from 'src/hooks';
 import {
@@ -99,31 +99,41 @@ const ProductInputDialog: React.FC<ProductInputDialogProps> = ({
   const isAnyValueChanged = isProductNameTouched || isCaloriesCostTouched || isCategoryTouched;
 
   return (
-    <Dialog open={isDialogOpened} onClose={handleClose} fullWidth>
-      <DialogTitle>{title}</DialogTitle>
-      <DialogContent>
-        <TextField
-          {...productNameinputProps}
-          autoFocus
-          fullWidth
-          margin="normal"
-          label="Product"
-          placeholder="Enter product name"
-        />
-        <TextField
-          {...caloriesCostInputProps}
-          type="number"
-          fullWidth
-          margin="normal"
-          label="Calories cost"
-          placeholder="Enter calories cost"
-        />
-        <CategorySelect {...categorySelectProps} label="Category" placeholder="Select a category" />
-      </DialogContent>
-      <DialogActions>
+    <AppDialog
+      title={title}
+      isOpened={isDialogOpened}
+      onClose={handleClose}
+      content={
+        <>
+          <TextField
+            {...productNameinputProps}
+            autoFocus
+            fullWidth
+            margin="normal"
+            label="Product"
+            placeholder="Enter product name"
+          />
+          <TextField
+            {...caloriesCostInputProps}
+            type="number"
+            fullWidth
+            margin="normal"
+            label="Calories cost"
+            placeholder="Enter calories cost"
+          />
+          <CategorySelect
+            {...categorySelectProps}
+            label="Category"
+            placeholder="Select a category"
+          />
+        </>
+      }
+      actionCancel={
         <AppButton disabled={isLoading} onClick={handleClose}>
           Cancel
         </AppButton>
+      }
+      actionSubmit={
         <AppButton
           aria-label={`${product ? 'Save' : 'Create'} ${productName} and close dialog`}
           variant="contained"
@@ -133,8 +143,8 @@ const ProductInputDialog: React.FC<ProductInputDialogProps> = ({
         >
           {submitText}
         </AppButton>
-      </DialogActions>
-    </Dialog>
+      }
+    />
   );
 };
 

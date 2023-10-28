@@ -11,13 +11,6 @@
       {
         "patterns": ["src/features/*/*"]
       }
-    ],
-    "react/jsx-no-bind": [
-      "warn",
-      {
-        "allowFunctions": true,
-        "allowArrowFunctions": false
-      }
     ]
   }
 }
