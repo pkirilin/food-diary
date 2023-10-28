@@ -40,7 +40,7 @@ const AppDialog: FC<AppDialogProps> = ({
         sx={theme => ({
           padding: `0 ${theme.spacing(3)} ${theme.spacing(2)}`,
 
-          '& > :not(:first-child)': {
+          '& > :not(:first-of-type)': {
             marginLeft: theme.spacing(2),
           },
         })}

@@ -2,7 +2,7 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { Box, IconButton, Popover, styled, Toolbar, Tooltip, Typography } from '@mui/material';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { ConfirmationDialog } from 'src/features/__shared__/components';
 import {
   useAppDispatch,
@@ -13,7 +13,8 @@ import {
 import { useToolbarStyles } from 'src/features/__shared__/styles';
 import { PageCreateEdit } from 'src/features/pages/models';
 import { createPage, deletePages } from 'src/features/pages/thunks';
-import PageCreateEditDialog from '../PageCreateEditDialog';
+import { useDateForNewPage } from '../../hooks';
+import { PageInputDialog } from '../PageInputDialog';
 import PagesFilter from '../PagesFilter';
 import ShowMoreTableOptions from '../ShowMoreTableOptions';
 
@@ -24,29 +25,50 @@ type PagesToolbarProps = React.PropsWithChildren<unknown>;
 const PagesToolbar: React.FC<PagesToolbarProps> = ({ children }) => {
   const classes = useToolbarStyles();
   const selectedPageIds = useAppSelector(state => state.pages.selectedPageIds);
+  const operationStatus = useAppSelector(state => state.pages.operationStatus);
   const dispatch = useAppDispatch();
 
   const [filter, showFilter] = usePopover();
 
-  const pageCreateDialog = useDialog<PageCreateEdit>(page => {
-    dispatch(createPage(page));
-  });
+  const [isDialogOpened, setIsDialogOpened] = useState(false);
+  const dateForNewPage = useDateForNewPage(isDialogOpened);
+
+  useEffect(() => {
+    if (operationStatus === 'succeeded') {
+      setIsDialogOpened(false);
+    }
+  }, [operationStatus]);
 
   const pagesDeleteDialog = useDialog(() => {
     dispatch(deletePages(selectedPageIds));
   });
 
-  const handleAddClick = (): void => {
-    pageCreateDialog.show();
+  const handleOpenDialog = (): void => {
+    setIsDialogOpened(true);
   };
 
-  const handleDeleteClick = (): void => {
+  const handleCloseDialog = () => {
+    setIsDialogOpened(false);
+  };
+
+  const handleCreatePage = (page: PageCreateEdit) => {
+    dispatch(createPage(page));
+  };
+
+  const handleDelete = (): void => {
     pagesDeleteDialog.show();
   };
 
   return (
     <Toolbar className={classes.root}>
-      <PageCreateEditDialog {...pageCreateDialog.binding} />
+      <PageInputDialog
+        title="New page"
+        submitText="Create"
+        initialDate={dateForNewPage}
+        isOpened={isDialogOpened}
+        onClose={handleCloseDialog}
+        onSubmit={handleCreatePage}
+      />
       <ConfirmationDialog
         {...pagesDeleteDialog.binding}
         dialogTitle="Delete pages confirmation"
@@ -59,7 +81,7 @@ const PagesToolbar: React.FC<PagesToolbarProps> = ({ children }) => {
           </Box>
           <Tooltip title="Delete selected pages">
             <span>
-              <IconButton onClick={handleDeleteClick} size="large">
+              <IconButton onClick={handleDelete} size="large">
                 <DeleteIcon />
               </IconButton>
             </span>
@@ -84,7 +106,7 @@ const PagesToolbar: React.FC<PagesToolbarProps> = ({ children }) => {
           </Tooltip>
           <Tooltip title="Add new page">
             <span>
-              <IconButton onClick={handleAddClick} size="large">
+              <IconButton onClick={handleOpenDialog} size="large">
                 <AddIcon />
               </IconButton>
             </span>
