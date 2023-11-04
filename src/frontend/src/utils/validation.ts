@@ -17,17 +17,15 @@ export const validateDate: ValidatorFunction<Date | null> = value => {
   return true;
 };
 
-export const validateCategoryName: ValidatorFunction<string> = value => {
-  return value.length >= 3 && value.length <= 50;
-};
+export const validateCategoryName: ValidatorFunction<string> = value =>
+  value.length >= 3 && value.length <= 50;
 
-export const validateProductName: ValidatorFunction<string> = value => {
-  return value.length >= 3 && value.length <= 50;
-};
+export const validateProductName: ValidatorFunction<string> = value =>
+  value.length >= 3 && value.length <= 50;
 
-export const validateCaloriesCost: ValidatorFunction<number> = value => {
-  return value > 0 && value < 5000;
-};
+export const validateCaloriesCost: ValidatorFunction<number> = value => value > 0 && value < 5000;
+
+export const validateQuantity: ValidatorFunction<number> = value => value > 0 && value < 1000;
 
 export const validateSelectOption: ValidatorFunction<SelectOption | null> = value => {
   return value !== null;

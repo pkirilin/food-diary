@@ -2,12 +2,12 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { IconButton, TableCell, TableRow, Tooltip } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useAppDispatch, useAppSelector, useDialog, useRouterId } from 'src/hooks';
 import { ConfirmationDialog } from '../../__shared__/components';
-import { useAppDispatch, useDialog, useRouterId } from '../../__shared__/hooks';
 import { NoteCreateEdit, NoteItem } from '../models';
 import { deleteNote, editNote } from '../thunks';
-import NoteCreateEditDialog from './NoteCreateEditDialog';
+import NoteInputDialog from './NoteInputDialog';
 
 type NotesTableRowProps = {
   note: NoteItem;
@@ -25,18 +25,7 @@ const useStyles = makeStyles(theme => ({
 const NotesTableRow: React.FC<NotesTableRowProps> = ({ note }: NotesTableRowProps) => {
   const classes = useStyles();
   const pageId = useRouterId('id');
-
   const dispatch = useAppDispatch();
-
-  const noteEditDialog = useDialog<NoteCreateEdit>(noteData => {
-    dispatch(
-      editNote({
-        id: note.id,
-        note: { ...noteData },
-        mealType: noteData.mealType,
-      }),
-    );
-  });
 
   const noteDeleteDialog = useDialog(() => {
     dispatch(
@@ -47,8 +36,32 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({ note }: NotesTableRowProp
     );
   });
 
-  const handleEditClick = (): void => {
-    noteEditDialog.show();
+  const [isEditDialogOpened, setIsEditDialogOpened] = useState(false);
+
+  const status = useAppSelector(state => state.notes.operationStatusesByMealType[note.mealType]);
+
+  useEffect(() => {
+    if (status === 'succeeded') {
+      setIsEditDialogOpened(false);
+    }
+  }, [status]);
+
+  const handleEditOpen = (): void => {
+    setIsEditDialogOpened(true);
+  };
+
+  const handleEditClose = (): void => {
+    setIsEditDialogOpened(false);
+  };
+
+  const handleEditSubmit = (noteData: NoteCreateEdit): void => {
+    dispatch(
+      editNote({
+        id: note.id,
+        mealType: noteData.mealType,
+        note: noteData,
+      }),
+    );
   };
 
   const handleDeleteClick = (): void => {
@@ -57,11 +70,20 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({ note }: NotesTableRowProp
 
   return (
     <TableRow>
-      <NoteCreateEditDialog
-        {...noteEditDialog.binding}
+      <NoteInputDialog
+        title="Edit note"
+        submitText="Save"
+        isOpened={isEditDialogOpened}
         mealType={note.mealType}
         pageId={pageId}
-        note={note}
+        product={{
+          id: note.productId,
+          name: note.productName,
+        }}
+        quantity={note.productQuantity}
+        displayOrder={note.displayOrder}
+        onClose={handleEditClose}
+        onSubmit={handleEditSubmit}
       />
       <ConfirmationDialog
         {...noteDeleteDialog.binding}
@@ -73,7 +95,7 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({ note }: NotesTableRowProp
       <TableCell>{note.calories}</TableCell>
       <TableCell className={classes.rowActions}>
         <Tooltip title="Edit note">
-          <IconButton size="small" onClick={handleEditClick}>
+          <IconButton size="small" onClick={handleEditOpen}>
             <EditIcon fontSize="small" />
           </IconButton>
         </Tooltip>

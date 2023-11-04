@@ -1,6 +1,6 @@
 import { Box, Container } from '@mui/material';
 import React, { useEffect } from 'react';
-import { useAppDispatch, useRouterId } from '../../__shared__/hooks';
+import { useAppDispatch, useRouterId } from 'src/hooks';
 import { MealsList } from '../../notes/components';
 import { getNotes } from '../../notes/thunks';
 import { getPageById } from '../thunks';

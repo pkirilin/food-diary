@@ -10,17 +10,11 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
-import React, { useMemo } from 'react';
-import {
-  useAppDispatch,
-  useDialog,
-  useRefreshEffect,
-  useRouterId,
-  useAppSelector,
-} from '../../__shared__/hooks';
+import React, { useEffect, useMemo, useState } from 'react';
+import { useAppDispatch, useAppSelector, useRouterId } from 'src/hooks';
 import { MealType, NoteCreateEdit } from '../models';
 import { createNote, getNotes } from '../thunks';
-import NoteCreateEditDialog from './NoteCreateEditDialog';
+import NoteInputDialog from './NoteInputDialog';
 import NotesTableRow from './NotesTableRow';
 
 type NotesTableProps = {
@@ -34,43 +28,69 @@ const NotesTable: React.FC<NotesTableProps> = ({ mealType }: NotesTableProps) =>
     state.notes.noteItems.filter(n => n.mealType === mealType),
   );
 
+  const maxDisplayOrderForNotesGroup = useAppSelector(state =>
+    state.notes.noteItems
+      .filter(note => note.mealType === mealType)
+      .reduce(
+        (maxOrder, note) => (note.displayOrder > maxOrder ? note.displayOrder : maxOrder),
+        -1,
+      ),
+  );
+
+  const status = useAppSelector(state => state.notes.operationStatusesByMealType[mealType]);
+
   const totalCalories = useMemo(
     () => noteItems.reduce((sum, note) => sum + note.calories, 0),
     [noteItems],
   );
 
+  const [isDialogOpened, setIsDialogOpened] = useState(false);
   const dispatch = useAppDispatch();
 
-  const noteCreateDialog = useDialog<NoteCreateEdit>(note => {
-    dispatch(
-      createNote({
-        mealType,
-        note,
-      }),
-    );
-  });
+  useEffect(() => {
+    if (status === 'succeeded') {
+      setIsDialogOpened(false);
 
-  useRefreshEffect(
-    state => state.notes.operationStatusesByMealType[mealType],
-    () => {
       dispatch(
         getNotes({
           pageId,
           mealType,
         }),
       );
-    },
-    [pageId, mealType],
-    false,
-  );
+    }
+  }, [dispatch, mealType, pageId, status]);
 
-  const handleAddNoteClick = (): void => {
-    noteCreateDialog.show();
+  const handleDialogOpen = (): void => {
+    setIsDialogOpened(true);
+  };
+
+  const handleDialogClose = (): void => {
+    setIsDialogOpened(false);
+  };
+
+  const handleAddNote = (note: NoteCreateEdit): void => {
+    dispatch(
+      createNote({
+        mealType,
+        note,
+      }),
+    );
   };
 
   return (
     <TableContainer>
-      <NoteCreateEditDialog {...noteCreateDialog.binding} mealType={mealType} pageId={pageId} />
+      <NoteInputDialog
+        title="New note"
+        submitText="Create"
+        isOpened={isDialogOpened}
+        mealType={mealType}
+        product={null}
+        quantity={100}
+        pageId={pageId}
+        displayOrder={maxDisplayOrderForNotesGroup + 1}
+        onClose={handleDialogClose}
+        onSubmit={handleAddNote}
+      />
       <Table size="small">
         <TableHead>
           <TableRow>
@@ -92,7 +112,7 @@ const NotesTable: React.FC<NotesTableProps> = ({ mealType }: NotesTableProps) =>
           size="medium"
           fullWidth
           startIcon={<AddIcon />}
-          onClick={handleAddNoteClick}
+          onClick={handleDialogOpen}
         >
           Add note
         </Button>
