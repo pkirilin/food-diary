@@ -6,5 +6,3 @@ import AppSelect from './AppSelect';
 import DatePicker from './DatePicker';
 
 export { AppButton, AppDialog, AppFab, AppLinearProgress, AppSelect, DatePicker };
-
-export * from 'src/features/__shared__/components';
