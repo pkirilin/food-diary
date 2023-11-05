@@ -3,10 +3,10 @@ import EditIcon from '@mui/icons-material/Edit';
 import { IconButton, TableCell, TableRow, Tooltip } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import React, { useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector, useDialog, useRouterId } from 'src/hooks';
-import { ConfirmationDialog } from '../../__shared__/components';
+import { useAppDispatch, useAppSelector, useRouterId } from 'src/hooks';
 import { NoteCreateEdit, NoteItem } from '../models';
 import { deleteNote, editNote } from '../thunks';
+import DeleteNoteDialog from './DeleteNoteDialog';
 import NoteInputDialog from './NoteInputDialog';
 
 type NotesTableRowProps = {
@@ -26,23 +26,15 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({ note }: NotesTableRowProp
   const classes = useStyles();
   const pageId = useRouterId('id');
   const dispatch = useAppDispatch();
-
-  const noteDeleteDialog = useDialog(() => {
-    dispatch(
-      deleteNote({
-        id: note.id,
-        mealType: note.mealType,
-      }),
-    );
-  });
+  const status = useAppSelector(state => state.notes.operationStatusesByMealType[note.mealType]);
 
   const [isEditDialogOpened, setIsEditDialogOpened] = useState(false);
-
-  const status = useAppSelector(state => state.notes.operationStatusesByMealType[note.mealType]);
+  const [isDeleteDialogOpened, setIsDeleteDialogOpened] = useState(false);
 
   useEffect(() => {
     if (status === 'succeeded') {
       setIsEditDialogOpened(false);
+      setIsDeleteDialogOpened(false);
     }
   }, [status]);
 
@@ -64,8 +56,21 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({ note }: NotesTableRowProp
     );
   };
 
-  const handleDeleteClick = (): void => {
-    noteDeleteDialog.show();
+  const handleDeleteOpen = (): void => {
+    setIsDeleteDialogOpened(true);
+  };
+
+  const handleDeleteClose = (): void => {
+    setIsDeleteDialogOpened(false);
+  };
+
+  const handleDeleteSubmit = ({ id, mealType }: NoteItem): void => {
+    dispatch(
+      deleteNote({
+        id,
+        mealType,
+      }),
+    );
   };
 
   return (
@@ -85,10 +90,12 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({ note }: NotesTableRowProp
         onClose={handleEditClose}
         onSubmit={handleEditSubmit}
       />
-      <ConfirmationDialog
-        {...noteDeleteDialog.binding}
-        dialogTitle="Delete note"
-        dialogMessage={`Are you sure you want to delete this note: ${note.productName}, ${note.productQuantity} g, ${note.calories} cal?`}
+      <DeleteNoteDialog
+        note={note}
+        isOpened={isDeleteDialogOpened}
+        isLoading={status === 'pending'}
+        onClose={handleDeleteClose}
+        onSubmit={handleDeleteSubmit}
       />
       <TableCell>{note.productName}</TableCell>
       <TableCell>{note.productQuantity}</TableCell>
@@ -100,7 +107,7 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({ note }: NotesTableRowProp
           </IconButton>
         </Tooltip>
         <Tooltip title="Delete note">
-          <IconButton size="small" onClick={handleDeleteClick}>
+          <IconButton size="small" onClick={handleDeleteOpen}>
             <DeleteIcon fontSize="small" />
           </IconButton>
         </Tooltip>

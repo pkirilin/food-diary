@@ -13,7 +13,7 @@ test('pages can be imported', async () => {
   render(ui);
   await userEvent.upload(screen.getByLabelText(/import file/i), file);
   const dialog = screen.getByRole('dialog');
-  await userEvent.click(within(dialog).getByText(/ok/i));
+  await userEvent.click(within(dialog).getByText(/yes/i));
 
   await waitForElementToBeRemoved(dialog);
 });

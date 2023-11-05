@@ -1,6 +1,6 @@
-import { Dialog, DialogTitle, DialogContent, Typography, DialogActions } from '@mui/material';
+import { Typography } from '@mui/material';
 import React, { useEffect } from 'react';
-import { AppButton } from 'src/components';
+import { AppButton, AppDialog } from 'src/components';
 import { categoriesApi } from '../api';
 import { Category } from '../types';
 
@@ -32,15 +32,11 @@ const DeleteCategoryDialog: React.FC<DeleteCategoryDialogProps> = ({
   }
 
   return (
-    <Dialog open={isDialogOpened} onClose={handleClose} fullWidth>
-      <DialogTitle>Delete category</DialogTitle>
-      <DialogContent>
-        <Typography>{`Delete category "${category.name}"?`}</Typography>
-      </DialogContent>
-      <DialogActions>
-        <AppButton disabled={deleteCategoryRequest.isLoading} variant="text" onClick={handleClose}>
-          No
-        </AppButton>
+    <AppDialog
+      title="Delete category"
+      isOpened={isDialogOpened}
+      content={<Typography>{`Delete category "${category.name}"?`}</Typography>}
+      actionSubmit={
         <AppButton
           aria-label={`Delete ${category.name}`}
           variant="contained"
@@ -50,8 +46,14 @@ const DeleteCategoryDialog: React.FC<DeleteCategoryDialogProps> = ({
         >
           Yes
         </AppButton>
-      </DialogActions>
-    </Dialog>
+      }
+      actionCancel={
+        <AppButton variant="text" onClick={handleClose} isLoading={deleteCategoryRequest.isLoading}>
+          No
+        </AppButton>
+      }
+      onClose={handleClose}
+    />
   );
 };
 

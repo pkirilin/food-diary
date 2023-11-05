@@ -1,8 +1,8 @@
 import PublishIcon from '@mui/icons-material/Publish';
 import { MenuItem, ListItemIcon, ListItemText, Box } from '@mui/material';
 import React, { useState } from 'react';
-import { ConfirmationDialog } from 'src/components';
 import { useImport } from '../hooks/useImport';
+import ConfirmImportDialog from './ConfirmImportDialog';
 
 type ImportPagesMenuItemProps = {
   isDisabled: boolean;
@@ -15,7 +15,7 @@ const ImportPagesMenuItem: React.FC<React.PropsWithChildren<ImportPagesMenuItemP
   onMenuClose,
 }) => {
   const [importFile, setImportFile] = useState<File>();
-  const importDialogProps = useImport(importFile);
+  const importPages = useImport(importFile);
 
   function cleanFileInput(target: EventTarget & HTMLInputElement) {
     // Change handler will not be executed if file with the same name is uploaded multiple times
@@ -63,12 +63,11 @@ const ImportPagesMenuItem: React.FC<React.PropsWithChildren<ImportPagesMenuItemP
           />
         </Box>
       </MenuItem>
-      <ConfirmationDialog
-        {...importDialogProps}
-        dialogTitle="Import warning"
-        dialogMessage={
-          'Pages import is going to be started. Import may update or overwrite existing data from file and may cause data loss. Continue?'
-        }
+      <ConfirmImportDialog
+        isOpened={importPages.isDialogOpened}
+        isLoading={importPages.isLoading}
+        onClose={importPages.closeDialog}
+        onSubmit={importPages.start}
       />
     </React.Fragment>
   );
