@@ -9,15 +9,4 @@ export const useTextInput = createInputHook<string, TextFieldProps>((value, setV
   },
 }));
 
-export const useNumericInput = createInputHook<number, TextFieldProps>((value, setValue) => ({
-  value,
-  onChange: event => {
-    setValue(Number(event.target.value));
-  },
-}));
-
 export const useValidatedTextInput = createValidatedInputHook<string, TextFieldProps>(useTextInput);
-
-export const useValidatedNumericInput = createValidatedInputHook<number, TextFieldProps>(
-  useNumericInput,
-);

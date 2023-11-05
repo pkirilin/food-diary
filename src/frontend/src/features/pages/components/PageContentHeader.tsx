@@ -1,7 +1,7 @@
 import { Box, Breadcrumbs, Link, Typography } from '@mui/material';
-import dateFnsFormat from 'date-fns/format';
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
+import { formatDate } from 'src/utils';
 import { useAppSelector } from '../../__shared__/hooks';
 
 const PageContentHeader: React.FC = () => {
@@ -11,8 +11,6 @@ const PageContentHeader: React.FC = () => {
     return null;
   }
 
-  const currentPageDate = dateFnsFormat(new Date(page.date), 'dd.MM.yyyy');
-
   return (
     <Box mb={2}>
       <Breadcrumbs>
@@ -20,7 +18,7 @@ const PageContentHeader: React.FC = () => {
           Pages
         </Link>
         <Typography variant="body1" component="h1" fontWeight="bold">
-          {currentPageDate}
+          {formatDate(new Date(page.date))}
         </Typography>
       </Breadcrumbs>
     </Box>

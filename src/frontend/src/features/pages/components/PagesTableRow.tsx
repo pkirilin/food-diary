@@ -1,29 +1,22 @@
 import EditIcon from '@mui/icons-material/Edit';
 import { TableRow, TableCell, Checkbox, Tooltip, IconButton, Link } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
-import dateFnsFormat from 'date-fns/format';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { useAppDispatch, useDialog, useAppSelector } from '../../__shared__/hooks';
+import { formatDate } from 'src/utils';
+import { useAppDispatch, useAppSelector } from '../../__shared__/hooks';
 import { PageCreateEdit, PageItem } from '../models';
 import { pageSelected } from '../slice';
 import { editPage } from '../thunks';
-import PageCreateEditDialog from './PageCreateEditDialog';
+import { PageInputDialog } from './PageInputDialog';
 
 type PagesTableRowProps = {
   page: PageItem;
 };
 
-const useStyles = makeStyles(() => ({
-  pageDateLink: {
-    // TODO: use theme value after Material 5 migration
-    fontWeight: 'bold',
-  },
-}));
-
 const PagesTableRow: React.FC<PagesTableRowProps> = ({ page }: PagesTableRowProps) => {
-  const classes = useStyles();
-  const pageDate = dateFnsFormat(new Date(page.date), 'dd.MM.yyyy');
+  const pageDate = new Date(page.date);
+
+  const operationStatus = useAppSelector(state => state.pages.operationStatus);
 
   const isPageSelected = useAppSelector(state =>
     state.pages.selectedPageIds.some(id => id === page.id),
@@ -31,14 +24,30 @@ const PagesTableRow: React.FC<PagesTableRowProps> = ({ page }: PagesTableRowProp
 
   const dispatch = useAppDispatch();
 
-  const pageEditDialog = useDialog<PageCreateEdit>(pageInfo => {
+  const [isDialogOpened, setIsDialogOpened] = useState(false);
+
+  useEffect(() => {
+    if (operationStatus === 'succeeded') {
+      setIsDialogOpened(false);
+    }
+  }, [operationStatus]);
+
+  const handleOpenDialog = () => {
+    setIsDialogOpened(true);
+  };
+
+  const handleCloseDialog = () => {
+    setIsDialogOpened(false);
+  };
+
+  const handleEditPage = ({ date }: PageCreateEdit) => {
     dispatch(
       editPage({
         id: page.id,
-        page: pageInfo,
+        page: { date },
       }),
     );
-  });
+  };
 
   const handleSelectPage = (): void => {
     dispatch(
@@ -49,13 +58,16 @@ const PagesTableRow: React.FC<PagesTableRowProps> = ({ page }: PagesTableRowProp
     );
   };
 
-  const handleEditClick = (): void => {
-    pageEditDialog.show();
-  };
-
   return (
     <TableRow hover>
-      <PageCreateEditDialog {...pageEditDialog.binding} page={page} />
+      <PageInputDialog
+        title="Edit page"
+        submitText="Save"
+        isOpened={isDialogOpened}
+        initialDate={pageDate}
+        onClose={handleCloseDialog}
+        onSubmit={handleEditPage}
+      />
       <TableCell padding="checkbox">
         <Checkbox color="primary" checked={isPageSelected} onChange={handleSelectPage} />
       </TableCell>
@@ -65,17 +77,17 @@ const PagesTableRow: React.FC<PagesTableRowProps> = ({ page }: PagesTableRowProp
           to={`/pages/${page.id}`}
           variant="body1"
           color="primary"
-          className={classes.pageDateLink}
           underline="hover"
+          fontWeight="bold"
         >
-          {pageDate}
+          {formatDate(pageDate)}
         </Link>
       </TableCell>
       <TableCell align="right">{page.countCalories}</TableCell>
       <TableCell align="right">{page.countNotes}</TableCell>
       <TableCell width="30px">
         <Tooltip title="Edit page">
-          <IconButton onClick={handleEditClick} size="large">
+          <IconButton onClick={handleOpenDialog} size="large">
             <EditIcon />
           </IconButton>
         </Tooltip>

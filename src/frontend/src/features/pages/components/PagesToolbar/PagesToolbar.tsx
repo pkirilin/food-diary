@@ -2,18 +2,14 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { Box, IconButton, Popover, styled, Toolbar, Tooltip, Typography } from '@mui/material';
-import React from 'react';
-import { ConfirmationDialog } from 'src/features/__shared__/components';
-import {
-  useAppDispatch,
-  useDialog,
-  usePopover,
-  useAppSelector,
-} from 'src/features/__shared__/hooks';
+import React, { useEffect, useState } from 'react';
+import { useAppDispatch, usePopover, useAppSelector } from 'src/features/__shared__/hooks';
 import { useToolbarStyles } from 'src/features/__shared__/styles';
 import { PageCreateEdit } from 'src/features/pages/models';
 import { createPage, deletePages } from 'src/features/pages/thunks';
-import PageCreateEditDialog from '../PageCreateEditDialog';
+import { useDateForNewPage } from '../../hooks';
+import DeletePagesDialog from '../DeletePagesDialog';
+import { PageInputDialog } from '../PageInputDialog';
 import PagesFilter from '../PagesFilter';
 import ShowMoreTableOptions from '../ShowMoreTableOptions';
 
@@ -24,33 +20,62 @@ type PagesToolbarProps = React.PropsWithChildren<unknown>;
 const PagesToolbar: React.FC<PagesToolbarProps> = ({ children }) => {
   const classes = useToolbarStyles();
   const selectedPageIds = useAppSelector(state => state.pages.selectedPageIds);
+  const operationStatus = useAppSelector(state => state.pages.operationStatus);
   const dispatch = useAppDispatch();
 
+  const [isInputDialogOpened, setIsInputDialogOpened] = useState(false);
+  const [isDeleteDialogOpened, setIsDeleteDialogOpened] = useState(false);
+
   const [filter, showFilter] = usePopover();
+  const dateForNewPage = useDateForNewPage(isInputDialogOpened);
 
-  const pageCreateDialog = useDialog<PageCreateEdit>(page => {
-    dispatch(createPage(page));
-  });
+  useEffect(() => {
+    if (operationStatus === 'succeeded') {
+      setIsInputDialogOpened(false);
+      setIsDeleteDialogOpened(false);
+    }
+  }, [operationStatus]);
 
-  const pagesDeleteDialog = useDialog(() => {
-    dispatch(deletePages(selectedPageIds));
-  });
-
-  const handleAddClick = (): void => {
-    pageCreateDialog.show();
+  const handleInputOpen = (): void => {
+    setIsInputDialogOpened(true);
   };
 
-  const handleDeleteClick = (): void => {
-    pagesDeleteDialog.show();
+  const handleInputClose = () => {
+    setIsInputDialogOpened(false);
+  };
+
+  const handleCreatePage = (page: PageCreateEdit) => {
+    dispatch(createPage(page));
+  };
+
+  const handleDeleteOpen = (): void => {
+    setIsDeleteDialogOpened(true);
+  };
+
+  const handleDeleteClose = (): void => {
+    setIsDeleteDialogOpened(false);
+  };
+
+  const handleDeletePages = (ids: number[]): void => {
+    dispatch(deletePages(ids));
   };
 
   return (
     <Toolbar className={classes.root}>
-      <PageCreateEditDialog {...pageCreateDialog.binding} />
-      <ConfirmationDialog
-        {...pagesDeleteDialog.binding}
-        dialogTitle="Delete pages confirmation"
-        dialogMessage="Do you really want to delete all selected pages?"
+      <PageInputDialog
+        title="New page"
+        submitText="Create"
+        initialDate={dateForNewPage}
+        isOpened={isInputDialogOpened}
+        onClose={handleInputClose}
+        onSubmit={handleCreatePage}
+      />
+      <DeletePagesDialog
+        isOpened={isDeleteDialogOpened}
+        isLoading={operationStatus === 'pending'}
+        pageIds={selectedPageIds}
+        onClose={handleDeleteClose}
+        onSubmit={handleDeletePages}
       />
       {selectedPageIds.length > 0 ? (
         <React.Fragment>
@@ -59,7 +84,7 @@ const PagesToolbar: React.FC<PagesToolbarProps> = ({ children }) => {
           </Box>
           <Tooltip title="Delete selected pages">
             <span>
-              <IconButton onClick={handleDeleteClick} size="large">
+              <IconButton onClick={handleDeleteOpen} size="large">
                 <DeleteIcon />
               </IconButton>
             </span>
@@ -84,7 +109,7 @@ const PagesToolbar: React.FC<PagesToolbarProps> = ({ children }) => {
           </Tooltip>
           <Tooltip title="Add new page">
             <span>
-              <IconButton onClick={handleAddClick} size="large">
+              <IconButton onClick={handleInputOpen} size="large">
                 <AddIcon />
               </IconButton>
             </span>

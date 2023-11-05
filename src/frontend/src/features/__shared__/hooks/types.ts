@@ -1,14 +1,5 @@
 import { TextFieldProps } from '@mui/material';
 
-export interface BindableHookResult<TBinding> {
-  binding: TBinding;
-}
-
-export interface BindableValueHookResult<TValue, TBinding> extends BindableHookResult<TBinding> {
-  value: TValue;
-  setValue: React.Dispatch<React.SetStateAction<TValue>>;
-}
-
 export type BindFunction<TBindingProps> = () => TBindingProps;
 export type ValidatorFunction<TValue> = (value: TValue) => boolean;
 

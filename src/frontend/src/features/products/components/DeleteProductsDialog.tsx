@@ -1,6 +1,6 @@
-import { Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 import React, { useEffect } from 'react';
-import { AppButton } from 'src/components';
+import { AppButton, AppDialog } from 'src/components';
 import { useAppSelector } from 'src/store';
 import { productsApi } from '../api';
 import { selectCheckedProductIds } from '../selectors';
@@ -34,15 +34,11 @@ const DeleteProductsDialog: React.FC<DeleteProductsDialogProps> = ({
   }
 
   return (
-    <Dialog open={isDialogOpened} onClose={handleClose} fullWidth>
-      <DialogTitle>Delete products confirmation</DialogTitle>
-      <DialogContent>
-        <Typography>Do you really want to delete selected products?</Typography>
-      </DialogContent>
-      <DialogActions>
-        <AppButton disabled={deleteProductRequest.isLoading} variant="text" onClick={handleClose}>
-          No
-        </AppButton>
+    <AppDialog
+      title="Delete products"
+      isOpened={isDialogOpened}
+      content={<Typography>Do you really want to delete selected products?</Typography>}
+      actionSubmit={
         <AppButton
           variant="contained"
           color="primary"
@@ -51,8 +47,14 @@ const DeleteProductsDialog: React.FC<DeleteProductsDialogProps> = ({
         >
           Yes
         </AppButton>
-      </DialogActions>
-    </Dialog>
+      }
+      actionCancel={
+        <AppButton variant="text" onClick={handleClose} isLoading={deleteProductRequest.isLoading}>
+          No
+        </AppButton>
+      }
+      onClose={handleClose}
+    />
   );
 };
 

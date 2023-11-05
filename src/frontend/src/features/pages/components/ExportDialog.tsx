@@ -1,6 +1,5 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import React, { useEffect } from 'react';
-import { AppButton, DatePicker } from 'src/components';
+import { AppButton, AppDialog, DatePicker } from 'src/components';
 import { useInput } from 'src/hooks';
 import { mapToDateInputProps } from 'src/utils/inputMapping';
 import { validateDate } from 'src/utils/validation';
@@ -15,78 +14,87 @@ type ExportDialogProps = {
 };
 
 const ExportDialog: React.FC<ExportDialogProps> = ({ format: exportFormat, isOpen, onClose }) => {
-  const {
-    inputProps: startDateInputProps,
-    value: startDate,
-    clearValue: clearStartDate,
-    isInvalid: isStartDateInvalid,
-    isTouched: isStartDateTouched,
-  } = useInput({
+  const startDateInput = useInput({
     initialValue: null,
     errorHelperText: 'Start date is required',
     validate: validateDate,
     mapToInputProps: mapToDateInputProps,
   });
 
-  const {
-    inputProps: endDateInputProps,
-    value: endDate,
-    clearValue: clearEndDate,
-    isInvalid: isEndDateInvalid,
-    isTouched: isEndDateTouched,
-  } = useInput({
+  const endDateInput = useInput({
     initialValue: null,
     errorHelperText: 'End date is required',
     validate: validateDate,
     mapToInputProps: mapToDateInputProps,
   });
 
-  const exportToJson = useExportToJson(startDate, endDate, onClose);
-  const exportToGoogleDocs = useExportToGoogleDocs(startDate, endDate, onClose);
-  const isExportDisabled =
-    isStartDateInvalid || isEndDateInvalid || !isStartDateTouched || !isEndDateTouched;
+  const exportToJson = useExportToJson(startDateInput.value, endDateInput.value, onClose);
+  const exportToGoogleDocs = useExportToGoogleDocs(
+    startDateInput.value,
+    endDateInput.value,
+    onClose,
+  );
+
+  const clearStartDate = startDateInput.clearValue;
+  const clearEndDate = endDateInput.clearValue;
 
   useEffect(() => {
-    if (isOpen) {
+    if (!isOpen) {
       clearStartDate();
       clearEndDate();
     }
   }, [isOpen, clearStartDate, clearEndDate]);
 
+  const isExportDisabled =
+    startDateInput.isInvalid ||
+    endDateInput.isInvalid ||
+    !startDateInput.isTouched ||
+    !endDateInput.isTouched;
+
+  const isExportLoading =
+    exportFormat === 'json' ? exportToJson.isLoading : exportToGoogleDocs.isLoading;
+  const exportSubmitText = exportFormat === 'json' ? 'Export to JSON' : 'Export to Google Docs';
+
+  const handleExportStart = (): void => {
+    if (exportFormat === 'json') {
+      exportToJson.start();
+    } else {
+      exportToGoogleDocs.start();
+    }
+  };
+
   return (
-    <Dialog open={isOpen} onClose={onClose}>
-      <DialogTitle>Export pages</DialogTitle>
-      <DialogContent>
-        <DatePicker {...startDateInputProps} label="Start date" placeholder="Select start date" />
-        <DatePicker {...endDateInputProps} label="End date" placeholder="Select end date" />
-      </DialogContent>
-      <DialogActions>
-        {exportFormat === 'json' ? (
-          <AppButton
-            isLoading={exportToJson.isLoading}
-            variant="contained"
-            color="primary"
-            onClick={exportToJson.start}
-            disabled={isExportDisabled}
-          >
-            Export to JSON
-          </AppButton>
-        ) : (
-          <AppButton
-            isLoading={exportToGoogleDocs.isLoading}
-            variant="contained"
-            color="primary"
-            onClick={exportToGoogleDocs.start}
-            disabled={isExportDisabled}
-          >
-            Export to Google Docs
-          </AppButton>
-        )}
-        <Button variant="text" onClick={onClose}>
+    <AppDialog
+      title="Export pages"
+      isOpened={isOpen}
+      content={
+        <>
+          <DatePicker
+            {...startDateInput.inputProps}
+            label="Start date"
+            placeholder="Select start date"
+          />
+          <DatePicker {...endDateInput.inputProps} label="End date" placeholder="Select end date" />
+        </>
+      }
+      actionSubmit={
+        <AppButton
+          isLoading={isExportLoading}
+          variant="contained"
+          color="primary"
+          onClick={handleExportStart}
+          disabled={isExportDisabled}
+        >
+          {exportSubmitText}
+        </AppButton>
+      }
+      actionCancel={
+        <AppButton variant="text" onClick={onClose}>
           Cancel
-        </Button>
-      </DialogActions>
-    </Dialog>
+        </AppButton>
+      }
+      onClose={onClose}
+    />
   );
 };
 

@@ -1,6 +1,6 @@
-import { Dialog, DialogTitle, DialogContent, TextField, DialogActions } from '@mui/material';
+import { TextField } from '@mui/material';
 import React, { Dispatch, SetStateAction, useEffect } from 'react';
-import { AppButton } from 'src/components';
+import { AppButton, AppDialog } from 'src/components';
 import { useInput } from 'src/hooks';
 import { mapToTextInputProps } from 'src/utils/inputMapping';
 import { validateCategoryName } from 'src/utils/validation';
@@ -55,10 +55,11 @@ const CategoryInputDialog: React.FC<CreateEditCategoryDialogProps> = ({
   }
 
   return (
-    <Dialog open={isDialogOpened} onClose={handleClose} fullWidth>
-      <DialogTitle>{title}</DialogTitle>
-
-      <DialogContent>
+    <AppDialog
+      title={title}
+      isOpened={isDialogOpened}
+      onClose={handleClose}
+      content={
         <TextField
           {...categoryNameInputProps}
           autoFocus
@@ -67,13 +68,8 @@ const CategoryInputDialog: React.FC<CreateEditCategoryDialogProps> = ({
           label="Category name"
           placeholder="Enter category name"
         />
-      </DialogContent>
-
-      <DialogActions>
-        <AppButton disabled={isLoading} onClick={handleClose}>
-          Cancel
-        </AppButton>
-
+      }
+      actionSubmit={
         <AppButton
           aria-label={`${category ? 'Save' : 'Create'} ${categoryName} and close dialog`}
           variant="contained"
@@ -83,8 +79,13 @@ const CategoryInputDialog: React.FC<CreateEditCategoryDialogProps> = ({
         >
           {submitText}
         </AppButton>
-      </DialogActions>
-    </Dialog>
+      }
+      actionCancel={
+        <AppButton disabled={isLoading} onClick={handleClose}>
+          Cancel
+        </AppButton>
+      }
+    />
   );
 };
 
