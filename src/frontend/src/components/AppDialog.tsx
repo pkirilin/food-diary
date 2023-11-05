@@ -34,10 +34,11 @@ const AppDialog: FC<AppDialogProps> = ({
         <CloseIcon />
       </IconButton>
       <DialogTitle>{title}</DialogTitle>
-      <DialogContent>{content}</DialogContent>
+      <DialogContent dividers>{content}</DialogContent>
       <DialogActions
         disableSpacing
         sx={theme => ({
+          marginTop: theme.spacing(3),
           padding: `0 ${theme.spacing(3)} ${theme.spacing(2)}`,
 
           '& > :not(:first-of-type)': {
