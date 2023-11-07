@@ -1,11 +1,6 @@
-﻿namespace FoodDiary.API.Dtos
-{
-    public class PageContentDto
-    {
-        public PageDto CurrentPage { get; set; }
+﻿namespace FoodDiary.API.Dtos;
 
-        public PageDto PreviousPage { get; set; }
-        
-        public PageDto NextPage { get; set; }
-    }
+public class PageContentDto
+{
+    public PageDto CurrentPage { get; set; }
 }
