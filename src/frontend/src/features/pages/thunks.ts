@@ -1,4 +1,4 @@
-import config from '../__shared__/config';
+import { API_URL } from 'src/config';
 import { SortOrder } from '../__shared__/models';
 import {
   createApiCallAsyncThunk,
@@ -27,21 +27,21 @@ export interface PageByIdResponse {
 
 export const getPages = createApiCallAsyncThunk<PagesSearchResult, GetPagesRequest>(
   'pages/getPages',
-  params => createUrl(`${config.apiUrl}/api/v1/pages`, params),
+  params => createUrl(`${API_URL}/api/v1/pages`, params),
   response => response.json(),
   'Failed to get pages',
 );
 
 export const getPageById = createApiCallAsyncThunk<PageByIdResponse, number>(
   'pages/getPageById',
-  id => `${config.apiUrl}/api/v1/pages/${id}`,
+  id => `${API_URL}/api/v1/pages/${id}`,
   response => response.json(),
   'Failed to get page',
 );
 
 export const createPage = createApiCallAsyncThunk<number, PageCreateEdit>(
   'pages/createPage',
-  () => `${config.apiUrl}/api/v1/pages`,
+  () => `${API_URL}/api/v1/pages`,
   async response => Number(await response.text()),
   'Failed to create page',
   {
@@ -52,7 +52,7 @@ export const createPage = createApiCallAsyncThunk<number, PageCreateEdit>(
 
 export const editPage = createApiCallAsyncThunk<void, EditPageRequest>(
   'pages/editPage',
-  ({ id }) => `${config.apiUrl}/api/v1/pages/${id}`,
+  ({ id }) => `${API_URL}/api/v1/pages/${id}`,
   handleEmptyResponse,
   'Failed to update page',
   {
@@ -63,7 +63,7 @@ export const editPage = createApiCallAsyncThunk<void, EditPageRequest>(
 
 export const deletePages = createApiCallAsyncThunk<void, number[]>(
   'pages/deletePages',
-  () => `${config.apiUrl}/api/v1/pages/batch`,
+  () => `${API_URL}/api/v1/pages/batch`,
   handleEmptyResponse,
   'Failed to delete pages',
   {
@@ -74,7 +74,7 @@ export const deletePages = createApiCallAsyncThunk<void, number[]>(
 
 export const exportPagesToJson = createApiCallAsyncThunk<void, ExportPagesToJsonRequest>(
   'pages/exportToJson',
-  params => createUrl(`${config.apiUrl}/api/v1/exports/json`, { ...params }),
+  params => createUrl(`${API_URL}/api/v1/exports/json`, { ...params }),
   async (response, { startDate, endDate }) => {
     const blob = await response.blob();
     downloadFile(blob, `FoodDiary_${startDate}_${endDate}.json`);
@@ -84,7 +84,7 @@ export const exportPagesToJson = createApiCallAsyncThunk<void, ExportPagesToJson
 
 export const importPages = createApiCallAsyncThunk<void, File>(
   'pages/importPages',
-  () => `${config.apiUrl}/api/v1/imports/json`,
+  () => `${API_URL}/api/v1/imports/json`,
   handleEmptyResponse,
   'Failed to import pages',
   {
@@ -100,7 +100,7 @@ export const importPages = createApiCallAsyncThunk<void, File>(
 
 export const getDateForNewPage = createApiCallAsyncThunk<string, void>(
   'pages/getDateForNewPage',
-  () => `${config.apiUrl}/api/v1/pages/date`,
+  () => `${API_URL}/api/v1/pages/date`,
   response => response.text(),
   'Failed to get date for new page',
 );
