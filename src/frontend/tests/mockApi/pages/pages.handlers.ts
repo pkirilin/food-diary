@@ -60,13 +60,8 @@ export const handlers: RestHandler[] = [
       return res(ctx.status(404));
     }
 
-    const previousDbPage = pagesService.getPrevious(id);
-    const nextDbPage = pagesService.getNext(id);
-
     const response: PageByIdResponse = {
       currentPage: mapToPage(currentDbPage),
-      previousPage: previousDbPage ? mapToPage(previousDbPage) : null,
-      nextPage: nextDbPage ? mapToPage(nextDbPage) : null,
     };
 
     return res(ctx.json(response));

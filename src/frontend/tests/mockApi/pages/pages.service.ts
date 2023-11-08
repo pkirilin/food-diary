@@ -41,20 +41,6 @@ export const getById = (id: number) =>
     },
   });
 
-export const getPrevious = (id: number) =>
-  db.page.findFirst({
-    where: {
-      id: { lt: id },
-    },
-  });
-
-export const getNext = (id: number) =>
-  db.page.findFirst({
-    where: {
-      id: { gt: id },
-    },
-  });
-
 export const getNotes = (pageId: number): DbNote[] => {
   const notes = db.note.findMany({
     where: {

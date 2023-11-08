@@ -21,8 +21,6 @@ export type PagesState = {
   totalPagesCount: number;
   filter: PageItemsFilter;
   current?: Page;
-  previous?: Page | null;
-  next?: Page | null;
   dateForNewPage?: string;
   dateForNewPageLoading: Status;
   isExportToJsonLoading: boolean;
@@ -109,14 +107,6 @@ const pagesSlice = createSlice({
       })
       .addCase(getPageById.fulfilled, (state, { payload }) => {
         state.current = payload.currentPage;
-
-        if (state.filter.sortOrder === SortOrder.Ascending) {
-          state.previous = payload.previousPage;
-          state.next = payload.nextPage;
-        } else {
-          state.previous = payload.nextPage;
-          state.next = payload.previousPage;
-        }
       })
       .addCase(deletePages.fulfilled, state => {
         state.selectedPageIds = [];

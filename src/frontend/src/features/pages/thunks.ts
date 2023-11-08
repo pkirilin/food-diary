@@ -23,8 +23,6 @@ export type EditPageRequest = {
 
 export interface PageByIdResponse {
   currentPage: Page;
-  previousPage: Page | null;
-  nextPage: Page | null;
 }
 
 export const getPages = createApiCallAsyncThunk<PagesSearchResult, GetPagesRequest>(

@@ -4,7 +4,6 @@ import { useAppDispatch, useRouterId } from 'src/hooks';
 import { MealsList } from '../../notes/components';
 import { getNotes } from '../../notes/thunks';
 import { getPageById } from '../thunks';
-import PageContentFooter from './PageContentFooter';
 import PageContentHeader from './PageContentHeader';
 
 const PageContent: React.FC = () => {
@@ -21,7 +20,6 @@ const PageContent: React.FC = () => {
       <Box py={3}>
         <PageContentHeader />
         <MealsList />
-        <PageContentFooter />
       </Box>
     </Container>
   );

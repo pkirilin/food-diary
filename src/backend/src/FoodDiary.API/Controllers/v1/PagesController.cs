@@ -79,11 +79,9 @@ namespace FoodDiary.API.Controllers.v1
                 return NotFound();
             }
 
-            var pageContentDto = new PageContentDto()
+            var pageContentDto = new PageContentDto
             {
-                CurrentPage = _mapper.Map<PageDto>(pageContent.CurrentPage),
-                PreviousPage = _mapper.Map<PageDto>(pageContent.PreviousPage),
-                NextPage = _mapper.Map<PageDto>(pageContent.NextPage),
+                CurrentPage = _mapper.Map<PageDto>(pageContent.CurrentPage)
             };
             
             return Ok(pageContentDto);
