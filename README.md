@@ -84,21 +84,21 @@ touch env.local
 Fill `env.local` with this values:
 
 ```text
-# enables mockServiceWorker to intercept and mock all API requests
 VITE_APP_MSW_ENABLED=true
-
-# setups fake authentication flow for local development
 VITE_APP_FAKE_AUTH_ENABLED=true
-
-# defines whether the user is authenticated by default when using a fake authentication flow
 VITE_APP_FAKE_AUTH_LOGIN_ON_INIT=true
 ```
 
-## (WIP) Frontend environment variables
+## Frontend environment variables
 
 | Name | Type | Description
 |---|---|---
+| `VITE_APP_API_URL` | `string` | Specifies a backend API base URL without a trim slash, e.g. `https://localhost:5001`
 | `VITE_APP_AUTH_CHECK_INTERVAL` | `number` | Specifies the auth status check interval in milliseconds to ensure that users with expired cookies will not be able to use the application without refreshing the page in the browser. Not used if `VITE_APP_FAKE_AUTH_ENABLED` is `true`
+| `VITE_APP_DEMO_MODE_ENABLED` | `boolean` | Enables demo mode. In demo mode, some features related to file system or external integrations are disabled
+| `VITE_APP_FAKE_AUTH_ENABLED` | `boolean` | Setups fake authentication flow without using a backend server and OAuth Identity provider. Used for local development
+| `VITE_APP_FAKE_AUTH_LOGIN_ON_INIT` | `boolean` | Defines whether the user is authenticated by default when using a fake authentication flow. Used for local development
+| `VITE_APP_MSW_ENABLED` | `boolean` | Enables mockServiceWorker to intercept and mock all API requests. Used for testing or local development purposes
 
 ## How to generate database migrations
 
