@@ -1,10 +1,8 @@
-import { skipToken } from '@reduxjs/toolkit/dist/query';
 import { useCallback } from 'react';
-import { API_URL } from 'src/config';
+import { API_URL, FAKE_AUTH_ENABLED } from 'src/config';
 import { useAppDispatch, useAppSelector } from 'src/hooks';
 import { createUrl } from 'src/utils';
 import { authApi } from '../api';
-import { USE_FAKE_AUTH } from '../constants';
 import { actions } from '../store';
 import { AuthUserState } from '../store/types';
 
@@ -24,7 +22,13 @@ type UseAuthHookResult = {
 export default function useAuth(): UseAuthHookResult {
   const user = useAppSelector(state => state.auth.user);
   const dispatch = useAppDispatch();
-  const getProfileQuery = authApi.useGetProfileQuery(USE_FAKE_AUTH ? skipToken : {});
+
+  const getProfileQuery = authApi.useGetProfileQuery(
+    {},
+    {
+      skip: !!user,
+    },
+  );
 
   const signIn = useCallback(() => {
     dispatch(actions.signIn());
@@ -36,7 +40,7 @@ export default function useAuth(): UseAuthHookResult {
 
   const login = useCallback(
     ({ returnUrl }: LoginOptions) => {
-      if (USE_FAKE_AUTH) {
+      if (FAKE_AUTH_ENABLED) {
         signIn();
       } else {
         const loginUrl = createUrl(`${API_URL}/api/v1/auth/login`, { returnUrl });
@@ -47,7 +51,7 @@ export default function useAuth(): UseAuthHookResult {
   );
 
   const logout = useCallback(() => {
-    if (USE_FAKE_AUTH) {
+    if (FAKE_AUTH_ENABLED) {
       signOut();
     } else {
       const logoutUrl = `${API_URL}/api/v1/auth/logout`;

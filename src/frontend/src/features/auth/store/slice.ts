@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { authApi } from '../api';
 import { AuthUserState } from './types';
 
 export type AuthState = {
@@ -23,6 +24,12 @@ const authSlice = createSlice({
       };
     },
   },
+  extraReducers: builder =>
+    builder.addMatcher(authApi.endpoints.getProfile.matchFulfilled, (state, { payload }) => {
+      state.user = {
+        isAuthenticated: payload.isAuthenticated,
+      };
+    }),
 });
 
 export default authSlice;

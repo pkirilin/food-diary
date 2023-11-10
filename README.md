@@ -87,9 +87,18 @@ Fill `env.local` with this values:
 # enables mockServiceWorker to intercept and mock all API requests
 VITE_APP_MSW_ENABLED=true
 
-# sets auth status check interval in milliseconds (set higher value to not get constantly logged out while developing app)
-VITE_APP_AUTH_CHECK_INTERVAL=50000000
+# setups fake authentication flow for local development
+VITE_APP_FAKE_AUTH_ENABLED=true
+
+# defines whether the user is authenticated by default when using a fake authentication flow
+VITE_APP_FAKE_AUTH_LOGIN_ON_INIT=true
 ```
+
+## (WIP) Frontend environment variables
+
+| Name | Type | Description
+|---|---|---
+| `VITE_APP_AUTH_CHECK_INTERVAL` | `number` | Specifies the auth status check interval in milliseconds to ensure that users with expired cookies will not be able to use the application without refreshing the page in the browser. Not used if `VITE_APP_FAKE_AUTH_ENABLED` is `true`
 
 ## How to generate database migrations
 

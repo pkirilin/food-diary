@@ -1,21 +1,25 @@
-import React from 'react';
+import { FC, PropsWithChildren } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth, useAuthProfileCheck } from '../hooks';
 import { NavigationState } from '../types';
 
-type RequireAuthProps = React.PropsWithChildren<unknown>;
+type RequireAuthProps = PropsWithChildren<unknown>;
 
-const RequireAuth: React.FC<RequireAuthProps> = ({ children }) => {
-  useAuthProfileCheck();
+const RequireAuth: FC<RequireAuthProps> = ({ children }) => {
   const { user } = useAuth();
   const location = useLocation();
+  useAuthProfileCheck();
 
-  if (user && !user.isAuthenticated) {
+  if (!user) {
+    return null;
+  }
+
+  if (!user.isAuthenticated) {
     const state: NavigationState = { from: location };
     return <Navigate to="/login" replace state={state} />;
   }
 
-  return <React.Fragment>{children}</React.Fragment>;
+  return <>{children}</>;
 };
 
 export default RequireAuth;

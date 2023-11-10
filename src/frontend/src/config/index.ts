@@ -8,3 +8,6 @@ export const MSW_ENABLED = import.meta.env.VITE_APP_MSW_ENABLED === 'true';
 
 export const DEMO_MODE_ENABLED =
   import.meta.env.MODE !== 'test' && import.meta.env.VITE_APP_DEMO_MODE_ENABLED === 'true';
+
+export const FAKE_AUTH_ENABLED = import.meta.env.VITE_APP_FAKE_AUTH_ENABLED === 'true';
+export const FAKE_AUTH_LOGIN_ON_INIT = import.meta.env.VITE_APP_FAKE_AUTH_LOGIN_ON_INIT === 'true';
