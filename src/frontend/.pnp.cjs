@@ -72,6 +72,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["prop-types", "npm:15.8.1"],\
             ["react", "npm:18.1.0"],\
             ["react-dom", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:18.1.0"],\
+            ["react-ga4", "npm:2.1.0"],\
             ["react-redux", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:8.0.2"],\
             ["react-router-dom", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:6.3.0"],\
             ["redux", "npm:4.2.0"],\
@@ -5625,6 +5626,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["prop-types", "npm:15.8.1"],\
             ["react", "npm:18.1.0"],\
             ["react-dom", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:18.1.0"],\
+            ["react-ga4", "npm:2.1.0"],\
             ["react-redux", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:8.0.2"],\
             ["react-router-dom", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:6.3.0"],\
             ["redux", "npm:4.2.0"],\
@@ -8248,6 +8250,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packagePeers": [\
             "@types/react",\
             "react"\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["react-ga4", [\
+        ["npm:2.1.0", {\
+          "packageLocation": "./.yarn/cache/react-ga4-npm-2.1.0-2d2287b7a6-f7fb411414.zip/node_modules/react-ga4/",\
+          "packageDependencies": [\
+            ["react-ga4", "npm:2.1.0"]\
           ],\
           "linkType": "HARD"\
         }]\

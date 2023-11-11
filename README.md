@@ -99,6 +99,8 @@ VITE_APP_FAKE_AUTH_LOGIN_ON_INIT=true
 | `VITE_APP_FAKE_AUTH_ENABLED` | `boolean` | Setups fake authentication flow without using a backend server and OAuth Identity provider. Used for local development
 | `VITE_APP_FAKE_AUTH_LOGIN_ON_INIT` | `boolean` | Defines whether the user is authenticated by default when using a fake authentication flow. Used for local development
 | `VITE_APP_MSW_ENABLED` | `boolean` | Enables mockServiceWorker to intercept and mock all API requests. Used for testing or local development purposes
+| `VITE_APP_GOOGLE_ANALYTICS_ENABLED` | `boolean` | Enables Google Analytics
+| `VITE_APP_GOOGLE_ANALYTICS_MEASUREMENT_ID` | `string` | Measurement (data stream) ID for Google Analytics
 
 ## How to generate database migrations
 

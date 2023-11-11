@@ -11,3 +11,9 @@ export const DEMO_MODE_ENABLED =
 
 export const FAKE_AUTH_ENABLED = import.meta.env.VITE_APP_FAKE_AUTH_ENABLED === 'true';
 export const FAKE_AUTH_LOGIN_ON_INIT = import.meta.env.VITE_APP_FAKE_AUTH_LOGIN_ON_INIT === 'true';
+
+export const GOOGLE_ANALYTICS_ENABLED =
+  import.meta.env.VITE_APP_GOOGLE_ANALYTICS_ENABLED === 'true';
+
+export const GOOGLE_ANALYTICS_MEASUREMENT_ID = import.meta.env
+  .VITE_APP_GOOGLE_ANALYTICS_MEASUREMENT_ID;
