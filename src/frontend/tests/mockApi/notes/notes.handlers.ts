@@ -1,11 +1,12 @@
-import { rest, RestHandler } from 'msw';
+import { http, HttpHandler, HttpResponse, PathParams } from 'msw';
 import { API_URL } from 'src/config';
 import { NoteCreateEdit } from 'src/features/notes';
 import { notesService } from '.';
 
-export const handlers: RestHandler[] = [
-  rest.get(`${API_URL}/api/v1/notes`, (req, res, ctx) => {
-    const pageId = parseInt(req.url.searchParams.get('pageId') ?? '0');
+export const handlers: HttpHandler[] = [
+  http.get(`${API_URL}/api/v1/notes`, ({ request }) => {
+    const url = new URL(request.url);
+    const pageId = parseInt(url.searchParams.get('pageId') ?? '0');
     const notes = notesService.getByPageId(pageId);
     const productsMap = notesService.getProducts(notes);
 
@@ -23,35 +24,38 @@ export const handlers: RestHandler[] = [
       };
     });
 
-    return res(ctx.json(response));
+    return HttpResponse.json(response);
   }),
 
-  rest.post(`${API_URL}/api/v1/notes`, async (req, res, ctx) => {
-    const body = await req.json<NoteCreateEdit>();
+  http.post<PathParams, NoteCreateEdit>(`${API_URL}/api/v1/notes`, async ({ request }) => {
+    const body = await request.json();
     const result = notesService.create(body);
 
     if (result === 'PageNotFound' || result === 'ProductNotFound') {
-      return res(ctx.status(400));
+      return new HttpResponse(null, { status: 400 });
     }
 
-    return res(ctx.status(200));
+    return new HttpResponse(null, { status: 200 });
   }),
 
-  rest.put(`${API_URL}/api/v1/notes/:id`, async (req, res, ctx) => {
-    const id = parseInt(req.params.id as string);
-    const body = await req.json<NoteCreateEdit>();
-    const result = notesService.update(id, body);
+  http.put<{ id: string }, NoteCreateEdit>(
+    `${API_URL}/api/v1/notes/:id`,
+    async ({ params, request }) => {
+      const id = parseInt(params.id);
+      const body = await request.json();
+      const result = notesService.update(id, body);
 
-    if (result === 'PageNotFound' || result === 'ProductNotFound') {
-      return res(ctx.status(400));
-    }
+      if (result === 'PageNotFound' || result === 'ProductNotFound') {
+        return new HttpResponse(null, { status: 400 });
+      }
 
-    return res(ctx.status(200));
-  }),
+      return new HttpResponse(null, { status: 200 });
+    },
+  ),
 
-  rest.delete(`${API_URL}/api/v1/notes/:id`, (req, res, ctx) => {
-    const id = parseInt(req.params.id as string);
+  http.delete<{ id: string }>(`${API_URL}/api/v1/notes/:id`, ({ params }) => {
+    const id = parseInt(params.id);
     notesService.deleteOne(id);
-    return res(ctx.status(200));
+    return new HttpResponse(null, { status: 200 });
   }),
 ];

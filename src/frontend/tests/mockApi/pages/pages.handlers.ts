@@ -1,4 +1,4 @@
-import { rest, RestHandler } from 'msw';
+import { http, HttpHandler, HttpResponse, PathParams } from 'msw';
 import { API_URL } from 'src/config';
 import { PageByIdResponse, PageCreateEdit, PagesSearchResult } from 'src/features/pages';
 import { SortOrder } from 'src/types';
@@ -6,13 +6,14 @@ import { formatDate } from 'src/utils';
 import { mapToPage } from './pages.mapper';
 import * as pagesService from './pages.service';
 
-export const handlers: RestHandler[] = [
-  rest.get(`${API_URL}/api/v1/pages`, (req, res, ctx) => {
-    const pageNumber = Number(req.url.searchParams.get('pageNumber') ?? 1);
-    const pageSize = Number(req.url.searchParams.get('pageSize') ?? 10);
-    const sortOrder = Number(req.url.searchParams.get('sortOrder') ?? SortOrder.Descending);
-    const startDate = req.url.searchParams.get('startDate');
-    const endDate = req.url.searchParams.get('endDate');
+export const handlers: HttpHandler[] = [
+  http.get(`${API_URL}/api/v1/pages`, ({ request }) => {
+    const url = new URL(request.url);
+    const pageNumber = Number(url.searchParams.get('pageNumber') ?? 1);
+    const pageSize = Number(url.searchParams.get('pageSize') ?? 10);
+    const sortOrder = Number(url.searchParams.get('sortOrder') ?? SortOrder.Descending);
+    const startDate = url.searchParams.get('startDate');
+    const endDate = url.searchParams.get('endDate');
 
     const pages = pagesService.get({
       pageNumber,
@@ -39,62 +40,59 @@ export const handlers: RestHandler[] = [
       totalPagesCount,
     };
 
-    return res(ctx.json(response));
+    return HttpResponse.json(response);
   }),
 
-  rest.get(`${API_URL}/api/v1/pages/date`, (req, res, ctx) => {
+  http.get(`${API_URL}/api/v1/pages/date`, () => {
     const date = new Date(pagesService.getNewPageDate());
     const response: string = formatDate(date);
-    return res(ctx.json(response));
+    return HttpResponse.json(response);
   }),
 
-  rest.get(`${API_URL}/api/v1/pages/:id`, (req, res, ctx) => {
-    if (!req.params.id) {
-      return res(ctx.status(404));
+  http.get<{ id: string }>(`${API_URL}/api/v1/pages/:id`, ({ params }) => {
+    if (!params.id) {
+      return new HttpResponse(null, { status: 404 });
     }
 
-    const id = Number(req.params.id);
+    const id = Number(params.id);
     const currentDbPage = pagesService.getById(id);
 
     if (!currentDbPage) {
-      return res(ctx.status(404));
+      return new HttpResponse(null, { status: 404 });
     }
 
     const response: PageByIdResponse = {
       currentPage: mapToPage(currentDbPage),
     };
 
-    return res(ctx.json(response));
+    return HttpResponse.json(response);
   }),
 
-  rest.post(`${API_URL}/api/v1/pages`, async (req, res, ctx) => {
-    const body = await req.json<PageCreateEdit>();
+  http.post<PathParams, PageCreateEdit>(`${API_URL}/api/v1/pages`, async ({ request }) => {
+    const body = await request.json();
     pagesService.create(body);
-    return res(ctx.status(200));
+    return new HttpResponse(null, { status: 200 });
   }),
 
-  rest.put(`${API_URL}/api/v1/pages/:id`, async (req, res, ctx) => {
-    const id = parseInt(req.params.id as string);
-    const body = await req.json<PageCreateEdit>();
-    pagesService.update(id, body);
-    return res(ctx.status(200));
-  }),
+  http.put<{ id: string }, PageCreateEdit>(
+    `${API_URL}/api/v1/pages/:id`,
+    async ({ params, request }) => {
+      const id = parseInt(params.id);
+      const body = await request.json();
+      pagesService.update(id, body);
+      return new HttpResponse(null, { status: 200 });
+    },
+  ),
 
-  rest.delete(`${API_URL}/api/v1/pages/batch`, async (req, res, ctx) => {
-    const pageIds = await req.json<number[]>();
+  http.delete<PathParams, number[]>(`${API_URL}/api/v1/pages/batch`, async ({ request }) => {
+    const pageIds = await request.json();
     pagesService.deleteMany(pageIds);
-    return res(ctx.status(200));
+    return new HttpResponse(null, { status: 200 });
   }),
 
-  rest.post(`${API_URL}/api/v1/imports/json`, (req, res, ctx) => {
-    return res(ctx.status(200));
-  }),
+  http.post(`${API_URL}/api/v1/imports/json`, () => new HttpResponse(null, { status: 200 })),
 
-  rest.get(`${API_URL}/api/v1/exports/json`, (req, res, ctx) => {
-    return res(ctx.body(new Blob()));
-  }),
+  http.get(`${API_URL}/api/v1/exports/json`, () => new HttpResponse(new Blob())),
 
-  rest.post(`${API_URL}/api/v1/exports/google-docs`, (req, res, ctx) => {
-    return res(ctx.status(200));
-  }),
+  http.post(`${API_URL}/api/v1/exports/google-docs`, () => new HttpResponse(null, { status: 200 })),
 ];

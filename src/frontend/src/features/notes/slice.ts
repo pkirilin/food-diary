@@ -15,10 +15,13 @@ const initialState: NotesState = {
 };
 
 function getInitialOperationStatuses(): Record<MealType, Status> {
-  return Meals.get().reduce((statuses, mealType) => {
-    statuses[mealType] = 'idle';
-    return statuses;
-  }, {} as Record<MealType, Status>);
+  return Meals.get().reduce(
+    (statuses, mealType) => {
+      statuses[mealType] = 'idle';
+      return statuses;
+    },
+    {} as Record<MealType, Status>,
+  );
 }
 
 const operationThunks = [createNote, editNote, deleteNote];

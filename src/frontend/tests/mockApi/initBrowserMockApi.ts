@@ -1,5 +1,10 @@
-const IGNORED_HOSTNAMES = ['apis.google.com', 'fonts.gstatic.com'];
-const IGNORED_PATHNAMES = ['manifest.json', 'favicon.*', 'main.*.hot-update.js'];
+const IGNORED_URL_PATTERNS: RegExp[] = [
+  /fonts.gstatic.com/,
+  /fonts.googleapis.com/,
+  /\/site.webmanifest/,
+  /^\/src/,
+  /localhost:5173/,
+];
 
 export const initBrowserMockApi = async (): Promise<void> => {
   const { worker } = await import('./browser');
@@ -8,12 +13,8 @@ export const initBrowserMockApi = async (): Promise<void> => {
   await initMockApiDb();
 
   await worker.start({
-    onUnhandledRequest(request, print) {
-      if (IGNORED_HOSTNAMES.some(hostname => request.url.hostname.match(hostname))) {
-        return;
-      }
-
-      if (IGNORED_PATHNAMES.some(pathname => request.url.pathname.match(pathname))) {
+    onUnhandledRequest: (request, print) => {
+      if (IGNORED_URL_PATTERNS.some(regexp => regexp.test(request.url))) {
         return;
       }
 
