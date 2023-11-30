@@ -5,7 +5,7 @@ export interface PagesSearchResultBuilder {
   withPageItem: (date: string) => PagesSearchResultBuilder;
 }
 
-export default function createPagesSearchResultBuilder() {
+export default function createPagesSearchResultBuilder(): PagesSearchResultBuilder {
   const pageItems: PageItem[] = [];
   let totalPagesCount = 0;
   let id = -1;

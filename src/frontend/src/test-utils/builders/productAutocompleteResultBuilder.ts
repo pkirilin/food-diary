@@ -5,7 +5,7 @@ export interface ProductAutocompleteResultBuilder {
   withOption: (name: string) => ProductAutocompleteResultBuilder;
 }
 
-export default function createProductAutocompleteResultBuilder() {
+export default function createProductAutocompleteResultBuilder(): ProductAutocompleteResultBuilder {
   let id = 0;
   const options: SelectOption[] = [];
 

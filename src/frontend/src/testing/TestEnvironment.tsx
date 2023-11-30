@@ -18,7 +18,7 @@ const TestEnvironment: React.FC<React.PropsWithChildren<TestEnvironmentProps>> =
   const { logout } = useAuth();
 
   useEffect(() => {
-    if (!signOutAfterMilliseconds) {
+    if (signOutAfterMilliseconds == null) {
       return;
     }
 
@@ -32,7 +32,7 @@ const TestEnvironment: React.FC<React.PropsWithChildren<TestEnvironmentProps>> =
   }, [logout, signOutAfterMilliseconds]);
 
   useEffect(() => {
-    if (pageSizeOverride) {
+    if (pageSizeOverride != null) {
       store.dispatch(pageSizeChanged(pageSizeOverride));
     }
   }, [pageSizeOverride, store]);

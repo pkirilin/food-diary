@@ -15,7 +15,7 @@ export interface TestComponentBuilder {
 
 type WrapperType = React.ComponentType<React.PropsWithChildren<unknown>>;
 
-const createComponentBuilder = (component: React.ReactElement) => {
+const createComponentBuilder = (component: React.ReactElement): TestComponentBuilder => {
   const wrappers: WrapperType[] = [];
 
   const builder: TestComponentBuilder = {

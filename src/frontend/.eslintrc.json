@@ -55,7 +55,7 @@
         "allowString": true,
         "allowNumber": true,
         "allowNullableObject": true,
-        "allowNullableBoolean": false,
+        "allowNullableBoolean": true,
         "allowNullableString": true,
         "allowNullableNumber": false,
         "allowNullableEnum": false,

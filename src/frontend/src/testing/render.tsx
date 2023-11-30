@@ -1,4 +1,4 @@
-import { render as rtlRender } from '@testing-library/react';
+import { type RenderResult, render as rtlRender } from '@testing-library/react';
 import type React from 'react';
 import AppProvider from 'src/AppProvider';
 import { actions as authActions } from 'src/features/auth/store';
@@ -18,7 +18,7 @@ const defaultOptions: RenderOptions = {
 function prepareStore(
   store: ReturnType<typeof configureAppStore>,
   { withAuthentication }: RenderOptions,
-) {
+): void {
   if (withAuthentication) {
     store.dispatch(authActions.signIn());
   } else if (withAuthentication === false) {
@@ -26,7 +26,7 @@ function prepareStore(
   }
 }
 
-export default function render(ui: React.ReactElement, options?: RenderOptions) {
+export default function render(ui: React.ReactElement, options?: RenderOptions): RenderResult {
   const optionsToApply = {
     ...defaultOptions,
     ...options,
