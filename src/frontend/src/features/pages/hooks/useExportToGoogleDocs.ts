@@ -1,7 +1,7 @@
 import format from 'date-fns/format';
 import { useEffect } from 'react';
 import { pagesApi } from '../api/pagesApi';
-import { UseExportResult } from '../types';
+import { type UseExportResult } from '../types';
 
 export function useExportToGoogleDocs(
   startDate: Date | null,

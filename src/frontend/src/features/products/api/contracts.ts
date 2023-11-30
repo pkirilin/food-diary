@@ -1,23 +1,23 @@
-export type GetProductsRequest = {
+export interface GetProductsRequest {
   pageNumber: number;
   pageSize: number;
   productSearchName?: string;
   categoryId?: number;
-};
+}
 
-export type CreateProductRequest = {
+export interface CreateProductRequest {
   name: string;
   caloriesCost: number;
   categoryId: number;
-};
+}
 
-export type EditProductRequest = {
+export interface EditProductRequest {
   id: number;
   name: string;
   caloriesCost: number;
   categoryId: number;
-};
+}
 
-export type DeleteProductsRequest = {
+export interface DeleteProductsRequest {
   ids: number[];
-};
+}

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { BindingCreatorFunction, InputHook, InputOptions } from './types';
+import { type BindingCreatorFunction, type InputHook, type InputOptions } from './types';
 
 export default function createInputHook<TValue, TBindingProps>(
   createBinding: BindingCreatorFunction<TValue, TBindingProps>,

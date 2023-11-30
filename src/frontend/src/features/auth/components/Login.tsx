@@ -1,5 +1,5 @@
 import { Box, Paper, Stack, Typography } from '@mui/material';
-import React from 'react';
+import type React from 'react';
 import { Navigate } from 'react-router-dom';
 import { AppButton } from 'src/components';
 import { DEMO_MODE_ENABLED } from 'src/config';

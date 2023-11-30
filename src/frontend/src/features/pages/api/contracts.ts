@@ -1,4 +1,4 @@
-export type ExportPagesToGoogleDocsRequest = {
+export interface ExportPagesToGoogleDocsRequest {
   startDate: string;
   endDate: string;
-};
+}

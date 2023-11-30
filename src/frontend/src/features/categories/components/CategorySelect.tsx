@@ -1,6 +1,6 @@
-import React from 'react';
+import type React from 'react';
 import { AppSelect } from 'src/components';
-import { SelectOption, SelectProps } from 'src/types';
+import { type SelectOption, type SelectProps } from 'src/types';
 import { categoriesApi } from '../api';
 
 const CategorySelect: React.FC<SelectProps<SelectOption>> = ({

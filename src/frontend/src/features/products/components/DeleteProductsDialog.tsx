@@ -1,14 +1,15 @@
 import { Typography } from '@mui/material';
-import React, { useEffect } from 'react';
+import type React from 'react';
+import { useEffect } from 'react';
 import { AppButton, AppDialog } from 'src/components';
 import { useAppSelector } from 'src/store';
 import { productsApi } from '../api';
 import { selectCheckedProductIds } from '../selectors';
 
-type DeleteProductsDialogProps = {
+interface DeleteProductsDialogProps {
   isOpened: boolean;
   setIsOpened: React.Dispatch<React.SetStateAction<boolean>>;
-};
+}
 
 const DeleteProductsDialog: React.FC<DeleteProductsDialogProps> = ({
   isOpened: isDialogOpened,

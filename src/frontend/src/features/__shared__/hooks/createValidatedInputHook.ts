@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import {
-  ValidatedInputProps,
-  InputHook,
-  InputOptions,
-  ValidatedInputHook,
-  ValidatedInputOptions,
+  type ValidatedInputProps,
+  type InputHook,
+  type InputOptions,
+  type ValidatedInputHook,
+  type ValidatedInputOptions,
 } from './types';
 
 export default function createValidatedInputHook<TValue, TBindingProps extends ValidatedInputProps>(

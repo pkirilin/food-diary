@@ -1,5 +1,5 @@
-import { SvgIcon, SvgIconProps } from '@mui/material';
-import React from 'react';
+import { SvgIcon, type SvgIconProps } from '@mui/material';
+import type React from 'react';
 
 const GoogleIcon: React.FC<SvgIconProps> = ({ ...props }) => {
   return (

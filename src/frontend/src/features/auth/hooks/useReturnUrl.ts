@@ -1,5 +1,5 @@
 import { useLocation } from 'react-router-dom';
-import { NavigationState } from '../types';
+import { type NavigationState } from '../types';
 
 export default function useReturnUrl(): string | undefined {
   const location = useLocation();

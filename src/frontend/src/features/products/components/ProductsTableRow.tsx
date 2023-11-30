@@ -5,13 +5,13 @@ import { useAppDispatch, useAppSelector } from '../../__shared__/hooks';
 import { productsApi } from '../api';
 import { selectCheckedProductIds } from '../selectors';
 import { productChecked, productUnchecked } from '../store';
-import { Product, ProductFormData } from '../types';
+import { type Product, type ProductFormData } from '../types';
 import { toProductFormData } from '../utils';
 import ProductInputDialog from './ProductInputDialog';
 
-type ProductsTableRowProps = {
+interface ProductsTableRowProps {
   product: Product;
-};
+}
 
 const ProductsTableRow: React.FC<ProductsTableRowProps> = ({ product }: ProductsTableRowProps) => {
   const [isEditDialogOpened, setIsEditDialogOpened] = useState(false);

@@ -8,17 +8,17 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
-import React from 'react';
+import type React from 'react';
 import { AppLinearProgress } from 'src/components';
-import { Product } from '../../types';
+import { type Product } from '../../types';
 import ProductsTableRow from '../ProductsTableRow';
 
-type ProductsTableProps = {
+interface ProductsTableProps {
   products: Product[];
   isLoading: boolean;
   checkedIds: number[];
   onCheckedChange: (products: Product[], newCheckedIds: number[]) => void;
-};
+}
 
 const ProductsTable: React.FC<ProductsTableProps> = ({
   products,

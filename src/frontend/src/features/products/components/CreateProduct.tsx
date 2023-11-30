@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useAppSelector } from 'src/store';
 import { productsApi } from '../api';
 import { selectProductsQueryArg } from '../selectors';
-import { ProductFormData } from '../types';
+import { type ProductFormData } from '../types';
 import ProductInputDialog from './ProductInputDialog';
 
 const CreateProduct: React.FC = () => {

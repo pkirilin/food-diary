@@ -1,10 +1,10 @@
 import { StyledEngineProvider, ThemeProvider } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import React from 'react';
+import type React from 'react';
 import { Provider } from 'react-redux';
 import theme from 'src/theme';
-import { createTestStore, TestStoreBuilder } from './storeBuilder';
+import { createTestStore, type TestStoreBuilder } from './storeBuilder';
 
 export interface TestComponentBuilder {
   please: () => React.ReactElement;

@@ -1,17 +1,18 @@
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { Card, CardHeader, CardActions, Button } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import type React from 'react';
+import { useEffect, useState } from 'react';
 import { categoriesApi } from '../api';
-import { Category, CategoryFormData } from '../types';
+import { type Category, type CategoryFormData } from '../types';
 import CategoryInputDialog from './CategoryInputDialog';
 import CategoryTitle from './CategoryTitle';
 import DeleteCategoryDialog from './DeleteCategoryDialog';
 import ProductsCount from './ProductsCount';
 
-type CategoriesListItemProps = {
+interface CategoriesListItemProps {
   category: Category;
-};
+}
 
 const CategoriesListItem: React.FC<CategoriesListItemProps> = ({ category }) => {
   const [isEditDialogOpened, setIsEditDialogOpened] = useState(false);

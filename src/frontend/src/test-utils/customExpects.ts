@@ -1,4 +1,4 @@
-import { RenderResult } from '@testing-library/react';
+import { type RenderResult } from '@testing-library/react';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace

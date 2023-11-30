@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
 import { useAuth } from 'src/features/auth';
 import { pageSizeChanged } from 'src/features/products/store';
-import { configureAppStore } from 'src/store';
+import { type configureAppStore } from 'src/store';
 
-type TestEnvironmentProps = {
+interface TestEnvironmentProps {
   store: ReturnType<typeof configureAppStore>;
   signOutAfterMilliseconds?: number;
   pageSizeOverride?: number;
-};
+}
 
 const TestEnvironment: React.FC<React.PropsWithChildren<TestEnvironmentProps>> = ({
   children,

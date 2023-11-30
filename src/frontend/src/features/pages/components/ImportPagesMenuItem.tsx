@@ -4,10 +4,10 @@ import React, { useState } from 'react';
 import { useImport } from '../hooks/useImport';
 import ConfirmImportDialog from './ConfirmImportDialog';
 
-type ImportPagesMenuItemProps = {
+interface ImportPagesMenuItemProps {
   isDisabled: boolean;
   onMenuClose: () => void;
-};
+}
 
 const ImportPagesMenuItem: React.FC<React.PropsWithChildren<ImportPagesMenuItemProps>> = ({
   children,

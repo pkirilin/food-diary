@@ -1,7 +1,7 @@
 import { TextField } from '@mui/material';
 import { DatePicker as MuiDatePicker } from '@mui/x-date-pickers';
-import React from 'react';
-import { DatePickerProps } from './DatePicker.types';
+import type React from 'react';
+import { type DatePickerProps } from './DatePicker.types';
 
 const DatePicker: React.FC<DatePickerProps> = ({
   label,

@@ -1,6 +1,7 @@
 import { Box, Button, Paper } from '@mui/material';
 import dateFnsFormat from 'date-fns/format';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import type React from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { DatePicker } from 'src/components';
 import { useInput } from 'src/hooks';
 import { mapToDateInputProps } from 'src/utils/inputMapping';

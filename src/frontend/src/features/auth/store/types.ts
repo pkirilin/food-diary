@@ -1,3 +1,3 @@
-export type AuthUserState = {
+export interface AuthUserState {
   isAuthenticated: boolean;
-};
+}

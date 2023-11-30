@@ -1,9 +1,9 @@
-import { TextFieldProps } from '@mui/material';
+import { type TextFieldProps } from '@mui/material';
 
 export type BindFunction<TBindingProps> = () => TBindingProps;
 export type ValidatorFunction<TValue> = (value: TValue) => boolean;
 
-export type BaseInputHook<TValue, TResult extends Array<unknown>, TArg = void> = (
+export type BaseInputHook<TValue, TResult extends unknown[], TArg = void> = (
   initialValue: TValue,
   arg?: TArg,
 ) => TResult;

@@ -1,4 +1,4 @@
-import { PopoverProps } from '@mui/material';
+import { type PopoverProps } from '@mui/material';
 import { useState } from 'react';
 
 export type ShowPopoverFn<TAnchorElement> = (event: React.MouseEvent<TAnchorElement>) => void;

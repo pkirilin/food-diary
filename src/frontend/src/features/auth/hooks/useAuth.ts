@@ -4,20 +4,20 @@ import { useAppDispatch, useAppSelector } from 'src/hooks';
 import { createUrl } from 'src/utils';
 import { authApi } from '../api';
 import { actions } from '../store';
-import { AuthUserState } from '../store/types';
+import { type AuthUserState } from '../store/types';
 
-type LoginOptions = {
+interface LoginOptions {
   returnUrl?: string;
-};
+}
 
-type UseAuthHookResult = {
+interface UseAuthHookResult {
   user?: AuthUserState;
   isLoggingIn: boolean;
   login: (options: LoginOptions) => void;
   logout: () => void;
   completeLogin: () => void;
   completeLogout: () => void;
-};
+}
 
 export default function useAuth(): UseAuthHookResult {
   const user = useAppSelector(state => state.auth.user);

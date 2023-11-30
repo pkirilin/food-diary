@@ -1,3 +1,3 @@
-export type AuthProfileResponse = {
+export interface AuthProfileResponse {
   isAuthenticated: boolean;
-};
+}

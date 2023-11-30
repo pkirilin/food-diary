@@ -1,12 +1,12 @@
 import { api } from 'src/api';
-import { SelectOption } from 'src/types';
+import { type SelectOption } from 'src/types';
 import { createUrl } from 'src/utils';
-import { ProductsResponse } from '../types';
+import { type ProductsResponse } from '../types';
 import {
-  CreateProductRequest,
-  DeleteProductsRequest,
-  EditProductRequest,
-  GetProductsRequest,
+  type CreateProductRequest,
+  type DeleteProductsRequest,
+  type EditProductRequest,
+  type GetProductsRequest,
 } from './contracts';
 
 export const productsApi = api.injectEndpoints({

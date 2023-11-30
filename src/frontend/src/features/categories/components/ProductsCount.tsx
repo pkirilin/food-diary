@@ -1,9 +1,9 @@
 import { Typography } from '@mui/material';
-import { Category } from '../types';
+import { type Category } from '../types';
 
-type CategoryProductsCountProps = {
+interface CategoryProductsCountProps {
   category: Category;
-};
+}
 
 const ProductsCount = ({ category }: CategoryProductsCountProps) => {
   const { countProducts: value } = category;

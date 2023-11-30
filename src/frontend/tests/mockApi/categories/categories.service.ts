@@ -1,4 +1,4 @@
-import { CategoryFormData } from 'src/features/categories';
+import { type CategoryFormData } from 'src/features/categories';
 import { db } from '../db';
 
 export const getAll = () =>

@@ -2,16 +2,17 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { IconButton, TableCell, TableRow, Tooltip } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
-import React, { useEffect, useState } from 'react';
+import type React from 'react';
+import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector, useRouterId } from 'src/hooks';
-import { NoteCreateEdit, NoteItem } from '../models';
+import { type NoteCreateEdit, type NoteItem } from '../models';
 import { deleteNote, editNote } from '../thunks';
 import DeleteNoteDialog from './DeleteNoteDialog';
 import NoteInputDialog from './NoteInputDialog';
 
-type NotesTableRowProps = {
+interface NotesTableRowProps {
   note: NoteItem;
-};
+}
 
 const useStyles = makeStyles(theme => ({
   rowActions: {

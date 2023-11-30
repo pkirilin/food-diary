@@ -1,10 +1,10 @@
-import { CssBaseline, StyledEngineProvider, Theme, ThemeProvider } from '@mui/material';
+import { CssBaseline, StyledEngineProvider, type Theme, ThemeProvider } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import React from 'react';
+import type React from 'react';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
-import { Store } from 'redux';
+import { type Store } from 'redux';
 import theme from './theme';
 
 declare module '@mui/styles/defaultTheme' {
@@ -12,9 +12,9 @@ declare module '@mui/styles/defaultTheme' {
   interface DefaultTheme extends Theme {}
 }
 
-type AppProviderProps = {
+interface AppProviderProps {
   store: Store;
-};
+}
 
 const AppProvider: React.FC<React.PropsWithChildren<AppProviderProps>> = ({ children, store }) => {
   return (

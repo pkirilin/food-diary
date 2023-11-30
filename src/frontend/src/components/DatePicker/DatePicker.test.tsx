@@ -7,12 +7,12 @@ import { mapToDateInputProps } from 'src/utils/inputMapping';
 import { validateDate } from 'src/utils/validation';
 import DatePicker from './DatePicker';
 
-type DatePickerTestProps = {
+interface DatePickerTestProps {
   label: string;
   placeholder: string;
   date?: Date | null;
   errorHelperText?: string;
-};
+}
 
 const DatePickerTest: React.FC<DatePickerTestProps> = ({
   label,

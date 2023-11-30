@@ -1,9 +1,9 @@
-export type Category = {
+export interface Category {
   id: number;
   name: string;
   countProducts: number;
-};
+}
 
-export type CategoryFormData = {
+export interface CategoryFormData {
   name: string;
-};
+}

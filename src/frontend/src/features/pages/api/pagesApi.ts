@@ -1,5 +1,5 @@
 import { api } from 'src/api';
-import { ExportPagesToGoogleDocsRequest } from './contracts';
+import { type ExportPagesToGoogleDocsRequest } from './contracts';
 
 export const pagesApi = api.injectEndpoints({
   endpoints: builder => ({

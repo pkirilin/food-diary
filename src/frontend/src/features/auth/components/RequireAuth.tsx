@@ -1,7 +1,7 @@
-import { FC, PropsWithChildren } from 'react';
+import { type FC, type PropsWithChildren } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth, useAuthProfileCheck } from '../hooks';
-import { NavigationState } from '../types';
+import { type NavigationState } from '../types';
 
 type RequireAuthProps = PropsWithChildren<unknown>;
 

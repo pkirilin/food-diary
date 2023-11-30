@@ -1,5 +1,6 @@
 import { TextField } from '@mui/material';
-import React, { useEffect } from 'react';
+import type React from 'react';
+import { useEffect } from 'react';
 import { AppButton, AppDialog } from 'src/components';
 import { CategorySelect } from 'src/features/categories';
 import { useInput } from 'src/hooks';
@@ -13,9 +14,9 @@ import {
   validateProductName,
   validateSelectOption,
 } from 'src/utils/validation';
-import { ProductFormData } from '../types';
+import { type ProductFormData } from '../types';
 
-type ProductInputDialogProps = {
+interface ProductInputDialogProps {
   isOpened: boolean;
   setIsOpened: React.Dispatch<React.SetStateAction<boolean>>;
   title: string;
@@ -23,7 +24,7 @@ type ProductInputDialogProps = {
   onSubmit: (product: ProductFormData) => void;
   isLoading: boolean;
   product?: ProductFormData;
-};
+}
 
 const ProductInputDialog: React.FC<ProductInputDialogProps> = ({
   isOpened: isDialogOpened,

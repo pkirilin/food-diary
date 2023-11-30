@@ -1,12 +1,12 @@
-import { CreateProductRequest, EditProductRequest } from 'src/features/products';
-import { db, DbProduct } from '../db';
+import { type CreateProductRequest, type EditProductRequest } from 'src/features/products';
+import { db, type DbProduct } from '../db';
 
-type GetProductsRequest = {
+interface GetProductsRequest {
   pageNumber: number;
   pageSize: number;
   categoryId: number | null;
   productSearchName: string | null;
-};
+}
 
 export const get = ({
   pageNumber,

@@ -1,14 +1,15 @@
 import { Typography } from '@mui/material';
-import React, { useEffect } from 'react';
+import type React from 'react';
+import { useEffect } from 'react';
 import { AppButton, AppDialog } from 'src/components';
 import { categoriesApi } from '../api';
-import { Category } from '../types';
+import { type Category } from '../types';
 
-type DeleteCategoryDialogProps = {
+interface DeleteCategoryDialogProps {
   isOpened: boolean;
   setIsOpened: React.Dispatch<React.SetStateAction<boolean>>;
   category: Category;
-};
+}
 
 const DeleteCategoryDialog: React.FC<DeleteCategoryDialogProps> = ({
   isOpened: isDialogOpened,

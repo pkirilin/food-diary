@@ -1,7 +1,7 @@
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { IconButton, Popover, Toolbar, Tooltip, Typography } from '@mui/material';
-import { Fragment, useState, MouseEvent, FC } from 'react';
+import { Fragment, useState, type MouseEvent, type FC } from 'react';
 import { usePopover, useAppSelector } from '../../__shared__/hooks';
 import { useToolbarStyles } from '../../__shared__/styles';
 import { selectCheckedProductIds } from '../selectors';

@@ -1,5 +1,5 @@
 import { Box, Typography } from '@mui/material';
-import React from 'react';
+import type React from 'react';
 import { useAppSelector } from '../../__shared__/hooks';
 
 const MealsListSummary: React.FC = () => {

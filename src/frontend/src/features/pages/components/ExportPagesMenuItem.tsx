@@ -1,14 +1,14 @@
 import { MenuItem, ListItemIcon, ListItemText } from '@mui/material';
 import React, { useState } from 'react';
-import { ExportFormat } from '../models';
+import { type ExportFormat } from '../models';
 import ExportDialog from './ExportDialog';
 
-type ExportPagesMenuItemProps = {
+interface ExportPagesMenuItemProps {
   format: ExportFormat;
   icon: React.ReactElement;
   isDisabled: boolean;
   onMenuClose: () => void;
-};
+}
 
 const ExportPagesMenuItem: React.FC<React.PropsWithChildren<ExportPagesMenuItemProps>> = ({
   children,

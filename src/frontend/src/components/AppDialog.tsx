@@ -1,15 +1,15 @@
 import CloseIcon from '@mui/icons-material/Close';
 import { Dialog, DialogTitle, DialogContent, DialogActions, IconButton } from '@mui/material';
-import { FC, ReactElement } from 'react';
+import { type FC, type ReactElement } from 'react';
 
-type AppDialogProps = {
+interface AppDialogProps {
   title: string;
   isOpened: boolean;
   onClose: () => void;
   content: ReactElement;
   actionSubmit: ReactElement;
   actionCancel?: ReactElement;
-};
+}
 
 const AppDialog: FC<AppDialogProps> = ({
   title,

@@ -1,8 +1,9 @@
 import { Box, Button, Paper, TextField } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import type React from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { CategorySelect } from 'src/features/categories';
-import { SelectOption } from 'src/types';
+import { type SelectOption } from 'src/types';
 import { useAppSelector, useValidatedTextInput } from '../../__shared__/hooks';
 import { useFilterStyles } from '../../__shared__/styles';
 import { filterByCategoryChanged, filterReset, productSearchNameChanged } from '../store';

@@ -1,4 +1,4 @@
-import { Navigate, RouteObject, useRoutes } from 'react-router-dom';
+import { Navigate, type RouteObject, useRoutes } from 'react-router-dom';
 import { Login, PostLogin, PostLogout, RequireAuth } from 'src/features/auth';
 import { Categories } from 'src/features/categories';
 import { NavigationBar } from 'src/features/navigation';

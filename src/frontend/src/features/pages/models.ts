@@ -1,4 +1,4 @@
-import { ItemsFilterBase, SortOrder } from '../__shared__/models';
+import { type ItemsFilterBase, type SortOrder } from '../__shared__/models';
 
 export interface Page {
   id: number;
@@ -29,7 +29,7 @@ export interface PageItemsFilter extends ItemsFilterBase {
 
 export type ExportFormat = 'json' | 'google docs';
 
-export type ExportPagesToJsonRequest = {
+export interface ExportPagesToJsonRequest {
   startDate: string;
   endDate: string;
-};
+}

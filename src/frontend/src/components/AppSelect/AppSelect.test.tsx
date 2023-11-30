@@ -1,7 +1,8 @@
 import { render, screen, waitForElementToBeRemoved } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import React, { useState } from 'react';
-import { SelectOption } from 'src/types';
+import type React from 'react';
+import { useState } from 'react';
+import { type SelectOption } from 'src/types';
 import AppSelect from './AppSelect';
 
 const TEST_OPTIONS: SelectOption[] = [
@@ -19,11 +20,11 @@ const TEST_OPTIONS: SelectOption[] = [
   },
 ];
 
-type AppSelectTestProps = {
+interface AppSelectTestProps {
   initialValue?: SelectOption | null;
   allowEmptyOptions?: boolean;
   errorText?: string;
-};
+}
 
 const AppSelectTest: React.FC<AppSelectTestProps> = ({
   initialValue = null,

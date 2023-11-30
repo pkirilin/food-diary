@@ -2,7 +2,7 @@ import EventIcon from '@mui/icons-material/Event';
 import TodayIcon from '@mui/icons-material/Today';
 import { Box, Chip, Tooltip } from '@mui/material';
 import dateFnsFormat from 'date-fns/format';
-import React from 'react';
+import type React from 'react';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '../../__shared__/hooks';
 import { useFilterAppliedParamsStyles } from '../../__shared__/styles';

@@ -1,4 +1,4 @@
-import { PageItem, PagesSearchResult } from 'src/features/pages/models';
+import { type PageItem, type PagesSearchResult } from 'src/features/pages/models';
 
 export interface PagesSearchResultBuilder {
   please: () => PagesSearchResult;

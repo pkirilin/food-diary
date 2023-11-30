@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from 'src/features/__shared__/hooks';
 import { exportToJsonFinished } from '../slice';
 import { exportPagesToJson } from '../thunks';
-import { UseExportResult } from '../types';
+import { type UseExportResult } from '../types';
 
 export function useExportToJson(
   startDate: Date | null,

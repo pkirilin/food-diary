@@ -5,7 +5,7 @@ import { Box, IconButton, Popover, styled, Toolbar, Tooltip, Typography } from '
 import React, { useEffect, useState } from 'react';
 import { useAppDispatch, usePopover, useAppSelector } from 'src/features/__shared__/hooks';
 import { useToolbarStyles } from 'src/features/__shared__/styles';
-import { PageCreateEdit } from 'src/features/pages/models';
+import { type PageCreateEdit } from 'src/features/pages/models';
 import { createPage, deletePages } from 'src/features/pages/thunks';
 import { useDateForNewPage } from '../../hooks';
 import DeletePagesDialog from '../DeletePagesDialog';

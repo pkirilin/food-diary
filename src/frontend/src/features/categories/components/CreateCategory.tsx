@@ -2,7 +2,7 @@ import AddIcon from '@mui/icons-material/Add';
 import React, { useEffect, useState } from 'react';
 import { AppFab } from 'src/components';
 import { categoriesApi } from '../api';
-import { CategoryFormData } from '../types';
+import { type CategoryFormData } from '../types';
 import CategoryInputDialog from './CategoryInputDialog';
 
 const CreateCategory: React.FC = () => {

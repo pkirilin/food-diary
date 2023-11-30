@@ -1,8 +1,8 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { SortOrder, Status } from '../__shared__/models';
-import { SelectionPayload } from '../__shared__/types';
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import { SortOrder, type Status } from '../__shared__/models';
+import { type SelectionPayload } from '../__shared__/types';
 import { createAsyncThunkMatcher } from '../__shared__/utils';
-import { Page, PageItem, PageItemsFilter } from './models';
+import { type Page, type PageItem, type PageItemsFilter } from './models';
 import {
   createPage,
   deletePages,
@@ -14,7 +14,7 @@ import {
   importPages,
 } from './thunks';
 
-export type PagesState = {
+export interface PagesState {
   pageItems: PageItem[];
   operationStatus: Status;
   selectedPageIds: number[];
@@ -27,7 +27,7 @@ export type PagesState = {
   isExportToJsonSuccess: boolean;
   isImportLoading: boolean;
   isImportSuccess: boolean;
-};
+}
 
 export interface SelectPagePayload extends SelectionPayload {
   pageId: number;

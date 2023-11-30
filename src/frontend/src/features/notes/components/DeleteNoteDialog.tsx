@@ -1,15 +1,15 @@
 import { Typography } from '@mui/material';
-import { FC } from 'react';
+import { type FC } from 'react';
 import { AppButton, AppDialog } from 'src/components';
-import { NoteItem } from '../models';
+import { type NoteItem } from '../models';
 
-type DeleteNoteDialogProps = {
+interface DeleteNoteDialogProps {
   note: NoteItem;
   isOpened: boolean;
   isLoading: boolean;
   onClose: () => void;
   onSubmit: (note: NoteItem) => void;
-};
+}
 
 const DeleteNoteDialog: FC<DeleteNoteDialogProps> = ({
   note,

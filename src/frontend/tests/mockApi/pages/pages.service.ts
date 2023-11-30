@@ -1,7 +1,7 @@
-import { NumberQuery } from '@mswjs/data/lib/query/queryTypes';
-import { GetPagesRequest, PageCreateEdit } from 'src/features/pages';
+import { type NumberQuery } from '@mswjs/data/lib/query/queryTypes';
+import { type GetPagesRequest, type PageCreateEdit } from 'src/features/pages';
 import { SortOrder } from 'src/types';
-import { db, DbNote, DbProduct } from '../db';
+import { db, type DbNote, type DbProduct } from '../db';
 
 const buildQuery = (startDate: string | null, endDate: string | null): Partial<NumberQuery> => {
   if (startDate && endDate) {

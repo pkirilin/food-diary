@@ -1,7 +1,7 @@
 import { Autocomplete, CircularProgress, TextField } from '@mui/material';
-import React from 'react';
+import type React from 'react';
 
-type AppSelectProps<TOption> = {
+interface AppSelectProps<TOption> {
   availableOptions: TOption[];
   getDisplayName: (value: TOption) => string;
   areOptionsEqual: (first: TOption, second: TOption) => boolean;
@@ -13,7 +13,7 @@ type AppSelectProps<TOption> = {
   helperText?: string;
   isLoading?: boolean;
   isInvalid?: boolean;
-};
+}
 
 const AppSelect = <TOption,>({
   availableOptions,

@@ -1,5 +1,5 @@
-import { NoteCreateEdit } from 'src/features/notes';
-import { db, DbNote, DbProduct } from '../db';
+import { type NoteCreateEdit } from 'src/features/notes';
+import { db, type DbNote, type DbProduct } from '../db';
 
 type Result = 'Success' | 'PageNotFound' | 'ProductNotFound';
 

@@ -1,11 +1,11 @@
 import { Grid, Typography } from '@mui/material';
-import { FC } from 'react';
-import { Category } from '../../types';
+import { type FC } from 'react';
+import { type Category } from '../../types';
 import CategoriesListItem from '../CategoriesListItem';
 
-type CategoriesListProps = {
+interface CategoriesListProps {
   categories: Category[];
-};
+}
 
 const CategoriesList: FC<CategoriesListProps> = ({ categories }) => {
   if (categories.length === 0) {

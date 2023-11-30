@@ -10,16 +10,17 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
-import React, { useEffect, useMemo, useState } from 'react';
+import type React from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useAppDispatch, useAppSelector, useRouterId } from 'src/hooks';
-import { MealType, NoteCreateEdit } from '../models';
+import { type MealType, type NoteCreateEdit } from '../models';
 import { createNote, getNotes } from '../thunks';
 import NoteInputDialog from './NoteInputDialog';
 import NotesTableRow from './NotesTableRow';
 
-type NotesTableProps = {
+interface NotesTableProps {
   mealType: MealType;
-};
+}
 
 const NotesTable: React.FC<NotesTableProps> = ({ mealType }: NotesTableProps) => {
   const pageId = useRouterId('id');

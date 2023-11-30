@@ -1,17 +1,17 @@
-import { AnyAction, createAsyncThunk } from '@reduxjs/toolkit';
+import { type AnyAction, createAsyncThunk } from '@reduxjs/toolkit';
 import configureStore from 'redux-mock-store';
-import thunk, { ThunkDispatch } from 'redux-thunk';
+import thunk, { type ThunkDispatch } from 'redux-thunk';
 import { createApiCallAsyncThunk, createAsyncThunkMatcher } from '../reduxToolkitExtensions';
 
-type TestRecord = {
+interface TestRecord {
   id: number;
   name: string;
   age: number;
-};
+}
 
-type TestState = {
+interface TestState {
   records: TestRecord[];
-};
+}
 
 type TestDispatch = ThunkDispatch<TestState, unknown, AnyAction>;
 

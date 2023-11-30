@@ -1,15 +1,15 @@
 import { render as rtlRender } from '@testing-library/react';
-import React from 'react';
+import type React from 'react';
 import AppProvider from 'src/AppProvider';
 import { actions as authActions } from 'src/features/auth/store';
 import { configureAppStore } from 'src/store';
 import TestEnvironment from './TestEnvironment';
 
-type RenderOptions = {
+interface RenderOptions {
   withAuthentication?: boolean;
   signOutAfterMilliseconds?: number;
   pageSizeOverride?: number;
-};
+}
 
 const defaultOptions: RenderOptions = {
   withAuthentication: true,

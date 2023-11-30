@@ -1,6 +1,6 @@
 import { createDraftSafeSelector, createSelector } from '@reduxjs/toolkit';
-import { RootState } from 'src/store';
-import { GetProductsRequest } from '../api/contracts';
+import { type RootState } from 'src/store';
+import { type GetProductsRequest } from '../api/contracts';
 
 const selectProducts = (state: RootState) => state.products;
 

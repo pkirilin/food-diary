@@ -1,17 +1,18 @@
 import EditIcon from '@mui/icons-material/Edit';
 import { TableRow, TableCell, Checkbox, Tooltip, IconButton, Link } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import type React from 'react';
+import { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { formatDate } from 'src/utils';
 import { useAppDispatch, useAppSelector } from '../../__shared__/hooks';
-import { PageCreateEdit, PageItem } from '../models';
+import { type PageCreateEdit, type PageItem } from '../models';
 import { pageSelected } from '../slice';
 import { editPage } from '../thunks';
 import { PageInputDialog } from './PageInputDialog';
 
-type PagesTableRowProps = {
+interface PagesTableRowProps {
   page: PageItem;
-};
+}
 
 const PagesTableRow: React.FC<PagesTableRowProps> = ({ page }: PagesTableRowProps) => {
   const pageDate = new Date(page.date);
