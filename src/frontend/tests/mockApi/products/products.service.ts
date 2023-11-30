@@ -13,7 +13,7 @@ export const get = ({
   pageSize,
   categoryId,
   productSearchName,
-}: GetProductsRequest) => {
+}: GetProductsRequest): DbProduct[] => {
   let productItems = db.product.findMany({
     where: {
       categoryId: categoryId === null ? {} : { equals: categoryId },
@@ -30,7 +30,7 @@ export const get = ({
   return productItems;
 };
 
-export const getAll = () => db.product.getAll();
+export const getAll = (): DbProduct[] => db.product.getAll();
 
 export const getCategoryNames = (products: DbProduct[]): Map<number, string> => {
   return products
@@ -123,7 +123,7 @@ export const update = (
   return 'Success';
 };
 
-export const deleteMany = (ids: number[]) => {
+export const deleteMany = (ids: number[]): void => {
   db.note.deleteMany({
     where: {
       productId: { in: ids },
