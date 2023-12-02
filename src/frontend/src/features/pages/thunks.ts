@@ -32,7 +32,7 @@ export interface PageByIdResponse {
 
 export const getPages = createApiCallAsyncThunk<PagesSearchResult, GetPagesRequest>(
   'pages/getPages',
-  params => createUrl(`${API_URL}/api/v1/pages`, params),
+  request => createUrl(`${API_URL}/api/v1/pages`, { ...request }),
   async response => await response.json(),
   'Failed to get pages',
 );

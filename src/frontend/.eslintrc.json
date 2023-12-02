@@ -63,6 +63,7 @@
         "allowRuleToRunWithoutStrictNullChecksIKnowWhatIAmDoing": false
       }
     ],
+    "@typescript-eslint/no-invalid-void-type": "off",
     "no-console": "warn",
     "no-restricted-imports": "off",
     "import/order": [

@@ -26,7 +26,7 @@ export interface DeleteNotePayload extends NoteOperationPayload {
 
 export const getNotes = createApiCallAsyncThunk<NoteItem[], GetNotesRequest>(
   'notes/getNotes',
-  params => createUrl(`${API_URL}/api/v1/notes`, params),
+  request => createUrl(`${API_URL}/api/v1/notes`, { ...request }),
   async response => await response.json(),
   'Failed to get notes',
 );

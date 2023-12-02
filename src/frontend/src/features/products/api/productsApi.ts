@@ -12,7 +12,7 @@ import {
 export const productsApi = api.injectEndpoints({
   endpoints: builder => ({
     getProducts: builder.query<ProductsResponse, GetProductsRequest>({
-      query: request => createUrl('/api/v1/products', request),
+      query: request => createUrl('/api/v1/products', { ...request }),
       providesTags: ['product'],
     }),
 
