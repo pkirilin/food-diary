@@ -1,7 +1,7 @@
 import { http, type HttpHandler, HttpResponse, type PathParams } from 'msw';
 import { API_URL } from 'src/config';
 import { type NoteCreateEdit } from 'src/features/notes';
-import { notesService } from '.';
+import * as notesService from './notes.service';
 
 export const handlers: HttpHandler[] = [
   http.get(`${API_URL}/api/v1/notes`, ({ request }) => {
