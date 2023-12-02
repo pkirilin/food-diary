@@ -74,7 +74,6 @@ export function createApiCallAsyncThunk<TData, TArgument>(
 
 export const handleEmptyResponse: ApiResponseHandler<void, unknown> = async () => {};
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type AnyAsyncThunk<TArgument = any> = AsyncThunk<any, TArgument, Record<string, unknown>>;
 
 type AnyAsyncThunkActionProperties = keyof Pick<

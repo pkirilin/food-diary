@@ -29,6 +29,7 @@
   "plugins": ["prettier", "import", "react", "react-hooks", "jest-dom", "testing-library"],
   "rules": {
     "prettier/prettier": 2,
+    "no-console": "warn",
     "react/jsx-uses-react": "off",
     "react/react-in-jsx-scope": "off",
     "react-hooks/rules-of-hooks": "error",
@@ -47,8 +48,6 @@
         "unnamedComponents": "arrow-function"
       }
     ],
-    "@typescript-eslint/no-empty-function": "warn",
-    "@typescript-eslint/no-empty-interface": "warn",
     "@typescript-eslint/strict-boolean-expressions": [
       "error",
       {
@@ -64,8 +63,6 @@
       }
     ],
     "@typescript-eslint/no-invalid-void-type": "off",
-    "no-console": "warn",
-    "no-restricted-imports": "off",
     "import/order": [
       "error",
       {
