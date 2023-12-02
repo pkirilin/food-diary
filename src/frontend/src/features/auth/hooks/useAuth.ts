@@ -23,7 +23,7 @@ export default function useAuth(): UseAuthHookResult {
   const user = useAppSelector(state => state.auth.user);
   const dispatch = useAppDispatch();
 
-  const getProfileQuery = authApi.useGetProfileQuery(
+  const { refetch, isFetching } = authApi.useGetProfileQuery(
     {},
     {
       skip: !!user,
@@ -59,12 +59,20 @@ export default function useAuth(): UseAuthHookResult {
     }
   }, [signOut]);
 
+  const completeLogin = useCallback(() => {
+    void refetch();
+  }, [refetch]);
+
+  const completeLogout = useCallback(() => {
+    void refetch();
+  }, [refetch]);
+
   return {
     user,
-    isLoggingIn: getProfileQuery.isFetching,
+    isLoggingIn: isFetching,
     login,
     logout,
-    completeLogin: getProfileQuery.refetch,
-    completeLogout: getProfileQuery.refetch,
+    completeLogin,
+    completeLogout,
   };
 }

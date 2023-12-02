@@ -48,7 +48,7 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({ note }: NotesTableRowProp
   };
 
   const handleEditSubmit = (noteData: NoteCreateEdit): void => {
-    dispatch(
+    void dispatch(
       editNote({
         id: note.id,
         mealType: noteData.mealType,
@@ -66,7 +66,7 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({ note }: NotesTableRowProp
   };
 
   const handleDeleteSubmit = ({ id, mealType }: NoteItem): void => {
-    dispatch(
+    void dispatch(
       deleteNote({
         id,
         mealType,

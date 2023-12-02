@@ -16,13 +16,13 @@ const CreateCategory: React.FC = () => {
     }
   }, [createCategoryRequest.isSuccess]);
 
-  function handleCreate() {
+  const handleCreate = (): void => {
     setIsCreateDialogOpened(true);
-  }
+  };
 
-  function handleDialogSubmit({ name }: CategoryFormData) {
-    createCategory({ name });
-  }
+  const handleDialogSubmit = ({ name }: CategoryFormData): void => {
+    void createCategory({ name });
+  };
 
   return (
     <React.Fragment>

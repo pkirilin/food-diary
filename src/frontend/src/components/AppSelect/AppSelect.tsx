@@ -28,9 +28,9 @@ const AppSelect = <TOption,>({
   isLoading,
   isInvalid,
 }: AppSelectProps<TOption>): React.ReactElement => {
-  function handleChange(event: React.SyntheticEvent, newValue: TOption | null) {
+  const handleChange = (event: React.SyntheticEvent, newValue: TOption | null): void => {
     onChange(newValue);
-  }
+  };
 
   return (
     <Autocomplete

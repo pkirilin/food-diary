@@ -12,9 +12,9 @@ const Login: React.FC = () => {
   const returnUrl = useReturnUrl();
   const { user, isLoggingIn, login } = useAuth();
 
-  function handleSignInWithGoogle() {
+  const handleSignInWithGoogle = (): void => {
     login({ returnUrl });
-  }
+  };
 
   if (user && user.isAuthenticated) {
     return <Navigate to="/" />;

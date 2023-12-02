@@ -36,19 +36,19 @@ const AppSelectTest: React.FC<AppSelectTestProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [optionsLoaded, setOptionsLoaded] = useState(false);
 
-  function getDisplayName({ name }: SelectOption) {
-    return name;
-  }
+  const getDisplayName = (option: SelectOption): string => {
+    return option.name;
+  };
 
-  function areOptionsEqual(first: SelectOption, second: SelectOption) {
+  const areOptionsEqual = (first: SelectOption, second: SelectOption): boolean => {
     return first.name === second.name;
-  }
+  };
 
-  function handleChange(newValue: SelectOption | null) {
-    setValue(newValue);
-  }
+  const handleChange = (value: SelectOption | null): void => {
+    setValue(value);
+  };
 
-  function handleOpen() {
+  const handleOpen = (): void => {
     if (optionsLoaded) {
       return;
     }
@@ -60,7 +60,7 @@ const AppSelectTest: React.FC<AppSelectTestProps> = ({
       setIsLoading(false);
       setOptionsLoaded(true);
     }, 50);
-  }
+  };
 
   return (
     <AppSelect

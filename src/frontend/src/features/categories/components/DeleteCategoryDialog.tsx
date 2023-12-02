@@ -24,13 +24,13 @@ const DeleteCategoryDialog: React.FC<DeleteCategoryDialogProps> = ({
     }
   }, [deleteCategoryRequest.isSuccess, setIsDialogOpened]);
 
-  function handleClose() {
+  const handleClose = (): void => {
     setIsDialogOpened(false);
-  }
+  };
 
-  function handleSubmit() {
-    deleteCategory(category.id);
-  }
+  const handleSubmit = (): void => {
+    void deleteCategory(category.id);
+  };
 
   return (
     <AppDialog

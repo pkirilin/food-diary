@@ -13,27 +13,27 @@ const CategorySelect: React.FC<SelectProps<SelectOption>> = ({
 }) => {
   const [getOptions, getOptionsRequest] = categoriesApi.useLazyGetCategorySelectOptionsQuery();
 
-  function getDisplayName(option: SelectOption) {
+  const getDisplayName = (option: SelectOption): string => {
     return option.name;
-  }
+  };
 
-  function areOptionsEqual(first: SelectOption, second: SelectOption) {
+  const areOptionsEqual = (first: SelectOption, second: SelectOption): boolean => {
     return first.name === second.name;
-  }
+  };
 
-  function handleChange(value: SelectOption | null) {
+  const handleChange = (value: SelectOption | null): void => {
     setValue(value);
-  }
+  };
 
-  function handleOpen() {
+  const handleOpen = (): void => {
     if (getOptionsRequest.isUninitialized) {
-      getOptions();
+      void getOptions();
     }
-  }
+  };
 
   return (
     <AppSelect
-      availableOptions={getOptionsRequest.data || []}
+      availableOptions={getOptionsRequest.data ?? []}
       value={value}
       getDisplayName={getDisplayName}
       areOptionsEqual={areOptionsEqual}

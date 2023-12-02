@@ -25,20 +25,20 @@ const CategoriesListItem: React.FC<CategoriesListItemProps> = ({ category }) => 
     }
   }, [editCategoryRequest.isSuccess]);
 
-  function handleEdit() {
+  const handleEdit = (): void => {
     setIsEditDialogOpened(true);
-  }
+  };
 
-  function handleDelete() {
+  const handleDelete = (): void => {
     setIsDeleteDialogOpened(true);
-  }
+  };
 
-  function handleEditDialogSubmit({ name }: CategoryFormData) {
-    editCategory({
+  const handleEditDialogSubmit = ({ name }: CategoryFormData): void => {
+    void editCategory({
       id: category.id,
       name,
     });
-  }
+  };
 
   return (
     <Card>

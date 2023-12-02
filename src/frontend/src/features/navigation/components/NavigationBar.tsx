@@ -10,9 +10,9 @@ import MobileMenu from './MobileMenu';
 const NavigationBar: React.FC = () => {
   const { logout } = useAuth();
 
-  function handleLogout() {
+  const handleLogout = (): void => {
     logout();
-  }
+  };
 
   return (
     <AppBar component="nav" position="sticky">

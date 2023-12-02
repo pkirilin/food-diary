@@ -52,7 +52,7 @@ const NotesTable: React.FC<NotesTableProps> = ({ mealType }: NotesTableProps) =>
     if (status === 'succeeded') {
       setIsDialogOpened(false);
 
-      dispatch(
+      void dispatch(
         getNotes({
           pageId,
           mealType,
@@ -70,7 +70,7 @@ const NotesTable: React.FC<NotesTableProps> = ({ mealType }: NotesTableProps) =>
   };
 
   const handleAddNote = (note: NoteCreateEdit): void => {
-    dispatch(
+    void dispatch(
       createNote({
         mealType,
         note,

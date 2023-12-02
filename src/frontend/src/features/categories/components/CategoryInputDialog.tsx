@@ -34,7 +34,7 @@ const CategoryInputDialog: React.FC<CreateEditCategoryDialogProps> = ({
     isInvalid: isCategoryNameInvalid,
     isTouched: isCategoryNameTouched,
   } = useInput({
-    initialValue: category?.name || '',
+    initialValue: category?.name ?? '',
     errorHelperText: 'Category name is invalid',
     validate: validateCategoryName,
     mapToInputProps: mapToTextInputProps,
@@ -48,13 +48,13 @@ const CategoryInputDialog: React.FC<CreateEditCategoryDialogProps> = ({
     }
   }, [isDialogOpened, clearCategoryName, category]);
 
-  function handleClose() {
+  const handleClose = (): void => {
     setIsDialogOpened(false);
-  }
+  };
 
-  function handleSubmit() {
+  const handleSubmit = (): void => {
     onSubmit({ name: categoryName });
-  }
+  };
 
   return (
     <AppDialog

@@ -19,9 +19,9 @@ import { APP_BAR_HEIGHT, APP_NAME, NAV_LINKS } from '../constants';
 const MobileMenu: React.FC = () => {
   const [isOpened, setIsOpened] = useState(false);
 
-  function handleMenuToggle() {
+  const handleMenuToggle = (): void => {
     setIsOpened(isOpened => !isOpened);
-  }
+  };
 
   return (
     <Box display={{ xs: 'flex', sm: 'none' }}>
