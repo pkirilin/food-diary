@@ -9,8 +9,7 @@ import {
   TableSortLabel,
   Typography,
 } from '@mui/material';
-import type React from 'react';
-import { useEffect, useState } from 'react';
+import { type FC, useEffect, useState } from 'react';
 import { SortOrder, type Status } from '../../../__shared__/models';
 import { type PageItem, type PageItemsFilter } from '../../models';
 import PagesTableRow from '../PagesTableRow';
@@ -25,7 +24,7 @@ interface PagesTableProps {
   onReorder: (order: SortOrder) => void;
 }
 
-const PagesTable: React.FC<PagesTableProps> = ({
+const PagesTable: FC<PagesTableProps> = ({
   pages,
   selectedPagesCount,
   filter,

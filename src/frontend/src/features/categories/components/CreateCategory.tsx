@@ -1,11 +1,11 @@
 import AddIcon from '@mui/icons-material/Add';
-import React, { useEffect, useState } from 'react';
+import { type FC, useEffect, useState } from 'react';
 import { AppFab } from 'src/components';
 import { categoriesApi } from '../api';
 import { type CategoryFormData } from '../types';
 import CategoryInputDialog from './CategoryInputDialog';
 
-const CreateCategory: React.FC = () => {
+const CreateCategory: FC = () => {
   const [isCreateDialogOpened, setIsCreateDialogOpened] = useState(false);
   const [createCategory, createCategoryRequest] = categoriesApi.useCreateCategoryMutation();
   const categoriesQuery = categoriesApi.useGetCategoriesQuery();
@@ -25,7 +25,7 @@ const CreateCategory: React.FC = () => {
   };
 
   return (
-    <React.Fragment>
+    <>
       <AppFab
         aria-label="Create new category"
         color="primary"
@@ -43,7 +43,7 @@ const CreateCategory: React.FC = () => {
         onSubmit={handleDialogSubmit}
         isLoading={createCategoryRequest.isLoading}
       />
-    </React.Fragment>
+    </>
   );
 };
 

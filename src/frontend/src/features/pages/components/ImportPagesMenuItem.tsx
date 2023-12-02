@@ -1,6 +1,6 @@
 import PublishIcon from '@mui/icons-material/Publish';
 import { MenuItem, ListItemIcon, ListItemText, Box } from '@mui/material';
-import React, { useState } from 'react';
+import { type PropsWithChildren, type FC, useState, type ChangeEvent } from 'react';
 import { useImport } from '../hooks/useImport';
 import ConfirmImportDialog from './ConfirmImportDialog';
 
@@ -9,7 +9,7 @@ interface ImportPagesMenuItemProps {
   onMenuClose: () => void;
 }
 
-const ImportPagesMenuItem: React.FC<React.PropsWithChildren<ImportPagesMenuItemProps>> = ({
+const ImportPagesMenuItem: FC<PropsWithChildren<ImportPagesMenuItemProps>> = ({
   children,
   isDisabled,
   onMenuClose,
@@ -22,7 +22,7 @@ const ImportPagesMenuItem: React.FC<React.PropsWithChildren<ImportPagesMenuItemP
     target.value = '';
   };
 
-  const handleImportFileChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  const handleImportFileChange = (event: ChangeEvent<HTMLInputElement>): void => {
     try {
       const file = event.target.files?.item(0);
       if (file) {
@@ -34,7 +34,7 @@ const ImportPagesMenuItem: React.FC<React.PropsWithChildren<ImportPagesMenuItemP
   };
 
   return (
-    <React.Fragment>
+    <>
       <MenuItem disabled={isDisabled} onClick={onMenuClose}>
         <Box
           component="label"
@@ -67,7 +67,7 @@ const ImportPagesMenuItem: React.FC<React.PropsWithChildren<ImportPagesMenuItemP
         onClose={importPages.closeDialog}
         onSubmit={importPages.start}
       />
-    </React.Fragment>
+    </>
   );
 };
 

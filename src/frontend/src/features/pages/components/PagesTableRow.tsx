@@ -1,7 +1,6 @@
 import EditIcon from '@mui/icons-material/Edit';
 import { TableRow, TableCell, Checkbox, Tooltip, IconButton, Link } from '@mui/material';
-import type React from 'react';
-import { useEffect, useState } from 'react';
+import { type FC, useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { formatDate } from 'src/utils';
 import { useAppDispatch, useAppSelector } from '../../__shared__/hooks';
@@ -14,7 +13,7 @@ interface PagesTableRowProps {
   page: PageItem;
 }
 
-const PagesTableRow: React.FC<PagesTableRowProps> = ({ page }: PagesTableRowProps) => {
+const PagesTableRow: FC<PagesTableRowProps> = ({ page }: PagesTableRowProps) => {
   const pageDate = new Date(page.date);
 
   const operationStatus = useAppSelector(state => state.pages.operationStatus);

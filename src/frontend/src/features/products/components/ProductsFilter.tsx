@@ -1,6 +1,5 @@
 import { Box, Button, Paper, TextField } from '@mui/material';
-import type React from 'react';
-import { useEffect, useState } from 'react';
+import { type FC, type FocusEvent, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { CategorySelect } from 'src/features/categories';
 import { type SelectOption } from 'src/types';
@@ -8,7 +7,7 @@ import { useAppSelector, useValidatedTextInput } from '../../__shared__/hooks';
 import { useFilterStyles } from '../../__shared__/styles';
 import { filterByCategoryChanged, filterReset, productSearchNameChanged } from '../store';
 
-const ProductsFilter: React.FC = () => {
+const ProductsFilter: FC = () => {
   const classes = useFilterStyles();
 
   const filterProductName = useAppSelector(state => state.products.filter.productSearchName ?? '');
@@ -32,7 +31,7 @@ const ProductsFilter: React.FC = () => {
     setCategory(filterCategory);
   }, [filterCategory]);
 
-  const handleProductSearchNameBlur = (event: React.FocusEvent<HTMLInputElement>): void => {
+  const handleProductSearchNameBlur = (event: FocusEvent<HTMLInputElement>): void => {
     dispatch(productSearchNameChanged(event.target.value));
   };
 

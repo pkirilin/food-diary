@@ -1,6 +1,5 @@
 import { Box, Button, Paper } from '@mui/material';
-import type React from 'react';
-import { useEffect } from 'react';
+import { type FC, useEffect } from 'react';
 import { DatePicker } from 'src/components';
 import { useInput } from 'src/hooks';
 import { mapToDateInputProps } from 'src/utils/inputMapping';
@@ -9,7 +8,7 @@ import { useFilterStyles } from '../../__shared__/styles';
 import { useFilter } from '../hooks';
 import { endDateChanged, startDateChanged } from '../slice';
 
-const PagesFilter: React.FC = () => {
+const PagesFilter: FC = () => {
   const classes = useFilterStyles();
   const { initialStartDate, initialEndDate, isChanged, applyToDatePart, reset } = useFilter();
 

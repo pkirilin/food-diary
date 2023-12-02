@@ -2,8 +2,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { IconButton, TableCell, TableRow, Tooltip } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
-import type React from 'react';
-import { useEffect, useState } from 'react';
+import { type FC, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector, useRouterId } from 'src/hooks';
 import { type NoteCreateEdit, type NoteItem } from '../models';
 import { deleteNote, editNote } from '../thunks';
@@ -23,7 +22,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const NotesTableRow: React.FC<NotesTableRowProps> = ({ note }: NotesTableRowProps) => {
+const NotesTableRow: FC<NotesTableRowProps> = ({ note }: NotesTableRowProps) => {
   const classes = useStyles();
   const pageId = useRouterId('id');
   const dispatch = useAppDispatch();

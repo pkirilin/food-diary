@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { type PropsWithChildren, type FC, useEffect } from 'react';
 import { useAuth } from 'src/features/auth';
 import { pageSizeChanged } from 'src/features/products/store';
 import { type configureAppStore } from 'src/store';
@@ -9,7 +9,7 @@ interface TestEnvironmentProps {
   pageSizeOverride?: number;
 }
 
-const TestEnvironment: React.FC<React.PropsWithChildren<TestEnvironmentProps>> = ({
+const TestEnvironment: FC<PropsWithChildren<TestEnvironmentProps>> = ({
   children,
   store,
   signOutAfterMilliseconds,
@@ -37,7 +37,7 @@ const TestEnvironment: React.FC<React.PropsWithChildren<TestEnvironmentProps>> =
     }
   }, [pageSizeOverride, store]);
 
-  return <React.Fragment>{children}</React.Fragment>;
+  return <>{children}</>;
 };
 
 export default TestEnvironment;

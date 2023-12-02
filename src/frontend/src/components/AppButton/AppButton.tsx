@@ -1,12 +1,12 @@
 import { Button, type ButtonProps } from '@mui/material';
-import type React from 'react';
+import { type FC } from 'react';
 import { AppButtonProgress, AppButtonRoot, AppButtonWrapper } from './AppButton.styles';
 
 interface AppButtonProps extends ButtonProps {
   isLoading?: boolean;
 }
 
-const AppButton: React.FC<AppButtonProps> = ({ isLoading, disabled, ...props }) => {
+const AppButton: FC<AppButtonProps> = ({ isLoading, disabled, ...props }) => {
   return (
     <AppButtonRoot>
       <AppButtonWrapper>

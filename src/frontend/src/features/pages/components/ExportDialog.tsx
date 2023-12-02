@@ -1,5 +1,4 @@
-import type React from 'react';
-import { useEffect } from 'react';
+import { type FC, useEffect } from 'react';
 import { AppButton, AppDialog, DatePicker } from 'src/components';
 import { useInput } from 'src/hooks';
 import { mapToDateInputProps } from 'src/utils/inputMapping';
@@ -14,7 +13,7 @@ interface ExportDialogProps {
   onClose: () => void;
 }
 
-const ExportDialog: React.FC<ExportDialogProps> = ({ format: exportFormat, isOpen, onClose }) => {
+const ExportDialog: FC<ExportDialogProps> = ({ format: exportFormat, isOpen, onClose }) => {
   const startDateInput = useInput({
     initialValue: null,
     errorHelperText: 'Start date is required',

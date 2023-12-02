@@ -8,8 +8,7 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
-import type React from 'react';
-import { type ReactElement } from 'react';
+import { type FC, type ReactElement } from 'react';
 import { AppLinearProgress } from 'src/components';
 import { type Product } from '../../types';
 import ProductsTableRow from '../ProductsTableRow';
@@ -21,7 +20,7 @@ interface ProductsTableProps {
   onCheckedChange: (products: Product[], newCheckedIds: number[]) => void;
 }
 
-const ProductsTable: React.FC<ProductsTableProps> = ({
+const ProductsTable: FC<ProductsTableProps> = ({
   products,
   isLoading,
   checkedIds,

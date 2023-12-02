@@ -1,7 +1,6 @@
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/material';
-import type React from 'react';
-import { useMemo, useState } from 'react';
+import { type FC, useMemo, useState } from 'react';
 import { getMealName, type MealType } from '../models';
 import NotesTable from './NotesTable';
 
@@ -9,7 +8,7 @@ interface MealsListItemProps {
   mealType: MealType;
 }
 
-const MealsListItem: React.FC<MealsListItemProps> = ({ mealType }: MealsListItemProps) => {
+const MealsListItem: FC<MealsListItemProps> = ({ mealType }: MealsListItemProps) => {
   const [expanded, setExpanded] = useState(true);
   const mealName = useMemo(() => getMealName(mealType), [mealType]);
 

@@ -1,10 +1,9 @@
-import type React from 'react';
-import { useEffect } from 'react';
+import { type FC, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../hooks';
 import AuthCallbackProgress from './AuthCallbackProgress';
 
-const PostLogout: React.FC = () => {
+const PostLogout: FC = () => {
   const { user, completeLogout } = useAuth();
 
   useEffect(() => {

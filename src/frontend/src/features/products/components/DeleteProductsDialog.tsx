@@ -1,6 +1,5 @@
 import { Typography } from '@mui/material';
-import type React from 'react';
-import { useEffect } from 'react';
+import { useEffect, type FC, type Dispatch, type SetStateAction } from 'react';
 import { AppButton, AppDialog } from 'src/components';
 import { useAppSelector } from 'src/store';
 import { productsApi } from '../api';
@@ -8,10 +7,10 @@ import { selectCheckedProductIds } from '../selectors';
 
 interface DeleteProductsDialogProps {
   isOpened: boolean;
-  setIsOpened: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsOpened: Dispatch<SetStateAction<boolean>>;
 }
 
-const DeleteProductsDialog: React.FC<DeleteProductsDialogProps> = ({
+const DeleteProductsDialog: FC<DeleteProductsDialogProps> = ({
   isOpened: isDialogOpened,
   setIsOpened: setIsDialogOpened,
 }) => {

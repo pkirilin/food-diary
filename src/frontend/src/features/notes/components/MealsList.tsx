@@ -1,14 +1,14 @@
-import React from 'react';
+import { type FC } from 'react';
 import { getMealTypes } from '../models';
 import MealsListItem from './MealsListItem';
 
-const MealsList: React.FC = () => {
+const MealsList: FC = () => {
   return (
-    <React.Fragment>
+    <>
       {getMealTypes().map((mealType, index) => (
         <MealsListItem key={index} mealType={mealType} />
       ))}
-    </React.Fragment>
+    </>
   );
 };
 

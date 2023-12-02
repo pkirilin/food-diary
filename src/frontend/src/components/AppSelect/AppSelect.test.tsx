@@ -1,7 +1,6 @@
 import { render, screen, waitForElementToBeRemoved } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import type React from 'react';
-import { useState } from 'react';
+import { type FC, useState } from 'react';
 import { type SelectOption } from 'src/types';
 import AppSelect from './AppSelect';
 
@@ -26,7 +25,7 @@ interface AppSelectTestProps {
   errorText?: string;
 }
 
-const AppSelectTest: React.FC<AppSelectTestProps> = ({
+const AppSelectTest: FC<AppSelectTestProps> = ({
   initialValue = null,
   allowEmptyOptions,
   errorText,

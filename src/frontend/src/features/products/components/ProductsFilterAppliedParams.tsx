@@ -1,12 +1,12 @@
 import CategoryIcon from '@mui/icons-material/Category';
 import SearchIcon from '@mui/icons-material/Search';
 import { Box, Chip, Tooltip } from '@mui/material';
-import type React from 'react';
+import { type FC } from 'react';
 import { useAppDispatch, useAppSelector } from 'src/store';
 import { useFilterAppliedParamsStyles } from '../../__shared__/styles';
 import { filterByCategoryChanged, productSearchNameChanged } from '../store';
 
-const ProductsFilterAppliedParams: React.FC = () => {
+const ProductsFilterAppliedParams: FC = () => {
   const classes = useFilterAppliedParamsStyles();
   const productSearchName = useAppSelector(state => state.products.filter.productSearchName);
   const category = useAppSelector(state => state.products.filter.category);

@@ -1,5 +1,5 @@
 import { type RenderResult, render as rtlRender } from '@testing-library/react';
-import type React from 'react';
+import { type ReactElement } from 'react';
 import AppProvider from 'src/AppProvider';
 import { actions as authActions } from 'src/features/auth/store';
 import { configureAppStore } from 'src/store';
@@ -26,7 +26,7 @@ function prepareStore(
   }
 }
 
-export default function render(ui: React.ReactElement, options?: RenderOptions): RenderResult {
+export default function render(ui: ReactElement, options?: RenderOptions): RenderResult {
   const optionsToApply = {
     ...defaultOptions,
     ...options,

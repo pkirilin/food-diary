@@ -1,16 +1,16 @@
 import { MenuItem, ListItemIcon, ListItemText } from '@mui/material';
-import React, { useState } from 'react';
+import { useState, type PropsWithChildren, type FC, type ReactElement } from 'react';
 import { type ExportFormat } from '../models';
 import ExportDialog from './ExportDialog';
 
 interface ExportPagesMenuItemProps {
   format: ExportFormat;
-  icon: React.ReactElement;
+  icon: ReactElement;
   isDisabled: boolean;
   onMenuClose: () => void;
 }
 
-const ExportPagesMenuItem: React.FC<React.PropsWithChildren<ExportPagesMenuItemProps>> = ({
+const ExportPagesMenuItem: FC<PropsWithChildren<ExportPagesMenuItemProps>> = ({
   children,
   format,
   icon,
@@ -29,13 +29,13 @@ const ExportPagesMenuItem: React.FC<React.PropsWithChildren<ExportPagesMenuItemP
   };
 
   return (
-    <React.Fragment>
+    <>
       <ExportDialog format={format} isOpen={isDialogOpen} onClose={handleDialogClose} />
       <MenuItem disabled={isDisabled} onClick={handleExport}>
         <ListItemIcon>{icon}</ListItemIcon>
         <ListItemText>{children}</ListItemText>
       </MenuItem>
-    </React.Fragment>
+    </>
   );
 };
 

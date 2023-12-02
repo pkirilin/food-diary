@@ -1,6 +1,6 @@
 import { Box, Container, Paper, Typography } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
-import type React from 'react';
+import { type FC } from 'react';
 import { useAppDispatch } from 'src/hooks';
 import { useAppSelector } from 'src/store';
 import { productsApi } from '../api';
@@ -12,7 +12,7 @@ import { selectProductsQueryArg, selectCheckedProductIds } from '../selectors';
 import { productsUnchecked, productsChecked } from '../store';
 import { type Product } from '../types';
 
-const Products: React.FC = () => {
+const Products: FC = () => {
   const getProductsQueryArg = useAppSelector(selectProductsQueryArg);
   const getProductsQuery = productsApi.useGetProductsQuery(getProductsQueryArg);
   const checkedProductIds = useAppSelector(selectCheckedProductIds);

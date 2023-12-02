@@ -2,7 +2,7 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { Box, IconButton, Popover, styled, Toolbar, Tooltip, Typography } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import { type PropsWithChildren, type FC, useEffect, useState } from 'react';
 import { useAppDispatch, usePopover, useAppSelector } from 'src/features/__shared__/hooks';
 import { useToolbarStyles } from 'src/features/__shared__/styles';
 import { type PageCreateEdit } from 'src/features/pages/models';
@@ -15,9 +15,9 @@ import ShowMoreTableOptions from '../ShowMoreTableOptions';
 
 const StyledTableHeader = styled(Typography)(({ theme }) => ({ ...theme.typography.h2 }));
 
-type PagesToolbarProps = React.PropsWithChildren<unknown>;
+type PagesToolbarProps = PropsWithChildren<unknown>;
 
-const PagesToolbar: React.FC<PagesToolbarProps> = ({ children }) => {
+const PagesToolbar: FC<PagesToolbarProps> = ({ children }) => {
   const classes = useToolbarStyles();
   const selectedPageIds = useAppSelector(state => state.pages.selectedPageIds);
   const operationStatus = useAppSelector(state => state.pages.operationStatus);
@@ -78,7 +78,7 @@ const PagesToolbar: React.FC<PagesToolbarProps> = ({ children }) => {
         onSubmit={handleDeletePages}
       />
       {selectedPageIds.length > 0 ? (
-        <React.Fragment>
+        <>
           <Box flexGrow={1}>
             <Typography>{selectedPageIds.length} selected</Typography>
           </Box>
@@ -89,9 +89,9 @@ const PagesToolbar: React.FC<PagesToolbarProps> = ({ children }) => {
               </IconButton>
             </span>
           </Tooltip>
-        </React.Fragment>
+        </>
       ) : (
-        <React.Fragment>
+        <>
           <Box flexGrow={1}>
             <StyledTableHeader>Pages</StyledTableHeader>
           </Box>
@@ -115,7 +115,7 @@ const PagesToolbar: React.FC<PagesToolbarProps> = ({ children }) => {
             </span>
           </Tooltip>
           <ShowMoreTableOptions />
-        </React.Fragment>
+        </>
       )}
       <Popover
         {...filter}

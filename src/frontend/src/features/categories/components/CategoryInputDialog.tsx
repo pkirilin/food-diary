@@ -1,7 +1,5 @@
 import { TextField } from '@mui/material';
-import type React from 'react';
-import { type Dispatch, type SetStateAction } from 'react';
-import { useEffect } from 'react';
+import { type FC, useEffect, type Dispatch, type SetStateAction } from 'react';
 import { AppButton, AppDialog } from 'src/components';
 import { useInput } from 'src/hooks';
 import { mapToTextInputProps } from 'src/utils/inputMapping';
@@ -18,7 +16,7 @@ interface CreateEditCategoryDialogProps {
   category?: Category;
 }
 
-const CategoryInputDialog: React.FC<CreateEditCategoryDialogProps> = ({
+const CategoryInputDialog: FC<CreateEditCategoryDialogProps> = ({
   isOpened: isDialogOpened,
   setIsOpened: setIsDialogOpened,
   title,

@@ -11,12 +11,11 @@ import {
   ListItemText,
   Typography,
 } from '@mui/material';
-import type React from 'react';
-import { useState } from 'react';
+import { type FC, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { APP_BAR_HEIGHT, APP_NAME, NAV_LINKS } from '../constants';
 
-const MobileMenu: React.FC = () => {
+const MobileMenu: FC = () => {
   const [isOpened, setIsOpened] = useState(false);
 
   const handleMenuToggle = (): void => {

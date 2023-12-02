@@ -1,6 +1,6 @@
 import EditIcon from '@mui/icons-material/Edit';
 import { Checkbox, IconButton, TableCell, TableRow, Tooltip } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import { type FC, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../__shared__/hooks';
 import { productsApi } from '../api';
 import { selectCheckedProductIds } from '../selectors';
@@ -13,7 +13,7 @@ interface ProductsTableRowProps {
   product: Product;
 }
 
-const ProductsTableRow: React.FC<ProductsTableRowProps> = ({ product }: ProductsTableRowProps) => {
+const ProductsTableRow: FC<ProductsTableRowProps> = ({ product }: ProductsTableRowProps) => {
   const [isEditDialogOpened, setIsEditDialogOpened] = useState(false);
   const [editProduct, editProductRequest] = productsApi.useEditProductMutation();
   const dispatch = useAppDispatch();
@@ -48,7 +48,7 @@ const ProductsTableRow: React.FC<ProductsTableRowProps> = ({ product }: Products
   };
 
   return (
-    <React.Fragment>
+    <>
       <TableRow hover selected={isChecked}>
         <TableCell padding="checkbox">
           <Checkbox
@@ -94,7 +94,7 @@ const ProductsTableRow: React.FC<ProductsTableRowProps> = ({ product }: Products
         isLoading={editProductRequest.isLoading}
         product={toProductFormData(product)}
       />
-    </React.Fragment>
+    </>
   );
 };
 
