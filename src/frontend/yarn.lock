@@ -3773,13 +3773,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-config-react@npm:^1.1.7":
-  version: 1.1.7
-  resolution: "eslint-config-react@npm:1.1.7"
-  checksum: 70e0d8c26ef1a75f0c2c6e4189d9cef99630d9ec846db3faa06036dd97bee6d0f61488844299bd857186ac0a77a2c921c3142c467bfaa35c21814f53b5c5eb2e
-  languageName: node
-  linkType: hard
-
 "eslint-config-standard-with-typescript@npm:^40.0.0":
   version: 40.0.0
   resolution: "eslint-config-standard-with-typescript@npm:40.0.0"
@@ -4384,7 +4377,6 @@ __metadata:
     date-fns: "npm:^2.28.0"
     eslint: "npm:^8.54.0"
     eslint-config-prettier: "npm:^9.0.0"
-    eslint-config-react: "npm:^1.1.7"
     eslint-config-standard-with-typescript: "npm:^40.0.0"
     eslint-import-resolver-typescript: "npm:^3.6.1"
     eslint-plugin-import: "npm:^2.29.0"
