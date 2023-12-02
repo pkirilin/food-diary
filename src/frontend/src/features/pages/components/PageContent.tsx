@@ -12,8 +12,7 @@ const PageContent: React.FC = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(getPageById(pageId));
-    dispatch(getNotes({ pageId }));
+    void Promise.allSettled([dispatch(getPageById(pageId)), dispatch(getNotes({ pageId }))]);
   }, [dispatch, pageId]);
 
   return (

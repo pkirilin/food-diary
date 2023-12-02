@@ -34,7 +34,7 @@ const PageInputDialog: FC<PageInputDialogProps> = ({
   const setDate = dateInput.setValue;
 
   useEffect(() => {
-    if (isOpened && initialDate) {
+    if (isOpened) {
       setDate(initialDate);
     }
   }, [initialDate, isOpened, setDate]);

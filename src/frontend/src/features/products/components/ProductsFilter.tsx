@@ -11,7 +11,7 @@ import { filterByCategoryChanged, filterReset, productSearchNameChanged } from '
 const ProductsFilter: React.FC = () => {
   const classes = useFilterStyles();
 
-  const filterProductName = useAppSelector(state => state.products.filter.productSearchName || '');
+  const filterProductName = useAppSelector(state => state.products.filter.productSearchName ?? '');
   const filterCategory = useAppSelector(state => state.products.filter.category);
   const filterChanged = useAppSelector(state => state.products.filter.changed);
 
@@ -32,18 +32,18 @@ const ProductsFilter: React.FC = () => {
     setCategory(filterCategory);
   }, [filterCategory]);
 
-  function handleProductSearchNameBlur(event: React.FocusEvent<HTMLInputElement>) {
+  const handleProductSearchNameBlur = (event: React.FocusEvent<HTMLInputElement>): void => {
     dispatch(productSearchNameChanged(event.target.value));
-  }
+  };
 
-  function handleCategoryChange(value: SelectOption | null) {
+  const handleCategoryChange = (value: SelectOption | null): void => {
     setCategory(value);
     dispatch(filterByCategoryChanged(value));
-  }
+  };
 
-  function handleReset() {
+  const handleReset = (): void => {
     dispatch(filterReset());
-  }
+  };
 
   return (
     <Box component={Paper} className={classes.root}>

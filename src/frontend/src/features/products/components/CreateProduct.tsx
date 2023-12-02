@@ -19,17 +19,17 @@ const CreateProduct: React.FC = () => {
     }
   }, [createProductRequest.isSuccess]);
 
-  function handleCreate() {
+  const handleCreate = (): void => {
     setIsDialogOpened(true);
-  }
+  };
 
-  function handleDialogSubmit({ name, caloriesCost, category }: ProductFormData) {
-    createProduct({
+  const handleDialogSubmit = ({ name, caloriesCost, category }: ProductFormData): void => {
+    void createProduct({
       name,
       caloriesCost,
       categoryId: category?.id,
     });
-  }
+  };
 
   return (
     <React.Fragment>

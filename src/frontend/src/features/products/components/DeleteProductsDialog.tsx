@@ -24,15 +24,15 @@ const DeleteProductsDialog: React.FC<DeleteProductsDialogProps> = ({
     }
   }, [deleteProductRequest.isSuccess, setIsDialogOpened]);
 
-  function handleClose() {
+  const handleClose = (): void => {
     setIsDialogOpened(false);
-  }
+  };
 
-  function handleSubmit() {
-    deleteProducts({
+  const handleSubmit = (): void => {
+    void deleteProducts({
       ids: checkedProductIds,
     });
-  }
+  };
 
   return (
     <AppDialog

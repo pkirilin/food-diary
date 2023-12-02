@@ -40,12 +40,12 @@ const PagesToolbar: React.FC<PagesToolbarProps> = ({ children }) => {
     setIsInputDialogOpened(true);
   };
 
-  const handleInputClose = () => {
+  const handleInputClose = (): void => {
     setIsInputDialogOpened(false);
   };
 
-  const handleCreatePage = (page: PageCreateEdit) => {
-    dispatch(createPage(page));
+  const handleCreatePage = (page: PageCreateEdit): void => {
+    void dispatch(createPage(page));
   };
 
   const handleDeleteOpen = (): void => {
@@ -57,7 +57,7 @@ const PagesToolbar: React.FC<PagesToolbarProps> = ({ children }) => {
   };
 
   const handleDeletePages = (ids: number[]): void => {
-    dispatch(deletePages(ids));
+    void dispatch(deletePages(ids));
   };
 
   return (

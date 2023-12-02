@@ -42,7 +42,7 @@ const ProductInputDialog: React.FC<ProductInputDialogProps> = ({
     isInvalid: isProductNameInvalid,
     isTouched: isProductNameTouched,
   } = useInput({
-    initialValue: product?.name || '',
+    initialValue: product?.name ?? '',
     errorHelperText: 'Product name is invalid',
     validate: validateProductName,
     mapToInputProps: mapToTextInputProps,
@@ -55,7 +55,7 @@ const ProductInputDialog: React.FC<ProductInputDialogProps> = ({
     isInvalid: isCaloriesCostInvalid,
     isTouched: isCaloriesCostTouched,
   } = useInput({
-    initialValue: product?.caloriesCost || 100,
+    initialValue: product?.caloriesCost ?? 100,
     errorHelperText: 'Calories cost is invalid',
     validate: validateCaloriesCost,
     mapToInputProps: mapToNumericInputProps,
@@ -68,7 +68,7 @@ const ProductInputDialog: React.FC<ProductInputDialogProps> = ({
     isInvalid: isCategoryInvalid,
     isTouched: isCategoryTouched,
   } = useInput({
-    initialValue: product?.category || null,
+    initialValue: product?.category ?? null,
     errorHelperText: 'Category is required',
     validate: validateSelectOption,
     mapToInputProps: mapToSelectProps,
@@ -82,11 +82,11 @@ const ProductInputDialog: React.FC<ProductInputDialogProps> = ({
     }
   }, [clearCaloriesCost, clearCategory, clearProductName, isDialogOpened]);
 
-  function handleClose() {
+  const handleClose = (): void => {
     setIsDialogOpened(false);
-  }
+  };
 
-  function handleSubmit() {
+  const handleSubmit = (): void => {
     if (category) {
       onSubmit({
         name: productName,
@@ -94,7 +94,7 @@ const ProductInputDialog: React.FC<ProductInputDialogProps> = ({
         category,
       });
     }
-  }
+  };
 
   const isAnyValueInvalid = isProductNameInvalid || isCaloriesCostInvalid || isCategoryInvalid;
   const isAnyValueChanged = isProductNameTouched || isCaloriesCostTouched || isCategoryTouched;

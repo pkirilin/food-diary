@@ -8,9 +8,7 @@ import { useAppSelector } from '../../__shared__/hooks';
 import { useFilterAppliedParamsStyles } from '../../__shared__/styles';
 import { endDateChanged, startDateChanged } from '../slice';
 
-function formatDate(date: string) {
-  return dateFnsFormat(new Date(date), 'dd.MM.yyyy');
-}
+const formatDate = (date: string): string => dateFnsFormat(new Date(date), 'dd.MM.yyyy');
 
 const PagesFilterAppliedParams: React.FC = () => {
   const classes = useFilterAppliedParamsStyles();

@@ -26,26 +26,26 @@ const ProductsTableRow: React.FC<ProductsTableRowProps> = ({ product }: Products
     }
   }, [editProductRequest.isSuccess]);
 
-  function handleEditClick() {
+  const handleEditClick = (): void => {
     setIsEditDialogOpened(true);
-  }
+  };
 
-  function handleEditDialogSubmit({ name, caloriesCost, category }: ProductFormData) {
-    editProduct({
+  const handleEditDialogSubmit = ({ name, caloriesCost, category }: ProductFormData): void => {
+    void editProduct({
       id: product.id,
       name,
       caloriesCost,
       categoryId: category.id,
     });
-  }
+  };
 
-  function handleCheckedChange() {
+  const handleCheckedChange = (): void => {
     if (isChecked) {
       dispatch(productUnchecked(product.id));
     } else {
       dispatch(productChecked(product.id));
     }
-  }
+  };
 
   return (
     <React.Fragment>

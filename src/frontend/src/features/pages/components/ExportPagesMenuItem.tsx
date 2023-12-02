@@ -19,14 +19,14 @@ const ExportPagesMenuItem: React.FC<React.PropsWithChildren<ExportPagesMenuItemP
 }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  function handleExport() {
+  const handleExport = (): void => {
     onMenuClose();
     setIsDialogOpen(true);
-  }
+  };
 
-  function handleDialogClose() {
+  const handleDialogClose = (): void => {
     setIsDialogOpen(false);
-  }
+  };
 
   return (
     <React.Fragment>

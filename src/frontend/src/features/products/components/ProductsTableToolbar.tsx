@@ -16,13 +16,13 @@ const ProductsTableToolbar: FC = () => {
   const [isDeleteDialogOpened, setIsDeleteDialogOpened] = useState(false);
   const isSelectionActive = checkedProductIds.length > 0;
 
-  function handleFilterClick(event: MouseEvent<HTMLButtonElement>) {
+  const handleFilterClick = (event: MouseEvent<HTMLButtonElement>): void => {
     showFilter(event);
-  }
+  };
 
-  function handleDeleteClick() {
+  const handleDeleteClick = (): void => {
     setIsDeleteDialogOpened(true);
-  }
+  };
 
   return (
     <Toolbar className={classes.root}>

@@ -17,12 +17,10 @@ const ImportPagesMenuItem: React.FC<React.PropsWithChildren<ImportPagesMenuItemP
   const [importFile, setImportFile] = useState<File>();
   const importPages = useImport(importFile);
 
-  function cleanFileInput(target: EventTarget & HTMLInputElement) {
+  const cleanFileInput = (target: EventTarget & HTMLInputElement): void => {
     // Change handler will not be executed if file with the same name is uploaded multiple times
-    if (target) {
-      target.value = '';
-    }
-  }
+    target.value = '';
+  };
 
   const handleImportFileChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     try {

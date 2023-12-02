@@ -9,6 +9,7 @@ import {
   Typography,
 } from '@mui/material';
 import type React from 'react';
+import { type ReactElement } from 'react';
 import { AppLinearProgress } from 'src/components';
 import { type Product } from '../../types';
 import ProductsTableRow from '../ProductsTableRow';
@@ -32,7 +33,7 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
     onCheckedChange(products, checkedIds);
   };
 
-  function renderRows() {
+  const renderRows = (): ReactElement => {
     if (products.length === 0) {
       return (
         <TableRow>
@@ -43,8 +44,14 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
       );
     }
 
-    return products.map(product => <ProductsTableRow key={product.id} product={product} />);
-  }
+    return (
+      <>
+        {products.map(product => (
+          <ProductsTableRow key={product.id} product={product} />
+        ))}
+      </>
+    );
+  };
 
   return (
     <TableContainer sx={{ position: 'relative' }}>

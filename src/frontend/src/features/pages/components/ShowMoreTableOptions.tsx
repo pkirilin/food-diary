@@ -11,13 +11,13 @@ const ShowMoreTableOptions: React.FC = () => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const isOpened = Boolean(anchorEl);
 
-  function handleMenuOpen(event: React.MouseEvent<HTMLElement>) {
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>): void => {
     setAnchorEl(event.currentTarget);
-  }
+  };
 
-  function handleMenuClose() {
+  const handleMenuClose = (): void => {
     setAnchorEl(null);
-  }
+  };
 
   return (
     <React.Fragment>

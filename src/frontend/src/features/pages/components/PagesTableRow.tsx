@@ -33,16 +33,16 @@ const PagesTableRow: React.FC<PagesTableRowProps> = ({ page }: PagesTableRowProp
     }
   }, [operationStatus]);
 
-  const handleOpenDialog = () => {
+  const handleOpenDialog = (): void => {
     setIsDialogOpened(true);
   };
 
-  const handleCloseDialog = () => {
+  const handleCloseDialog = (): void => {
     setIsDialogOpened(false);
   };
 
-  const handleEditPage = ({ date }: PageCreateEdit) => {
-    dispatch(
+  const handleEditPage = ({ date }: PageCreateEdit): void => {
+    void dispatch(
       editPage({
         id: page.id,
         page: { date },

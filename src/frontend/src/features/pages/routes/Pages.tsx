@@ -23,7 +23,7 @@ const Pages: FC = () => {
 
   const handleRefetch = useCallback(
     ({ sortOrder, pageNumber, pageSize, startDate, endDate }: PageItemsFilter) => {
-      dispatch(
+      void dispatch(
         getPages({
           sortOrder,
           pageNumber,

@@ -25,7 +25,7 @@ export function useImport(file?: File): UseImportResult {
 
   const start = useCallback(() => {
     if (file) {
-      dispatch(importPages(file));
+      void dispatch(importPages(file));
     }
   }, [dispatch, file]);
 

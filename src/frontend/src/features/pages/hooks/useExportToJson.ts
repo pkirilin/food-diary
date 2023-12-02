@@ -5,11 +5,11 @@ import { exportToJsonFinished } from '../slice';
 import { exportPagesToJson } from '../thunks';
 import { type UseExportResult } from '../types';
 
-export function useExportToJson(
+export const useExportToJson = (
   startDate: Date | null,
   endDate: Date | null,
   onSuccess: () => void,
-): UseExportResult {
+): UseExportResult => {
   const isLoading = useAppSelector(state => state.pages.isExportToJsonLoading);
   const isSuccess = useAppSelector(state => state.pages.isExportToJsonSuccess);
   const dispatch = useAppDispatch();
@@ -21,19 +21,19 @@ export function useExportToJson(
     }
   }, [dispatch, isSuccess, onSuccess]);
 
-  function start() {
+  const start = (): void => {
     if (startDate && endDate) {
-      dispatch(
+      void dispatch(
         exportPagesToJson({
           startDate: format(startDate, 'yyyy-MM-dd'),
           endDate: format(endDate, 'yyyy-MM-dd'),
         }),
       );
     }
-  }
+  };
 
   return {
     isLoading,
     start,
   };
-}
+};

@@ -9,7 +9,7 @@ export const useDateForNewPage = (isInitialized: boolean): Date => {
 
   useEffect(() => {
     if (isInitialized) {
-      dispatch(getDateForNewPage());
+      void dispatch(getDateForNewPage());
     }
   }, [dispatch, isInitialized]);
 
