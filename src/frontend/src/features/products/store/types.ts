@@ -1,4 +1,4 @@
-import { ItemsFilterBase, SelectOption } from 'src/types';
+import { type ItemsFilterBase, type SelectOption } from 'src/types';
 
 export interface ProductItemsFilter extends ItemsFilterBase {
   pageNumber: number;

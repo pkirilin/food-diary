@@ -136,7 +136,9 @@ test('products can be filtered by category', async () => {
   await userEvent.click(within(await screen.findByRole('listbox')).getByText(/cereals/i));
   await userEvent.click(document.body);
 
-  await waitFor(() => expect(screen.queryByText(/milk/i)).not.toBeInTheDocument());
+  await waitFor(() => {
+    expect(screen.queryByText(/milk/i)).not.toBeInTheDocument();
+  });
   const filterChip = screen.getByLabelText(/applied filter: category/i);
   expect(within(filterChip).queryByText(/cereals/i)).toBeVisible();
   expect(screen.getByText(/oats/i));
@@ -153,7 +155,9 @@ test('products can be filtered by name', async () => {
   await userEvent.type(productName, 'bre');
   await userEvent.click(document.body);
 
-  await waitFor(() => expect(screen.queryByText(/rice/i)).not.toBeInTheDocument());
+  await waitFor(() => {
+    expect(screen.queryByText(/rice/i)).not.toBeInTheDocument();
+  });
   const filterChip = screen.getByLabelText(/applied filter: product search name/i);
   expect(within(filterChip).queryByText(/bre/i)).toBeVisible();
   expect(screen.getByText(/bread/i));

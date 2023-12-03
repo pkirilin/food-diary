@@ -1,20 +1,20 @@
-import { SelectOption } from 'src/types';
+import { type SelectOption } from 'src/types';
 
-export type Product = {
+export interface Product {
   id: number;
   name: string;
   caloriesCost: number;
   categoryId: number;
   categoryName: string;
-};
+}
 
-export type ProductsResponse = {
+export interface ProductsResponse {
   productItems: Product[];
   totalProductsCount: number;
-};
+}
 
-export type ProductFormData = {
+export interface ProductFormData {
   name: string;
   caloriesCost: number;
   category: SelectOption;
-};
+}

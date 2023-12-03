@@ -1,69 +1,85 @@
 {
   "root": true,
-  "extends": [
-    "eslint:recommended",
-    "plugin:import/typescript",
-    "plugin:react/recommended",
-    "plugin:react/jsx-runtime",
-    "plugin:@typescript-eslint/eslint-recommended",
-    "plugin:@typescript-eslint/recommended",
-    "prettier"
-  ],
-  "parser": "@typescript-eslint/parser",
-  "parserOptions": {
-    "ecmaVersion": 2018,
-    "sourceType": "module",
-    "ecmaFeatures": {
-      "jsx": true
-    }
-  },
-  "settings": {
-    "react": {
-      "version": "detect"
-    }
-  },
-  "plugins": ["prettier", "import", "react", "react-hooks", "jest-dom", "testing-library"],
-  "rules": {
-    "prettier/prettier": 2,
-    "react/jsx-uses-react": "off",
-    "react/react-in-jsx-scope": "off",
-    "react-hooks/rules-of-hooks": "error",
-    "react-hooks/exhaustive-deps": "warn",
-    "react/self-closing-comp": [
-      "warn",
-      {
-        "component": true,
-        "html": false
-      }
-    ],
-    "react/function-component-definition": [
-      "warn",
-      {
-        "namedComponents": "arrow-function",
-        "unnamedComponents": "arrow-function"
-      }
-    ],
-    "@typescript-eslint/no-empty-function": "warn",
-    "@typescript-eslint/no-empty-interface": "warn",
-    "no-console": "warn",
-    "no-restricted-imports": "off",
-    "import/order": [
-      "error",
-      {
-        "groups": ["builtin", "external", "internal", "parent", "sibling", "index", "object"],
-        "alphabetize": {
-          "order": "asc",
-          "caseInsensitive": true
-        },
-        "pathGroups": [
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx"],
+      "extends": [
+        "plugin:import/typescript",
+        "plugin:react/recommended",
+        "plugin:react-hooks/recommended",
+        "plugin:react/jsx-runtime",
+        "standard-with-typescript",
+        "prettier"
+      ],
+      "parser": "@typescript-eslint/parser",
+      "parserOptions": {
+        "ecmaVersion": 2018,
+        "sourceType": "module",
+        "ecmaFeatures": {
+          "jsx": true
+        }
+      },
+      "settings": {
+        "react": {
+          "version": "detect"
+        }
+      },
+      "plugins": ["prettier", "import", "react", "react-hooks", "jest-dom", "testing-library"],
+      "rules": {
+        "prettier/prettier": 2,
+        "no-console": "warn",
+        "react/jsx-uses-react": "off",
+        "react/react-in-jsx-scope": "off",
+        "react-hooks/rules-of-hooks": "error",
+        "react-hooks/exhaustive-deps": "warn",
+        "react/self-closing-comp": [
+          "warn",
           {
-            "pattern": "src/**",
-            "group": "internal",
-            "position": "after"
+            "component": true,
+            "html": false
           }
         ],
-        "pathGroupsExcludedImportTypes": ["internal"]
+        "react/function-component-definition": [
+          "warn",
+          {
+            "namedComponents": "arrow-function",
+            "unnamedComponents": "arrow-function"
+          }
+        ],
+        "@typescript-eslint/strict-boolean-expressions": [
+          "error",
+          {
+            "allowString": true,
+            "allowNumber": true,
+            "allowNullableObject": true,
+            "allowNullableBoolean": true,
+            "allowNullableString": true,
+            "allowNullableNumber": false,
+            "allowNullableEnum": false,
+            "allowAny": false,
+            "allowRuleToRunWithoutStrictNullChecksIKnowWhatIAmDoing": false
+          }
+        ],
+        "@typescript-eslint/no-invalid-void-type": "off",
+        "import/order": [
+          "error",
+          {
+            "groups": ["builtin", "external", "internal", "parent", "sibling", "index", "object"],
+            "alphabetize": {
+              "order": "asc",
+              "caseInsensitive": true
+            },
+            "pathGroups": [
+              {
+                "pattern": "src/**",
+                "group": "internal",
+                "position": "after"
+              }
+            ],
+            "pathGroupsExcludedImportTypes": ["internal"]
+          }
+        ]
       }
-    ]
-  }
+    }
+  ]
 }

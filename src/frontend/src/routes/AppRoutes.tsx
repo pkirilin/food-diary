@@ -1,4 +1,5 @@
-import { Navigate, RouteObject, useRoutes } from 'react-router-dom';
+import { type FC } from 'react';
+import { Navigate, type RouteObject, useRoutes } from 'react-router-dom';
 import { Login, PostLogin, PostLogout, RequireAuth } from 'src/features/auth';
 import { Categories } from 'src/features/categories';
 import { NavigationBar } from 'src/features/navigation';
@@ -45,7 +46,7 @@ const PRIVATE_ROUTES: RouteObject[] = [
   },
 ];
 
-export default function AppRoutes() {
+const AppRoutes: FC = () => {
   const element = useRoutes([
     ...PUBLIC_ROUTES,
     ...PRIVATE_ROUTES.map(route => ({
@@ -64,4 +65,6 @@ export default function AppRoutes() {
   ]);
 
   return element;
-}
+};
+
+export default AppRoutes;

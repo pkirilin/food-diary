@@ -1,7 +1,7 @@
 import { Typography } from '@mui/material';
-import React from 'react';
+import { type FC } from 'react';
 
-const NotFound: React.FC = () => {
+const NotFound: FC = () => {
   return <Typography>There is nothing here</Typography>;
 };
 

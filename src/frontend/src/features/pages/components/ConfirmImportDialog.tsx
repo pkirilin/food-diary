@@ -1,16 +1,16 @@
 import { Typography } from '@mui/material';
-import { FC } from 'react';
+import { type FC } from 'react';
 import { AppButton, AppDialog } from 'src/components';
 
 const WARNING_MESSAGE =
   'Pages import is going to be started. Import may update or overwrite existing data from file and may cause data loss. Continue?';
 
-type ConfirmImportDialogProps = {
+interface ConfirmImportDialogProps {
   isOpened: boolean;
   isLoading: boolean;
   onClose: () => void;
   onSubmit: () => void;
-};
+}
 
 const ConfirmImportDialog: FC<ConfirmImportDialogProps> = ({
   isOpened,

@@ -2,25 +2,25 @@ import AddToDriveIcon from '@mui/icons-material/AddToDrive';
 import DataObjectIcon from '@mui/icons-material/DataObject';
 import ShowMoreIcon from '@mui/icons-material/MoreVert';
 import { Divider, IconButton, Menu } from '@mui/material';
-import React from 'react';
+import { useState, type FC, type MouseEvent } from 'react';
 import { DEMO_MODE_ENABLED } from 'src/config';
 import ExportPagesMenuItem from './ExportPagesMenuItem';
 import ImportPagesMenuItem from './ImportPagesMenuItem';
 
-const ShowMoreTableOptions: React.FC = () => {
-  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
+const ShowMoreTableOptions: FC = () => {
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const isOpened = Boolean(anchorEl);
 
-  function handleMenuOpen(event: React.MouseEvent<HTMLElement>) {
+  const handleMenuOpen = (event: MouseEvent<HTMLElement>): void => {
     setAnchorEl(event.currentTarget);
-  }
+  };
 
-  function handleMenuClose() {
+  const handleMenuClose = (): void => {
     setAnchorEl(null);
-  }
+  };
 
   return (
-    <React.Fragment>
+    <>
       <IconButton
         size="large"
         id="show-more-button"
@@ -75,7 +75,7 @@ const ShowMoreTableOptions: React.FC = () => {
           Export to Google Docs
         </ExportPagesMenuItem>
       </Menu>
-    </React.Fragment>
+    </>
   );
 };
 

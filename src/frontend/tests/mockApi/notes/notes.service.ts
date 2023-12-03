@@ -1,9 +1,9 @@
-import { NoteCreateEdit } from 'src/features/notes';
-import { db, DbNote, DbProduct } from '../db';
+import { type NoteCreateEdit } from 'src/features/notes';
+import { db, type DbNote, type DbProduct } from '../db';
 
 type Result = 'Success' | 'PageNotFound' | 'ProductNotFound';
 
-export const getByPageId = (pageId: number) =>
+export const getByPageId = (pageId: number): DbNote[] =>
   db.note.findMany({
     where: {
       pageId: { equals: pageId },
@@ -125,7 +125,7 @@ export const update = (
   return 'Success';
 };
 
-export const deleteOne = (id: number) => {
+export const deleteOne = (id: number): void => {
   db.note.delete({
     where: {
       id: { equals: id },

@@ -1,4 +1,4 @@
-import { ReactElement } from 'react';
+import { type ReactElement } from 'react';
 
 import createCategoryAutocompleteResultBuilder from './builders/categoryAutocompleteResultBuilder';
 import createComponentBuilder from './builders/componentBuilder';

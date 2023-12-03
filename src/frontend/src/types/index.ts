@@ -1,11 +1,11 @@
 export type ValidatorFunction<T> = (value: T) => boolean;
 
-export type InputOptions<TValue> = {
+export interface InputOptions<TValue> {
   value: TValue;
   setValue: (newValue: TValue) => void;
   helperText: string;
   isInvalid: boolean;
-};
+}
 
 export type MapToInputPropsFunction<TValue, TProps> = (options: InputOptions<TValue>) => TProps;
 

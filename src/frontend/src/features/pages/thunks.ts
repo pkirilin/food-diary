@@ -1,25 +1,30 @@
 import { API_URL } from 'src/config';
-import { SortOrder } from '../__shared__/models';
+import { type SortOrder } from '../__shared__/models';
 import {
   createApiCallAsyncThunk,
   createUrl,
   downloadFile,
   handleEmptyResponse,
 } from '../__shared__/utils';
-import { ExportPagesToJsonRequest, Page, PageCreateEdit, PagesSearchResult } from './models';
+import {
+  type ExportPagesToJsonRequest,
+  type Page,
+  type PageCreateEdit,
+  type PagesSearchResult,
+} from './models';
 
-export type GetPagesRequest = {
+export interface GetPagesRequest {
   startDate: string | null;
   endDate: string | null;
   sortOrder: SortOrder;
   pageNumber: number;
   pageSize: number;
-};
+}
 
-export type EditPageRequest = {
+export interface EditPageRequest {
   id: number;
   page: PageCreateEdit;
-};
+}
 
 export interface PageByIdResponse {
   currentPage: Page;
@@ -27,15 +32,15 @@ export interface PageByIdResponse {
 
 export const getPages = createApiCallAsyncThunk<PagesSearchResult, GetPagesRequest>(
   'pages/getPages',
-  params => createUrl(`${API_URL}/api/v1/pages`, params),
-  response => response.json(),
+  request => createUrl(`${API_URL}/api/v1/pages`, { ...request }),
+  async response => await response.json(),
   'Failed to get pages',
 );
 
 export const getPageById = createApiCallAsyncThunk<PageByIdResponse, number>(
   'pages/getPageById',
   id => `${API_URL}/api/v1/pages/${id}`,
-  response => response.json(),
+  async response => await response.json(),
   'Failed to get page',
 );
 
@@ -101,6 +106,6 @@ export const importPages = createApiCallAsyncThunk<void, File>(
 export const getDateForNewPage = createApiCallAsyncThunk<string, void>(
   'pages/getDateForNewPage',
   () => `${API_URL}/api/v1/pages/date`,
-  response => response.text(),
+  async response => await response.text(),
   'Failed to get date for new page',
 );

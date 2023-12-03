@@ -2,16 +2,16 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { IconButton, TableCell, TableRow, Tooltip } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
-import React, { useEffect, useState } from 'react';
+import { type FC, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector, useRouterId } from 'src/hooks';
-import { NoteCreateEdit, NoteItem } from '../models';
+import { type NoteCreateEdit, type NoteItem } from '../models';
 import { deleteNote, editNote } from '../thunks';
 import DeleteNoteDialog from './DeleteNoteDialog';
 import NoteInputDialog from './NoteInputDialog';
 
-type NotesTableRowProps = {
+interface NotesTableRowProps {
   note: NoteItem;
-};
+}
 
 const useStyles = makeStyles(theme => ({
   rowActions: {
@@ -22,7 +22,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const NotesTableRow: React.FC<NotesTableRowProps> = ({ note }: NotesTableRowProps) => {
+const NotesTableRow: FC<NotesTableRowProps> = ({ note }: NotesTableRowProps) => {
   const classes = useStyles();
   const pageId = useRouterId('id');
   const dispatch = useAppDispatch();
@@ -47,7 +47,7 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({ note }: NotesTableRowProp
   };
 
   const handleEditSubmit = (noteData: NoteCreateEdit): void => {
-    dispatch(
+    void dispatch(
       editNote({
         id: note.id,
         mealType: noteData.mealType,
@@ -65,7 +65,7 @@ const NotesTableRow: React.FC<NotesTableRowProps> = ({ note }: NotesTableRowProp
   };
 
   const handleDeleteSubmit = ({ id, mealType }: NoteItem): void => {
-    dispatch(
+    void dispatch(
       deleteNote({
         id,
         mealType,

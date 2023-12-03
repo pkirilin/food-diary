@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { create } from 'src/test-utils';
-import { PageCreateEdit } from '../../models';
+import { type PageCreateEdit } from '../../models';
 import PageInputDialog from './PageInputDialog';
 
 describe('when initial date is specified', () => {

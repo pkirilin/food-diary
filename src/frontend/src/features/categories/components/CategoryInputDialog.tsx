@@ -1,12 +1,12 @@
 import { TextField } from '@mui/material';
-import React, { Dispatch, SetStateAction, useEffect } from 'react';
+import { type FC, useEffect, type Dispatch, type SetStateAction } from 'react';
 import { AppButton, AppDialog } from 'src/components';
 import { useInput } from 'src/hooks';
 import { mapToTextInputProps } from 'src/utils/inputMapping';
 import { validateCategoryName } from 'src/utils/validation';
-import { Category, CategoryFormData } from '../types';
+import { type Category, type CategoryFormData } from '../types';
 
-type CreateEditCategoryDialogProps = {
+interface CreateEditCategoryDialogProps {
   isOpened: boolean;
   setIsOpened: Dispatch<SetStateAction<boolean>>;
   title: string;
@@ -14,9 +14,9 @@ type CreateEditCategoryDialogProps = {
   onSubmit: (category: CategoryFormData) => void;
   isLoading: boolean;
   category?: Category;
-};
+}
 
-const CategoryInputDialog: React.FC<CreateEditCategoryDialogProps> = ({
+const CategoryInputDialog: FC<CreateEditCategoryDialogProps> = ({
   isOpened: isDialogOpened,
   setIsOpened: setIsDialogOpened,
   title,
@@ -32,7 +32,7 @@ const CategoryInputDialog: React.FC<CreateEditCategoryDialogProps> = ({
     isInvalid: isCategoryNameInvalid,
     isTouched: isCategoryNameTouched,
   } = useInput({
-    initialValue: category?.name || '',
+    initialValue: category?.name ?? '',
     errorHelperText: 'Category name is invalid',
     validate: validateCategoryName,
     mapToInputProps: mapToTextInputProps,
@@ -46,13 +46,13 @@ const CategoryInputDialog: React.FC<CreateEditCategoryDialogProps> = ({
     }
   }, [isDialogOpened, clearCategoryName, category]);
 
-  function handleClose() {
+  const handleClose = (): void => {
     setIsDialogOpened(false);
-  }
+  };
 
-  function handleSubmit() {
+  const handleSubmit = (): void => {
     onSubmit({ name: categoryName });
-  }
+  };
 
   return (
     <AppDialog

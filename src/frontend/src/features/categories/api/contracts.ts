@@ -1,10 +1,10 @@
-export type CreateCategoryRequest = {
+export interface CreateCategoryRequest {
   name: string;
-};
+}
 
-export type EditCategoryRequest = {
+export interface EditCategoryRequest {
   id: number;
   name: string;
-};
+}
 
 export type DeleteCategoryRequest = number;

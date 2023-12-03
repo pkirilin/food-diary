@@ -1,7 +1,7 @@
-import { NumberQuery } from '@mswjs/data/lib/query/queryTypes';
-import { GetPagesRequest, PageCreateEdit } from 'src/features/pages';
+import { type NumberQuery } from '@mswjs/data/lib/query/queryTypes';
+import { type GetPagesRequest, type PageCreateEdit } from 'src/features/pages';
 import { SortOrder } from 'src/types';
-import { db, DbNote, DbProduct } from '../db';
+import { db, type DbPage, type DbNote, type DbProduct } from '../db';
 
 const buildQuery = (startDate: string | null, endDate: string | null): Partial<NumberQuery> => {
   if (startDate && endDate) {
@@ -19,7 +19,13 @@ const buildQuery = (startDate: string | null, endDate: string | null): Partial<N
   return {};
 };
 
-export const get = ({ pageNumber, pageSize, sortOrder, startDate, endDate }: GetPagesRequest) => {
+export const get = ({
+  pageNumber,
+  pageSize,
+  sortOrder,
+  startDate,
+  endDate,
+}: GetPagesRequest): DbPage[] => {
   const query = buildQuery(startDate, endDate);
 
   return db.page.findMany({
@@ -32,9 +38,9 @@ export const get = ({ pageNumber, pageSize, sortOrder, startDate, endDate }: Get
   });
 };
 
-export const count = () => db.page.count();
+export const count = (): number => db.page.count();
 
-export const getById = (id: number) =>
+export const getById = (id: number): DbPage | null =>
   db.page.findFirst({
     where: {
       id: { equals: id },
@@ -48,7 +54,7 @@ export const getNotes = (pageId: number): DbNote[] => {
     },
   });
 
-  const compareNotes = (first: DbNote, second: DbNote) => {
+  const compareNotes = (first: DbNote, second: DbNote): number => {
     const pageIdDiff = first.pageId - second.pageId;
     return pageIdDiff === 0 ? first.displayOrder - second.displayOrder : pageIdDiff;
   };
@@ -118,7 +124,7 @@ export const create = ({ date }: PageCreateEdit): void => {
   });
 };
 
-export const update = (id: number, { date }: PageCreateEdit) => {
+export const update = (id: number, { date }: PageCreateEdit): void => {
   db.page.update({
     where: {
       id: { equals: id },
@@ -129,7 +135,7 @@ export const update = (id: number, { date }: PageCreateEdit) => {
   });
 };
 
-export const deleteMany = (pageIds: number[]) => {
+export const deleteMany = (pageIds: number[]): void => {
   db.note.deleteMany({
     where: {
       pageId: { in: pageIds },

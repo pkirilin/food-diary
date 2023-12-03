@@ -1,10 +1,10 @@
 import { Box, Breadcrumbs, Link, Typography } from '@mui/material';
-import React from 'react';
+import { type FC } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { formatDate } from 'src/utils';
 import { useAppSelector } from '../../__shared__/hooks';
 
-const PageContentHeader: React.FC = () => {
+const PageContentHeader: FC = () => {
   const page = useAppSelector(state => state.pages.current);
 
   if (!page) {

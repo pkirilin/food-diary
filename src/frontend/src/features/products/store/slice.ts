@@ -1,12 +1,12 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { SelectOption } from 'src/types';
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import { type SelectOption } from 'src/types';
 import { productsApi } from '../api';
-import { ProductItemsFilter } from './types';
+import { type ProductItemsFilter } from './types';
 
-export type ProductsState = {
+export interface ProductsState {
   checkedProductIds: number[];
   filter: ProductItemsFilter;
-};
+}
 
 const initialState: ProductsState = {
   checkedProductIds: [],

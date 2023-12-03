@@ -1,19 +1,19 @@
-import { CategoryFormData } from 'src/features/categories';
-import { db } from '../db';
+import { type CategoryFormData } from 'src/features/categories';
+import { type DbCategory, db } from '../db';
 
-export const getAll = () =>
+export const getAll = (): DbCategory[] =>
   db.category.findMany({
     orderBy: { name: 'asc' },
   });
 
-export const getProductsCount = (categoryId: number) =>
+export const getProductsCount = (categoryId: number): number =>
   db.product.count({
     where: {
       categoryId: { equals: categoryId },
     },
   });
 
-export const create = ({ name }: CategoryFormData) => {
+export const create = ({ name }: CategoryFormData): void => {
   const maxId =
     db.category
       .findMany({
@@ -30,7 +30,7 @@ export const create = ({ name }: CategoryFormData) => {
   });
 };
 
-export const update = (id: number, body: CategoryFormData) => {
+export const update = (id: number, body: CategoryFormData): void => {
   db.category.update({
     where: {
       id: { equals: id },
@@ -39,7 +39,7 @@ export const update = (id: number, body: CategoryFormData) => {
   });
 };
 
-export const deleteOne = (id: number) => {
+export const deleteOne = (id: number): void => {
   const products = db.product.findMany({
     where: {
       categoryId: { equals: id },

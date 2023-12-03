@@ -1,13 +1,13 @@
 import AddIcon from '@mui/icons-material/Add';
 import { IconButton, Tooltip } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import { type FC, useEffect, useState } from 'react';
 import { useAppSelector } from 'src/store';
 import { productsApi } from '../api';
 import { selectProductsQueryArg } from '../selectors';
-import { ProductFormData } from '../types';
+import { type ProductFormData } from '../types';
 import ProductInputDialog from './ProductInputDialog';
 
-const CreateProduct: React.FC = () => {
+const CreateProduct: FC = () => {
   const [isDialogOpened, setIsDialogOpened] = useState(false);
   const getProductsQueryArg = useAppSelector(selectProductsQueryArg);
   const getProductsQuery = productsApi.useGetProductsQuery(getProductsQueryArg);
@@ -19,20 +19,20 @@ const CreateProduct: React.FC = () => {
     }
   }, [createProductRequest.isSuccess]);
 
-  function handleCreate() {
+  const handleCreate = (): void => {
     setIsDialogOpened(true);
-  }
+  };
 
-  function handleDialogSubmit({ name, caloriesCost, category }: ProductFormData) {
-    createProduct({
+  const handleDialogSubmit = ({ name, caloriesCost, category }: ProductFormData): void => {
+    void createProduct({
       name,
       caloriesCost,
       categoryId: category?.id,
     });
-  }
+  };
 
   return (
-    <React.Fragment>
+    <>
       <Tooltip title="Add new product">
         <span>
           <IconButton
@@ -54,7 +54,7 @@ const CreateProduct: React.FC = () => {
         onSubmit={handleDialogSubmit}
         isLoading={createProductRequest.isLoading}
       />
-    </React.Fragment>
+    </>
   );
 };
 

@@ -1,4 +1,4 @@
-import { TextFieldProps } from '@mui/material';
+import { type TextFieldProps } from '@mui/material';
 import createInputHook from './createInputHook';
 import createValidatedInputHook from './createValidatedInputHook';
 

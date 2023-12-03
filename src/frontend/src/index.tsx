@@ -7,7 +7,7 @@ import { GOOGLE_ANALYTICS_ENABLED, MSW_ENABLED } from './config';
 import { initGoogleAnalytics } from './googleAnalytics';
 import store from './store';
 
-(async () => {
+void (async () => {
   if (MSW_ENABLED) {
     await initBrowserMockApi();
   }

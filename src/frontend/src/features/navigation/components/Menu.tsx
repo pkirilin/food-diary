@@ -1,9 +1,9 @@
 import { Box, List, ListItem, ListItemButton, ListItemText } from '@mui/material';
-import React from 'react';
+import { type FC } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { NAV_LINKS } from '../constants';
 
-const Menu: React.FC = () => {
+const Menu: FC = () => {
   const location = useLocation();
 
   return (

@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react';
+import { type FC, useEffect } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 import { useAuth } from '../hooks';
 import AuthCallbackProgress from './AuthCallbackProgress';
 
-const PostLogin: React.FC = () => {
+const PostLogin: FC = () => {
   const { user, completeLogin } = useAuth();
   const params = useParams();
 
@@ -12,7 +12,7 @@ const PostLogin: React.FC = () => {
   }, [completeLogin]);
 
   if (user && user.isAuthenticated) {
-    const redirectUrl = params['returnUrl'] ?? '/';
+    const redirectUrl = params.returnUrl ?? '/';
     return <Navigate to={redirectUrl} />;
   }
 

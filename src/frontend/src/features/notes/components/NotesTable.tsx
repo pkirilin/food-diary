@@ -10,18 +10,18 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
-import React, { useEffect, useMemo, useState } from 'react';
+import { type FC, useEffect, useMemo, useState } from 'react';
 import { useAppDispatch, useAppSelector, useRouterId } from 'src/hooks';
-import { MealType, NoteCreateEdit } from '../models';
+import { type MealType, type NoteCreateEdit } from '../models';
 import { createNote, getNotes } from '../thunks';
 import NoteInputDialog from './NoteInputDialog';
 import NotesTableRow from './NotesTableRow';
 
-type NotesTableProps = {
+interface NotesTableProps {
   mealType: MealType;
-};
+}
 
-const NotesTable: React.FC<NotesTableProps> = ({ mealType }: NotesTableProps) => {
+const NotesTable: FC<NotesTableProps> = ({ mealType }: NotesTableProps) => {
   const pageId = useRouterId('id');
 
   const noteItems = useAppSelector(state =>
@@ -51,7 +51,7 @@ const NotesTable: React.FC<NotesTableProps> = ({ mealType }: NotesTableProps) =>
     if (status === 'succeeded') {
       setIsDialogOpened(false);
 
-      dispatch(
+      void dispatch(
         getNotes({
           pageId,
           mealType,
@@ -69,7 +69,7 @@ const NotesTable: React.FC<NotesTableProps> = ({ mealType }: NotesTableProps) =>
   };
 
   const handleAddNote = (note: NoteCreateEdit): void => {
-    dispatch(
+    void dispatch(
       createNote({
         mealType,
         note,

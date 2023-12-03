@@ -2,12 +2,12 @@ import { useCallback, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from 'src/hooks';
 import { importPages } from '../thunks';
 
-type UseImportResult = {
+interface UseImportResult {
   isDialogOpened: boolean;
   isLoading: boolean;
   start: () => void;
   closeDialog: () => void;
-};
+}
 
 export function useImport(file?: File): UseImportResult {
   const isSuccess = useAppSelector(state => state.pages.isImportSuccess);
@@ -25,7 +25,7 @@ export function useImport(file?: File): UseImportResult {
 
   const start = useCallback(() => {
     if (file) {
-      dispatch(importPages(file));
+      void dispatch(importPages(file));
     }
   }, [dispatch, file]);
 

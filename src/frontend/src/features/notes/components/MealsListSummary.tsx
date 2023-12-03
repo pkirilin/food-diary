@@ -1,8 +1,8 @@
 import { Box, Typography } from '@mui/material';
-import React from 'react';
+import { type FC } from 'react';
 import { useAppSelector } from '../../__shared__/hooks';
 
-const MealsListSummary: React.FC = () => {
+const MealsListSummary: FC = () => {
   const totalCalories = useAppSelector(state =>
     state.notes.noteItems.reduce((sum, note) => sum + note.calories, 0),
   );

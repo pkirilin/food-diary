@@ -1,6 +1,10 @@
-import { http, HttpHandler, HttpResponse, PathParams } from 'msw';
+import { http, type HttpHandler, HttpResponse, type PathParams } from 'msw';
 import { API_URL } from 'src/config';
-import { PageByIdResponse, PageCreateEdit, PagesSearchResult } from 'src/features/pages';
+import {
+  type PageByIdResponse,
+  type PageCreateEdit,
+  type PagesSearchResult,
+} from 'src/features/pages';
 import { SortOrder } from 'src/types';
 import { formatDate } from 'src/utils';
 import { mapToPage } from './pages.mapper';
@@ -34,7 +38,7 @@ export const handlers: HttpHandler[] = [
           id,
           date: formatDate(new Date(date)),
           countNotes: notes.length,
-          countCalories: countCalories,
+          countCalories,
         };
       }),
       totalPagesCount,

@@ -1,14 +1,14 @@
 import { Typography } from '@mui/material';
-import { FC } from 'react';
+import { type FC } from 'react';
 import { AppButton, AppDialog } from 'src/components';
 
-type DeletePagesDialogProps = {
+interface DeletePagesDialogProps {
   isOpened: boolean;
   isLoading: boolean;
   pageIds: number[];
   onClose: () => void;
   onSubmit: (pageIds: number[]) => void;
-};
+}
 
 const DeletePagesDialog: FC<DeletePagesDialogProps> = ({
   isOpened,

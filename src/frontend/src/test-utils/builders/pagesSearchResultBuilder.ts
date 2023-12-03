@@ -1,11 +1,11 @@
-import { PageItem, PagesSearchResult } from 'src/features/pages/models';
+import { type PageItem, type PagesSearchResult } from 'src/features/pages/models';
 
 export interface PagesSearchResultBuilder {
   please: () => PagesSearchResult;
   withPageItem: (date: string) => PagesSearchResultBuilder;
 }
 
-export default function createPagesSearchResultBuilder() {
+export default function createPagesSearchResultBuilder(): PagesSearchResultBuilder {
   const pageItems: PageItem[] = [];
   let totalPagesCount = 0;
   let id = -1;

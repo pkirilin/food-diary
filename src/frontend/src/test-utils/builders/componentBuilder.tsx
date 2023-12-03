@@ -1,25 +1,25 @@
 import { StyledEngineProvider, ThemeProvider } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import React from 'react';
+import { type ReactElement, type ComponentType, type PropsWithChildren } from 'react';
 import { Provider } from 'react-redux';
 import theme from 'src/theme';
-import { createTestStore, TestStoreBuilder } from './storeBuilder';
+import { createTestStore, type TestStoreBuilder } from './storeBuilder';
 
 export interface TestComponentBuilder {
-  please: () => React.ReactElement;
+  please: () => ReactElement;
   withReduxStore: (
     configure?: (builder: TestStoreBuilder) => TestStoreBuilder,
   ) => TestComponentBuilder;
 }
 
-type WrapperType = React.ComponentType<React.PropsWithChildren<unknown>>;
+type WrapperType = ComponentType<PropsWithChildren<unknown>>;
 
-const createComponentBuilder = (component: React.ReactElement) => {
+const createComponentBuilder = (component: ReactElement): TestComponentBuilder => {
   const wrappers: WrapperType[] = [];
 
   const builder: TestComponentBuilder = {
-    please: (): React.ReactElement => {
+    please: (): ReactElement => {
       const ui = wrappers.reduceRight(
         (element, Wrapper) => <Wrapper>{element}</Wrapper>,
         component,

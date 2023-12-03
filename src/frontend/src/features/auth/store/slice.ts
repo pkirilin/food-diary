@@ -1,10 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { authApi } from '../api';
-import { AuthUserState } from './types';
+import { type AuthUserState } from './types';
 
-export type AuthState = {
+export interface AuthState {
   user?: AuthUserState;
-};
+}
 
 const initialState: AuthState = {};
 

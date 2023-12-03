@@ -1,16 +1,16 @@
 import { Box, Button, Paper, TextField } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import { type FC, type FocusEvent, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { CategorySelect } from 'src/features/categories';
-import { SelectOption } from 'src/types';
+import { type SelectOption } from 'src/types';
 import { useAppSelector, useValidatedTextInput } from '../../__shared__/hooks';
 import { useFilterStyles } from '../../__shared__/styles';
 import { filterByCategoryChanged, filterReset, productSearchNameChanged } from '../store';
 
-const ProductsFilter: React.FC = () => {
+const ProductsFilter: FC = () => {
   const classes = useFilterStyles();
 
-  const filterProductName = useAppSelector(state => state.products.filter.productSearchName || '');
+  const filterProductName = useAppSelector(state => state.products.filter.productSearchName ?? '');
   const filterCategory = useAppSelector(state => state.products.filter.category);
   const filterChanged = useAppSelector(state => state.products.filter.changed);
 
@@ -31,18 +31,18 @@ const ProductsFilter: React.FC = () => {
     setCategory(filterCategory);
   }, [filterCategory]);
 
-  function handleProductSearchNameBlur(event: React.FocusEvent<HTMLInputElement>) {
+  const handleProductSearchNameBlur = (event: FocusEvent<HTMLInputElement>): void => {
     dispatch(productSearchNameChanged(event.target.value));
-  }
+  };
 
-  function handleCategoryChange(value: SelectOption | null) {
+  const handleCategoryChange = (value: SelectOption | null): void => {
     setCategory(value);
     dispatch(filterByCategoryChanged(value));
-  }
+  };
 
-  function handleReset() {
+  const handleReset = (): void => {
     dispatch(filterReset());
-  }
+  };
 
   return (
     <Box component={Paper} className={classes.root}>

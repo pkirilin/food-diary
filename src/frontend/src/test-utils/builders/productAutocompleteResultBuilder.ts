@@ -1,11 +1,11 @@
-import { SelectOption } from 'src/types';
+import { type SelectOption } from 'src/types';
 
 export interface ProductAutocompleteResultBuilder {
   please: () => SelectOption[];
   withOption: (name: string) => ProductAutocompleteResultBuilder;
 }
 
-export default function createProductAutocompleteResultBuilder() {
+export default function createProductAutocompleteResultBuilder(): ProductAutocompleteResultBuilder {
   let id = 0;
   const options: SelectOption[] = [];
 

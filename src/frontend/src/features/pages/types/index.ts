@@ -1,4 +1,4 @@
-export type UseExportResult = {
+export interface UseExportResult {
   isLoading: boolean;
   start: () => void;
-};
+}

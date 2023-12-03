@@ -1,16 +1,16 @@
 import { Paper, Typography } from '@mui/material';
 import { Container, Box } from '@mui/system';
 import visuallyHidden from '@mui/utils/visuallyHidden';
-import { FC, useCallback } from 'react';
+import { type FC, useCallback } from 'react';
 import { DEMO_MODE_ENABLED } from 'src/config';
 import { useAppSelector, useAppDispatch } from 'src/hooks';
-import { SortOrder } from 'src/types';
+import { type SortOrder } from 'src/types';
 import DemoPagesWarning from '../components/DemoPagesWarning';
 import PagesFilterAppliedParams from '../components/PagesFilterAppliedParams';
 import PagesTable from '../components/PagesTable';
 import PagesTablePagination from '../components/PagesTablePagination';
 import PagesToolbar from '../components/PagesToolbar';
-import { PageItemsFilter } from '../models';
+import { type PageItemsFilter } from '../models';
 import { allPagesSelected, sortOrderChanged } from '../slice';
 import { getPages } from '../thunks';
 
@@ -23,7 +23,7 @@ const Pages: FC = () => {
 
   const handleRefetch = useCallback(
     ({ sortOrder, pageNumber, pageSize, startDate, endDate }: PageItemsFilter) => {
-      dispatch(
+      void dispatch(
         getPages({
           sortOrder,
           pageNumber,

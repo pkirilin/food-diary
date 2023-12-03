@@ -1,10 +1,10 @@
 import { TablePagination } from '@mui/material';
-import React from 'react';
+import { type FC } from 'react';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '../../__shared__/hooks';
 import { pageNumberChanged, pageSizeChanged } from '../slice';
 
-const PagesTablePagination: React.FC = () => {
+const PagesTablePagination: FC = () => {
   const pageNumber = useAppSelector(state => state.pages.filter.pageNumber);
   const pageSize = useAppSelector(state => state.pages.filter.pageSize);
   const totalPagesCount = useAppSelector(state => state.pages.totalPagesCount);

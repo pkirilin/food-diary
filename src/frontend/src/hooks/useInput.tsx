@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
-import { InputOptions, MapToInputPropsFunction, ValidatorFunction } from 'src/types';
+import { type InputOptions, type MapToInputPropsFunction, type ValidatorFunction } from 'src/types';
 
-type UseInputOptions<TValue, TProps> = {
+interface UseInputOptions<TValue, TProps> {
   initialValue: TValue;
   errorHelperText: string;
   validate: ValidatorFunction<TValue>;
   mapToInputProps: MapToInputPropsFunction<TValue, TProps>;
-};
+}
 
 type UseInputResult<TValue, TProps> = InputOptions<TValue> & {
   clearValue: () => void;

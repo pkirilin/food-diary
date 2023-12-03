@@ -1,18 +1,17 @@
 import { Box, Container } from '@mui/material';
-import React, { useEffect } from 'react';
+import { type FC, useEffect } from 'react';
 import { useAppDispatch, useRouterId } from 'src/hooks';
 import { MealsList } from '../../notes/components';
 import { getNotes } from '../../notes/thunks';
 import { getPageById } from '../thunks';
 import PageContentHeader from './PageContentHeader';
 
-const PageContent: React.FC = () => {
+const PageContent: FC = () => {
   const pageId = useRouterId('id');
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(getPageById(pageId));
-    dispatch(getNotes({ pageId }));
+    void Promise.allSettled([dispatch(getPageById(pageId)), dispatch(getNotes({ pageId }))]);
   }, [dispatch, pageId]);
 
   return (

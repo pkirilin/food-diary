@@ -1,7 +1,11 @@
-import { http, HttpHandler, HttpResponse, PathParams } from 'msw';
+import { http, type HttpHandler, HttpResponse, type PathParams } from 'msw';
 import { API_URL } from 'src/config';
-import { CreateProductRequest, EditProductRequest, ProductsResponse } from 'src/features/products';
-import { SelectOption } from 'src/types';
+import {
+  type CreateProductRequest,
+  type EditProductRequest,
+  type ProductsResponse,
+} from 'src/features/products';
+import { type SelectOption } from 'src/types';
 import * as productsService from './products.service';
 
 export const handlers: HttpHandler[] = [

@@ -28,8 +28,7 @@ export const db = factory({
   },
 });
 
-export type Db = typeof db;
-
-export type DbPage = NonNullable<ReturnType<Db['page']['findFirst']>>;
-export type DbNote = NonNullable<ReturnType<Db['note']['findFirst']>>;
-export type DbProduct = NonNullable<ReturnType<Db['product']['findFirst']>>;
+export type DbPage = ReturnType<typeof db.page.findMany>[0];
+export type DbNote = ReturnType<typeof db.note.findMany>[0];
+export type DbProduct = ReturnType<typeof db.product.findMany>[0];
+export type DbCategory = ReturnType<typeof db.category.findMany>[0];

@@ -1,11 +1,11 @@
 import { Box, CircularProgress, Typography } from '@mui/material';
-import React from 'react';
+import { type FC } from 'react';
 
-type AuthCallbackProgressProps = {
+interface AuthCallbackProgressProps {
   label: string;
-};
+}
 
-const AuthCallbackProgress: React.FC<AuthCallbackProgressProps> = ({ label }) => {
+const AuthCallbackProgress: FC<AuthCallbackProgressProps> = ({ label }) => {
   return (
     <Box height="100vh" display="flex" justifyContent="center" alignItems="center">
       <Box display="flex" alignItems="center" gap={2} p={4}>

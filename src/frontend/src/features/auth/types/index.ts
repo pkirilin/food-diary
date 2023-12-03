@@ -1,5 +1,5 @@
-import { Location } from 'react-router-dom';
+import { type Location } from 'react-router-dom';
 
-export type NavigationState = {
+export interface NavigationState {
   from?: Location;
-};
+}

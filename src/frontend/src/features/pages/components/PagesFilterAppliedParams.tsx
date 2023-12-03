@@ -2,17 +2,15 @@ import EventIcon from '@mui/icons-material/Event';
 import TodayIcon from '@mui/icons-material/Today';
 import { Box, Chip, Tooltip } from '@mui/material';
 import dateFnsFormat from 'date-fns/format';
-import React from 'react';
+import { type FC } from 'react';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '../../__shared__/hooks';
 import { useFilterAppliedParamsStyles } from '../../__shared__/styles';
 import { endDateChanged, startDateChanged } from '../slice';
 
-function formatDate(date: string) {
-  return dateFnsFormat(new Date(date), 'dd.MM.yyyy');
-}
+const formatDate = (date: string): string => dateFnsFormat(new Date(date), 'dd.MM.yyyy');
 
-const PagesFilterAppliedParams: React.FC = () => {
+const PagesFilterAppliedParams: FC = () => {
   const classes = useFilterAppliedParamsStyles();
 
   const startDate = useAppSelector(state => state.pages.filter.startDate);

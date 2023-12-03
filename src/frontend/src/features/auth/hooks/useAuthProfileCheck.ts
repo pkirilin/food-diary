@@ -11,7 +11,7 @@ export default function useAuthProfileCheck(): void {
     }
 
     const interval = setInterval(() => {
-      getProfile({});
+      void getProfile({});
     }, AUTH_CHECK_INTERVAL);
 
     return () => {

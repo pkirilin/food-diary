@@ -1,13 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { Status } from '../__shared__/models';
-import { AnyAsyncThunk, createAsyncThunkMatcher } from '../__shared__/utils';
-import { Meals, MealType, NoteItem } from './models';
-import { createNote, deleteNote, editNote, getNotes, NoteOperationPayload } from './thunks';
+import { type Status } from '../__shared__/models';
+import { type AnyAsyncThunk, createAsyncThunkMatcher } from '../__shared__/utils';
+import { MealType, type NoteItem } from './models';
+import { createNote, deleteNote, editNote, getNotes, type NoteOperationPayload } from './thunks';
 
-export type NotesState = {
+export interface NotesState {
   noteItems: NoteItem[];
   operationStatusesByMealType: Record<MealType, Status>;
-};
+}
 
 const initialState: NotesState = {
   noteItems: [],
@@ -15,13 +15,13 @@ const initialState: NotesState = {
 };
 
 function getInitialOperationStatuses(): Record<MealType, Status> {
-  return Meals.get().reduce(
-    (statuses, mealType) => {
-      statuses[mealType] = 'idle';
-      return statuses;
-    },
-    {} as Record<MealType, Status>,
-  );
+  return {
+    [MealType.Breakfast]: 'idle',
+    [MealType.SecondBreakfast]: 'idle',
+    [MealType.Lunch]: 'idle',
+    [MealType.AfternoonSnack]: 'idle',
+    [MealType.Dinner]: 'idle',
+  };
 }
 
 const operationThunks = [createNote, editNote, deleteNote];

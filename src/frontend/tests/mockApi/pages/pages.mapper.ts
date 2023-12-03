@@ -1,6 +1,6 @@
-import { Page } from 'src/features/pages';
+import { type Page } from 'src/features/pages';
 import { formatDate } from 'src/utils';
-import { DbPage } from '../db';
+import { type DbPage } from '../db';
 
 export const mapToPage = ({ id, date }: DbPage): Page => ({
   id,

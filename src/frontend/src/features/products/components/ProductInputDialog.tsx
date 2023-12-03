@@ -1,5 +1,5 @@
 import { TextField } from '@mui/material';
-import React, { useEffect } from 'react';
+import { useEffect, type FC, type Dispatch, type SetStateAction } from 'react';
 import { AppButton, AppDialog } from 'src/components';
 import { CategorySelect } from 'src/features/categories';
 import { useInput } from 'src/hooks';
@@ -13,19 +13,19 @@ import {
   validateProductName,
   validateSelectOption,
 } from 'src/utils/validation';
-import { ProductFormData } from '../types';
+import { type ProductFormData } from '../types';
 
-type ProductInputDialogProps = {
+interface ProductInputDialogProps {
   isOpened: boolean;
-  setIsOpened: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsOpened: Dispatch<SetStateAction<boolean>>;
   title: string;
   submitText: string;
   onSubmit: (product: ProductFormData) => void;
   isLoading: boolean;
   product?: ProductFormData;
-};
+}
 
-const ProductInputDialog: React.FC<ProductInputDialogProps> = ({
+const ProductInputDialog: FC<ProductInputDialogProps> = ({
   isOpened: isDialogOpened,
   setIsOpened: setIsDialogOpened,
   title,
@@ -41,7 +41,7 @@ const ProductInputDialog: React.FC<ProductInputDialogProps> = ({
     isInvalid: isProductNameInvalid,
     isTouched: isProductNameTouched,
   } = useInput({
-    initialValue: product?.name || '',
+    initialValue: product?.name ?? '',
     errorHelperText: 'Product name is invalid',
     validate: validateProductName,
     mapToInputProps: mapToTextInputProps,
@@ -54,7 +54,7 @@ const ProductInputDialog: React.FC<ProductInputDialogProps> = ({
     isInvalid: isCaloriesCostInvalid,
     isTouched: isCaloriesCostTouched,
   } = useInput({
-    initialValue: product?.caloriesCost || 100,
+    initialValue: product?.caloriesCost ?? 100,
     errorHelperText: 'Calories cost is invalid',
     validate: validateCaloriesCost,
     mapToInputProps: mapToNumericInputProps,
@@ -67,7 +67,7 @@ const ProductInputDialog: React.FC<ProductInputDialogProps> = ({
     isInvalid: isCategoryInvalid,
     isTouched: isCategoryTouched,
   } = useInput({
-    initialValue: product?.category || null,
+    initialValue: product?.category ?? null,
     errorHelperText: 'Category is required',
     validate: validateSelectOption,
     mapToInputProps: mapToSelectProps,
@@ -81,11 +81,11 @@ const ProductInputDialog: React.FC<ProductInputDialogProps> = ({
     }
   }, [clearCaloriesCost, clearCategory, clearProductName, isDialogOpened]);
 
-  function handleClose() {
+  const handleClose = (): void => {
     setIsDialogOpened(false);
-  }
+  };
 
-  function handleSubmit() {
+  const handleSubmit = (): void => {
     if (category) {
       onSubmit({
         name: productName,
@@ -93,7 +93,7 @@ const ProductInputDialog: React.FC<ProductInputDialogProps> = ({
         category,
       });
     }
-  }
+  };
 
   const isAnyValueInvalid = isProductNameInvalid || isCaloriesCostInvalid || isCategoryInvalid;
   const isAnyValueChanged = isProductNameTouched || isCaloriesCostTouched || isCategoryTouched;

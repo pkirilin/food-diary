@@ -1,31 +1,28 @@
 import CategoryIcon from '@mui/icons-material/Category';
 import SearchIcon from '@mui/icons-material/Search';
 import { Box, Chip, Tooltip } from '@mui/material';
-import React from 'react';
-import { useDispatch } from 'react-redux';
-import { useAppSelector } from '../../__shared__/hooks';
+import { type FC } from 'react';
+import { useAppDispatch, useAppSelector } from 'src/store';
 import { useFilterAppliedParamsStyles } from '../../__shared__/styles';
 import { filterByCategoryChanged, productSearchNameChanged } from '../store';
 
-const ProductsFilterAppliedParams: React.FC = () => {
+const ProductsFilterAppliedParams: FC = () => {
   const classes = useFilterAppliedParamsStyles();
-
   const productSearchName = useAppSelector(state => state.products.filter.productSearchName);
   const category = useAppSelector(state => state.products.filter.category);
-
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   if (!productSearchName && !category) {
     return null;
   }
 
-  function handleProductSearchNameClear() {
+  const handleProductSearchNameClear = (): void => {
     dispatch(productSearchNameChanged(''));
-  }
+  };
 
-  function handleCategoryClear() {
+  const handleCategoryClear = (): void => {
     dispatch(filterByCategoryChanged(null));
-  }
+  };
 
   return (
     <Box className={classes.root}>

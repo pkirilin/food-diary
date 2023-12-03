@@ -1,16 +1,16 @@
 import { Typography } from '@mui/material';
-import React, { useEffect } from 'react';
+import { useEffect, type FC, type Dispatch, type SetStateAction } from 'react';
 import { AppButton, AppDialog } from 'src/components';
 import { categoriesApi } from '../api';
-import { Category } from '../types';
+import { type Category } from '../types';
 
-type DeleteCategoryDialogProps = {
+interface DeleteCategoryDialogProps {
   isOpened: boolean;
-  setIsOpened: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsOpened: Dispatch<SetStateAction<boolean>>;
   category: Category;
-};
+}
 
-const DeleteCategoryDialog: React.FC<DeleteCategoryDialogProps> = ({
+const DeleteCategoryDialog: FC<DeleteCategoryDialogProps> = ({
   isOpened: isDialogOpened,
   setIsOpened: setIsDialogOpened,
   category,
@@ -23,13 +23,13 @@ const DeleteCategoryDialog: React.FC<DeleteCategoryDialogProps> = ({
     }
   }, [deleteCategoryRequest.isSuccess, setIsDialogOpened]);
 
-  function handleClose() {
+  const handleClose = (): void => {
     setIsDialogOpened(false);
-  }
+  };
 
-  function handleSubmit() {
-    deleteCategory(category.id);
-  }
+  const handleSubmit = (): void => {
+    void deleteCategory(category.id);
+  };
 
   return (
     <AppDialog

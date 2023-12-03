@@ -1,6 +1,6 @@
 import { Box, Container, Paper, Typography } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
-import React from 'react';
+import { type FC } from 'react';
 import { useAppDispatch } from 'src/hooks';
 import { useAppSelector } from 'src/store';
 import { productsApi } from '../api';
@@ -10,9 +10,9 @@ import ProductsTablePagination from '../components/ProductsTablePagination';
 import ProductsTableToolbar from '../components/ProductsTableToolbar';
 import { selectProductsQueryArg, selectCheckedProductIds } from '../selectors';
 import { productsUnchecked, productsChecked } from '../store';
-import { Product } from '../types';
+import { type Product } from '../types';
 
-const Products: React.FC = () => {
+const Products: FC = () => {
   const getProductsQueryArg = useAppSelector(selectProductsQueryArg);
   const getProductsQuery = productsApi.useGetProductsQuery(getProductsQueryArg);
   const checkedProductIds = useAppSelector(selectCheckedProductIds);

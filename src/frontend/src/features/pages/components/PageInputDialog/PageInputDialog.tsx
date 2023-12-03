@@ -1,20 +1,20 @@
 import { Button } from '@mui/material';
-import { FC, useEffect } from 'react';
+import { type FC, useEffect } from 'react';
 import { AppDialog, DatePicker } from 'src/components';
 import { useInput } from 'src/hooks';
 import { formatDate } from 'src/utils';
 import { mapToDateInputProps } from 'src/utils/inputMapping';
 import { validateDate } from 'src/utils/validation';
-import { PageCreateEdit } from '../../models';
+import { type PageCreateEdit } from '../../models';
 
-type PageInputDialogProps = {
+interface PageInputDialogProps {
   title: string;
   isOpened: boolean;
   submitText: string;
   initialDate: Date;
   onClose: () => void;
   onSubmit: (page: PageCreateEdit) => void;
-};
+}
 
 const PageInputDialog: FC<PageInputDialogProps> = ({
   title,
@@ -34,7 +34,7 @@ const PageInputDialog: FC<PageInputDialogProps> = ({
   const setDate = dateInput.setValue;
 
   useEffect(() => {
-    if (isOpened && initialDate) {
+    if (isOpened) {
       setDate(initialDate);
     }
   }, [initialDate, isOpened, setDate]);

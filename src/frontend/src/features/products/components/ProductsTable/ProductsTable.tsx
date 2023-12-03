@@ -8,19 +8,19 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
-import React from 'react';
+import { type FC, type ReactElement } from 'react';
 import { AppLinearProgress } from 'src/components';
-import { Product } from '../../types';
+import { type Product } from '../../types';
 import ProductsTableRow from '../ProductsTableRow';
 
-type ProductsTableProps = {
+interface ProductsTableProps {
   products: Product[];
   isLoading: boolean;
   checkedIds: number[];
   onCheckedChange: (products: Product[], newCheckedIds: number[]) => void;
-};
+}
 
-const ProductsTable: React.FC<ProductsTableProps> = ({
+const ProductsTable: FC<ProductsTableProps> = ({
   products,
   isLoading,
   checkedIds,
@@ -32,7 +32,7 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
     onCheckedChange(products, checkedIds);
   };
 
-  function renderRows() {
+  const renderRows = (): ReactElement => {
     if (products.length === 0) {
       return (
         <TableRow>
@@ -43,8 +43,14 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
       );
     }
 
-    return products.map(product => <ProductsTableRow key={product.id} product={product} />);
-  }
+    return (
+      <>
+        {products.map(product => (
+          <ProductsTableRow key={product.id} product={product} />
+        ))}
+      </>
+    );
+  };
 
   return (
     <TableContainer sx={{ position: 'relative' }}>

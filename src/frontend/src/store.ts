@@ -1,13 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { api } from './api';
-import { useAppSelector } from './features/__shared__/hooks';
+import { useAppDispatch, useAppSelector } from './features/__shared__/hooks';
 import authReducer from './features/auth/store';
 import notesReducer from './features/notes/slice';
 import pagesReducer from './features/pages/slice';
 import productsReducer from './features/products/store';
 
-export function configureAppStore() {
-  return configureStore({
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+export const configureAppStore = () =>
+  configureStore({
     reducer: {
       [api.reducerPath]: api.reducer,
       auth: authReducer,
@@ -18,14 +19,13 @@ export function configureAppStore() {
 
     middleware: getDefaultMiddleware => getDefaultMiddleware().concat(api.middleware),
   });
-}
 
-const store = configureAppStore();
+const store: ReturnType<typeof configureAppStore> = configureAppStore();
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 export type AppStore = ReturnType<typeof configureAppStore>;
 
-export { useAppSelector };
+export { useAppSelector, useAppDispatch };
 
 export default store;

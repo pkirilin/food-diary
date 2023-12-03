@@ -1,8 +1,8 @@
 import { Box } from '@mui/material';
-import React from 'react';
+import { type FC } from 'react';
 import { AppRoutes } from './routes';
 
-const App: React.FC = () => {
+const App: FC = () => {
   return (
     <Box component="main" position="relative">
       <AppRoutes />

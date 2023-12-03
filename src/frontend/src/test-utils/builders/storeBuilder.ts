@@ -1,10 +1,10 @@
-import { AppStore, configureAppStore } from '../../store';
+import { type AppStore, configureAppStore } from '../../store';
 
 export interface TestStoreBuilder {
   please: () => AppStore;
 }
 
-export const createTestStore = () => {
+export const createTestStore = (): TestStoreBuilder => {
   const store = configureAppStore();
 
   const builder: TestStoreBuilder = {

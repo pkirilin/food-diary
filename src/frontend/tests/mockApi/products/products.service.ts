@@ -1,19 +1,19 @@
-import { CreateProductRequest, EditProductRequest } from 'src/features/products';
-import { db, DbProduct } from '../db';
+import { type CreateProductRequest, type EditProductRequest } from 'src/features/products';
+import { db, type DbProduct } from '../db';
 
-type GetProductsRequest = {
+interface GetProductsRequest {
   pageNumber: number;
   pageSize: number;
   categoryId: number | null;
   productSearchName: string | null;
-};
+}
 
 export const get = ({
   pageNumber,
   pageSize,
   categoryId,
   productSearchName,
-}: GetProductsRequest) => {
+}: GetProductsRequest): DbProduct[] => {
   let productItems = db.product.findMany({
     where: {
       categoryId: categoryId === null ? {} : { equals: categoryId },
@@ -30,7 +30,7 @@ export const get = ({
   return productItems;
 };
 
-export const getAll = () => db.product.getAll();
+export const getAll = (): DbProduct[] => db.product.getAll();
 
 export const getCategoryNames = (products: DbProduct[]): Map<number, string> => {
   return products
@@ -123,7 +123,7 @@ export const update = (
   return 'Success';
 };
 
-export const deleteMany = (ids: number[]) => {
+export const deleteMany = (ids: number[]): void => {
   db.note.deleteMany({
     where: {
       productId: { in: ids },

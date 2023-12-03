@@ -1,4 +1,4 @@
-export type DatePickerProps = {
+export interface DatePickerProps {
   date: Date | null;
   onChange: (value: Date | null) => void;
   label?: string;
@@ -6,4 +6,4 @@ export type DatePickerProps = {
   autoFocus?: boolean;
   isInvalid?: boolean;
   helperText?: string;
-};
+}

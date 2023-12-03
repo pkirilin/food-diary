@@ -1,14 +1,14 @@
 import { Button, TextField } from '@mui/material';
-import { FC, useEffect } from 'react';
+import { type FC, useEffect } from 'react';
 import { AppDialog } from 'src/components';
 import { ProductSelect } from 'src/features/products';
 import { useInput } from 'src/hooks';
-import { SelectOption } from 'src/types';
+import { type SelectOption } from 'src/types';
 import { mapToNumericInputProps, mapToSelectProps } from 'src/utils/inputMapping';
 import { validateQuantity, validateSelectOption } from 'src/utils/validation';
-import { MealType, NoteCreateEdit } from '../models';
+import { type MealType, type NoteCreateEdit } from '../models';
 
-type NoteInputDialogProps = {
+interface NoteInputDialogProps {
   title: string;
   submitText: string;
   isOpened: boolean;
@@ -19,7 +19,7 @@ type NoteInputDialogProps = {
   displayOrder: number;
   onClose: () => void;
   onSubmit: (note: NoteCreateEdit) => void;
-};
+}
 
 const NoteInputDialog: FC<NoteInputDialogProps> = ({
   title,

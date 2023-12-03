@@ -1,7 +1,7 @@
 import { render, screen, waitForElementToBeRemoved } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import React, { useState } from 'react';
-import { SelectOption } from 'src/types';
+import { type FC, useState } from 'react';
+import { type SelectOption } from 'src/types';
 import AppSelect from './AppSelect';
 
 const TEST_OPTIONS: SelectOption[] = [
@@ -19,13 +19,13 @@ const TEST_OPTIONS: SelectOption[] = [
   },
 ];
 
-type AppSelectTestProps = {
+interface AppSelectTestProps {
   initialValue?: SelectOption | null;
   allowEmptyOptions?: boolean;
   errorText?: string;
-};
+}
 
-const AppSelectTest: React.FC<AppSelectTestProps> = ({
+const AppSelectTest: FC<AppSelectTestProps> = ({
   initialValue = null,
   allowEmptyOptions,
   errorText,
@@ -35,19 +35,19 @@ const AppSelectTest: React.FC<AppSelectTestProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [optionsLoaded, setOptionsLoaded] = useState(false);
 
-  function getDisplayName({ name }: SelectOption) {
-    return name;
-  }
+  const getDisplayName = (option: SelectOption): string => {
+    return option.name;
+  };
 
-  function areOptionsEqual(first: SelectOption, second: SelectOption) {
+  const areOptionsEqual = (first: SelectOption, second: SelectOption): boolean => {
     return first.name === second.name;
-  }
+  };
 
-  function handleChange(newValue: SelectOption | null) {
-    setValue(newValue);
-  }
+  const handleChange = (value: SelectOption | null): void => {
+    setValue(value);
+  };
 
-  function handleOpen() {
+  const handleOpen = (): void => {
     if (optionsLoaded) {
       return;
     }
@@ -59,7 +59,7 @@ const AppSelectTest: React.FC<AppSelectTestProps> = ({
       setIsLoading(false);
       setOptionsLoaded(true);
     }, 50);
-  }
+  };
 
   return (
     <AppSelect

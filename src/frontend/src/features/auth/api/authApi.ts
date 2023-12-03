@@ -1,5 +1,5 @@
 import { api } from 'src/api';
-import { AuthProfileResponse } from './contracts';
+import { type AuthProfileResponse } from './contracts';
 
 export const authApi = api.injectEndpoints({
   endpoints: builder => ({

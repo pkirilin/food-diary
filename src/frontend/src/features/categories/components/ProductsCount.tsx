@@ -1,11 +1,14 @@
 import { Typography } from '@mui/material';
-import { Category } from '../types';
+import { type FC } from 'react';
+import { type Category } from '../types';
 
-type CategoryProductsCountProps = {
+interface CategoryProductsCountProps {
   category: Category;
-};
+}
 
-const ProductsCount = ({ category }: CategoryProductsCountProps) => {
+const ProductsCount: FC<CategoryProductsCountProps> = ({
+  category,
+}: CategoryProductsCountProps) => {
   const { countProducts: value } = category;
   const prefix = value === 0 ? 'no' : value.toString();
   const suffix = value === 1 ? 'product' : 'products';

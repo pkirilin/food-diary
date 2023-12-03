@@ -9,12 +9,12 @@ import {
   TableSortLabel,
   Typography,
 } from '@mui/material';
-import React, { useEffect, useState } from 'react';
-import { SortOrder, Status } from '../../../__shared__/models';
-import { PageItem, PageItemsFilter } from '../../models';
+import { type FC, useEffect, useState } from 'react';
+import { SortOrder, type Status } from '../../../__shared__/models';
+import { type PageItem, type PageItemsFilter } from '../../models';
 import PagesTableRow from '../PagesTableRow';
 
-type PagesTableProps = {
+interface PagesTableProps {
   pages: PageItem[];
   selectedPagesCount: number;
   filter: PageItemsFilter;
@@ -22,9 +22,9 @@ type PagesTableProps = {
   onRefetch: (filter: PageItemsFilter) => void;
   onSelectAll: (isSelected: boolean) => void;
   onReorder: (order: SortOrder) => void;
-};
+}
 
-const PagesTable: React.FC<PagesTableProps> = ({
+const PagesTable: FC<PagesTableProps> = ({
   pages,
   selectedPagesCount,
   filter,

@@ -1,7 +1,7 @@
-import { SvgIcon, SvgIconProps } from '@mui/material';
-import React from 'react';
+import { SvgIcon, type SvgIconProps } from '@mui/material';
+import { type FC } from 'react';
 
-const GoogleIcon: React.FC<SvgIconProps> = ({ ...props }) => {
+const GoogleIcon: FC<SvgIconProps> = ({ ...props }) => {
   return (
     <SvgIcon {...props} viewBox="-.5 0 48 48">
       <g fill="none" fillRule="evenodd">

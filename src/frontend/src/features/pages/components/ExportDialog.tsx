@@ -1,19 +1,19 @@
-import React, { useEffect } from 'react';
+import { type FC, useEffect } from 'react';
 import { AppButton, AppDialog, DatePicker } from 'src/components';
 import { useInput } from 'src/hooks';
 import { mapToDateInputProps } from 'src/utils/inputMapping';
 import { validateDate } from 'src/utils/validation';
 import { useExportToGoogleDocs } from '../hooks/useExportToGoogleDocs';
 import { useExportToJson } from '../hooks/useExportToJson';
-import { ExportFormat } from '../models';
+import { type ExportFormat } from '../models';
 
-type ExportDialogProps = {
+interface ExportDialogProps {
   format: ExportFormat;
   isOpen: boolean;
   onClose: () => void;
-};
+}
 
-const ExportDialog: React.FC<ExportDialogProps> = ({ format: exportFormat, isOpen, onClose }) => {
+const ExportDialog: FC<ExportDialogProps> = ({ format: exportFormat, isOpen, onClose }) => {
   const startDateInput = useInput({
     initialValue: null,
     errorHelperText: 'Start date is required',

@@ -1,7 +1,11 @@
 import { api } from 'src/api';
-import { SelectOption } from 'src/types';
-import { Category } from '../types';
-import { CreateCategoryRequest, DeleteCategoryRequest, EditCategoryRequest } from './contracts';
+import { type SelectOption } from 'src/types';
+import { type Category } from '../types';
+import {
+  type CreateCategoryRequest,
+  type DeleteCategoryRequest,
+  type EditCategoryRequest,
+} from './contracts';
 
 export const categoriesApi = api.injectEndpoints({
   endpoints: builder => ({

@@ -1,4 +1,4 @@
-import { ValidatorFunction } from './hooks/types';
+import { type ValidatorFunction } from './hooks/types';
 
 export const createDateValidator = (isRequired: boolean): ValidatorFunction<Date | null> => {
   return date =>

@@ -6,29 +6,25 @@ export enum MealType {
   Dinner = 5,
 }
 
-export class Meals {
-  private static readonly _availableMeals: Map<MealType, string> = new Map<MealType, string>([
-    [MealType.Breakfast, 'Breakfast'],
-    [MealType.SecondBreakfast, 'Second breakfast'],
-    [MealType.Lunch, 'Lunch'],
-    [MealType.AfternoonSnack, 'Afternoon snack'],
-    [MealType.Dinner, 'Dinner'],
-  ]);
+const AVAILABLE_MEALS: Map<MealType, string> = new Map<MealType, string>([
+  [MealType.Breakfast, 'Breakfast'],
+  [MealType.SecondBreakfast, 'Second breakfast'],
+  [MealType.Lunch, 'Lunch'],
+  [MealType.AfternoonSnack, 'Afternoon snack'],
+  [MealType.Dinner, 'Dinner'],
+]);
 
-  public static get(): MealType[] {
-    return Array.from(this._availableMeals.keys());
+export const getMealTypes = (): MealType[] => Array.from(AVAILABLE_MEALS.keys());
+
+export const getMealName = (mealType: MealType): string => {
+  const mealName = AVAILABLE_MEALS.get(mealType);
+
+  if (!mealName) {
+    throw new Error(`Meal type = '${mealType}' doesn't exist`);
   }
 
-  public static getName(mealType: MealType): string {
-    const mealName = this._availableMeals.get(mealType);
-
-    if (!mealName) {
-      throw new Error(`Meal type = '${mealType}' doesn't exist`);
-    }
-
-    return mealName;
-  }
-}
+  return mealName;
+};
 
 export interface NoteItem {
   id: number;

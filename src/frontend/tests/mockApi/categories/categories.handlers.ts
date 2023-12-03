@@ -1,7 +1,7 @@
-import { http, HttpHandler, HttpResponse, PathParams } from 'msw';
+import { http, type HttpHandler, HttpResponse, type PathParams } from 'msw';
 import { API_URL } from 'src/config';
-import { Category, CategoryFormData } from 'src/features/categories';
-import { SelectOption } from 'src/types';
+import { type Category, type CategoryFormData } from 'src/features/categories';
+import { type SelectOption } from 'src/types';
 import * as categoriesService from './categories.service';
 
 export const handlers: HttpHandler[] = [

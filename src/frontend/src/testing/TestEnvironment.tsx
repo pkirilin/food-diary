@@ -1,15 +1,15 @@
-import React, { useEffect } from 'react';
+import { type PropsWithChildren, type FC, useEffect } from 'react';
 import { useAuth } from 'src/features/auth';
 import { pageSizeChanged } from 'src/features/products/store';
-import { configureAppStore } from 'src/store';
+import { type configureAppStore } from 'src/store';
 
-type TestEnvironmentProps = {
+interface TestEnvironmentProps {
   store: ReturnType<typeof configureAppStore>;
   signOutAfterMilliseconds?: number;
   pageSizeOverride?: number;
-};
+}
 
-const TestEnvironment: React.FC<React.PropsWithChildren<TestEnvironmentProps>> = ({
+const TestEnvironment: FC<PropsWithChildren<TestEnvironmentProps>> = ({
   children,
   store,
   signOutAfterMilliseconds,
@@ -18,7 +18,7 @@ const TestEnvironment: React.FC<React.PropsWithChildren<TestEnvironmentProps>> =
   const { logout } = useAuth();
 
   useEffect(() => {
-    if (!signOutAfterMilliseconds) {
+    if (signOutAfterMilliseconds == null) {
       return;
     }
 
@@ -32,12 +32,12 @@ const TestEnvironment: React.FC<React.PropsWithChildren<TestEnvironmentProps>> =
   }, [logout, signOutAfterMilliseconds]);
 
   useEffect(() => {
-    if (pageSizeOverride) {
+    if (pageSizeOverride != null) {
       store.dispatch(pageSizeChanged(pageSizeOverride));
     }
   }, [pageSizeOverride, store]);
 
-  return <React.Fragment>{children}</React.Fragment>;
+  return <>{children}</>;
 };
 
 export default TestEnvironment;

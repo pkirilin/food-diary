@@ -1,4 +1,4 @@
-import { Product, ProductFormData } from '../types';
+import { type Product, type ProductFormData } from '../types';
 
 export function toProductFormData({
   name,

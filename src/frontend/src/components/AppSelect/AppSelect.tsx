@@ -1,7 +1,7 @@
 import { Autocomplete, CircularProgress, TextField } from '@mui/material';
-import React from 'react';
+import { type SyntheticEvent, type ReactElement } from 'react';
 
-type AppSelectProps<TOption> = {
+interface AppSelectProps<TOption> {
   availableOptions: TOption[];
   getDisplayName: (value: TOption) => string;
   areOptionsEqual: (first: TOption, second: TOption) => boolean;
@@ -13,7 +13,7 @@ type AppSelectProps<TOption> = {
   helperText?: string;
   isLoading?: boolean;
   isInvalid?: boolean;
-};
+}
 
 const AppSelect = <TOption,>({
   availableOptions,
@@ -27,10 +27,10 @@ const AppSelect = <TOption,>({
   helperText,
   isLoading,
   isInvalid,
-}: AppSelectProps<TOption>): React.ReactElement => {
-  function handleChange(event: React.SyntheticEvent, newValue: TOption | null) {
+}: AppSelectProps<TOption>): ReactElement => {
+  const handleChange = (event: SyntheticEvent, newValue: TOption | null): void => {
     onChange(newValue);
-  }
+  };
 
   return (
     <Autocomplete

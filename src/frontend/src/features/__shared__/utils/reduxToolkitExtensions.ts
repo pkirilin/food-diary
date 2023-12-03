@@ -1,4 +1,4 @@
-import { AnyAction, AsyncThunk, createAsyncThunk } from '@reduxjs/toolkit';
+import { type AnyAction, type AsyncThunk, createAsyncThunk } from '@reduxjs/toolkit';
 
 export type ApiCallAsyncThunk<TData, TArgument> = AsyncThunk<
   TData,
@@ -62,7 +62,7 @@ export function createApiCallAsyncThunk<TData, TArgument>(
       });
 
       if (response.ok) {
-        return getData(response, arg);
+        return await getData(response, arg);
       }
 
       return rejectWithValue(`${defaultErrorMessage}: response was not ok`);
@@ -72,11 +72,8 @@ export function createApiCallAsyncThunk<TData, TArgument>(
   });
 }
 
-export const handleEmptyResponse: ApiResponseHandler<void, unknown> = async () => {
-  return;
-};
+export const handleEmptyResponse: ApiResponseHandler<void, unknown> = async () => {};
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type AnyAsyncThunk<TArgument = any> = AsyncThunk<any, TArgument, Record<string, unknown>>;
 
 type AnyAsyncThunkActionProperties = keyof Pick<

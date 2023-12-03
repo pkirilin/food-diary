@@ -1,5 +1,5 @@
 import { Box, Paper, Stack, Typography } from '@mui/material';
-import React from 'react';
+import { type FC } from 'react';
 import { Navigate } from 'react-router-dom';
 import { AppButton } from 'src/components';
 import { DEMO_MODE_ENABLED } from 'src/config';
@@ -8,13 +8,13 @@ import DemoAuthWarning from './DemoAuthWarning';
 import GoogleIcon from './GoogleIcon';
 import Logo from './Logo';
 
-const Login: React.FC = () => {
+const Login: FC = () => {
   const returnUrl = useReturnUrl();
   const { user, isLoggingIn, login } = useAuth();
 
-  function handleSignInWithGoogle() {
+  const handleSignInWithGoogle = (): void => {
     login({ returnUrl });
-  }
+  };
 
   if (user && user.isAuthenticated) {
     return <Navigate to="/" />;
