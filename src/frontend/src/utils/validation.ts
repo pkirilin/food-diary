@@ -21,7 +21,7 @@ export const validateCategoryName: ValidatorFunction<string> = value =>
   value.length >= 3 && value.length <= 50;
 
 export const validateProductName: ValidatorFunction<string> = value =>
-  value.length >= 3 && value.length <= 50;
+  value.length >= 3 && value.length <= 100;
 
 export const validateCaloriesCost: ValidatorFunction<number> = value => value > 0 && value < 5000;
 
