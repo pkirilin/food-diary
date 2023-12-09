@@ -3,10 +3,11 @@ import { db, type DbNote, type DbProduct } from '../db';
 
 type Result = 'Success' | 'PageNotFound' | 'ProductNotFound';
 
-export const getByPageId = (pageId: number): DbNote[] =>
+export const get = (pageId: number, mealType: number | null): DbNote[] =>
   db.note.findMany({
     where: {
       pageId: { equals: pageId },
+      mealType: mealType === null ? {} : { equals: mealType },
     },
     orderBy: {
       displayOrder: 'asc',

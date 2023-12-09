@@ -3,11 +3,20 @@ import { API_URL } from 'src/config';
 import { type NoteCreateEdit } from 'src/features/notes';
 import * as notesService from './notes.service';
 
+const parseIntOrNull = (value: string | null): number | null =>
+  value === null ? null : parseInt(value);
+
 export const handlers: HttpHandler[] = [
   http.get(`${API_URL}/api/v1/notes`, ({ request }) => {
     const url = new URL(request.url);
-    const pageId = parseInt(url.searchParams.get('pageId') ?? '0');
-    const notes = notesService.getByPageId(pageId);
+    const pageId = parseIntOrNull(url.searchParams.get('pageId'));
+    const mealType = parseIntOrNull(url.searchParams.get('mealType'));
+
+    if (pageId === null) {
+      return new HttpResponse(null, { status: 400 });
+    }
+
+    const notes = notesService.get(pageId, mealType);
     const productsMap = notesService.getProducts(notes);
 
     const response = notes.map(({ id, mealType, displayOrder, productId, quantity }) => {
