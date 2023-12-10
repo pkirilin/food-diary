@@ -8,9 +8,8 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Typography,
 } from '@mui/material';
-import { type FC, useEffect, useMemo, useState } from 'react';
+import { type FC, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector, useRouterId } from 'src/hooks';
 import { type MealType, type NoteCreateEdit } from '../models';
 import { createNote, getNotes } from '../thunks';
@@ -38,11 +37,6 @@ const NotesTable: FC<NotesTableProps> = ({ mealType }: NotesTableProps) => {
   );
 
   const status = useAppSelector(state => state.notes.operationStatusesByMealType[mealType]);
-
-  const totalCalories = useMemo(
-    () => noteItems.reduce((sum, note) => sum + note.calories, 0),
-    [noteItems],
-  );
 
   const [isDialogOpened, setIsDialogOpened] = useState(false);
   const dispatch = useAppDispatch();
@@ -116,11 +110,6 @@ const NotesTable: FC<NotesTableProps> = ({ mealType }: NotesTableProps) => {
         >
           Add note
         </Button>
-      </Box>
-      <Box mt={2}>
-        <Typography variant="subtitle1" align="right">
-          Total calories: {totalCalories}
-        </Typography>
       </Box>
     </TableContainer>
   );

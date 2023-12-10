@@ -13,7 +13,8 @@ import {
 } from '@mui/material';
 import { type FC, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { APP_BAR_HEIGHT, APP_NAME, NAV_LINKS } from '../constants';
+import { APP_BAR_HEIGHT } from 'src/constants';
+import { APP_NAME, NAV_LINKS } from '../constants';
 
 const MobileMenu: FC = () => {
   const [isOpened, setIsOpened] = useState(false);
