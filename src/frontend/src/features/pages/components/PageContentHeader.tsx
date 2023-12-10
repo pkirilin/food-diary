@@ -1,4 +1,12 @@
-import { Breadcrumbs, Link, Stack, Typography, useScrollTrigger } from '@mui/material';
+import {
+  Box,
+  Breadcrumbs,
+  Container,
+  Link,
+  Stack,
+  Typography,
+  useScrollTrigger,
+} from '@mui/material';
 import { useMemo, type FC } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Calories } from 'src/components';
@@ -27,12 +35,7 @@ const PageContentHeader: FC = () => {
   }
 
   return (
-    <Stack
-      direction="row"
-      p={3}
-      gap={2}
-      justifyContent="space-between"
-      alignItems="center"
+    <Box
       position="sticky"
       top={APP_BAR_HEIGHT}
       zIndex={1}
@@ -49,16 +52,25 @@ const PageContentHeader: FC = () => {
         },
       })}
     >
-      <Breadcrumbs>
-        <Link component={RouterLink} fontWeight="bold" to="/pages" underline="hover">
-          Pages
-        </Link>
-        <Typography variant="body1" component="h1" fontWeight="bold">
-          {formatDate(new Date(page.date))}
-        </Typography>
-      </Breadcrumbs>
-      <Calories amount={totalCalories} />
-    </Stack>
+      <Stack
+        component={Container}
+        direction="row"
+        py={3}
+        gap={2}
+        justifyContent="space-between"
+        alignItems="center"
+      >
+        <Breadcrumbs>
+          <Link component={RouterLink} fontWeight="bold" to="/pages" underline="hover">
+            Pages
+          </Link>
+          <Typography variant="body1" component="h1" fontWeight="bold">
+            {formatDate(new Date(page.date))}
+          </Typography>
+        </Breadcrumbs>
+        <Calories amount={totalCalories} />
+      </Stack>
+    </Box>
   );
 };
 
