@@ -1,8 +1,9 @@
 import LogoutIcon from '@mui/icons-material/Logout';
 import { AppBar, Box, Container, IconButton, Toolbar, Tooltip } from '@mui/material';
 import { type FC } from 'react';
+import { APP_BAR_HEIGHT } from 'src/constants';
 import { useAuth } from 'src/features/auth';
-import { APP_BAR_HEIGHT, APP_NAME } from '../constants';
+import { APP_NAME } from '../constants';
 import BrandLink from './BrandLink';
 import Menu from './Menu';
 import MobileMenu from './MobileMenu';

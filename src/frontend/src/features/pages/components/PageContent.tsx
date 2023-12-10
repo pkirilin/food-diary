@@ -15,12 +15,14 @@ const PageContent: FC = () => {
   }, [dispatch, pageId]);
 
   return (
-    <Container>
-      <Box py={3}>
-        <PageContentHeader />
-        <MealsList />
-      </Box>
-    </Container>
+    <>
+      <PageContentHeader />
+      <Container>
+        <Box pb={3}>
+          <MealsList />
+        </Box>
+      </Container>
+    </>
   );
 };
 

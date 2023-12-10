@@ -15,5 +15,3 @@ export const NAV_LINKS = [
     path: '/categories',
   },
 ];
-
-export const APP_BAR_HEIGHT = '75px';

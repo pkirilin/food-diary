@@ -1,13 +1,15 @@
-import { Breadcrumbs, Link, Stack, Typography } from '@mui/material';
+import { Breadcrumbs, Link, Stack, Typography, useScrollTrigger } from '@mui/material';
 import { useMemo, type FC } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Calories } from 'src/components';
+import { APP_BAR_HEIGHT } from 'src/constants';
 import { formatDate } from 'src/utils';
 import { useAppSelector } from '../../__shared__/hooks';
 
+const DIVIDER_VISIBLE_SCROLL_THRESHOLD = 16;
+
 const PageContentHeader: FC = () => {
   const page = useAppSelector(state => state.pages.current);
-
   const noteItems = useAppSelector(state => state.notes.noteItems);
 
   const totalCalories = useMemo(
@@ -15,12 +17,38 @@ const PageContentHeader: FC = () => {
     [noteItems],
   );
 
+  const dividerVisible = useScrollTrigger({
+    threshold: DIVIDER_VISIBLE_SCROLL_THRESHOLD,
+    disableHysteresis: true,
+  });
+
   if (!page) {
     return null;
   }
 
   return (
-    <Stack direction="row" mb={2} gap={2} justifyContent="space-between" alignItems="center">
+    <Stack
+      direction="row"
+      p={3}
+      gap={2}
+      justifyContent="space-between"
+      alignItems="center"
+      position="sticky"
+      top={APP_BAR_HEIGHT}
+      zIndex={1}
+      bgcolor={theme => theme.palette.background.default}
+      sx={theme => ({
+        '::before': {
+          content: '""',
+          position: 'absolute',
+          display: dividerVisible ? 'block' : 'none',
+          left: 0,
+          bottom: 0,
+          width: '100%',
+          border: `1px solid ${theme.palette.divider}`,
+        },
+      })}
+    >
       <Breadcrumbs>
         <Link component={RouterLink} fontWeight="bold" to="/pages" underline="hover">
           Pages
