@@ -1,18 +1,26 @@
-import { Box, Breadcrumbs, Link, Typography } from '@mui/material';
-import { type FC } from 'react';
+import { Breadcrumbs, Link, Stack, Typography } from '@mui/material';
+import { useMemo, type FC } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
+import { Calories } from 'src/components';
 import { formatDate } from 'src/utils';
 import { useAppSelector } from '../../__shared__/hooks';
 
 const PageContentHeader: FC = () => {
   const page = useAppSelector(state => state.pages.current);
 
+  const noteItems = useAppSelector(state => state.notes.noteItems);
+
+  const totalCalories = useMemo(
+    () => noteItems.reduce((sum, note) => sum + note.calories, 0),
+    [noteItems],
+  );
+
   if (!page) {
     return null;
   }
 
   return (
-    <Box mb={2}>
+    <Stack direction="row" mb={2} gap={2} justifyContent="space-between" alignItems="center">
       <Breadcrumbs>
         <Link component={RouterLink} fontWeight="bold" to="/pages" underline="hover">
           Pages
@@ -21,7 +29,8 @@ const PageContentHeader: FC = () => {
           {formatDate(new Date(page.date))}
         </Typography>
       </Breadcrumbs>
-    </Box>
+      <Calories amount={totalCalories} />
+    </Stack>
   );
 };
 

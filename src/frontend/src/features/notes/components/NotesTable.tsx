@@ -8,9 +8,9 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Typography,
 } from '@mui/material';
 import { type FC, useEffect, useMemo, useState } from 'react';
+import { Calories } from 'src/components';
 import { useAppDispatch, useAppSelector, useRouterId } from 'src/hooks';
 import { type MealType, type NoteCreateEdit } from '../models';
 import { createNote, getNotes } from '../thunks';
@@ -117,10 +117,8 @@ const NotesTable: FC<NotesTableProps> = ({ mealType }: NotesTableProps) => {
           Add note
         </Button>
       </Box>
-      <Box mt={2}>
-        <Typography variant="subtitle1" align="right">
-          Total calories: {totalCalories}
-        </Typography>
+      <Box mt={2} textAlign="right">
+        <Calories amount={totalCalories} />
       </Box>
     </TableContainer>
   );
