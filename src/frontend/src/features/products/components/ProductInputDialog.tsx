@@ -35,7 +35,7 @@ const ProductInputDialog: FC<ProductInputDialogProps> = ({
   product,
 }) => {
   const {
-    inputProps: productNameinputProps,
+    inputProps: productNameInputProps,
     value: productName,
     clearValue: clearProductName,
     isInvalid: isProductNameInvalid,
@@ -106,7 +106,7 @@ const ProductInputDialog: FC<ProductInputDialogProps> = ({
       content={
         <>
           <TextField
-            {...productNameinputProps}
+            {...productNameInputProps}
             autoFocus
             fullWidth
             margin="normal"
