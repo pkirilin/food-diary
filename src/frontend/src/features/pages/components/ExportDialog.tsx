@@ -1,4 +1,4 @@
-import { type FC, useEffect } from 'react';
+import { type FC, useEffect, type FormEventHandler } from 'react';
 import { AppButton, AppDialog, DatePicker } from 'src/components';
 import { useInput } from 'src/hooks';
 import { mapToDateInputProps } from 'src/utils/inputMapping';
@@ -55,7 +55,9 @@ const ExportDialog: FC<ExportDialogProps> = ({ format: exportFormat, isOpen, onC
     exportFormat === 'json' ? exportToJson.isLoading : exportToGoogleDocs.isLoading;
   const exportSubmitText = exportFormat === 'json' ? 'Export to JSON' : 'Export to Google Docs';
 
-  const handleExportStart = (): void => {
+  const handleSubmit: FormEventHandler<HTMLFormElement> = event => {
+    event.preventDefault();
+
     if (exportFormat === 'json') {
       exportToJson.start();
     } else {
@@ -68,28 +70,29 @@ const ExportDialog: FC<ExportDialogProps> = ({ format: exportFormat, isOpen, onC
       title="Export pages"
       isOpened={isOpen}
       content={
-        <>
+        <form id="export-form" onSubmit={handleSubmit}>
           <DatePicker
             {...startDateInput.inputProps}
             label="Start date"
             placeholder="Select start date"
           />
           <DatePicker {...endDateInput.inputProps} label="End date" placeholder="Select end date" />
-        </>
+        </form>
       }
       actionSubmit={
         <AppButton
-          isLoading={isExportLoading}
+          type="submit"
+          form="export-form"
           variant="contained"
           color="primary"
-          onClick={handleExportStart}
+          isLoading={isExportLoading}
           disabled={isExportDisabled}
         >
           {exportSubmitText}
         </AppButton>
       }
       actionCancel={
-        <AppButton variant="text" onClick={onClose}>
+        <AppButton type="button" variant="text" onClick={onClose}>
           Cancel
         </AppButton>
       }

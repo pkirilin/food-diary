@@ -1,5 +1,5 @@
 import { Button } from '@mui/material';
-import { type FC, useEffect } from 'react';
+import { type FC, useEffect, type FormEventHandler } from 'react';
 import { AppDialog, DatePicker } from 'src/components';
 import { useInput } from 'src/hooks';
 import { formatDate } from 'src/utils';
@@ -39,7 +39,9 @@ const PageInputDialog: FC<PageInputDialogProps> = ({
     }
   }, [initialDate, isOpened, setDate]);
 
-  const handleSubmitClick = (): void => {
+  const handleSubmit: FormEventHandler<HTMLFormElement> = event => {
+    event.preventDefault();
+
     if (dateInput.value) {
       onSubmit({
         date: formatDate(dateInput.value),
@@ -53,25 +55,28 @@ const PageInputDialog: FC<PageInputDialogProps> = ({
       isOpened={isOpened}
       onClose={onClose}
       content={
-        <DatePicker
-          {...dateInput.inputProps}
-          autoFocus
-          label="Page date"
-          placeholder="Select page date"
-        />
+        <form id="page-input-form" onSubmit={handleSubmit}>
+          <DatePicker
+            {...dateInput.inputProps}
+            autoFocus
+            label="Page date"
+            placeholder="Select page date"
+          />
+        </form>
       }
       actionSubmit={
         <Button
+          type="submit"
+          form="page-input-form"
           variant="contained"
           color="primary"
-          onClick={handleSubmitClick}
           disabled={dateInput.isInvalid || !dateInput.isTouched}
         >
           {submitText}
         </Button>
       }
       actionCancel={
-        <Button variant="text" onClick={onClose}>
+        <Button type="button" variant="text" onClick={onClose}>
           Cancel
         </Button>
       }
