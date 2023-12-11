@@ -13,6 +13,7 @@ interface AppSelectProps<TOption> {
   helperText?: string;
   isLoading?: boolean;
   isInvalid?: boolean;
+  autoFocus?: boolean;
 }
 
 const AppSelect = <TOption,>({
@@ -27,6 +28,7 @@ const AppSelect = <TOption,>({
   helperText,
   isLoading,
   isInvalid,
+  autoFocus,
 }: AppSelectProps<TOption>): ReactElement => {
   const handleChange = (event: SyntheticEvent, newValue: TOption | null): void => {
     onChange(newValue);
@@ -48,6 +50,7 @@ const AppSelect = <TOption,>({
           error={isInvalid}
           helperText={helperText}
           margin="normal"
+          autoFocus={autoFocus}
           InputProps={{
             ...params.InputProps,
             endAdornment: isLoading ? (

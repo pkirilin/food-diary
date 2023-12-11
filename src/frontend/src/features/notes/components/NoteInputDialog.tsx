@@ -30,7 +30,6 @@ const NoteInputDialog: FC<NoteInputDialogProps> = ({
   product,
   quantity,
   displayOrder,
-
   onClose,
   onSubmit,
 }) => {
@@ -83,6 +82,7 @@ const NoteInputDialog: FC<NoteInputDialogProps> = ({
             {...productInput.inputProps}
             label="Product"
             placeholder="Select a product"
+            autoFocus
           />
           <TextField
             {...quantityInput.inputProps}
