@@ -1,5 +1,11 @@
 import { TextField } from '@mui/material';
-import { useEffect, type FC, type Dispatch, type SetStateAction } from 'react';
+import {
+  useEffect,
+  type FC,
+  type Dispatch,
+  type SetStateAction,
+  type FormEventHandler,
+} from 'react';
 import { AppButton, AppDialog } from 'src/components';
 import { CategorySelect } from 'src/features/categories';
 import { useInput } from 'src/hooks';
@@ -35,7 +41,7 @@ const ProductInputDialog: FC<ProductInputDialogProps> = ({
   product,
 }) => {
   const {
-    inputProps: productNameinputProps,
+    inputProps: productNameInputProps,
     value: productName,
     clearValue: clearProductName,
     isInvalid: isProductNameInvalid,
@@ -85,7 +91,9 @@ const ProductInputDialog: FC<ProductInputDialogProps> = ({
     setIsDialogOpened(false);
   };
 
-  const handleSubmit = (): void => {
+  const handleSubmit: FormEventHandler<HTMLFormElement> = event => {
+    event.preventDefault();
+
     if (category) {
       onSubmit({
         name: productName,
@@ -104,9 +112,9 @@ const ProductInputDialog: FC<ProductInputDialogProps> = ({
       isOpened={isDialogOpened}
       onClose={handleClose}
       content={
-        <>
+        <form id="product-input-form" onSubmit={handleSubmit}>
           <TextField
-            {...productNameinputProps}
+            {...productNameInputProps}
             autoFocus
             fullWidth
             margin="normal"
@@ -126,22 +134,23 @@ const ProductInputDialog: FC<ProductInputDialogProps> = ({
             label="Category"
             placeholder="Select a category"
           />
-        </>
-      }
-      actionCancel={
-        <AppButton disabled={isLoading} onClick={handleClose}>
-          Cancel
-        </AppButton>
+        </form>
       }
       actionSubmit={
         <AppButton
+          type="submit"
+          form="product-input-form"
           aria-label={`${product ? 'Save' : 'Create'} ${productName} and close dialog`}
           variant="contained"
           disabled={isAnyValueInvalid || !isAnyValueChanged}
-          onClick={handleSubmit}
           isLoading={isLoading}
         >
           {submitText}
+        </AppButton>
+      }
+      actionCancel={
+        <AppButton type="button" disabled={isLoading} onClick={handleClose}>
+          Cancel
         </AppButton>
       }
     />

@@ -10,6 +10,7 @@ const ProductSelect: FC<SelectProps<SelectOption>> = ({
   setValue,
   helperText,
   isInvalid,
+  autoFocus,
 }) => {
   const [getOptions, getOptionsRequest] = productsApi.useLazyGetProductSelectOptionsQuery();
 
@@ -44,6 +45,7 @@ const ProductSelect: FC<SelectProps<SelectOption>> = ({
       label={label}
       placeholder={placeholder}
       helperText={helperText}
+      autoFocus={autoFocus}
     />
   );
 };

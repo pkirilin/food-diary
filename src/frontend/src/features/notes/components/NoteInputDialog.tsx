@@ -1,5 +1,5 @@
 import { Button, TextField } from '@mui/material';
-import { type FC, useEffect } from 'react';
+import { type FC, useEffect, type FormEventHandler } from 'react';
 import { AppDialog } from 'src/components';
 import { ProductSelect } from 'src/features/products';
 import { useInput } from 'src/hooks';
@@ -30,7 +30,6 @@ const NoteInputDialog: FC<NoteInputDialogProps> = ({
   product,
   quantity,
   displayOrder,
-
   onClose,
   onSubmit,
 }) => {
@@ -58,7 +57,9 @@ const NoteInputDialog: FC<NoteInputDialogProps> = ({
     }
   }, [clearProductInput, clearQuantityInput, isOpened]);
 
-  const handleSubmit = (): void => {
+  const handleSubmit: FormEventHandler<HTMLFormElement> = event => {
+    event.preventDefault();
+
     if (productInput.value) {
       onSubmit({
         mealType,
@@ -78,11 +79,12 @@ const NoteInputDialog: FC<NoteInputDialogProps> = ({
       title={title}
       isOpened={isOpened}
       content={
-        <>
+        <form id="note-input-form" onSubmit={handleSubmit}>
           <ProductSelect
             {...productInput.inputProps}
             label="Product"
             placeholder="Select a product"
+            autoFocus
           />
           <TextField
             {...quantityInput.inputProps}
@@ -92,20 +94,21 @@ const NoteInputDialog: FC<NoteInputDialogProps> = ({
             margin="normal"
             fullWidth
           />
-        </>
+        </form>
       }
       actionSubmit={
         <Button
+          type="submit"
+          form="note-input-form"
           variant="contained"
           color="primary"
           disabled={isAnyValueInvalid || !isAnyValueChanged}
-          onClick={handleSubmit}
         >
           {submitText}
         </Button>
       }
       actionCancel={
-        <Button variant="text" onClick={onClose}>
+        <Button type="button" variant="text" onClick={onClose}>
           Cancel
         </Button>
       }

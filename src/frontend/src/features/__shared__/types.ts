@@ -9,4 +9,5 @@ export interface SelectProps<TOption> {
   setValue: (value: TOption | null) => void;
   helperText?: string;
   isInvalid?: boolean;
+  autoFocus?: boolean;
 }

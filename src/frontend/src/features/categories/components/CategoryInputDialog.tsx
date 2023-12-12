@@ -1,5 +1,11 @@
 import { TextField } from '@mui/material';
-import { type FC, useEffect, type Dispatch, type SetStateAction } from 'react';
+import {
+  type FC,
+  useEffect,
+  type Dispatch,
+  type SetStateAction,
+  type FormEventHandler,
+} from 'react';
 import { AppButton, AppDialog } from 'src/components';
 import { useInput } from 'src/hooks';
 import { mapToTextInputProps } from 'src/utils/inputMapping';
@@ -50,7 +56,8 @@ const CategoryInputDialog: FC<CreateEditCategoryDialogProps> = ({
     setIsDialogOpened(false);
   };
 
-  const handleSubmit = (): void => {
+  const handleSubmit: FormEventHandler<HTMLFormElement> = event => {
+    event.preventDefault();
     onSubmit({ name: categoryName });
   };
 
@@ -60,28 +67,31 @@ const CategoryInputDialog: FC<CreateEditCategoryDialogProps> = ({
       isOpened={isDialogOpened}
       onClose={handleClose}
       content={
-        <TextField
-          {...categoryNameInputProps}
-          autoFocus
-          margin="dense"
-          fullWidth
-          label="Category name"
-          placeholder="Enter category name"
-        />
+        <form id="category-input-form" onSubmit={handleSubmit}>
+          <TextField
+            {...categoryNameInputProps}
+            autoFocus
+            margin="dense"
+            fullWidth
+            label="Category name"
+            placeholder="Enter category name"
+          />
+        </form>
       }
       actionSubmit={
         <AppButton
-          aria-label={`${category ? 'Save' : 'Create'} ${categoryName} and close dialog`}
+          type="submit"
+          form="category-input-form"
           variant="contained"
           disabled={isSubmitDisabled}
-          onClick={handleSubmit}
           isLoading={isLoading}
+          aria-label={`${category ? 'Save' : 'Create'} ${categoryName} and close dialog`}
         >
           {submitText}
         </AppButton>
       }
       actionCancel={
-        <AppButton disabled={isLoading} onClick={handleClose}>
+        <AppButton type="button" disabled={isLoading} onClick={handleClose}>
           Cancel
         </AppButton>
       }

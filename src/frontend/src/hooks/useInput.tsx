@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
 import { type InputOptions, type MapToInputPropsFunction, type ValidatorFunction } from 'src/types';
 
+// Single space is used to avoid shifting form control when it becomes invalid
+// Source: https://github.com/mui/material-ui/issues/13646
+const VALID_HELPER_TEXT = ' ';
+
 interface UseInputOptions<TValue, TProps> {
   initialValue: TValue;
   errorHelperText: string;
@@ -21,7 +25,7 @@ export default function useInput<TValue, TProps>({
   mapToInputProps,
 }: UseInputOptions<TValue, TProps>): UseInputResult<TValue, TProps> {
   const [value, originalSetValue] = useState<TValue>(initialValue);
-  const [helperText, setHelperText] = useState('');
+  const [helperText, setHelperText] = useState(VALID_HELPER_TEXT);
   const [isInvalid, setIsInvalid] = useState(false);
   const [isTouched, setIsTouched] = useState(false);
 
@@ -35,7 +39,7 @@ export default function useInput<TValue, TProps>({
 
   const clearValue = useCallback(() => {
     originalSetValue(initialValue);
-    setHelperText('');
+    setHelperText(VALID_HELPER_TEXT);
     setIsInvalid(false);
     setIsTouched(false);
   }, [initialValue, originalSetValue, setIsTouched]);
@@ -43,7 +47,7 @@ export default function useInput<TValue, TProps>({
   useEffect(() => {
     if (isTouched) {
       const isInvalid = !validate(value);
-      const helperText = isInvalid ? errorHelperText : '';
+      const helperText = isInvalid ? errorHelperText : VALID_HELPER_TEXT;
       setIsInvalid(isInvalid);
       setHelperText(helperText);
     }

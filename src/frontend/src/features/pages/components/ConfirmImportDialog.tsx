@@ -1,5 +1,5 @@
 import { Typography } from '@mui/material';
-import { type FC } from 'react';
+import { type FormEventHandler, type FC } from 'react';
 import { AppButton, AppDialog } from 'src/components';
 
 const WARNING_MESSAGE =
@@ -18,18 +18,40 @@ const ConfirmImportDialog: FC<ConfirmImportDialogProps> = ({
   onClose,
   onSubmit,
 }) => {
+  const handleSubmit: FormEventHandler<HTMLFormElement> = event => {
+    event.preventDefault();
+    onSubmit();
+  };
+
   return (
     <AppDialog
       title="Import warning"
       isOpened={isOpened}
-      content={<Typography>{WARNING_MESSAGE}</Typography>}
+      content={
+        <form id="confirm-import" onSubmit={handleSubmit}>
+          <Typography>{WARNING_MESSAGE}</Typography>
+        </form>
+      }
       actionSubmit={
-        <AppButton variant="contained" color="primary" onClick={onSubmit} isLoading={isLoading}>
+        <AppButton
+          type="submit"
+          form="confirm-import"
+          variant="contained"
+          color="error"
+          isLoading={isLoading}
+          autoFocus
+        >
           Yes
         </AppButton>
       }
       actionCancel={
-        <AppButton variant="text" onClick={onClose} isLoading={isLoading}>
+        <AppButton
+          type="button"
+          variant="text"
+          color="inherit"
+          onClick={onClose}
+          isLoading={isLoading}
+        >
           No
         </AppButton>
       }

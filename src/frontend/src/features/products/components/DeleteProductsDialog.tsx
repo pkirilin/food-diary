@@ -1,5 +1,11 @@
 import { Typography } from '@mui/material';
-import { useEffect, type FC, type Dispatch, type SetStateAction } from 'react';
+import {
+  useEffect,
+  type FC,
+  type Dispatch,
+  type SetStateAction,
+  type FormEventHandler,
+} from 'react';
 import { AppButton, AppDialog } from 'src/components';
 import { useAppSelector } from 'src/store';
 import { productsApi } from '../api';
@@ -27,29 +33,40 @@ const DeleteProductsDialog: FC<DeleteProductsDialogProps> = ({
     setIsDialogOpened(false);
   };
 
-  const handleSubmit = (): void => {
-    void deleteProducts({
-      ids: checkedProductIds,
-    });
+  const handleSubmit: FormEventHandler<HTMLFormElement> = event => {
+    event.preventDefault();
+    void deleteProducts({ ids: checkedProductIds });
   };
 
   return (
     <AppDialog
       title="Delete products"
       isOpened={isDialogOpened}
-      content={<Typography>Do you really want to delete selected products?</Typography>}
+      content={
+        <form id="delete-products" onSubmit={handleSubmit}>
+          <Typography>Do you really want to delete selected products?</Typography>
+        </form>
+      }
       actionSubmit={
         <AppButton
+          type="submit"
+          form="delete-products"
           variant="contained"
-          color="primary"
-          onClick={handleSubmit}
+          color="error"
           isLoading={deleteProductRequest.isLoading}
+          autoFocus
         >
           Yes
         </AppButton>
       }
       actionCancel={
-        <AppButton variant="text" onClick={handleClose} isLoading={deleteProductRequest.isLoading}>
+        <AppButton
+          type="button"
+          variant="text"
+          color="inherit"
+          onClick={handleClose}
+          isLoading={deleteProductRequest.isLoading}
+        >
           No
         </AppButton>
       }
