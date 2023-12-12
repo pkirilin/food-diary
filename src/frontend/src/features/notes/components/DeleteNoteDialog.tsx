@@ -1,5 +1,5 @@
 import { Typography } from '@mui/material';
-import { type FC } from 'react';
+import { type FormEventHandler, type FC } from 'react';
 import { AppButton, AppDialog } from 'src/components';
 import { type NoteItem } from '../models';
 
@@ -18,7 +18,8 @@ const DeleteNoteDialog: FC<DeleteNoteDialogProps> = ({
   onClose,
   onSubmit,
 }) => {
-  const handleSubmit = (): void => {
+  const handleSubmit: FormEventHandler<HTMLFormElement> = event => {
+    event.preventDefault();
     onSubmit(note);
   };
 
@@ -27,15 +28,30 @@ const DeleteNoteDialog: FC<DeleteNoteDialogProps> = ({
       title="Delete note confirmation"
       isOpened={isOpened}
       content={
-        <Typography>{`Are you sure you want to delete this note: ${note.productName}, ${note.productQuantity} g, ${note.calories} cal?`}</Typography>
+        <form id="delete-note" onSubmit={handleSubmit}>
+          <Typography>{`Are you sure you want to delete this note: ${note.productName}, ${note.productQuantity} g, ${note.calories} cal?`}</Typography>
+        </form>
       }
       actionSubmit={
-        <AppButton variant="contained" color="primary" onClick={handleSubmit} isLoading={isLoading}>
+        <AppButton
+          type="submit"
+          form="delete-note"
+          variant="contained"
+          color="error"
+          isLoading={isLoading}
+          autoFocus
+        >
           Yes
         </AppButton>
       }
       actionCancel={
-        <AppButton variant="text" onClick={onClose} isLoading={isLoading}>
+        <AppButton
+          type="button"
+          variant="text"
+          color="inherit"
+          onClick={onClose}
+          isLoading={isLoading}
+        >
           No
         </AppButton>
       }

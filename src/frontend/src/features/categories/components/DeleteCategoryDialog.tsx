@@ -1,5 +1,11 @@
 import { Typography } from '@mui/material';
-import { useEffect, type FC, type Dispatch, type SetStateAction } from 'react';
+import {
+  useEffect,
+  type FC,
+  type Dispatch,
+  type SetStateAction,
+  type FormEventHandler,
+} from 'react';
 import { AppButton, AppDialog } from 'src/components';
 import { categoriesApi } from '../api';
 import { type Category } from '../types';
@@ -27,7 +33,8 @@ const DeleteCategoryDialog: FC<DeleteCategoryDialogProps> = ({
     setIsDialogOpened(false);
   };
 
-  const handleSubmit = (): void => {
+  const handleSubmit: FormEventHandler<HTMLFormElement> = event => {
+    event.preventDefault();
     void deleteCategory(category.id);
   };
 
@@ -35,20 +42,32 @@ const DeleteCategoryDialog: FC<DeleteCategoryDialogProps> = ({
     <AppDialog
       title="Delete category"
       isOpened={isDialogOpened}
-      content={<Typography>{`Delete category "${category.name}"?`}</Typography>}
+      content={
+        <form id="delete-category" onSubmit={handleSubmit}>
+          <Typography>{`Delete category "${category.name}"?`}</Typography>
+        </form>
+      }
       actionSubmit={
         <AppButton
-          aria-label={`Delete ${category.name}`}
+          type="submit"
+          form="delete-category"
           variant="contained"
-          color="primary"
-          onClick={handleSubmit}
+          color="error"
           isLoading={deleteCategoryRequest.isLoading}
+          aria-label={`Delete ${category.name}`}
+          autoFocus
         >
           Yes
         </AppButton>
       }
       actionCancel={
-        <AppButton variant="text" onClick={handleClose} isLoading={deleteCategoryRequest.isLoading}>
+        <AppButton
+          type="button"
+          variant="text"
+          color="inherit"
+          onClick={handleClose}
+          isLoading={deleteCategoryRequest.isLoading}
+        >
           No
         </AppButton>
       }

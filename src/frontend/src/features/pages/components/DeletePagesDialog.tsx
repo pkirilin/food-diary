@@ -1,5 +1,5 @@
 import { Typography } from '@mui/material';
-import { type FC } from 'react';
+import { type FormEventHandler, type FC } from 'react';
 import { AppButton, AppDialog } from 'src/components';
 
 interface DeletePagesDialogProps {
@@ -17,7 +17,8 @@ const DeletePagesDialog: FC<DeletePagesDialogProps> = ({
   onClose,
   onSubmit,
 }) => {
-  const handleSubmit = (): void => {
+  const handleSubmit: FormEventHandler<HTMLFormElement> = event => {
+    event.preventDefault();
     onSubmit(pageIds);
   };
 
@@ -25,14 +26,31 @@ const DeletePagesDialog: FC<DeletePagesDialogProps> = ({
     <AppDialog
       title="Delete pages confirmation"
       isOpened={isOpened}
-      content={<Typography>Do you really want to delete all selected pages?</Typography>}
+      content={
+        <form id="delete-pages" onSubmit={handleSubmit}>
+          <Typography>Do you really want to delete all selected pages?</Typography>
+        </form>
+      }
       actionSubmit={
-        <AppButton variant="contained" color="primary" onClick={handleSubmit} isLoading={isLoading}>
+        <AppButton
+          type="submit"
+          form="delete-pages"
+          variant="contained"
+          color="error"
+          isLoading={isLoading}
+          autoFocus
+        >
           Yes
         </AppButton>
       }
       actionCancel={
-        <AppButton variant="text" onClick={onClose} isLoading={isLoading}>
+        <AppButton
+          type="button"
+          variant="text"
+          color="inherit"
+          onClick={onClose}
+          isLoading={isLoading}
+        >
           No
         </AppButton>
       }
