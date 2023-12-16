@@ -1,23 +1,18 @@
-using System.Net.Http.Json;
-using FoodDiary.API.Dtos;
 using FoodDiary.ComponentTests.Infrastructure;
 
 namespace FoodDiary.ComponentTests.Scenarios.Products;
 
-public class ProductsApiTests : ScenarioBase
+public class ProductsApiTests : ScenarioBase<ProductsApiContext>
 {
-    public ProductsApiTests(FoodDiaryWebApplicationFactory factory) : base(factory)
+    public ProductsApiTests(FoodDiaryWebApplicationFactory factory) : base(() => new ProductsApiContext(factory))
     {
     }
 
-    [Fact]
-    public async Task I_can_retrieve_empty_products_list()
+    [Scenario]
+    public Task I_can_retrieve_empty_products_list()
     {
-        var client = Factory.CreateClient();
-
-        var productsResponse = await client.GetFromJsonAsync<ProductsSearchResultDto>("/api/v1/products");
-
-        productsResponse!.ProductItems.Should().BeEmpty();
-        productsResponse.TotalProductsCount.Should().Be(0);
+        return Runner.WithContext(ContextFactory).RunScenarioAsync(
+            c => c.When_user_retrieves_products_list(),
+            c => c.Then_products_list_is_empty());
     }
 }

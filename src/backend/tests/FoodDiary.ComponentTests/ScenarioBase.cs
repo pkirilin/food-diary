@@ -2,12 +2,12 @@ using FoodDiary.ComponentTests.Infrastructure;
 
 namespace FoodDiary.ComponentTests;
 
-public abstract class ScenarioBase : IClassFixture<FoodDiaryWebApplicationFactory>
+public abstract class ScenarioBase<TContext> : FeatureFixture, IClassFixture<FoodDiaryWebApplicationFactory>
 {
-    protected readonly FoodDiaryWebApplicationFactory Factory;
+    protected readonly Func<TContext> ContextFactory;
 
-    protected ScenarioBase(FoodDiaryWebApplicationFactory factory)
+    protected ScenarioBase(Func<TContext> contextFactory)
     {
-        Factory = factory;
+        ContextFactory = contextFactory;
     }
 }
