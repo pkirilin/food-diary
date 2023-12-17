@@ -2,6 +2,7 @@ using FoodDiary.API;
 using FoodDiary.ComponentTests.Infrastructure.Auth;
 using FoodDiary.Infrastructure;
 using JetBrains.Annotations;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -36,6 +37,9 @@ public class FoodDiaryWebApplicationFactory : WebApplicationFactory<Startup>, IA
                 {
                     options.UseNpgsql(_dbContainer.GetConnectionString());
                 });
+                
+                services.AddDataProtection()
+                    .PersistKeysToDbContext<FoodDiaryContext>();
             }
             
             services.AddFakeAuthForTests();
