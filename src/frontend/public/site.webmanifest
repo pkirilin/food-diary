@@ -1,6 +1,6 @@
 {
-    "name": "food-diary",
-    "short_name": "food-diary",
+    "name": "Food diary",
+    "short_name": "Food diary",
     "icons": [
         {
             "src": "/android-chrome-192x192.png",
