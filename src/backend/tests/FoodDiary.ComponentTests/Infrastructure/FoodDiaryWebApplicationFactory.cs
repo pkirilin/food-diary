@@ -50,10 +50,11 @@ public class FoodDiaryWebApplicationFactory : WebApplicationFactory<Startup>, IA
                 {
                     options.UseNpgsql(_dbContainer.GetConnectionString());
                 });
-                
-                services.AddDataProtection()
-                    .PersistKeysToDbContext<FoodDiaryContext>();
             }
+
+            services
+                .AddDataProtection()
+                .PersistKeysToFileSystem(new DirectoryInfo(Path.Combine("DataProtectionKeys")));
             
             services.AddFakeAuthForTests();
         });
