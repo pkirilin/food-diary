@@ -19,8 +19,12 @@ jobs:
         run: dotnet restore
       - name: Build
         run: dotnet build --configuration Release --no-restore
-      - name: Test
-        run: dotnet test --no-restore --verbosity normal
+      - name: Run unit tests
+        run: dotnet test tests/FoodDiary.UnitTests --no-restore --verbosity normal
+      - name: Run integration tests
+        run: dotnet test tests/FoodDiary.IntegrationTests --no-restore --verbosity normal
+      - name: Run component tests
+        run: dotnet test tests/FoodDiary.ComponentTests --no-restore --verbosity normal
   frontend:
     runs-on: ubuntu-latest
     defaults:
