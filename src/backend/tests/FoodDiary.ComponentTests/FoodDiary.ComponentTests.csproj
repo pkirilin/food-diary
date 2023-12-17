@@ -31,4 +31,10 @@
     <ProjectReference Include="..\..\src\FoodDiary.API\FoodDiary.API.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="appsettings.ComponentTests.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
