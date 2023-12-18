@@ -9,10 +9,11 @@ public class ProductsApiTests : ScenarioBase<ProductsApiContext>
     }
 
     [Scenario]
-    public Task I_can_retrieve_empty_products_list()
+    public Task I_can_retrieve_products_list()
     {
         return Run(
+            c => c.Given_products("Chicken", "Apple", "Milk"),
             c => c.When_user_retrieves_products_list(),
-            c => c.Then_products_list_is_empty());
+            c => c.Then_products_list_contains_products_ordered_by_name("Chicken", "Apple", "Milk"));
     }
 }
