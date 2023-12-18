@@ -1,13 +1,17 @@
+using System.Linq.Expressions;
 using FoodDiary.ComponentTests.Infrastructure;
 
 namespace FoodDiary.ComponentTests;
 
 public abstract class ScenarioBase<TContext> : FeatureFixture, IClassFixture<FoodDiaryWebApplicationFactory>
 {
-    protected readonly Func<TContext> ContextFactory;
+    private readonly Func<TContext> _contextFactory;
 
     protected ScenarioBase(Func<TContext> contextFactory)
     {
-        ContextFactory = contextFactory;
+        _contextFactory = contextFactory;
     }
+
+    protected Task Run(params Expression<Func<TContext, Task>>[] steps) =>
+        Runner.WithContext(_contextFactory).RunScenarioAsync(steps);
 }

@@ -11,7 +11,7 @@ public class ProductsApiTests : ScenarioBase<ProductsApiContext>
     [Scenario]
     public Task I_can_retrieve_empty_products_list()
     {
-        return Runner.WithContext(ContextFactory).RunScenarioAsync(
+        return Run(
             c => c.When_user_retrieves_products_list(),
             c => c.Then_products_list_is_empty());
     }
