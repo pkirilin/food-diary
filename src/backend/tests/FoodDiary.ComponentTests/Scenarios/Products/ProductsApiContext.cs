@@ -5,16 +5,13 @@ using FoodDiary.Domain.Entities;
 
 namespace FoodDiary.ComponentTests.Scenarios.Products;
 
-public class ProductsApiContext
+public class ProductsApiContext : CommonSteps
 {
-    private readonly FoodDiaryWebApplicationFactory _factory;
-
     private readonly Dictionary<string, Product> _existingProducts = new();
     private ProductsSearchResultDto? _productsResponse;
 
-    public ProductsApiContext(FoodDiaryWebApplicationFactory factory)
+    public ProductsApiContext(FoodDiaryWebApplicationFactory factory) : base(factory)
     {
-        _factory = factory;
     }
 
     public async Task Given_products(params string[] productNames)
@@ -35,7 +32,7 @@ public class ProductsApiContext
             })
             .ToList();
 
-        await _factory.SeedDataAsync(products);
+        await Factory.SeedDataAsync(products);
         
         foreach (var product in products)
         {
@@ -45,7 +42,7 @@ public class ProductsApiContext
     
     public async Task When_user_retrieves_products_list()
     {
-        var client = _factory.CreateClient();
+        var client = Factory.CreateClient();
         _productsResponse = await client.GetFromJsonAsync<ProductsSearchResultDto>("/api/v1/products");
     }
     

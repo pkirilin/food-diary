@@ -1,5 +1,4 @@
 using FoodDiary.API;
-using FoodDiary.ComponentTests.Infrastructure.Auth;
 using FoodDiary.Infrastructure;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.DataProtection;
@@ -55,8 +54,6 @@ public class FoodDiaryWebApplicationFactory : WebApplicationFactory<Startup>, IA
             services
                 .AddDataProtection()
                 .PersistKeysToFileSystem(new DirectoryInfo(Path.Combine("DataProtectionKeys")));
-            
-            services.AddFakeAuthForTests();
         });
     }
 
@@ -71,19 +68,5 @@ public class FoodDiaryWebApplicationFactory : WebApplicationFactory<Startup>, IA
     public new Task DisposeAsync()
     {
         return _dbContainer.StopAsync();
-    }
-    
-    public async Task SeedDataAsync<TEntity>(IEnumerable<TEntity> entities) where TEntity : class
-    {
-        if (Services is null)
-        {
-            throw new InvalidOperationException("Service provider must be initialized");
-        }
-        
-        await using var scope = Services.CreateAsyncScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<FoodDiaryContext>();
-        var dbSet = dbContext.Set<TEntity>();
-        dbSet.AddRange(entities);
-        await dbContext.SaveChangesAsync();
     }
 }
