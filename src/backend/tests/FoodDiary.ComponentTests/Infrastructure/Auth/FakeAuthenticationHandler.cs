@@ -25,7 +25,7 @@ public class FakeAuthenticationHandler : AuthenticationHandler<FakeAuthenticatio
             claims.Add(new Claim(Constants.ClaimTypes.Email, Options.UserEmail));
         }
 
-        var identity = new ClaimsIdentity(claims, "Test");
+        var identity = new ClaimsIdentity(claims, Scheme.Name);
         var principal = new ClaimsPrincipal(identity);
 
         var properties = new AuthenticationProperties(new Dictionary<string, string?>
@@ -33,7 +33,7 @@ public class FakeAuthenticationHandler : AuthenticationHandler<FakeAuthenticatio
             [".Token.access_token"] = "test_google_access_token"
         });
 
-        var ticket = new AuthenticationTicket(principal, properties, "Test");
+        var ticket = new AuthenticationTicket(principal, properties, Scheme.Name);
         var result = AuthenticateResult.Success(ticket);
         return Task.FromResult(result);
     }
