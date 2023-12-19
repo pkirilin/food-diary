@@ -3,19 +3,20 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace FoodDiary.ComponentTests.Infrastructure.Auth;
 
-public static class AuthExtensions
+public static class FakeAuthExtensions
 {
     private const string FakeSchemeName = "Fake";
 
-    public static void AddFakeAuthForTests(this IServiceCollection services, AuthOptions authOptions)
+    public static void AddFakeAuthForTests(
+        this IServiceCollection services,
+        AuthOptions authOptions,
+        Action<FakeAuthenticationHandlerOptions> configureOptions)
     {
-        var fakeUserEmail = authOptions.AllowedEmails.First();
-        
         services.AddAuthentication(FakeSchemeName)
             .AddScheme<FakeAuthenticationHandlerOptions, FakeAuthenticationHandler>(
                 FakeSchemeName,
                 "Fake auth for tests",
-                options => { options.UserEmail = fakeUserEmail; });
+                configureOptions);
 
         services.AddAuthorization(options =>
         {
@@ -23,7 +24,7 @@ public static class AuthExtensions
             {
                 policy.AddAuthenticationSchemes(FakeSchemeName)
                     .RequireAuthenticatedUser()
-                    .RequireClaim(Constants.ClaimTypes.Email, fakeUserEmail);
+                    .RequireClaim(Constants.ClaimTypes.Email, authOptions.AllowedEmails);
             });
         });
     }

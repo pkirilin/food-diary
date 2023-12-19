@@ -11,25 +11,32 @@ namespace FoodDiary.ComponentTests;
 
 public abstract class CommonSteps
 {
+    private readonly IOptions<AuthOptions> _authOptions;
+    private readonly string _defaultUserEmail;
+    
     protected WebApplicationFactory<Startup> Factory;
 
     protected CommonSteps(FoodDiaryWebApplicationFactory factory)
     {
+        _authOptions = factory.Services.GetRequiredService<IOptions<AuthOptions>>();
+        _defaultUserEmail = _authOptions.Value.AllowedEmails.First();
         Factory = factory;
     }
-    
+
     public Task Given_user_is_authenticated()
     {
-        var authOptions = Factory.Services.GetRequiredService<IOptions<AuthOptions>>();
-        
         Factory = Factory.WithWebHostBuilder(builder =>
         {
             builder.ConfigureTestServices(services =>
             {
-                services.AddFakeAuthForTests(authOptions.Value);
+                services.AddFakeAuthForTests(_authOptions.Value, options =>
+                {
+                    options.UserEmail = _defaultUserEmail;
+                    options.ShouldAuthenticate = true;
+                });
             });
         });
-        
+
         return Task.CompletedTask;
     }
 }

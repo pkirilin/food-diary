@@ -18,6 +18,12 @@ public class FakeAuthenticationHandler : AuthenticationHandler<FakeAuthenticatio
 
     protected override Task<AuthenticateResult> HandleAuthenticateAsync()
     {
+        if (!Options.ShouldAuthenticate)
+        {
+            return Task.FromResult(
+                AuthenticateResult.Fail($"User '{Options.UserEmail}' was not authenticated by fake auth"));
+        }
+        
         var claims = new List<Claim>();
 
         if (Options.UserEmail is not null)
