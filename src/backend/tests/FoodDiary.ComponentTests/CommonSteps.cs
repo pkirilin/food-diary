@@ -23,20 +23,30 @@ public abstract class CommonSteps
         Factory = factory;
     }
 
-    public Task Given_user_is_authenticated()
+    public Task Given_authenticated_user()
     {
-        Factory = Factory.WithWebHostBuilder(builder =>
+        Factory = WithAuthenticatedUser();
+        return Task.CompletedTask;
+    }
+    
+    public Task Given_authenticated_user(string email)
+    {
+        Factory = WithAuthenticatedUser(email);
+        return Task.CompletedTask;
+    }
+
+    private WebApplicationFactory<Startup> WithAuthenticatedUser(string? email = null)
+    {
+        return Factory.WithWebHostBuilder(builder =>
         {
             builder.ConfigureTestServices(services =>
             {
                 services.AddFakeAuthForTests(_authOptions.Value, options =>
                 {
-                    options.UserEmail = _defaultUserEmail;
+                    options.UserEmail = email ?? _defaultUserEmail;
                     options.ShouldAuthenticate = true;
                 });
             });
         });
-
-        return Task.CompletedTask;
     }
 }
