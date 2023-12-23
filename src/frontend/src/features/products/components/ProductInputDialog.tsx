@@ -9,6 +9,7 @@ import {
 import { AppButton, AppDialog } from 'src/components';
 import { CategorySelect } from 'src/features/categories';
 import { useInput } from 'src/hooks';
+import { type SelectOption } from 'src/types';
 import {
   mapToNumericInputProps,
   mapToSelectProps,
@@ -28,6 +29,10 @@ interface ProductInputDialogProps {
   submitText: string;
   onSubmit: (product: ProductFormData) => void;
   isLoading: boolean;
+  categories: SelectOption[];
+  categoriesLoaded: boolean;
+  categoriesLoading: boolean;
+  onLoadCategories: () => Promise<void>;
   product?: ProductFormData;
 }
 
@@ -38,6 +43,10 @@ const ProductInputDialog: FC<ProductInputDialogProps> = ({
   submitText,
   onSubmit,
   isLoading,
+  categories,
+  categoriesLoaded,
+  categoriesLoading,
+  onLoadCategories,
   product,
 }) => {
   const {
@@ -133,6 +142,10 @@ const ProductInputDialog: FC<ProductInputDialogProps> = ({
             {...categorySelectProps}
             label="Category"
             placeholder="Select a category"
+            options={categories}
+            optionsLoaded={categoriesLoaded}
+            optionsLoading={categoriesLoading}
+            onLoadOptions={onLoadCategories}
           />
         </form>
       }
