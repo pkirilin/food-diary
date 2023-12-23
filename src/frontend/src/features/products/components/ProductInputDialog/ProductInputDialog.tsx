@@ -18,9 +18,10 @@ import {
 import {
   validateCaloriesCost,
   validateProductName,
+  validateQuantity,
   validateSelectOption,
 } from 'src/utils/validation';
-import { type ProductFormData } from '../types';
+import { type ProductFormData } from '../../types';
 
 interface ProductInputDialogProps {
   isOpened: boolean;
@@ -75,6 +76,13 @@ const ProductInputDialog: FC<ProductInputDialogProps> = ({
     mapToInputProps: mapToNumericInputProps,
   });
 
+  const { clearValue: clearDefaultQuantity, ...defaultQuantityInput } = useInput({
+    initialValue: product?.defaultQuantity ?? 100,
+    errorHelperText: 'Default quantity is invalid',
+    validate: validateQuantity,
+    mapToInputProps: mapToNumericInputProps,
+  });
+
   const {
     inputProps: categorySelectProps,
     value: category,
@@ -92,9 +100,10 @@ const ProductInputDialog: FC<ProductInputDialogProps> = ({
     if (isDialogOpened) {
       clearProductName();
       clearCaloriesCost();
+      clearDefaultQuantity();
       clearCategory();
     }
-  }, [clearCaloriesCost, clearCategory, clearProductName, isDialogOpened]);
+  }, [clearCaloriesCost, clearDefaultQuantity, clearCategory, clearProductName, isDialogOpened]);
 
   const handleClose = (): void => {
     setIsDialogOpened(false);
@@ -107,13 +116,23 @@ const ProductInputDialog: FC<ProductInputDialogProps> = ({
       onSubmit({
         name: productName,
         caloriesCost,
+        defaultQuantity: defaultQuantityInput.value,
         category,
       });
     }
   };
 
-  const isAnyValueInvalid = isProductNameInvalid || isCaloriesCostInvalid || isCategoryInvalid;
-  const isAnyValueChanged = isProductNameTouched || isCaloriesCostTouched || isCategoryTouched;
+  const isAnyValueInvalid =
+    isProductNameInvalid ||
+    isCaloriesCostInvalid ||
+    isCategoryInvalid ||
+    defaultQuantityInput.isInvalid;
+
+  const isAnyValueChanged =
+    isProductNameTouched ||
+    isCaloriesCostTouched ||
+    isCategoryTouched ||
+    defaultQuantityInput.isTouched;
 
   return (
     <AppDialog
@@ -137,6 +156,14 @@ const ProductInputDialog: FC<ProductInputDialogProps> = ({
             margin="normal"
             label="Calories cost"
             placeholder="Enter calories cost"
+          />
+          <TextField
+            {...defaultQuantityInput.inputProps}
+            type="number"
+            fullWidth
+            margin="normal"
+            label="Default quantity"
+            placeholder="Enter default quantity"
           />
           <CategorySelect
             {...categorySelectProps}

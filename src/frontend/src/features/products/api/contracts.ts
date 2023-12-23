@@ -8,6 +8,7 @@ export interface GetProductsRequest {
 export interface CreateProductRequest {
   name: string;
   caloriesCost: number;
+  defaultQuantity: number;
   categoryId: number;
 }
 
@@ -15,6 +16,7 @@ export interface EditProductRequest {
   id: number;
   name: string;
   caloriesCost: number;
+  defaultQuantity: number;
   categoryId: number;
 }
 

@@ -4,10 +4,10 @@ import { type FC, useEffect, useState } from 'react';
 import { categoriesApi } from 'src/features/categories';
 import { useAppDispatch, useAppSelector } from '../../__shared__/hooks';
 import { productsApi } from '../api';
+import { toEditProductRequest, toProductFormData } from '../mapping';
 import { selectCheckedProductIds } from '../selectors';
 import { productChecked, productUnchecked } from '../store';
 import { type Product, type ProductFormData } from '../types';
-import { toProductFormData } from '../utils';
 import ProductInputDialog from './ProductInputDialog';
 
 interface ProductsTableRowProps {
@@ -32,13 +32,9 @@ const ProductsTableRow: FC<ProductsTableRowProps> = ({ product }: ProductsTableR
     setIsEditDialogOpened(true);
   };
 
-  const handleEditDialogSubmit = ({ name, caloriesCost, category }: ProductFormData): void => {
-    void editProduct({
-      id: product.id,
-      name,
-      caloriesCost,
-      categoryId: category.id,
-    });
+  const handleEditDialogSubmit = (formData: ProductFormData): void => {
+    const request = toEditProductRequest(product.id, formData);
+    void editProduct(request);
   };
 
   const handleCheckedChange = (): void => {
@@ -72,6 +68,12 @@ const ProductsTableRow: FC<ProductsTableRowProps> = ({ product }: ProductsTableR
           aria-label={`${product.name} calories cost is ${product.caloriesCost}`}
         >
           {product.caloriesCost}
+        </TableCell>
+        <TableCell
+          align="right"
+          aria-label={`${product.name} default quantity is ${product.defaultQuantity}`}
+        >
+          {product.defaultQuantity}
         </TableCell>
         <TableCell aria-label={`${product.name} is in ${product.categoryName} category`}>
           {product.categoryName}

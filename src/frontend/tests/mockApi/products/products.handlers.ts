@@ -27,10 +27,11 @@ export const handlers: HttpHandler[] = [
     const categoryNamesMap = productsService.getCategoryNames(products);
 
     const response: ProductsResponse = {
-      productItems: products.map(({ id, name, caloriesCost, categoryId }) => ({
+      productItems: products.map(({ id, name, caloriesCost, defaultQuantity, categoryId }) => ({
         id,
         name,
         caloriesCost,
+        defaultQuantity,
         categoryId,
         categoryName: categoryNamesMap.get(categoryId) ?? 'NULL',
       })),

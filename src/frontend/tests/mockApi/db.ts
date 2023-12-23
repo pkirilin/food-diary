@@ -24,6 +24,7 @@ export const db = factory({
     id: primaryKey(Number),
     name: String,
     caloriesCost: Number,
+    defaultQuantity: Number,
     categoryId: Number,
   },
 });

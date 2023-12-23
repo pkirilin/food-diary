@@ -31,14 +31,10 @@ export const productsApi = api.injectEndpoints({
     }),
 
     editProduct: builder.mutation<void, EditProductRequest>({
-      query: ({ id, name, caloriesCost, categoryId }) => ({
+      query: ({ id, ...body }) => ({
         method: 'PUT',
         url: `/api/v1/products/${id}`,
-        body: {
-          name,
-          caloriesCost,
-          categoryId,
-        },
+        body,
       }),
       invalidatesTags: ['product'],
     }),
