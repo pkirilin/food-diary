@@ -2,8 +2,9 @@ import { type FC } from 'react';
 import { AppSelect } from 'src/components';
 import { type SelectOption, type SelectProps } from 'src/types';
 import { productsApi } from '../api';
+import { type ProductSelectOption } from '../types';
 
-const ProductSelect: FC<SelectProps<SelectOption>> = ({
+const ProductSelect: FC<SelectProps<ProductSelectOption>> = ({
   label,
   placeholder,
   value = null,
@@ -22,7 +23,7 @@ const ProductSelect: FC<SelectProps<SelectOption>> = ({
     return first.name === second.name;
   };
 
-  const handleChange = (value: SelectOption | null): void => {
+  const handleChange = (value: ProductSelectOption | null): void => {
     setValue(value);
   };
 

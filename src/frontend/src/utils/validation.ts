@@ -27,6 +27,6 @@ export const validateCaloriesCost: ValidatorFunction<number> = value => value > 
 
 export const validateQuantity: ValidatorFunction<number> = value => value > 0 && value < 1000;
 
-export const validateSelectOption: ValidatorFunction<SelectOption | null> = value => {
-  return value !== null;
-};
+export const validateSelectOption = <TOption extends SelectOption>(
+  value: TOption | null,
+): boolean => value !== null;

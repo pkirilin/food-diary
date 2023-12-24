@@ -4,6 +4,7 @@ import { IconButton, TableCell, TableRow, Tooltip } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import { type FC, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector, useRouterId } from 'src/hooks';
+import { toProductSelectOption } from '../mapping';
 import { type NoteCreateEdit, type NoteItem } from '../models';
 import { deleteNote, editNote } from '../thunks';
 import DeleteNoteDialog from './DeleteNoteDialog';
@@ -81,10 +82,7 @@ const NotesTableRow: FC<NotesTableRowProps> = ({ note }: NotesTableRowProps) => 
         isOpened={isEditDialogOpened}
         mealType={note.mealType}
         pageId={pageId}
-        product={{
-          id: note.productId,
-          name: note.productName,
-        }}
+        product={toProductSelectOption(note)}
         quantity={note.productQuantity}
         displayOrder={note.displayOrder}
         onClose={handleEditClose}
