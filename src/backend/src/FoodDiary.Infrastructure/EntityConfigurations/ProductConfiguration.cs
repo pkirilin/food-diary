@@ -17,6 +17,9 @@ namespace FoodDiary.Infrastructure.EntityConfigurations
                 .HasForeignKey(p => p.CategoryId);
 
             builder.HasIndex(p => p.Name).IsUnique();
+
+            builder.Property(p => p.DefaultQuantity)
+                .HasDefaultValue(100);
         }
     }
 }

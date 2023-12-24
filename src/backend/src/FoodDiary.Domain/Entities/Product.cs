@@ -19,6 +19,8 @@ namespace FoodDiary.Domain.Entities
         /// </summary>
         public int CaloriesCost { get; set; }
 
+        public int DefaultQuantity { get; set; } = 100;
+
         public int CategoryId { get; set; }
 
         public Category Category { get; set; }

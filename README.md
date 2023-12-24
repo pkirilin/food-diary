@@ -105,9 +105,10 @@ VITE_APP_FAKE_AUTH_LOGIN_ON_INIT=true
 ## How to generate database migrations
 
 ```shell
-dotnet ef migrations add <migration_name> \                 
--s src/backend/src/FoodDiary.API \
--p src/backend/src/FoodDiary.Infrastructure
+dotnet ef migrations add <migration_name> \
+    -s src/backend/src/FoodDiary.API \
+    -p src/backend/src/FoodDiary.Infrastructure \
+    -o Migrations
 ```
 
 ## Copyright notes
