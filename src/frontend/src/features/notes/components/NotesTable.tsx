@@ -10,6 +10,7 @@ import {
   TableRow,
 } from '@mui/material';
 import { type FC, useEffect, useState } from 'react';
+import { productsApi } from 'src/features/products';
 import { useAppDispatch, useAppSelector, useRouterId } from 'src/hooks';
 import { type MealType, type NoteCreateEdit } from '../models';
 import { createNote, getNotes } from '../thunks';
@@ -37,6 +38,7 @@ const NotesTable: FC<NotesTableProps> = ({ mealType }: NotesTableProps) => {
   );
 
   const status = useAppSelector(state => state.notes.operationStatusesByMealType[mealType]);
+  const [getProducts, getProductsRequest] = productsApi.useLazyGetProductSelectOptionsQuery();
 
   const [isDialogOpened, setIsDialogOpened] = useState(false);
   const dispatch = useAppDispatch();
@@ -71,6 +73,10 @@ const NotesTable: FC<NotesTableProps> = ({ mealType }: NotesTableProps) => {
     );
   };
 
+  const handleLoadProducts = async (): Promise<void> => {
+    await getProducts();
+  };
+
   return (
     <TableContainer>
       <NoteInputDialog
@@ -79,6 +85,10 @@ const NotesTable: FC<NotesTableProps> = ({ mealType }: NotesTableProps) => {
         isOpened={isDialogOpened}
         mealType={mealType}
         product={null}
+        products={getProductsRequest.data ?? []}
+        productsLoaded={!getProductsRequest.isUninitialized}
+        productsLoading={getProductsRequest.isLoading}
+        onLoadProducts={handleLoadProducts}
         quantity={100}
         pageId={pageId}
         displayOrder={maxDisplayOrderForNotesGroup + 1}
@@ -96,7 +106,14 @@ const NotesTable: FC<NotesTableProps> = ({ mealType }: NotesTableProps) => {
         </TableHead>
         <TableBody>
           {noteItems.map(note => (
-            <NotesTableRow key={note.id} note={note} />
+            <NotesTableRow
+              key={note.id}
+              note={note}
+              products={getProductsRequest.data ?? []}
+              productsLoaded={!getProductsRequest.isUninitialized}
+              productsLoading={getProductsRequest.isLoading}
+              onLoadProducts={handleLoadProducts}
+            />
           ))}
         </TableBody>
       </Table>

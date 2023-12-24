@@ -1,10 +1,16 @@
 import { type FC } from 'react';
 import { AppSelect } from 'src/components';
 import { type SelectOption, type SelectProps } from 'src/types';
-import { productsApi } from '../api';
 import { type ProductSelectOption } from '../types';
 
-const ProductSelect: FC<SelectProps<ProductSelectOption>> = ({
+interface ProductSelectProps extends SelectProps<ProductSelectOption> {
+  options: ProductSelectOption[];
+  optionsLoaded: boolean;
+  optionsLoading: boolean;
+  onLoadOptions: () => Promise<void>;
+}
+
+const ProductSelect: FC<ProductSelectProps> = ({
   label,
   placeholder,
   value = null,
@@ -12,9 +18,11 @@ const ProductSelect: FC<SelectProps<ProductSelectOption>> = ({
   helperText,
   isInvalid,
   autoFocus,
+  options,
+  optionsLoaded,
+  optionsLoading,
+  onLoadOptions,
 }) => {
-  const [getOptions, getOptionsRequest] = productsApi.useLazyGetProductSelectOptionsQuery();
-
   const getDisplayName = (option: SelectOption): string => {
     return option.name;
   };
@@ -28,20 +36,20 @@ const ProductSelect: FC<SelectProps<ProductSelectOption>> = ({
   };
 
   const handleOpen = (): void => {
-    if (getOptionsRequest.isUninitialized) {
-      void getOptions();
+    if (!optionsLoaded) {
+      void onLoadOptions();
     }
   };
 
   return (
     <AppSelect
-      availableOptions={getOptionsRequest.data ?? []}
+      availableOptions={options}
       value={value}
       getDisplayName={getDisplayName}
       areOptionsEqual={areOptionsEqual}
       onChange={handleChange}
       onOpen={handleOpen}
-      isLoading={getOptionsRequest.isLoading}
+      isLoading={optionsLoading}
       isInvalid={isInvalid}
       label={label}
       placeholder={placeholder}
