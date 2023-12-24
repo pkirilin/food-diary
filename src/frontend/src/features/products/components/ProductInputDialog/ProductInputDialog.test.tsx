@@ -38,7 +38,7 @@ test('should submit form on valid input', async () => {
   await user.type(caloriesCost, '150');
   await user.click(category);
   await user.click(within(screen.getByRole('listbox')).getByText(/test category/i));
-  await user.click(screen.getByLabelText(/create test product/i));
+  await user.click(screen.getByRole('button', { name: /create test product/i }));
 
   expect(onSubmitMock).toHaveBeenCalledWith({
     name: 'Test product',
