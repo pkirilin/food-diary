@@ -9,7 +9,7 @@ using FoodDiary.Domain.Entities;
 
 namespace FoodDiary.ComponentTests.Scenarios.Products;
 
-public class ProductsApiContext : CommonSteps
+public class ProductsApiContext : BaseContext
 {
     private readonly Dictionary<string, Product> _existingProducts = new();
     private Category _testCategory = null!;

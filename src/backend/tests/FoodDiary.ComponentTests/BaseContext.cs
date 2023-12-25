@@ -9,7 +9,7 @@ using Microsoft.Extensions.Options;
 
 namespace FoodDiary.ComponentTests;
 
-public abstract class CommonSteps
+public abstract class BaseContext
 {
     private readonly IOptions<AuthOptions> _authOptions;
     private readonly string _defaultUserEmail;
@@ -18,7 +18,7 @@ public abstract class CommonSteps
     protected WebApplicationFactory<Startup> Factory;
     protected HttpClient ApiClient => _apiClient ??= Factory.CreateClient();
 
-    protected CommonSteps(FoodDiaryWebApplicationFactory factory)
+    protected BaseContext(FoodDiaryWebApplicationFactory factory)
     {
         _authOptions = factory.Services.GetRequiredService<IOptions<AuthOptions>>();
         _defaultUserEmail = _authOptions.Value.AllowedEmails.First();

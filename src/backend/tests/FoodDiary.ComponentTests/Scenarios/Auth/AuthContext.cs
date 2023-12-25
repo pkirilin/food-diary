@@ -3,7 +3,7 @@ using FoodDiary.ComponentTests.Infrastructure;
 
 namespace FoodDiary.ComponentTests.Scenarios.Auth;
 
-public class AuthContext : CommonSteps
+public class AuthContext : BaseContext
 {
     private HttpResponseMessage? _response;
     

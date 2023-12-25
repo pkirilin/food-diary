@@ -5,7 +5,7 @@ using FoodDiary.Domain.Entities;
 
 namespace FoodDiary.ComponentTests.Scenarios.Notes;
 
-public class NotesApiContext : CommonSteps
+public class NotesApiContext : BaseContext
 {
     private readonly Dictionary<string, Note> _existingNotes = new();
 
