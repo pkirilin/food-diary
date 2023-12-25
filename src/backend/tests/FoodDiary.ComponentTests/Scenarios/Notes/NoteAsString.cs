@@ -37,8 +37,8 @@ public static class NoteAsString
             Product = new Product
             {
                 Name = productName,
-                CaloriesCost = 100,
-                DefaultQuantity = 100,
+                CaloriesCost = 123,
+                DefaultQuantity = 123,
                 Category = TestCategory
             }
         };

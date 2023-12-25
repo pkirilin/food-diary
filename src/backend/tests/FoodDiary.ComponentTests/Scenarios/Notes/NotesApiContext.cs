@@ -48,6 +48,7 @@ public class NotesApiContext : BaseContext
                     actual.MealType == expected.MealType &&
                     actual.ProductName == expected.Product.Name &&
                     actual.ProductQuantity == expected.ProductQuantity &&
+                    actual.ProductDefaultQuantity == expected.Product.DefaultQuantity &&
                     actual.DisplayOrder == expected.DisplayOrder &&
                     actual.Calories > 0);
             });
