@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Http.Json;
 using FoodDiary.API.Dtos;
 using FoodDiary.API.Requests;
+using FoodDiary.Application.Services.Products;
 using FoodDiary.ComponentTests.Infrastructure;
 using FoodDiary.Contracts.Products;
 using FoodDiary.Domain.Entities;
@@ -34,6 +35,7 @@ public class ProductsApiContext : CommonSteps
                 Id = index + 1,
                 Name = name,
                 CaloriesCost = 100,
+                DefaultQuantity = 100,
                 CategoryId = _testCategory.Id
             })
             .ToList();
@@ -65,6 +67,7 @@ public class ProductsApiContext : CommonSteps
         {
             Name = productName,
             CaloriesCost = 123,
+            DefaultQuantity = 321,
             CategoryId = _testCategory.Id
         };
         
@@ -80,6 +83,7 @@ public class ProductsApiContext : CommonSteps
         {
             Name = newProductName,
             CaloriesCost = 123,
+            DefaultQuantity = 321,
             CategoryId = _testCategory.Id
         };
         
@@ -96,6 +100,7 @@ public class ProductsApiContext : CommonSteps
                 Id = p.Id,
                 Name = p.Name,
                 CaloriesCost = p.CaloriesCost,
+                DefaultQuantity = p.DefaultQuantity,
                 CategoryId = _testCategory.Id,
                 CategoryName = _testCategory.Name
             })
@@ -110,11 +115,7 @@ public class ProductsApiContext : CommonSteps
     {
         var expected = productNames
             .Select(name => _existingProducts[name])
-            .Select(p => new ProductAutocompleteItemDto
-            {
-                Id = p.Id,
-                Name = p.Name
-            })
+            .Select(p => p.ToProductAutocompleteItemDto())
             .ToList();
         
         _productsForAutocompleteResponse.Should().BeEquivalentTo(expected);
@@ -132,7 +133,8 @@ public class ProductsApiContext : CommonSteps
     {
         _productsResponse!.ProductItems.Should().Contain(p =>
             p.Name == _productCreateEditRequest.Name &&
-            (int)p.CaloriesCost == (int)_productCreateEditRequest.CaloriesCost &&
+            p.CaloriesCost == _productCreateEditRequest.CaloriesCost &&
+            p.DefaultQuantity == _productCreateEditRequest.DefaultQuantity &&
             p.CategoryId == _productCreateEditRequest.CategoryId);
         return Task.CompletedTask;
     }
@@ -147,7 +149,8 @@ public class ProductsApiContext : CommonSteps
     {
         _productsResponse!.ProductItems.Should().Contain(p =>
             p.Name == _productCreateEditRequest.Name &&
-            (int)p.CaloriesCost == (int)_productCreateEditRequest.CaloriesCost &&
+            p.CaloriesCost == _productCreateEditRequest.CaloriesCost &&
+            p.DefaultQuantity == _productCreateEditRequest.DefaultQuantity &&
             p.CategoryId == _productCreateEditRequest.CategoryId);
         return Task.CompletedTask;
     }

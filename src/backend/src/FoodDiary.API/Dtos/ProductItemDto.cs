@@ -1,15 +1,16 @@
-﻿namespace FoodDiary.API.Dtos
+﻿namespace FoodDiary.API.Dtos;
+
+public class ProductItemDto
 {
-    public class ProductItemDto
-    {
-        public int Id { get; set; }
+    public int Id { get; init; }
 
-        public string Name { get; set; }
+    public string Name { get; init; }
 
-        public double CaloriesCost { get; set; }
+    public int CaloriesCost { get; init; }
 
-        public int CategoryId { get; set; }
+    public int DefaultQuantity { get; init; }
 
-        public string CategoryName { get; set; }
-    }
+    public int CategoryId { get; init; }
+
+    public string CategoryName { get; init; }
 }
