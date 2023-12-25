@@ -33,7 +33,7 @@ public class NotesApiContext : CommonSteps
     {
         var testPageId = NoteAsString.TestPage.Id;
         
-        _notesList = await Factory.CreateClient()
+        _notesList = await ApiClient
             .GetFromJsonAsync<IReadOnlyList<NoteItemDto>>($"/api/v1/notes?pageId={testPageId}");
     }
 

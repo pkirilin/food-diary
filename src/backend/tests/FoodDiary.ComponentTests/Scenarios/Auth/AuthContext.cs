@@ -13,8 +13,7 @@ public class AuthContext : CommonSteps
 
     public async Task When_user_is_trying_to_access_resource(string path)
     {
-        var client = Factory.CreateClient();
-        _response = await client.GetAsync(path);
+        _response = await ApiClient.GetAsync(path);
     }
     
     public Task Then_access_is_forbidden()

@@ -50,12 +50,12 @@ public class ProductsApiContext : CommonSteps
     
     public async Task When_user_retrieves_products_list()
     {
-        _productsResponse = await Factory.CreateClient().GetFromJsonAsync<ProductsSearchResultDto>("/api/v1/products");
+        _productsResponse = await ApiClient.GetFromJsonAsync<ProductsSearchResultDto>("/api/v1/products");
     }
     
     public async Task When_user_searches_products_for_autocomplete()
     {
-        _productsForAutocompleteResponse = await Factory.CreateClient()
+        _productsForAutocompleteResponse = await ApiClient
             .GetFromJsonAsync<ProductAutocompleteItemDto[]>("api/v1/products/autocomplete");
     }
 
@@ -71,8 +71,7 @@ public class ProductsApiContext : CommonSteps
             CategoryId = _testCategory.Id
         };
         
-        _createProductResponse = await Factory.CreateClient()
-            .PostAsJsonAsync("/api/v1/products", _productCreateEditRequest);
+        _createProductResponse = await ApiClient.PostAsJsonAsync("/api/v1/products", _productCreateEditRequest);
     }
 
     public async Task When_user_updates_product(string oldProductName, string newProductName)
@@ -87,7 +86,7 @@ public class ProductsApiContext : CommonSteps
             CategoryId = _testCategory.Id
         };
         
-        _updateProductResponse = await Factory.CreateClient()
+        _updateProductResponse = await ApiClient
             .PutAsJsonAsync($"/api/v1/products/{product.Id}", _productCreateEditRequest);
     }
     

@@ -13,8 +13,10 @@ public abstract class CommonSteps
 {
     private readonly IOptions<AuthOptions> _authOptions;
     private readonly string _defaultUserEmail;
+    private HttpClient? _apiClient;
     
     protected WebApplicationFactory<Startup> Factory;
+    protected HttpClient ApiClient => _apiClient ??= Factory.CreateClient();
 
     protected CommonSteps(FoodDiaryWebApplicationFactory factory)
     {
