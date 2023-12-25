@@ -28,4 +28,27 @@ public class ProductsApiTests : ScenarioBase<ProductsApiContext>
             c => c.When_user_searches_products_for_autocomplete(),
             c => c.Then_products_for_autocomplete_contain_products_ordered_by_name("Chicken", "Apple", "Milk"));
     }
+
+    [Scenario]
+    public Task I_can_create_product()
+    {
+        return Run(
+            c => c.Given_authenticated_user(),
+            c => c.When_user_creates_product("Chicken"),
+            c => c.Then_product_is_successfully_created(),
+            c => c.When_user_retrieves_products_list(),
+            c => c.Then_products_list_contains_created_product());
+    }
+
+    [Scenario]
+    public Task I_can_update_product()
+    {
+        return Run(
+            c => c.Given_authenticated_user(),
+            c => c.Given_products("Chicken"),
+            c => c.When_user_updates_product("Chicken", "Boiled chicken"),
+            c => c.Then_product_is_successfully_updated(),
+            c => c.When_user_retrieves_products_list(),
+            c => c.Then_products_list_contains_updated_product());
+    }
 }
