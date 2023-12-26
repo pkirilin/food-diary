@@ -1,0 +1,31 @@
+{
+  "pages": [
+    {
+      "date": "2020-08-08T00:00:00",
+      "notes": [
+        {
+          "mealType": 1,
+          "product": {
+            "name": "Oats",
+            "caloriesCost": 378,
+            "defaultQuantity": 80,
+            "category": "Cereals"
+          },
+          "productQuantity": 80,
+          "displayOrder": 0
+        },
+        {
+          "mealType": 1,
+          "product": {
+            "name": "Milk",
+            "caloriesCost": 60,
+            "defaultQuantity": 150,
+            "category": "Dairy"
+          },
+          "productQuantity": 100,
+          "displayOrder": 1
+        }
+      ]
+    }
+  ]
+}

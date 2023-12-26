@@ -1,0 +1,62 @@
+using FoodDiary.ComponentTests.Dsl;
+using FoodDiary.ComponentTests.Infrastructure;
+using FoodDiary.Domain.Enums;
+
+namespace FoodDiary.ComponentTests.Scenarios.Import;
+
+public class ImportApiTests : ScenarioBase<ImportApiContext>
+{
+    public ImportApiTests(FoodDiaryWebApplicationFactory factory) : base(factory, () => new ImportApiContext(factory))
+    {
+    }
+
+    [Scenario]
+    public Task I_can_import_my_data_from_json_file()
+    {
+        var categories = new
+        {
+            Cereals = Create.Category("Cereals").Please(),
+            Dairy = Create.Category("Dairy").Please()
+        };
+
+        var products = new
+        {
+            Oats = Create.Product("Oats")
+                .WithCategory(categories.Cereals)
+                .WithCaloriesCost(378)
+                .WithDefaultQuantity(80)
+                .Please(),
+            Milk = Create.Product("Milk")
+                .WithCategory(categories.Dairy)
+                .WithCaloriesCost(60)
+                .WithDefaultQuantity(150)
+                .Please()
+        };
+
+        var page = Create.Page("2020-08-08").Please();
+
+        var notes = new
+        {
+            BreakfastOats = Create.Note(MealType.Breakfast)
+                .WithPage(page)
+                .WithDisplayOrder(0)
+                .WithProduct(products.Oats, 80)
+                .Please(),
+            BreakfastMilk = Create.Note(MealType.Breakfast)
+                .WithPage(page)
+                .WithDisplayOrder(1)
+                .WithProduct(products.Milk, 100)
+                .Please()
+        };
+        
+        return Run(
+            c => c.Given_authenticated_user(),
+            c => c.Given_json_import_file("testImportFile.json"),
+            c => c.When_user_imports_data_from_json_file(),
+            c => c.Then_json_import_is_successful(),
+            c => c.Then_pages_list_contains(page),
+            c => c.Then_notes_list_contains(notes.BreakfastOats, notes.BreakfastMilk),
+            c => c.Then_products_list_contains(products.Oats, products.Milk),
+            c => c.Then_categories_list_contains(categories.Cereals, categories.Dairy));
+    }
+}

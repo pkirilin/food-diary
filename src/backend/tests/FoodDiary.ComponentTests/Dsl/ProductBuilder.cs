@@ -1,0 +1,36 @@
+using FoodDiary.Domain.Entities;
+
+namespace FoodDiary.ComponentTests.Dsl;
+
+public class ProductBuilder
+{
+    private readonly Product _product = new()
+    {
+        Id = Random.Shared.Next()
+    };
+
+    public ProductBuilder(string name)
+    {
+        _product.Name = name;
+    }
+    
+    public Product Please() => _product;
+
+    public ProductBuilder WithCategory(Category category)
+    {
+        _product.Category = category;
+        return this;
+    }
+    
+    public ProductBuilder WithDefaultQuantity(int defaultQuantity)
+    {
+        _product.DefaultQuantity = defaultQuantity;
+        return this;
+    }
+    
+    public ProductBuilder WithCaloriesCost(int caloriesCost)
+    {
+        _product.CaloriesCost = caloriesCost;
+        return this;
+    }
+}
