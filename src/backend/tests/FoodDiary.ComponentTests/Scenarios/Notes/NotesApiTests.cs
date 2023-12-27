@@ -50,7 +50,7 @@ public class NotesApiTests : ScenarioBase<NotesApiContext>
         return Run(
             c => c.Given_authenticated_user(),
             c => c.Given_notes(notes.LunchChicken, notes.LunchRice),
-            c => c.When_user_retrieves_notes_list(page.Id),
-            c => c.Then_notes_list_contains(notes.LunchChicken, notes.LunchRice));
+            c => c.When_user_retrieves_notes_list_for_page(page),
+            c => c.Then_notes_list_contains_items(notes.LunchChicken, notes.LunchRice));
     }
 }

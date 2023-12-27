@@ -27,7 +27,7 @@ public class ProductsApiContext : BaseContext
     {
     }
 
-    public async Task Given_products(params string[] productNames)
+    public async Task Given_products(params string[] products)
     {
         _testCategory = Create.Category("Test Category")
             .WithId(1)
@@ -35,15 +35,15 @@ public class ProductsApiContext : BaseContext
         
         await Factory.SeedDataAsync(new[] { _testCategory });
 
-        var products = productNames
+        var productsList = products
             .Select(name => Create.Product(name)
                 .WithCategoryId(_testCategory.Id)
                 .Please())
             .ToList();
 
-        await Factory.SeedDataAsync(products);
+        await Factory.SeedDataAsync(productsList);
         
-        foreach (var product in products)
+        foreach (var product in productsList)
         {
             _existingProducts.Add(product.Name, product);
         }
@@ -60,7 +60,7 @@ public class ProductsApiContext : BaseContext
             .GetFromJsonAsync<ProductAutocompleteItemDto[]>("api/v1/products/autocomplete");
     }
 
-    public async Task When_user_creates_product(string productName)
+    public async Task When_user_creates_product(string product)
     {
         _testCategory = Create.Category("Test Category")
             .WithId(1)
@@ -70,7 +70,7 @@ public class ProductsApiContext : BaseContext
         
         _productCreateEditRequest = new ProductCreateEditRequest
         {
-            Name = productName,
+            Name = product,
             CaloriesCost = 123,
             DefaultQuantity = 321,
             CategoryId = _testCategory.Id
@@ -79,13 +79,13 @@ public class ProductsApiContext : BaseContext
         _createProductResponse = await ApiClient.PostAsJsonAsync("/api/v1/products", _productCreateEditRequest);
     }
 
-    public async Task When_user_updates_product(string oldProductName, string newProductName)
+    public async Task When_user_updates_product_from_NAME_to_NEWNAME(string name, string newName)
     {
-        var product = _existingProducts[oldProductName];
+        var product = _existingProducts[name];
         
         _productCreateEditRequest = new ProductCreateEditRequest
         {
-            Name = newProductName,
+            Name = newName,
             CaloriesCost = 123,
             DefaultQuantity = 321,
             CategoryId = _testCategory.Id
@@ -95,9 +95,9 @@ public class ProductsApiContext : BaseContext
             .PutAsJsonAsync($"/api/v1/products/{product.Id}", _productCreateEditRequest);
     }
     
-    public Task Then_products_list_contains_products_ordered_by_name(params string[] productNames)
+    public Task Then_products_list_contains_items_ordered_by_name(params string[] items)
     {
-        var expected = productNames
+        var expected = items
             .Select(name => _existingProducts[name])
             .Select(p =>
             {
@@ -111,9 +111,9 @@ public class ProductsApiContext : BaseContext
         return Task.CompletedTask;
     }
 
-    public Task Then_products_for_autocomplete_contain_products_ordered_by_name(params string[] productNames)
+    public Task Then_products_for_autocomplete_contain_items_ordered_by_name(params string[] items)
     {
-        var expected = productNames
+        var expected = items
             .Select(name => _existingProducts[name])
             .Select(p => p.ToProductAutocompleteItemDto())
             .ToList();

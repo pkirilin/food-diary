@@ -31,9 +31,9 @@ public abstract class BaseContext
         return Task.CompletedTask;
     }
     
-    public Task Given_authenticated_user(string email)
+    public Task Given_authenticated_user(string user)
     {
-        Factory = WithAuthenticatedUser(email);
+        Factory = WithAuthenticatedUser(user);
         return Task.CompletedTask;
     }
 

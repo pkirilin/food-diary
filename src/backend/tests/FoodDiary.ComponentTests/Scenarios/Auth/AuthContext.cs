@@ -11,9 +11,9 @@ public class AuthContext : BaseContext
     {
     }
 
-    public async Task When_user_is_trying_to_access_resource(string path)
+    public async Task When_user_is_trying_to_access_resource(string resource)
     {
-        _response = await ApiClient.GetAsync(path);
+        _response = await ApiClient.GetAsync(resource);
     }
     
     public Task Then_access_is_forbidden()

@@ -16,7 +16,7 @@ public class ProductsApiTests : ScenarioBase<ProductsApiContext>
             c => c.Given_authenticated_user(),
             c => c.Given_products("Chicken", "Apple", "Milk"),
             c => c.When_user_retrieves_products_list(),
-            c => c.Then_products_list_contains_products_ordered_by_name("Chicken", "Apple", "Milk"));
+            c => c.Then_products_list_contains_items_ordered_by_name("Chicken", "Apple", "Milk"));
     }
 
     [Scenario]
@@ -26,7 +26,7 @@ public class ProductsApiTests : ScenarioBase<ProductsApiContext>
             c => c.Given_authenticated_user(),
             c => c.Given_products("Chicken", "Apple", "Milk"),
             c => c.When_user_searches_products_for_autocomplete(),
-            c => c.Then_products_for_autocomplete_contain_products_ordered_by_name("Chicken", "Apple", "Milk"));
+            c => c.Then_products_for_autocomplete_contain_items_ordered_by_name("Chicken", "Apple", "Milk"));
     }
 
     [Scenario]
@@ -46,7 +46,7 @@ public class ProductsApiTests : ScenarioBase<ProductsApiContext>
         return Run(
             c => c.Given_authenticated_user(),
             c => c.Given_products("Chicken"),
-            c => c.When_user_updates_product("Chicken", "Boiled chicken"),
+            c => c.When_user_updates_product_from_NAME_to_NEWNAME("Chicken", "Boiled chicken"),
             c => c.Then_product_is_successfully_updated(),
             c => c.When_user_retrieves_products_list(),
             c => c.Then_products_list_contains_updated_product());

@@ -19,9 +19,9 @@ public class ImportApiContext : BaseContext
     {
     }
 
-    public Task Given_json_import_file(string fileName)
+    public Task Given_json_import_file_name(string name)
     {
-        _importFilePath = Path.Combine("Scenarios", "Import", fileName);
+        _importFilePath = Path.Combine("Scenarios", "Import", name);
         return Task.CompletedTask;
     }
 
@@ -47,7 +47,7 @@ public class ImportApiContext : BaseContext
         return Task.CompletedTask;
     }
 
-    public async Task Then_pages_list_contains(Page item)
+    public async Task Then_pages_list_contains_item(Page item)
     {
         var pagesListResult = await ApiClient.GetFromJsonAsync<PagesSearchResultDto>("/api/v1/pages");
         var expectedDate = item.Date.ToString("s", CultureInfo.InvariantCulture)[..10];
@@ -57,7 +57,7 @@ public class ImportApiContext : BaseContext
         _createdPageId = createdPage!.Id;
     }
     
-    public async Task Then_notes_list_contains(params Note[] items)
+    public async Task Then_notes_list_contains_items(params Note[] items)
     {
         var notesList = await ApiClient.GetFromJsonAsync<List<NoteItemDto>>($"/api/v1/notes?pageId={_createdPageId}");
         var expectedNotesList = items.Select(n => n.ToNoteItemDto());
@@ -71,7 +71,7 @@ public class ImportApiContext : BaseContext
             .And.AllSatisfy(note => { note.Calories.Should().BePositive(); });
     }
     
-    public async Task Then_products_list_contains(params Product[] items)
+    public async Task Then_products_list_contains_items(params Product[] items)
     {
         var productsListResult = await ApiClient.GetFromJsonAsync<ProductsSearchResultDto>("/api/v1/products");
         var productsList = productsListResult?.ProductItems ?? Array.Empty<ProductItemDto>();
@@ -83,7 +83,7 @@ public class ImportApiContext : BaseContext
                 .Excluding(product => product.CategoryId));
     }
     
-    public async Task Then_categories_list_contains(params Category[] items)
+    public async Task Then_categories_list_contains_items(params Category[] items)
     {
         var categoriesList = await ApiClient.GetFromJsonAsync<List<CategoryItemDto>>("/api/v1/categories");
         var expectedCategoriesList = items.Select(c => c.ToCategoryItemDto());

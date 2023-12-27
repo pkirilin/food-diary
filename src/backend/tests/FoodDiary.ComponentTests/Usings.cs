@@ -3,4 +3,6 @@ global using FluentAssertions;
 global using LightBDD.XUnit2;
 global using LightBDD.Framework.Scenarios;
 
-[assembly: LightBddScope]
+using FoodDiary.ComponentTests;
+
+[assembly: ConfiguredLightBddScope]

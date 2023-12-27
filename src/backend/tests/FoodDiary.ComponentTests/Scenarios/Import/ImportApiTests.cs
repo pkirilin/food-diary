@@ -51,12 +51,12 @@ public class ImportApiTests : ScenarioBase<ImportApiContext>
         
         return Run(
             c => c.Given_authenticated_user(),
-            c => c.Given_json_import_file("testImportFile.json"),
+            c => c.Given_json_import_file_name("testImportFile.json"),
             c => c.When_user_imports_data_from_json_file(),
             c => c.Then_json_import_is_successful(),
-            c => c.Then_pages_list_contains(page),
-            c => c.Then_notes_list_contains(notes.BreakfastOats, notes.BreakfastMilk),
-            c => c.Then_products_list_contains(products.Oats, products.Milk),
-            c => c.Then_categories_list_contains(categories.Cereals, categories.Dairy));
+            c => c.Then_pages_list_contains_item(page),
+            c => c.Then_notes_list_contains_items(notes.BreakfastOats, notes.BreakfastMilk),
+            c => c.Then_products_list_contains_items(products.Oats, products.Milk),
+            c => c.Then_categories_list_contains_items(categories.Cereals, categories.Dairy));
     }
 }

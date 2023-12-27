@@ -14,17 +14,17 @@ public class NotesApiContext : BaseContext
     {
     }
     
-    public Task Given_notes(params Note[] items)
+    public Task Given_notes(params Note[] notes)
     {
-        return Factory.SeedDataAsync(items);
+        return Factory.SeedDataAsync(notes);
     }
 
-    public async Task When_user_retrieves_notes_list(int pageId)
+    public async Task When_user_retrieves_notes_list_for_page(Page page)
     {
-        _notesList = await ApiClient.GetFromJsonAsync<IReadOnlyList<NoteItemDto>>($"/api/v1/notes?pageId={pageId}");
+        _notesList = await ApiClient.GetFromJsonAsync<IReadOnlyList<NoteItemDto>>($"/api/v1/notes?pageId={page.Id}");
     }
 
-    public Task Then_notes_list_contains(params Note[] items)
+    public Task Then_notes_list_contains_items(params Note[] items)
     {
         var expectedNotesList = items.Select(n => n.ToNoteItemDto());
 
