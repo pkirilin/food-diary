@@ -2,6 +2,7 @@ using System.Globalization;
 using System.Net;
 using System.Net.Http.Json;
 using FoodDiary.API.Dtos;
+using FoodDiary.API.Mapping;
 using FoodDiary.ComponentTests.Infrastructure;
 using FoodDiary.Domain.Entities;
 
@@ -59,40 +60,37 @@ public class ImportApiContext : BaseContext
     public async Task Then_notes_list_contains(params Note[] items)
     {
         var notesList = await ApiClient.GetFromJsonAsync<List<NoteItemDto>>($"/api/v1/notes?pageId={_createdPageId}");
+        var expectedNotesList = items.Select(n => n.ToNoteItemDto());
 
-        items.ToList().ForEach(expected =>
-        {
-            notesList.Should().Contain(actual =>
-                actual.MealType == expected.MealType &&
-                actual.ProductName == expected.Product.Name &&
-                actual.ProductQuantity == expected.ProductQuantity &&
-                actual.ProductDefaultQuantity == expected.Product.DefaultQuantity &&
-                actual.DisplayOrder == expected.DisplayOrder &&
-                actual.Calories > 0);
-        });
+        notesList.Should()
+            .BeEquivalentTo(expectedNotesList, options => options
+                .Excluding(note => note.Id)
+                .Excluding(note => note.PageId)
+                .Excluding(note => note.ProductId)
+                .Excluding(note => note.Calories))
+            .And.AllSatisfy(note => { note.Calories.Should().BePositive(); });
     }
     
     public async Task Then_products_list_contains(params Product[] items)
     {
         var productsListResult = await ApiClient.GetFromJsonAsync<ProductsSearchResultDto>("/api/v1/products");
-        
-        items.ToList().ForEach(expected =>
-        {
-            productsListResult?.ProductItems.Should().Contain(actual =>
-                actual.Name == expected.Name &&
-                actual.CaloriesCost == expected.CaloriesCost &&
-                actual.DefaultQuantity == expected.DefaultQuantity &&
-                actual.CategoryName == expected.Category.Name);
-        });
+        var productsList = productsListResult?.ProductItems ?? Array.Empty<ProductItemDto>();
+        var expectedProductsList = items.Select(p => p.ToProductItemDto());
+
+        productsList.Should()
+            .BeEquivalentTo(expectedProductsList, options => options
+                .Excluding(product => product.Id)
+                .Excluding(product => product.CategoryId));
     }
     
     public async Task Then_categories_list_contains(params Category[] items)
     {
         var categoriesList = await ApiClient.GetFromJsonAsync<List<CategoryItemDto>>("/api/v1/categories");
-        
-        items.ToList().ForEach(expected =>
-        {
-            categoriesList.Should().Contain(actual => actual.Name == expected.Name);
-        });
+        var expectedCategoriesList = items.Select(c => c.ToCategoryItemDto());
+
+        categoriesList.Should()
+            .BeEquivalentTo(expectedCategoriesList, options => options
+                .Excluding(category => category.Id)
+                .Excluding(category => category.CountProducts));
     }
 }

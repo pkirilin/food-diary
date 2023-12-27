@@ -1,8 +1,10 @@
 using System.Net;
 using System.Net.Http.Json;
 using FoodDiary.API.Dtos;
+using FoodDiary.API.Mapping;
 using FoodDiary.API.Requests;
 using FoodDiary.Application.Services.Products;
+using FoodDiary.ComponentTests.Dsl;
 using FoodDiary.ComponentTests.Infrastructure;
 using FoodDiary.Contracts.Products;
 using FoodDiary.Domain.Entities;
@@ -27,7 +29,11 @@ public class ProductsApiContext : BaseContext
 
     public async Task Given_products(params string[] productNames)
     {
-        _testCategory = await CreateTestCategory();
+        _testCategory = Create.Category("Test Category")
+            .WithId(1)
+            .Please();
+        
+        await Factory.SeedDataAsync(new[] { _testCategory });
         
         var products = productNames
             .Select((name, index) => new Product
@@ -61,7 +67,11 @@ public class ProductsApiContext : BaseContext
 
     public async Task When_user_creates_product(string productName)
     {
-        _testCategory = await CreateTestCategory();
+        _testCategory = Create.Category("Test Category")
+            .WithId(1)
+            .Please();
+        
+        await Factory.SeedDataAsync(new[] { _testCategory });
         
         _productCreateEditRequest = new ProductCreateEditRequest
         {
@@ -94,14 +104,10 @@ public class ProductsApiContext : BaseContext
     {
         var expected = productNames
             .Select(name => _existingProducts[name])
-            .Select(p => new ProductItemDto
+            .Select(p =>
             {
-                Id = p.Id,
-                Name = p.Name,
-                CaloriesCost = p.CaloriesCost,
-                DefaultQuantity = p.DefaultQuantity,
-                CategoryId = _testCategory.Id,
-                CategoryName = _testCategory.Name
+                p.Category = _testCategory;
+                return p.ToProductItemDto();
             })
             .ToList();
         
@@ -130,11 +136,7 @@ public class ProductsApiContext : BaseContext
     
     public Task Then_products_list_contains_created_product()
     {
-        _productsResponse!.ProductItems.Should().Contain(p =>
-            p.Name == _productCreateEditRequest.Name &&
-            p.CaloriesCost == _productCreateEditRequest.CaloriesCost &&
-            p.DefaultQuantity == _productCreateEditRequest.DefaultQuantity &&
-            p.CategoryId == _productCreateEditRequest.CategoryId);
+        _productsResponse!.ProductItems.Should().ContainEquivalentOf(_productCreateEditRequest);
         return Task.CompletedTask;
     }
     
@@ -146,23 +148,7 @@ public class ProductsApiContext : BaseContext
     
     public Task Then_products_list_contains_updated_product()
     {
-        _productsResponse!.ProductItems.Should().Contain(p =>
-            p.Name == _productCreateEditRequest.Name &&
-            p.CaloriesCost == _productCreateEditRequest.CaloriesCost &&
-            p.DefaultQuantity == _productCreateEditRequest.DefaultQuantity &&
-            p.CategoryId == _productCreateEditRequest.CategoryId);
+        _productsResponse!.ProductItems.Should().ContainEquivalentOf(_productCreateEditRequest);
         return Task.CompletedTask;
-    }
-
-    private async Task<Category> CreateTestCategory()
-    {
-        var testCategory = new Category
-        {
-            Id = 1,
-            Name = "Test category"
-        };
-
-        await Factory.SeedDataAsync(new[] { testCategory });
-        return testCategory;
     }
 }

@@ -1,5 +1,6 @@
 using System.Net.Http.Json;
 using FoodDiary.API.Dtos;
+using FoodDiary.API.Mapping;
 using FoodDiary.ComponentTests.Infrastructure;
 using FoodDiary.Domain.Entities;
 
@@ -39,19 +40,17 @@ public class NotesApiContext : BaseContext
 
     public Task Then_notes_list_contains(params string[] notesAsString)
     {
-        notesAsString
+        var expectedNotesList = notesAsString
             .Select(text => _existingNotes[text])
-            .ToList()
-            .ForEach(expected =>
-            {
-                _notesList.Should().Contain(actual =>
-                    actual.MealType == expected.MealType &&
-                    actual.ProductName == expected.Product.Name &&
-                    actual.ProductQuantity == expected.ProductQuantity &&
-                    actual.ProductDefaultQuantity == expected.Product.DefaultQuantity &&
-                    actual.DisplayOrder == expected.DisplayOrder &&
-                    actual.Calories > 0);
-            });
+            .Select(n => n.ToNoteItemDto());
+
+        _notesList.Should()
+            .BeEquivalentTo(expectedNotesList, options => options
+                .Excluding(note => note.Id)
+                .Excluding(note => note.PageId)
+                .Excluding(note => note.ProductId)
+                .Excluding(note => note.Calories))
+            .And.AllSatisfy(note => { note.Calories.Should().BePositive(); });
         
         return Task.CompletedTask;
     }
