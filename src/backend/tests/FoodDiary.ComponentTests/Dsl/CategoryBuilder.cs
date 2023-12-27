@@ -7,7 +7,7 @@ public class CategoryBuilder
     private readonly Category _category = new()
     {
         Id = Random.Shared.Next(),
-        Products = Array.Empty<Product>()
+        Products = new List<Product>()
     };
 
     public CategoryBuilder(string name)

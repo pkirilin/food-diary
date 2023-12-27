@@ -15,4 +15,10 @@ public class PageBuilder
     }
 
     public Page Please() => _page;
+
+    public PageBuilder WithId(int id)
+    {
+        _page.Id = id;
+        return this;
+    }
 }

@@ -8,41 +8,25 @@ namespace FoodDiary.ComponentTests.Scenarios.Notes;
 
 public class NotesApiContext : BaseContext
 {
-    private readonly Dictionary<string, Note> _existingNotes = new();
-
     private IReadOnlyList<NoteItemDto>? _notesList;
     
     public NotesApiContext(FoodDiaryWebApplicationFactory factory) : base(factory)
     {
     }
     
-    public Task Given_notes(params string[] notesAsString)
+    public Task Given_notes(params Note[] items)
     {
-        var notesByTextRepresentation = notesAsString
-            .Select(n => (Text: n, ParsedNote: NoteAsString.Parse(n)))
-            .ToDictionary(pair => pair.Text, pair => pair.ParsedNote);
-
-        foreach (var (key, value) in notesByTextRepresentation)
-        {
-            _existingNotes.Add(key, value);
-        }
-        
-        return Factory.SeedDataAsync(notesByTextRepresentation.Values);
+        return Factory.SeedDataAsync(items);
     }
 
-    public async Task When_user_retrieves_notes_list()
+    public async Task When_user_retrieves_notes_list(int pageId)
     {
-        var testPageId = NoteAsString.TestPage.Id;
-        
-        _notesList = await ApiClient
-            .GetFromJsonAsync<IReadOnlyList<NoteItemDto>>($"/api/v1/notes?pageId={testPageId}");
+        _notesList = await ApiClient.GetFromJsonAsync<IReadOnlyList<NoteItemDto>>($"/api/v1/notes?pageId={pageId}");
     }
 
-    public Task Then_notes_list_contains(params string[] notesAsString)
+    public Task Then_notes_list_contains(params Note[] items)
     {
-        var expectedNotesList = notesAsString
-            .Select(text => _existingNotes[text])
-            .Select(n => n.ToNoteItemDto());
+        var expectedNotesList = items.Select(n => n.ToNoteItemDto());
 
         _notesList.Should()
             .BeEquivalentTo(expectedNotesList, options => options

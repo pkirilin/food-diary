@@ -6,7 +6,9 @@ public class ProductBuilder
 {
     private readonly Product _product = new()
     {
-        Id = Random.Shared.Next()
+        Id = Random.Shared.Next(),
+        CaloriesCost = 100,
+        DefaultQuantity = 100
     };
 
     public ProductBuilder(string name)
@@ -19,6 +21,12 @@ public class ProductBuilder
     public ProductBuilder WithCategory(Category category)
     {
         _product.Category = category;
+        return this;
+    }
+    
+    public ProductBuilder WithCategoryId(int categoryId)
+    {
+        _product.CategoryId = categoryId;
         return this;
     }
     

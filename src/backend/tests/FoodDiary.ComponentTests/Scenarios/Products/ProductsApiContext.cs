@@ -34,16 +34,11 @@ public class ProductsApiContext : BaseContext
             .Please();
         
         await Factory.SeedDataAsync(new[] { _testCategory });
-        
+
         var products = productNames
-            .Select((name, index) => new Product
-            {
-                Id = index + 1,
-                Name = name,
-                CaloriesCost = 100,
-                DefaultQuantity = 100,
-                CategoryId = _testCategory.Id
-            })
+            .Select(name => Create.Product(name)
+                .WithCategoryId(_testCategory.Id)
+                .Please())
             .ToList();
 
         await Factory.SeedDataAsync(products);
