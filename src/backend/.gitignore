@@ -10,9 +10,6 @@
 *.userosscache
 *.sln.docstates
 
-# User-specific files (MonoDevelop/Xamarin Studio)
-*.userprefs
-
 # Mono auto generated files
 mono_crash.*
 
@@ -434,3 +431,4 @@ $RECYCLE.BIN/
 
 # Ignoring API XML documentation file generated at build-time
 src/FoodDiary.API/FoodDiary.API.xml
+src/FoodDiary.API/frontend/**
