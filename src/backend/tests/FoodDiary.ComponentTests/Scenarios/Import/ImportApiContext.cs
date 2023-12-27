@@ -66,7 +66,7 @@ public class ImportApiContext : BaseContext
                 actual.MealType == expected.MealType &&
                 actual.ProductName == expected.Product.Name &&
                 actual.ProductQuantity == expected.ProductQuantity &&
-                // actual.ProductDefaultQuantity == expected.Product.DefaultQuantity &&
+                actual.ProductDefaultQuantity == expected.Product.DefaultQuantity &&
                 actual.DisplayOrder == expected.DisplayOrder &&
                 actual.Calories > 0);
         });
@@ -81,7 +81,7 @@ public class ImportApiContext : BaseContext
             productsListResult?.ProductItems.Should().Contain(actual =>
                 actual.Name == expected.Name &&
                 actual.CaloriesCost == expected.CaloriesCost &&
-                // actual.DefaultQuantity == expected.DefaultQuantity &&
+                actual.DefaultQuantity == expected.DefaultQuantity &&
                 actual.CategoryName == expected.Category.Name);
         });
     }

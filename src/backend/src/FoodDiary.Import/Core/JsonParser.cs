@@ -65,11 +65,12 @@ namespace FoodDiary.Import.Core
 
         public IEnumerable<string> ParseProducts(IEnumerable<JsonExportNoteDto> notesFromJson)
         {
-            var productsFromJson = notesFromJson.Select(n => n.Product);
+            var productsFromJson = notesFromJson.Select(n => n.Product).ToList();
 
-            var areProductsFromJsonValid = productsFromJson.All(p => p != null
-                && p.Name.Length >= 3 && p.Name.Length <= 100
-                && p.CaloriesCost >= 1 && p.CaloriesCost <= 1000);
+            var areProductsFromJsonValid = productsFromJson.All(p =>
+                p?.Name.Length is >= 3 and <= 100 &&
+                p.CaloriesCost is >= 1 and <= 1000 &&
+                p.DefaultQuantity is >= 10 and <= 1000);
 
             if (!areProductsFromJsonValid)
                 throw new ImportException("Failed to parse products from import file");

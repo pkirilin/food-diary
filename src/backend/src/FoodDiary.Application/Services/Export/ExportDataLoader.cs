@@ -64,6 +64,7 @@ internal class ExportDataLoader : IExportDataLoader
                 {
                     Name = note.Product.Name,
                     CaloriesCost = note.Product.CaloriesCost,
+                    DefaultQuantity = note.Product.DefaultQuantity,
                     Category = note.Product.Category.Name
                 }
             })
