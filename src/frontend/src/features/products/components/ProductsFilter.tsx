@@ -1,7 +1,7 @@
 import { Box, Button, Paper, TextField } from '@mui/material';
 import { type FC, type FocusEvent, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { CategorySelect } from 'src/features/categories';
+import { CategorySelect, categoriesApi } from 'src/features/categories';
 import { type SelectOption } from 'src/types';
 import { useAppSelector, useValidatedTextInput } from '../../__shared__/hooks';
 import { useFilterStyles } from '../../__shared__/styles';
@@ -13,6 +13,7 @@ const ProductsFilter: FC = () => {
   const filterProductName = useAppSelector(state => state.products.filter.productSearchName ?? '');
   const filterCategory = useAppSelector(state => state.products.filter.category);
   const filterChanged = useAppSelector(state => state.products.filter.changed);
+  const [getCategories, categoriesRequest] = categoriesApi.useLazyGetCategorySelectOptionsQuery();
 
   const dispatch = useDispatch();
 
@@ -44,6 +45,10 @@ const ProductsFilter: FC = () => {
     dispatch(filterReset());
   };
 
+  const handleLoadCategories = async (): Promise<void> => {
+    await getCategories();
+  };
+
   return (
     <Box component={Paper} className={classes.root}>
       <TextField
@@ -59,6 +64,10 @@ const ProductsFilter: FC = () => {
         placeholder="Select a category"
         value={category}
         setValue={handleCategoryChange}
+        options={categoriesRequest.data ?? []}
+        optionsLoaded={!categoriesRequest.isUninitialized}
+        optionsLoading={categoriesRequest.isLoading}
+        onLoadOptions={handleLoadCategories}
       />
       <Box className={classes.controls}>
         <Button variant="text" disabled={!filterChanged} onClick={handleReset}>

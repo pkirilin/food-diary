@@ -33,6 +33,7 @@ export interface NoteItem {
   productId: number;
   productName: string;
   productQuantity: number;
+  productDefaultQuantity: number;
   calories: number;
 }
 

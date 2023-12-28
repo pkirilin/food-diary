@@ -3,7 +3,7 @@ using FoodDiary.ComponentTests.Infrastructure;
 
 namespace FoodDiary.ComponentTests.Scenarios.Auth;
 
-public class AuthContext : CommonSteps
+public class AuthContext : BaseContext
 {
     private HttpResponseMessage? _response;
     
@@ -11,10 +11,9 @@ public class AuthContext : CommonSteps
     {
     }
 
-    public async Task When_user_is_trying_to_access_resource(string path)
+    public async Task When_user_is_trying_to_access_resource(string resource)
     {
-        var client = Factory.CreateClient();
-        _response = await client.GetAsync(path);
+        _response = await ApiClient.GetAsync(resource);
     }
     
     public Task Then_access_is_forbidden()

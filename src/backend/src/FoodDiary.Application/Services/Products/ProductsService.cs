@@ -17,15 +17,10 @@ internal class ProductsService : IProductsService
     
     public async Task<ProductAutocompleteItemDto[]> GetAutocompleteItemsAsync(CancellationToken cancellationToken)
     {
-        var productsFromDb = await _unitOfWork.Products.GetAllOrderedByNameAsync(cancellationToken);
+        var products = await _unitOfWork.Products.GetAllOrderedByNameAsync(cancellationToken);
 
-        var productsForAutocomplete = productsFromDb.Select(p => new ProductAutocompleteItemDto
-            {
-                Id = p.Id,
-                Name = p.Name
-            })
+        return products
+            .Select(p => p.ToProductAutocompleteItemDto())
             .ToArray();
-
-        return productsForAutocomplete;
     }
 }

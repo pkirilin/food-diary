@@ -61,6 +61,7 @@ type CreateProductResult = 'Success' | 'CategoryNotFound';
 export const create = ({
   name,
   caloriesCost,
+  defaultQuantity,
   categoryId,
 }: CreateProductRequest): CreateProductResult => {
   const category = db.category.findFirst({
@@ -87,6 +88,7 @@ export const create = ({
     id: maxId + 1,
     name,
     caloriesCost,
+    defaultQuantity,
     categoryId,
   });
 
@@ -97,7 +99,7 @@ type UpdateProductResult = 'Success' | 'CategoryNotFound';
 
 export const update = (
   id: number,
-  { name, caloriesCost, categoryId }: EditProductRequest,
+  { name, caloriesCost, defaultQuantity, categoryId }: EditProductRequest,
 ): UpdateProductResult => {
   const category = db.category.findFirst({
     where: {
@@ -116,6 +118,7 @@ export const update = (
     data: {
       name,
       caloriesCost,
+      defaultQuantity,
       categoryId,
     },
   });

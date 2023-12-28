@@ -1,7 +1,6 @@
 import { api } from 'src/api';
-import { type SelectOption } from 'src/types';
 import { createUrl } from 'src/utils';
-import { type ProductsResponse } from '../types';
+import { type ProductSelectOption, type ProductsResponse } from '../types';
 import {
   type CreateProductRequest,
   type DeleteProductsRequest,
@@ -16,7 +15,7 @@ export const productsApi = api.injectEndpoints({
       providesTags: ['product'],
     }),
 
-    getProductSelectOptions: builder.query<SelectOption[], void>({
+    getProductSelectOptions: builder.query<ProductSelectOption[], void>({
       query: () => '/api/v1/products/autocomplete',
       providesTags: ['product'],
     }),
@@ -31,14 +30,10 @@ export const productsApi = api.injectEndpoints({
     }),
 
     editProduct: builder.mutation<void, EditProductRequest>({
-      query: ({ id, name, caloriesCost, categoryId }) => ({
+      query: ({ id, ...body }) => ({
         method: 'PUT',
         url: `/api/v1/products/${id}`,
-        body: {
-          name,
-          caloriesCost,
-          categoryId,
-        },
+        body,
       }),
       invalidatesTags: ['product'],
     }),

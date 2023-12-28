@@ -22,14 +22,16 @@ namespace FoodDiary.Import.Implementation
             if (productFromJson == null)
                 throw new ArgumentNullException(nameof(productFromJson));
 
-            if (String.IsNullOrEmpty(productFromJson.Name))
+            if (string.IsNullOrEmpty(productFromJson.Name))
                 throw new ArgumentNullException(nameof(productFromJson.Name));
 
             var existingProductsDictionary = _importDataProvider.ExistingProducts;
             Product importedProduct;
 
-            if (existingProductsDictionary.ContainsKey(productFromJson.Name))
-                importedProduct = existingProductsDictionary[productFromJson.Name];
+            if (existingProductsDictionary.TryGetValue(productFromJson.Name, out var existingProduct))
+            {
+                importedProduct = existingProduct;
+            }
             else
             {
                 importedProduct = new Product { Name = productFromJson.Name };
@@ -37,6 +39,7 @@ namespace FoodDiary.Import.Implementation
             }
 
             importedProduct.CaloriesCost = productFromJson.CaloriesCost;
+            importedProduct.DefaultQuantity = productFromJson.DefaultQuantity;
             importedProduct.Category = _categoryImporter.ImportCategory(productFromJson.Category);
             return importedProduct;
         }

@@ -9,6 +9,7 @@ import {
 import { AppButton, AppDialog } from 'src/components';
 import { CategorySelect } from 'src/features/categories';
 import { useInput } from 'src/hooks';
+import { type SelectOption } from 'src/types';
 import {
   mapToNumericInputProps,
   mapToSelectProps,
@@ -17,9 +18,10 @@ import {
 import {
   validateCaloriesCost,
   validateProductName,
+  validateQuantity,
   validateSelectOption,
 } from 'src/utils/validation';
-import { type ProductFormData } from '../types';
+import { type ProductFormData } from '../../types';
 
 interface ProductInputDialogProps {
   isOpened: boolean;
@@ -28,6 +30,10 @@ interface ProductInputDialogProps {
   submitText: string;
   onSubmit: (product: ProductFormData) => void;
   isLoading: boolean;
+  categories: SelectOption[];
+  categoriesLoaded: boolean;
+  categoriesLoading: boolean;
+  onLoadCategories: () => Promise<void>;
   product?: ProductFormData;
 }
 
@@ -38,41 +44,34 @@ const ProductInputDialog: FC<ProductInputDialogProps> = ({
   submitText,
   onSubmit,
   isLoading,
+  categories,
+  categoriesLoaded,
+  categoriesLoading,
+  onLoadCategories,
   product,
 }) => {
-  const {
-    inputProps: productNameInputProps,
-    value: productName,
-    clearValue: clearProductName,
-    isInvalid: isProductNameInvalid,
-    isTouched: isProductNameTouched,
-  } = useInput({
+  const { clearValue: clearProductName, ...productName } = useInput({
     initialValue: product?.name ?? '',
     errorHelperText: 'Product name is invalid',
     validate: validateProductName,
     mapToInputProps: mapToTextInputProps,
   });
 
-  const {
-    inputProps: caloriesCostInputProps,
-    value: caloriesCost,
-    clearValue: clearCaloriesCost,
-    isInvalid: isCaloriesCostInvalid,
-    isTouched: isCaloriesCostTouched,
-  } = useInput({
+  const { clearValue: clearCaloriesCost, ...caloriesCost } = useInput({
     initialValue: product?.caloriesCost ?? 100,
     errorHelperText: 'Calories cost is invalid',
     validate: validateCaloriesCost,
     mapToInputProps: mapToNumericInputProps,
   });
 
-  const {
-    inputProps: categorySelectProps,
-    value: category,
-    clearValue: clearCategory,
-    isInvalid: isCategoryInvalid,
-    isTouched: isCategoryTouched,
-  } = useInput({
+  const { clearValue: clearDefaultQuantity, ...defaultQuantity } = useInput({
+    initialValue: product?.defaultQuantity ?? 100,
+    errorHelperText: 'Default quantity is invalid',
+    validate: validateQuantity,
+    mapToInputProps: mapToNumericInputProps,
+  });
+
+  const { clearValue: clearCategory, ...category } = useInput({
     initialValue: product?.category ?? null,
     errorHelperText: 'Category is required',
     validate: validateSelectOption,
@@ -83,9 +82,10 @@ const ProductInputDialog: FC<ProductInputDialogProps> = ({
     if (isDialogOpened) {
       clearProductName();
       clearCaloriesCost();
+      clearDefaultQuantity();
       clearCategory();
     }
-  }, [clearCaloriesCost, clearCategory, clearProductName, isDialogOpened]);
+  }, [clearCaloriesCost, clearDefaultQuantity, clearCategory, clearProductName, isDialogOpened]);
 
   const handleClose = (): void => {
     setIsDialogOpened(false);
@@ -94,17 +94,27 @@ const ProductInputDialog: FC<ProductInputDialogProps> = ({
   const handleSubmit: FormEventHandler<HTMLFormElement> = event => {
     event.preventDefault();
 
-    if (category) {
+    if (category.value) {
       onSubmit({
-        name: productName,
-        caloriesCost,
-        category,
+        name: productName.value,
+        caloriesCost: caloriesCost.value,
+        defaultQuantity: defaultQuantity.value,
+        category: category.value,
       });
     }
   };
 
-  const isAnyValueInvalid = isProductNameInvalid || isCaloriesCostInvalid || isCategoryInvalid;
-  const isAnyValueChanged = isProductNameTouched || isCaloriesCostTouched || isCategoryTouched;
+  const isAnyValueInvalid =
+    productName.isInvalid ||
+    caloriesCost.isInvalid ||
+    category.isInvalid ||
+    defaultQuantity.isInvalid;
+
+  const isAnyValueChanged =
+    productName.isTouched ||
+    caloriesCost.isTouched ||
+    category.isTouched ||
+    defaultQuantity.isTouched;
 
   return (
     <AppDialog
@@ -114,7 +124,7 @@ const ProductInputDialog: FC<ProductInputDialogProps> = ({
       content={
         <form id="product-input-form" onSubmit={handleSubmit}>
           <TextField
-            {...productNameInputProps}
+            {...productName.inputProps}
             autoFocus
             fullWidth
             margin="normal"
@@ -122,17 +132,29 @@ const ProductInputDialog: FC<ProductInputDialogProps> = ({
             placeholder="Enter product name"
           />
           <TextField
-            {...caloriesCostInputProps}
+            {...caloriesCost.inputProps}
             type="number"
             fullWidth
             margin="normal"
             label="Calories cost"
             placeholder="Enter calories cost"
           />
+          <TextField
+            {...defaultQuantity.inputProps}
+            type="number"
+            fullWidth
+            margin="normal"
+            label="Default quantity"
+            placeholder="Enter default quantity"
+          />
           <CategorySelect
-            {...categorySelectProps}
+            {...category.inputProps}
             label="Category"
             placeholder="Select a category"
+            options={categories}
+            optionsLoaded={categoriesLoaded}
+            optionsLoading={categoriesLoading}
+            onLoadOptions={onLoadCategories}
           />
         </form>
       }
@@ -140,7 +162,7 @@ const ProductInputDialog: FC<ProductInputDialogProps> = ({
         <AppButton
           type="submit"
           form="product-input-form"
-          aria-label={`${product ? 'Save' : 'Create'} ${productName} and close dialog`}
+          aria-label={`${product ? 'Save' : 'Create'} ${productName.value} and close dialog`}
           variant="contained"
           disabled={isAnyValueInvalid || !isAnyValueChanged}
           isLoading={isLoading}

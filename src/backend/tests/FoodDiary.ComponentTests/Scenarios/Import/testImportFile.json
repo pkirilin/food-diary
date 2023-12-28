@@ -6,19 +6,21 @@
         {
           "mealType": 1,
           "product": {
-            "name": "Imported product 1",
-            "caloriesCost": 100,
-            "category": "Imported category 1"
+            "name": "Oats",
+            "caloriesCost": 378,
+            "defaultQuantity": 80,
+            "category": "Cereals"
           },
-          "productQuantity": 100,
+          "productQuantity": 80,
           "displayOrder": 0
         },
         {
           "mealType": 1,
           "product": {
-            "name": "First product",
-            "caloriesCost": 120,
-            "category": "First category"
+            "name": "Milk",
+            "caloriesCost": 60,
+            "defaultQuantity": 150,
+            "category": "Dairy"
           },
           "productQuantity": 100,
           "displayOrder": 1

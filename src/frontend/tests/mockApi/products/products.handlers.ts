@@ -1,6 +1,7 @@
 import { http, type HttpHandler, HttpResponse, type PathParams } from 'msw';
 import { API_URL } from 'src/config';
 import {
+  type ProductSelectOption,
   type CreateProductRequest,
   type EditProductRequest,
   type ProductsResponse,
@@ -27,10 +28,11 @@ export const handlers: HttpHandler[] = [
     const categoryNamesMap = productsService.getCategoryNames(products);
 
     const response: ProductsResponse = {
-      productItems: products.map(({ id, name, caloriesCost, categoryId }) => ({
+      productItems: products.map(({ id, name, caloriesCost, defaultQuantity, categoryId }) => ({
         id,
         name,
         caloriesCost,
+        defaultQuantity,
         categoryId,
         categoryName: categoryNamesMap.get(categoryId) ?? 'NULL',
       })),
@@ -41,7 +43,9 @@ export const handlers: HttpHandler[] = [
   }),
 
   http.get(`${API_URL}/api/v1/products/autocomplete`, () => {
-    const response: SelectOption[] = productsService.getAll().map(({ id, name }) => ({ id, name }));
+    const response: SelectOption[] = productsService
+      .getAll()
+      .map<ProductSelectOption>(({ id, name, defaultQuantity }) => ({ id, name, defaultQuantity }));
 
     return HttpResponse.json(response);
   }),

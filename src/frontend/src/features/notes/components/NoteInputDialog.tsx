@@ -1,9 +1,8 @@
 import { Button, TextField } from '@mui/material';
 import { type FC, useEffect, type FormEventHandler } from 'react';
 import { AppDialog } from 'src/components';
-import { ProductSelect } from 'src/features/products';
+import { ProductSelect, type ProductSelectOption } from 'src/features/products';
 import { useInput } from 'src/hooks';
-import { type SelectOption } from 'src/types';
 import { mapToNumericInputProps, mapToSelectProps } from 'src/utils/inputMapping';
 import { validateQuantity, validateSelectOption } from 'src/utils/validation';
 import { type MealType, type NoteCreateEdit } from '../models';
@@ -14,7 +13,11 @@ interface NoteInputDialogProps {
   isOpened: boolean;
   mealType: MealType;
   pageId: number;
-  product: SelectOption | null;
+  product: ProductSelectOption | null;
+  products: ProductSelectOption[];
+  productsLoaded: boolean;
+  productsLoading: boolean;
+  onLoadProducts: () => Promise<void>;
   quantity: number;
   displayOrder: number;
   onClose: () => void;
@@ -28,6 +31,10 @@ const NoteInputDialog: FC<NoteInputDialogProps> = ({
   mealType,
   pageId,
   product,
+  products,
+  productsLoaded,
+  productsLoading,
+  onLoadProducts,
   quantity,
   displayOrder,
   onClose,
@@ -40,7 +47,7 @@ const NoteInputDialog: FC<NoteInputDialogProps> = ({
     mapToInputProps: mapToSelectProps,
   });
 
-  const quantityInput = useInput({
+  const { setValue: setQuantity, ...quantityInput } = useInput({
     initialValue: quantity,
     errorHelperText: 'Quantity is invalid',
     validate: validateQuantity,
@@ -56,6 +63,12 @@ const NoteInputDialog: FC<NoteInputDialogProps> = ({
       clearQuantityInput();
     }
   }, [clearProductInput, clearQuantityInput, isOpened]);
+
+  useEffect(() => {
+    if (productInput.value) {
+      setQuantity(productInput.value.defaultQuantity);
+    }
+  }, [productInput.value, setQuantity]);
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = event => {
     event.preventDefault();
@@ -85,6 +98,10 @@ const NoteInputDialog: FC<NoteInputDialogProps> = ({
             label="Product"
             placeholder="Select a product"
             autoFocus
+            options={products}
+            optionsLoaded={productsLoaded}
+            optionsLoading={productsLoading}
+            onLoadOptions={onLoadProducts}
           />
           <TextField
             {...quantityInput.inputProps}

@@ -47,7 +47,7 @@ namespace FoodDiary.IntegrationTests
             var notesSearchQuery = $"{Endpoints.GetNotes}?pageId={pageId}";
 
             // Act
-            var response = await _client.PostDataAsync(Endpoints.CreateNote, newNoteRequest);
+            await _client.PostDataAsync(Endpoints.CreateNote, newNoteRequest);
             var notes = await _client.GetDataAsync<IEnumerable<NoteItemDto>>(notesSearchQuery);
 
             // Assert
@@ -61,26 +61,6 @@ namespace FoodDiary.IntegrationTests
         }
 
         [Theory]
-        [InlineData("New product", 100, 1)]
-        public async void PostValidProduct_CreatesNewProduct(string productName, int caloriesCost, int categoryId)
-        {
-            // Arrange
-            var product = new ProductCreateEditRequest()
-            {
-                Name = productName,
-                CaloriesCost = caloriesCost,
-                CategoryId = categoryId
-            };
-
-            // Act
-            var response = await _client.PostDataAsync(Endpoints.CreateProduct, product);
-            var products = await _client.GetDataAsync<ProductsSearchResultDto>(Endpoints.GetProducts);
-
-            // Assert
-            products.ProductItems.Should().Contain(p => p.Name == productName);
-        }
-
-        [Theory]
         [InlineData("New category")]
         public async void PostValidCategory_CreatesNewCategory(string categoryName)
         {
@@ -91,7 +71,7 @@ namespace FoodDiary.IntegrationTests
             };
 
             // Act
-            var response = await _client.PostDataAsync(Endpoints.CreateCategory, category);
+            await _client.PostDataAsync(Endpoints.CreateCategory, category);
             var categories = await _client.GetDataAsync<IEnumerable<CategoryItemDto>>(Endpoints.GetCategories);
 
             // Assert

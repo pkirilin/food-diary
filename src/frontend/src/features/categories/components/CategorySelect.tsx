@@ -1,18 +1,26 @@
 import { type FC } from 'react';
 import { AppSelect } from 'src/components';
 import { type SelectOption, type SelectProps } from 'src/types';
-import { categoriesApi } from '../api';
 
-const CategorySelect: FC<SelectProps<SelectOption>> = ({
+interface CategorySelectProps extends SelectProps<SelectOption> {
+  options: SelectOption[];
+  optionsLoaded: boolean;
+  optionsLoading: boolean;
+  onLoadOptions: () => Promise<void>;
+}
+
+const CategorySelect: FC<CategorySelectProps> = ({
   label,
   placeholder,
   value = null,
   setValue,
   helperText,
   isInvalid,
+  options,
+  optionsLoaded,
+  optionsLoading,
+  onLoadOptions,
 }) => {
-  const [getOptions, getOptionsRequest] = categoriesApi.useLazyGetCategorySelectOptionsQuery();
-
   const getDisplayName = (option: SelectOption): string => {
     return option.name;
   };
@@ -26,20 +34,20 @@ const CategorySelect: FC<SelectProps<SelectOption>> = ({
   };
 
   const handleOpen = (): void => {
-    if (getOptionsRequest.isUninitialized) {
-      void getOptions();
+    if (!optionsLoaded) {
+      void onLoadOptions();
     }
   };
 
   return (
     <AppSelect
-      availableOptions={getOptionsRequest.data ?? []}
+      availableOptions={options}
       value={value}
       getDisplayName={getDisplayName}
       areOptionsEqual={areOptionsEqual}
       onChange={handleChange}
       onOpen={handleOpen}
-      isLoading={getOptionsRequest.isLoading}
+      isLoading={optionsLoading}
       isInvalid={isInvalid}
       label={label}
       placeholder={placeholder}

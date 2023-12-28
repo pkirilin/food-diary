@@ -1,6 +1,6 @@
 import { http, type HttpHandler, HttpResponse, type PathParams } from 'msw';
 import { API_URL } from 'src/config';
-import { type NoteCreateEdit } from 'src/features/notes';
+import { type NoteItem, type NoteCreateEdit } from 'src/features/notes';
 import * as notesService from './notes.service';
 
 const parseIntOrNull = (value: string | null): number | null =>
@@ -19,16 +19,17 @@ export const handlers: HttpHandler[] = [
     const notes = notesService.get(pageId, mealType);
     const productsMap = notesService.getProducts(notes);
 
-    const response = notes.map(({ id, mealType, displayOrder, productId, quantity }) => {
+    const response = notes.map<NoteItem>(({ id, mealType, displayOrder, productId, quantity }) => {
       const product = productsMap.get(productId);
 
       return {
         id,
         mealType,
         displayOrder,
-        productId: product?.id,
-        productName: product?.name,
+        productId: product?.id ?? 0,
+        productName: product?.name ?? '',
         productQuantity: quantity,
+        productDefaultQuantity: product?.defaultQuantity ?? 0,
         calories: product ? notesService.calculateCalories(quantity, product) : 0,
       };
     });

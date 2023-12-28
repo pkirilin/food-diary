@@ -72,6 +72,7 @@ const ProductsTable: FC<ProductsTableProps> = ({
             </TableCell>
             <TableCell>Name</TableCell>
             <TableCell align="right">Calories cost</TableCell>
+            <TableCell align="right">Default quantity</TableCell>
             <TableCell>Category</TableCell>
             <TableCell padding="checkbox" />
           </TableRow>

@@ -1,9 +1,13 @@
-﻿namespace FoodDiary.Contracts.Products
-{
-    public class ProductAutocompleteItemDto
-    {
-        public int Id { get; set; }
+﻿using System.Diagnostics.CodeAnalysis;
 
-        public string Name { get; set; }
-    }
+namespace FoodDiary.Contracts.Products;
+
+[SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
+public class ProductAutocompleteItemDto
+{
+    public int Id { get; init; }
+
+    public string Name { get; init; }
+
+    public int DefaultQuantity { get; init; }
 }

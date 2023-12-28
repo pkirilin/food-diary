@@ -3,66 +3,77 @@
     "id": 1,
     "name": "Bread",
     "caloriesCost": 250,
+    "defaultQuantity": 50,
     "categoryId": 1
   },
   {
     "id": 2,
     "name": "Beef",
     "caloriesCost": 500,
+    "defaultQuantity": 100,
     "categoryId": 2
   },
   {
     "id": 3,
     "name": "Tomato",
     "caloriesCost": 20,
+    "defaultQuantity": 100,
     "categoryId": 3
   },
   {
     "id": 4,
     "name": "Milk",
     "caloriesCost": 60,
+    "defaultQuantity": 100,
     "categoryId": 4
   },
   {
     "id": 5,
     "name": "Apple",
     "caloriesCost": 52,
+    "defaultQuantity": 150,
     "categoryId": 5
   },
   {
     "id": 6,
     "name": "Oats",
     "caloriesCost": 379,
+    "defaultQuantity": 100,
     "categoryId": 1
   },
   {
     "id": 7,
     "name": "Chicken",
     "caloriesCost": 239,
+    "defaultQuantity": 150,
     "categoryId": 2
   },
   {
     "id": 8,
     "name": "Spinach",
     "caloriesCost": 23,
+    "defaultQuantity": 120,
     "categoryId": 3
   },
   {
     "id": 9,
     "name": "Cheese",
     "caloriesCost": 402,
+    "defaultQuantity": 100,
     "categoryId": 4
   },
   {
     "id": 10,
     "name": "Banana",
     "caloriesCost": 96,
+    "defaultQuantity": 100,
     "categoryId": 5
   },
   {
     "id": 11,
     "name": "Chocolate cake",
     "caloriesCost": 450,
+    "defaultQuantity": 100,
     "categoryId": 6
   }
 ]

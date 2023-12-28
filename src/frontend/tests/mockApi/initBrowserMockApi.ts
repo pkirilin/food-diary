@@ -4,6 +4,7 @@ const IGNORED_URL_PATTERNS: RegExp[] = [
   /\/site.webmanifest/,
   /^\/src/,
   /localhost:5173/,
+  /chrome-extension:\/\//,
 ];
 
 export const initBrowserMockApi = async (): Promise<void> => {
