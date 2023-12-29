@@ -1,3 +1,4 @@
+import { WithTriggerButton } from 'tests/sideEffects';
 import { type ReactElement } from 'react';
 import { type Mock } from 'vitest';
 import { MealType } from 'src/features/notes';
@@ -9,25 +10,31 @@ export class NoteInputDialogBuilder {
   private _selectedProductName: string | null = null;
   private _quantity: number = 100;
   private _onSubmitMock: Mock = vi.fn();
+  private _openAndCloseOnButtonClick: boolean = false;
+  private _triggerButtonLabel: string = '';
 
   please(): ReactElement {
     return (
-      <NoteInputDialog
-        title="Test"
-        submitText="Submit"
-        isOpened
-        mealType={MealType.Breakfast}
-        pageId={1}
-        product={this.getSelectedProduct()}
-        products={this._products}
-        productsLoaded={true}
-        productsLoading={false}
-        onLoadProducts={vi.fn()}
-        quantity={this._quantity}
-        displayOrder={1}
-        onClose={vi.fn()}
-        onSubmit={this._onSubmitMock}
-      />
+      <WithTriggerButton label={this._triggerButtonLabel}>
+        {({ active, onTriggerClick }) => (
+          <NoteInputDialog
+            title="Test"
+            submitText="Submit"
+            isOpened={this._openAndCloseOnButtonClick ? active : true}
+            mealType={MealType.Breakfast}
+            pageId={1}
+            product={this.getSelectedProduct()}
+            products={this._products}
+            productsLoaded={true}
+            productsLoading={false}
+            onLoadProducts={vi.fn()}
+            quantity={this._quantity}
+            displayOrder={1}
+            onClose={this._openAndCloseOnButtonClick ? onTriggerClick : vi.fn()}
+            onSubmit={this._onSubmitMock}
+          />
+        )}
+      </WithTriggerButton>
     );
   }
 
@@ -56,6 +63,12 @@ export class NoteInputDialogBuilder {
 
   withOnSubmit(onSubmitMock: Mock): NoteInputDialogBuilder {
     this._onSubmitMock = onSubmitMock;
+    return this;
+  }
+
+  withOpenAndCloseOnButtonClick(label: string): NoteInputDialogBuilder {
+    this._openAndCloseOnButtonClick = true;
+    this._triggerButtonLabel = label;
     return this;
   }
 

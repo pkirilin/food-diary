@@ -19,6 +19,29 @@ describe('when opened for existing note', () => {
   });
 });
 
+describe('when opened for edit, changed product, closed without save, and opened again', () => {
+  test('should take quantity from note quantity', async () => {
+    const user = userEvent.setup();
+    const ui = create
+      .NoteInputDialog()
+      .withProductForSelect({ name: 'First product', defaultQuantity: 200 })
+      .withProductForSelect({ name: 'Second product', defaultQuantity: 300 })
+      .withSelectedProduct('First product')
+      .withQuantity(100)
+      .withOpenAndCloseOnButtonClick('Open dialog')
+      .please();
+
+    render(ui);
+    await user.click(screen.getByText(/open dialog/i));
+    await user.click(screen.getByPlaceholderText(/select a product/i));
+    await user.click(within(screen.getByRole('listbox')).getByText(/second product/i));
+    await user.click(screen.getByText(/cancel/i));
+    await user.click(screen.getByText(/open dialog/i));
+
+    expect(screen.getByPlaceholderText(/product quantity/i)).toHaveValue(100);
+  });
+});
+
 describe('when product changed', () => {
   test(`should take quantity from product's default quantity if creating note`, async () => {
     const user = userEvent.setup();
