@@ -5,7 +5,7 @@ import { ProductSelect, type ProductSelectOption } from 'src/features/products';
 import { useInput } from 'src/hooks';
 import { mapToNumericInputProps, mapToSelectProps } from 'src/utils/inputMapping';
 import { validateQuantity, validateSelectOption } from 'src/utils/validation';
-import { type MealType, type NoteCreateEdit } from '../models';
+import { type MealType, type NoteCreateEdit } from '../../models';
 
 interface NoteInputDialogProps {
   title: string;
@@ -40,35 +40,38 @@ const NoteInputDialog: FC<NoteInputDialogProps> = ({
   onClose,
   onSubmit,
 }) => {
-  const productInput = useInput({
+  const { clearValue: clearProduct, ...productInput } = useInput({
     initialValue: product,
     errorHelperText: 'Product is required',
     validate: validateSelectOption,
     mapToInputProps: mapToSelectProps,
   });
 
-  const { setValue: setQuantity, ...quantityInput } = useInput({
+  const {
+    setValue: setQuantity,
+    clearValue: clearQuantity,
+    ...quantityInput
+  } = useInput({
     initialValue: quantity,
     errorHelperText: 'Quantity is invalid',
     validate: validateQuantity,
     mapToInputProps: mapToNumericInputProps,
   });
 
-  const clearProductInput = productInput.clearValue;
-  const clearQuantityInput = quantityInput.clearValue;
-
   useEffect(() => {
-    if (!isOpened) {
-      clearProductInput();
-      clearQuantityInput();
+    if (isOpened) {
+      clearProduct();
+      clearQuantity();
     }
-  }, [clearProductInput, clearQuantityInput, isOpened]);
+  }, [clearProduct, clearQuantity, isOpened]);
 
   useEffect(() => {
-    if (productInput.value) {
+    if (isOpened && productInput.value && productInput.isTouched) {
       setQuantity(productInput.value.defaultQuantity);
+    } else {
+      clearQuantity();
     }
-  }, [productInput.value, setQuantity]);
+  }, [isOpened, productInput.value, productInput.isTouched, setQuantity, clearQuantity]);
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = event => {
     event.preventDefault();
