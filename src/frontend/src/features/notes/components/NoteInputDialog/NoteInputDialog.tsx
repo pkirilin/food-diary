@@ -5,7 +5,7 @@ import { ProductSelect, type ProductSelectOption } from 'src/features/products';
 import { useInput } from 'src/hooks';
 import { mapToNumericInputProps, mapToSelectProps } from 'src/utils/inputMapping';
 import { validateQuantity, validateSelectOption } from 'src/utils/validation';
-import { type MealType, type NoteCreateEdit } from '../models';
+import { type MealType, type NoteCreateEdit } from '../../models';
 
 interface NoteInputDialogProps {
   title: string;
@@ -69,7 +69,6 @@ const NoteInputDialog: FC<NoteInputDialogProps> = ({
     if (isOpened && productInput.value && productInput.isTouched) {
       setQuantity(productInput.value.defaultQuantity);
     } else {
-      // TODO: remove and add test (close and open again should not reset quantity to default)
       clearQuantity();
     }
   }, [isOpened, productInput.value, productInput.isTouched, setQuantity, clearQuantity]);

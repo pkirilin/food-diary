@@ -1,7 +1,7 @@
 import { create } from 'tests/dsl';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { MealType, type NoteCreateEdit } from '../models';
+import { MealType, type NoteCreateEdit } from '../../models';
 
 describe('when opened for existing note', () => {
   test(`should take quantity from note quantity`, async () => {
