@@ -3,8 +3,24 @@ import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MealType, type NoteCreateEdit } from '../models';
 
-describe('when opened for new note', () => {
-  test(`should take quantity from product's default quantity`, async () => {
+describe('when opened for existing note', () => {
+  test(`should take quantity from note quantity`, async () => {
+    const ui = create
+      .NoteInputDialog()
+      .withProductForSelect({ name: 'Test product', defaultQuantity: 123 })
+      .withSelectedProduct('Test product')
+      .withQuantity(321)
+      .please();
+
+    render(ui);
+
+    const quantity = await screen.findByPlaceholderText(/product quantity/i);
+    expect(quantity).toHaveValue(321);
+  });
+});
+
+describe('when product changed', () => {
+  test(`should take quantity from product's default quantity if creating note`, async () => {
     const user = userEvent.setup();
     const ui = create
       .NoteInputDialog()
@@ -13,11 +29,26 @@ describe('when opened for new note', () => {
       .please();
 
     render(ui);
-
     await user.click(screen.getByPlaceholderText(/select a product/i));
     await user.click(within(screen.getByRole('listbox')).getByText(/test product/i));
 
     expect(screen.getByPlaceholderText(/product quantity/i)).toHaveValue(123);
+  });
+
+  test(`should take quantity from product's default quantity if editing note`, async () => {
+    const user = userEvent.setup();
+    const ui = create
+      .NoteInputDialog()
+      .withProductForSelect({ name: 'First product', defaultQuantity: 200 })
+      .withProductForSelect({ name: 'Second product', defaultQuantity: 300 })
+      .withSelectedProduct('First product')
+      .please();
+
+    render(ui);
+    await user.click(screen.getByPlaceholderText(/select a product/i));
+    await user.click(within(screen.getByRole('listbox')).getByText(/second product/i));
+
+    expect(screen.getByPlaceholderText(/product quantity/i)).toHaveValue(300);
   });
 });
 

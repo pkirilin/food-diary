@@ -6,6 +6,7 @@ import { type ProductSelectOption } from 'src/features/products';
 
 export class NoteInputDialogBuilder {
   private readonly _products: ProductSelectOption[] = [];
+  private _selectedProductName: string | null = null;
   private _quantity: number = 100;
   private _onSubmitMock: Mock = vi.fn();
 
@@ -17,7 +18,7 @@ export class NoteInputDialogBuilder {
         isOpened
         mealType={MealType.Breakfast}
         pageId={1}
-        product={null}
+        product={this.getSelectedProduct()}
         products={this._products}
         productsLoaded={true}
         productsLoading={false}
@@ -39,6 +40,12 @@ export class NoteInputDialogBuilder {
       name,
       defaultQuantity,
     });
+
+    return this;
+  }
+
+  withSelectedProduct(name: string): NoteInputDialogBuilder {
+    this._selectedProductName = name;
     return this;
   }
 
@@ -50,5 +57,21 @@ export class NoteInputDialogBuilder {
   withOnSubmit(onSubmitMock: Mock): NoteInputDialogBuilder {
     this._onSubmitMock = onSubmitMock;
     return this;
+  }
+
+  private getSelectedProduct(): ProductSelectOption | null {
+    if (this._selectedProductName === null) {
+      return null;
+    }
+
+    const product = this._products.find(p => p.name === this._selectedProductName) ?? null;
+
+    if (product === null) {
+      throw new Error(
+        `Product '${this._selectedProductName}' cannot be selected because it is not added to products for select`,
+      );
+    }
+
+    return { ...product };
   }
 }
