@@ -1,10 +1,8 @@
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
-import SearchIcon from '@mui/icons-material/Search';
 import {
   Box,
   IconButton,
-  InputAdornment,
   MenuItem,
   Popover,
   Stack,
@@ -18,6 +16,7 @@ import { selectCheckedProductIds } from '../selectors';
 import CreateProduct from './CreateProduct';
 import DeleteProductsDialog from './DeleteProductsDialog';
 import ProductsFilter from './ProductsFilter';
+import SearchByName from './SearchByName';
 
 const ProductsTableToolbar: FC = () => {
   const checkedProductIds = useAppSelector(selectCheckedProductIds);
@@ -67,24 +66,7 @@ const ProductsTableToolbar: FC = () => {
             direction={{ xs: 'column', sm: 'row' }}
             alignItems={{ xs: 'flex-start', sm: 'center' }}
           >
-            <TextField
-              size="small"
-              placeholder="Search by name"
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon />
-                  </InputAdornment>
-                ),
-              }}
-              sx={theme => ({
-                minWidth: '200px',
-                width: '100%',
-                [theme.breakpoints.up('sm')]: {
-                  width: '200px',
-                },
-              })}
-            />
+            <SearchByName />
             <TextField
               size="small"
               label="Category"

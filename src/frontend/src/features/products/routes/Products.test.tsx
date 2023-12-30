@@ -153,22 +153,14 @@ test('products can be filtered by category', async () => {
 });
 
 test('products can be filtered by name', async () => {
+  const user = userEvent.setup();
+
   render(<Products />);
+  const searchField = await screen.findByPlaceholderText(/search by name/i);
+  await user.type(searchField, 'bre');
 
-  await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
-  await userEvent.click(screen.getByLabelText(/open products filter/i));
-
-  const filterPopup = within(screen.getByRole('presentation'));
-  const productName = filterPopup.getByPlaceholderText(/product name/i);
-  await userEvent.type(productName, 'bre');
-  await userEvent.click(document.body);
-
-  await waitFor(() => {
-    expect(screen.queryByText(/rice/i)).not.toBeInTheDocument();
-  });
-  const filterChip = screen.getByLabelText(/applied filter: product search name/i);
-  expect(within(filterChip).queryByText(/bre/i)).toBeVisible();
   expect(screen.getByText(/bread/i));
+  expect(screen.queryByText(/rice/i)).not.toBeInTheDocument();
 });
 
 test('products filter can be reset', async () => {
@@ -178,12 +170,9 @@ test('products filter can be reset', async () => {
   await userEvent.click(screen.getByLabelText(/open products filter/i));
 
   const filterPopup = within(screen.getByRole('presentation'));
-  const productName = filterPopup.getByPlaceholderText(/product name/i);
   const category = filterPopup.getByPlaceholderText(/category/i);
-  await userEvent.type(productName, 'sfdsfwfegegrw');
   await userEvent.click(category);
   await userEvent.click(within(await screen.findByRole('listbox')).getByText(/dairy/i));
-  await waitFor(() => expect(screen.getByText(/no products found/i)));
   await userEvent.click(filterPopup.getByRole('button', { name: /reset/i }));
 
   expect(screen.getByText(/bread/i));
