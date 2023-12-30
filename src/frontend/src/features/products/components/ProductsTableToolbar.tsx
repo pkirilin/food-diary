@@ -2,26 +2,24 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import SearchIcon from '@mui/icons-material/Search';
 import {
+  Box,
   IconButton,
   InputAdornment,
   MenuItem,
   Popover,
   Stack,
   TextField,
-  Toolbar,
   Tooltip,
   Typography,
 } from '@mui/material';
-import { Fragment, useState, type MouseEvent, type FC } from 'react';
+import { useState, type MouseEvent, type FC } from 'react';
 import { usePopover, useAppSelector } from '../../__shared__/hooks';
-import { useToolbarStyles } from '../../__shared__/styles';
 import { selectCheckedProductIds } from '../selectors';
 import CreateProduct from './CreateProduct';
 import DeleteProductsDialog from './DeleteProductsDialog';
 import ProductsFilter from './ProductsFilter';
 
 const ProductsTableToolbar: FC = () => {
-  const classes = useToolbarStyles();
   const checkedProductIds = useAppSelector(selectCheckedProductIds);
   const [filter, showFilter] = usePopover();
   const [isDeleteDialogOpened, setIsDeleteDialogOpened] = useState(false);
@@ -36,9 +34,9 @@ const ProductsTableToolbar: FC = () => {
   };
 
   return (
-    <Toolbar className={classes.root}>
+    <Box p={2}>
       {isSelectionActive && (
-        <Fragment>
+        <Stack direction="row" spacing={2} alignItems="center">
           <Typography flexGrow={1}>{checkedProductIds.length} selected</Typography>
           <Tooltip title="Delete product">
             <IconButton
@@ -49,12 +47,12 @@ const ProductsTableToolbar: FC = () => {
               <DeleteIcon />
             </IconButton>
           </Tooltip>
-        </Fragment>
+        </Stack>
       )}
       {!isSelectionActive && (
         <Stack
           width="100%"
-          spacing={2}
+          spacing={{ xs: 3, sm: 2 }}
           direction={{ xs: 'column', sm: 'row' }}
           alignItems={{ xs: 'flex-start', sm: 'center' }}
           justifyContent="space-between"
@@ -65,7 +63,7 @@ const ProductsTableToolbar: FC = () => {
           <Stack
             width="100%"
             flex={1}
-            spacing={2}
+            spacing={{ xs: 3, sm: 2 }}
             direction={{ xs: 'column', sm: 'row' }}
             alignItems={{ xs: 'flex-start', sm: 'center' }}
           >
@@ -135,7 +133,7 @@ const ProductsTableToolbar: FC = () => {
       >
         <ProductsFilter />
       </Popover>
-    </Toolbar>
+    </Box>
   );
 };
 
