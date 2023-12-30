@@ -1,6 +1,17 @@
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
-import { IconButton, Popover, Toolbar, Tooltip, Typography } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
+import {
+  IconButton,
+  InputAdornment,
+  MenuItem,
+  Popover,
+  Stack,
+  TextField,
+  Toolbar,
+  Tooltip,
+  Typography,
+} from '@mui/material';
 import { Fragment, useState, type MouseEvent, type FC } from 'react';
 import { usePopover, useAppSelector } from '../../__shared__/hooks';
 import { useToolbarStyles } from '../../__shared__/styles';
@@ -41,23 +52,74 @@ const ProductsTableToolbar: FC = () => {
         </Fragment>
       )}
       {!isSelectionActive && (
-        <Fragment>
+        <Stack
+          width="100%"
+          spacing={2}
+          direction={{ xs: 'column', sm: 'row' }}
+          alignItems={{ xs: 'flex-start', sm: 'center' }}
+          justifyContent="space-between"
+        >
           <Typography variant="h2" flexGrow={1}>
             Products
           </Typography>
-          <Tooltip title="Filter products">
-            <span>
-              <IconButton
-                size="large"
-                onClick={handleFilterClick}
-                aria-label="Open products filter"
-              >
-                <FilterListIcon />
-              </IconButton>
-            </span>
-          </Tooltip>
-          <CreateProduct />
-        </Fragment>
+          <Stack
+            width="100%"
+            flex={1}
+            spacing={2}
+            direction={{ xs: 'column', sm: 'row' }}
+            alignItems={{ xs: 'flex-start', sm: 'center' }}
+          >
+            <TextField
+              size="small"
+              placeholder="Search by name"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon />
+                  </InputAdornment>
+                ),
+              }}
+              sx={theme => ({
+                minWidth: '200px',
+                width: '100%',
+                [theme.breakpoints.up('sm')]: {
+                  width: '200px',
+                },
+              })}
+            />
+            <TextField
+              size="small"
+              label="Category"
+              select
+              value={' '}
+              sx={theme => ({
+                minWidth: '200px',
+                width: '100%',
+                [theme.breakpoints.up('sm')]: {
+                  width: '200px',
+                },
+              })}
+            >
+              <MenuItem value={' '}>All</MenuItem>
+              <MenuItem value={'cereals'}>Cereals</MenuItem>
+              <MenuItem value={'dairy'}>Dairy</MenuItem>
+            </TextField>
+            <Stack direction="row">
+              <Tooltip title="Filter products">
+                <span>
+                  <IconButton
+                    size="large"
+                    onClick={handleFilterClick}
+                    aria-label="Open products filter"
+                  >
+                    <FilterListIcon />
+                  </IconButton>
+                </span>
+              </Tooltip>
+              <CreateProduct />
+            </Stack>
+          </Stack>
+        </Stack>
       )}
       <DeleteProductsDialog isOpened={isDeleteDialogOpened} setIsOpened={setIsDeleteDialogOpened} />
       <Popover
