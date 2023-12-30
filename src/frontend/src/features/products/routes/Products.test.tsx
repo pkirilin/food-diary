@@ -1,4 +1,4 @@
-import { screen, waitFor, waitForElementToBeRemoved, within } from '@testing-library/react';
+import { screen, waitForElementToBeRemoved, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { render } from 'src/testing';
 import Products from './Products';
@@ -133,23 +133,15 @@ test('products can be deleted', async () => {
 });
 
 test('products can be filtered by category', async () => {
+  const user = userEvent.setup();
+
   render(<Products />);
+  const categoryField = await screen.findByLabelText(/category/i);
+  await user.click(categoryField);
+  await user.click(within(await screen.findByRole('listbox')).getByText(/cereals/i));
 
-  await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
-  await userEvent.click(screen.getByLabelText(/open products filter/i));
-
-  const filterPopup = within(screen.getByRole('presentation'));
-  const category = filterPopup.getByPlaceholderText(/category/i);
-  await userEvent.click(category);
-  await userEvent.click(within(await screen.findByRole('listbox')).getByText(/cereals/i));
-  await userEvent.click(document.body);
-
-  await waitFor(() => {
-    expect(screen.queryByText(/milk/i)).not.toBeInTheDocument();
-  });
-  const filterChip = screen.getByLabelText(/applied filter: category/i);
-  expect(within(filterChip).queryByText(/cereals/i)).toBeVisible();
   expect(screen.getByText(/oats/i));
+  expect(screen.queryByText(/milk/i)).not.toBeInTheDocument();
 });
 
 test('products can be filtered by name', async () => {
@@ -161,23 +153,6 @@ test('products can be filtered by name', async () => {
 
   expect(screen.getByText(/bread/i));
   expect(screen.queryByText(/rice/i)).not.toBeInTheDocument();
-});
-
-test('products filter can be reset', async () => {
-  render(<Products />);
-
-  await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
-  await userEvent.click(screen.getByLabelText(/open products filter/i));
-
-  const filterPopup = within(screen.getByRole('presentation'));
-  const category = filterPopup.getByPlaceholderText(/category/i);
-  await userEvent.click(category);
-  await userEvent.click(within(await screen.findByRole('listbox')).getByText(/dairy/i));
-  await userEvent.click(filterPopup.getByRole('button', { name: /reset/i }));
-
-  expect(screen.getByText(/bread/i));
-  expect(screen.getByText(/milk/i));
-  expect(screen.getByText(/apple/i));
 });
 
 test('products in table are split by pages', async () => {

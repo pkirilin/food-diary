@@ -5,8 +5,9 @@ import { useDebounce } from 'use-debounce';
 import { useAppDispatch } from 'src/store';
 import { validateProductName } from 'src/utils/validation';
 import { productSearchNameChanged } from '../store';
+import * as styles from '../styles';
 
-const SearchByName: FC = () => {
+export const SearchByName: FC = () => {
   const [query, setQuery] = useState('');
   const [debouncedQuery] = useDebounce(query, 500);
   const dispatch = useAppDispatch();
@@ -27,6 +28,7 @@ const SearchByName: FC = () => {
       placeholder="Search by name"
       value={query}
       onChange={handleQueryChange}
+      sx={styles.searchField}
       InputProps={{
         startAdornment: (
           <InputAdornment position="start">
@@ -34,15 +36,6 @@ const SearchByName: FC = () => {
           </InputAdornment>
         ),
       }}
-      sx={theme => ({
-        minWidth: '200px',
-        width: '100%',
-        [theme.breakpoints.up('sm')]: {
-          width: '200px',
-        },
-      })}
     />
   );
 };
-
-export default SearchByName;

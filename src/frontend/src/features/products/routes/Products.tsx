@@ -4,7 +4,6 @@ import { type FC } from 'react';
 import { useAppDispatch } from 'src/hooks';
 import { useAppSelector } from 'src/store';
 import { productsApi } from '../api';
-import ProductsFilterAppliedParams from '../components/ProductsFilterAppliedParams';
 import ProductsTable from '../components/ProductsTable';
 import ProductsTablePagination from '../components/ProductsTablePagination';
 import ProductsTableToolbar from '../components/ProductsTableToolbar';
@@ -34,7 +33,6 @@ const Products: FC = () => {
         </Typography>
         <Paper>
           <ProductsTableToolbar />
-          <ProductsFilterAppliedParams />
           <ProductsTable
             products={getProductsQuery.data?.productItems ?? []}
             isLoading={getProductsQuery.isFetching}
