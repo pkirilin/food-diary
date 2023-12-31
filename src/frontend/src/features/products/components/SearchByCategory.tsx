@@ -1,4 +1,4 @@
-import { MenuItem, TextField, Typography } from '@mui/material';
+import { Divider, MenuItem, TextField, Typography } from '@mui/material';
 import { type FC, type ChangeEventHandler } from 'react';
 import { categoriesApi } from 'src/features/categories';
 import { useAppDispatch, useAppSelector } from 'src/store';
@@ -6,7 +6,7 @@ import { type SelectOption } from 'src/types';
 import { filterByCategoryChanged } from '../store';
 import * as styles from '../styles';
 
-const ALL_CATEGORIES_VALUE = ' ';
+const ANY_CATEGORY_VALUE = ' ';
 
 export const SearchByCategory: FC = () => {
   const category = useAppSelector(state => state.products.filter.category);
@@ -15,7 +15,7 @@ export const SearchByCategory: FC = () => {
   const dispatch = useAppDispatch();
 
   const findSelectedCategory = (selectedValue: string): SelectOption | null => {
-    if (selectedValue === ALL_CATEGORIES_VALUE) {
+    if (selectedValue === ANY_CATEGORY_VALUE) {
       return null;
     }
     return categoryOptions.find(c => c.id === Number(selectedValue)) ?? null;
@@ -32,10 +32,11 @@ export const SearchByCategory: FC = () => {
       size="small"
       label="Category"
       sx={styles.searchField}
-      value={category?.id ?? ALL_CATEGORIES_VALUE}
+      value={category?.id ?? ANY_CATEGORY_VALUE}
       onChange={handleChange}
     >
-      <MenuItem value={ALL_CATEGORIES_VALUE}>All</MenuItem>
+      <MenuItem value={ANY_CATEGORY_VALUE}>Any</MenuItem>
+      {categoryOptions.length > 0 && <Divider />}
       {categoryOptions.map(({ id, name }) => (
         <MenuItem key={id} value={id}>
           <Typography noWrap>{name}</Typography>
