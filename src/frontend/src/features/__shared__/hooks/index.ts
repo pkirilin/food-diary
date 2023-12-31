@@ -4,5 +4,3 @@ import usePopover from './usePopover';
 import useRouterId from './useRouterId';
 
 export { useAppSelector, useAppDispatch, useRouterId, usePopover };
-
-export * from './inputHooks';

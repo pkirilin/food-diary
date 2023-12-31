@@ -1,33 +1,26 @@
 import DeleteIcon from '@mui/icons-material/Delete';
-import FilterListIcon from '@mui/icons-material/FilterList';
-import { IconButton, Popover, Toolbar, Tooltip, Typography } from '@mui/material';
-import { Fragment, useState, type MouseEvent, type FC } from 'react';
-import { usePopover, useAppSelector } from '../../__shared__/hooks';
-import { useToolbarStyles } from '../../__shared__/styles';
+import { Box, IconButton, Stack, Tooltip, Typography } from '@mui/material';
+import { useState, type FC } from 'react';
+import { useAppSelector } from '../../__shared__/hooks';
 import { selectCheckedProductIds } from '../selectors';
 import CreateProduct from './CreateProduct';
 import DeleteProductsDialog from './DeleteProductsDialog';
-import ProductsFilter from './ProductsFilter';
+import { SearchByCategory } from './SearchByCategory';
+import { SearchByName } from './SearchByName';
 
 const ProductsTableToolbar: FC = () => {
-  const classes = useToolbarStyles();
   const checkedProductIds = useAppSelector(selectCheckedProductIds);
-  const [filter, showFilter] = usePopover();
   const [isDeleteDialogOpened, setIsDeleteDialogOpened] = useState(false);
   const isSelectionActive = checkedProductIds.length > 0;
-
-  const handleFilterClick = (event: MouseEvent<HTMLButtonElement>): void => {
-    showFilter(event);
-  };
 
   const handleDeleteClick = (): void => {
     setIsDeleteDialogOpened(true);
   };
 
   return (
-    <Toolbar className={classes.root}>
+    <Box p={2}>
       {isSelectionActive && (
-        <Fragment>
+        <Stack direction="row" spacing={2} alignItems="center">
           <Typography flexGrow={1}>{checkedProductIds.length} selected</Typography>
           <Tooltip title="Delete product">
             <IconButton
@@ -38,42 +31,35 @@ const ProductsTableToolbar: FC = () => {
               <DeleteIcon />
             </IconButton>
           </Tooltip>
-        </Fragment>
+        </Stack>
       )}
       {!isSelectionActive && (
-        <Fragment>
+        <Stack
+          width="100%"
+          spacing={{ xs: 3, sm: 2 }}
+          direction={{ xs: 'column', sm: 'row' }}
+          alignItems={{ xs: 'flex-start', sm: 'center' }}
+          justifyContent="space-between"
+        >
           <Typography variant="h2" flexGrow={1}>
             Products
           </Typography>
-          <Tooltip title="Filter products">
-            <span>
-              <IconButton
-                size="large"
-                onClick={handleFilterClick}
-                aria-label="Open products filter"
-              >
-                <FilterListIcon />
-              </IconButton>
-            </span>
-          </Tooltip>
-          <CreateProduct />
-        </Fragment>
+          <Stack
+            width="100%"
+            flex={1}
+            spacing={{ xs: 3, sm: 2 }}
+            direction={{ xs: 'column', sm: 'row' }}
+            justifyContent="space-between"
+            alignItems={{ xs: 'flex-start', sm: 'center' }}
+          >
+            <SearchByName />
+            <SearchByCategory />
+            <CreateProduct />
+          </Stack>
+        </Stack>
       )}
       <DeleteProductsDialog isOpened={isDeleteDialogOpened} setIsOpened={setIsDeleteDialogOpened} />
-      <Popover
-        {...filter}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'right',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-      >
-        <ProductsFilter />
-      </Popover>
-    </Toolbar>
+    </Box>
   );
 };
 

@@ -1,22 +1,30 @@
 import { Box, Container, Paper, Typography } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
-import { type FC } from 'react';
+import { useEffect, type FC } from 'react';
 import { useAppDispatch } from 'src/hooks';
 import { useAppSelector } from 'src/store';
 import { productsApi } from '../api';
-import ProductsFilterAppliedParams from '../components/ProductsFilterAppliedParams';
 import ProductsTable from '../components/ProductsTable';
 import ProductsTablePagination from '../components/ProductsTablePagination';
 import ProductsTableToolbar from '../components/ProductsTableToolbar';
 import { selectProductsQueryArg, selectCheckedProductIds } from '../selectors';
-import { productsUnchecked, productsChecked } from '../store';
+import { productsUnchecked, productsChecked, filterReset } from '../store';
 import { type Product } from '../types';
 
 const Products: FC = () => {
   const getProductsQueryArg = useAppSelector(selectProductsQueryArg);
   const getProductsQuery = productsApi.useGetProductsQuery(getProductsQueryArg);
   const checkedProductIds = useAppSelector(selectCheckedProductIds);
+  const filterChanged = useAppSelector(state => state.products.filter.changed);
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    return () => {
+      if (filterChanged) {
+        dispatch(filterReset());
+      }
+    };
+  }, [dispatch, filterChanged]);
 
   const handleCheckedProductsChange = (products: Product[], newCheckedIds: number[]): void => {
     if (newCheckedIds.length > 0) {
@@ -34,7 +42,6 @@ const Products: FC = () => {
         </Typography>
         <Paper>
           <ProductsTableToolbar />
-          <ProductsFilterAppliedParams />
           <ProductsTable
             products={getProductsQuery.data?.productItems ?? []}
             isLoading={getProductsQuery.isFetching}
