@@ -10,24 +10,37 @@ import {
 } from 'react';
 import { useDebounce } from 'use-debounce';
 import { useAppDispatch, useAppSelector } from 'src/store';
-import { validateProductName } from 'src/utils/validation';
 import { productSearchNameChanged } from '../store';
 import * as styles from '../styles';
+
+const DEBOUNCE_QUERY_DELAY = 500;
+const DEBOUNCE_QUERY_LENGTH_THRESHOLD = 3;
 
 export const SearchByName: FC = () => {
   const filterQuery = useAppSelector(state => state.products.filter.productSearchName ?? '');
   const [query, setQuery] = useState(filterQuery);
-  const [debouncedQuery] = useDebounce(query, 500);
+  const [queryTouched, setQueryTouched] = useState(false);
+  const [debouncedQuery] = useDebounce(query, DEBOUNCE_QUERY_DELAY);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (debouncedQuery === '' || validateProductName(debouncedQuery)) {
+    if (!queryTouched) {
+      return;
+    }
+
+    if (query === '') {
+      dispatch(productSearchNameChanged(query));
+      return;
+    }
+
+    if (debouncedQuery.length >= DEBOUNCE_QUERY_LENGTH_THRESHOLD) {
       dispatch(productSearchNameChanged(debouncedQuery));
     }
-  }, [debouncedQuery, dispatch]);
+  }, [queryTouched, query, debouncedQuery, dispatch]);
 
   const handleQueryChange: ChangeEventHandler<HTMLInputElement> = event => {
     setQuery(event.target.value);
+    setQueryTouched(true);
   };
 
   const handleQueryClear: MouseEventHandler<HTMLButtonElement> = () => {
