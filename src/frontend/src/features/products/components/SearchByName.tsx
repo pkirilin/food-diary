@@ -18,6 +18,7 @@ const DEBOUNCE_QUERY_LENGTH_THRESHOLD = 3;
 
 export const SearchByName: FC = () => {
   const filterQuery = useAppSelector(state => state.products.filter.productSearchName ?? '');
+  const filterChanged = useAppSelector(state => state.products.filter.changed);
   const [query, setQuery] = useState(filterQuery);
   const [queryTouched, setQueryTouched] = useState(false);
   const [debouncedQuery] = useDebounce(query, DEBOUNCE_QUERY_DELAY);
@@ -37,6 +38,13 @@ export const SearchByName: FC = () => {
       dispatch(productSearchNameChanged(debouncedQuery));
     }
   }, [queryTouched, query, debouncedQuery, dispatch]);
+
+  useEffect(() => {
+    if (!filterChanged) {
+      setQuery('');
+      setQueryTouched(false);
+    }
+  }, [filterChanged]);
 
   const handleQueryChange: ChangeEventHandler<HTMLInputElement> = event => {
     setQuery(event.target.value);
