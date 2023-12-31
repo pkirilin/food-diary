@@ -1,7 +1,7 @@
 import { MenuItem, TextField } from '@mui/material';
-import { type FC, type ChangeEventHandler, useState } from 'react';
+import { type FC, type ChangeEventHandler } from 'react';
 import { categoriesApi } from 'src/features/categories';
-import { useAppDispatch } from 'src/store';
+import { useAppDispatch, useAppSelector } from 'src/store';
 import { type SelectOption } from 'src/types';
 import { filterByCategoryChanged } from '../store';
 import * as styles from '../styles';
@@ -9,7 +9,7 @@ import * as styles from '../styles';
 const ALL_CATEGORIES_VALUE = ' ';
 
 export const SearchByCategory: FC = () => {
-  const [category, setCategory] = useState<SelectOption | null>(null);
+  const category = useAppSelector(state => state.products.filter.category);
   const getCategoriesQuery = categoriesApi.useGetCategorySelectOptionsQuery();
   const categoryOptions = getCategoriesQuery.data ?? [];
   const dispatch = useAppDispatch();
@@ -23,7 +23,6 @@ export const SearchByCategory: FC = () => {
 
   const handleChange: ChangeEventHandler<HTMLInputElement> = event => {
     const selectedCategory = findSelectedCategory(event.target.value);
-    setCategory(selectedCategory);
     dispatch(filterByCategoryChanged(selectedCategory));
   };
 

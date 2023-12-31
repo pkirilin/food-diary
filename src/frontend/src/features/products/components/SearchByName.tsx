@@ -9,13 +9,14 @@ import {
   type MouseEventHandler,
 } from 'react';
 import { useDebounce } from 'use-debounce';
-import { useAppDispatch } from 'src/store';
+import { useAppDispatch, useAppSelector } from 'src/store';
 import { validateProductName } from 'src/utils/validation';
 import { productSearchNameChanged } from '../store';
 import * as styles from '../styles';
 
 export const SearchByName: FC = () => {
-  const [query, setQuery] = useState('');
+  const filterQuery = useAppSelector(state => state.products.filter.productSearchName ?? '');
+  const [query, setQuery] = useState(filterQuery);
   const [debouncedQuery] = useDebounce(query, 500);
   const dispatch = useAppDispatch();
 
