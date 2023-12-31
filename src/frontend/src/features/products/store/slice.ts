@@ -49,15 +49,17 @@ const productsSlice = createSlice({
     productSearchNameChanged: (state, { payload }: PayloadAction<string>) => {
       state.filter.productSearchName = payload;
       state.filter.changed = true;
+      state.filter.pageNumber = initialState.filter.pageNumber;
+      state.filter.pageSize = initialState.filter.pageSize;
     },
     filterByCategoryChanged: (state, { payload }: PayloadAction<SelectOption | null>) => {
       state.filter.category = payload;
       state.filter.changed = true;
+      state.filter.pageNumber = initialState.filter.pageNumber;
+      state.filter.pageSize = initialState.filter.pageSize;
     },
     filterReset: state => {
-      state.filter.productSearchName = undefined;
-      state.filter.category = null;
-      state.filter.changed = false;
+      state.filter = initialState.filter;
     },
   },
   extraReducers: builder =>
