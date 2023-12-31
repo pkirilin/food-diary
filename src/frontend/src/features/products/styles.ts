@@ -6,4 +6,7 @@ export const searchField: SxProps<Theme> = theme => ({
   [theme.breakpoints.up('sm')]: {
     width: '200px',
   },
+  [theme.breakpoints.up('lg')]: {
+    width: '300px',
+  },
 });

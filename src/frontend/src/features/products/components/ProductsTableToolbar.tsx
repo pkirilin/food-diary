@@ -49,6 +49,7 @@ const ProductsTableToolbar: FC = () => {
             flex={1}
             spacing={{ xs: 3, sm: 2 }}
             direction={{ xs: 'column', sm: 'row' }}
+            justifyContent="space-between"
             alignItems={{ xs: 'flex-start', sm: 'center' }}
           >
             <SearchByName />
