@@ -1,6 +1,13 @@
+import ClearIcon from '@mui/icons-material/Clear';
 import SearchIcon from '@mui/icons-material/Search';
-import { TextField, InputAdornment } from '@mui/material';
-import { useState, type FC, type ChangeEventHandler, useEffect } from 'react';
+import { TextField, InputAdornment, IconButton } from '@mui/material';
+import {
+  useState,
+  type FC,
+  type ChangeEventHandler,
+  useEffect,
+  type MouseEventHandler,
+} from 'react';
 import { useDebounce } from 'use-debounce';
 import { useAppDispatch } from 'src/store';
 import { validateProductName } from 'src/utils/validation';
@@ -22,6 +29,10 @@ export const SearchByName: FC = () => {
     setQuery(event.target.value);
   };
 
+  const handleQueryClear: MouseEventHandler<HTMLButtonElement> = () => {
+    setQuery('');
+  };
+
   return (
     <TextField
       size="small"
@@ -32,9 +43,16 @@ export const SearchByName: FC = () => {
       InputProps={{
         startAdornment: (
           <InputAdornment position="start">
-            <SearchIcon />
+            <SearchIcon fontSize="small" />
           </InputAdornment>
         ),
+        endAdornment: query ? (
+          <InputAdornment position="end">
+            <IconButton size="small" onClick={handleQueryClear}>
+              <ClearIcon fontSize="small" />
+            </IconButton>
+          </InputAdornment>
+        ) : null,
       }}
     />
   );
