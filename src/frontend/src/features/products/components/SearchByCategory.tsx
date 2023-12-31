@@ -1,4 +1,4 @@
-import { MenuItem, TextField } from '@mui/material';
+import { MenuItem, TextField, Typography } from '@mui/material';
 import { type FC, type ChangeEventHandler } from 'react';
 import { categoriesApi } from 'src/features/categories';
 import { useAppDispatch, useAppSelector } from 'src/store';
@@ -38,7 +38,7 @@ export const SearchByCategory: FC = () => {
       <MenuItem value={ALL_CATEGORIES_VALUE}>All</MenuItem>
       {categoryOptions.map(({ id, name }) => (
         <MenuItem key={id} value={id}>
-          {name}
+          <Typography noWrap>{name}</Typography>
         </MenuItem>
       ))}
     </TextField>
