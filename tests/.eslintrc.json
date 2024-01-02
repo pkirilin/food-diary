@@ -1,0 +1,22 @@
+{
+  "root": true,
+  "overrides": [
+    {
+      "files": ["*.ts"],
+      "extends": ["plugin:import/typescript", "standard-with-typescript", "prettier"],
+      "parser": "@typescript-eslint/parser",
+      "parserOptions": {
+        "ecmaVersion": 2018,
+        "sourceType": "module",
+        "ecmaFeatures": {
+          "jsx": true
+        }
+      },
+      "plugins": ["prettier", "import"],
+      "rules": {
+        "prettier/prettier": 2,
+        "no-console": "warn"
+      }
+    }
+  ]
+}

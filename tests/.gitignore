@@ -1,10 +1,7 @@
 /node_modules
 /.pnp
 .pnp.js
-/coverage
-dist
 playwright-report
-
 .DS_Store
 
 npm-debug.log*
