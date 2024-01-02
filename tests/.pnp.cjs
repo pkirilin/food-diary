@@ -36,6 +36,7 @@ const RAW_RUNTIME_STATE =
           ["eslint-config-standard-with-typescript", "virtual:94f14c72dacee66eb9bad0d3bd8df38873d4c8bc3a7e2cb9fa6db6a4f7da1ede4d65ea1ce5ae3f76fbba9f585473226ddc01aeed0d813bbc197a27c20a47e466#npm:43.0.0"],\
           ["eslint-plugin-import", "virtual:94f14c72dacee66eb9bad0d3bd8df38873d4c8bc3a7e2cb9fa6db6a4f7da1ede4d65ea1ce5ae3f76fbba9f585473226ddc01aeed0d813bbc197a27c20a47e466#npm:2.29.1"],\
           ["eslint-plugin-n", "virtual:94f14c72dacee66eb9bad0d3bd8df38873d4c8bc3a7e2cb9fa6db6a4f7da1ede4d65ea1ce5ae3f76fbba9f585473226ddc01aeed0d813bbc197a27c20a47e466#npm:16.6.1"],\
+          ["eslint-plugin-playwright", "virtual:94f14c72dacee66eb9bad0d3bd8df38873d4c8bc3a7e2cb9fa6db6a4f7da1ede4d65ea1ce5ae3f76fbba9f585473226ddc01aeed0d813bbc197a27c20a47e466#npm:0.21.0"],\
           ["eslint-plugin-prettier", "virtual:94f14c72dacee66eb9bad0d3bd8df38873d4c8bc3a7e2cb9fa6db6a4f7da1ede4d65ea1ce5ae3f76fbba9f585473226ddc01aeed0d813bbc197a27c20a47e466#npm:5.1.2"],\
           ["eslint-plugin-promise", "virtual:94f14c72dacee66eb9bad0d3bd8df38873d4c8bc3a7e2cb9fa6db6a4f7da1ede4d65ea1ce5ae3f76fbba9f585473226ddc01aeed0d813bbc197a27c20a47e466#npm:6.1.1"],\
           ["prettier", "npm:3.1.1"],\
@@ -1495,6 +1496,33 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
+    ["eslint-plugin-playwright", [\
+      ["npm:0.21.0", {\
+        "packageLocation": "../../../../.yarn/berry/cache/eslint-plugin-playwright-npm-0.21.0-11b59335d2-10c0.zip/node_modules/eslint-plugin-playwright/",\
+        "packageDependencies": [\
+          ["eslint-plugin-playwright", "npm:0.21.0"]\
+        ],\
+        "linkType": "SOFT"\
+      }],\
+      ["virtual:94f14c72dacee66eb9bad0d3bd8df38873d4c8bc3a7e2cb9fa6db6a4f7da1ede4d65ea1ce5ae3f76fbba9f585473226ddc01aeed0d813bbc197a27c20a47e466#npm:0.21.0", {\
+        "packageLocation": "./.yarn/__virtual__/eslint-plugin-playwright-virtual-6aa006c87c/5/.yarn/berry/cache/eslint-plugin-playwright-npm-0.21.0-11b59335d2-10c0.zip/node_modules/eslint-plugin-playwright/",\
+        "packageDependencies": [\
+          ["eslint-plugin-playwright", "virtual:94f14c72dacee66eb9bad0d3bd8df38873d4c8bc3a7e2cb9fa6db6a4f7da1ede4d65ea1ce5ae3f76fbba9f585473226ddc01aeed0d813bbc197a27c20a47e466#npm:0.21.0"],\
+          ["@types/eslint", "npm:8.56.0"],\
+          ["@types/eslint-plugin-jest", null],\
+          ["eslint", "npm:8.56.0"],\
+          ["eslint-plugin-jest", null],\
+          ["globals", "npm:13.24.0"]\
+        ],\
+        "packagePeers": [\
+          "@types/eslint-plugin-jest",\
+          "@types/eslint",\
+          "eslint-plugin-jest",\
+          "eslint"\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
     ["eslint-plugin-prettier", [\
       ["npm:5.1.2", {\
         "packageLocation": "../../../../.yarn/berry/cache/eslint-plugin-prettier-npm-5.1.2-d18bb6313f-10c0.zip/node_modules/eslint-plugin-prettier/",\
@@ -1755,6 +1783,7 @@ const RAW_RUNTIME_STATE =
           ["eslint-config-standard-with-typescript", "virtual:94f14c72dacee66eb9bad0d3bd8df38873d4c8bc3a7e2cb9fa6db6a4f7da1ede4d65ea1ce5ae3f76fbba9f585473226ddc01aeed0d813bbc197a27c20a47e466#npm:43.0.0"],\
           ["eslint-plugin-import", "virtual:94f14c72dacee66eb9bad0d3bd8df38873d4c8bc3a7e2cb9fa6db6a4f7da1ede4d65ea1ce5ae3f76fbba9f585473226ddc01aeed0d813bbc197a27c20a47e466#npm:2.29.1"],\
           ["eslint-plugin-n", "virtual:94f14c72dacee66eb9bad0d3bd8df38873d4c8bc3a7e2cb9fa6db6a4f7da1ede4d65ea1ce5ae3f76fbba9f585473226ddc01aeed0d813bbc197a27c20a47e466#npm:16.6.1"],\
+          ["eslint-plugin-playwright", "virtual:94f14c72dacee66eb9bad0d3bd8df38873d4c8bc3a7e2cb9fa6db6a4f7da1ede4d65ea1ce5ae3f76fbba9f585473226ddc01aeed0d813bbc197a27c20a47e466#npm:0.21.0"],\
           ["eslint-plugin-prettier", "virtual:94f14c72dacee66eb9bad0d3bd8df38873d4c8bc3a7e2cb9fa6db6a4f7da1ede4d65ea1ce5ae3f76fbba9f585473226ddc01aeed0d813bbc197a27c20a47e466#npm:5.1.2"],\
           ["eslint-plugin-promise", "virtual:94f14c72dacee66eb9bad0d3bd8df38873d4c8bc3a7e2cb9fa6db6a4f7da1ede4d65ea1ce5ae3f76fbba9f585473226ddc01aeed0d813bbc197a27c20a47e466#npm:6.1.1"],\
           ["prettier", "npm:3.1.1"],\

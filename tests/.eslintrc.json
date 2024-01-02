@@ -3,10 +3,10 @@
   "overrides": [
     {
       "files": ["*.ts"],
-      "extends": ["plugin:import/typescript", "standard-with-typescript", "prettier"],
+      "extends": ["standard-with-typescript", "plugin:playwright/recommended", "prettier"],
       "parser": "@typescript-eslint/parser",
       "parserOptions": {
-        "ecmaVersion": 2018,
+        "ecmaVersion": "latest",
         "sourceType": "module",
         "ecmaFeatures": {
           "jsx": true
