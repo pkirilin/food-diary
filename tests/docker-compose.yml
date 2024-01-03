@@ -30,6 +30,8 @@ services:
       - Google__ExportFolderId=test_folder_id
       - GoogleAuth__ClientId=test_client_id
       - GoogleAuth__ClientSecret=test_client_secret
+      - VITE_APP_API_URL=https://localhost:5001
+      - VITE_APP_AUTH_CHECK_INTERVAL=14400000 # 4 hours
     volumes:
       - ../certs:/https:ro
     entrypoint: >
