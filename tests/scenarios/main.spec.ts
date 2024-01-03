@@ -1,6 +1,7 @@
-import { expect, test } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 
-test('should display google search page', async ({ page }) => {
-  await page.goto('https://www.google.com/');
-  await expect(page.getByRole('img', { name: 'Google' })).toBeVisible();
+test('should display sign in page', async ({ page }) => {
+  await page.goto('https://localhost:10000');
+
+  await expect(page.getByRole('button', { name: /sign in with google/i })).toBeVisible();
 });
