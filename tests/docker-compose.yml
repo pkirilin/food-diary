@@ -2,15 +2,15 @@ version: "3.9"
 services:
   db:
     ports:
-      - "10100:5432"
+      - "8090:5432"
     image: postgres:12.2-alpine
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: FoodDiary
-      PGPORT: 10100
+      PGPORT: 8090
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -p 10100 -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -p 8090 -U postgres"]
       interval: 10s
       retries: 5
   web:
@@ -21,18 +21,16 @@ services:
       context: ../
       dockerfile: Dockerfile
     ports:
-      - "10000:443"
+      - "8080:443"
     environment:
       - ASPNETCORE_URLS=https://+:443
       - ASPNETCORE_Kestrel__Certificates__Default__Password=test
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/app.pfx
-      - ConnectionStrings__Default=User ID=postgres;Password=postgres;Host=db;Port=10100;Database=FoodDiary
+      - ConnectionStrings__Default=User ID=postgres;Password=postgres;Host=db;Port=8090;Database=FoodDiary
       - Auth__AllowedEmails__0=test.user@gmail.com
       - Google__ExportFolderId=test_folder_id
       - GoogleAuth__ClientId=test_client_id
       - GoogleAuth__ClientSecret=test_client_secret
-      - VITE_APP_API_URL=https://localhost:10000
-      - VITE_APP_AUTH_CHECK_INTERVAL=14400000 # 4 hours
     volumes:
       - ../certs:/https:ro
     entrypoint: >
