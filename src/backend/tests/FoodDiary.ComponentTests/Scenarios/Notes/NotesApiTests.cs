@@ -66,4 +66,19 @@ public class NotesApiTests : ScenarioBase<NotesApiContext>
             c => c.When_user_retrieves_notes_list_for_page(originalNote.Page),
             c => c.Then_notes_list_contains_items(updatedNote));
     }
+
+    [Scenario]
+    public Task I_can_delete_single_note()
+    {
+        var page = Create.Page("2024-01-04").Please();
+        var note = Create.Note().WithPage(page).Please();
+        
+        return Run(
+            c => c.Given_authenticated_user(),
+            c => c.Given_notes(note),
+            c => c.When_user_deletes_note(note),
+            c => c.Then_note_is_successfully_deleted(),
+            c => c.When_user_retrieves_notes_list_for_page(page),
+            c => c.Then_notes_list_contains_no_items());
+    }
 }

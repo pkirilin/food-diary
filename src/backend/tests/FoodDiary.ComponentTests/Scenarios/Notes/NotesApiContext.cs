@@ -12,6 +12,7 @@ public class NotesApiContext : BaseContext
     private IReadOnlyList<NoteItemDto>? _notesList;
     private HttpResponseMessage _createNoteResponse = null!;
     private HttpResponseMessage _updateNoteResponse = null!;
+    private HttpResponseMessage _deleteNoteResponse = null!;
 
     public NotesApiContext(FoodDiaryWebApplicationFactory factory) : base(factory)
     {
@@ -54,6 +55,11 @@ public class NotesApiContext : BaseContext
         _updateNoteResponse = await ApiClient.PutAsJsonAsync($"/api/v1/notes/{note.Id}", request);
     }
 
+    public async Task When_user_deletes_note(Note note)
+    {
+        _deleteNoteResponse = await ApiClient.DeleteAsync($"/api/v1/notes/{note.Id}");
+    }
+
     public Task Then_notes_list_contains_items(params Note[] items)
     {
         var expectedNotesList = items.Select(n => n.ToNoteItemDto());
@@ -68,6 +74,12 @@ public class NotesApiContext : BaseContext
         
         return Task.CompletedTask;
     }
+    
+    public Task Then_notes_list_contains_no_items()
+    {
+        _notesList.Should().BeEmpty();
+        return Task.CompletedTask;
+    }
 
     public Task Then_note_is_successfully_created()
     {
@@ -78,6 +90,12 @@ public class NotesApiContext : BaseContext
     public Task Then_note_is_successfully_updated()
     {
         _updateNoteResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        return Task.CompletedTask;
+    }
+    
+    public Task Then_note_is_successfully_deleted()
+    {
+        _deleteNoteResponse.StatusCode.Should().Be(HttpStatusCode.OK);
         return Task.CompletedTask;
     }
 }
