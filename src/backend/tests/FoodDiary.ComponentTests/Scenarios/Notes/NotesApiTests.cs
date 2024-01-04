@@ -14,9 +14,13 @@ public class NotesApiTests : ScenarioBase<NotesApiContext>
     {
         return Run(
             c => c.Given_authenticated_user(),
-            c => c.Given_notes(Given.Notes.August202008.ChickenWithRiceForLunch),
-            c => c.When_user_retrieves_notes_list_for_page(Given.Page.August202008),
-            c => c.Then_notes_list_contains_items(Given.Notes.August202008.ChickenWithRiceForLunch));
+            c => c.Given_notes(
+                Given.Notes.August_08_2020.Lunch.Chicken,
+                Given.Notes.August_08_2020.Lunch.Rice),
+            c => c.When_user_retrieves_notes_list_for_page(Given.Page.August_08_2020),
+            c => c.Then_notes_list_contains_items(
+                Given.Notes.August_08_2020.Lunch.Chicken,
+                Given.Notes.August_08_2020.Lunch.Rice));
     }
 
     [Scenario]
@@ -24,11 +28,11 @@ public class NotesApiTests : ScenarioBase<NotesApiContext>
     {
         return Run(
             c => c.Given_authenticated_user(),
-            c => c.Given_page(Given.Page.January202404()),
-            c => c.Given_product(Given.Product.Beef()),
-            c => c.When_user_creates_note(Given.Notes.January202404.Breakfast.Beef()),
+            c => c.Given_page(Given.Page.August_08_2020),
+            c => c.Given_product(Given.Product.Chicken),
+            c => c.When_user_creates_note(Given.Notes.August_08_2020.Lunch.Chicken),
             c => c.Then_note_is_successfully_created(),
-            c => c.When_user_retrieves_notes_list_for_page(Given.Page.January202404()),
-            c => c.Then_notes_list_contains_items(Given.Notes.January202404.Breakfast.Beef()));
+            c => c.When_user_retrieves_notes_list_for_page(Given.Page.August_08_2020),
+            c => c.Then_notes_list_contains_items(Given.Notes.August_08_2020.Lunch.Chicken));
     }
 }
