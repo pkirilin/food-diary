@@ -10,9 +10,9 @@ public class CategoryBuilder
         Products = new List<Product>()
     };
 
-    public CategoryBuilder(string name)
+    public CategoryBuilder(string? name)
     {
-        _category.Name = name;
+        _category.Name = string.IsNullOrWhiteSpace(name) ? $"Test-${Guid.NewGuid()}" : name;
     }
 
     public Category Please() => _category;

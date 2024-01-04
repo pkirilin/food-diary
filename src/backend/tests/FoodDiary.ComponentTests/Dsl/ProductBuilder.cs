@@ -9,7 +9,7 @@ public class ProductBuilder
         Id = Random.Shared.Next(),
         CaloriesCost = 100,
         DefaultQuantity = 100,
-        Category = Create.Category("Test").Please()
+        Category = Create.Category().Please()
     };
 
     public ProductBuilder(string name)
@@ -30,13 +30,7 @@ public class ProductBuilder
         _product.Category = category;
         return this;
     }
-    
-    public ProductBuilder WithCategoryId(int categoryId)
-    {
-        _product.CategoryId = categoryId;
-        return this;
-    }
-    
+
     public ProductBuilder WithDefaultQuantity(int defaultQuantity)
     {
         _product.DefaultQuantity = defaultQuantity;

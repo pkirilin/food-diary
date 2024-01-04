@@ -16,7 +16,6 @@ public static class Given
     {
         public static Domain.Entities.Category Cereals => Create.Category("Cereals").Please();
         public static Domain.Entities.Category Dairy => Create.Category("Dairy").Please();
-        public static Domain.Entities.Category Meat => Create.Category("Meat").Please();
     }
 
     public static class Product
@@ -35,20 +34,6 @@ public static class Given
             .WithCategory(Category.Dairy)
             .WithCaloriesCost(60)
             .WithDefaultQuantity(150)
-            .Please();
-
-        public static Domain.Entities.Product Chicken => Create.Product("Chicken")
-            .WithId(3)
-            .WithCategory(Category.Meat)
-            .WithCaloriesCost(150)
-            .WithDefaultQuantity(150)
-            .Please();
-
-        public static Domain.Entities.Product Rice => Create.Product("Rice")
-            .WithId(4)
-            .WithCategory(SharedCereals)
-            .WithCaloriesCost(110)
-            .WithDefaultQuantity(90)
             .Please();
     }
 
@@ -71,23 +56,6 @@ public static class Given
                     .WithMealType(MealType.Breakfast)
                     .WithPage(SharedPage)
                     .WithProduct(Product.Milk, 100)
-                    .WithDisplayOrder(1)
-                    .Please();
-            }
-            
-            public static class Lunch
-            {
-                public static Note Chicken => Create.Note()
-                    .WithMealType(MealType.Lunch)
-                    .WithPage(SharedPage)
-                    .WithProduct(Product.Chicken, 170)
-                    .WithDisplayOrder(0)
-                    .Please();
-
-                public static Note Rice => Create.Note()
-                    .WithMealType(MealType.Lunch)
-                    .WithPage(SharedPage)
-                    .WithProduct(Product.Rice, 100)
                     .WithDisplayOrder(1)
                     .Please();
             }
