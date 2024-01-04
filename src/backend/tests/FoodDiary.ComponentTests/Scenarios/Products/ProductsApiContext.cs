@@ -32,12 +32,10 @@ public class ProductsApiContext : BaseContext
         _testCategory = Create.Category("Test Category")
             .WithId(1)
             .Please();
-        
-        await Factory.SeedDataAsync(new[] { _testCategory });
 
         var productsList = products
             .Select(name => Create.Product(name)
-                .WithCategoryId(_testCategory.Id)
+                .WithCategory(_testCategory)
                 .Please())
             .ToList();
 

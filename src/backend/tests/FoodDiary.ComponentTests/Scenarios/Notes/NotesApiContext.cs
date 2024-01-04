@@ -45,12 +45,12 @@ public class NotesApiContext : BaseContext
         _createNoteResponse = await ApiClient.PostAsJsonAsync("/api/v1/notes", request);
     }
     
-    public async Task When_user_updates_product_quantity_for_note_to_quantity(Note note, int quantity)
+    public async Task When_user_updates_product_quantity_for_note(Note note, int newQuantity)
     {
         var request = note.ToNoteCreateEditRequest();
         request.ProductId = note.Product.Id;
         request.PageId = note.Page.Id;
-        request.ProductQuantity = quantity;
+        request.ProductQuantity = newQuantity;
         _updateNoteResponse = await ApiClient.PutAsJsonAsync($"/api/v1/notes/{note.Id}", request);
     }
 

@@ -39,10 +39,10 @@ public class NotesApiTests : ScenarioBase<NotesApiContext>
     [Scenario]
     public Task I_can_update_note()
     {
-        var originalNote = Given.Notes.August_08_2020.Lunch.Chicken;
-        // TODO: remove this hack
-        originalNote.Page.Notes.Clear();
-        var expectedNote = Create.Note()
+        var originalNote = Create.Note()
+            .WithProduct("Chicken", 150)
+            .Please();
+        var updatedNote = Create.Note()
             .From(originalNote)
             .WithProductQuantity(200)
             .Please();
@@ -50,9 +50,9 @@ public class NotesApiTests : ScenarioBase<NotesApiContext>
         return Run(
             c => c.Given_authenticated_user(),
             c => c.Given_notes(originalNote),
-            c => c.When_user_updates_product_quantity_for_note_to_quantity(originalNote, 200),
+            c => c.When_user_updates_product_quantity_for_note(originalNote, 200),
             c => c.Then_note_is_successfully_updated(),
-            c => c.When_user_retrieves_notes_list_for_page(Given.Page.August_08_2020),
-            c => c.Then_notes_list_contains_items(expectedNote));
+            c => c.When_user_retrieves_notes_list_for_page(originalNote.Page),
+            c => c.Then_notes_list_contains_items(updatedNote));
     }
 }

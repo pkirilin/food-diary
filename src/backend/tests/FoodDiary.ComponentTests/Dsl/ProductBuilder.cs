@@ -6,8 +6,10 @@ public class ProductBuilder
 {
     private readonly Product _product = new()
     {
+        Id = Random.Shared.Next(),
         CaloriesCost = 100,
-        DefaultQuantity = 100
+        DefaultQuantity = 100,
+        Category = Create.Category("Test").Please()
     };
 
     public ProductBuilder(string name)

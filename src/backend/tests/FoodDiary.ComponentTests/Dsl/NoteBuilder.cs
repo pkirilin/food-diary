@@ -7,7 +7,11 @@ public class NoteBuilder
 {
     private readonly Note _note = new()
     {
-        Id = Random.Shared.Next()
+        Id = Random.Shared.Next(),
+        MealType = MealType.Breakfast,
+        Page = Create.Page(DateTime.UtcNow.ToString("u")[..10]).Please(),
+        Product = Create.Product("Test").Please(),
+        ProductQuantity = 100
     };
 
     public Note Please() => _note;
@@ -33,6 +37,13 @@ public class NoteBuilder
     public NoteBuilder WithProduct(Product product, int quantity)
     {
         _note.Product = product;
+        _note.ProductQuantity = quantity;
+        return this;
+    }
+    
+    public NoteBuilder WithProduct(string productName, int quantity)
+    {
+        _note.Product = Create.Product(productName).Please();
         _note.ProductQuantity = quantity;
         return this;
     }
