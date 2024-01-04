@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Http.Json;
 using FoodDiary.API.Dtos;
 using FoodDiary.API.Mapping;
+using FoodDiary.ComponentTests.Dsl;
 using FoodDiary.ComponentTests.Infrastructure;
 using FoodDiary.Domain.Entities;
 
@@ -40,18 +41,18 @@ public class NotesApiContext : BaseContext
 
     public async Task When_user_creates_note(Note note)
     {
-        var request = note.ToNoteCreateEditRequest();
-        request.ProductId = note.Product.Id;
-        request.PageId = note.Page.Id;
+        var request = Create.NoteCreateEditRequest()
+            .From(note)
+            .Please();
         _createNoteResponse = await ApiClient.PostAsJsonAsync("/api/v1/notes", request);
     }
     
     public async Task When_user_updates_product_quantity_for_note(Note note, int newQuantity)
     {
-        var request = note.ToNoteCreateEditRequest();
-        request.ProductId = note.Product.Id;
-        request.PageId = note.Page.Id;
-        request.ProductQuantity = newQuantity;
+        var request = Create.NoteCreateEditRequest()
+            .From(note)
+            .WithProductQuantity(newQuantity)
+            .Please();
         _updateNoteResponse = await ApiClient.PutAsJsonAsync($"/api/v1/notes/{note.Id}", request);
     }
 
