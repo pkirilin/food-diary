@@ -1,4 +1,5 @@
 using FoodDiary.API.Dtos;
+using FoodDiary.API.Requests;
 using FoodDiary.Domain.Entities;
 
 namespace FoodDiary.API.Mapping;
@@ -15,5 +16,14 @@ public static class NotesMapper
         ProductName = note.Product.Name,
         ProductQuantity = note.ProductQuantity,
         ProductDefaultQuantity = note.Product.DefaultQuantity,
+    };
+
+    public static NoteCreateEditRequest ToNoteCreateEditRequest(this Note note) => new()
+    {
+        MealType = note.MealType,
+        ProductQuantity = note.ProductQuantity,
+        DisplayOrder = note.DisplayOrder,
+        ProductId = note.ProductId,
+        PageId = note.PageId
     };
 }
