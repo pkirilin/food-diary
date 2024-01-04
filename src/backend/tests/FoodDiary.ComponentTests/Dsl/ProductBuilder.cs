@@ -19,12 +19,6 @@ public class ProductBuilder
     
     public Product Please() => _product;
 
-    public ProductBuilder WithId(int id)
-    {
-        _product.Id = id;
-        return this;
-    }
-
     public ProductBuilder WithCategory(Category category)
     {
         _product.Category = category;
