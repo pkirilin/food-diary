@@ -60,13 +60,15 @@ public static class Given
             
             public static class Breakfast
             {
-                public static Note Oats => Create.Note(MealType.Breakfast)
+                public static Note Oats => Create.Note()
+                    .WithMealType(MealType.Breakfast)
                     .WithPage(SharedPage)
                     .WithProduct(Product.Oats, 80)
                     .WithDisplayOrder(0)
                     .Please();
                 
-                public static Note Milk => Create.Note(MealType.Breakfast)
+                public static Note Milk => Create.Note()
+                    .WithMealType(MealType.Breakfast)
                     .WithPage(SharedPage)
                     .WithProduct(Product.Milk, 100)
                     .WithDisplayOrder(1)
@@ -75,13 +77,15 @@ public static class Given
             
             public static class Lunch
             {
-                public static Note Chicken => Create.Note(MealType.Lunch)
+                public static Note Chicken => Create.Note()
+                    .WithMealType(MealType.Lunch)
                     .WithPage(SharedPage)
                     .WithProduct(Product.Chicken, 170)
                     .WithDisplayOrder(0)
                     .Please();
 
-                public static Note Rice => Create.Note(MealType.Lunch)
+                public static Note Rice => Create.Note()
+                    .WithMealType(MealType.Lunch)
                     .WithPage(SharedPage)
                     .WithProduct(Product.Rice, 100)
                     .WithDisplayOrder(1)

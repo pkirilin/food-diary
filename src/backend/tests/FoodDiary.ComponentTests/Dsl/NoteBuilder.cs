@@ -10,16 +10,17 @@ public class NoteBuilder
         Id = Random.Shared.Next()
     };
 
-    public NoteBuilder(MealType mealType)
-    {
-        _note.MealType = mealType;
-    }
-
     public Note Please() => _note;
     
     public NoteBuilder WithPage(Page page)
     {
         _note.Page = page;
+        return this;
+    }
+
+    public NoteBuilder WithMealType(MealType mealType)
+    {
+        _note.MealType = mealType;
         return this;
     }
     
@@ -33,6 +34,25 @@ public class NoteBuilder
     {
         _note.Product = product;
         _note.ProductQuantity = quantity;
+        return this;
+    }
+
+    public NoteBuilder WithProductQuantity(int quantity)
+    {
+        _note.ProductQuantity = quantity;
+        return this;
+    }
+
+    public NoteBuilder From(Note note)
+    {
+        _note.Id = note.Id;
+        _note.MealType = note.MealType;
+        _note.PageId = note.PageId;
+        _note.ProductId = note.ProductId;
+        _note.ProductQuantity = note.ProductQuantity;
+        _note.DisplayOrder = note.DisplayOrder;
+        _note.Page = note.Page;
+        _note.Product = note.Product;
         return this;
     }
 }

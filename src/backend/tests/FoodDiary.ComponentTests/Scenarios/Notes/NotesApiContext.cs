@@ -11,7 +11,8 @@ public class NotesApiContext : BaseContext
 {
     private IReadOnlyList<NoteItemDto>? _notesList;
     private HttpResponseMessage _createNoteResponse = null!;
-    
+    private HttpResponseMessage _updateNoteResponse = null!;
+
     public NotesApiContext(FoodDiaryWebApplicationFactory factory) : base(factory)
     {
     }
@@ -43,6 +44,15 @@ public class NotesApiContext : BaseContext
         request.PageId = note.Page.Id;
         _createNoteResponse = await ApiClient.PostAsJsonAsync("/api/v1/notes", request);
     }
+    
+    public async Task When_user_updates_product_quantity_for_note_to_quantity(Note note, int quantity)
+    {
+        var request = note.ToNoteCreateEditRequest();
+        request.ProductId = note.Product.Id;
+        request.PageId = note.Page.Id;
+        request.ProductQuantity = quantity;
+        _updateNoteResponse = await ApiClient.PutAsJsonAsync($"/api/v1/notes/{note.Id}", request);
+    }
 
     public Task Then_notes_list_contains_items(params Note[] items)
     {
@@ -62,6 +72,12 @@ public class NotesApiContext : BaseContext
     public Task Then_note_is_successfully_created()
     {
         _createNoteResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        return Task.CompletedTask;
+    }
+    
+    public Task Then_note_is_successfully_updated()
+    {
+        _updateNoteResponse.StatusCode.Should().Be(HttpStatusCode.OK);
         return Task.CompletedTask;
     }
 }
