@@ -28,7 +28,7 @@ public class PagesApiTests : ScenarioBase<PagesApiContext>
     }
 
     [Scenario]
-    public Task I_can_get_date_for_new_page()
+    public Task I_receive_next_day_date_for_new_page_when_I_have_some_pages()
     {
         var pages = Create.PagesList(5)
             .StartingFrom("2024-01-01")
@@ -40,5 +40,14 @@ public class PagesApiTests : ScenarioBase<PagesApiContext>
             c => c.Given_pages(pages),
             c => c.When_user_retieves_date_for_new_page(),
             c => c.Then_date_for_new_page_contains_value("2024-01-06"));
+    }
+    
+    [Scenario]
+    public Task I_receive_today_date_for_new_page_when_I_dont_have_any_pages()
+    {
+        return Run(
+            c => c.Given_authenticated_user(),
+            c => c.When_user_retieves_date_for_new_page(),
+            c => c.Then_date_for_new_page_is_today());
     }
 }

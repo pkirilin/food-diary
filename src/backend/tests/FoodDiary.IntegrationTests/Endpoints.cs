@@ -14,7 +14,6 @@
         public static string GetNotes => NotesBaseUrl;
         public static string GetProducts => ProductsBaseUrl;
         public static string GetCategories => CategoriesBaseUrl;
-        public static string GetDateForNewPage => $"{PagesBaseUrl}/date";
 
         public static string CreatePage => PagesBaseUrl;
         public static string CreateNote => NotesBaseUrl;

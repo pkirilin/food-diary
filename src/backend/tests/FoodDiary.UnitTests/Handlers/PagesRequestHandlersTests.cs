@@ -74,27 +74,6 @@ namespace FoodDiary.UnitTests.Handlers
 
         [Theory]
         [CustomAutoData]
-        public async void GetDateForNewPageRequestHandler_ReturnsRequestedDate(GetDateForNewPageRequest request, List<Page> pagesByDate)
-        {
-            var handler = new GetDateForNewPageRequestHandler(_pageRepositoryMock.Object);
-            var pagesByDateQuery = pagesByDate.AsQueryable();
-            var expectedResult = pagesByDate.First().Date.AddDays(1);
-
-            _pageRepositoryMock.Setup(r => r.GetQueryWithoutTracking())
-                .Returns(pagesByDateQuery);
-            _pageRepositoryMock.Setup(r => r.GetByQueryAsync(It.IsNotNull<IQueryable<Page>>(), default))
-                .ReturnsAsync(pagesByDate);
-
-            var result = await handler.Handle(request, default);
-
-            _pageRepositoryMock.Verify(r => r.GetQueryWithoutTracking(), Times.Once);
-            _pageRepositoryMock.Verify(r => r.GetByQueryAsync(It.IsNotNull<IQueryable<Page>>(), default), Times.Once);
-
-            result.Should().Be(expectedResult);
-        }
-
-        [Theory]
-        [CustomAutoData]
         public async void GetPagesByExactDateRequestHandler_ReturnsRequestedPages(GetPagesByExactDateRequest request, List<Page> expectedResult)
         {
             var handler = new GetPagesByExactDateRequestHandler(_pageRepositoryMock.Object);

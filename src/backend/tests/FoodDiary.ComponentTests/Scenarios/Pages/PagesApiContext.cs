@@ -2,6 +2,7 @@ using System.Net.Http.Json;
 using FoodDiary.API.Dtos;
 using FoodDiary.API.Mapping;
 using FoodDiary.ComponentTests.Infrastructure;
+using FoodDiary.ComponentTests.Infrastructure.DateAndTime;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Utils;
 using Microsoft.Extensions.DependencyInjection;
@@ -51,6 +52,12 @@ public class PagesApiContext : BaseContext
     public Task Then_date_for_new_page_contains_value(string value)
     {
         _dateForNewPage.Should().Be(value);
+        return Task.CompletedTask;
+    }
+    
+    public Task Then_date_for_new_page_is_today()
+    {
+        _dateForNewPage.Should().Be(FakeDateTimeProvider.CurrentFakeDateAsString);
         return Task.CompletedTask;
     }
 }

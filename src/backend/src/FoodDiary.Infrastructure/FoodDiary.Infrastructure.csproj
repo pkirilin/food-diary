@@ -4,6 +4,7 @@
     <LangVersion>10</LangVersion>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\FoodDiary.Application\FoodDiary.Application.csproj" />
     <ProjectReference Include="..\FoodDiary.Domain\FoodDiary.Domain.csproj" />
   </ItemGroup>
   <ItemGroup>
