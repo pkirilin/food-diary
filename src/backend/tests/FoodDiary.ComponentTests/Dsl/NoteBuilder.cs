@@ -48,12 +48,6 @@ public class NoteBuilder
         return this;
     }
 
-    public NoteBuilder WithProductQuantity(int quantity)
-    {
-        _note.ProductQuantity = quantity;
-        return this;
-    }
-
     public NoteBuilder From(Note note)
     {
         _note.Id = note.Id;

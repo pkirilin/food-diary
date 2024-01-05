@@ -30,6 +30,12 @@ public class NoteCreateEditRequestBuilder
         _pageId = note.Page.Id;
         return this;
     }
+    
+    public NoteCreateEditRequestBuilder WithProduct(Product product)
+    {
+        _productId = product.Id;
+        return this;
+    }
 
     public NoteCreateEditRequestBuilder WithProductQuantity(int productQuantity)
     {
