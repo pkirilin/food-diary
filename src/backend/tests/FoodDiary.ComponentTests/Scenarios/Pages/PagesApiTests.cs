@@ -55,6 +55,37 @@ public class PagesApiTests : ScenarioBase<PagesApiContext>
     }
 
     [Scenario]
+    public Task I_can_delete_page()
+    {
+        var page = Create.Page("2024-01-02").Please();
+        
+        return Run(
+            c => c.Given_authenticated_user(),
+            c => c.Given_pages(page),
+            c => c.When_user_deletes_page(page),
+            c => c.Then_page_is_successfully_deleted(),
+            c => c.When_user_retieves_pages_list(),
+            c => c.Then_pages_list_is_empty());
+    }
+    
+    [Scenario]
+    public Task I_can_delete_many_pages()
+    {
+        var pages = Create.PagesList(3)
+            .StartingFrom("2024-01-01")
+            .WithOneDayInterval()
+            .Please();
+        
+        return Run(
+            c => c.Given_authenticated_user(),
+            c => c.Given_pages(pages),
+            c => c.When_user_deletes_multiple_pages(pages),
+            c => c.Then_multiple_pages_are_successfully_deleted(),
+            c => c.When_user_retieves_pages_list(),
+            c => c.Then_pages_list_is_empty());
+    }
+
+    [Scenario]
     public Task I_receive_next_day_date_for_new_page_when_I_have_some_pages()
     {
         var pages = Create.PagesList(5)

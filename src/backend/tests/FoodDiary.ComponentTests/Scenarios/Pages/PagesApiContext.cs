@@ -1,5 +1,7 @@
 using System.Net;
 using System.Net.Http.Json;
+using System.Text;
+using System.Text.Json;
 using FoodDiary.API.Dtos;
 using FoodDiary.API.Mapping;
 using FoodDiary.API.Requests;
@@ -17,6 +19,8 @@ public class PagesApiContext : BaseContext
     private string? _dateForNewPage;
     private HttpResponseMessage _createPageResponse = null!;
     private HttpResponseMessage _updatePageResponse = null!;
+    private HttpResponseMessage _deletePageResponse = null!;
+    private HttpResponseMessage _deleteMultiplePagesResponse = null!;
     
     public PagesApiContext(FoodDiaryWebApplicationFactory factory) : base(factory)
     {
@@ -50,6 +54,23 @@ public class PagesApiContext : BaseContext
         _updatePageResponse = await ApiClient.PutAsJsonAsync($"/api/v1/pages/{page.Id}", request);
     }
 
+    public async Task When_user_deletes_page(Page page)
+    {
+        _deletePageResponse = await ApiClient.DeleteAsync($"/api/v1/pages/{page.Id}");
+    }
+    
+    public async Task When_user_deletes_multiple_pages(params Page[] pages)
+    {
+        var pageIds = pages.Select(p => p.Id);
+        
+        var request = new HttpRequestMessage(HttpMethod.Delete, "/api/v1/pages/batch")
+        {
+            Content = new StringContent(JsonSerializer.Serialize(pageIds), Encoding.Unicode, "application/json")
+        };
+
+        _deleteMultiplePagesResponse = await ApiClient.SendAsync(request);
+    }
+
     public async Task When_user_retieves_date_for_new_page()
     {
          var response = await ApiClient.GetAsync("/api/v1/pages/date");
@@ -73,6 +94,12 @@ public class PagesApiContext : BaseContext
         
         return Task.CompletedTask;
     }
+
+    public Task Then_pages_list_is_empty()
+    {
+        _pagesSearchResult?.PageItems.Should().BeEmpty();
+        return Task.CompletedTask;
+    }
     
     public Task Then_page_is_successfully_created()
     {
@@ -83,6 +110,18 @@ public class PagesApiContext : BaseContext
     public Task Then_page_is_successfully_updated()
     {
         _updatePageResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        return Task.CompletedTask;
+    }
+    
+    public Task Then_page_is_successfully_deleted()
+    {
+        _deletePageResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        return Task.CompletedTask;
+    }
+    
+    public Task Then_multiple_pages_are_successfully_deleted()
+    {
+        _deleteMultiplePagesResponse.StatusCode.Should().Be(HttpStatusCode.OK);
         return Task.CompletedTask;
     }
 
