@@ -1,6 +1,8 @@
+using System.Net;
 using System.Net.Http.Json;
 using FoodDiary.API.Dtos;
 using FoodDiary.API.Mapping;
+using FoodDiary.API.Requests;
 using FoodDiary.ComponentTests.Infrastructure;
 using FoodDiary.ComponentTests.Infrastructure.DateAndTime;
 using FoodDiary.Domain.Entities;
@@ -13,6 +15,7 @@ public class PagesApiContext : BaseContext
 {
     private PagesSearchResultDto? _pagesSearchResult;
     private string? _dateForNewPage;
+    private HttpResponseMessage _createPageResponse = null!;
     
     public PagesApiContext(FoodDiaryWebApplicationFactory factory) : base(factory)
     {
@@ -27,6 +30,17 @@ public class PagesApiContext : BaseContext
     {
         _pagesSearchResult = await ApiClient.GetFromJsonAsync<PagesSearchResultDto>(
             $"/api/v1/pages?startDate={from}&endDate={to}");
+    }
+    
+    public async Task When_user_retieves_pages_list()
+    {
+        _pagesSearchResult = await ApiClient.GetFromJsonAsync<PagesSearchResultDto>("/api/v1/pages");
+    }
+
+    public async Task When_user_creates_page(Page page)
+    {
+        var request = new PageCreateEditRequest { Date = page.Date };
+        _createPageResponse = await ApiClient.PostAsJsonAsync("/api/v1/pages", request);
     }
 
     public async Task When_user_retieves_date_for_new_page()
@@ -45,7 +59,17 @@ public class PagesApiContext : BaseContext
     {
         var caloriesCalculator = Factory.Services.GetRequiredService<ICaloriesCalculator>();
         var expectedPageItems = items.Select(p => p.ToPageItemDto(caloriesCalculator));
-        _pagesSearchResult?.PageItems.Should().BeEquivalentTo(expectedPageItems);
+        
+        _pagesSearchResult?.PageItems
+            .Should()
+            .BeEquivalentTo(expectedPageItems, options => options.Excluding(page => page.Id));
+        
+        return Task.CompletedTask;
+    }
+    
+    public Task Then_page_is_successfully_created()
+    {
+        _createPageResponse.StatusCode.Should().Be(HttpStatusCode.OK);
         return Task.CompletedTask;
     }
 

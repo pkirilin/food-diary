@@ -28,6 +28,19 @@ public class PagesApiTests : ScenarioBase<PagesApiContext>
     }
 
     [Scenario]
+    public Task I_can_create_page()
+    {
+        var page = Create.Page("2024-01-02").Please();
+        
+        return Run(
+            c => c.Given_authenticated_user(),
+            c => c.When_user_creates_page_with_date(page),
+            c => c.Then_page_is_successfully_created(),
+            c => c.When_user_retieves_pages_list(),
+            c => c.Then_pages_list_contains_items(page));
+    }
+
+    [Scenario]
     public Task I_receive_next_day_date_for_new_page_when_I_have_some_pages()
     {
         var pages = Create.PagesList(5)
