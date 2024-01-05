@@ -12,6 +12,6 @@ internal class ProductFormatter : IValueFormatter
             throw new FormatterNotRegisteredException(value);
         }
 
-        return $"{product.Name} ({product.Category?.Name})";
+        return product.Name;
     }
 }
