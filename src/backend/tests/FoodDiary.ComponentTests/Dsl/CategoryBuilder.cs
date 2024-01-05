@@ -12,7 +12,7 @@ public class CategoryBuilder
 
     public CategoryBuilder(string? name)
     {
-        _category.Name = string.IsNullOrWhiteSpace(name) ? $"Test-${Guid.NewGuid()}" : name;
+        _category.Name = string.IsNullOrWhiteSpace(name) ? $"TestCategory-{Guid.NewGuid()}" : name;
     }
 
     public Category Please() => _category;
