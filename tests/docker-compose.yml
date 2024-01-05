@@ -1,0 +1,41 @@
+version: "3.9"
+services:
+  db:
+    ports:
+      - "8090:5432"
+    image: postgres:12.2-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: FoodDiary
+      PGPORT: 8090
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -p 8090 -U postgres"]
+      interval: 10s
+      retries: 5
+  web:
+    depends_on:
+      db:
+        condition: service_healthy
+    build:
+      context: ../
+      dockerfile: Dockerfile
+    ports:
+      - "8080:443"
+    environment:
+      - ASPNETCORE_URLS=https://+:443
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=test
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/app.pfx
+      - ConnectionStrings__Default=User ID=postgres;Password=postgres;Host=db;Port=8090;Database=FoodDiary
+      - Auth__AllowedEmails__0=test.user@gmail.com
+      - Google__ExportFolderId=test_folder_id
+      - GoogleAuth__ClientId=test_client_id
+      - GoogleAuth__ClientSecret=test_client_secret
+    volumes:
+      - ../certs:/https:ro
+    entrypoint: >
+      /bin/bash -c "cp /https/ca.cert.crt /usr/local/share/ca-certificates/ca.cert.crt &&
+        chmod 644 /usr/local/share/ca-certificates/ca.cert.crt &&
+        update-ca-certificates &&
+        dotnet migrator/FoodDiary.Migrator.dll &&
+        dotnet FoodDiary.API.dll"
