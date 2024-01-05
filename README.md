@@ -65,7 +65,7 @@ This information can be extremely useful for people who want to keep track of en
     yarn start
     ```
 
-1. Navigate to <https://localhost:5001>
+1. Navigate to <https://localhost:8080>
 
 ## How to run frontend without backend
 
@@ -93,7 +93,7 @@ VITE_APP_FAKE_AUTH_LOGIN_ON_INIT=true
 
 Name                                       | Type      | Description
 -------------------------------------------|-----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-`VITE_APP_API_URL`                         | `string`  | Specifies a backend API base URL without a trim slash, e.g. `https://localhost:5001`
+`VITE_APP_API_URL`                         | `string`  | Specifies a backend API base URL without a trim slash, e.g. `https://localhost:8080`
 `VITE_APP_AUTH_CHECK_INTERVAL`             | `number`  | Specifies the auth status check interval in milliseconds to ensure that users with expired cookies will not be able to use the application without refreshing the page in the browser. Not used if `VITE_APP_FAKE_AUTH_ENABLED` is `true`
 `VITE_APP_DEMO_MODE_ENABLED`               | `boolean` | Enables demo mode. In demo mode, some features related to file system or external integrations are disabled
 `VITE_APP_FAKE_AUTH_ENABLED`               | `boolean` | Setups fake authentication flow without using a backend server and OAuth Identity provider. Used for local development
