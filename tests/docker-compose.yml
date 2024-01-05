@@ -13,11 +13,6 @@ services:
       test: ["CMD-SHELL", "pg_isready -p 8090 -U postgres"]
       interval: 10s
       retries: 5
-  mountebank:
-    image: bbyars/mountebank:2.9.1
-    ports:
-      - "2125:2525"
-      - "2126:2126"
   web:
     depends_on:
       db:
@@ -36,7 +31,6 @@ services:
       - Google__ExportFolderId=test_folder_id
       - GoogleAuth__ClientId=test_client_id
       - GoogleAuth__ClientSecret=test_client_secret
-      - GoogleAuth__AuthorizationEndpoint=http://localhost:2126/authorize
     volumes:
       - ../certs:/https:ro
     entrypoint: >

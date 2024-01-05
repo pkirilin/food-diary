@@ -65,9 +65,6 @@ namespace FoodDiary.API
                 })
                 .AddGoogle(Constants.AuthenticationSchemes.OAuthGoogle, options =>
                 {
-                    options.AuthorizationEndpoint = _googleAuthOptions.AuthorizationEndpoint;
-                    options.TokenEndpoint = _googleAuthOptions.TokenEndpoint;
-                    options.UserInformationEndpoint = _googleAuthOptions.UserInformationEndpoint;
                     options.SignInScheme = Constants.AuthenticationSchemes.Cookie;
                     options.ClientId = _googleAuthOptions.ClientId;
                     options.ClientSecret = _googleAuthOptions.ClientSecret;
