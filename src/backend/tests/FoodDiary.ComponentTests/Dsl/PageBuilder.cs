@@ -6,7 +6,8 @@ public class PageBuilder
 {
     private readonly Page _page = new()
     {
-        Id = Random.Shared.Next()
+        Id = Random.Shared.Next(),
+        Notes = new List<Note>()
     };
 
     public PageBuilder(string date)
