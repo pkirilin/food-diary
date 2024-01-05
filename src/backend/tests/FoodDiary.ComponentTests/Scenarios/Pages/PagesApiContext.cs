@@ -11,6 +11,7 @@ namespace FoodDiary.ComponentTests.Scenarios.Pages;
 public class PagesApiContext : BaseContext
 {
     private PagesSearchResultDto? _pagesSearchResult;
+    private string? _dateForNewPage;
     
     public PagesApiContext(FoodDiaryWebApplicationFactory factory) : base(factory)
     {
@@ -26,6 +27,12 @@ public class PagesApiContext : BaseContext
         _pagesSearchResult = await ApiClient.GetFromJsonAsync<PagesSearchResultDto>(
             $"/api/v1/pages?startDate={from}&endDate={to}");
     }
+
+    public async Task When_user_retieves_date_for_new_page()
+    {
+         var response = await ApiClient.GetAsync("/api/v1/pages/date");
+         _dateForNewPage = await response.Content.ReadAsStringAsync();
+    }
     
     public Task Then_pages_list_contains_total_items_count(int count)
     {
@@ -38,6 +45,12 @@ public class PagesApiContext : BaseContext
         var caloriesCalculator = Factory.Services.GetRequiredService<ICaloriesCalculator>();
         var expectedPageItems = items.Select(p => p.ToPageItemDto(caloriesCalculator));
         _pagesSearchResult?.PageItems.Should().BeEquivalentTo(expectedPageItems);
+        return Task.CompletedTask;
+    }
+
+    public Task Then_date_for_new_page_contains_value(string value)
+    {
+        _dateForNewPage.Should().Be(value);
         return Task.CompletedTask;
     }
 }

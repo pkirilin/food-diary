@@ -26,4 +26,19 @@ public class PagesApiTests : ScenarioBase<PagesApiContext>
             c => c.Then_pages_list_contains_total_items_count(3),
             c => c.Then_pages_list_contains_items(expectedPages));
     }
+
+    [Scenario]
+    public Task I_can_get_date_for_new_page()
+    {
+        var pages = Create.PagesList(5)
+            .StartingFrom("2024-01-01")
+            .WithOneDayInterval()
+            .Please();
+        
+        return Run(
+            c => c.Given_authenticated_user(),
+            c => c.Given_pages(pages),
+            c => c.When_user_retieves_date_for_new_page(),
+            c => c.Then_date_for_new_page_contains_value("2024-01-06"));
+    }
 }
