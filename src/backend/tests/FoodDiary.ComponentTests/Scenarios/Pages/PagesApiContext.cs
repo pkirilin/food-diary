@@ -16,6 +16,7 @@ public class PagesApiContext : BaseContext
     private PagesSearchResultDto? _pagesSearchResult;
     private string? _dateForNewPage;
     private HttpResponseMessage _createPageResponse = null!;
+    private HttpResponseMessage _updatePageResponse = null!;
     
     public PagesApiContext(FoodDiaryWebApplicationFactory factory) : base(factory)
     {
@@ -28,8 +29,8 @@ public class PagesApiContext : BaseContext
 
     public async Task When_user_retieves_pages_list_from_to(string from, string to)
     {
-        _pagesSearchResult = await ApiClient.GetFromJsonAsync<PagesSearchResultDto>(
-            $"/api/v1/pages?startDate={from}&endDate={to}");
+        _pagesSearchResult = await ApiClient
+            .GetFromJsonAsync<PagesSearchResultDto>($"/api/v1/pages?startDate={from}&endDate={to}");
     }
     
     public async Task When_user_retieves_pages_list()
@@ -41,6 +42,12 @@ public class PagesApiContext : BaseContext
     {
         var request = new PageCreateEditRequest { Date = page.Date };
         _createPageResponse = await ApiClient.PostAsJsonAsync("/api/v1/pages", request);
+    }
+
+    public async Task When_user_updates_page(Page page)
+    {
+        var request = new PageCreateEditRequest { Date = page.Date };
+        _updatePageResponse = await ApiClient.PutAsJsonAsync($"/api/v1/pages/{page.Id}", request);
     }
 
     public async Task When_user_retieves_date_for_new_page()
@@ -70,6 +77,12 @@ public class PagesApiContext : BaseContext
     public Task Then_page_is_successfully_created()
     {
         _createPageResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        return Task.CompletedTask;
+    }
+
+    public Task Then_page_is_successfully_updated()
+    {
+        _updatePageResponse.StatusCode.Should().Be(HttpStatusCode.OK);
         return Task.CompletedTask;
     }
 

@@ -34,8 +34,22 @@ public class PagesApiTests : ScenarioBase<PagesApiContext>
         
         return Run(
             c => c.Given_authenticated_user(),
-            c => c.When_user_creates_page_with_date(page),
+            c => c.When_user_creates_page(page),
             c => c.Then_page_is_successfully_created(),
+            c => c.When_user_retieves_pages_list(),
+            c => c.Then_pages_list_contains_items(page));
+    }
+
+    [Scenario]
+    public Task I_can_update_page()
+    {
+        var page = Create.Page("2024-01-02").Please();
+        
+        return Run(
+            c => c.Given_authenticated_user(),
+            c => c.Given_pages(page),
+            c => c.When_user_updates_page(page),
+            c => c.Then_page_is_successfully_updated(),
             c => c.When_user_retieves_pages_list(),
             c => c.Then_pages_list_contains_items(page));
     }
