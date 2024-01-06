@@ -18,13 +18,7 @@ internal class CategoriesService : ICategoriesService
     public async Task<CategoryAutocompleteItemDto[]> GetAutocompleteItemsAsync(CancellationToken cancellationToken)
     {
         var categoryEntities = await _unitOfWork.Categories.GetAllOrderedByNameAsync(cancellationToken);
-
-        var categoriesForAutocomplete = categoryEntities.Select(c => new CategoryAutocompleteItemDto
-        {
-            Id = c.Id,
-            Name = c.Name
-        }).ToArray();
-
+        var categoriesForAutocomplete = categoryEntities.Select(c => c.ToCategoryAutocompleteItemDto()).ToArray();
         return categoriesForAutocomplete;
     }
 }
