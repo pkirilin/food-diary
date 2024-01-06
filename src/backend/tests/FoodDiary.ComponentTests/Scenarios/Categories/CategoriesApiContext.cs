@@ -15,6 +15,7 @@ public class CategoriesApiContext : BaseContext
     private IReadOnlyList<CategoryItemDto>? _categoriesList;
     private IReadOnlyList<CategoryAutocompleteItemDto>? _categoriesListForAutocomplete;
     private HttpResponseMessage _createCategoryResponse = null!;
+    private HttpResponseMessage _updateCategoryResponse = null!;
     
     public CategoriesApiContext(FoodDiaryWebApplicationFactory factory) : base(factory)
     {
@@ -34,6 +35,12 @@ public class CategoriesApiContext : BaseContext
     {
         var request = new CategoryCreateEditRequest { Name = category };
         _createCategoryResponse = await ApiClient.PostAsJsonAsync("/api/v1/categories", request);
+    }
+
+    public async Task When_user_renames_category(Category category, string newName)
+    {
+        var request = new CategoryCreateEditRequest { Name = newName };
+        _updateCategoryResponse = await ApiClient.PutAsJsonAsync($"/api/v1/categories/{category.Id}", request);
     }
     
     public async Task When_user_searches_categories_for_autocomplete()
@@ -56,6 +63,12 @@ public class CategoriesApiContext : BaseContext
     public Task Then_category_is_successfully_created()
     {
         _createCategoryResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        return Task.CompletedTask;
+    }
+    
+    public Task Then_category_is_successfully_updated()
+    {
+        _updateCategoryResponse.StatusCode.Should().Be(HttpStatusCode.OK);
         return Task.CompletedTask;
     }
 
