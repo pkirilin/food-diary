@@ -46,10 +46,21 @@ public class ProductsApiContext : BaseContext
             _existingProducts.Add(product.Name, product);
         }
     }
+
+    public Task Given_products(params Product[] products)
+    {
+        return Factory.SeedDataAsync(products);
+    }
     
     public async Task When_user_retrieves_products_list()
     {
         _productsResponse = await ApiClient.GetFromJsonAsync<ProductsSearchResultDto>("/api/v1/products");
+    }
+
+    public async Task When_user_searches_products_by_name(string name)
+    {
+        _productsResponse = await ApiClient
+            .GetFromJsonAsync<ProductsSearchResultDto>($"/api/v1/products?productSearchName={name}");
     }
     
     public async Task When_user_searches_products_for_autocomplete()
@@ -91,6 +102,17 @@ public class ProductsApiContext : BaseContext
         
         _updateProductResponse = await ApiClient
             .PutAsJsonAsync($"/api/v1/products/{product.Id}", _productCreateEditRequest);
+    }
+    
+    public Task Then_products_list_contains_items(params Product[] items)
+    {
+        var expectedProductsList = items.Select(p => p.ToProductItemDto());
+        
+        _productsResponse?.ProductItems.Should()
+            .BeEquivalentTo(expectedProductsList, options => options.Excluding(p => p.Id))
+            .And.BeInAscendingOrder(p => p.Name);
+        
+        return Task.CompletedTask;
     }
     
     public Task Then_products_list_contains_items_ordered_by_name(params string[] items)
