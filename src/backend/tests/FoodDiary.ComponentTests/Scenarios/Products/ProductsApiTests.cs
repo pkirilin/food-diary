@@ -28,14 +28,15 @@ public class ProductsApiTests : ScenarioBase<ProductsApiContext>
     public Task I_can_search_products_by_name()
     {
         var apple = Create.Product("Apple").Please();
-        var chicken = Create.Product("Chicken").Please();
+        var mozzarellaCheese = Create.Product("Mozzarella cheese").Please();
         var milk = Create.Product("Milk").Please();
+        var chicken = Create.Product("Chicken").Please();
         
         return Run(
             c => c.Given_authenticated_user(),
-            c => c.Given_products(apple, chicken, milk),
-            c => c.When_user_searches_products_by_name("app"),
-            c => c.Then_products_list_contains_items(apple));
+            c => c.Given_products(apple, mozzarellaCheese, milk, chicken),
+            c => c.When_user_searches_products_by_name("ch"),
+            c => c.Then_products_list_contains_items(chicken, mozzarellaCheese));
     }
 
     [Scenario]
