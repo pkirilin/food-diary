@@ -22,6 +22,19 @@ public class CategoriesApiTests : ScenarioBase<CategoriesApiContext>
             c => c.When_user_retrieves_categories_list(),
             c => c.Then_categories_list_contains_items(cereals, dairy));
     }
+
+    [Scenario]
+    public Task I_can_create_category()
+    {
+        var frozenFoods = Create.Category("Frozen foods").Please();
+        
+        return Run(
+            c => c.Given_authenticated_user(),
+            c => c.When_user_creates_category("Frozen foods"),
+            c => c.Then_category_is_successfully_created(),
+            c => c.When_user_retrieves_categories_list(),
+            c => c.Then_categories_list_contains_items(frozenFoods));
+    }
     
     [Scenario]
     public Task I_can_search_categories_for_autocomplete()
