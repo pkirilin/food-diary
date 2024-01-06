@@ -51,24 +51,7 @@ internal class ExportDataLoader : IExportDataLoader
         CancellationToken cancellationToken)
     {
         var pages = await _unitOfWork.Pages.GetAsync(startDate, endDate, cancellationToken);
-
-        var exportPages = pages.Select(page => new JsonExportPageDto
-        {
-            Date = page.Date,
-            Notes = page.Notes.Select(note => new JsonExportNoteDto
-            {
-                MealType = (int)note.MealType,
-                DisplayOrder = note.DisplayOrder,
-                ProductQuantity = note.ProductQuantity,
-                Product = new JsonExportProductDto
-                {
-                    Name = note.Product.Name,
-                    CaloriesCost = note.Product.CaloriesCost,
-                    DefaultQuantity = note.Product.DefaultQuantity,
-                    Category = note.Product.Category.Name
-                }
-            })
-        });
+        var exportPages = pages.Select(page => page.ToJsonExportPageDto());
 
         return new JsonExportFileDto
         {
