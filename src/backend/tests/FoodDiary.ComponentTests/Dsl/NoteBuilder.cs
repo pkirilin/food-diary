@@ -10,7 +10,7 @@ public class NoteBuilder
         Id = Random.Shared.Next(),
         MealType = MealType.Breakfast,
         Page = Create.Page(DateTime.UtcNow.ToString("u")[..10]).Please(),
-        Product = Create.Product("Test").Please(),
+        Product = Create.Product().Please(),
         ProductQuantity = 100
     };
 

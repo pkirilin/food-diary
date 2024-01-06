@@ -1,4 +1,5 @@
 using FoodDiary.Domain.Entities;
+using FoodDiary.Domain.Enums;
 
 namespace FoodDiary.ComponentTests.Dsl;
 
@@ -16,4 +17,19 @@ public class PageBuilder
     }
 
     public Page Please() => _page;
+
+    public PageBuilder WithNotes(MealType mealType, int count)
+    {
+        for (var i = 0; i < count; i++)
+        {
+            var note = Create.Note()
+                .WithMealType(mealType)
+                .WithPage(_page)
+                .Please();
+            
+            _page.Notes.Add(note);
+        }
+        
+        return this;
+    }
 }

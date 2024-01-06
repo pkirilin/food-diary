@@ -1,5 +1,6 @@
 using FoodDiary.ComponentTests.Dsl;
 using FoodDiary.ComponentTests.Infrastructure;
+using FoodDiary.Domain.Enums;
 
 namespace FoodDiary.ComponentTests.Scenarios.Export;
 
@@ -12,7 +13,11 @@ public class ExportApiTests : ScenarioBase<ExportApiContext>
     [Scenario]
     public Task I_can_export_data_to_json_file()
     {
-        var page = Create.Page("2024-01-01").Please();
+        var page = Create.Page("2024-01-01")
+            .WithNotes(MealType.Breakfast, count: 2)
+            .WithNotes(MealType.Lunch, count: 2)
+            .WithNotes(MealType.Dinner, count: 2)
+            .Please();
         
         return Run(
             c => c.Given_authenticated_user(),
