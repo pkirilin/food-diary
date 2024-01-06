@@ -12,12 +12,30 @@ public class ProductBuilder
         Category = Create.Category().Please()
     };
 
-    public ProductBuilder(string name)
+    public ProductBuilder(string? name)
     {
-        _product.Name = name;
+        _product.Name = string.IsNullOrWhiteSpace(name) ? $"TestProduct-{Guid.NewGuid()}" : name;
     }
     
     public Product Please() => _product;
+
+    public ProductBuilder From(Product product)
+    {
+        _product.Id = product.Id;
+        _product.Name = product.Name;
+        _product.CaloriesCost = product.CaloriesCost;
+        _product.DefaultQuantity = product.DefaultQuantity;
+        _product.CategoryId = product.CategoryId;
+        _product.Category = product.Category;
+        _product.Notes = product.Notes;
+        return this;
+    }
+    
+    public ProductBuilder WithName(string name)
+    {
+        _product.Name = name;
+        return this;
+    }
 
     public ProductBuilder WithCategory(Category category)
     {
