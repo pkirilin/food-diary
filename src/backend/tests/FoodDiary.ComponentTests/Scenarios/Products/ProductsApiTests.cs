@@ -80,4 +80,33 @@ public class ProductsApiTests : ScenarioBase<ProductsApiContext>
             c => c.When_user_retrieves_products_list(),
             c => c.Then_products_list_contains_items(boiledChicken));
     }
+
+    [Scenario]
+    public Task I_can_delete_product()
+    {
+        var milk = Create.Product("Milk").Please();
+        
+        return Run(
+            c => c.Given_authenticated_user(),
+            c => c.Given_products(milk),
+            c => c.When_user_deletes_product(milk),
+            c => c.Then_product_is_successfully_deleted(),
+            c => c.When_user_retrieves_products_list(),
+            c => c.Then_products_list_is_empty());
+    }
+    
+    [Scenario]
+    public Task I_can_delete_multiple_products()
+    {
+        var oats = Create.Product("Oats").Please();
+        var milk = Create.Product("Milk").Please();
+        
+        return Run(
+            c => c.Given_authenticated_user(),
+            c => c.Given_products(milk),
+            c => c.When_user_deletes_products(oats, milk),
+            c => c.Then_multiple_products_are_successfully_deleted(),
+            c => c.When_user_retrieves_products_list(),
+            c => c.Then_products_list_is_empty());
+    }
 }
