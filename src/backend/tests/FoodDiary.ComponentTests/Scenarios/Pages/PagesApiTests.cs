@@ -28,6 +28,18 @@ public class PagesApiTests : ScenarioBase<PagesApiContext>
     }
 
     [Scenario]
+    public Task I_can_retrieve_page_by_id()
+    {
+        var page = Create.Page("2024-01-01").Please();
+        
+        return Run(
+            c => c.Given_authenticated_user(),
+            c => c.Given_pages(page),
+            c => c.When_user_retieves_page_by_id(page.Id),
+            c => c.Then_page_by_id_contains_item(page));
+    }
+
+    [Scenario]
     public Task I_can_create_page()
     {
         var page = Create.Page("2024-01-02").Please();

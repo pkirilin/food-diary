@@ -16,6 +16,7 @@ namespace FoodDiary.ComponentTests.Scenarios.Pages;
 public class PagesApiContext : BaseContext
 {
     private PagesSearchResultDto? _pagesSearchResult;
+    private PageContentDto? _getPageByIdResult;
     private string? _dateForNewPage;
     private HttpResponseMessage _createPageResponse = null!;
     private HttpResponseMessage _updatePageResponse = null!;
@@ -35,6 +36,11 @@ public class PagesApiContext : BaseContext
     {
         _pagesSearchResult = await ApiClient
             .GetFromJsonAsync<PagesSearchResultDto>($"/api/v1/pages?startDate={from}&endDate={to}");
+    }
+
+    public async Task When_user_retieves_page_by_id(int id)
+    {
+        _getPageByIdResult = await ApiClient.GetFromJsonAsync<PageContentDto>($"/api/v1/pages/{id}");
     }
     
     public async Task When_user_retieves_pages_list()
@@ -98,6 +104,12 @@ public class PagesApiContext : BaseContext
     public Task Then_pages_list_is_empty()
     {
         _pagesSearchResult?.PageItems.Should().BeEmpty();
+        return Task.CompletedTask;
+    }
+
+    public Task Then_page_by_id_contains_item(Page item)
+    {
+        _getPageByIdResult?.CurrentPage.Date.Should().Be(item.Date);
         return Task.CompletedTask;
     }
     
