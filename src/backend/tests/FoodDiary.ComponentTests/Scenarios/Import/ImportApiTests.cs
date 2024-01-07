@@ -14,6 +14,7 @@ public class ImportApiTests : ScenarioBase<ImportApiContext>
     public Task I_can_import_my_data_from_json_file()
     {
         var page = Create.Page("2020-08-08").Please();
+        var emptyPage = Create.Page("2020-08-09").Please();
 
         var categories = new
         {
@@ -53,10 +54,13 @@ public class ImportApiTests : ScenarioBase<ImportApiContext>
         
         return Run(
             c => c.Given_authenticated_user(),
-            c => c.Given_json_import_file_name("testImportFile.json"),
-            c => c.When_user_imports_data_from_json_file(),
+            c => c.Given_pages(page),
+            c => c.Given_categories(categories.Cereals),
+            c => c.Given_products(products.Oats),
+            c => c.Given_notes(notes.Oats),
+            c => c.When_user_imports_data_from_json_file("testImportFile.json"),
             c => c.Then_json_import_is_successful(),
-            c => c.Then_pages_list_contains_item(page),
+            c => c.Then_pages_list_contains_items(page, emptyPage),
             c => c.Then_notes_list_contains_items(notes.Oats, notes.Milk),
             c => c.Then_products_list_contains_items(products.Oats, products.Milk),
             c => c.Then_categories_list_contains_items(categories.Cereals, categories.Dairy));

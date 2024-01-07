@@ -21,6 +21,13 @@ public class NoteBuilder
         _note.Page = page;
         return this;
     }
+    
+    public NoteBuilder WithExistingPage(Page page)
+    {
+        _note.Page = null;
+        _note.PageId = page.Id;
+        return this;
+    }
 
     public NoteBuilder WithMealType(MealType mealType)
     {
@@ -38,6 +45,13 @@ public class NoteBuilder
     {
         _note.Product = product;
         _note.ProductQuantity = quantity;
+        return this;
+    }
+    
+    public NoteBuilder WithExistingProduct(Product product)
+    {
+        _note.Product = null;
+        _note.ProductId = product.Id;
         return this;
     }
     

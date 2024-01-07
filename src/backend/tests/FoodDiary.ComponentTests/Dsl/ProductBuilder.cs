@@ -42,6 +42,13 @@ public class ProductBuilder
         _product.Category = category;
         return this;
     }
+    
+    public ProductBuilder WithExistingCategory(Category category)
+    {
+        _product.Category = null;
+        _product.CategoryId = category.Id;
+        return this;
+    }
 
     public ProductBuilder WithDefaultQuantity(int defaultQuantity)
     {

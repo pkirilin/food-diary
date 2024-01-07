@@ -11,9 +11,9 @@ public class PageBuilder
         Notes = new List<Note>()
     };
 
-    public PageBuilder(string date)
+    public PageBuilder(string? date)
     {
-        _page.Date = DateTime.Parse(date);
+        _page.Date = string.IsNullOrWhiteSpace(date) ? DateTime.UtcNow : DateTime.Parse(date);
     }
 
     public Page Please() => _page;
