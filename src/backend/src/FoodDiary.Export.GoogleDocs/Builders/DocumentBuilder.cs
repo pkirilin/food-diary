@@ -2,7 +2,7 @@ using System.Runtime.CompilerServices;
 using Google.Apis.Docs.v1.Data;
 using Range = Google.Apis.Docs.v1.Data.Range;
 
-[assembly:InternalsVisibleTo("FoodDiary.Export.GoogleDocs.Tests")]
+[assembly:InternalsVisibleTo("FoodDiary.UnitTests")]
 
 namespace FoodDiary.Export.GoogleDocs.Builders;
 

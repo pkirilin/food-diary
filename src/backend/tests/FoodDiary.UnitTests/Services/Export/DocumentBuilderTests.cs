@@ -4,7 +4,7 @@ using FoodDiary.Export.GoogleDocs.Builders;
 using Google.Apis.Docs.v1.Data;
 using Xunit;
 
-namespace FoodDiary.Export.GoogleDocs.Tests;
+namespace FoodDiary.UnitTests.Services.Export;
 
 public class DocumentBuilderTests
 {
@@ -57,7 +57,7 @@ public class DocumentBuilderTests
             .Select(p => p.GetValue(request))
             .First(v => v != null);
 
-        var location = propertyInRequest?.GetType()
+        var location = propertyInRequest.GetType()
             .GetProperties()
             .Where(p => p.Name == "Location")
             .Select(p => (Location)p.GetValue(propertyInRequest)!)

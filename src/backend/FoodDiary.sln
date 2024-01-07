@@ -25,8 +25,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{CF9D0D23
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoodDiary.Export.GoogleDocs", "src\FoodDiary.Export.GoogleDocs\FoodDiary.Export.GoogleDocs.csproj", "{87976F60-4108-40F7-9E52-259BA90C48A2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoodDiary.Export.GoogleDocs.Tests", "tests\FoodDiary.Export.GoogleDocs.Tests\FoodDiary.Export.GoogleDocs.Tests.csproj", "{97D09E96-52BA-4754-A3BD-EC4D147BE72C}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoodDiary.Constants", "src\FoodDiary.Constants\FoodDiary.Constants.csproj", "{2ABD3714-CA9D-4B68-801E-C63BBC1EE520}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoodDiary.ComponentTests", "tests\FoodDiary.ComponentTests\FoodDiary.ComponentTests.csproj", "{1347582C-3CDB-4F7A-82AF-E0E9F8B69C71}"
@@ -161,18 +159,6 @@ Global
 		{87976F60-4108-40F7-9E52-259BA90C48A2}.Release|x64.Build.0 = Release|Any CPU
 		{87976F60-4108-40F7-9E52-259BA90C48A2}.Release|x86.ActiveCfg = Release|Any CPU
 		{87976F60-4108-40F7-9E52-259BA90C48A2}.Release|x86.Build.0 = Release|Any CPU
-		{97D09E96-52BA-4754-A3BD-EC4D147BE72C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{97D09E96-52BA-4754-A3BD-EC4D147BE72C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{97D09E96-52BA-4754-A3BD-EC4D147BE72C}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{97D09E96-52BA-4754-A3BD-EC4D147BE72C}.Debug|x64.Build.0 = Debug|Any CPU
-		{97D09E96-52BA-4754-A3BD-EC4D147BE72C}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{97D09E96-52BA-4754-A3BD-EC4D147BE72C}.Debug|x86.Build.0 = Debug|Any CPU
-		{97D09E96-52BA-4754-A3BD-EC4D147BE72C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{97D09E96-52BA-4754-A3BD-EC4D147BE72C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{97D09E96-52BA-4754-A3BD-EC4D147BE72C}.Release|x64.ActiveCfg = Release|Any CPU
-		{97D09E96-52BA-4754-A3BD-EC4D147BE72C}.Release|x64.Build.0 = Release|Any CPU
-		{97D09E96-52BA-4754-A3BD-EC4D147BE72C}.Release|x86.ActiveCfg = Release|Any CPU
-		{97D09E96-52BA-4754-A3BD-EC4D147BE72C}.Release|x86.Build.0 = Release|Any CPU
 		{2ABD3714-CA9D-4B68-801E-C63BBC1EE520}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2ABD3714-CA9D-4B68-801E-C63BBC1EE520}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2ABD3714-CA9D-4B68-801E-C63BBC1EE520}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -203,7 +189,6 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{E91B757E-1E91-4846-9FCB-C6FA568CEF5E} = {CF9D0D23-CA8E-4DC8-8E10-E15B4A42A680}
-		{97D09E96-52BA-4754-A3BD-EC4D147BE72C} = {CF9D0D23-CA8E-4DC8-8E10-E15B4A42A680}
 		{1347582C-3CDB-4F7A-82AF-E0E9F8B69C71} = {CF9D0D23-CA8E-4DC8-8E10-E15B4A42A680}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
