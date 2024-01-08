@@ -11,7 +11,7 @@ namespace FoodDiary.API.Requests
         [Range(1, Int32.MaxValue, ErrorMessage = "Invalid page size value specified")]
         public int PageSize { get; set; } = 10;
 
-        public string ProductSearchName { get; set; }
+        public string? ProductSearchName { get; set; }
 
         [Range(1, Int32.MaxValue)]
         public int? CategoryId { get; set; }
