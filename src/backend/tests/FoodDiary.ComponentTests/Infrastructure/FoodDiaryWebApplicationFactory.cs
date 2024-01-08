@@ -1,4 +1,8 @@
 using FoodDiary.API;
+using FoodDiary.Application.Abstractions;
+using FoodDiary.ComponentTests.Infrastructure.DateAndTime;
+using FoodDiary.ComponentTests.Infrastructure.Google;
+using FoodDiary.Export.GoogleDocs;
 using FoodDiary.Infrastructure;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.DataProtection;
@@ -50,6 +54,10 @@ public class FoodDiaryWebApplicationFactory : WebApplicationFactory<Startup>, IA
                     options.UseNpgsql(_dbContainer.GetConnectionString());
                 });
             }
+            
+            services.AddSingleton<IDateTimeProvider, FakeDateTimeProvider>();
+            services.AddSingleton<IGoogleDriveClient, FakeGoogleDriveClient>();
+            services.AddSingleton<IGoogleDocsClient, FakeGoogleDocsClient>();
 
             services
                 .AddDataProtection()

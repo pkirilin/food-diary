@@ -7,19 +7,31 @@ public class NoteBuilder
 {
     private readonly Note _note = new()
     {
-        Id = Random.Shared.Next()
+        Id = Random.Shared.Next(),
+        MealType = MealType.Breakfast,
+        Page = Create.Page(DateTime.UtcNow.ToString("u")[..10]).Please(),
+        Product = Create.Product().Please(),
+        ProductQuantity = 100
     };
-
-    public NoteBuilder(MealType mealType)
-    {
-        _note.MealType = mealType;
-    }
 
     public Note Please() => _note;
     
     public NoteBuilder WithPage(Page page)
     {
         _note.Page = page;
+        return this;
+    }
+    
+    public NoteBuilder WithExistingPage(Page page)
+    {
+        _note.Page = null;
+        _note.PageId = page.Id;
+        return this;
+    }
+
+    public NoteBuilder WithMealType(MealType mealType)
+    {
+        _note.MealType = mealType;
         return this;
     }
     
@@ -33,6 +45,33 @@ public class NoteBuilder
     {
         _note.Product = product;
         _note.ProductQuantity = quantity;
+        return this;
+    }
+    
+    public NoteBuilder WithExistingProduct(Product product)
+    {
+        _note.Product = null;
+        _note.ProductId = product.Id;
+        return this;
+    }
+    
+    public NoteBuilder WithProduct(string productName, int quantity)
+    {
+        _note.Product = Create.Product(productName).Please();
+        _note.ProductQuantity = quantity;
+        return this;
+    }
+
+    public NoteBuilder From(Note note)
+    {
+        _note.Id = note.Id;
+        _note.MealType = note.MealType;
+        _note.PageId = note.PageId;
+        _note.ProductId = note.ProductId;
+        _note.ProductQuantity = note.ProductQuantity;
+        _note.DisplayOrder = note.DisplayOrder;
+        _note.Page = note.Page;
+        _note.Product = note.Product;
         return this;
     }
 }

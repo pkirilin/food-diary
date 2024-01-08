@@ -1,8 +1,8 @@
-using System.Globalization;
 using System.Net;
 using System.Net.Http.Json;
 using FoodDiary.API.Dtos;
 using FoodDiary.API.Mapping;
+using FoodDiary.ComponentTests.Dsl;
 using FoodDiary.ComponentTests.Infrastructure;
 using FoodDiary.Domain.Entities;
 
@@ -10,24 +10,49 @@ namespace FoodDiary.ComponentTests.Scenarios.Import;
 
 public class ImportApiContext : BaseContext
 {
-    private string _importFilePath = string.Empty;
-
     private HttpResponseMessage _importJsonResponse = null!;
     private int _createdPageId;
     
     public ImportApiContext(FoodDiaryWebApplicationFactory factory) : base(factory)
     {
     }
-
-    public Task Given_json_import_file_name(string name)
+    
+    public Task Given_categories(params Category[] categories)
     {
-        _importFilePath = Path.Combine("Scenarios", "Import", name);
-        return Task.CompletedTask;
+        return Factory.SeedDataAsync(categories);
+    }
+    
+    public Task Given_products(params Product[] products)
+    {
+        var productsToCreate = products.Select(p => Create.Product()
+            .From(p)
+            .WithExistingCategory(p.Category)
+            .Please());
+        
+        return Factory.SeedDataAsync(productsToCreate);
+    }
+    
+    public Task Given_notes(params Note[] notes)
+    {
+        var notesToCreate = notes.Select(n => Create.Note()
+            .From(n)
+            .WithExistingPage(n.Page)
+            .WithExistingProduct(n.Product)
+            .Please());
+        
+        return Factory.SeedDataAsync(notesToCreate);
+    }
+    
+    public Task Given_pages(params Page[] pages)
+    {
+        return Factory.SeedDataAsync(pages);
     }
 
-    public async Task When_user_imports_data_from_json_file()
+    public async Task When_user_imports_data_from_json_file(string file)
     {
-        await using var stream = File.OpenRead(_importFilePath);
+        var importFilePath = Path.Combine("Scenarios", "Import", file);
+        
+        await using var stream = File.OpenRead(importFilePath);
         using var content = new MultipartFormDataContent();
         content.Add(new StreamContent(stream), "importFile", "importFile");
         
@@ -47,14 +72,19 @@ public class ImportApiContext : BaseContext
         return Task.CompletedTask;
     }
 
-    public async Task Then_pages_list_contains_item(Page item)
+    public async Task Then_pages_list_contains_items(params Page[] items)
     {
         var pagesListResult = await ApiClient.GetFromJsonAsync<PagesSearchResultDto>("/api/v1/pages");
-        var expectedDate = item.Date.ToString("s", CultureInfo.InvariantCulture)[..10];
-        var createdPage = pagesListResult?.PageItems.FirstOrDefault(p => p.Date == expectedDate);
+        var expectedPageDates = items.Select(p => p.Date.ToString("yyyy-MM-dd")).ToList();
         
+        var createdPage = pagesListResult?.PageItems.FirstOrDefault(p => p.Date == expectedPageDates.FirstOrDefault());
         createdPage.Should().NotBeNull();
         _createdPageId = createdPage!.Id;
+
+        pagesListResult?.PageItems
+            .Select(p => p.Date)
+            .Should()
+            .BeEquivalentTo(expectedPageDates);
     }
     
     public async Task Then_notes_list_contains_items(params Note[] items)

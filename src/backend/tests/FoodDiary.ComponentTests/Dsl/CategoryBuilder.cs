@@ -10,16 +10,29 @@ public class CategoryBuilder
         Products = new List<Product>()
     };
 
-    public CategoryBuilder(string name)
+    public CategoryBuilder(string? name)
     {
-        _category.Name = name;
+        _category.Name = string.IsNullOrWhiteSpace(name) ? $"TestCategory-{Guid.NewGuid()}" : name;
     }
 
     public Category Please() => _category;
 
+    public CategoryBuilder From(Category category)
+    {
+        _category.Id = category.Id;
+        _category.Name = category.Name;
+        return this;
+    }
+
     public CategoryBuilder WithId(int id)
     {
         _category.Id = id;
+        return this;
+    }
+    
+    public CategoryBuilder WithName(string name)
+    {
+        _category.Name = name;
         return this;
     }
 }

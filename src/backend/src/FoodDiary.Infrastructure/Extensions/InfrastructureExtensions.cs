@@ -1,4 +1,6 @@
+using FoodDiary.Application.Abstractions;
 using FoodDiary.Domain.Abstractions.v2;
+using FoodDiary.Infrastructure.DateAndTime;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -25,5 +27,6 @@ public static class InfrastructureExtensions
         }
 
         services.AddScoped<IFoodDiaryUnitOfWork, FoodDiaryUnitOfWork>();
+        services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
     }
 }

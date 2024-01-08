@@ -21,8 +21,6 @@ jobs:
         run: dotnet build --configuration Release --no-restore
       - name: Run unit tests
         run: dotnet test tests/FoodDiary.UnitTests --no-restore --verbosity normal
-      - name: Run integration tests
-        run: dotnet test tests/FoodDiary.IntegrationTests --no-restore --verbosity normal
       - name: Run component tests
         run: dotnet test tests/FoodDiary.ComponentTests --no-restore --verbosity normal
   frontend:
