@@ -21,7 +21,11 @@ This information can be extremely useful for people who want to keep track of en
 1. Start PostgreSQL database:
 
     ```shell
-    docker run -p 5432:5432 --name postgres -e POSTGRES_PASSWORD=postgres -e -d postgres:12.2-alpine
+    docker run -p 5432:5432 --name postgres \
+        -e POSTGRES_USER=postgres \
+        -e POSTGRES_PASSWORD=postgres \
+        -e POSTGRES_DB=FoodDiary \
+        -d postgres:15.1-alpine
     ```
 
     _Optional_: PgAdmin can be started like this:
