@@ -3,34 +3,33 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace FoodDiary.Domain.Abstractions
+namespace FoodDiary.Domain.Abstractions;
+
+public interface IRepository<TEntity> where TEntity : class
 {
-    public interface IRepository<TEntity> where TEntity : class
-    {
-        IQueryable<TEntity> GetQuery();
+    IQueryable<TEntity> GetQuery();
 
-        IQueryable<TEntity> GetQueryWithoutTracking();
+    IQueryable<TEntity> GetQueryWithoutTracking();
 
-        Task<List<TEntity>> GetAllAsync(CancellationToken cancellationToken);
+    Task<List<TEntity>> GetAllAsync(CancellationToken cancellationToken);
 
-        Task<List<TEntity>> GetByQueryAsync(IQueryable<TEntity> query, CancellationToken cancellationToken);
+    Task<List<TEntity>> GetByQueryAsync(IQueryable<TEntity> query, CancellationToken cancellationToken);
 
-        Task<TEntity> GetByIdAsync(int id, CancellationToken cancellationToken);
+    Task<TEntity> GetByIdAsync(int id, CancellationToken cancellationToken);
 
-        Task<int> CountByQueryAsync(IQueryable<TEntity> query, CancellationToken cancellationToken);
+    Task<int> CountByQueryAsync(IQueryable<TEntity> query, CancellationToken cancellationToken);
 
-        TEntity Add(TEntity entity);
+    TEntity Add(TEntity entity);
 
-        void Update(TEntity entity);
+    void Update(TEntity entity);
 
-        void Remove(TEntity entity);
+    void Remove(TEntity entity);
 
-        void AddRange(IEnumerable<TEntity> entities);
+    void AddRange(IEnumerable<TEntity> entities);
 
-        void UpdateRange(IEnumerable<TEntity> entities);
+    void UpdateRange(IEnumerable<TEntity> entities);
 
-        void RemoveRange(IEnumerable<TEntity> entities);
+    void RemoveRange(IEnumerable<TEntity> entities);
 
-        IUnitOfWork UnitOfWork { get; }
-    }
+    IUnitOfWork UnitOfWork { get; }
 }

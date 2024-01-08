@@ -1,12 +1,11 @@
 ﻿using FoodDiary.Domain.Enums;
 
-namespace FoodDiary.Domain.Utils
+namespace FoodDiary.Domain.Utils;
+
+public interface IMealNameResolver
 {
-    public interface IMealNameResolver
-    {
-        /// <summary>
-        /// Gets string representation of specified meal type
-        /// </summary>
-        string GetMealName(MealType mealType);
-    }
+    /// <summary>
+    /// Gets string representation of specified meal type
+    /// </summary>
+    string GetMealName(MealType mealType);
 }

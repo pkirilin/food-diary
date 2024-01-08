@@ -8,21 +8,20 @@ using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Repositories;
 using MediatR;
 
-namespace FoodDiary.Application.Products.Handlers
+namespace FoodDiary.Application.Products.Handlers;
+
+class GetProductsByIdsRequestHandler : IRequestHandler<GetProductsByIdsRequest, List<Product>>
 {
-    class GetProductsByIdsRequestHandler : IRequestHandler<GetProductsByIdsRequest, List<Product>>
+    private readonly IProductRepository _productRepository;
+
+    public GetProductsByIdsRequestHandler(IProductRepository productRepository)
     {
-        private readonly IProductRepository _productRepository;
+        _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
+    }
 
-        public GetProductsByIdsRequestHandler(IProductRepository productRepository)
-        {
-            _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
-        }
-
-        public Task<List<Product>> Handle(GetProductsByIdsRequest request, CancellationToken cancellationToken)
-        {
-            var query = _productRepository.GetQuery().Where(p => request.Ids.Contains(p.Id));
-            return _productRepository.GetByQueryAsync(query, cancellationToken);
-        }
+    public Task<List<Product>> Handle(GetProductsByIdsRequest request, CancellationToken cancellationToken)
+    {
+        var query = _productRepository.GetQuery().Where(p => request.Ids.Contains(p.Id));
+        return _productRepository.GetByQueryAsync(query, cancellationToken);
     }
 }

@@ -8,41 +8,40 @@ using FoodDiary.Domain.Enums;
 using FoodDiary.Domain.Repositories;
 using MediatR;
 
-namespace FoodDiary.Application.Pages.Handlers
+namespace FoodDiary.Application.Pages.Handlers;
+
+class GetPagesRequestHandler : IRequestHandler<GetPagesRequest, PagesSearchResult>
 {
-    class GetPagesRequestHandler : IRequestHandler<GetPagesRequest, PagesSearchResult>
+    private readonly IPageRepository _pageRepository;
+
+    public GetPagesRequestHandler(IPageRepository pageRepository)
     {
-        private readonly IPageRepository _pageRepository;
+        _pageRepository = pageRepository ?? throw new ArgumentNullException(nameof(pageRepository));
+    }
 
-        public GetPagesRequestHandler(IPageRepository pageRepository)
-        {
-            _pageRepository = pageRepository ?? throw new ArgumentNullException(nameof(pageRepository));
-        }
+    public async Task<PagesSearchResult> Handle(GetPagesRequest request, CancellationToken cancellationToken)
+    {
+        var query = _pageRepository.GetQueryWithoutTracking();
 
-        public async Task<PagesSearchResult> Handle(GetPagesRequest request, CancellationToken cancellationToken)
-        {
-            var query = _pageRepository.GetQueryWithoutTracking();
+        if (request.StartDate.HasValue)
+            query = query.Where(p => p.Date >= request.StartDate);
+        if (request.EndDate.HasValue)
+            query = query.Where(p => p.Date <= request.EndDate);
 
-            if (request.StartDate.HasValue)
-                query = query.Where(p => p.Date >= request.StartDate);
-            if (request.EndDate.HasValue)
-                query = query.Where(p => p.Date <= request.EndDate);
+        query = request.SortOrder == SortOrder.Ascending ? query.OrderBy(p => p.Date) : query.OrderByDescending(p => p.Date);
+        query = _pageRepository.LoadNotesWithProductsAndCategories(query);
 
-            query = request.SortOrder == SortOrder.Ascending ? query.OrderBy(p => p.Date) : query.OrderByDescending(p => p.Date);
-            query = _pageRepository.LoadNotesWithProductsAndCategories(query);
+        var totalPagesCount = await _pageRepository.CountByQueryAsync(query, cancellationToken);
 
-            var totalPagesCount = await _pageRepository.CountByQueryAsync(query, cancellationToken);
+        query = query.Skip((request.PageNumber - 1) * request.PageSize)
+            .Take(request.PageSize);
 
-            query = query.Skip((request.PageNumber - 1) * request.PageSize)
-                .Take(request.PageSize);
-
-            var foundPages = await _pageRepository.GetByQueryAsync(query, cancellationToken);
+        var foundPages = await _pageRepository.GetByQueryAsync(query, cancellationToken);
             
-            return new PagesSearchResult()
-            {
-                FoundPages = foundPages,
-                TotalPagesCount = totalPagesCount
-            };
-        }
+        return new PagesSearchResult()
+        {
+            FoundPages = foundPages,
+            TotalPagesCount = totalPagesCount
+        };
     }
 }

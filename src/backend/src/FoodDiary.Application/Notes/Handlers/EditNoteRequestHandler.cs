@@ -5,21 +5,20 @@ using FoodDiary.Application.Notes.Requests;
 using FoodDiary.Domain.Repositories;
 using MediatR;
 
-namespace FoodDiary.Application.Notes.Handlers
+namespace FoodDiary.Application.Notes.Handlers;
+
+class EditNoteRequestHandler : IRequestHandler<EditNoteRequest, int>
 {
-    class EditNoteRequestHandler : IRequestHandler<EditNoteRequest, int>
+    private readonly INoteRepository _noteRepository;
+
+    public EditNoteRequestHandler(INoteRepository noteRepository)
     {
-        private readonly INoteRepository _noteRepository;
+        _noteRepository = noteRepository ?? throw new ArgumentNullException(nameof(noteRepository));
+    }
 
-        public EditNoteRequestHandler(INoteRepository noteRepository)
-        {
-            _noteRepository = noteRepository ?? throw new ArgumentNullException(nameof(noteRepository));
-        }
-
-        public Task<int> Handle(EditNoteRequest request, CancellationToken cancellationToken)
-        {
-            _noteRepository.Update(request.Entity);
-            return _noteRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
-        }
+    public Task<int> Handle(EditNoteRequest request, CancellationToken cancellationToken)
+    {
+        _noteRepository.Update(request.Entity);
+        return _noteRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
     }
 }

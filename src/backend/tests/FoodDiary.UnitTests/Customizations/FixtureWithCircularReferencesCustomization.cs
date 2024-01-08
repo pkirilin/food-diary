@@ -1,13 +1,12 @@
 ﻿using AutoFixture;
 
-namespace FoodDiary.UnitTests.Customizations
+namespace FoodDiary.UnitTests.Customizations;
+
+public class FixtureWithCircularReferencesCustomization : ICustomization
 {
-    public class FixtureWithCircularReferencesCustomization : ICustomization
+    public void Customize(IFixture fixture)
     {
-        public void Customize(IFixture fixture)
-        {
-            fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
-            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
-        }
+        fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
+        fixture.Behaviors.Add(new OmitOnRecursionBehavior());
     }
 }

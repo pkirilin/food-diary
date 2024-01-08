@@ -1,15 +1,14 @@
-namespace FoodDiary.Domain.Enums
+namespace FoodDiary.Domain.Enums;
+
+public enum MealType
 {
-    public enum MealType
-    {
-        Breakfast = 1,
+    Breakfast = 1,
 
-        SecondBreakfast = 2,
+    SecondBreakfast = 2,
 
-        Lunch = 3,
+    Lunch = 3,
 
-        AfternoonSnack = 4,
+    AfternoonSnack = 4,
         
-        Dinner = 5
-    }
+    Dinner = 5
 }

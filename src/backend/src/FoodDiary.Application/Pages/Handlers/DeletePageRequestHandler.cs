@@ -5,21 +5,20 @@ using FoodDiary.Application.Pages.Requests;
 using FoodDiary.Domain.Repositories;
 using MediatR;
 
-namespace FoodDiary.Application.Pages.Handlers
+namespace FoodDiary.Application.Pages.Handlers;
+
+class DeletePageRequestHandler : IRequestHandler<DeletePageRequest, int>
 {
-    class DeletePageRequestHandler : IRequestHandler<DeletePageRequest, int>
+    private readonly IPageRepository _pageRepository;
+
+    public DeletePageRequestHandler(IPageRepository pageRepository)
     {
-        private readonly IPageRepository _pageRepository;
+        _pageRepository = pageRepository ?? throw new ArgumentNullException(nameof(pageRepository));
+    }
 
-        public DeletePageRequestHandler(IPageRepository pageRepository)
-        {
-            _pageRepository = pageRepository ?? throw new ArgumentNullException(nameof(pageRepository));
-        }
-
-        public Task<int> Handle(DeletePageRequest request, CancellationToken cancellationToken)
-        {
-            _pageRepository.Remove(request.Entity);
-            return _pageRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
-        }
+    public Task<int> Handle(DeletePageRequest request, CancellationToken cancellationToken)
+    {
+        _pageRepository.Remove(request.Entity);
+        return _pageRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
     }
 }

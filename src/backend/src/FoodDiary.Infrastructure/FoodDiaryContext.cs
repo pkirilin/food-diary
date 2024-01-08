@@ -6,32 +6,31 @@ using FoodDiary.Infrastructure.EntityConfigurations;
 using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace FoodDiary.Infrastructure
+namespace FoodDiary.Infrastructure;
+
+[SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
+public class FoodDiaryContext : DbContext, IUnitOfWork, IDataProtectionKeyContext
 {
-    [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
-    public class FoodDiaryContext : DbContext, IUnitOfWork, IDataProtectionKeyContext
+    public FoodDiaryContext(DbContextOptions options) : base(options)
     {
-        public FoodDiaryContext(DbContextOptions options) : base(options)
-        {
-            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
-        }
+        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+    }
         
-        public DbSet<DataProtectionKey> DataProtectionKeys { get; set; }
+    public DbSet<DataProtectionKey> DataProtectionKeys { get; set; }
 
-        public DbSet<Page> Pages { get; set; }
+    public DbSet<Page> Pages { get; set; }
 
-        public DbSet<Note> Notes { get; set; }
+    public DbSet<Note> Notes { get; set; }
 
-        public DbSet<Product> Products { get; set; }
+    public DbSet<Product> Products { get; set; }
 
-        public DbSet<Category> Categories { get; set; }
+    public DbSet<Category> Categories { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.ApplyConfiguration(new PageConfiguration());
-            modelBuilder.ApplyConfiguration(new NoteConfiguration());
-            modelBuilder.ApplyConfiguration(new ProductConfiguration());
-            modelBuilder.ApplyConfiguration(new CategoryConfiguration());
-        }
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.ApplyConfiguration(new PageConfiguration());
+        modelBuilder.ApplyConfiguration(new NoteConfiguration());
+        modelBuilder.ApplyConfiguration(new ProductConfiguration());
+        modelBuilder.ApplyConfiguration(new CategoryConfiguration());
     }
 }

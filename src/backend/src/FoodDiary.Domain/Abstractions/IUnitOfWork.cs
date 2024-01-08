@@ -1,10 +1,9 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
-namespace FoodDiary.Domain.Abstractions
+namespace FoodDiary.Domain.Abstractions;
+
+public interface IUnitOfWork
 {
-    public interface IUnitOfWork
-    {
-        Task<int> SaveChangesAsync(CancellationToken cancellationToken);
-    }
+    Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

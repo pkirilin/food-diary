@@ -9,25 +9,24 @@ using Microsoft.Extensions.DependencyInjection;
 
 [assembly:InternalsVisibleTo("FoodDiary.UnitTests")]
 
-namespace FoodDiary.Application.Extensions
+namespace FoodDiary.Application.Extensions;
+
+public static class ServiceCollectionExtensions
 {
-    public static class ServiceCollectionExtensions
+    public static void AddApplicationDependencies(this IServiceCollection services)
     {
-        public static void AddApplicationDependencies(this IServiceCollection services)
-        {
-            services.AddMediatR(Assembly.GetExecutingAssembly());
-            services.AddApplicationServices();
-        }
+        services.AddMediatR(Assembly.GetExecutingAssembly());
+        services.AddApplicationServices();
+    }
 
-        private static void AddApplicationServices(this IServiceCollection services)
-        {
-            services.AddScoped<IProductsService, ProductsService>();
-            services.AddScoped<ICategoriesService, CategoriesService>();
+    private static void AddApplicationServices(this IServiceCollection services)
+    {
+        services.AddScoped<IProductsService, ProductsService>();
+        services.AddScoped<ICategoriesService, CategoriesService>();
 
-            services.AddScoped<IExportService, ExportService>();
-            services.AddScoped<IExportDataLoader, ExportDataLoader>();
-            services.AddSingleton<IGoogleAccessTokenProvider, GoogleAccessTokenProvider>();
-            services.AddGoogleDocsExportService();
-        }
+        services.AddScoped<IExportService, ExportService>();
+        services.AddScoped<IExportDataLoader, ExportDataLoader>();
+        services.AddSingleton<IGoogleAccessTokenProvider, GoogleAccessTokenProvider>();
+        services.AddGoogleDocsExportService();
     }
 }

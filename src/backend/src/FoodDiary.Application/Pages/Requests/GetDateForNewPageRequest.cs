@@ -1,9 +1,8 @@
 ﻿using System;
 using MediatR;
 
-namespace FoodDiary.Application.Pages.Requests
+namespace FoodDiary.Application.Pages.Requests;
+
+public class GetDateForNewPageRequest : IRequest<DateTime>
 {
-    public class GetDateForNewPageRequest : IRequest<DateTime>
-    {
-    }
 }

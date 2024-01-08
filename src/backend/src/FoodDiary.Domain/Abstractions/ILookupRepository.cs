@@ -3,10 +3,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace FoodDiary.Domain.Abstractions
+namespace FoodDiary.Domain.Abstractions;
+
+public interface ILookupRepository<TKey, TEntity> where TEntity : class
 {
-    public interface ILookupRepository<TKey, TEntity> where TEntity : class
-    {
-        Task<Dictionary<TKey, TEntity>> GetDictionaryByQueryAsync(IQueryable<TEntity> query, CancellationToken cancellationToken);
-    }
+    Task<Dictionary<TKey, TEntity>> GetDictionaryByQueryAsync(IQueryable<TEntity> query, CancellationToken cancellationToken);
 }

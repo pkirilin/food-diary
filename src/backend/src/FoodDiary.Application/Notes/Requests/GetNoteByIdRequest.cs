@@ -1,12 +1,11 @@
 ﻿using FoodDiary.Application.Abstractions;
 using FoodDiary.Domain.Entities;
 
-namespace FoodDiary.Application.Notes.Requests
+namespace FoodDiary.Application.Notes.Requests;
+
+public class GetNoteByIdRequest : GetEntityByIdRequest<Note>
 {
-    public class GetNoteByIdRequest : GetEntityByIdRequest<Note>
+    public GetNoteByIdRequest(int id) : base(id)
     {
-        public GetNoteByIdRequest(int id) : base(id)
-        {
-        }
     }
 }

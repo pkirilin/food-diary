@@ -7,42 +7,41 @@ using FoodDiary.Application.Products.Requests;
 using FoodDiary.Domain.Repositories;
 using MediatR;
 
-namespace FoodDiary.Application.Products.Handlers
+namespace FoodDiary.Application.Products.Handlers;
+
+class GetProductsRequestHandler : IRequestHandler<GetProductsRequest, ProductsSearchResult>
 {
-    class GetProductsRequestHandler : IRequestHandler<GetProductsRequest, ProductsSearchResult>
+    private readonly IProductRepository _productRepository;
+
+    public GetProductsRequestHandler(IProductRepository productRepository)
     {
-        private readonly IProductRepository _productRepository;
+        _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
+    }
 
-        public GetProductsRequestHandler(IProductRepository productRepository)
+    public async Task<ProductsSearchResult> Handle(GetProductsRequest request, CancellationToken cancellationToken)
+    {
+        var totalProductsCount = default(int?);
+        var query = _productRepository.GetQueryWithoutTracking();
+
+        if (!String.IsNullOrWhiteSpace(request.ProductName))
+            query = query.Where(p => p.Name.ToLower().Contains(request.ProductName.ToLower()));
+        if (request.CategoryId.HasValue)
+            query = query.Where(p => p.CategoryId == request.CategoryId);
+        if (request.CalculateTotalProductsCount)
+            totalProductsCount = await _productRepository.CountByQueryAsync(query, cancellationToken);
+        if (request.LoadCategory)
+            query = _productRepository.LoadCategory(query);
+
+        query = query.OrderBy(p => p.Name)
+            .Skip((request.PageNumber - 1) * request.PageSize)
+            .Take(request.PageSize);
+
+        var foundProducts = await _productRepository.GetByQueryAsync(query, cancellationToken);
+
+        return new ProductsSearchResult()
         {
-            _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
-        }
-
-        public async Task<ProductsSearchResult> Handle(GetProductsRequest request, CancellationToken cancellationToken)
-        {
-            var totalProductsCount = default(int?);
-            var query = _productRepository.GetQueryWithoutTracking();
-
-            if (!String.IsNullOrWhiteSpace(request.ProductName))
-                query = query.Where(p => p.Name.ToLower().Contains(request.ProductName.ToLower()));
-            if (request.CategoryId.HasValue)
-                query = query.Where(p => p.CategoryId == request.CategoryId);
-            if (request.CalculateTotalProductsCount)
-                totalProductsCount = await _productRepository.CountByQueryAsync(query, cancellationToken);
-            if (request.LoadCategory)
-                query = _productRepository.LoadCategory(query);
-
-            query = query.OrderBy(p => p.Name)
-                .Skip((request.PageNumber - 1) * request.PageSize)
-                .Take(request.PageSize);
-
-            var foundProducts = await _productRepository.GetByQueryAsync(query, cancellationToken);
-
-            return new ProductsSearchResult()
-            {
-                FoundProducts = foundProducts,
-                TotalProductsCount = totalProductsCount
-            };
-        }
+            FoundProducts = foundProducts,
+            TotalProductsCount = totalProductsCount
+        };
     }
 }

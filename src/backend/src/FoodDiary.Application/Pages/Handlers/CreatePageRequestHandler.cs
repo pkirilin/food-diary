@@ -6,22 +6,21 @@ using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Repositories;
 using MediatR;
 
-namespace FoodDiary.Application.Pages.Handlers
+namespace FoodDiary.Application.Pages.Handlers;
+
+class CreatePageRequestHandler : IRequestHandler<CreatePageRequest, Page>
 {
-    class CreatePageRequestHandler : IRequestHandler<CreatePageRequest, Page>
+    private readonly IPageRepository _pageRepository;
+
+    public CreatePageRequestHandler(IPageRepository pageRepository)
     {
-        private readonly IPageRepository _pageRepository;
+        _pageRepository = pageRepository ?? throw new ArgumentNullException(nameof(pageRepository));
+    }
 
-        public CreatePageRequestHandler(IPageRepository pageRepository)
-        {
-            _pageRepository = pageRepository ?? throw new ArgumentNullException(nameof(pageRepository));
-        }
-
-        public async Task<Page> Handle(CreatePageRequest request, CancellationToken cancellationToken)
-        {
-            var createdPage = _pageRepository.Add(request.Entity);
-            await _pageRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
-            return createdPage;
-        }
+    public async Task<Page> Handle(CreatePageRequest request, CancellationToken cancellationToken)
+    {
+        var createdPage = _pageRepository.Add(request.Entity);
+        await _pageRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
+        return createdPage;
     }
 }

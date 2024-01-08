@@ -1,14 +1,13 @@
 ﻿using FoodDiary.Contracts.Export.Json;
 using FoodDiary.Domain.Entities;
 
-namespace FoodDiary.Import.Services
+namespace FoodDiary.Import.Services;
+
+interface INoteJsonImporter
 {
-    interface INoteJsonImporter
-    {
-        /// <summary>
-        /// Creates note from JSON
-        /// </summary>
-        /// <returns>Imported note entity</returns>
-        Note ImportNote(JsonExportNoteDto noteFromJson);
-    }
+    /// <summary>
+    /// Creates note from JSON
+    /// </summary>
+    /// <returns>Imported note entity</returns>
+    Note ImportNote(JsonExportNoteDto noteFromJson);
 }

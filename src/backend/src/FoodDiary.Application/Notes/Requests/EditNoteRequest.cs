@@ -1,12 +1,11 @@
 ﻿using FoodDiary.Application.Abstractions;
 using FoodDiary.Domain.Entities;
 
-namespace FoodDiary.Application.Notes.Requests
+namespace FoodDiary.Application.Notes.Requests;
+
+public class EditNoteRequest : EditEntityRequest<Note>
 {
-    public class EditNoteRequest : EditEntityRequest<Note>
+    public EditNoteRequest(Note entity) : base(entity)
     {
-        public EditNoteRequest(Note entity) : base(entity)
-        {
-        }
     }
 }

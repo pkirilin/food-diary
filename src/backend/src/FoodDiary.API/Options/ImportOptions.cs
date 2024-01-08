@@ -1,7 +1,6 @@
-﻿namespace FoodDiary.API.Options
+﻿namespace FoodDiary.API.Options;
+
+public class ImportOptions
 {
-    public class ImportOptions
-    {
-        public long MaxImportFileLengthBytes { get; set; }
-    }
+    public long MaxImportFileLengthBytes { get; set; }
 }
