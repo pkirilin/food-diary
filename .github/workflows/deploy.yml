@@ -41,7 +41,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 6.0.302
+          dotnet-version: 8.0.100
       - name: Run migrator
         run: dotnet run --configuration Release --project src/backend/src/FoodDiary.Migrator/FoodDiary.Migrator.csproj "${{ secrets.Migrator_DatabaseConnectionString }}"
 
