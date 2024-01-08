@@ -22,18 +22,14 @@ public class Startup
 {
     private readonly AuthOptions _authOptions;
     private readonly GoogleAuthOptions _googleAuthOptions;
+    private readonly IConfiguration _configuration;
         
-    public Startup(IConfiguration configuration, IHostEnvironment env)
+    public Startup(IConfiguration configuration)
     {
-        Configuration = configuration;
-        Env = env;
-        _authOptions = Configuration.GetSection("Auth").Get<AuthOptions>();
-        _googleAuthOptions = Configuration.GetSection("GoogleAuth").Get<GoogleAuthOptions>();
+        _configuration = configuration;
+        _authOptions = _configuration.GetSection("Auth").Get<AuthOptions>()!;
+        _googleAuthOptions = _configuration.GetSection("GoogleAuth").Get<GoogleAuthOptions>()!;
     }
-
-    private IConfiguration Configuration { get; }
-        
-    private IHostEnvironment Env { get; }
 
     public void ConfigureServices(IServiceCollection services)
     {
@@ -87,10 +83,10 @@ public class Startup
             });
         });
 
-        services.ConfigureCustomOptions(Configuration);
-        services.Configure<ImportOptions>(Configuration.GetSection("Import"));
+        services.ConfigureCustomOptions(_configuration);
+        services.Configure<ImportOptions>(_configuration.GetSection("Import"));
 
-        services.AddInfrastructure(Env);
+        services.AddInfrastructure();
 
         services.AddRepositories();
         services.AddUtils();
