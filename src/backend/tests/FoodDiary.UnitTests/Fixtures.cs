@@ -1,11 +1,10 @@
 ﻿using AutoFixture;
 using FoodDiary.UnitTests.Customizations;
 
-namespace FoodDiary.UnitTests
+namespace FoodDiary.UnitTests;
+
+static class Fixtures
 {
-    static class Fixtures
-    {
-        public static IFixture Custom =>
-            new Fixture().Customize(new FixtureWithCircularReferencesCustomization());
-    }
+    public static IFixture Custom =>
+        new Fixture().Customize(new FixtureWithCircularReferencesCustomization());
 }

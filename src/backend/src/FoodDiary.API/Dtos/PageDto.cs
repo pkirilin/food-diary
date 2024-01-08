@@ -1,11 +1,10 @@
 ﻿using System;
 
-namespace FoodDiary.API.Dtos
-{
-    public class PageDto
-    {
-        public int Id { get; set; }
+namespace FoodDiary.API.Dtos;
 
-        public DateTime Date { get; set; }
-    }
+public class PageDto
+{
+    public int Id { get; set; }
+
+    public DateTime Date { get; set; }
 }

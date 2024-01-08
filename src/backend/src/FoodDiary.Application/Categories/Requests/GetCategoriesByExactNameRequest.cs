@@ -2,15 +2,14 @@
 using FoodDiary.Domain.Entities;
 using MediatR;
 
-namespace FoodDiary.Application.Categories.Requests
-{
-    public class GetCategoriesByExactNameRequest : IRequest<List<Category>>
-    {
-        public string Name { get; set; }
+namespace FoodDiary.Application.Categories.Requests;
 
-        public GetCategoriesByExactNameRequest(string name)
-        {
-            Name = name;
-        }
+public class GetCategoriesByExactNameRequest : IRequest<List<Category>>
+{
+    public string Name { get; set; }
+
+    public GetCategoriesByExactNameRequest(string name)
+    {
+        Name = name;
     }
 }

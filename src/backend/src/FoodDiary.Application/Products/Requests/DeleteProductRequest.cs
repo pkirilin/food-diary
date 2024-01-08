@@ -1,12 +1,11 @@
 ﻿using FoodDiary.Application.Abstractions;
 using FoodDiary.Domain.Entities;
 
-namespace FoodDiary.Application.Products.Requests
+namespace FoodDiary.Application.Products.Requests;
+
+public class DeleteProductRequest : DeleteEntityRequest<Product>
 {
-    public class DeleteProductRequest : DeleteEntityRequest<Product>
+    public DeleteProductRequest(Product entity) : base(entity)
     {
-        public DeleteProductRequest(Product entity) : base(entity)
-        {
-        }
     }
 }

@@ -7,31 +7,30 @@ using FoodDiary.Import.Services;
 
 [assembly: InternalsVisibleTo("FoodDiary.Import.UnitTests")]
 
-namespace FoodDiary.Import.Core
+namespace FoodDiary.Import.Core;
+
+class JsonImporter : IJsonImporter
 {
-    class JsonImporter : IJsonImporter
+    private readonly IPageJsonImporter _pageImporter;
+
+    public JsonImporter(IPageJsonImporter pageImporter)
     {
-        private readonly IPageJsonImporter _pageImporter;
+        _pageImporter = pageImporter ?? throw new ArgumentNullException(nameof(pageImporter));
+    }
 
-        public JsonImporter(IPageJsonImporter pageImporter)
+    public void Import(JsonExportFileDto jsonObj, out List<Page> createdPages)
+    {
+        if (jsonObj == null)
+            throw new ArgumentNullException(nameof(jsonObj));
+
+        createdPages = new List<Page>();
+
+        foreach (var pageFromJson in jsonObj.Pages)
         {
-            _pageImporter = pageImporter ?? throw new ArgumentNullException(nameof(pageImporter));
-        }
-
-        public void Import(JsonExportFileDto jsonObj, out List<Page> createdPages)
-        {
-            if (jsonObj == null)
-                throw new ArgumentNullException(nameof(jsonObj));
-
-            createdPages = new List<Page>();
-
-            foreach (var pageFromJson in jsonObj.Pages)
-            {
-                _pageImporter.ImportPage(pageFromJson, out var createdPage);
+            _pageImporter.ImportPage(pageFromJson, out var createdPage);
                 
-                if (createdPage != null)
-                    createdPages.Add(createdPage);
-            }
+            if (createdPage != null)
+                createdPages.Add(createdPage);
         }
     }
 }

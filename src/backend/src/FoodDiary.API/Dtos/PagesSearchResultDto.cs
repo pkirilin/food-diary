@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
 
-namespace FoodDiary.API.Dtos
-{
-    public class PagesSearchResultDto
-    {
-        public int TotalPagesCount { get; set; }
+namespace FoodDiary.API.Dtos;
 
-        public IEnumerable<PageItemDto> PageItems { get; set; }
-    }
+public class PagesSearchResultDto
+{
+    public int TotalPagesCount { get; set; }
+
+    public IEnumerable<PageItemDto> PageItems { get; set; }
 }

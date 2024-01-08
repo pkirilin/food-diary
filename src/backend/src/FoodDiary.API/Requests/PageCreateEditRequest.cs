@@ -1,11 +1,10 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace FoodDiary.API.Requests
+namespace FoodDiary.API.Requests;
+
+public class PageCreateEditRequest
 {
-    public class PageCreateEditRequest
-    {
-        [Required]
-        public DateTime Date { get; set; }
-    }
+    [Required]
+    public DateTime Date { get; set; }
 }

@@ -1,7 +1,6 @@
-﻿namespace FoodDiary.Contracts.Export.Json
+﻿namespace FoodDiary.Contracts.Export.Json;
+
+public class JsonExportFileDto
 {
-    public class JsonExportFileDto
-    {
-        public IEnumerable<JsonExportPageDto> Pages { get; set; }
-    }
+    public IEnumerable<JsonExportPageDto> Pages { get; set; }
 }

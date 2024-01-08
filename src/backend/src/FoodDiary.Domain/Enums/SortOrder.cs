@@ -1,8 +1,7 @@
-namespace FoodDiary.Domain.Enums
+namespace FoodDiary.Domain.Enums;
+
+public enum SortOrder : byte
 {
-    public enum SortOrder : byte
-    {
-        Ascending = 0,
-        Descending = 1
-    }
+    Ascending = 0,
+    Descending = 1
 }

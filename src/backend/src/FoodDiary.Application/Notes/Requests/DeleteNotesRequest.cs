@@ -2,12 +2,11 @@
 using FoodDiary.Application.Abstractions;
 using FoodDiary.Domain.Entities;
 
-namespace FoodDiary.Application.Notes.Requests
+namespace FoodDiary.Application.Notes.Requests;
+
+public class DeleteNotesRequest : DeleteManyEntitiesRequest<Note>
 {
-    public class DeleteNotesRequest : DeleteManyEntitiesRequest<Note>
+    public DeleteNotesRequest(IEnumerable<Note> entities) : base(entities)
     {
-        public DeleteNotesRequest(IEnumerable<Note> entities) : base(entities)
-        {
-        }
     }
 }

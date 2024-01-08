@@ -5,21 +5,20 @@ using FoodDiary.Application.Categories.Requests;
 using FoodDiary.Domain.Repositories;
 using MediatR;
 
-namespace FoodDiary.Application.Categories.Handlers
+namespace FoodDiary.Application.Categories.Handlers;
+
+class DeleteCategoryRequestHandler : IRequestHandler<DeleteCategoryRequest, int>
 {
-    class DeleteCategoryRequestHandler : IRequestHandler<DeleteCategoryRequest, int>
+    private readonly ICategoryRepository _categoryRepository;
+
+    public DeleteCategoryRequestHandler(ICategoryRepository categoryRepository)
     {
-        private readonly ICategoryRepository _categoryRepository;
+        _categoryRepository = categoryRepository ?? throw new ArgumentNullException(nameof(categoryRepository));
+    }
 
-        public DeleteCategoryRequestHandler(ICategoryRepository categoryRepository)
-        {
-            _categoryRepository = categoryRepository ?? throw new ArgumentNullException(nameof(categoryRepository));
-        }
-
-        public Task<int> Handle(DeleteCategoryRequest request, CancellationToken cancellationToken)
-        {
-            _categoryRepository.Remove(request.Entity);
-            return _categoryRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
-        }
+    public Task<int> Handle(DeleteCategoryRequest request, CancellationToken cancellationToken)
+    {
+        _categoryRepository.Remove(request.Entity);
+        return _categoryRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
     }
 }

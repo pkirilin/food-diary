@@ -3,45 +3,44 @@ using FoodDiary.Contracts.Export.Json;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Import.Services;
 
-namespace FoodDiary.Import.Implementation
+namespace FoodDiary.Import.Implementation;
+
+class ProductJsonImporter : IProductJsonImporter
 {
-    class ProductJsonImporter : IProductJsonImporter
+    private readonly IJsonImportDataProvider _importDataProvider;
+
+    private readonly ICategoryJsonImporter _categoryImporter;
+
+    public ProductJsonImporter(IJsonImportDataProvider importDataProvider, ICategoryJsonImporter categoryImporter)
     {
-        private readonly IJsonImportDataProvider _importDataProvider;
+        _importDataProvider = importDataProvider ?? throw new ArgumentNullException(nameof(importDataProvider));
+        _categoryImporter = categoryImporter ?? throw new ArgumentNullException(nameof(categoryImporter));
+    }
 
-        private readonly ICategoryJsonImporter _categoryImporter;
+    public Product ImportProduct(JsonExportProductDto productFromJson)
+    {
+        if (productFromJson == null)
+            throw new ArgumentNullException(nameof(productFromJson));
 
-        public ProductJsonImporter(IJsonImportDataProvider importDataProvider, ICategoryJsonImporter categoryImporter)
+        if (string.IsNullOrEmpty(productFromJson.Name))
+            throw new ArgumentNullException(nameof(productFromJson.Name));
+
+        var existingProductsDictionary = _importDataProvider.ExistingProducts;
+        Product importedProduct;
+
+        if (existingProductsDictionary.TryGetValue(productFromJson.Name, out var existingProduct))
         {
-            _importDataProvider = importDataProvider ?? throw new ArgumentNullException(nameof(importDataProvider));
-            _categoryImporter = categoryImporter ?? throw new ArgumentNullException(nameof(categoryImporter));
+            importedProduct = existingProduct;
+        }
+        else
+        {
+            importedProduct = new Product { Name = productFromJson.Name };
+            existingProductsDictionary.Add(productFromJson.Name, importedProduct);
         }
 
-        public Product ImportProduct(JsonExportProductDto productFromJson)
-        {
-            if (productFromJson == null)
-                throw new ArgumentNullException(nameof(productFromJson));
-
-            if (string.IsNullOrEmpty(productFromJson.Name))
-                throw new ArgumentNullException(nameof(productFromJson.Name));
-
-            var existingProductsDictionary = _importDataProvider.ExistingProducts;
-            Product importedProduct;
-
-            if (existingProductsDictionary.TryGetValue(productFromJson.Name, out var existingProduct))
-            {
-                importedProduct = existingProduct;
-            }
-            else
-            {
-                importedProduct = new Product { Name = productFromJson.Name };
-                existingProductsDictionary.Add(productFromJson.Name, importedProduct);
-            }
-
-            importedProduct.CaloriesCost = productFromJson.CaloriesCost;
-            importedProduct.DefaultQuantity = productFromJson.DefaultQuantity;
-            importedProduct.Category = _categoryImporter.ImportCategory(productFromJson.Category);
-            return importedProduct;
-        }
+        importedProduct.CaloriesCost = productFromJson.CaloriesCost;
+        importedProduct.DefaultQuantity = productFromJson.DefaultQuantity;
+        importedProduct.Category = _categoryImporter.ImportCategory(productFromJson.Category);
+        return importedProduct;
     }
 }

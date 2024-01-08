@@ -3,17 +3,16 @@ using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 
-namespace FoodDiary.Infrastructure.Repositories
-{
-    public class NoteRepository : Repository<Note>, INoteRepository
-    {
-        public NoteRepository(FoodDiaryContext context) : base(context)
-        {
-        }
+namespace FoodDiary.Infrastructure.Repositories;
 
-        public IQueryable<Note> LoadProduct(IQueryable<Note> query)
-        {
-            return query.Include(n => n.Product);
-        }
+public class NoteRepository : Repository<Note>, INoteRepository
+{
+    public NoteRepository(FoodDiaryContext context) : base(context)
+    {
+    }
+
+    public IQueryable<Note> LoadProduct(IQueryable<Note> query)
+    {
+        return query.Include(n => n.Product);
     }
 }

@@ -6,20 +6,19 @@ using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Repositories;
 using MediatR;
 
-namespace FoodDiary.Application.Pages.Handlers
+namespace FoodDiary.Application.Pages.Handlers;
+
+class GetPageByIdRequestHandler : IRequestHandler<GetPageByIdRequest, Page>
 {
-    class GetPageByIdRequestHandler : IRequestHandler<GetPageByIdRequest, Page>
+    private readonly IPageRepository _pageRepository;
+
+    public GetPageByIdRequestHandler(IPageRepository pageRepository)
     {
-        private readonly IPageRepository _pageRepository;
+        _pageRepository = pageRepository ?? throw new ArgumentNullException(nameof(pageRepository));
+    }
 
-        public GetPageByIdRequestHandler(IPageRepository pageRepository)
-        {
-            _pageRepository = pageRepository ?? throw new ArgumentNullException(nameof(pageRepository));
-        }
-
-        public Task<Page> Handle(GetPageByIdRequest request, CancellationToken cancellationToken)
-        {
-            return _pageRepository.GetByIdAsync(request.Id, cancellationToken);
-        }
+    public Task<Page> Handle(GetPageByIdRequest request, CancellationToken cancellationToken)
+    {
+        return _pageRepository.GetByIdAsync(request.Id, cancellationToken);
     }
 }

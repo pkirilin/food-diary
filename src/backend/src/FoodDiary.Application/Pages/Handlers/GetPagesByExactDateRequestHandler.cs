@@ -8,21 +8,20 @@ using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Repositories;
 using MediatR;
 
-namespace FoodDiary.Application.Pages.Handlers
+namespace FoodDiary.Application.Pages.Handlers;
+
+class GetPagesByExactDateRequestHandler : IRequestHandler<GetPagesByExactDateRequest, List<Page>>
 {
-    class GetPagesByExactDateRequestHandler : IRequestHandler<GetPagesByExactDateRequest, List<Page>>
+    private readonly IPageRepository _pageRepository;
+
+    public GetPagesByExactDateRequestHandler(IPageRepository pageRepository)
     {
-        private readonly IPageRepository _pageRepository;
+        _pageRepository = pageRepository ?? throw new ArgumentNullException(nameof(pageRepository));
+    }
 
-        public GetPagesByExactDateRequestHandler(IPageRepository pageRepository)
-        {
-            _pageRepository = pageRepository ?? throw new ArgumentNullException(nameof(pageRepository));
-        }
-
-        public Task<List<Page>> Handle(GetPagesByExactDateRequest request, CancellationToken cancellationToken)
-        {
-            var query = _pageRepository.GetQueryWithoutTracking().Where(p => p.Date == request.Date);
-            return _pageRepository.GetByQueryAsync(query, cancellationToken);
-        }
+    public Task<List<Page>> Handle(GetPagesByExactDateRequest request, CancellationToken cancellationToken)
+    {
+        var query = _pageRepository.GetQueryWithoutTracking().Where(p => p.Date == request.Date);
+        return _pageRepository.GetByQueryAsync(query, cancellationToken);
     }
 }

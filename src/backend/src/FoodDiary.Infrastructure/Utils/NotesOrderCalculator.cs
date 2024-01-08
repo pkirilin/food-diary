@@ -2,15 +2,14 @@
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Utils;
 
-namespace FoodDiary.Infrastructure.Utils
+namespace FoodDiary.Infrastructure.Utils;
+
+public class NotesOrderCalculator : INotesOrderCalculator
 {
-    public class NotesOrderCalculator : INotesOrderCalculator
+    public void RecalculateDisplayOrders(IEnumerable<Note> notes, int initialOrderValue = -1)
     {
-        public void RecalculateDisplayOrders(IEnumerable<Note> notes, int initialOrderValue = -1)
-        {
-            int curIndex = initialOrderValue;
-            foreach (var note in notes)
-                note.DisplayOrder = ++curIndex;
-        }
+        int curIndex = initialOrderValue;
+        foreach (var note in notes)
+            note.DisplayOrder = ++curIndex;
     }
 }

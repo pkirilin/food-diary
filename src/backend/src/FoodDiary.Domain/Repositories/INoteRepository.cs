@@ -2,10 +2,9 @@
 using FoodDiary.Domain.Abstractions;
 using FoodDiary.Domain.Entities;
 
-namespace FoodDiary.Domain.Repositories
+namespace FoodDiary.Domain.Repositories;
+
+public interface INoteRepository : IRepository<Note>
 {
-    public interface INoteRepository : IRepository<Note>
-    {
-        IQueryable<Note> LoadProduct(IQueryable<Note> query);
-    }
+    IQueryable<Note> LoadProduct(IQueryable<Note> query);
 }

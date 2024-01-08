@@ -22,7 +22,7 @@ public class FoodDiaryWebApplicationFactory : WebApplicationFactory<Startup>, IA
     private const string EnvironmentName = "ComponentTests";
     
     private readonly PostgreSqlContainer _dbContainer = new PostgreSqlBuilder()
-        .WithImage("postgres:12.2-alpine")
+        .WithImage("postgres:15.1-alpine")
         .WithUsername("postgres")
         .WithPassword("postgres")
         .WithDatabase("food-diary")

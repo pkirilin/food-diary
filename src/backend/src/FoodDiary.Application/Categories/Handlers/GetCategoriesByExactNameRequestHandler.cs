@@ -8,21 +8,20 @@ using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Repositories;
 using MediatR;
 
-namespace FoodDiary.Application.Categories.Handlers
+namespace FoodDiary.Application.Categories.Handlers;
+
+class GetCategoriesByExactNameRequestHandler : IRequestHandler<GetCategoriesByExactNameRequest, List<Category>>
 {
-    class GetCategoriesByExactNameRequestHandler : IRequestHandler<GetCategoriesByExactNameRequest, List<Category>>
+    private readonly ICategoryRepository _categoryRepository;
+
+    public GetCategoriesByExactNameRequestHandler(ICategoryRepository categoryRepository)
     {
-        private readonly ICategoryRepository _categoryRepository;
+        _categoryRepository = categoryRepository ?? throw new ArgumentNullException(nameof(categoryRepository));
+    }
 
-        public GetCategoriesByExactNameRequestHandler(ICategoryRepository categoryRepository)
-        {
-            _categoryRepository = categoryRepository ?? throw new ArgumentNullException(nameof(categoryRepository));
-        }
-
-        public Task<List<Category>> Handle(GetCategoriesByExactNameRequest request, CancellationToken cancellationToken)
-        {
-            var query = _categoryRepository.GetQueryWithoutTracking().Where(c => c.Name == request.Name);
-            return _categoryRepository.GetByQueryAsync(query, cancellationToken);
-        }
+    public Task<List<Category>> Handle(GetCategoriesByExactNameRequest request, CancellationToken cancellationToken)
+    {
+        var query = _categoryRepository.GetQueryWithoutTracking().Where(c => c.Name == request.Name);
+        return _categoryRepository.GetByQueryAsync(query, cancellationToken);
     }
 }

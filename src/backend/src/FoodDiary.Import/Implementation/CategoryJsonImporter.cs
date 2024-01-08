@@ -2,34 +2,33 @@
 using FoodDiary.Domain.Entities;
 using FoodDiary.Import.Services;
 
-namespace FoodDiary.Import.Implementation
+namespace FoodDiary.Import.Implementation;
+
+class CategoryJsonImporter : ICategoryJsonImporter
 {
-    class CategoryJsonImporter : ICategoryJsonImporter
+    private readonly IJsonImportDataProvider _importDataProvider;
+
+    public CategoryJsonImporter(IJsonImportDataProvider importDataProvider)
     {
-        private readonly IJsonImportDataProvider _importDataProvider;
+        _importDataProvider = importDataProvider ?? throw new ArgumentNullException(nameof(importDataProvider));
+    }
 
-        public CategoryJsonImporter(IJsonImportDataProvider importDataProvider)
+    public Category ImportCategory(string categoryNameFromJson)
+    {
+        if (String.IsNullOrWhiteSpace(categoryNameFromJson))
+            throw new ArgumentNullException(nameof(categoryNameFromJson));
+
+        var existingCategoriesDictionary = _importDataProvider.ExistingCategories;
+        Category importedCategory;
+
+        if (existingCategoriesDictionary.ContainsKey(categoryNameFromJson))
+            importedCategory = existingCategoriesDictionary[categoryNameFromJson];
+        else
         {
-            _importDataProvider = importDataProvider ?? throw new ArgumentNullException(nameof(importDataProvider));
+            importedCategory = new Category { Name = categoryNameFromJson };
+            existingCategoriesDictionary.Add(categoryNameFromJson, importedCategory);
         }
 
-        public Category ImportCategory(string categoryNameFromJson)
-        {
-            if (String.IsNullOrWhiteSpace(categoryNameFromJson))
-                throw new ArgumentNullException(nameof(categoryNameFromJson));
-
-            var existingCategoriesDictionary = _importDataProvider.ExistingCategories;
-            Category importedCategory;
-
-            if (existingCategoriesDictionary.ContainsKey(categoryNameFromJson))
-                importedCategory = existingCategoriesDictionary[categoryNameFromJson];
-            else
-            {
-                importedCategory = new Category { Name = categoryNameFromJson };
-                existingCategoriesDictionary.Add(categoryNameFromJson, importedCategory);
-            }
-
-            return importedCategory;
-        }
+        return importedCategory;
     }
 }

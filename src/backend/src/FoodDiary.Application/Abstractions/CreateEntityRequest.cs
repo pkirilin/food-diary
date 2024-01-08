@@ -1,14 +1,13 @@
 ﻿using MediatR;
 
-namespace FoodDiary.Application.Abstractions
-{
-    public abstract class CreateEntityRequest<TEntity> : IRequest<TEntity> where TEntity : class
-    {
-        public TEntity Entity { get; set; }
+namespace FoodDiary.Application.Abstractions;
 
-        protected CreateEntityRequest(TEntity entity)
-        {
-            Entity = entity;
-        }
+public abstract class CreateEntityRequest<TEntity> : IRequest<TEntity> where TEntity : class
+{
+    public TEntity Entity { get; set; }
+
+    protected CreateEntityRequest(TEntity entity)
+    {
+        Entity = entity;
     }
 }
