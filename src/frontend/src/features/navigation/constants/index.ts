@@ -1,4 +1,4 @@
-export const APP_NAME = 'Food diary';
+export const APP_NAME = 'Food Diary';
 
 export const NAV_LINKS = [
   {
