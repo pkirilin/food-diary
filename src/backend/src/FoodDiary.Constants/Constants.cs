@@ -17,4 +17,13 @@ public static class Constants
     {
         public const string Email = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress";
     }
+
+    public static class OpenIdConnectParameters
+    {
+        public const string AccessToken = "access_token";
+        public const string IdToken = "id_token";
+        public const string RefreshToken = "refresh_token";
+        public const string TokenType = "token_type";
+        public const string ExpiresAt = "expires_at";
+    }
 }
