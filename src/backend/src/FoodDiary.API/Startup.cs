@@ -1,5 +1,4 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Threading.Tasks;
 using FoodDiary.API.Extensions;
 using FoodDiary.API.Middlewares;
@@ -46,12 +45,13 @@ public class Startup
             .AddCookie(Constants.AuthenticationSchemes.Cookie, options =>
             {
                 options.SlidingExpiration = true;
-                options.ExpireTimeSpan = TimeSpan.FromHours(1);
+                options.ExpireTimeSpan = Constants.AuthenticationParameters.CookieLifetime;
                 options.ReturnUrlParameter = "returnUrl";
                 options.Cookie.HttpOnly = true;
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 options.Cookie.SameSite = SameSiteMode.Lax;
-                options.Cookie.MaxAge = TimeSpan.FromHours(1);
+                options.Cookie.MaxAge = Constants.AuthenticationParameters.CookieLifetime;
+                options.Cookie.Expiration = Constants.AuthenticationParameters.CookieLifetime;
 
                 options.Events.OnSigningOut = context =>
                 {

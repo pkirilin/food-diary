@@ -8,6 +8,12 @@ public static class Constants
         public const string Cookie = "fd-auth";
     }
 
+    public static class AuthenticationParameters
+    {
+        public static readonly TimeSpan CookieLifetime = TimeSpan.FromHours(1);
+        public static readonly TimeSpan AccessTokenRefreshInterval = TimeSpan.FromHours(1);
+    }
+
     public static class AuthorizationPolicies
     {
         public const string GoogleAllowedEmails = "GoogleAllowedEmails";

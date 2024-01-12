@@ -77,9 +77,9 @@ internal class GetUserProfileRequestHandler : IRequestHandler<GetUserProfileRequ
 
     private bool ExistingTokenExpired(DateTimeOffset existingTokenIssuedOn)
     {
-        // TODO: move to constant
-        var accessTokenRefreshInterval = TimeSpan.FromHours(1);
-        var accessTokenExpirationDate = existingTokenIssuedOn.Add(accessTokenRefreshInterval);
+        var accessTokenExpirationDate = existingTokenIssuedOn
+            .Add(Constants.AuthenticationParameters.AccessTokenRefreshInterval);
+        
         var currentDate = _timeProvider.GetUtcNow();
 
         return currentDate > accessTokenExpirationDate;
