@@ -64,6 +64,8 @@ public class Startup
                 options.SignInScheme = Constants.AuthenticationSchemes.Cookie;
                 options.ClientId = _googleAuthOptions.ClientId;
                 options.ClientSecret = _googleAuthOptions.ClientSecret;
+                options.TokenEndpoint = _googleAuthOptions.TokenEndpoint;
+                options.UserInformationEndpoint = _googleAuthOptions.UserInformationEndpoint;
                 options.SaveTokens = true;
                 options.Scope.Add("openid");
                 options.Scope.Add("profile");

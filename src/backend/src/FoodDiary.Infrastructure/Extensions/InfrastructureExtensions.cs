@@ -1,6 +1,8 @@
 using FoodDiary.Application.Abstractions;
+using FoodDiary.Application.Auth.GetUserProfile;
 using FoodDiary.Domain.Abstractions.v2;
 using FoodDiary.Infrastructure.DateAndTime;
+using FoodDiary.Infrastructure.Integrations.Google;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -11,6 +13,13 @@ namespace FoodDiary.Infrastructure.Extensions;
 public static class InfrastructureExtensions
 {
     public static void AddInfrastructure(this IServiceCollection services)
+    {
+        services.AddDataAccess();
+        services.AddDateAndTime();
+        services.AddIntegrations();
+    }
+
+    private static void AddDataAccess(this IServiceCollection services)
     {
         services.AddDbContext<FoodDiaryContext>((serviceProvider, builder) =>
         {
@@ -23,6 +32,15 @@ public static class InfrastructureExtensions
             .PersistKeysToDbContext<FoodDiaryContext>();
 
         services.AddScoped<IFoodDiaryUnitOfWork, FoodDiaryUnitOfWork>();
+    }
+
+    private static void AddDateAndTime(this IServiceCollection services)
+    {
         services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
+    }
+
+    private static void AddIntegrations(this IServiceCollection services)
+    {
+        services.AddHttpClient<IOAuthClient, GoogleOAuthClient>();
     }
 }

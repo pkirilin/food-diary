@@ -49,9 +49,10 @@ internal class GetUserProfileRequestHandler : IRequestHandler<GetUserProfileRequ
             return new GetUserProfileResult.Authenticated();
         }
         
+        var accessToken = request.AuthResult.Properties.GetTokenValue(Constants.OpenIdConnectParameters.AccessToken);
         var refreshToken = request.AuthResult.Properties.GetTokenValue(Constants.OpenIdConnectParameters.RefreshToken);
 
-        if (string.IsNullOrWhiteSpace(refreshToken))
+        if (string.IsNullOrWhiteSpace(accessToken) || string.IsNullOrWhiteSpace(refreshToken))
         {
             return await NotAuthenticated();
         }
@@ -63,7 +64,7 @@ internal class GetUserProfileRequestHandler : IRequestHandler<GetUserProfileRequ
             return await NotAuthenticated();
         }
 
-        var userInfoResult = await _oAuthClient.GetUserInfo(cancellationToken);
+        var userInfoResult = await _oAuthClient.GetUserInfo(accessToken, cancellationToken);
 
         if (userInfoResult is GetUserInfoResult.Error)
         {
