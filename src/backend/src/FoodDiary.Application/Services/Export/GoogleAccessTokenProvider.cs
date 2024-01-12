@@ -1,4 +1,3 @@
-#nullable enable
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
@@ -22,7 +21,7 @@ internal class GoogleAccessTokenProvider : IGoogleAccessTokenProvider
         }
         
         var auth = await _httpContextAccessor.HttpContext.AuthenticateAsync(Constants.AuthenticationSchemes.OAuthGoogle);
-        var accessToken = auth.Properties?.GetTokenValue("access_token");
+        var accessToken = auth.Properties?.GetTokenValue(Constants.OpenIdConnectParameters.RefreshToken);
         return accessToken;
     }
 }
