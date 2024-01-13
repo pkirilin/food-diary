@@ -30,12 +30,16 @@ public class AuthContext : BaseContext
 
     public Task Given_user_access_token_can_be_refreshed()
     {
-        var googleIdentityProvider = Factory.Services.GetRequiredService<GoogleIdentityProvider>();
-        return googleIdentityProvider.SetupAccessTokenSuccessfullyRefreshed();
+        return Factory.Services
+            .GetRequiredService<GoogleIdentityProvider>()
+            .SetupAccessTokenSuccessfullyRefreshed();
     }
 
-    public async Task Given_user_info_can_be_retrieved()
+    public Task Given_user_info_can_be_retrieved()
     {
+        return Factory.Services
+            .GetRequiredService<GoogleIdentityProvider>()
+            .SetupUserInfoSuccessfullyReceived();
     }
 
     public async Task When_user_is_trying_to_access_resource(string resource)

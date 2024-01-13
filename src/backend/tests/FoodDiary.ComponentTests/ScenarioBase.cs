@@ -24,7 +24,7 @@ public abstract class ScenarioBase<TContext> :
     public async Task InitializeAsync()
     {
         await _factory.ClearDataAsync();
-        await _factory.TearDownFakeExternalServices();
+        await _factory.SetupFakeExternalServices();
     }
 
     public Task DisposeAsync()

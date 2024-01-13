@@ -16,9 +16,10 @@ public static class FakeExternalServicesExtensions
         services.AddSingleton<IGoogleDocsClient, FakeGoogleDocsClient>();
     }
     
-    public static Task TearDownFakeExternalServices(this WebApplicationFactory<Startup> factory)
+    public static Task SetupFakeExternalServices(this WebApplicationFactory<Startup> factory)
     {
-        var mountebankClient = factory.Services.GetRequiredService<IClient>();
-        return mountebankClient.DeleteAllImpostersAsync();
+        return factory.Services
+            .GetRequiredService<GoogleIdentityProvider>()
+            .Setup();
     }
 }
