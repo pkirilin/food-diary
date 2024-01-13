@@ -1,7 +1,7 @@
 using FoodDiary.Export.GoogleDocs;
 using Google.Apis.Docs.v1.Data;
 
-namespace FoodDiary.ComponentTests.Infrastructure.Google;
+namespace FoodDiary.ComponentTests.Infrastructure.ExternalServices;
 
 public class FakeGoogleDocsClient : IGoogleDocsClient
 {

@@ -23,10 +23,12 @@ public static class WebApplicationFactoryExtensions
     {
         await using var scope = factory.Services.CreateAsyncScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<FoodDiaryContext>();
-        await dbContext.Database.ExecuteSqlRawAsync(@"
-            truncate table ""Notes"" cascade;
-            truncate table ""Pages"" cascade;
-            truncate table ""Products"" cascade;
-            truncate table ""Categories"" cascade;");
+        await dbContext.Database.ExecuteSqlRawAsync(
+            """
+            truncate table "Notes" cascade;
+            truncate table "Pages" cascade;
+            truncate table "Products" cascade;
+            truncate table "Categories" cascade;
+            """);
     }
 }

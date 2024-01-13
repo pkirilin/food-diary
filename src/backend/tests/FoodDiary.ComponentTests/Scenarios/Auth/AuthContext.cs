@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http.Json;
 using FoodDiary.ComponentTests.Infrastructure;
+using FoodDiary.ComponentTests.Infrastructure.ExternalServices;
 using FoodDiary.Contracts.Auth;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -27,8 +28,10 @@ public class AuthContext : BaseContext
         return Task.CompletedTask;
     }
 
-    public async Task Given_user_access_token_can_be_refreshed()
+    public Task Given_user_access_token_can_be_refreshed()
     {
+        var googleIdentityProvider = Factory.Services.GetRequiredService<GoogleIdentityProvider>();
+        return googleIdentityProvider.SetupAccessTokenSuccessfullyRefreshed();
     }
 
     public async Task Given_user_info_can_be_retrieved()
