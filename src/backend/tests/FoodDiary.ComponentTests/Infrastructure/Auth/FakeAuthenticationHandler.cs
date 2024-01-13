@@ -22,7 +22,7 @@ public class FakeAuthenticationHandler : AuthenticationHandler<FakeAuthenticatio
             return Task.FromResult(
                 AuthenticateResult.Fail($"User '{Options.UserEmail}' was not authenticated by fake auth"));
         }
-        
+
         var claims = new List<Claim>();
 
         if (Options.UserEmail is not null)
@@ -33,13 +33,35 @@ public class FakeAuthenticationHandler : AuthenticationHandler<FakeAuthenticatio
         var identity = new ClaimsIdentity(claims, Scheme.Name);
         var principal = new ClaimsPrincipal(identity);
 
-        var properties = new AuthenticationProperties(new Dictionary<string, string?>
+        var properties = new AuthenticationProperties
         {
-            [".Token.access_token"] = "test_google_access_token"
-        });
+            IssuedUtc = Options.IssuedUtc
+        };
+
+        var tokens = CreateTokens();
+        properties.StoreTokens(tokens);
 
         var ticket = new AuthenticationTicket(principal, properties, Scheme.Name);
         var result = AuthenticateResult.Success(ticket);
+        
         return Task.FromResult(result);
+    }
+
+    private static IEnumerable<AuthenticationToken> CreateTokens()
+    {
+        return
+        [
+            new AuthenticationToken
+            {
+                Name = Constants.OpenIdConnectParameters.AccessToken,
+                Value = "fake_access_token"
+            },
+
+            new AuthenticationToken
+            {
+                Name = Constants.OpenIdConnectParameters.RefreshToken,
+                Value = "fake_refresh_token"
+            }
+        ];
     }
 }

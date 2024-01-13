@@ -20,4 +20,15 @@ public class AuthTests : ScenarioBase<AuthContext>
             c => c.When_user_is_trying_to_access_resource(resourcePath),
             c => c.Then_access_is_forbidden());
     }
+
+    [Scenario]
+    public Task The_client_can_check_auth_status_and_keep_user_signed_in()
+    {
+        return Run(
+            c => c.Given_authenticated_user_with_expired_access_token(),
+            c => c.Given_user_access_token_can_be_refreshed(),
+            c => c.Given_user_info_can_be_retrieved(),
+            c => c.When_client_checks_auth_status(),
+            c => c.Then_user_is_authenticated());
+    }
 }

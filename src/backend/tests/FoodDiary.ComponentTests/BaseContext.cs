@@ -37,7 +37,9 @@ public abstract class BaseContext
         return Task.CompletedTask;
     }
 
-    private WebApplicationFactory<Startup> WithAuthenticatedUser(string? email = null)
+    protected WebApplicationFactory<Startup> WithAuthenticatedUser(
+        string? email = null,
+        DateTimeOffset? tokenIssuedOn = null)
     {
         return Factory.WithWebHostBuilder(builder =>
         {
@@ -47,6 +49,7 @@ public abstract class BaseContext
                 {
                     options.UserEmail = email ?? _defaultUserEmail;
                     options.ShouldAuthenticate = true;
+                    options.IssuedUtc = tokenIssuedOn;
                 });
             });
         });

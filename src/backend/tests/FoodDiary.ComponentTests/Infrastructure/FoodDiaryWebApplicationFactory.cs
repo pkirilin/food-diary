@@ -1,5 +1,4 @@
 using FoodDiary.API;
-using FoodDiary.Application.Abstractions;
 using FoodDiary.ComponentTests.Infrastructure.DateAndTime;
 using FoodDiary.ComponentTests.Infrastructure.Google;
 using FoodDiary.Export.GoogleDocs;
@@ -55,7 +54,7 @@ public class FoodDiaryWebApplicationFactory : WebApplicationFactory<Startup>, IA
                 });
             }
             
-            services.AddSingleton<IDateTimeProvider, FakeDateTimeProvider>();
+            services.AddFakeDateAndTime();
             services.AddSingleton<IGoogleDriveClient, FakeGoogleDriveClient>();
             services.AddSingleton<IGoogleDocsClient, FakeGoogleDocsClient>();
 
