@@ -1,6 +1,6 @@
 using System;
 using System.Threading.Tasks;
-using FoodDiary.Application.Auth.GetUserProfile;
+using FoodDiary.Application.Auth.GetStatus;
 using FoodDiary.Contracts.Auth;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
@@ -48,17 +48,17 @@ public class AuthController : ControllerBase
         return SignOut(Constants.AuthenticationSchemes.Cookie);
     }
 
-    [HttpGet("profile")]
-    public async Task<IActionResult> GetProfile()
+    [HttpGet("status")]
+    public async Task<IActionResult> GetStatus()
     {
         var authResult = await HttpContext.AuthenticateAsync(Constants.AuthenticationSchemes.OAuthGoogle);
-        var request = new GetUserProfileRequest(authResult);
+        var request = new GetStatusRequest(authResult);
         var result = await _sender.Send(request);
 
         return result switch
         {
-            GetUserProfileResult.Authenticated => Ok(new AuthProfileResponse { IsAuthenticated = true }),
-            _ => Ok(new AuthProfileResponse { IsAuthenticated = false })
+            GetStatusResult.Authenticated => Ok(new GetAuthStatusResponse { IsAuthenticated = true }),
+            _ => Ok(new GetAuthStatusResponse { IsAuthenticated = false })
         };
     }
 }

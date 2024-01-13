@@ -8,24 +8,24 @@ using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 
-namespace FoodDiary.Application.Auth.GetUserProfile;
+namespace FoodDiary.Application.Auth.GetStatus;
 
-public record GetUserProfileRequest(AuthenticateResult? AuthResult) : IRequest<GetUserProfileResult>;
+public record GetStatusRequest(AuthenticateResult? AuthResult) : IRequest<GetStatusResult>;
 
-public abstract record GetUserProfileResult
+public abstract record GetStatusResult
 {
-    public record NotAuthenticated : GetUserProfileResult;
-    public record Authenticated : GetUserProfileResult;
+    public record NotAuthenticated : GetStatusResult;
+    public record Authenticated : GetStatusResult;
 }
 
 [UsedImplicitly]
-internal class GetUserProfileRequestHandler : IRequestHandler<GetUserProfileRequest, GetUserProfileResult>
+internal class GetStatusRequestHandler : IRequestHandler<GetStatusRequest, GetStatusResult>
 {
     private readonly TimeProvider _timeProvider;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IOAuthClient _oAuthClient;
 
-    public GetUserProfileRequestHandler(
+    public GetStatusRequestHandler(
         TimeProvider timeProvider,
         IHttpContextAccessor httpContextAccessor,
         IOAuthClient oAuthClient)
@@ -35,18 +35,18 @@ internal class GetUserProfileRequestHandler : IRequestHandler<GetUserProfileRequ
         _oAuthClient = oAuthClient;
     }
     
-    public async Task<GetUserProfileResult> Handle(GetUserProfileRequest request, CancellationToken cancellationToken)
+    public async Task<GetStatusResult> Handle(GetStatusRequest request, CancellationToken cancellationToken)
     {
         if (request.AuthResult is null ||
             !request.AuthResult.Succeeded ||
             !request.AuthResult.Properties.IssuedUtc.HasValue)
         {
-            return new GetUserProfileResult.NotAuthenticated();
+            return new GetStatusResult.NotAuthenticated();
         }
 
         if (!ExistingTokenExpired(request.AuthResult.Properties.IssuedUtc.Value))
         {
-            return new GetUserProfileResult.Authenticated();
+            return new GetStatusResult.Authenticated();
         }
         
         var accessToken = request.AuthResult.Properties.GetTokenValue(Constants.OpenIdConnectParameters.AccessToken);
@@ -86,13 +86,13 @@ internal class GetUserProfileRequestHandler : IRequestHandler<GetUserProfileRequ
         return currentDate > accessTokenExpirationDate;
     }
     
-    private async Task<GetUserProfileResult> NotAuthenticated()
+    private async Task<GetStatusResult> NotAuthenticated()
     {
         await _httpContextAccessor.HttpContext.SignOutAsync(Constants.AuthenticationSchemes.Cookie);
-        return new GetUserProfileResult.NotAuthenticated();
+        return new GetStatusResult.NotAuthenticated();
     }
 
-    private async Task<GetUserProfileResult> AuthenticatedWithNewTokens(
+    private async Task<GetStatusResult> AuthenticatedWithNewTokens(
         AuthenticateResult authResult,
         IEnumerable<AuthenticationToken> tokens)
     {
@@ -105,7 +105,7 @@ internal class GetUserProfileRequestHandler : IRequestHandler<GetUserProfileRequ
             authResult.Principal,
             authResult.Properties);
 
-        return new GetUserProfileResult.Authenticated();
+        return new GetStatusResult.Authenticated();
     }
 
     private IEnumerable<AuthenticationToken> CreateNewTokens(RefreshTokenResult.Success refreshTokenResponse)

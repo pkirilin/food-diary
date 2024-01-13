@@ -1,5 +1,5 @@
 using FoodDiary.Application.Abstractions;
-using FoodDiary.Application.Auth.GetUserProfile;
+using FoodDiary.Application.Auth.GetStatus;
 using FoodDiary.Domain.Abstractions.v2;
 using FoodDiary.Infrastructure.DateAndTime;
 using FoodDiary.Infrastructure.Integrations.Google;

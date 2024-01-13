@@ -2,7 +2,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 
-namespace FoodDiary.Application.Auth.GetUserProfile;
+namespace FoodDiary.Application.Auth.GetStatus;
 
 public abstract record RefreshTokenResult
 {
