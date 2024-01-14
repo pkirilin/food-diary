@@ -9,11 +9,13 @@ namespace FoodDiary.ComponentTests.Scenarios.Auth;
 
 public class AuthContext : BaseContext
 {
+    private readonly GoogleIdentityProvider _googleIdentityProvider;
     private HttpResponseMessage? _response;
     private GetAuthStatusResponse? _getStatusResponse;
 
-    public AuthContext(FoodDiaryWebApplicationFactory factory) : base(factory)
+    public AuthContext(FoodDiaryWebApplicationFactory factory, ExternalServicesFixture externalServices) : base(factory)
     {
+        _googleIdentityProvider = externalServices.GoogleIdentityProvider;
     }
 
     public Task Given_authenticated_user_with_expired_access_token()
@@ -28,18 +30,19 @@ public class AuthContext : BaseContext
         return Task.CompletedTask;
     }
 
+    public Task Given_google_identity_provider_is_ready()
+    {
+        return _googleIdentityProvider.Start();
+    }
+
     public Task Given_user_access_token_can_be_refreshed()
     {
-        return Factory.Services
-            .GetRequiredService<GoogleIdentityProvider>()
-            .SetupAccessTokenSuccessfullyRefreshed();
+        return _googleIdentityProvider.SetupAccessTokenSuccessfullyRefreshed();
     }
 
     public Task Given_user_info_can_be_retrieved()
     {
-        return Factory.Services
-            .GetRequiredService<GoogleIdentityProvider>()
-            .SetupUserInfoSuccessfullyReceived();
+        return _googleIdentityProvider.SetupUserInfoSuccessfullyReceived();
     }
 
     public async Task When_user_is_trying_to_access_resource(string resource)

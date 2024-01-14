@@ -9,20 +9,18 @@ namespace FoodDiary.ComponentTests.Infrastructure.ExternalServices;
 public class GoogleIdentityProvider
 {
     private readonly IClient _mountebankClient;
-    private readonly HttpImposter _imposter;
 
     public GoogleIdentityProvider(IClient mountebankClient)
     {
         _mountebankClient = mountebankClient;
-        _imposter = new HttpImposter(Port, nameof(GoogleIdentityProvider), new HttpImposterOptions());
     }
     
     public const int Port = 4545;
 
-    public Task Setup()
+    public Task Start()
     {
-        _imposter.Stubs.Clear();
-        return _mountebankClient.OverwriteAllImposters([_imposter]);
+        var imposter = new HttpImposter(Port, nameof(GoogleIdentityProvider), new HttpImposterOptions());
+        return _mountebankClient.OverwriteAllImposters([imposter]);
     }
 
     public Task SetupAccessTokenSuccessfullyRefreshed()

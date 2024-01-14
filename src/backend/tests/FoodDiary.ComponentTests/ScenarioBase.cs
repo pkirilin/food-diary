@@ -1,6 +1,5 @@
 using System.Linq.Expressions;
 using FoodDiary.ComponentTests.Infrastructure;
-using FoodDiary.ComponentTests.Infrastructure.ExternalServices;
 
 namespace FoodDiary.ComponentTests;
 
@@ -24,7 +23,6 @@ public abstract class ScenarioBase<TContext> :
     public async Task InitializeAsync()
     {
         await _factory.ClearDataAsync();
-        await _factory.SetupFakeExternalServices();
     }
 
     public Task DisposeAsync()

@@ -1,10 +1,13 @@
 using FoodDiary.ComponentTests.Infrastructure;
+using FoodDiary.ComponentTests.Infrastructure.ExternalServices;
 
 namespace FoodDiary.ComponentTests.Scenarios.Auth;
 
+[Collection(nameof(ExternalServicesCollection))]
 public class AuthTests : ScenarioBase<AuthContext>
 {
-    public AuthTests(FoodDiaryWebApplicationFactory factory) : base(factory, () => new AuthContext(factory))
+    public AuthTests(FoodDiaryWebApplicationFactory factory, ExternalServicesFixture externalServices)
+        : base(factory, () => new AuthContext(factory, externalServices))
     {
     }
 
@@ -26,6 +29,7 @@ public class AuthTests : ScenarioBase<AuthContext>
     {
         return Run(
             c => c.Given_authenticated_user_with_expired_access_token(),
+            c => c.Given_google_identity_provider_is_ready(),
             c => c.Given_user_access_token_can_be_refreshed(),
             c => c.Given_user_info_can_be_retrieved(),
             c => c.When_client_checks_auth_status(),

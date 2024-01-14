@@ -1,8 +1,7 @@
-using DotNet.Testcontainers.Builders;
-using DotNet.Testcontainers.Containers;
 using FoodDiary.API;
 using FoodDiary.ComponentTests.Infrastructure.DateAndTime;
 using FoodDiary.ComponentTests.Infrastructure.ExternalServices;
+using FoodDiary.Export.GoogleDocs;
 using FoodDiary.Infrastructure;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.DataProtection;
@@ -26,12 +25,6 @@ public class FoodDiaryWebApplicationFactory : WebApplicationFactory<Startup>, IA
         .WithUsername("postgres")
         .WithPassword("postgres")
         .WithDatabase("food-diary")
-        .Build();
-    
-    private readonly IContainer _mountebankContainer = new ContainerBuilder()
-        .WithImage("bbyars/mountebank:2.9.1")
-        .WithPortBinding(2525, 2525)
-        .WithPortBinding(GoogleIdentityProvider.Port, GoogleIdentityProvider.Port)
         .Build();
     
     protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -62,7 +55,8 @@ public class FoodDiaryWebApplicationFactory : WebApplicationFactory<Startup>, IA
             }
             
             services.AddFakeDateAndTime();
-            services.AddFakeExternalServices();
+            services.AddSingleton<IGoogleDriveClient, FakeGoogleDriveClient>();
+            services.AddSingleton<IGoogleDocsClient, FakeGoogleDocsClient>();
 
             services
                 .AddDataProtection()
@@ -72,7 +66,6 @@ public class FoodDiaryWebApplicationFactory : WebApplicationFactory<Startup>, IA
 
     public async Task InitializeAsync()
     {
-        await _mountebankContainer.StartAsync();
         await _dbContainer.StartAsync();
         await using var scope = Services.CreateAsyncScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<FoodDiaryContext>();
@@ -82,6 +75,5 @@ public class FoodDiaryWebApplicationFactory : WebApplicationFactory<Startup>, IA
     public new async Task DisposeAsync()
     {
         await _dbContainer.StopAsync();
-        await _mountebankContainer.StopAsync();
     }
 }
