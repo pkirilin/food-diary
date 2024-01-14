@@ -8,24 +8,24 @@ namespace FoodDiary.ComponentTests.Infrastructure.ExternalServices;
 [UsedImplicitly]
 public class ExternalServicesFixture : IAsyncLifetime
 {
-    private readonly IContainer _mountebankContainer = new ContainerBuilder()
+    private static readonly IContainer MountebankContainer = new ContainerBuilder()
         .WithImage("bbyars/mountebank:2.9.1")
         .WithPortBinding(2525, 2525)
         .WithPortBinding(GoogleIdentityProvider.Port, GoogleIdentityProvider.Port)
         .Build();
     
-    private readonly IClient _mountebankClient = new MountebankClient(
+    private static readonly IClient MountebankClient = new MountebankClient(
         new Uri("http://localhost:2525", UriKind.Absolute));
 
-    public GoogleIdentityProvider GoogleIdentityProvider => new(_mountebankClient);
+    public GoogleIdentityProvider GoogleIdentityProvider { get; } = new(MountebankClient);
 
     public async Task InitializeAsync()
     {
-        await _mountebankContainer.StartAsync();
+        await MountebankContainer.StartAsync();
     }
 
     public async Task DisposeAsync()
     {
-        await _mountebankContainer.StopAsync();
+        await MountebankContainer.StopAsync();
     }
 }

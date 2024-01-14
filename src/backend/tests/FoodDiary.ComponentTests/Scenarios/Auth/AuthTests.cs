@@ -4,13 +4,9 @@ using FoodDiary.ComponentTests.Infrastructure.ExternalServices;
 namespace FoodDiary.ComponentTests.Scenarios.Auth;
 
 [Collection(nameof(ExternalServicesCollection))]
-public class AuthTests : ScenarioBase<AuthContext>
+public class AuthTests(FoodDiaryWebApplicationFactory factory, ExternalServicesFixture externalServices)
+    : ScenarioBase<AuthContext>(factory, () => new AuthContext(factory, externalServices))
 {
-    public AuthTests(FoodDiaryWebApplicationFactory factory, ExternalServicesFixture externalServices)
-        : base(factory, () => new AuthContext(factory, externalServices))
-    {
-    }
-
     [Scenario]
     [InlineData("/api/v1/pages")]
     [InlineData("/api/v1/notes")]
