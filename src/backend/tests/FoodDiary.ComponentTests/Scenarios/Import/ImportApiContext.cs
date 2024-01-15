@@ -8,15 +8,12 @@ using FoodDiary.Domain.Entities;
 
 namespace FoodDiary.ComponentTests.Scenarios.Import;
 
-public class ImportApiContext : BaseContext
+public class ImportApiContext(FoodDiaryWebApplicationFactory factory, InfrastructureFixture infrastructure)
+    : BaseContext(factory, infrastructure)
 {
     private HttpResponseMessage _importJsonResponse = null!;
     private int _createdPageId;
-    
-    public ImportApiContext(FoodDiaryWebApplicationFactory factory) : base(factory)
-    {
-    }
-    
+
     public Task Given_categories(params Category[] categories)
     {
         return Factory.SeedDataAsync(categories);

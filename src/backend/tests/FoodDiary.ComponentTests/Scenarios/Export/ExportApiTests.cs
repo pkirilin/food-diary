@@ -4,11 +4,12 @@ using FoodDiary.Domain.Enums;
 
 namespace FoodDiary.ComponentTests.Scenarios.Export;
 
-public class ExportApiTests : ScenarioBase<ExportApiContext>
+public class ExportApiTests(FoodDiaryWebApplicationFactory factory, InfrastructureFixture infrastructure)
+    : ScenarioBase<ExportApiContext>(factory, infrastructure)
 {
-    public ExportApiTests(FoodDiaryWebApplicationFactory factory) : base(factory, () => new ExportApiContext(factory))
-    {
-    }
+    protected override ExportApiContext CreateContext(
+        FoodDiaryWebApplicationFactory factory,
+        InfrastructureFixture infrastructure) => new(factory, infrastructure);
 
     [Scenario]
     public Task I_can_export_data_to_json_file()

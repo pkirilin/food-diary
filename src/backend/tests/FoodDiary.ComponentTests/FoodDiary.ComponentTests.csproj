@@ -29,6 +29,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\FoodDiary.API\FoodDiary.API.csproj" />
+    <ProjectReference Include="..\..\src\FoodDiary.Migrator\FoodDiary.Migrator.csproj" />
   </ItemGroup>
 
   <ItemGroup>

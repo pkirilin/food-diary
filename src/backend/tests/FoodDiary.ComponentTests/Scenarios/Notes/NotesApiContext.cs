@@ -8,17 +8,14 @@ using FoodDiary.Domain.Entities;
 
 namespace FoodDiary.ComponentTests.Scenarios.Notes;
 
-public class NotesApiContext : BaseContext
+public class NotesApiContext(FoodDiaryWebApplicationFactory factory, InfrastructureFixture infrastructure)
+    : BaseContext(factory, infrastructure)
 {
     private IReadOnlyList<NoteItemDto>? _notesList;
     private HttpResponseMessage _createNoteResponse = null!;
     private HttpResponseMessage _updateNoteResponse = null!;
     private HttpResponseMessage _deleteNoteResponse = null!;
 
-    public NotesApiContext(FoodDiaryWebApplicationFactory factory) : base(factory)
-    {
-    }
-    
     public Task Given_notes(params Note[] notes)
     {
         return Factory.SeedDataAsync(notes);

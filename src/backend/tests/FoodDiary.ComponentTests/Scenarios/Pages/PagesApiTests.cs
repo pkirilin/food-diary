@@ -3,11 +3,12 @@ using FoodDiary.ComponentTests.Infrastructure;
 
 namespace FoodDiary.ComponentTests.Scenarios.Pages;
 
-public class PagesApiTests : ScenarioBase<PagesApiContext>
+public class PagesApiTests(FoodDiaryWebApplicationFactory factory, InfrastructureFixture infrastructure)
+    : ScenarioBase<PagesApiContext>(factory, infrastructure)
 {
-    public PagesApiTests(FoodDiaryWebApplicationFactory factory) : base(factory, () => new PagesApiContext(factory))
-    {
-    }
+    protected override PagesApiContext CreateContext(
+        FoodDiaryWebApplicationFactory factory,
+        InfrastructureFixture infrastructure) => new(factory, infrastructure);
 
     [Scenario]
     public Task I_can_retrieve_pages_list()

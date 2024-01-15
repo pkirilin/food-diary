@@ -10,17 +10,14 @@ using FoodDiary.Domain.Entities;
 
 namespace FoodDiary.ComponentTests.Scenarios.Categories;
 
-public class CategoriesApiContext : BaseContext
+public class CategoriesApiContext(FoodDiaryWebApplicationFactory factory, InfrastructureFixture infrastructure)
+    : BaseContext(factory, infrastructure)
 {
     private IReadOnlyList<CategoryItemDto>? _categoriesList;
     private IReadOnlyList<CategoryAutocompleteItemDto>? _categoriesListForAutocomplete;
     private HttpResponseMessage _createCategoryResponse = null!;
     private HttpResponseMessage _updateCategoryResponse = null!;
     private HttpResponseMessage _deleteCategoryResponse = null!;
-    
-    public CategoriesApiContext(FoodDiaryWebApplicationFactory factory) : base(factory)
-    {
-    }
 
     public Task Given_categories(params Category[] categories)
     {

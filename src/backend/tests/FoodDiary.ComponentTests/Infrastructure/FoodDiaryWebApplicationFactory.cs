@@ -2,30 +2,20 @@ using FoodDiary.API;
 using FoodDiary.ComponentTests.Infrastructure.DateAndTime;
 using FoodDiary.ComponentTests.Infrastructure.ExternalServices;
 using FoodDiary.Export.GoogleDocs;
-using FoodDiary.Infrastructure;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Testcontainers.PostgreSql;
 
 namespace FoodDiary.ComponentTests.Infrastructure;
 
 [UsedImplicitly]
-public class FoodDiaryWebApplicationFactory : WebApplicationFactory<Startup>, IAsyncLifetime
+public class FoodDiaryWebApplicationFactory : WebApplicationFactory<Startup>
 {
     private const string EnvironmentName = "ComponentTests";
-    
-    private readonly PostgreSqlContainer _dbContainer = new PostgreSqlBuilder()
-        .WithImage("postgres:15.1-alpine")
-        .WithUsername("postgres")
-        .WithPassword("postgres")
-        .WithDatabase("food-diary")
-        .Build();
     
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
@@ -41,19 +31,6 @@ public class FoodDiaryWebApplicationFactory : WebApplicationFactory<Startup>, IA
         
         builder.ConfigureTestServices(services =>
         {
-            var dbContextOptionsDescriptor = services
-                .FirstOrDefault(d => d.ServiceType == typeof(DbContextOptions<FoodDiaryContext>));
-
-            if (dbContextOptionsDescriptor is not null)
-            {
-                services.Remove(dbContextOptionsDescriptor);
-                
-                services.AddDbContext<FoodDiaryContext>(options =>
-                {
-                    options.UseNpgsql(_dbContainer.GetConnectionString());
-                });
-            }
-            
             services.AddFakeDateAndTime();
             services.AddSingleton<IGoogleDriveClient, FakeGoogleDriveClient>();
             services.AddSingleton<IGoogleDocsClient, FakeGoogleDocsClient>();
@@ -62,18 +39,5 @@ public class FoodDiaryWebApplicationFactory : WebApplicationFactory<Startup>, IA
                 .AddDataProtection()
                 .PersistKeysToFileSystem(new DirectoryInfo(Path.Combine("DataProtectionKeys")));
         });
-    }
-
-    public async Task InitializeAsync()
-    {
-        await _dbContainer.StartAsync();
-        await using var scope = Services.CreateAsyncScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<FoodDiaryContext>();
-        await dbContext.Database.MigrateAsync();
-    }
-
-    public new async Task DisposeAsync()
-    {
-        await _dbContainer.StopAsync();
     }
 }

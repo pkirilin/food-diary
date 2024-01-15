@@ -4,11 +4,12 @@ using FoodDiary.Domain.Enums;
 
 namespace FoodDiary.ComponentTests.Scenarios.Import;
 
-public class ImportApiTests : ScenarioBase<ImportApiContext>
+public class ImportApiTests(FoodDiaryWebApplicationFactory factory, InfrastructureFixture infrastructure)
+    : ScenarioBase<ImportApiContext>(factory, infrastructure)
 {
-    public ImportApiTests(FoodDiaryWebApplicationFactory factory) : base(factory, () => new ImportApiContext(factory))
-    {
-    }
+    protected override ImportApiContext CreateContext(
+        FoodDiaryWebApplicationFactory factory,
+        InfrastructureFixture infrastructure) => new(factory, infrastructure);
 
     [Scenario]
     public Task I_can_import_my_data_from_json_file()
