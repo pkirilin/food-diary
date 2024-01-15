@@ -51,7 +51,6 @@ public class Startup
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 options.Cookie.SameSite = SameSiteMode.Lax;
                 options.Cookie.MaxAge = Constants.AuthenticationParameters.CookieLifetime;
-                options.Cookie.Expiration = Constants.AuthenticationParameters.CookieLifetime;
 
                 options.Events.OnSigningOut = context =>
                 {
