@@ -1,11 +1,11 @@
 using System;
-using System.Diagnostics.CodeAnalysis;
+using JetBrains.Annotations;
 
 namespace FoodDiary.Application.Services.Export;
 
-[SuppressMessage("ReSharper", "PropertyCanBeMadeInitOnly.Global")]
+[PublicAPI]
 public class ExportToGoogleDocsRequestDto
 {
-    public DateTime StartDate { get; set; }
-    public DateTime EndDate { get; set; }
+    public DateTime StartDate { get; init; }
+    public DateTime EndDate { get; init; }
 }

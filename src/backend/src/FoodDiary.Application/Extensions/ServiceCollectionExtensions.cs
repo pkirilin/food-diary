@@ -26,7 +26,6 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<IExportService, ExportService>();
         services.AddScoped<IExportDataLoader, ExportDataLoader>();
-        services.AddSingleton<IGoogleAccessTokenProvider, GoogleAccessTokenProvider>();
         services.AddGoogleDocsExportService();
     }
 }
