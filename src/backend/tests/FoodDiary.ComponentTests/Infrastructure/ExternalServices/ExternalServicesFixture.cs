@@ -19,13 +19,13 @@ public class ExternalServicesFixture : IAsyncLifetime
 
     public GoogleIdentityProvider GoogleIdentityProvider { get; } = new(MountebankClient);
 
-    public async Task InitializeAsync()
+    public Task InitializeAsync()
     {
-        await MountebankContainer.StartAsync();
+        return MountebankContainer.StartAsync();
     }
 
-    public async Task DisposeAsync()
+    public Task DisposeAsync()
     {
-        await MountebankContainer.StopAsync();
+        return MountebankContainer.StopAsync();
     }
 }

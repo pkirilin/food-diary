@@ -10,15 +10,13 @@ public class InfrastructureFixture : IAsyncLifetime
     public DatabaseFixture Database { get; } = new();
     public ExternalServicesFixture ExternalServices { get; } = new();
     
-    public async Task InitializeAsync()
+    public Task InitializeAsync()
     {
-        await Database.InitializeAsync();
-        await ExternalServices.InitializeAsync();
+        return Task.WhenAll(Database.InitializeAsync(), ExternalServices.InitializeAsync());
     }
 
-    public async Task DisposeAsync()
+    public Task DisposeAsync()
     {
-        await Database.DisposeAsync();
-        await ExternalServices.DisposeAsync();
+        return Task.WhenAll(Database.DisposeAsync(), ExternalServices.DisposeAsync());
     }
 }
