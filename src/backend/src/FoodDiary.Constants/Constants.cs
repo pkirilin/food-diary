@@ -10,7 +10,7 @@ public static class Constants
 
     public static class AuthenticationParameters
     {
-        public static readonly TimeSpan CookieLifetime = TimeSpan.FromHours(1);
+        public static readonly TimeSpan CookieLifetime = TimeSpan.FromDays(7);
         public static readonly TimeSpan AccessTokenRefreshInterval = TimeSpan.FromHours(1);
     }
 
