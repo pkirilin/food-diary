@@ -7,6 +7,7 @@ using JetBrains.Annotations;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
 namespace FoodDiary.Application.Auth.GetStatus;
 
@@ -19,22 +20,12 @@ public abstract record GetStatusResult
 }
 
 [UsedImplicitly]
-internal class GetStatusRequestHandler : IRequestHandler<GetStatusRequest, GetStatusResult>
+internal class GetStatusRequestHandler(
+    TimeProvider timeProvider,
+    IHttpContextAccessor httpContextAccessor,
+    IOAuthClient oAuthClient,
+    ILogger<GetStatusRequestHandler> logger) : IRequestHandler<GetStatusRequest, GetStatusResult>
 {
-    private readonly TimeProvider _timeProvider;
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly IOAuthClient _oAuthClient;
-
-    public GetStatusRequestHandler(
-        TimeProvider timeProvider,
-        IHttpContextAccessor httpContextAccessor,
-        IOAuthClient oAuthClient)
-    {
-        _timeProvider = timeProvider;
-        _httpContextAccessor = httpContextAccessor;
-        _oAuthClient = oAuthClient;
-    }
-    
     public async Task<GetStatusResult> Handle(GetStatusRequest request, CancellationToken cancellationToken)
     {
         if (request.AuthResult is null ||
@@ -43,37 +34,50 @@ internal class GetStatusRequestHandler : IRequestHandler<GetStatusRequest, GetSt
         {
             return new GetStatusResult.NotAuthenticated();
         }
-
+        
+        var userEmail = request.AuthResult.Principal.FindFirst(Constants.ClaimTypes.Email)?.Value;
+        logger.LogInformation("Checking access token for user {UserEmail}...", userEmail);
+        
         if (!ExistingTokenExpired(request.AuthResult.Properties.IssuedUtc.Value))
         {
+            logger.LogInformation("User {UserEmail} has been successfully authenticated", userEmail);
             return new GetStatusResult.Authenticated();
         }
+        
+        logger.LogInformation("Access token for user {UserEmail} expired. Attempting to refresh token...", userEmail);
         
         var accessToken = request.AuthResult.Properties.GetTokenValue(Constants.OpenIdConnectParameters.AccessToken);
         var refreshToken = request.AuthResult.Properties.GetTokenValue(Constants.OpenIdConnectParameters.RefreshToken);
 
         if (string.IsNullOrWhiteSpace(accessToken) || string.IsNullOrWhiteSpace(refreshToken))
         {
+            logger.LogInformation("Access and/or refresh tokens for user {UserEmail} were not found", userEmail);
             return await NotAuthenticated();
         }
 
-        var refreshTokenResult = await _oAuthClient.RefreshToken(refreshToken, cancellationToken);
+        var refreshTokenResult = await oAuthClient.RefreshToken(refreshToken, cancellationToken);
 
         if (refreshTokenResult is not RefreshTokenResult.Success refreshTokenResponse)
         {
+            logger.LogInformation("Could not refresh token for user {UserEmail}", userEmail);
             return await NotAuthenticated();
         }
 
-        var userInfoResult = await _oAuthClient.GetUserInfo(accessToken, cancellationToken);
+        logger.LogInformation(
+            "Token for user {UserEmail} has been successfully refreshed. Trying to get user info...",
+            userEmail);
+        
+        var userInfoResult = await oAuthClient.GetUserInfo(accessToken, cancellationToken);
 
         if (userInfoResult is GetUserInfoResult.Error)
         {
+            logger.LogInformation("Could not retrieve user info for {UserEmail}", userEmail);
             return await NotAuthenticated();
         }
-
+        
         var tokens = CreateNewTokens(refreshTokenResponse);
 
-        return await AuthenticatedWithNewTokens(request.AuthResult, tokens);
+        return await AuthenticatedWithNewTokens(request.AuthResult, tokens, userEmail);
     }
 
     private bool ExistingTokenExpired(DateTimeOffset existingTokenIssuedOn)
@@ -81,36 +85,39 @@ internal class GetStatusRequestHandler : IRequestHandler<GetStatusRequest, GetSt
         var accessTokenExpirationDate = existingTokenIssuedOn
             .Add(Constants.AuthenticationParameters.AccessTokenRefreshInterval);
         
-        var currentDate = _timeProvider.GetUtcNow();
-
+        var currentDate = timeProvider.GetUtcNow();
+        
         return currentDate > accessTokenExpirationDate;
     }
     
     private async Task<GetStatusResult> NotAuthenticated()
     {
-        await _httpContextAccessor.HttpContext.SignOutAsync(Constants.AuthenticationSchemes.Cookie);
+        await httpContextAccessor.HttpContext.SignOutAsync(Constants.AuthenticationSchemes.Cookie);
         return new GetStatusResult.NotAuthenticated();
     }
 
     private async Task<GetStatusResult> AuthenticatedWithNewTokens(
         AuthenticateResult authResult,
-        IEnumerable<AuthenticationToken> tokens)
+        IEnumerable<AuthenticationToken> tokens,
+        string? userEmail)
     {
         authResult.Properties.StoreTokens(tokens);
         authResult.Properties.Items.Remove(".issued");
         authResult.Properties.Items.Remove(".expires");
         
-        await _httpContextAccessor.HttpContext.SignInAsync(
+        await httpContextAccessor.HttpContext.SignInAsync(
             Constants.AuthenticationSchemes.Cookie,
             authResult.Principal,
             authResult.Properties);
+        
+        logger.LogInformation("User {UserEmail} has been successfully authenticated", userEmail);
 
         return new GetStatusResult.Authenticated();
     }
 
     private IEnumerable<AuthenticationToken> CreateNewTokens(RefreshTokenResult.Success refreshTokenResponse)
     {
-        var expiresAt = _timeProvider.GetUtcNow() + TimeSpan.FromSeconds(refreshTokenResponse.ExpiresIn);
+        var expiresAt = timeProvider.GetUtcNow() + TimeSpan.FromSeconds(refreshTokenResponse.ExpiresIn);
         
         return
         [
