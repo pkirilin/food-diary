@@ -66,12 +66,13 @@ public class Startup
                 options.TokenEndpoint = _googleAuthOptions.TokenEndpoint;
                 options.UserInformationEndpoint = _googleAuthOptions.UserInformationEndpoint;
                 options.SaveTokens = true;
+                options.AccessType = "offline";
+                options.ReturnUrlParameter = "returnUrl";
                 options.Scope.Add("openid");
                 options.Scope.Add("profile");
                 options.Scope.Add("email");
                 options.Scope.Add("https://www.googleapis.com/auth/documents");
                 options.Scope.Add("https://www.googleapis.com/auth/drive");
-                options.ReturnUrlParameter = "returnUrl";
             });
 
         services.AddAuthorization(options =>
