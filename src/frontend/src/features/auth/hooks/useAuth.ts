@@ -22,13 +22,7 @@ interface UseAuthHookResult {
 export default function useAuth(): UseAuthHookResult {
   const user = useAppSelector(state => state.auth.user);
   const dispatch = useAppDispatch();
-
-  const { refetch, isFetching } = authApi.useGetStatusQuery(
-    {},
-    {
-      skip: !!user,
-    },
-  );
+  const [getAuthStatus, getAuthStatusRequest] = authApi.useLazyGetStatusQuery();
 
   const signIn = useCallback(() => {
     dispatch(actions.signIn());
@@ -60,16 +54,16 @@ export default function useAuth(): UseAuthHookResult {
   }, [signOut]);
 
   const completeLogin = useCallback(() => {
-    void refetch();
-  }, [refetch]);
+    void getAuthStatus({});
+  }, [getAuthStatus]);
 
   const completeLogout = useCallback(() => {
-    void refetch();
-  }, [refetch]);
+    void getAuthStatus({});
+  }, [getAuthStatus]);
 
   return {
     user,
-    isLoggingIn: isFetching,
+    isLoggingIn: getAuthStatusRequest.isFetching,
     login,
     logout,
     completeLogin,

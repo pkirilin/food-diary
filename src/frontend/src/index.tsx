@@ -3,7 +3,8 @@ import { initBrowserMockApi } from 'tests/mockApi';
 import { createRoot } from 'react-dom/client';
 import App from './App';
 import AppProvider from './AppProvider';
-import { GOOGLE_ANALYTICS_ENABLED, MSW_ENABLED } from './config';
+import { initAuthUserState } from './authStatusCheck';
+import { FAKE_AUTH_ENABLED, GOOGLE_ANALYTICS_ENABLED, MSW_ENABLED } from './config';
 import { initGoogleAnalytics } from './googleAnalytics';
 import store from './store';
 
@@ -14,6 +15,10 @@ void (async () => {
 
   if (GOOGLE_ANALYTICS_ENABLED) {
     initGoogleAnalytics();
+  }
+
+  if (!FAKE_AUTH_ENABLED) {
+    await initAuthUserState(store);
   }
 
   const container = document.getElementById('root') as HTMLElement;
