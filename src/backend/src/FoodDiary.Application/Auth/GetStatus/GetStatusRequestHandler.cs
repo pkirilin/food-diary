@@ -82,9 +82,7 @@ internal class GetStatusRequestHandler(
 
     private bool ExistingTokenExpired(DateTimeOffset existingTokenIssuedOn)
     {
-        var accessTokenExpirationDate = existingTokenIssuedOn
-            .Add(Constants.AuthenticationParameters.AccessTokenRefreshInterval);
-        
+        var accessTokenExpirationDate = existingTokenIssuedOn + Constants.AuthenticationParameters.AccessTokenRefreshInterval;
         var currentDate = timeProvider.GetUtcNow();
         
         return currentDate > accessTokenExpirationDate;
