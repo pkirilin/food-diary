@@ -10,34 +10,29 @@ using Microsoft.Extensions.Options;
 
 namespace FoodDiary.Infrastructure.Integrations.Google;
 
-public class GoogleOAuthClient : IOAuthClient
+public class GoogleOAuthClient(HttpClient httpClient, IOptions<GoogleAuthOptions> options) : IOAuthClient
 {
-    private readonly HttpClient _httpClient;
-    private readonly IOptions<GoogleAuthOptions> _options;
-
-    public GoogleOAuthClient(HttpClient httpClient, IOptions<GoogleAuthOptions> options)
-    {
-        _httpClient = httpClient;
-        _options = options;
-    }
-
     public async Task<RefreshTokenResult> RefreshToken(string currentRefreshToken, CancellationToken cancellationToken)
     {
         var formValues = new List<KeyValuePair<string, string>>
         {
             new("grant_type", "refresh_token"),
-            new("client_id", _options.Value.ClientId),
-            new("client_secret", _options.Value.ClientSecret),
+            new("client_id", options.Value.ClientId),
+            new("client_secret", options.Value.ClientSecret),
             new("refresh_token", currentRefreshToken),
-            new("scope", "openid profile email")
+            new("scope", $"{Constants.AuthenticationScopes.Openid} " +
+                         $"{Constants.AuthenticationScopes.Profile} " +
+                         $"{Constants.AuthenticationScopes.Email} " +
+                         $"{Constants.AuthenticationScopes.GoogleDocs} " +
+                         $"{Constants.AuthenticationScopes.GoogleDrive}")
         };
 
-        var request = new HttpRequestMessage(HttpMethod.Post, _options.Value.TokenEndpoint)
+        var request = new HttpRequestMessage(HttpMethod.Post, options.Value.TokenEndpoint)
         {
             Content = new FormUrlEncodedContent(formValues)
         };
 
-        var response = await _httpClient.SendAsync(request, cancellationToken);
+        var response = await httpClient.SendAsync(request, cancellationToken);
 
         if (!response.IsSuccessStatusCode)
         {
@@ -51,7 +46,7 @@ public class GoogleOAuthClient : IOAuthClient
 
     public async Task<GetUserInfoResult> GetUserInfo(string accessToken, CancellationToken cancellationToken)
     {
-        var request = new HttpRequestMessage(HttpMethod.Get, _options.Value.UserInformationEndpoint)
+        var request = new HttpRequestMessage(HttpMethod.Get, options.Value.UserInformationEndpoint)
         {
             Headers =
             {
@@ -59,7 +54,7 @@ public class GoogleOAuthClient : IOAuthClient
             }
         };
         
-        var response = await _httpClient.SendAsync(request, cancellationToken);
+        var response = await httpClient.SendAsync(request, cancellationToken);
 
         if (!response.IsSuccessStatusCode)
         {

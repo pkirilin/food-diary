@@ -68,11 +68,11 @@ public class Startup
                 options.SaveTokens = true;
                 options.AccessType = "offline";
                 options.ReturnUrlParameter = "returnUrl";
-                options.Scope.Add("openid");
-                options.Scope.Add("profile");
-                options.Scope.Add("email");
-                options.Scope.Add("https://www.googleapis.com/auth/documents");
-                options.Scope.Add("https://www.googleapis.com/auth/drive");
+                options.Scope.Add(Constants.AuthenticationScopes.Openid);
+                options.Scope.Add(Constants.AuthenticationScopes.Profile);
+                options.Scope.Add(Constants.AuthenticationScopes.Email);
+                options.Scope.Add(Constants.AuthenticationScopes.GoogleDocs);
+                options.Scope.Add(Constants.AuthenticationScopes.GoogleDrive);
             });
 
         services.AddAuthorization(options =>

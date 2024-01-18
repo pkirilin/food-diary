@@ -6,33 +6,30 @@ using MbDotNet.Models.Stubs;
 
 namespace FoodDiary.ComponentTests.Infrastructure.ExternalServices;
 
-public class GoogleIdentityProvider
+public class GoogleIdentityProvider(IClient mountebankClient)
 {
-    private readonly IClient _mountebankClient;
-
-    public GoogleIdentityProvider(IClient mountebankClient)
-    {
-        _mountebankClient = mountebankClient;
-    }
-    
     public const int Port = 4545;
 
     public Task Start()
     {
         var imposter = new HttpImposter(Port, nameof(GoogleIdentityProvider), new HttpImposterOptions());
-        return _mountebankClient.OverwriteAllImposters([imposter]);
+        return mountebankClient.OverwriteAllImposters([imposter]);
     }
 
     public Task SetupAccessTokenSuccessfullyRefreshed()
     {
-        return _mountebankClient.AddHttpImposterStubAsync(Port, new HttpStub()
+        return mountebankClient.AddHttpImposterStubAsync(Port, new HttpStub()
             .OnPathAndMethodEqual("/token", Method.Post)
             .ReturnsJson(HttpStatusCode.OK, new
             {
                 access_token = "new_fake_access_token",
                 expires_in = 3599,
                 refresh_token = "new_fake_refresh_token",
-                scope = "openid https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email",
+                scope = $"{Constants.AuthenticationScopes.Openid} " +
+                        $"{Constants.AuthenticationScopes.GoogleProfile} " +
+                        $"{Constants.AuthenticationScopes.GoogleEmail} " +
+                        $"{Constants.AuthenticationScopes.GoogleDocs} " +
+                        $"{Constants.AuthenticationScopes.GoogleDrive}",
                 token_type = "Bearer",
                 id_token = "new_fake_id_token"
             }));
@@ -40,7 +37,7 @@ public class GoogleIdentityProvider
 
     public Task SetupUserInfoSuccessfullyReceived()
     {
-        return _mountebankClient.AddHttpImposterStubAsync(Port, new HttpStub()
+        return mountebankClient.AddHttpImposterStubAsync(Port, new HttpStub()
             .OnPathAndMethodEqual("/userinfo", Method.Get)
             .ReturnsJson(HttpStatusCode.OK, new {}));
     }
