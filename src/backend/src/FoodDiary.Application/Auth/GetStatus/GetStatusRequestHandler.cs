@@ -67,7 +67,7 @@ internal class GetStatusRequestHandler(
             "Token for user {UserEmail} has been successfully refreshed. Trying to get user info...",
             userEmail);
         
-        var userInfoResult = await oAuthClient.GetUserInfo(accessToken, cancellationToken);
+        var userInfoResult = await oAuthClient.GetUserInfo(refreshTokenResponse.AccessToken, cancellationToken);
 
         if (userInfoResult is GetUserInfoResult.Error)
         {
