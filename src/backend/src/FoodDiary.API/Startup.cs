@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using System.Threading.Tasks;
+using FoodDiary.API.Authentication;
 using FoodDiary.API.Extensions;
 using FoodDiary.API.Middlewares;
 using FoodDiary.API.Options;
@@ -58,7 +59,7 @@ public class Startup
                     return Task.CompletedTask;
                 };
             })
-            .AddGoogle(Constants.AuthenticationSchemes.OAuthGoogle, options =>
+            .AddCustomGoogle(Constants.AuthenticationSchemes.OAuthGoogle, options =>
             {
                 options.SignInScheme = Constants.AuthenticationSchemes.Cookie;
                 options.ClientId = _googleAuthOptions.ClientId;
