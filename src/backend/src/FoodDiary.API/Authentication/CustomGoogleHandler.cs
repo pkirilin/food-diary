@@ -22,7 +22,7 @@ public class CustomGoogleHandler(IOptionsMonitor<GoogleOptions> options, ILogger
         SetQueryParam(query, properties, OAuthChallengeProperties.ScopeKey, base.FormatScope, Options.Scope);
         SetQueryParam(query, properties, GoogleChallengeProperties.AccessTypeKey, Options.AccessType);
         SetQueryParam(query, properties, GoogleChallengeProperties.ApprovalPromptKey);
-        SetQueryParam(query, properties, GoogleChallengeProperties.PromptParameterKey, "select_account+consent");
+        SetQueryParam(query, properties, GoogleChallengeProperties.PromptParameterKey, "select_account consent");
         SetQueryParam(query, properties, GoogleChallengeProperties.LoginHintKey);
         SetQueryParam(query, properties, GoogleChallengeProperties.IncludeGrantedScopesKey, v => v?.ToString(CultureInfo.InvariantCulture).ToLowerInvariant(), new bool?());
         
