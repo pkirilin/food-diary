@@ -3,6 +3,6 @@ import { API_URL } from 'src/config';
 
 export const api = createApi({
   tagTypes: ['product', 'category'],
-  baseQuery: fetchBaseQuery({ baseUrl: API_URL, credentials: 'include' }),
+  baseQuery: fetchBaseQuery({ baseUrl: API_URL }),
   endpoints: () => ({}),
 });

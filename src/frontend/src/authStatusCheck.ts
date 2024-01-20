@@ -17,7 +17,7 @@ export const initAuthUserState = async (store: AppStore): Promise<void> => {
 
   do {
     try {
-      const response = await fetch(`${API_URL}/api/v1/auth/status`, { credentials: 'include' });
+      const response = await fetch(`${API_URL}/api/v1/auth/status`);
       const user = (await response.json()) as GetAuthStatusResponse;
 
       if (user.isAuthenticated) {
