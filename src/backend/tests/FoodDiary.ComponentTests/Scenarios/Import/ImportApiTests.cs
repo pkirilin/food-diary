@@ -34,7 +34,7 @@ public class ImportApiTests(FoodDiaryWebApplicationFactory factory, Infrastructu
                 .WithCategory(categories.Dairy)
                 .WithCaloriesCost(60)
                 .WithDefaultQuantity(150)
-                .Please(),
+                .Please()
         };
         
         var notes = new
