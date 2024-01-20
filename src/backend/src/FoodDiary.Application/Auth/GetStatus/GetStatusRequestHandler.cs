@@ -46,16 +46,16 @@ internal class GetStatusRequestHandler(
         
         logger.LogInformation("Access token for user {UserEmail} expired. Attempting to refresh token...", userEmail);
         
-        var accessToken = request.AuthResult.Properties.GetTokenValue(Constants.OpenIdConnectParameters.AccessToken);
-        var refreshToken = request.AuthResult.Properties.GetTokenValue(Constants.OpenIdConnectParameters.RefreshToken);
+        var existingAccessToken = request.AuthResult.Properties.GetTokenValue(Constants.OpenIdConnectParameters.AccessToken);
+        var existingRefreshToken = request.AuthResult.Properties.GetTokenValue(Constants.OpenIdConnectParameters.RefreshToken);
 
-        if (string.IsNullOrWhiteSpace(accessToken) || string.IsNullOrWhiteSpace(refreshToken))
+        if (string.IsNullOrWhiteSpace(existingAccessToken) || string.IsNullOrWhiteSpace(existingRefreshToken))
         {
             logger.LogInformation("Access and/or refresh tokens for user {UserEmail} were not found", userEmail);
             return await NotAuthenticated();
         }
 
-        var refreshTokenResult = await oAuthClient.RefreshToken(refreshToken, cancellationToken);
+        var refreshTokenResult = await oAuthClient.RefreshToken(existingRefreshToken, cancellationToken);
 
         if (refreshTokenResult is not RefreshTokenResult.Success refreshTokenResponse)
         {
@@ -75,7 +75,7 @@ internal class GetStatusRequestHandler(
             return await NotAuthenticated();
         }
         
-        var tokens = CreateNewTokens(refreshTokenResponse);
+        var tokens = CreateNewTokens(refreshTokenResponse, existingRefreshToken);
 
         return await AuthenticatedWithNewTokens(request.AuthResult, tokens, userEmail);
     }
@@ -113,7 +113,9 @@ internal class GetStatusRequestHandler(
         return new GetStatusResult.Authenticated();
     }
 
-    private IEnumerable<AuthenticationToken> CreateNewTokens(RefreshTokenResult.Success refreshTokenResponse)
+    private IEnumerable<AuthenticationToken> CreateNewTokens(
+        RefreshTokenResult.Success refreshTokenResponse,
+        string existingRefreshToken)
     {
         var expiresAt = timeProvider.GetUtcNow() + TimeSpan.FromSeconds(refreshTokenResponse.ExpiresIn);
         
@@ -134,7 +136,7 @@ internal class GetStatusRequestHandler(
             new AuthenticationToken
             {
                 Name = Constants.OpenIdConnectParameters.RefreshToken,
-                Value = refreshTokenResponse.RefreshToken
+                Value = existingRefreshToken
             },
 
             new AuthenticationToken

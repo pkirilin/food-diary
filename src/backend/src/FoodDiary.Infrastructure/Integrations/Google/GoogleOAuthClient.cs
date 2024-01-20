@@ -12,14 +12,14 @@ namespace FoodDiary.Infrastructure.Integrations.Google;
 
 public class GoogleOAuthClient(HttpClient httpClient, IOptions<GoogleAuthOptions> options) : IOAuthClient
 {
-    public async Task<RefreshTokenResult> RefreshToken(string currentRefreshToken, CancellationToken cancellationToken)
+    public async Task<RefreshTokenResult> RefreshToken(string refreshToken, CancellationToken cancellationToken)
     {
         var formValues = new List<KeyValuePair<string, string>>
         {
             new("grant_type", "refresh_token"),
             new("client_id", options.Value.ClientId),
             new("client_secret", options.Value.ClientSecret),
-            new("refresh_token", currentRefreshToken),
+            new("refresh_token", refreshToken),
             new("scope", $"{Constants.AuthenticationScopes.Openid} " +
                          $"{Constants.AuthenticationScopes.Profile} " +
                          $"{Constants.AuthenticationScopes.Email} " +

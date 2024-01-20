@@ -15,8 +15,6 @@ public abstract record RefreshTokenResult
         string AccessToken,
         [property: JsonPropertyName("id_token")]
         string IdToken,
-        [property: JsonPropertyName("refresh_token")]
-        string RefreshToken,
         [property: JsonPropertyName("token_type")]
         string TokenType,
         [property: JsonPropertyName("expires_in")]
@@ -33,7 +31,7 @@ public record GetUserInfoResult
 
 public interface IOAuthClient
 {
-    Task<RefreshTokenResult> RefreshToken(string currentRefreshToken, CancellationToken cancellationToken);
+    Task<RefreshTokenResult> RefreshToken(string refreshToken, CancellationToken cancellationToken);
     
     Task<GetUserInfoResult> GetUserInfo(string accessToken, CancellationToken cancellationToken);
 }
