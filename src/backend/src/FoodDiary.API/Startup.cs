@@ -1,6 +1,5 @@
 ﻿using System.Reflection;
 using System.Threading.Tasks;
-using FoodDiary.API.Authentication;
 using FoodDiary.API.Extensions;
 using FoodDiary.API.Middlewares;
 using FoodDiary.API.Options;
@@ -9,9 +8,11 @@ using FoodDiary.Configuration;
 using FoodDiary.Configuration.Extensions;
 using FoodDiary.Import.Extensions;
 using FoodDiary.Infrastructure.Extensions;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -59,7 +60,7 @@ public class Startup
                     return Task.CompletedTask;
                 };
             })
-            .AddCustomGoogle(Constants.AuthenticationSchemes.OAuthGoogle, options =>
+            .AddGoogle(Constants.AuthenticationSchemes.OAuthGoogle, options =>
             {
                 options.SignInScheme = Constants.AuthenticationSchemes.Cookie;
                 options.ClientId = _googleAuthOptions.ClientId;
@@ -74,6 +75,20 @@ public class Startup
                 options.Scope.Add(Constants.AuthenticationScopes.Email);
                 options.Scope.Add(Constants.AuthenticationScopes.GoogleDocs);
                 options.Scope.Add(Constants.AuthenticationScopes.GoogleDrive);
+                
+                options.Events.OnRedirectToAuthorizationEndpoint = context =>
+                {
+                    const string prompt = "select_account consent";
+                    
+                    var redirectUri = QueryHelpers.AddQueryString(
+                        context.RedirectUri,
+                        GoogleChallengeProperties.PromptParameterKey,
+                        prompt);
+                    
+                    context.Properties.SetParameter(GoogleChallengeProperties.PromptParameterKey, prompt);
+                    context.Response.Redirect(redirectUri);
+                    return Task.CompletedTask;
+                };
             });
 
         services.AddAuthorization(options =>
