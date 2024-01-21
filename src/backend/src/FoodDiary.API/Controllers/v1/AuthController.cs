@@ -1,11 +1,11 @@
 using System;
 using System.Threading.Tasks;
+using FoodDiary.Application.Auth.GetStatus;
 using FoodDiary.Contracts.Auth;
+using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
-#nullable enable
 
 namespace FoodDiary.API.Controllers.v1;
 
@@ -13,17 +13,24 @@ namespace FoodDiary.API.Controllers.v1;
 [Route("api/v1/auth")]
 public class AuthController : ControllerBase
 {
+    private readonly ISender _sender;
+
+    public AuthController(ISender sender)
+    {
+        _sender = sender;
+    }
+
     [HttpGet("login")]
     public IActionResult Login([FromQuery] string? returnUrl)
     {
         var redirectUrl = Url.Action("LoginCallback", "Auth", new { returnUrl });
-        
+
         var properties = new AuthenticationProperties
         {
             RedirectUri = redirectUrl,
             AllowRefresh = true
         };
-        
+
         return Challenge(properties, Constants.AuthenticationSchemes.OAuthGoogle);
     }
 
@@ -32,7 +39,7 @@ public class AuthController : ControllerBase
     {
         return Redirect($"/post-login?returnUrl={Uri.EscapeDataString(returnUrl)}");
     }
-    
+
     [HttpGet("logout")]
     [Authorize]
     public async Task<IActionResult> Logout()
@@ -40,15 +47,18 @@ public class AuthController : ControllerBase
         await HttpContext.SignOutAsync(Constants.AuthenticationSchemes.Cookie);
         return SignOut(Constants.AuthenticationSchemes.Cookie);
     }
-    
-    [HttpGet("profile")]
-    public async Task<IActionResult> GetProfile()
-    {
-        var auth = await HttpContext.AuthenticateAsync(Constants.AuthenticationSchemes.OAuthGoogle);
 
-        return Ok(new AuthProfileResponse
+    [HttpGet("status")]
+    public async Task<IActionResult> GetStatus()
+    {
+        var authResult = await HttpContext.AuthenticateAsync(Constants.AuthenticationSchemes.OAuthGoogle);
+        var request = new GetStatusRequest(authResult);
+        var result = await _sender.Send(request);
+
+        return result switch
         {
-            IsAuthenticated = auth.Succeeded
-        });
+            GetStatusResult.Authenticated => Ok(new GetAuthStatusResponse { IsAuthenticated = true }),
+            _ => Ok(new GetAuthStatusResponse { IsAuthenticated = false })
+        };
     }
 }

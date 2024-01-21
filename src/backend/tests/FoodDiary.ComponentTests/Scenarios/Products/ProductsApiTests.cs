@@ -3,12 +3,12 @@ using FoodDiary.ComponentTests.Infrastructure;
 
 namespace FoodDiary.ComponentTests.Scenarios.Products;
 
-public class ProductsApiTests : ScenarioBase<ProductsApiContext>
+public class ProductsApiTests(FoodDiaryWebApplicationFactory factory, InfrastructureFixture infrastructure)
+    : ScenarioBase<ProductsApiContext>(factory, infrastructure)
 {
-    public ProductsApiTests(FoodDiaryWebApplicationFactory factory)
-        : base(factory, () => new ProductsApiContext(factory))
-    {
-    }
+    protected override ProductsApiContext CreateContext(
+        FoodDiaryWebApplicationFactory factory,
+        InfrastructureFixture infrastructure) => new(factory, infrastructure);
 
     [Scenario]
     public Task I_can_retrieve_products_list()

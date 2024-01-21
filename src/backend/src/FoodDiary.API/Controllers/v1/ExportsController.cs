@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using FoodDiary.Application.Services.Export;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 
 namespace FoodDiary.API.Controllers.v1;
@@ -9,15 +10,8 @@ namespace FoodDiary.API.Controllers.v1;
 [ApiController]
 [Authorize(Constants.AuthorizationPolicies.GoogleAllowedEmails)]
 [Route("api/v1/exports")]
-public class ExportsController : ControllerBase
+public class ExportsController(IExportService exportService) : ControllerBase
 {
-    private readonly IExportService _exportService;
-
-    public ExportsController(IExportService exportService)
-    {
-        _exportService = exportService;
-    }
-
     [HttpGet("json")]
     public async Task<IActionResult> ExportToJson([FromQuery] ExportRequestDto request,
         CancellationToken cancellationToken)
@@ -28,7 +22,7 @@ public class ExportsController : ControllerBase
             return BadRequest(ModelState);
         }
             
-        var fileContents = await _exportService.ExportToJsonAsync(request, cancellationToken);
+        var fileContents = await exportService.ExportToJsonAsync(request, cancellationToken);
             
         return File(fileContents, "application/json");
     }
@@ -37,7 +31,15 @@ public class ExportsController : ControllerBase
     public async Task<IActionResult> ExportToGoogleDocs([FromBody] ExportToGoogleDocsRequestDto request,
         CancellationToken cancellationToken)
     {
-        var exportResponse = await _exportService.ExportToGoogleDocsAsync(request, cancellationToken);
+        var authResult = await HttpContext.AuthenticateAsync(Constants.AuthenticationSchemes.OAuthGoogle);
+        var accessToken = authResult.Properties?.GetTokenValue(Constants.OpenIdConnectParameters.RefreshToken);
+
+        if (string.IsNullOrWhiteSpace(accessToken))
+        {
+            return Unauthorized();
+        }
+        
+        var exportResponse = await exportService.ExportToGoogleDocsAsync(request, accessToken, cancellationToken);
             
         return Ok(exportResponse);
     }

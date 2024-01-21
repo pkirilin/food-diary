@@ -1,5 +1,4 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Threading.Tasks;
 using FoodDiary.API.Extensions;
 using FoodDiary.API.Middlewares;
@@ -9,9 +8,11 @@ using FoodDiary.Configuration;
 using FoodDiary.Configuration.Extensions;
 using FoodDiary.Import.Extensions;
 using FoodDiary.Infrastructure.Extensions;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -46,12 +47,12 @@ public class Startup
             .AddCookie(Constants.AuthenticationSchemes.Cookie, options =>
             {
                 options.SlidingExpiration = true;
-                options.ExpireTimeSpan = TimeSpan.FromHours(1);
+                options.ExpireTimeSpan = Constants.AuthenticationParameters.CookieLifetime;
                 options.ReturnUrlParameter = "returnUrl";
                 options.Cookie.HttpOnly = true;
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 options.Cookie.SameSite = SameSiteMode.Lax;
-                options.Cookie.MaxAge = TimeSpan.FromHours(1);
+                options.Cookie.MaxAge = Constants.AuthenticationParameters.CookieLifetime;
 
                 options.Events.OnSigningOut = context =>
                 {
@@ -64,13 +65,30 @@ public class Startup
                 options.SignInScheme = Constants.AuthenticationSchemes.Cookie;
                 options.ClientId = _googleAuthOptions.ClientId;
                 options.ClientSecret = _googleAuthOptions.ClientSecret;
+                options.TokenEndpoint = _googleAuthOptions.TokenEndpoint;
+                options.UserInformationEndpoint = _googleAuthOptions.UserInformationEndpoint;
                 options.SaveTokens = true;
-                options.Scope.Add("openid");
-                options.Scope.Add("profile");
-                options.Scope.Add("email");
-                options.Scope.Add("https://www.googleapis.com/auth/documents");
-                options.Scope.Add("https://www.googleapis.com/auth/drive");
+                options.AccessType = "offline";
                 options.ReturnUrlParameter = "returnUrl";
+                options.Scope.Add(Constants.AuthenticationScopes.Openid);
+                options.Scope.Add(Constants.AuthenticationScopes.Profile);
+                options.Scope.Add(Constants.AuthenticationScopes.Email);
+                options.Scope.Add(Constants.AuthenticationScopes.GoogleDocs);
+                options.Scope.Add(Constants.AuthenticationScopes.GoogleDrive);
+                
+                options.Events.OnRedirectToAuthorizationEndpoint = context =>
+                {
+                    const string prompt = "select_account consent";
+                    
+                    var redirectUri = QueryHelpers.AddQueryString(
+                        context.RedirectUri,
+                        GoogleChallengeProperties.PromptParameterKey,
+                        prompt);
+                    
+                    context.Properties.SetParameter(GoogleChallengeProperties.PromptParameterKey, prompt);
+                    context.Response.Redirect(redirectUri);
+                    return Task.CompletedTask;
+                };
             });
 
         services.AddAuthorization(options =>

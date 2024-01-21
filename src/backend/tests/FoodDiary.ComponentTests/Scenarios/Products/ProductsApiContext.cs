@@ -12,7 +12,8 @@ using FoodDiary.Domain.Entities;
 
 namespace FoodDiary.ComponentTests.Scenarios.Products;
 
-public class ProductsApiContext : BaseContext
+public class ProductsApiContext(FoodDiaryWebApplicationFactory factory, InfrastructureFixture infrastructure)
+    : BaseContext(factory, infrastructure)
 {
     private ProductsSearchResultDto? _productsResponse;
     private ProductAutocompleteItemDto[]? _productsForAutocompleteResponse;
@@ -20,10 +21,6 @@ public class ProductsApiContext : BaseContext
     private HttpResponseMessage _updateProductResponse = null!;
     private HttpResponseMessage _deleteProductResponse = null!;
     private HttpResponseMessage _deleteMultipleProductsResponse = null!;
-
-    public ProductsApiContext(FoodDiaryWebApplicationFactory factory) : base(factory)
-    {
-    }
 
     public Task Given_products(params Product[] products)
     {

@@ -1,10 +1,13 @@
-using FoodDiary.Application.Abstractions;
+using System.Globalization;
 
 namespace FoodDiary.ComponentTests.Infrastructure.DateAndTime;
 
-public class FakeDateTimeProvider : IDateTimeProvider
+public class FakeDateTimeProvider : TimeProvider
 {
     public const string CurrentFakeDateAsString = "2024-01-01";
 
-    public DateTime Now => DateTime.Parse(CurrentFakeDateAsString);
+    public override DateTimeOffset GetUtcNow() =>
+        DateTime.SpecifyKind(
+            DateTime.Parse(CurrentFakeDateAsString, CultureInfo.InvariantCulture),
+            DateTimeKind.Utc);
 }

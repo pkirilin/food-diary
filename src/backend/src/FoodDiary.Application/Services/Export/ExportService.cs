@@ -1,4 +1,3 @@
-#nullable enable
 using System.IO;
 using System.Text.Encodings.Web;
 using System.Text.Json;
@@ -13,25 +12,22 @@ internal class ExportService : IExportService
 {
     private readonly IExportDataLoader _exportDataLoader;
     private readonly IGoogleDocsExportService _googleDocsService;
-    private readonly IGoogleAccessTokenProvider _googleAccessTokenProvider;
 
-    public ExportService(IExportDataLoader exportDataLoader,
-        IGoogleDocsExportService googleDocsService,
-        IGoogleAccessTokenProvider googleAccessTokenProvider)
+    public ExportService(IExportDataLoader exportDataLoader, IGoogleDocsExportService googleDocsService)
     {
         _exportDataLoader = exportDataLoader;
         _googleDocsService = googleDocsService;
-        _googleAccessTokenProvider = googleAccessTokenProvider;
     }
     
-    public async Task<ExportToGoogleDocsResponseDto> ExportToGoogleDocsAsync(ExportToGoogleDocsRequestDto request,
+    public async Task<ExportToGoogleDocsResponseDto> ExportToGoogleDocsAsync(
+        ExportToGoogleDocsRequestDto request,
+        string accessToken,
         CancellationToken cancellationToken)
     {
         var exportFileDto = await _exportDataLoader.GetDataAsync(request.StartDate,
             request.EndDate,
             cancellationToken);
-
-        var accessToken = await _googleAccessTokenProvider.GetAccessTokenAsync();
+        
         var exportRequest = new ExportRequest(accessToken, exportFileDto);
         var documentId = await _googleDocsService.ExportAsync(exportRequest, cancellationToken);
 

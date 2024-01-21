@@ -24,12 +24,6 @@ public class CategoryBuilder
         return this;
     }
 
-    public CategoryBuilder WithId(int id)
-    {
-        _category.Id = id;
-        return this;
-    }
-    
     public CategoryBuilder WithName(string name)
     {
         _category.Name = name;

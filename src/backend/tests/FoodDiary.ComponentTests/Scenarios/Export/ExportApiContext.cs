@@ -7,16 +7,13 @@ using FoodDiary.Domain.Entities;
 
 namespace FoodDiary.ComponentTests.Scenarios.Export;
 
-public class ExportApiContext : BaseContext
+public class ExportApiContext(FoodDiaryWebApplicationFactory factory, InfrastructureFixture infrastructure)
+    : BaseContext(factory, infrastructure)
 {
     private HttpResponseMessage _exportJsonResponse = null!;
     private JsonExportFileDto? _exportJsonData;
     
     private HttpResponseMessage _exportGoogleDocsResponse = null!;
-    
-    public ExportApiContext(FoodDiaryWebApplicationFactory factory) : base(factory)
-    {
-    }
 
     public Task Given_pages(params Page[] pages)
     {

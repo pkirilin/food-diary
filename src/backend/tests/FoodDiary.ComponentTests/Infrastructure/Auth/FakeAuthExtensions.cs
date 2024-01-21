@@ -18,6 +18,7 @@ public static class FakeAuthExtensions
                 configureOptions);
         
         services.AddSingleton<IAuthenticationSchemeProvider, FakeAuthenticationSchemeProvider>();
+        services.AddSingleton<IAuthenticationService, FakeAuthenticationService>();
 
         services.AddAuthorization(options =>
         {

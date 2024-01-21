@@ -3,11 +3,12 @@ using FoodDiary.ComponentTests.Infrastructure;
 
 namespace FoodDiary.ComponentTests.Scenarios.Notes;
 
-public class NotesApiTests : ScenarioBase<NotesApiContext>
+public class NotesApiTests(FoodDiaryWebApplicationFactory factory, InfrastructureFixture infrastructure)
+    : ScenarioBase<NotesApiContext>(factory, infrastructure)
 {
-    public NotesApiTests(FoodDiaryWebApplicationFactory factory) : base(factory, () => new NotesApiContext(factory))
-    {
-    }
+    protected override NotesApiContext CreateContext(
+        FoodDiaryWebApplicationFactory factory,
+        InfrastructureFixture infrastructure) => new(factory, infrastructure);
 
     [Scenario]
     public Task I_can_retrieve_notes_list()

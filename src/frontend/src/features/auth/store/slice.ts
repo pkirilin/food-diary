@@ -25,7 +25,7 @@ const authSlice = createSlice({
     },
   },
   extraReducers: builder =>
-    builder.addMatcher(authApi.endpoints.getProfile.matchFulfilled, (state, { payload }) => {
+    builder.addMatcher(authApi.endpoints.getStatus.matchFulfilled, (state, { payload }) => {
       state.user = {
         isAuthenticated: payload.isAuthenticated,
       };

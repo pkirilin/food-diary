@@ -6,7 +6,7 @@ public static class MigratorConfiguration
 {
     private static readonly IConfiguration Configuration;
 
-    public static string ConnectionString => Configuration["ConnectionStrings:Default"];
+    public static string? ConnectionString => Configuration["ConnectionStrings:Default"];
     
     static MigratorConfiguration()
     {
@@ -16,7 +16,7 @@ public static class MigratorConfiguration
     private static IConfiguration BuildConfiguration()
     {
         var builder = new ConfigurationBuilder()
-            .AddJsonFile("appsettings.json");
+            .AddJsonFile("appsettings.Migrator.json");
         
         var env = Environment.GetEnvironmentVariable("ENV");
 

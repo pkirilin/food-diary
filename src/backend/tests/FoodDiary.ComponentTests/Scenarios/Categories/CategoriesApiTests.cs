@@ -3,12 +3,12 @@ using FoodDiary.ComponentTests.Infrastructure;
 
 namespace FoodDiary.ComponentTests.Scenarios.Categories;
 
-public class CategoriesApiTests : ScenarioBase<CategoriesApiContext>
+public class CategoriesApiTests(FoodDiaryWebApplicationFactory factory, InfrastructureFixture infrastructure)
+    : ScenarioBase<CategoriesApiContext>(factory, infrastructure)
 {
-    public CategoriesApiTests(FoodDiaryWebApplicationFactory factory) :
-        base(factory, () => new CategoriesApiContext(factory))
-    {
-    }
+    protected override CategoriesApiContext CreateContext(
+        FoodDiaryWebApplicationFactory factory,
+        InfrastructureFixture infrastructure) => new(factory, infrastructure);
 
     [Scenario]
     public Task I_can_retrieve_categories_list()

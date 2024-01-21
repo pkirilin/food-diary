@@ -1,3 +1,3 @@
-export interface AuthProfileResponse {
+export interface GetAuthStatusResponse {
   isAuthenticated: boolean;
 }

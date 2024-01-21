@@ -3,23 +3,25 @@ using FoodDiary.ComponentTests.Infrastructure;
 
 namespace FoodDiary.ComponentTests;
 
-public abstract class ScenarioBase<TContext> : FeatureFixture, IClassFixture<FoodDiaryWebApplicationFactory>, IAsyncLifetime
+[Collection(nameof(InfrastructureCollection))]
+public abstract class ScenarioBase<TContext>(
+    FoodDiaryWebApplicationFactory factory,
+    InfrastructureFixture infrastructure)
+    : FeatureFixture, IClassFixture<FoodDiaryWebApplicationFactory>, IAsyncLifetime
 {
-    private readonly FoodDiaryWebApplicationFactory _factory;
-    private readonly Func<TContext> _contextFactory;
-
-    protected ScenarioBase(FoodDiaryWebApplicationFactory factory, Func<TContext> contextFactory)
+    protected Task Run(params Expression<Func<TContext, Task>>[] steps)
     {
-        _factory = factory;
-        _contextFactory = contextFactory;
+        var context = CreateContext(factory, infrastructure);
+        return Runner.WithContext(context).RunScenarioAsync(steps);
     }
 
-    protected Task Run(params Expression<Func<TContext, Task>>[] steps) =>
-        Runner.WithContext(_contextFactory).RunScenarioAsync(steps);
+    protected abstract TContext CreateContext(
+        FoodDiaryWebApplicationFactory factory,
+        InfrastructureFixture infrastructure);
     
     public Task InitializeAsync()
     {
-        return _factory.ClearDataAsync();
+        return infrastructure.Database.Clear();
     }
 
     public Task DisposeAsync()

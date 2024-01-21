@@ -13,7 +13,8 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace FoodDiary.ComponentTests.Scenarios.Pages;
 
-public class PagesApiContext : BaseContext
+public class PagesApiContext(FoodDiaryWebApplicationFactory factory, InfrastructureFixture infrastructure)
+    : BaseContext(factory, infrastructure)
 {
     private PagesSearchResultDto? _pagesSearchResult;
     private PageContentDto? _getPageByIdResult;
@@ -22,10 +23,6 @@ public class PagesApiContext : BaseContext
     private HttpResponseMessage _updatePageResponse = null!;
     private HttpResponseMessage _deletePageResponse = null!;
     private HttpResponseMessage _deleteMultiplePagesResponse = null!;
-    
-    public PagesApiContext(FoodDiaryWebApplicationFactory factory) : base(factory)
-    {
-    }
 
     public Task Given_pages(params Page[] pages)
     {

@@ -23,7 +23,7 @@ export default function useAuth(): UseAuthHookResult {
   const user = useAppSelector(state => state.auth.user);
   const dispatch = useAppDispatch();
 
-  const { refetch, isFetching } = authApi.useGetProfileQuery(
+  const { refetch, isFetching } = authApi.useGetStatusQuery(
     {},
     {
       skip: !!user,
