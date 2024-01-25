@@ -19,6 +19,7 @@ type PagesToolbarProps = PropsWithChildren<unknown>;
 
 const PagesToolbar: FC<PagesToolbarProps> = ({ children }) => {
   const classes = useToolbarStyles();
+  const [filter, showFilter] = usePopover();
 
   const selectedPageIds = useAppSelector(state => state.pages.selectedPageIds);
   const operationStatus = useAppSelector(state => state.pages.operationStatus);
@@ -26,9 +27,7 @@ const PagesToolbar: FC<PagesToolbarProps> = ({ children }) => {
   const [isInputDialogOpened, setIsInputDialogOpened] = useState(false);
   const [isDeleteDialogOpened, setIsDeleteDialogOpened] = useState(false);
 
-  const [filter, showFilter] = usePopover();
-  const dateForNewPage = useDateForNewPage(isInputDialogOpened);
-
+  const dateForNewPage = useDateForNewPage();
   const [createPage, createPageRequest] = pagesApi.useCreatePageMutation();
   const [deletePages, deletePagesRequest] = pagesApi.useDeletePagesMutation();
 
