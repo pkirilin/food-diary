@@ -3,10 +3,9 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { Box, IconButton, Popover, styled, Toolbar, Tooltip, Typography } from '@mui/material';
 import { type PropsWithChildren, type FC, useEffect, useState } from 'react';
-import { useAppDispatch, usePopover, useAppSelector } from 'src/features/__shared__/hooks';
+import { usePopover, useAppSelector } from 'src/features/__shared__/hooks';
 import { useToolbarStyles } from 'src/features/__shared__/styles';
 import { type PageCreateEdit } from 'src/features/pages/models';
-import { deletePages } from 'src/features/pages/thunks';
 import { pagesApi } from '../../api';
 import { useDateForNewPage } from '../../hooks';
 import DeletePagesDialog from '../DeletePagesDialog';
@@ -20,16 +19,18 @@ type PagesToolbarProps = PropsWithChildren<unknown>;
 
 const PagesToolbar: FC<PagesToolbarProps> = ({ children }) => {
   const classes = useToolbarStyles();
+
   const selectedPageIds = useAppSelector(state => state.pages.selectedPageIds);
   const operationStatus = useAppSelector(state => state.pages.operationStatus);
-  const dispatch = useAppDispatch();
 
   const [isInputDialogOpened, setIsInputDialogOpened] = useState(false);
   const [isDeleteDialogOpened, setIsDeleteDialogOpened] = useState(false);
 
   const [filter, showFilter] = usePopover();
   const dateForNewPage = useDateForNewPage(isInputDialogOpened);
+
   const [createPage, createPageRequest] = pagesApi.useCreatePageMutation();
+  const [deletePages, deletePagesRequest] = pagesApi.useDeletePagesMutation();
 
   useEffect(() => {
     if (operationStatus === 'succeeded') {
@@ -39,11 +40,11 @@ const PagesToolbar: FC<PagesToolbarProps> = ({ children }) => {
   }, [operationStatus]);
 
   useEffect(() => {
-    if (createPageRequest.isSuccess) {
+    if (createPageRequest.isSuccess || deletePagesRequest.isSuccess) {
       setIsInputDialogOpened(false);
       setIsDeleteDialogOpened(false);
     }
-  }, [createPageRequest.isSuccess]);
+  }, [createPageRequest.isSuccess, deletePagesRequest.isSuccess]);
 
   const handleInputOpen = (): void => {
     setIsInputDialogOpened(true);
@@ -66,7 +67,7 @@ const PagesToolbar: FC<PagesToolbarProps> = ({ children }) => {
   };
 
   const handleDeletePages = (ids: number[]): void => {
-    void dispatch(deletePages(ids));
+    void deletePages(ids);
   };
 
   return (

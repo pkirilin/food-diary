@@ -2,6 +2,7 @@ import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import { SortOrder, type Status } from '../__shared__/models';
 import { type SelectionPayload } from '../__shared__/types';
 import { createAsyncThunkMatcher } from '../__shared__/utils';
+import { pagesApi } from './api';
 import { type Page, type PageItem, type PageItemsFilter } from './models';
 import {
   createPage,
@@ -155,6 +156,16 @@ const pagesSlice = createSlice({
       })
       .addMatcher(createAsyncThunkMatcher(operationThunks, 'rejected'), state => {
         state.operationStatus = 'failed';
+      })
+
+      .addMatcher(pagesApi.endpoints.createPage.matchFulfilled, state => {
+        state.selectedPageIds = [];
+      })
+      .addMatcher(pagesApi.endpoints.editPage.matchFulfilled, state => {
+        state.selectedPageIds = [];
+      })
+      .addMatcher(pagesApi.endpoints.deletePages.matchFulfilled, state => {
+        state.selectedPageIds = [];
       }),
 });
 
