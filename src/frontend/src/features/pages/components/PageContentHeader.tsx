@@ -13,11 +13,15 @@ import { Calories } from 'src/components';
 import { APP_BAR_HEIGHT } from 'src/constants';
 import { formatDate } from 'src/utils';
 import { useAppSelector } from '../../__shared__/hooks';
+import { type Page } from '../models';
 
 const DIVIDER_VISIBLE_SCROLL_THRESHOLD = 16;
 
-const PageContentHeader: FC = () => {
-  const page = useAppSelector(state => state.pages.current);
+interface Props {
+  page: Page | null;
+}
+
+const PageContentHeader: FC<Props> = ({ page }) => {
   const noteItems = useAppSelector(state => state.notes.noteItems);
 
   const totalCalories = useMemo(

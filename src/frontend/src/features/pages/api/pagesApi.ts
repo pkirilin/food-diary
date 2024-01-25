@@ -1,7 +1,7 @@
 import { api } from 'src/api';
 import { createUrl } from 'src/utils';
 import { type PageCreateEdit, type PagesSearchResult } from '../models';
-import { type PageByIdResponse, type GetPagesRequest, type EditPageRequest } from '../thunks';
+import { type GetPagesRequest, type EditPageRequest, type PageByIdResponse } from '../thunks';
 import { type ExportPagesToGoogleDocsRequest } from './contracts';
 
 export const pagesApi = api.injectEndpoints({
