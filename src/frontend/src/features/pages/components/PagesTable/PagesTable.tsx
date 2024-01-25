@@ -10,7 +10,7 @@ import {
   Typography,
 } from '@mui/material';
 import { type FC, useEffect, useState } from 'react';
-import { SortOrder, type Status } from '../../../__shared__/models';
+import { SortOrder } from '../../../__shared__/models';
 import { type PageItem, type PageItemsFilter } from '../../models';
 import PagesTableRow from '../PagesTableRow';
 
@@ -18,8 +18,6 @@ interface PagesTableProps {
   pages: PageItem[];
   selectedPagesCount: number;
   filter: PageItemsFilter;
-  operationStatus: Status;
-  onRefetch: (filter: PageItemsFilter) => void;
   onSelectAll: (isSelected: boolean) => void;
   onReorder: (order: SortOrder) => void;
 }
@@ -28,20 +26,11 @@ const PagesTable: FC<PagesTableProps> = ({
   pages,
   selectedPagesCount,
   filter,
-  operationStatus,
-  onRefetch,
   onSelectAll,
   onReorder,
 }) => {
   const [sortDirectionByDate, setSortDirectionByDate] = useState<'asc' | 'desc'>();
-
   const areAllPagesSelected = pages.length > 0 && pages.length === selectedPagesCount;
-
-  useEffect(() => {
-    if (operationStatus === 'idle' || operationStatus === 'succeeded') {
-      onRefetch(filter);
-    }
-  }, [filter, onRefetch, operationStatus]);
 
   useEffect(() => {
     setSortDirectionByDate(filter.sortOrder === SortOrder.Ascending ? 'asc' : 'desc');
