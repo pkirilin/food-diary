@@ -1,5 +1,5 @@
-import { type PageItemsFilter } from './models';
-import { type GetPagesRequest } from './thunks';
+import { type PageItem, type PageCreateEdit, type PageItemsFilter } from './models';
+import { type EditPageRequest, type GetPagesRequest } from './thunks';
 
 export const toGetPagesRequest = ({
   sortOrder,
@@ -13,4 +13,9 @@ export const toGetPagesRequest = ({
   pageSize,
   startDate: startDate ?? null,
   endDate: endDate ?? null,
+});
+
+export const toEditPageRequest = (page: PageItem, { date }: PageCreateEdit): EditPageRequest => ({
+  id: page.id,
+  page: { date },
 });

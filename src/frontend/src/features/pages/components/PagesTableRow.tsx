@@ -4,9 +4,10 @@ import { type FC, useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { formatDate } from 'src/utils';
 import { useAppDispatch, useAppSelector } from '../../__shared__/hooks';
+import { pagesApi } from '../api';
+import { toEditPageRequest } from '../mapping';
 import { type PageCreateEdit, type PageItem } from '../models';
 import { pageSelected } from '../slice';
-import { editPage } from '../thunks';
 import { PageInputDialog } from './PageInputDialog';
 
 interface PagesTableRowProps {
@@ -14,23 +15,20 @@ interface PagesTableRowProps {
 }
 
 const PagesTableRow: FC<PagesTableRowProps> = ({ page }: PagesTableRowProps) => {
+  const [editPage, editPageRequest] = pagesApi.useEditPageMutation();
+  const [isDialogOpened, setIsDialogOpened] = useState(false);
   const pageDate = new Date(page.date);
-
-  const operationStatus = useAppSelector(state => state.pages.operationStatus);
+  const dispatch = useAppDispatch();
 
   const isPageSelected = useAppSelector(state =>
     state.pages.selectedPageIds.some(id => id === page.id),
   );
 
-  const dispatch = useAppDispatch();
-
-  const [isDialogOpened, setIsDialogOpened] = useState(false);
-
   useEffect(() => {
-    if (operationStatus === 'succeeded') {
+    if (editPageRequest.isSuccess) {
       setIsDialogOpened(false);
     }
-  }, [operationStatus]);
+  }, [editPageRequest.isSuccess]);
 
   const handleOpenDialog = (): void => {
     setIsDialogOpened(true);
@@ -40,13 +38,8 @@ const PagesTableRow: FC<PagesTableRowProps> = ({ page }: PagesTableRowProps) => 
     setIsDialogOpened(false);
   };
 
-  const handleEditPage = ({ date }: PageCreateEdit): void => {
-    void dispatch(
-      editPage({
-        id: page.id,
-        page: { date },
-      }),
-    );
+  const handleEditPage = (newPageData: PageCreateEdit): void => {
+    void editPage(toEditPageRequest(page, newPageData));
   };
 
   const handleSelectPage = (): void => {
