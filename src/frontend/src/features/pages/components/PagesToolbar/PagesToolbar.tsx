@@ -6,7 +6,8 @@ import { type PropsWithChildren, type FC, useEffect, useState } from 'react';
 import { useAppDispatch, usePopover, useAppSelector } from 'src/features/__shared__/hooks';
 import { useToolbarStyles } from 'src/features/__shared__/styles';
 import { type PageCreateEdit } from 'src/features/pages/models';
-import { createPage, deletePages } from 'src/features/pages/thunks';
+import { deletePages } from 'src/features/pages/thunks';
+import { pagesApi } from '../../api';
 import { useDateForNewPage } from '../../hooks';
 import DeletePagesDialog from '../DeletePagesDialog';
 import { PageInputDialog } from '../PageInputDialog';
@@ -28,6 +29,7 @@ const PagesToolbar: FC<PagesToolbarProps> = ({ children }) => {
 
   const [filter, showFilter] = usePopover();
   const dateForNewPage = useDateForNewPage(isInputDialogOpened);
+  const [createPage, createPageRequest] = pagesApi.useCreatePageMutation();
 
   useEffect(() => {
     if (operationStatus === 'succeeded') {
@@ -35,6 +37,13 @@ const PagesToolbar: FC<PagesToolbarProps> = ({ children }) => {
       setIsDeleteDialogOpened(false);
     }
   }, [operationStatus]);
+
+  useEffect(() => {
+    if (createPageRequest.isSuccess) {
+      setIsInputDialogOpened(false);
+      setIsDeleteDialogOpened(false);
+    }
+  }, [createPageRequest.isSuccess]);
 
   const handleInputOpen = (): void => {
     setIsInputDialogOpened(true);
@@ -45,7 +54,7 @@ const PagesToolbar: FC<PagesToolbarProps> = ({ children }) => {
   };
 
   const handleCreatePage = (page: PageCreateEdit): void => {
-    void dispatch(createPage(page));
+    void createPage(page);
   };
 
   const handleDeleteOpen = (): void => {
