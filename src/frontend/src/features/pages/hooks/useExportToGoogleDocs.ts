@@ -1,13 +1,17 @@
 import format from 'date-fns/format';
 import { useEffect } from 'react';
 import { pagesApi } from '../api/pagesApi';
-import { type UseExportResult } from '../types';
+
+interface UseExportToGoogleDocsResult {
+  isLoading: boolean;
+  start: () => Promise<void>;
+}
 
 export const useExportToGoogleDocs = (
   startDate: Date | null,
   endDate: Date | null,
   onSuccess: () => void,
-): UseExportResult => {
+): UseExportToGoogleDocsResult => {
   const [startExport, exportRequest] = pagesApi.useExportToGoogleDocsMutation();
 
   useEffect(() => {
@@ -17,9 +21,9 @@ export const useExportToGoogleDocs = (
     }
   }, [exportRequest, onSuccess]);
 
-  const start = (): void => {
+  const start = async (): Promise<void> => {
     if (startDate && endDate) {
-      void startExport({
+      await startExport({
         startDate: format(startDate, 'yyyy-MM-dd'),
         endDate: format(endDate, 'yyyy-MM-dd'),
       });
