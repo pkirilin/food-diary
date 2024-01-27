@@ -54,7 +54,7 @@ const Pages: FC = () => {
             onSelectAll={handleSelectAll}
             onReorder={handleReorder}
           />
-          <PagesTablePagination />
+          <PagesTablePagination totalPagesCount={getPagesQuery.data?.totalPagesCount ?? 0} />
         </Paper>
       </Box>
     </Container>

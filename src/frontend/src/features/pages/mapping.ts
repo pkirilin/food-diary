@@ -1,5 +1,5 @@
+import { type EditPageRequest, type GetPagesRequest } from './api';
 import { type PageItem, type PageCreateEdit, type PageItemsFilter } from './models';
-import { type EditPageRequest, type GetPagesRequest } from './thunks';
 
 export const toGetPagesRequest = ({
   sortOrder,

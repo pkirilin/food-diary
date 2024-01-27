@@ -20,9 +20,7 @@ type PagesToolbarProps = PropsWithChildren<unknown>;
 const PagesToolbar: FC<PagesToolbarProps> = ({ children }) => {
   const classes = useToolbarStyles();
   const [filter, showFilter] = usePopover();
-
   const selectedPageIds = useAppSelector(state => state.pages.selectedPageIds);
-  const operationStatus = useAppSelector(state => state.pages.operationStatus);
 
   const [isInputDialogOpened, setIsInputDialogOpened] = useState(false);
   const [isDeleteDialogOpened, setIsDeleteDialogOpened] = useState(false);
@@ -30,13 +28,6 @@ const PagesToolbar: FC<PagesToolbarProps> = ({ children }) => {
   const dateForNewPage = useDateForNewPage();
   const [createPage, createPageRequest] = pagesApi.useCreatePageMutation();
   const [deletePages, deletePagesRequest] = pagesApi.useDeletePagesMutation();
-
-  useEffect(() => {
-    if (operationStatus === 'succeeded') {
-      setIsInputDialogOpened(false);
-      setIsDeleteDialogOpened(false);
-    }
-  }, [operationStatus]);
 
   useEffect(() => {
     if (createPageRequest.isSuccess || deletePagesRequest.isSuccess) {
@@ -81,7 +72,7 @@ const PagesToolbar: FC<PagesToolbarProps> = ({ children }) => {
       />
       <DeletePagesDialog
         isOpened={isDeleteDialogOpened}
-        isLoading={operationStatus === 'pending'}
+        isLoading={deletePagesRequest.isLoading}
         pageIds={selectedPageIds}
         onClose={handleDeleteClose}
         onSubmit={handleDeletePages}
