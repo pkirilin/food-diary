@@ -48,7 +48,7 @@ export const pagesApi = api.injectEndpoints({
       invalidatesTags: ['page', 'note'],
     }),
 
-    importPagesFromJson: builder.mutation<void, File>({
+    importFromJson: builder.mutation<void, File>({
       query: file => {
         const formData = new FormData();
         formData.append('importFile', file, file.name);

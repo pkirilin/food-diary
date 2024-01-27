@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from 'src/hooks';
-import { importPages } from '../thunks';
+import { pagesApi } from '../api';
 
 interface UseImportResult {
   isDialogOpened: boolean;
@@ -10,10 +9,8 @@ interface UseImportResult {
 }
 
 export function useImport(file?: File): UseImportResult {
-  const isSuccess = useAppSelector(state => state.pages.isImportSuccess);
-  const isLoading = useAppSelector(state => state.pages.isImportLoading);
-  const dispatch = useAppDispatch();
   const [isDialogOpened, setIsDialogOpened] = useState(false);
+  const [importFromJson, importFromJsonRequest] = pagesApi.useImportFromJsonMutation();
 
   const openDialog = useCallback(() => {
     setIsDialogOpened(true);
@@ -25,9 +22,9 @@ export function useImport(file?: File): UseImportResult {
 
   const start = useCallback(() => {
     if (file) {
-      void dispatch(importPages(file));
+      void importFromJson(file);
     }
-  }, [dispatch, file]);
+  }, [importFromJson, file]);
 
   useEffect(() => {
     if (file) {
@@ -36,14 +33,14 @@ export function useImport(file?: File): UseImportResult {
   }, [file, openDialog]);
 
   useEffect(() => {
-    if (isSuccess) {
+    if (importFromJsonRequest.isSuccess) {
       closeDialog();
     }
-  }, [closeDialog, isSuccess]);
+  }, [closeDialog, importFromJsonRequest.isSuccess]);
 
   return {
     isDialogOpened,
-    isLoading,
+    isLoading: importFromJsonRequest.isLoading,
     start,
     closeDialog,
   };
