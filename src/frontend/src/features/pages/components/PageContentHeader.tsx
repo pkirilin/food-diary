@@ -11,32 +11,25 @@ import { useMemo, type FC } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Calories } from 'src/components';
 import { APP_BAR_HEIGHT } from 'src/constants';
+import { notesApi } from 'src/features/notes';
 import { formatDate } from 'src/utils';
-import { useAppSelector } from '../../__shared__/hooks';
 import { type Page } from '../models';
 
 const DIVIDER_VISIBLE_SCROLL_THRESHOLD = 16;
 
 interface Props {
-  page: Page | null;
+  page: Page;
 }
 
 const PageContentHeader: FC<Props> = ({ page }) => {
-  const noteItems = useAppSelector(state => state.notes.noteItems);
-
-  const totalCalories = useMemo(
-    () => noteItems.reduce((sum, note) => sum + note.calories, 0),
-    [noteItems],
-  );
+  const getNotesQuery = notesApi.useGetNotesQuery({ pageId: page.id });
+  const notes = useMemo(() => getNotesQuery.data ?? [], [getNotesQuery.data]);
+  const totalCalories = useMemo(() => notes.reduce((sum, note) => sum + note.calories, 0), [notes]);
 
   const dividerVisible = useScrollTrigger({
     threshold: DIVIDER_VISIBLE_SCROLL_THRESHOLD,
     disableHysteresis: true,
   });
-
-  if (!page) {
-    return null;
-  }
 
   return (
     <Box

@@ -1,12 +1,22 @@
-import { type FC } from 'react';
-import { getMealTypes } from '../models';
+import { useMemo, type FC } from 'react';
+import { type NoteItem, getMealTypes, groupNotesByMealType } from '../models';
 import MealsListItem from './MealsListItem';
 
-const MealsList: FC = () => {
+interface MealsListProps {
+  notes: NoteItem[];
+}
+
+const MealsList: FC<MealsListProps> = ({ notes }) => {
+  const notesGroupedByMealType = useMemo(() => groupNotesByMealType(notes), [notes]);
+
   return (
     <>
-      {getMealTypes().map((mealType, index) => (
-        <MealsListItem key={index} mealType={mealType} />
+      {getMealTypes().map(mealType => (
+        <MealsListItem
+          key={mealType}
+          mealType={mealType}
+          notes={notesGroupedByMealType.get(mealType) ?? []}
+        />
       ))}
     </>
   );

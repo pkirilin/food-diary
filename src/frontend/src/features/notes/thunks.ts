@@ -1,11 +1,6 @@
 import { API_URL } from 'src/config';
-import { createApiCallAsyncThunk, createUrl, handleEmptyResponse } from '../__shared__/utils';
-import { type MealType, type NoteCreateEdit, type NoteItem } from './models';
-
-export interface GetNotesRequest {
-  pageId: number;
-  mealType?: MealType;
-}
+import { createApiCallAsyncThunk, handleEmptyResponse } from '../__shared__/utils';
+import { type MealType, type NoteCreateEdit } from './models';
 
 export interface NoteOperationPayload {
   mealType: MealType;
@@ -23,13 +18,6 @@ export interface EditNotePayload extends NoteOperationPayload {
 export interface DeleteNotePayload extends NoteOperationPayload {
   id: number;
 }
-
-export const getNotes = createApiCallAsyncThunk<NoteItem[], GetNotesRequest>(
-  'notes/getNotes',
-  request => createUrl(`${API_URL}/api/v1/notes`, { ...request }),
-  async response => await response.json(),
-  'Failed to get notes',
-);
 
 export const createNote = createApiCallAsyncThunk<void, CreateNotePayload>(
   'notes/createNote',
