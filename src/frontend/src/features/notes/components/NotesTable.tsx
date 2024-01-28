@@ -11,9 +11,10 @@ import {
 } from '@mui/material';
 import { type FC, useEffect, useState, useMemo } from 'react';
 import { productsApi } from 'src/features/products';
-import { useAppDispatch, useAppSelector, useRouterId } from 'src/hooks';
+import { useRouterId } from 'src/hooks';
+import { notesApi } from '../api';
+import { toCreateNoteRequest } from '../mapping';
 import { type NoteItem, type MealType, type NoteCreateEdit } from '../models';
-import { createNote } from '../thunks';
 import NoteInputDialog from './NoteInputDialog';
 import NotesTableRow from './NotesTableRow';
 
@@ -24,10 +25,9 @@ interface NotesTableProps {
 
 const NotesTable: FC<NotesTableProps> = ({ mealType, notes }: NotesTableProps) => {
   const pageId = useRouterId('id');
-  const status = useAppSelector(state => state.notes.operationStatusesByMealType[mealType]);
   const [getProducts, getProductsRequest] = productsApi.useLazyGetProductSelectOptionsQuery();
+  const [createNote, createNoteResponse] = notesApi.useCreateNoteMutation();
   const [isDialogOpened, setIsDialogOpened] = useState(false);
-  const dispatch = useAppDispatch();
 
   const maxDisplayOrderForNotesGroup = useMemo(
     () =>
@@ -39,10 +39,10 @@ const NotesTable: FC<NotesTableProps> = ({ mealType, notes }: NotesTableProps) =
   );
 
   useEffect(() => {
-    if (status === 'succeeded') {
+    if (createNoteResponse.isSuccess) {
       setIsDialogOpened(false);
     }
-  }, [dispatch, mealType, status]);
+  }, [createNoteResponse.isSuccess]);
 
   const handleDialogOpen = (): void => {
     setIsDialogOpened(true);
@@ -53,12 +53,8 @@ const NotesTable: FC<NotesTableProps> = ({ mealType, notes }: NotesTableProps) =
   };
 
   const handleAddNote = (note: NoteCreateEdit): void => {
-    void dispatch(
-      createNote({
-        mealType,
-        note,
-      }),
-    );
+    const request = toCreateNoteRequest(note);
+    void createNote(request);
   };
 
   const handleLoadProducts = async (): Promise<void> => {

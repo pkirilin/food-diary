@@ -4,10 +4,10 @@ import { IconButton, TableCell, TableRow, Tooltip } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import { type FC, useEffect, useState } from 'react';
 import { type ProductSelectOption } from 'src/features/products';
-import { useAppDispatch, useAppSelector, useRouterId } from 'src/hooks';
-import { toProductSelectOption } from '../mapping';
+import { useRouterId } from 'src/hooks';
+import { notesApi } from '../api';
+import { toEditNoteRequest, toProductSelectOption } from '../mapping';
 import { type NoteCreateEdit, type NoteItem } from '../models';
-import { deleteNote, editNote } from '../thunks';
 import DeleteNoteDialog from './DeleteNoteDialog';
 import NoteInputDialog from './NoteInputDialog';
 
@@ -37,18 +37,24 @@ const NotesTableRow: FC<NotesTableRowProps> = ({
 }: NotesTableRowProps) => {
   const classes = useStyles();
   const pageId = useRouterId('id');
-  const dispatch = useAppDispatch();
-  const status = useAppSelector(state => state.notes.operationStatusesByMealType[note.mealType]);
 
   const [isEditDialogOpened, setIsEditDialogOpened] = useState(false);
   const [isDeleteDialogOpened, setIsDeleteDialogOpened] = useState(false);
 
+  const [editNote, editNoteResponse] = notesApi.useEditNoteMutation();
+  const [deleteNote, deleteNoteResponse] = notesApi.useDeleteNoteMutation();
+
   useEffect(() => {
-    if (status === 'succeeded') {
+    if (editNoteResponse.isSuccess) {
       setIsEditDialogOpened(false);
+    }
+  }, [editNoteResponse.isSuccess]);
+
+  useEffect(() => {
+    if (deleteNoteResponse.isSuccess) {
       setIsDeleteDialogOpened(false);
     }
-  }, [status]);
+  }, [deleteNoteResponse.isSuccess]);
 
   const handleEditOpen = (): void => {
     setIsEditDialogOpened(true);
@@ -59,13 +65,8 @@ const NotesTableRow: FC<NotesTableRowProps> = ({
   };
 
   const handleEditSubmit = (noteData: NoteCreateEdit): void => {
-    void dispatch(
-      editNote({
-        id: note.id,
-        mealType: noteData.mealType,
-        note: noteData,
-      }),
-    );
+    const request = toEditNoteRequest(note.id, noteData);
+    void editNote(request);
   };
 
   const handleDeleteOpen = (): void => {
@@ -76,13 +77,8 @@ const NotesTableRow: FC<NotesTableRowProps> = ({
     setIsDeleteDialogOpened(false);
   };
 
-  const handleDeleteSubmit = ({ id, mealType }: NoteItem): void => {
-    void dispatch(
-      deleteNote({
-        id,
-        mealType,
-      }),
-    );
+  const handleDeleteSubmit = ({ id }: NoteItem): void => {
+    void deleteNote(id);
   };
 
   return (
