@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { API_URL } from 'src/config';
 import { createUrl, downloadFile, formatDate } from 'src/utils';
 import { type ExportPagesToJsonRequest } from '../models';
 
@@ -18,6 +19,7 @@ export const useExportToJson = (
   useEffect(() => {
     if (exportFileDownloaded) {
       onSuccess();
+      setExportFileDownloaded(false);
     }
   }, [exportFileDownloaded, onSuccess]);
 
@@ -31,10 +33,11 @@ export const useExportToJson = (
           endDate: formatDate(endDate),
         };
 
-        const url = createUrl('/api/v1/exports/json', { ...request });
+        const url = createUrl(`${API_URL}/api/v1/exports/json`, { ...request });
         const response = await fetch(url);
 
         if (!response.ok) {
+          setExportFileDownloading(false);
           setExportFileDownloaded(false);
           return;
         }
