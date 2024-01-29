@@ -5,9 +5,7 @@ import { type ProductSelectOption } from '../types';
 
 interface ProductSelectProps extends SelectProps<ProductSelectOption> {
   options: ProductSelectOption[];
-  optionsLoaded: boolean;
   optionsLoading: boolean;
-  onLoadOptions: () => Promise<void>;
 }
 
 const ProductSelect: FC<ProductSelectProps> = ({
@@ -19,9 +17,7 @@ const ProductSelect: FC<ProductSelectProps> = ({
   isInvalid,
   autoFocus,
   options,
-  optionsLoaded,
   optionsLoading,
-  onLoadOptions,
 }) => {
   const getDisplayName = (option: SelectOption): string => {
     return option.name;
@@ -35,12 +31,6 @@ const ProductSelect: FC<ProductSelectProps> = ({
     setValue(value);
   };
 
-  const handleOpen = (): void => {
-    if (!optionsLoaded) {
-      void onLoadOptions();
-    }
-  };
-
   return (
     <AppSelect
       availableOptions={options}
@@ -48,7 +38,6 @@ const ProductSelect: FC<ProductSelectProps> = ({
       getDisplayName={getDisplayName}
       areOptionsEqual={areOptionsEqual}
       onChange={handleChange}
-      onOpen={handleOpen}
       isLoading={optionsLoading}
       isInvalid={isInvalid}
       label={label}
