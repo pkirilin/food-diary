@@ -4,10 +4,13 @@ import { useDispatch } from 'react-redux';
 import { useAppSelector } from '../../__shared__/hooks';
 import { pageNumberChanged, pageSizeChanged } from '../slice';
 
-const PagesTablePagination: FC = () => {
+interface PagesTablePaginationProps {
+  totalPagesCount: number;
+}
+
+const PagesTablePagination: FC<PagesTablePaginationProps> = ({ totalPagesCount }) => {
   const pageNumber = useAppSelector(state => state.pages.filter.pageNumber);
   const pageSize = useAppSelector(state => state.pages.filter.pageSize);
-  const totalPagesCount = useAppSelector(state => state.pages.totalPagesCount);
   const dispatch = useDispatch();
 
   const handleChangePage = (

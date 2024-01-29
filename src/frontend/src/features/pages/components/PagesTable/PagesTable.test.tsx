@@ -14,8 +14,6 @@ describe('when pages are empty', () => {
           sortOrder: SortOrder.Descending,
           changed: false,
         }}
-        operationStatus={'succeeded'}
-        onRefetch={vi.fn()}
         onSelectAll={vi.fn()}
         onReorder={vi.fn()}
       />,

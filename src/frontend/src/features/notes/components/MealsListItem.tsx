@@ -2,26 +2,18 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { Accordion, AccordionDetails, AccordionSummary, Stack, Typography } from '@mui/material';
 import { type FC, useMemo, useState } from 'react';
 import { Calories } from 'src/components';
-import { useAppSelector } from 'src/store';
-import { getMealName, type MealType } from '../models';
+import { getMealName, type NoteItem, type MealType } from '../models';
 import NotesTable from './NotesTable';
 
 interface MealsListItemProps {
   mealType: MealType;
+  notes: NoteItem[];
 }
 
-const MealsListItem: FC<MealsListItemProps> = ({ mealType }: MealsListItemProps) => {
+const MealsListItem: FC<MealsListItemProps> = ({ mealType, notes }: MealsListItemProps) => {
   const [expanded, setExpanded] = useState(true);
   const mealName = useMemo(() => getMealName(mealType), [mealType]);
-
-  const noteItems = useAppSelector(state =>
-    state.notes.noteItems.filter(n => n.mealType === mealType),
-  );
-
-  const totalCalories = useMemo(
-    () => noteItems.reduce((sum, note) => sum + note.calories, 0),
-    [noteItems],
-  );
+  const totalCalories = useMemo(() => notes.reduce((sum, note) => sum + note.calories, 0), [notes]);
 
   const handleAccordionChange = (): void => {
     setExpanded(!expanded);
@@ -36,7 +28,7 @@ const MealsListItem: FC<MealsListItemProps> = ({ mealType }: MealsListItemProps)
         </Stack>
       </AccordionSummary>
       <AccordionDetails>
-        <NotesTable mealType={mealType} />
+        <NotesTable mealType={mealType} notes={notes} />
       </AccordionDetails>
     </Accordion>
   );

@@ -59,9 +59,9 @@ const ExportDialog: FC<ExportDialogProps> = ({ format: exportFormat, isOpen, onC
     event.preventDefault();
 
     if (exportFormat === 'json') {
-      exportToJson.start();
+      void exportToJson.start();
     } else {
-      exportToGoogleDocs.start();
+      void exportToGoogleDocs.start();
     }
   };
 

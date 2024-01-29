@@ -1,20 +1,11 @@
-import { useEffect, useMemo } from 'react';
-import { useAppDispatch, useAppSelector } from 'src/hooks';
-import { getDateForNewPage } from '../thunks';
+import { useMemo } from 'react';
+import { pagesApi } from '../api';
 
-export const useDateForNewPage = (isInitialized: boolean): Date => {
-  const dateForNewPage = useAppSelector(state => state.pages.dateForNewPage);
-  const status = useAppSelector(state => state.pages.dateForNewPageLoading);
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    if (isInitialized) {
-      void dispatch(getDateForNewPage());
-    }
-  }, [dispatch, isInitialized]);
+export const useDateForNewPage = (): Date => {
+  const query = pagesApi.useGetDateForNewPageQuery();
 
   return useMemo(
-    () => (status === 'succeeded' && dateForNewPage ? new Date(dateForNewPage) : new Date()),
-    [dateForNewPage, status],
+    () => (query.isSuccess && query.data ? new Date(query.data) : new Date()),
+    [query.data, query.isSuccess],
   );
 };

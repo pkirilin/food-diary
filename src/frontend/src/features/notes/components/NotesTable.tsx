@@ -9,52 +9,40 @@ import {
   TableHead,
   TableRow,
 } from '@mui/material';
-import { type FC, useEffect, useState } from 'react';
+import { type FC, useEffect, useState, useMemo } from 'react';
 import { productsApi } from 'src/features/products';
-import { useAppDispatch, useAppSelector, useRouterId } from 'src/hooks';
-import { type MealType, type NoteCreateEdit } from '../models';
-import { createNote, getNotes } from '../thunks';
+import { useRouterId } from 'src/hooks';
+import { notesApi } from '../api';
+import { toCreateNoteRequest } from '../mapping';
+import { type NoteItem, type MealType, type NoteCreateEdit } from '../models';
 import NoteInputDialog from './NoteInputDialog';
 import NotesTableRow from './NotesTableRow';
 
 interface NotesTableProps {
   mealType: MealType;
+  notes: NoteItem[];
 }
 
-const NotesTable: FC<NotesTableProps> = ({ mealType }: NotesTableProps) => {
+const NotesTable: FC<NotesTableProps> = ({ mealType, notes }: NotesTableProps) => {
   const pageId = useRouterId('id');
+  const [getProducts, getProductsRequest] = productsApi.useLazyGetProductSelectOptionsQuery();
+  const [createNote, createNoteResponse] = notesApi.useCreateNoteMutation();
+  const [isDialogOpened, setIsDialogOpened] = useState(false);
 
-  const noteItems = useAppSelector(state =>
-    state.notes.noteItems.filter(n => n.mealType === mealType),
-  );
-
-  const maxDisplayOrderForNotesGroup = useAppSelector(state =>
-    state.notes.noteItems
-      .filter(note => note.mealType === mealType)
-      .reduce(
+  const maxDisplayOrderForNotesGroup = useMemo(
+    () =>
+      notes.reduce(
         (maxOrder, note) => (note.displayOrder > maxOrder ? note.displayOrder : maxOrder),
         -1,
       ),
+    [notes],
   );
 
-  const status = useAppSelector(state => state.notes.operationStatusesByMealType[mealType]);
-  const [getProducts, getProductsRequest] = productsApi.useLazyGetProductSelectOptionsQuery();
-
-  const [isDialogOpened, setIsDialogOpened] = useState(false);
-  const dispatch = useAppDispatch();
-
   useEffect(() => {
-    if (status === 'succeeded') {
+    if (createNoteResponse.isSuccess) {
       setIsDialogOpened(false);
-
-      void dispatch(
-        getNotes({
-          pageId,
-          mealType,
-        }),
-      );
     }
-  }, [dispatch, mealType, pageId, status]);
+  }, [createNoteResponse.isSuccess]);
 
   const handleDialogOpen = (): void => {
     setIsDialogOpened(true);
@@ -65,12 +53,8 @@ const NotesTable: FC<NotesTableProps> = ({ mealType }: NotesTableProps) => {
   };
 
   const handleAddNote = (note: NoteCreateEdit): void => {
-    void dispatch(
-      createNote({
-        mealType,
-        note,
-      }),
-    );
+    const request = toCreateNoteRequest(note);
+    void createNote(request);
   };
 
   const handleLoadProducts = async (): Promise<void> => {
@@ -105,7 +89,7 @@ const NotesTable: FC<NotesTableProps> = ({ mealType }: NotesTableProps) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {noteItems.map(note => (
+          {notes.map(note => (
             <NotesTableRow
               key={note.id}
               note={note}

@@ -1,40 +1,25 @@
 import { Paper, Typography } from '@mui/material';
 import { Container, Box } from '@mui/system';
 import visuallyHidden from '@mui/utils/visuallyHidden';
-import { type FC, useCallback } from 'react';
+import { type FC } from 'react';
 import { DEMO_MODE_ENABLED } from 'src/config';
 import { useAppSelector, useAppDispatch } from 'src/hooks';
 import { type SortOrder } from 'src/types';
+import { pagesApi } from '../api';
 import DemoPagesWarning from '../components/DemoPagesWarning';
 import PagesFilterAppliedParams from '../components/PagesFilterAppliedParams';
 import PagesTable from '../components/PagesTable';
 import PagesTablePagination from '../components/PagesTablePagination';
 import PagesToolbar from '../components/PagesToolbar';
-import { type PageItemsFilter } from '../models';
+import { toGetPagesRequest } from '../mapping';
 import { allPagesSelected, sortOrderChanged } from '../slice';
-import { getPages } from '../thunks';
 
 const Pages: FC = () => {
-  const pages = useAppSelector(state => state.pages.pageItems);
   const selectedPagesCount = useAppSelector(state => state.pages.selectedPageIds.length);
   const pagesFilter = useAppSelector(state => state.pages.filter);
-  const operationStatus = useAppSelector(state => state.pages.operationStatus);
   const dispatch = useAppDispatch();
-
-  const handleRefetch = useCallback(
-    ({ sortOrder, pageNumber, pageSize, startDate, endDate }: PageItemsFilter) => {
-      void dispatch(
-        getPages({
-          sortOrder,
-          pageNumber,
-          pageSize,
-          startDate: startDate ?? null,
-          endDate: endDate ?? null,
-        }),
-      );
-    },
-    [dispatch],
-  );
+  const getPagesRequest = toGetPagesRequest(pagesFilter);
+  const getPagesQuery = pagesApi.useGetPagesQuery(getPagesRequest);
 
   const handleSelectAll = (isSelected: boolean): void => {
     dispatch(
@@ -63,15 +48,13 @@ const Pages: FC = () => {
           <PagesToolbar />
           <PagesFilterAppliedParams />
           <PagesTable
-            pages={pages}
+            pages={getPagesQuery.data?.pageItems ?? []}
             selectedPagesCount={selectedPagesCount}
             filter={pagesFilter}
-            operationStatus={operationStatus}
-            onRefetch={handleRefetch}
             onSelectAll={handleSelectAll}
             onReorder={handleReorder}
           />
-          <PagesTablePagination />
+          <PagesTablePagination totalPagesCount={getPagesQuery.data?.totalPagesCount ?? 0} />
         </Paper>
       </Box>
     </Container>

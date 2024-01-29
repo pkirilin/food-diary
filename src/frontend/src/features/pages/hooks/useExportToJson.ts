@@ -1,39 +1,60 @@
-import format from 'date-fns/format';
-import { useEffect } from 'react';
-import { useAppDispatch, useAppSelector } from 'src/features/__shared__/hooks';
-import { exportToJsonFinished } from '../slice';
-import { exportPagesToJson } from '../thunks';
-import { type UseExportResult } from '../types';
+import { useEffect, useState } from 'react';
+import { API_URL } from 'src/config';
+import { createUrl, downloadFile, formatDate } from 'src/utils';
+import { type ExportPagesToJsonRequest } from '../models';
+
+interface UseExportToJsonResult {
+  isLoading: boolean;
+  start: () => Promise<void>;
+}
 
 export const useExportToJson = (
   startDate: Date | null,
   endDate: Date | null,
   onSuccess: () => void,
-): UseExportResult => {
-  const isLoading = useAppSelector(state => state.pages.isExportToJsonLoading);
-  const isSuccess = useAppSelector(state => state.pages.isExportToJsonSuccess);
-  const dispatch = useAppDispatch();
+): UseExportToJsonResult => {
+  const [exportFileDownloading, setExportFileDownloading] = useState(false);
+  const [exportFileDownloaded, setExportFileDownloaded] = useState(false);
 
   useEffect(() => {
-    if (isSuccess) {
+    if (exportFileDownloaded) {
       onSuccess();
-      dispatch(exportToJsonFinished());
+      setExportFileDownloaded(false);
     }
-  }, [dispatch, isSuccess, onSuccess]);
+  }, [exportFileDownloaded, onSuccess]);
 
-  const start = (): void => {
+  const start = async (): Promise<void> => {
     if (startDate && endDate) {
-      void dispatch(
-        exportPagesToJson({
-          startDate: format(startDate, 'yyyy-MM-dd'),
-          endDate: format(endDate, 'yyyy-MM-dd'),
-        }),
-      );
+      try {
+        setExportFileDownloading(true);
+
+        const request: ExportPagesToJsonRequest = {
+          startDate: formatDate(startDate),
+          endDate: formatDate(endDate),
+        };
+
+        const url = createUrl(`${API_URL}/api/v1/exports/json`, { ...request });
+        const response = await fetch(url);
+
+        if (!response.ok) {
+          setExportFileDownloading(false);
+          setExportFileDownloaded(false);
+          return;
+        }
+
+        const blob = await response.blob();
+        downloadFile(blob, `FoodDiary_${request.startDate}_${request.endDate}.json`);
+        setExportFileDownloaded(true);
+      } catch (error) {
+        setExportFileDownloaded(false);
+      } finally {
+        setExportFileDownloading(false);
+      }
     }
   };
 
   return {
-    isLoading,
+    isLoading: exportFileDownloading,
     start,
   };
 };
