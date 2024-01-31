@@ -21,9 +21,7 @@ test('should submit form on valid input', async () => {
           name: 'Test category',
         },
       ]}
-      categoriesLoaded={true}
       categoriesLoading={false}
-      onLoadCategories={vi.fn()}
     />,
   );
 

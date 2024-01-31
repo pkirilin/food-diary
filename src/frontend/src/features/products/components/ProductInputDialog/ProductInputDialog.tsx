@@ -31,9 +31,7 @@ interface ProductInputDialogProps {
   onSubmit: (product: ProductFormData) => void;
   isLoading: boolean;
   categories: SelectOption[];
-  categoriesLoaded: boolean;
   categoriesLoading: boolean;
-  onLoadCategories: () => Promise<void>;
   product?: ProductFormData;
 }
 
@@ -45,9 +43,7 @@ const ProductInputDialog: FC<ProductInputDialogProps> = ({
   onSubmit,
   isLoading,
   categories,
-  categoriesLoaded,
   categoriesLoading,
-  onLoadCategories,
   product,
 }) => {
   const { clearValue: clearProductName, ...productName } = useInput({
@@ -152,9 +148,7 @@ const ProductInputDialog: FC<ProductInputDialogProps> = ({
             label="Category"
             placeholder="Select a category"
             options={categories}
-            optionsLoaded={categoriesLoaded}
             optionsLoading={categoriesLoading}
-            onLoadOptions={onLoadCategories}
           />
         </form>
       }

@@ -4,9 +4,7 @@ import { type SelectOption, type SelectProps } from 'src/types';
 
 interface CategorySelectProps extends SelectProps<SelectOption> {
   options: SelectOption[];
-  optionsLoaded: boolean;
   optionsLoading: boolean;
-  onLoadOptions: () => Promise<void>;
 }
 
 const CategorySelect: FC<CategorySelectProps> = ({
@@ -17,9 +15,7 @@ const CategorySelect: FC<CategorySelectProps> = ({
   helperText,
   isInvalid,
   options,
-  optionsLoaded,
   optionsLoading,
-  onLoadOptions,
 }) => {
   const getDisplayName = (option: SelectOption): string => {
     return option.name;
@@ -33,12 +29,6 @@ const CategorySelect: FC<CategorySelectProps> = ({
     setValue(value);
   };
 
-  const handleOpen = (): void => {
-    if (!optionsLoaded) {
-      void onLoadOptions();
-    }
-  };
-
   return (
     <AppSelect
       availableOptions={options}
@@ -46,7 +36,6 @@ const CategorySelect: FC<CategorySelectProps> = ({
       getDisplayName={getDisplayName}
       areOptionsEqual={areOptionsEqual}
       onChange={handleChange}
-      onOpen={handleOpen}
       isLoading={optionsLoading}
       isInvalid={isInvalid}
       label={label}
