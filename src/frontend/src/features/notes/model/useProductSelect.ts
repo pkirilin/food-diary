@@ -1,13 +1,13 @@
 import { productsApi, type ProductSelectOption } from 'src/features/products';
 
-interface UseProductAutocompleteResult {
+interface UseProductSelectResult {
   data: ProductSelectOption[];
   isLoading: boolean;
 }
 
 const QUERY_ARG = {};
 
-export const useProductAutocomplete = (): UseProductAutocompleteResult => {
+export const useProductSelect = (): UseProductSelectResult => {
   const query = productsApi.useGetProductSelectOptionsQuery(QUERY_ARG, { refetchOnFocus: true });
 
   return {

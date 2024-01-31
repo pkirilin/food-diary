@@ -4,7 +4,7 @@ import { type FC, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../__shared__/hooks';
 import { productsApi } from '../api';
 import { toEditProductRequest, toProductFormData } from '../mapping';
-import { useCategoryAutocomplete } from '../model';
+import { useCategorySelect } from '../model';
 import { selectCheckedProductIds } from '../selectors';
 import { productChecked, productUnchecked } from '../store';
 import { type Product, type ProductFormData } from '../types';
@@ -17,7 +17,7 @@ interface ProductsTableRowProps {
 const ProductsTableRow: FC<ProductsTableRowProps> = ({ product }: ProductsTableRowProps) => {
   const [isEditDialogOpened, setIsEditDialogOpened] = useState(false);
   const [editProduct, editProductRequest] = productsApi.useEditProductMutation();
-  const categoryAutocomplete = useCategoryAutocomplete();
+  const categorySelect = useCategorySelect();
   const dispatch = useAppDispatch();
   const checkedProductIds = useAppSelector(selectCheckedProductIds);
   const isChecked = checkedProductIds.some(id => id === product.id);
@@ -97,8 +97,8 @@ const ProductsTableRow: FC<ProductsTableRowProps> = ({ product }: ProductsTableR
         onSubmit={handleEditDialogSubmit}
         isLoading={editProductRequest.isLoading}
         product={toProductFormData(product)}
-        categories={categoryAutocomplete.data}
-        categoriesLoading={categoryAutocomplete.isLoading}
+        categories={categorySelect.data}
+        categoriesLoading={categorySelect.isLoading}
       />
     </>
   );

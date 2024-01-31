@@ -4,7 +4,7 @@ import { type FC, useEffect, useState } from 'react';
 import { useAppSelector } from 'src/store';
 import { productsApi } from '../api';
 import { toCreateProductRequest } from '../mapping';
-import { useCategoryAutocomplete } from '../model';
+import { useCategorySelect } from '../model';
 import { selectProductsQueryArg } from '../selectors';
 import { type ProductFormData } from '../types';
 import ProductInputDialog from './ProductInputDialog';
@@ -13,7 +13,7 @@ const CreateProduct: FC = () => {
   const [isDialogOpened, setIsDialogOpened] = useState(false);
   const getProductsQueryArg = useAppSelector(selectProductsQueryArg);
   const getProductsQuery = productsApi.useGetProductsQuery(getProductsQueryArg);
-  const categoryAutocomplete = useCategoryAutocomplete();
+  const categorySelect = useCategorySelect();
   const [createProduct, createProductRequest] = productsApi.useCreateProductMutation();
 
   useEffect(() => {
@@ -52,8 +52,8 @@ const CreateProduct: FC = () => {
         submitText="Create"
         onSubmit={handleDialogSubmit}
         isLoading={createProductRequest.isLoading}
-        categories={categoryAutocomplete.data}
-        categoriesLoading={categoryAutocomplete.isLoading}
+        categories={categorySelect.data}
+        categoriesLoading={categorySelect.isLoading}
       />
     </>
   );

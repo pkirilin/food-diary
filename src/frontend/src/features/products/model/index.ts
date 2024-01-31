@@ -1,1 +1,1 @@
-export * from './useCategoryAutocomplete';
+export * from './useCategorySelect';

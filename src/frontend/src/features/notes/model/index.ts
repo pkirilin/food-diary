@@ -1,1 +1,1 @@
-export * from './useProductAutocomplete';
+export * from './useProductSelect';

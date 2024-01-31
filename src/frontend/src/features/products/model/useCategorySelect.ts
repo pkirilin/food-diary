@@ -1,14 +1,14 @@
 import { categoriesApi } from 'src/features/categories';
 import { type SelectOption } from 'src/types';
 
-interface UseCategoryAutocompleteResult {
+interface UseCategorySelectResult {
   data: SelectOption[];
   isLoading: boolean;
 }
 
 const QUERY_ARG = {};
 
-export const useCategoryAutocomplete = (): UseCategoryAutocompleteResult => {
+export const useCategorySelect = (): UseCategorySelectResult => {
   const query = categoriesApi.useGetCategorySelectOptionsQuery(QUERY_ARG, { refetchOnFocus: true });
 
   return {
