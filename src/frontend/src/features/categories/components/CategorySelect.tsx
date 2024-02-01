@@ -17,24 +17,14 @@ const CategorySelect: FC<CategorySelectProps> = ({
   options,
   optionsLoading,
 }) => {
-  const getDisplayName = (option: SelectOption): string => {
-    return option.name;
-  };
-
-  const areOptionsEqual = (first: SelectOption, second: SelectOption): boolean => {
-    return first.name === second.name;
-  };
-
   const handleChange = (value: SelectOption | null): void => {
     setValue(value);
   };
 
   return (
     <AppSelect
-      availableOptions={options}
+      options={options}
       value={value}
-      getDisplayName={getDisplayName}
-      areOptionsEqual={areOptionsEqual}
       onChange={handleChange}
       isLoading={optionsLoading}
       isInvalid={isInvalid}

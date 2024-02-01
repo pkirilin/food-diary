@@ -1,12 +1,10 @@
 import { Autocomplete, CircularProgress, TextField } from '@mui/material';
 import { type SyntheticEvent, type ReactElement } from 'react';
+import { type SelectOption } from 'src/types';
 
 interface AppSelectProps<TOption> {
-  availableOptions: TOption[];
-  getDisplayName: (value: TOption) => string;
-  areOptionsEqual: (first: TOption, second: TOption) => boolean;
+  options: TOption[];
   onChange: (newValue: TOption | null) => void;
-  onOpen?: () => void;
   label?: string;
   placeholder?: string;
   value?: TOption | null;
@@ -16,12 +14,9 @@ interface AppSelectProps<TOption> {
   autoFocus?: boolean;
 }
 
-const AppSelect = <TOption,>({
-  availableOptions,
-  getDisplayName,
-  areOptionsEqual,
+const AppSelect = <TOption extends SelectOption>({
+  options,
   onChange,
-  onOpen,
   label,
   placeholder,
   value = null,
@@ -30,6 +25,14 @@ const AppSelect = <TOption,>({
   isInvalid,
   autoFocus,
 }: AppSelectProps<TOption>): ReactElement => {
+  const getDisplayName = (option: TOption): string => {
+    return option.name;
+  };
+
+  const areOptionsEqual = (first: SelectOption, second: SelectOption): boolean => {
+    return first.name === second.name;
+  };
+
   const handleChange = (event: SyntheticEvent, newValue: TOption | null): void => {
     onChange(newValue);
   };
@@ -37,11 +40,10 @@ const AppSelect = <TOption,>({
   return (
     <Autocomplete
       value={value}
-      options={availableOptions}
+      options={options}
       getOptionLabel={getDisplayName}
       isOptionEqualToValue={areOptionsEqual}
       onChange={handleChange}
-      onOpen={onOpen}
       renderInput={params => (
         <TextField
           {...params}
