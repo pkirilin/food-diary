@@ -25,7 +25,7 @@ export const notesApi = api.injectEndpoints({
         url: `/api/v1/notes/${id}`,
         body: request,
       }),
-      invalidatesTags: ['note'],
+      invalidatesTags: ['note', 'page'],
     }),
 
     deleteNote: builder.mutation<void, number>({

@@ -14,9 +14,7 @@ import NoteInputDialog from './NoteInputDialog';
 interface NotesTableRowProps {
   note: NoteItem;
   products: ProductSelectOption[];
-  productsLoaded: boolean;
   productsLoading: boolean;
-  onLoadProducts: () => Promise<void>;
 }
 
 const useStyles = makeStyles(theme => ({
@@ -31,9 +29,7 @@ const useStyles = makeStyles(theme => ({
 const NotesTableRow: FC<NotesTableRowProps> = ({
   note,
   products,
-  productsLoaded,
   productsLoading,
-  onLoadProducts,
 }: NotesTableRowProps) => {
   const classes = useStyles();
   const pageId = useRouterId('id');
@@ -91,9 +87,7 @@ const NotesTableRow: FC<NotesTableRowProps> = ({
         pageId={pageId}
         product={toProductSelectOption(note)}
         products={products}
-        productsLoaded={productsLoaded}
         productsLoading={productsLoading}
-        onLoadProducts={onLoadProducts}
         quantity={note.productQuantity}
         displayOrder={note.displayOrder}
         onClose={handleEditClose}

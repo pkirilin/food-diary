@@ -15,9 +15,7 @@ interface NoteInputDialogProps {
   pageId: number;
   product: ProductSelectOption | null;
   products: ProductSelectOption[];
-  productsLoaded: boolean;
   productsLoading: boolean;
-  onLoadProducts: () => Promise<void>;
   quantity: number;
   displayOrder: number;
   onClose: () => void;
@@ -32,9 +30,7 @@ const NoteInputDialog: FC<NoteInputDialogProps> = ({
   pageId,
   product,
   products,
-  productsLoaded,
   productsLoading,
-  onLoadProducts,
   quantity,
   displayOrder,
   onClose,
@@ -102,9 +98,7 @@ const NoteInputDialog: FC<NoteInputDialogProps> = ({
             placeholder="Select a product"
             autoFocus
             options={products}
-            optionsLoaded={productsLoaded}
             optionsLoading={productsLoading}
-            onLoadOptions={onLoadProducts}
           />
           <TextField
             {...quantityInput.inputProps}

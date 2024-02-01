@@ -10,10 +10,10 @@ import {
   TableRow,
 } from '@mui/material';
 import { type FC, useEffect, useState, useMemo } from 'react';
-import { productsApi } from 'src/features/products';
 import { useRouterId } from 'src/hooks';
 import { notesApi } from '../api';
 import { toCreateNoteRequest } from '../mapping';
+import { useProductSelect } from '../model';
 import { type NoteItem, type MealType, type NoteCreateEdit } from '../models';
 import NoteInputDialog from './NoteInputDialog';
 import NotesTableRow from './NotesTableRow';
@@ -25,7 +25,7 @@ interface NotesTableProps {
 
 const NotesTable: FC<NotesTableProps> = ({ mealType, notes }: NotesTableProps) => {
   const pageId = useRouterId('id');
-  const [getProducts, getProductsRequest] = productsApi.useLazyGetProductSelectOptionsQuery();
+  const productSelect = useProductSelect();
   const [createNote, createNoteResponse] = notesApi.useCreateNoteMutation();
   const [isDialogOpened, setIsDialogOpened] = useState(false);
 
@@ -57,10 +57,6 @@ const NotesTable: FC<NotesTableProps> = ({ mealType, notes }: NotesTableProps) =
     void createNote(request);
   };
 
-  const handleLoadProducts = async (): Promise<void> => {
-    await getProducts();
-  };
-
   return (
     <TableContainer>
       <NoteInputDialog
@@ -69,10 +65,8 @@ const NotesTable: FC<NotesTableProps> = ({ mealType, notes }: NotesTableProps) =
         isOpened={isDialogOpened}
         mealType={mealType}
         product={null}
-        products={getProductsRequest.data ?? []}
-        productsLoaded={!getProductsRequest.isUninitialized}
-        productsLoading={getProductsRequest.isLoading}
-        onLoadProducts={handleLoadProducts}
+        products={productSelect.data}
+        productsLoading={productSelect.isLoading}
         quantity={100}
         pageId={pageId}
         displayOrder={maxDisplayOrderForNotesGroup + 1}
@@ -93,10 +87,8 @@ const NotesTable: FC<NotesTableProps> = ({ mealType, notes }: NotesTableProps) =
             <NotesTableRow
               key={note.id}
               note={note}
-              products={getProductsRequest.data ?? []}
-              productsLoaded={!getProductsRequest.isUninitialized}
-              productsLoading={getProductsRequest.isLoading}
-              onLoadProducts={handleLoadProducts}
+              products={productSelect.data}
+              productsLoading={productSelect.isLoading}
             />
           ))}
         </TableBody>

@@ -25,9 +25,7 @@ export class NoteInputDialogBuilder {
             pageId={1}
             product={this.getSelectedProduct()}
             products={this._products}
-            productsLoaded={true}
             productsLoading={false}
-            onLoadProducts={vi.fn()}
             quantity={this._quantity}
             displayOrder={1}
             onClose={this._openAndCloseOnButtonClick ? onTriggerClick : vi.fn()}
