@@ -1,12 +1,6 @@
-name: Deploy to Azure Container Apps
+name: Deploy
 
 on:
-  push:
-    branches: 
-      [ main ]
-    paths:
-    - '**'
-    - '.github/workflows/deploy.yml'
   workflow_dispatch:
       
 jobs:
