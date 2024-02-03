@@ -133,7 +133,6 @@ public class Startup
         }
 
         app.UseMiddleware<ExceptionHandlerMiddleware>();
-        app.UseStaticFiles();
         app.UseSpaStaticFiles();
         app.UseRouting();
         app.UseAuthentication();
