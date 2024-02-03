@@ -10,11 +10,13 @@ using FoodDiary.Import.Extensions;
 using FoodDiary.Infrastructure.Extensions;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 
 namespace FoodDiary.API;
@@ -24,7 +26,7 @@ public class Startup
     private readonly AuthOptions _authOptions;
     private readonly GoogleAuthOptions _googleAuthOptions;
     private readonly IConfiguration _configuration;
-        
+
     public Startup(IConfiguration configuration)
     {
         _configuration = configuration;
@@ -101,6 +103,10 @@ public class Startup
             });
         });
 
+        services.AddHealthChecks()
+            .AddCheck("liveness", () => HealthCheckResult.Healthy(), ["alive"])
+            .AddCheck("readiness", () => HealthCheckResult.Healthy(), ["ready"]);
+
         services.ConfigureCustomOptions(_configuration);
         services.Configure<ImportOptions>(_configuration.GetSection("Import"));
 
@@ -137,6 +143,16 @@ public class Startup
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();
+            
+            endpoints.MapHealthChecks("/healthz/live", new HealthCheckOptions
+            {
+                Predicate = healthCheck => healthCheck.Tags.Contains("alive")
+            });
+                
+            endpoints.MapHealthChecks("/healthz/ready", new HealthCheckOptions
+            {
+                Predicate = healthCheck => healthCheck.Tags.Contains("ready")
+            });
         });
             
         app.UseSpa(spa =>
