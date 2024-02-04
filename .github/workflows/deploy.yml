@@ -52,13 +52,9 @@ jobs:
       - name: Deploy to Azure Container Apps
         uses: azure/container-apps-deploy-action@v2
         with:
-          appSourcePath: ${{ github.workspace }} 
-          registryUrl: docker.io
-          registryUsername: ${{ secrets.FOODDIARY_REGISTRY_USERNAME }}
-          registryPassword: ${{ secrets.FOODDIARY_REGISTRY_PASSWORD }}
           containerAppName: food-diary
           resourceGroup: rg-food-diary
-          imageToDeploy: ${{ secrets.AzureAppService_ContainerUsername_6ff515138c474569b14fb663d02b6c5d }}/food-diary:${{ github.sha }}
+          imageToDeploy: index.docker.io/${{ secrets.AzureAppService_ContainerUsername_6ff515138c474569b14fb663d02b6c5d }}/food-diary:${{ github.sha }}
 
   deploy-app-service:
     runs-on: ubuntu-latest
