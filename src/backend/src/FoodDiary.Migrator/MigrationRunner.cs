@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace FoodDiary.Migrator;
 
@@ -30,8 +31,9 @@ public class MigrationRunner
     private static ServiceProvider BuildServiceProvider()
     {
         var services = new ServiceCollection();
-    
-        services.AddLogging(logging => logging.AddConsole());
+        
+        services.AddSerilog(logger => logger
+            .ReadFrom.Configuration(MigratorConfiguration.Configuration));
 
         return services.BuildServiceProvider();
     }
