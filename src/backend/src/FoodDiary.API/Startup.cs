@@ -18,6 +18,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
+using Serilog;
 
 namespace FoodDiary.API;
 
@@ -106,6 +107,9 @@ public class Startup
         services.AddHealthChecks()
             .AddCheck("liveness", () => HealthCheckResult.Healthy(), ["alive"])
             .AddCheck("readiness", () => HealthCheckResult.Healthy(), ["ready"]);
+        
+        services.AddSerilog((provider, logger) => logger
+            .ReadFrom.Configuration(provider.GetRequiredService<IConfiguration>()));
 
         services.ConfigureCustomOptions(_configuration);
         services.Configure<ImportOptions>(_configuration.GetSection("Import"));
@@ -134,6 +138,7 @@ public class Startup
 
         app.UseMiddleware<ExceptionHandlerMiddleware>();
         app.UseSpaStaticFiles();
+        app.UseSerilogRequestLogging();
         app.UseRouting();
         app.UseAuthentication();
         app.UseAuthorization();

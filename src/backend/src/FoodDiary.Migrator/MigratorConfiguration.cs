@@ -4,7 +4,7 @@ namespace FoodDiary.Migrator;
 
 public static class MigratorConfiguration
 {
-    private static readonly IConfiguration Configuration;
+    public static IConfiguration Configuration { get; }
 
     public static string? ConnectionString => Configuration["ConnectionStrings:Default"];
     
