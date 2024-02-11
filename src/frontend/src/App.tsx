@@ -1,13 +1,9 @@
-import { Box } from '@mui/material';
 import { type FC } from 'react';
-import { AppRoutes } from './routes';
+import { RouterProvider } from 'react-router-dom';
+import { router } from './app/router';
 
 const App: FC = () => {
-  return (
-    <Box component="main" position="relative">
-      <AppRoutes />
-    </Box>
-  );
+  return <RouterProvider router={router} />;
 };
 
 export default App;

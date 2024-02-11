@@ -20,7 +20,11 @@
     "jsx": "react-jsx",
     "noFallthroughCasesInSwitch": true,
     "baseUrl": ".",
-    "types": ["vitest/globals"]
+    "types": ["vitest/globals"],
+    "paths": {
+      "@/*": ["./src/*"],
+      "@tests/*": ["./tests/*"]
+    },
   },
   "include": [
     "src",

@@ -3,7 +3,6 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { type PropsWithChildren, type FC } from 'react';
 import { Provider } from 'react-redux';
-import { BrowserRouter } from 'react-router-dom';
 import { type Store } from 'redux';
 import theme from './theme';
 
@@ -18,7 +17,7 @@ const AppProvider: FC<PropsWithChildren<AppProviderProps>> = ({ children, store 
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <Provider store={store}>
             <CssBaseline />
-            <BrowserRouter>{children}</BrowserRouter>
+            {children}
           </Provider>
         </LocalizationProvider>
       </ThemeProvider>
