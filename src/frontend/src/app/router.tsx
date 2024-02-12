@@ -9,6 +9,10 @@ export const router = createBrowserRouter([
         path: '/',
         lazy: async () => await import('@/pages/RootPage'),
       },
+      {
+        path: '/login',
+        lazy: async () => await import('@/pages/LoginPage'),
+      },
     ],
   },
 ]);

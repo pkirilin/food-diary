@@ -1,5 +1,5 @@
 import { Paper, Typography } from '@mui/material';
-import { Container, Box } from '@mui/system';
+import { Box } from '@mui/system';
 import visuallyHidden from '@mui/utils/visuallyHidden';
 import { type FC } from 'react';
 import { DEMO_MODE_ENABLED } from 'src/config';
@@ -34,30 +34,28 @@ const Pages: FC = () => {
   };
 
   return (
-    <Container>
-      <Box py={3}>
-        {DEMO_MODE_ENABLED && (
-          <Box pb={3}>
-            <DemoPagesWarning />
-          </Box>
-        )}
-        <Typography sx={visuallyHidden} variant="h1" gutterBottom>
-          Pages
-        </Typography>
-        <Paper>
-          <PagesToolbar />
-          <PagesFilterAppliedParams />
-          <PagesTable
-            pages={getPagesQuery.data?.pageItems ?? []}
-            selectedPagesCount={selectedPagesCount}
-            filter={pagesFilter}
-            onSelectAll={handleSelectAll}
-            onReorder={handleReorder}
-          />
-          <PagesTablePagination totalPagesCount={getPagesQuery.data?.totalPagesCount ?? 0} />
-        </Paper>
-      </Box>
-    </Container>
+    <>
+      {DEMO_MODE_ENABLED && (
+        <Box pb={3}>
+          <DemoPagesWarning />
+        </Box>
+      )}
+      <Typography sx={visuallyHidden} variant="h1" gutterBottom>
+        Pages
+      </Typography>
+      <Paper>
+        <PagesToolbar />
+        <PagesFilterAppliedParams />
+        <PagesTable
+          pages={getPagesQuery.data?.pageItems ?? []}
+          selectedPagesCount={selectedPagesCount}
+          filter={pagesFilter}
+          onSelectAll={handleSelectAll}
+          onReorder={handleReorder}
+        />
+        <PagesTablePagination totalPagesCount={getPagesQuery.data?.totalPagesCount ?? 0} />
+      </Paper>
+    </>
   );
 };
 

@@ -1,13 +1,22 @@
-import { Container } from '@mui/material';
-import { type PropsWithChildren, type FC } from 'react';
+import { Box, Container } from '@mui/material';
+import { type PropsWithChildren, type FC, type ReactElement } from 'react';
 
-export const Layout: FC<PropsWithChildren> = ({ children }) => (
-  <Container
-    component="main"
-    sx={theme => ({
-      padding: theme.spacing(2),
-    })}
-  >
-    {children}
-  </Container>
-);
+interface Props {
+  header?: ReactElement;
+}
+
+export const Layout: FC<PropsWithChildren<Props>> = ({ children, header }) => {
+  return (
+    <>
+      {header && <Box component="header">{header}</Box>}
+      <Container
+        component="main"
+        sx={theme => ({
+          padding: theme.spacing(3),
+        })}
+      >
+        {children}
+      </Container>
+    </>
+  );
+};
