@@ -24,6 +24,9 @@ jobs:
       CR_REPOSITORY: food-diary
       IMAGE_TAG: ${{ github.sha }}
     steps:
+      - name: Checkout to the branch
+        uses: actions/checkout@v4
+
       - name: Login to Yandex Cloud Container Registry
         id: login-cr
         uses: yc-actions/yc-cr-login@v1
