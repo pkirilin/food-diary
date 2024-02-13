@@ -51,3 +51,9 @@ jobs:
           revision-execution-timeout: 10
           revision-env: |
             ForwardHttpsSchemeManuallyForAllRequests=true
+          revision-secrets: |
+            Auth__AllowedEmails__0=${{ secrets.YC_REVISION_SECRETS_ALLOWED_EMAILS }}
+            Google__ExportFolderId=${{ secrets.YC_REVISION_SECRETS_EXPORT_FOLDER_ID }}
+            ConnectionStrings__Default=${{ secrets.YC_REVISION_SECRETS_DB_CONNECTION_STRING }}
+            GoogleAuth__ClientId=${{ secrets.YC_REVISION_SECRETS_GOOGLE_CLIENT_ID }}
+            GoogleAuth__ClientSecret=${{ secrets.YC_REVISION_SECRETS_GOOGLE_CLIENT_SECRET }}
