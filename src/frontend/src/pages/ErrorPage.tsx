@@ -1,11 +1,11 @@
 import { Link, Typography } from '@mui/material';
 import { type FC } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { Layout } from '@/shared/ui';
+import { PublicLayout } from '@/widgets/layout';
 
 export const ErrorPage: FC = () => {
   return (
-    <Layout>
+    <PublicLayout>
       <Typography variant="h1" gutterBottom>
         Oops!
       </Typography>
@@ -15,6 +15,6 @@ export const ErrorPage: FC = () => {
       <Link component={RouterLink} to="/">
         Return to home
       </Link>
-    </Layout>
+    </PublicLayout>
   );
 };

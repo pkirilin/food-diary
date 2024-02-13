@@ -1,11 +1,10 @@
 import { type FC } from 'react';
 import { type LoaderFunction, redirect } from 'react-router-dom';
 import { authApi } from '@/features/auth';
-import { NavigationBar } from '@/features/navigation';
 import { Pages, pagesApi } from '@/features/pages';
-import { Layout } from '@/shared/ui';
 import store from '@/store';
 import { SortOrder } from '@/types';
+import { PrivateLayout } from '@/widgets/layout';
 
 export const loader: LoaderFunction = async ({ request }) => {
   const authStatusPromise = store.dispatch(
@@ -37,12 +36,11 @@ export const loader: LoaderFunction = async ({ request }) => {
   };
 
   await getPagesPromise;
-
   return {};
 };
 
 export const Component: FC = () => (
-  <Layout header={<NavigationBar />}>
+  <PrivateLayout>
     <Pages />
-  </Layout>
+  </PrivateLayout>
 );
