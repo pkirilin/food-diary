@@ -43,10 +43,10 @@ jobs:
         uses: yc-actions/yc-sls-container-deploy@v2
         with:
           yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
-          container-name: $CR_REPOSITORY
+          container-name: ${{ env.CR_REPOSITORY }}
           folder-id: ${{ secrets.YC_FOLDER_ID }}
           public: true
-          revision-image-url: cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG
+          revision-image-url: cr.yandex/${{ env.CR_REGISTRY }}/${{ env.CR_REPOSITORY }}:${{ env.IMAGE_TAG }}
           revision-service-account-id: ${{ secrets.YC_REVISION_SERVICE_ACCOUNT_ID }}
           revision-cores: 1
           revision-memory: 512Mb
