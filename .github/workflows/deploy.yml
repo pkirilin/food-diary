@@ -61,6 +61,7 @@ jobs:
           revision-provisioned: 1
           revision-env: |
             ForwardHttpsSchemeManuallyForAllRequests=true
+            WriteLogsInJsonFormat=true
           revision-secrets: |
             Auth__AllowedEmails__0=${{ secrets.YC_REVISION_SECRETS_ALLOWED_EMAILS }}
             Google__ExportFolderId=${{ secrets.YC_REVISION_SECRETS_EXPORT_FOLDER_ID }}
