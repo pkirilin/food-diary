@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using System.Threading.Tasks;
 using FoodDiary.API.Extensions;
+using FoodDiary.API.Logging;
 using FoodDiary.API.Middlewares;
 using FoodDiary.API.Options;
 using FoodDiary.Application.Extensions;
@@ -108,8 +109,7 @@ public class Startup
             .AddCheck("liveness", () => HealthCheckResult.Healthy(), ["alive"])
             .AddCheck("readiness", () => HealthCheckResult.Healthy(), ["ready"]);
         
-        services.AddSerilog((provider, logger) => logger
-            .ReadFrom.Configuration(provider.GetRequiredService<IConfiguration>()));
+        services.AddSerilog((provider, logger) => logger.Configure(provider));
 
         services.ConfigureCustomOptions(_configuration);
         services.Configure<ImportOptions>(_configuration.GetSection("Import"));
