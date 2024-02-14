@@ -58,6 +58,7 @@ jobs:
           revision-core-fraction: 100
           revision-concurrency: 2
           revision-execution-timeout: 10
+          revision-provisioned: 1
           revision-env: |
             ForwardHttpsSchemeManuallyForAllRequests=true
           revision-secrets: |
