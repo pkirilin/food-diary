@@ -3,6 +3,11 @@ name: Deploy
 on:
   # workflow_dispatch:
   push:
+
+env:
+  CR_REGISTRY: ${{ secrets.YC_CR_REGISTRY }}
+  CR_REPOSITORY: food-diary
+  IMAGE_TAG: ${{ github.sha }}
       
 jobs:
   run-migrations:
@@ -16,13 +21,9 @@ jobs:
       - name: Run migrator
         run: dotnet run --configuration Release --project src/backend/src/FoodDiary.Migrator/FoodDiary.Migrator.csproj "${{ secrets.Migrator_DatabaseConnectionString }}"
 
-  deploy:
+  build-and-push-image:
     runs-on: ubuntu-latest
     needs: run-migrations
-    env:
-      CR_REGISTRY: ${{ secrets.YC_CR_REGISTRY }}
-      CR_REPOSITORY: food-diary
-      IMAGE_TAG: ${{ github.sha }}
     steps:
       - name: Checkout to the branch
         uses: actions/checkout@v4
@@ -37,7 +38,11 @@ jobs:
         run: |
           docker build -t cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG .
           docker push cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG
-  
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build-and-push-image
+    steps:
       - name: Deploy Serverless Container
         id: deploy-sls-container
         uses: yc-actions/yc-sls-container-deploy@v2
