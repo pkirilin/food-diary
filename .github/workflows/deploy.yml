@@ -60,8 +60,9 @@ jobs:
           revision-execution-timeout: 10
           revision-provisioned: 1
           revision-env: |
-            ForwardHttpsSchemeManuallyForAllRequests=true
-            WriteLogsInJsonFormat=true
+            App__ForwardHttpsSchemeManuallyForAllRequests=true
+            App__Logging__WriteLogsInJsonFormat=true
+            App__Logging__UseYandexCloudLogsFormat=true
           revision-secrets: |
             Auth__AllowedEmails__0=${{ secrets.YC_REVISION_SECRETS_ALLOWED_EMAILS }}
             Google__ExportFolderId=${{ secrets.YC_REVISION_SECRETS_EXPORT_FOLDER_ID }}
