@@ -2,6 +2,11 @@ name: Deploy
 
 on:
   workflow_dispatch:
+
+env:
+  CR_REGISTRY: ${{ secrets.YC_CR_REGISTRY }}
+  CR_REPOSITORY: food-diary
+  IMAGE_TAG: ${{ github.sha }}
       
 jobs:
   run-migrations:
@@ -15,59 +20,51 @@ jobs:
       - name: Run migrator
         run: dotnet run --configuration Release --project src/backend/src/FoodDiary.Migrator/FoodDiary.Migrator.csproj "${{ secrets.Migrator_DatabaseConnectionString }}"
 
-  push-image:
+  build-and-push-image:
     runs-on: ubuntu-latest
     needs: run-migrations
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-  
-      - name: Log in to registry
-        uses: docker/login-action@v3
-        with:
-          registry: https://index.docker.io/v1/
-          username: ${{ secrets.AzureAppService_ContainerUsername_6ff515138c474569b14fb663d02b6c5d }}
-          password: ${{ secrets.AzureAppService_ContainerPassword_f7974bea4cb74acab7e80b5c884a8659 }}
-  
-      - name: Build and push container image to registry
-        uses: docker/build-push-action@v5
-        with:
-          push: true
-          tags: index.docker.io/${{ secrets.AzureAppService_ContainerUsername_6ff515138c474569b14fb663d02b6c5d }}/food-diary:${{ github.sha }}
-          file: ./Dockerfile
-
-  deploy-container-apps:
-    runs-on: ubuntu-latest
-    needs: push-image
     steps:
       - name: Checkout to the branch
         uses: actions/checkout@v4
 
-      - name: Azure Login
-        uses: azure/login@v1
+      - name: Login to Yandex Cloud Container Registry
+        id: login-cr
+        uses: yc-actions/yc-cr-login@v2
         with:
-          creds: ${{ secrets.FOODDIARY_AZURE_CREDENTIALS }}
+          yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+  
+      - name: Build, tag, and push image to Yandex Cloud Container Registry
+        run: |
+          docker build -t cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG .
+          docker push cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG
 
-      - name: Deploy to Azure Container Apps
-        uses: azure/container-apps-deploy-action@v2
-        with:
-          containerAppName: food-diary
-          resourceGroup: rg-food-diary
-          imageToDeploy: index.docker.io/${{ secrets.AzureAppService_ContainerUsername_6ff515138c474569b14fb663d02b6c5d }}/food-diary:${{ github.sha }}
-
-  deploy-app-service:
+  deploy:
     runs-on: ubuntu-latest
-    needs: push-image
-    environment:
-      name: 'production'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+    needs: build-and-push-image
     steps:
-    - name: Deploy to Azure Web App
-      id: deploy-to-webapp
-      uses: azure/webapps-deploy@v3
-      with:
-        app-name: 'food-diary'
-        slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_d39bb6452cd540d78f4dd9fe3526ed62 }}
-        images: 'index.docker.io/${{ secrets.AzureAppService_ContainerUsername_6ff515138c474569b14fb663d02b6c5d }}/food-diary:${{ github.sha }}'
+      - name: Deploy Serverless Container
+        id: deploy-sls-container
+        uses: yc-actions/yc-sls-container-deploy@v2
+        with:
+          yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+          container-name: ${{ env.CR_REPOSITORY }}
+          folder-id: ${{ secrets.YC_FOLDER_ID }}
+          public: true
+          revision-image-url: cr.yandex/${{ env.CR_REGISTRY }}/${{ env.CR_REPOSITORY }}:${{ env.IMAGE_TAG }}
+          revision-service-account-id: ${{ secrets.YC_REVISION_SERVICE_ACCOUNT_ID }}
+          revision-cores: 1
+          revision-memory: 512Mb
+          revision-core-fraction: 100
+          revision-concurrency: 2
+          revision-execution-timeout: 10
+          revision-provisioned: 1
+          revision-env: |
+            App__ForwardHttpsSchemeManuallyForAllRequests=true
+            App__Logging__WriteLogsInJsonFormat=true
+            App__Logging__UseYandexCloudLogsFormat=true
+          revision-secrets: |
+            Auth__AllowedEmails__0=${{ secrets.YC_REVISION_SECRETS_ALLOWED_EMAILS }}
+            Google__ExportFolderId=${{ secrets.YC_REVISION_SECRETS_EXPORT_FOLDER_ID }}
+            ConnectionStrings__Default=${{ secrets.YC_REVISION_SECRETS_DB_CONNECTION_STRING }}
+            GoogleAuth__ClientId=${{ secrets.YC_REVISION_SECRETS_GOOGLE_CLIENT_ID }}
+            GoogleAuth__ClientSecret=${{ secrets.YC_REVISION_SECRETS_GOOGLE_CLIENT_SECRET }}
