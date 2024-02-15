@@ -1,8 +1,7 @@
 name: Deploy
 
 on:
-  # workflow_dispatch:
-  push:
+  workflow_dispatch:
 
 env:
   CR_REGISTRY: ${{ secrets.YC_CR_REGISTRY }}
