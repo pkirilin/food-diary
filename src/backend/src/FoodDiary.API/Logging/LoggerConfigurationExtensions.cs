@@ -2,7 +2,6 @@ using System;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
-using Serilog.Formatting.Json;
 
 namespace FoodDiary.API.Logging;
 
@@ -16,7 +15,7 @@ public static class LoggerConfigurationExtensions
         
         if (configuration.GetSection("WriteLogsInJsonFormat").Get<bool>())
         {
-            loggerConfiguration.WriteTo.Console(new JsonFormatter());
+            loggerConfiguration.WriteTo.Console(new YandexCloudJsonFormatter());
         }
         else
         {
