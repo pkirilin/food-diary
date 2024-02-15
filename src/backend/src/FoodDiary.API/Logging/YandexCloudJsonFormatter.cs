@@ -23,9 +23,8 @@ public class YandexCloudJsonFormatter : ITextFormatter
             {
                 message = logEvent.MessageTemplate.Render(logEvent.Properties),
                 level = FormatLevel(logEvent.Level),
-                timestamp = logEvent.Timestamp.ToString("O"),
                 exception = logEvent.Exception,
-                properties = logEvent.Properties.ToDictionary(p => p.Key, p => p.Value.ToString())
+                properties = logEvent.Properties.ToDictionary(p => p.Key, p => p.Value.ToString().Trim('"'))
             },
             SerializerOptions));
     }
