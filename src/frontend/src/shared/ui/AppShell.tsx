@@ -10,7 +10,7 @@ interface Props extends PropsWithChildren {
 export const AppShell: FC<Props> = ({ children, withNavigationProgress, header }) => (
   <>
     {header && (
-      <Box component="header" position="sticky" top={0} zIndex={1}>
+      <Box component="header" position="sticky" top={0} zIndex={theme => theme.zIndex.appBar}>
         {header}
       </Box>
     )}

@@ -12,4 +12,6 @@ export const {
   filterReset,
 } = actions;
 
+export * from './types';
+
 export default reducer;

@@ -1,4 +1,4 @@
-import { Box, Container, Paper, Typography } from '@mui/material';
+import { Paper, Typography } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 import { useEffect, type FC } from 'react';
 import { useAppDispatch } from 'src/hooks';
@@ -35,23 +35,21 @@ const Products: FC = () => {
   };
 
   return (
-    <Container>
-      <Box py={3}>
-        <Typography sx={visuallyHidden} variant="h1" gutterBottom>
-          Products
-        </Typography>
-        <Paper>
-          <ProductsTableToolbar />
-          <ProductsTable
-            products={getProductsQuery.data?.productItems ?? []}
-            isLoading={getProductsQuery.isFetching}
-            checkedIds={checkedProductIds}
-            onCheckedChange={handleCheckedProductsChange}
-          />
-          <ProductsTablePagination />
-        </Paper>
-      </Box>
-    </Container>
+    <>
+      <Typography sx={visuallyHidden} variant="h1" gutterBottom>
+        Products
+      </Typography>
+      <Paper>
+        <ProductsTableToolbar />
+        <ProductsTable
+          products={getProductsQuery.data?.productItems ?? []}
+          isLoading={getProductsQuery.isFetching}
+          checkedIds={checkedProductIds}
+          onCheckedChange={handleCheckedProductsChange}
+        />
+        <ProductsTablePagination />
+      </Paper>
+    </>
   );
 };
 
