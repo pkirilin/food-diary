@@ -15,6 +15,14 @@ export const createAppRouter = (): ReturnType<typeof createBrowserRouter> =>
           lazy: async () => await import('@/pages/ui/LoginPage'),
         },
         {
+          path: '/post-login',
+          lazy: async () => await import('@/pages/ui/PostLoginPage'),
+        },
+        {
+          path: 'post-logout',
+          lazy: async () => await import('@/pages/ui/PostLogoutPage'),
+        },
+        {
           path: '/pages',
           lazy: async () => await import('@/pages/ui/PagesPage'),
         },
