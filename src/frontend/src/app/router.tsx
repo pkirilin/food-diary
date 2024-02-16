@@ -1,5 +1,5 @@
-import { createBrowserRouter } from 'react-router-dom';
-import { ErrorPage } from '@/pages/ErrorPage';
+import { createBrowserRouter, redirect } from 'react-router-dom';
+import { ErrorPage } from '@/pages/ui/ErrorPage';
 
 export const router = createBrowserRouter([
   {
@@ -7,19 +7,27 @@ export const router = createBrowserRouter([
     children: [
       {
         path: '/',
-        lazy: async () => await import('@/pages/RootPage'),
+        loader: () => redirect('/pages'),
       },
       {
         path: '/login',
-        lazy: async () => await import('@/pages/LoginPage'),
+        lazy: async () => await import('@/pages/ui/LoginPage'),
       },
       {
         path: '/pages',
-        lazy: async () => await import('@/pages/RootPage'),
+        lazy: async () => await import('@/pages/ui/PagesPage'),
+      },
+      {
+        path: '/pages/:id',
+        lazy: async () => await import('@/pages/ui/PageDetailPage'),
       },
       {
         path: '/products',
-        lazy: async () => await import('@/pages/ProductsPage'),
+        lazy: async () => await import('@/pages/ui/ProductsPage'),
+      },
+      {
+        path: '/categories',
+        lazy: async () => await import('@/pages/ui/CategoriesPage'),
       },
     ],
   },
