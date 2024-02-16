@@ -12,7 +12,6 @@ interface LoginOptions {
 
 interface UseAuthHookResult {
   user?: AuthUserState;
-  isLoggingIn: boolean;
   login: (options: LoginOptions) => void;
   logout: () => void;
   completeLogin: () => void;
@@ -22,13 +21,7 @@ interface UseAuthHookResult {
 export default function useAuth(): UseAuthHookResult {
   const user = useAppSelector(state => state.auth.user);
   const dispatch = useAppDispatch();
-
-  const { refetch, isFetching } = authApi.useGetStatusQuery(
-    {},
-    {
-      skip: !!user,
-    },
-  );
+  const [getStatus] = authApi.useLazyGetStatusQuery();
 
   const signIn = useCallback(() => {
     dispatch(actions.signIn());
@@ -60,16 +53,15 @@ export default function useAuth(): UseAuthHookResult {
   }, [signOut]);
 
   const completeLogin = useCallback(() => {
-    void refetch();
-  }, [refetch]);
+    void getStatus({});
+  }, [getStatus]);
 
   const completeLogout = useCallback(() => {
-    void refetch();
-  }, [refetch]);
+    void getStatus({});
+  }, [getStatus]);
 
   return {
     user,
-    isLoggingIn: isFetching,
     login,
     logout,
     completeLogin,

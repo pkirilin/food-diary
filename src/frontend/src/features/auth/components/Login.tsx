@@ -1,6 +1,5 @@
 import { Box, Paper, Stack, Typography } from '@mui/material';
 import { type FC } from 'react';
-import { Navigate } from 'react-router-dom';
 import { AppButton } from 'src/components';
 import { DEMO_MODE_ENABLED } from 'src/config';
 import { useAuth, useReturnUrl } from '../hooks';
@@ -10,15 +9,11 @@ import Logo from './Logo';
 
 const Login: FC = () => {
   const returnUrl = useReturnUrl();
-  const { user, isLoggingIn, login } = useAuth();
+  const { login } = useAuth();
 
   const handleSignInWithGoogle = (): void => {
     login({ returnUrl });
   };
-
-  if (user && user.isAuthenticated) {
-    return <Navigate to="/" />;
-  }
 
   return (
     <Box
@@ -27,16 +22,11 @@ const Login: FC = () => {
       justifyContent="center"
       alignItems="center"
       p={4}
-      sx={theme => ({
-        backgroundColor: theme.palette.grey[100],
-      })}
+      sx={theme => ({ backgroundColor: theme.palette.grey[100] })}
     >
       <Paper
         component={Stack}
-        width={{
-          xs: '100%',
-          sm: '512px',
-        }}
+        width={{ xs: '100%', sm: '512px' }}
         p={4}
         spacing={4}
         alignItems="center"
@@ -52,7 +42,6 @@ const Login: FC = () => {
           Food Diary
         </Typography>
         <AppButton
-          isLoading={isLoggingIn}
           onClick={handleSignInWithGoogle}
           startIcon={<GoogleIcon />}
           variant="outlined"
@@ -67,7 +56,7 @@ const Login: FC = () => {
             },
           })}
         >
-          {isLoggingIn ? 'Logging in' : 'Sign in with Google'}
+          Sign in with Google
         </AppButton>
       </Paper>
     </Box>
