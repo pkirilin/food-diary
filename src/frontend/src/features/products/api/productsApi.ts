@@ -26,7 +26,7 @@ export const productsApi = api.injectEndpoints({
         url: '/api/v1/products',
         body: product,
       }),
-      invalidatesTags: ['product'],
+      invalidatesTags: ['product', 'note'],
     }),
 
     editProduct: builder.mutation<void, EditProductRequest>({
@@ -35,7 +35,7 @@ export const productsApi = api.injectEndpoints({
         url: `/api/v1/products/${id}`,
         body,
       }),
-      invalidatesTags: ['product'],
+      invalidatesTags: ['product', 'note'],
     }),
 
     deleteProducts: builder.mutation<void, DeleteProductsRequest>({
@@ -44,7 +44,7 @@ export const productsApi = api.injectEndpoints({
         url: '/api/v1/products/batch',
         body: ids,
       }),
-      invalidatesTags: ['product'],
+      invalidatesTags: ['product', 'note'],
     }),
   }),
 });
