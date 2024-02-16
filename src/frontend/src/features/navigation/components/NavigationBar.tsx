@@ -18,14 +18,7 @@ const NavigationBar: FC = () => {
   return (
     <AppBar component="nav" position="sticky">
       <Container>
-        <Box
-          id="back-to-top-anchor"
-          component={Toolbar}
-          disableGutters
-          display="flex"
-          gap={1}
-          height={APP_BAR_HEIGHT}
-        >
+        <Box component={Toolbar} disableGutters display="flex" gap={1} height={APP_BAR_HEIGHT}>
           <MobileMenu />
           <Box display="flex" justifyContent="space-between" gap={2} flexGrow={1}>
             <Box display="flex" alignItems="center" gap={4}>
