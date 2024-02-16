@@ -1,9 +1,11 @@
 import { createBrowserRouter, redirect } from 'react-router-dom';
 import { ErrorPage } from '@/pages/ui/ErrorPage';
+import { RootPage } from '@/pages/ui/RootPage';
 
 export const createAppRouter = (): ReturnType<typeof createBrowserRouter> =>
   createBrowserRouter([
     {
+      element: <RootPage />,
       errorElement: <ErrorPage />,
       children: [
         {
