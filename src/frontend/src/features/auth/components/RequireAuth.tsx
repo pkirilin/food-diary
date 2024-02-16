@@ -1,6 +1,6 @@
 import { type FC, type PropsWithChildren } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { useAuth, useAuthProfileCheck } from '../hooks';
+import { useAuth, useAuthStatusCheckEffect } from '../hooks';
 import { type NavigationState } from '../types';
 
 type RequireAuthProps = PropsWithChildren<unknown>;
@@ -8,7 +8,7 @@ type RequireAuthProps = PropsWithChildren<unknown>;
 const RequireAuth: FC<RequireAuthProps> = ({ children }) => {
   const { user } = useAuth();
   const location = useLocation();
-  useAuthProfileCheck();
+  useAuthStatusCheckEffect();
 
   if (!user) {
     return null;

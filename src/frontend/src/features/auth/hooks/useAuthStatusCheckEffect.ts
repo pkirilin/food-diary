@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { AUTH_CHECK_INTERVAL, FAKE_AUTH_ENABLED } from 'src/config';
 import { authApi } from '../api';
 
-export default function useAuthProfileCheck(): void {
+export const useAuthStatusCheckEffect = (): void => {
   const [getProfile] = authApi.useLazyGetStatusQuery();
 
   useEffect(() => {
@@ -18,4 +18,4 @@ export default function useAuthProfileCheck(): void {
       clearInterval(interval);
     };
   }, [getProfile]);
-}
+};

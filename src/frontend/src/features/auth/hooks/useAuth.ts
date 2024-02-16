@@ -18,7 +18,7 @@ interface UseAuthHookResult {
   completeLogout: () => void;
 }
 
-export default function useAuth(): UseAuthHookResult {
+export const useAuth = (): UseAuthHookResult => {
   const user = useAppSelector(state => state.auth.user);
   const dispatch = useAppDispatch();
   const [getStatus] = authApi.useLazyGetStatusQuery();
@@ -67,4 +67,4 @@ export default function useAuth(): UseAuthHookResult {
     completeLogin,
     completeLogout,
   };
-}
+};
