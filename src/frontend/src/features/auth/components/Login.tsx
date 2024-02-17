@@ -1,11 +1,11 @@
-import { Box, Paper, Stack, Typography } from '@mui/material';
+import { Box, Paper, Stack } from '@mui/material';
 import { type FC } from 'react';
 import { AppButton } from 'src/components';
 import { DEMO_MODE_ENABLED } from 'src/config';
 import { useAuth, useReturnUrl } from '../hooks';
 import DemoAuthWarning from './DemoAuthWarning';
 import GoogleIcon from './GoogleIcon';
-import Logo from './Logo';
+import { AppName } from '@/shared/ui';
 
 const Login: FC = () => {
   const returnUrl = useReturnUrl();
@@ -32,15 +32,7 @@ const Login: FC = () => {
         alignItems="center"
       >
         {DEMO_MODE_ENABLED && <DemoAuthWarning />}
-        <Logo />
-        <Typography
-          variant="h1"
-          fontWeight="bold"
-          textAlign="center"
-          sx={theme => ({ color: theme.palette.primary.main })}
-        >
-          Food Diary
-        </Typography>
+        <AppName />
         <AppButton
           onClick={handleSignInWithGoogle}
           startIcon={<GoogleIcon />}
