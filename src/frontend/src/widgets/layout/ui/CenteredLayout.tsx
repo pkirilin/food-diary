@@ -5,7 +5,7 @@ export const CenteredLayout: FC<PropsWithChildren> = ({ children }) => (
   <Box bgcolor={theme => theme.palette.grey[100]}>
     <Box
       height="100vh"
-      width={{ xs: '100%', sm: '512px' }}
+      width={{ xs: '100%', sm: '425px' }}
       margin="auto"
       display="flex"
       justifyContent="center"

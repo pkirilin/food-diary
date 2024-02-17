@@ -21,7 +21,7 @@ export const loader: LoaderFunction = async () => {
 
 export const Component: FC = () => (
   <CenteredLayout>
-    <Paper p={3} spacing={3} width="100%" alignItems="center" component={Stack}>
+    <Paper p={{ xs: 3, sm: 4 }} spacing={3} width="100%" alignItems="center" component={Stack}>
       <AppName />
       <SignInWithGoogleButton />
     </Paper>

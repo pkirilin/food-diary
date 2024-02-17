@@ -1,7 +1,7 @@
+import { Button } from '@mui/material';
 import { type FC } from 'react';
 import { useAuth, useReturnUrl } from '../hooks';
 import GoogleIcon from './GoogleIcon';
-import { AppButton } from '@/components';
 
 export const SignInWithGoogleButton: FC = () => {
   const returnUrl = useReturnUrl();
@@ -12,7 +12,8 @@ export const SignInWithGoogleButton: FC = () => {
   };
 
   return (
-    <AppButton
+    <Button
+      fullWidth
       onClick={handleSignInWithGoogle}
       startIcon={<GoogleIcon />}
       variant="outlined"
@@ -28,6 +29,6 @@ export const SignInWithGoogleButton: FC = () => {
       })}
     >
       Sign in with Google
-    </AppButton>
+    </Button>
   );
 };
