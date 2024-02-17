@@ -1,8 +1,11 @@
+import { Paper, Stack } from '@mui/material';
 import { type FC } from 'react';
 import { type LoaderFunction, redirect } from 'react-router-dom';
 import { ok } from '../lib';
-import { Login, authApi } from '@/features/auth';
+import { authApi, SignInWithGoogleButton } from '@/features/auth';
+import { AppName } from '@/shared/ui';
 import store from '@/store';
+import { CenteredLayout } from '@/widgets/layout';
 
 export const loader: LoaderFunction = async () => {
   const getAuthStatusQuery = await store.dispatch(
@@ -16,4 +19,11 @@ export const loader: LoaderFunction = async () => {
   return ok();
 };
 
-export const Component: FC = () => <Login />;
+export const Component: FC = () => (
+  <CenteredLayout>
+    <Paper p={3} spacing={3} width="100%" alignItems="center" component={Stack}>
+      <AppName />
+      <SignInWithGoogleButton />
+    </Paper>
+  </CenteredLayout>
+);

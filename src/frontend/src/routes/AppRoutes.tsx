@@ -1,6 +1,6 @@
 import { type FC } from 'react';
 import { Navigate, type RouteObject, useRoutes } from 'react-router-dom';
-import { Login, PostLogin, PostLogout, RequireAuth } from 'src/features/auth';
+import { PostLogin, PostLogout, RequireAuth } from 'src/features/auth';
 import { Categories } from 'src/features/categories';
 import { NavigationBar } from 'src/features/navigation';
 import { Pages } from 'src/features/pages';
@@ -9,10 +9,6 @@ import { Products } from 'src/features/products';
 import NotFound from './NotFound';
 
 const PUBLIC_ROUTES: RouteObject[] = [
-  {
-    path: '/login',
-    element: <Login />,
-  },
   {
     path: '/post-login',
     element: <PostLogin />,
