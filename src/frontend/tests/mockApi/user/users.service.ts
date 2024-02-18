@@ -11,3 +11,10 @@ export const signInById = (id: number): void => {
     data: { isAuthenticated: true },
   });
 };
+
+export const signOutById = (id: number): void => {
+  db.user.update({
+    where: { id: { equals: id } },
+    data: { isAuthenticated: false },
+  });
+};

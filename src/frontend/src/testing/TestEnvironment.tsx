@@ -1,7 +1,7 @@
 import { type PropsWithChildren, type FC, useEffect } from 'react';
-import { useAuth } from 'src/features/auth';
 import { pageSizeChanged } from 'src/features/products/store';
-import { type configureAppStore } from 'src/store';
+import { useAppDispatch, type configureAppStore } from 'src/store';
+import { actions } from '@/features/auth/store';
 
 interface TestEnvironmentProps {
   store: ReturnType<typeof configureAppStore>;
@@ -15,7 +15,7 @@ const TestEnvironment: FC<PropsWithChildren<TestEnvironmentProps>> = ({
   signOutAfterMilliseconds,
   pageSizeOverride,
 }) => {
-  const { logout } = useAuth();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (signOutAfterMilliseconds == null) {
@@ -23,19 +23,19 @@ const TestEnvironment: FC<PropsWithChildren<TestEnvironmentProps>> = ({
     }
 
     const timeout = setTimeout(() => {
-      logout();
+      dispatch(actions.signOut());
     }, signOutAfterMilliseconds);
 
     return () => {
       clearTimeout(timeout);
     };
-  }, [logout, signOutAfterMilliseconds]);
+  }, [dispatch, signOutAfterMilliseconds]);
 
   useEffect(() => {
     if (pageSizeOverride != null) {
-      store.dispatch(pageSizeChanged(pageSizeOverride));
+      dispatch(pageSizeChanged(pageSizeOverride));
     }
-  }, [pageSizeOverride, store]);
+  }, [dispatch, pageSizeOverride]);
 
   return <>{children}</>;
 };
