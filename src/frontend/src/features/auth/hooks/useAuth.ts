@@ -1,18 +1,12 @@
 import { useCallback } from 'react';
 import { API_URL, FAKE_AUTH_ENABLED } from 'src/config';
 import { useAppDispatch, useAppSelector } from 'src/hooks';
-import { createUrl } from 'src/utils';
 import { authApi } from '../api';
 import { actions } from '../store';
 import { type AuthUserState } from '../store/types';
 
-interface LoginOptions {
-  returnUrl?: string;
-}
-
 interface UseAuthHookResult {
   user?: AuthUserState;
-  login: (options: LoginOptions) => void;
   logout: () => void;
   completeLogin: () => void;
   completeLogout: () => void;
@@ -23,25 +17,9 @@ export const useAuth = (): UseAuthHookResult => {
   const dispatch = useAppDispatch();
   const [getStatus] = authApi.useLazyGetStatusQuery();
 
-  const signIn = useCallback(() => {
-    dispatch(actions.signIn());
-  }, [dispatch]);
-
   const signOut = useCallback(() => {
     dispatch(actions.signOut());
   }, [dispatch]);
-
-  const login = useCallback(
-    ({ returnUrl }: LoginOptions) => {
-      if (FAKE_AUTH_ENABLED) {
-        signIn();
-      } else {
-        const loginUrl = createUrl(`${API_URL}/api/v1/auth/login`, { returnUrl });
-        window.location.href = loginUrl;
-      }
-    },
-    [signIn],
-  );
 
   const logout = useCallback(() => {
     if (FAKE_AUTH_ENABLED) {
@@ -62,7 +40,6 @@ export const useAuth = (): UseAuthHookResult => {
 
   return {
     user,
-    login,
     logout,
     completeLogin,
     completeLogout,

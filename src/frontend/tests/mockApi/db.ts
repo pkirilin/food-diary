@@ -1,6 +1,11 @@
 import { factory, primaryKey } from '@mswjs/data';
 
 export const db = factory({
+  user: {
+    id: primaryKey(Number),
+    isAuthenticated: Boolean,
+  },
+
   page: {
     id: primaryKey(Number),
     date: Number,
@@ -29,6 +34,7 @@ export const db = factory({
   },
 });
 
+export type DbUser = ReturnType<typeof db.user.findMany>[0];
 export type DbPage = ReturnType<typeof db.page.findMany>[0];
 export type DbNote = ReturnType<typeof db.note.findMany>[0];
 export type DbProduct = ReturnType<typeof db.product.findMany>[0];
