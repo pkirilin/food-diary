@@ -2,7 +2,7 @@ import { Paper, Stack } from '@mui/material';
 import { type FC } from 'react';
 import { type LoaderFunction, redirect, type ActionFunction } from 'react-router-dom';
 import { ok } from '../lib';
-import { API_URL, FAKE_AUTH_ENABLED, FAKE_AUTH_LOGIN_ON_INIT } from '@/config';
+import { API_URL, FAKE_AUTH_ENABLED } from '@/config';
 import { authApi, SignInForm } from '@/features/auth';
 import { AppName } from '@/shared/ui';
 import store from '@/store';
@@ -10,11 +10,6 @@ import { createUrl } from '@/utils';
 import { CenteredLayout } from '@/widgets/layout';
 
 export const loader: LoaderFunction = async () => {
-  if (FAKE_AUTH_ENABLED && FAKE_AUTH_LOGIN_ON_INIT) {
-    const { usersService } = await import('@tests/mockApi/user');
-    usersService.signInById(1);
-  }
-
   const getAuthStatusQuery = await store.dispatch(
     authApi.endpoints.getStatus.initiate({}, { forceRefetch: true }),
   );
