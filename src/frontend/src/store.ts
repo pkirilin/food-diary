@@ -2,7 +2,6 @@ import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
 import { api } from './api';
 import { useAppDispatch, useAppSelector } from './features/__shared__/hooks';
-import authReducer from './features/auth/store';
 import pagesReducer from './features/pages/slice';
 import productsReducer from './features/products/store';
 
@@ -11,7 +10,6 @@ export const configureAppStore = () =>
   configureStore({
     reducer: {
       [api.reducerPath]: api.reducer,
-      auth: authReducer,
       pages: pagesReducer,
       products: productsReducer,
     },
