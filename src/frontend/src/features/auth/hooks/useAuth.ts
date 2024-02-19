@@ -1,29 +1,16 @@
-import { useCallback } from 'react';
-import { useAppSelector } from 'src/hooks';
-import { authApi } from '../api';
-import { type AuthUserState } from '../store/types';
+import { type GetAuthStatusResponse, authApi } from '../api';
 
-interface UseAuthHookResult {
-  user?: AuthUserState;
-  completeLogin: () => void;
-  completeLogout: () => void;
+interface UseAuthResult {
+  status: GetAuthStatusResponse;
 }
 
-export const useAuth = (): UseAuthHookResult => {
-  const user = useAppSelector(state => state.auth.user);
-  const [getStatus] = authApi.useLazyGetStatusQuery();
+export const useAuth = (): UseAuthResult => {
+  const status = authApi.useGetStatusQuery(
+    {},
+    {
+      selectFromResult: ({ data }) => data ?? { isAuthenticated: false },
+    },
+  );
 
-  const completeLogin = useCallback(() => {
-    void getStatus({});
-  }, [getStatus]);
-
-  const completeLogout = useCallback(() => {
-    void getStatus({});
-  }, [getStatus]);
-
-  return {
-    user,
-    completeLogin,
-    completeLogout,
-  };
+  return { status };
 };
