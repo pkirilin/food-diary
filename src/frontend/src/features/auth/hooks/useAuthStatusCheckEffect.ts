@@ -1,21 +1,25 @@
 import { useEffect } from 'react';
-import { AUTH_CHECK_INTERVAL, FAKE_AUTH_ENABLED } from 'src/config';
+import { useSubmit } from 'react-router-dom';
+import { AUTH_CHECK_INTERVAL } from 'src/config';
 import { authApi } from '../api';
 
 export const useAuthStatusCheckEffect = (): void => {
-  const [getProfile] = authApi.useLazyGetStatusQuery();
+  const [getAuthStatus] = authApi.useLazyGetStatusQuery();
+  const submit = useSubmit();
 
   useEffect(() => {
-    if (FAKE_AUTH_ENABLED) {
-      return;
-    }
-
     const interval = setInterval(() => {
-      void getProfile({});
+      void (async () => {
+        const authStatus = await getAuthStatus({});
+
+        if (!authStatus.data?.isAuthenticated) {
+          submit(null, { method: 'post', action: '/logout' });
+        }
+      })();
     }, AUTH_CHECK_INTERVAL);
 
     return () => {
       clearInterval(interval);
     };
-  }, [getProfile]);
+  }, [getAuthStatus, submit]);
 };
