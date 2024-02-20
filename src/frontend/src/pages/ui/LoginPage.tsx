@@ -1,6 +1,11 @@
 import { Paper, Stack } from '@mui/material';
 import { type FC } from 'react';
-import { type LoaderFunction, redirect, type ActionFunction } from 'react-router-dom';
+import {
+  type LoaderFunction,
+  redirect,
+  type ActionFunction,
+  redirectDocument,
+} from 'react-router-dom';
 import { ok } from '../lib';
 import { API_URL, FAKE_AUTH_ENABLED } from '@/config';
 import { authApi, SignInForm } from '@/features/auth';
@@ -31,7 +36,7 @@ export const action: ActionFunction = async ({ request }) => {
   }
 
   const loginUrl = createUrl(`${API_URL}/api/v1/auth/login`, { returnUrl });
-  return redirect(loginUrl);
+  return redirectDocument(loginUrl);
 };
 
 export const Component: FC = () => (

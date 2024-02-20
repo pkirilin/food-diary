@@ -1,4 +1,4 @@
-import { redirect, type ActionFunction } from 'react-router-dom';
+import { redirect, type ActionFunction, redirectDocument } from 'react-router-dom';
 import { API_URL, FAKE_AUTH_ENABLED } from '@/config';
 
 export const action: ActionFunction = async () => {
@@ -8,5 +8,5 @@ export const action: ActionFunction = async () => {
     return redirect('/login');
   }
 
-  return redirect(`${API_URL}/api/v1/auth/logout`);
+  return redirectDocument(`${API_URL}/api/v1/auth/logout`);
 };
