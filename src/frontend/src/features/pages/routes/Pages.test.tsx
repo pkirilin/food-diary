@@ -3,12 +3,13 @@ import userEvent from '@testing-library/user-event';
 import { render } from 'src/testing';
 import Pages from './Pages';
 
-// TODO: fix this test by adding progressbar
-// test('pages are loaded into table', async () => {
-//   render(<Pages />);
+test('pages are loaded into table', async () => {
+  render(<Pages />);
 
-//   await expect(screen).toContainPageItems('01.01.2022');
-// });
+  const pageItems = await screen.findAllByText(/^\d{4}-\d{2}-\d{2}$/);
+
+  expect(pageItems.length).toBeGreaterThan(0);
+});
 
 test('pages can be exported to JSON if start/end dates specified', async () => {
   render(<Pages />);

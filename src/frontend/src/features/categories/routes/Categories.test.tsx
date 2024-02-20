@@ -6,9 +6,7 @@ import Categories from './Categories';
 test('categories are displayed with their product counts', async () => {
   render(<Categories />);
 
-  await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
-
-  expect(screen.getByText(/dairy/i));
+  expect(await screen.findByText(/dairy/i));
   expect(screen.getByText(/bakery/i));
   expect(screen.getByText(/frozen foods/i));
   expect(screen.getByLabelText(/2 products in dairy/i));
@@ -19,9 +17,7 @@ test('categories are displayed with their product counts', async () => {
 test('category can be created', async () => {
   render(<Categories />);
 
-  await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
-  await userEvent.click(screen.getByLabelText(/create new category/i));
-
+  await userEvent.click(await screen.findByLabelText(/create new category/i));
   const dialog = within(screen.getByRole('dialog'));
   await userEvent.type(dialog.getByPlaceholderText(/category name/i), 'New fancy category');
   await userEvent.click(dialog.getByLabelText(/create new fancy category/i));
@@ -34,9 +30,7 @@ test('category can be created', async () => {
 test('category can be edited', async () => {
   render(<Categories />);
 
-  await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
-  await userEvent.click(screen.getByLabelText(/edit cereals/i));
-
+  await userEvent.click(await screen.findByLabelText(/edit cereals/i));
   const dialog = within(screen.getByRole('dialog'));
   const name = dialog.getByPlaceholderText(/category name/i);
   await userEvent.clear(name);
@@ -49,18 +43,9 @@ test('category can be edited', async () => {
 test('category can be deleted', async () => {
   render(<Categories />);
 
-  await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
-  await userEvent.click(screen.getByLabelText(/delete cereals/i));
-
+  await userEvent.click(await screen.findByLabelText(/delete cereals/i));
   const dialog = within(screen.getByRole('dialog'));
   await userEvent.click(dialog.getByLabelText(/delete cereals/i));
 
   expect(screen.queryByText(/cereals/i)).not.toBeInTheDocument();
-});
-
-test('category cannot be created while categories list is loading', async () => {
-  render(<Categories />);
-
-  expect(screen.getByRole('progressbar')).toBeVisible();
-  expect(screen.getByLabelText(/create new category/i)).toBeDisabled();
 });

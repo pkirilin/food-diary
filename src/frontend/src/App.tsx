@@ -1,13 +1,10 @@
-import { Box } from '@mui/material';
-import { type FC } from 'react';
-import { AppRoutes } from './routes';
+import { type PropsWithChildren, type FC } from 'react';
+import { RouterProvider } from 'react-router-dom';
+import { AppLoader } from './app/AppLoader';
+import { createAppRouter } from './app/router';
 
-const App: FC = () => {
-  return (
-    <Box component="main" position="relative">
-      <AppRoutes />
-    </Box>
-  );
-};
+const App: FC<PropsWithChildren> = ({ children }) => (
+  <RouterProvider router={createAppRouter(children)} fallbackElement={<AppLoader />} />
+);
 
 export default App;

@@ -10,7 +10,6 @@ import {
 import { useMemo, type FC } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Calories } from 'src/components';
-import { APP_BAR_HEIGHT } from 'src/constants';
 import { notesApi } from 'src/features/notes';
 import { formatDate } from 'src/utils';
 import { type Page } from '../models';
@@ -26,7 +25,7 @@ const PageContentHeader: FC<Props> = ({ page }) => {
   const notes = useMemo(() => getNotesQuery.data ?? [], [getNotesQuery.data]);
   const totalCalories = useMemo(() => notes.reduce((sum, note) => sum + note.calories, 0), [notes]);
 
-  const dividerVisible = useScrollTrigger({
+  const pageScrolled = useScrollTrigger({
     threshold: DIVIDER_VISIBLE_SCROLL_THRESHOLD,
     disableHysteresis: true,
   });
@@ -34,14 +33,12 @@ const PageContentHeader: FC<Props> = ({ page }) => {
   return (
     <Box
       position="sticky"
-      top={APP_BAR_HEIGHT}
-      zIndex={1}
       bgcolor={theme => theme.palette.background.default}
       sx={theme => ({
         '::before': {
           content: '""',
           position: 'absolute',
-          display: dividerVisible ? 'block' : 'none',
+          display: pageScrolled ? 'block' : 'none',
           left: 0,
           bottom: 0,
           width: '100%',
@@ -52,7 +49,8 @@ const PageContentHeader: FC<Props> = ({ page }) => {
       <Stack
         component={Container}
         direction="row"
-        py={3}
+        pt={3}
+        pb={pageScrolled ? 3 : 0}
         gap={2}
         justifyContent="space-between"
         alignItems="center"

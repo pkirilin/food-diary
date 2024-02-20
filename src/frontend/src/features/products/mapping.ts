@@ -1,4 +1,5 @@
-import { type CreateProductRequest, type EditProductRequest } from './api';
+import { type GetProductsRequest, type CreateProductRequest, type EditProductRequest } from './api';
+import { type ProductItemsFilter } from './store';
 import { type Product, type ProductFormData } from './types';
 
 export const toProductFormData = ({
@@ -15,6 +16,18 @@ export const toProductFormData = ({
     id: categoryId,
     name: categoryName,
   },
+});
+
+export const toGetProductsRequest = ({
+  pageNumber,
+  pageSize,
+  productSearchName,
+  category,
+}: ProductItemsFilter): GetProductsRequest => ({
+  pageNumber,
+  pageSize,
+  productSearchName,
+  categoryId: category?.id,
 });
 
 export const toCreateProductRequest = ({

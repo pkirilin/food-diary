@@ -21,6 +21,12 @@ beforeAll(() => {
     }),
   });
 
+  // For react-router-dom's <ScrollRestoration /> support
+  Object.defineProperty(window, 'scrollTo', {
+    writable: true,
+    value: () => {},
+  });
+
   server.listen();
 });
 

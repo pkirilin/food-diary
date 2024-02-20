@@ -1,11 +1,14 @@
 import { http, type HttpHandler, HttpResponse } from 'msw';
-import { API_URL, FAKE_AUTH_ENABLED, FAKE_AUTH_LOGIN_ON_INIT } from 'src/config';
+import { API_URL } from 'src/config';
 import { type GetAuthStatusResponse } from 'src/features/auth';
+import { usersService } from '../user';
 
 export const handlers: HttpHandler[] = [
-  http.get(`${API_URL}/api/v1/auth/status`, () =>
-    HttpResponse.json<GetAuthStatusResponse>({
-      isAuthenticated: FAKE_AUTH_ENABLED && FAKE_AUTH_LOGIN_ON_INIT,
-    }),
-  ),
+  http.get(`${API_URL}/api/v1/auth/status`, () => {
+    const user = usersService.findById(1);
+
+    return HttpResponse.json<GetAuthStatusResponse>({
+      isAuthenticated: user?.isAuthenticated ?? false,
+    });
+  }),
 ];

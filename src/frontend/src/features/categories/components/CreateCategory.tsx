@@ -8,7 +8,6 @@ import CategoryInputDialog from './CategoryInputDialog';
 const CreateCategory: FC = () => {
   const [isCreateDialogOpened, setIsCreateDialogOpened] = useState(false);
   const [createCategory, createCategoryRequest] = categoriesApi.useCreateCategoryMutation();
-  const categoriesQuery = categoriesApi.useGetCategoriesQuery();
 
   useEffect(() => {
     if (createCategoryRequest.isSuccess) {
@@ -26,12 +25,7 @@ const CreateCategory: FC = () => {
 
   return (
     <>
-      <AppFab
-        aria-label="Create new category"
-        color="primary"
-        onClick={handleCreate}
-        disabled={categoriesQuery.isLoading}
-      >
+      <AppFab aria-label="Create new category" color="primary" onClick={handleCreate}>
         <AddIcon />
       </AppFab>
 

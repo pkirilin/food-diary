@@ -1,5 +1,4 @@
-import { screen } from '@testing-library/react';
-import { render } from 'src/testing';
+import { render, screen } from '@testing-library/react';
 import AppButton from './AppButton';
 
 test('should be enabled by default', async () => {

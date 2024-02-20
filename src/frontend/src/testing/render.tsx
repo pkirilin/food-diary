@@ -1,51 +1,55 @@
 import { type RenderResult, render as rtlRender } from '@testing-library/react';
 import { type ReactElement } from 'react';
+import { RouterProvider, createMemoryRouter } from 'react-router-dom';
 import AppProvider from 'src/AppProvider';
-import { actions as authActions } from 'src/features/auth/store';
 import { configureAppStore } from 'src/store';
 import TestEnvironment from './TestEnvironment';
+import App from '@/App';
 
 interface RenderOptions {
-  withAuthentication?: boolean;
   signOutAfterMilliseconds?: number;
   pageSizeOverride?: number;
 }
 
-const defaultOptions: RenderOptions = {
-  withAuthentication: true,
+export const renderApp = ({
+  signOutAfterMilliseconds,
+  pageSizeOverride,
+}: RenderOptions = {}): void => {
+  rtlRender(
+    <AppProvider store={configureAppStore()}>
+      <App>
+        <TestEnvironment
+          signOutAfterMilliseconds={signOutAfterMilliseconds}
+          pageSizeOverride={pageSizeOverride}
+        />
+      </App>
+    </AppProvider>,
+  );
 };
 
-function prepareStore(
-  store: ReturnType<typeof configureAppStore>,
-  { withAuthentication }: RenderOptions,
-): void {
-  if (withAuthentication) {
-    store.dispatch(authActions.signIn());
-  } else if (withAuthentication === false) {
-    store.dispatch(authActions.signOut());
-  }
-}
+export default function render(
+  ui: ReactElement,
+  { signOutAfterMilliseconds, pageSizeOverride }: RenderOptions = {},
+): RenderResult {
+  const store = configureAppStore();
 
-export default function render(ui: ReactElement, options?: RenderOptions): RenderResult {
-  const optionsToApply = {
-    ...defaultOptions,
-    ...options,
-  };
-
-  const store: ReturnType<typeof configureAppStore> = configureAppStore();
-  prepareStore(store, optionsToApply);
-
-  const { signOutAfterMilliseconds, pageSizeOverride } = optionsToApply;
+  const router = createMemoryRouter([
+    {
+      path: '/',
+      element: (
+        <TestEnvironment
+          signOutAfterMilliseconds={signOutAfterMilliseconds}
+          pageSizeOverride={pageSizeOverride}
+        >
+          {ui}
+        </TestEnvironment>
+      ),
+    },
+  ]);
 
   const result = rtlRender(
     <AppProvider store={store}>
-      <TestEnvironment
-        store={store}
-        signOutAfterMilliseconds={signOutAfterMilliseconds}
-        pageSizeOverride={pageSizeOverride}
-      >
-        {ui}
-      </TestEnvironment>
+      <RouterProvider router={router} />
     </AppProvider>,
   );
 
