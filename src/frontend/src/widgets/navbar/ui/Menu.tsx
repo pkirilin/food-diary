@@ -1,9 +1,9 @@
 import { Box, List, ListItem, ListItemButton, ListItemText } from '@mui/material';
 import { type FC } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { NAV_LINKS } from '../constants';
+import { NAV_LINKS } from '../lib';
 
-const Menu: FC = () => {
+export const Menu: FC = () => {
   const location = useLocation();
 
   return (
@@ -43,5 +43,3 @@ const Menu: FC = () => {
     </Box>
   );
 };
-
-export default Menu;

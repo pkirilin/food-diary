@@ -1,6 +1,6 @@
 import { Box, Container, LinearProgress } from '@mui/material';
 import { type PropsWithChildren, type FC, type ReactElement } from 'react';
-import { APP_BAR_HEIGHT } from '@/constants';
+import { APP_BAR_HEIGHT } from '../constants';
 
 interface Props extends PropsWithChildren {
   withNavigationProgress: boolean;
