@@ -1,5 +1,6 @@
 import 'date-fns';
 import { initBrowserMockApi } from 'tests/mockApi';
+import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
 import AppProvider from './AppProvider';
@@ -20,8 +21,10 @@ void (async () => {
   const root = createRoot(container);
 
   root.render(
-    <AppProvider store={store}>
-      <App />
-    </AppProvider>,
+    <StrictMode>
+      <AppProvider store={store}>
+        <App />
+      </AppProvider>
+    </StrictMode>,
   );
 })();
