@@ -1,8 +1,8 @@
 import { type PropsWithChildren, type FC, type ReactElement } from 'react';
-import { useNavigationProgress } from '../lib';
 import { useAuthStatusCheckEffect } from '@/features/auth';
 import { AppShell } from '@/shared/ui';
 import { NavigationBar } from '@/widgets/navbar';
+import { useNavigationProgress } from '../lib';
 
 interface Props extends PropsWithChildren {
   header?: ReactElement;

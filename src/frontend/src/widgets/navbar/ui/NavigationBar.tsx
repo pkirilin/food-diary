@@ -2,10 +2,10 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { AppBar, Box, Container, IconButton, Link, Toolbar, Tooltip } from '@mui/material';
 import { type FC } from 'react';
 import { Form, Link as RouterLink } from 'react-router-dom';
+import { APP_BAR_HEIGHT } from '@/shared/constants';
 import { APP_NAME } from '../lib';
 import { Menu } from './Menu';
 import { MobileMenu } from './MobileMenu';
-import { APP_BAR_HEIGHT } from '@/shared/constants';
 
 export const NavigationBar: FC = () => (
   <AppBar component="nav" position="sticky">

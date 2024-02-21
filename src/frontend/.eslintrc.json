@@ -76,6 +76,16 @@
             },
             "pathGroups": [
               {
+                "pattern": "@/**/*",
+                "group": "internal",
+                "position": "after"
+              },
+              {
+                "pattern": "@tests/*",
+                "group": "internal",
+                "position": "after"
+              },
+              {
                 "pattern": "src/**",
                 "group": "internal",
                 "position": "after"

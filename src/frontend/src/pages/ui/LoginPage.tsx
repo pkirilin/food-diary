@@ -6,13 +6,13 @@ import {
   type ActionFunction,
   redirectDocument,
 } from 'react-router-dom';
-import { ok } from '../lib';
 import { API_URL, FAKE_AUTH_ENABLED } from '@/config';
 import { authApi, SignInForm } from '@/features/auth';
 import { AppName } from '@/shared/ui';
 import store from '@/store';
 import { createUrl } from '@/utils';
 import { CenteredLayout } from '@/widgets/layout';
+import { ok } from '../lib';
 
 export const loader: LoaderFunction = async () => {
   const getAuthStatusQuery = await store.dispatch(

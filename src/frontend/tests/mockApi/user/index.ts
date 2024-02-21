@@ -1,6 +1,6 @@
+import { FAKE_AUTH_LOGIN_ON_INIT } from '@/config';
 import { db } from '../db';
 import data from './users.data.json';
-import { FAKE_AUTH_LOGIN_ON_INIT } from '@/config';
 
 export const fillUsers = (): void => {
   data.forEach(user => {
