@@ -39,7 +39,7 @@ export class NoteInputDialogBuilder {
   withProductForSelect({
     name = 'Test',
     defaultQuantity = 100,
-  }: Partial<ProductSelectOption>): NoteInputDialogBuilder {
+  }: Partial<ProductSelectOption>): this {
     this._products.push({
       id: this._products.length + 1,
       name,
@@ -49,22 +49,22 @@ export class NoteInputDialogBuilder {
     return this;
   }
 
-  withSelectedProduct(name: string): NoteInputDialogBuilder {
+  withSelectedProduct(name: string): this {
     this._selectedProductName = name;
     return this;
   }
 
-  withQuantity(quantity: number): NoteInputDialogBuilder {
+  withQuantity(quantity: number): this {
     this._quantity = quantity;
     return this;
   }
 
-  withOnSubmit(onSubmitMock: Mock): NoteInputDialogBuilder {
+  withOnSubmit(onSubmitMock: Mock): this {
     this._onSubmitMock = onSubmitMock;
     return this;
   }
 
-  withOpenAndCloseOnButtonClick(label: string): NoteInputDialogBuilder {
+  withOpenAndCloseOnButtonClick(label: string): this {
     this._openAndCloseOnButtonClick = true;
     this._triggerButtonLabel = label;
     return this;
