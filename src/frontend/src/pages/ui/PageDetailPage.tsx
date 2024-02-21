@@ -1,12 +1,12 @@
 import { type FC } from 'react';
 import { useLoaderData } from 'react-router-dom';
-import { withAuthStatusCheck } from '../lib';
 import { notesApi } from '@/features/notes';
 import { MealsList } from '@/features/notes/components';
 import { pagesApi } from '@/features/pages';
 import PageContentHeader from '@/features/pages/components/PageContentHeader';
 import store from '@/store';
 import { PrivateLayout } from '@/widgets/layout';
+import { withAuthStatusCheck } from '../lib';
 
 interface LoaderData {
   pageId: number;

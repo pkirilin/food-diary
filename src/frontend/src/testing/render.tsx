@@ -1,10 +1,10 @@
 import { type RenderResult, render as rtlRender } from '@testing-library/react';
 import { type ReactElement } from 'react';
 import { RouterProvider, createMemoryRouter } from 'react-router-dom';
+import App from '@/App';
 import AppProvider from 'src/AppProvider';
 import { configureAppStore } from 'src/store';
 import TestEnvironment from './TestEnvironment';
-import App from '@/App';
 
 interface RenderOptions {
   signOutAfterMilliseconds?: number;

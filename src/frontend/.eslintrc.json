@@ -4,7 +4,6 @@
     {
       "files": ["*.ts", "*.tsx"],
       "extends": [
-        "plugin:import/typescript",
         "plugin:react/recommended",
         "plugin:react-hooks/recommended",
         "plugin:react/jsx-runtime",
@@ -13,18 +12,19 @@
       ],
       "parser": "@typescript-eslint/parser",
       "parserOptions": {
-        "ecmaVersion": 2018,
+        "ecmaVersion": "latest",
         "sourceType": "module",
         "ecmaFeatures": {
           "jsx": true
-        }
+        },
+        "project": ["tsconfig.json"]
       },
       "settings": {
         "react": {
           "version": "detect"
         }
       },
-      "plugins": ["prettier", "import", "react", "react-hooks", "jest-dom", "testing-library"],
+      "plugins": ["prettier", "react", "react-hooks", "jest-dom", "testing-library", "import"],
       "rules": {
         "prettier/prettier": 2,
         "no-console": "warn",
@@ -60,6 +60,12 @@
             "allowRuleToRunWithoutStrictNullChecksIKnowWhatIAmDoing": false
           }
         ],
+        "@typescript-eslint/no-misused-promises": "off",
+        "@typescript-eslint/no-confusing-void-expression": "off",
+        "@typescript-eslint/promise-function-async": "off",
+        "@typescript-eslint/unbound-method": "off",
+        "@typescript-eslint/no-floating-promises": "off",
+        "@typescript-eslint/no-unsafe-argument": "off",
         "@typescript-eslint/no-invalid-void-type": "off",
         "import/order": [
           "error",
@@ -70,6 +76,16 @@
               "caseInsensitive": true
             },
             "pathGroups": [
+              {
+                "pattern": "@/**/*",
+                "group": "internal",
+                "position": "after"
+              },
+              {
+                "pattern": "@tests/*",
+                "group": "internal",
+                "position": "after"
+              },
               {
                 "pattern": "src/**",
                 "group": "internal",
