@@ -65,6 +65,7 @@
         "@typescript-eslint/promise-function-async": "off",
         "@typescript-eslint/unbound-method": "off",
         "@typescript-eslint/no-floating-promises": "off",
+        "@typescript-eslint/no-unsafe-argument": "off",
         "@typescript-eslint/no-invalid-void-type": "off",
         "import/order": [
           "error",
