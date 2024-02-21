@@ -11,7 +11,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "update-sdks": "yarn dlx @yarnpkg/sdks"
   },
   "dependencies": {
     "@date-io/core": "^2.14.0",
@@ -82,7 +83,7 @@
       "last 1 safari version"
     ]
   },
-  "packageManager": "yarn@4.0.2",
+  "packageManager": "yarn@4.1.0",
   "msw": {
     "workerDirectory": "public"
   },
