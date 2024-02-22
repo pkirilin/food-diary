@@ -1,4 +1,4 @@
-import { screen, waitForElementToBeRemoved, within } from '@testing-library/react';
+import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { render } from 'src/testing';
 import Products from './Products';
@@ -6,18 +6,18 @@ import Products from './Products';
 test('products are loaded into table', async () => {
   render(<Products />);
 
-  await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
+  const bread = await screen.findByText(/bread/i);
 
-  expect(screen.getByText(/bread/i));
-  expect(screen.getByLabelText(/bread calories cost is 250/i));
-  expect(screen.getByLabelText(/bread is in cereals category/i));
+  expect(bread).toBeVisible();
+  expect(screen.getByLabelText(/bread calories cost is 250/i)).toBeVisible();
+  expect(screen.getByLabelText(/bread is in cereals category/i)).toBeVisible();
 });
 
 test('product can be created', async () => {
   render(<Products />);
 
-  await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
-  await userEvent.click(screen.getByLabelText(/open create product dialog/i));
+  const createButton = await screen.findByRole('button', { name: /open create product dialog/i });
+  await userEvent.click(createButton);
 
   const dialog = within(screen.getByRole('dialog'));
   const productName = dialog.getByPlaceholderText(/product name/i);
@@ -42,8 +42,10 @@ test('product can be created', async () => {
 test('product can be edited', async () => {
   render(<Products />);
 
-  await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
-  await userEvent.click(screen.getByLabelText(/open edit product dialog for bread/i));
+  const editButton = await screen.findByRole('button', {
+    name: /open edit product dialog for bread/i,
+  });
+  await userEvent.click(editButton);
 
   const dialog = within(screen.getByRole('dialog'));
   const productName = dialog.getByPlaceholderText(/product name/i);
@@ -66,8 +68,10 @@ test('product can be edited', async () => {
 test('new product input is validated', async () => {
   render(<Products />);
 
-  await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
-  await userEvent.click(screen.getByLabelText(/open create product dialog/i));
+  const createButton = await screen.findByRole('button', {
+    name: /open create product dialog/i,
+  });
+  await userEvent.click(createButton);
   const dialog = within(screen.getByRole('dialog'));
   const productName = dialog.getByPlaceholderText(/product name/i);
   const caloriesCost = dialog.getByPlaceholderText(/calories cost/i);
@@ -85,8 +89,10 @@ test('new product input is validated', async () => {
 test('existing product input is validated', async () => {
   render(<Products />);
 
-  await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
-  await userEvent.click(screen.getByLabelText(/open edit product dialog for bread/i));
+  const editButton = await screen.findByRole('button', {
+    name: /open edit product dialog for bread/i,
+  });
+  await userEvent.click(editButton);
   const dialog = within(screen.getByRole('dialog'));
   const productName = dialog.getByPlaceholderText(/product name/i);
   const caloriesCost = dialog.getByPlaceholderText(/calories cost/i);
@@ -104,8 +110,8 @@ test('existing product input is validated', async () => {
 test('product can be selected', async () => {
   render(<Products />);
 
-  await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
-  await userEvent.click(screen.getByLabelText(/select bread/i));
+  const breadCheckbox = await screen.findByLabelText(/select bread/i);
+  await userEvent.click(breadCheckbox);
 
   expect(screen.getByText(/1 selected/i));
 });
@@ -113,8 +119,8 @@ test('product can be selected', async () => {
 test('all products can be selected', async () => {
   render(<Products />);
 
-  await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
-  await userEvent.click(screen.getByLabelText(/select all/i));
+  const selectAll = await screen.findByLabelText(/select all/i);
+  await userEvent.click(selectAll);
 
   expect(screen.getByText(/(\d)+ selected/i));
 });
@@ -122,8 +128,8 @@ test('all products can be selected', async () => {
 test('products can be deleted', async () => {
   render(<Products />);
 
-  await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
-  await userEvent.click(screen.getByLabelText(/select bread/i));
+  const breadCheckbox = await screen.findByLabelText(/select bread/i);
+  await userEvent.click(breadCheckbox);
   await userEvent.click(screen.getByLabelText(/delete selected products/i));
   const dialog = within(screen.getByRole('dialog'));
   await userEvent.click(dialog.getByText(/yes/i));
@@ -134,13 +140,15 @@ test('products can be deleted', async () => {
 
 test('products can be filtered by category', async () => {
   const user = userEvent.setup();
-
   render(<Products />);
+
   const categoryField = await screen.findByLabelText(/category/i);
   await user.click(categoryField);
-  await user.click(within(await screen.findByRole('listbox')).getByText(/cereals/i));
+  const categorySelect = await screen.findByRole('listbox', { name: /category/i });
+  const cereals = within(categorySelect).getByRole('option', { name: /cereals/i });
+  await user.click(cereals);
 
-  expect(screen.getByText(/oats/i));
+  expect(await screen.findByText(/oats/i));
   expect(screen.queryByText(/milk/i)).not.toBeInTheDocument();
 });
 
@@ -158,18 +166,21 @@ test('products can be filtered by name', async () => {
 test('products in table are split by pages', async () => {
   render(<Products />, { pageSizeOverride: 2 });
 
-  await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
-  expect(screen.getByText(/1–.* of .*/i));
+  const paginationForTheFirstPage = await screen.findByText(/1–.* of .*/i);
+  expect(paginationForTheFirstPage).toBeVisible();
 
   await userEvent.click(screen.getByLabelText(/go to next page/i));
-  expect(screen.getByText(/.*–.* of .*/i)).not.toHaveTextContent(/1–.* of .*/i);
+  const paginationForTheSecondPage = await screen.findByText(/.*–.* of .*/i);
+  expect(paginationForTheSecondPage).not.toHaveTextContent(/1–.* of .*/i);
 });
 
 test('product with empty category cannot be saved', async () => {
   render(<Products />);
 
-  await waitForElementToBeRemoved(screen.queryByRole('progressbar'));
-  await userEvent.click(screen.getByLabelText(/open edit product dialog for bread/i));
+  const editButton = await screen.findByRole('button', {
+    name: /open edit product dialog for bread/i,
+  });
+  await userEvent.click(editButton);
 
   const dialog = within(screen.getByRole('dialog'));
   const category = dialog.getByPlaceholderText(/category/i);

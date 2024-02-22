@@ -9,23 +9,16 @@ import {
   Typography,
 } from '@mui/material';
 import { type FC, type ReactElement } from 'react';
-import { AppLinearProgress } from 'src/components';
 import { type Product } from '../../types';
 import ProductsTableRow from '../ProductsTableRow';
 
 interface ProductsTableProps {
   products: Product[];
-  isLoading: boolean;
   checkedIds: number[];
   onCheckedChange: (products: Product[], newCheckedIds: number[]) => void;
 }
 
-const ProductsTable: FC<ProductsTableProps> = ({
-  products,
-  isLoading,
-  checkedIds,
-  onCheckedChange,
-}) => {
+const ProductsTable: FC<ProductsTableProps> = ({ products, checkedIds, onCheckedChange }) => {
   const allProductsChecked = products.length > 0 && products.length === checkedIds.length;
 
   const handleCheckedIdsChange = (): void => {
@@ -53,8 +46,7 @@ const ProductsTable: FC<ProductsTableProps> = ({
   };
 
   return (
-    <TableContainer sx={{ position: 'relative' }}>
-      {isLoading && <AppLinearProgress />}
+    <TableContainer>
       <Table>
         <TableHead>
           <TableRow>
