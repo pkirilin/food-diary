@@ -70,6 +70,7 @@ const NotesTable: FC<NotesTableProps> = ({ mealType, notes }: NotesTableProps) =
         quantity={100}
         pageId={pageId}
         displayOrder={maxDisplayOrderForNotesGroup + 1}
+        submitting={createNoteResponse.isLoading}
         onClose={handleDialogClose}
         onSubmit={handleAddNote}
       />

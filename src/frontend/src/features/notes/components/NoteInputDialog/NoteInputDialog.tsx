@@ -1,5 +1,6 @@
-import { Button, TextField } from '@mui/material';
+import { TextField } from '@mui/material';
 import { type FC, useEffect, type FormEventHandler } from 'react';
+import { Button } from '@/shared/ui';
 import { AppDialog } from 'src/components';
 import { ProductSelect, type ProductSelectOption } from 'src/features/products';
 import { useInput } from 'src/hooks';
@@ -7,7 +8,7 @@ import { mapToNumericInputProps, mapToSelectProps } from 'src/utils/inputMapping
 import { validateQuantity, validateSelectOption } from 'src/utils/validation';
 import { type MealType, type NoteCreateEdit } from '../../models';
 
-interface NoteInputDialogProps {
+interface Props {
   title: string;
   submitText: string;
   isOpened: boolean;
@@ -18,11 +19,12 @@ interface NoteInputDialogProps {
   productsLoading: boolean;
   quantity: number;
   displayOrder: number;
+  submitting: boolean;
   onClose: () => void;
   onSubmit: (note: NoteCreateEdit) => void;
 }
 
-const NoteInputDialog: FC<NoteInputDialogProps> = ({
+const NoteInputDialog: FC<Props> = ({
   title,
   submitText,
   isOpened,
@@ -33,6 +35,7 @@ const NoteInputDialog: FC<NoteInputDialogProps> = ({
   productsLoading,
   quantity,
   displayOrder,
+  submitting,
   onClose,
   onSubmit,
 }) => {
@@ -117,6 +120,7 @@ const NoteInputDialog: FC<NoteInputDialogProps> = ({
           variant="contained"
           color="primary"
           disabled={isAnyValueInvalid || !isAnyValueChanged}
+          loading={submitting}
         >
           {submitText}
         </Button>

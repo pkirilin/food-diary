@@ -41,16 +41,10 @@ const NotesTableRow: FC<NotesTableRowProps> = ({
   const [deleteNote, deleteNoteResponse] = notesApi.useDeleteNoteMutation();
 
   useEffect(() => {
-    if (editNoteResponse.isSuccess) {
+    if (editNoteResponse.isSuccess || deleteNoteResponse.isSuccess) {
       setIsEditDialogOpened(false);
     }
-  }, [editNoteResponse.isSuccess]);
-
-  useEffect(() => {
-    if (deleteNoteResponse.isSuccess) {
-      setIsDeleteDialogOpened(false);
-    }
-  }, [deleteNoteResponse.isSuccess]);
+  }, [deleteNoteResponse.isSuccess, editNoteResponse.isSuccess]);
 
   const handleEditOpen = (): void => {
     setIsEditDialogOpened(true);
@@ -90,13 +84,14 @@ const NotesTableRow: FC<NotesTableRowProps> = ({
         productsLoading={productsLoading}
         quantity={note.productQuantity}
         displayOrder={note.displayOrder}
+        submitting={editNoteResponse.isLoading}
         onClose={handleEditClose}
         onSubmit={handleEditSubmit}
       />
       <DeleteNoteDialog
         note={note}
         isOpened={isDeleteDialogOpened}
-        isLoading={status === 'pending'}
+        isLoading={deleteNoteResponse.isLoading}
         onClose={handleDeleteClose}
         onSubmit={handleDeleteSubmit}
       />
