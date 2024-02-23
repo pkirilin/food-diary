@@ -36,14 +36,9 @@ const AppDialog: FC<AppDialogProps> = ({
       <DialogTitle>{title}</DialogTitle>
       <DialogContent dividers>{content}</DialogContent>
       <DialogActions
-        disableSpacing
         sx={theme => ({
           marginTop: theme.spacing(3),
           padding: `0 ${theme.spacing(3)} ${theme.spacing(2)}`,
-
-          '& > :not(:first-of-type)': {
-            marginLeft: theme.spacing(2),
-          },
         })}
       >
         {actionCancel}

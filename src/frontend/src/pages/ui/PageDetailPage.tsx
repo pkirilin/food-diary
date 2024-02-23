@@ -1,5 +1,5 @@
 import { type FC } from 'react';
-import { useLoaderData } from 'react-router-dom';
+import { Outlet, useLoaderData } from 'react-router-dom';
 import { notesApi } from '@/features/notes';
 import { MealsList } from '@/features/notes/components';
 import { pagesApi } from '@/features/pages';
@@ -37,6 +37,7 @@ export const Component: FC = () => {
       }
     >
       <MealsList notes={getNotesQuery.data ?? []} />
+      <Outlet />
     </PrivateLayout>
   );
 };

@@ -38,6 +38,12 @@ export const createAppRouter = (
         {
           path: '/pages/:id',
           lazy: async () => await import('@/pages/ui/PageDetailPage'),
+          children: [
+            {
+              path: 'notes/new',
+              lazy: async () => await import('@/pages/ui/NewNotePage'),
+            },
+          ],
         },
         {
           path: '/products',

@@ -1,7 +1,5 @@
-import AddIcon from '@mui/icons-material/Add';
 import {
   Box,
-  Button,
   Table,
   TableBody,
   TableCell,
@@ -15,6 +13,7 @@ import { notesApi } from '../api';
 import { toCreateNoteRequest } from '../mapping';
 import { useProductSelect } from '../model';
 import { type NoteItem, type MealType, type NoteCreateEdit } from '../models';
+import { AddNote } from '../ui';
 import NoteInputDialog from './NoteInputDialog';
 import NotesTableRow from './NotesTableRow';
 
@@ -43,10 +42,6 @@ const NotesTable: FC<NotesTableProps> = ({ mealType, notes }: NotesTableProps) =
       setIsDialogOpened(false);
     }
   }, [createNoteResponse.isSuccess]);
-
-  const handleDialogOpen = (): void => {
-    setIsDialogOpened(true);
-  };
 
   const handleDialogClose = (): void => {
     setIsDialogOpened(false);
@@ -95,15 +90,7 @@ const NotesTable: FC<NotesTableProps> = ({ mealType, notes }: NotesTableProps) =
         </TableBody>
       </Table>
       <Box mt={1}>
-        <Button
-          variant="text"
-          size="medium"
-          fullWidth
-          startIcon={<AddIcon />}
-          onClick={handleDialogOpen}
-        >
-          Add note
-        </Button>
+        <AddNote pageId={pageId} mealType={mealType} />
       </Box>
     </TableContainer>
   );
