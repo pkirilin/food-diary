@@ -17,3 +17,7 @@ export const GOOGLE_ANALYTICS_ENABLED =
 
 export const GOOGLE_ANALYTICS_MEASUREMENT_ID = import.meta.env
   .VITE_APP_GOOGLE_ANALYTICS_MEASUREMENT_ID;
+
+export const MOCK_API_RESPONSE_DELAY = Number(
+  import.meta.env.VITE_APP_MOCK_API_RESPONSE_DELAY ?? '0',
+);
