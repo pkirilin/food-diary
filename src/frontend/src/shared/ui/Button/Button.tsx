@@ -10,8 +10,8 @@ interface Props extends MuiButtonProps {
   loading?: boolean;
 }
 
-export const Button: FC<Props> = ({ children, loading, disabled, ...props }) => (
-  <MuiButton {...props} disabled={!!disabled || loading}>
+export const Button: FC<Props> = ({ children, loading, disabled, color, ...props }) => (
+  <MuiButton {...props} disabled={!!disabled || loading} color={color}>
     <Box
       component="span"
       display="flex"
@@ -19,7 +19,7 @@ export const Button: FC<Props> = ({ children, loading, disabled, ...props }) => 
       alignItems="center"
       gap={theme => theme.spacing(1)}
     >
-      {loading && <CircularProgress size={16} />}
+      {loading && <CircularProgress size={16} color={color} />}
       {children}
     </Box>
   </MuiButton>

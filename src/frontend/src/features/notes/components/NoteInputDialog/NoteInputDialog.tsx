@@ -117,7 +117,7 @@ const NoteInputDialog: FC<Props> = ({
         <Button
           type="submit"
           form="note-input-form"
-          variant="contained"
+          variant="text"
           color="primary"
           disabled={isAnyValueInvalid || !isAnyValueChanged}
           loading={submitting}
@@ -126,7 +126,7 @@ const NoteInputDialog: FC<Props> = ({
         </Button>
       }
       actionCancel={
-        <Button type="button" variant="text" onClick={onClose}>
+        <Button type="button" variant="text" color="inherit" onClick={onClose}>
           Cancel
         </Button>
       }

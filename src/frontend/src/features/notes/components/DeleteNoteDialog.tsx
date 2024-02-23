@@ -37,7 +37,7 @@ const DeleteNoteDialog: FC<DeleteNoteDialogProps> = ({
         <Button
           type="submit"
           form="delete-note"
-          variant="contained"
+          variant="text"
           color="error"
           loading={isLoading}
           autoFocus
