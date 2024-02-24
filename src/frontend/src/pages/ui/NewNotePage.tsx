@@ -22,7 +22,7 @@ export const loader: LoaderFunction = withAuthStatusCheck(({ params, request }) 
 
   return {
     pageId,
-    mealType: mealType ? (Number(mealType) as MealType) : MealType.Breakfast,
+    mealType: mealType ? Number(mealType) : MealType.Breakfast,
   } satisfies LoaderData;
 });
 
@@ -47,6 +47,26 @@ export const action: ActionFunction = withAuthStatusCheck(async ({ request }) =>
       productQuantity: 123,
       displayOrder: 2,
     }),
+  );
+
+  const notes = await store.dispatch(
+    notesApi.endpoints.getNotes.initiate({ pageId: Number(pageId) }),
+  );
+
+  await store.dispatch(
+    notesApi.util.upsertQueryData('getNotes', { pageId: Number(pageId) }, [
+      ...(notes.data ?? []),
+      {
+        id: -1,
+        mealType: Number(mealType),
+        productId: 1,
+        productQuantity: 123,
+        displayOrder: 2,
+        productName: 'Bread',
+        productDefaultQuantity: 0,
+        calories: 307,
+      },
+    ]),
   );
 
   return redirect(`/pages/${Number(pageId)}`);
