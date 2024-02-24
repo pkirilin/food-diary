@@ -19,7 +19,7 @@ interface Props {
   productsLoading: boolean;
   quantity: number;
   displayOrder: number;
-  submitting: boolean;
+  submitInProgress: boolean;
   onClose: () => void;
   onSubmit: (note: NoteCreateEdit) => void;
 }
@@ -35,7 +35,7 @@ const NoteInputDialog: FC<Props> = ({
   productsLoading,
   quantity,
   displayOrder,
-  submitting,
+  submitInProgress,
   onClose,
   onSubmit,
 }) => {
@@ -120,7 +120,7 @@ const NoteInputDialog: FC<Props> = ({
           variant="text"
           color="primary"
           disabled={isAnyValueInvalid || !isAnyValueChanged}
-          loading={submitting}
+          loading={submitInProgress}
         >
           {submitText}
         </Button>

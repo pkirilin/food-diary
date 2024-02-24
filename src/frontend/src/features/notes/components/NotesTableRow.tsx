@@ -39,12 +39,21 @@ const NotesTableRow: FC<NotesTableRowProps> = ({
 
   const [editNote, editNoteResponse] = notesApi.useEditNoteMutation();
   const [deleteNote, deleteNoteResponse] = notesApi.useDeleteNoteMutation();
+  const getNotesQuery = notesApi.useGetNotesQuery({ pageId });
 
   useEffect(() => {
-    if (editNoteResponse.isSuccess || deleteNoteResponse.isSuccess) {
+    const notesChanged = !getNotesQuery.isFetching && getNotesQuery.isSuccess;
+
+    if ((editNoteResponse.isSuccess || deleteNoteResponse.isSuccess) && notesChanged) {
       setIsEditDialogOpened(false);
     }
-  }, [deleteNoteResponse.isSuccess, editNoteResponse.isSuccess]);
+  }, [
+    deleteNoteResponse.isSuccess,
+    editNoteResponse.isSuccess,
+    getNotesQuery.isFetching,
+    getNotesQuery.isSuccess,
+    getNotesQuery.isUninitialized,
+  ]);
 
   const handleEditOpen = (): void => {
     setIsEditDialogOpened(true);
@@ -84,14 +93,14 @@ const NotesTableRow: FC<NotesTableRowProps> = ({
         productsLoading={productsLoading}
         quantity={note.productQuantity}
         displayOrder={note.displayOrder}
-        submitting={editNoteResponse.isLoading}
+        submitInProgress={editNoteResponse.isLoading || getNotesQuery.isFetching}
         onClose={handleEditClose}
         onSubmit={handleEditSubmit}
       />
       <DeleteNoteDialog
         note={note}
         isOpened={isDeleteDialogOpened}
-        isLoading={deleteNoteResponse.isLoading}
+        submitInProgress={deleteNoteResponse.isLoading || getNotesQuery.isFetching}
         onClose={handleDeleteClose}
         onSubmit={handleDeleteSubmit}
       />

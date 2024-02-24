@@ -28,6 +28,7 @@ const NotesTable: FC<NotesTableProps> = ({ mealType, notes }: NotesTableProps) =
   const productSelect = useProductSelect();
   const [createNote, createNoteResponse] = notesApi.useCreateNoteMutation();
   const [isDialogOpened, setIsDialogOpened] = useState(false);
+  const getNotesQuery = notesApi.useGetNotesQuery({ pageId });
 
   const maxDisplayOrderForNotesGroup = useMemo(
     () =>
@@ -39,10 +40,12 @@ const NotesTable: FC<NotesTableProps> = ({ mealType, notes }: NotesTableProps) =
   );
 
   useEffect(() => {
-    if (createNoteResponse.isSuccess) {
+    const notesChanged = !getNotesQuery.isFetching && getNotesQuery.isSuccess;
+
+    if (createNoteResponse.isSuccess && notesChanged) {
       setIsDialogOpened(false);
     }
-  }, [createNoteResponse.isSuccess]);
+  }, [createNoteResponse.isSuccess, getNotesQuery.isFetching, getNotesQuery.isSuccess]);
 
   const handleDialogOpen = (): void => {
     setIsDialogOpened(true);
@@ -70,7 +73,7 @@ const NotesTable: FC<NotesTableProps> = ({ mealType, notes }: NotesTableProps) =
         quantity={100}
         pageId={pageId}
         displayOrder={maxDisplayOrderForNotesGroup + 1}
-        submitting={createNoteResponse.isLoading}
+        submitInProgress={createNoteResponse.isLoading || getNotesQuery.isFetching}
         onClose={handleDialogClose}
         onSubmit={handleAddNote}
       />

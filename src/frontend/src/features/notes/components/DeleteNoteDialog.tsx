@@ -7,7 +7,7 @@ import { type NoteItem } from '../models';
 interface DeleteNoteDialogProps {
   note: NoteItem;
   isOpened: boolean;
-  isLoading: boolean;
+  submitInProgress: boolean;
   onClose: () => void;
   onSubmit: (note: NoteItem) => void;
 }
@@ -15,7 +15,7 @@ interface DeleteNoteDialogProps {
 const DeleteNoteDialog: FC<DeleteNoteDialogProps> = ({
   note,
   isOpened,
-  isLoading,
+  submitInProgress,
   onClose,
   onSubmit,
 }) => {
@@ -39,7 +39,7 @@ const DeleteNoteDialog: FC<DeleteNoteDialogProps> = ({
           form="delete-note"
           variant="text"
           color="error"
-          loading={isLoading}
+          loading={submitInProgress}
           autoFocus
         >
           Yes
