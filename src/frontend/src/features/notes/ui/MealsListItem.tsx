@@ -1,16 +1,15 @@
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { Accordion, AccordionDetails, AccordionSummary, Stack, Typography } from '@mui/material';
-import { type FC, useMemo, useState } from 'react';
+import { type FC, useMemo, useState, type PropsWithChildren } from 'react';
 import { Calories } from 'src/components';
 import { getMealName, type NoteItem, type MealType } from '../models';
-import NotesTable from './NotesTable';
 
-interface MealsListItemProps {
+interface Props extends PropsWithChildren {
   mealType: MealType;
   notes: NoteItem[];
 }
 
-const MealsListItem: FC<MealsListItemProps> = ({ mealType, notes }: MealsListItemProps) => {
+export const MealsListItem: FC<Props> = ({ children, mealType, notes }: Props) => {
   const [expanded, setExpanded] = useState(true);
   const mealName = useMemo(() => getMealName(mealType), [mealType]);
   const totalCalories = useMemo(() => notes.reduce((sum, note) => sum + note.calories, 0), [notes]);
@@ -27,11 +26,7 @@ const MealsListItem: FC<MealsListItemProps> = ({ mealType, notes }: MealsListIte
           <Calories amount={totalCalories} />
         </Stack>
       </AccordionSummary>
-      <AccordionDetails>
-        <NotesTable mealType={mealType} notes={notes} />
-      </AccordionDetails>
+      <AccordionDetails>{children}</AccordionDetails>
     </Accordion>
   );
 };
-
-export default MealsListItem;
