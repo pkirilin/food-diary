@@ -1,4 +1,4 @@
-import { Button, Input } from '@mui/material';
+import { Button, CircularProgress, Input } from '@mui/material';
 import { type FC } from 'react';
 import { Form, Link } from 'react-router-dom';
 import { AppDialog } from '@/components';
@@ -6,24 +6,37 @@ import { type MealType } from '../models';
 
 interface Props {
   title: string;
+  submitInProgress: boolean;
   pageId: number;
   mealType: MealType;
   onClose: () => void;
 }
 
-export const NoteInputDialog: FC<Props> = ({ title, pageId, mealType, onClose }) => {
+export const NoteInputDialog: FC<Props> = ({
+  title,
+  submitInProgress,
+  pageId,
+  mealType,
+  onClose,
+}) => {
   return (
     <AppDialog
       isOpened
       title={title}
       content={
-        <Form id="note-input-dialog" method="post" action={`/pages/${pageId}/notes/new`}>
+        <Form id="note-input" method="post" action={`/pages/${pageId}/notes/new`}>
           <Input type="hidden" name="pageId" value={pageId} />
           <Input type="hidden" name="mealType" value={mealType} />
         </Form>
       }
       actionSubmit={
-        <Button form="note-input-dialog" type="submit" variant="text">
+        <Button
+          type="submit"
+          form="note-input"
+          variant="text"
+          disabled={submitInProgress}
+          startIcon={submitInProgress ? <CircularProgress size={16} /> : null}
+        >
           Create
         </Button>
       }

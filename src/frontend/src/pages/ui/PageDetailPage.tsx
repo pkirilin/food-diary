@@ -14,13 +14,17 @@ interface LoaderData {
 
 export const loader = withAuthStatusCheck(async ({ params }) => {
   const pageId = Number(params.id);
-  const getPageByIdQuery = await store.dispatch(pagesApi.endpoints.getPageById.initiate(pageId));
+  const pageResponse = await store.dispatch(pagesApi.endpoints.getPageById.initiate(pageId));
 
-  if (!getPageByIdQuery.isSuccess) {
+  if (pageResponse.isError) {
     return new Response(null, { status: 500 });
   }
 
-  await store.dispatch(notesApi.endpoints.getNotes.initiate({ pageId }));
+  const notesResponse = await store.dispatch(notesApi.endpoints.getNotes.initiate({ pageId }));
+
+  if (notesResponse.isError) {
+    return new Response(null, { status: 500 });
+  }
 
   return { pageId } satisfies LoaderData;
 });
