@@ -5,6 +5,7 @@ import { type PropsWithChildren, type FC, useEffect, useState } from 'react';
 import { usePopover, useAppSelector } from 'src/features/__shared__/hooks';
 import { useToolbarStyles } from 'src/features/__shared__/styles';
 import { pagesApi } from '../../api';
+import { usePages } from '../../model';
 import { AddPage } from '../../ui';
 import DeletePagesDialog from '../DeletePagesDialog';
 import PagesFilter from '../PagesFilter';
@@ -20,12 +21,13 @@ const PagesToolbar: FC<PagesToolbarProps> = ({ children }) => {
   const selectedPageIds = useAppSelector(state => state.pages.selectedPageIds);
   const [isDeleteDialogOpened, setIsDeleteDialogOpened] = useState(false);
   const [deletePages, deletePagesRequest] = pagesApi.useDeletePagesMutation();
+  const pages = usePages();
 
   useEffect(() => {
-    if (deletePagesRequest.isSuccess) {
+    if (deletePagesRequest.isSuccess && pages.isChanged) {
       setIsDeleteDialogOpened(false);
     }
-  }, [deletePagesRequest.isSuccess]);
+  }, [deletePagesRequest.isSuccess, pages.isChanged]);
 
   const handleDeleteOpen = (): void => {
     setIsDeleteDialogOpened(true);
@@ -43,7 +45,7 @@ const PagesToolbar: FC<PagesToolbarProps> = ({ children }) => {
     <Toolbar className={classes.root}>
       <DeletePagesDialog
         isOpened={isDeleteDialogOpened}
-        isLoading={deletePagesRequest.isLoading}
+        submitInProgress={deletePagesRequest.isLoading || pages.isFetching}
         pageIds={selectedPageIds}
         onClose={handleDeleteClose}
         onSubmit={handleDeletePages}

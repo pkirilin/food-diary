@@ -6,6 +6,7 @@ import { formatDate } from 'src/utils';
 import { useAppDispatch, useAppSelector } from '../../__shared__/hooks';
 import { pagesApi } from '../api';
 import { toEditPageRequest } from '../mapping';
+import { usePages } from '../model';
 import { type PageCreateEdit, type PageItem } from '../models';
 import { pageSelected } from '../slice';
 import { PageInputDialog } from './PageInputDialog';
@@ -15,6 +16,7 @@ interface PagesTableRowProps {
 }
 
 const PagesTableRow: FC<PagesTableRowProps> = ({ page }: PagesTableRowProps) => {
+  const pages = usePages();
   const [editPage, editPageRequest] = pagesApi.useEditPageMutation();
   const [isDialogOpened, setIsDialogOpened] = useState(false);
   const pageDate = new Date(page.date);
@@ -25,10 +27,10 @@ const PagesTableRow: FC<PagesTableRowProps> = ({ page }: PagesTableRowProps) => 
   );
 
   useEffect(() => {
-    if (editPageRequest.isSuccess) {
+    if (editPageRequest.isSuccess && pages.isChanged) {
       setIsDialogOpened(false);
     }
-  }, [editPageRequest.isSuccess]);
+  }, [editPageRequest.isSuccess, pages.isChanged]);
 
   const handleOpenDialog = (): void => {
     setIsDialogOpened(true);
@@ -58,6 +60,7 @@ const PagesTableRow: FC<PagesTableRowProps> = ({ page }: PagesTableRowProps) => 
         submitText="Save"
         isOpened={isDialogOpened}
         initialDate={pageDate}
+        submitInProgress={editPageRequest.isLoading || pages.isFetching}
         onClose={handleCloseDialog}
         onSubmit={handleEditPage}
       />

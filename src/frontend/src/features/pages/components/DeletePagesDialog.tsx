@@ -1,10 +1,11 @@
 import { Typography } from '@mui/material';
 import { type FormEventHandler, type FC } from 'react';
-import { AppButton, AppDialog } from 'src/components';
+import { Button } from '@/shared/ui';
+import { AppDialog } from 'src/components';
 
 interface DeletePagesDialogProps {
   isOpened: boolean;
-  isLoading: boolean;
+  submitInProgress: boolean;
   pageIds: number[];
   onClose: () => void;
   onSubmit: (pageIds: number[]) => void;
@@ -12,7 +13,7 @@ interface DeletePagesDialogProps {
 
 const DeletePagesDialog: FC<DeletePagesDialogProps> = ({
   isOpened,
-  isLoading,
+  submitInProgress,
   pageIds,
   onClose,
   onSubmit,
@@ -32,27 +33,21 @@ const DeletePagesDialog: FC<DeletePagesDialogProps> = ({
         </form>
       }
       actionSubmit={
-        <AppButton
+        <Button
           type="submit"
           form="delete-pages"
-          variant="contained"
+          variant="text"
           color="error"
-          isLoading={isLoading}
+          loading={submitInProgress}
           autoFocus
         >
           Yes
-        </AppButton>
+        </Button>
       }
       actionCancel={
-        <AppButton
-          type="button"
-          variant="text"
-          color="inherit"
-          onClick={onClose}
-          isLoading={isLoading}
-        >
+        <Button type="button" variant="text" color="inherit" onClick={onClose}>
           No
-        </AppButton>
+        </Button>
       }
       onClose={onClose}
     />

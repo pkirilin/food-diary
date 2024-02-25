@@ -14,6 +14,7 @@ describe('when initial date is specified', () => {
           submitText="Create"
           isOpened
           initialDate={new Date('2023-10-22')}
+          submitInProgress={false}
           onSubmit={submitFn}
           onClose={vi.fn()}
         />,
