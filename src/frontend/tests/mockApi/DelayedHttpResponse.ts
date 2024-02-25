@@ -13,6 +13,13 @@ const ok = (): Promise<HttpResponse> => status(200);
 
 const badRequest = (): Promise<HttpResponse> => status(400);
 
+const notFound = (): Promise<HttpResponse> => status(400);
+
+const file = async (blob: Blob): Promise<HttpResponse> => {
+  await delay();
+  return new HttpResponse(blob);
+};
+
 const json = async <T extends JsonBodyType>(data: T): Promise<HttpResponse> => {
   await delay();
   return HttpResponse.json(data);
@@ -21,5 +28,7 @@ const json = async <T extends JsonBodyType>(data: T): Promise<HttpResponse> => {
 export const DelayedHttpResponse = {
   ok,
   badRequest,
+  notFound,
   json,
+  file,
 } as const;
