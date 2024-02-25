@@ -1,5 +1,4 @@
 import {
-  Box,
   CircularProgress,
   Button as MuiButton,
   type ButtonProps as MuiButtonProps,
@@ -10,17 +9,13 @@ interface Props extends MuiButtonProps {
   loading?: boolean;
 }
 
-export const Button: FC<Props> = ({ children, loading, disabled, color, ...props }) => (
-  <MuiButton {...props} disabled={!!disabled || loading} color={color}>
-    <Box
-      component="span"
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-      gap={theme => theme.spacing(1)}
-    >
-      {loading && <CircularProgress size={16} color={color} />}
-      {children}
-    </Box>
+export const Button: FC<Props> = ({ children, loading, disabled, color, startIcon, ...props }) => (
+  <MuiButton
+    {...props}
+    disabled={!!disabled || loading}
+    color={color}
+    startIcon={loading ? <CircularProgress size={16} color={color} /> : startIcon}
+  >
+    {children}
   </MuiButton>
 );
