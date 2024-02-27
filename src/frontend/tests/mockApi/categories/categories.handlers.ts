@@ -1,7 +1,8 @@
-import { http, type HttpHandler, HttpResponse, type PathParams } from 'msw';
+import { http, type HttpHandler, type PathParams } from 'msw';
 import { API_URL } from 'src/config';
 import { type Category, type CategoryFormData } from 'src/features/categories';
 import { type SelectOption } from 'src/types';
+import { DelayedHttpResponse } from '../DelayedHttpResponse';
 import * as categoriesService from './categories.service';
 
 export const handlers: HttpHandler[] = [
@@ -12,7 +13,7 @@ export const handlers: HttpHandler[] = [
       countProducts: categoriesService.getProductsCount(id),
     }));
 
-    return HttpResponse.json(response);
+    return DelayedHttpResponse.json(response);
   }),
 
   http.get(`${API_URL}/api/v1/categories/autocomplete`, () => {
@@ -21,13 +22,13 @@ export const handlers: HttpHandler[] = [
       name,
     }));
 
-    return HttpResponse.json(categories);
+    return DelayedHttpResponse.json(categories);
   }),
 
   http.post<PathParams, CategoryFormData>(`${API_URL}/api/v1/categories`, async ({ request }) => {
     const body = await request.json();
     categoriesService.create(body);
-    return new HttpResponse(null, { status: 200 });
+    return await DelayedHttpResponse.ok();
   }),
 
   http.put<{ id: string }, CategoryFormData>(
@@ -36,13 +37,13 @@ export const handlers: HttpHandler[] = [
       const id = parseInt(params.id);
       const body = await request.json();
       categoriesService.update(id, body);
-      return new HttpResponse(null, { status: 200 });
+      return await DelayedHttpResponse.ok();
     },
   ),
 
   http.delete<{ id: string }>(`${API_URL}/api/v1/categories/:id`, ({ params }) => {
     const id = parseInt(params.id);
     categoriesService.deleteOne(id);
-    return new HttpResponse(null, { status: 200 });
+    return DelayedHttpResponse.ok();
   }),
 ];

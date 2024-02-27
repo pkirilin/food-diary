@@ -2,18 +2,20 @@ import AddIcon from '@mui/icons-material/Add';
 import { type FC, useEffect, useState } from 'react';
 import { AppFab } from 'src/components';
 import { categoriesApi } from '../api';
+import { useCategories } from '../model';
 import { type CategoryFormData } from '../types';
 import CategoryInputDialog from './CategoryInputDialog';
 
 const CreateCategory: FC = () => {
   const [isCreateDialogOpened, setIsCreateDialogOpened] = useState(false);
   const [createCategory, createCategoryRequest] = categoriesApi.useCreateCategoryMutation();
+  const categories = useCategories();
 
   useEffect(() => {
-    if (createCategoryRequest.isSuccess) {
+    if (createCategoryRequest.isSuccess && categories.isChanged) {
       setIsCreateDialogOpened(false);
     }
-  }, [createCategoryRequest.isSuccess]);
+  }, [categories.isChanged, createCategoryRequest.isSuccess]);
 
   const handleCreate = (): void => {
     setIsCreateDialogOpened(true);
@@ -35,7 +37,7 @@ const CreateCategory: FC = () => {
         title="Create category"
         submitText="Create"
         onSubmit={handleDialogSubmit}
-        isLoading={createCategoryRequest.isLoading}
+        loading={createCategoryRequest.isLoading || categories.isFetching}
       />
     </>
   );

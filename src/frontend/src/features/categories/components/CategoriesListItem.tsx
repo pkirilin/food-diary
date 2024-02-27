@@ -3,6 +3,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import { Card, CardHeader, CardActions, Button } from '@mui/material';
 import { type FC, useEffect, useState } from 'react';
 import { categoriesApi } from '../api';
+import { useCategories } from '../model';
 import { type Category, type CategoryFormData } from '../types';
 import CategoryInputDialog from './CategoryInputDialog';
 import CategoryTitle from './CategoryTitle';
@@ -17,12 +18,13 @@ const CategoriesListItem: FC<CategoriesListItemProps> = ({ category }) => {
   const [isEditDialogOpened, setIsEditDialogOpened] = useState(false);
   const [isDeleteDialogOpened, setIsDeleteDialogOpened] = useState(false);
   const [editCategory, editCategoryRequest] = categoriesApi.useEditCategoryMutation();
+  const categories = useCategories();
 
   useEffect(() => {
-    if (editCategoryRequest.isSuccess) {
+    if (editCategoryRequest.isSuccess && categories.isChanged) {
       setIsEditDialogOpened(false);
     }
-  }, [editCategoryRequest.isSuccess]);
+  }, [categories.isChanged, editCategoryRequest.isSuccess]);
 
   const handleEdit = (): void => {
     setIsEditDialogOpened(true);
@@ -66,7 +68,7 @@ const CategoriesListItem: FC<CategoriesListItemProps> = ({ category }) => {
         title="Edit category"
         submitText="Save"
         onSubmit={handleEditDialogSubmit}
-        isLoading={editCategoryRequest.isLoading}
+        loading={editCategoryRequest.isLoading || categories.isFetching}
         category={category}
       />
 

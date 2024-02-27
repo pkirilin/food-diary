@@ -5,7 +5,7 @@ import { PrivateLayout } from '@/widgets/layout';
 import { ok, withAuthStatusCheck } from '../lib';
 
 export const loader = withAuthStatusCheck(async () => {
-  await store.dispatch(categoriesApi.endpoints.getCategories.initiate());
+  await store.dispatch(categoriesApi.endpoints.getCategories.initiate({}));
   return ok();
 });
 

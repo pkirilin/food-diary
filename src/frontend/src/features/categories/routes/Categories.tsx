@@ -1,18 +1,18 @@
 import { Typography } from '@mui/material';
 import { type FC } from 'react';
-import { categoriesApi } from '../api';
 import CategoriesList from '../components/CategoriesList';
 import CreateCategory from '../components/CreateCategory';
+import { useCategories } from '../model';
 
 const Categories: FC = () => {
-  const categoriesQuery = categoriesApi.useGetCategoriesQuery();
+  const categories = useCategories();
 
   return (
     <>
       <Typography variant="h1" gutterBottom>
         Categories
       </Typography>
-      <CategoriesList categories={categoriesQuery.data ?? []} />
+      <CategoriesList categories={categories.data} />
       <CreateCategory />
     </>
   );
