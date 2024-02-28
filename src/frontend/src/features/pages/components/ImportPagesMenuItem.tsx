@@ -2,6 +2,7 @@ import PublishIcon from '@mui/icons-material/Publish';
 import { MenuItem, ListItemIcon, ListItemText, Box } from '@mui/material';
 import { type PropsWithChildren, type FC, useState, type ChangeEvent } from 'react';
 import { useImport } from '../hooks/useImport';
+import { usePages } from '../model';
 import ConfirmImportDialog from './ConfirmImportDialog';
 
 interface ImportPagesMenuItemProps {
@@ -15,7 +16,12 @@ const ImportPagesMenuItem: FC<PropsWithChildren<ImportPagesMenuItemProps>> = ({
   onMenuClose,
 }) => {
   const [importFile, setImportFile] = useState<File>();
-  const importPages = useImport(importFile);
+  const pages = usePages();
+
+  const importPages = useImport({
+    file: importFile,
+    pagesChanged: pages.isChanged,
+  });
 
   const cleanFileInput = (target: EventTarget & HTMLInputElement): void => {
     // Change handler will not be executed if file with the same name is uploaded multiple times
@@ -63,7 +69,7 @@ const ImportPagesMenuItem: FC<PropsWithChildren<ImportPagesMenuItemProps>> = ({
       </MenuItem>
       <ConfirmImportDialog
         isOpened={importPages.isDialogOpened}
-        isLoading={importPages.isLoading}
+        submitInProgress={importPages.isLoading || pages.isFetching}
         onClose={importPages.closeDialog}
         onSubmit={importPages.start}
       />
