@@ -68,10 +68,9 @@ test('product can be edited', async () => {
 test('new product input is validated', async () => {
   render(<Products />);
 
-  const createButton = await screen.findByRole('button', {
-    name: /open create product dialog/i,
-  });
+  const createButton = await screen.findByRole('button', { name: /open create product dialog/i });
   await userEvent.click(createButton);
+
   const dialog = within(screen.getByRole('dialog'));
   const productName = dialog.getByPlaceholderText(/product name/i);
   const caloriesCost = dialog.getByPlaceholderText(/calories cost/i);

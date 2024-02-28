@@ -46,6 +46,7 @@ test('category can be deleted', async () => {
   await userEvent.click(await screen.findByLabelText(/delete cereals/i));
   const dialog = within(screen.getByRole('dialog'));
   await userEvent.click(dialog.getByLabelText(/delete cereals/i));
+  await waitForElementToBeRemoved(screen.getByRole('dialog'));
 
   expect(screen.queryByText(/cereals/i)).not.toBeInTheDocument();
 });
