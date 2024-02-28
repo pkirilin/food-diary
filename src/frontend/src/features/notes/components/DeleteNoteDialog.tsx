@@ -46,7 +46,13 @@ const DeleteNoteDialog: FC<DeleteNoteDialogProps> = ({
         </Button>
       }
       actionCancel={
-        <Button type="button" variant="text" color="inherit" onClick={onClose}>
+        <Button
+          type="button"
+          variant="text"
+          color="inherit"
+          onClick={onClose}
+          disabled={submitInProgress}
+        >
           No
         </Button>
       }

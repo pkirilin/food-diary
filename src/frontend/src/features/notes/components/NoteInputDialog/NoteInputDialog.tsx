@@ -126,7 +126,13 @@ const NoteInputDialog: FC<Props> = ({
         </Button>
       }
       actionCancel={
-        <Button type="button" variant="text" color="inherit" onClick={onClose}>
+        <Button
+          type="button"
+          variant="text"
+          color="inherit"
+          onClick={onClose}
+          disabled={submitInProgress}
+        >
           Cancel
         </Button>
       }
