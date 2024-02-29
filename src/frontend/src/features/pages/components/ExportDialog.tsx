@@ -1,5 +1,6 @@
 import { type FC, useEffect, type FormEventHandler } from 'react';
-import { AppButton, AppDialog, DatePicker } from 'src/components';
+import { Button } from '@/shared/ui';
+import { AppDialog, DatePicker } from 'src/components';
 import { useInput } from 'src/hooks';
 import { mapToDateInputProps } from 'src/utils/inputMapping';
 import { validateDate } from 'src/utils/validation';
@@ -80,21 +81,27 @@ const ExportDialog: FC<ExportDialogProps> = ({ format: exportFormat, isOpen, onC
         </form>
       }
       actionSubmit={
-        <AppButton
+        <Button
           type="submit"
           form="export-form"
-          variant="contained"
+          variant="text"
           color="primary"
-          isLoading={isExportLoading}
+          loading={isExportLoading}
           disabled={isExportDisabled}
         >
           {exportSubmitText}
-        </AppButton>
+        </Button>
       }
       actionCancel={
-        <AppButton type="button" variant="text" onClick={onClose}>
+        <Button
+          type="button"
+          variant="text"
+          color="inherit"
+          onClick={onClose}
+          disabled={isExportLoading}
+        >
           Cancel
-        </AppButton>
+        </Button>
       }
       onClose={onClose}
     />
