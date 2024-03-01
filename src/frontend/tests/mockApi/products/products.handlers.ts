@@ -1,4 +1,4 @@
-import { http, type HttpHandler, HttpResponse, type PathParams } from 'msw';
+import { http, type HttpHandler, type PathParams } from 'msw';
 import { API_URL } from 'src/config';
 import {
   type ProductSelectOption,
@@ -7,6 +7,7 @@ import {
   type ProductsResponse,
 } from 'src/features/products';
 import { type SelectOption } from 'src/types';
+import { DelayedHttpResponse } from '../DelayedHttpResponse';
 import * as productsService from './products.service';
 
 export const handlers: HttpHandler[] = [
@@ -39,7 +40,7 @@ export const handlers: HttpHandler[] = [
       totalProductsCount,
     };
 
-    return HttpResponse.json(response);
+    return DelayedHttpResponse.json(response);
   }),
 
   http.get(`${API_URL}/api/v1/products/autocomplete`, () => {
@@ -47,7 +48,7 @@ export const handlers: HttpHandler[] = [
       .getAll()
       .map<ProductSelectOption>(({ id, name, defaultQuantity }) => ({ id, name, defaultQuantity }));
 
-    return HttpResponse.json(response);
+    return DelayedHttpResponse.json(response);
   }),
 
   http.post<PathParams, CreateProductRequest>(`${API_URL}/api/v1/products`, async ({ request }) => {
@@ -55,10 +56,10 @@ export const handlers: HttpHandler[] = [
     const result = productsService.create(body);
 
     if (result === 'CategoryNotFound') {
-      return new HttpResponse(null, { status: 400 });
+      return await DelayedHttpResponse.badRequest();
     }
 
-    return new HttpResponse(null, { status: 200 });
+    return await DelayedHttpResponse.ok();
   }),
 
   http.put<{ id: string }, EditProductRequest>(
@@ -69,16 +70,16 @@ export const handlers: HttpHandler[] = [
       const result = productsService.update(id, body);
 
       if (result === 'CategoryNotFound') {
-        return new HttpResponse(null, { status: 400 });
+        return await DelayedHttpResponse.badRequest();
       }
 
-      return new HttpResponse(null, { status: 200 });
+      return await DelayedHttpResponse.ok();
     },
   ),
 
   http.delete<PathParams, number[]>(`${API_URL}/api/v1/products/batch`, async ({ request }) => {
     const productIds = await request.json();
     productsService.deleteMany(productIds);
-    return new HttpResponse(null, { status: 200 });
+    return await DelayedHttpResponse.ok();
   }),
 ];
