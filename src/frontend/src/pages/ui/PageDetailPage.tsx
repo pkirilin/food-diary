@@ -1,7 +1,6 @@
 import { type FC } from 'react';
 import { useLoaderData } from 'react-router-dom';
-import { notesApi } from '@/features/notes';
-import { MealsList } from '@/features/notes/components';
+import { notesApi, MealsList, NotesTable } from '@/features/notes';
 import { pagesApi } from '@/features/pages';
 import PageContentHeader from '@/features/pages/components/PageContentHeader';
 import store from '@/store';
@@ -36,7 +35,17 @@ export const Component: FC = () => {
         getPageByIdQuery.data && <PageContentHeader page={getPageByIdQuery.data.currentPage} />
       }
     >
-      <MealsList notes={getNotesQuery.data ?? []} />
+      <MealsList
+        notes={getNotesQuery.data ?? []}
+        renderItem={(notes, mealType) => (
+          <NotesTable
+            mealType={mealType}
+            notes={notes}
+            notesChanged={!getNotesQuery.isFetching && getNotesQuery.isSuccess}
+            notesFetching={getNotesQuery.isFetching}
+          />
+        )}
+      />
     </PrivateLayout>
   );
 };

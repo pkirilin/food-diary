@@ -4,7 +4,7 @@ import { type FC, useEffect, useState } from 'react';
 import { useAppSelector } from 'src/store';
 import { productsApi } from '../api';
 import { toCreateProductRequest } from '../mapping';
-import { useCategorySelect } from '../model';
+import { useCategorySelect, useProducts } from '../model';
 import { selectProductsQueryArg } from '../selectors';
 import { type ProductFormData } from '../types';
 import ProductInputDialog from './ProductInputDialog';
@@ -14,13 +14,14 @@ const CreateProduct: FC = () => {
   const getProductsQueryArg = useAppSelector(selectProductsQueryArg);
   const getProductsQuery = productsApi.useGetProductsQuery(getProductsQueryArg);
   const categorySelect = useCategorySelect();
+  const products = useProducts();
   const [createProduct, createProductRequest] = productsApi.useCreateProductMutation();
 
   useEffect(() => {
-    if (createProductRequest.isSuccess) {
+    if (createProductRequest.isSuccess && products.isChanged) {
       setIsDialogOpened(false);
     }
-  }, [createProductRequest.isSuccess]);
+  }, [createProductRequest.isSuccess, products.isChanged]);
 
   const handleCreate = (): void => {
     setIsDialogOpened(true);
@@ -51,7 +52,7 @@ const CreateProduct: FC = () => {
         title="Create product"
         submitText="Create"
         onSubmit={handleDialogSubmit}
-        isLoading={createProductRequest.isLoading}
+        isLoading={createProductRequest.isLoading || products.isFetching}
         categories={categorySelect.data}
         categoriesLoading={categorySelect.isLoading}
       />

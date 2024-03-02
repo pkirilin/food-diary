@@ -1,5 +1,5 @@
-import { Button } from '@mui/material';
 import { type FC, useEffect, type FormEventHandler } from 'react';
+import { Button } from '@/shared/ui';
 import { AppDialog, DatePicker } from 'src/components';
 import { useInput } from 'src/hooks';
 import { formatDate } from 'src/utils';
@@ -12,6 +12,7 @@ interface PageInputDialogProps {
   isOpened: boolean;
   submitText: string;
   initialDate: Date;
+  submitInProgress: boolean;
   onClose: () => void;
   onSubmit: (page: PageCreateEdit) => void;
 }
@@ -21,6 +22,7 @@ const PageInputDialog: FC<PageInputDialogProps> = ({
   isOpened,
   submitText,
   initialDate,
+  submitInProgress,
   onClose,
   onSubmit,
 }) => {
@@ -68,15 +70,16 @@ const PageInputDialog: FC<PageInputDialogProps> = ({
         <Button
           type="submit"
           form="page-input-form"
-          variant="contained"
+          variant="text"
           color="primary"
           disabled={dateInput.isInvalid || !dateInput.isTouched}
+          loading={submitInProgress}
         >
           {submitText}
         </Button>
       }
       actionCancel={
-        <Button type="button" variant="text" onClick={onClose}>
+        <Button type="button" variant="text" color="inherit" onClick={onClose}>
           Cancel
         </Button>
       }

@@ -6,15 +6,17 @@ import { type FC, useEffect, useState } from 'react';
 import { type ProductSelectOption } from 'src/features/products';
 import { useRouterId } from 'src/hooks';
 import { notesApi } from '../api';
+import DeleteNoteDialog from '../components/DeleteNoteDialog';
+import NoteInputDialog from '../components/NoteInputDialog';
 import { toEditNoteRequest, toProductSelectOption } from '../mapping';
 import { type NoteCreateEdit, type NoteItem } from '../models';
-import DeleteNoteDialog from './DeleteNoteDialog';
-import NoteInputDialog from './NoteInputDialog';
 
 interface NotesTableRowProps {
   note: NoteItem;
   products: ProductSelectOption[];
   productsLoading: boolean;
+  notesChanged: boolean;
+  notesFetching: boolean;
 }
 
 const useStyles = makeStyles(theme => ({
@@ -26,10 +28,12 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const NotesTableRow: FC<NotesTableRowProps> = ({
+export const NotesTableRow: FC<NotesTableRowProps> = ({
   note,
   products,
   productsLoading,
+  notesChanged,
+  notesFetching,
 }: NotesTableRowProps) => {
   const classes = useStyles();
   const pageId = useRouterId('id');
@@ -41,16 +45,10 @@ const NotesTableRow: FC<NotesTableRowProps> = ({
   const [deleteNote, deleteNoteResponse] = notesApi.useDeleteNoteMutation();
 
   useEffect(() => {
-    if (editNoteResponse.isSuccess) {
+    if ((editNoteResponse.isSuccess || deleteNoteResponse.isSuccess) && notesChanged) {
       setIsEditDialogOpened(false);
     }
-  }, [editNoteResponse.isSuccess]);
-
-  useEffect(() => {
-    if (deleteNoteResponse.isSuccess) {
-      setIsDeleteDialogOpened(false);
-    }
-  }, [deleteNoteResponse.isSuccess]);
+  }, [deleteNoteResponse.isSuccess, editNoteResponse.isSuccess, notesChanged]);
 
   const handleEditOpen = (): void => {
     setIsEditDialogOpened(true);
@@ -90,13 +88,14 @@ const NotesTableRow: FC<NotesTableRowProps> = ({
         productsLoading={productsLoading}
         quantity={note.productQuantity}
         displayOrder={note.displayOrder}
+        submitInProgress={editNoteResponse.isLoading || notesFetching}
         onClose={handleEditClose}
         onSubmit={handleEditSubmit}
       />
       <DeleteNoteDialog
         note={note}
         isOpened={isDeleteDialogOpened}
-        isLoading={status === 'pending'}
+        submitInProgress={deleteNoteResponse.isLoading || notesFetching}
         onClose={handleDeleteClose}
         onSubmit={handleDeleteSubmit}
       />
@@ -118,5 +117,3 @@ const NotesTableRow: FC<NotesTableRowProps> = ({
     </TableRow>
   );
 };
-
-export default NotesTableRow;

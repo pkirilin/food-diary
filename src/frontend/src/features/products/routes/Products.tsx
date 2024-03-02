@@ -1,19 +1,19 @@
 import { Paper, Typography } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 import { useEffect, type FC } from 'react';
+import { LoadingContainer } from '@/shared/ui';
 import { useAppDispatch } from 'src/hooks';
 import { useAppSelector } from 'src/store';
-import { productsApi } from '../api';
 import ProductsTable from '../components/ProductsTable';
 import ProductsTablePagination from '../components/ProductsTablePagination';
 import ProductsTableToolbar from '../components/ProductsTableToolbar';
-import { selectProductsQueryArg, selectCheckedProductIds } from '../selectors';
+import { useProducts } from '../model';
+import { selectCheckedProductIds } from '../selectors';
 import { productsUnchecked, productsChecked, filterReset } from '../store';
 import { type Product } from '../types';
 
 const Products: FC = () => {
-  const getProductsQueryArg = useAppSelector(selectProductsQueryArg);
-  const getProductsQuery = productsApi.useGetProductsQuery(getProductsQueryArg);
+  const products = useProducts();
   const checkedProductIds = useAppSelector(selectCheckedProductIds);
   const filterChanged = useAppSelector(state => state.products.filter.changed);
   const dispatch = useAppDispatch();
@@ -41,12 +41,13 @@ const Products: FC = () => {
       </Typography>
       <Paper>
         <ProductsTableToolbar />
-        <ProductsTable
-          products={getProductsQuery.data?.productItems ?? []}
-          isLoading={getProductsQuery.isFetching}
-          checkedIds={checkedProductIds}
-          onCheckedChange={handleCheckedProductsChange}
-        />
+        <LoadingContainer loading={products.isFetching}>
+          <ProductsTable
+            products={products.data}
+            checkedIds={checkedProductIds}
+            onCheckedChange={handleCheckedProductsChange}
+          />
+        </LoadingContainer>
         <ProductsTablePagination />
       </Paper>
     </>

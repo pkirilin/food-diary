@@ -6,7 +6,8 @@ import {
   type SetStateAction,
   type FormEventHandler,
 } from 'react';
-import { AppButton, AppDialog } from 'src/components';
+import { Button } from '@/shared/ui';
+import { AppDialog } from 'src/components';
 import { useInput } from 'src/hooks';
 import { mapToTextInputProps } from 'src/utils/inputMapping';
 import { validateCategoryName } from 'src/utils/validation';
@@ -18,7 +19,7 @@ interface CreateEditCategoryDialogProps {
   title: string;
   submitText: string;
   onSubmit: (category: CategoryFormData) => void;
-  isLoading: boolean;
+  loading: boolean;
   category?: Category;
 }
 
@@ -28,7 +29,7 @@ const CategoryInputDialog: FC<CreateEditCategoryDialogProps> = ({
   title,
   submitText,
   onSubmit,
-  isLoading,
+  loading,
   category,
 }) => {
   const {
@@ -79,21 +80,28 @@ const CategoryInputDialog: FC<CreateEditCategoryDialogProps> = ({
         </form>
       }
       actionSubmit={
-        <AppButton
+        <Button
           type="submit"
           form="category-input-form"
-          variant="contained"
+          variant="text"
+          color="primary"
           disabled={isSubmitDisabled}
-          isLoading={isLoading}
+          loading={loading}
           aria-label={`${category ? 'Save' : 'Create'} ${categoryName} and close dialog`}
         >
           {submitText}
-        </AppButton>
+        </Button>
       }
       actionCancel={
-        <AppButton type="button" disabled={isLoading} onClick={handleClose}>
+        <Button
+          type="button"
+          variant="text"
+          color="inherit"
+          disabled={loading}
+          onClick={handleClose}
+        >
           Cancel
-        </AppButton>
+        </Button>
       }
     />
   );

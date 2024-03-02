@@ -6,7 +6,8 @@ import {
   type SetStateAction,
   type FormEventHandler,
 } from 'react';
-import { AppButton, AppDialog } from 'src/components';
+import { Button } from '@/shared/ui';
+import { AppDialog } from 'src/components';
 import { CategorySelect } from 'src/features/categories';
 import { useInput } from 'src/hooks';
 import { type SelectOption } from 'src/types';
@@ -153,21 +154,28 @@ const ProductInputDialog: FC<ProductInputDialogProps> = ({
         </form>
       }
       actionSubmit={
-        <AppButton
+        <Button
           type="submit"
           form="product-input-form"
           aria-label={`${product ? 'Save' : 'Create'} ${productName.value} and close dialog`}
-          variant="contained"
+          variant="text"
+          color="primary"
           disabled={isAnyValueInvalid || !isAnyValueChanged}
-          isLoading={isLoading}
+          loading={isLoading}
         >
           {submitText}
-        </AppButton>
+        </Button>
       }
       actionCancel={
-        <AppButton type="button" disabled={isLoading} onClick={handleClose}>
+        <Button
+          type="button"
+          variant="text"
+          color="inherit"
+          disabled={isLoading}
+          onClick={handleClose}
+        >
           Cancel
-        </AppButton>
+        </Button>
       }
     />
   );

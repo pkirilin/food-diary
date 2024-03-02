@@ -4,7 +4,7 @@ import { type FC, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../__shared__/hooks';
 import { productsApi } from '../api';
 import { toEditProductRequest, toProductFormData } from '../mapping';
-import { useCategorySelect } from '../model';
+import { useCategorySelect, useProducts } from '../model';
 import { selectCheckedProductIds } from '../selectors';
 import { productChecked, productUnchecked } from '../store';
 import { type Product, type ProductFormData } from '../types';
@@ -21,12 +21,13 @@ const ProductsTableRow: FC<ProductsTableRowProps> = ({ product }: ProductsTableR
   const dispatch = useAppDispatch();
   const checkedProductIds = useAppSelector(selectCheckedProductIds);
   const isChecked = checkedProductIds.some(id => id === product.id);
+  const products = useProducts();
 
   useEffect(() => {
-    if (editProductRequest.isSuccess) {
+    if (editProductRequest.isSuccess && products.isChanged) {
       setIsEditDialogOpened(false);
     }
-  }, [editProductRequest.isSuccess]);
+  }, [editProductRequest.isSuccess, products.isChanged]);
 
   const handleEditClick = (): void => {
     setIsEditDialogOpened(true);
@@ -88,14 +89,13 @@ const ProductsTableRow: FC<ProductsTableRowProps> = ({ product }: ProductsTableR
           </Tooltip>
         </TableCell>
       </TableRow>
-
       <ProductInputDialog
         isOpened={isEditDialogOpened}
         setIsOpened={setIsEditDialogOpened}
         title="Edit product"
         submitText="Save"
         onSubmit={handleEditDialogSubmit}
-        isLoading={editProductRequest.isLoading}
+        isLoading={editProductRequest.isLoading || products.isFetching}
         product={toProductFormData(product)}
         categories={categorySelect.data}
         categoriesLoading={categorySelect.isLoading}

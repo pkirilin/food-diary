@@ -35,7 +35,7 @@ test('category can be edited', async () => {
   const name = dialog.getByPlaceholderText(/category name/i);
   await userEvent.clear(name);
   await userEvent.type(name, 'Modified Cereals');
-  await userEvent.click(dialog.getByLabelText(/save modified cereals/i));
+  await userEvent.click(dialog.getByRole('button', { name: /save modified cereals/i }));
 
   expect(await screen.findByText(/modified cereals/i));
 });
@@ -46,6 +46,7 @@ test('category can be deleted', async () => {
   await userEvent.click(await screen.findByLabelText(/delete cereals/i));
   const dialog = within(screen.getByRole('dialog'));
   await userEvent.click(dialog.getByLabelText(/delete cereals/i));
+  await waitForElementToBeRemoved(screen.getByRole('dialog'));
 
   expect(screen.queryByText(/cereals/i)).not.toBeInTheDocument();
 });

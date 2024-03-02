@@ -12,22 +12,30 @@ import {
 import { type FC, useEffect, useState, useMemo } from 'react';
 import { useRouterId } from 'src/hooks';
 import { notesApi } from '../api';
+import NoteInputDialog from '../components/NoteInputDialog';
 import { toCreateNoteRequest } from '../mapping';
 import { useProductSelect } from '../model';
 import { type NoteItem, type MealType, type NoteCreateEdit } from '../models';
-import NoteInputDialog from './NoteInputDialog';
-import NotesTableRow from './NotesTableRow';
+import { NotesTableRow } from './NotesTableRow';
 
 interface NotesTableProps {
   mealType: MealType;
   notes: NoteItem[];
+  notesChanged: boolean;
+  notesFetching: boolean;
 }
 
-const NotesTable: FC<NotesTableProps> = ({ mealType, notes }: NotesTableProps) => {
+export const NotesTable: FC<NotesTableProps> = ({
+  mealType,
+  notes,
+  notesChanged,
+  notesFetching,
+}: NotesTableProps) => {
   const pageId = useRouterId('id');
   const productSelect = useProductSelect();
   const [createNote, createNoteResponse] = notesApi.useCreateNoteMutation();
   const [isDialogOpened, setIsDialogOpened] = useState(false);
+  const getNotesQuery = notesApi.useGetNotesQuery({ pageId });
 
   const maxDisplayOrderForNotesGroup = useMemo(
     () =>
@@ -39,10 +47,12 @@ const NotesTable: FC<NotesTableProps> = ({ mealType, notes }: NotesTableProps) =
   );
 
   useEffect(() => {
-    if (createNoteResponse.isSuccess) {
+    const notesChanged = !getNotesQuery.isFetching && getNotesQuery.isSuccess;
+
+    if (createNoteResponse.isSuccess && notesChanged) {
       setIsDialogOpened(false);
     }
-  }, [createNoteResponse.isSuccess]);
+  }, [createNoteResponse.isSuccess, getNotesQuery.isFetching, getNotesQuery.isSuccess]);
 
   const handleDialogOpen = (): void => {
     setIsDialogOpened(true);
@@ -70,6 +80,7 @@ const NotesTable: FC<NotesTableProps> = ({ mealType, notes }: NotesTableProps) =
         quantity={100}
         pageId={pageId}
         displayOrder={maxDisplayOrderForNotesGroup + 1}
+        submitInProgress={createNoteResponse.isLoading || getNotesQuery.isFetching}
         onClose={handleDialogClose}
         onSubmit={handleAddNote}
       />
@@ -89,6 +100,8 @@ const NotesTable: FC<NotesTableProps> = ({ mealType, notes }: NotesTableProps) =
               note={note}
               products={productSelect.data}
               productsLoading={productSelect.isLoading}
+              notesChanged={notesChanged}
+              notesFetching={notesFetching}
             />
           ))}
         </TableBody>
@@ -107,5 +120,3 @@ const NotesTable: FC<NotesTableProps> = ({ mealType, notes }: NotesTableProps) =
     </TableContainer>
   );
 };
-
-export default NotesTable;

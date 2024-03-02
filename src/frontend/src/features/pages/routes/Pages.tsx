@@ -5,21 +5,18 @@ import { type FC } from 'react';
 import { DEMO_MODE_ENABLED } from 'src/config';
 import { useAppSelector, useAppDispatch } from 'src/hooks';
 import { type SortOrder } from 'src/types';
-import { pagesApi } from '../api';
 import DemoPagesWarning from '../components/DemoPagesWarning';
 import PagesFilterAppliedParams from '../components/PagesFilterAppliedParams';
 import PagesTable from '../components/PagesTable';
 import PagesTablePagination from '../components/PagesTablePagination';
 import PagesToolbar from '../components/PagesToolbar';
-import { toGetPagesRequest } from '../mapping';
+import { usePages } from '../model';
 import { allPagesSelected, sortOrderChanged } from '../slice';
 
 const Pages: FC = () => {
   const selectedPagesCount = useAppSelector(state => state.pages.selectedPageIds.length);
-  const pagesFilter = useAppSelector(state => state.pages.filter);
   const dispatch = useAppDispatch();
-  const getPagesRequest = toGetPagesRequest(pagesFilter);
-  const getPagesQuery = pagesApi.useGetPagesQuery(getPagesRequest);
+  const pages = usePages();
 
   const handleSelectAll = (isSelected: boolean): void => {
     dispatch(
@@ -47,13 +44,13 @@ const Pages: FC = () => {
         <PagesToolbar />
         <PagesFilterAppliedParams />
         <PagesTable
-          pages={getPagesQuery.data?.pageItems ?? []}
+          pages={pages.data}
           selectedPagesCount={selectedPagesCount}
-          filter={pagesFilter}
+          filter={pages.filter}
           onSelectAll={handleSelectAll}
           onReorder={handleReorder}
         />
-        <PagesTablePagination totalPagesCount={getPagesQuery.data?.totalPagesCount ?? 0} />
+        <PagesTablePagination totalPagesCount={pages.totalCount} />
       </Paper>
     </>
   );

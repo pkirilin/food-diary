@@ -69,15 +69,6 @@ const productsSlice = createSlice({
       })
       .addMatcher(productsApi.endpoints.deleteProducts.matchFulfilled, state => {
         state.checkedProductIds = [];
-      })
-      .addMatcher(productsApi.endpoints.createProduct.matchPending, state => {
-        state.filter = initialState.filter;
-      })
-      .addMatcher(productsApi.endpoints.editProduct.matchPending, state => {
-        state.filter = initialState.filter;
-      })
-      .addMatcher(productsApi.endpoints.deleteProducts.matchPending, state => {
-        state.filter = initialState.filter;
       }),
 });
 

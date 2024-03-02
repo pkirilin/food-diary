@@ -1,12 +1,13 @@
 import { Typography } from '@mui/material';
 import { type FormEventHandler, type FC } from 'react';
-import { AppButton, AppDialog } from 'src/components';
+import { Button } from '@/shared/ui';
+import { AppDialog } from 'src/components';
 import { type NoteItem } from '../models';
 
 interface DeleteNoteDialogProps {
   note: NoteItem;
   isOpened: boolean;
-  isLoading: boolean;
+  submitInProgress: boolean;
   onClose: () => void;
   onSubmit: (note: NoteItem) => void;
 }
@@ -14,7 +15,7 @@ interface DeleteNoteDialogProps {
 const DeleteNoteDialog: FC<DeleteNoteDialogProps> = ({
   note,
   isOpened,
-  isLoading,
+  submitInProgress,
   onClose,
   onSubmit,
 }) => {
@@ -33,27 +34,27 @@ const DeleteNoteDialog: FC<DeleteNoteDialogProps> = ({
         </form>
       }
       actionSubmit={
-        <AppButton
+        <Button
           type="submit"
           form="delete-note"
-          variant="contained"
+          variant="text"
           color="error"
-          isLoading={isLoading}
+          loading={submitInProgress}
           autoFocus
         >
           Yes
-        </AppButton>
+        </Button>
       }
       actionCancel={
-        <AppButton
+        <Button
           type="button"
           variant="text"
           color="inherit"
           onClick={onClose}
-          isLoading={isLoading}
+          disabled={submitInProgress}
         >
           No
-        </AppButton>
+        </Button>
       }
       onClose={onClose}
     />

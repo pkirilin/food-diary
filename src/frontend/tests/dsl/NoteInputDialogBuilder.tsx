@@ -28,6 +28,7 @@ export class NoteInputDialogBuilder {
             productsLoading={false}
             quantity={this._quantity}
             displayOrder={1}
+            submitInProgress={false}
             onClose={this._openAndCloseOnButtonClick ? onTriggerClick : vi.fn()}
             onSubmit={this._onSubmitMock}
           />

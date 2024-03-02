@@ -1,20 +1,21 @@
 import { Typography } from '@mui/material';
 import { type FormEventHandler, type FC } from 'react';
-import { AppButton, AppDialog } from 'src/components';
+import { Button } from '@/shared/ui';
+import { AppDialog } from 'src/components';
 
 const WARNING_MESSAGE =
   'Pages import is going to be started. Import may update or overwrite existing data from file and may cause data loss. Continue?';
 
 interface ConfirmImportDialogProps {
   isOpened: boolean;
-  isLoading: boolean;
+  submitInProgress: boolean;
   onClose: () => void;
   onSubmit: () => void;
 }
 
 const ConfirmImportDialog: FC<ConfirmImportDialogProps> = ({
   isOpened,
-  isLoading,
+  submitInProgress,
   onClose,
   onSubmit,
 }) => {
@@ -33,27 +34,27 @@ const ConfirmImportDialog: FC<ConfirmImportDialogProps> = ({
         </form>
       }
       actionSubmit={
-        <AppButton
+        <Button
           type="submit"
           form="confirm-import"
-          variant="contained"
-          color="error"
-          isLoading={isLoading}
+          variant="text"
+          color="warning"
+          loading={submitInProgress}
           autoFocus
         >
           Yes
-        </AppButton>
+        </Button>
       }
       actionCancel={
-        <AppButton
+        <Button
           type="button"
           variant="text"
           color="inherit"
           onClick={onClose}
-          isLoading={isLoading}
+          disabled={submitInProgress}
         >
           No
-        </AppButton>
+        </Button>
       }
       onClose={onClose}
     />

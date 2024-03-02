@@ -6,9 +6,11 @@ import {
   type SetStateAction,
   type FormEventHandler,
 } from 'react';
-import { AppButton, AppDialog } from 'src/components';
+import { Button } from '@/shared/ui';
+import { AppDialog } from 'src/components';
 import { useAppSelector } from 'src/store';
 import { productsApi } from '../api';
+import { useProducts } from '../model';
 import { selectCheckedProductIds } from '../selectors';
 
 interface DeleteProductsDialogProps {
@@ -22,12 +24,13 @@ const DeleteProductsDialog: FC<DeleteProductsDialogProps> = ({
 }) => {
   const checkedProductIds = useAppSelector(selectCheckedProductIds);
   const [deleteProducts, deleteProductRequest] = productsApi.useDeleteProductsMutation();
+  const products = useProducts();
 
   useEffect(() => {
-    if (deleteProductRequest.isSuccess) {
+    if (deleteProductRequest.isSuccess && products.isChanged) {
       setIsDialogOpened(false);
     }
-  }, [deleteProductRequest.isSuccess, setIsDialogOpened]);
+  }, [deleteProductRequest.isSuccess, products.isChanged, setIsDialogOpened]);
 
   const handleClose = (): void => {
     setIsDialogOpened(false);
@@ -48,27 +51,27 @@ const DeleteProductsDialog: FC<DeleteProductsDialogProps> = ({
         </form>
       }
       actionSubmit={
-        <AppButton
+        <Button
           type="submit"
           form="delete-products"
-          variant="contained"
+          variant="text"
           color="error"
-          isLoading={deleteProductRequest.isLoading}
+          loading={deleteProductRequest.isLoading || products.isFetching}
           autoFocus
         >
           Yes
-        </AppButton>
+        </Button>
       }
       actionCancel={
-        <AppButton
+        <Button
           type="button"
           variant="text"
           color="inherit"
           onClick={handleClose}
-          isLoading={deleteProductRequest.isLoading}
+          disabled={deleteProductRequest.isLoading}
         >
           No
-        </AppButton>
+        </Button>
       }
       onClose={handleClose}
     />

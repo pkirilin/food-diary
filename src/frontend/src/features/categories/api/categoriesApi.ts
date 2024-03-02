@@ -9,7 +9,7 @@ import {
 
 export const categoriesApi = api.injectEndpoints({
   endpoints: builder => ({
-    getCategories: builder.query<Category[], void>({
+    getCategories: builder.query<Category[], unknown>({
       query: () => '/api/v1/categories',
       providesTags: ['category'],
     }),

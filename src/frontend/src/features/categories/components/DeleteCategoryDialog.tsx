@@ -6,8 +6,10 @@ import {
   type SetStateAction,
   type FormEventHandler,
 } from 'react';
-import { AppButton, AppDialog } from 'src/components';
+import { Button } from '@/shared/ui';
+import { AppDialog } from 'src/components';
 import { categoriesApi } from '../api';
+import { useCategories } from '../model';
 import { type Category } from '../types';
 
 interface DeleteCategoryDialogProps {
@@ -22,12 +24,13 @@ const DeleteCategoryDialog: FC<DeleteCategoryDialogProps> = ({
   category,
 }) => {
   const [deleteCategory, deleteCategoryRequest] = categoriesApi.useDeleteCategoryMutation();
+  const categories = useCategories();
 
   useEffect(() => {
-    if (deleteCategoryRequest.isSuccess) {
+    if (deleteCategoryRequest.isSuccess && categories.isChanged) {
       setIsDialogOpened(false);
     }
-  }, [deleteCategoryRequest.isSuccess, setIsDialogOpened]);
+  }, [categories.isChanged, deleteCategoryRequest.isSuccess, setIsDialogOpened]);
 
   const handleClose = (): void => {
     setIsDialogOpened(false);
@@ -48,28 +51,28 @@ const DeleteCategoryDialog: FC<DeleteCategoryDialogProps> = ({
         </form>
       }
       actionSubmit={
-        <AppButton
+        <Button
           type="submit"
           form="delete-category"
-          variant="contained"
+          variant="text"
           color="error"
-          isLoading={deleteCategoryRequest.isLoading}
+          loading={deleteCategoryRequest.isLoading || categories.isFetching}
           aria-label={`Delete ${category.name}`}
           autoFocus
         >
           Yes
-        </AppButton>
+        </Button>
       }
       actionCancel={
-        <AppButton
+        <Button
           type="button"
           variant="text"
           color="inherit"
           onClick={handleClose}
-          isLoading={deleteCategoryRequest.isLoading}
+          disabled={deleteCategoryRequest.isLoading}
         >
           No
-        </AppButton>
+        </Button>
       }
       onClose={handleClose}
     />

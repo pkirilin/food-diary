@@ -1,4 +1,4 @@
-import { http, type HttpHandler, HttpResponse, type PathParams } from 'msw';
+import { http, type HttpHandler, type PathParams } from 'msw';
 import { API_URL } from 'src/config';
 import {
   type PageByIdResponse,
@@ -7,6 +7,7 @@ import {
 } from 'src/features/pages';
 import { SortOrder } from 'src/types';
 import { formatDate } from 'src/utils';
+import { DelayedHttpResponse } from '../DelayedHttpResponse';
 import { mapToPage } from './pages.mapper';
 import * as pagesService from './pages.service';
 
@@ -44,38 +45,38 @@ export const handlers: HttpHandler[] = [
       totalPagesCount,
     };
 
-    return HttpResponse.json(response);
+    return DelayedHttpResponse.json(response);
   }),
 
   http.get(`${API_URL}/api/v1/pages/date`, () => {
     const date = new Date(pagesService.getNewPageDate());
     const response: string = formatDate(date);
-    return HttpResponse.json(response);
+    return DelayedHttpResponse.json(response);
   }),
 
   http.get<{ id: string }>(`${API_URL}/api/v1/pages/:id`, ({ params }) => {
     if (!params.id) {
-      return new HttpResponse(null, { status: 404 });
+      return DelayedHttpResponse.notFound();
     }
 
     const id = Number(params.id);
     const currentDbPage = pagesService.getById(id);
 
     if (!currentDbPage) {
-      return new HttpResponse(null, { status: 404 });
+      return DelayedHttpResponse.notFound();
     }
 
     const response: PageByIdResponse = {
       currentPage: mapToPage(currentDbPage),
     };
 
-    return HttpResponse.json(response);
+    return DelayedHttpResponse.json(response);
   }),
 
   http.post<PathParams, PageCreateEdit>(`${API_URL}/api/v1/pages`, async ({ request }) => {
     const body = await request.json();
     pagesService.create(body);
-    return new HttpResponse(null, { status: 200 });
+    return await DelayedHttpResponse.ok();
   }),
 
   http.put<{ id: string }, PageCreateEdit>(
@@ -84,19 +85,19 @@ export const handlers: HttpHandler[] = [
       const id = parseInt(params.id);
       const body = await request.json();
       pagesService.update(id, body);
-      return new HttpResponse(null, { status: 200 });
+      return await DelayedHttpResponse.ok();
     },
   ),
 
   http.delete<PathParams, number[]>(`${API_URL}/api/v1/pages/batch`, async ({ request }) => {
     const pageIds = await request.json();
     pagesService.deleteMany(pageIds);
-    return new HttpResponse(null, { status: 200 });
+    return await DelayedHttpResponse.ok();
   }),
 
-  http.post(`${API_URL}/api/v1/imports/json`, () => new HttpResponse(null, { status: 200 })),
+  http.post(`${API_URL}/api/v1/imports/json`, () => DelayedHttpResponse.ok()),
 
-  http.get(`${API_URL}/api/v1/exports/json`, () => new HttpResponse(new Blob())),
+  http.get(`${API_URL}/api/v1/exports/json`, () => DelayedHttpResponse.file(new Blob())),
 
-  http.post(`${API_URL}/api/v1/exports/google-docs`, () => new HttpResponse(null, { status: 200 })),
+  http.post(`${API_URL}/api/v1/exports/google-docs`, () => DelayedHttpResponse.ok()),
 ];

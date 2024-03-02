@@ -1,14 +1,19 @@
 import { useCallback, useEffect, useState } from 'react';
 import { pagesApi } from '../api';
 
-interface UseImportResult {
+interface Args {
+  file?: File;
+  pagesChanged: boolean;
+}
+
+interface Result {
   isDialogOpened: boolean;
   isLoading: boolean;
   start: () => void;
   closeDialog: () => void;
 }
 
-export function useImport(file?: File): UseImportResult {
+export function useImport({ file, pagesChanged }: Args): Result {
   const [isDialogOpened, setIsDialogOpened] = useState(false);
   const [importFromJson, importFromJsonRequest] = pagesApi.useImportFromJsonMutation();
 
@@ -33,10 +38,10 @@ export function useImport(file?: File): UseImportResult {
   }, [file, openDialog]);
 
   useEffect(() => {
-    if (importFromJsonRequest.isSuccess) {
+    if (importFromJsonRequest.isSuccess && pagesChanged) {
       closeDialog();
     }
-  }, [closeDialog, importFromJsonRequest.isSuccess]);
+  }, [closeDialog, importFromJsonRequest.isSuccess, pagesChanged]);
 
   return {
     isDialogOpened,

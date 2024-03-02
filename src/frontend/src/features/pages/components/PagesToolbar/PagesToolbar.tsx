@@ -1,15 +1,13 @@
-import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { Box, IconButton, Popover, styled, Toolbar, Tooltip, Typography } from '@mui/material';
 import { type PropsWithChildren, type FC, useEffect, useState } from 'react';
 import { usePopover, useAppSelector } from 'src/features/__shared__/hooks';
 import { useToolbarStyles } from 'src/features/__shared__/styles';
-import { type PageCreateEdit } from 'src/features/pages/models';
 import { pagesApi } from '../../api';
-import { useDateForNewPage } from '../../hooks';
+import { usePages } from '../../model';
+import { AddPage } from '../../ui';
 import DeletePagesDialog from '../DeletePagesDialog';
-import { PageInputDialog } from '../PageInputDialog';
 import PagesFilter from '../PagesFilter';
 import ShowMoreTableOptions from '../ShowMoreTableOptions';
 
@@ -21,32 +19,15 @@ const PagesToolbar: FC<PagesToolbarProps> = ({ children }) => {
   const classes = useToolbarStyles();
   const [filter, showFilter] = usePopover();
   const selectedPageIds = useAppSelector(state => state.pages.selectedPageIds);
-
-  const [isInputDialogOpened, setIsInputDialogOpened] = useState(false);
   const [isDeleteDialogOpened, setIsDeleteDialogOpened] = useState(false);
-
-  const dateForNewPage = useDateForNewPage();
-  const [createPage, createPageRequest] = pagesApi.useCreatePageMutation();
   const [deletePages, deletePagesRequest] = pagesApi.useDeletePagesMutation();
+  const pages = usePages();
 
   useEffect(() => {
-    if (createPageRequest.isSuccess || deletePagesRequest.isSuccess) {
-      setIsInputDialogOpened(false);
+    if (deletePagesRequest.isSuccess && pages.isChanged) {
       setIsDeleteDialogOpened(false);
     }
-  }, [createPageRequest.isSuccess, deletePagesRequest.isSuccess]);
-
-  const handleInputOpen = (): void => {
-    setIsInputDialogOpened(true);
-  };
-
-  const handleInputClose = (): void => {
-    setIsInputDialogOpened(false);
-  };
-
-  const handleCreatePage = (page: PageCreateEdit): void => {
-    void createPage(page);
-  };
+  }, [deletePagesRequest.isSuccess, pages.isChanged]);
 
   const handleDeleteOpen = (): void => {
     setIsDeleteDialogOpened(true);
@@ -62,17 +43,9 @@ const PagesToolbar: FC<PagesToolbarProps> = ({ children }) => {
 
   return (
     <Toolbar className={classes.root}>
-      <PageInputDialog
-        title="New page"
-        submitText="Create"
-        initialDate={dateForNewPage}
-        isOpened={isInputDialogOpened}
-        onClose={handleInputClose}
-        onSubmit={handleCreatePage}
-      />
       <DeletePagesDialog
         isOpened={isDeleteDialogOpened}
-        isLoading={deletePagesRequest.isLoading}
+        submitInProgress={deletePagesRequest.isLoading || pages.isFetching}
         pageIds={selectedPageIds}
         onClose={handleDeleteClose}
         onSubmit={handleDeletePages}
@@ -107,13 +80,7 @@ const PagesToolbar: FC<PagesToolbarProps> = ({ children }) => {
               </IconButton>
             </span>
           </Tooltip>
-          <Tooltip title="Add new page">
-            <span>
-              <IconButton onClick={handleInputOpen} size="large">
-                <AddIcon />
-              </IconButton>
-            </span>
-          </Tooltip>
+          <AddPage />
           <ShowMoreTableOptions />
         </>
       )}
