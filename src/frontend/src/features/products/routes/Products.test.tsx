@@ -1,4 +1,4 @@
-import { screen, within } from '@testing-library/react';
+import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { render } from 'src/testing';
 import Products from './Products';
@@ -17,6 +17,7 @@ test('product can be created', async () => {
   render(<Products />);
 
   const createButton = await screen.findByRole('button', { name: /open create product dialog/i });
+  await waitFor(() => expect(createButton).toBeEnabled());
   await userEvent.click(createButton);
 
   const dialog = within(screen.getByRole('dialog'));
@@ -69,6 +70,7 @@ test('new product input is validated', async () => {
   render(<Products />);
 
   const createButton = await screen.findByRole('button', { name: /open create product dialog/i });
+  await waitFor(() => expect(createButton).toBeEnabled());
   await userEvent.click(createButton);
 
   const dialog = within(screen.getByRole('dialog'));
@@ -119,6 +121,7 @@ test('all products can be selected', async () => {
   render(<Products />);
 
   const selectAll = await screen.findByLabelText(/select all/i);
+  await waitFor(() => expect(selectAll).toBeEnabled());
   await userEvent.click(selectAll);
 
   expect(screen.getByText(/(\d)+ selected/i));
@@ -133,7 +136,7 @@ test('products can be deleted', async () => {
   const dialog = within(screen.getByRole('dialog'));
   await userEvent.click(dialog.getByText(/yes/i));
 
-  expect(screen.queryByText(/bread/i)).not.toBeInTheDocument();
+  await waitFor(() => expect(screen.queryByText(/bread/i)).not.toBeInTheDocument());
   expect(screen.queryByText(/(\d)+ selected/i)).not.toBeInTheDocument();
 });
 
@@ -148,7 +151,7 @@ test('products can be filtered by category', async () => {
   await user.click(cereals);
 
   expect(await screen.findByText(/oats/i));
-  expect(screen.queryByText(/milk/i)).not.toBeInTheDocument();
+  await waitFor(() => expect(screen.queryByText(/milk/i)).not.toBeInTheDocument());
 });
 
 test('products can be filtered by name', async () => {
