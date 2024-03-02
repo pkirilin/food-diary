@@ -105,7 +105,7 @@ test('existing product input is validated', async () => {
 
   expect(productName).toBeInvalid();
   expect(caloriesCost).toBeInvalid();
-  expect(dialog.getByText(/save/i)).toBeDisabled();
+  expect(dialog.getByRole('button', { name: /save/i })).toBeDisabled();
 });
 
 test('product can be selected', async () => {

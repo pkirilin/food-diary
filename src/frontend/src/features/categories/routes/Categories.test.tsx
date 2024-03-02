@@ -35,7 +35,7 @@ test('category can be edited', async () => {
   const name = dialog.getByPlaceholderText(/category name/i);
   await userEvent.clear(name);
   await userEvent.type(name, 'Modified Cereals');
-  await userEvent.click(dialog.getByLabelText(/save modified cereals/i));
+  await userEvent.click(dialog.getByRole('button', { name: /save modified cereals/i }));
 
   expect(await screen.findByText(/modified cereals/i));
 });

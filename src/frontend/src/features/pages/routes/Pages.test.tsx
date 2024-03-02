@@ -40,7 +40,7 @@ test('pages cannot be exported if start/end dates not specified', async () => {
   await userEvent.clear(endDate);
   await userEvent.type(endDate, '01012022');
 
-  const exportButton = await within(dialog).findByText(/export to json/i);
+  const exportButton = await within(dialog).findByRole('button', { name: /export to json/i });
   expect(exportButton).toBeDisabled();
 });
 
