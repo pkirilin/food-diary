@@ -1,4 +1,4 @@
-import { screen, waitForElementToBeRemoved, within } from '@testing-library/react';
+import { screen, waitFor, waitForElementToBeRemoved, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { render } from 'src/testing';
 import Categories from './Categories';
@@ -48,5 +48,5 @@ test('category can be deleted', async () => {
   await userEvent.click(dialog.getByLabelText(/delete cereals/i));
   await waitForElementToBeRemoved(screen.getByRole('dialog'));
 
-  expect(screen.queryByText(/cereals/i)).not.toBeInTheDocument();
+  await waitFor(() => expect(screen.queryByText(/cereals/i)).not.toBeInTheDocument());
 });

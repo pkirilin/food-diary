@@ -1,4 +1,4 @@
-import { screen, waitFor, within } from '@testing-library/react';
+import { screen, waitFor, waitForElementToBeRemoved, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { render } from 'src/testing';
 import Products from './Products';
@@ -59,6 +59,7 @@ test('product can be edited', async () => {
   await userEvent.clear(defaultQuantity);
   await userEvent.type(defaultQuantity, '105');
   await userEvent.click(dialog.getByLabelText(/save/i));
+  await waitForElementToBeRemoved(screen.getByRole('dialog'));
 
   expect(await screen.findByText(/rye bread/i));
   expect(screen.getByLabelText(/rye bread calories cost is 95/i));
@@ -135,6 +136,7 @@ test('products can be deleted', async () => {
   await userEvent.click(screen.getByLabelText(/delete selected products/i));
   const dialog = within(screen.getByRole('dialog'));
   await userEvent.click(dialog.getByText(/yes/i));
+  await waitForElementToBeRemoved(screen.getByRole('dialog'));
 
   await waitFor(() => expect(screen.queryByText(/bread/i)).not.toBeInTheDocument());
   expect(screen.queryByText(/(\d)+ selected/i)).not.toBeInTheDocument();
