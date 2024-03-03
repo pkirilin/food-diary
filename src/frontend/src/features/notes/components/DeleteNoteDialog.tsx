@@ -1,8 +1,8 @@
-import { Typography } from '@mui/material';
+import { DialogContentText, Typography } from '@mui/material';
 import { type FormEventHandler, type FC } from 'react';
 import { Button } from '@/shared/ui';
 import { AppDialog } from 'src/components';
-import { type NoteItem } from '../models';
+import { getMealName, type NoteItem } from '../models';
 
 interface DeleteNoteDialogProps {
   note: NoteItem;
@@ -26,11 +26,17 @@ const DeleteNoteDialog: FC<DeleteNoteDialogProps> = ({
 
   return (
     <AppDialog
-      title="Delete note confirmation"
+      title="Delete note?"
       isOpened={isOpened}
       content={
         <form id="delete-note" onSubmit={handleSubmit}>
-          <Typography>{`Are you sure you want to delete this note: ${note.productName}, ${note.productQuantity} g, ${note.calories} cal?`}</Typography>
+          <DialogContentText paragraph>
+            You are going to delete this note from <b>{getMealName(note.mealType)}</b>:
+          </DialogContentText>
+          <Typography>
+            {note.productName} {note.productQuantity} g ({note.calories} cal)
+          </Typography>
+          <DialogContentText />
         </form>
       }
       actionSubmit={
@@ -42,7 +48,7 @@ const DeleteNoteDialog: FC<DeleteNoteDialogProps> = ({
           loading={submitInProgress}
           autoFocus
         >
-          Yes
+          Delete
         </Button>
       }
       actionCancel={
@@ -53,7 +59,7 @@ const DeleteNoteDialog: FC<DeleteNoteDialogProps> = ({
           onClick={onClose}
           disabled={submitInProgress}
         >
-          No
+          Cancel
         </Button>
       }
       onClose={onClose}
