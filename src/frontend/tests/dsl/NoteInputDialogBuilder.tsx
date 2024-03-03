@@ -1,8 +1,8 @@
 import { WithTriggerButton } from 'tests/sideEffects';
 import { type ReactElement } from 'react';
 import { type Mock } from 'vitest';
+import NoteInputDialog from '@/features/notes/ui/NoteInputDialog';
 import { MealType } from 'src/features/notes';
-import NoteInputDialog from 'src/features/notes/components/NoteInputDialog';
 import { type ProductSelectOption } from 'src/features/products';
 
 export class NoteInputDialogBuilder {

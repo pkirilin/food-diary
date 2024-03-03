@@ -6,7 +6,7 @@ import { ProductSelect, type ProductSelectOption } from 'src/features/products';
 import { useInput } from 'src/hooks';
 import { mapToNumericInputProps, mapToSelectProps } from 'src/utils/inputMapping';
 import { validateQuantity, validateSelectOption } from 'src/utils/validation';
-import { type MealType, type NoteCreateEdit } from '../../models';
+import { getMealName, type MealType, type NoteCreateEdit } from '../../models';
 
 interface Props {
   title: string;
@@ -95,6 +95,13 @@ const NoteInputDialog: FC<Props> = ({
       isOpened={isOpened}
       content={
         <form id="note-input-form" onSubmit={handleSubmit}>
+          <TextField
+            label="Meal"
+            value={getMealName(mealType)}
+            margin="normal"
+            fullWidth
+            inputProps={{ readOnly: true }}
+          />
           <ProductSelect
             {...productInput.inputProps}
             label="Product"

@@ -7,9 +7,9 @@ import { type ProductSelectOption } from 'src/features/products';
 import { useRouterId } from 'src/hooks';
 import { notesApi } from '../api';
 import DeleteNoteDialog from '../components/DeleteNoteDialog';
-import NoteInputDialog from '../components/NoteInputDialog';
 import { toEditNoteRequest, toProductSelectOption } from '../mapping';
 import { type NoteCreateEdit, type NoteItem } from '../models';
+import NoteInputDialog from './NoteInputDialog';
 
 interface NotesTableRowProps {
   note: NoteItem;

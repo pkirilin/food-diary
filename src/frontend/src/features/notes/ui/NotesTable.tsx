@@ -1,7 +1,5 @@
-import AddIcon from '@mui/icons-material/Add';
 import {
   Box,
-  Button,
   Table,
   TableBody,
   TableCell,
@@ -9,13 +7,11 @@ import {
   TableHead,
   TableRow,
 } from '@mui/material';
-import { type FC, useEffect, useState, useMemo } from 'react';
+import { type FC } from 'react';
 import { useRouterId } from 'src/hooks';
-import { notesApi } from '../api';
-import NoteInputDialog from '../components/NoteInputDialog';
-import { toCreateNoteRequest } from '../mapping';
 import { useProductSelect } from '../model';
-import { type NoteItem, type MealType, type NoteCreateEdit } from '../models';
+import { type NoteItem, type MealType } from '../models';
+import { AddNote } from './AddNote';
 import { NotesTableRow } from './NotesTableRow';
 
 interface NotesTableProps {
@@ -33,57 +29,9 @@ export const NotesTable: FC<NotesTableProps> = ({
 }: NotesTableProps) => {
   const pageId = useRouterId('id');
   const productSelect = useProductSelect();
-  const [createNote, createNoteResponse] = notesApi.useCreateNoteMutation();
-  const [isDialogOpened, setIsDialogOpened] = useState(false);
-  const getNotesQuery = notesApi.useGetNotesQuery({ pageId });
-
-  const maxDisplayOrderForNotesGroup = useMemo(
-    () =>
-      notes.reduce(
-        (maxOrder, note) => (note.displayOrder > maxOrder ? note.displayOrder : maxOrder),
-        -1,
-      ),
-    [notes],
-  );
-
-  useEffect(() => {
-    const notesChanged = !getNotesQuery.isFetching && getNotesQuery.isSuccess;
-
-    if (createNoteResponse.isSuccess && notesChanged) {
-      setIsDialogOpened(false);
-    }
-  }, [createNoteResponse.isSuccess, getNotesQuery.isFetching, getNotesQuery.isSuccess]);
-
-  const handleDialogOpen = (): void => {
-    setIsDialogOpened(true);
-  };
-
-  const handleDialogClose = (): void => {
-    setIsDialogOpened(false);
-  };
-
-  const handleAddNote = (note: NoteCreateEdit): void => {
-    const request = toCreateNoteRequest(note);
-    void createNote(request);
-  };
 
   return (
     <TableContainer>
-      <NoteInputDialog
-        title="New note"
-        submitText="Create"
-        isOpened={isDialogOpened}
-        mealType={mealType}
-        product={null}
-        products={productSelect.data}
-        productsLoading={productSelect.isLoading}
-        quantity={100}
-        pageId={pageId}
-        displayOrder={maxDisplayOrderForNotesGroup + 1}
-        submitInProgress={createNoteResponse.isLoading || getNotesQuery.isFetching}
-        onClose={handleDialogClose}
-        onSubmit={handleAddNote}
-      />
       <Table size="small">
         <TableHead>
           <TableRow>
@@ -107,15 +55,7 @@ export const NotesTable: FC<NotesTableProps> = ({
         </TableBody>
       </Table>
       <Box mt={1}>
-        <Button
-          variant="text"
-          size="medium"
-          fullWidth
-          startIcon={<AddIcon />}
-          onClick={handleDialogOpen}
-        >
-          Add note
-        </Button>
+        <AddNote pageId={pageId} mealType={mealType} />
       </Box>
     </TableContainer>
   );
