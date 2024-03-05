@@ -5,17 +5,13 @@ import dateFnsFormat from 'date-fns/format';
 import { type FC } from 'react';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '../../__shared__/hooks';
-import { useFilterAppliedParamsStyles } from '../../__shared__/styles';
 import { endDateChanged, startDateChanged } from '../slice';
 
 const formatDate = (date: string): string => dateFnsFormat(new Date(date), 'dd.MM.yyyy');
 
 const PagesFilterAppliedParams: FC = () => {
-  const classes = useFilterAppliedParamsStyles();
-
   const startDate = useAppSelector(state => state.pages.filter.startDate);
   const endDate = useAppSelector(state => state.pages.filter.endDate);
-
   const dispatch = useDispatch();
 
   if (!startDate && !endDate) {
@@ -23,7 +19,7 @@ const PagesFilterAppliedParams: FC = () => {
   }
 
   return (
-    <Box className={classes.root}>
+    <Box p={2}>
       {startDate && (
         <Tooltip title="Applied filter: start date">
           <Chip
