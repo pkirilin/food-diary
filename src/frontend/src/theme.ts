@@ -1,9 +1,5 @@
-import { type Theme, createTheme } from '@mui/material';
+import { createTheme } from '@mui/material';
 import { green } from '@mui/material/colors';
-
-declare module '@mui/styles/defaultTheme' {
-  interface DefaultTheme extends Theme {}
-}
 
 declare module '@mui/material/styles' {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface

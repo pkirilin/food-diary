@@ -4,12 +4,10 @@ import { DatePicker } from 'src/components';
 import { useInput } from 'src/hooks';
 import { mapToDateInputProps } from 'src/utils/inputMapping';
 import { validateDate } from 'src/utils/validation';
-import { useFilterStyles } from '../../__shared__/styles';
 import { useFilter } from '../hooks';
 import { endDateChanged, startDateChanged } from '../slice';
 
 const PagesFilter: FC = () => {
-  const classes = useFilterStyles();
   const { initialStartDate, initialEndDate, isChanged, applyToDatePart, reset } = useFilter();
 
   const {
@@ -50,10 +48,10 @@ const PagesFilter: FC = () => {
   }, [initialStartDate, initialEndDate, setStartDate, setEndDate]);
 
   return (
-    <Box component={Paper} className={classes.root}>
+    <Box component={Paper} p={2}>
       <DatePicker {...startDateInputProps} label="Start date" placeholder="Select start date" />
       <DatePicker {...endDateInputProps} label="End date" placeholder="Select end date" />
-      <Box className={classes.controls}>
+      <Box display="flex" justifyContent="flex-end">
         <Button variant="text" disabled={!isChanged} onClick={reset}>
           Reset
         </Button>

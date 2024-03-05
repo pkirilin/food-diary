@@ -1,9 +1,8 @@
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
-import { Box, IconButton, Popover, styled, Toolbar, Tooltip, Typography } from '@mui/material';
+import { Box, IconButton, Popover, Stack, styled, Tooltip, Typography } from '@mui/material';
 import { type PropsWithChildren, type FC, useEffect, useState } from 'react';
 import { usePopover, useAppSelector } from 'src/features/__shared__/hooks';
-import { useToolbarStyles } from 'src/features/__shared__/styles';
 import { pagesApi } from '../../api';
 import { usePages } from '../../model';
 import { AddPage } from '../../ui';
@@ -16,7 +15,6 @@ const StyledTableHeader = styled(Typography)(({ theme }) => ({ ...theme.typograp
 type PagesToolbarProps = PropsWithChildren<unknown>;
 
 const PagesToolbar: FC<PagesToolbarProps> = ({ children }) => {
-  const classes = useToolbarStyles();
   const [filter, showFilter] = usePopover();
   const selectedPageIds = useAppSelector(state => state.pages.selectedPageIds);
   const [isDeleteDialogOpened, setIsDeleteDialogOpened] = useState(false);
@@ -42,7 +40,7 @@ const PagesToolbar: FC<PagesToolbarProps> = ({ children }) => {
   };
 
   return (
-    <Toolbar className={classes.root}>
+    <Stack direction="row" alignItems="center" p={2}>
       <DeletePagesDialog
         isOpened={isDeleteDialogOpened}
         submitInProgress={deletePagesRequest.isLoading || pages.isFetching}
@@ -98,7 +96,7 @@ const PagesToolbar: FC<PagesToolbarProps> = ({ children }) => {
         <PagesFilter />
       </Popover>
       {children}
-    </Toolbar>
+    </Stack>
   );
 };
 

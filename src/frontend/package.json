@@ -22,7 +22,6 @@
     "@mui/icons-material": "^5.14.13",
     "@mui/lab": "^5.0.0-alpha.122",
     "@mui/material": "^5.11.12",
-    "@mui/styles": "^5.11.12",
     "@mui/system": "^5.9.1",
     "@mui/utils": "^5.11.12",
     "@mui/x-date-pickers": "^5.0.20",
@@ -83,7 +82,7 @@
       "last 1 safari version"
     ]
   },
-  "packageManager": "yarn@4.1.0",
+  "packageManager": "yarn@4.1.1",
   "msw": {
     "workerDirectory": "public"
   },
