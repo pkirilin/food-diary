@@ -1,12 +1,5 @@
 import makeStyles from '@mui/styles/makeStyles';
 
-export const useToolbarStyles = makeStyles(theme => ({
-  root: {
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(1),
-  },
-}));
-
 export const useFilterStyles = makeStyles(theme => ({
   root: {
     width: '450px',
