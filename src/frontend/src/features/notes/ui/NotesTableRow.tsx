@@ -1,7 +1,6 @@
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import { IconButton, TableCell, TableRow, Tooltip } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
+import { IconButton, Stack, TableCell, TableRow, Tooltip } from '@mui/material';
 import { type FC, useEffect, useState } from 'react';
 import { type ProductSelectOption } from 'src/features/products';
 import { useRouterId } from 'src/hooks';
@@ -19,15 +18,6 @@ interface NotesTableRowProps {
   notesFetching: boolean;
 }
 
-const useStyles = makeStyles(theme => ({
-  rowActions: {
-    display: 'flex',
-    '& > :not(:first-child)': {
-      marginLeft: theme.spacing(1),
-    },
-  },
-}));
-
 export const NotesTableRow: FC<NotesTableRowProps> = ({
   note,
   products,
@@ -35,12 +25,9 @@ export const NotesTableRow: FC<NotesTableRowProps> = ({
   notesChanged,
   notesFetching,
 }: NotesTableRowProps) => {
-  const classes = useStyles();
   const pageId = useRouterId('id');
-
   const [isEditDialogOpened, setIsEditDialogOpened] = useState(false);
   const [isDeleteDialogOpened, setIsDeleteDialogOpened] = useState(false);
-
   const [editNote, editNoteResponse] = notesApi.useEditNoteMutation();
   const [deleteNote, deleteNoteResponse] = notesApi.useDeleteNoteMutation();
 
@@ -102,17 +89,19 @@ export const NotesTableRow: FC<NotesTableRowProps> = ({
       <TableCell>{note.productName}</TableCell>
       <TableCell>{note.productQuantity}</TableCell>
       <TableCell>{note.calories}</TableCell>
-      <TableCell className={classes.rowActions}>
-        <Tooltip title="Edit note">
-          <IconButton size="small" onClick={handleEditOpen}>
-            <EditIcon fontSize="small" />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Delete note">
-          <IconButton size="small" onClick={handleDeleteOpen}>
-            <DeleteIcon fontSize="small" />
-          </IconButton>
-        </Tooltip>
+      <TableCell>
+        <Stack direction="row" spacing={1}>
+          <Tooltip title="Edit note">
+            <IconButton size="small" onClick={handleEditOpen}>
+              <EditIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Delete note">
+            <IconButton size="small" onClick={handleDeleteOpen}>
+              <DeleteIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+        </Stack>
       </TableCell>
     </TableRow>
   );
