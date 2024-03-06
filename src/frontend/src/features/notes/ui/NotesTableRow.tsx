@@ -1,7 +1,7 @@
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { IconButton, Stack, TableCell, TableRow, Tooltip } from '@mui/material';
-import { type FC, useEffect, useState } from 'react';
+import { type FC, useEffect, useState, useMemo } from 'react';
 import { type ProductSelectOption } from 'src/features/products';
 import { useRouterId } from 'src/hooks';
 import { notesApi } from '../api';
@@ -30,6 +30,7 @@ export const NotesTableRow: FC<NotesTableRowProps> = ({
   const [isDeleteDialogOpened, setIsDeleteDialogOpened] = useState(false);
   const [editNote, editNoteResponse] = notesApi.useEditNoteMutation();
   const [deleteNote, deleteNoteResponse] = notesApi.useDeleteNoteMutation();
+  const product = useMemo(() => toProductSelectOption(note), [note]);
 
   useEffect(() => {
     if ((editNoteResponse.isSuccess || deleteNoteResponse.isSuccess) && notesChanged) {
@@ -70,7 +71,7 @@ export const NotesTableRow: FC<NotesTableRowProps> = ({
         isOpened={isEditDialogOpened}
         mealType={note.mealType}
         pageId={pageId}
-        product={toProductSelectOption(note)}
+        product={product}
         products={products}
         productsLoading={productsLoading}
         quantity={note.productQuantity}
