@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { type InputOptions, type MapToInputPropsFunction, type ValidatorFunction } from 'src/types';
 
 // Single space is used to avoid shifting form control when it becomes invalid
@@ -53,20 +53,21 @@ export default function useInput<TValue, TProps>({
     }
   }, [errorHelperText, isTouched, validate, value]);
 
-  const inputProps = mapToInputProps({
-    value,
-    setValue,
-    helperText,
-    isInvalid,
-  });
-
-  return {
-    value,
-    setValue,
-    clearValue,
-    helperText,
-    isInvalid,
-    isTouched,
-    inputProps,
-  };
+  return useMemo(
+    () => ({
+      value,
+      setValue,
+      clearValue,
+      helperText,
+      isInvalid,
+      isTouched,
+      inputProps: mapToInputProps({
+        value,
+        setValue,
+        helperText,
+        isInvalid,
+      }),
+    }),
+    [clearValue, helperText, isInvalid, isTouched, mapToInputProps, setValue, value],
+  );
 }

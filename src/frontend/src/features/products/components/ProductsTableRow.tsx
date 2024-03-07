@@ -1,6 +1,6 @@
 import EditIcon from '@mui/icons-material/Edit';
 import { Checkbox, IconButton, TableCell, TableRow, Tooltip } from '@mui/material';
-import { type FC, useEffect, useState } from 'react';
+import { type FC, useEffect, useState, useMemo } from 'react';
 import { useAppDispatch, useAppSelector } from '../../__shared__/hooks';
 import { productsApi } from '../api';
 import { toEditProductRequest, toProductFormData } from '../mapping';
@@ -22,6 +22,7 @@ const ProductsTableRow: FC<ProductsTableRowProps> = ({ product }: ProductsTableR
   const checkedProductIds = useAppSelector(selectCheckedProductIds);
   const isChecked = checkedProductIds.some(id => id === product.id);
   const products = useProducts();
+  const productFormData = useMemo(() => toProductFormData(product), [product]);
 
   useEffect(() => {
     if (editProductRequest.isSuccess && products.isChanged) {
@@ -96,7 +97,7 @@ const ProductsTableRow: FC<ProductsTableRowProps> = ({ product }: ProductsTableR
         submitText="Save"
         onSubmit={handleEditDialogSubmit}
         isLoading={editProductRequest.isLoading || products.isFetching}
-        product={toProductFormData(product)}
+        product={productFormData}
         categories={categorySelect.data}
         categoriesLoading={categorySelect.isLoading}
       />

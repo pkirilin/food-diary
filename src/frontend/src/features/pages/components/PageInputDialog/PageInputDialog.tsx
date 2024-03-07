@@ -26,14 +26,12 @@ const PageInputDialog: FC<PageInputDialogProps> = ({
   onClose,
   onSubmit,
 }) => {
-  const dateInput = useInput({
+  const { setValue: setDate, ...dateInput } = useInput({
     initialValue: initialDate,
     errorHelperText: 'Date is required',
     validate: validateDate,
     mapToInputProps: mapToDateInputProps,
   });
-
-  const setDate = dateInput.setValue;
 
   useEffect(() => {
     if (isOpened) {

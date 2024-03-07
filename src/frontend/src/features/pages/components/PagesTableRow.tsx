@@ -1,6 +1,6 @@
 import EditIcon from '@mui/icons-material/Edit';
 import { TableRow, TableCell, Checkbox, Tooltip, IconButton, Link } from '@mui/material';
-import { type FC, useEffect, useState } from 'react';
+import { type FC, useEffect, useState, useMemo } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { formatDate } from 'src/utils';
 import { useAppDispatch, useAppSelector } from '../../__shared__/hooks';
@@ -19,7 +19,7 @@ const PagesTableRow: FC<PagesTableRowProps> = ({ page }: PagesTableRowProps) => 
   const pages = usePages();
   const [editPage, editPageRequest] = pagesApi.useEditPageMutation();
   const [isDialogOpened, setIsDialogOpened] = useState(false);
-  const pageDate = new Date(page.date);
+  const initialDate = useMemo(() => new Date(page.date), [page.date]);
   const dispatch = useAppDispatch();
 
   const isPageSelected = useAppSelector(state =>
@@ -59,7 +59,7 @@ const PagesTableRow: FC<PagesTableRowProps> = ({ page }: PagesTableRowProps) => 
         title="Edit page"
         submitText="Save"
         isOpened={isDialogOpened}
-        initialDate={pageDate}
+        initialDate={initialDate}
         submitInProgress={editPageRequest.isLoading || pages.isFetching}
         onClose={handleCloseDialog}
         onSubmit={handleEditPage}
@@ -76,7 +76,7 @@ const PagesTableRow: FC<PagesTableRowProps> = ({ page }: PagesTableRowProps) => 
           underline="hover"
           fontWeight="bold"
         >
-          {formatDate(pageDate)}
+          {formatDate(initialDate)}
         </Link>
       </TableCell>
       <TableCell align="right">{page.countCalories}</TableCell>
