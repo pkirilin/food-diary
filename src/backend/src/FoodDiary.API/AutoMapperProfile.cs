@@ -29,8 +29,6 @@ public class AutoMapperProfile : Profile
             .ForMember(
                 dest => dest.CountNotes,
                 o => o.MapFrom(src => src.Notes.Count));
-
-        CreateMap<Page, PageDto>();
     }
 
     private void CreateNoteMappings()

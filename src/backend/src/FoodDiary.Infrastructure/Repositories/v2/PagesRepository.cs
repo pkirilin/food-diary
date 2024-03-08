@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,6 +32,13 @@ internal class PagesRepository(FoodDiaryContext context) : IPagesRepository
             cancellationToken: cancellationToken);
     }
 
+    public async Task<IReadOnlyList<Page>> FindByIds(IReadOnlyList<int> ids, CancellationToken cancellationToken)
+    {
+        return await context.Pages
+            .Where(p => ids.Contains(p.Id))
+            .ToListAsync(cancellationToken);
+    }
+
     public Task<Page?> FindByDate(DateOnly date, CancellationToken cancellationToken)
     {
         return context.Pages
@@ -45,9 +53,21 @@ internal class PagesRepository(FoodDiaryContext context) : IPagesRepository
         return entry.Entity.Id;
     }
 
-    public async Task Update(Page page, CancellationToken cancellationToken)
+    public Task Update(Page page, CancellationToken cancellationToken)
     {
         context.Update(page);
-        await context.SaveChangesAsync(cancellationToken);
+        return context.SaveChangesAsync(cancellationToken);
+    }
+
+    public Task Delete(Page page, CancellationToken cancellationToken)
+    {
+        context.Remove(page);
+        return context.SaveChangesAsync(cancellationToken);
+    }
+
+    public Task Delete(IEnumerable<Page> pages, CancellationToken cancellationToken)
+    {
+        context.RemoveRange(pages);
+        return context.SaveChangesAsync(cancellationToken);
     }
 }

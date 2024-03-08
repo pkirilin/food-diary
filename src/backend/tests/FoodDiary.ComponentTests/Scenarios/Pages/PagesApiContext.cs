@@ -114,7 +114,7 @@ public class PagesApiContext(FoodDiaryWebApplicationFactory factory, Infrastruct
 
     public Task Then_page_by_id_contains_item(Page item)
     {
-        _getPageByIdResult?.CurrentPage.Date.Should().Be(item.Date);
+        _getPageByIdResult?.CurrentPage.Date.Should().Be(item.DateNew);
         return Task.CompletedTask;
     }
     

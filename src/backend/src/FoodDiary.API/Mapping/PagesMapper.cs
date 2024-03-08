@@ -13,4 +13,13 @@ public static class PagesMapper
         CountNotes = page.Notes.Count,
         CountCalories = caloriesCalculator.Calculate(page.Notes)
     };
+
+    public static PageContentDto ToPageContentDto(this Page page) => new()
+    {
+        CurrentPage = new PageDto
+        {
+            Id = page.Id,
+            Date = page.DateNew
+        }
+    };
 }

@@ -5,13 +5,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using FoodDiary.API.Dtos;
-using FoodDiary.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using FoodDiary.API.Requests;
 using MediatR;
 using FoodDiary.Application.Pages.Requests;
-using System.Linq;
+using FoodDiary.API.Mapping;
 using FoodDiary.Application.Pages.CreatePage;
+using FoodDiary.Application.Pages.Delete;
+using FoodDiary.Application.Pages.FindPage;
 using FoodDiary.Application.Pages.UpdatePage;
 using Microsoft.AspNetCore.Authorization;
 
@@ -69,24 +70,20 @@ public class PagesController : ControllerBase
         return Ok(pagesListResponse);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:int}")]
     [ProducesResponseType(typeof(PageContentDto), (int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.NotFound)]
-    public async Task<IActionResult> GetPageById([FromRoute] int id, CancellationToken cancellationToken)
+    public async Task<IActionResult> FindPageById([FromRoute] int id, CancellationToken cancellationToken)
     {
-        var pageContent = await _mediator.Send(new GetPageContentByIdRequest(id), cancellationToken);
-
-        if (pageContent == null)
+        var request = new FindPageByIdRequest(id);
+        var response = await _mediator.Send(request, cancellationToken);
+        
+        return response switch
         {
-            return NotFound();
-        }
-
-        var pageContentDto = new PageContentDto
-        {
-            CurrentPage = _mapper.Map<PageDto>(pageContent.CurrentPage)
+            FindPageByIdResponse.PageNotFound => NotFound(),
+            FindPageByIdResponse.Success success => Ok(success.Page.ToPageContentDto()),
+            _ => Conflict()
         };
-            
-        return Ok(pageContentDto);
     }
     
     [HttpPost]
@@ -127,39 +124,37 @@ public class PagesController : ControllerBase
             _ => Conflict()
         };
     }
-
-    /// <summary>
-    /// Deletes page by specified id
-    /// </summary>
-    /// <param name="id">Page for delete id</param>
-    /// <param name="cancellationToken"></param>
-    [HttpDelete("{id}")]
+    
+    [HttpDelete("{id:int}")]
     [ProducesResponseType((int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.NotFound)]
     public async Task<IActionResult> DeletePage([FromRoute] int id, CancellationToken cancellationToken)
     {
-        var pageForDelete = await _mediator.Send(new GetPageByIdRequest(id), cancellationToken);
-
-        if (pageForDelete == null)
-            return NotFound();
-
-        await _mediator.Send(new DeletePageRequest(pageForDelete), cancellationToken);
-        return Ok();
+        var request = new DeletePageRequest(id);
+        var response = await _mediator.Send(request, cancellationToken);
+        
+        return response switch
+        {
+            DeletePageResponse.PageNotFound => NotFound(),
+            DeletePageResponse.Success => Ok(),
+            _ => Conflict()
+        };
     }
-
-    /// <summary>
-    /// Deletes pages by specified ids
-    /// </summary>
-    /// <param name="ids">Pages for delete ids</param>
-    /// <param name="cancellationToken"></param>
+    
     [HttpDelete("batch")]
     [ProducesResponseType((int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-    public async Task<IActionResult> DeletePages([FromBody] ICollection<int> ids, CancellationToken cancellationToken)
+    public async Task<IActionResult> DeletePages([FromBody] IReadOnlyList<int> ids, CancellationToken cancellationToken)
     {
-        var pagesForDelete = await _mediator.Send(new GetPagesByIdsRequest(ids), cancellationToken);
-        await _mediator.Send(new DeletePagesRequest(pagesForDelete), cancellationToken);
-        return Ok();
+        var request = new DeletePagesRequest(ids);
+        var response = await _mediator.Send(request, cancellationToken);
+        
+        return response switch
+        {
+            DeletePagesResponse.SomePagesWereNotFound => BadRequest(),
+            DeletePagesResponse.Success => Ok(),
+            _ => Conflict()
+        };
     }
 
     /// <summary>
@@ -173,7 +168,7 @@ public class PagesController : ControllerBase
         return Ok(dateForNewPage.ToString("yyyy-MM-dd"));
     }
 
-    private IActionResult PageAlreadyExists(DateOnly date)
+    private BadRequestObjectResult PageAlreadyExists(DateOnly date)
     {
         ModelState.AddModelError(nameof(date), $"Page with date '${date.ToShortDateString()}' already exists");
         return BadRequest(ModelState);
