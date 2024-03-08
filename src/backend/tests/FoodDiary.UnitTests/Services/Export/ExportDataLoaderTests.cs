@@ -53,6 +53,7 @@ public class ExportDataLoaderTests
                 {
                     Id = 1,
                     Date = DateTime.Parse("2022-05-01"),
+                    DateNew = DateOnly.Parse("2022-05-01"),
                     Notes = new List<Note>
                     {
                         new()
@@ -107,8 +108,8 @@ public class ExportDataLoaderTests
                         }
                     }
                 },
-                new Page { Id = 2, Date = DateTime.Parse("2022-05-02"), Notes = new List<Note>() },
-                new Page { Id = 3, Date = DateTime.Parse("2022-05-03"), Notes = new List<Note>() }
+                new Page { Id = 2, Date = DateTime.Parse("2022-05-02"), DateNew = DateOnly.Parse("2022-05-02"), Notes = new List<Note>() },
+                new Page { Id = 3, Date = DateTime.Parse("2022-05-03"), DateNew = DateOnly.Parse("2022-05-03"), Notes = new List<Note>() }
             };
 
             return pages;

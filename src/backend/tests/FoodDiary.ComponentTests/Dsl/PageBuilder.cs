@@ -8,6 +8,7 @@ public class PageBuilder
     private readonly Page _page = new()
     {
         Id = Random.Shared.Next(),
+        DateNew = DateOnly.FromDateTime(DateTime.UtcNow),
         Notes = new List<Note>()
     };
 

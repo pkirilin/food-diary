@@ -37,9 +37,10 @@ class PageJsonImporter : IPageJsonImporter
             importedPage = existingPagesDictionary[pageFromJson.Date];
         else
         {
-            importedPage = createdPage = new Page()
+            importedPage = createdPage = new Page
             {
-                Date = pageFromJson.Date
+                Date = pageFromJson.Date,
+                DateNew = DateOnly.FromDateTime(pageFromJson.Date)
             };
         }
 

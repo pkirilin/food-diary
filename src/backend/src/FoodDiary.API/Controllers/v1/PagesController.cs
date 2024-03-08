@@ -11,6 +11,8 @@ using FoodDiary.API.Requests;
 using MediatR;
 using FoodDiary.Application.Pages.Requests;
 using System.Linq;
+using FoodDiary.Application.Pages.CreatePage;
+using FoodDiary.Application.Pages.UpdatePage;
 using Microsoft.AspNetCore.Authorization;
 
 namespace FoodDiary.API.Controllers.v1;
@@ -86,66 +88,44 @@ public class PagesController : ControllerBase
             
         return Ok(pageContentDto);
     }
-
-    /// <summary>
-    /// Creates new page if page with the same date doesn't exist
-    /// </summary>
-    /// <param name="pageData">New page info</param>
-    /// <param name="cancellationToken"></param>
+    
     [HttpPost]
     [ProducesResponseType((int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-    public async Task<IActionResult> CreatePage([FromBody] PageCreateEditRequest pageData, CancellationToken cancellationToken)
+    public async Task<IActionResult> CreatePage(
+        [FromBody] PageCreateEditRequest body,
+        CancellationToken cancellationToken)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+        var request = new CreatePageRequest(body.Date);
+        var response = await _mediator.Send(request, cancellationToken);
 
-        var pagesWithTheSameDate = await _mediator.Send(new GetPagesByExactDateRequest(pageData.Date), cancellationToken);
-
-        if (pagesWithTheSameDate.Any())
+        return response switch
         {
-            ModelState.AddModelError(nameof(pageData.Date), $"Page with date '${pageData.Date.ToShortDateString()}' already exists");
-            return BadRequest(ModelState);
-        }
-
-        var page = _mapper.Map<Page>(pageData);
-        var createdPage = await _mediator.Send(new CreatePageRequest(page), cancellationToken);
-        return Ok(createdPage.Id);
+            CreatePageResponse.PageAlreadyExists => PageAlreadyExists(body.Date),
+            CreatePageResponse.Success success => Ok(success.Id),
+            _ => Conflict()
+        };
     }
-
-    /// <summary>
-    /// Updates page by specified id
-    /// </summary>
-    /// <param name="id">Page for update id</param>
-    /// <param name="updatedPageData">Updated page info</param>
-    /// <param name="cancellationToken"></param>
-    [HttpPut("{id}")]
+    
+    [HttpPut("{id:int}")]
     [ProducesResponseType((int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
     [ProducesResponseType((int)HttpStatusCode.NotFound)]
-    public async Task<IActionResult> EditPage([FromRoute] int id, [FromBody] PageCreateEditRequest updatedPageData, CancellationToken cancellationToken)
+    public async Task<IActionResult> UpdatePage(
+        [FromRoute] int id,
+        [FromBody] PageCreateEditRequest body,
+        CancellationToken cancellationToken)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+        var request = new UpdatePageRequest(id, body.Date);
+        var response = await _mediator.Send(request, cancellationToken);
 
-        var originalPage = await _mediator.Send(new GetPageByIdRequest(id), cancellationToken);
-            
-        if (originalPage == null)
-            return NotFound();
-
-        var pagesWithTheSameDate = await _mediator.Send(new GetPagesByExactDateRequest(updatedPageData.Date), cancellationToken);
-        var pageHasChanges = originalPage.Date != updatedPageData.Date;
-        var pageCanBeUpdated = !pageHasChanges || (pageHasChanges && !pagesWithTheSameDate.Any());
-
-        if (!pageCanBeUpdated)
+        return response switch
         {
-            ModelState.AddModelError(nameof(updatedPageData.Date), $"Page with date '${updatedPageData.Date.ToShortDateString()}' already exists");
-            return BadRequest(ModelState);
-        }
-
-        originalPage = _mapper.Map(updatedPageData, originalPage);
-        await _mediator.Send(new EditPageRequest(originalPage), cancellationToken);
-        return Ok();
+            UpdatePageResponse.PageAlreadyExists => PageAlreadyExists(body.Date),
+            UpdatePageResponse.PageNotFound => NotFound(),
+            UpdatePageResponse.Success => Ok(),
+            _ => Conflict()
+        };
     }
 
     /// <summary>
@@ -191,5 +171,11 @@ public class PagesController : ControllerBase
     {
         var dateForNewPage = await _mediator.Send(new GetDateForNewPageRequest(), cancellationToken);
         return Ok(dateForNewPage.ToString("yyyy-MM-dd"));
+    }
+
+    private IActionResult PageAlreadyExists(DateOnly date)
+    {
+        ModelState.AddModelError(nameof(date), $"Page with date '${date.ToShortDateString()}' already exists");
+        return BadRequest(ModelState);
     }
 }

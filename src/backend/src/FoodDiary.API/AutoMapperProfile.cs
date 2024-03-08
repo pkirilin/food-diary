@@ -19,8 +19,6 @@ public class AutoMapperProfile : Profile
 
     private void CreatePageMappings()
     {
-        CreateMap<PageCreateEditRequest, Page>();
-
         CreateMap<Page, PageItemDto>()
             .ForMember(
                 dest => dest.Date,
