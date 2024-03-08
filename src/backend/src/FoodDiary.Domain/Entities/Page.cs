@@ -15,5 +15,7 @@ public class Page
     /// </summary>
     public DateTime Date { get; set; }
 
+    public DateOnly DateNew { get; init; }
+
     public virtual ICollection<Note> Notes { get; set; }
 }
