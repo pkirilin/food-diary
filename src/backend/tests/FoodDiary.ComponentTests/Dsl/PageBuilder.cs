@@ -15,6 +15,7 @@ public class PageBuilder
     public PageBuilder(string? date)
     {
         _page.Date = string.IsNullOrWhiteSpace(date) ? DateTime.UtcNow : DateTime.Parse(date);
+        _page.DateNew = DateOnly.FromDateTime(_page.Date);
     }
 
     public Page Please() => _page;

@@ -61,7 +61,7 @@ public class PagesApiTests(FoodDiaryWebApplicationFactory factory, Infrastructur
         return Run(
             c => c.Given_authenticated_user(),
             c => c.Given_pages(page),
-            c => c.When_user_updates_page(page),
+            c => c.When_user_updates_page(page, "2024-01-03"),
             c => c.Then_page_is_successfully_updated(),
             c => c.When_user_retieves_pages_list(),
             c => c.Then_pages_list_contains_items(page));

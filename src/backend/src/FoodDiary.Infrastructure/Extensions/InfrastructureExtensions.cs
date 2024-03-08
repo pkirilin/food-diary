@@ -1,6 +1,8 @@
 using FoodDiary.Application.Auth.GetStatus;
 using FoodDiary.Domain.Abstractions.v2;
+using FoodDiary.Domain.Repositories.v2;
 using FoodDiary.Infrastructure.Integrations.Google;
+using FoodDiary.Infrastructure.Repositories.v2;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -29,6 +31,7 @@ public static class InfrastructureExtensions
             .PersistKeysToDbContext<FoodDiaryContext>();
 
         services.AddScoped<IFoodDiaryUnitOfWork, FoodDiaryUnitOfWork>();
+        services.AddScoped<IPagesRepository, PagesRepository>();
     }
 
     private static void AddIntegrations(this IServiceCollection services)
