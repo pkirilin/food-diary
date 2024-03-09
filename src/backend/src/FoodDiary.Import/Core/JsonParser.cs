@@ -20,7 +20,7 @@ class JsonParser : IJsonParser
         if (jsonObj.Pages == null)
             throw new ImportException("Failed to parse pages from import file");
 
-        var jsonPagesGroupedByDates = jsonObj.Pages.GroupBy(p => p.Date);
+        var jsonPagesGroupedByDates = jsonObj.Pages.GroupBy(p => p.Date).ToList();
         var arePageDatesUnique = jsonPagesGroupedByDates.Select(g => g.Count())
             .All(groupSize => groupSize == 1);
 
@@ -32,12 +32,12 @@ class JsonParser : IJsonParser
 
     public IEnumerable<JsonExportNoteDto> ParseNotes(IEnumerable<JsonExportPageDto> pagesFromJson)
     {
-        var notesForEachPage = pagesFromJson.Select(p => p.Notes);
+        var notesForEachPage = pagesFromJson.Select(p => p.Notes).ToList();
 
         if (notesForEachPage.Any(pn => pn == null))
             throw new ImportException("Failed to parse notes from import file");
 
-        var notesFromJson = notesForEachPage.SelectMany(pn => pn);
+        var notesFromJson = notesForEachPage.SelectMany(pn => pn).ToList();
 
         var areDisplayOrdersAndMealTypesUniqueForEveryPage = notesForEachPage
             .All(pn => pn.GroupBy(n => new { n.MealType, n.DisplayOrder })
@@ -80,7 +80,7 @@ class JsonParser : IJsonParser
 
     public IEnumerable<string> ParseCategories(IEnumerable<JsonExportNoteDto> notesFromJson)
     {
-        var categoryNamesFromJson = notesFromJson.Select(n => n.Product.Category);
+        var categoryNamesFromJson = notesFromJson.Select(n => n.Product.Category).ToList();
 
         var areCategoryNamesFromJsonValid = categoryNamesFromJson.All(name => name != null
                                                                               && name.Length >= 4 && name.Length <= 64);
