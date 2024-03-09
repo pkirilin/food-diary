@@ -12,6 +12,7 @@ using FoodDiary.API.Mapping;
 using FoodDiary.Application.Pages.CreatePage;
 using FoodDiary.Application.Pages.Delete;
 using FoodDiary.Application.Pages.FindPage;
+using FoodDiary.Application.Pages.GetDateForNewPage;
 using FoodDiary.Application.Pages.UpdatePage;
 using FoodDiary.Domain.Utils;
 using Microsoft.AspNetCore.Authorization;
@@ -145,16 +146,18 @@ public class PagesController(
             _ => Conflict()
         };
     }
-
-    /// <summary>
-    /// Gets suggested date for next page that is going to be created
-    /// </summary>
+    
     [HttpGet("date")]
     [ProducesResponseType((int)HttpStatusCode.OK)]
     public async Task<IActionResult> GetDateForNewPage(CancellationToken cancellationToken)
     {
-        var dateForNewPage = await sender.Send(new GetDateForNewPageRequest(), cancellationToken);
-        return Ok(dateForNewPage.ToString("yyyy-MM-dd"));
+        var response = await sender.Send(new GetDateForNewPageRequest(), cancellationToken);
+
+        return response switch
+        {
+            GetDateForNewPageResult.Success success => Ok(success.Date.ToString("O")),
+            _ => Conflict()
+        };
     }
 
     private BadRequestObjectResult PageAlreadyExists(DateOnly date)

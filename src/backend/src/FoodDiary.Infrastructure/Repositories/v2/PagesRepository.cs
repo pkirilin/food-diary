@@ -46,6 +46,14 @@ internal class PagesRepository(FoodDiaryContext context) : IPagesRepository
             .FirstOrDefaultAsync(cancellationToken);
     }
 
+    public Task<Page?> FindLast(CancellationToken cancellationToken)
+    {
+        return context.Pages
+            .AsNoTracking()
+            .OrderByDescending(p => p.DateNew)
+            .FirstOrDefaultAsync(cancellationToken);
+    }
+
     public async Task<int> Create(Page page, CancellationToken cancellationToken)
     {
         var entry = await context.Pages.AddAsync(page, cancellationToken);
