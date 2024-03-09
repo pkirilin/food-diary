@@ -24,7 +24,7 @@ internal class GetDateForNewPageRequestHandler(
         CancellationToken cancellationToken)
     {
         var lastPage = await repository.FindLast(cancellationToken);
-        var date = lastPage?.DateNew.AddDays(1) ?? DateOnly.FromDateTime(timeProvider.GetUtcNow().Date);
+        var date = lastPage?.Date.AddDays(1) ?? DateOnly.FromDateTime(timeProvider.GetUtcNow().Date);
         return new GetDateForNewPageResult.Success(date);
     }
 }

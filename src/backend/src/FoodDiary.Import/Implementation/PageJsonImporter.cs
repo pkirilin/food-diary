@@ -30,17 +30,13 @@ internal class PageJsonImporter : IPageJsonImporter
         Page importedPage;
         createdPage = null;
 
-        // Removing time from date for correct search
-        var date = DateTime.Parse(pageFromJson.Date.ToShortDateString());
-
         if (existingPagesDictionary.TryGetValue(pageFromJson.Date, out var page))
             importedPage = page;
         else
         {
             importedPage = createdPage = new Page
             {
-                Date = date,
-                DateNew = pageFromJson.Date
+                Date = pageFromJson.Date
             };
         }
 

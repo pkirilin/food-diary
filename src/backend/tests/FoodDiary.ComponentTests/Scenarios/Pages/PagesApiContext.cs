@@ -49,7 +49,7 @@ public class PagesApiContext(FoodDiaryWebApplicationFactory factory, Infrastruct
     {
         var request = new PageCreateEditRequest
         {
-            Date = page.DateNew
+            Date = page.Date
         };
         
         _createPageResponse = await ApiClient.PostAsJsonAsync("/api/v1/pages", request);
@@ -114,7 +114,7 @@ public class PagesApiContext(FoodDiaryWebApplicationFactory factory, Infrastruct
 
     public Task Then_page_by_id_contains_item(Page item)
     {
-        _getPageByIdResult?.CurrentPage.Date.Should().Be(item.DateNew);
+        _getPageByIdResult?.CurrentPage.Date.Should().Be(item.Date);
         return Task.CompletedTask;
     }
     

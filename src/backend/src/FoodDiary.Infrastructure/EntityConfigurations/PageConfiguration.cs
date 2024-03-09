@@ -9,9 +9,7 @@ public class PageConfiguration : IEntityTypeConfiguration<Page>
     public void Configure(EntityTypeBuilder<Page> builder)
     {
         builder.ToTable("Pages");
-
         builder.HasKey(p => p.Id);
-
         builder.HasIndex(p => p.Date).IsUnique();
     }
 }

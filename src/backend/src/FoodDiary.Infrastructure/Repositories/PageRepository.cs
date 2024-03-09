@@ -24,6 +24,6 @@ public class PageRepository : Repository<Page>, IPageRepository
 
     public Task<Dictionary<DateOnly, Page>> GetDictionaryByQueryAsync(IQueryable<Page> query, CancellationToken cancellationToken)
     {
-        return query.ToDictionaryAsync(p => p.DateNew, cancellationToken);
+        return query.ToDictionaryAsync(p => p.Date, cancellationToken);
     }
 }

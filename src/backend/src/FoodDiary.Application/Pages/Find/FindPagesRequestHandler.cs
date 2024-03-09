@@ -45,13 +45,13 @@ internal class FindPagesRequestHandler(
     private static IQueryable<Page> BuildQuery(FindPagesRequest request, IQueryable<Page> query)
     {
         if (request.StartDate.HasValue)
-            query = query.Where(p => p.DateNew >= request.StartDate);
+            query = query.Where(p => p.Date >= request.StartDate);
         if (request.EndDate.HasValue)
-            query = query.Where(p => p.DateNew <= request.EndDate);
+            query = query.Where(p => p.Date <= request.EndDate);
         
         query = request.SortOrder == SortOrder.Ascending
-            ? query.OrderBy(p => p.DateNew)
-            : query.OrderByDescending(p => p.DateNew);
+            ? query.OrderBy(p => p.Date)
+            : query.OrderByDescending(p => p.Date);
         
         query = query
             .Skip((request.PageNumber - 1) * request.PageSize)

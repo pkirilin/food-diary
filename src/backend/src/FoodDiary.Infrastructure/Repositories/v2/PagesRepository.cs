@@ -59,7 +59,7 @@ internal class PagesRepository(FoodDiaryContext context) : IPagesRepository
     public Task<Page?> FindByDate(DateOnly date, CancellationToken cancellationToken)
     {
         return context.Pages
-            .Where(p => p.DateNew == date)
+            .Where(p => p.Date == date)
             .FirstOrDefaultAsync(cancellationToken);
     }
 
@@ -67,7 +67,7 @@ internal class PagesRepository(FoodDiaryContext context) : IPagesRepository
     {
         return context.Pages
             .AsNoTracking()
-            .OrderByDescending(p => p.DateNew)
+            .OrderByDescending(p => p.Date)
             .FirstOrDefaultAsync(cancellationToken);
     }
 

@@ -25,7 +25,7 @@ internal class ExportDataLoader(
 
         var exportPages = pages.Select(page => new ExportPageDto
         {
-            FormattedDate = page.DateNew.ToString("dd.MM.yyyy"),
+            FormattedDate = page.Date.ToString("dd.MM.yyyy"),
             TotalCalories = caloriesCalculator.Calculate(page.Notes),
             NoteGroups = GetNoteGroups(page.Notes)
         }).ToArray();
@@ -57,8 +57,8 @@ internal class ExportDataLoader(
     }
 
     private static IQueryable<Page> BuildQuery(IQueryable<Page> pages, DateOnly startDate, DateOnly endDate) => pages
-        .Where(p => p.DateNew >= startDate && p.DateNew <= endDate)
-        .OrderBy(p => p.DateNew);
+        .Where(p => p.Date >= startDate && p.Date <= endDate)
+        .OrderBy(p => p.Date);
 
     private ExportNoteGroupDto[] GetNoteGroups(IEnumerable<Note> notes)
     {

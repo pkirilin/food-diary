@@ -12,6 +12,6 @@ internal class PageFormatter : IValueFormatter
             throw new FormatterNotRegisteredException(value);
         }
         
-        return page.DateNew.ToString("O");
+        return page.Date.ToString("O");
     }
 }

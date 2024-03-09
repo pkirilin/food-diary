@@ -10,7 +10,7 @@ public static class PagesMapper
 {
     public static PageItemDto ToPageItemDto(this Page page, ICaloriesCalculator caloriesCalculator) => new(
         page.Id,
-        page.DateNew,
+        page.Date,
         page.Notes.Count,
         caloriesCalculator.Calculate(page.Notes));
 
@@ -19,7 +19,7 @@ public static class PagesMapper
         CurrentPage = new PageDto
         {
             Id = page.Id,
-            Date = page.DateNew
+            Date = page.Date
         }
     };
 

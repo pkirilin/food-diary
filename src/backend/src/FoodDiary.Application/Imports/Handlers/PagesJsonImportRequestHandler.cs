@@ -48,7 +48,7 @@ internal class PagesJsonImportRequestHandler : IRequestHandler<PagesJsonImportRe
 
         // Preparing queries for entities which are going to be updated
         var pagesForUpdateQuery = _pageRepository.GetQuery()
-            .Where(p => pagesFromJsonDates.Contains(p.DateNew));
+            .Where(p => pagesFromJsonDates.Contains(p.Date));
         var importProductsQuery = _productRepository.GetQuery()
             .Where(p => productNamesFromJson.Contains(p.Name));
         var importCategoriesQuery = _categoryRepository.GetQuery()

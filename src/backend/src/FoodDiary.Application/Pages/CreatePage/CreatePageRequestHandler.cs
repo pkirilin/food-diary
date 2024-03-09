@@ -31,8 +31,7 @@ internal class CreatePageRequestHandler(
 
         var page = new Page
         {
-            Date = request.Date.ToDateTime(new TimeOnly(), DateTimeKind.Unspecified),
-            DateNew = request.Date
+            Date = request.Date
         };
 
         var id = await repository.Create(page, cancellationToken);
