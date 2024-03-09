@@ -32,7 +32,7 @@ public class ExportsController(IExportService exportService) : ControllerBase
         CancellationToken cancellationToken)
     {
         var authResult = await HttpContext.AuthenticateAsync(Constants.AuthenticationSchemes.OAuthGoogle);
-        var accessToken = authResult.Properties?.GetTokenValue(Constants.OpenIdConnectParameters.RefreshToken);
+        var accessToken = authResult.Properties?.GetTokenValue(Constants.OpenIdConnectParameters.AccessToken);
 
         if (string.IsNullOrWhiteSpace(accessToken))
         {
