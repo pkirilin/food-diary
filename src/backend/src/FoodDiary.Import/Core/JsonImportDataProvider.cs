@@ -4,17 +4,13 @@ using FoodDiary.Domain.Entities;
 
 namespace FoodDiary.Import.Core;
 
-class JsonImportDataProvider : IJsonImportDataProvider
+internal class JsonImportDataProvider : IJsonImportDataProvider
 {
-    private IDictionary<DateTime, Page> _existingPages;
+    private IDictionary<DateOnly, Page> _existingPages;
     private IDictionary<string, Product> _existingProducts;
     private IDictionary<string, Category> _existingCategories;
 
-    public JsonImportDataProvider()
-    {
-    }
-
-    public IDictionary<DateTime, Page> ExistingPages
+    public IDictionary<DateOnly, Page> ExistingPages
     {
         get
         {

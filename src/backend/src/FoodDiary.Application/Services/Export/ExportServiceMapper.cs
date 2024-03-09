@@ -10,7 +10,7 @@ public static class ExportServiceMapper
     {
         return new JsonExportPageDto
         {
-            Date = page.Date,
+            Date = page.DateNew,
             Notes = page.Notes.Select(note => note.ToJsonExportNoteDto())
         };
     }

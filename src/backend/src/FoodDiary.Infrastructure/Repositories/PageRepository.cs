@@ -22,8 +22,8 @@ public class PageRepository : Repository<Page>, IPageRepository
             .ThenInclude(p => p.Category);
     }
 
-    public Task<Dictionary<DateTime, Page>> GetDictionaryByQueryAsync(IQueryable<Page> query, CancellationToken cancellationToken)
+    public Task<Dictionary<DateOnly, Page>> GetDictionaryByQueryAsync(IQueryable<Page> query, CancellationToken cancellationToken)
     {
-        return query.ToDictionaryAsync(p => p.Date, cancellationToken);
+        return query.ToDictionaryAsync(p => p.DateNew, cancellationToken);
     }
 }
