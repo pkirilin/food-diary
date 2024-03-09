@@ -1,21 +1,23 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using FoodDiary.Domain.Enums;
+using JetBrains.Annotations;
 
 namespace FoodDiary.API.Requests;
 
+[PublicAPI]
 public class PagesSearchRequest
 {
     [EnumDataType(typeof(SortOrder))]
-    public SortOrder SortOrder { get; set; } = SortOrder.Descending;
+    public SortOrder SortOrder { get; init; } = SortOrder.Descending;
 
-    public DateTime? StartDate { get; set; }
+    public DateOnly? StartDate { get; init; }
 
-    public DateTime? EndDate { get; set; }
+    public DateOnly? EndDate { get; init; }
         
-    [Range(1, Int32.MaxValue, ErrorMessage = "Invalid page number value specified")]
-    public int PageNumber { get; set; } = 1;
+    [Range(1, int.MaxValue, ErrorMessage = "Invalid page number value specified")]
+    public int PageNumber { get; init; } = 1;
 
-    [Range(1, Int32.MaxValue, ErrorMessage = "Invalid page size value specified")]
-    public int PageSize { get; set; } = 10;
+    [Range(1, int.MaxValue, ErrorMessage = "Invalid page size value specified")]
+    public int PageSize { get; init; } = 10;
 }

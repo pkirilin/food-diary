@@ -7,11 +7,10 @@ using FoodDiary.API.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using FoodDiary.API.Requests;
 using MediatR;
-using FoodDiary.Application.Pages.Requests;
 using FoodDiary.API.Mapping;
 using FoodDiary.Application.Pages.CreatePage;
 using FoodDiary.Application.Pages.Delete;
-using FoodDiary.Application.Pages.FindPage;
+using FoodDiary.Application.Pages.Find;
 using FoodDiary.Application.Pages.GetDateForNewPage;
 using FoodDiary.Application.Pages.UpdatePage;
 using FoodDiary.Domain.Utils;
@@ -27,37 +26,25 @@ public class PagesController(
     ISender sender,
     ICaloriesCalculator caloriesCalculator) : ControllerBase
 {
-    /// <summary>
-    /// Gets pages list by specified parameters
-    /// </summary>
-    /// <param name="pagesRequest">Pages search parameters</param>
-    /// <param name="cancellationToken"></param>
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<PageItemDto>), (int)HttpStatusCode.OK)]
     public async Task<IActionResult> GetPages([FromQuery] PagesSearchRequest pagesRequest, CancellationToken cancellationToken)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-
-        var startDate = pagesRequest.StartDate;
-        var endDate = pagesRequest.EndDate;
-
-        if (startDate.HasValue && endDate.HasValue && startDate > endDate)
-        {
-            ModelState.AddModelError(nameof(pagesRequest.StartDate), "Start date cannot be greater than end date");
-            return BadRequest(ModelState);
-        }
-
-        var getPagesRequest = new GetPagesRequest(
+        var request = new FindPagesRequest(
             pagesRequest.SortOrder,
             pagesRequest.StartDate,
             pagesRequest.EndDate,
             pagesRequest.PageNumber,
             pagesRequest.PageSize);
-            
-        var pagesSearchResult = await sender.Send(getPagesRequest, cancellationToken);
-        var pagesListResponse = pagesSearchResult.ToPagesSearchResultDto(caloriesCalculator);
-        return Ok(pagesListResponse);
+        
+        var response = await sender.Send(request, cancellationToken);
+        
+        return response switch
+        {
+            FindPagesResponse.StartDateIsGreaterThanEndDate => StartDateIsGreaterThanEndDate(nameof(FindPagesRequest.StartDate)),
+            FindPagesResponse.Success success => Ok(success.ToPagesSearchResultDto(caloriesCalculator)),
+            _ => Conflict()
+        };
     }
 
     [HttpGet("{id:int}")]
@@ -163,6 +150,12 @@ public class PagesController(
     private BadRequestObjectResult PageAlreadyExists(DateOnly date)
     {
         ModelState.AddModelError(nameof(date), $"Page with date '${date.ToShortDateString()}' already exists");
+        return BadRequest(ModelState);
+    }
+    
+    private BadRequestObjectResult StartDateIsGreaterThanEndDate(string key)
+    {
+        ModelState.AddModelError(key, "Start date cannot be greater than end date");
         return BadRequest(ModelState);
     }
 }

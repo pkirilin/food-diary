@@ -25,6 +25,21 @@ internal class PagesRepository(FoodDiaryContext context) : IPagesRepository
             .ToArrayAsync(cancellationToken);
     }
 
+    public async Task<FindResult> Find(
+        Func<IQueryable<Page>, IQueryable<Page>> buildQuery,
+        CancellationToken cancellationToken)
+    {
+        var query = buildQuery(context.Pages.AsNoTracking())
+            .Include(p => p.Notes)
+            .ThenInclude(n => n.Product)
+            .ThenInclude(p => p.Category);
+        
+        var foundPages = await query.ToListAsync(cancellationToken);
+        var totalCount = await query.LongCountAsync(cancellationToken);
+        
+        return new FindResult(foundPages, totalCount);
+    }
+
     public async Task<Page?> FindById(int id, CancellationToken cancellationToken)
     {
         return await context.Pages.FindAsync(

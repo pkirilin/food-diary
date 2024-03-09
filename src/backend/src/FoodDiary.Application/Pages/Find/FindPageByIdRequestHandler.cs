@@ -5,7 +5,7 @@ using FoodDiary.Domain.Repositories.v2;
 using JetBrains.Annotations;
 using MediatR;
 
-namespace FoodDiary.Application.Pages.FindPage;
+namespace FoodDiary.Application.Pages.Find;
 
 public record FindPageByIdRequest(int Id) : IRequest<FindPageByIdResponse>;
 

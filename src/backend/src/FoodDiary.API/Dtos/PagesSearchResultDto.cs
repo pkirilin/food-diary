@@ -4,7 +4,7 @@ namespace FoodDiary.API.Dtos;
 
 public class PagesSearchResultDto
 {
-    public int TotalPagesCount { get; set; }
+    public long TotalPagesCount { get; set; }
 
     public IEnumerable<PageItemDto> PageItems { get; set; }
 }

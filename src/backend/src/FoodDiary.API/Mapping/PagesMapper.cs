@@ -1,6 +1,6 @@
 using System.Linq;
 using FoodDiary.API.Dtos;
-using FoodDiary.Application.Models;
+using FoodDiary.Application.Pages.Find;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Utils;
 
@@ -24,10 +24,10 @@ public static class PagesMapper
     };
 
     public static PagesSearchResultDto ToPagesSearchResultDto(
-        this PagesSearchResult result,
+        this FindPagesResponse.Success response,
         ICaloriesCalculator caloriesCalculator) => new()
         {
-            PageItems = result.FoundPages.Select(p => p.ToPageItemDto(caloriesCalculator)),
-            TotalPagesCount = result.TotalPagesCount
+            PageItems = response.FoundPages.Select(p => p.ToPageItemDto(caloriesCalculator)),
+            TotalPagesCount = response.TotalPagesCount
         };
 }
