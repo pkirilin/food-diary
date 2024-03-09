@@ -7,7 +7,7 @@ import {
   TableHead,
   TableRow,
 } from '@mui/material';
-import { type FC } from 'react';
+import { useMemo, type FC } from 'react';
 import { useRouterId } from 'src/hooks';
 import { useProductSelect } from '../model';
 import { type NoteItem, type MealType } from '../models';
@@ -29,6 +29,15 @@ export const NotesTable: FC<NotesTableProps> = ({
 }: NotesTableProps) => {
   const pageId = useRouterId('id');
   const productSelect = useProductSelect();
+
+  const maxDisplayOrderForNotesGroup = useMemo(
+    () =>
+      notes.reduce(
+        (maxOrder, note) => (note.displayOrder > maxOrder ? note.displayOrder : maxOrder),
+        -1,
+      ),
+    [notes],
+  );
 
   return (
     <TableContainer>
@@ -55,7 +64,11 @@ export const NotesTable: FC<NotesTableProps> = ({
         </TableBody>
       </Table>
       <Box mt={1}>
-        <AddNote pageId={pageId} mealType={mealType} />
+        <AddNote
+          pageId={pageId}
+          mealType={mealType}
+          displayOrder={maxDisplayOrderForNotesGroup + 1}
+        />
       </Box>
     </TableContainer>
   );
