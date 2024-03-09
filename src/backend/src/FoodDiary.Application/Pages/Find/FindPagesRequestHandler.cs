@@ -35,7 +35,7 @@ internal class FindPagesRequestHandler(
             return new FindPagesResponse.StartDateIsGreaterThanEndDate();
         }
         
-        var (foundPages, totalPagesCount) = await repository.Find(
+        var (foundPages, totalPagesCount) = await repository.FindWithTotalCount(
             pages => BuildQuery(request, pages),
             cancellationToken);
         

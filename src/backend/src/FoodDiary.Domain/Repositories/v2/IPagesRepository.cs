@@ -9,13 +9,18 @@ using FoodDiary.Domain.Entities;
 
 namespace FoodDiary.Domain.Repositories.v2;
 
-public record FindResult(IReadOnlyList<Page> FoundPages, long TotalCount);
+public record FindWithTotalCountResult(IReadOnlyList<Page> FoundPages, long TotalCount);
 
 public interface IPagesRepository
 {
-    Task<Page[]> GetAsync(DateTime startDate, DateTime endDate, CancellationToken cancellationToken);
+    Task<IReadOnlyList<Page>> Find(
+        Func<IQueryable<Page>, IQueryable<Page>> buildQuery,
+        CancellationToken cancellationToken);
 
-    Task<FindResult> Find(Func<IQueryable<Page>, IQueryable<Page>> buildQuery, CancellationToken cancellationToken);
+    Task<FindWithTotalCountResult> FindWithTotalCount(
+        Func<IQueryable<Page>, IQueryable<Page>> buildQuery,
+        CancellationToken cancellationToken);
+    
     Task<Page?> FindById(int id, CancellationToken cancellationToken);
     Task<IReadOnlyList<Page>> FindByIds(IReadOnlyList<int> ids, CancellationToken cancellationToken);
     Task<Page?> FindByDate(DateOnly date, CancellationToken cancellationToken);

@@ -29,8 +29,8 @@ public class ExportApiContext(FoodDiaryWebApplicationFactory factory, Infrastruc
     {
         var request = new ExportToGoogleDocsRequestDto
         {
-            StartDate = DateTime.Parse(startDate),
-            EndDate = DateTime.Parse(endDate)
+            StartDate = DateOnly.Parse(startDate),
+            EndDate = DateOnly.Parse(endDate)
         };
         
         _exportGoogleDocsResponse = await ApiClient.PostAsJsonAsync("/api/v1/exports/google-docs", request);

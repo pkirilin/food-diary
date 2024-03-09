@@ -1,12 +1,11 @@
 using System;
-using System.Diagnostics.CodeAnalysis;
+using JetBrains.Annotations;
 
 namespace FoodDiary.Application.Services.Export;
 
-[SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
+[PublicAPI]
 public class ExportRequestDto
 {
-    public DateTime StartDate { get; set; }
-    
-    public DateTime EndDate { get; set; }
+    public required DateOnly StartDate { get; init; }
+    public required DateOnly EndDate { get; init; }
 }

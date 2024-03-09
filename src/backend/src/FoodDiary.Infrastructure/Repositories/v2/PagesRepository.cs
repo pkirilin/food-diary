@@ -13,23 +13,25 @@ namespace FoodDiary.Infrastructure.Repositories.v2;
 
 internal class PagesRepository(FoodDiaryContext context) : IPagesRepository
 {
-    public Task<Page[]> GetAsync(DateTime startDate, DateTime endDate, CancellationToken cancellationToken)
-    {
-        return context.Pages
-            .Where(p => p.Date >= startDate && p.Date <= endDate)
-            .OrderBy(p => p.Date)
-            .AsSplitQuery()
-            .Include(p => p.Notes)
-            .ThenInclude(n => n.Product)
-            .ThenInclude(pr => pr.Category)
-            .ToArrayAsync(cancellationToken);
-    }
-
-    public async Task<FindResult> Find(
+    public async Task<IReadOnlyList<Page>> Find(
         Func<IQueryable<Page>, IQueryable<Page>> buildQuery,
         CancellationToken cancellationToken)
     {
         var query = buildQuery(context.Pages.AsNoTracking())
+            .AsSplitQuery()
+            .Include(p => p.Notes)
+            .ThenInclude(n => n.Product)
+            .ThenInclude(p => p.Category);
+        
+        return await query.ToListAsync(cancellationToken);
+    }
+
+    public async Task<FindWithTotalCountResult> FindWithTotalCount(
+        Func<IQueryable<Page>, IQueryable<Page>> buildQuery,
+        CancellationToken cancellationToken)
+    {
+        var query = buildQuery(context.Pages.AsNoTracking())
+            .AsSplitQuery()
             .Include(p => p.Notes)
             .ThenInclude(n => n.Product)
             .ThenInclude(p => p.Category);
@@ -37,7 +39,7 @@ internal class PagesRepository(FoodDiaryContext context) : IPagesRepository
         var foundPages = await query.ToListAsync(cancellationToken);
         var totalCount = await query.LongCountAsync(cancellationToken);
         
-        return new FindResult(foundPages, totalCount);
+        return new FindWithTotalCountResult(foundPages, totalCount);
     }
 
     public async Task<Page?> FindById(int id, CancellationToken cancellationToken)
