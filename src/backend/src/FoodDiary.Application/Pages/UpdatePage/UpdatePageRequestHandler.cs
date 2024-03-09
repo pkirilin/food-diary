@@ -36,6 +36,7 @@ internal class UpdatePageRequestHandler(
             return new UpdatePageResponse.PageNotFound();
         }
 
+        page.Date = request.Date.ToDateTime(new TimeOnly(), DateTimeKind.Unspecified);
         page.DateNew = request.Date;
         await repository.Update(page, cancellationToken);
         
