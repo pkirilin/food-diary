@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using FoodDiary.Application.Services.Export;
-using FoodDiary.Domain.Abstractions.v2;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Enums;
 using FoodDiary.Domain.Repositories.v2;
@@ -52,7 +51,7 @@ public class ExportDataLoaderTests
                 new Page
                 {
                     Id = 1,
-                    Date = DateTime.Parse("2022-05-01"),
+                    Date = DateOnly.Parse("2022-05-01"),
                     Notes = new List<Note>
                     {
                         new()
@@ -107,8 +106,8 @@ public class ExportDataLoaderTests
                         }
                     }
                 },
-                new Page { Id = 2, Date = DateTime.Parse("2022-05-02"), Notes = new List<Note>() },
-                new Page { Id = 3, Date = DateTime.Parse("2022-05-03"), Notes = new List<Note>() }
+                new Page { Id = 2, Date = DateOnly.Parse("2022-05-02"), Notes = new List<Note>() },
+                new Page { Id = 3, Date = DateOnly.Parse("2022-05-03"), Notes = new List<Note>() }
             };
 
             return pages;
@@ -118,21 +117,19 @@ public class ExportDataLoaderTests
     [Fact]
     public async void GetDataAsync_ShouldLoadAndTransformPagesToExportData()
     {
-        var unitOfWorkMock = new Mock<IFoodDiaryUnitOfWork>();
         var pagesRepositoryMock = new Mock<IPagesRepository>();
         var caloriesCalculatorMock = new Mock<ICaloriesCalculator>();
         var mealNameResolverMock = new Mock<IMealNameResolver>();
 
         var exportDataLoader = new ExportDataLoader(
-            unitOfWorkMock.Object,
+            pagesRepositoryMock.Object,
             caloriesCalculatorMock.Object,
             mealNameResolverMock.Object);
 
-        var startDate = DateTime.Parse("2022-05-01");
-        var endDate = DateTime.Parse("2022-05-11");
-
-        unitOfWorkMock.SetupGet(u => u.Pages).Returns(pagesRepositoryMock.Object);
-        pagesRepositoryMock.Setup(r => r.GetAsync(startDate, endDate, default)).ReturnsAsync(Pages);
+        var startDate = DateOnly.Parse("2022-05-01");
+        var endDate = DateOnly.Parse("2022-05-11");
+        
+        pagesRepositoryMock.Setup(r => r.Find(It.IsAny<Func<IQueryable<Page>, IQueryable<Page>>>(), default)).ReturnsAsync(Pages);
         caloriesCalculatorMock.Setup(c => c.Calculate(It.IsAny<Note>())).Returns(100);
         caloriesCalculatorMock.Setup(c => c.Calculate(It.IsAny<ICollection<Note>>())).Returns(100);
         mealNameResolverMock.Setup(r => r.GetMealName(It.IsAny<MealType>())).Returns("Test meal type");

@@ -1,4 +1,3 @@
-using System.Globalization;
 using FoodDiary.Domain.Entities;
 using LightBDD.Core.Formatting.Values;
 
@@ -13,6 +12,6 @@ internal class PageFormatter : IValueFormatter
             throw new FormatterNotRegisteredException(value);
         }
         
-        return page.Date.ToString("s", CultureInfo.InvariantCulture)[..10];
+        return page.Date.ToString("O");
     }
 }

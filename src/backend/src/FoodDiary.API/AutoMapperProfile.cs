@@ -11,28 +11,9 @@ public class AutoMapperProfile : Profile
 {
     public AutoMapperProfile()
     {
-        CreatePageMappings();
         CreateNoteMappings();
         CreateCategoryMappings();
         CreateProductMappings();
-    }
-
-    private void CreatePageMappings()
-    {
-        CreateMap<PageCreateEditRequest, Page>();
-
-        CreateMap<Page, PageItemDto>()
-            .ForMember(
-                dest => dest.Date,
-                o => o.MapFrom(src => src.Date.ToString("yyyy-MM-dd")))
-            .ForMember(
-                dest => dest.CountCalories,
-                o => o.MapFrom<PageCaloriesCountValueResolver>())
-            .ForMember(
-                dest => dest.CountNotes,
-                o => o.MapFrom(src => src.Notes.Count));
-
-        CreateMap<Page, PageDto>();
     }
 
     private void CreateNoteMappings()

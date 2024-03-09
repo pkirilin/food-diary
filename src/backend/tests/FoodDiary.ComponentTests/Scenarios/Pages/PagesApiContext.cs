@@ -47,13 +47,21 @@ public class PagesApiContext(FoodDiaryWebApplicationFactory factory, Infrastruct
 
     public async Task When_user_creates_page(Page page)
     {
-        var request = new PageCreateEditRequest { Date = page.Date };
+        var request = new PageCreateEditRequest
+        {
+            Date = page.Date
+        };
+        
         _createPageResponse = await ApiClient.PostAsJsonAsync("/api/v1/pages", request);
     }
 
-    public async Task When_user_updates_page(Page page)
+    public async Task When_user_updates_page(Page page, string newDate)
     {
-        var request = new PageCreateEditRequest { Date = page.Date };
+        var request = new PageCreateEditRequest
+        {
+            Date = DateOnly.Parse(newDate)
+        };
+        
         _updatePageResponse = await ApiClient.PutAsJsonAsync($"/api/v1/pages/{page.Id}", request);
     }
 

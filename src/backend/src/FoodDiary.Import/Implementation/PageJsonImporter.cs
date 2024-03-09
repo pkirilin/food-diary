@@ -6,7 +6,7 @@ using FoodDiary.Import.Services;
 
 namespace FoodDiary.Import.Implementation;
 
-class PageJsonImporter : IPageJsonImporter
+internal class PageJsonImporter : IPageJsonImporter
 {
     private readonly IJsonImportDataProvider _importDataProvider;
 
@@ -30,14 +30,11 @@ class PageJsonImporter : IPageJsonImporter
         Page importedPage;
         createdPage = null;
 
-        // Removing time from date for correct search
-        pageFromJson.Date = DateTime.Parse(pageFromJson.Date.ToShortDateString());
-
-        if (existingPagesDictionary.ContainsKey(pageFromJson.Date))
-            importedPage = existingPagesDictionary[pageFromJson.Date];
+        if (existingPagesDictionary.TryGetValue(pageFromJson.Date, out var page))
+            importedPage = page;
         else
         {
-            importedPage = createdPage = new Page()
+            importedPage = createdPage = new Page
             {
                 Date = pageFromJson.Date
             };

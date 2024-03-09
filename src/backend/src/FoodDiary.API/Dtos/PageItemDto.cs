@@ -1,12 +1,7 @@
-﻿namespace FoodDiary.API.Dtos;
+﻿using System;
+using JetBrains.Annotations;
 
-public class PageItemDto
-{
-    public int Id { get; set; }
+namespace FoodDiary.API.Dtos;
 
-    public string Date { get; set; }
-
-    public int CountNotes { get; set; }
-
-    public int CountCalories { get; set; }
-}
+[PublicAPI]
+public record PageItemDto(int Id, DateOnly Date, int CountNotes, int CountCalories);

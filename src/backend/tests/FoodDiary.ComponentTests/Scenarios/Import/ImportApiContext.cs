@@ -72,7 +72,7 @@ public class ImportApiContext(FoodDiaryWebApplicationFactory factory, Infrastruc
     public async Task Then_pages_list_contains_items(params Page[] items)
     {
         var pagesListResult = await ApiClient.GetFromJsonAsync<PagesSearchResultDto>("/api/v1/pages");
-        var expectedPageDates = items.Select(p => p.Date.ToString("yyyy-MM-dd")).ToList();
+        var expectedPageDates = items.Select(p => p.Date).ToList();
         
         var createdPage = pagesListResult?.PageItems.FirstOrDefault(p => p.Date == expectedPageDates.FirstOrDefault());
         createdPage.Should().NotBeNull();

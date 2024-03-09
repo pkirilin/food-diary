@@ -1,6 +1,6 @@
 import { type FC } from 'react';
 import { useLoaderData } from 'react-router-dom';
-import { notesApi, MealsList, NotesTable } from '@/features/notes';
+import { notesApi, MealsList, NotesTable, useNotes } from '@/features/notes';
 import { pagesApi } from '@/features/pages';
 import PageContentHeader from '@/features/pages/components/PageContentHeader';
 import store from '@/store';
@@ -27,7 +27,7 @@ export const loader = withAuthStatusCheck(async ({ params }) => {
 export const Component: FC = () => {
   const { pageId } = useLoaderData() as LoaderData;
   const getPageByIdQuery = pagesApi.useGetPageByIdQuery(pageId);
-  const getNotesQuery = notesApi.useGetNotesQuery({ pageId });
+  const notes = useNotes(pageId);
 
   return (
     <PrivateLayout
@@ -36,13 +36,13 @@ export const Component: FC = () => {
       }
     >
       <MealsList
-        notes={getNotesQuery.data ?? []}
-        renderItem={(notes, mealType) => (
+        notes={notes.data}
+        renderItem={(notesGroup, mealType) => (
           <NotesTable
             mealType={mealType}
-            notes={notes}
-            notesChanged={!getNotesQuery.isFetching && getNotesQuery.isSuccess}
-            notesFetching={getNotesQuery.isFetching}
+            notes={notesGroup}
+            notesChanged={notes.isChanged}
+            notesFetching={notes.isFetching}
           />
         )}
       />

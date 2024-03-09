@@ -6,5 +6,5 @@ namespace FoodDiary.API.Requests;
 public class PageCreateEditRequest
 {
     [Required]
-    public DateTime Date { get; set; }
+    public required DateOnly Date { get; init; }
 }

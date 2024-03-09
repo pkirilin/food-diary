@@ -6,10 +6,12 @@ using MediatR;
 using System.Linq;
 using FoodDiary.Domain.Repositories;
 using FoodDiary.Import;
+using JetBrains.Annotations;
 
 namespace FoodDiary.Application.Imports.Handlers;
 
-class PagesJsonImportRequestHandler : IRequestHandler<PagesJsonImportRequest, int>
+[UsedImplicitly]
+internal class PagesJsonImportRequestHandler : IRequestHandler<PagesJsonImportRequest, int>
 {
     private readonly IPageRepository _pageRepository;
     private readonly IProductRepository _productRepository;

@@ -8,12 +8,15 @@ public class PageBuilder
     private readonly Page _page = new()
     {
         Id = Random.Shared.Next(),
+        Date = DateOnly.FromDateTime(DateTime.UtcNow),
         Notes = new List<Note>()
     };
 
     public PageBuilder(string? date)
     {
-        _page.Date = string.IsNullOrWhiteSpace(date) ? DateTime.UtcNow : DateTime.Parse(date);
+        _page.Date = string.IsNullOrWhiteSpace(date)
+            ? DateOnly.FromDateTime(DateTime.UtcNow)
+            : DateOnly.Parse(date);
     }
 
     public Page Please() => _page;

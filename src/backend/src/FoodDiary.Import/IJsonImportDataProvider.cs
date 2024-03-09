@@ -12,7 +12,7 @@ public interface IJsonImportDataProvider
     /// <summary>
     /// Existing page entities which are going to be updated by import
     /// </summary>
-    IDictionary<DateTime, Page> ExistingPages { get; set; }
+    IDictionary<DateOnly, Page> ExistingPages { get; set; }
 
     /// <summary>
     /// Existing product entities which are going to be updated by import

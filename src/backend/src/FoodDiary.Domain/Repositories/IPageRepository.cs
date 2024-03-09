@@ -5,7 +5,7 @@ using FoodDiary.Domain.Entities;
 
 namespace FoodDiary.Domain.Repositories;
 
-public interface IPageRepository : IRepository<Page>, ILookupRepository<DateTime, Page>
+public interface IPageRepository : IRepository<Page>, ILookupRepository<DateOnly, Page>
 {
     IQueryable<Page> LoadNotesWithProductsAndCategories(IQueryable<Page> query);
 }

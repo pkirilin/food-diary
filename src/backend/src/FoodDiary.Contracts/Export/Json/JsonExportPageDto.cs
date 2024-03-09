@@ -2,7 +2,7 @@
 
 public class JsonExportPageDto
 {
-    public DateTime Date { get; set; }
+    public DateOnly Date { get; set; }
 
     public IEnumerable<JsonExportNoteDto> Notes { get; set; }
 }

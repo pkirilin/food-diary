@@ -5,37 +5,28 @@ using System.Threading;
 using System.Threading.Tasks;
 using FoodDiary.Contracts.Export;
 using FoodDiary.Contracts.Export.Json;
-using FoodDiary.Domain.Abstractions.v2;
 using FoodDiary.Domain.Entities;
+using FoodDiary.Domain.Repositories.v2;
 using FoodDiary.Domain.Utils;
 
 namespace FoodDiary.Application.Services.Export;
 
-internal class ExportDataLoader : IExportDataLoader
+internal class ExportDataLoader(
+    IPagesRepository repository,
+    ICaloriesCalculator caloriesCalculator,
+    IMealNameResolver mealNameResolver) : IExportDataLoader
 {
-    private readonly IFoodDiaryUnitOfWork _unitOfWork;
-    private readonly ICaloriesCalculator _caloriesCalculator;
-    private readonly IMealNameResolver _mealNameResolver;
-
-    public ExportDataLoader(IFoodDiaryUnitOfWork unitOfWork,
-        ICaloriesCalculator caloriesCalculator,
-        IMealNameResolver mealNameResolver)
-    {
-        _unitOfWork = unitOfWork;
-        _caloriesCalculator = caloriesCalculator;
-        _mealNameResolver = mealNameResolver;
-    }
-    
-    public async Task<ExportFileDto> GetDataAsync(DateTime startDate,
-        DateTime endDate,
+    public async Task<ExportFileDto> GetDataAsync(
+        DateOnly startDate,
+        DateOnly endDate,
         CancellationToken cancellationToken)
     {
-        var pages = await _unitOfWork.Pages.GetAsync(startDate, endDate, cancellationToken);
+        var pages = await repository.Find(pages => BuildQuery(pages, startDate, endDate), cancellationToken);
 
         var exportPages = pages.Select(page => new ExportPageDto
         {
             FormattedDate = page.Date.ToString("dd.MM.yyyy"),
-            TotalCalories = _caloriesCalculator.Calculate(page.Notes),
+            TotalCalories = caloriesCalculator.Calculate(page.Notes),
             NoteGroups = GetNoteGroups(page.Notes)
         }).ToArray();
 
@@ -46,11 +37,12 @@ internal class ExportDataLoader : IExportDataLoader
         };
     }
 
-    public async Task<JsonExportFileDto> GetJsonDataAsync(DateTime startDate,
-        DateTime endDate,
+    public async Task<JsonExportFileDto> GetJsonDataAsync(
+        DateOnly startDate,
+        DateOnly endDate,
         CancellationToken cancellationToken)
     {
-        var pages = await _unitOfWork.Pages.GetAsync(startDate, endDate, cancellationToken);
+        var pages = await repository.Find(pages => BuildQuery(pages, startDate, endDate), cancellationToken);
         var exportPages = pages.Select(page => page.ToJsonExportPageDto());
 
         return new JsonExportFileDto
@@ -59,10 +51,14 @@ internal class ExportDataLoader : IExportDataLoader
         };
     }
 
-    private static string GenerateExportFileName(DateTime startDate, DateTime endDate)
+    private static string GenerateExportFileName(DateOnly startDate, DateOnly endDate)
     {
         return $"FoodDiary_{startDate:yyyyMMdd}_{endDate:yyyyMMdd}";
     }
+
+    private static IQueryable<Page> BuildQuery(IQueryable<Page> pages, DateOnly startDate, DateOnly endDate) => pages
+        .Where(p => p.Date >= startDate && p.Date <= endDate)
+        .OrderBy(p => p.Date);
 
     private ExportNoteGroupDto[] GetNoteGroups(IEnumerable<Note> notes)
     {
@@ -77,8 +73,8 @@ internal class ExportDataLoader : IExportDataLoader
     {
         return new ExportNoteGroupDto
         {
-            MealName = _mealNameResolver.GetMealName(notes.First().MealType),
-            TotalCalories = _caloriesCalculator.Calculate(notes),
+            MealName = mealNameResolver.GetMealName(notes.First().MealType),
+            TotalCalories = caloriesCalculator.Calculate(notes),
             Notes = notes.Select(MapNote).ToArray(),
         };
     }
@@ -89,7 +85,7 @@ internal class ExportDataLoader : IExportDataLoader
         {
             ProductName = note.Product.Name,
             ProductQuantity = note.ProductQuantity,
-            Calories = _caloriesCalculator.Calculate(note)
+            Calories = caloriesCalculator.Calculate(note)
         };
     }
 }

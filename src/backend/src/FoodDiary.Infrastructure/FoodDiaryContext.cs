@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using FoodDiary.Domain.Abstractions;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Infrastructure.EntityConfigurations;
@@ -13,7 +12,6 @@ public class FoodDiaryContext : DbContext, IUnitOfWork, IDataProtectionKeyContex
 {
     public FoodDiaryContext(DbContextOptions options) : base(options)
     {
-        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
     }
         
     public DbSet<DataProtectionKey> DataProtectionKeys { get; set; }
