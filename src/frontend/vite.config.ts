@@ -1,6 +1,7 @@
 import type { UserConfig as VitestUserConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
+import { VitePWA as pwa } from 'vite-plugin-pwa';
 
 declare module 'vite' {
   export interface UserConfig {
@@ -9,7 +10,31 @@ declare module 'vite' {
 }
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    pwa({
+      registerType: 'autoUpdate',
+      manifest: {
+        name: 'Food Diary',
+        short_name: 'Food Diary',
+        icons: [
+          {
+            src: '/android-chrome-192x192.png',
+            sizes: '192x192',
+            type: 'image/png',
+          },
+          {
+            src: '/android-chrome-192x192.png',
+            sizes: '192x192',
+            type: 'image/png',
+          },
+        ],
+        theme_color: '#ffffff',
+        background_color: '#ffffff',
+        display: 'standalone',
+      },
+    }),
+  ],
 
   resolve: {
     alias: {
