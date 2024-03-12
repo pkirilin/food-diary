@@ -24,9 +24,14 @@ export default defineConfig({
             type: 'image/png',
           },
           {
-            src: '/android-chrome-192x192.png',
-            sizes: '192x192',
+            src: '/android-chrome-512x512.png',
+            sizes: '512x512',
             type: 'image/png',
+          },
+          {
+            src: '/logo-maskable.svg',
+            sizes: '192x192 512x512',
+            purpose: 'maskable',
           },
         ],
         theme_color: '#ffffff',
