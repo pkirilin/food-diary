@@ -38,6 +38,9 @@ export default defineConfig({
         background_color: '#ffffff',
         display: 'standalone',
       },
+      workbox: {
+        navigateFallbackDenylist: [/^\/api\/v1\/auth/, /^\/signin-google/],
+      },
     }),
   ],
 
