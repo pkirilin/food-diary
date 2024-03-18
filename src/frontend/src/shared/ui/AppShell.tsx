@@ -26,7 +26,7 @@ export const AppShell: FC<Props> = ({ children, withNavigationProgress, header }
     <Container
       component="main"
       sx={theme => ({
-        padding: theme.spacing(3),
+        paddingY: theme.spacing(3),
       })}
     >
       {children}

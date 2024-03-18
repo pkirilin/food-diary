@@ -1,6 +1,6 @@
 import { type FC } from 'react';
 import { useLoaderData } from 'react-router-dom';
-import { notesApi, MealsList, NotesTable, useNotes } from '@/features/notes';
+import { notesApi, MealsList, useNotes } from '@/features/notes';
 import { pagesApi } from '@/features/pages';
 import PageContentHeader from '@/features/pages/components/PageContentHeader';
 import store from '@/store';
@@ -35,17 +35,7 @@ export const Component: FC = () => {
         getPageByIdQuery.data && <PageContentHeader page={getPageByIdQuery.data.currentPage} />
       }
     >
-      <MealsList
-        notes={notes.data}
-        renderItem={(notesGroup, mealType) => (
-          <NotesTable
-            mealType={mealType}
-            notes={notesGroup}
-            notesChanged={notes.isChanged}
-            notesFetching={notes.isFetching}
-          />
-        )}
-      />
+      <MealsList notes={notes.data} />
     </PrivateLayout>
   );
 };

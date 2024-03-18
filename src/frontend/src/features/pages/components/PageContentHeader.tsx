@@ -9,7 +9,6 @@ import {
 } from '@mui/material';
 import { useMemo, type FC } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { Calories } from 'src/components';
 import { notesApi } from 'src/features/notes';
 import { formatDate } from 'src/utils';
 import { type Page } from '../models';
@@ -63,7 +62,7 @@ const PageContentHeader: FC<Props> = ({ page }) => {
             {formatDate(new Date(page.date))}
           </Typography>
         </Breadcrumbs>
-        <Calories amount={totalCalories} />
+        <Typography color="GrayText" fontWeight={700}>{`${totalCalories} kcal`}</Typography>
       </Stack>
     </Box>
   );

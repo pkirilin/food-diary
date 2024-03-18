@@ -1,13 +1,12 @@
-import { useMemo, type FC, type ReactElement } from 'react';
-import { type NoteItem, getMealTypes, groupNotesByMealType, type MealType } from '../models';
+import { useMemo, type FC } from 'react';
+import { type NoteItem, getMealTypes, groupNotesByMealType } from '../models';
 import { MealsListItem } from './MealsListItem';
 
 interface Props {
   notes: NoteItem[];
-  renderItem: (notes: NoteItem[], mealType: MealType) => ReactElement;
 }
 
-export const MealsList: FC<Props> = ({ notes, renderItem }) => {
+export const MealsList: FC<Props> = ({ notes }) => {
   const notesGroupedByMealType = useMemo(() => groupNotesByMealType(notes), [notes]);
 
   return (
@@ -17,9 +16,7 @@ export const MealsList: FC<Props> = ({ notes, renderItem }) => {
           key={mealType}
           mealType={mealType}
           notes={notesGroupedByMealType.get(mealType) ?? []}
-        >
-          {renderItem(notesGroupedByMealType.get(mealType) ?? [], mealType)}
-        </MealsListItem>
+        />
       ))}
     </>
   );
