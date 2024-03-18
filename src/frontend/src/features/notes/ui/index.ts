@@ -1,2 +1,2 @@
-export * from './MealsList';
 export * from './NotesTable';
+export * from './MealsList';
