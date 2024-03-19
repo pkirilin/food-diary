@@ -40,7 +40,7 @@ export const Component: FC = () => {
         getPageByIdQuery.data && <PageContentHeader page={getPageByIdQuery.data.currentPage} />
       }
     >
-      <MealsList notes={notes.data} />
+      <MealsList pageId={pageId} notes={notes.data} />
     </PrivateLayout>
   );
 };
