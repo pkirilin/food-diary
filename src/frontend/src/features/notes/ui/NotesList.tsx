@@ -1,6 +1,7 @@
 import { List, ListSubheader, Stack, Typography } from '@mui/material';
 import { useMemo, type FC } from 'react';
 import { getMealName, type MealType, type NoteItem } from '../models';
+import { AddNote } from './AddNote';
 import { NotesListItem } from './NotesListItem';
 
 interface Props {
@@ -12,6 +13,15 @@ interface Props {
 export const NotesList: FC<Props> = ({ pageId, mealType, notes }) => {
   const mealName = useMemo(() => getMealName(mealType), [mealType]);
   const totalCalories = useMemo(() => notes.reduce((sum, note) => sum + note.calories, 0), [notes]);
+
+  const maxDisplayOrderForNotesGroup = useMemo(
+    () =>
+      notes.reduce(
+        (maxOrder, note) => (note.displayOrder > maxOrder ? note.displayOrder : maxOrder),
+        -1,
+      ),
+    [notes],
+  );
 
   return (
     <List
@@ -45,6 +55,11 @@ export const NotesList: FC<Props> = ({ pageId, mealType, notes }) => {
       {notes.map(note => (
         <NotesListItem key={note.id} note={note} pageId={pageId} />
       ))}
+      <AddNote
+        pageId={pageId}
+        mealType={mealType}
+        displayOrder={maxDisplayOrderForNotesGroup + 1}
+      />
     </List>
   );
 };
