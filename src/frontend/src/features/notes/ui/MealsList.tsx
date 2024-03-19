@@ -16,7 +16,7 @@ export const MealsList: FC<Props> = ({ notes, pageId }: Props) => {
   return (
     <List>
       {MEAL_TYPES.map(mealType => (
-        <ListItem key={mealType} disableGutters>
+        <ListItem key={mealType} disableGutters divider>
           <NotesList
             pageId={pageId}
             mealType={mealType}
