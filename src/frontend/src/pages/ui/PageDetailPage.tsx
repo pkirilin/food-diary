@@ -1,12 +1,6 @@
-import { useMemo, type FC } from 'react';
+import { type FC } from 'react';
 import { useLoaderData } from 'react-router-dom';
-import {
-  notesApi,
-  useNotes,
-  groupNotesByMealType,
-  getMealTypes,
-  MealsList,
-} from '@/features/notes';
+import { notesApi, useNotes, MealsList } from '@/features/notes';
 import { pagesApi } from '@/features/pages';
 import PageContentHeader from '@/features/pages/components/PageContentHeader';
 import store from '@/store';
@@ -34,7 +28,6 @@ export const Component: FC = () => {
   const { pageId } = useLoaderData() as LoaderData;
   const getPageByIdQuery = pagesApi.useGetPageByIdQuery(pageId);
   const notes = useNotes(pageId);
-  const notesGroupedByMealType = useMemo(() => groupNotesByMealType(notes.data), [notes]);
 
   return (
     <PrivateLayout
@@ -42,13 +35,7 @@ export const Component: FC = () => {
         getPageByIdQuery.data && <PageContentHeader page={getPageByIdQuery.data.currentPage} />
       }
     >
-      {getMealTypes().map(mealType => (
-        <MealsList
-          key={mealType}
-          mealType={mealType}
-          notes={notesGroupedByMealType.get(mealType) ?? []}
-        />
-      ))}
+      <MealsList notes={notes.data} />
     </PrivateLayout>
   );
 };
