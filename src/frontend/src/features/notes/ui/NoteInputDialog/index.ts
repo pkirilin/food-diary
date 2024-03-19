@@ -1,3 +1,1 @@
-import NoteInputDialog from './NoteInputDialog';
-
-export default NoteInputDialog;
+export * from './NoteInputDialog';

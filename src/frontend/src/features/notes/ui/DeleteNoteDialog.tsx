@@ -12,7 +12,7 @@ interface DeleteNoteDialogProps {
   onSubmit: (note: NoteItem) => void;
 }
 
-const DeleteNoteDialog: FC<DeleteNoteDialogProps> = ({
+export const DeleteNoteDialog: FC<DeleteNoteDialogProps> = ({
   note,
   isOpened,
   submitInProgress,
@@ -66,5 +66,3 @@ const DeleteNoteDialog: FC<DeleteNoteDialogProps> = ({
     />
   );
 };
-
-export default DeleteNoteDialog;

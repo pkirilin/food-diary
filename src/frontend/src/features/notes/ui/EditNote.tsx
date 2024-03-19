@@ -1,8 +1,8 @@
-import { useMemo, type FC, useEffect, useCallback, useState, type ReactElement } from 'react';
-import { notesApi, useNotes, useProductSelect } from '@/features/notes';
+import { useMemo, type FC, useEffect, type ReactElement } from 'react';
+import { NoteInputDialog, notesApi, useNotes, useProductSelect } from '@/features/notes';
+import { useToggle } from '@/shared/hooks';
 import { toEditNoteRequest, toProductSelectOption } from '../mapping';
 import { type NoteCreateEdit, type NoteItem } from '../models';
-import NoteInputDialog from './NoteInputDialog';
 
 interface Props {
   note: NoteItem;
@@ -15,11 +15,7 @@ export const EditNote: FC<Props> = ({ note, pageId, children }) => {
   const productSelect = useProductSelect();
   const product = useMemo(() => toProductSelectOption(note), [note]);
   const [editNote, editNoteResponse] = notesApi.useEditNoteMutation();
-  const [dialogOpened, setDialogOpened] = useState(false);
-
-  const toggleDialog = useCallback(() => {
-    setDialogOpened(value => !value);
-  }, []);
+  const [dialogOpened, toggleDialog] = useToggle();
 
   useEffect(() => {
     if (editNoteResponse.isSuccess && notes.isChanged) {

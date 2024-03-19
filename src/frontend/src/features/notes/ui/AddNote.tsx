@@ -5,7 +5,7 @@ import { notesApi } from '../api';
 import { toCreateNoteRequest } from '../mapping';
 import { useProductSelect, useNotes } from '../model';
 import { type NoteCreateEdit, type MealType } from '../models';
-import NoteInputDialog from './NoteInputDialog';
+import { NoteInputDialog } from './NoteInputDialog';
 
 interface Props {
   pageId: number;

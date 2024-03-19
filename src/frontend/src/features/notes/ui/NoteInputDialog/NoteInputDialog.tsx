@@ -24,7 +24,7 @@ interface Props {
   onSubmit: (note: NoteCreateEdit) => void;
 }
 
-const NoteInputDialog: FC<Props> = ({
+export const NoteInputDialog: FC<Props> = ({
   title,
   submitText,
   isOpened,
@@ -147,5 +147,3 @@ const NoteInputDialog: FC<Props> = ({
     />
   );
 };
-
-export default NoteInputDialog;

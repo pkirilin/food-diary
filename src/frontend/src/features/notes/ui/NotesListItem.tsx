@@ -2,6 +2,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { ListItem, IconButton, ListItemButton, ListItemText } from '@mui/material';
 import { type FC } from 'react';
 import { type NoteItem } from '../models';
+import { DeleteNote } from './DeleteNote';
 import { EditNote } from './EditNote';
 
 interface Props {
@@ -16,9 +17,13 @@ export const NotesListItem: FC<Props> = ({ note, pageId }) => {
       disablePadding
       key={note.id}
       secondaryAction={
-        <IconButton>
-          <DeleteIcon />
-        </IconButton>
+        <DeleteNote note={note} pageId={pageId}>
+          {toggleDeleteDialog => (
+            <IconButton onClick={toggleDeleteDialog}>
+              <DeleteIcon />
+            </IconButton>
+          )}
+        </DeleteNote>
       }
     >
       <EditNote note={note} pageId={pageId}>
