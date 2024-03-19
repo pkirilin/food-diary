@@ -24,14 +24,21 @@ export const NotesList: FC<Props> = ({ mealType, notes }) => {
   return (
     <List
       subheader={
-        <ListSubheader disableGutters>
+        <ListSubheader>
           <Stack direction="row" spacing={1} justifyContent="space-between">
-            <Typography fontSize="inherit" fontWeight="inherit" component="span" noWrap>
+            <Typography
+              fontSize="inherit"
+              fontWeight="inherit"
+              lineHeight="inherit"
+              component="span"
+              noWrap
+            >
               {mealName}
             </Typography>
             <Typography
               fontSize="inherit"
               fontWeight="inherit"
+              lineHeight="inherit"
               component="span"
               width={100}
               align="right"
