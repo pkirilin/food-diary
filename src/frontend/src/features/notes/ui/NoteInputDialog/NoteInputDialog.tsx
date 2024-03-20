@@ -136,7 +136,7 @@ export const NoteInputDialog: FC<Props> = ({
       )}
       renderCancel={getCancelProps => (
         <Button
-          {...getCancelProps({ disabled: submitDisabled })}
+          {...getCancelProps({ disabled: submitInProgress })}
           type="button"
           onClick={onClose}
           disabled={submitInProgress}
