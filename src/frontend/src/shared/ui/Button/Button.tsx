@@ -11,7 +11,16 @@ interface Props extends MuiButtonProps {
 }
 
 export const Button: FC<Props> = ({ children, loading, disabled, color, ...props }) => (
-  <MuiButton {...props} disabled={!!disabled || loading} color={color}>
+  <MuiButton
+    {...props}
+    disabled={!!disabled || loading}
+    color={color}
+    sx={{
+      '&.Mui-disabled': {
+        color: loading ? 'inherit' : color,
+      },
+    }}
+  >
     {loading && <CircularProgress size={16} color={color} sx={{ position: 'absolute' }} />}
     <Box visibility={loading ? 'hidden' : 'visible'}>{children}</Box>
   </MuiButton>
