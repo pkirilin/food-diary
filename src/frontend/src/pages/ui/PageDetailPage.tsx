@@ -1,4 +1,4 @@
-import { useMediaQuery, useTheme } from '@mui/material';
+import { type Theme, useMediaQuery, useTheme } from '@mui/material';
 import { type FC } from 'react';
 import { useLoaderData } from 'react-router-dom';
 import { notesApi, useNotes, MealsList } from '@/features/notes';
@@ -30,7 +30,7 @@ export const Component: FC = () => {
   const getPageByIdQuery = pagesApi.useGetPageByIdQuery(pageId);
   const notes = useNotes(pageId);
   const theme = useTheme();
-  const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
+  const isDesktop = useMediaQuery<Theme>(theme => theme.breakpoints.up('md'));
 
   return (
     <PrivateLayout

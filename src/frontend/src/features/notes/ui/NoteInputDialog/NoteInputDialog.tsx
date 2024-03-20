@@ -94,6 +94,7 @@ export const NoteInputDialog: FC<Props> = ({
       title={title}
       opened={isOpened}
       onClose={onClose}
+      displayMode="fullScreenOnMobile"
       content={
         <form id="note-input-form" onSubmit={handleSubmit}>
           <TextField
@@ -122,20 +123,24 @@ export const NoteInputDialog: FC<Props> = ({
           />
         </form>
       }
-      renderSubmit={({ mobile, ...submitProps }) => (
+      renderSubmit={getSubmitProps => (
         <Button
-          {...submitProps}
+          {...getSubmitProps({ disabled: submitDisabled })}
           type="submit"
           form="note-input-form"
           disabled={submitDisabled}
           loading={submitInProgress}
-          sx={{ display: mobile && submitDisabled ? 'none' : 'block' }}
         >
           {submitText}
         </Button>
       )}
-      renderCancel={cancelProps => (
-        <Button {...cancelProps} type="button" onClick={onClose} disabled={submitInProgress}>
+      renderCancel={getCancelProps => (
+        <Button
+          {...getCancelProps({ disabled: submitDisabled })}
+          type="button"
+          onClick={onClose}
+          disabled={submitInProgress}
+        >
           Cancel
         </Button>
       )}
