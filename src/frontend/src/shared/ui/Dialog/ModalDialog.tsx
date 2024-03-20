@@ -13,7 +13,7 @@ interface Props extends DialogBaseProps {
   renderCancel: RenderActionFn;
 }
 
-export const ModalDialog: FC<Props> = ({
+const ModalDialog: FC<Props> = ({
   title,
   opened,
   content,
@@ -58,3 +58,5 @@ export const ModalDialog: FC<Props> = ({
     </MuiDialogActions>
   </MuiDialog>
 );
+
+export default ModalDialog;

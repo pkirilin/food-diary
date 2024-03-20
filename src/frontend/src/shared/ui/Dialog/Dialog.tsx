@@ -1,7 +1,5 @@
 import { type Theme, useMediaQuery } from '@mui/material';
-import { type FC } from 'react';
-import { FullScreenDialog } from './FullScreenDialog';
-import { ModalDialog } from './ModalDialog';
+import { lazy, type FC } from 'react';
 import { type RenderActionFn, type DialogBaseProps } from './types';
 
 type DisplayMode = 'modal' | 'fullScreenOnMobile';
@@ -10,6 +8,10 @@ interface Props extends DialogBaseProps {
   displayMode?: DisplayMode;
   renderCancel: RenderActionFn;
 }
+
+const FullScreenDialog = lazy(() => import('./FullScreenDialog'));
+
+const ModalDialog = lazy(() => import('./ModalDialog'));
 
 export const Dialog: FC<Props> = ({ displayMode = 'modal', renderCancel, ...props }) => {
   const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));

@@ -23,7 +23,7 @@ const Transition = forwardRef(function FullScreenDialogTransition(
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export const FullScreenDialog: FC<Props> = ({ title, opened, content, onClose, renderSubmit }) => (
+const FullScreenDialog: FC<Props> = ({ title, opened, content, onClose, renderSubmit }) => (
   <MuiDialog open={opened} onClose={onClose} fullWidth fullScreen TransitionComponent={Transition}>
     <AppBar position="relative">
       <Toolbar>
@@ -43,3 +43,5 @@ export const FullScreenDialog: FC<Props> = ({ title, opened, content, onClose, r
     <Box p={2}>{content}</Box>
   </MuiDialog>
 );
+
+export default FullScreenDialog;
