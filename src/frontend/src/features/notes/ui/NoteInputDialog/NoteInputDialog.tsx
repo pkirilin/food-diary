@@ -94,7 +94,7 @@ export const NoteInputDialog: FC<Props> = ({
       title={title}
       opened={isOpened}
       onClose={onClose}
-      displayMode="fullScreenOnMobile"
+      renderMode="fullScreenOnMobile"
       content={
         <form id="note-input-form" onSubmit={handleSubmit}>
           <TextField
