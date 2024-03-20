@@ -1,5 +1,5 @@
 import DeleteIcon from '@mui/icons-material/Delete';
-import { ListItem, IconButton, ListItemButton, ListItemText } from '@mui/material';
+import { ListItem, IconButton, ListItemButton, ListItemText, Tooltip } from '@mui/material';
 import { type FC } from 'react';
 import { type NoteItem } from '../models';
 import { DeleteNote } from './DeleteNote';
@@ -13,15 +13,16 @@ interface Props {
 export const NotesListItem: FC<Props> = ({ note, pageId }) => {
   return (
     <ListItem
-      disableGutters
       disablePadding
       key={note.id}
       secondaryAction={
         <DeleteNote note={note} pageId={pageId}>
           {toggleDeleteDialog => (
-            <IconButton onClick={toggleDeleteDialog}>
-              <DeleteIcon />
-            </IconButton>
+            <Tooltip title="Delete note">
+              <IconButton edge="end" onClick={toggleDeleteDialog}>
+                <DeleteIcon />
+              </IconButton>
+            </Tooltip>
           )}
         </DeleteNote>
       }

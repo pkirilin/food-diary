@@ -30,7 +30,7 @@ export const Component: FC = () => {
   const getPageByIdQuery = pagesApi.useGetPageByIdQuery(pageId);
   const notes = useNotes(pageId);
   const theme = useTheme();
-  const isDesktop = useMediaQuery<Theme>(theme => theme.breakpoints.up('md'));
+  const isDesktop = useMediaQuery<Theme>(theme => theme.breakpoints.up('sm'));
 
   return (
     <PrivateLayout
