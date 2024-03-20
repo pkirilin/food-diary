@@ -1,4 +1,4 @@
-import { List, ListSubheader, Stack, Typography } from '@mui/material';
+import { Grid, List, ListItem, ListSubheader, Stack, Typography } from '@mui/material';
 import { useMemo, type FC } from 'react';
 import { getMealName, type MealType, type NoteItem } from '../models';
 import { AddNote } from './AddNote';
@@ -52,14 +52,20 @@ export const NotesList: FC<Props> = ({ pageId, mealType, notes }) => {
       }
       sx={{ width: '100%' }}
     >
-      {notes.map(note => (
-        <NotesListItem key={note.id} note={note} pageId={pageId} />
-      ))}
-      <AddNote
-        pageId={pageId}
-        mealType={mealType}
-        displayOrder={maxDisplayOrderForNotesGroup + 1}
-      />
+      <ListItem disableGutters disablePadding>
+        <Grid container columnSpacing={4} component={List} disablePadding>
+          {notes.map(note => (
+            <NotesListItem key={note.id} note={note} pageId={pageId} />
+          ))}
+        </Grid>
+      </ListItem>
+      <ListItem>
+        <AddNote
+          pageId={pageId}
+          mealType={mealType}
+          displayOrder={maxDisplayOrderForNotesGroup + 1}
+        />
+      </ListItem>
     </List>
   );
 };
