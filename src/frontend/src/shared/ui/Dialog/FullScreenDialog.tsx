@@ -33,11 +33,11 @@ const FullScreenDialog: FC<Props> = ({ title, opened, content, onClose, renderSu
         <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
           {title}
         </Typography>
-        {renderSubmit(({ disabled }) => ({
+        {renderSubmit({
           color: 'inherit',
           variant: 'text',
-          sx: () => ({ display: disabled ? 'none' : 'block' }),
-        }))}
+          hiddenWhenDisabled: true,
+        })}
       </Toolbar>
     </AppBar>
     <Box p={2}>{content}</Box>

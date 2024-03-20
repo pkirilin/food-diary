@@ -1,9 +1,7 @@
-import { type ButtonProps } from '@mui/material';
 import { type ReactElement } from 'react';
+import { type ButtonProps } from '../Button';
 
-type GetPropsFn = (propsOverrides: Partial<ButtonProps>) => ButtonProps;
-
-export type RenderActionFn = (getProps: GetPropsFn) => ReactElement;
+export type RenderActionFn = (props: ButtonProps) => ReactElement;
 
 export interface DialogBaseProps {
   title: string;

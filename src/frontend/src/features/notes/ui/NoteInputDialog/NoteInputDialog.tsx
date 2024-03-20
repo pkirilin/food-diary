@@ -123,9 +123,9 @@ export const NoteInputDialog: FC<Props> = ({
           />
         </form>
       }
-      renderSubmit={getSubmitProps => (
+      renderSubmit={submitProps => (
         <Button
-          {...getSubmitProps({ disabled: submitDisabled })}
+          {...submitProps}
           type="submit"
           form="note-input-form"
           disabled={submitDisabled}
@@ -134,13 +134,8 @@ export const NoteInputDialog: FC<Props> = ({
           {submitText}
         </Button>
       )}
-      renderCancel={getCancelProps => (
-        <Button
-          {...getCancelProps({ disabled: submitInProgress })}
-          type="button"
-          onClick={onClose}
-          disabled={submitInProgress}
-        >
+      renderCancel={cancelProps => (
+        <Button {...cancelProps} type="button" onClick={onClose} disabled={submitInProgress}>
           Cancel
         </Button>
       )}

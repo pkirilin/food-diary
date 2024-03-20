@@ -47,14 +47,14 @@ const ModalDialog: FC<Props> = ({
         },
       })}
     >
-      {renderCancel(() => ({
+      {renderCancel({
         color: 'primary',
         variant: 'text',
-      }))}
-      {renderSubmit(() => ({
+      })}
+      {renderSubmit({
         color: 'primary',
         variant: 'text',
-      }))}
+      })}
     </MuiDialogActions>
   </MuiDialog>
 );

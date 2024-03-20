@@ -6,11 +6,19 @@ import {
 } from '@mui/material';
 import { type FC } from 'react';
 
-interface Props extends MuiButtonProps {
+export interface ButtonProps extends MuiButtonProps {
   loading?: boolean;
+  hiddenWhenDisabled?: boolean;
 }
 
-export const Button: FC<Props> = ({ children, loading, disabled, color, ...props }) => (
+export const Button: FC<ButtonProps> = ({
+  children,
+  loading,
+  disabled,
+  hiddenWhenDisabled,
+  color,
+  ...props
+}) => (
   <MuiButton
     {...props}
     disabled={!!disabled || loading}
@@ -18,6 +26,7 @@ export const Button: FC<Props> = ({ children, loading, disabled, color, ...props
     sx={{
       '&.Mui-disabled': {
         color: loading ? 'inherit' : color,
+        display: disabled && hiddenWhenDisabled ? 'none' : 'block',
       },
     }}
   >
