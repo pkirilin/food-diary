@@ -1,7 +1,6 @@
 import { TextField } from '@mui/material';
 import { type FC, useEffect, type FormEventHandler } from 'react';
-import { Button } from '@/shared/ui';
-import { AppDialog } from 'src/components';
+import { Button, Dialog } from '@/shared/ui';
 import { ProductSelect, type ProductSelectOption } from 'src/features/products';
 import { useInput } from 'src/hooks';
 import { mapToNumericInputProps, mapToSelectProps } from 'src/utils/inputMapping';
@@ -86,13 +85,15 @@ export const NoteInputDialog: FC<Props> = ({
     }
   };
 
-  const isAnyValueInvalid = productInput.isInvalid || quantityInput.isInvalid;
-  const isAnyValueChanged = productInput.isTouched || quantityInput.isTouched;
+  const anyValueInvalid = productInput.isInvalid || quantityInput.isInvalid;
+  const anyValueChanged = productInput.isTouched || quantityInput.isTouched;
+  const submitDisabled = anyValueInvalid || !anyValueChanged;
 
   return (
-    <AppDialog
+    <Dialog
       title={title}
-      isOpened={isOpened}
+      opened={isOpened}
+      onClose={onClose}
       content={
         <form id="note-input-form" onSubmit={handleSubmit}>
           <TextField
@@ -101,6 +102,7 @@ export const NoteInputDialog: FC<Props> = ({
             margin="normal"
             fullWidth
             inputProps={{ readOnly: true }}
+            helperText=" "
           />
           <ProductSelect
             {...productInput.inputProps}
@@ -120,30 +122,23 @@ export const NoteInputDialog: FC<Props> = ({
           />
         </form>
       }
-      actionSubmit={
+      renderSubmit={({ mobile, ...submitProps }) => (
         <Button
+          {...submitProps}
           type="submit"
           form="note-input-form"
-          variant="text"
-          color="primary"
-          disabled={isAnyValueInvalid || !isAnyValueChanged}
+          disabled={submitDisabled}
           loading={submitInProgress}
+          sx={{ display: mobile && submitDisabled ? 'none' : 'block' }}
         >
           {submitText}
         </Button>
-      }
-      actionCancel={
-        <Button
-          type="button"
-          variant="text"
-          color="inherit"
-          onClick={onClose}
-          disabled={submitInProgress}
-        >
+      )}
+      renderCancel={cancelProps => (
+        <Button {...cancelProps} type="button" onClick={onClose} disabled={submitInProgress}>
           Cancel
         </Button>
-      }
-      onClose={onClose}
+      )}
     />
   );
 };
