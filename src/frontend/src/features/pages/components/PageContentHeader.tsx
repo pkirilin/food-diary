@@ -62,7 +62,13 @@ const PageContentHeader: FC<Props> = ({ page }) => {
             {formatDate(new Date(page.date))}
           </Typography>
         </Breadcrumbs>
-        <Typography color="GrayText" fontWeight={700}>{`${totalCalories} kcal`}</Typography>
+        <Typography
+          variant="body1"
+          sx={theme => ({
+            fontWeight: theme.typography.fontWeightBold,
+            color: theme.palette.text.secondary,
+          })}
+        >{`${totalCalories} kcal`}</Typography>
       </Stack>
     </Box>
   );

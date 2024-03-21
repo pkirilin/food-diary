@@ -1,5 +1,14 @@
 import DeleteIcon from '@mui/icons-material/Delete';
-import { ListItem, IconButton, ListItemButton, ListItemText, Tooltip, Grid } from '@mui/material';
+import {
+  ListItem,
+  IconButton,
+  ListItemButton,
+  ListItemText,
+  Tooltip,
+  Grid,
+  Typography,
+  styled,
+} from '@mui/material';
 import { type FC } from 'react';
 import { type NoteItem } from '../models';
 import { DeleteNote } from './DeleteNote';
@@ -10,18 +19,20 @@ interface Props {
   pageId: number;
 }
 
+const NotesListItemTextSecondary = styled(Typography)(({ theme }) => ({
+  ...theme.typography.body2,
+  color: theme.palette.text.secondary,
+  fontWeight: theme.typography.fontWeightMedium,
+}));
+
 export const NotesListItem: FC<Props> = ({ note, pageId }) => (
-  <Grid
+  <ListItem
     key={note.id}
-    item
-    xs={12}
-    md={6}
-    component={ListItem}
     disablePadding
     secondaryAction={
       <DeleteNote note={note} pageId={pageId}>
         {toggleDeleteDialog => (
-          <Tooltip title="Delete note">
+          <Tooltip title="Delete note" placement="left">
             <IconButton edge="end" onClick={toggleDeleteDialog}>
               <DeleteIcon />
             </IconButton>
@@ -33,12 +44,33 @@ export const NotesListItem: FC<Props> = ({ note, pageId }) => (
     <EditNote note={note} pageId={pageId}>
       {toggleEditDialog => (
         <ListItemButton onClick={toggleEditDialog}>
-          <ListItemText
-            primary={note.productName}
-            secondary={`${note.productQuantity} g, ${note.calories} kcal`}
+          <Grid
+            container
+            columnSpacing={2}
+            component={ListItemText}
+            disableTypography
+            primary={
+              <Grid item xs={12} md={8}>
+                {note.productName}
+              </Grid>
+            }
+            secondary={
+              <Grid item xs={12} md={4}>
+                <Grid container columnSpacing={2}>
+                  <Grid item md={6}>
+                    <NotesListItemTextSecondary>
+                      {note.productQuantity} g
+                    </NotesListItemTextSecondary>
+                  </Grid>
+                  <Grid item md={6}>
+                    <NotesListItemTextSecondary>{note.calories} kcal</NotesListItemTextSecondary>
+                  </Grid>
+                </Grid>
+              </Grid>
+            }
           />
         </ListItemButton>
       )}
     </EditNote>
-  </Grid>
+  </ListItem>
 );
