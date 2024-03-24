@@ -8,6 +8,7 @@ import {
   Grid,
   Typography,
   styled,
+  type TypographyProps,
 } from '@mui/material';
 import { type FC } from 'react';
 import { type NoteItem } from '../models';
@@ -19,7 +20,7 @@ interface Props {
   pageId: number;
 }
 
-const SecondaryTextStyled = styled(Typography)(({ theme }) => ({
+const SecondaryTextStyled = styled(Typography)<TypographyProps>(({ theme }) => ({
   ...theme.typography.body2,
   color: theme.palette.text.secondary,
   fontWeight: theme.typography.fontWeightMedium,
@@ -57,12 +58,15 @@ export const NotesListItem: FC<Props> = ({ note, pageId }) => (
             secondary={
               <Grid item xs={12} md={4}>
                 <Grid container columnSpacing={{ xs: 1, md: 2 }}>
-                  <Grid item md={6}>
-                    <SecondaryTextStyled>{note.productQuantity} g</SecondaryTextStyled>
+                  <Grid item md={4}>
+                    <SecondaryTextStyled align="right">
+                      {note.productQuantity} g
+                    </SecondaryTextStyled>
                   </Grid>
-                  <Grid item md={6}>
-                    <SecondaryTextStyled>{note.calories} kcal</SecondaryTextStyled>
+                  <Grid item md={4}>
+                    <SecondaryTextStyled align="right">{note.calories} kcal</SecondaryTextStyled>
                   </Grid>
+                  <Grid item md={4} />
                 </Grid>
               </Grid>
             }
