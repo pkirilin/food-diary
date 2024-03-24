@@ -11,6 +11,9 @@ interface AppDialogProps {
   actionCancel?: ReactElement;
 }
 
+/**
+ * @deprecated Use shared/ui/Dialog instead
+ */
 const AppDialog: FC<AppDialogProps> = ({
   title,
   isOpened,

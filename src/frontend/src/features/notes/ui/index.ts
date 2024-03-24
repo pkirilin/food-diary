@@ -1,2 +1,4 @@
 export * from './MealsList';
-export * from './NotesTable';
+export * from './NotesList';
+export * from './EditNote';
+export * from './NoteInputDialog';

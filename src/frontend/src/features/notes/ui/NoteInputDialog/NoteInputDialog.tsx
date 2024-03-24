@@ -1,7 +1,6 @@
 import { TextField } from '@mui/material';
 import { type FC, useEffect, type FormEventHandler } from 'react';
-import { Button } from '@/shared/ui';
-import { AppDialog } from 'src/components';
+import { Button, Dialog } from '@/shared/ui';
 import { ProductSelect, type ProductSelectOption } from 'src/features/products';
 import { useInput } from 'src/hooks';
 import { mapToNumericInputProps, mapToSelectProps } from 'src/utils/inputMapping';
@@ -24,7 +23,7 @@ interface Props {
   onSubmit: (note: NoteCreateEdit) => void;
 }
 
-const NoteInputDialog: FC<Props> = ({
+export const NoteInputDialog: FC<Props> = ({
   title,
   submitText,
   isOpened,
@@ -86,13 +85,16 @@ const NoteInputDialog: FC<Props> = ({
     }
   };
 
-  const isAnyValueInvalid = productInput.isInvalid || quantityInput.isInvalid;
-  const isAnyValueChanged = productInput.isTouched || quantityInput.isTouched;
+  const anyValueInvalid = productInput.isInvalid || quantityInput.isInvalid;
+  const anyValueChanged = productInput.isTouched || quantityInput.isTouched;
+  const submitDisabled = anyValueInvalid || !anyValueChanged;
 
   return (
-    <AppDialog
+    <Dialog
       title={title}
-      isOpened={isOpened}
+      opened={isOpened}
+      onClose={onClose}
+      renderMode="fullScreenOnMobile"
       content={
         <form id="note-input-form" onSubmit={handleSubmit}>
           <TextField
@@ -101,6 +103,7 @@ const NoteInputDialog: FC<Props> = ({
             margin="normal"
             fullWidth
             inputProps={{ readOnly: true }}
+            helperText=" "
           />
           <ProductSelect
             {...productInput.inputProps}
@@ -120,32 +123,22 @@ const NoteInputDialog: FC<Props> = ({
           />
         </form>
       }
-      actionSubmit={
+      renderSubmit={submitProps => (
         <Button
+          {...submitProps}
           type="submit"
           form="note-input-form"
-          variant="text"
-          color="primary"
-          disabled={isAnyValueInvalid || !isAnyValueChanged}
+          disabled={submitDisabled}
           loading={submitInProgress}
         >
           {submitText}
         </Button>
-      }
-      actionCancel={
-        <Button
-          type="button"
-          variant="text"
-          color="inherit"
-          onClick={onClose}
-          disabled={submitInProgress}
-        >
+      )}
+      renderCancel={cancelProps => (
+        <Button {...cancelProps} type="button" onClick={onClose} disabled={submitInProgress}>
           Cancel
         </Button>
-      }
-      onClose={onClose}
+      )}
     />
   );
 };
-
-export default NoteInputDialog;

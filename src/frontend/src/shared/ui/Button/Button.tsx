@@ -6,12 +6,30 @@ import {
 } from '@mui/material';
 import { type FC } from 'react';
 
-interface Props extends MuiButtonProps {
+export interface ButtonProps extends MuiButtonProps {
   loading?: boolean;
+  hiddenWhenDisabled?: boolean;
 }
 
-export const Button: FC<Props> = ({ children, loading, disabled, color, ...props }) => (
-  <MuiButton {...props} disabled={!!disabled || loading} color={color}>
+export const Button: FC<ButtonProps> = ({
+  children,
+  loading,
+  disabled,
+  hiddenWhenDisabled,
+  color,
+  ...props
+}) => (
+  <MuiButton
+    {...props}
+    disabled={!!disabled || loading}
+    color={color}
+    sx={{
+      '&.Mui-disabled': {
+        color: loading ? 'inherit' : color,
+        display: disabled && hiddenWhenDisabled ? 'none' : 'block',
+      },
+    }}
+  >
     {loading && <CircularProgress size={16} color={color} sx={{ position: 'absolute' }} />}
     <Box visibility={loading ? 'hidden' : 'visible'}>{children}</Box>
   </MuiButton>

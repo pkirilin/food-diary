@@ -6,9 +6,10 @@ import { useNavigationProgress } from '../lib';
 
 interface Props extends PropsWithChildren {
   header?: ReactElement;
+  withAdditionalNavigation?: boolean;
 }
 
-export const PrivateLayout: FC<Props> = ({ children, header }) => {
+export const PrivateLayout: FC<Props> = ({ children, header, withAdditionalNavigation }) => {
   const navigationProgressVisible = useNavigationProgress();
 
   useAuthStatusCheckEffect();
@@ -16,6 +17,7 @@ export const PrivateLayout: FC<Props> = ({ children, header }) => {
   return (
     <AppShell
       withNavigationProgress={navigationProgressVisible}
+      withAdditionalNavigation={withAdditionalNavigation}
       header={
         <>
           <NavigationBar />

@@ -1,8 +1,7 @@
 import { type FC } from 'react';
 import { useLoaderData } from 'react-router-dom';
-import { notesApi, MealsList, NotesTable, useNotes } from '@/features/notes';
-import { pagesApi } from '@/features/pages';
-import PageContentHeader from '@/features/pages/components/PageContentHeader';
+import { notesApi, useNotes, MealsList } from '@/features/notes';
+import { pagesApi, PageDetailHeader } from '@/features/pages';
 import store from '@/store';
 import { PrivateLayout } from '@/widgets/layout';
 import { withAuthStatusCheck } from '../lib';
@@ -31,21 +30,12 @@ export const Component: FC = () => {
 
   return (
     <PrivateLayout
+      withAdditionalNavigation
       header={
-        getPageByIdQuery.data && <PageContentHeader page={getPageByIdQuery.data.currentPage} />
+        getPageByIdQuery.data && <PageDetailHeader page={getPageByIdQuery.data.currentPage} />
       }
     >
-      <MealsList
-        notes={notes.data}
-        renderItem={(notesGroup, mealType) => (
-          <NotesTable
-            mealType={mealType}
-            notes={notesGroup}
-            notesChanged={notes.isChanged}
-            notesFetching={notes.isFetching}
-          />
-        )}
-      />
+      <MealsList pageId={pageId} notes={notes.data} />
     </PrivateLayout>
   );
 };

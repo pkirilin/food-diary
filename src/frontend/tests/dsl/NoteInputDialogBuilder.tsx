@@ -1,8 +1,9 @@
 import { WithTriggerButton } from 'tests/sideEffects';
+import { ThemeProvider } from '@mui/material';
 import { type ReactElement } from 'react';
 import { type Mock } from 'vitest';
-import NoteInputDialog from '@/features/notes/ui/NoteInputDialog';
-import { MealType } from 'src/features/notes';
+import { MealType, NoteInputDialog } from '@/features/notes';
+import theme from '@/theme';
 import { type ProductSelectOption } from 'src/features/products';
 
 export class NoteInputDialogBuilder {
@@ -15,25 +16,27 @@ export class NoteInputDialogBuilder {
 
   please(): ReactElement {
     return (
-      <WithTriggerButton label={this._triggerButtonLabel}>
-        {({ active, onTriggerClick }) => (
-          <NoteInputDialog
-            title="Test"
-            submitText="Submit"
-            isOpened={this._openAndCloseOnButtonClick ? active : true}
-            mealType={MealType.Breakfast}
-            pageId={1}
-            product={this.getSelectedProduct()}
-            products={this._products}
-            productsLoading={false}
-            quantity={this._quantity}
-            displayOrder={1}
-            submitInProgress={false}
-            onClose={this._openAndCloseOnButtonClick ? onTriggerClick : vi.fn()}
-            onSubmit={this._onSubmitMock}
-          />
-        )}
-      </WithTriggerButton>
+      <ThemeProvider theme={theme}>
+        <WithTriggerButton label={this._triggerButtonLabel}>
+          {({ active, onTriggerClick }) => (
+            <NoteInputDialog
+              title="Test"
+              submitText="Submit"
+              isOpened={this._openAndCloseOnButtonClick ? active : true}
+              mealType={MealType.Breakfast}
+              pageId={1}
+              product={this.getSelectedProduct()}
+              products={this._products}
+              productsLoading={false}
+              quantity={this._quantity}
+              displayOrder={1}
+              submitInProgress={false}
+              onClose={this._openAndCloseOnButtonClick ? onTriggerClick : vi.fn()}
+              onSubmit={this._onSubmitMock}
+            />
+          )}
+        </WithTriggerButton>
+      </ThemeProvider>
     );
   }
 
