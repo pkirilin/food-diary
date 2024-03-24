@@ -1,8 +1,7 @@
 import { type FC } from 'react';
 import { useLoaderData } from 'react-router-dom';
 import { notesApi, useNotes, MealsList } from '@/features/notes';
-import { pagesApi } from '@/features/pages';
-import PageContentHeader from '@/features/pages/components/PageContentHeader';
+import { pagesApi, PageDetailHeader } from '@/features/pages';
 import store from '@/store';
 import { PrivateLayout } from '@/widgets/layout';
 import { withAuthStatusCheck } from '../lib';
@@ -31,8 +30,9 @@ export const Component: FC = () => {
 
   return (
     <PrivateLayout
+      withAdditionalNavigation
       header={
-        getPageByIdQuery.data && <PageContentHeader page={getPageByIdQuery.data.currentPage} />
+        getPageByIdQuery.data && <PageDetailHeader page={getPageByIdQuery.data.currentPage} />
       }
     >
       <MealsList pageId={pageId} notes={notes.data} />
