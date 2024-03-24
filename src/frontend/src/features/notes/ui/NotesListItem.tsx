@@ -19,7 +19,7 @@ interface Props {
   pageId: number;
 }
 
-const NotesListItemTextSecondary = styled(Typography)(({ theme }) => ({
+const SecondaryTextStyled = styled(Typography)(({ theme }) => ({
   ...theme.typography.body2,
   color: theme.palette.text.secondary,
   fontWeight: theme.typography.fontWeightMedium,
@@ -56,14 +56,12 @@ export const NotesListItem: FC<Props> = ({ note, pageId }) => (
             }
             secondary={
               <Grid item xs={12} md={4}>
-                <Grid container columnSpacing={2}>
+                <Grid container columnSpacing={{ xs: 1, md: 2 }}>
                   <Grid item md={6}>
-                    <NotesListItemTextSecondary>
-                      {note.productQuantity} g
-                    </NotesListItemTextSecondary>
+                    <SecondaryTextStyled>{note.productQuantity} g</SecondaryTextStyled>
                   </Grid>
                   <Grid item md={6}>
-                    <NotesListItemTextSecondary>{note.calories} kcal</NotesListItemTextSecondary>
+                    <SecondaryTextStyled>{note.calories} kcal</SecondaryTextStyled>
                   </Grid>
                 </Grid>
               </Grid>

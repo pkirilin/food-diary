@@ -8,6 +8,8 @@ import {
   Toolbar,
   Tooltip,
   Typography,
+  type TypographyProps,
+  styled,
   useScrollTrigger,
 } from '@mui/material';
 import { useMemo, type FC } from 'react';
@@ -22,6 +24,12 @@ interface Props {
   page: Page;
 }
 
+const TextStyled = styled(Typography)<TypographyProps>(({ theme }) => ({
+  ...theme.typography.body1,
+  fontWeight: theme.typography.fontWeightBold,
+  color: theme.palette.text.secondary,
+}));
+
 export const PageDetailHeader: FC<Props> = ({ page }) => {
   const getNotesQuery = notesApi.useGetNotesQuery({ pageId: page.id });
   const notes = useMemo(() => getNotesQuery.data ?? [], [getNotesQuery.data]);
@@ -35,19 +43,15 @@ export const PageDetailHeader: FC<Props> = ({ page }) => {
   return (
     <AppBar color="inherit" position="static" elevation={pageScrolled ? 1 : 0} component="nav">
       <Container>
-        <Toolbar disableGutters component={Box} display="flex" alignItems="baseline" gap={2}>
+        <Toolbar disableGutters component={Box} display="flex" alignItems="center" gap={2}>
           <Tooltip title="Back to pages list">
             <IconButton edge="start" component={RouterLink} to="/pages">
               <ArrowBackIcon />
             </IconButton>
           </Tooltip>
           <Stack direction="row" spacing={2} justifyContent="space-between" width="100%">
-            <Typography variant="body1" component="h1" fontWeight="bold">
-              {formatDate(new Date(page.date))}
-            </Typography>
-            <Typography variant="body1" component="span" fontWeight="bold">
-              {totalCalories} kcal
-            </Typography>
+            <TextStyled component="h1">{formatDate(new Date(page.date))}</TextStyled>
+            <TextStyled component="span">{totalCalories} kcal</TextStyled>
           </Stack>
         </Toolbar>
       </Container>
