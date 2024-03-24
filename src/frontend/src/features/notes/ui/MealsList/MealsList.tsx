@@ -1,6 +1,6 @@
 import { List, Stack } from '@mui/material';
 import { type FC, useMemo, type PropsWithChildren } from 'react';
-import { type NoteItem, getMealTypes, groupNotesByMealType } from '../models';
+import { type NoteItem, getMealTypes, groupNotesByMealType } from '../../models';
 import { MealsListItem } from './MealsListItem';
 
 interface Props extends PropsWithChildren {

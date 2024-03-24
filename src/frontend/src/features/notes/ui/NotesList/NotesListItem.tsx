@@ -11,9 +11,9 @@ import {
   type TypographyProps,
 } from '@mui/material';
 import { type FC } from 'react';
-import { type NoteItem } from '../models';
-import { DeleteNote } from './DeleteNote';
-import { EditNote } from './EditNote';
+import { type NoteItem } from '../../models';
+import { DeleteNote } from '../DeleteNote';
+import { EditNote } from '../EditNote';
 
 interface Props {
   note: NoteItem;

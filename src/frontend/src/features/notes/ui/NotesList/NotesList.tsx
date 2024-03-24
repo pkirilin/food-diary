@@ -1,7 +1,7 @@
 import { List, ListItem } from '@mui/material';
 import { useMemo, type FC } from 'react';
-import { type MealType, type NoteItem } from '../models';
-import { AddNote } from './AddNote';
+import { type MealType, type NoteItem } from '../../models';
+import { AddNote } from '../AddNote';
 import { NotesListItem } from './NotesListItem';
 
 interface Props {
