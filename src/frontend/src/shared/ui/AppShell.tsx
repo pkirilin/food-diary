@@ -1,6 +1,5 @@
-import { Box, Container, LinearProgress } from '@mui/material';
+import { AppBar, Container, LinearProgress } from '@mui/material';
 import { type PropsWithChildren, type FC, type ReactElement } from 'react';
-import { APP_BAR_HEIGHT } from '../constants';
 
 interface Props extends PropsWithChildren {
   withNavigationProgress: boolean;
@@ -16,15 +15,15 @@ export const AppShell: FC<Props> = ({
 }) => (
   <>
     {header && (
-      <Box component="header" position="sticky" top={0} zIndex={theme => theme.zIndex.appBar}>
-        {header}
-      </Box>
+      <AppBar position="sticky">
+        <Container>{header}</Container>
+      </AppBar>
     )}
     {withNavigationProgress && (
       <LinearProgress
         sx={{
           position: 'absolute',
-          top: header ? APP_BAR_HEIGHT : 0,
+          top: 0,
           width: '100%',
         }}
       />
