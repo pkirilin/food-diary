@@ -30,8 +30,7 @@ export const Component: FC = () => {
 
   return (
     <PrivateLayout
-      withAdditionalNavigation
-      header={
+      subheader={
         getPageByIdQuery.data && <PageDetailHeader page={getPageByIdQuery.data.currentPage} />
       }
     >

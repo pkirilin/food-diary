@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 import { type FC, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { APP_BAR_HEIGHT } from '@/shared/constants';
+import { APP_BAR_HEIGHT_SM } from '@/shared/constants';
 import { APP_NAME, NAV_LINKS } from '../lib';
 
 export const MobileMenu: FC = () => {
@@ -51,7 +51,12 @@ export const MobileMenu: FC = () => {
           <IconButton size="large" aria-label="Close menu" onClick={handleMenuToggle}>
             <CloseIcon />
           </IconButton>
-          <Box display="flex" justifyContent="center" alignItems="center" height={APP_BAR_HEIGHT}>
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            height={APP_BAR_HEIGHT_SM}
+          >
             <Typography
               sx={theme => ({
                 fontSize: theme.typography.h1.fontSize,

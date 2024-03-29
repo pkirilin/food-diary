@@ -1,41 +1,79 @@
 import { AppBar, Box, Container, LinearProgress, Toolbar } from '@mui/material';
 import { type PropsWithChildren, type FC, type ReactElement } from 'react';
-import { APP_BAR_HEIGHT, SIDEBAR_DRAWER_WIDTH } from '../constants';
+import { APP_BAR_HEIGHT_SM, APP_BAR_HEIGHT_XS, SIDEBAR_DRAWER_WIDTH } from '../constants';
 
 interface Props extends PropsWithChildren {
   withNavigationProgress: boolean;
-  withAdditionalNavigation?: boolean;
   withSidebar?: boolean;
   header?: ReactElement;
+  subheader?: ReactElement;
+  subheaderElevation?: number;
 }
 
 export const AppShell: FC<Props> = ({
   children,
   withNavigationProgress,
-  withAdditionalNavigation,
   withSidebar,
   header,
+  subheader,
+  subheaderElevation,
 }) => (
   <>
     {header && (
-      <AppBar variant="outlined">
+      <AppBar>
         <Box component={Toolbar} disableGutters px={{ xs: 1, sm: 2, md: 1 }}>
           {header}
         </Box>
+      </AppBar>
+    )}
+    {subheader && (
+      <AppBar
+        position="sticky"
+        elevation={subheaderElevation}
+        component={Box}
+        color="inherit"
+        ml={{
+          xs: 0,
+          md: withSidebar ? `${SIDEBAR_DRAWER_WIDTH}px` : 0,
+        }}
+        width={{
+          xs: '100%',
+          md: withSidebar ? `calc(100% - ${SIDEBAR_DRAWER_WIDTH}px)` : '100%',
+        }}
+        sx={{
+          top: {
+            xs: APP_BAR_HEIGHT_XS,
+            sm: APP_BAR_HEIGHT_SM,
+          },
+        }}
+      >
+        <Container disableGutters>
+          <Box
+            component={Toolbar}
+            disableGutters
+            pl={{ xs: 1, sm: 2, md: 1 }}
+            pr={{ xs: 2, sm: 3 }}
+          >
+            {subheader}
+          </Box>
+        </Container>
       </AppBar>
     )}
     {withNavigationProgress && (
       <LinearProgress
         sx={{
           position: 'absolute',
-          top: APP_BAR_HEIGHT,
+          top: {
+            xs: APP_BAR_HEIGHT_XS,
+            sm: APP_BAR_HEIGHT_SM,
+          },
           width: '100%',
         }}
       />
     )}
     <Box
       component="main"
-      pt={withAdditionalNavigation ? 0 : 3}
+      pt={subheader ? 0 : 3}
       pb={3}
       ml={{
         xs: 0,

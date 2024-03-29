@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import { type FC } from 'react';
 import { Form } from 'react-router-dom';
-import { APP_BAR_HEIGHT, SIDEBAR_DRAWER_WIDTH } from '@/shared/constants';
+import { APP_BAR_HEIGHT_SM, SIDEBAR_DRAWER_WIDTH } from '@/shared/constants';
 import { APP_NAME } from '../lib';
 import { MenuList } from './MenuList';
 
@@ -59,18 +59,13 @@ export const NavigationBar: FC<Props> = ({ menuOpened, toggleMenu }) => {
         ModalProps={{ keepMounted: isMobile }}
         PaperProps={{
           sx: {
-            marginTop: { xs: 0, md: `${APP_BAR_HEIGHT}px` },
+            marginTop: { xs: 0, md: `${APP_BAR_HEIGHT_SM}px` },
             width: { xs: '75%', md: `${SIDEBAR_DRAWER_WIDTH}px` },
           },
           component: 'nav',
         }}
       >
-        <Box
-          component={AppBar}
-          variant="outlined"
-          position="static"
-          display={{ xs: 'block', md: 'none' }}
-        >
+        <Box component={AppBar} position="static" display={{ xs: 'block', md: 'none' }}>
           <Box px={1} component={Toolbar} disableGutters>
             <Box display="flex" gap={3} alignItems="center">
               <IconButton color="inherit" aria-label="Close menu" onClick={toggleMenu}>
