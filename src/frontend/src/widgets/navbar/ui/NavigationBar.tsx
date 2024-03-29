@@ -47,16 +47,16 @@ export const NavigationBar: FC = () => {
         }}
       >
         <AppBar position="static">
-          <Toolbar>
-            <Box display="flex" gap={1} alignItems="center">
-              <IconButton edge="start" color="inherit" aria-label="Close menu" onClick={toggleMenu}>
+          <Box p={1} component={Toolbar} disableGutters>
+            <Box display="flex" gap={3} alignItems="center">
+              <IconButton color="inherit" aria-label="Close menu" onClick={toggleMenu}>
                 <CloseIcon />
               </IconButton>
               <Typography variant="h6" component="div">
                 {APP_NAME}
               </Typography>
             </Box>
-          </Toolbar>
+          </Box>
         </AppBar>
         <MenuList />
       </Drawer>

@@ -1,4 +1,5 @@
-import { ListItem, ListItemButton, ListItemText } from '@mui/material';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import { Box, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 import { type FC } from 'react';
 import { Link as RouterLink, useMatch } from 'react-router-dom';
 
@@ -12,7 +13,7 @@ export const MenuListItem: FC<Props> = ({ title, path }) => {
   const active = !!match;
 
   return (
-    <ListItem disablePadding divider>
+    <ListItem disablePadding>
       <ListItemButton
         component={RouterLink}
         to={active ? '' : path}
@@ -25,6 +26,9 @@ export const MenuListItem: FC<Props> = ({ title, path }) => {
           },
         })}
       >
+        <Box component={ListItemIcon}>
+          <CalendarMonthIcon />
+        </Box>
         <ListItemText primary={title} />
       </ListItemButton>
     </ListItem>
