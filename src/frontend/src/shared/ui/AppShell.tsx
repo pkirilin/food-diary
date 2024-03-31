@@ -2,10 +2,15 @@ import { AppBar, Box, Container, LinearProgress, Toolbar } from '@mui/material';
 import { type PropsWithChildren, type FC, type ReactElement } from 'react';
 import { APP_BAR_HEIGHT_SM, APP_BAR_HEIGHT_XS, SIDEBAR_DRAWER_WIDTH } from '../constants';
 
+interface HeaderProps {
+  navigationBar: ReactElement;
+  navigationDrawer: ReactElement;
+}
+
 interface Props extends PropsWithChildren {
   withNavigationProgress: boolean;
   withSidebar?: boolean;
-  header?: ReactElement;
+  header?: HeaderProps;
   subheader?: ReactElement;
   subheaderElevation?: number;
 }
@@ -20,11 +25,14 @@ export const AppShell: FC<Props> = ({
 }) => (
   <>
     {header && (
-      <AppBar>
-        <Box component={Toolbar} disableGutters px={{ xs: 1, sm: 2, md: 1 }}>
-          {header}
+      <>
+        <Box component={AppBar} zIndex={theme => theme.zIndex.drawer + 1}>
+          <Box component={Toolbar} disableGutters px={{ xs: 1, sm: 2, md: 1 }}>
+            {header.navigationBar}
+          </Box>
         </Box>
-      </AppBar>
+        {header.navigationDrawer}
+      </>
     )}
     {subheader && (
       <AppBar

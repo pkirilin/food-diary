@@ -26,7 +26,7 @@ const NAV_LINKS: NavLink[] = [
 ];
 
 export const MenuList: FC = () => (
-  <Box component={List} disablePadding>
+  <Box component={List}>
     {NAV_LINKS.map((navLink, index) => (
       <MenuListItem key={`${index}-${navLink.title}`} navLink={navLink} />
     ))}

@@ -4,7 +4,7 @@ import { useAuthStatusCheckEffect } from '@/features/auth';
 import { APP_BAR_HEIGHT_SM, APP_BAR_HEIGHT_XS } from '@/shared/constants';
 import { useToggle } from '@/shared/hooks';
 import { AppShell } from '@/shared/ui';
-import { NavigationBar } from '@/widgets/navbar';
+import { NavigationBar, NavigationDrawer } from '@/widgets/navbar';
 import { useNavigationProgress } from '../lib';
 
 interface Props extends PropsWithChildren {
@@ -28,7 +28,10 @@ export const PrivateLayout: FC<Props> = ({ children, subheader }) => {
     <AppShell
       withNavigationProgress={navigationProgressVisible}
       withSidebar={menuOpened}
-      header={<NavigationBar menuOpened={menuOpened} toggleMenu={toggleMenu} />}
+      header={{
+        navigationBar: <NavigationBar menuOpened={menuOpened} toggleMenu={toggleMenu} />,
+        navigationDrawer: <NavigationDrawer menuOpened={menuOpened} toggleMenu={toggleMenu} />,
+      }}
       subheader={subheader}
       subheaderElevation={pageScrolled ? 1 : 0}
     >
