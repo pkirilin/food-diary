@@ -1,7 +1,11 @@
-import { Box, Container, Toolbar } from '@mui/material';
+import { Container, Toolbar } from '@mui/material';
 import { type PropsWithChildren, type FC, type ReactElement } from 'react';
-import { SIDEBAR_DRAWER_WIDTH } from '../../constants';
-import { HeaderStyled, NavigationProgressStyled, SubheaderStyled } from './AppShell.styles';
+import {
+  HeaderStyled,
+  MainStyled,
+  NavigationProgressStyled,
+  SubheaderStyled,
+} from './AppShell.styles';
 
 interface HeaderProps {
   navigationBar: ReactElement;
@@ -19,7 +23,7 @@ interface Props extends PropsWithChildren {
 export const AppShell: FC<Props> = ({
   children,
   withNavigationProgress,
-  withSidebar,
+  withSidebar = false,
   header,
   subheader,
   subheaderElevation,
@@ -33,20 +37,8 @@ export const AppShell: FC<Props> = ({
         {header.navigationDrawer}
       </>
     )}
-    {withNavigationProgress && <NavigationProgressStyled withSidebar={withSidebar} />}
-    <Box
-      component="main"
-      pt={subheader ? 0 : 3}
-      pb={3}
-      ml={{
-        xs: 0,
-        md: withSidebar ? `${SIDEBAR_DRAWER_WIDTH}px` : 0,
-      }}
-      width={{
-        xs: '100%',
-        md: withSidebar ? `calc(100% - ${SIDEBAR_DRAWER_WIDTH}px)` : '100%',
-      }}
-    >
+    {withNavigationProgress && <NavigationProgressStyled $withSidebar={withSidebar} />}
+    <MainStyled $withSidebar={withSidebar} $withSubheader={!!subheader}>
       {header && <Toolbar />}
       {subheader && (
         <SubheaderStyled position="sticky" color="inherit" elevation={subheaderElevation}>
@@ -56,6 +48,6 @@ export const AppShell: FC<Props> = ({
         </SubheaderStyled>
       )}
       <Container>{children}</Container>
-    </Box>
+    </MainStyled>
   </>
 );
