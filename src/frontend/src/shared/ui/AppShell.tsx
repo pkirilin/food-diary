@@ -32,32 +32,6 @@ export const AppShell: FC<Props> = ({
         {header.navigationDrawer}
       </>
     )}
-    {subheader && (
-      <AppBar
-        position="sticky"
-        elevation={subheaderElevation}
-        component={Box}
-        color="inherit"
-        ml={{
-          xs: 0,
-          md: withSidebar ? `${SIDEBAR_DRAWER_WIDTH}px` : 0,
-        }}
-        width={{
-          xs: '100%',
-          md: withSidebar ? `calc(100% - ${SIDEBAR_DRAWER_WIDTH}px)` : '100%',
-        }}
-        sx={{
-          top: {
-            xs: APP_BAR_HEIGHT_XS,
-            sm: APP_BAR_HEIGHT_SM,
-          },
-        }}
-      >
-        <Container disableGutters>
-          <Toolbar>{subheader}</Toolbar>
-        </Container>
-      </AppBar>
-    )}
     {withNavigationProgress && (
       <LinearProgress
         sx={{
@@ -84,6 +58,24 @@ export const AppShell: FC<Props> = ({
       }}
     >
       {header && <Toolbar />}
+      {subheader && (
+        <AppBar
+          position="sticky"
+          elevation={subheaderElevation}
+          component={Box}
+          color="inherit"
+          sx={{
+            top: {
+              xs: APP_BAR_HEIGHT_XS,
+              sm: APP_BAR_HEIGHT_SM,
+            },
+          }}
+        >
+          <Container disableGutters>
+            <Toolbar>{subheader}</Toolbar>
+          </Container>
+        </AppBar>
+      )}
       <Container>{children}</Container>
     </Box>
   </>
