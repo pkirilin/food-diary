@@ -1,6 +1,7 @@
-import { AppBar, Box, Container, LinearProgress, Toolbar } from '@mui/material';
+import { AppBar, Box, Container, Toolbar } from '@mui/material';
 import { type PropsWithChildren, type FC, type ReactElement } from 'react';
-import { APP_BAR_HEIGHT_SM, APP_BAR_HEIGHT_XS, SIDEBAR_DRAWER_WIDTH } from '../constants';
+import { APP_BAR_HEIGHT_SM, APP_BAR_HEIGHT_XS, SIDEBAR_DRAWER_WIDTH } from '../../constants';
+import { NavigationProgressStyled } from './AppShell.styles';
 
 interface HeaderProps {
   navigationBar: ReactElement;
@@ -32,22 +33,7 @@ export const AppShell: FC<Props> = ({
         {header.navigationDrawer}
       </>
     )}
-    {withNavigationProgress && (
-      <LinearProgress
-        sx={theme => ({
-          position: 'absolute',
-          top: header
-            ? {
-                xs: APP_BAR_HEIGHT_XS,
-                sm: APP_BAR_HEIGHT_SM,
-              }
-            : 0,
-          left: withSidebar ? `${SIDEBAR_DRAWER_WIDTH}px` : 0,
-          width: withSidebar ? `calc(100% - ${SIDEBAR_DRAWER_WIDTH}px)` : '100%',
-          zIndex: theme.zIndex.drawer + 1,
-        })}
-      />
-    )}
+    {withNavigationProgress && <NavigationProgressStyled withSidebar={withSidebar} />}
     <Box
       component="main"
       pt={subheader ? 0 : 3}
