@@ -14,7 +14,7 @@ interface HeaderProps {
 
 interface Props extends PropsWithChildren {
   withNavigationProgress: boolean;
-  withSidebar?: boolean;
+  withSidebar: boolean;
   header?: HeaderProps;
   subheader?: ReactElement;
   subheaderElevation?: number;
@@ -23,7 +23,7 @@ interface Props extends PropsWithChildren {
 export const AppShell: FC<Props> = ({
   children,
   withNavigationProgress,
-  withSidebar = false,
+  withSidebar,
   header,
   subheader,
   subheaderElevation,

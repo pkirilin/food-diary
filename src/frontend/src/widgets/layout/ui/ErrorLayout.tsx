@@ -5,5 +5,9 @@ import { useNavigationProgress } from '../lib';
 export const ErrorLayout: FC<PropsWithChildren> = ({ children }) => {
   const navigationProgressVisible = useNavigationProgress();
 
-  return <AppShell withNavigationProgress={navigationProgressVisible}>{children}</AppShell>;
+  return (
+    <AppShell withNavigationProgress={navigationProgressVisible} withSidebar={false}>
+      {children}
+    </AppShell>
+  );
 };
