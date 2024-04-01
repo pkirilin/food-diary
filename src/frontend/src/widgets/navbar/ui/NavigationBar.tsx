@@ -4,7 +4,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { Box, IconButton, type Theme, Tooltip, Typography, useMediaQuery } from '@mui/material';
 import { type FC } from 'react';
 import { Form } from 'react-router-dom';
-import { APP_NAME } from '../lib';
+import { APP_NAME } from '@/shared/constants';
 
 interface Props {
   menuOpened: boolean;
