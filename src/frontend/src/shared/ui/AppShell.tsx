@@ -34,14 +34,18 @@ export const AppShell: FC<Props> = ({
     )}
     {withNavigationProgress && (
       <LinearProgress
-        sx={{
+        sx={theme => ({
           position: 'absolute',
-          top: {
-            xs: APP_BAR_HEIGHT_XS,
-            sm: APP_BAR_HEIGHT_SM,
-          },
-          width: '100%',
-        }}
+          top: header
+            ? {
+                xs: APP_BAR_HEIGHT_XS,
+                sm: APP_BAR_HEIGHT_SM,
+              }
+            : 0,
+          left: withSidebar ? `${SIDEBAR_DRAWER_WIDTH}px` : 0,
+          width: withSidebar ? `calc(100% - ${SIDEBAR_DRAWER_WIDTH}px)` : '100%',
+          zIndex: theme.zIndex.drawer + 1,
+        })}
       />
     )}
     <Box
