@@ -25,7 +25,9 @@ export const MenuListItem: FC<Props> = ({ navLink }) => {
           },
         })}
       >
-        <Box component={ListItemIcon}>{navLink.icon}</Box>
+        <Box component={ListItemIcon} ml={{ xs: '-3px', sm: '4px' }}>
+          {navLink.icon}
+        </Box>
         <ListItemText primary={navLink.title} />
       </ListItemButton>
     </ListItem>

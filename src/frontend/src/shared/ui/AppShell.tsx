@@ -27,9 +27,7 @@ export const AppShell: FC<Props> = ({
     {header && (
       <>
         <Box component={AppBar} zIndex={theme => theme.zIndex.drawer + 1}>
-          <Box component={Toolbar} disableGutters px={{ xs: 1, sm: 2, md: 1 }}>
-            {header.navigationBar}
-          </Box>
+          <Toolbar>{header.navigationBar}</Toolbar>
         </Box>
         {header.navigationDrawer}
       </>
@@ -56,14 +54,7 @@ export const AppShell: FC<Props> = ({
         }}
       >
         <Container disableGutters>
-          <Box
-            component={Toolbar}
-            disableGutters
-            pl={{ xs: 1, sm: 2, md: 1 }}
-            pr={{ xs: 2, sm: 3 }}
-          >
-            {subheader}
-          </Box>
+          <Toolbar>{subheader}</Toolbar>
         </Container>
       </AppBar>
     )}

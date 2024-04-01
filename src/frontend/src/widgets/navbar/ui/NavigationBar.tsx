@@ -23,9 +23,10 @@ export const NavigationBar: FC<Props> = ({ menuOpened, toggleMenu }) => {
       flex={1}
       width="100%"
     >
-      <Box display="flex" gap={{ xs: 1, md: 3 }} alignItems="center">
+      <Box display="flex" gap={3} alignItems="center">
         <IconButton
           color="inherit"
+          edge="start"
           aria-label={menuOpened ? 'Close menu' : 'Open menu'}
           onClick={toggleMenu}
         >
@@ -37,7 +38,7 @@ export const NavigationBar: FC<Props> = ({ menuOpened, toggleMenu }) => {
       </Box>
       <Box component={Form} method="post" action="/logout">
         <Tooltip title="Logout">
-          <IconButton type="submit" aria-label="Logout">
+          <IconButton type="submit" edge="end" aria-label="Logout">
             <LogoutIcon sx={theme => ({ fill: theme.palette.primary.contrastText })} />
           </IconButton>
         </Tooltip>

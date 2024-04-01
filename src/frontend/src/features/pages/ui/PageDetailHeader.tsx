@@ -31,7 +31,7 @@ export const PageDetailHeader: FC<Props> = ({ page }) => {
   return (
     <>
       <Tooltip title="Back to pages list">
-        <IconButton component={RouterLink} to="/pages" sx={{ marginRight: 1 }}>
+        <IconButton edge="start" component={RouterLink} to="/pages" sx={{ marginRight: 1 }}>
           <ArrowBackIcon />
         </IconButton>
       </Tooltip>
