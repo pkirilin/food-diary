@@ -4,7 +4,7 @@ import RestaurantIcon from '@mui/icons-material/Restaurant';
 import { List } from '@mui/material';
 import { Box } from '@mui/system';
 import { type FC } from 'react';
-import { MenuListItem } from './MenuListItem';
+import { NavigationMenuListItem } from './NavigationMenuListItem';
 import { type NavLink } from './types';
 
 const NAV_LINKS: NavLink[] = [
@@ -25,10 +25,10 @@ const NAV_LINKS: NavLink[] = [
   },
 ];
 
-export const MenuList: FC = () => (
+export const NavigationMenuList: FC = () => (
   <Box component={List}>
     {NAV_LINKS.map((navLink, index) => (
-      <MenuListItem key={`${index}-${navLink.title}`} navLink={navLink} />
+      <NavigationMenuListItem key={`${index}-${navLink.title}`} navLink={navLink} />
     ))}
   </Box>
 );

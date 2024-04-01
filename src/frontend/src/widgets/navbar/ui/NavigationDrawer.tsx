@@ -1,7 +1,7 @@
 import { type Theme, useMediaQuery, Box, Drawer, Toolbar } from '@mui/material';
 import { type FC } from 'react';
 import { APP_BAR_HEIGHT_SM, SIDEBAR_DRAWER_WIDTH } from '@/shared/constants';
-import { MenuList } from './MenuList';
+import { NavigationMenuList } from './NavigationMenuList';
 
 interface Props {
   menuOpened: boolean;
@@ -26,7 +26,7 @@ export const NavigationDrawer: FC<Props> = ({ menuOpened, toggleMenu }) => {
       }}
     >
       <Box component={Toolbar} display={{ xs: 'block', md: 'none' }} />
-      <MenuList />
+      <NavigationMenuList />
     </Drawer>
   );
 };

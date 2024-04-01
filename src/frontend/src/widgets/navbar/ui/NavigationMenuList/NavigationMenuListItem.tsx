@@ -7,7 +7,7 @@ interface Props {
   navLink: NavLink;
 }
 
-export const MenuListItem: FC<Props> = ({ navLink }) => {
+export const NavigationMenuListItem: FC<Props> = ({ navLink }) => {
   const match = useMatch(navLink.path);
   const active = !!match;
 
