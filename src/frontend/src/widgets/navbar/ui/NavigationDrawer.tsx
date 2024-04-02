@@ -20,7 +20,7 @@ export const NavigationDrawer: FC<Props> = ({ menuOpened, toggleMenu }) => {
       PaperProps={{
         sx: {
           marginTop: { xs: 0, md: `${APP_BAR_HEIGHT_SM}px` },
-          width: { xs: '75%', md: `${SIDEBAR_DRAWER_WIDTH}px` },
+          width: `${SIDEBAR_DRAWER_WIDTH}px`,
         },
         component: 'nav',
       }}
