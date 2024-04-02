@@ -6,14 +6,15 @@ const shouldForwardProp = (prop: PropertyKey): boolean => !prop.toString().start
 
 interface NavigationProgressStyledProps extends LinearProgressProps {
   $withSidebar: boolean;
+  $withHeader: boolean;
 }
 
 export const NavigationProgressStyled = styled(LinearProgress, {
   shouldForwardProp,
-})<NavigationProgressStyledProps>(({ theme, $withSidebar }) => ({
+})<NavigationProgressStyledProps>(({ theme, $withSidebar, $withHeader }) => ({
   position: 'absolute',
   zIndex: theme.zIndex.drawer + 1,
-  top: APP_BAR_HEIGHT_XS,
+  top: $withHeader ? `${APP_BAR_HEIGHT_XS}px` : 0,
   left: 0,
   width: '100%',
 
@@ -23,7 +24,7 @@ export const NavigationProgressStyled = styled(LinearProgress, {
   },
 
   [theme.breakpoints.up('md')]: {
-    top: APP_BAR_HEIGHT_SM,
+    top: $withHeader ? `${APP_BAR_HEIGHT_SM}px` : 0,
   },
 }));
 

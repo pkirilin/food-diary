@@ -37,7 +37,9 @@ export const AppShell: FC<Props> = ({
         {header.navigationDrawer}
       </>
     )}
-    {withNavigationProgress && <NavigationProgressStyled $withSidebar={withSidebar} />}
+    {withNavigationProgress && (
+      <NavigationProgressStyled $withSidebar={withSidebar} $withHeader={!!header} />
+    )}
     <MainStyled $withSidebar={withSidebar} $withSubheader={!!subheader}>
       {header && <Toolbar />}
       {subheader && (
