@@ -6,6 +6,7 @@ import {
   Typography,
   type TypographyProps,
   styled,
+  Box,
 } from '@mui/material';
 import { useMemo, type FC } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
@@ -29,9 +30,9 @@ export const PageDetailHeader: FC<Props> = ({ page }) => {
   const totalCalories = useMemo(() => notes.reduce((sum, note) => sum + note.calories, 0), [notes]);
 
   return (
-    <>
+    <Box display="flex" alignItems="center" gap={3} width="100%">
       <Tooltip title="Back to pages list">
-        <IconButton edge="start" component={RouterLink} to="/pages" sx={{ marginRight: 1 }}>
+        <IconButton edge="start" component={RouterLink} to="/pages">
           <ArrowBackIcon />
         </IconButton>
       </Tooltip>
@@ -39,6 +40,6 @@ export const PageDetailHeader: FC<Props> = ({ page }) => {
         <TextStyled component="h1">{formatDate(new Date(page.date))}</TextStyled>
         <TextStyled component="span">{totalCalories} kcal</TextStyled>
       </Stack>
-    </>
+    </Box>
   );
 };
