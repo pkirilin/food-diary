@@ -1,13 +1,13 @@
 import { type FC } from 'react';
 import { useLoaderData } from 'react-router-dom';
 import { notesApi, useNotes, MealsList } from '@/features/notes';
-import { pagesApi, PageDetailHeader } from '@/features/pages';
+import { pagesApi, PageDetailHeader, type Page } from '@/features/pages';
 import store from '@/store';
 import { PrivateLayout } from '@/widgets/layout';
 import { withAuthStatusCheck } from '../lib';
 
 interface LoaderData {
-  pageId: number;
+  page: Page;
 }
 
 export const loader = withAuthStatusCheck(async ({ params }) => {
@@ -20,22 +20,16 @@ export const loader = withAuthStatusCheck(async ({ params }) => {
 
   await store.dispatch(notesApi.endpoints.getNotes.initiate({ pageId }));
 
-  return { pageId } satisfies LoaderData;
+  return { page: getPageByIdQuery.data.currentPage } satisfies LoaderData;
 });
 
 export const Component: FC = () => {
-  const { pageId } = useLoaderData() as LoaderData;
-  const getPageByIdQuery = pagesApi.useGetPageByIdQuery(pageId);
-  const notes = useNotes(pageId);
+  const { page } = useLoaderData() as LoaderData;
+  const notes = useNotes(page.id);
 
   return (
-    <PrivateLayout
-      withAdditionalNavigation
-      header={
-        getPageByIdQuery.data && <PageDetailHeader page={getPageByIdQuery.data.currentPage} />
-      }
-    >
-      <MealsList pageId={pageId} notes={notes.data} />
+    <PrivateLayout subheader={<PageDetailHeader page={page} />}>
+      <MealsList pageId={page.id} notes={notes.data} />
     </PrivateLayout>
   );
 };

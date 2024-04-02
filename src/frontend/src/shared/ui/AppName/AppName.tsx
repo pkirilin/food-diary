@@ -1,5 +1,6 @@
 import { Typography, Box, Stack } from '@mui/material';
 import { type FC } from 'react';
+import { APP_NAME } from '@/shared/constants';
 import { Logo } from './Logo';
 
 export const AppName: FC = () => (
@@ -13,7 +14,7 @@ export const AppName: FC = () => (
       textAlign="center"
       sx={theme => ({ color: theme.palette.primary.main })}
     >
-      Food Diary
+      {APP_NAME}
     </Typography>
   </Stack>
 );
