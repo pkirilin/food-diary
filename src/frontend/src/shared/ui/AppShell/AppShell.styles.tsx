@@ -19,12 +19,9 @@ export const NavigationProgressStyled = styled(LinearProgress, {
   width: '100%',
 
   [theme.breakpoints.up('sm')]: {
+    top: $withHeader ? `${APP_BAR_HEIGHT_SM}px` : 0,
     left: $withSidebar ? `${SIDEBAR_DRAWER_WIDTH}px` : 0,
     width: $withSidebar ? `calc(100% - ${SIDEBAR_DRAWER_WIDTH}px)` : '100%',
-  },
-
-  [theme.breakpoints.up('md')]: {
-    top: $withHeader ? `${APP_BAR_HEIGHT_SM}px` : 0,
   },
 }));
 
