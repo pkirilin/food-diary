@@ -13,7 +13,6 @@ export default defineConfig({
   plugins: [
     react(),
     pwa({
-      registerType: 'autoUpdate',
       manifest: {
         name: 'Food Diary',
         short_name: 'Food Diary',
