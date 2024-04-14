@@ -1,6 +1,5 @@
 import 'date-fns';
 import { initBrowserMockApi } from 'tests/mockApi';
-import { registerSW } from 'virtual:pwa-register';
 import { createRoot } from 'react-dom/client';
 import App from './App';
 import AppProvider from './AppProvider';
@@ -9,9 +8,6 @@ import { initGoogleAnalytics } from './googleAnalytics';
 import store from './store';
 
 void (async () => {
-  const updateSW = registerSW({ immediate: true });
-  await updateSW();
-
   if (MSW_ENABLED) {
     await initBrowserMockApi();
   }
