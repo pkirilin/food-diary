@@ -20,7 +20,7 @@
     "jsx": "react-jsx",
     "noFallthroughCasesInSwitch": true,
     "baseUrl": ".",
-    "types": ["vitest/globals"],
+    "types": ["vitest/globals","vite-plugin-pwa/client"],
     "paths": {
       "@/*": ["./src/*"],
       "@tests/*": ["./tests/*"]

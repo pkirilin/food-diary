@@ -5805,6 +5805,7 @@ __metadata:
     vite-plugin-pwa: "npm:^0.19.2"
     vitest: "npm:^0.34.6"
     vitest-preview: "npm:^0.0.1"
+    workbox-window: "npm:^7.0.0"
   languageName: unknown
   linkType: soft
 
