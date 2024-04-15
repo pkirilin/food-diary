@@ -57,7 +57,7 @@ jobs:
           revision-core-fraction: 100
           revision-concurrency: 2
           revision-execution-timeout: 10
-          revision-provisioned: 1
+          revision-provisioned: 0
           revision-env: |
             App__ForwardHttpsSchemeManuallyForAllRequests=true
             App__Logging__WriteLogsInJsonFormat=true
