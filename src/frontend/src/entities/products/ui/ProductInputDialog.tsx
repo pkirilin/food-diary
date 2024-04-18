@@ -4,6 +4,9 @@ import { Button, Dialog } from '@/shared/ui';
 import { type ProductFormType } from '../model';
 
 interface Props {
+  title: string;
+  submitText: string;
+  formId: string;
   opened: boolean;
   product: ProductFormType;
   handleClose: () => void;
@@ -12,6 +15,9 @@ interface Props {
 }
 
 export const ProductInputDialog: FC<Props> = ({
+  title,
+  submitText,
+  formId,
   opened,
   product,
   handleClose,
@@ -20,14 +26,15 @@ export const ProductInputDialog: FC<Props> = ({
 }) => {
   return (
     <Dialog
-      title="New product"
+      title={title}
       content={
-        <form id="new-product-form" onSubmit={handleSubmit}>
+        <form id={formId} onSubmit={handleSubmit}>
           <TextField
             label="Name"
             placeholder="Product name"
             value={product.name}
             onChange={handleProductNameChange}
+            fullWidth
             autoFocus
           />
         </form>
@@ -40,8 +47,8 @@ export const ProductInputDialog: FC<Props> = ({
         </Button>
       )}
       renderSubmit={submitProps => (
-        <Button {...submitProps} type="submit" form="new-product-form">
-          Create
+        <Button {...submitProps} type="submit" form={formId}>
+          {submitText}
         </Button>
       )}
     />

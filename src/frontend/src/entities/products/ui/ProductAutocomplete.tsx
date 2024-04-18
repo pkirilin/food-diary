@@ -19,22 +19,6 @@ interface ProductOptionType {
 
 const filter = createFilterOptions<ProductOptionType>();
 
-const filterOptions = (
-  options: ProductOptionType[],
-  state: FilterOptionsState<ProductOptionType>,
-): ProductOptionType[] => {
-  const filtered = filter(options, state);
-
-  if (state.inputValue !== '') {
-    filtered.push({
-      inputValue: state.inputValue,
-      name: `Add "${state.inputValue}"`,
-    });
-  }
-
-  return filtered;
-};
-
 const getOptionLabel = (option: string | ProductOptionType): string => {
   if (typeof option === 'string') {
     return option;
@@ -51,6 +35,9 @@ const PRODUCTS: readonly ProductOptionType[] = [{ name: 'Bread' }, { name: 'Rice
 
 export const ProductAutocomplete: FC = () => {
   const [value, setValue] = useState<ProductOptionType | null>(null);
+  const [valueAddedOnTheFly, setValueAddedOnTheFly] = useState(false);
+  const [dialogTitle, setDialogTitle] = useState('');
+  const [dialogSubmitText, setDialogSubmitText] = useState('');
   const [dialogOpened, toggleDialog] = useToggle();
 
   const handleDialogClose = (): void => {
@@ -63,6 +50,47 @@ export const ProductAutocomplete: FC = () => {
   const [dialogValue, setDialogValue] = useState<ProductFormType>({
     name: '',
   });
+
+  const filterOptions = (
+    options: ProductOptionType[],
+    state: FilterOptionsState<ProductOptionType>,
+  ): ProductOptionType[] => {
+    const filtered = filter(options, state);
+
+    if (filtered.some(o => o.name === state.inputValue)) {
+      return filtered;
+    }
+
+    if (state.inputValue !== '') {
+      filtered.push({
+        inputValue: state.inputValue,
+        name: `Add "${state.inputValue}"`,
+      });
+
+      setTimeout(() => {
+        setDialogTitle('Add product');
+        setDialogSubmitText('Create');
+      });
+
+      return filtered;
+    }
+
+    if (value && valueAddedOnTheFly) {
+      filtered.unshift({
+        inputValue: value.name,
+        name: `Edit "${value.name}"`,
+      });
+
+      setTimeout(() => {
+        setDialogTitle('Edit product');
+        setDialogSubmitText('Save');
+      });
+
+      return filtered;
+    }
+
+    return filtered;
+  };
 
   const handleOptionChange = (
     _: SyntheticEvent,
@@ -82,6 +110,7 @@ export const ProductAutocomplete: FC = () => {
       });
     } else {
       setValue(newValue);
+      setValueAddedOnTheFly(false);
     }
   };
 
@@ -97,6 +126,7 @@ export const ProductAutocomplete: FC = () => {
     setValue({
       name: dialogValue.name,
     });
+    setValueAddedOnTheFly(true);
     handleDialogClose();
   };
 
@@ -118,6 +148,9 @@ export const ProductAutocomplete: FC = () => {
         )}
       />
       <ProductInputDialog
+        title={dialogTitle}
+        submitText={dialogSubmitText}
+        formId="product-form"
         opened={dialogOpened}
         product={dialogValue}
         handleClose={handleDialogClose}
