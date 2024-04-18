@@ -1,3 +1,4 @@
+import { type FilterOptionsState } from '@mui/material';
 import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -6,7 +7,8 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
-import { type FC, type FormEvent, useState } from 'react';
+import { type FC, type FormEvent, useState, type SyntheticEvent } from 'react';
+import { useToggle } from '@/shared/hooks';
 
 interface ProductOptionType {
   inputValue?: string;
@@ -19,87 +21,93 @@ interface ProductFormType {
 
 const filter = createFilterOptions<ProductOptionType>();
 
+const filterOptions = (
+  options: ProductOptionType[],
+  state: FilterOptionsState<ProductOptionType>,
+): ProductOptionType[] => {
+  const filtered = filter(options, state);
+
+  if (state.inputValue !== '') {
+    filtered.push({
+      inputValue: state.inputValue,
+      name: `Add "${state.inputValue}"`,
+    });
+  }
+
+  return filtered;
+};
+
+const getOptionLabel = (option: string | ProductOptionType): string => {
+  if (typeof option === 'string') {
+    return option;
+  }
+  if (option.inputValue) {
+    return option.inputValue;
+  }
+  return option.name;
+};
+
 const PRODUCTS: readonly ProductOptionType[] = [{ name: 'Bread' }, { name: 'Rice' }];
 
 export const ProductAutocomplete: FC = () => {
   const [value, setValue] = useState<ProductOptionType | null>(null);
-  const [open, toggleOpen] = useState(false);
+  const [dialogOpened, toggleDialog] = useToggle();
 
-  const handleClose = (): void => {
+  const handleDialogClose = (): void => {
     setDialogValue({
       name: '',
     });
-    toggleOpen(false);
+    toggleDialog();
   };
 
   const [dialogValue, setDialogValue] = useState<ProductFormType>({
     name: '',
   });
 
+  const handleChange = (_: SyntheticEvent, newValue: string | ProductOptionType | null): void => {
+    if (typeof newValue === 'string') {
+      setTimeout(() => {
+        toggleDialog();
+        setDialogValue({
+          name: newValue,
+        });
+      });
+    } else if (newValue?.inputValue) {
+      toggleDialog();
+      setDialogValue({
+        name: newValue.inputValue,
+      });
+    } else {
+      setValue(newValue);
+    }
+  };
+
   const handleSubmit = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
     setValue({
       name: dialogValue.name,
     });
-    handleClose();
+    handleDialogClose();
   };
 
   return (
     <>
       <Autocomplete
         value={value}
-        onChange={(event, newValue) => {
-          if (typeof newValue === 'string') {
-            // timeout to avoid instant validation of the dialog's form.
-            setTimeout(() => {
-              toggleOpen(true);
-              setDialogValue({
-                name: newValue,
-              });
-            });
-          } else if (newValue?.inputValue) {
-            toggleOpen(true);
-            setDialogValue({
-              name: newValue.inputValue,
-            });
-          } else {
-            setValue(newValue);
-          }
-        }}
-        filterOptions={(options, params) => {
-          const filtered = filter(options, params);
-
-          if (params.inputValue !== '') {
-            filtered.push({
-              inputValue: params.inputValue,
-              name: `Add "${params.inputValue}"`,
-            });
-          }
-
-          return filtered;
-        }}
+        onChange={handleChange}
         options={PRODUCTS}
-        getOptionLabel={option => {
-          // for example value selected with enter, right from the input
-          if (typeof option === 'string') {
-            return option;
-          }
-          if (option.inputValue) {
-            return option.inputValue;
-          }
-          return option.name;
-        }}
         selectOnFocus
         clearOnBlur
         handleHomeEndKeys
-        renderOption={(props, option) => <li {...props}>{option.name}</li>}
-        sx={{ width: 300 }}
         freeSolo
+        getOptionLabel={getOptionLabel}
+        filterOptions={filterOptions}
+        renderOption={(props, option) => <li {...props}>{option.name}</li>}
         renderInput={params => (
           <TextField {...params} label="Product" placeholder="Select a product" />
         )}
       />
-      <Dialog open={open} onClose={handleClose}>
+      <Dialog open={dialogOpened} onClose={handleDialogClose}>
         <form onSubmit={handleSubmit}>
           <DialogTitle>Add a new product</DialogTitle>
           <DialogContent>
@@ -117,7 +125,7 @@ export const ProductAutocomplete: FC = () => {
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose}>Cancel</Button>
+            <Button onClick={handleDialogClose}>Cancel</Button>
             <Button type="submit">Add</Button>
           </DialogActions>
         </form>
