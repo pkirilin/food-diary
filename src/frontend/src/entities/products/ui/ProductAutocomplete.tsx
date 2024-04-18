@@ -1,6 +1,5 @@
 import { type FilterOptionsState } from '@mui/material';
 import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
-import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import {
   type FC,
@@ -10,14 +9,11 @@ import {
   type ChangeEventHandler,
 } from 'react';
 import { useToggle } from '@/shared/hooks';
-import { Dialog } from '@/shared/ui';
+import { type ProductFormType } from '../model';
+import { ProductInputDialog } from './ProductInputDialog';
 
 interface ProductOptionType {
   inputValue?: string;
-  name: string;
-}
-
-interface ProductFormType {
   name: string;
 }
 
@@ -43,9 +39,11 @@ const getOptionLabel = (option: string | ProductOptionType): string => {
   if (typeof option === 'string') {
     return option;
   }
+
   if (option.inputValue) {
     return option.inputValue;
   }
+
   return option.name;
 };
 
@@ -119,31 +117,12 @@ export const ProductAutocomplete: FC = () => {
           <TextField {...params} label="Product" placeholder="Select a product" />
         )}
       />
-      <Dialog
-        title="New product"
-        content={
-          <form id="new-product-form" onSubmit={handleSubmit}>
-            <TextField
-              label="Name"
-              placeholder="Product name"
-              value={dialogValue.name}
-              onChange={handleProductNameChange}
-              autoFocus
-            />
-          </form>
-        }
+      <ProductInputDialog
         opened={dialogOpened}
-        onClose={handleDialogClose}
-        renderCancel={cancelProps => (
-          <Button {...cancelProps} type="button" onClick={handleDialogClose}>
-            Cancel
-          </Button>
-        )}
-        renderSubmit={submitProps => (
-          <Button {...submitProps} type="submit" form="new-product-form">
-            Create
-          </Button>
-        )}
+        product={dialogValue}
+        handleClose={handleDialogClose}
+        handleSubmit={handleSubmit}
+        handleProductNameChange={handleProductNameChange}
       />
     </>
   );
