@@ -1,14 +1,16 @@
 import { type FilterOptionsState } from '@mui/material';
 import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
 import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
-import { type FC, type FormEvent, useState, type SyntheticEvent } from 'react';
+import {
+  type FC,
+  type FormEvent,
+  useState,
+  type SyntheticEvent,
+  type ChangeEventHandler,
+} from 'react';
 import { useToggle } from '@/shared/hooks';
+import { Dialog } from '@/shared/ui';
 
 interface ProductOptionType {
   inputValue?: string;
@@ -64,7 +66,10 @@ export const ProductAutocomplete: FC = () => {
     name: '',
   });
 
-  const handleChange = (_: SyntheticEvent, newValue: string | ProductOptionType | null): void => {
+  const handleOptionChange = (
+    _: SyntheticEvent,
+    newValue: string | ProductOptionType | null,
+  ): void => {
     if (typeof newValue === 'string') {
       setTimeout(() => {
         toggleDialog();
@@ -82,6 +87,13 @@ export const ProductAutocomplete: FC = () => {
     }
   };
 
+  const handleProductNameChange: ChangeEventHandler<HTMLInputElement> = event => {
+    setDialogValue({
+      ...dialogValue,
+      name: event.target.value,
+    });
+  };
+
   const handleSubmit = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
     setValue({
@@ -94,7 +106,7 @@ export const ProductAutocomplete: FC = () => {
     <>
       <Autocomplete
         value={value}
-        onChange={handleChange}
+        onChange={handleOptionChange}
         options={PRODUCTS}
         selectOnFocus
         clearOnBlur
@@ -107,29 +119,32 @@ export const ProductAutocomplete: FC = () => {
           <TextField {...params} label="Product" placeholder="Select a product" />
         )}
       />
-      <Dialog open={dialogOpened} onClose={handleDialogClose}>
-        <form onSubmit={handleSubmit}>
-          <DialogTitle>Add a new product</DialogTitle>
-          <DialogContent>
-            <DialogContentText>Add new product info</DialogContentText>
+      <Dialog
+        title="New product"
+        content={
+          <form id="new-product-form" onSubmit={handleSubmit}>
             <TextField
               label="Name"
-              autoFocus
+              placeholder="Product name"
               value={dialogValue.name}
-              onChange={event =>
-                setDialogValue({
-                  ...dialogValue,
-                  name: event.target.value,
-                })
-              }
+              onChange={handleProductNameChange}
+              autoFocus
             />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleDialogClose}>Cancel</Button>
-            <Button type="submit">Add</Button>
-          </DialogActions>
-        </form>
-      </Dialog>
+          </form>
+        }
+        opened={dialogOpened}
+        onClose={handleDialogClose}
+        renderCancel={cancelProps => (
+          <Button {...cancelProps} type="button" onClick={handleDialogClose}>
+            Cancel
+          </Button>
+        )}
+        renderSubmit={submitProps => (
+          <Button {...submitProps} type="submit" form="new-product-form">
+            Create
+          </Button>
+        )}
+      />
     </>
   );
 };
