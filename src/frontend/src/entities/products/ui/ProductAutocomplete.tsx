@@ -30,11 +30,18 @@ interface Props {
   options: readonly ProductOptionType[];
   loading: boolean;
   value: ProductOptionType | null;
+  valueTemporary?: boolean;
   onChange: (newValue: ProductOptionType | null) => void;
 }
 
-export const ProductAutocomplete: FC<Props> = ({ options, loading, value, onChange }) => {
-  const [valueAddedOnTheFly, setValueAddedOnTheFly] = useState(false);
+export const ProductAutocomplete: FC<Props> = ({
+  options,
+  loading,
+  value,
+  valueTemporary = false,
+  onChange,
+}) => {
+  const [valueAddedOnTheFly, setValueAddedOnTheFly] = useState(valueTemporary);
   const [dialogTitle, setDialogTitle] = useState('');
   const [dialogSubmitText, setDialogSubmitText] = useState('');
   const [dialogOpened, toggleDialog] = useToggle();

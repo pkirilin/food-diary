@@ -4,11 +4,15 @@ import { type ProductSelectOption, productsApi } from '@/features/products';
 const QUERY_ARG = {};
 
 export interface ProductOptionType {
-  inputValue?: string;
   name: string;
+  inputValue?: string;
+  id?: number;
 }
 
-const mapToAutocompleteOption = ({ name }: ProductSelectOption): ProductOptionType => ({ name });
+const mapToAutocompleteOption = ({ id, name }: ProductSelectOption): ProductOptionType => ({
+  id,
+  name,
+});
 
 interface Result {
   options: ProductOptionType[];
