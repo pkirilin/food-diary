@@ -31,6 +31,8 @@ interface Props {
   loading: boolean;
   value: ProductOptionType | null;
   valueTemporary?: boolean;
+  helperText?: string;
+  error?: boolean;
   onChange: (newValue: ProductOptionType | null) => void;
 }
 
@@ -39,6 +41,8 @@ export const ProductAutocomplete: FC<Props> = ({
   loading,
   value,
   valueTemporary = false,
+  helperText,
+  error,
   onChange,
 }) => {
   const [valueAddedOnTheFly, setValueAddedOnTheFly] = useState(valueTemporary);
@@ -154,6 +158,8 @@ export const ProductAutocomplete: FC<Props> = ({
             {...inputParams}
             label="Product"
             placeholder="Select a product"
+            error={error}
+            helperText={helperText}
             InputProps={{
               ...inputParams.InputProps,
               endAdornment: loading ? (
