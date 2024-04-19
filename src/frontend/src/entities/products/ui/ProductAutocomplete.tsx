@@ -1,4 +1,4 @@
-import { type FilterOptionsState } from '@mui/material';
+import { CircularProgress, type FilterOptionsState } from '@mui/material';
 import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import {
@@ -9,13 +9,8 @@ import {
   type ChangeEventHandler,
 } from 'react';
 import { useToggle } from '@/shared/hooks';
-import { type ProductFormType } from '../model';
+import { type ProductOptionType, type ProductFormType } from '../model';
 import { ProductInputDialog } from './ProductInputDialog';
-
-interface ProductOptionType {
-  inputValue?: string;
-  name: string;
-}
 
 const filter = createFilterOptions<ProductOptionType>();
 
@@ -31,10 +26,14 @@ const getOptionLabel = (option: string | ProductOptionType): string => {
   return option.name;
 };
 
-const PRODUCTS: readonly ProductOptionType[] = [{ name: 'Bread' }, { name: 'Rice' }];
+interface Props {
+  options: readonly ProductOptionType[];
+  loading: boolean;
+  value: ProductOptionType | null;
+  onChange: (newValue: ProductOptionType | null) => void;
+}
 
-export const ProductAutocomplete: FC = () => {
-  const [value, setValue] = useState<ProductOptionType | null>(null);
+export const ProductAutocomplete: FC<Props> = ({ options, loading, value, onChange }) => {
   const [valueAddedOnTheFly, setValueAddedOnTheFly] = useState(false);
   const [dialogTitle, setDialogTitle] = useState('');
   const [dialogSubmitText, setDialogSubmitText] = useState('');
@@ -109,7 +108,7 @@ export const ProductAutocomplete: FC = () => {
         name: newValue.inputValue,
       });
     } else {
-      setValue(newValue);
+      onChange(newValue);
       setValueAddedOnTheFly(false);
     }
   };
@@ -123,7 +122,7 @@ export const ProductAutocomplete: FC = () => {
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
-    setValue({
+    onChange({
       name: dialogValue.name,
     });
     setValueAddedOnTheFly(true);
@@ -135,7 +134,7 @@ export const ProductAutocomplete: FC = () => {
       <Autocomplete
         value={value}
         onChange={handleOptionChange}
-        options={PRODUCTS}
+        options={options}
         selectOnFocus
         clearOnBlur
         handleHomeEndKeys
@@ -143,8 +142,20 @@ export const ProductAutocomplete: FC = () => {
         getOptionLabel={getOptionLabel}
         filterOptions={filterOptions}
         renderOption={(props, option) => <li {...props}>{option.name}</li>}
-        renderInput={params => (
-          <TextField {...params} label="Product" placeholder="Select a product" />
+        renderInput={inputParams => (
+          <TextField
+            {...inputParams}
+            label="Product"
+            placeholder="Select a product"
+            InputProps={{
+              ...inputParams.InputProps,
+              endAdornment: loading ? (
+                <CircularProgress color="inherit" size={20} />
+              ) : (
+                inputParams.InputProps.endAdornment
+              ),
+            }}
+          />
         )}
       />
       <ProductInputDialog
