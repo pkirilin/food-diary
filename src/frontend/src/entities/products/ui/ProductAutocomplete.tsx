@@ -53,12 +53,11 @@ export const ProductAutocomplete: FC<Props> = ({
   const [dialogTitle, setDialogTitle] = useState('');
   const [dialogSubmitText, setDialogSubmitText] = useState('');
   const [dialogOpened, toggleDialog] = useToggle();
+  const [dialogValue, setDialogValue] = useState<ProductFormType>(EMPTY_DIALOG_VALUE);
 
   const handleDialogClose = (): void => {
     toggleDialog();
   };
-
-  const [dialogValue, setDialogValue] = useState<ProductFormType>(EMPTY_DIALOG_VALUE);
 
   const filterOptions = (
     options: ProductOptionType[],
@@ -177,6 +176,7 @@ export const ProductAutocomplete: FC<Props> = ({
         submitText={dialogSubmitText}
         formId="product-form"
         opened={dialogOpened}
+        submitting={false}
         product={dialogValue}
         renderCategoryInput={renderCategoryInput}
         onClose={handleDialogClose}

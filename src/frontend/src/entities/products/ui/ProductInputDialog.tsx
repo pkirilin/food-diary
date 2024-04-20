@@ -21,6 +21,7 @@ interface Props {
   submitText: string;
   formId: string;
   opened: boolean;
+  submitting: boolean;
   product: ProductFormType;
   renderCategoryInput: (props: SelectProps<SelectOption>) => ReactElement;
   onClose: () => void;
@@ -32,6 +33,7 @@ export const ProductInputDialog: FC<Props> = ({
   submitText,
   formId,
   opened,
+  submitting,
   product,
   renderCategoryInput,
   onClose,
@@ -84,6 +86,19 @@ export const ProductInputDialog: FC<Props> = ({
     });
   };
 
+  const anyValueInvalid =
+    productName.isInvalid ||
+    caloriesCost.isInvalid ||
+    category.isInvalid ||
+    category.value === null ||
+    defaultQuantity.isInvalid;
+
+  const anyValueTouched =
+    productName.isTouched ||
+    caloriesCost.isTouched ||
+    category.isTouched ||
+    defaultQuantity.isTouched;
+
   return (
     <Dialog
       title={title}
@@ -119,12 +134,18 @@ export const ProductInputDialog: FC<Props> = ({
       opened={opened}
       onClose={onClose}
       renderCancel={cancelProps => (
-        <Button {...cancelProps} type="button" onClick={onClose}>
+        <Button {...cancelProps} type="button" onClick={onClose} disabled={submitting}>
           Cancel
         </Button>
       )}
       renderSubmit={submitProps => (
-        <Button {...submitProps} type="submit" form={formId}>
+        <Button
+          {...submitProps}
+          type="submit"
+          form={formId}
+          loading={submitting}
+          disabled={anyValueInvalid || !anyValueTouched}
+        >
           {submitText}
         </Button>
       )}
