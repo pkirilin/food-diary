@@ -5,13 +5,19 @@ const QUERY_ARG = {};
 
 export interface ProductOptionType {
   name: string;
+  defaultQuantity: number;
   inputValue?: string;
   id?: number;
 }
 
-const mapToAutocompleteOption = ({ id, name }: ProductSelectOption): ProductOptionType => ({
+const mapToAutocompleteOption = ({
   id,
   name,
+  defaultQuantity,
+}: ProductSelectOption): ProductOptionType => ({
+  id,
+  name,
+  defaultQuantity,
 });
 
 interface Result {

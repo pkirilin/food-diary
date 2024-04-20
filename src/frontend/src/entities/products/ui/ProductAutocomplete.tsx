@@ -1,13 +1,7 @@
 import { CircularProgress, type FilterOptionsState } from '@mui/material';
 import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
-import {
-  type FC,
-  type FormEvent,
-  useState,
-  type SyntheticEvent,
-  type ChangeEventHandler,
-} from 'react';
+import { type FC, useState, type SyntheticEvent } from 'react';
 import { useToggle } from '@/shared/hooks';
 import { type ProductOptionType, type ProductFormType } from '../model';
 import { ProductInputDialog } from './ProductInputDialog';
@@ -26,6 +20,13 @@ const getOptionLabel = (option: string | ProductOptionType): string => {
   return option.name;
 };
 
+const EMPTY_DIALOG_VALUE: ProductFormType = {
+  name: '',
+  defaultQuantity: 100,
+  caloriesCost: 100,
+  category: null,
+};
+
 interface Props {
   options: readonly ProductOptionType[];
   loading: boolean;
@@ -33,7 +34,7 @@ interface Props {
   valueTemporary?: boolean;
   helperText?: string;
   error?: boolean;
-  onChange: (newValue: ProductOptionType | null) => void;
+  onChange: (selectedProduct: ProductOptionType | null) => void;
 }
 
 export const ProductAutocomplete: FC<Props> = ({
@@ -51,15 +52,10 @@ export const ProductAutocomplete: FC<Props> = ({
   const [dialogOpened, toggleDialog] = useToggle();
 
   const handleDialogClose = (): void => {
-    setDialogValue({
-      name: '',
-    });
     toggleDialog();
   };
 
-  const [dialogValue, setDialogValue] = useState<ProductFormType>({
-    name: '',
-  });
+  const [dialogValue, setDialogValue] = useState<ProductFormType>(EMPTY_DIALOG_VALUE);
 
   const filterOptions = (
     options: ProductOptionType[],
@@ -75,6 +71,7 @@ export const ProductAutocomplete: FC<Props> = ({
       filtered.push({
         inputValue: state.inputValue,
         name: `Add "${state.inputValue}"`,
+        defaultQuantity: 100,
       });
 
       setTimeout(() => {
@@ -89,6 +86,7 @@ export const ProductAutocomplete: FC<Props> = ({
       filtered.unshift({
         inputValue: value.name,
         name: `Edit "${value.name}"`,
+        defaultQuantity: value.defaultQuantity,
       });
 
       setTimeout(() => {
@@ -104,37 +102,37 @@ export const ProductAutocomplete: FC<Props> = ({
 
   const handleOptionChange = (
     _: SyntheticEvent,
-    newValue: string | ProductOptionType | null,
+    selectedProduct: string | ProductOptionType | null,
   ): void => {
-    if (typeof newValue === 'string') {
-      setTimeout(() => {
-        toggleDialog();
-        setDialogValue({
-          name: newValue,
-        });
-      });
-    } else if (newValue?.inputValue) {
+    if (typeof selectedProduct === 'string') {
       toggleDialog();
-      setDialogValue({
-        name: newValue.inputValue,
-      });
+      setDialogValue(({ caloriesCost, defaultQuantity, category }) => ({
+        name: selectedProduct,
+        caloriesCost,
+        defaultQuantity,
+        category,
+      }));
+    } else if (selectedProduct?.inputValue) {
+      const { inputValue, defaultQuantity } = selectedProduct;
+      toggleDialog();
+      setDialogValue(({ caloriesCost, category }) => ({
+        name: inputValue,
+        caloriesCost,
+        defaultQuantity,
+        category,
+      }));
     } else {
-      onChange(newValue);
+      setDialogValue(EMPTY_DIALOG_VALUE);
+      onChange(selectedProduct);
       setValueAddedOnTheFly(false);
     }
   };
 
-  const handleProductNameChange: ChangeEventHandler<HTMLInputElement> = event => {
-    setDialogValue({
-      ...dialogValue,
-      name: event.target.value,
-    });
-  };
-
-  const handleSubmit = (event: FormEvent<HTMLFormElement>): void => {
-    event.preventDefault();
+  const handleSubmit = (product: ProductFormType): void => {
+    setDialogValue(product);
     onChange({
-      name: dialogValue.name,
+      name: product.name,
+      defaultQuantity: product.defaultQuantity,
     });
     setValueAddedOnTheFly(true);
     handleDialogClose();
@@ -177,9 +175,8 @@ export const ProductAutocomplete: FC<Props> = ({
         formId="product-form"
         opened={dialogOpened}
         product={dialogValue}
-        handleClose={handleDialogClose}
-        handleSubmit={handleSubmit}
-        handleProductNameChange={handleProductNameChange}
+        onClose={handleDialogClose}
+        onSubmit={handleSubmit}
       />
     </>
   );
