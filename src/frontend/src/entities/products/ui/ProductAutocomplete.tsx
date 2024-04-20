@@ -4,17 +4,17 @@ import TextField from '@mui/material/TextField';
 import { type FC, useState, type SyntheticEvent, type ReactElement } from 'react';
 import { useToggle } from '@/shared/hooks';
 import { type SelectOption, type SelectProps } from '@/types';
-import { type ProductOptionType, type ProductFormType } from '../model';
+import { type AutocompleteOptionType, type ProductFormType } from '../model';
 import { ProductInputDialog } from './ProductInputDialog';
 
-const filter = createFilterOptions<ProductOptionType>();
+const filter = createFilterOptions<AutocompleteOptionType>();
 
-const getOptionLabel = (option: string | ProductOptionType): string => {
+const getOptionLabel = (option: string | AutocompleteOptionType): string => {
   if (typeof option === 'string') {
     return option;
   }
 
-  if (option.inputValue) {
+  if (option.freeSolo && option.inputValue) {
     return option.inputValue;
   }
 
@@ -29,27 +29,25 @@ const EMPTY_DIALOG_VALUE: ProductFormType = {
 };
 
 interface Props {
-  options: readonly ProductOptionType[];
+  options: readonly AutocompleteOptionType[];
   loading: boolean;
-  value: ProductOptionType | null;
-  valueTemporary?: boolean;
+  value: AutocompleteOptionType | null;
   helperText?: string;
   error?: boolean;
   renderCategoryInput: (props: SelectProps<SelectOption>) => ReactElement;
-  onChange: (selectedProduct: ProductOptionType | null) => void;
+  onChange: (selectedProduct: AutocompleteOptionType | null) => void;
 }
 
 export const ProductAutocomplete: FC<Props> = ({
   options,
   loading,
   value,
-  valueTemporary = false,
   helperText,
   error,
   renderCategoryInput,
   onChange,
 }) => {
-  const [valueAddedOnTheFly, setValueAddedOnTheFly] = useState(valueTemporary);
+  const [valueAddedOnTheFly, setValueAddedOnTheFly] = useState(value?.freeSolo ?? false);
   const [dialogTitle, setDialogTitle] = useState('');
   const [dialogSubmitText, setDialogSubmitText] = useState('');
   const [dialogOpened, toggleDialog] = useToggle();
@@ -60,9 +58,9 @@ export const ProductAutocomplete: FC<Props> = ({
   };
 
   const filterOptions = (
-    options: ProductOptionType[],
-    state: FilterOptionsState<ProductOptionType>,
-  ): ProductOptionType[] => {
+    options: AutocompleteOptionType[],
+    state: FilterOptionsState<AutocompleteOptionType>,
+  ): AutocompleteOptionType[] => {
     const filtered = filter(options, state);
 
     if (filtered.some(o => o.name === state.inputValue)) {
@@ -71,9 +69,12 @@ export const ProductAutocomplete: FC<Props> = ({
 
     if (state.inputValue !== '') {
       filtered.push({
+        freeSolo: true,
         inputValue: state.inputValue,
         name: `Add "${state.inputValue}"`,
-        defaultQuantity: 100,
+        caloriesCost: EMPTY_DIALOG_VALUE.caloriesCost,
+        defaultQuantity: EMPTY_DIALOG_VALUE.defaultQuantity,
+        category: EMPTY_DIALOG_VALUE.category,
       });
 
       setTimeout(() => {
@@ -86,9 +87,12 @@ export const ProductAutocomplete: FC<Props> = ({
 
     if (value && valueAddedOnTheFly) {
       filtered.unshift({
+        freeSolo: true,
         inputValue: value.name,
         name: `Edit "${value.name}"`,
-        defaultQuantity: value.defaultQuantity,
+        caloriesCost: dialogValue.caloriesCost,
+        defaultQuantity: dialogValue.defaultQuantity,
+        category: dialogValue.category,
       });
 
       setTimeout(() => {
@@ -104,7 +108,7 @@ export const ProductAutocomplete: FC<Props> = ({
 
   const handleOptionChange = (
     _: SyntheticEvent,
-    selectedProduct: string | ProductOptionType | null,
+    selectedProduct: string | AutocompleteOptionType | null,
   ): void => {
     if (typeof selectedProduct === 'string') {
       toggleDialog();
@@ -114,7 +118,10 @@ export const ProductAutocomplete: FC<Props> = ({
         defaultQuantity,
         category,
       }));
-    } else if (selectedProduct?.inputValue) {
+      return;
+    }
+
+    if (selectedProduct?.freeSolo && selectedProduct?.inputValue) {
       const { inputValue, defaultQuantity } = selectedProduct;
       toggleDialog();
       setDialogValue(({ caloriesCost, category }) => ({
@@ -123,18 +130,22 @@ export const ProductAutocomplete: FC<Props> = ({
         defaultQuantity,
         category,
       }));
-    } else {
-      setDialogValue(EMPTY_DIALOG_VALUE);
-      onChange(selectedProduct);
-      setValueAddedOnTheFly(false);
+      return;
     }
+
+    setDialogValue(EMPTY_DIALOG_VALUE);
+    onChange(selectedProduct);
+    setValueAddedOnTheFly(false);
   };
 
   const handleSubmit = (product: ProductFormType): void => {
     setDialogValue(product);
     onChange({
+      freeSolo: true,
       name: product.name,
+      caloriesCost: product.caloriesCost,
       defaultQuantity: product.defaultQuantity,
+      category: product.category,
     });
     setValueAddedOnTheFly(true);
     handleDialogClose();

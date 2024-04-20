@@ -1,27 +1,41 @@
 import { useMemo } from 'react';
 import { type ProductSelectOption, productsApi } from '@/features/products';
+import { type SelectOption } from '@/types';
 
 const QUERY_ARG = {};
 
-export interface ProductOptionType {
+interface AutocompleteBaseOption {
+  freeSolo?: boolean;
   name: string;
   defaultQuantity: number;
-  inputValue?: string;
-  id?: number;
 }
+
+export interface AutocompleteExistingOption extends AutocompleteBaseOption {
+  freeSolo?: false;
+  id: number;
+}
+
+export interface AutocompleteFreeSoloOption extends AutocompleteBaseOption {
+  freeSolo: true;
+  caloriesCost: number;
+  category: SelectOption | null;
+  inputValue?: string;
+}
+
+export type AutocompleteOptionType = AutocompleteExistingOption | AutocompleteFreeSoloOption;
 
 const mapToAutocompleteOption = ({
   id,
   name,
   defaultQuantity,
-}: ProductSelectOption): ProductOptionType => ({
+}: ProductSelectOption): AutocompleteOptionType => ({
   id,
   name,
   defaultQuantity,
 });
 
 interface Result {
-  options: ProductOptionType[];
+  options: AutocompleteOptionType[];
   isLoading: boolean;
 }
 
