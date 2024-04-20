@@ -1,8 +1,9 @@
 import { CircularProgress, type FilterOptionsState } from '@mui/material';
 import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
-import { type FC, useState, type SyntheticEvent } from 'react';
+import { type FC, useState, type SyntheticEvent, type ReactElement } from 'react';
 import { useToggle } from '@/shared/hooks';
+import { type SelectOption, type SelectProps } from '@/types';
 import { type ProductOptionType, type ProductFormType } from '../model';
 import { ProductInputDialog } from './ProductInputDialog';
 
@@ -34,6 +35,7 @@ interface Props {
   valueTemporary?: boolean;
   helperText?: string;
   error?: boolean;
+  renderCategoryInput: (props: SelectProps<SelectOption>) => ReactElement;
   onChange: (selectedProduct: ProductOptionType | null) => void;
 }
 
@@ -44,6 +46,7 @@ export const ProductAutocomplete: FC<Props> = ({
   valueTemporary = false,
   helperText,
   error,
+  renderCategoryInput,
   onChange,
 }) => {
   const [valueAddedOnTheFly, setValueAddedOnTheFly] = useState(valueTemporary);
@@ -175,6 +178,7 @@ export const ProductAutocomplete: FC<Props> = ({
         formId="product-form"
         opened={dialogOpened}
         product={dialogValue}
+        renderCategoryInput={renderCategoryInput}
         onClose={handleDialogClose}
         onSubmit={handleSubmit}
       />

@@ -1,9 +1,19 @@
 import { TextField } from '@mui/material';
-import { type FormEventHandler, type FC, useEffect } from 'react';
+import { type FormEventHandler, type FC, useEffect, type ReactElement } from 'react';
 import { useInput } from '@/hooks';
 import { Button, Dialog } from '@/shared/ui';
-import { mapToNumericInputProps, mapToTextInputProps } from '@/utils/inputMapping';
-import { validateCaloriesCost, validateProductName, validateQuantity } from '@/utils/validation';
+import { type SelectOption, type SelectProps } from '@/types';
+import {
+  mapToNumericInputProps,
+  mapToSelectProps,
+  mapToTextInputProps,
+} from '@/utils/inputMapping';
+import {
+  validateCaloriesCost,
+  validateProductName,
+  validateQuantity,
+  validateSelectOption,
+} from '@/utils/validation';
 import { type ProductFormType } from '../model';
 
 interface Props {
@@ -12,6 +22,7 @@ interface Props {
   formId: string;
   opened: boolean;
   product: ProductFormType;
+  renderCategoryInput: (props: SelectProps<SelectOption>) => ReactElement;
   onClose: () => void;
   onSubmit: (product: ProductFormType) => void;
 }
@@ -22,6 +33,7 @@ export const ProductInputDialog: FC<Props> = ({
   formId,
   opened,
   product,
+  renderCategoryInput,
   onClose,
   onSubmit,
 }) => {
@@ -46,13 +58,21 @@ export const ProductInputDialog: FC<Props> = ({
     mapToInputProps: mapToNumericInputProps,
   });
 
+  const { clearValue: clearCategory, ...category } = useInput({
+    initialValue: product?.category ?? null,
+    errorHelperText: 'Category is required',
+    validate: validateSelectOption,
+    mapToInputProps: mapToSelectProps,
+  });
+
   useEffect(() => {
     if (opened) {
       clearProductName();
       clearCaloriesCost();
       clearDefaultQuantity();
+      clearCategory();
     }
-  }, [clearCaloriesCost, clearDefaultQuantity, clearProductName, opened]);
+  }, [clearCaloriesCost, clearCategory, clearDefaultQuantity, clearProductName, opened]);
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = event => {
     event.preventDefault();
@@ -60,7 +80,7 @@ export const ProductInputDialog: FC<Props> = ({
       name: productName.value,
       caloriesCost: caloriesCost.value,
       defaultQuantity: defaultQuantity.value,
-      category: null,
+      category: category.value,
     });
   };
 
@@ -93,6 +113,7 @@ export const ProductInputDialog: FC<Props> = ({
             label="Default quantity"
             placeholder="Enter default quantity"
           />
+          {renderCategoryInput(category.inputProps)}
         </form>
       }
       opened={opened}
