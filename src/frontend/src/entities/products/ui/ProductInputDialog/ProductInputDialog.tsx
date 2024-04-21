@@ -14,7 +14,7 @@ import {
   validateQuantity,
   validateSelectOption,
 } from '@/utils/validation';
-import { type ProductFormType } from '../model';
+import { type ProductFormType } from '../../model';
 
 interface Props {
   title: string;
