@@ -4,8 +4,8 @@ import TextField from '@mui/material/TextField';
 import { type FC, useState, type SyntheticEvent, type ReactElement } from 'react';
 import { useToggle } from '@/shared/hooks';
 import { type SelectOption, type SelectProps } from '@/types';
-import { type AutocompleteOptionType, type ProductFormType } from '../model';
-import { ProductInputDialog } from './ProductInputDialog';
+import { type AutocompleteOptionType, type ProductFormType } from '../../model';
+import { ProductInputDialog } from '../ProductInputDialog';
 
 const filter = createFilterOptions<AutocompleteOptionType>();
 
