@@ -20,7 +20,9 @@ export class AutocompleteOptionTypeBuilder {
 }
 
 export class ProductAutocompleteBuilder {
+  private _value: AutocompleteOptionType | null = null;
   private _onChangeMock = vi.fn();
+  private _renderInputDialogMock = vi.fn();
   private readonly _options: AutocompleteOptionType[] = [];
 
   please(): ReactElement {
@@ -29,9 +31,9 @@ export class ProductAutocompleteBuilder {
         <ProductAutocomplete
           options={this._options}
           loading={false}
-          value={null}
+          value={this._value}
           onChange={this._onChangeMock}
-          renderCategoryInput={vi.fn()}
+          renderInputDialog={this._renderInputDialogMock}
         />
       </ThemeProvider>
     );
@@ -42,8 +44,18 @@ export class ProductAutocompleteBuilder {
     return this;
   }
 
+  withRenderInputDialogMock(fn: Mock): this {
+    this._renderInputDialogMock = fn;
+    return this;
+  }
+
   withOptions(options: AutocompleteOptionType[]): this {
     this._options.push(...options);
+    return this;
+  }
+
+  withValue(value: AutocompleteOptionType): this {
+    this._value = value;
     return this;
   }
 }

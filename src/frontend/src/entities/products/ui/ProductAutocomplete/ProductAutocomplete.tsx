@@ -3,9 +3,12 @@ import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import { type FC, useState, type SyntheticEvent, type ReactElement } from 'react';
 import { useToggle } from '@/shared/hooks';
-import { type SelectOption, type SelectProps } from '@/types';
-import { type AutocompleteOptionType, type ProductFormType } from '../../model';
-import { ProductInputDialog } from '../ProductInputDialog';
+import {
+  mapToProductFormType,
+  type AutocompleteOptionType,
+  type ProductFormType,
+} from '../../model';
+import { type ProductInputDialogProps } from '../ProductInputDialog';
 
 const filter = createFilterOptions<AutocompleteOptionType>();
 
@@ -28,13 +31,15 @@ const EMPTY_DIALOG_VALUE: ProductFormType = {
   category: null,
 };
 
+export type RenderInputDialogProps = Omit<ProductInputDialogProps, 'renderCategoryInput'>;
+
 interface Props {
   options: readonly AutocompleteOptionType[];
   loading: boolean;
   value: AutocompleteOptionType | null;
   helperText?: string;
   error?: boolean;
-  renderCategoryInput: (props: SelectProps<SelectOption>) => ReactElement;
+  renderInputDialog: (props: RenderInputDialogProps) => ReactElement;
   onChange: (selectedProduct: AutocompleteOptionType | null) => void;
 }
 
@@ -44,14 +49,17 @@ export const ProductAutocomplete: FC<Props> = ({
   value,
   helperText,
   error,
-  renderCategoryInput,
+  renderInputDialog,
   onChange,
 }) => {
   const [valueAddedOnTheFly, setValueAddedOnTheFly] = useState(value?.freeSolo ?? false);
   const [dialogTitle, setDialogTitle] = useState('');
   const [dialogSubmitText, setDialogSubmitText] = useState('');
   const [dialogOpened, toggleDialog] = useToggle();
-  const [dialogValue, setDialogValue] = useState<ProductFormType>(EMPTY_DIALOG_VALUE);
+
+  const [dialogValue, setDialogValue] = useState<ProductFormType>(
+    value?.freeSolo ? mapToProductFormType(value) : EMPTY_DIALOG_VALUE,
+  );
 
   const handleDialogClose = (): void => {
     toggleDialog();
@@ -182,17 +190,16 @@ export const ProductAutocomplete: FC<Props> = ({
           />
         )}
       />
-      <ProductInputDialog
-        title={dialogTitle}
-        submitText={dialogSubmitText}
-        formId="product-form"
-        opened={dialogOpened}
-        submitting={false}
-        product={dialogValue}
-        renderCategoryInput={renderCategoryInput}
-        onClose={handleDialogClose}
-        onSubmit={handleSubmit}
-      />
+      {renderInputDialog({
+        title: dialogTitle,
+        submitText: dialogSubmitText,
+        formId: 'product-form',
+        opened: dialogOpened,
+        submitting: false,
+        product: dialogValue,
+        onClose: handleDialogClose,
+        onSubmit: handleSubmit,
+      })}
     </>
   );
 };

@@ -16,7 +16,7 @@ import {
 } from '@/utils/validation';
 import { type ProductFormType } from '../../model';
 
-interface Props {
+export interface ProductInputDialogProps {
   title: string;
   submitText: string;
   formId: string;
@@ -28,7 +28,7 @@ interface Props {
   onSubmit: (product: ProductFormType) => void;
 }
 
-export const ProductInputDialog: FC<Props> = ({
+export const ProductInputDialog: FC<ProductInputDialogProps> = ({
   title,
   submitText,
   formId,
