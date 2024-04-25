@@ -1,39 +1,22 @@
-import { ThemeProvider } from '@mui/material';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import theme from '@/theme';
 import { type SelectOption, type SelectProps } from '@/types';
 import { type ProductFormType } from '../../model';
-import { ProductInputDialog } from './ProductInputDialog';
+import { createProduct, createProductInputDialog } from './ProductInputDialog.fixture';
 
 describe('when input is valid', () => {
   test('should submit form', async () => {
     const user = userEvent.setup();
     const renderCategoryInputMock = vi.fn();
     const onSubmitMock = vi.fn();
+    const product = createProduct().withCategory({ id: 1, name: 'Test category' }).please();
 
     render(
-      <ThemeProvider theme={theme}>
-        <ProductInputDialog
-          opened
-          submitting={false}
-          title="Test"
-          submitText="Submit"
-          formId="test-form"
-          product={{
-            name: '',
-            caloriesCost: 100,
-            defaultQuantity: 100,
-            category: {
-              id: 1,
-              name: 'Test category',
-            },
-          }}
-          renderCategoryInput={renderCategoryInputMock}
-          onSubmit={onSubmitMock}
-          onClose={vi.fn()}
-        />
-      </ThemeProvider>,
+      createProductInputDialog()
+        .withProduct(product)
+        .withRenderCategoryInputMock(renderCategoryInputMock)
+        .withOnSubmitMock(onSubmitMock)
+        .please(),
     );
 
     const productName = await screen.findByPlaceholderText(/product name/i);
@@ -47,15 +30,15 @@ describe('when input is valid', () => {
     await user.click(screen.getByRole('button', { name: /submit/i }));
 
     expect(renderCategoryInputMock).toHaveBeenCalledWith(
-      expect.objectContaining({
+      expect.objectContaining<Partial<SelectProps<SelectOption>>>({
         value: {
           id: 1,
           name: 'Test category',
         },
-      } satisfies Partial<SelectProps<SelectOption>>),
+      }),
     );
 
-    expect(onSubmitMock).toHaveBeenCalledWith({
+    expect(onSubmitMock).toHaveBeenCalledWith<[ProductFormType]>({
       name: 'Test product',
       caloriesCost: 150,
       defaultQuantity: 50,
@@ -63,6 +46,6 @@ describe('when input is valid', () => {
         id: 1,
         name: 'Test category',
       },
-    } satisfies ProductFormType);
+    });
   });
 });

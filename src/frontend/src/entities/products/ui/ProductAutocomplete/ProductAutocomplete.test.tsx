@@ -8,12 +8,11 @@ describe('when existing option is selected', () => {
     const options = givenOptions('Bread', 'Milk', 'Cheese');
     const onChangeMock = vi.fn();
     const user = userEvent.setup();
-    const ui = createProductAutocomplete()
-      .withOnChangeMock(onChangeMock)
-      .withOptions(options)
-      .please();
 
-    render(ui);
+    render(
+      createProductAutocomplete().withOnChangeMock(onChangeMock).withOptions(options).please(),
+    );
+
     await user.type(screen.getByPlaceholderText(/product/i), 'Mi');
     await user.click(screen.getByRole('option', { name: /milk/i }));
 
@@ -26,12 +25,14 @@ describe('when typing non existing option', () => {
     const options = givenOptions('Bread', 'Milk', 'Cheese');
     const renderInputDialogMock = vi.fn();
     const user = userEvent.setup();
-    const ui = createProductAutocomplete()
-      .withRenderInputDialogMock(renderInputDialogMock)
-      .withOptions(options)
-      .please();
 
-    render(ui);
+    render(
+      createProductAutocomplete()
+        .withRenderInputDialogMock(renderInputDialogMock)
+        .withOptions(options)
+        .please(),
+    );
+
     await user.type(screen.getByPlaceholderText(/product/i), 'Chicken');
     await user.click(screen.getByRole('option', { name: /add "chicken"/i }));
 
@@ -57,22 +58,24 @@ describe('when current input value does not exist in options', () => {
     const options = givenOptions('Bread', 'Milk', 'Cheese');
     const renderInputDialogMock = vi.fn();
     const user = userEvent.setup();
-    const ui = createProductAutocomplete()
-      .withRenderInputDialogMock(renderInputDialogMock)
-      .withOptions(options)
-      .withValue({
-        freeSolo: true,
-        name: 'Chicken',
-        defaultQuantity: 120,
-        caloriesCost: 150,
-        category: {
-          id: 1,
-          name: 'Meat',
-        },
-      })
-      .please();
 
-    render(ui);
+    render(
+      createProductAutocomplete()
+        .withRenderInputDialogMock(renderInputDialogMock)
+        .withOptions(options)
+        .withValue({
+          freeSolo: true,
+          name: 'Chicken',
+          defaultQuantity: 120,
+          caloriesCost: 150,
+          category: {
+            id: 1,
+            name: 'Meat',
+          },
+        })
+        .please(),
+    );
+
     await user.click(screen.getByPlaceholderText(/product/i));
     await user.click(screen.getByRole('option', { name: /edit "chicken"/i }));
 
