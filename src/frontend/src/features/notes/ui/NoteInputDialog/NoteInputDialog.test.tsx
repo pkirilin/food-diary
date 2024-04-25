@@ -1,5 +1,5 @@
 import { create } from 'tests/dsl';
-import { render, screen, within } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MealType, type NoteCreateEdit } from '../../models';
 
@@ -33,8 +33,11 @@ describe('when opened for edit, changed product, closed without save, and opened
 
     render(ui);
     await user.click(screen.getByText(/open dialog/i));
-    await user.click(screen.getByPlaceholderText(/select a product/i));
-    await user.click(within(screen.getByRole('listbox')).getByText(/second product/i));
+
+    const productInput = screen.getByRole('combobox', { name: /product/i });
+    const secondProductOption = screen.getByRole('option', { name: /second product/i });
+    await user.selectOptions(productInput, [secondProductOption]);
+
     await user.click(screen.getByText(/cancel/i));
     await user.click(screen.getByText(/open dialog/i));
 
@@ -52,8 +55,9 @@ describe('when product changed', () => {
       .please();
 
     render(ui);
-    await user.click(screen.getByPlaceholderText(/select a product/i));
-    await user.click(within(screen.getByRole('listbox')).getByText(/test product/i));
+    const productInput = screen.getByRole('combobox', { name: /product/i });
+    const testProductOption = screen.getByRole('option', { name: /test product/i });
+    await user.selectOptions(productInput, [testProductOption]);
 
     expect(screen.getByPlaceholderText(/product quantity/i)).toHaveValue(123);
   });
@@ -68,8 +72,9 @@ describe('when product changed', () => {
       .please();
 
     render(ui);
-    await user.click(screen.getByPlaceholderText(/select a product/i));
-    await user.click(within(screen.getByRole('listbox')).getByText(/second product/i));
+    const productInput = screen.getByRole('combobox', { name: /product/i });
+    const secondProductOption = screen.getByRole('option', { name: /second product/i });
+    await user.selectOptions(productInput, [secondProductOption]);
 
     expect(screen.getByPlaceholderText(/product quantity/i)).toHaveValue(300);
   });
@@ -88,20 +93,22 @@ describe('when input is valid', () => {
 
     render(ui);
 
-    const productInput = screen.getByPlaceholderText(/select a product/i);
+    const productInput = screen.getByRole('combobox', { name: /product/i });
+    const testProductOption = screen.getByRole('option', { name: /test product/i });
+    await user.selectOptions(productInput, [testProductOption]);
+
     const quantityInput = screen.getByPlaceholderText(/product quantity/i);
-    await user.click(productInput);
-    await user.click(within(screen.getByRole('listbox')).getByText(/test product/i));
     await user.clear(quantityInput);
     await user.type(quantityInput, '150');
+
     await user.click(screen.getByRole('button', { name: /submit/i }));
 
-    expect(onSubmitMock).toHaveBeenCalledWith({
+    expect(onSubmitMock).toHaveBeenCalledWith<[NoteCreateEdit]>({
       mealType: MealType.Breakfast,
       pageId: 1,
       productId: 1,
       productQuantity: 150,
       displayOrder: 1,
-    } satisfies NoteCreateEdit);
+    });
   });
 });

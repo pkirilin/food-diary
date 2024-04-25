@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { type ProductSelectOption, productsApi } from '@/features/products';
-import { type SelectOption } from '@/types';
+import { type ValidatorFunction, type MapToInputPropsFunction, type SelectOption } from '@/types';
+import { type ProductAutocompleteProps } from '../ui';
 import { type ProductFormType } from './types';
 
 const QUERY_ARG = {};
@@ -24,6 +25,26 @@ export interface AutocompleteFreeSoloOption extends AutocompleteBaseOption {
 }
 
 export type AutocompleteOptionType = AutocompleteExistingOption | AutocompleteFreeSoloOption;
+
+export type AutocompleteInputProps = Omit<
+  ProductAutocompleteProps,
+  'options' | 'loading' | 'renderInputDialog'
+>;
+
+export const mapToAutocompleteProps: MapToInputPropsFunction<
+  AutocompleteOptionType | null,
+  AutocompleteInputProps
+> = ({ value, setValue, isInvalid, helperText }) => ({
+  value,
+  onChange: newValue => {
+    setValue(newValue);
+  },
+  error: isInvalid,
+  helperText,
+});
+
+export const validateAutocompleteInput: ValidatorFunction<AutocompleteOptionType | null> = value =>
+  value !== null;
 
 export const mapToProductFormType = ({
   name,

@@ -1,10 +1,10 @@
 import { TextField } from '@mui/material';
-import { type FC, useEffect, type FormEventHandler } from 'react';
+import { type FC, useEffect, type FormEventHandler, type ReactElement } from 'react';
+import { productsModel } from '@/entities/products';
 import { Button, Dialog } from '@/shared/ui';
-import { ProductSelect, type ProductSelectOption } from 'src/features/products';
 import { useInput } from 'src/hooks';
-import { mapToNumericInputProps, mapToSelectProps } from 'src/utils/inputMapping';
-import { validateQuantity, validateSelectOption } from 'src/utils/validation';
+import { mapToNumericInputProps } from 'src/utils/inputMapping';
+import { validateQuantity } from 'src/utils/validation';
 import { getMealName, type MealType, type NoteCreateEdit } from '../../models';
 
 interface Props {
@@ -13,12 +13,11 @@ interface Props {
   isOpened: boolean;
   mealType: MealType;
   pageId: number;
-  product: ProductSelectOption | null;
-  products: ProductSelectOption[];
-  productsLoading: boolean;
+  product: productsModel.AutocompleteOptionType | null;
   quantity: number;
   displayOrder: number;
   submitInProgress: boolean;
+  renderProductAutocomplete: (props: productsModel.AutocompleteInputProps) => ReactElement;
   onClose: () => void;
   onSubmit: (note: NoteCreateEdit) => void;
 }
@@ -30,19 +29,18 @@ export const NoteInputDialog: FC<Props> = ({
   mealType,
   pageId,
   product,
-  products,
-  productsLoading,
   quantity,
   displayOrder,
   submitInProgress,
+  renderProductAutocomplete,
   onClose,
   onSubmit,
 }) => {
   const { clearValue: clearProduct, ...productInput } = useInput({
     initialValue: product,
     errorHelperText: 'Product is required',
-    validate: validateSelectOption,
-    mapToInputProps: mapToSelectProps,
+    validate: productsModel.validateAutocompleteInput,
+    mapToInputProps: productsModel.mapToAutocompleteProps,
   });
 
   const {
@@ -74,7 +72,7 @@ export const NoteInputDialog: FC<Props> = ({
   const handleSubmit: FormEventHandler<HTMLFormElement> = event => {
     event.preventDefault();
 
-    if (productInput.value) {
+    if (productInput.value && !productInput.value.freeSolo) {
       onSubmit({
         mealType,
         productQuantity: quantityInput.value,
@@ -105,14 +103,10 @@ export const NoteInputDialog: FC<Props> = ({
             inputProps={{ readOnly: true }}
             helperText=" "
           />
-          <ProductSelect
-            {...productInput.inputProps}
-            label="Product"
-            placeholder="Select a product"
-            autoFocus
-            options={products}
-            optionsLoading={productsLoading}
-          />
+          {renderProductAutocomplete({
+            ...productInput.inputProps,
+            autoFocus: true,
+          })}
           <TextField
             {...quantityInput.inputProps}
             type="number"

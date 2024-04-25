@@ -1,9 +1,12 @@
 import AddIcon from '@mui/icons-material/Add';
 import { useState, type FC, useEffect } from 'react';
+import { ProductAutocomplete, ProductInputDialog, productsModel } from '@/entities/products';
+import { CategorySelect } from '@/features/categories';
+import { useCategorySelect } from '@/features/products';
 import { Button } from '@/shared/ui';
 import { notesApi } from '../api';
 import { toCreateNoteRequest } from '../mapping';
-import { useProductSelect, useNotes } from '../model';
+import { useNotes } from '../model';
 import { type NoteCreateEdit, type MealType } from '../models';
 import { NoteInputDialog } from './NoteInputDialog';
 
@@ -17,7 +20,8 @@ export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
   const [createNote, createNoteResponse] = notesApi.useCreateNoteMutation();
   const [isDialogOpened, setIsDialogOpened] = useState(false);
   const notes = useNotes(pageId);
-  const productSelect = useProductSelect();
+  const productAutocomplete = productsModel.useAutocomplete();
+  const categorySelect = useCategorySelect();
 
   useEffect(() => {
     if (createNoteResponse.isSuccess && notes.isChanged) {
@@ -55,12 +59,31 @@ export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
         isOpened={isDialogOpened}
         mealType={mealType}
         product={null}
-        products={productSelect.data}
-        productsLoading={productSelect.isLoading}
         quantity={100}
         pageId={pageId}
         displayOrder={displayOrder}
         submitInProgress={createNoteResponse.isLoading || notes.isFetching}
+        renderProductAutocomplete={autocompleteProps => (
+          <ProductAutocomplete
+            {...autocompleteProps}
+            options={productAutocomplete.options}
+            loading={productAutocomplete.isLoading}
+            renderInputDialog={productInputProps => (
+              <ProductInputDialog
+                {...productInputProps}
+                renderCategoryInput={categoryInputProps => (
+                  <CategorySelect
+                    {...categoryInputProps}
+                    label="Category"
+                    placeholder="Select a category"
+                    options={categorySelect.data}
+                    optionsLoading={categorySelect.isLoading}
+                  />
+                )}
+              />
+            )}
+          />
+        )}
         onClose={handleDialogClose}
         onSubmit={handleAddNote}
       />

@@ -33,22 +33,24 @@ const EMPTY_DIALOG_VALUE: ProductFormType = {
 
 export type RenderInputDialogProps = Omit<ProductInputDialogProps, 'renderCategoryInput'>;
 
-interface Props {
+export interface ProductAutocompleteProps {
   options: readonly AutocompleteOptionType[];
   loading: boolean;
   value: AutocompleteOptionType | null;
   helperText?: string;
   error?: boolean;
+  autoFocus?: boolean;
   renderInputDialog: (props: RenderInputDialogProps) => ReactElement;
   onChange: (selectedProduct: AutocompleteOptionType | null) => void;
 }
 
-export const ProductAutocomplete: FC<Props> = ({
+export const ProductAutocomplete: FC<ProductAutocompleteProps> = ({
   options,
   loading,
   value,
   helperText,
   error,
+  autoFocus,
   renderInputDialog,
   onChange,
 }) => {
@@ -179,6 +181,7 @@ export const ProductAutocomplete: FC<Props> = ({
             placeholder="Select a product"
             error={error}
             helperText={helperText}
+            autoFocus={autoFocus}
             InputProps={{
               ...inputParams.InputProps,
               endAdornment: loading ? (

@@ -2,6 +2,7 @@ import { WithTriggerButton } from 'tests/sideEffects';
 import { ThemeProvider } from '@mui/material';
 import { type ReactElement } from 'react';
 import { type Mock } from 'vitest';
+import { type productsModel } from '@/entities/products';
 import { MealType, NoteInputDialog } from '@/features/notes';
 import theme from '@/theme';
 import { type ProductSelectOption } from 'src/features/products';
@@ -26,11 +27,10 @@ export class NoteInputDialogBuilder {
               mealType={MealType.Breakfast}
               pageId={1}
               product={this.getSelectedProduct()}
-              products={this._products}
-              productsLoading={false}
               quantity={this._quantity}
               displayOrder={1}
               submitInProgress={false}
+              renderProductAutocomplete={this.renderProductAutocomplete.bind(this)}
               onClose={this._openAndCloseOnButtonClick ? onTriggerClick : vi.fn()}
               onSubmit={this._onSubmitMock}
             />
@@ -88,5 +88,27 @@ export class NoteInputDialogBuilder {
     }
 
     return { ...product };
+  }
+
+  private renderProductAutocomplete({
+    value,
+    onChange,
+  }: productsModel.AutocompleteInputProps): ReactElement {
+    return (
+      <label>
+        Product
+        <select
+          value={value?.name ?? ''}
+          onChange={event => {
+            const product = this._products.find(p => p.name === event.target.value);
+            onChange(product ?? null);
+          }}
+        >
+          {this._products.map(p => (
+            <option key={p.id}>{p.name}</option>
+          ))}
+        </select>
+      </label>
+    );
   }
 }
