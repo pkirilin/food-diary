@@ -19,7 +19,7 @@ interface Props {
   submitInProgress: boolean;
   renderProductAutocomplete: (props: productsModel.AutocompleteInputProps) => ReactElement;
   onClose: () => void;
-  onSubmit: (note: NoteCreateEdit) => void;
+  onSubmit: (note: NoteCreateEdit) => Promise<void>;
 }
 
 export const NoteInputDialog: FC<Props> = ({
@@ -69,15 +69,15 @@ export const NoteInputDialog: FC<Props> = ({
     }
   }, [isOpened, productInput.value, productInput.isTouched, setQuantity, clearQuantity]);
 
-  const handleSubmit: FormEventHandler<HTMLFormElement> = event => {
+  const handleSubmit: FormEventHandler<HTMLFormElement> = async event => {
     event.preventDefault();
 
-    if (productInput.value && !productInput.value.freeSolo) {
-      onSubmit({
+    if (productInput.value) {
+      await onSubmit({
         mealType,
         productQuantity: quantityInput.value,
         displayOrder,
-        productId: productInput.value.id,
+        product: productInput.value,
         pageId,
       });
     }

@@ -1,6 +1,7 @@
 import { create } from 'tests/dsl';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { type productsModel } from '@/entities/products';
 import { MealType, type NoteCreateEdit } from '../../models';
 
 describe('when opened for existing note', () => {
@@ -106,7 +107,10 @@ describe('when input is valid', () => {
     expect(onSubmitMock).toHaveBeenCalledWith<[NoteCreateEdit]>({
       mealType: MealType.Breakfast,
       pageId: 1,
-      productId: 1,
+      product: expect.objectContaining<Partial<productsModel.AutocompleteExistingOption>>({
+        name: 'Test product',
+        defaultQuantity: 123,
+      }),
       productQuantity: 150,
       displayOrder: 1,
     });

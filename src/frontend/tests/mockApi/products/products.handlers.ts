@@ -5,6 +5,7 @@ import {
   type CreateProductRequest,
   type EditProductRequest,
   type ProductsResponse,
+  type CreateProductResponse,
 } from 'src/features/products';
 import { type SelectOption } from 'src/types';
 import { DelayedHttpResponse } from '../DelayedHttpResponse';
@@ -55,11 +56,11 @@ export const handlers: HttpHandler[] = [
     const body = await request.json();
     const result = productsService.create(body);
 
-    if (result === 'CategoryNotFound') {
+    if (result.type === 'CategoryNotFound') {
       return await DelayedHttpResponse.badRequest();
     }
 
-    return await DelayedHttpResponse.ok();
+    return await DelayedHttpResponse.json<CreateProductResponse>({ id: result.id });
   }),
 
   http.put<{ id: string }, EditProductRequest>(

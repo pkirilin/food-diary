@@ -2,7 +2,7 @@ import { useMemo, type FC, useEffect, type ReactElement } from 'react';
 import { ProductAutocomplete, ProductInputDialog, productsModel } from '@/entities/products';
 import { CategorySelect } from '@/features/categories';
 import { NoteInputDialog, notesApi, useNotes } from '@/features/notes';
-import { useCategorySelect } from '@/features/products';
+import { type CreateProductRequest, productsApi, useCategorySelect } from '@/features/products';
 import { useToggle } from '@/shared/hooks';
 import { toEditNoteRequest, toProductSelectOption } from '../mapping';
 import { type NoteCreateEdit, type NoteItem } from '../models';
@@ -13,10 +13,23 @@ interface Props {
   children: (toggleDialog: () => void) => ReactElement;
 }
 
+const toCreateProductRequest = ({
+  name,
+  caloriesCost,
+  defaultQuantity,
+  category,
+}: productsModel.AutocompleteFreeSoloOption): CreateProductRequest => ({
+  name,
+  caloriesCost,
+  defaultQuantity,
+  categoryId: category?.id ?? 0,
+});
+
 export const EditNote: FC<Props> = ({ note, pageId, children }) => {
   const notes = useNotes(pageId);
   const product = useMemo(() => toProductSelectOption(note), [note]);
   const [editNote, editNoteResponse] = notesApi.useEditNoteMutation();
+  const [createProduct] = productsApi.useCreateProductMutation();
   const [dialogOpened, toggleDialog] = useToggle();
   const productAutocomplete = productsModel.useAutocomplete();
   const categorySelect = useCategorySelect();
@@ -27,9 +40,22 @@ export const EditNote: FC<Props> = ({ note, pageId, children }) => {
     }
   }, [editNoteResponse.isSuccess, notes.isChanged, toggleDialog]);
 
-  const handleSubmit = (formData: NoteCreateEdit): void => {
-    const request = toEditNoteRequest(note.id, formData);
-    void editNote(request);
+  const createProductIfNotExists = async (
+    product: productsModel.AutocompleteOptionType,
+  ): Promise<number> => {
+    if (!product.freeSolo) {
+      return product.id;
+    }
+
+    const createProductRequest = toCreateProductRequest(product);
+    const createProductResponse = await createProduct(createProductRequest).unwrap();
+    return createProductResponse.id;
+  };
+
+  const handleSubmit = async (formData: NoteCreateEdit): Promise<void> => {
+    const productId = await createProductIfNotExists(formData.product);
+    const request = toEditNoteRequest(note.id, productId, formData);
+    await editNote(request);
   };
 
   return (

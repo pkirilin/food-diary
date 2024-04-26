@@ -1,4 +1,4 @@
-import { type NoteCreateEdit } from 'src/features/notes';
+import { type CreateNoteRequest, type EditNoteRequest } from 'src/features/notes';
 import { db, type DbNote, type DbProduct } from '../db';
 
 type Result = 'Success' | 'PageNotFound' | 'ProductNotFound';
@@ -45,7 +45,7 @@ export const create = ({
   displayOrder,
   productId,
   pageId,
-}: NoteCreateEdit): Result => {
+}: CreateNoteRequest): Result => {
   const page = db.page.findFirst({
     where: {
       id: { equals: pageId },
@@ -88,7 +88,7 @@ export const create = ({
 
 export const update = (
   id: number,
-  { mealType, productQuantity, displayOrder, productId, pageId }: NoteCreateEdit,
+  { mealType, productQuantity, displayOrder, productId, pageId }: EditNoteRequest,
 ): Result => {
   const page = db.page.findFirst({
     where: {

@@ -1,3 +1,5 @@
+import { type productsModel } from '@/entities/products';
+
 export enum MealType {
   Breakfast = 1,
   SecondBreakfast = 2,
@@ -57,8 +59,8 @@ export interface NoteItem {
 
 export interface NoteCreateEdit {
   mealType: MealType;
-  productId: number;
   pageId: number;
+  product: productsModel.AutocompleteOptionType;
   productQuantity: number;
   displayOrder: number;
 }

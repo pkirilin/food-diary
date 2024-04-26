@@ -2,7 +2,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { useState, type FC, useEffect } from 'react';
 import { ProductAutocomplete, ProductInputDialog, productsModel } from '@/entities/products';
 import { CategorySelect } from '@/features/categories';
-import { useCategorySelect } from '@/features/products';
+import { type CreateProductRequest, productsApi, useCategorySelect } from '@/features/products';
 import { Button } from '@/shared/ui';
 import { notesApi } from '../api';
 import { toCreateNoteRequest } from '../mapping';
@@ -16,8 +16,21 @@ interface Props {
   displayOrder: number;
 }
 
+const toCreateProductRequest = ({
+  name,
+  caloriesCost,
+  defaultQuantity,
+  category,
+}: productsModel.AutocompleteFreeSoloOption): CreateProductRequest => ({
+  name,
+  caloriesCost,
+  defaultQuantity,
+  categoryId: category?.id ?? 0,
+});
+
 export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
   const [createNote, createNoteResponse] = notesApi.useCreateNoteMutation();
+  const [createProduct] = productsApi.useCreateProductMutation();
   const [isDialogOpened, setIsDialogOpened] = useState(false);
   const notes = useNotes(pageId);
   const productAutocomplete = productsModel.useAutocomplete();
@@ -37,9 +50,22 @@ export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
     setIsDialogOpened(false);
   };
 
-  const handleAddNote = (note: NoteCreateEdit): void => {
-    const request = toCreateNoteRequest(note);
-    void createNote(request);
+  const createProductIfNotExists = async (
+    product: productsModel.AutocompleteOptionType,
+  ): Promise<number> => {
+    if (!product.freeSolo) {
+      return product.id;
+    }
+
+    const createProductRequest = toCreateProductRequest(product);
+    const createProductResponse = await createProduct(createProductRequest).unwrap();
+    return createProductResponse.id;
+  };
+
+  const handleAddNote = async (note: NoteCreateEdit): Promise<void> => {
+    const productId = await createProductIfNotExists(note.product);
+    const request = toCreateNoteRequest(note, productId);
+    await createNote(request);
   };
 
   return (

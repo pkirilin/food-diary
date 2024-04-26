@@ -2,6 +2,7 @@ import { api } from 'src/api';
 import { createUrl } from 'src/utils';
 import { type ProductSelectOption, type ProductsResponse } from '../types';
 import {
+  type CreateProductResponse,
   type CreateProductRequest,
   type DeleteProductsRequest,
   type EditProductRequest,
@@ -20,13 +21,13 @@ export const productsApi = api.injectEndpoints({
       providesTags: ['product'],
     }),
 
-    createProduct: builder.mutation<void, CreateProductRequest>({
+    createProduct: builder.mutation<CreateProductResponse, CreateProductRequest>({
       query: product => ({
         method: 'POST',
         url: '/api/v1/products',
         body: product,
       }),
-      invalidatesTags: ['product', 'note'],
+      invalidatesTags: ['product'],
     }),
 
     editProduct: builder.mutation<void, EditProductRequest>({

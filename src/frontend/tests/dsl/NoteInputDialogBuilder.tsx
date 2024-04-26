@@ -43,7 +43,7 @@ export class NoteInputDialogBuilder {
   withProductForSelect({
     name = 'Test',
     defaultQuantity = 100,
-  }: Partial<ProductSelectOption>): this {
+  }: Partial<productsModel.AutocompleteExistingOption>): this {
     this._products.push({
       id: this._products.length + 1,
       name,

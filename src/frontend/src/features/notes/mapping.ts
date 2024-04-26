@@ -12,13 +12,10 @@ export const toProductSelectOption = ({
   defaultQuantity: productDefaultQuantity,
 });
 
-export const toCreateNoteRequest = ({
-  mealType,
-  productId,
-  pageId,
-  productQuantity,
-  displayOrder,
-}: NoteCreateEdit): CreateNoteRequest => ({
+export const toCreateNoteRequest = (
+  { mealType, pageId, productQuantity, displayOrder }: NoteCreateEdit,
+  productId: number,
+): CreateNoteRequest => ({
   mealType,
   productId,
   pageId,
@@ -28,7 +25,8 @@ export const toCreateNoteRequest = ({
 
 export const toEditNoteRequest = (
   id: number,
-  { mealType, productId, pageId, productQuantity, displayOrder }: NoteCreateEdit,
+  productId: number,
+  { mealType, pageId, productQuantity, displayOrder }: NoteCreateEdit,
 ): EditNoteRequest => ({
   id,
   mealType,
