@@ -65,6 +65,7 @@ describe('when current input value does not exist in options', () => {
         .withOptions(options)
         .withValue({
           freeSolo: true,
+          editing: false,
           name: 'Chicken',
           defaultQuantity: 120,
           caloriesCost: 150,

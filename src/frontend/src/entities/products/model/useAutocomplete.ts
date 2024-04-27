@@ -19,6 +19,7 @@ export interface AutocompleteExistingOption extends AutocompleteBaseOption {
 
 export interface AutocompleteFreeSoloOption extends AutocompleteBaseOption {
   freeSolo: true;
+  editing: boolean;
   caloriesCost: number;
   category: SelectOption | null;
   inputValue?: string;
