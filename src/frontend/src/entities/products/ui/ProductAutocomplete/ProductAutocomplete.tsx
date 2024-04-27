@@ -90,6 +90,7 @@ export const ProductAutocomplete: FC<ProductAutocompleteProps> = ({
       setTimeout(() => {
         setDialogTitle('Add product');
         setDialogSubmitText('Create');
+        setDialogValue(EMPTY_DIALOG_VALUE);
       });
 
       return filtered;
