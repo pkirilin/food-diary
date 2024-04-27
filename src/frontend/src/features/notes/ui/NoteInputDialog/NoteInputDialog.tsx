@@ -16,7 +16,7 @@ interface Props {
   product: productsModel.AutocompleteOptionType | null;
   quantity: number;
   displayOrder: number;
-  submitInProgress: boolean;
+  submitting: boolean;
   renderProductAutocomplete: (props: productsModel.AutocompleteInputProps) => ReactElement;
   onClose: () => void;
   onSubmit: (note: NoteCreateEdit) => Promise<void>;
@@ -31,7 +31,7 @@ export const NoteInputDialog: FC<Props> = ({
   product,
   quantity,
   displayOrder,
-  submitInProgress,
+  submitting,
   renderProductAutocomplete,
   onClose,
   onSubmit,
@@ -123,13 +123,13 @@ export const NoteInputDialog: FC<Props> = ({
           type="submit"
           form="note-input-form"
           disabled={submitDisabled}
-          loading={submitInProgress}
+          loading={submitting}
         >
           {submitText}
         </Button>
       )}
       renderCancel={cancelProps => (
-        <Button {...cancelProps} type="button" onClick={onClose} disabled={submitInProgress}>
+        <Button {...cancelProps} type="button" onClick={onClose} disabled={submitting}>
           Cancel
         </Button>
       )}

@@ -29,7 +29,7 @@ export const EditNote: FC<Props> = ({ note, pageId, children }) => {
   const notes = useNotes(pageId);
   const product = useMemo(() => toProductSelectOption(note), [note]);
   const [editNote, editNoteResponse] = notesApi.useEditNoteMutation();
-  const [createProduct] = productsApi.useCreateProductMutation();
+  const [createProduct, createProductResponse] = productsApi.useCreateProductMutation();
   const [dialogOpened, toggleDialog] = useToggle();
   const productAutocomplete = productsModel.useAutocomplete();
   const categorySelect = useCategorySelect();
@@ -48,8 +48,8 @@ export const EditNote: FC<Props> = ({ note, pageId, children }) => {
     }
 
     const createProductRequest = toCreateProductRequest(product);
-    const createProductResponse = await createProduct(createProductRequest).unwrap();
-    return createProductResponse.id;
+    const { id } = await createProduct(createProductRequest).unwrap();
+    return id;
   };
 
   const handleSubmit = async (formData: NoteCreateEdit): Promise<void> => {
@@ -70,7 +70,9 @@ export const EditNote: FC<Props> = ({ note, pageId, children }) => {
         product={product}
         quantity={note.productQuantity}
         displayOrder={note.displayOrder}
-        submitInProgress={editNoteResponse.isLoading || notes.isFetching}
+        submitting={
+          createProductResponse.isLoading || editNoteResponse.isLoading || notes.isFetching
+        }
         renderProductAutocomplete={autocompleteProps => (
           <ProductAutocomplete
             {...autocompleteProps}

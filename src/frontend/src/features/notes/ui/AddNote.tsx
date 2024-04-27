@@ -30,7 +30,7 @@ const toCreateProductRequest = ({
 
 export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
   const [createNote, createNoteResponse] = notesApi.useCreateNoteMutation();
-  const [createProduct] = productsApi.useCreateProductMutation();
+  const [createProduct, createProductResponse] = productsApi.useCreateProductMutation();
   const [isDialogOpened, setIsDialogOpened] = useState(false);
   const notes = useNotes(pageId);
   const productAutocomplete = productsModel.useAutocomplete();
@@ -58,8 +58,8 @@ export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
     }
 
     const createProductRequest = toCreateProductRequest(product);
-    const createProductResponse = await createProduct(createProductRequest).unwrap();
-    return createProductResponse.id;
+    const { id } = await createProduct(createProductRequest).unwrap();
+    return id;
   };
 
   const handleAddNote = async (note: NoteCreateEdit): Promise<void> => {
@@ -88,7 +88,9 @@ export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
         quantity={100}
         pageId={pageId}
         displayOrder={displayOrder}
-        submitInProgress={createNoteResponse.isLoading || notes.isFetching}
+        submitting={
+          createProductResponse.isLoading || createNoteResponse.isLoading || notes.isFetching
+        }
         renderProductAutocomplete={autocompleteProps => (
           <ProductAutocomplete
             {...autocompleteProps}
