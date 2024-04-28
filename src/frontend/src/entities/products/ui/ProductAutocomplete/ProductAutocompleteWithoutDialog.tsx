@@ -25,7 +25,7 @@ const EMPTY_DIALOG_VALUE: ProductFormType = {
   category: null,
 };
 
-export interface ProductAutocompleteProps {
+export interface ProductAutocompleteWithoutDialogProps {
   options: readonly AutocompleteOptionType[];
   loading: boolean;
   value: AutocompleteOptionType | null;
@@ -36,7 +36,7 @@ export interface ProductAutocompleteProps {
   autoFocus?: boolean;
 }
 
-export const ProductAutocompleteWithoutDialog: FC<ProductAutocompleteProps> = ({
+export const ProductAutocompleteWithoutDialog: FC<ProductAutocompleteWithoutDialogProps> = ({
   options,
   loading,
   value,
