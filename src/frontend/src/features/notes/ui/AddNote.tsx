@@ -1,9 +1,19 @@
 import AddIcon from '@mui/icons-material/Add';
-import { TextField } from '@mui/material';
-import { useState, type FC, useEffect, type MouseEventHandler, type FormEventHandler } from 'react';
-import { ProductAutocomplete, ProductInputDialog, productsModel } from '@/entities/products';
-import { ProductAutocompleteWithoutDialog } from '@/entities/products/ui/ProductAutocomplete/ProductAutocompleteWithoutDialog';
-import { CategorySelect } from '@/features/categories';
+import {
+  useState,
+  type FC,
+  useEffect,
+  type MouseEventHandler,
+  type FormEventHandler,
+  type ReactElement,
+  useMemo,
+} from 'react';
+import { NoteInputForm, type NoteInputFormProps } from '@/entities/notes/ui/NoteInputForm';
+import { productsModel } from '@/entities/products';
+import {
+  ProductInputForm,
+  type ProductInputFormProps,
+} from '@/entities/products/ui/ProductInputForm';
 import { type CreateProductRequest, productsApi, useCategorySelect } from '@/features/products';
 import { useInput } from '@/hooks';
 import { useToggle } from '@/shared/hooks';
@@ -14,7 +24,16 @@ import { notesApi } from '../api';
 import { toCreateNoteRequest } from '../mapping';
 import { useNotes } from '../model';
 import { type NoteCreateEdit, type MealType } from '../models';
-import { NoteInputDialog } from './NoteInputDialog';
+
+type InputDialogStateType = 'note' | 'product';
+
+export interface InputDialogState {
+  type: InputDialogStateType;
+  title: string;
+  formId: string;
+  handleClose: () => void;
+  handleSubmit: () => void | Promise<void>;
+}
 
 interface Props {
   pageId: number;
@@ -52,115 +71,127 @@ export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
   const productAutocomplete = productsModel.useAutocomplete();
   const categorySelect = useCategorySelect();
 
-  const {
-    clearValue: clearProduct,
-    inputProps: productAutocompleteProps,
-    value: productAutocompleteSelectedValue,
-    setValue: setProductAutocompleteSelectedValue,
-  } = useInput({
-    initialValue: null,
-    errorHelperText: 'Product is required',
-    validate: productsModel.validateAutocompleteInput,
-    mapToInputProps: productsModel.mapToAutocompleteProps,
-  });
+  const [productAutocompleteValue, setProductAutocompleteValue] =
+    useState<productsModel.AutocompleteOptionType | null>(null);
 
-  const [editingProduct, toggleEditingProduct] = useToggle();
+  const [productDialogValue, setProductDialogValue] =
+    useState<productsModel.ProductFormType>(EMPTY_DIALOG_VALUE);
 
-  const { setValue: setProductName, ...productName } = useInput({
-    initialValue: EMPTY_DIALOG_VALUE.name,
-    errorHelperText: 'Product name is invalid',
-    validate: validateProductName,
-    mapToInputProps: mapToTextInputProps,
-  });
+  const [currentInputDialogType, setCurrentInputDialogType] =
+    useState<InputDialogStateType>('note');
 
-  useEffect(() => {
-    if (productAutocompleteSelectedValue === null || !productAutocompleteSelectedValue.freeSolo) {
-      return;
-    }
+  const inputDialogStates: InputDialogState[] = useMemo(
+    () => [
+      {
+        type: 'note',
+        title: 'New note',
+        formId: 'note-form',
+        handleClose: () => {
+          toggleDialog();
+          setProductDialogValue(EMPTY_DIALOG_VALUE);
+          setProductAutocompleteValue(null);
+        },
+        handleSubmit: async () => {
+          const createProductIfNotExists = async (
+            product: productsModel.AutocompleteOptionType,
+          ): Promise<number> => {
+            if (!product.freeSolo) {
+              return product.id;
+            }
 
-    toggleEditingProduct();
-    setProductName(productAutocompleteSelectedValue.name);
-  }, [productAutocompleteSelectedValue, setProductName, toggleEditingProduct]);
+            const createProductRequest = toCreateProductRequest(product);
+            const { id } = await createProduct(createProductRequest).unwrap();
+            return id;
+          };
 
-  useEffect(() => {
-    if (dialogOpened) {
-      clearProduct();
-    }
-  }, [clearProduct, dialogOpened]);
+          if (!productAutocompleteValue) {
+            return;
+          }
+
+          const note: NoteCreateEdit = {
+            pageId,
+            mealType,
+            displayOrder,
+            productQuantity: 123,
+            product: productAutocompleteValue,
+          };
+
+          const productId = await createProductIfNotExists(note.product);
+          const request = toCreateNoteRequest(note, productId);
+          await createNote(request);
+        },
+      },
+      {
+        type: 'product',
+        title: 'New product',
+        formId: 'product-form',
+        handleClose: () => {
+          setCurrentInputDialogType('note');
+        },
+        handleSubmit: async () => {
+          setProductAutocompleteValue({
+            freeSolo: true,
+            editing: true,
+            name: productDialogValue.name,
+            caloriesCost: productDialogValue.caloriesCost,
+            defaultQuantity: productDialogValue.defaultQuantity,
+            category: productDialogValue.category,
+          });
+          setCurrentInputDialogType('note');
+        },
+      },
+    ],
+    [
+      createNote,
+      createProduct,
+      displayOrder,
+      mealType,
+      pageId,
+      productAutocompleteValue,
+      productDialogValue.caloriesCost,
+      productDialogValue.category,
+      productDialogValue.defaultQuantity,
+      productDialogValue.name,
+      toggleDialog,
+    ],
+  );
+
+  const currentInputDialogState = useMemo(
+    () => inputDialogStates.find(s => s.type === currentInputDialogType),
+    [currentInputDialogType, inputDialogStates],
+  );
 
   useEffect(() => {
     if (createNoteResponse.isSuccess && notes.isChanged) {
       toggleDialog();
+      setProductDialogValue(EMPTY_DIALOG_VALUE);
+      setProductAutocompleteValue(null);
     }
   }, [createNoteResponse.isSuccess, notes.isChanged, toggleDialog]);
 
   const handleDialogOpen = (): void => {
+    setCurrentInputDialogType('note');
     toggleDialog();
   };
 
-  const handleDialogClose = (): void => {
-    if (editingProduct) {
-      toggleEditingProduct();
-    } else {
-      toggleDialog();
-    }
-  };
+  const handleProductChange = (value: productsModel.AutocompleteOptionType | null): void => {
+    setProductAutocompleteValue(value);
 
-  const createProductIfNotExists = async (
-    product: productsModel.AutocompleteOptionType,
-  ): Promise<number> => {
-    if (!product.freeSolo) {
-      return product.id;
-    }
-
-    const createProductRequest = toCreateProductRequest(product);
-    const { id } = await createProduct(createProductRequest).unwrap();
-    return id;
-  };
-
-  const handleAddNote = async (note: NoteCreateEdit): Promise<void> => {
-    const productId = await createProductIfNotExists(note.product);
-    const request = toCreateNoteRequest(note, productId);
-    await createNote(request);
-  };
-
-  const handleCancel: MouseEventHandler<HTMLButtonElement> = () => {
-    if (editingProduct) {
-      toggleEditingProduct();
-    } else {
-      toggleDialog();
-    }
-  };
-
-  const handleSubmit: FormEventHandler<HTMLFormElement> = async event => {
-    event.preventDefault();
-
-    if (productAutocompleteSelectedValue === null) {
+    if (value === null || !value.freeSolo) {
       return;
     }
 
-    if (editingProduct) {
-      setProductAutocompleteSelectedValue({
-        freeSolo: true,
-        editing: true,
-        name: productName.value,
-        caloriesCost: EMPTY_DIALOG_VALUE.caloriesCost,
-        defaultQuantity: EMPTY_DIALOG_VALUE.defaultQuantity,
-        category: EMPTY_DIALOG_VALUE.category,
-      });
-    } else {
-      const note: NoteCreateEdit = {
-        mealType,
-        productQuantity: 123,
-        displayOrder,
-        product: productAutocompleteSelectedValue,
-        pageId,
-      };
+    setCurrentInputDialogType('product');
+    setProductDialogValue(prev => ({ ...prev, name: value.name }));
+  };
 
-      const productId = await createProductIfNotExists(note.product);
-      const request = toCreateNoteRequest(note, productId);
-      await createNote(request);
-    }
+  const handleProductFormValuesChange = (values: productsModel.ProductFormType): void => {
+    setProductDialogValue(values);
+  };
+
+  const handleSubmit: FormEventHandler<HTMLFormElement> = (event): void => {
+    event.preventDefault();
+    currentInputDialogState?.handleSubmit();
   };
 
   return (
@@ -174,43 +205,41 @@ export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
       >
         Add note
       </Button>
-      <Dialog
-        title={editingProduct ? 'Product' : 'Note'}
-        opened={dialogOpened}
-        onClose={handleDialogClose}
-        content={
-          <form id="note-form" onSubmit={handleSubmit}>
-            {editingProduct ? (
-              <TextField
-                {...productName.inputProps}
-                label="Name"
-                placeholder="Product name"
-                fullWidth
-                autoFocus
-              />
-            ) : (
-              <ProductAutocompleteWithoutDialog
-                {...productAutocompleteProps}
-                autoFocus
-                value={productAutocompleteSelectedValue}
-                dialogValue={{ ...EMPTY_DIALOG_VALUE, name: productName.value }}
-                options={productAutocomplete.options}
-                loading={productAutocomplete.isLoading}
-              />
-            )}
-          </form>
-        }
-        renderCancel={cancelProps => (
-          <Button {...cancelProps} onClick={handleCancel}>
-            Cancel
-          </Button>
-        )}
-        renderSubmit={submitProps => (
-          <Button {...submitProps} form="note-form">
-            Submit
-          </Button>
-        )}
-      />
+      {currentInputDialogState && (
+        <Dialog
+          title={currentInputDialogState.title}
+          opened={dialogOpened}
+          onClose={currentInputDialogState.handleClose}
+          content={
+            <form id={currentInputDialogState.formId} onSubmit={handleSubmit}>
+              {currentInputDialogState.type === 'note' && (
+                <NoteInputForm
+                  product={productAutocompleteValue}
+                  productAutocomplete={productAutocomplete}
+                  dialogValue={productDialogValue}
+                  onProductChange={handleProductChange}
+                />
+              )}
+              {currentInputDialogState.type === 'product' && (
+                <ProductInputForm
+                  values={productDialogValue}
+                  onValuesChange={handleProductFormValuesChange}
+                />
+              )}
+            </form>
+          }
+          renderCancel={cancelProps => (
+            <Button {...cancelProps} onClick={currentInputDialogState.handleClose}>
+              Cancel
+            </Button>
+          )}
+          renderSubmit={submitProps => (
+            <Button {...submitProps} form={currentInputDialogState.formId}>
+              Submit
+            </Button>
+          )}
+        />
+      )}
     </>
   );
 };

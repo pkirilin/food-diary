@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { type ProductSelectOption, productsApi } from '@/features/products';
 import { type ValidatorFunction, type MapToInputPropsFunction, type SelectOption } from '@/types';
-import { type ProductAutocompleteProps } from '../ui';
+import { type ProductAutocompleteWithoutDialogProps } from '../ui';
 import { type ProductFormType } from './types';
 
 const QUERY_ARG = {};
@@ -28,8 +28,8 @@ export interface AutocompleteFreeSoloOption extends AutocompleteBaseOption {
 export type AutocompleteOptionType = AutocompleteExistingOption | AutocompleteFreeSoloOption;
 
 export type AutocompleteInputProps = Omit<
-  ProductAutocompleteProps,
-  'options' | 'loading' | 'renderInputDialog'
+  ProductAutocompleteWithoutDialogProps,
+  'options' | 'loading' | 'renderInputDialog' | 'dialogValue'
 >;
 
 export const mapToAutocompleteProps: MapToInputPropsFunction<
@@ -69,12 +69,12 @@ const mapToAutocompleteOption = ({
   defaultQuantity,
 });
 
-interface Result {
+export interface UseAutocompleteResult {
   options: AutocompleteOptionType[];
   isLoading: boolean;
 }
 
-export const useAutocomplete = (): Result => {
+export const useAutocomplete = (): UseAutocompleteResult => {
   const query = productsApi.useGetProductSelectOptionsQuery(QUERY_ARG, { refetchOnFocus: true });
 
   const options = useMemo(() => query.data?.map(mapToAutocompleteOption) ?? [], [query.data]);
