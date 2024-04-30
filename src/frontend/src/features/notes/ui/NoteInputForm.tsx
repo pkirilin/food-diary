@@ -1,7 +1,10 @@
+import { TextField } from '@mui/material';
 import { useEffect, type FC, type FormEventHandler, type ReactElement } from 'react';
 import { type productsModel } from '@/entities/products';
-import { type MealType, type NoteCreateEdit } from '@/features/notes';
-import { type UseInputResult } from '@/hooks';
+import { getMealName, type MealType, type NoteCreateEdit } from '@/features/notes';
+import { useInput, type UseInputResult } from '@/hooks';
+import { mapToNumericInputProps } from '@/utils/inputMapping';
+import { validateQuantity } from '@/utils/validation';
 
 export interface NoteInputFormProps {
   id: string;
@@ -12,6 +15,7 @@ export interface NoteInputFormProps {
     productsModel.AutocompleteOptionType | null,
     productsModel.AutocompleteInputProps
   >;
+  quantity: number;
   renderProductAutocomplete: (props: productsModel.AutocompleteInputProps) => ReactElement;
   onSubmit: (values: NoteCreateEdit) => Promise<void>;
   onSubmitDisabledChange: (disabled: boolean) => void;
@@ -23,12 +27,20 @@ export const NoteInputForm: FC<NoteInputFormProps> = ({
   mealType,
   displayOrder,
   productAutocompleteInput,
+  quantity,
   renderProductAutocomplete,
   onSubmit,
   onSubmitDisabledChange,
 }) => {
-  const anyValueInvalid = productAutocompleteInput.isInvalid;
-  const anyValueChanged = productAutocompleteInput.isTouched;
+  const quantityInput = useInput({
+    initialValue: quantity,
+    errorHelperText: 'Quantity is invalid',
+    validate: validateQuantity,
+    mapToInputProps: mapToNumericInputProps,
+  });
+
+  const anyValueInvalid = productAutocompleteInput.isInvalid || quantityInput.isInvalid;
+  const anyValueChanged = productAutocompleteInput.isTouched || quantityInput.isTouched;
 
   useEffect(() => {
     onSubmitDisabledChange(anyValueInvalid || !anyValueChanged);
@@ -45,14 +57,30 @@ export const NoteInputForm: FC<NoteInputFormProps> = ({
       pageId,
       mealType,
       displayOrder,
-      productQuantity: 100,
+      productQuantity: quantityInput.value,
       product: productAutocompleteInput.value,
     });
   };
 
   return (
     <form id={id} onSubmit={handleSubmit}>
+      <TextField
+        label="Meal"
+        value={getMealName(mealType)}
+        margin="normal"
+        fullWidth
+        inputProps={{ readOnly: true }}
+        helperText=" "
+      />
       {renderProductAutocomplete(productAutocompleteInput.inputProps)}
+      <TextField
+        {...quantityInput.inputProps}
+        type="number"
+        label="Quantity"
+        placeholder="Product quantity, g"
+        margin="normal"
+        fullWidth
+      />
     </form>
   );
 };

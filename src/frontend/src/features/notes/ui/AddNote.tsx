@@ -1,8 +1,9 @@
 import AddIcon from '@mui/icons-material/Add';
 import { useState, type FC, useEffect, useMemo, useCallback } from 'react';
-import { NoteInputForm } from '@/entities/notes/ui/NoteInputForm';
 import { ProductAutocompleteWithoutDialog, productsModel } from '@/entities/products';
 import { ProductInputForm } from '@/entities/products/ui/ProductInputForm';
+import { CategorySelect } from '@/features/categories';
+import { NoteInputForm } from '@/features/notes';
 import { type CreateProductRequest, productsApi, useCategorySelect } from '@/features/products';
 import { useInput } from '@/hooks';
 import { useToggle } from '@/shared/hooks';
@@ -49,10 +50,7 @@ const EMPTY_DIALOG_VALUE: productsModel.ProductFormType = {
   name: '',
   defaultQuantity: 100,
   caloriesCost: 100,
-  category: {
-    id: 1,
-    name: 'Cereals',
-  },
+  category: null,
 };
 
 export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
@@ -159,7 +157,14 @@ export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
     }
 
     setCurrentInputDialogType('product');
-    setProductDialogValue(prev => ({ ...prev, name: value.name }));
+
+    setProductDialogValue({
+      name: value.name,
+      caloriesCost: value.caloriesCost,
+      defaultQuantity: value.defaultQuantity,
+      category: value.category,
+    });
+
     productNameInput.setValue(value.name);
   };
 
@@ -232,6 +237,7 @@ export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
                     mealType={mealType}
                     displayOrder={displayOrder}
                     productAutocompleteInput={productAutocompleteInput}
+                    quantity={100}
                     renderProductAutocomplete={productAutocompleteProps => (
                       <ProductAutocompleteWithoutDialog
                         {...productAutocompleteProps}
@@ -252,6 +258,15 @@ export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
                     id={currentInputDialogState.formId}
                     product={productDialogValue}
                     productNameInput={productNameInput}
+                    renderCategoryInput={categoryInputProps => (
+                      <CategorySelect
+                        {...categoryInputProps}
+                        label="Category"
+                        placeholder="Select a category"
+                        options={categorySelect.data}
+                        optionsLoading={categorySelect.isLoading}
+                      />
+                    )}
                     onSubmit={handleProductInputFormSubmit}
                     onSubmitDisabledChange={handleProductInputFormSubmitDisabledChange}
                   />
@@ -263,6 +278,7 @@ export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
           renderCancel={cancelProps => (
             <Button
               {...cancelProps}
+              type="button"
               onClick={currentInputDialogState.handleClose}
               disabled={currentInputDialogState.cancelDisabled}
             >
@@ -272,6 +288,7 @@ export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
           renderSubmit={submitProps => (
             <Button
               {...submitProps}
+              type="submit"
               form={currentInputDialogState.formId}
               disabled={currentInputDialogState.submitDisabled}
               loading={currentInputDialogState.submitLoading}
