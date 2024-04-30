@@ -1,14 +1,12 @@
-import { TextField } from '@mui/material';
+import { TextField, type TextFieldProps } from '@mui/material';
 import { useEffect, type FC, type FormEventHandler } from 'react';
-import { useInput } from '@/hooks';
-import { mapToTextInputProps } from '@/utils/inputMapping';
-import { validateProductName } from '@/utils/validation';
+import { type UseInputResult } from '@/hooks';
 import { type ProductFormType } from '../model';
 
 export interface ProductInputFormProps {
   id: string;
   product: ProductFormType;
-  shouldClearValues: boolean;
+  productNameInput: UseInputResult<string, TextFieldProps>;
   onSubmit: (values: ProductFormType) => void;
   onSubmitDisabledChange: (disabled: boolean) => void;
 }
@@ -16,42 +14,29 @@ export interface ProductInputFormProps {
 export const ProductInputForm: FC<ProductInputFormProps> = ({
   id,
   product,
-  shouldClearValues,
+  productNameInput,
   onSubmit,
   onSubmitDisabledChange,
 }) => {
-  const { clearValue: clearProductName, ...productName } = useInput({
-    initialValue: product.name,
-    errorHelperText: 'Product name is invalid',
-    validate: validateProductName,
-    mapToInputProps: mapToTextInputProps,
-  });
-
-  const anyValueInvalid = productName.isInvalid;
-  const anyValueChanged = productName.isTouched;
+  const anyValueInvalid = productNameInput.isInvalid;
+  const anyValueChanged = productNameInput.isTouched;
 
   useEffect(() => {
     onSubmitDisabledChange(anyValueInvalid || !anyValueChanged);
   }, [anyValueChanged, anyValueInvalid, onSubmitDisabledChange]);
 
-  useEffect(() => {
-    if (shouldClearValues) {
-      clearProductName();
-    }
-  }, [clearProductName, shouldClearValues]);
-
   const handleSubmit: FormEventHandler<HTMLFormElement> = event => {
     event.preventDefault();
     onSubmit({
       ...product,
-      name: productName.value,
+      name: productNameInput.value,
     });
   };
 
   return (
     <form id={id} onSubmit={handleSubmit}>
       <TextField
-        {...productName.inputProps}
+        {...productNameInput.inputProps}
         label="Name"
         placeholder="Product name"
         fullWidth

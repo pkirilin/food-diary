@@ -7,6 +7,8 @@ import { type CreateProductRequest, productsApi, useCategorySelect } from '@/fea
 import { useInput } from '@/hooks';
 import { useToggle } from '@/shared/hooks';
 import { Button, Dialog } from '@/shared/ui';
+import { mapToTextInputProps } from '@/utils/inputMapping';
+import { validateProductName } from '@/utils/validation';
 import { notesApi } from '../api';
 import { toCreateNoteRequest } from '../mapping';
 import { useNotes } from '../model';
@@ -68,6 +70,13 @@ export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
     mapToInputProps: productsModel.mapToAutocompleteProps,
   });
 
+  const productNameInput = useInput({
+    initialValue: '',
+    errorHelperText: 'Product name is invalid',
+    validate: validateProductName,
+    mapToInputProps: mapToTextInputProps,
+  });
+
   const { setValue: setProductAutocompleteValue, clearValue: clearProductAutocompleteValue } =
     productAutocompleteInput;
 
@@ -103,7 +112,7 @@ export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
         title: 'New product',
         submitText: 'Add product',
         submitLoading: false,
-        submitDisabled: false,
+        submitDisabled: productSubmitDisabled,
         cancelDisabled: false,
         formId: 'product-form',
         handleClose: () => {
@@ -117,6 +126,7 @@ export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
       createProductResponse.isLoading,
       noteSubmitDisabled,
       notes.isFetching,
+      productSubmitDisabled,
       toggleDialog,
     ],
   );
@@ -150,6 +160,7 @@ export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
 
     setCurrentInputDialogType('product');
     setProductDialogValue(prev => ({ ...prev, name: value.name }));
+    productNameInput.setValue(value.name);
   };
 
   const createProductIfNotExists = async (
@@ -240,7 +251,7 @@ export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
                   <ProductInputForm
                     id={currentInputDialogState.formId}
                     product={productDialogValue}
-                    shouldClearValues={dialogOpened}
+                    productNameInput={productNameInput}
                     onSubmit={handleProductInputFormSubmit}
                     onSubmitDisabledChange={handleProductInputFormSubmitDisabledChange}
                   />
