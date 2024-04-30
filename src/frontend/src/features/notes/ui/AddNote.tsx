@@ -1,9 +1,10 @@
 import AddIcon from '@mui/icons-material/Add';
 import { useState, type FC, useEffect, useMemo, useCallback } from 'react';
 import { NoteInputForm } from '@/entities/notes/ui/NoteInputForm';
-import { productsModel } from '@/entities/products';
+import { ProductAutocompleteWithoutDialog, productsModel } from '@/entities/products';
 import { ProductInputForm } from '@/entities/products/ui/ProductInputForm';
 import { type CreateProductRequest, productsApi, useCategorySelect } from '@/features/products';
+import { useInput } from '@/hooks';
 import { useToggle } from '@/shared/hooks';
 import { Button, Dialog } from '@/shared/ui';
 import { notesApi } from '../api';
@@ -60,8 +61,15 @@ export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
   const productAutocomplete = productsModel.useAutocomplete();
   const categorySelect = useCategorySelect();
 
-  const [productAutocompleteValue, setProductAutocompleteValue] =
-    useState<productsModel.AutocompleteOptionType | null>(null);
+  const productAutocompleteInput = useInput({
+    initialValue: null,
+    errorHelperText: 'Product is required',
+    validate: productsModel.validateAutocompleteInput,
+    mapToInputProps: productsModel.mapToAutocompleteProps,
+  });
+
+  const { setValue: setProductAutocompleteValue, clearValue: clearProductAutocompleteValue } =
+    productAutocompleteInput;
 
   const [productDialogValue, setProductDialogValue] =
     useState<productsModel.ProductFormType>(EMPTY_DIALOG_VALUE);
@@ -81,13 +89,13 @@ export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
         formId: 'note-form',
         submitLoading:
           createProductResponse.isLoading || createNoteResponse.isLoading || notes.isFetching,
-        submitDisabled: false,
+        submitDisabled: noteSubmitDisabled,
         cancelDisabled:
           createProductResponse.isLoading || createNoteResponse.isLoading || notes.isFetching,
         handleClose: () => {
           toggleDialog();
           setProductDialogValue(EMPTY_DIALOG_VALUE);
-          setProductAutocompleteValue(null);
+          clearProductAutocompleteValue();
         },
       },
       {
@@ -103,7 +111,14 @@ export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
         },
       },
     ],
-    [createNoteResponse.isLoading, createProductResponse.isLoading, notes.isFetching, toggleDialog],
+    [
+      clearProductAutocompleteValue,
+      createNoteResponse.isLoading,
+      createProductResponse.isLoading,
+      noteSubmitDisabled,
+      notes.isFetching,
+      toggleDialog,
+    ],
   );
 
   const currentInputDialogState = useMemo(
@@ -115,9 +130,9 @@ export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
     if (createNoteResponse.isSuccess && notes.isChanged) {
       toggleDialog();
       setProductDialogValue(EMPTY_DIALOG_VALUE);
-      setProductAutocompleteValue(null);
+      clearProductAutocompleteValue();
     }
-  }, [createNoteResponse.isSuccess, notes.isChanged, toggleDialog]);
+  }, [clearProductAutocompleteValue, createNoteResponse.isSuccess, notes.isChanged, toggleDialog]);
 
   const handleDialogOpen = (): void => {
     setCurrentInputDialogType('note');
@@ -205,11 +220,17 @@ export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
                     pageId={pageId}
                     mealType={mealType}
                     displayOrder={displayOrder}
-                    product={productAutocompleteValue}
-                    productAutocomplete={productAutocomplete}
-                    dialogValue={productDialogValue}
-                    shouldClearValues={dialogOpened}
-                    onProductChange={handleNoteInputFormProductChange}
+                    productAutocompleteInput={productAutocompleteInput}
+                    renderProductAutocomplete={productAutocompleteProps => (
+                      <ProductAutocompleteWithoutDialog
+                        {...productAutocompleteProps}
+                        autoFocus
+                        dialogValue={productDialogValue}
+                        options={productAutocomplete.options}
+                        loading={productAutocomplete.isLoading}
+                        onChange={handleNoteInputFormProductChange}
+                      />
+                    )}
                     onSubmit={handleNoteInputFormSubmit}
                     onSubmitDisabledChange={handleNoteInputFormSubmitDisabledChange}
                   />

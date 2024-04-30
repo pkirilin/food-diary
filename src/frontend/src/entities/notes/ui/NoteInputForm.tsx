@@ -1,18 +1,18 @@
-import { useEffect, type FC, type FormEventHandler } from 'react';
-import { ProductAutocompleteWithoutDialog, productsModel } from '@/entities/products';
+import { useEffect, type FC, type FormEventHandler, type ReactElement } from 'react';
+import { type productsModel } from '@/entities/products';
 import { type MealType, type NoteCreateEdit } from '@/features/notes';
-import { useInput } from '@/hooks';
+import { type UseInputResult } from '@/hooks';
 
 export interface NoteInputFormProps {
   id: string;
   pageId: number;
   mealType: MealType;
   displayOrder: number;
-  product: productsModel.AutocompleteOptionType | null;
-  productAutocomplete: productsModel.UseAutocompleteResult;
-  dialogValue: productsModel.ProductFormType;
-  shouldClearValues: boolean;
-  onProductChange: (value: productsModel.AutocompleteOptionType | null) => void;
+  productAutocompleteInput: UseInputResult<
+    productsModel.AutocompleteOptionType | null,
+    productsModel.AutocompleteInputProps
+  >;
+  renderProductAutocomplete: (props: productsModel.AutocompleteInputProps) => ReactElement;
   onSubmit: (values: NoteCreateEdit) => Promise<void>;
   onSubmitDisabledChange: (disabled: boolean) => void;
 }
@@ -22,43 +22,22 @@ export const NoteInputForm: FC<NoteInputFormProps> = ({
   pageId,
   mealType,
   displayOrder,
-  product,
-  productAutocomplete,
-  dialogValue,
-  shouldClearValues,
-  onProductChange,
+  productAutocompleteInput,
+  renderProductAutocomplete,
   onSubmit,
   onSubmitDisabledChange,
 }) => {
-  const { clearValue: clearProductAutocomplete, ...productInput } = useInput({
-    initialValue: product,
-    errorHelperText: 'Product is required',
-    validate: productsModel.validateAutocompleteInput,
-    mapToInputProps: productsModel.mapToAutocompleteProps,
-  });
-
-  const anyValueInvalid = productInput.isInvalid;
-  const anyValueChanged = productInput.isTouched;
+  const anyValueInvalid = productAutocompleteInput.isInvalid;
+  const anyValueChanged = productAutocompleteInput.isTouched;
 
   useEffect(() => {
     onSubmitDisabledChange(anyValueInvalid || !anyValueChanged);
   }, [anyValueChanged, anyValueInvalid, onSubmitDisabledChange]);
 
-  useEffect(() => {
-    if (shouldClearValues) {
-      clearProductAutocomplete();
-    }
-  }, [clearProductAutocomplete, shouldClearValues]);
-
-  const handleProductChange = (value: productsModel.AutocompleteOptionType | null): void => {
-    productInput.inputProps.onChange(value);
-    onProductChange(value);
-  };
-
   const handleSubmit: FormEventHandler<HTMLFormElement> = event => {
     event.preventDefault();
 
-    if (!productInput.value) {
+    if (!productAutocompleteInput.value) {
       return;
     }
 
@@ -67,20 +46,13 @@ export const NoteInputForm: FC<NoteInputFormProps> = ({
       mealType,
       displayOrder,
       productQuantity: 100,
-      product: productInput.value,
+      product: productAutocompleteInput.value,
     });
   };
 
   return (
     <form id={id} onSubmit={handleSubmit}>
-      <ProductAutocompleteWithoutDialog
-        {...productInput.inputProps}
-        autoFocus
-        dialogValue={dialogValue}
-        options={productAutocomplete.options}
-        loading={productAutocomplete.isLoading}
-        onChange={handleProductChange}
-      />
+      {renderProductAutocomplete(productAutocompleteInput.inputProps)}
     </form>
   );
 };
