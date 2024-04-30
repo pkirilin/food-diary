@@ -55,7 +55,7 @@ const EMPTY_DIALOG_VALUE: productsModel.ProductFormType = {
 
 export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
   const [createNote, createNoteResponse] = notesApi.useCreateNoteMutation();
-  const [createProduct, createProductResponse] = productsApi.useCreateProductMutation();
+  const [createProduct] = productsApi.useCreateProductMutation();
   const [dialogOpened, toggleDialog] = useToggle();
   const notes = useNotes(pageId);
   const productAutocomplete = productsModel.useAutocomplete();
@@ -86,6 +86,7 @@ export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
 
   const [noteSubmitDisabled, setNoteSubmitDisabled] = useState(true);
   const [productSubmitDisabled, setProductSubmitDisabled] = useState(true);
+  const [productSubmitLoading, setProductSubmitLoading] = useState(false);
 
   const inputDialogStates = useMemo<InputDialogState[]>(
     () => [
@@ -94,11 +95,9 @@ export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
         title: 'New note',
         submitText: 'Add note',
         formId: 'note-form',
-        submitLoading:
-          createProductResponse.isLoading || createNoteResponse.isLoading || notes.isFetching,
+        submitLoading: productSubmitLoading,
         submitDisabled: noteSubmitDisabled,
-        cancelDisabled:
-          createProductResponse.isLoading || createNoteResponse.isLoading || notes.isFetching,
+        cancelDisabled: productSubmitLoading,
         handleClose: () => {
           toggleDialog();
           setProductDialogValue(EMPTY_DIALOG_VALUE);
@@ -120,11 +119,9 @@ export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
     ],
     [
       clearProductAutocompleteValue,
-      createNoteResponse.isLoading,
-      createProductResponse.isLoading,
       noteSubmitDisabled,
-      notes.isFetching,
       productSubmitDisabled,
+      productSubmitLoading,
       toggleDialog,
     ],
   );
@@ -139,6 +136,7 @@ export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
       toggleDialog();
       setProductDialogValue(EMPTY_DIALOG_VALUE);
       clearProductAutocompleteValue();
+      setProductSubmitLoading(false);
     }
   }, [clearProductAutocompleteValue, createNoteResponse.isSuccess, notes.isChanged, toggleDialog]);
 
@@ -181,9 +179,14 @@ export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
   };
 
   const handleNoteInputFormSubmit = async (noteValues: NoteCreateEdit): Promise<void> => {
-    const productId = await createProductIfNotExists(noteValues.product);
-    const request = toCreateNoteRequest(noteValues, productId);
-    await createNote(request);
+    try {
+      setProductSubmitLoading(true);
+      const productId = await createProductIfNotExists(noteValues.product);
+      const request = toCreateNoteRequest(noteValues, productId);
+      await createNote(request);
+    } catch (err) {
+      setProductSubmitLoading(false);
+    }
   };
 
   const handleNoteInputFormSubmitDisabledChange = useCallback((disabled: boolean): void => {
