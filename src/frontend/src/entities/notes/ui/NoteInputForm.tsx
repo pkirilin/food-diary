@@ -14,6 +14,7 @@ export interface NoteInputFormProps {
   shouldClearValues: boolean;
   onProductChange: (value: productsModel.AutocompleteOptionType | null) => void;
   onSubmit: (values: NoteCreateEdit) => Promise<void>;
+  onSubmitDisabledChange: (disabled: boolean) => void;
 }
 
 export const NoteInputForm: FC<NoteInputFormProps> = ({
@@ -27,17 +28,21 @@ export const NoteInputForm: FC<NoteInputFormProps> = ({
   shouldClearValues,
   onProductChange,
   onSubmit,
+  onSubmitDisabledChange,
 }) => {
-  const {
-    inputProps: productAutocompleteProps,
-    value: productAutocompleteValue,
-    clearValue: clearProductAutocomplete,
-  } = useInput({
+  const { clearValue: clearProductAutocomplete, ...productInput } = useInput({
     initialValue: product,
     errorHelperText: 'Product is required',
     validate: productsModel.validateAutocompleteInput,
     mapToInputProps: productsModel.mapToAutocompleteProps,
   });
+
+  const anyValueInvalid = productInput.isInvalid;
+  const anyValueChanged = productInput.isTouched;
+
+  useEffect(() => {
+    onSubmitDisabledChange(anyValueInvalid || !anyValueChanged);
+  }, [anyValueChanged, anyValueInvalid, onSubmitDisabledChange]);
 
   useEffect(() => {
     if (shouldClearValues) {
@@ -46,14 +51,14 @@ export const NoteInputForm: FC<NoteInputFormProps> = ({
   }, [clearProductAutocomplete, shouldClearValues]);
 
   const handleProductChange = (value: productsModel.AutocompleteOptionType | null): void => {
-    productAutocompleteProps.onChange(value);
+    productInput.inputProps.onChange(value);
     onProductChange(value);
   };
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = event => {
     event.preventDefault();
 
-    if (!productAutocompleteValue) {
+    if (!productInput.value) {
       return;
     }
 
@@ -62,14 +67,14 @@ export const NoteInputForm: FC<NoteInputFormProps> = ({
       mealType,
       displayOrder,
       productQuantity: 100,
-      product: productAutocompleteValue,
+      product: productInput.value,
     });
   };
 
   return (
     <form id={id} onSubmit={handleSubmit}>
       <ProductAutocompleteWithoutDialog
-        {...productAutocompleteProps}
+        {...productInput.inputProps}
         autoFocus
         dialogValue={dialogValue}
         options={productAutocomplete.options}

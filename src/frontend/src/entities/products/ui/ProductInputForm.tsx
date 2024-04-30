@@ -10,6 +10,7 @@ export interface ProductInputFormProps {
   product: ProductFormType;
   shouldClearValues: boolean;
   onSubmit: (values: ProductFormType) => void;
+  onSubmitDisabledChange: (disabled: boolean) => void;
 }
 
 export const ProductInputForm: FC<ProductInputFormProps> = ({
@@ -17,17 +18,21 @@ export const ProductInputForm: FC<ProductInputFormProps> = ({
   product,
   shouldClearValues,
   onSubmit,
+  onSubmitDisabledChange,
 }) => {
-  const {
-    value: productName,
-    clearValue: clearProductName,
-    inputProps: productNameProps,
-  } = useInput({
+  const { clearValue: clearProductName, ...productName } = useInput({
     initialValue: product.name,
     errorHelperText: 'Product name is invalid',
     validate: validateProductName,
     mapToInputProps: mapToTextInputProps,
   });
+
+  const anyValueInvalid = productName.isInvalid;
+  const anyValueChanged = productName.isTouched;
+
+  useEffect(() => {
+    onSubmitDisabledChange(anyValueInvalid || !anyValueChanged);
+  }, [anyValueChanged, anyValueInvalid, onSubmitDisabledChange]);
 
   useEffect(() => {
     if (shouldClearValues) {
@@ -39,14 +44,14 @@ export const ProductInputForm: FC<ProductInputFormProps> = ({
     event.preventDefault();
     onSubmit({
       ...product,
-      name: productName,
+      name: productName.value,
     });
   };
 
   return (
     <form id={id} onSubmit={handleSubmit}>
       <TextField
-        {...productNameProps}
+        {...productName.inputProps}
         label="Name"
         placeholder="Product name"
         fullWidth

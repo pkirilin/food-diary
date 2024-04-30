@@ -1,25 +1,11 @@
 import AddIcon from '@mui/icons-material/Add';
-import {
-  useState,
-  type FC,
-  useEffect,
-  type MouseEventHandler,
-  type FormEventHandler,
-  type ReactElement,
-  useMemo,
-} from 'react';
-import { NoteInputForm, type NoteInputFormProps } from '@/entities/notes/ui/NoteInputForm';
+import { useState, type FC, useEffect, useMemo, useCallback } from 'react';
+import { NoteInputForm } from '@/entities/notes/ui/NoteInputForm';
 import { productsModel } from '@/entities/products';
-import {
-  ProductInputForm,
-  type ProductInputFormProps,
-} from '@/entities/products/ui/ProductInputForm';
+import { ProductInputForm } from '@/entities/products/ui/ProductInputForm';
 import { type CreateProductRequest, productsApi, useCategorySelect } from '@/features/products';
-import { useInput } from '@/hooks';
 import { useToggle } from '@/shared/hooks';
 import { Button, Dialog } from '@/shared/ui';
-import { mapToTextInputProps } from '@/utils/inputMapping';
-import { validateProductName } from '@/utils/validation';
 import { notesApi } from '../api';
 import { toCreateNoteRequest } from '../mapping';
 import { useNotes } from '../model';
@@ -30,6 +16,10 @@ type InputDialogStateType = 'note' | 'product';
 export interface InputDialogState {
   type: InputDialogStateType;
   title: string;
+  submitText: string;
+  submitLoading: boolean;
+  submitDisabled: boolean;
+  cancelDisabled: boolean;
   formId: string;
   handleClose: () => void;
 }
@@ -79,12 +69,21 @@ export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
   const [currentInputDialogType, setCurrentInputDialogType] =
     useState<InputDialogStateType>('note');
 
-  const inputDialogStates: InputDialogState[] = useMemo(
+  const [noteSubmitDisabled, setNoteSubmitDisabled] = useState(true);
+  const [productSubmitDisabled, setProductSubmitDisabled] = useState(true);
+
+  const inputDialogStates = useMemo<InputDialogState[]>(
     () => [
       {
         type: 'note',
         title: 'New note',
+        submitText: 'Add note',
         formId: 'note-form',
+        submitLoading:
+          createProductResponse.isLoading || createNoteResponse.isLoading || notes.isFetching,
+        submitDisabled: false,
+        cancelDisabled:
+          createProductResponse.isLoading || createNoteResponse.isLoading || notes.isFetching,
         handleClose: () => {
           toggleDialog();
           setProductDialogValue(EMPTY_DIALOG_VALUE);
@@ -94,13 +93,17 @@ export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
       {
         type: 'product',
         title: 'New product',
+        submitText: 'Add product',
+        submitLoading: false,
+        submitDisabled: false,
+        cancelDisabled: false,
         formId: 'product-form',
         handleClose: () => {
           setCurrentInputDialogType('note');
         },
       },
     ],
-    [toggleDialog],
+    [createNoteResponse.isLoading, createProductResponse.isLoading, notes.isFetching, toggleDialog],
   );
 
   const currentInputDialogState = useMemo(
@@ -121,7 +124,9 @@ export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
     toggleDialog();
   };
 
-  const handleProductChange = (value: productsModel.AutocompleteOptionType | null): void => {
+  const handleNoteInputFormProductChange = (
+    value: productsModel.AutocompleteOptionType | null,
+  ): void => {
     setProductAutocompleteValue(value);
 
     if (value === null || !value.freeSolo) {
@@ -150,6 +155,10 @@ export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
     await createNote(request);
   };
 
+  const handleNoteInputFormSubmitDisabledChange = useCallback((disabled: boolean): void => {
+    setNoteSubmitDisabled(disabled);
+  }, []);
+
   const handleProductInputFormSubmit = async ({
     name,
     caloriesCost,
@@ -167,6 +176,10 @@ export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
     setCurrentInputDialogType('note');
   };
 
+  const handleProductInputFormSubmitDisabledChange = useCallback((disabled: boolean): void => {
+    setProductSubmitDisabled(disabled);
+  }, []);
+
   return (
     <>
       <Button
@@ -183,40 +196,55 @@ export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
           title={currentInputDialogState.title}
           opened={dialogOpened}
           onClose={currentInputDialogState.handleClose}
-          content={
-            <>
-              {currentInputDialogState.type === 'note' && (
-                <NoteInputForm
-                  id={currentInputDialogState.formId}
-                  pageId={pageId}
-                  mealType={mealType}
-                  displayOrder={displayOrder}
-                  product={productAutocompleteValue}
-                  productAutocomplete={productAutocomplete}
-                  dialogValue={productDialogValue}
-                  shouldClearValues={dialogOpened}
-                  onProductChange={handleProductChange}
-                  onSubmit={handleNoteInputFormSubmit}
-                />
-              )}
-              {currentInputDialogState.type === 'product' && (
-                <ProductInputForm
-                  id={currentInputDialogState.formId}
-                  product={productDialogValue}
-                  shouldClearValues={dialogOpened}
-                  onSubmit={handleProductInputFormSubmit}
-                />
-              )}
-            </>
-          }
+          content={(() => {
+            switch (currentInputDialogState.type) {
+              case 'note':
+                return (
+                  <NoteInputForm
+                    id={currentInputDialogState.formId}
+                    pageId={pageId}
+                    mealType={mealType}
+                    displayOrder={displayOrder}
+                    product={productAutocompleteValue}
+                    productAutocomplete={productAutocomplete}
+                    dialogValue={productDialogValue}
+                    shouldClearValues={dialogOpened}
+                    onProductChange={handleNoteInputFormProductChange}
+                    onSubmit={handleNoteInputFormSubmit}
+                    onSubmitDisabledChange={handleNoteInputFormSubmitDisabledChange}
+                  />
+                );
+              case 'product':
+                return (
+                  <ProductInputForm
+                    id={currentInputDialogState.formId}
+                    product={productDialogValue}
+                    shouldClearValues={dialogOpened}
+                    onSubmit={handleProductInputFormSubmit}
+                    onSubmitDisabledChange={handleProductInputFormSubmitDisabledChange}
+                  />
+                );
+              default:
+                return <></>;
+            }
+          })()}
           renderCancel={cancelProps => (
-            <Button {...cancelProps} onClick={currentInputDialogState.handleClose}>
+            <Button
+              {...cancelProps}
+              onClick={currentInputDialogState.handleClose}
+              disabled={currentInputDialogState.cancelDisabled}
+            >
               Cancel
             </Button>
           )}
           renderSubmit={submitProps => (
-            <Button {...submitProps} form={currentInputDialogState.formId}>
-              Submit
+            <Button
+              {...submitProps}
+              form={currentInputDialogState.formId}
+              disabled={currentInputDialogState.submitDisabled}
+              loading={currentInputDialogState.submitLoading}
+            >
+              {currentInputDialogState.submitText}
             </Button>
           )}
         />
