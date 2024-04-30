@@ -1,37 +1,57 @@
 import { TextField } from '@mui/material';
-import { type FC } from 'react';
+import { useEffect, type FC, type FormEventHandler } from 'react';
 import { useInput } from '@/hooks';
 import { mapToTextInputProps } from '@/utils/inputMapping';
 import { validateProductName } from '@/utils/validation';
 import { type ProductFormType } from '../model';
 
 export interface ProductInputFormProps {
-  values: ProductFormType;
-  onValuesChange: (values: ProductFormType) => void;
+  id: string;
+  product: ProductFormType;
+  shouldClearValues: boolean;
+  onSubmit: (values: ProductFormType) => void;
 }
 
-export const ProductInputForm: FC<ProductInputFormProps> = ({ values, onValuesChange }) => {
-  const { inputProps: productNameInputProps } = useInput({
-    initialValue: values.name,
+export const ProductInputForm: FC<ProductInputFormProps> = ({
+  id,
+  product,
+  shouldClearValues,
+  onSubmit,
+}) => {
+  const {
+    value: productName,
+    clearValue: clearProductName,
+    inputProps: productNameProps,
+  } = useInput({
+    initialValue: product.name,
     errorHelperText: 'Product name is invalid',
     validate: validateProductName,
     mapToInputProps: mapToTextInputProps,
   });
 
-  return (
-    <TextField
-      {...productNameInputProps}
-      label="Name"
-      placeholder="Product name"
-      fullWidth
-      autoFocus
-      onChange={event => {
-        if (productNameInputProps.onChange) {
-          productNameInputProps.onChange(event);
-        }
+  useEffect(() => {
+    if (shouldClearValues) {
+      clearProductName();
+    }
+  }, [clearProductName, shouldClearValues]);
 
-        onValuesChange({ ...values, name: event.target.value });
-      }}
-    />
+  const handleSubmit: FormEventHandler<HTMLFormElement> = event => {
+    event.preventDefault();
+    onSubmit({
+      ...product,
+      name: productName,
+    });
+  };
+
+  return (
+    <form id={id} onSubmit={handleSubmit}>
+      <TextField
+        {...productNameProps}
+        label="Name"
+        placeholder="Product name"
+        fullWidth
+        autoFocus
+      />
+    </form>
   );
 };
