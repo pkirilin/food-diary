@@ -66,6 +66,8 @@ export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
       displayOrder={displayOrder}
       product={null}
       quantity={100}
+      productAutocomplete={productAutocomplete}
+      categorySelect={categorySelect}
       renderTrigger={openDialog => (
         <Button variant="text" size="medium" fullWidth startIcon={<AddIcon />} onClick={openDialog}>
           Add note

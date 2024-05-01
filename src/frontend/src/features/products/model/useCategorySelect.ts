@@ -1,7 +1,7 @@
 import { categoriesApi } from 'src/features/categories';
 import { type SelectOption } from 'src/types';
 
-interface UseCategorySelectResult {
+export interface UseCategorySelectResult {
   data: SelectOption[];
   isLoading: boolean;
 }

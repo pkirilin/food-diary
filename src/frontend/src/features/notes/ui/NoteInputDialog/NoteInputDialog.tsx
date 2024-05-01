@@ -5,7 +5,7 @@ import {
   ProductAutocompleteWithoutDialog,
 } from '@/entities/products';
 import { CategorySelect } from '@/features/categories';
-import { useCategorySelect } from '@/features/products';
+import { type UseCategorySelectResult } from '@/features/products';
 import { useToggle } from '@/shared/hooks';
 import { Button, Dialog } from '@/shared/ui';
 import { useInput } from 'src/hooks';
@@ -37,41 +37,35 @@ interface InputDialogState {
 interface Props {
   title: string;
   submitText: string;
-  // opened: boolean;
   mealType: MealType;
   pageId: number;
   product: productsModel.AutocompleteOptionType | null;
   quantity: number;
   displayOrder: number;
-  // submitLoading: boolean;
-  submitSuccess: boolean;
-  // renderProductAutocomplete: (props: productsModel.AutocompleteInputProps) => ReactElement;
-  // onClose: () => void;
+  productAutocomplete: productsModel.UseAutocompleteResult;
+  categorySelect: UseCategorySelectResult;
   renderTrigger: (toggleDialog: () => void) => ReactElement;
   onSubmit: (note: NoteCreateEdit) => Promise<void>;
+  submitSuccess: boolean;
   onSubmitSuccess: () => void;
 }
 
 export const NoteInputDialog: FC<Props> = ({
   title,
   submitText,
-  // opened,
   mealType,
   pageId,
   product,
   quantity,
   displayOrder,
-  // submitLoading,
-  submitSuccess,
-  // renderProductAutocomplete,
-  // onClose,
+  productAutocomplete,
+  categorySelect,
   renderTrigger,
   onSubmit,
+  submitSuccess,
   onSubmitSuccess,
 }) => {
   const [dialogOpened, toggleDialog] = useToggle();
-  const productAutocomplete = productsModel.useAutocomplete();
-  const categorySelect = useCategorySelect();
 
   const productAutocompleteInput = useInput({
     initialValue: product,
@@ -239,9 +233,9 @@ export const NoteInputDialog: FC<Props> = ({
                         {...productAutocompleteProps}
                         autoFocus
                         dialogValue={productDialogValue}
+                        onChange={handleNoteInputFormProductChange}
                         options={productAutocomplete.options}
                         loading={productAutocomplete.isLoading}
-                        onChange={handleNoteInputFormProductChange}
                       />
                     )}
                     onSubmit={handleNoteInputFormSubmit}

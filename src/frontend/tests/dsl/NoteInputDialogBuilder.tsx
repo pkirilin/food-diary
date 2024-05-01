@@ -28,8 +28,14 @@ export class NoteInputDialogBuilder {
               product={this.getSelectedProduct()}
               quantity={this._quantity}
               displayOrder={1}
-              // renderProductAutocomplete={this.renderProductAutocomplete.bind(this)}
-              // onClose={this._openAndCloseOnButtonClick ? onTriggerClick : vi.fn()}
+              productAutocomplete={{
+                options: this._products,
+                isLoading: false,
+              }}
+              categorySelect={{
+                data: [],
+                isLoading: false,
+              }}
               renderTrigger={openDialog => (
                 <button onClick={openDialog}>{this._triggerButtonLabel}</button>
               )}

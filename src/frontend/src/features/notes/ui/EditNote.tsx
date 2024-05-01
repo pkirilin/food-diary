@@ -63,28 +63,8 @@ export const EditNote: FC<Props> = ({ note, pageId, renderTrigger }) => {
       product={product}
       quantity={note.productQuantity}
       displayOrder={note.displayOrder}
-      // renderProductAutocomplete={autocompleteProps => (
-      //   <ProductAutocomplete
-      //     {...autocompleteProps}
-      //     options={productAutocomplete.options}
-      //     loading={productAutocomplete.isLoading}
-      //     renderInputDialog={productInputProps => (
-      //       <ProductInputDialog
-      //         {...productInputProps}
-      //         renderCategoryInput={categoryInputProps => (
-      //           <CategorySelect
-      //             {...categoryInputProps}
-      //             label="Category"
-      //             placeholder="Select a category"
-      //             options={categorySelect.data}
-      //             optionsLoading={categorySelect.isLoading}
-      //           />
-      //         )}
-      //       />
-      //     )}
-      //   />
-      // )}
-      // onClose={toggleDialog}
+      productAutocomplete={productAutocomplete}
+      categorySelect={categorySelect}
       renderTrigger={renderTrigger}
       onSubmit={handleSubmit}
       submitSuccess={editNoteResponse.isSuccess && notes.isChanged}
