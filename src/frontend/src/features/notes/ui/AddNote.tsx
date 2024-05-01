@@ -3,6 +3,7 @@ import { useCallback, type FC } from 'react';
 import { productsModel } from '@/entities/products';
 import { NoteInputDialog } from '@/features/notes';
 import { type CreateProductRequest, productsApi, useCategorySelect } from '@/features/products';
+import { useToggle } from '@/shared/hooks';
 import { Button } from '@/shared/ui';
 import { notesApi } from '../api';
 import { toCreateNoteRequest } from '../mapping';
@@ -28,6 +29,7 @@ interface Props {
 }
 
 export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
+  const [dialogOpened, toggleDialog] = useToggle();
   const [createNote, createNoteResponse] = notesApi.useCreateNoteMutation();
   const [createProduct] = productsApi.useCreateProductMutation();
   const { reset: resetCreateNote } = createNoteResponse;
@@ -58,24 +60,26 @@ export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
   }, [resetCreateNote]);
 
   return (
-    <NoteInputDialog
-      title="New note"
-      submitText="Add note"
-      pageId={pageId}
-      mealType={mealType}
-      displayOrder={displayOrder}
-      product={null}
-      quantity={100}
-      productAutocomplete={productAutocomplete}
-      categorySelect={categorySelect}
-      renderTrigger={openDialog => (
-        <Button variant="text" size="medium" fullWidth startIcon={<AddIcon />} onClick={openDialog}>
-          Add note
-        </Button>
-      )}
-      onSubmit={handleSubmit}
-      submitSuccess={createNoteResponse.isSuccess && notes.isChanged}
-      onSubmitSuccess={handleSubmitSuccess}
-    />
+    <>
+      <Button variant="text" size="medium" fullWidth startIcon={<AddIcon />} onClick={toggleDialog}>
+        Add note
+      </Button>
+      <NoteInputDialog
+        opened={dialogOpened}
+        title="New note"
+        submitText="Add note"
+        pageId={pageId}
+        mealType={mealType}
+        displayOrder={displayOrder}
+        product={null}
+        quantity={100}
+        productAutocomplete={productAutocomplete}
+        categorySelect={categorySelect}
+        submitSuccess={createNoteResponse.isSuccess && notes.isChanged}
+        onClose={toggleDialog}
+        onSubmit={handleSubmit}
+        onSubmitSuccess={handleSubmitSuccess}
+      />
+    </>
   );
 };

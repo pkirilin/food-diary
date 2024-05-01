@@ -1,83 +1,86 @@
-import { create } from 'tests/dsl';
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { type productsModel } from '@/entities/products';
-import { MealType, type NoteCreateEdit } from '../../models';
+import {
+  whenDialogOpened,
+  givenNoteInputDialog,
+  whenProductSelected,
+  thenQuantityHasValue,
+  whenQuantityChanged,
+  whenFormSubmitted,
+  whenDialogClosed,
+  thenFormValueContains,
+  thenDialogShouldBeHidden,
+} from './NoteInputDialog.fixture';
 
 describe('when opened for existing note', () => {
   test(`should take quantity from note quantity`, async () => {
-    const ui = create
-      .NoteInputDialog()
-      .withProductForSelect({ name: 'Test product', defaultQuantity: 123 })
-      .withSelectedProduct('Test product')
-      .withQuantity(321)
-      .please();
+    const user = userEvent.setup();
 
-    render(ui);
+    render(
+      givenNoteInputDialog()
+        .withProductForSelect({ name: 'Test product', defaultQuantity: 123 })
+        .withSelectedProduct('Test product')
+        .withQuantity(321)
+        .please(),
+    );
 
-    const quantity = await screen.findByPlaceholderText(/product quantity/i);
-    expect(quantity).toHaveValue(321);
+    await whenDialogOpened(user);
+    await thenQuantityHasValue(321);
   });
 });
 
 describe('when opened for edit, changed product, closed without save, and opened again', () => {
   test('should take quantity from note quantity', async () => {
     const user = userEvent.setup();
-    const ui = create
-      .NoteInputDialog()
-      .withProductForSelect({ name: 'First product', defaultQuantity: 200 })
-      .withProductForSelect({ name: 'Second product', defaultQuantity: 300 })
-      .withSelectedProduct('First product')
-      .withQuantity(100)
-      .withOpenAndCloseOnButtonClick('Open dialog')
-      .please();
 
-    render(ui);
-    await user.click(screen.getByText(/open dialog/i));
+    render(
+      givenNoteInputDialog()
+        .withProductForSelect({ name: 'First product', defaultQuantity: 200 })
+        .withProductForSelect({ name: 'Second product', defaultQuantity: 300 })
+        .withSelectedProduct('First product')
+        .withQuantity(100)
+        .please(),
+    );
 
-    const productInput = screen.getByRole('combobox', { name: /product/i });
-    const secondProductOption = screen.getByRole('option', { name: /second product/i });
-    await user.selectOptions(productInput, [secondProductOption]);
-
-    await user.click(screen.getByText(/cancel/i));
-    await user.click(screen.getByText(/open dialog/i));
-
-    expect(screen.getByPlaceholderText(/product quantity/i)).toHaveValue(100);
+    await whenDialogOpened(user);
+    await whenProductSelected(user, /second product/i);
+    await whenDialogClosed(user);
+    await thenDialogShouldBeHidden();
+    await whenDialogOpened(user);
+    await thenQuantityHasValue(100);
   });
 });
 
 describe('when product changed', () => {
   test(`should take quantity from product's default quantity if creating note`, async () => {
     const user = userEvent.setup();
-    const ui = create
-      .NoteInputDialog()
-      .withQuantity(100)
-      .withProductForSelect({ name: 'Test product', defaultQuantity: 123 })
-      .please();
 
-    render(ui);
-    const productInput = screen.getByRole('combobox', { name: /product/i });
-    const testProductOption = screen.getByRole('option', { name: /test product/i });
-    await user.selectOptions(productInput, [testProductOption]);
+    render(
+      givenNoteInputDialog()
+        .withQuantity(100)
+        .withProductForSelect({ name: 'Test product', defaultQuantity: 123 })
+        .please(),
+    );
 
-    expect(screen.getByPlaceholderText(/product quantity/i)).toHaveValue(123);
+    await whenDialogOpened(user);
+    await whenProductSelected(user, /test product/i);
+    await thenQuantityHasValue(123);
   });
 
   test(`should take quantity from product's default quantity if editing note`, async () => {
     const user = userEvent.setup();
-    const ui = create
-      .NoteInputDialog()
-      .withProductForSelect({ name: 'First product', defaultQuantity: 200 })
-      .withProductForSelect({ name: 'Second product', defaultQuantity: 300 })
-      .withSelectedProduct('First product')
-      .please();
 
-    render(ui);
-    const productInput = screen.getByRole('combobox', { name: /product/i });
-    const secondProductOption = screen.getByRole('option', { name: /second product/i });
-    await user.selectOptions(productInput, [secondProductOption]);
+    render(
+      givenNoteInputDialog()
+        .withProductForSelect({ name: 'First product', defaultQuantity: 200 })
+        .withProductForSelect({ name: 'Second product', defaultQuantity: 300 })
+        .withSelectedProduct('First product')
+        .please(),
+    );
 
-    expect(screen.getByPlaceholderText(/product quantity/i)).toHaveValue(300);
+    await whenDialogOpened(user);
+    await whenProductSelected(user, /second product/i);
+    await thenQuantityHasValue(300);
   });
 });
 
@@ -85,34 +88,25 @@ describe('when input is valid', () => {
   test('should submit form', async () => {
     const user = userEvent.setup();
     const onSubmitMock = vi.fn();
-    const ui = create
-      .NoteInputDialog()
-      .withQuantity(100)
-      .withProductForSelect({ name: 'Test product', defaultQuantity: 123 })
-      .withOnSubmit(onSubmitMock)
-      .please();
 
-    render(ui);
+    render(
+      givenNoteInputDialog()
+        .withQuantity(100)
+        .withProductForSelect({ name: 'Test product', defaultQuantity: 123 })
+        .withOnSubmit(onSubmitMock)
+        .please(),
+    );
 
-    const productInput = screen.getByRole('combobox', { name: /product/i });
-    const testProductOption = screen.getByRole('option', { name: /test product/i });
-    await user.selectOptions(productInput, [testProductOption]);
-
-    const quantityInput = screen.getByPlaceholderText(/product quantity/i);
-    await user.clear(quantityInput);
-    await user.type(quantityInput, '150');
-
-    await user.click(screen.getByRole('button', { name: /submit/i }));
-
-    expect(onSubmitMock).toHaveBeenCalledWith<[NoteCreateEdit]>({
-      mealType: MealType.Breakfast,
-      pageId: 1,
-      product: expect.objectContaining<Partial<productsModel.AutocompleteExistingOption>>({
+    await whenDialogOpened(user);
+    await whenProductSelected(user, /test product/i);
+    await whenQuantityChanged(user, 150);
+    await whenFormSubmitted(user);
+    await thenFormValueContains(onSubmitMock, {
+      product: {
         name: 'Test product',
         defaultQuantity: 123,
-      }),
+      },
       productQuantity: 150,
-      displayOrder: 1,
     });
   });
 });

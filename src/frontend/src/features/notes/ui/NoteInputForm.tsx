@@ -32,7 +32,11 @@ export const NoteInputForm: FC<NoteInputFormProps> = ({
   onSubmit,
   onSubmitDisabledChange,
 }) => {
-  const quantityInput = useInput({
+  const {
+    setValue: setQuantity,
+    clearValue: clearQuantity,
+    ...quantityInput
+  } = useInput({
     initialValue: quantity,
     errorHelperText: 'Quantity is invalid',
     validate: validateQuantity,
@@ -45,6 +49,19 @@ export const NoteInputForm: FC<NoteInputFormProps> = ({
   useEffect(() => {
     onSubmitDisabledChange(anyValueInvalid || !anyValueChanged);
   }, [anyValueChanged, anyValueInvalid, onSubmitDisabledChange]);
+
+  useEffect(() => {
+    if (productAutocompleteInput.value && productAutocompleteInput.isTouched) {
+      setQuantity(productAutocompleteInput.value.defaultQuantity);
+    } else {
+      clearQuantity();
+    }
+  }, [
+    clearQuantity,
+    productAutocompleteInput.isTouched,
+    productAutocompleteInput.value,
+    setQuantity,
+  ]);
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = event => {
     event.preventDefault();

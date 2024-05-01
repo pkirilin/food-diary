@@ -2,6 +2,7 @@ import { useMemo, type FC, type ReactElement, useCallback } from 'react';
 import { productsModel } from '@/entities/products';
 import { NoteInputDialog, notesApi, useNotes } from '@/features/notes';
 import { type CreateProductRequest, productsApi, useCategorySelect } from '@/features/products';
+import { useToggle } from '@/shared/hooks';
 import { toEditNoteRequest, toProductSelectOption } from '../mapping';
 import { type NoteCreateEdit, type NoteItem } from '../models';
 
@@ -24,6 +25,7 @@ const toCreateProductRequest = ({
 });
 
 export const EditNote: FC<Props> = ({ note, pageId, renderTrigger }) => {
+  const [dialogOpened, toggleDialog] = useToggle();
   const notes = useNotes(pageId);
   const product = useMemo(() => toProductSelectOption(note), [note]);
   const [editNote, editNoteResponse] = notesApi.useEditNoteMutation();
@@ -55,20 +57,24 @@ export const EditNote: FC<Props> = ({ note, pageId, renderTrigger }) => {
   }, [resetEditNote]);
 
   return (
-    <NoteInputDialog
-      title="Edit note"
-      submitText="Save note"
-      mealType={note.mealType}
-      pageId={pageId}
-      product={product}
-      quantity={note.productQuantity}
-      displayOrder={note.displayOrder}
-      productAutocomplete={productAutocomplete}
-      categorySelect={categorySelect}
-      renderTrigger={renderTrigger}
-      onSubmit={handleSubmit}
-      submitSuccess={editNoteResponse.isSuccess && notes.isChanged}
-      onSubmitSuccess={handleSubmitSuccess}
-    />
+    <>
+      {renderTrigger(toggleDialog)}
+      <NoteInputDialog
+        opened={dialogOpened}
+        title="Edit note"
+        submitText="Save note"
+        mealType={note.mealType}
+        pageId={pageId}
+        product={product}
+        quantity={note.productQuantity}
+        displayOrder={note.displayOrder}
+        productAutocomplete={productAutocomplete}
+        categorySelect={categorySelect}
+        onClose={toggleDialog}
+        onSubmit={handleSubmit}
+        submitSuccess={editNoteResponse.isSuccess && notes.isChanged}
+        onSubmitSuccess={handleSubmitSuccess}
+      />
+    </>
   );
 };

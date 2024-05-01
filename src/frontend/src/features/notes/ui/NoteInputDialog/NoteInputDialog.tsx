@@ -1,4 +1,4 @@
-import { type FC, useEffect, type ReactElement, useCallback, useMemo, useState } from 'react';
+import { type FC, useEffect, useCallback, useMemo, useState } from 'react';
 import {
   productsModel,
   ProductInputForm,
@@ -6,7 +6,6 @@ import {
 } from '@/entities/products';
 import { CategorySelect } from '@/features/categories';
 import { type UseCategorySelectResult } from '@/features/products';
-import { useToggle } from '@/shared/hooks';
 import { Button, Dialog } from '@/shared/ui';
 import { useInput } from 'src/hooks';
 import { mapToTextInputProps } from 'src/utils/inputMapping';
@@ -35,6 +34,7 @@ interface InputDialogState {
 }
 
 interface Props {
+  opened: boolean;
   title: string;
   submitText: string;
   mealType: MealType;
@@ -44,13 +44,14 @@ interface Props {
   displayOrder: number;
   productAutocomplete: productsModel.UseAutocompleteResult;
   categorySelect: UseCategorySelectResult;
-  renderTrigger: (toggleDialog: () => void) => ReactElement;
-  onSubmit: (note: NoteCreateEdit) => Promise<void>;
   submitSuccess: boolean;
+  onClose: () => void;
+  onSubmit: (note: NoteCreateEdit) => Promise<void>;
   onSubmitSuccess: () => void;
 }
 
 export const NoteInputDialog: FC<Props> = ({
+  opened,
   title,
   submitText,
   mealType,
@@ -60,13 +61,11 @@ export const NoteInputDialog: FC<Props> = ({
   displayOrder,
   productAutocomplete,
   categorySelect,
-  renderTrigger,
-  onSubmit,
   submitSuccess,
+  onClose,
+  onSubmit,
   onSubmitSuccess,
 }) => {
-  const [dialogOpened, toggleDialog] = useToggle();
-
   const productAutocompleteInput = useInput({
     initialValue: product,
     errorHelperText: 'Product is required',
@@ -105,7 +104,7 @@ export const NoteInputDialog: FC<Props> = ({
         submitDisabled: noteSubmitDisabled,
         cancelDisabled: noteSubmitLoading,
         handleClose: () => {
-          toggleDialog();
+          onClose();
           setProductDialogValue(EMPTY_DIALOG_VALUE);
           clearProductAutocompleteValue();
         },
@@ -124,13 +123,13 @@ export const NoteInputDialog: FC<Props> = ({
       },
     ],
     [
-      clearProductAutocompleteValue,
+      title,
+      submitText,
+      noteSubmitLoading,
       noteSubmitDisabled,
       productSubmitDisabled,
-      noteSubmitLoading,
-      submitText,
-      title,
-      toggleDialog,
+      clearProductAutocompleteValue,
+      onClose,
     ],
   );
 
@@ -140,19 +139,14 @@ export const NoteInputDialog: FC<Props> = ({
   );
 
   useEffect(() => {
-    if (dialogOpened && submitSuccess) {
-      toggleDialog();
+    if (opened && submitSuccess) {
+      onClose();
       setProductDialogValue(EMPTY_DIALOG_VALUE);
       clearProductAutocompleteValue();
       setNoteSubmitLoading(false);
       onSubmitSuccess();
     }
-  }, [clearProductAutocompleteValue, dialogOpened, onSubmitSuccess, submitSuccess, toggleDialog]);
-
-  const handleDialogOpen = (): void => {
-    setCurrentInputDialogType('note');
-    toggleDialog();
-  };
+  }, [clearProductAutocompleteValue, opened, onSubmitSuccess, submitSuccess, onClose]);
 
   const handleNoteInputFormProductChange = (
     value: productsModel.AutocompleteOptionType | null,
@@ -211,11 +205,10 @@ export const NoteInputDialog: FC<Props> = ({
 
   return (
     <>
-      {renderTrigger(handleDialogOpen)}
       {currentInputDialogState && (
         <Dialog
           title={currentInputDialogState.title}
-          opened={dialogOpened}
+          opened={opened}
           onClose={currentInputDialogState.handleClose}
           content={(() => {
             switch (currentInputDialogState.type) {
