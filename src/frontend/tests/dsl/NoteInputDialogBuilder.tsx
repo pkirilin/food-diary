@@ -30,12 +30,13 @@ export class NoteInputDialogBuilder {
               displayOrder={1}
               // renderProductAutocomplete={this.renderProductAutocomplete.bind(this)}
               // onClose={this._openAndCloseOnButtonClick ? onTriggerClick : vi.fn()}
-              submitSuccess={false}
+              renderTrigger={openDialog => (
+                <button onClick={openDialog}>{this._triggerButtonLabel}</button>
+              )}
               onSubmit={this._onSubmitMock}
+              submitSuccess={false}
               onSubmitSuccess={vi.fn()}
-            >
-              {() => <div>asasdsa</div>}
-            </NoteInputDialog>
+            />
           )}
         </WithTriggerButton>
       </ThemeProvider>

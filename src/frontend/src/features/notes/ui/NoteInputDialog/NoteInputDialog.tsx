@@ -47,9 +47,9 @@ interface Props {
   submitSuccess: boolean;
   // renderProductAutocomplete: (props: productsModel.AutocompleteInputProps) => ReactElement;
   // onClose: () => void;
+  renderTrigger: (toggleDialog: () => void) => ReactElement;
   onSubmit: (note: NoteCreateEdit) => Promise<void>;
   onSubmitSuccess: () => void;
-  children: (toggleDialog: () => void) => ReactElement;
 }
 
 export const NoteInputDialog: FC<Props> = ({
@@ -65,9 +65,9 @@ export const NoteInputDialog: FC<Props> = ({
   submitSuccess,
   // renderProductAutocomplete,
   // onClose,
+  renderTrigger,
   onSubmit,
   onSubmitSuccess,
-  children,
 }) => {
   const [dialogOpened, toggleDialog] = useToggle();
   const productAutocomplete = productsModel.useAutocomplete();
@@ -217,7 +217,7 @@ export const NoteInputDialog: FC<Props> = ({
 
   return (
     <>
-      {children(handleDialogOpen)}
+      {renderTrigger(handleDialogOpen)}
       {currentInputDialogState && (
         <Dialog
           title={currentInputDialogState.title}

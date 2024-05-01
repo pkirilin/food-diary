@@ -66,21 +66,14 @@ export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
       displayOrder={displayOrder}
       product={null}
       quantity={100}
-      submitSuccess={createNoteResponse.isSuccess && notes.isChanged}
-      onSubmit={handleSubmit}
-      onSubmitSuccess={handleSubmitSuccess}
-    >
-      {toggleDialog => (
-        <Button
-          variant="text"
-          size="medium"
-          fullWidth
-          startIcon={<AddIcon />}
-          onClick={toggleDialog}
-        >
+      renderTrigger={openDialog => (
+        <Button variant="text" size="medium" fullWidth startIcon={<AddIcon />} onClick={openDialog}>
           Add note
         </Button>
       )}
-    </NoteInputDialog>
+      onSubmit={handleSubmit}
+      submitSuccess={createNoteResponse.isSuccess && notes.isChanged}
+      onSubmitSuccess={handleSubmitSuccess}
+    />
   );
 };

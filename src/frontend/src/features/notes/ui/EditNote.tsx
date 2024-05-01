@@ -8,7 +8,7 @@ import { type NoteCreateEdit, type NoteItem } from '../models';
 interface Props {
   note: NoteItem;
   pageId: number;
-  children: (openDialog: () => void) => ReactElement;
+  renderTrigger: (openDialog: () => void) => ReactElement;
 }
 
 const toCreateProductRequest = ({
@@ -23,7 +23,7 @@ const toCreateProductRequest = ({
   categoryId: category?.id ?? 0,
 });
 
-export const EditNote: FC<Props> = ({ note, pageId, children }) => {
+export const EditNote: FC<Props> = ({ note, pageId, renderTrigger }) => {
   const notes = useNotes(pageId);
   const product = useMemo(() => toProductSelectOption(note), [note]);
   const [editNote, editNoteResponse] = notesApi.useEditNoteMutation();
@@ -63,7 +63,6 @@ export const EditNote: FC<Props> = ({ note, pageId, children }) => {
       product={product}
       quantity={note.productQuantity}
       displayOrder={note.displayOrder}
-      submitSuccess={editNoteResponse.isSuccess && notes.isChanged}
       // renderProductAutocomplete={autocompleteProps => (
       //   <ProductAutocomplete
       //     {...autocompleteProps}
@@ -86,10 +85,10 @@ export const EditNote: FC<Props> = ({ note, pageId, children }) => {
       //   />
       // )}
       // onClose={toggleDialog}
+      renderTrigger={renderTrigger}
       onSubmit={handleSubmit}
+      submitSuccess={editNoteResponse.isSuccess && notes.isChanged}
       onSubmitSuccess={handleSubmitSuccess}
-    >
-      {openDialog => children(openDialog)}
-    </NoteInputDialog>
+    />
   );
 };
