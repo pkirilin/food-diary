@@ -23,17 +23,19 @@ export class NoteInputDialogBuilder {
             <NoteInputDialog
               title="Test"
               submitText="Submit"
-              isOpened={this._openAndCloseOnButtonClick ? active : true}
               mealType={MealType.Breakfast}
               pageId={1}
               product={this.getSelectedProduct()}
               quantity={this._quantity}
               displayOrder={1}
-              submitting={false}
-              renderProductAutocomplete={this.renderProductAutocomplete.bind(this)}
-              onClose={this._openAndCloseOnButtonClick ? onTriggerClick : vi.fn()}
+              // renderProductAutocomplete={this.renderProductAutocomplete.bind(this)}
+              // onClose={this._openAndCloseOnButtonClick ? onTriggerClick : vi.fn()}
+              submitSuccess={false}
               onSubmit={this._onSubmitMock}
-            />
+              onSubmitSuccess={vi.fn()}
+            >
+              {() => <div>asasdsa</div>}
+            </NoteInputDialog>
           )}
         </WithTriggerButton>
       </ThemeProvider>
