@@ -7,19 +7,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FoodDiary.Infrastructure.Repositories.v2;
 
-internal class ProductsRepository : IProductsRepository
+internal class ProductsRepository(FoodDiaryContext context) : IProductsRepository
 {
-    private readonly DbSet<Product> _products;
-
-    public ProductsRepository(DbSet<Product> products)
-    {
-        _products = products;
-    }
-    
-    public async Task<Product[]> GetAllOrderedByNameAsync(CancellationToken cancellationToken)
-    {
-        return await _products
+    public Task<Product[]> GetAllOrderedByNameAsync(CancellationToken cancellationToken) =>
+        context.Products
             .OrderBy(p => p.Name)
             .ToArrayAsync(cancellationToken);
+
+    public Task<Product> FindByExactName(string name, CancellationToken cancellationToken) =>
+        context.Products.FirstOrDefaultAsync(p => p.Name == name, cancellationToken);
+
+    public async Task Create(Product product, CancellationToken cancellationToken)
+    {
+        context.Products.Add(product);
+        await context.SaveChangesAsync(cancellationToken);
     }
 }

@@ -5,12 +5,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using FoodDiary.API.Dtos;
-using FoodDiary.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using FoodDiary.API.Requests;
 using MediatR;
 using FoodDiary.Application.Products.Requests;
 using System.Linq;
+using FoodDiary.API.Mapping;
+using FoodDiary.Application.Products.Create;
 using FoodDiary.Application.Services.Products;
 using Microsoft.AspNetCore.Authorization;
 
@@ -66,31 +67,26 @@ public class ProductsController : ControllerBase
 
         return Ok(searchResultDto);
     }
-
-    /// <summary>
-    /// Creates new product if product with the same name doesn't exist
-    /// </summary>
-    /// <param name="productData">New product info</param>
-    /// <param name="cancellationToken"></param>
+    
     [HttpPost]
     [ProducesResponseType((int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
     public async Task<IActionResult> CreateProduct([FromBody] ProductCreateEditRequest productData, CancellationToken cancellationToken)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+        var request = new CreateProductRequest(
+            productData.Name,
+            productData.CaloriesCost,
+            productData.DefaultQuantity,
+            productData.CategoryId);
 
-        var productsWithTheSameName = await _mediator.Send(new GetProductsByExactNameRequest(productData.Name), cancellationToken);
-            
-        if (productsWithTheSameName.Any())
+        var response = await _mediator.Send(request, cancellationToken);
+
+        return response switch
         {
-            ModelState.AddModelError(nameof(productData.Name), $"Product with the name '{productData.Name}' already exists");
-            return BadRequest(ModelState);
-        }
-
-        var product = _mapper.Map<Product>(productData);
-        await _mediator.Send(new CreateProductRequest(product), cancellationToken);
-        return Ok();
+            CreateProductResponse.ProductAlreadyExists => ProductAlreadyExists(productData),
+            CreateProductResponse.Success success => Ok(success.Product.ToCreateProductResponse()),
+            _ => Conflict()
+        };
     }
 
     /// <summary>
@@ -167,5 +163,11 @@ public class ProductsController : ControllerBase
     {
         var products = await _productsService.GetAutocompleteItemsAsync(cancellationToken);
         return Ok(products);
+    }
+
+    private IActionResult ProductAlreadyExists(ProductCreateEditRequest product)
+    {
+        ModelState.AddModelError(nameof(product.Name), $"Product with the name '{product.Name}' already exists");
+        return BadRequest(ModelState);
     }
 }
