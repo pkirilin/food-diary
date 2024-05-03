@@ -207,6 +207,7 @@ export const NoteInputDialog: FC<Props> = ({
     <>
       {currentInputDialogState && (
         <Dialog
+          renderMode="fullScreenOnMobile"
           title={currentInputDialogState.title}
           opened={opened}
           onClose={currentInputDialogState.handleClose}
