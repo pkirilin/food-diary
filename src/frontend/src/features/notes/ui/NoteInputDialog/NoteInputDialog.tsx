@@ -1,17 +1,14 @@
-import { type FC, useEffect, useCallback, useMemo, useState } from 'react';
-import {
-  productsModel,
-  ProductInputForm,
-  ProductAutocompleteWithoutDialog,
-} from '@/entities/products';
-import { CategorySelect } from '@/features/categories';
+import { type FC, useEffect, useState } from 'react';
+import { productsModel } from '@/entities/products';
 import { type UseCategorySelectResult } from '@/features/products';
 import { Button, Dialog } from '@/shared/ui';
 import { useInput } from 'src/hooks';
 import { mapToTextInputProps } from 'src/utils/inputMapping';
 import { validateProductName } from 'src/utils/validation';
 import { type MealType, type NoteCreateEdit } from '../../models';
-import { NoteInputForm } from '../NoteInputForm';
+import { type DialogState, type DialogStateType } from './types';
+import { useNoteDialog } from './useNoteDialog';
+import { useProductDialog } from './useProductDialog';
 
 const EMPTY_DIALOG_VALUE: productsModel.ProductFormType = {
   name: '',
@@ -19,19 +16,6 @@ const EMPTY_DIALOG_VALUE: productsModel.ProductFormType = {
   caloriesCost: 100,
   category: null,
 };
-
-type InputDialogStateType = 'note' | 'product';
-
-interface InputDialogState {
-  type: InputDialogStateType;
-  title: string;
-  submitText: string;
-  submitLoading: boolean;
-  submitDisabled: boolean;
-  cancelDisabled: boolean;
-  formId: string;
-  handleClose: () => void;
-}
 
 interface Props {
   opened: boolean;
@@ -57,11 +41,11 @@ export const NoteInputDialog: FC<Props> = ({
   mealType,
   pageId,
   product,
-  quantity,
   displayOrder,
-  productAutocomplete,
   categorySelect,
   submitSuccess,
+  quantity,
+  productAutocomplete,
   onClose,
   onSubmit,
   onSubmitSuccess,
@@ -86,202 +70,115 @@ export const NoteInputDialog: FC<Props> = ({
   const [productDialogValue, setProductDialogValue] =
     useState<productsModel.ProductFormType>(EMPTY_DIALOG_VALUE);
 
-  const [currentInputDialogType, setCurrentInputDialogType] =
-    useState<InputDialogStateType>('note');
+  const [currentInputDialogType, setCurrentInputDialogType] = useState<DialogStateType>('note');
 
-  const [noteSubmitDisabled, setNoteSubmitDisabled] = useState(true);
-  const [noteSubmitLoading, setNoteSubmitLoading] = useState(false);
-  const [productSubmitDisabled, setProductSubmitDisabled] = useState(true);
+  const { state: noteDialogState, onSubmitSuccess: onNoteSubmitSuccess } = useNoteDialog({
+    pageId,
+    mealType,
+    displayOrder,
+    title,
+    submitText,
+    quantity,
+    productAutocomplete,
+    productAutocompleteInput,
+    productDialogValue,
+    onSubmit,
+    onClose: () => {
+      onClose();
+      setProductDialogValue(EMPTY_DIALOG_VALUE);
+      clearProductAutocompleteValue();
+    },
+    onProductChange: value => {
+      setProductAutocompleteValue(value);
 
-  const inputDialogStates = useMemo<InputDialogState[]>(
-    () => [
-      {
-        type: 'note',
-        title,
-        submitText,
-        formId: 'note-form',
-        submitLoading: noteSubmitLoading,
-        submitDisabled: noteSubmitDisabled,
-        cancelDisabled: noteSubmitLoading,
-        handleClose: () => {
-          onClose();
-          setProductDialogValue(EMPTY_DIALOG_VALUE);
-          clearProductAutocompleteValue();
-        },
-      },
-      {
-        type: 'product',
-        title: 'New product',
-        submitText: 'Add product',
-        submitLoading: false,
-        submitDisabled: productSubmitDisabled,
-        cancelDisabled: false,
-        formId: 'product-form',
-        handleClose: () => {
-          setCurrentInputDialogType('note');
-        },
-      },
-    ],
-    [
-      title,
-      submitText,
-      noteSubmitLoading,
-      noteSubmitDisabled,
-      productSubmitDisabled,
-      clearProductAutocompleteValue,
-      onClose,
-    ],
-  );
+      if (value?.freeSolo === true) {
+        setCurrentInputDialogType('product');
 
-  const currentInputDialogState = useMemo(
-    () => inputDialogStates.find(s => s.type === currentInputDialogType),
-    [currentInputDialogType, inputDialogStates],
-  );
+        setProductDialogValue({
+          name: value.name,
+          caloriesCost: value.caloriesCost,
+          defaultQuantity: value.defaultQuantity,
+          category: value.category,
+        });
+
+        productNameInput.setValue(value.name);
+      }
+    },
+  });
+
+  const { state: productDialogState } = useProductDialog({
+    productDialogValue,
+    productNameInput,
+    categorySelect,
+    onClose: () => {
+      setCurrentInputDialogType('note');
+    },
+    onSubmit: ({ name, caloriesCost, defaultQuantity, category }) => {
+      setProductAutocompleteValue({
+        freeSolo: true,
+        editing: true,
+        name,
+        caloriesCost,
+        defaultQuantity,
+        category,
+      });
+      setCurrentInputDialogType('note');
+    },
+  });
 
   useEffect(() => {
     if (opened && submitSuccess) {
       onClose();
       setProductDialogValue(EMPTY_DIALOG_VALUE);
       clearProductAutocompleteValue();
-      setNoteSubmitLoading(false);
       onSubmitSuccess();
+      onNoteSubmitSuccess();
     }
-  }, [clearProductAutocompleteValue, opened, onSubmitSuccess, submitSuccess, onClose]);
+  }, [
+    opened,
+    onClose,
+    submitSuccess,
+    onSubmitSuccess,
+    onNoteSubmitSuccess,
+    clearProductAutocompleteValue,
+  ]);
 
-  const handleNoteInputFormProductChange = (
-    value: productsModel.AutocompleteOptionType | null,
-  ): void => {
-    setProductAutocompleteValue(value);
+  const dialogStates: DialogState[] = [noteDialogState, productDialogState];
 
-    if (value === null || !value.freeSolo) {
-      return;
-    }
+  const currentDialogState = dialogStates.find(s => s.type === currentInputDialogType);
 
-    setCurrentInputDialogType('product');
-
-    setProductDialogValue({
-      name: value.name,
-      caloriesCost: value.caloriesCost,
-      defaultQuantity: value.defaultQuantity,
-      category: value.category,
-    });
-
-    productNameInput.setValue(value.name);
-  };
-
-  const handleNoteInputFormSubmit = async (noteValues: NoteCreateEdit): Promise<void> => {
-    try {
-      setNoteSubmitLoading(true);
-      await onSubmit(noteValues);
-    } catch (err) {
-      setNoteSubmitLoading(false);
-    }
-  };
-
-  const handleNoteInputFormSubmitDisabledChange = useCallback((disabled: boolean): void => {
-    setNoteSubmitDisabled(disabled);
-  }, []);
-
-  const handleProductInputFormSubmit = async ({
-    name,
-    caloriesCost,
-    defaultQuantity,
-    category,
-  }: productsModel.ProductFormType): Promise<void> => {
-    setProductAutocompleteValue({
-      freeSolo: true,
-      editing: true,
-      name,
-      caloriesCost,
-      defaultQuantity,
-      category,
-    });
-    setCurrentInputDialogType('note');
-  };
-
-  const handleProductInputFormSubmitDisabledChange = useCallback((disabled: boolean): void => {
-    setProductSubmitDisabled(disabled);
-  }, []);
+  if (!currentDialogState) {
+    return null;
+  }
 
   return (
-    <>
-      {currentInputDialogState && (
-        <Dialog
-          renderMode="fullScreenOnMobile"
-          title={currentInputDialogState.title}
-          opened={opened}
-          onClose={currentInputDialogState.handleClose}
-          content={(() => {
-            switch (currentInputDialogState.type) {
-              case 'note':
-                return (
-                  <NoteInputForm
-                    id={currentInputDialogState.formId}
-                    pageId={pageId}
-                    mealType={mealType}
-                    displayOrder={displayOrder}
-                    productAutocompleteInput={productAutocompleteInput}
-                    quantity={quantity}
-                    renderProductAutocomplete={productAutocompleteProps => (
-                      <ProductAutocompleteWithoutDialog
-                        {...productAutocompleteProps}
-                        autoFocus
-                        dialogValue={productDialogValue}
-                        onChange={handleNoteInputFormProductChange}
-                        options={productAutocomplete.options}
-                        loading={productAutocomplete.isLoading}
-                      />
-                    )}
-                    onSubmit={handleNoteInputFormSubmit}
-                    onSubmitDisabledChange={handleNoteInputFormSubmitDisabledChange}
-                  />
-                );
-              case 'product':
-                return (
-                  <ProductInputForm
-                    id={currentInputDialogState.formId}
-                    product={productDialogValue}
-                    productNameInput={productNameInput}
-                    renderCategoryInput={categoryInputProps => (
-                      <CategorySelect
-                        {...categoryInputProps}
-                        label="Category"
-                        placeholder="Select a category"
-                        options={categorySelect.data}
-                        optionsLoading={categorySelect.isLoading}
-                      />
-                    )}
-                    onSubmit={handleProductInputFormSubmit}
-                    onSubmitDisabledChange={handleProductInputFormSubmitDisabledChange}
-                  />
-                );
-              default:
-                return <></>;
-            }
-          })()}
-          renderCancel={cancelProps => (
-            <Button
-              {...cancelProps}
-              type="button"
-              onClick={currentInputDialogState.handleClose}
-              disabled={currentInputDialogState.cancelDisabled}
-            >
-              Cancel
-            </Button>
-          )}
-          renderSubmit={submitProps => (
-            <Button
-              {...submitProps}
-              type="submit"
-              form={currentInputDialogState.formId}
-              disabled={currentInputDialogState.submitDisabled}
-              loading={currentInputDialogState.submitLoading}
-            >
-              {currentInputDialogState.submitText}
-            </Button>
-          )}
-        />
+    <Dialog
+      renderMode="fullScreenOnMobile"
+      opened={opened}
+      title={currentDialogState.title}
+      content={currentDialogState.content}
+      onClose={currentDialogState.onClose}
+      renderCancel={cancelProps => (
+        <Button
+          {...cancelProps}
+          type="button"
+          disabled={currentDialogState.cancelDisabled}
+          onClick={currentDialogState.onClose}
+        >
+          Cancel
+        </Button>
       )}
-    </>
+      renderSubmit={submitProps => (
+        <Button
+          {...submitProps}
+          type="submit"
+          form={currentDialogState.formId}
+          disabled={currentDialogState.submitDisabled}
+          loading={currentDialogState.submitLoading}
+        >
+          {currentDialogState.submitText}
+        </Button>
+      )}
+    />
   );
 };
