@@ -1,6 +1,6 @@
 import AddIcon from '@mui/icons-material/Add';
 import { useCallback, type FC } from 'react';
-import { productsModel } from '@/entities/products';
+import { productModel } from '@/entities/product';
 import { NoteInputDialog } from '@/features/notes';
 import { type CreateProductRequest, productsApi, useCategorySelect } from '@/features/products';
 import { useToggle } from '@/shared/hooks';
@@ -15,7 +15,7 @@ const toCreateProductRequest = ({
   caloriesCost,
   defaultQuantity,
   category,
-}: productsModel.AutocompleteFreeSoloOption): CreateProductRequest => ({
+}: productModel.AutocompleteFreeSoloOption): CreateProductRequest => ({
   name,
   caloriesCost,
   defaultQuantity,
@@ -34,11 +34,11 @@ export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
   const [createProduct] = productsApi.useCreateProductMutation();
   const { reset: resetCreateNote } = createNoteResponse;
   const notes = useNotes(pageId);
-  const productAutocomplete = productsModel.useAutocomplete();
+  const productAutocomplete = productModel.useAutocomplete();
   const categorySelect = useCategorySelect();
 
   const createProductIfNotExists = async (
-    product: productsModel.AutocompleteOptionType,
+    product: productModel.AutocompleteOptionType,
   ): Promise<number> => {
     if (!product.freeSolo) {
       return product.id;

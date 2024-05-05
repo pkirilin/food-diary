@@ -1,5 +1,5 @@
 import { useMemo, type FC, type ReactElement, useCallback } from 'react';
-import { productsModel } from '@/entities/products';
+import { productModel } from '@/entities/product';
 import { NoteInputDialog, notesApi, useNotes } from '@/features/notes';
 import { type CreateProductRequest, productsApi, useCategorySelect } from '@/features/products';
 import { useToggle } from '@/shared/hooks';
@@ -17,7 +17,7 @@ const toCreateProductRequest = ({
   caloriesCost,
   defaultQuantity,
   category,
-}: productsModel.AutocompleteFreeSoloOption): CreateProductRequest => ({
+}: productModel.AutocompleteFreeSoloOption): CreateProductRequest => ({
   name,
   caloriesCost,
   defaultQuantity,
@@ -31,11 +31,11 @@ export const EditNote: FC<Props> = ({ note, pageId, renderTrigger }) => {
   const [editNote, editNoteResponse] = notesApi.useEditNoteMutation();
   const { reset: resetEditNote } = editNoteResponse;
   const [createProduct] = productsApi.useCreateProductMutation();
-  const productAutocomplete = productsModel.useAutocomplete();
+  const productAutocomplete = productModel.useAutocomplete();
   const categorySelect = useCategorySelect();
 
   const createProductIfNotExists = async (
-    product: productsModel.AutocompleteOptionType,
+    product: productModel.AutocompleteOptionType,
   ): Promise<number> => {
     if (!product.freeSolo) {
       return product.id;

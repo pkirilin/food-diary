@@ -1,6 +1,6 @@
 import { TextField } from '@mui/material';
 import { useEffect, type FC, type FormEventHandler, type ReactElement } from 'react';
-import { type productsModel } from '@/entities/products';
+import { type productModel } from '@/entities/product';
 import { getMealName, type MealType, type NoteCreateEdit } from '@/features/notes';
 import { useInput, type UseInputResult } from '@/hooks';
 import { mapToNumericInputProps } from '@/utils/inputMapping';
@@ -12,11 +12,11 @@ export interface NoteInputFormProps {
   mealType: MealType;
   displayOrder: number;
   productAutocompleteInput: UseInputResult<
-    productsModel.AutocompleteOptionType | null,
-    productsModel.AutocompleteInputProps
+    productModel.AutocompleteOptionType | null,
+    productModel.AutocompleteInputProps
   >;
   quantity: number;
-  renderProductAutocomplete: (props: productsModel.AutocompleteInputProps) => ReactElement;
+  renderProductAutocomplete: (props: productModel.AutocompleteInputProps) => ReactElement;
   onSubmit: (values: NoteCreateEdit) => Promise<void>;
   onSubmitDisabledChange: (disabled: boolean) => void;
 }

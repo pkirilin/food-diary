@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { ProductAutocomplete, type productsModel } from '@/entities/products';
+import { ProductAutocomplete, type productModel } from '@/entities/product';
 import { type UseInputResult } from '@/hooks';
 import { type MealType, type NoteCreateEdit } from '../../models';
 import { NoteInputForm } from '../NoteInputForm';
@@ -12,15 +12,15 @@ interface Args {
   title: string;
   submitText: string;
   quantity: number;
-  productAutocomplete: productsModel.UseAutocompleteResult;
+  productAutocomplete: productModel.UseAutocompleteResult;
   productAutocompleteInput: UseInputResult<
-    productsModel.AutocompleteOptionType | null,
-    productsModel.AutocompleteInputProps
+    productModel.AutocompleteOptionType | null,
+    productModel.AutocompleteInputProps
   >;
-  productFormValues: productsModel.FormValues;
+  productFormValues: productModel.FormValues;
   onClose: () => void;
   onSubmit: (note: NoteCreateEdit) => Promise<void>;
-  onProductChange: (value: productsModel.AutocompleteOptionType | null) => void;
+  onProductChange: (value: productModel.AutocompleteOptionType | null) => void;
 }
 
 interface Result {

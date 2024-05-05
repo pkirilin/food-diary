@@ -3,7 +3,7 @@ import { screen } from '@testing-library/dom';
 import { type UserEvent } from '@testing-library/user-event';
 import { type ReactElement } from 'react';
 import { type Mock } from 'vitest';
-import { type productsModel } from '@/entities/products';
+import { type productModel } from '@/entities/product';
 import { MealType, type NoteCreateEdit, NoteInputDialog } from '@/features/notes';
 import theme from '@/theme';
 import { type SelectOption } from '@/types';
@@ -53,7 +53,7 @@ class NoteInputDialogBuilder {
   withProductForSelect({
     name = 'Test',
     defaultQuantity = 100,
-  }: Partial<productsModel.AutocompleteExistingOption>): this {
+  }: Partial<productModel.AutocompleteExistingOption>): this {
     this._products.push({
       id: this._products.length + 1,
       name,
@@ -177,11 +177,8 @@ export const whenProductAdded = async (user: UserEvent): Promise<void> => {
 export const expectExistingProduct = ({
   name,
   defaultQuantity,
-}: Omit<
-  productsModel.AutocompleteExistingOption,
-  'id'
->): productsModel.AutocompleteExistingOption =>
-  expect.objectContaining<productsModel.AutocompleteExistingOption>({
+}: Omit<productModel.AutocompleteExistingOption, 'id'>): productModel.AutocompleteExistingOption =>
+  expect.objectContaining<productModel.AutocompleteExistingOption>({
     id: expect.any(Number),
     name,
     defaultQuantity,
@@ -193,10 +190,10 @@ export const expectNewProduct = ({
   defaultQuantity,
   category,
 }: Omit<
-  productsModel.AutocompleteFreeSoloOption,
+  productModel.AutocompleteFreeSoloOption,
   'freeSolo' | 'editing'
->): productsModel.AutocompleteFreeSoloOption =>
-  expect.objectContaining<productsModel.AutocompleteFreeSoloOption>({
+>): productModel.AutocompleteFreeSoloOption =>
+  expect.objectContaining<productModel.AutocompleteFreeSoloOption>({
     freeSolo: true,
     editing: true,
     name,

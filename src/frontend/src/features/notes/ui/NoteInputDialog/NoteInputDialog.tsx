@@ -1,5 +1,5 @@
 import { type FC, useEffect, useState } from 'react';
-import { productsModel } from '@/entities/products';
+import { productModel } from '@/entities/product';
 import { type UseCategorySelectResult } from '@/features/products';
 import { Button, Dialog } from '@/shared/ui';
 import { useInput } from 'src/hooks';
@@ -16,10 +16,10 @@ interface Props {
   submitText: string;
   mealType: MealType;
   pageId: number;
-  product: productsModel.AutocompleteOptionType | null;
+  product: productModel.AutocompleteOptionType | null;
   quantity: number;
   displayOrder: number;
-  productAutocomplete: productsModel.UseAutocompleteResult;
+  productAutocomplete: productModel.UseAutocompleteResult;
   categorySelect: UseCategorySelectResult;
   submitSuccess: boolean;
   onClose: () => void;
@@ -46,8 +46,8 @@ export const NoteInputDialog: FC<Props> = ({
   const productAutocompleteInput = useInput({
     initialValue: product,
     errorHelperText: 'Product is required',
-    validate: productsModel.validateAutocompleteInput,
-    mapToInputProps: productsModel.mapToAutocompleteProps,
+    validate: productModel.validateAutocompleteInput,
+    mapToInputProps: productModel.mapToAutocompleteProps,
   });
 
   const productNameInput = useInput({
@@ -64,7 +64,7 @@ export const NoteInputDialog: FC<Props> = ({
     values: productFormValues,
     setValues: setProductFormValues,
     clearValues: clearProductFormValues,
-  } = productsModel.useFormValues();
+  } = productModel.useFormValues();
 
   const [currentInputDialogType, setCurrentInputDialogType] = useState<DialogStateType>('note');
 

@@ -1,17 +1,17 @@
 import { type TextFieldProps } from '@mui/material';
 import { useCallback, useState } from 'react';
-import { ProductInputForm, type productsModel } from '@/entities/products';
+import { ProductInputForm, type productModel } from '@/entities/product';
 import { CategorySelect } from '@/features/categories';
 import { type UseCategorySelectResult } from '@/features/products';
 import { type UseInputResult } from '@/hooks';
 import { type DialogState } from './types';
 
 interface Args {
-  productFormValues: productsModel.FormValues;
+  productFormValues: productModel.FormValues;
   productNameInput: UseInputResult<string, TextFieldProps>;
   categorySelect: UseCategorySelectResult;
   onClose: () => void;
-  onSubmit: (values: productsModel.FormValues) => void | Promise<void>;
+  onSubmit: (values: productModel.FormValues) => void | Promise<void>;
 }
 
 interface Result {
