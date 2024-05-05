@@ -62,7 +62,7 @@ export const EditNote: FC<Props> = ({ note, pageId, renderTrigger }) => {
       <NoteInputDialog
         opened={dialogOpened}
         title="Edit note"
-        submitText="Save note"
+        submitText="Save"
         mealType={note.mealType}
         pageId={pageId}
         product={product}

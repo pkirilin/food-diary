@@ -171,7 +171,7 @@ export const whenProductCategorySelected = async (user: UserEvent, name: RegExp)
 };
 
 export const whenProductAdded = async (user: UserEvent): Promise<void> => {
-  await user.click(screen.getByRole('button', { name: /add product/i }));
+  await user.click(screen.getByRole('button', { name: /add/i }));
 };
 
 export const expectExistingProduct = ({
@@ -257,7 +257,7 @@ export const thenSubmitNoteButtonIsDisabled = async (): Promise<void> => {
 };
 
 export const thenAddProductButtonIsDisabled = async (): Promise<void> => {
-  expect(screen.getByRole('button', { name: /add product/i })).toBeDisabled();
+  expect(screen.getByRole('button', { name: /add/i })).toBeDisabled();
 };
 
 export const thenFormValueContains = async (

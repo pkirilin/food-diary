@@ -35,7 +35,7 @@ export const useProductDialog = ({
     state: {
       type: 'product',
       title: 'New product',
-      submitText: 'Add product',
+      submitText: 'Add',
       submitLoading: false,
       submitDisabled: productSubmitDisabled,
       cancelDisabled: false,

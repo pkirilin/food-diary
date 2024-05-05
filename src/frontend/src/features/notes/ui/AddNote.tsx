@@ -67,7 +67,7 @@ export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
       <NoteInputDialog
         opened={dialogOpened}
         title="New note"
-        submitText="Add note"
+        submitText="Add"
         pageId={pageId}
         mealType={mealType}
         displayOrder={displayOrder}
