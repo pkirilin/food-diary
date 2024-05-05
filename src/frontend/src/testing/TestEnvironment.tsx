@@ -36,7 +36,7 @@ const TestEnvironment: FC<PropsWithChildren<TestEnvironmentProps>> = ({
     }
   }, [dispatch, pageSizeOverride]);
 
-  return <>{children}</>;
+  return children;
 };
 
 export default TestEnvironment;
