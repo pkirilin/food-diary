@@ -7,11 +7,11 @@ import { type UseInputResult } from '@/hooks';
 import { type DialogState } from './types';
 
 interface Args {
-  productDialogValue: productsModel.ProductFormType;
+  productFormValues: productsModel.FormValues;
   productNameInput: UseInputResult<string, TextFieldProps>;
   categorySelect: UseCategorySelectResult;
   onClose: () => void;
-  onSubmit: (values: productsModel.ProductFormType) => void | Promise<void>;
+  onSubmit: (values: productsModel.FormValues) => void | Promise<void>;
 }
 
 interface Result {
@@ -19,7 +19,7 @@ interface Result {
 }
 
 export const useProductDialog = ({
-  productDialogValue,
+  productFormValues,
   productNameInput,
   categorySelect,
   onClose,
@@ -43,7 +43,7 @@ export const useProductDialog = ({
       content: (
         <ProductInputForm
           id="product-form"
-          product={productDialogValue}
+          values={productFormValues}
           productNameInput={productNameInput}
           renderCategoryInput={categoryInputProps => (
             <CategorySelect

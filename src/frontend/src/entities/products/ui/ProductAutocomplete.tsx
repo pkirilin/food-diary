@@ -2,7 +2,7 @@ import { CircularProgress, type FilterOptionsState } from '@mui/material';
 import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import { type FC, type SyntheticEvent } from 'react';
-import { EMPTY_DIALOG_VALUE, type AutocompleteOptionType, type ProductFormType } from '../model';
+import { EMPTY_FORM_VALUES, type AutocompleteOptionType, type FormValues } from '../model';
 
 const filter = createFilterOptions<AutocompleteOptionType>();
 
@@ -23,7 +23,7 @@ export interface ProductAutocompleteProps {
   loading: boolean;
   value: AutocompleteOptionType | null;
   onChange: (selectedProduct: AutocompleteOptionType | null) => void;
-  dialogValue: ProductFormType;
+  formValues: FormValues;
   helperText?: string;
   error?: boolean;
   autoFocus?: boolean;
@@ -34,7 +34,7 @@ export const ProductAutocomplete: FC<ProductAutocompleteProps> = ({
   loading,
   value,
   onChange,
-  dialogValue,
+  formValues,
   helperText,
   error,
   autoFocus,
@@ -50,28 +50,32 @@ export const ProductAutocomplete: FC<ProductAutocompleteProps> = ({
     }
 
     if (state.inputValue !== '') {
+      const { caloriesCost, defaultQuantity, category } = EMPTY_FORM_VALUES;
+
       filtered.push({
         freeSolo: true,
         editing: false,
         inputValue: state.inputValue,
         name: `Add "${state.inputValue}"`,
-        caloriesCost: EMPTY_DIALOG_VALUE.caloriesCost,
-        defaultQuantity: EMPTY_DIALOG_VALUE.defaultQuantity,
-        category: EMPTY_DIALOG_VALUE.category,
+        caloriesCost,
+        defaultQuantity,
+        category,
       });
 
       return filtered;
     }
 
     if (value?.freeSolo) {
+      const { caloriesCost, defaultQuantity, category } = formValues;
+
       filtered.unshift({
         freeSolo: true,
         editing: true,
         inputValue: value.name,
         name: `Edit "${value.name}"`,
-        caloriesCost: dialogValue.caloriesCost,
-        defaultQuantity: dialogValue.defaultQuantity,
-        category: dialogValue.category,
+        caloriesCost,
+        defaultQuantity,
+        category,
       });
 
       return filtered;
@@ -85,27 +89,32 @@ export const ProductAutocomplete: FC<ProductAutocompleteProps> = ({
     selectedProduct: string | AutocompleteOptionType | null,
   ): void => {
     if (typeof selectedProduct === 'string') {
+      const { caloriesCost, defaultQuantity, category } = formValues;
+
       onChange({
         freeSolo: true,
         editing: false,
         name: selectedProduct,
-        caloriesCost: dialogValue.caloriesCost,
-        defaultQuantity: dialogValue.defaultQuantity,
-        category: dialogValue.category,
+        caloriesCost,
+        defaultQuantity,
+        category,
       });
 
       return;
     }
 
     if (selectedProduct?.freeSolo && selectedProduct?.inputValue) {
+      const { editing, inputValue, defaultQuantity } = selectedProduct;
+      const { caloriesCost, category } = formValues;
+
       onChange({
         freeSolo: true,
-        editing: selectedProduct.editing,
-        name: selectedProduct.inputValue,
-        inputValue: selectedProduct.inputValue,
-        defaultQuantity: selectedProduct.defaultQuantity,
-        caloriesCost: dialogValue.caloriesCost,
-        category: dialogValue.category,
+        editing,
+        name: inputValue,
+        inputValue,
+        defaultQuantity,
+        caloriesCost,
+        category,
       });
 
       return;

@@ -17,7 +17,7 @@ interface Args {
     productsModel.AutocompleteOptionType | null,
     productsModel.AutocompleteInputProps
   >;
-  productDialogValue: productsModel.ProductFormType;
+  productFormValues: productsModel.FormValues;
   onClose: () => void;
   onSubmit: (note: NoteCreateEdit) => Promise<void>;
   onProductChange: (value: productsModel.AutocompleteOptionType | null) => void;
@@ -37,7 +37,7 @@ export const useNoteDialog = ({
   quantity,
   productAutocomplete,
   productAutocompleteInput,
-  productDialogValue,
+  productFormValues,
   onClose,
   onSubmit,
   onProductChange,
@@ -84,7 +84,7 @@ export const useNoteDialog = ({
             <ProductAutocomplete
               {...productAutocompleteProps}
               autoFocus
-              dialogValue={productDialogValue}
+              formValues={productFormValues}
               onChange={onProductChange}
               options={productAutocomplete.options}
               loading={productAutocomplete.isLoading}

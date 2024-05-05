@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { type ProductSelectOption, productsApi } from '@/features/products';
 import { type ValidatorFunction, type MapToInputPropsFunction, type SelectOption } from '@/types';
 import { type ProductAutocompleteProps } from '../ui';
-import { type ProductFormType } from './types';
+import { type FormValues } from './types';
 
 interface AutocompleteBaseOption {
   freeSolo?: boolean;
@@ -50,7 +50,7 @@ export const mapToProductFormType = ({
   defaultQuantity,
   caloriesCost,
   category,
-}: AutocompleteFreeSoloOption): ProductFormType => ({
+}: AutocompleteFreeSoloOption): FormValues => ({
   name,
   defaultQuantity,
   caloriesCost,

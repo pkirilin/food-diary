@@ -1,6 +1,6 @@
-import { type ProductFormType } from './types';
+import { type FormValues } from './types';
 
-export const EMPTY_DIALOG_VALUE: ProductFormType = {
+export const EMPTY_FORM_VALUES: FormValues = {
   name: '',
   defaultQuantity: 100,
   caloriesCost: 100,

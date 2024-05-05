@@ -60,9 +60,11 @@ export const NoteInputDialog: FC<Props> = ({
   const { setValue: setProductAutocompleteValue, clearValue: clearProductAutocompleteValue } =
     productAutocompleteInput;
 
-  const [productDialogValue, setProductDialogValue] = useState<productsModel.ProductFormType>(
-    productsModel.EMPTY_DIALOG_VALUE,
-  );
+  const {
+    values: productFormValues,
+    setValues: setProductFormValues,
+    clearValues: clearProductFormValues,
+  } = productsModel.useFormValues();
 
   const [currentInputDialogType, setCurrentInputDialogType] = useState<DialogStateType>('note');
 
@@ -75,11 +77,11 @@ export const NoteInputDialog: FC<Props> = ({
     quantity,
     productAutocomplete,
     productAutocompleteInput,
-    productDialogValue,
+    productFormValues,
     onSubmit,
     onClose: () => {
       onClose();
-      setProductDialogValue(productsModel.EMPTY_DIALOG_VALUE);
+      clearProductFormValues();
       clearProductAutocompleteValue();
     },
     onProductChange: value => {
@@ -88,7 +90,7 @@ export const NoteInputDialog: FC<Props> = ({
       if (value?.freeSolo === true) {
         setCurrentInputDialogType('product');
 
-        setProductDialogValue({
+        setProductFormValues({
           name: value.name,
           caloriesCost: value.caloriesCost,
           defaultQuantity: value.defaultQuantity,
@@ -101,7 +103,7 @@ export const NoteInputDialog: FC<Props> = ({
   });
 
   const { state: productDialogState } = useProductDialog({
-    productDialogValue,
+    productFormValues,
     productNameInput,
     categorySelect,
     onClose: () => {
@@ -123,18 +125,19 @@ export const NoteInputDialog: FC<Props> = ({
   useEffect(() => {
     if (opened && submitSuccess) {
       onClose();
-      setProductDialogValue(productsModel.EMPTY_DIALOG_VALUE);
+      clearProductFormValues();
       clearProductAutocompleteValue();
       onSubmitSuccess();
       onNoteSubmitSuccess();
     }
   }, [
-    opened,
-    onClose,
-    submitSuccess,
-    onSubmitSuccess,
-    onNoteSubmitSuccess,
     clearProductAutocompleteValue,
+    clearProductFormValues,
+    onClose,
+    onNoteSubmitSuccess,
+    onSubmitSuccess,
+    opened,
+    submitSuccess,
   ]);
 
   const dialogStates: DialogState[] = [noteDialogState, productDialogState];
