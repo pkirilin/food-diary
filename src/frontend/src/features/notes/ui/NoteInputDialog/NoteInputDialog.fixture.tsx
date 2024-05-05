@@ -32,7 +32,7 @@ class NoteInputDialogBuilder {
               product={this.getSelectedProduct()}
               quantity={this._quantity}
               displayOrder={1}
-              productAutocomplete={{
+              productAutocompleteData={{
                 options: this._products,
                 isLoading: false,
               }}

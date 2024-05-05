@@ -19,7 +19,7 @@ interface Props {
   product: productModel.AutocompleteOptionType | null;
   quantity: number;
   displayOrder: number;
-  productAutocomplete: productModel.UseAutocompleteResult;
+  productAutocompleteData: productModel.AutocompleteData;
   categorySelect: UseCategorySelectResult;
   submitSuccess: boolean;
   onClose: () => void;
@@ -38,17 +38,12 @@ export const NoteInputDialog: FC<Props> = ({
   categorySelect,
   submitSuccess,
   quantity,
-  productAutocomplete,
+  productAutocompleteData,
   onClose,
   onSubmit,
   onSubmitSuccess,
 }) => {
-  const productAutocompleteInput = useInput({
-    initialValue: product,
-    errorHelperText: 'Product is required',
-    validate: productModel.validateAutocompleteInput,
-    mapToInputProps: productModel.mapToAutocompleteProps,
-  });
+  const productAutocompleteInput = productModel.useAutocompleteInput(product);
 
   const productNameInput = useInput({
     initialValue: '',
@@ -75,7 +70,7 @@ export const NoteInputDialog: FC<Props> = ({
     title,
     submitText,
     quantity,
-    productAutocomplete,
+    productAutocompleteData,
     productAutocompleteInput,
     productFormValues,
     onSubmit,

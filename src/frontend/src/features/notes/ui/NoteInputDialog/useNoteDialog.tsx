@@ -1,6 +1,5 @@
 import { useCallback, useState } from 'react';
 import { ProductAutocomplete, type productModel } from '@/entities/product';
-import { type UseInputResult } from '@/hooks';
 import { type MealType, type NoteCreateEdit } from '../../models';
 import { NoteInputForm } from '../NoteInputForm';
 import { type DialogState } from './types';
@@ -12,11 +11,8 @@ interface Args {
   title: string;
   submitText: string;
   quantity: number;
-  productAutocomplete: productModel.UseAutocompleteResult;
-  productAutocompleteInput: UseInputResult<
-    productModel.AutocompleteOptionType | null,
-    productModel.AutocompleteInputProps
-  >;
+  productAutocompleteData: productModel.AutocompleteData;
+  productAutocompleteInput: productModel.AutocompleteInput;
   productFormValues: productModel.FormValues;
   onClose: () => void;
   onSubmit: (note: NoteCreateEdit) => Promise<void>;
@@ -35,7 +31,7 @@ export const useNoteDialog = ({
   title,
   submitText,
   quantity,
-  productAutocomplete,
+  productAutocompleteData,
   productAutocompleteInput,
   productFormValues,
   onClose,
@@ -86,8 +82,8 @@ export const useNoteDialog = ({
               autoFocus
               formValues={productFormValues}
               onChange={onProductChange}
-              options={productAutocomplete.options}
-              loading={productAutocomplete.isLoading}
+              options={productAutocompleteData.options}
+              loading={productAutocompleteData.isLoading}
             />
           )}
           onSubmit={handleSubmit}

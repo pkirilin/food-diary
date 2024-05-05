@@ -1,4 +1,5 @@
 export * from './types';
 export * from './constants';
-export * from './useAutocomplete';
+export * from './useAutocompleteData';
+export * from './useAutocompleteInput';
 export * from './useFormValues';

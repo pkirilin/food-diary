@@ -31,7 +31,7 @@ export const EditNote: FC<Props> = ({ note, pageId, renderTrigger }) => {
   const [editNote, editNoteResponse] = notesApi.useEditNoteMutation();
   const { reset: resetEditNote } = editNoteResponse;
   const [createProduct] = productsApi.useCreateProductMutation();
-  const productAutocomplete = productModel.useAutocomplete();
+  const productAutocompleteData = productModel.useAutocompleteData();
   const categorySelect = useCategorySelect();
 
   const createProductIfNotExists = async (
@@ -68,7 +68,7 @@ export const EditNote: FC<Props> = ({ note, pageId, renderTrigger }) => {
         product={product}
         quantity={note.productQuantity}
         displayOrder={note.displayOrder}
-        productAutocomplete={productAutocomplete}
+        productAutocompleteData={productAutocompleteData}
         categorySelect={categorySelect}
         onClose={toggleDialog}
         onSubmit={handleSubmit}

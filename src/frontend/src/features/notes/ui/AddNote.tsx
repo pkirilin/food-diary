@@ -34,7 +34,7 @@ export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
   const [createProduct] = productsApi.useCreateProductMutation();
   const { reset: resetCreateNote } = createNoteResponse;
   const notes = useNotes(pageId);
-  const productAutocomplete = productModel.useAutocomplete();
+  const productAutocompleteData = productModel.useAutocompleteData();
   const categorySelect = useCategorySelect();
 
   const createProductIfNotExists = async (
@@ -73,7 +73,7 @@ export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
         displayOrder={displayOrder}
         product={null}
         quantity={100}
-        productAutocomplete={productAutocomplete}
+        productAutocompleteData={productAutocompleteData}
         categorySelect={categorySelect}
         submitSuccess={createNoteResponse.isSuccess && notes.isChanged}
         onClose={toggleDialog}
