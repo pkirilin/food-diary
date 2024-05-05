@@ -25,9 +25,9 @@ export interface AutocompleteFreeSoloOption extends AutocompleteBaseOption {
 
 export type AutocompleteOptionType = AutocompleteExistingOption | AutocompleteFreeSoloOption;
 
-export type AutocompleteInputProps = Omit<
+export type AutocompleteInputProps = Pick<
   ProductAutocompleteProps,
-  'options' | 'loading' | 'renderInputDialog' | 'dialogValue'
+  'value' | 'onChange' | 'error' | 'helperText'
 >;
 
 export const mapToAutocompleteProps: MapToInputPropsFunction<

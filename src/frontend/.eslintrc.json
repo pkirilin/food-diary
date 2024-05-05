@@ -29,6 +29,7 @@
         "prettier/prettier": 2,
         "no-console": "warn",
         "react/jsx-uses-react": "off",
+        "react/jsx-no-useless-fragment": "warn",
         "react/react-in-jsx-scope": "off",
         "react-hooks/rules-of-hooks": "error",
         "react-hooks/exhaustive-deps": "warn",

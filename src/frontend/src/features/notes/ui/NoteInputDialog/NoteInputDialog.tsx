@@ -10,13 +10,6 @@ import { type DialogState, type DialogStateType } from './types';
 import { useNoteDialog } from './useNoteDialog';
 import { useProductDialog } from './useProductDialog';
 
-const EMPTY_DIALOG_VALUE: productsModel.ProductFormType = {
-  name: '',
-  defaultQuantity: 100,
-  caloriesCost: 100,
-  category: null,
-};
-
 interface Props {
   opened: boolean;
   title: string;
@@ -67,8 +60,9 @@ export const NoteInputDialog: FC<Props> = ({
   const { setValue: setProductAutocompleteValue, clearValue: clearProductAutocompleteValue } =
     productAutocompleteInput;
 
-  const [productDialogValue, setProductDialogValue] =
-    useState<productsModel.ProductFormType>(EMPTY_DIALOG_VALUE);
+  const [productDialogValue, setProductDialogValue] = useState<productsModel.ProductFormType>(
+    productsModel.EMPTY_DIALOG_VALUE,
+  );
 
   const [currentInputDialogType, setCurrentInputDialogType] = useState<DialogStateType>('note');
 
@@ -85,7 +79,7 @@ export const NoteInputDialog: FC<Props> = ({
     onSubmit,
     onClose: () => {
       onClose();
-      setProductDialogValue(EMPTY_DIALOG_VALUE);
+      setProductDialogValue(productsModel.EMPTY_DIALOG_VALUE);
       clearProductAutocompleteValue();
     },
     onProductChange: value => {
@@ -129,7 +123,7 @@ export const NoteInputDialog: FC<Props> = ({
   useEffect(() => {
     if (opened && submitSuccess) {
       onClose();
-      setProductDialogValue(EMPTY_DIALOG_VALUE);
+      setProductDialogValue(productsModel.EMPTY_DIALOG_VALUE);
       clearProductAutocompleteValue();
       onSubmitSuccess();
       onNoteSubmitSuccess();

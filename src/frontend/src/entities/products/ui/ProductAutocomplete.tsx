@@ -2,7 +2,7 @@ import { CircularProgress, type FilterOptionsState } from '@mui/material';
 import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import { type FC, type SyntheticEvent } from 'react';
-import { type AutocompleteOptionType, type ProductFormType } from '../model';
+import { EMPTY_DIALOG_VALUE, type AutocompleteOptionType, type ProductFormType } from '../model';
 
 const filter = createFilterOptions<AutocompleteOptionType>();
 
@@ -16,13 +16,6 @@ const getOptionLabel = (option: string | AutocompleteOptionType): string => {
   }
 
   return option.name;
-};
-
-const EMPTY_DIALOG_VALUE: ProductFormType = {
-  name: '',
-  defaultQuantity: 100,
-  caloriesCost: 100,
-  category: null,
 };
 
 export interface ProductAutocompleteProps {
@@ -122,37 +115,35 @@ export const ProductAutocomplete: FC<ProductAutocompleteProps> = ({
   };
 
   return (
-    <>
-      <Autocomplete
-        value={value}
-        onChange={handleOptionChange}
-        options={options}
-        selectOnFocus
-        clearOnBlur
-        handleHomeEndKeys
-        freeSolo
-        getOptionLabel={getOptionLabel}
-        filterOptions={filterOptions}
-        renderOption={(props, option) => <li {...props}>{option.name}</li>}
-        renderInput={inputParams => (
-          <TextField
-            {...inputParams}
-            label="Product"
-            placeholder="Select a product"
-            error={error}
-            helperText={helperText}
-            autoFocus={autoFocus}
-            InputProps={{
-              ...inputParams.InputProps,
-              endAdornment: loading ? (
-                <CircularProgress color="inherit" size={20} />
-              ) : (
-                inputParams.InputProps.endAdornment
-              ),
-            }}
-          />
-        )}
-      />
-    </>
+    <Autocomplete
+      value={value}
+      onChange={handleOptionChange}
+      options={options}
+      selectOnFocus
+      clearOnBlur
+      handleHomeEndKeys
+      freeSolo
+      getOptionLabel={getOptionLabel}
+      filterOptions={filterOptions}
+      renderOption={(props, option) => <li {...props}>{option.name}</li>}
+      renderInput={inputParams => (
+        <TextField
+          {...inputParams}
+          label="Product"
+          placeholder="Select a product"
+          error={error}
+          helperText={helperText}
+          autoFocus={autoFocus}
+          InputProps={{
+            ...inputParams.InputProps,
+            endAdornment: loading ? (
+              <CircularProgress color="inherit" size={20} />
+            ) : (
+              inputParams.InputProps.endAdornment
+            ),
+          }}
+        />
+      )}
+    />
   );
 };
