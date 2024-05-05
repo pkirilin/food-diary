@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { type ProductSelectOption, productsApi } from '@/features/products';
 import { type ValidatorFunction, type MapToInputPropsFunction, type SelectOption } from '@/types';
-import { type ProductAutocompleteWithoutDialogProps } from '../ui';
+import { type ProductAutocompleteProps } from '../ui';
 import { type ProductFormType } from './types';
 
 interface AutocompleteBaseOption {
@@ -26,7 +26,7 @@ export interface AutocompleteFreeSoloOption extends AutocompleteBaseOption {
 export type AutocompleteOptionType = AutocompleteExistingOption | AutocompleteFreeSoloOption;
 
 export type AutocompleteInputProps = Omit<
-  ProductAutocompleteWithoutDialogProps,
+  ProductAutocompleteProps,
   'options' | 'loading' | 'renderInputDialog' | 'dialogValue'
 >;
 

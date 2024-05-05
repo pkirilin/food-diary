@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { ProductAutocompleteWithoutDialog, type productsModel } from '@/entities/products';
+import { ProductAutocomplete, type productsModel } from '@/entities/products';
 import { type UseInputResult } from '@/hooks';
 import { type MealType, type NoteCreateEdit } from '../../models';
 import { NoteInputForm } from '../NoteInputForm';
@@ -81,7 +81,7 @@ export const useNoteDialog = ({
           productAutocompleteInput={productAutocompleteInput}
           quantity={quantity}
           renderProductAutocomplete={productAutocompleteProps => (
-            <ProductAutocompleteWithoutDialog
+            <ProductAutocomplete
               {...productAutocompleteProps}
               autoFocus
               dialogValue={productDialogValue}

@@ -2,7 +2,7 @@ import { CircularProgress, type FilterOptionsState } from '@mui/material';
 import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import { type FC, type SyntheticEvent } from 'react';
-import { type AutocompleteOptionType, type ProductFormType } from '../../model';
+import { type AutocompleteOptionType, type ProductFormType } from '../model';
 
 const filter = createFilterOptions<AutocompleteOptionType>();
 
@@ -25,7 +25,7 @@ const EMPTY_DIALOG_VALUE: ProductFormType = {
   category: null,
 };
 
-export interface ProductAutocompleteWithoutDialogProps {
+export interface ProductAutocompleteProps {
   options: readonly AutocompleteOptionType[];
   loading: boolean;
   value: AutocompleteOptionType | null;
@@ -36,7 +36,7 @@ export interface ProductAutocompleteWithoutDialogProps {
   autoFocus?: boolean;
 }
 
-export const ProductAutocompleteWithoutDialog: FC<ProductAutocompleteWithoutDialogProps> = ({
+export const ProductAutocomplete: FC<ProductAutocompleteProps> = ({
   options,
   loading,
   value,
@@ -92,19 +92,6 @@ export const ProductAutocompleteWithoutDialog: FC<ProductAutocompleteWithoutDial
     selectedProduct: string | AutocompleteOptionType | null,
   ): void => {
     if (typeof selectedProduct === 'string') {
-      // toggleDialog();
-      // setDialogValue(({ caloriesCost, defaultQuantity, category }) => ({
-      //   name: selectedProduct,
-      //   caloriesCost,
-      //   defaultQuantity,
-      //   category,
-      // }));
-
-      // onDialogValueChange({
-      //   ...dialogValue,
-      //   name: selectedProduct,
-      // });
-
       onChange({
         freeSolo: true,
         editing: false,
@@ -118,21 +105,6 @@ export const ProductAutocompleteWithoutDialog: FC<ProductAutocompleteWithoutDial
     }
 
     if (selectedProduct?.freeSolo && selectedProduct?.inputValue) {
-      // const { inputValue, defaultQuantity } = selectedProduct;
-      // toggleDialog();
-      // setDialogValue(({ caloriesCost, category }) => ({
-      //   name: inputValue,
-      //   caloriesCost,
-      //   defaultQuantity,
-      //   category,
-      // }));
-
-      // onDialogValueChange({
-      //   ...dialogValue,
-      //   name: inputValue,
-      //   defaultQuantity,
-      // });
-
       onChange({
         freeSolo: true,
         editing: selectedProduct.editing,
