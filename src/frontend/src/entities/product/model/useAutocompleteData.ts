@@ -1,22 +1,6 @@
 import { useMemo } from 'react';
 import { type ProductSelectOption, productsApi } from '@/features/products';
-import {
-  type AutocompleteFreeSoloOption,
-  type AutocompleteOptionType,
-  type FormValues,
-} from './types';
-
-export const mapToProductFormType = ({
-  name,
-  defaultQuantity,
-  caloriesCost,
-  category,
-}: AutocompleteFreeSoloOption): FormValues => ({
-  name,
-  defaultQuantity,
-  caloriesCost,
-  category,
-});
+import { type AutocompleteOptionType } from './types';
 
 const mapToAutocompleteOption = ({
   id,

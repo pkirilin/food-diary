@@ -2,25 +2,13 @@ import AddIcon from '@mui/icons-material/Add';
 import { useCallback, type FC } from 'react';
 import { productModel } from '@/entities/product';
 import { NoteInputDialog } from '@/features/notes';
-import { type CreateProductRequest, productsApi, useCategorySelect } from '@/features/products';
+import { useCategorySelect } from '@/features/products';
 import { useToggle } from '@/shared/hooks';
 import { Button } from '@/shared/ui';
 import { notesApi } from '../api';
 import { toCreateNoteRequest } from '../mapping';
-import { useNotes } from '../model';
+import { useNotes, useAddProductIfNotExists } from '../model';
 import { type NoteCreateEdit, type MealType } from '../models';
-
-const toCreateProductRequest = ({
-  name,
-  caloriesCost,
-  defaultQuantity,
-  category,
-}: productModel.AutocompleteFreeSoloOption): CreateProductRequest => ({
-  name,
-  caloriesCost,
-  defaultQuantity,
-  categoryId: category?.id ?? 0,
-});
 
 interface Props {
   pageId: number;
@@ -31,26 +19,14 @@ interface Props {
 export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
   const [dialogOpened, toggleDialog] = useToggle();
   const [createNote, createNoteResponse] = notesApi.useCreateNoteMutation();
-  const [createProduct] = productsApi.useCreateProductMutation();
   const { reset: resetCreateNote } = createNoteResponse;
   const notes = useNotes(pageId);
+  const addProductIfNotExists = useAddProductIfNotExists();
   const productAutocompleteData = productModel.useAutocompleteData();
   const categorySelect = useCategorySelect();
 
-  const createProductIfNotExists = async (
-    product: productModel.AutocompleteOptionType,
-  ): Promise<number> => {
-    if (!product.freeSolo) {
-      return product.id;
-    }
-
-    const createProductRequest = toCreateProductRequest(product);
-    const { id } = await createProduct(createProductRequest).unwrap();
-    return id;
-  };
-
   const handleSubmit = async (noteValues: NoteCreateEdit): Promise<void> => {
-    const productId = await createProductIfNotExists(noteValues.product);
+    const productId = await addProductIfNotExists(noteValues.product);
     const request = toCreateNoteRequest(noteValues, productId);
     await createNote(request);
   };
