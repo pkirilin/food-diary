@@ -1,5 +1,4 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { setupListeners } from '@reduxjs/toolkit/query';
 import { api } from './api';
 import { useAppDispatch, useAppSelector } from './features/__shared__/hooks';
 import pagesReducer from './features/pages/slice';
@@ -18,8 +17,6 @@ export const configureAppStore = () =>
   });
 
 const store: ReturnType<typeof configureAppStore> = configureAppStore();
-
-setupListeners(store.dispatch);
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

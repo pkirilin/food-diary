@@ -9,7 +9,7 @@ export interface UseCategorySelectResult {
 const QUERY_ARG = {};
 
 export const useCategorySelect = (): UseCategorySelectResult => {
-  const query = categoriesApi.useGetCategorySelectOptionsQuery(QUERY_ARG, { refetchOnFocus: true });
+  const query = categoriesApi.useGetCategorySelectOptionsQuery(QUERY_ARG);
 
   return {
     data: query.data ?? [],

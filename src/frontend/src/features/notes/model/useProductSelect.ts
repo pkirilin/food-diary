@@ -8,7 +8,7 @@ interface UseProductSelectResult {
 const QUERY_ARG = {};
 
 export const useProductSelect = (): UseProductSelectResult => {
-  const query = productsApi.useGetProductSelectOptionsQuery(QUERY_ARG, { refetchOnFocus: true });
+  const query = productsApi.useGetProductSelectOptionsQuery(QUERY_ARG);
 
   return {
     data: query.data ?? [],

@@ -4,8 +4,6 @@ import { type ValidatorFunction, type MapToInputPropsFunction, type SelectOption
 import { type ProductAutocompleteWithoutDialogProps } from '../ui';
 import { type ProductFormType } from './types';
 
-const QUERY_ARG = {};
-
 interface AutocompleteBaseOption {
   freeSolo?: boolean;
   name: string;
@@ -74,8 +72,10 @@ export interface UseAutocompleteResult {
   isLoading: boolean;
 }
 
+const QUERY_ARG = {};
+
 export const useAutocomplete = (): UseAutocompleteResult => {
-  const query = productsApi.useGetProductSelectOptionsQuery(QUERY_ARG, { refetchOnFocus: true });
+  const query = productsApi.useGetProductSelectOptionsQuery(QUERY_ARG);
 
   const options = useMemo(() => query.data?.map(mapToAutocompleteOption) ?? [], [query.data]);
 
