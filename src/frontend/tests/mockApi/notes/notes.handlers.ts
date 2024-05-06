@@ -1,6 +1,6 @@
 import { http, type HttpHandler, type PathParams } from 'msw';
 import { API_URL } from 'src/config';
-import { type NoteItem, type NoteCreateEdit } from 'src/features/notes';
+import { type NoteItem, type EditNoteRequest, type CreateNoteRequest } from 'src/features/notes';
 import { DelayedHttpResponse } from '../DelayedHttpResponse';
 import * as notesService from './notes.service';
 
@@ -38,7 +38,7 @@ export const handlers: HttpHandler[] = [
     return await DelayedHttpResponse.json(response);
   }),
 
-  http.post<PathParams, NoteCreateEdit>(`${API_URL}/api/v1/notes`, async ({ request }) => {
+  http.post<PathParams, CreateNoteRequest>(`${API_URL}/api/v1/notes`, async ({ request }) => {
     const body = await request.json();
     const result = notesService.create(body);
 
@@ -49,7 +49,7 @@ export const handlers: HttpHandler[] = [
     return await DelayedHttpResponse.ok();
   }),
 
-  http.put<{ id: string }, NoteCreateEdit>(
+  http.put<{ id: string }, EditNoteRequest>(
     `${API_URL}/api/v1/notes/:id`,
     async ({ params, request }) => {
       const id = parseInt(params.id);

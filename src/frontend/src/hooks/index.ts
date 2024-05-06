@@ -1,5 +1,5 @@
-import useInput from './useInput';
+import useInput, { type UseInputResult } from './useInput';
 
-export { useInput };
+export { useInput, type UseInputResult };
 
 export * from 'src/features/__shared__/hooks';

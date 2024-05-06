@@ -6,12 +6,12 @@ import { type NoteItem } from '../models';
 import { DeleteNoteDialog } from './DeleteNoteDialog';
 
 interface Props {
-  children: (toggleDialog: () => void) => ReactElement;
   note: NoteItem;
   pageId: number;
+  renderTrigger: (openDialog: () => void) => ReactElement;
 }
 
-export const DeleteNote: FC<Props> = ({ children, note, pageId }) => {
+export const DeleteNote: FC<Props> = ({ note, pageId, renderTrigger }) => {
   const notes = useNotes(pageId);
   const [deleteNote, deleteNoteResponse] = notesApi.useDeleteNoteMutation();
   const [dialogOpened, toggleDialog] = useToggle();
@@ -28,7 +28,7 @@ export const DeleteNote: FC<Props> = ({ children, note, pageId }) => {
 
   return (
     <>
-      {children(toggleDialog)}
+      {renderTrigger(toggleDialog)}
       <DeleteNoteDialog
         note={note}
         isOpened={dialogOpened}

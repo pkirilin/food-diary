@@ -31,20 +31,24 @@ export const NotesListItem: FC<Props> = ({ note, pageId }) => (
     key={note.id}
     disablePadding
     secondaryAction={
-      <DeleteNote note={note} pageId={pageId}>
-        {toggleDeleteDialog => (
+      <DeleteNote
+        note={note}
+        pageId={pageId}
+        renderTrigger={openDeleteDialog => (
           <Tooltip title="Delete note" placement="left">
-            <IconButton edge="end" onClick={toggleDeleteDialog}>
+            <IconButton edge="end" onClick={openDeleteDialog}>
               <DeleteIcon />
             </IconButton>
           </Tooltip>
         )}
-      </DeleteNote>
+      />
     }
   >
-    <EditNote note={note} pageId={pageId}>
-      {toggleEditDialog => (
-        <ListItemButton onClick={toggleEditDialog}>
+    <EditNote
+      note={note}
+      pageId={pageId}
+      renderTrigger={openDialog => (
+        <ListItemButton onClick={openDialog}>
           <Grid
             container
             columnSpacing={2}
@@ -73,6 +77,6 @@ export const NotesListItem: FC<Props> = ({ note, pageId }) => (
           />
         </ListItemButton>
       )}
-    </EditNote>
+    />
   </ListItem>
 );

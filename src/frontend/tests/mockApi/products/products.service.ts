@@ -56,7 +56,15 @@ export const getCategoryNames = (products: DbProduct[]): Map<number, string> => 
 
 export const count = (): number => db.product.count();
 
-type CreateProductResult = 'Success' | 'CategoryNotFound';
+interface CreateProductResultSuccess {
+  type: 'Success';
+  id: number;
+}
+interface CreateProductResultError {
+  type: 'CategoryNotFound';
+}
+
+type CreateProductResult = CreateProductResultSuccess | CreateProductResultError;
 
 export const create = ({
   name,
@@ -71,7 +79,7 @@ export const create = ({
   });
 
   if (!category) {
-    return 'CategoryNotFound';
+    return { type: 'CategoryNotFound' };
   }
 
   const maxId =
@@ -84,15 +92,17 @@ export const create = ({
       })
       ?.at(0)?.id ?? 0;
 
+  const id = maxId + 1;
+
   db.product.create({
-    id: maxId + 1,
+    id,
     name,
     caloriesCost,
     defaultQuantity,
     categoryId,
   });
 
-  return 'Success';
+  return { type: 'Success', id };
 };
 
 type UpdateProductResult = 'Success' | 'CategoryNotFound';

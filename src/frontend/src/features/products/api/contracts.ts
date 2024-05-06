@@ -12,6 +12,10 @@ export interface CreateProductRequest {
   categoryId: number;
 }
 
+export interface CreateProductResponse {
+  id: number;
+}
+
 export interface EditProductRequest {
   id: number;
   name: string;

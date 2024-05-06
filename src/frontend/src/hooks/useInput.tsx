@@ -12,7 +12,7 @@ interface UseInputOptions<TValue, TProps> {
   mapToInputProps: MapToInputPropsFunction<TValue, TProps>;
 }
 
-type UseInputResult<TValue, TProps> = InputOptions<TValue> & {
+export type UseInputResult<TValue, TProps> = InputOptions<TValue> & {
   clearValue: () => void;
   isTouched: boolean;
   inputProps: TProps;

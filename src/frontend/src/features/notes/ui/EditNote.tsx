@@ -1,5 +1,7 @@
-import { useMemo, type FC, useEffect, type ReactElement } from 'react';
-import { NoteInputDialog, notesApi, useNotes, useProductSelect } from '@/features/notes';
+import { useMemo, type FC, type ReactElement, useCallback } from 'react';
+import { productModel } from '@/entities/product';
+import { NoteInputDialog, notesApi, useAddProductIfNotExists, useNotes } from '@/features/notes';
+import { useCategorySelect } from '@/features/products';
 import { useToggle } from '@/shared/hooks';
 import { toEditNoteRequest, toProductSelectOption } from '../mapping';
 import { type NoteCreateEdit, type NoteItem } from '../models';
@@ -7,44 +9,47 @@ import { type NoteCreateEdit, type NoteItem } from '../models';
 interface Props {
   note: NoteItem;
   pageId: number;
-  children: (toggleDialog: () => void) => ReactElement;
+  renderTrigger: (openDialog: () => void) => ReactElement;
 }
 
-export const EditNote: FC<Props> = ({ note, pageId, children }) => {
+export const EditNote: FC<Props> = ({ note, pageId, renderTrigger }) => {
+  const [dialogOpened, toggleDialog] = useToggle();
   const notes = useNotes(pageId);
-  const productSelect = useProductSelect();
+  const addProductIfNotExists = useAddProductIfNotExists();
   const product = useMemo(() => toProductSelectOption(note), [note]);
   const [editNote, editNoteResponse] = notesApi.useEditNoteMutation();
-  const [dialogOpened, toggleDialog] = useToggle();
+  const { reset: resetEditNote } = editNoteResponse;
+  const productAutocompleteData = productModel.useAutocompleteData();
+  const categorySelect = useCategorySelect();
 
-  useEffect(() => {
-    if (editNoteResponse.isSuccess && notes.isChanged) {
-      toggleDialog();
-    }
-  }, [editNoteResponse.isSuccess, notes.isChanged, toggleDialog]);
-
-  const handleSubmit = (formData: NoteCreateEdit): void => {
-    const request = toEditNoteRequest(note.id, formData);
-    void editNote(request);
+  const handleSubmit = async (formData: NoteCreateEdit): Promise<void> => {
+    const productId = await addProductIfNotExists(formData.product);
+    const request = toEditNoteRequest(note.id, productId, formData);
+    await editNote(request);
   };
+
+  const handleSubmitSuccess = useCallback(() => {
+    resetEditNote();
+  }, [resetEditNote]);
 
   return (
     <>
-      {children(toggleDialog)}
+      {renderTrigger(toggleDialog)}
       <NoteInputDialog
+        opened={dialogOpened}
         title="Edit note"
         submitText="Save"
-        isOpened={dialogOpened}
         mealType={note.mealType}
         pageId={pageId}
         product={product}
-        products={productSelect.data}
-        productsLoading={productSelect.isLoading}
         quantity={note.productQuantity}
         displayOrder={note.displayOrder}
-        submitInProgress={editNoteResponse.isLoading || notes.isFetching}
+        productAutocompleteData={productAutocompleteData}
+        categorySelect={categorySelect}
         onClose={toggleDialog}
         onSubmit={handleSubmit}
+        submitSuccess={editNoteResponse.isSuccess && notes.isChanged}
+        onSubmitSuccess={handleSubmitSuccess}
       />
     </>
   );

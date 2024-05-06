@@ -115,10 +115,12 @@ public class ProductsApiContext(FoodDiaryWebApplicationFactory factory, Infrastr
         return Task.CompletedTask;
     }
 
-    public Task Then_product_is_successfully_created()
+    public async Task Then_product_is_successfully_created()
     {
         _createProductResponse.StatusCode.Should().Be(HttpStatusCode.OK);
-        return Task.CompletedTask;
+        var response = await _createProductResponse.Content.ReadFromJsonAsync<CreateProductResponse>();
+        response.Should().NotBeNull();
+        response!.Id.Should().BePositive();
     }
     
     public Task Then_product_is_successfully_updated()

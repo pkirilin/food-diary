@@ -1,142 +1,174 @@
-import { TextField } from '@mui/material';
-import { type FC, useEffect, type FormEventHandler } from 'react';
+import { type FC, useEffect, useState } from 'react';
+import { productModel } from '@/entities/product';
+import { type UseCategorySelectResult } from '@/features/products';
 import { Button, Dialog } from '@/shared/ui';
-import { ProductSelect, type ProductSelectOption } from 'src/features/products';
 import { useInput } from 'src/hooks';
-import { mapToNumericInputProps, mapToSelectProps } from 'src/utils/inputMapping';
-import { validateQuantity, validateSelectOption } from 'src/utils/validation';
-import { getMealName, type MealType, type NoteCreateEdit } from '../../models';
+import { mapToTextInputProps } from 'src/utils/inputMapping';
+import { validateProductName } from 'src/utils/validation';
+import { type MealType, type NoteCreateEdit } from '../../models';
+import { type DialogState, type DialogStateType } from './types';
+import { useNoteDialog } from './useNoteDialog';
+import { useProductDialog } from './useProductDialog';
 
 interface Props {
+  opened: boolean;
   title: string;
   submitText: string;
-  isOpened: boolean;
   mealType: MealType;
   pageId: number;
-  product: ProductSelectOption | null;
-  products: ProductSelectOption[];
-  productsLoading: boolean;
+  product: productModel.AutocompleteOptionType | null;
   quantity: number;
   displayOrder: number;
-  submitInProgress: boolean;
+  productAutocompleteData: productModel.AutocompleteData;
+  categorySelect: UseCategorySelectResult;
+  submitSuccess: boolean;
   onClose: () => void;
-  onSubmit: (note: NoteCreateEdit) => void;
+  onSubmit: (note: NoteCreateEdit) => Promise<void>;
+  onSubmitSuccess: () => void;
 }
 
 export const NoteInputDialog: FC<Props> = ({
+  opened,
   title,
   submitText,
-  isOpened,
   mealType,
   pageId,
   product,
-  products,
-  productsLoading,
-  quantity,
   displayOrder,
-  submitInProgress,
+  categorySelect,
+  submitSuccess,
+  quantity,
+  productAutocompleteData,
   onClose,
   onSubmit,
+  onSubmitSuccess,
 }) => {
-  const { clearValue: clearProduct, ...productInput } = useInput({
-    initialValue: product,
-    errorHelperText: 'Product is required',
-    validate: validateSelectOption,
-    mapToInputProps: mapToSelectProps,
+  const productAutocompleteInput = productModel.useAutocompleteInput(product);
+
+  const productNameInput = useInput({
+    initialValue: '',
+    errorHelperText: 'Product name is invalid',
+    validate: validateProductName,
+    mapToInputProps: mapToTextInputProps,
   });
+
+  const { setValue: setProductAutocompleteValue, clearValue: clearProductAutocompleteValue } =
+    productAutocompleteInput;
 
   const {
-    setValue: setQuantity,
-    clearValue: clearQuantity,
-    ...quantityInput
-  } = useInput({
-    initialValue: quantity,
-    errorHelperText: 'Quantity is invalid',
-    validate: validateQuantity,
-    mapToInputProps: mapToNumericInputProps,
+    values: productFormValues,
+    setValues: setProductFormValues,
+    clearValues: clearProductFormValues,
+  } = productModel.useFormValues();
+
+  const [currentInputDialogType, setCurrentInputDialogType] = useState<DialogStateType>('note');
+
+  const { state: noteDialogState, onSubmitSuccess: onNoteSubmitSuccess } = useNoteDialog({
+    pageId,
+    mealType,
+    displayOrder,
+    title,
+    submitText,
+    quantity,
+    productAutocompleteData,
+    productAutocompleteInput,
+    productFormValues,
+    onSubmit,
+    onClose: () => {
+      onClose();
+      clearProductFormValues();
+      clearProductAutocompleteValue();
+    },
+    onProductChange: value => {
+      setProductAutocompleteValue(value);
+
+      if (value?.freeSolo === true) {
+        setCurrentInputDialogType('product');
+
+        setProductFormValues({
+          name: value.name,
+          caloriesCost: value.caloriesCost,
+          defaultQuantity: value.defaultQuantity,
+          category: value.category,
+        });
+
+        productNameInput.setValue(value.name);
+      }
+    },
+  });
+
+  const { state: productDialogState } = useProductDialog({
+    productFormValues,
+    productNameInput,
+    categorySelect,
+    onClose: () => {
+      setCurrentInputDialogType('note');
+    },
+    onSubmit: ({ name, caloriesCost, defaultQuantity, category }) => {
+      setProductAutocompleteValue({
+        freeSolo: true,
+        editing: true,
+        name,
+        caloriesCost,
+        defaultQuantity,
+        category,
+      });
+      setCurrentInputDialogType('note');
+    },
   });
 
   useEffect(() => {
-    if (isOpened) {
-      clearProduct();
-      clearQuantity();
+    if (opened && submitSuccess) {
+      onClose();
+      clearProductFormValues();
+      clearProductAutocompleteValue();
+      onSubmitSuccess();
+      onNoteSubmitSuccess();
     }
-  }, [clearProduct, clearQuantity, isOpened]);
+  }, [
+    clearProductAutocompleteValue,
+    clearProductFormValues,
+    onClose,
+    onNoteSubmitSuccess,
+    onSubmitSuccess,
+    opened,
+    submitSuccess,
+  ]);
 
-  useEffect(() => {
-    if (isOpened && productInput.value && productInput.isTouched) {
-      setQuantity(productInput.value.defaultQuantity);
-    } else {
-      clearQuantity();
-    }
-  }, [isOpened, productInput.value, productInput.isTouched, setQuantity, clearQuantity]);
+  const dialogStates: DialogState[] = [noteDialogState, productDialogState];
 
-  const handleSubmit: FormEventHandler<HTMLFormElement> = event => {
-    event.preventDefault();
+  const currentDialogState = dialogStates.find(s => s.type === currentInputDialogType);
 
-    if (productInput.value) {
-      onSubmit({
-        mealType,
-        productQuantity: quantityInput.value,
-        displayOrder,
-        productId: productInput.value.id,
-        pageId,
-      });
-    }
-  };
-
-  const anyValueInvalid = productInput.isInvalid || quantityInput.isInvalid;
-  const anyValueChanged = productInput.isTouched || quantityInput.isTouched;
-  const submitDisabled = anyValueInvalid || !anyValueChanged;
+  if (!currentDialogState) {
+    return null;
+  }
 
   return (
     <Dialog
-      title={title}
-      opened={isOpened}
-      onClose={onClose}
       renderMode="fullScreenOnMobile"
-      content={
-        <form id="note-input-form" onSubmit={handleSubmit}>
-          <TextField
-            label="Meal"
-            value={getMealName(mealType)}
-            margin="normal"
-            fullWidth
-            inputProps={{ readOnly: true }}
-            helperText=" "
-          />
-          <ProductSelect
-            {...productInput.inputProps}
-            label="Product"
-            placeholder="Select a product"
-            autoFocus
-            options={products}
-            optionsLoading={productsLoading}
-          />
-          <TextField
-            {...quantityInput.inputProps}
-            type="number"
-            label="Quantity"
-            placeholder="Product quantity, g"
-            margin="normal"
-            fullWidth
-          />
-        </form>
-      }
+      opened={opened}
+      title={currentDialogState.title}
+      content={currentDialogState.content}
+      onClose={currentDialogState.onClose}
+      renderCancel={cancelProps => (
+        <Button
+          {...cancelProps}
+          type="button"
+          disabled={currentDialogState.cancelDisabled}
+          onClick={currentDialogState.onClose}
+        >
+          Cancel
+        </Button>
+      )}
       renderSubmit={submitProps => (
         <Button
           {...submitProps}
           type="submit"
-          form="note-input-form"
-          disabled={submitDisabled}
-          loading={submitInProgress}
+          form={currentDialogState.formId}
+          disabled={currentDialogState.submitDisabled}
+          loading={currentDialogState.submitLoading}
         >
-          {submitText}
-        </Button>
-      )}
-      renderCancel={cancelProps => (
-        <Button {...cancelProps} type="button" onClick={onClose} disabled={submitInProgress}>
-          Cancel
+          {currentDialogState.submitText}
         </Button>
       )}
     />

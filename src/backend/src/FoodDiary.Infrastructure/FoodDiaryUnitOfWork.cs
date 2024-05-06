@@ -4,16 +4,7 @@ using FoodDiary.Infrastructure.Repositories.v2;
 
 namespace FoodDiary.Infrastructure;
 
-public class FoodDiaryUnitOfWork : IFoodDiaryUnitOfWork
+public class FoodDiaryUnitOfWork(FoodDiaryContext context) : IFoodDiaryUnitOfWork
 {
-    private readonly FoodDiaryContext _context;
-
-    public FoodDiaryUnitOfWork(FoodDiaryContext context)
-    {
-        _context = context;
-    }
-    
-    public IProductsRepository Products => new ProductsRepository(_context.Products);
-
-    public ICategoriesRepository Categories => new CategoriesRepository(_context.Categories);
+    public ICategoriesRepository Categories => new CategoriesRepository(context.Categories);
 }

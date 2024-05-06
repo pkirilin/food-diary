@@ -1,2 +1,2 @@
 export * from './useNotes';
-export * from './useProductSelect';
+export * from './useAddProductIfNotExists';

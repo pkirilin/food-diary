@@ -1,7 +1,7 @@
 import { categoriesApi } from 'src/features/categories';
 import { type SelectOption } from 'src/types';
 
-interface UseCategorySelectResult {
+export interface UseCategorySelectResult {
   data: SelectOption[];
   isLoading: boolean;
 }
@@ -9,7 +9,7 @@ interface UseCategorySelectResult {
 const QUERY_ARG = {};
 
 export const useCategorySelect = (): UseCategorySelectResult => {
-  const query = categoriesApi.useGetCategorySelectOptionsQuery(QUERY_ARG, { refetchOnFocus: true });
+  const query = categoriesApi.useGetCategorySelectOptionsQuery(QUERY_ARG);
 
   return {
     data: query.data ?? [],

@@ -1,11 +1,14 @@
 import AddIcon from '@mui/icons-material/Add';
-import { useState, type FC, useEffect } from 'react';
+import { useCallback, type FC } from 'react';
+import { productModel } from '@/entities/product';
+import { NoteInputDialog } from '@/features/notes';
+import { useCategorySelect } from '@/features/products';
+import { useToggle } from '@/shared/hooks';
 import { Button } from '@/shared/ui';
 import { notesApi } from '../api';
 import { toCreateNoteRequest } from '../mapping';
-import { useProductSelect, useNotes } from '../model';
+import { useNotes, useAddProductIfNotExists } from '../model';
 import { type NoteCreateEdit, type MealType } from '../models';
-import { NoteInputDialog } from './NoteInputDialog';
 
 interface Props {
   pageId: number;
@@ -14,55 +17,44 @@ interface Props {
 }
 
 export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
+  const [dialogOpened, toggleDialog] = useToggle();
   const [createNote, createNoteResponse] = notesApi.useCreateNoteMutation();
-  const [isDialogOpened, setIsDialogOpened] = useState(false);
+  const { reset: resetCreateNote } = createNoteResponse;
   const notes = useNotes(pageId);
-  const productSelect = useProductSelect();
+  const addProductIfNotExists = useAddProductIfNotExists();
+  const productAutocompleteData = productModel.useAutocompleteData();
+  const categorySelect = useCategorySelect();
 
-  useEffect(() => {
-    if (createNoteResponse.isSuccess && notes.isChanged) {
-      setIsDialogOpened(false);
-    }
-  }, [createNoteResponse.isSuccess, notes.isChanged]);
-
-  const handleDialogOpen = (): void => {
-    setIsDialogOpened(true);
+  const handleSubmit = async (noteValues: NoteCreateEdit): Promise<void> => {
+    const productId = await addProductIfNotExists(noteValues.product);
+    const request = toCreateNoteRequest(noteValues, productId);
+    await createNote(request);
   };
 
-  const handleDialogClose = (): void => {
-    setIsDialogOpened(false);
-  };
-
-  const handleAddNote = (note: NoteCreateEdit): void => {
-    const request = toCreateNoteRequest(note);
-    void createNote(request);
-  };
+  const handleSubmitSuccess = useCallback(() => {
+    resetCreateNote();
+  }, [resetCreateNote]);
 
   return (
     <>
-      <Button
-        variant="text"
-        size="medium"
-        fullWidth
-        startIcon={<AddIcon />}
-        onClick={handleDialogOpen}
-      >
+      <Button variant="text" size="medium" fullWidth startIcon={<AddIcon />} onClick={toggleDialog}>
         Add note
       </Button>
       <NoteInputDialog
+        opened={dialogOpened}
         title="New note"
-        submitText="Create"
-        isOpened={isDialogOpened}
-        mealType={mealType}
-        product={null}
-        products={productSelect.data}
-        productsLoading={productSelect.isLoading}
-        quantity={100}
+        submitText="Add"
         pageId={pageId}
+        mealType={mealType}
         displayOrder={displayOrder}
-        submitInProgress={createNoteResponse.isLoading || notes.isFetching}
-        onClose={handleDialogClose}
-        onSubmit={handleAddNote}
+        product={null}
+        quantity={100}
+        productAutocompleteData={productAutocompleteData}
+        categorySelect={categorySelect}
+        submitSuccess={createNoteResponse.isSuccess && notes.isChanged}
+        onClose={toggleDialog}
+        onSubmit={handleSubmit}
+        onSubmitSuccess={handleSubmitSuccess}
       />
     </>
   );
