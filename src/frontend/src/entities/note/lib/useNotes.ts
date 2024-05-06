@@ -1,5 +1,5 @@
-import { notesApi } from '../api';
-import { type NoteItem } from '../models';
+import { noteApi } from '../api/noteApi';
+import { type NoteItem } from '../model';
 
 interface Result {
   data: NoteItem[];
@@ -8,7 +8,7 @@ interface Result {
 }
 
 export const useNotes = (pageId: number): Result => {
-  return notesApi.useGetNotesQuery(
+  return noteApi.useGetNotesQuery(
     {
       pageId,
     },

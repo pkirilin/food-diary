@@ -1,15 +1,16 @@
-import { api } from 'src/api';
+import { api } from '@/api';
 import { createUrl } from 'src/utils';
-import { type ProductSelectOption, type ProductsResponse } from '../types';
+import { type ProductsResponse } from '../../../features/products/types';
 import {
   type CreateProductResponse,
   type CreateProductRequest,
   type DeleteProductsRequest,
   type EditProductRequest,
   type GetProductsRequest,
+  type ProductSelectOption,
 } from './contracts';
 
-export const productsApi = api.injectEndpoints({
+export const productApi = api.injectEndpoints({
   endpoints: builder => ({
     getProducts: builder.query<ProductsResponse, GetProductsRequest>({
       query: request => createUrl('/api/v1/products', { ...request }),

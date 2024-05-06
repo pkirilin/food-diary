@@ -1,30 +1,31 @@
 import { useMemo, type FC, type ReactElement, useCallback } from 'react';
-import { productModel } from '@/entities/product';
-import { NoteInputDialog, notesApi, useAddProductIfNotExists, useNotes } from '@/features/notes';
+import { type NoteCreateEdit, noteApi, noteLib, type noteModel } from '@/entities/note';
+import { productLib } from '@/entities/product';
 import { useCategorySelect } from '@/features/products';
 import { useToggle } from '@/shared/hooks';
-import { toEditNoteRequest, toProductSelectOption } from '../mapping';
-import { type NoteCreateEdit, type NoteItem } from '../models';
+import { mapToEditNoteRequest, mapToProductSelectOption } from '../lib/mapping';
+import { useAddProductIfNotExists } from '../lib/useAddProductIfNotExists';
+import { NoteInputDialog } from './NoteInputDialog';
 
 interface Props {
-  note: NoteItem;
+  note: noteModel.NoteItem;
   pageId: number;
   renderTrigger: (openDialog: () => void) => ReactElement;
 }
 
 export const EditNote: FC<Props> = ({ note, pageId, renderTrigger }) => {
   const [dialogOpened, toggleDialog] = useToggle();
-  const notes = useNotes(pageId);
+  const notes = noteLib.useNotes(pageId);
   const addProductIfNotExists = useAddProductIfNotExists();
-  const product = useMemo(() => toProductSelectOption(note), [note]);
-  const [editNote, editNoteResponse] = notesApi.useEditNoteMutation();
+  const product = useMemo(() => mapToProductSelectOption(note), [note]);
+  const [editNote, editNoteResponse] = noteApi.useEditNoteMutation();
   const { reset: resetEditNote } = editNoteResponse;
-  const productAutocompleteData = productModel.useAutocompleteData();
+  const productAutocompleteData = productLib.useAutocompleteData();
   const categorySelect = useCategorySelect();
 
   const handleSubmit = async (formData: NoteCreateEdit): Promise<void> => {
     const productId = await addProductIfNotExists(formData.product);
-    const request = toEditNoteRequest(note.id, productId, formData);
+    const request = mapToEditNoteRequest(note.id, productId, formData);
     await editNote(request);
   };
 

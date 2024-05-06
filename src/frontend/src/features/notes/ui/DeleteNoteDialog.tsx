@@ -1,15 +1,16 @@
 import { DialogContentText, Typography } from '@mui/material';
 import { type FormEventHandler, type FC } from 'react';
+import { type noteModel } from '@/entities/note';
 import { Button } from '@/shared/ui';
 import { AppDialog } from 'src/components';
-import { getMealName, type NoteItem } from '../models';
+import { getMealName } from '../models';
 
 interface DeleteNoteDialogProps {
-  note: NoteItem;
+  note: noteModel.NoteItem;
   isOpened: boolean;
   submitInProgress: boolean;
   onClose: () => void;
-  onSubmit: (note: NoteItem) => void;
+  onSubmit: (note: noteModel.NoteItem) => void;
 }
 
 export const DeleteNoteDialog: FC<DeleteNoteDialogProps> = ({

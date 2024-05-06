@@ -11,12 +11,13 @@ import {
   type TypographyProps,
 } from '@mui/material';
 import { type FC } from 'react';
-import { type NoteItem } from '../../models';
+
+import { type noteModel } from '@/entities/note';
+import { EditNote } from '@/features/note/addEdit';
 import { DeleteNote } from '../DeleteNote';
-import { EditNote } from '../EditNote';
 
 interface Props {
-  note: NoteItem;
+  note: noteModel.NoteItem;
   pageId: number;
 }
 

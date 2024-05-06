@@ -1,18 +1,18 @@
 import { useCallback, useState } from 'react';
-import { ProductAutocomplete, type productModel } from '@/entities/product';
-import { type MealType, type NoteCreateEdit } from '../../models';
-import { NoteInputForm } from '../NoteInputForm';
-import { type DialogState } from './types';
+import { type NoteCreateEdit, type noteModel } from '@/entities/note';
+import { ProductAutocomplete, type productLib, type productModel } from '@/entities/product';
+import { type DialogState } from '../model';
+import { NoteInputForm } from '../ui/NoteInputForm';
 
 interface Args {
   pageId: number;
-  mealType: MealType;
+  mealType: noteModel.MealType;
   displayOrder: number;
   title: string;
   submitText: string;
   quantity: number;
-  productAutocompleteData: productModel.AutocompleteData;
-  productAutocompleteInput: productModel.AutocompleteInput;
+  productAutocompleteData: productLib.AutocompleteData;
+  productAutocompleteInput: productLib.AutocompleteInput;
   productFormValues: productModel.FormValues;
   onClose: () => void;
   onSubmit: (note: NoteCreateEdit) => Promise<void>;

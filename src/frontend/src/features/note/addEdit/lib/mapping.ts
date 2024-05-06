@@ -1,18 +1,22 @@
-import { type ProductSelectOption } from '../products';
-import { type EditNoteRequest, type CreateNoteRequest } from './api';
-import { type NoteCreateEdit, type NoteItem } from './models';
+import {
+  type noteModel,
+  type NoteCreateEdit,
+  type CreateNoteRequest,
+  type EditNoteRequest,
+} from '@/entities/note';
+import { type ProductSelectOption } from '@/entities/product';
 
-export const toProductSelectOption = ({
+export const mapToProductSelectOption = ({
   productId,
   productName,
   productDefaultQuantity,
-}: NoteItem): ProductSelectOption => ({
+}: noteModel.NoteItem): ProductSelectOption => ({
   id: productId,
   name: productName,
   defaultQuantity: productDefaultQuantity,
 });
 
-export const toCreateNoteRequest = (
+export const mapToCreateNoteRequest = (
   { mealType, pageId, productQuantity, displayOrder }: NoteCreateEdit,
   productId: number,
 ): CreateNoteRequest => ({
@@ -23,7 +27,7 @@ export const toCreateNoteRequest = (
   displayOrder,
 });
 
-export const toEditNoteRequest = (
+export const mapToEditNoteRequest = (
   id: number,
   productId: number,
   { mealType, pageId, productQuantity, displayOrder }: NoteCreateEdit,

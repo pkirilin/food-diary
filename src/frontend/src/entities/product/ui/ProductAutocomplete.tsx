@@ -1,8 +1,12 @@
-import { CircularProgress, type FilterOptionsState } from '@mui/material';
-import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
+import {
+  CircularProgress,
+  type FilterOptionsState,
+  Autocomplete,
+  createFilterOptions,
+} from '@mui/material';
 import TextField from '@mui/material/TextField';
 import { type FC, type SyntheticEvent } from 'react';
-import { EMPTY_FORM_VALUES, type AutocompleteOptionType, type FormValues } from '../model';
+import { type FormValues, type AutocompleteOptionType, EMPTY_FORM_VALUES } from '../model';
 
 const filter = createFilterOptions<AutocompleteOptionType>();
 

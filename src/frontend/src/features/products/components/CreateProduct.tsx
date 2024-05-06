@@ -1,8 +1,8 @@
 import AddIcon from '@mui/icons-material/Add';
 import { IconButton, Tooltip } from '@mui/material';
 import { type FC, useEffect, useState } from 'react';
+import { productApi } from '@/entities/product';
 import { useAppSelector } from 'src/store';
-import { productsApi } from '../api';
 import { toCreateProductRequest } from '../mapping';
 import { useCategorySelect, useProducts } from '../model';
 import { selectProductsQueryArg } from '../selectors';
@@ -12,10 +12,10 @@ import ProductInputDialog from './ProductInputDialog';
 const CreateProduct: FC = () => {
   const [isDialogOpened, setIsDialogOpened] = useState(false);
   const getProductsQueryArg = useAppSelector(selectProductsQueryArg);
-  const getProductsQuery = productsApi.useGetProductsQuery(getProductsQueryArg);
+  const getProductsQuery = productApi.useGetProductsQuery(getProductsQueryArg);
   const categorySelect = useCategorySelect();
   const products = useProducts();
-  const [createProduct, createProductRequest] = productsApi.useCreateProductMutation();
+  const [createProduct, createProductRequest] = productApi.useCreateProductMutation();
 
   useEffect(() => {
     if (createProductRequest.isSuccess && products.isChanged) {

@@ -5,6 +5,12 @@ export interface GetProductsRequest {
   categoryId?: number;
 }
 
+export interface ProductSelectOption {
+  id: number;
+  name: string;
+  defaultQuantity: number;
+}
+
 export interface CreateProductRequest {
   name: string;
   caloriesCost: number;

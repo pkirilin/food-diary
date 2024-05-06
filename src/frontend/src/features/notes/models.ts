@@ -1,24 +1,16 @@
-import { type productModel } from '@/entities/product';
+import { noteModel } from '@/entities/note';
 
-export enum MealType {
-  Breakfast = 1,
-  SecondBreakfast = 2,
-  Lunch = 3,
-  AfternoonSnack = 4,
-  Dinner = 5,
-}
-
-const AVAILABLE_MEALS: Map<MealType, string> = new Map<MealType, string>([
-  [MealType.Breakfast, 'Breakfast'],
-  [MealType.SecondBreakfast, 'Second breakfast'],
-  [MealType.Lunch, 'Lunch'],
-  [MealType.AfternoonSnack, 'Afternoon snack'],
-  [MealType.Dinner, 'Dinner'],
+const AVAILABLE_MEALS: Map<noteModel.MealType, string> = new Map<noteModel.MealType, string>([
+  [noteModel.MealType.Breakfast, 'Breakfast'],
+  [noteModel.MealType.SecondBreakfast, 'Second breakfast'],
+  [noteModel.MealType.Lunch, 'Lunch'],
+  [noteModel.MealType.AfternoonSnack, 'Afternoon snack'],
+  [noteModel.MealType.Dinner, 'Dinner'],
 ]);
 
-export const getMealTypes = (): MealType[] => Array.from(AVAILABLE_MEALS.keys());
+export const getMealTypes = (): noteModel.MealType[] => Array.from(AVAILABLE_MEALS.keys());
 
-export const getMealName = (mealType: MealType): string => {
+export const getMealName = (mealType: noteModel.MealType): string => {
   const mealName = AVAILABLE_MEALS.get(mealType);
 
   if (!mealName) {
@@ -29,9 +21,9 @@ export const getMealName = (mealType: MealType): string => {
 };
 
 const assignNoteToGroup = (
-  groups: Map<MealType, NoteItem[]>,
-  note: NoteItem,
-): Map<MealType, NoteItem[]> => {
+  groups: Map<noteModel.MealType, noteModel.NoteItem[]>,
+  note: noteModel.NoteItem,
+): Map<noteModel.MealType, noteModel.NoteItem[]> => {
   const notes = groups.get(note.mealType);
 
   if (notes) {
@@ -43,24 +35,7 @@ const assignNoteToGroup = (
   return groups;
 };
 
-export const groupNotesByMealType = (notes: NoteItem[]): Map<MealType, NoteItem[]> =>
-  notes.reduce(assignNoteToGroup, new Map<MealType, NoteItem[]>());
-
-export interface NoteItem {
-  id: number;
-  mealType: MealType;
-  displayOrder: number;
-  productId: number;
-  productName: string;
-  productQuantity: number;
-  productDefaultQuantity: number;
-  calories: number;
-}
-
-export interface NoteCreateEdit {
-  mealType: MealType;
-  pageId: number;
-  product: productModel.AutocompleteOptionType;
-  productQuantity: number;
-  displayOrder: number;
-}
+export const groupNotesByMealType = (
+  notes: noteModel.NoteItem[],
+): Map<noteModel.MealType, noteModel.NoteItem[]> =>
+  notes.reduce(assignNoteToGroup, new Map<noteModel.MealType, noteModel.NoteItem[]>());

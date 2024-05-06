@@ -1,8 +1,8 @@
 import EditIcon from '@mui/icons-material/Edit';
 import { Checkbox, IconButton, TableCell, TableRow, Tooltip } from '@mui/material';
 import { type FC, useEffect, useState, useMemo } from 'react';
+import { productApi } from '@/entities/product';
 import { useAppDispatch, useAppSelector } from '../../__shared__/hooks';
-import { productsApi } from '../api';
 import { toEditProductRequest, toProductFormData } from '../mapping';
 import { useCategorySelect, useProducts } from '../model';
 import { selectCheckedProductIds } from '../selectors';
@@ -16,7 +16,7 @@ interface ProductsTableRowProps {
 
 const ProductsTableRow: FC<ProductsTableRowProps> = ({ product }: ProductsTableRowProps) => {
   const [isEditDialogOpened, setIsEditDialogOpened] = useState(false);
-  const [editProduct, editProductRequest] = productsApi.useEditProductMutation();
+  const [editProduct, editProductRequest] = productApi.useEditProductMutation();
   const categorySelect = useCategorySelect();
   const dispatch = useAppDispatch();
   const checkedProductIds = useAppSelector(selectCheckedProductIds);

@@ -1,25 +1,25 @@
 import { type FC, useEffect, useState } from 'react';
-import { productModel } from '@/entities/product';
+import { type NoteCreateEdit, type noteModel } from '@/entities/note';
+import { productLib, type productModel } from '@/entities/product';
 import { type UseCategorySelectResult } from '@/features/products';
 import { Button, Dialog } from '@/shared/ui';
 import { useInput } from 'src/hooks';
 import { mapToTextInputProps } from 'src/utils/inputMapping';
 import { validateProductName } from 'src/utils/validation';
-import { type MealType, type NoteCreateEdit } from '../../models';
-import { type DialogState, type DialogStateType } from './types';
-import { useNoteDialog } from './useNoteDialog';
-import { useProductDialog } from './useProductDialog';
+import { useNoteDialog } from '../../lib/useNoteDialog';
+import { useProductDialog } from '../../lib/useProductDialog';
+import { type DialogState, type DialogStateType } from '../../model';
 
 interface Props {
   opened: boolean;
   title: string;
   submitText: string;
-  mealType: MealType;
+  mealType: noteModel.MealType;
   pageId: number;
   product: productModel.AutocompleteOptionType | null;
   quantity: number;
   displayOrder: number;
-  productAutocompleteData: productModel.AutocompleteData;
+  productAutocompleteData: productLib.AutocompleteData;
   categorySelect: UseCategorySelectResult;
   submitSuccess: boolean;
   onClose: () => void;
@@ -43,7 +43,7 @@ export const NoteInputDialog: FC<Props> = ({
   onSubmit,
   onSubmitSuccess,
 }) => {
-  const productAutocompleteInput = productModel.useAutocompleteInput(product);
+  const productAutocompleteInput = productLib.useAutocompleteInput(product);
 
   const productNameInput = useInput({
     initialValue: '',
@@ -59,7 +59,7 @@ export const NoteInputDialog: FC<Props> = ({
     values: productFormValues,
     setValues: setProductFormValues,
     clearValues: clearProductFormValues,
-  } = productModel.useFormValues();
+  } = productLib.useFormValues();
 
   const [currentInputDialogType, setCurrentInputDialogType] = useState<DialogStateType>('note');
 

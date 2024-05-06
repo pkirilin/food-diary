@@ -3,12 +3,12 @@ import { screen } from '@testing-library/dom';
 import { type UserEvent } from '@testing-library/user-event';
 import { type ReactElement } from 'react';
 import { type Mock } from 'vitest';
-import { type productModel } from '@/entities/product';
-import { MealType, type NoteCreateEdit, NoteInputDialog } from '@/features/notes';
+import { type NoteCreateEdit, noteModel } from '@/entities/note';
+import { type ProductSelectOption, type productModel } from '@/entities/product';
 import theme from '@/theme';
 import { type SelectOption } from '@/types';
 import { WithTriggerButton } from '@tests/sideEffects';
-import { type ProductSelectOption } from 'src/features/products';
+import { NoteInputDialog } from './NoteInputDialog';
 
 class NoteInputDialogBuilder {
   private readonly _products: ProductSelectOption[] = [];
@@ -27,7 +27,7 @@ class NoteInputDialogBuilder {
               onClose={onTriggerClick}
               title="Note"
               submitText="Submit"
-              mealType={MealType.Breakfast}
+              mealType={noteModel.MealType.Breakfast}
               pageId={1}
               product={this.getSelectedProduct()}
               quantity={this._quantity}
@@ -262,7 +262,7 @@ export const thenFormValueContains = async (
   { product, productQuantity }: Pick<NoteCreateEdit, 'product' | 'productQuantity'>,
 ): Promise<void> => {
   expect(onSubmitMock).toHaveBeenCalledWith<[NoteCreateEdit]>({
-    mealType: MealType.Breakfast,
+    mealType: noteModel.MealType.Breakfast,
     pageId: 1,
     displayOrder: 1,
     product,

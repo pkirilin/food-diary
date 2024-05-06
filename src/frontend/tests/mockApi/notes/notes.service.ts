@@ -1,4 +1,4 @@
-import { type CreateNoteRequest, type EditNoteRequest } from 'src/features/notes';
+import { type CreateNoteRequest, type EditNoteRequest } from '@/entities/note';
 import { db, type DbNote, type DbProduct } from '../db';
 
 type Result = 'Success' | 'PageNotFound' | 'ProductNotFound';

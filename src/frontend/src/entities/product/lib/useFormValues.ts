@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
-import { EMPTY_FORM_VALUES } from './constants';
-import { type FormValues } from './types';
+import { EMPTY_FORM_VALUES } from '../model/constants';
+import { type FormValues } from '../model/types';
 
 interface Result {
   values: FormValues;

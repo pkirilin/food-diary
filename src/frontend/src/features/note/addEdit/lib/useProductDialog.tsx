@@ -4,7 +4,7 @@ import { ProductInputForm, type productModel } from '@/entities/product';
 import { CategorySelect } from '@/features/categories';
 import { type UseCategorySelectResult } from '@/features/products';
 import { type UseInputResult } from '@/hooks';
-import { type DialogState } from './types';
+import { type DialogState } from '../model';
 
 interface Args {
   productFormValues: productModel.FormValues;

@@ -20,7 +20,3 @@ export interface ProductFormData {
   defaultQuantity: number;
   category: SelectOption;
 }
-
-export interface ProductSelectOption extends SelectOption {
-  defaultQuantity: number;
-}

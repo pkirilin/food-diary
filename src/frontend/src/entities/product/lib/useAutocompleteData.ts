@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
-import { type ProductSelectOption, productsApi } from '@/features/products';
-import { type AutocompleteOptionType } from './types';
+import { type ProductSelectOption } from '../api/contracts';
+import { productApi } from '../api/productApi';
+import { type AutocompleteOptionType } from '../model/types';
 
 const mapToAutocompleteOption = ({
   id,
@@ -18,7 +19,7 @@ export interface AutocompleteData {
 }
 
 export const useAutocompleteData = (): AutocompleteData => {
-  const query = productsApi.useGetProductSelectOptionsQuery();
+  const query = productApi.useGetProductSelectOptionsQuery();
 
   const options = useMemo(() => query.data?.map(mapToAutocompleteOption) ?? [], [query.data]);
 

@@ -1,5 +1,4 @@
-import { type productModel } from '@/entities/product';
-import { productsApi, type CreateProductRequest } from '@/features/products';
+import { type CreateProductRequest, productApi, type productModel } from '@/entities/product';
 
 const toCreateProductRequest = ({
   name,
@@ -16,7 +15,7 @@ const toCreateProductRequest = ({
 type AddProductIfNotExistsFn = (product: productModel.AutocompleteOptionType) => Promise<number>;
 
 export const useAddProductIfNotExists = (): AddProductIfNotExistsFn => {
-  const [createProduct] = productsApi.useCreateProductMutation();
+  const [createProduct] = productApi.useCreateProductMutation();
 
   return async product => {
     if (!product.freeSolo) {

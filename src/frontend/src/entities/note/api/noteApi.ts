@@ -1,11 +1,15 @@
+import {
+  type EditNoteRequest,
+  type CreateNoteRequest,
+  type GetNotesRequest,
+  type noteModel,
+} from '@/entities/note';
 import { api } from 'src/api';
 import { createUrl } from 'src/utils';
-import { type NoteItem } from '../models';
-import { type EditNoteRequest, type CreateNoteRequest, type GetNotesRequest } from './contracts';
 
-export const notesApi = api.injectEndpoints({
+export const noteApi = api.injectEndpoints({
   endpoints: builder => ({
-    getNotes: builder.query<NoteItem[], GetNotesRequest>({
+    getNotes: builder.query<noteModel.NoteItem[], GetNotesRequest>({
       query: request => createUrl('/api/v1/notes', { ...request }),
       providesTags: ['note'],
     }),
