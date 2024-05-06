@@ -1,2 +1,2 @@
 export * from './models';
-export * from './ui';
+export * from './ui/DeleteNote';

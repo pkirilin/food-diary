@@ -1,9 +1,9 @@
 import { Box, ListItem, Paper } from '@mui/material';
 import { useMemo, type FC } from 'react';
 import { type noteModel } from '@/entities/note';
-import { getMealName } from '../../models';
-import { NotesList } from '../NotesList';
+import { getMealName } from '@/features/notes';
 import { MealsListItemHeader } from './MealsListItemHeader';
+import { NotesList } from './NotesList';
 
 interface Props {
   pageId: number;
