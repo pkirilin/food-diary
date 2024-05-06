@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
-import { type NoteCreateEdit, type noteModel } from '@/entities/note';
+import { type noteModel } from '@/entities/note';
 import { ProductAutocomplete, type productLib, type productModel } from '@/entities/product';
-import { type DialogState } from '../model';
+import { type Note, type DialogState } from '../model';
 import { NoteInputForm } from '../ui/NoteInputForm';
 
 interface Args {
@@ -15,7 +15,7 @@ interface Args {
   productAutocompleteInput: productLib.AutocompleteInput;
   productFormValues: productModel.FormValues;
   onClose: () => void;
-  onSubmit: (note: NoteCreateEdit) => Promise<void>;
+  onSubmit: (note: Note) => Promise<void>;
   onProductChange: (value: productModel.AutocompleteOptionType | null) => void;
 }
 
@@ -42,10 +42,10 @@ export const useNoteDialog = ({
   const [submitLoading, setSubmitLoading] = useState(false);
   const cancelDisabled = submitLoading;
 
-  const handleSubmit = async (noteValues: NoteCreateEdit): Promise<void> => {
+  const handleSubmit = async (note: Note): Promise<void> => {
     try {
       setSubmitLoading(true);
-      await onSubmit(noteValues);
+      await onSubmit(note);
     } catch (err) {
       setSubmitLoading(false);
     }

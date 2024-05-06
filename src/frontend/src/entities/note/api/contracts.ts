@@ -1,4 +1,3 @@
-import { type productModel } from '@/entities/product';
 import { type MealType } from '../model';
 
 export interface GetNotesRequest {
@@ -10,14 +9,6 @@ export interface CreateNoteRequest {
   mealType: MealType;
   productId: number;
   pageId: number;
-  productQuantity: number;
-  displayOrder: number;
-}
-
-export interface NoteCreateEdit {
-  mealType: MealType;
-  pageId: number;
-  product: productModel.AutocompleteOptionType;
   productQuantity: number;
   displayOrder: number;
 }

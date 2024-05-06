@@ -1,12 +1,13 @@
 import AddIcon from '@mui/icons-material/Add';
 import { useCallback, type FC } from 'react';
 import { categoryLib } from '@/entities/category';
-import { type NoteCreateEdit, noteApi, type noteModel, noteLib } from '@/entities/note';
+import { noteApi, type noteModel, noteLib } from '@/entities/note';
 import { productLib } from '@/entities/product';
 import { useToggle } from '@/shared/hooks';
 import { Button } from '@/shared/ui';
 import { mapToCreateNoteRequest } from '../lib/mapping';
 import { useAddProductIfNotExists } from '../lib/useAddProductIfNotExists';
+import { type Note } from '../model';
 import { NoteInputDialog } from './NoteInputDialog';
 
 interface Props {
@@ -24,9 +25,9 @@ export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
   const productAutocompleteData = productLib.useAutocompleteData();
   const categorySelect = categoryLib.useCategorySelectData();
 
-  const handleSubmit = async (noteValues: NoteCreateEdit): Promise<void> => {
-    const productId = await addProductIfNotExists(noteValues.product);
-    const request = mapToCreateNoteRequest(noteValues, productId);
+  const handleSubmit = async (note: Note): Promise<void> => {
+    const productId = await addProductIfNotExists(note.product);
+    const request = mapToCreateNoteRequest(note, productId);
     await createNote(request);
   };
 

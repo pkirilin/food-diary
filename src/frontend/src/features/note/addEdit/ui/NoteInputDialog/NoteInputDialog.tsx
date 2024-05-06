@@ -1,6 +1,6 @@
 import { type FC, useEffect, useState } from 'react';
 import { type categoryLib } from '@/entities/category';
-import { type NoteCreateEdit, type noteModel } from '@/entities/note';
+import { type noteModel } from '@/entities/note';
 import { productLib, type productModel } from '@/entities/product';
 import { Button, Dialog } from '@/shared/ui';
 import { useInput } from 'src/hooks';
@@ -8,7 +8,7 @@ import { mapToTextInputProps } from 'src/utils/inputMapping';
 import { validateProductName } from 'src/utils/validation';
 import { useNoteDialog } from '../../lib/useNoteDialog';
 import { useProductDialog } from '../../lib/useProductDialog';
-import { type DialogState, type DialogStateType } from '../../model';
+import { type Note, type DialogState, type DialogStateType } from '../../model';
 
 interface Props {
   opened: boolean;
@@ -23,7 +23,7 @@ interface Props {
   categorySelect: categoryLib.CategorySelectData;
   submitSuccess: boolean;
   onClose: () => void;
-  onSubmit: (note: NoteCreateEdit) => Promise<void>;
+  onSubmit: (note: Note) => Promise<void>;
   onSubmitSuccess: () => void;
 }
 

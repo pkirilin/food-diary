@@ -3,11 +3,12 @@ import { screen } from '@testing-library/dom';
 import { type UserEvent } from '@testing-library/user-event';
 import { type ReactElement } from 'react';
 import { type Mock } from 'vitest';
-import { type NoteCreateEdit, noteModel } from '@/entities/note';
+import { noteModel } from '@/entities/note';
 import { type ProductSelectOption, type productModel } from '@/entities/product';
 import theme from '@/theme';
 import { type SelectOption } from '@/types';
 import { WithTriggerButton } from '@tests/sideEffects';
+import { type Note } from '../../model';
 import { NoteInputDialog } from './NoteInputDialog';
 
 class NoteInputDialogBuilder {
@@ -259,9 +260,9 @@ export const thenAddProductButtonIsDisabled = async (): Promise<void> => {
 
 export const thenFormValueContains = async (
   onSubmitMock: Mock,
-  { product, productQuantity }: Pick<NoteCreateEdit, 'product' | 'productQuantity'>,
+  { product, productQuantity }: Pick<Note, 'product' | 'productQuantity'>,
 ): Promise<void> => {
-  expect(onSubmitMock).toHaveBeenCalledWith<[NoteCreateEdit]>({
+  expect(onSubmitMock).toHaveBeenCalledWith<[Note]>({
     mealType: noteModel.MealType.Breakfast,
     pageId: 1,
     displayOrder: 1,
