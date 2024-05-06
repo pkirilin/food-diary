@@ -1,2 +1,1 @@
-export * from './ui/AddNote';
-export * from './ui/EditNote';
+export * from './ui';
