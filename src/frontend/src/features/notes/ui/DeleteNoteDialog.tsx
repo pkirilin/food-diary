@@ -1,9 +1,8 @@
 import { DialogContentText, Typography } from '@mui/material';
 import { type FormEventHandler, type FC } from 'react';
-import { type noteModel } from '@/entities/note';
+import { noteLib, type noteModel } from '@/entities/note';
 import { Button } from '@/shared/ui';
 import { AppDialog } from 'src/components';
-import { getMealName } from '../models';
 
 interface DeleteNoteDialogProps {
   note: noteModel.NoteItem;
@@ -32,7 +31,7 @@ export const DeleteNoteDialog: FC<DeleteNoteDialogProps> = ({
       content={
         <form id="delete-note" onSubmit={handleSubmit}>
           <DialogContentText paragraph>
-            You are going to delete this note from <b>{getMealName(note.mealType)}</b>:
+            You are going to delete this note from <b>{noteLib.getMealName(note.mealType)}</b>:
           </DialogContentText>
           <Typography>
             {note.productName} {note.productQuantity} g ({note.calories} cal)

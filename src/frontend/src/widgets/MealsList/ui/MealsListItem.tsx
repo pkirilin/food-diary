@@ -1,7 +1,6 @@
 import { Box, ListItem, Paper } from '@mui/material';
 import { useMemo, type FC } from 'react';
-import { type noteModel } from '@/entities/note';
-import { getMealName } from '@/features/notes';
+import { noteLib, type noteModel } from '@/entities/note';
 import { MealsListItemHeader } from './MealsListItemHeader';
 import { NotesList } from './NotesList';
 
@@ -17,7 +16,10 @@ export const MealsListItem: FC<Props> = ({ pageId, mealType, notes }) => {
   return (
     <ListItem disableGutters disablePadding>
       <Box width="100%">
-        <MealsListItemHeader mealName={getMealName(mealType)} totalCalories={totalCalories} />
+        <MealsListItemHeader
+          mealName={noteLib.getMealName(mealType)}
+          totalCalories={totalCalories}
+        />
         <Paper component="section">
           <NotesList pageId={pageId} mealType={mealType} notes={notes} />
         </Paper>

@@ -1,7 +1,6 @@
 import { List, Stack } from '@mui/material';
 import { type FC, useMemo, type PropsWithChildren } from 'react';
-import { type noteModel } from '@/entities/note';
-import { getMealTypes, groupNotesByMealType } from '@/features/notes';
+import { noteLib, type noteModel } from '@/entities/note';
 import { MealsListItem } from './MealsListItem';
 
 interface Props extends PropsWithChildren {
@@ -9,10 +8,10 @@ interface Props extends PropsWithChildren {
   pageId: number;
 }
 
-const MEAL_TYPES = getMealTypes();
+const MEAL_TYPES = noteLib.getMealTypes();
 
 export const MealsList: FC<Props> = ({ notes, pageId }: Props) => {
-  const notesGroupedByMealType = useMemo(() => groupNotesByMealType(notes), [notes]);
+  const notesGroupedByMealType = useMemo(() => noteLib.groupByMealType(notes), [notes]);
 
   return (
     <Stack spacing={4} component={List} disablePadding>

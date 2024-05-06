@@ -1,8 +1,7 @@
 import { TextField } from '@mui/material';
 import { useEffect, type FC, type FormEventHandler, type ReactElement } from 'react';
-import { type NoteCreateEdit, type noteModel } from '@/entities/note';
+import { noteLib, type NoteCreateEdit, type noteModel } from '@/entities/note';
 import { type productLib, type productModel } from '@/entities/product';
-import { getMealName } from '@/features/notes';
 import { useInput, type UseInputResult } from '@/hooks';
 import { mapToNumericInputProps } from '@/utils/inputMapping';
 import { validateQuantity } from '@/utils/validation';
@@ -84,7 +83,7 @@ export const NoteInputForm: FC<NoteInputFormProps> = ({
     <form id={id} onSubmit={handleSubmit}>
       <TextField
         label="Meal"
-        value={getMealName(mealType)}
+        value={noteLib.getMealName(mealType)}
         margin="normal"
         fullWidth
         inputProps={{ readOnly: true }}
