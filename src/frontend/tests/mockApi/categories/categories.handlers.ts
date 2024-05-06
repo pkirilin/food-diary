@@ -1,13 +1,14 @@
 import { http, type HttpHandler, type PathParams } from 'msw';
+import { type categoryModel } from '@/entities/category';
 import { API_URL } from 'src/config';
-import { type Category, type CategoryFormData } from 'src/features/categories';
+import { type CategoryFormData } from 'src/features/categories';
 import { type SelectOption } from 'src/types';
 import { DelayedHttpResponse } from '../DelayedHttpResponse';
 import * as categoriesService from './categories.service';
 
 export const handlers: HttpHandler[] = [
   http.get(`${API_URL}/api/v1/categories`, () => {
-    const response: Category[] = categoriesService.getAll().map(({ id, name }) => ({
+    const response: categoryModel.Category[] = categoriesService.getAll().map(({ id, name }) => ({
       id,
       name,
       countProducts: categoriesService.getProductsCount(id),

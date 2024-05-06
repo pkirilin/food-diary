@@ -7,7 +7,7 @@ interface CategorySelectProps extends SelectProps<SelectOption> {
   optionsLoading: boolean;
 }
 
-const CategorySelect: FC<CategorySelectProps> = ({
+export const CategorySelect: FC<CategorySelectProps> = ({
   label,
   placeholder,
   value = null,
@@ -34,5 +34,3 @@ const CategorySelect: FC<CategorySelectProps> = ({
     />
   );
 };
-
-export default CategorySelect;

@@ -1,8 +1,7 @@
-import { categoriesApi } from '../api';
-import { type Category } from '../types';
+import { categoryApi, type categoryModel } from '@/entities/category';
 
 interface Result {
-  data: Category[];
+  data: categoryModel.Category[];
   isFetching: boolean;
   isChanged: boolean;
 }
@@ -10,7 +9,7 @@ interface Result {
 const QUERY_ARG = {};
 
 export const useCategories = (): Result =>
-  categoriesApi.useGetCategoriesQuery(QUERY_ARG, {
+  categoryApi.useGetCategoriesQuery(QUERY_ARG, {
     selectFromResult: ({ data, isFetching, isSuccess }) => ({
       data: data ?? [],
       isFetching,

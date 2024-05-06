@@ -1,10 +1,11 @@
 import AddIcon from '@mui/icons-material/Add';
 import { IconButton, Tooltip } from '@mui/material';
 import { type FC, useEffect, useState } from 'react';
+import { categoryLib } from '@/entities/category';
 import { productApi } from '@/entities/product';
 import { useAppSelector } from 'src/store';
 import { toCreateProductRequest } from '../mapping';
-import { useCategorySelect, useProducts } from '../model';
+import { useProducts } from '../model';
 import { selectProductsQueryArg } from '../selectors';
 import { type ProductFormData } from '../types';
 import ProductInputDialog from './ProductInputDialog';
@@ -13,7 +14,7 @@ const CreateProduct: FC = () => {
   const [isDialogOpened, setIsDialogOpened] = useState(false);
   const getProductsQueryArg = useAppSelector(selectProductsQueryArg);
   const getProductsQuery = productApi.useGetProductsQuery(getProductsQueryArg);
-  const categorySelect = useCategorySelect();
+  const categorySelect = categoryLib.useCategorySelectData();
   const products = useProducts();
   const [createProduct, createProductRequest] = productApi.useCreateProductMutation();
 

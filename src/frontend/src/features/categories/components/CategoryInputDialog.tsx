@@ -6,12 +6,13 @@ import {
   type SetStateAction,
   type FormEventHandler,
 } from 'react';
+import { type categoryModel } from '@/entities/category';
 import { Button } from '@/shared/ui';
 import { AppDialog } from 'src/components';
 import { useInput } from 'src/hooks';
 import { mapToTextInputProps } from 'src/utils/inputMapping';
 import { validateCategoryName } from 'src/utils/validation';
-import { type Category, type CategoryFormData } from '../types';
+import { type CategoryFormData } from '../types';
 
 interface CreateEditCategoryDialogProps {
   isOpened: boolean;
@@ -20,7 +21,7 @@ interface CreateEditCategoryDialogProps {
   submitText: string;
   onSubmit: (category: CategoryFormData) => void;
   loading: boolean;
-  category?: Category;
+  category?: categoryModel.Category;
 }
 
 const CategoryInputDialog: FC<CreateEditCategoryDialogProps> = ({

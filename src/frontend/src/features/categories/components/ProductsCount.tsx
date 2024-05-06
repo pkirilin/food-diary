@@ -1,9 +1,9 @@
 import { Typography } from '@mui/material';
 import { type FC } from 'react';
-import { type Category } from '../types';
+import { type categoryModel } from '@/entities/category';
 
 interface CategoryProductsCountProps {
-  category: Category;
+  category: categoryModel.Category;
 }
 
 const ProductsCount: FC<CategoryProductsCountProps> = ({

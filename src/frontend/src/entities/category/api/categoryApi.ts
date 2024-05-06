@@ -1,20 +1,20 @@
 import { api } from 'src/api';
 import { type SelectOption } from 'src/types';
-import { type Category } from '../types';
+import { type Category } from '../model';
 import {
   type CreateCategoryRequest,
   type DeleteCategoryRequest,
   type EditCategoryRequest,
 } from './contracts';
 
-export const categoriesApi = api.injectEndpoints({
+export const categoryApi = api.injectEndpoints({
   endpoints: builder => ({
     getCategories: builder.query<Category[], unknown>({
       query: () => '/api/v1/categories',
       providesTags: ['category'],
     }),
 
-    getCategorySelectOptions: builder.query<SelectOption[], unknown>({
+    getCategorySelectOptions: builder.query<SelectOption[], void>({
       query: () => '/api/v1/categories/autocomplete',
       providesTags: ['category'],
     }),

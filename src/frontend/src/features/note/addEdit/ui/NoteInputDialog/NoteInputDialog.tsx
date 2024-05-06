@@ -1,7 +1,7 @@
 import { type FC, useEffect, useState } from 'react';
+import { type categoryLib } from '@/entities/category';
 import { type NoteCreateEdit, type noteModel } from '@/entities/note';
 import { productLib, type productModel } from '@/entities/product';
-import { type UseCategorySelectResult } from '@/features/products';
 import { Button, Dialog } from '@/shared/ui';
 import { useInput } from 'src/hooks';
 import { mapToTextInputProps } from 'src/utils/inputMapping';
@@ -20,7 +20,7 @@ interface Props {
   quantity: number;
   displayOrder: number;
   productAutocompleteData: productLib.AutocompleteData;
-  categorySelect: UseCategorySelectResult;
+  categorySelect: categoryLib.CategorySelectData;
   submitSuccess: boolean;
   onClose: () => void;
   onSubmit: (note: NoteCreateEdit) => Promise<void>;

@@ -6,9 +6,9 @@ import {
   type SetStateAction,
   type FormEventHandler,
 } from 'react';
+import { CategorySelect } from '@/entities/category';
 import { Button } from '@/shared/ui';
 import { AppDialog } from 'src/components';
-import { CategorySelect } from 'src/features/categories';
 import { useInput } from 'src/hooks';
 import { type SelectOption } from 'src/types';
 import {

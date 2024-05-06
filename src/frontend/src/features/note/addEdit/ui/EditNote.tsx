@@ -1,7 +1,7 @@
 import { useMemo, type FC, type ReactElement, useCallback } from 'react';
+import { categoryLib } from '@/entities/category';
 import { type NoteCreateEdit, noteApi, noteLib, type noteModel } from '@/entities/note';
 import { productLib } from '@/entities/product';
-import { useCategorySelect } from '@/features/products';
 import { useToggle } from '@/shared/hooks';
 import { mapToEditNoteRequest, mapToProductSelectOption } from '../lib/mapping';
 import { useAddProductIfNotExists } from '../lib/useAddProductIfNotExists';
@@ -21,7 +21,7 @@ export const EditNote: FC<Props> = ({ note, pageId, renderTrigger }) => {
   const [editNote, editNoteResponse] = noteApi.useEditNoteMutation();
   const { reset: resetEditNote } = editNoteResponse;
   const productAutocompleteData = productLib.useAutocompleteData();
-  const categorySelect = useCategorySelect();
+  const categorySelect = categoryLib.useCategorySelectData();
 
   const handleSubmit = async (formData: NoteCreateEdit): Promise<void> => {
     const productId = await addProductIfNotExists(formData.product);

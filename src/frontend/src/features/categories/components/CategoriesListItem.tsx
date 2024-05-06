@@ -2,22 +2,22 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { Card, CardHeader, CardActions, Button } from '@mui/material';
 import { type FC, useEffect, useState } from 'react';
-import { categoriesApi } from '../api';
+import { categoryApi, type categoryModel } from '@/entities/category';
 import { useCategories } from '../model';
-import { type Category, type CategoryFormData } from '../types';
+import { type CategoryFormData } from '../types';
 import CategoryInputDialog from './CategoryInputDialog';
 import CategoryTitle from './CategoryTitle';
 import DeleteCategoryDialog from './DeleteCategoryDialog';
 import ProductsCount from './ProductsCount';
 
 interface CategoriesListItemProps {
-  category: Category;
+  category: categoryModel.Category;
 }
 
 const CategoriesListItem: FC<CategoriesListItemProps> = ({ category }) => {
   const [isEditDialogOpened, setIsEditDialogOpened] = useState(false);
   const [isDeleteDialogOpened, setIsDeleteDialogOpened] = useState(false);
-  const [editCategory, editCategoryRequest] = categoriesApi.useEditCategoryMutation();
+  const [editCategory, editCategoryRequest] = categoryApi.useEditCategoryMutation();
   const categories = useCategories();
 
   useEffect(() => {
