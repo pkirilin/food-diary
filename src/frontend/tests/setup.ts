@@ -1,8 +1,6 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
 import '@testing-library/jest-dom';
-import 'src/test-utils/customExpects';
-import { initMockApiDb } from 'tests/mockApi';
-import { server } from 'tests/mockApi/server';
+import { initMockApiDb } from './mockApi';
+import { server } from './mockApi/server';
 
 beforeAll(() => {
   // For MUI Date picker to work in tests
