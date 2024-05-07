@@ -2,7 +2,7 @@ import { TablePagination } from '@mui/material';
 import { type FC } from 'react';
 import { useDispatch } from 'react-redux';
 import { productApi } from '@/entities/product';
-import { useAppSelector } from '../../__shared__/hooks';
+import { useAppSelector } from '@/store';
 import { selectProductsQueryArg } from '../selectors';
 import { pageNumberChanged, pageSizeChanged } from '../store';
 

@@ -3,7 +3,7 @@ import { Checkbox, IconButton, TableCell, TableRow, Tooltip } from '@mui/materia
 import { type FC, useEffect, useState, useMemo } from 'react';
 import { categoryLib } from '@/entities/category';
 import { productApi } from '@/entities/product';
-import { useAppDispatch, useAppSelector } from '../../__shared__/hooks';
+import { useAppDispatch, useAppSelector } from '@/store';
 import { toEditProductRequest, toProductFormData } from '../mapping';
 import { useProducts } from '../model';
 import { selectCheckedProductIds } from '../selectors';

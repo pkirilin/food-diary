@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
+import { type TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import { api } from './api';
-import { useAppDispatch, useAppSelector } from './features/__shared__/hooks';
 import pagesReducer from './features/pages/slice';
 import productsReducer from './features/products/store';
 
@@ -22,6 +22,7 @@ export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 export type AppStore = ReturnType<typeof configureAppStore>;
 
-export { useAppSelector, useAppDispatch };
+export const useAppDispatch: () => AppDispatch = useDispatch;
+export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
 export default store;
