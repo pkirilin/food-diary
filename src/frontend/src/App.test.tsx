@@ -1,6 +1,6 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { AUTH_CHECK_INTERVAL } from './config';
+import { AUTH_CHECK_INTERVAL } from '@/shared/config';
 import { renderApp } from './testing/render';
 
 test('user can login and logout', async () => {

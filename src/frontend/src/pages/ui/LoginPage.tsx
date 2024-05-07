@@ -6,8 +6,8 @@ import {
   type ActionFunction,
   redirectDocument,
 } from 'react-router-dom';
-import { API_URL, FAKE_AUTH_ENABLED } from '@/config';
 import { authApi, SignInForm } from '@/features/auth';
+import { API_URL, FAKE_AUTH_ENABLED } from '@/shared/config';
 import { createUrl } from '@/shared/lib';
 import { AppName } from '@/shared/ui';
 import store from '@/store';

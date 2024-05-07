@@ -1,7 +1,7 @@
 import { http, type HttpHandler, type PathParams } from 'msw';
 import { type categoryModel } from '@/entities/category';
+import { API_URL } from '@/shared/config';
 import { type SelectOption } from '@/shared/types';
-import { API_URL } from 'src/config';
 import { type CategoryFormData } from 'src/features/categories';
 import { DelayedHttpResponse } from '../DelayedHttpResponse';
 import * as categoriesService from './categories.service';

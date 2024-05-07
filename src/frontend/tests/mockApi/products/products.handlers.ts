@@ -5,8 +5,8 @@ import {
   type CreateProductResponse,
   type EditProductRequest,
 } from '@/entities/product';
+import { API_URL } from '@/shared/config';
 import { type SelectOption } from '@/shared/types';
-import { API_URL } from 'src/config';
 import { type ProductsResponse } from 'src/features/products';
 import { DelayedHttpResponse } from '../DelayedHttpResponse';
 import * as productsService from './products.service';

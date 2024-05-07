@@ -1,9 +1,9 @@
 import 'date-fns';
 import { initBrowserMockApi } from 'tests/mockApi';
 import { createRoot } from 'react-dom/client';
+import { GOOGLE_ANALYTICS_ENABLED, MSW_ENABLED } from '@/shared/config';
 import App from './App';
 import AppProvider from './AppProvider';
-import { GOOGLE_ANALYTICS_ENABLED, MSW_ENABLED } from './config';
 import { initGoogleAnalytics } from './googleAnalytics';
 import store from './store';
 

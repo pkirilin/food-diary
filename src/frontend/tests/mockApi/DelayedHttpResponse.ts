@@ -1,5 +1,5 @@
 import { HttpResponse, type JsonBodyType, delay as mswDelay } from 'msw';
-import { MOCK_API_RESPONSE_DELAY } from '@/config';
+import { MOCK_API_RESPONSE_DELAY } from '@/shared/config';
 
 const delay = (): Promise<void> => {
   if (import.meta.env.MODE === 'test') {

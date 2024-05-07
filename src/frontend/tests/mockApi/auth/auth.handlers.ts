@@ -1,5 +1,5 @@
 import { http, type HttpHandler, HttpResponse } from 'msw';
-import { API_URL } from 'src/config';
+import { API_URL } from '@/shared/config';
 import { type GetAuthStatusResponse } from 'src/features/auth';
 import { usersService } from '../user';
 

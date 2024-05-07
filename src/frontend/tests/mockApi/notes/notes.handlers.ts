@@ -1,6 +1,6 @@
 import { http, type HttpHandler, type PathParams } from 'msw';
 import { type CreateNoteRequest, type EditNoteRequest, type noteModel } from '@/entities/note';
-import { API_URL } from 'src/config';
+import { API_URL } from '@/shared/config';
 import { DelayedHttpResponse } from '../DelayedHttpResponse';
 import * as notesService from './notes.service';
 

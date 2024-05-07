@@ -1,7 +1,7 @@
 import { http, type HttpHandler, type PathParams } from 'msw';
+import { API_URL } from '@/shared/config';
 import { formatDate } from '@/shared/lib';
 import { SortOrder } from '@/shared/types';
-import { API_URL } from 'src/config';
 import {
   type PageByIdResponse,
   type PageCreateEdit,

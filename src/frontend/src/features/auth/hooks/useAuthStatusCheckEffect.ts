@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useSubmit } from 'react-router-dom';
-import { AUTH_CHECK_INTERVAL } from 'src/config';
+import { AUTH_CHECK_INTERVAL } from '@/shared/config';
 import { authApi } from '../api';
 
 export const useAuthStatusCheckEffect = (): void => {
