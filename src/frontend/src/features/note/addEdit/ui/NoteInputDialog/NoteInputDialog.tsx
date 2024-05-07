@@ -15,7 +15,7 @@ interface Props {
   submitText: string;
   mealType: noteModel.MealType;
   pageId: number;
-  product: productModel.AutocompleteOptionType | null;
+  product: productModel.AutocompleteOption | null;
   quantity: number;
   displayOrder: number;
   productAutocompleteData: productLib.AutocompleteData;

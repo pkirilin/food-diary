@@ -1,6 +1,6 @@
 import { type UseInputResult, useInput } from '@/shared/hooks';
 import { type MapToInputPropsFunction, type ValidatorFunction } from '@/shared/types';
-import { type AutocompleteOptionType } from '../model/types';
+import { type AutocompleteOption } from '../model/types';
 import { type ProductAutocompleteProps } from '../ui/ProductAutocomplete';
 
 export type AutocompleteInputProps = Pick<
@@ -8,13 +8,10 @@ export type AutocompleteInputProps = Pick<
   'value' | 'onChange' | 'error' | 'helperText'
 >;
 
-export type AutocompleteInput = UseInputResult<
-  AutocompleteOptionType | null,
-  AutocompleteInputProps
->;
+export type AutocompleteInput = UseInputResult<AutocompleteOption | null, AutocompleteInputProps>;
 
 const mapToInputProps: MapToInputPropsFunction<
-  AutocompleteOptionType | null,
+  AutocompleteOption | null,
   AutocompleteInputProps
 > = ({ value, setValue, isInvalid, helperText }) => ({
   value,
@@ -25,10 +22,10 @@ const mapToInputProps: MapToInputPropsFunction<
   helperText,
 });
 
-const validate: ValidatorFunction<AutocompleteOptionType | null> = value => value !== null;
+const validate: ValidatorFunction<AutocompleteOption | null> = value => value !== null;
 
 export const useAutocompleteInput = (
-  initialValue: AutocompleteOptionType | null = null,
+  initialValue: AutocompleteOption | null = null,
 ): AutocompleteInput =>
   useInput({
     initialValue,

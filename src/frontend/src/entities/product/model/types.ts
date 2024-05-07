@@ -26,4 +26,4 @@ export interface AutocompleteFreeSoloOption extends AutocompleteBaseOption {
   inputValue?: string;
 }
 
-export type AutocompleteOptionType = AutocompleteExistingOption | AutocompleteFreeSoloOption;
+export type AutocompleteOption = AutocompleteExistingOption | AutocompleteFreeSoloOption;

@@ -1,20 +1,20 @@
 import { useMemo } from 'react';
 import { type ProductSelectOption } from '../api/contracts';
 import { productApi } from '../api/productApi';
-import { type AutocompleteOptionType } from '../model/types';
+import { type AutocompleteOption } from '../model/types';
 
 const mapToAutocompleteOption = ({
   id,
   name,
   defaultQuantity,
-}: ProductSelectOption): AutocompleteOptionType => ({
+}: ProductSelectOption): AutocompleteOption => ({
   id,
   name,
   defaultQuantity,
 });
 
 export interface AutocompleteData {
-  options: AutocompleteOptionType[];
+  options: AutocompleteOption[];
   isLoading: boolean;
 }
 

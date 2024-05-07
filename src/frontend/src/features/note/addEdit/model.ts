@@ -19,7 +19,7 @@ export interface DialogState {
 export interface Note {
   mealType: noteModel.MealType;
   pageId: number;
-  product: productModel.AutocompleteOptionType;
+  product: productModel.AutocompleteOption;
   productQuantity: number;
   displayOrder: number;
 }

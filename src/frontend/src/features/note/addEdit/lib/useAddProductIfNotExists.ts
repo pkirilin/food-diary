@@ -12,7 +12,7 @@ const toCreateProductRequest = ({
   categoryId: category?.id ?? 0,
 });
 
-type AddProductIfNotExistsFn = (product: productModel.AutocompleteOptionType) => Promise<number>;
+type AddProductIfNotExistsFn = (product: productModel.AutocompleteOption) => Promise<number>;
 
 export const useAddProductIfNotExists = (): AddProductIfNotExistsFn => {
   const [createProduct] = productApi.useCreateProductMutation();

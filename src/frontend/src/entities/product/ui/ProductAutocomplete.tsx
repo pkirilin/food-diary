@@ -6,11 +6,11 @@ import {
 } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import { type FC, type SyntheticEvent } from 'react';
-import { type FormValues, type AutocompleteOptionType, EMPTY_FORM_VALUES } from '../model';
+import { type FormValues, type AutocompleteOption, EMPTY_FORM_VALUES } from '../model';
 
-const filter = createFilterOptions<AutocompleteOptionType>();
+const filter = createFilterOptions<AutocompleteOption>();
 
-const getOptionLabel = (option: string | AutocompleteOptionType): string => {
+const getOptionLabel = (option: string | AutocompleteOption): string => {
   if (typeof option === 'string') {
     return option;
   }
@@ -23,10 +23,10 @@ const getOptionLabel = (option: string | AutocompleteOptionType): string => {
 };
 
 export interface ProductAutocompleteProps {
-  options: readonly AutocompleteOptionType[];
+  options: readonly AutocompleteOption[];
   loading: boolean;
-  value: AutocompleteOptionType | null;
-  onChange: (selectedProduct: AutocompleteOptionType | null) => void;
+  value: AutocompleteOption | null;
+  onChange: (selectedProduct: AutocompleteOption | null) => void;
   formValues: FormValues;
   helperText?: string;
   error?: boolean;
@@ -44,9 +44,9 @@ export const ProductAutocomplete: FC<ProductAutocompleteProps> = ({
   autoFocus,
 }) => {
   const filterOptions = (
-    options: AutocompleteOptionType[],
-    state: FilterOptionsState<AutocompleteOptionType>,
-  ): AutocompleteOptionType[] => {
+    options: AutocompleteOption[],
+    state: FilterOptionsState<AutocompleteOption>,
+  ): AutocompleteOption[] => {
     const filtered = filter(options, state);
 
     if (filtered.some(o => o.name === state.inputValue)) {
@@ -90,7 +90,7 @@ export const ProductAutocomplete: FC<ProductAutocompleteProps> = ({
 
   const handleOptionChange = (
     _: SyntheticEvent,
-    selectedProduct: string | AutocompleteOptionType | null,
+    selectedProduct: string | AutocompleteOption | null,
   ): void => {
     if (typeof selectedProduct === 'string') {
       const { caloriesCost, defaultQuantity, category } = formValues;

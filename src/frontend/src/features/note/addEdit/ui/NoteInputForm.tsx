@@ -12,7 +12,7 @@ export interface NoteInputFormProps {
   mealType: noteModel.MealType;
   displayOrder: number;
   productAutocompleteInput: UseInputResult<
-    productModel.AutocompleteOptionType | null,
+    productModel.AutocompleteOption | null,
     productLib.AutocompleteInputProps
   >;
   quantity: number;

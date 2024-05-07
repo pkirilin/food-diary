@@ -16,7 +16,7 @@ interface Args {
   productFormValues: productModel.FormValues;
   onClose: () => void;
   onSubmit: (note: Note) => Promise<void>;
-  onProductChange: (value: productModel.AutocompleteOptionType | null) => void;
+  onProductChange: (value: productModel.AutocompleteOption | null) => void;
 }
 
 interface Result {
