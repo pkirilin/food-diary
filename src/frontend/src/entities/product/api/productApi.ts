@@ -1,4 +1,4 @@
-import { api } from '@/api';
+import { api } from '@/shared/api';
 import { createUrl } from '@/shared/lib';
 import { type ProductsResponse } from '../../../features/products/types';
 import {

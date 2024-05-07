@@ -4,8 +4,8 @@ import {
   type GetNotesRequest,
   type noteModel,
 } from '@/entities/note';
+import { api } from '@/shared/api';
 import { createUrl } from '@/shared/lib';
-import { api } from 'src/api';
 
 export const noteApi = api.injectEndpoints({
   endpoints: builder => ({

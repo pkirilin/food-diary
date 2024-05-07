@@ -1,4 +1,4 @@
-import { api } from 'src/api';
+import { api } from '@/shared/api';
 import { type GetAuthStatusResponse } from './contracts';
 
 export const authApi = api.injectEndpoints({

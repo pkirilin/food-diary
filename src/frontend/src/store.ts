@@ -1,8 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { type TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
-import { api } from './api';
 import pagesReducer from './features/pages/slice';
 import productsReducer from './features/products/store';
+import { api } from './shared/api';
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const configureAppStore = () =>
