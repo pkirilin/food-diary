@@ -1,6 +1,6 @@
 import { screen, waitForElementToBeRemoved, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { render } from 'src/testing';
+import { render } from '@tests/render';
 import Pages from './Pages';
 
 test('pages are loaded into table', async () => {

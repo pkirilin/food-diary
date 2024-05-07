@@ -3,8 +3,9 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { type ReactElement, type ComponentType, type PropsWithChildren } from 'react';
 import { Provider } from 'react-redux';
+import { configureAppStore } from '@/app/store';
 import { theme } from '@/app/theme';
-import { createTestStore, type TestStoreBuilder } from './storeBuilder';
+import { type TestStoreBuilder } from './storeBuilder';
 
 export interface TestComponentBuilder {
   please: () => ReactElement;
@@ -34,9 +35,8 @@ const createComponentBuilder = (component: ReactElement): TestComponentBuilder =
       );
     },
 
-    withReduxStore: (configure = builder => builder): TestComponentBuilder => {
-      const storeBuilder = createTestStore();
-      const store = configure(storeBuilder).please();
+    withReduxStore: (): TestComponentBuilder => {
+      const store = configureAppStore();
       wrappers.push(({ children }) => <Provider store={store}>{children}</Provider>);
       return builder;
     },

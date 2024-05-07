@@ -27,7 +27,7 @@ export const renderApp = ({
   );
 };
 
-export default function render(
+export function render(
   ui: ReactElement,
   { signOutAfterMilliseconds, pageSizeOverride }: RenderOptions = {},
 ): RenderResult {
