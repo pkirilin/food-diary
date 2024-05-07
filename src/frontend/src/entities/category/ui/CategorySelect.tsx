@@ -1,6 +1,6 @@
 import { type FC } from 'react';
 import { type SelectOption, type SelectProps } from '@/shared/types';
-import { AppSelect } from 'src/components';
+import { AppSelect } from '@/shared/ui';
 
 interface CategorySelectProps extends SelectProps<SelectOption> {
   options: SelectOption[];

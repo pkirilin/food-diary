@@ -4,7 +4,7 @@ import { type FC } from 'react';
 import { useInput } from '@/shared/hooks';
 import { mapToDateInputProps, validateDate } from '@/shared/lib';
 import { create } from 'src/test-utils';
-import DatePicker from './DatePicker';
+import { DatePicker } from './DatePicker';
 
 interface DatePickerTestProps {
   label: string;

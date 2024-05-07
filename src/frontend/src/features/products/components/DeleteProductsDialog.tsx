@@ -7,8 +7,7 @@ import {
   type FormEventHandler,
 } from 'react';
 import { productApi } from '@/entities/product';
-import { Button } from '@/shared/ui';
-import { AppDialog } from 'src/components';
+import { Button, AppDialog } from '@/shared/ui';
 import { useAppSelector } from 'src/store';
 import { useProducts } from '../model';
 import { selectCheckedProductIds } from '../selectors';

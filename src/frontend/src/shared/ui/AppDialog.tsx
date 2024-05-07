@@ -14,7 +14,7 @@ interface AppDialogProps {
 /**
  * @deprecated Use shared/ui/Dialog instead
  */
-const AppDialog: FC<AppDialogProps> = ({
+export const AppDialog: FC<AppDialogProps> = ({
   title,
   isOpened,
   onClose,
@@ -55,5 +55,3 @@ const AppDialog: FC<AppDialogProps> = ({
     </Dialog>
   );
 };
-
-export default AppDialog;

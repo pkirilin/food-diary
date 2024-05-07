@@ -14,7 +14,7 @@ interface AppSelectProps<TOption> {
   autoFocus?: boolean;
 }
 
-const AppSelect = <TOption extends SelectOption>({
+export const AppSelect = <TOption extends SelectOption>({
   options,
   onChange,
   label,
@@ -66,5 +66,3 @@ const AppSelect = <TOption extends SelectOption>({
     />
   );
 };
-
-export default AppSelect;

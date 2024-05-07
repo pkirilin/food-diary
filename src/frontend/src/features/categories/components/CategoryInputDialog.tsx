@@ -9,8 +9,7 @@ import {
 import { type categoryModel } from '@/entities/category';
 import { useInput } from '@/shared/hooks';
 import { mapToTextInputProps, validateCategoryName } from '@/shared/lib';
-import { Button } from '@/shared/ui';
-import { AppDialog } from 'src/components';
+import { Button, AppDialog } from '@/shared/ui';
 import { type CategoryFormData } from '../types';
 
 interface CreateEditCategoryDialogProps {

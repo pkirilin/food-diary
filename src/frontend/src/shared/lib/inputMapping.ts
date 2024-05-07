@@ -5,7 +5,7 @@ import {
   type SelectOption,
   type SelectProps,
 } from '@/shared/types';
-import { type DatePickerProps } from 'src/components/DatePicker';
+import { type DatePickerProps } from '../ui';
 
 export const mapToTextInputProps: MapToInputPropsFunction<string, TextFieldProps> = ({
   value,

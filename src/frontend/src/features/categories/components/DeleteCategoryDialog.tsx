@@ -7,8 +7,7 @@ import {
   type FormEventHandler,
 } from 'react';
 import { categoryApi, type categoryModel } from '@/entities/category';
-import { Button } from '@/shared/ui';
-import { AppDialog } from 'src/components';
+import { AppDialog, Button } from '@/shared/ui';
 import { useCategories } from '../model';
 
 interface DeleteCategoryDialogProps {

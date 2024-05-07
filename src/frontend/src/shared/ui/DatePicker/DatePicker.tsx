@@ -3,7 +3,7 @@ import { DatePicker as MuiDatePicker } from '@mui/x-date-pickers';
 import { type FC } from 'react';
 import { type DatePickerProps } from './DatePicker.types';
 
-const DatePicker: FC<DatePickerProps> = ({
+export const DatePicker: FC<DatePickerProps> = ({
   label,
   placeholder,
   date,
@@ -32,5 +32,3 @@ const DatePicker: FC<DatePickerProps> = ({
     />
   );
 };
-
-export default DatePicker;

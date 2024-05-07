@@ -1,7 +1,7 @@
 import AddIcon from '@mui/icons-material/Add';
 import { type FC, useEffect, useState } from 'react';
 import { categoryApi } from '@/entities/category';
-import { AppFab } from 'src/components';
+import { AppFab } from '@/shared/ui';
 import { useCategories } from '../model';
 import { type CategoryFormData } from '../types';
 import CategoryInputDialog from './CategoryInputDialog';

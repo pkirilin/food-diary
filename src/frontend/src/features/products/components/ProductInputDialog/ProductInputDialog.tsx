@@ -18,8 +18,7 @@ import {
   validateSelectOption,
 } from '@/shared/lib';
 import { type SelectOption } from '@/shared/types';
-import { Button } from '@/shared/ui';
-import { AppDialog } from 'src/components';
+import { Button, AppDialog } from '@/shared/ui';
 import { type ProductFormData } from '../../types';
 
 interface ProductInputDialogProps {

@@ -1,7 +1,6 @@
 import { Typography } from '@mui/material';
 import { type FormEventHandler, type FC } from 'react';
-import { Button } from '@/shared/ui';
-import { AppDialog } from 'src/components';
+import { Button, AppDialog } from '@/shared/ui';
 
 const WARNING_MESSAGE =
   'Pages import is going to be started. Import may update or overwrite existing data from file and may cause data loss. Continue?';

@@ -1,8 +1,7 @@
 import { DialogContentText, Typography } from '@mui/material';
 import { type FormEventHandler, type FC } from 'react';
 import { noteLib, type noteModel } from '@/entities/note';
-import { Button } from '@/shared/ui';
-import { AppDialog } from 'src/components';
+import { Button, AppDialog } from '@/shared/ui';
 
 interface DeleteNoteDialogProps {
   note: noteModel.NoteItem;
