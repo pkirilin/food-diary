@@ -1,4 +1,4 @@
-import { type SortOrder } from 'src/types';
+import { type SortOrder } from '@/shared/types';
 import { type Page, type PageCreateEdit } from '../models';
 
 export interface GetPagesRequest {

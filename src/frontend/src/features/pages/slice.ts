@@ -1,6 +1,5 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import { SortOrder } from '../__shared__/models';
-import { type SelectionPayload } from '../__shared__/types';
+import { type SelectionPayload, SortOrder } from '@/shared/types';
 import { pagesApi } from './api';
 import { type PageItem, type PageItemsFilter } from './models';
 

@@ -8,7 +8,7 @@ import {
   validateQuantity,
   validateSelectOption,
 } from '@/shared/lib';
-import { type SelectOption, type SelectProps } from '@/types';
+import { type SelectOption, type SelectProps } from '@/shared/types';
 import { EMPTY_FORM_VALUES, type FormValues } from '../model';
 
 export interface ProductInputFormProps {

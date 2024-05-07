@@ -1,6 +1,6 @@
 import { Autocomplete, CircularProgress, TextField } from '@mui/material';
 import { type SyntheticEvent, type ReactElement } from 'react';
-import { type SelectOption } from 'src/types';
+import { type SelectOption } from '@/shared/types';
 
 interface AppSelectProps<TOption> {
   options: TOption[];

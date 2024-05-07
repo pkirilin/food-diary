@@ -1,8 +1,8 @@
 import { Divider, MenuItem, TextField, Typography } from '@mui/material';
 import { type FC, type ChangeEventHandler } from 'react';
 import { categoryLib } from '@/entities/category';
+import { type SelectOption } from '@/shared/types';
 import { useAppDispatch, useAppSelector } from 'src/store';
-import { type SelectOption } from 'src/types';
 import { filterByCategoryChanged } from '../store';
 import * as styles from '../styles';
 

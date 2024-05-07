@@ -10,7 +10,7 @@ import {
   Typography,
 } from '@mui/material';
 import { type FC, useEffect, useState } from 'react';
-import { SortOrder } from '../../../__shared__/models';
+import { SortOrder } from '@/shared/types';
 import { type PageItem, type PageItemsFilter } from '../../models';
 import PagesTableRow from '../PagesTableRow';
 

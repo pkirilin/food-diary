@@ -1,6 +1,6 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import { productApi } from '@/entities/product';
-import { type SelectOption } from 'src/types';
+import { type SelectOption } from '@/shared/types';
 import { type ProductItemsFilter } from './types';
 
 export interface ProductsState {

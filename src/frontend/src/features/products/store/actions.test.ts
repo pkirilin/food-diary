@@ -1,5 +1,5 @@
+import { type SelectOption } from '@/shared/types';
 import { createTestStore } from 'src/testing/store';
-import { type SelectOption } from 'src/types';
 import { actions } from './slice';
 import { type ProductItemsFilter } from './types';
 

@@ -1,5 +1,5 @@
+import { type SelectOption } from '@/shared/types';
 import { api } from 'src/api';
-import { type SelectOption } from 'src/types';
 import { type Category } from '../model';
 import {
   type CreateCategoryRequest,

@@ -1,4 +1,4 @@
-import { type SelectOption } from 'src/types';
+import { type SelectOption } from '@/shared/types';
 
 export interface ProductAutocompleteResultBuilder {
   please: () => SelectOption[];

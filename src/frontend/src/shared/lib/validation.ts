@@ -1,5 +1,5 @@
 import isValid from 'date-fns/isValid';
-import { type SelectOption, type ValidatorFunction } from 'src/types';
+import { type SelectOption, type ValidatorFunction } from '@/shared/types';
 
 export const validateDate: ValidatorFunction<Date | null> = value => {
   if (value === null) {

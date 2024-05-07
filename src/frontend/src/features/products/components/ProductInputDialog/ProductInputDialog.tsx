@@ -16,10 +16,10 @@ import {
   validateQuantity,
   validateSelectOption,
 } from '@/shared/lib';
+import { type SelectOption } from '@/shared/types';
 import { Button } from '@/shared/ui';
 import { AppDialog } from 'src/components';
 import { useInput } from 'src/hooks';
-import { type SelectOption } from 'src/types';
 import { type ProductFormData } from '../../types';
 
 interface ProductInputDialogProps {

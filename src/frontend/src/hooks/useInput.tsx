@@ -1,5 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { type InputOptions, type MapToInputPropsFunction, type ValidatorFunction } from 'src/types';
+import {
+  type InputOptions,
+  type MapToInputPropsFunction,
+  type ValidatorFunction,
+} from '@/shared/types';
 
 // Single space is used to avoid shifting form control when it becomes invalid
 // Source: https://github.com/mui/material-ui/issues/13646

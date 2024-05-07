@@ -1,5 +1,5 @@
 import { type UseInputResult, useInput } from '@/hooks';
-import { type MapToInputPropsFunction, type ValidatorFunction } from '@/types';
+import { type MapToInputPropsFunction, type ValidatorFunction } from '@/shared/types';
 import { type AutocompleteOptionType } from '../model/types';
 import { type ProductAutocompleteProps } from '../ui/ProductAutocomplete';
 

@@ -1,4 +1,4 @@
-import { type SelectOption } from '@/types';
+import { type SelectOption } from '@/shared/types';
 
 export interface FormValues {
   name: string;

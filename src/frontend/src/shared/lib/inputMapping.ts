@@ -1,11 +1,11 @@
 import { type TextFieldProps } from '@mui/material';
-import { type DatePickerProps } from 'src/components/DatePicker';
 import {
   type InputOptions,
   type MapToInputPropsFunction,
   type SelectOption,
   type SelectProps,
-} from 'src/types';
+} from '@/shared/types';
+import { type DatePickerProps } from 'src/components/DatePicker';
 
 export const mapToTextInputProps: MapToInputPropsFunction<string, TextFieldProps> = ({
   value,
