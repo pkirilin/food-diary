@@ -8,7 +8,7 @@ import {
   useState,
   type MouseEventHandler,
 } from 'react';
-import { useAppSelector } from '@/store';
+import { useAppSelector } from '@/app/store';
 import { pagesApi } from '../../api';
 import { usePages } from '../../model';
 import { AddPage } from '../../ui';

@@ -1,8 +1,8 @@
 import { Paper, Typography } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 import { useEffect, type FC } from 'react';
+import { useAppDispatch, useAppSelector } from '@/app/store';
 import { LoadingContainer } from '@/shared/ui';
-import { useAppDispatch, useAppSelector } from '@/store';
 import ProductsTable from '../components/ProductsTable';
 import ProductsTablePagination from '../components/ProductsTablePagination';
 import ProductsTableToolbar from '../components/ProductsTableToolbar';

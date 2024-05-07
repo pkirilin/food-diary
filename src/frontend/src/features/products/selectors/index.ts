@@ -1,5 +1,5 @@
 import { createDraftSafeSelector, createSelector } from '@reduxjs/toolkit';
-import { type RootState } from 'src/store';
+import { type RootState } from '@/app/store';
 import { toGetProductsRequest } from '../mapping';
 import { type ProductsState } from '../store/slice';
 

@@ -6,9 +6,9 @@ import {
   type SetStateAction,
   type FormEventHandler,
 } from 'react';
+import { useAppSelector } from '@/app/store';
 import { productApi } from '@/entities/product';
 import { Button, AppDialog } from '@/shared/ui';
-import { useAppSelector } from 'src/store';
 import { useProducts } from '../model';
 import { selectCheckedProductIds } from '../selectors';
 

@@ -1,7 +1,7 @@
 import { type FC } from 'react';
+import store from '@/app/store';
 import { productApi } from '@/entities/product';
 import { Products, toGetProductsRequest } from '@/features/products';
-import store from '@/store';
 import { PrivateLayout } from '@/widgets/layout';
 import { ok, withAuthStatusCheck } from '../lib';
 

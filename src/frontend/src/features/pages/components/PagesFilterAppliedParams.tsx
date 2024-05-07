@@ -4,7 +4,7 @@ import { Box, Chip, Tooltip } from '@mui/material';
 import dateFnsFormat from 'date-fns/format';
 import { type FC } from 'react';
 import { useDispatch } from 'react-redux';
-import { useAppSelector } from '@/store';
+import { useAppSelector } from '@/app/store';
 import { endDateChanged, startDateChanged } from '../slice';
 
 const formatDate = (date: string): string => dateFnsFormat(new Date(date), 'dd.MM.yyyy');

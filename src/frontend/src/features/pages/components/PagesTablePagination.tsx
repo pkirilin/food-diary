@@ -1,7 +1,7 @@
 import { TablePagination } from '@mui/material';
 import { type FC } from 'react';
 import { useDispatch } from 'react-redux';
-import { useAppSelector } from '@/store';
+import { useAppSelector } from '@/app/store';
 import { pageNumberChanged, pageSizeChanged } from '../slice';
 
 interface PagesTablePaginationProps {

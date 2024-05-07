@@ -6,11 +6,11 @@ import { Provider } from 'react-redux';
 import { type Store } from 'redux';
 import theme from './theme';
 
-interface AppProviderProps {
+interface Props {
   store: Store;
 }
 
-const AppProvider: FC<PropsWithChildren<AppProviderProps>> = ({ children, store }) => {
+export const RootProvider: FC<PropsWithChildren<Props>> = ({ children, store }) => {
   return (
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={theme}>
@@ -24,5 +24,3 @@ const AppProvider: FC<PropsWithChildren<AppProviderProps>> = ({ children, store 
     </StyledEngineProvider>
   );
 };
-
-export default AppProvider;

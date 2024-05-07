@@ -1,7 +1,7 @@
 import { type FC } from 'react';
+import store from '@/app/store';
 import { categoryApi } from '@/entities/category';
 import { Categories } from '@/features/categories';
-import store from '@/store';
 import { PrivateLayout } from '@/widgets/layout';
 import { ok, withAuthStatusCheck } from '../lib';
 

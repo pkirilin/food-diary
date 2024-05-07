@@ -1,5 +1,5 @@
+import { useAppSelector } from '@/app/store';
 import { productApi } from '@/entities/product';
-import { useAppSelector } from '@/store';
 import { selectProductsQueryArg } from '../selectors';
 import { type Product } from '../types';
 

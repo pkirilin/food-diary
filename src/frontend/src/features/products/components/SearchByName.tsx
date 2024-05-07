@@ -9,7 +9,7 @@ import {
   type MouseEventHandler,
 } from 'react';
 import { useDebounce } from 'use-debounce';
-import { useAppDispatch, useAppSelector } from 'src/store';
+import { useAppDispatch, useAppSelector } from '@/app/store';
 import { productSearchNameChanged } from '../store';
 import * as styles from '../styles';
 

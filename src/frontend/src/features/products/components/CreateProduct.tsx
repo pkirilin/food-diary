@@ -1,9 +1,9 @@
 import AddIcon from '@mui/icons-material/Add';
 import { IconButton, Tooltip } from '@mui/material';
 import { type FC, useEffect, useState } from 'react';
+import { useAppSelector } from '@/app/store';
 import { categoryLib } from '@/entities/category';
 import { productApi } from '@/entities/product';
-import { useAppSelector } from 'src/store';
 import { toCreateProductRequest } from '../mapping';
 import { useProducts } from '../model';
 import { selectProductsQueryArg } from '../selectors';

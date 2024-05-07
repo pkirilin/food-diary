@@ -1,9 +1,9 @@
 import { type RenderResult, render as rtlRender } from '@testing-library/react';
 import { type ReactElement } from 'react';
 import { RouterProvider, createMemoryRouter } from 'react-router-dom';
-import App from '@/App';
-import AppProvider from 'src/AppProvider';
-import { configureAppStore } from 'src/store';
+import { Root } from '@/app/Root';
+import { RootProvider } from '@/app/RootProvider';
+import { configureAppStore } from '@/app/store';
 import TestEnvironment from './TestEnvironment';
 
 interface RenderOptions {
@@ -16,14 +16,14 @@ export const renderApp = ({
   pageSizeOverride,
 }: RenderOptions = {}): void => {
   rtlRender(
-    <AppProvider store={configureAppStore()}>
-      <App>
+    <RootProvider store={configureAppStore()}>
+      <Root>
         <TestEnvironment
           signOutAfterMilliseconds={signOutAfterMilliseconds}
           pageSizeOverride={pageSizeOverride}
         />
-      </App>
-    </AppProvider>,
+      </Root>
+    </RootProvider>,
   );
 };
 
@@ -48,9 +48,9 @@ export default function render(
   ]);
 
   const result = rtlRender(
-    <AppProvider store={store}>
+    <RootProvider store={store}>
       <RouterProvider router={router} />
-    </AppProvider>,
+    </RootProvider>,
   );
 
   return result;

@@ -1,7 +1,7 @@
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Box, IconButton, Stack, Tooltip, Typography } from '@mui/material';
 import { useState, type FC } from 'react';
-import { useAppSelector } from '@/store';
+import { useAppSelector } from '@/app/store';
 import { selectCheckedProductIds } from '../selectors';
 import CreateProduct from './CreateProduct';
 import DeleteProductsDialog from './DeleteProductsDialog';

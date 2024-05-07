@@ -1,8 +1,8 @@
 import { TablePagination } from '@mui/material';
 import { type FC } from 'react';
 import { useDispatch } from 'react-redux';
+import { useAppSelector } from '@/app/store';
 import { productApi } from '@/entities/product';
-import { useAppSelector } from '@/store';
 import { selectProductsQueryArg } from '../selectors';
 import { pageNumberChanged, pageSizeChanged } from '../store';
 

@@ -1,8 +1,8 @@
 import { type FC } from 'react';
 import { useLoaderData } from 'react-router-dom';
+import store from '@/app/store';
 import { noteApi, noteLib } from '@/entities/note';
 import { pagesApi, PageDetailHeader, type Page } from '@/features/pages';
-import store from '@/store';
 import { PrivateLayout } from '@/widgets/layout';
 import { MealsList } from '@/widgets/MealsList';
 import { withAuthStatusCheck } from '../lib';

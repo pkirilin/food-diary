@@ -1,9 +1,9 @@
 import EditIcon from '@mui/icons-material/Edit';
 import { Checkbox, IconButton, TableCell, TableRow, Tooltip } from '@mui/material';
 import { type FC, useEffect, useState, useMemo } from 'react';
+import { useAppDispatch, useAppSelector } from '@/app/store';
 import { categoryLib } from '@/entities/category';
 import { productApi } from '@/entities/product';
-import { useAppDispatch, useAppSelector } from '@/store';
 import { toEditProductRequest, toProductFormData } from '../mapping';
 import { useProducts } from '../model';
 import { selectCheckedProductIds } from '../selectors';

@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useAppSelector, useAppDispatch } from '@/app/store';
 import { formatDate, validateDate } from '@/shared/lib';
-import { useAppSelector, useAppDispatch } from 'src/store';
 import { type endDateChanged, filterReset, type startDateChanged } from '../slice';
 
 type DateChangedAction = typeof startDateChanged | typeof endDateChanged;

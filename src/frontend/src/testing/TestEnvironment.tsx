@@ -1,7 +1,7 @@
 import { type PropsWithChildren, type FC, useEffect } from 'react';
 import { useSubmit } from 'react-router-dom';
+import { useAppDispatch } from '@/app/store';
 import { pageSizeChanged } from 'src/features/products/store';
-import { useAppDispatch } from 'src/store';
 
 interface TestEnvironmentProps {
   signOutAfterMilliseconds?: number;

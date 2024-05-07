@@ -3,7 +3,7 @@ import { type FC } from 'react';
 import { AppName } from '@/shared/ui';
 import { CenteredLayout } from '@/widgets/layout';
 
-export const AppLoader: FC = () => (
+export const RootLoader: FC = () => (
   <Grow in>
     <Box>
       <CenteredLayout>

@@ -6,11 +6,11 @@ import {
   type ActionFunction,
   redirectDocument,
 } from 'react-router-dom';
+import store from '@/app/store';
 import { authApi, SignInForm } from '@/features/auth';
 import { API_URL, FAKE_AUTH_ENABLED } from '@/shared/config';
 import { createUrl } from '@/shared/lib';
 import { AppName } from '@/shared/ui';
-import store from '@/store';
 import { CenteredLayout } from '@/widgets/layout';
 import { ok } from '../lib';
 
