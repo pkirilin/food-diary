@@ -1,6 +1,6 @@
 import { render, screen, waitForElementToBeRemoved, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { create } from 'src/test-utils';
+import { create } from '@tests/dsl';
 import PagesToolbar from '../PagesToolbar';
 
 test('pages can be imported', async () => {

@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { create } from 'src/test-utils';
+import { create } from '@tests/dsl';
 import { type PageCreateEdit } from '../../models';
 import PageInputDialog from './PageInputDialog';
 

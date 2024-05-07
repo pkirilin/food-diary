@@ -5,6 +5,9 @@ import createComponentBuilder from './builders/componentBuilder';
 import createPagesSearchResultBuilder from './builders/pagesSearchResultBuilder';
 import createProductAutocompleteResultBuilder from './builders/productAutocompleteResultBuilder';
 
+/**
+ * @deprecated It is better to use local test-scoped DSL
+ */
 const create = {
   component: (ui: ReactElement) => createComponentBuilder(ui),
   pagesSearchResult: () => createPagesSearchResultBuilder(),

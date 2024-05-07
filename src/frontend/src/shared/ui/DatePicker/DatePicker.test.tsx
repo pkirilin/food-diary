@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { type FC } from 'react';
 import { useInput } from '@/shared/hooks';
 import { mapToDateInputProps, validateDate } from '@/shared/lib';
-import { create } from 'src/test-utils';
+import { create } from '@tests/dsl';
 import { DatePicker } from './DatePicker';
 
 interface DatePickerTestProps {
