@@ -1,4 +1,4 @@
-import { type CreateProductRequest, type EditProductRequest } from 'src/features/products';
+import { type CreateProductRequest, type EditProductRequest } from '@/entities/product';
 import { db, type DbProduct } from '../db';
 
 interface GetProductsRequest {

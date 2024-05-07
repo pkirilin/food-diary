@@ -1,4 +1,4 @@
-import { useAppSelector } from '@/store';
+import { useAppSelector } from '@/app/store';
 import { pagesApi } from '../api';
 import { toGetPagesRequest } from '../mapping';
 import { type PageItemsFilter, type PageItem } from '../models';

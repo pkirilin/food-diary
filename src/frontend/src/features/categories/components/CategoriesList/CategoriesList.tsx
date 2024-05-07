@@ -1,10 +1,10 @@
 import { Grid, Typography } from '@mui/material';
 import { type FC } from 'react';
-import { type Category } from '../../types';
+import { type categoryModel } from '@/entities/category';
 import CategoriesListItem from '../CategoriesListItem';
 
 interface CategoriesListProps {
-  categories: Category[];
+  categories: categoryModel.Category[];
 }
 
 const CategoriesList: FC<CategoriesListProps> = ({ categories }) => {

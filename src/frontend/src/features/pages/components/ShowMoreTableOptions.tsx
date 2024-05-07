@@ -3,7 +3,7 @@ import DataObjectIcon from '@mui/icons-material/DataObject';
 import ShowMoreIcon from '@mui/icons-material/MoreVert';
 import { Divider, IconButton, Menu } from '@mui/material';
 import { useState, type FC, type MouseEvent } from 'react';
-import { DEMO_MODE_ENABLED } from 'src/config';
+import { DEMO_MODE_ENABLED } from '@/shared/config';
 import ExportPagesMenuItem from './ExportPagesMenuItem';
 import ImportPagesMenuItem from './ImportPagesMenuItem';
 

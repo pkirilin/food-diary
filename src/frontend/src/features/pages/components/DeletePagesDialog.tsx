@@ -1,7 +1,6 @@
 import { Typography } from '@mui/material';
 import { type FormEventHandler, type FC } from 'react';
-import { Button } from '@/shared/ui';
-import { AppDialog } from 'src/components';
+import { AppDialog, Button } from '@/shared/ui';
 
 interface DeletePagesDialogProps {
   isOpened: boolean;

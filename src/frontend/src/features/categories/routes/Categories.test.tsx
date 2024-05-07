@@ -1,6 +1,6 @@
 import { screen, waitFor, waitForElementToBeRemoved, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { render } from 'src/testing';
+import { render } from '@tests/render';
 import Categories from './Categories';
 
 test('categories are displayed with their product counts', async () => {

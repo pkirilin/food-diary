@@ -1,2 +1,2 @@
-export * from './ProductAutocomplete';
 export * from './ProductInputForm';
+export * from './ProductAutocomplete';

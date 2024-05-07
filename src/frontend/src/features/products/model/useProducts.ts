@@ -1,5 +1,5 @@
-import { useAppSelector } from '@/store';
-import { productsApi } from '../api';
+import { useAppSelector } from '@/app/store';
+import { productApi } from '@/entities/product';
 import { selectProductsQueryArg } from '../selectors';
 import { type Product } from '../types';
 
@@ -12,7 +12,7 @@ interface Result {
 export const useProducts = (): Result => {
   const getProductsQueryArg = useAppSelector(selectProductsQueryArg);
 
-  return productsApi.useGetProductsQuery(getProductsQueryArg, {
+  return productApi.useGetProductsQuery(getProductsQueryArg, {
     selectFromResult: ({ data, isFetching, isSuccess }) => ({
       data: data?.productItems ?? [],
       isFetching,

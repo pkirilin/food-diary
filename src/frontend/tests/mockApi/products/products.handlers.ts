@@ -1,13 +1,13 @@
 import { http, type HttpHandler, type PathParams } from 'msw';
-import { API_URL } from 'src/config';
 import {
   type ProductSelectOption,
   type CreateProductRequest,
-  type EditProductRequest,
-  type ProductsResponse,
   type CreateProductResponse,
-} from 'src/features/products';
-import { type SelectOption } from 'src/types';
+  type EditProductRequest,
+} from '@/entities/product';
+import { API_URL } from '@/shared/config';
+import { type SelectOption } from '@/shared/types';
+import { type ProductsResponse } from 'src/features/products';
 import { DelayedHttpResponse } from '../DelayedHttpResponse';
 import * as productsService from './products.service';
 

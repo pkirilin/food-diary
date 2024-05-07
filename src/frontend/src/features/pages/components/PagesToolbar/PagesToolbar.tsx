@@ -1,8 +1,14 @@
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { Box, IconButton, Popover, Stack, styled, Tooltip, Typography } from '@mui/material';
-import { type PropsWithChildren, type FC, useEffect, useState } from 'react';
-import { usePopover, useAppSelector } from 'src/features/__shared__/hooks';
+import {
+  type PropsWithChildren,
+  type FC,
+  useEffect,
+  useState,
+  type MouseEventHandler,
+} from 'react';
+import { useAppSelector } from '@/app/store';
 import { pagesApi } from '../../api';
 import { usePages } from '../../model';
 import { AddPage } from '../../ui';
@@ -15,7 +21,7 @@ const StyledTableHeader = styled(Typography)(({ theme }) => ({ ...theme.typograp
 type PagesToolbarProps = PropsWithChildren<unknown>;
 
 const PagesToolbar: FC<PagesToolbarProps> = ({ children }) => {
-  const [filter, showFilter] = usePopover();
+  const [filterAnchorEl, setFilterAnchorEl] = useState<HTMLElement | null>(null);
   const selectedPageIds = useAppSelector(state => state.pages.selectedPageIds);
   const [isDeleteDialogOpened, setIsDeleteDialogOpened] = useState(false);
   const [deletePages, deletePagesRequest] = pagesApi.useDeletePagesMutation();
@@ -37,6 +43,14 @@ const PagesToolbar: FC<PagesToolbarProps> = ({ children }) => {
 
   const handleDeletePages = (ids: number[]): void => {
     void deletePages(ids);
+  };
+
+  const handleFilterOpen: MouseEventHandler<HTMLButtonElement> = event => {
+    setFilterAnchorEl(event.currentTarget);
+  };
+
+  const handleFilterClose = (): void => {
+    setFilterAnchorEl(null);
   };
 
   return (
@@ -68,12 +82,7 @@ const PagesToolbar: FC<PagesToolbarProps> = ({ children }) => {
           </Box>
           <Tooltip title="Filter pages">
             <span>
-              <IconButton
-                onClick={event => {
-                  showFilter(event);
-                }}
-                size="large"
-              >
+              <IconButton onClick={handleFilterOpen} size="large">
                 <FilterListIcon />
               </IconButton>
             </span>
@@ -83,7 +92,9 @@ const PagesToolbar: FC<PagesToolbarProps> = ({ children }) => {
         </>
       )}
       <Popover
-        {...filter}
+        open={filterAnchorEl !== null}
+        anchorEl={filterAnchorEl}
+        onClose={handleFilterClose}
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'right',

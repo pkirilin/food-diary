@@ -1,4 +1,4 @@
-import { type SelectOption } from 'src/types';
+import { type SelectOption } from '@/shared/types';
 
 export interface Product {
   id: number;
@@ -19,8 +19,4 @@ export interface ProductFormData {
   caloriesCost: number;
   defaultQuantity: number;
   category: SelectOption;
-}
-
-export interface ProductSelectOption extends SelectOption {
-  defaultQuantity: number;
 }

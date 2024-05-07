@@ -1,8 +1,8 @@
 import { Divider, MenuItem, TextField, Typography } from '@mui/material';
 import { type FC, type ChangeEventHandler } from 'react';
-import { useAppDispatch, useAppSelector } from 'src/store';
-import { type SelectOption } from 'src/types';
-import { useCategorySelect } from '../model';
+import { useAppDispatch, useAppSelector } from '@/app/store';
+import { categoryLib } from '@/entities/category';
+import { type SelectOption } from '@/shared/types';
 import { filterByCategoryChanged } from '../store';
 import * as styles from '../styles';
 
@@ -10,7 +10,7 @@ const ANY_CATEGORY_VALUE = ' ';
 
 export const SearchByCategory: FC = () => {
   const category = useAppSelector(state => state.products.filter.category);
-  const categorySelect = useCategorySelect();
+  const categorySelect = categoryLib.useCategorySelectData();
   const dispatch = useAppDispatch();
 
   const findSelectedCategory = (selectedValue: string): SelectOption | null => {

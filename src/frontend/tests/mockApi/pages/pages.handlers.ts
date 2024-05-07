@@ -1,12 +1,12 @@
 import { http, type HttpHandler, type PathParams } from 'msw';
-import { API_URL } from 'src/config';
+import { API_URL } from '@/shared/config';
+import { formatDate } from '@/shared/lib';
+import { SortOrder } from '@/shared/types';
 import {
   type PageByIdResponse,
   type PageCreateEdit,
   type PagesSearchResult,
 } from 'src/features/pages';
-import { SortOrder } from 'src/types';
-import { formatDate } from 'src/utils';
 import { DelayedHttpResponse } from '../DelayedHttpResponse';
 import { mapToPage } from './pages.mapper';
 import * as pagesService from './pages.service';

@@ -1,4 +1,8 @@
-import { type GetProductsRequest, type CreateProductRequest, type EditProductRequest } from './api';
+import {
+  type GetProductsRequest,
+  type CreateProductRequest,
+  type EditProductRequest,
+} from '@/entities/product';
 import { type ProductItemsFilter } from './store';
 import { type Product, type ProductFormData } from './types';
 

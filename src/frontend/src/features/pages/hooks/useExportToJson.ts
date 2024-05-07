@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { API_URL } from 'src/config';
-import { createUrl, downloadFile, formatDate } from 'src/utils';
+import { API_URL } from '@/shared/config';
+import { formatDate, createUrl, downloadFile } from '@/shared/lib';
 import { type ExportPagesToJsonRequest } from '../models';
 
 interface UseExportToJsonResult {

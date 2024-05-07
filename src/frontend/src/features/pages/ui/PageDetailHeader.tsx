@@ -10,8 +10,8 @@ import {
 } from '@mui/material';
 import { useMemo, type FC } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { notesApi } from 'src/features/notes';
-import { formatDate } from 'src/utils';
+import { noteApi } from '@/entities/note';
+import { formatDate } from '@/shared/lib';
 import { type Page } from '../models';
 
 interface Props {
@@ -25,7 +25,7 @@ const TextStyled = styled(Typography)<TypographyProps>(({ theme }) => ({
 }));
 
 export const PageDetailHeader: FC<Props> = ({ page }) => {
-  const getNotesQuery = notesApi.useGetNotesQuery({ pageId: page.id });
+  const getNotesQuery = noteApi.useGetNotesQuery({ pageId: page.id });
   const notes = useMemo(() => getNotesQuery.data ?? [], [getNotesQuery.data]);
   const totalCalories = useMemo(() => notes.reduce((sum, note) => sum + note.calories, 0), [notes]);
 

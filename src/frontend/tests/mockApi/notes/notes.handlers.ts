@@ -1,6 +1,6 @@
 import { http, type HttpHandler, type PathParams } from 'msw';
-import { API_URL } from 'src/config';
-import { type NoteItem, type EditNoteRequest, type CreateNoteRequest } from 'src/features/notes';
+import { type CreateNoteRequest, type EditNoteRequest, type noteModel } from '@/entities/note';
+import { API_URL } from '@/shared/config';
 import { DelayedHttpResponse } from '../DelayedHttpResponse';
 import * as notesService from './notes.service';
 
@@ -20,20 +20,22 @@ export const handlers: HttpHandler[] = [
     const notes = notesService.get(pageId, mealType);
     const productsMap = notesService.getProducts(notes);
 
-    const response = notes.map<NoteItem>(({ id, mealType, displayOrder, productId, quantity }) => {
-      const product = productsMap.get(productId);
+    const response = notes.map<noteModel.NoteItem>(
+      ({ id, mealType, displayOrder, productId, quantity }) => {
+        const product = productsMap.get(productId);
 
-      return {
-        id,
-        mealType,
-        displayOrder,
-        productId: product?.id ?? 0,
-        productName: product?.name ?? '',
-        productQuantity: quantity,
-        productDefaultQuantity: product?.defaultQuantity ?? 0,
-        calories: product ? notesService.calculateCalories(quantity, product) : 0,
-      };
-    });
+        return {
+          id,
+          mealType,
+          displayOrder,
+          productId: product?.id ?? 0,
+          productName: product?.name ?? '',
+          productQuantity: quantity,
+          productDefaultQuantity: product?.defaultQuantity ?? 0,
+          calories: product ? notesService.calculateCalories(quantity, product) : 0,
+        };
+      },
+    );
 
     return await DelayedHttpResponse.json(response);
   }),

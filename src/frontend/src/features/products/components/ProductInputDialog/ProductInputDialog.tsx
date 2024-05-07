@@ -6,22 +6,19 @@ import {
   type SetStateAction,
   type FormEventHandler,
 } from 'react';
-import { Button } from '@/shared/ui';
-import { AppDialog } from 'src/components';
-import { CategorySelect } from 'src/features/categories';
-import { useInput } from 'src/hooks';
-import { type SelectOption } from 'src/types';
+import { CategorySelect } from '@/entities/category';
+import { useInput } from '@/shared/hooks';
 import {
   mapToNumericInputProps,
   mapToSelectProps,
   mapToTextInputProps,
-} from 'src/utils/inputMapping';
-import {
   validateCaloriesCost,
   validateProductName,
   validateQuantity,
   validateSelectOption,
-} from 'src/utils/validation';
+} from '@/shared/lib';
+import { type SelectOption } from '@/shared/types';
+import { Button, AppDialog } from '@/shared/ui';
 import { type ProductFormData } from '../../types';
 
 interface ProductInputDialogProps {

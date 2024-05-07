@@ -6,16 +6,14 @@ import {
   type SetStateAction,
   type FormEventHandler,
 } from 'react';
-import { Button } from '@/shared/ui';
-import { AppDialog } from 'src/components';
-import { categoriesApi } from '../api';
+import { categoryApi, type categoryModel } from '@/entities/category';
+import { AppDialog, Button } from '@/shared/ui';
 import { useCategories } from '../model';
-import { type Category } from '../types';
 
 interface DeleteCategoryDialogProps {
   isOpened: boolean;
   setIsOpened: Dispatch<SetStateAction<boolean>>;
-  category: Category;
+  category: categoryModel.Category;
 }
 
 const DeleteCategoryDialog: FC<DeleteCategoryDialogProps> = ({
@@ -23,7 +21,7 @@ const DeleteCategoryDialog: FC<DeleteCategoryDialogProps> = ({
   setIsOpened: setIsDialogOpened,
   category,
 }) => {
-  const [deleteCategory, deleteCategoryRequest] = categoriesApi.useDeleteCategoryMutation();
+  const [deleteCategory, deleteCategoryRequest] = categoryApi.useDeleteCategoryMutation();
   const categories = useCategories();
 
   useEffect(() => {

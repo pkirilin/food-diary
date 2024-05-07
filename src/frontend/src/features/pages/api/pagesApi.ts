@@ -1,5 +1,5 @@
-import { api } from 'src/api';
-import { createUrl } from 'src/utils';
+import { api } from '@/shared/api';
+import { createUrl } from '@/shared/lib';
 import { type PageCreateEdit, type PagesSearchResult } from '../models';
 import {
   type GetPagesRequest,

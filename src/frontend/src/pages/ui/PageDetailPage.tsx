@@ -1,9 +1,10 @@
 import { type FC } from 'react';
 import { useLoaderData } from 'react-router-dom';
-import { notesApi, useNotes, MealsList } from '@/features/notes';
+import { store } from '@/app/store';
+import { noteApi, noteLib } from '@/entities/note';
 import { pagesApi, PageDetailHeader, type Page } from '@/features/pages';
-import store from '@/store';
 import { PrivateLayout } from '@/widgets/layout';
+import { MealsList } from '@/widgets/MealsList';
 import { withAuthStatusCheck } from '../lib';
 
 interface LoaderData {
@@ -18,14 +19,14 @@ export const loader = withAuthStatusCheck(async ({ params }) => {
     return new Response(null, { status: 500 });
   }
 
-  await store.dispatch(notesApi.endpoints.getNotes.initiate({ pageId }));
+  await store.dispatch(noteApi.endpoints.getNotes.initiate({ pageId }));
 
   return { page: getPageByIdQuery.data.currentPage } satisfies LoaderData;
 });
 
 export const Component: FC = () => {
   const { page } = useLoaderData() as LoaderData;
-  const notes = useNotes(page.id);
+  const notes = noteLib.useNotes(page.id);
 
   return (
     <PrivateLayout subheader={<PageDetailHeader page={page} />}>

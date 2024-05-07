@@ -1,12 +1,12 @@
-import { createTestStore } from 'src/testing/store';
-import { type SelectOption } from 'src/types';
+import { configureAppStore } from '@/app/store';
+import { type SelectOption } from '@/shared/types';
 import { actions } from './slice';
 import { type ProductItemsFilter } from './types';
 
 const { productChecked, productsChecked, productsUnchecked, productUnchecked } = actions;
 
 test('products can be checked and unchecked', () => {
-  const store = createTestStore();
+  const store = configureAppStore();
 
   store.dispatch(productsChecked([1, 2, 3]));
   store.dispatch(productChecked(4));
@@ -18,7 +18,7 @@ test('products can be checked and unchecked', () => {
 
 describe('productSearchNameChanged', () => {
   test('should apply filter by product name', () => {
-    const store = createTestStore();
+    const store = configureAppStore();
 
     store.dispatch(actions.productSearchNameChanged('test'));
 
@@ -32,7 +32,7 @@ describe('productSearchNameChanged', () => {
   });
 
   test('should reset pagination settings', () => {
-    const store = createTestStore();
+    const store = configureAppStore();
 
     store.dispatch(actions.pageNumberChanged(2));
     store.dispatch(actions.pageSizeChanged(20));
@@ -49,7 +49,7 @@ describe('productSearchNameChanged', () => {
 
 describe('filterByCategoryChanged', () => {
   test('should apply filter by category', () => {
-    const store = createTestStore();
+    const store = configureAppStore();
     const category: SelectOption = { id: 1, name: 'Test category' };
 
     store.dispatch(actions.filterByCategoryChanged(category));
@@ -63,7 +63,7 @@ describe('filterByCategoryChanged', () => {
   });
 
   test('should reset pagination settings', () => {
-    const store = createTestStore();
+    const store = configureAppStore();
 
     store.dispatch(actions.pageNumberChanged(2));
     store.dispatch(actions.pageSizeChanged(20));
@@ -80,7 +80,7 @@ describe('filterByCategoryChanged', () => {
 
 describe('filterReset', () => {
   test('should reset filter', () => {
-    const store = createTestStore();
+    const store = configureAppStore();
 
     store.dispatch(actions.pageNumberChanged(2));
     store.dispatch(actions.pageSizeChanged(20));

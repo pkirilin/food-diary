@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { SortOrder } from 'src/types';
+import { SortOrder } from '@/shared/types';
 import PagesTable from './PagesTable';
 
 describe('when pages are empty', () => {

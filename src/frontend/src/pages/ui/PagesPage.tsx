@@ -1,6 +1,6 @@
 import { type FC } from 'react';
+import { store } from '@/app/store';
 import { Pages, pagesApi, toGetPagesRequest } from '@/features/pages';
-import store from '@/store';
 import { PrivateLayout } from '@/widgets/layout';
 import { ok, withAuthStatusCheck } from '../lib';
 

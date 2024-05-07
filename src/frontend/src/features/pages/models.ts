@@ -1,4 +1,4 @@
-import { type ItemsFilterBase, type SortOrder } from '../__shared__/models';
+import { type ItemsFilterBase, type SortOrder } from '@/shared/types';
 
 export interface Page {
   id: number;

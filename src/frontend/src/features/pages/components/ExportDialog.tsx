@@ -1,9 +1,7 @@
 import { type FC, useEffect, type FormEventHandler } from 'react';
-import { Button } from '@/shared/ui';
-import { AppDialog, DatePicker } from 'src/components';
-import { useInput } from 'src/hooks';
-import { mapToDateInputProps } from 'src/utils/inputMapping';
-import { validateDate } from 'src/utils/validation';
+import { useInput } from '@/shared/hooks';
+import { mapToDateInputProps, validateDate } from '@/shared/lib';
+import { Button, AppDialog, DatePicker } from '@/shared/ui';
 import { useExportToGoogleDocs } from '../hooks/useExportToGoogleDocs';
 import { useExportToJson } from '../hooks/useExportToJson';
 import { type ExportFormat } from '../models';

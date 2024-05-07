@@ -1,4 +1,4 @@
-import { FAKE_AUTH_LOGIN_ON_INIT } from '@/config';
+import { FAKE_AUTH_LOGIN_ON_INIT } from '@/shared/config';
 import { db } from '../db';
 import data from './users.data.json';
 

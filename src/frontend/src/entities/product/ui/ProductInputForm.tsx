@@ -1,9 +1,14 @@
 import { TextField, type TextFieldProps } from '@mui/material';
 import { useEffect, type FC, type FormEventHandler, type ReactElement } from 'react';
-import { useInput, type UseInputResult } from '@/hooks';
-import { type SelectOption, type SelectProps } from '@/types';
-import { mapToNumericInputProps, mapToSelectProps } from '@/utils/inputMapping';
-import { validateCaloriesCost, validateQuantity, validateSelectOption } from '@/utils/validation';
+import { useInput, type UseInputResult } from '@/shared/hooks';
+import {
+  mapToNumericInputProps,
+  mapToSelectProps,
+  validateCaloriesCost,
+  validateQuantity,
+  validateSelectOption,
+} from '@/shared/lib';
+import { type SelectOption, type SelectProps } from '@/shared/types';
 import { EMPTY_FORM_VALUES, type FormValues } from '../model';
 
 export interface ProductInputFormProps {

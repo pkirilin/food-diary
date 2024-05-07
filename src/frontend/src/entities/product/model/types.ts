@@ -1,4 +1,4 @@
-import { type SelectOption } from '@/types';
+import { type SelectOption } from '@/shared/types';
 
 export interface FormValues {
   name: string;
@@ -26,4 +26,4 @@ export interface AutocompleteFreeSoloOption extends AutocompleteBaseOption {
   inputValue?: string;
 }
 
-export type AutocompleteOptionType = AutocompleteExistingOption | AutocompleteFreeSoloOption;
+export type AutocompleteOption = AutocompleteExistingOption | AutocompleteFreeSoloOption;

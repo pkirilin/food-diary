@@ -6,10 +6,9 @@ import {
   type SetStateAction,
   type FormEventHandler,
 } from 'react';
-import { Button } from '@/shared/ui';
-import { AppDialog } from 'src/components';
-import { useAppSelector } from 'src/store';
-import { productsApi } from '../api';
+import { useAppSelector } from '@/app/store';
+import { productApi } from '@/entities/product';
+import { Button, AppDialog } from '@/shared/ui';
 import { useProducts } from '../model';
 import { selectCheckedProductIds } from '../selectors';
 
@@ -23,7 +22,7 @@ const DeleteProductsDialog: FC<DeleteProductsDialogProps> = ({
   setIsOpened: setIsDialogOpened,
 }) => {
   const checkedProductIds = useAppSelector(selectCheckedProductIds);
-  const [deleteProducts, deleteProductRequest] = productsApi.useDeleteProductsMutation();
+  const [deleteProducts, deleteProductRequest] = productApi.useDeleteProductsMutation();
   const products = useProducts();
 
   useEffect(() => {
