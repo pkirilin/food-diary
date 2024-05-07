@@ -9,7 +9,7 @@ declare module '@mui/material/styles' {
   interface ThemeOptions {}
 }
 
-export default createTheme({
+export const theme = createTheme({
   palette: {
     mode: 'light',
     primary: {

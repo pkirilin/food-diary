@@ -3,7 +3,7 @@ import { screen } from '@testing-library/dom';
 import { type UserEvent } from '@testing-library/user-event';
 import { type ReactElement } from 'react';
 import { type Mock } from 'vitest';
-import theme from '@/app/theme';
+import { theme } from '@/app/theme';
 import { noteModel } from '@/entities/note';
 import { type ProductSelectOption, type productModel } from '@/entities/product';
 import { type SelectOption } from '@/shared/types';

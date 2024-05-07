@@ -3,7 +3,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { type ReactElement, type ComponentType, type PropsWithChildren } from 'react';
 import { Provider } from 'react-redux';
-import theme from '@/app/theme';
+import { theme } from '@/app/theme';
 import { createTestStore, type TestStoreBuilder } from './storeBuilder';
 
 export interface TestComponentBuilder {

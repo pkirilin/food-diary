@@ -1,6 +1,6 @@
 import { type FC } from 'react';
 import { useLoaderData } from 'react-router-dom';
-import store from '@/app/store';
+import { store } from '@/app/store';
 import { noteApi, noteLib } from '@/entities/note';
 import { pagesApi, PageDetailHeader, type Page } from '@/features/pages';
 import { PrivateLayout } from '@/widgets/layout';

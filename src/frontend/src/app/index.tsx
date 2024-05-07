@@ -5,7 +5,7 @@ import { GOOGLE_ANALYTICS_ENABLED, MSW_ENABLED } from '@/shared/config';
 import { initGoogleAnalytics } from './googleAnalytics';
 import { Root } from './Root';
 import { RootProvider } from './RootProvider';
-import store from './store';
+import { store } from './store';
 
 void (async () => {
   if (MSW_ENABLED) {

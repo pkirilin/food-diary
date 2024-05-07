@@ -1,5 +1,5 @@
 import { type LoaderFunction, redirect } from 'react-router-dom';
-import store from '@/app/store';
+import { store } from '@/app/store';
 import { authApi } from '@/features/auth';
 import { createUrl } from '@/shared/lib';
 

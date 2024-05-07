@@ -1,5 +1,5 @@
 import { type FC } from 'react';
-import store from '@/app/store';
+import { store } from '@/app/store';
 import { categoryApi } from '@/entities/category';
 import { Categories } from '@/features/categories';
 import { PrivateLayout } from '@/widgets/layout';

@@ -1,5 +1,5 @@
 import { type FC } from 'react';
-import store from '@/app/store';
+import { store } from '@/app/store';
 import { productApi } from '@/entities/product';
 import { Products, toGetProductsRequest } from '@/features/products';
 import { PrivateLayout } from '@/widgets/layout';

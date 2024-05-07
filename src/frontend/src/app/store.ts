@@ -16,7 +16,7 @@ export const configureAppStore = () =>
     middleware: getDefaultMiddleware => getDefaultMiddleware().concat(api.middleware),
   });
 
-const store: ReturnType<typeof configureAppStore> = configureAppStore();
+export const store: ReturnType<typeof configureAppStore> = configureAppStore();
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
@@ -24,5 +24,3 @@ export type AppStore = ReturnType<typeof configureAppStore>;
 
 export const useAppDispatch: () => AppDispatch = useDispatch;
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
-
-export default store;
