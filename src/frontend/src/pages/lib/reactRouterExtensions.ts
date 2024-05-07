@@ -1,7 +1,7 @@
 import { type LoaderFunction, redirect } from 'react-router-dom';
 import { authApi } from '@/features/auth';
+import { createUrl } from '@/shared/lib';
 import store from '@/store';
-import { createUrl } from '@/utils';
 
 export const ok = (): Response => new Response(null, { status: 200 });
 

@@ -3,8 +3,7 @@ import { useEffect, type FC, type FormEventHandler, type ReactElement } from 're
 import { noteLib, type noteModel } from '@/entities/note';
 import { type productLib, type productModel } from '@/entities/product';
 import { useInput, type UseInputResult } from '@/hooks';
-import { mapToNumericInputProps } from '@/utils/inputMapping';
-import { validateQuantity } from '@/utils/validation';
+import { mapToNumericInputProps, validateQuantity } from '@/shared/lib';
 import { type Note } from '../model';
 
 export interface NoteInputFormProps {

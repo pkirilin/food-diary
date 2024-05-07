@@ -8,9 +8,9 @@ import {
 } from 'react-router-dom';
 import { API_URL, FAKE_AUTH_ENABLED } from '@/config';
 import { authApi, SignInForm } from '@/features/auth';
+import { createUrl } from '@/shared/lib';
 import { AppName } from '@/shared/ui';
 import store from '@/store';
-import { createUrl } from '@/utils';
 import { CenteredLayout } from '@/widgets/layout';
 import { ok } from '../lib';
 

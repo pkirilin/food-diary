@@ -1,4 +1,4 @@
-import { createUrl } from '../urlHelper';
+import { createUrl } from './urlHelper';
 
 describe('createUrl', () => {
   describe('for no parameters', () => {

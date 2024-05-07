@@ -11,7 +11,7 @@ import {
 import { useMemo, type FC } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { noteApi } from '@/entities/note';
-import { formatDate } from 'src/utils';
+import { formatDate } from '@/shared/lib';
 import { type Page } from '../models';
 
 interface Props {

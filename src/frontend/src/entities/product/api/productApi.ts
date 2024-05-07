@@ -1,5 +1,5 @@
 import { api } from '@/api';
-import { createUrl } from 'src/utils';
+import { createUrl } from '@/shared/lib';
 import { type ProductsResponse } from '../../../features/products/types';
 import {
   type CreateProductResponse,

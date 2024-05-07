@@ -7,11 +7,10 @@ import {
   type FormEventHandler,
 } from 'react';
 import { type categoryModel } from '@/entities/category';
+import { mapToTextInputProps, validateCategoryName } from '@/shared/lib';
 import { Button } from '@/shared/ui';
 import { AppDialog } from 'src/components';
 import { useInput } from 'src/hooks';
-import { mapToTextInputProps } from 'src/utils/inputMapping';
-import { validateCategoryName } from 'src/utils/validation';
 import { type CategoryFormData } from '../types';
 
 interface CreateEditCategoryDialogProps {

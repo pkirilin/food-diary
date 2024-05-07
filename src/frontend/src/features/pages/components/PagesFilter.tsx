@@ -1,9 +1,8 @@
 import { Box, Button, Paper } from '@mui/material';
 import { type FC, useEffect } from 'react';
+import { mapToDateInputProps, validateDate } from '@/shared/lib';
 import { DatePicker } from 'src/components';
 import { useInput } from 'src/hooks';
-import { mapToDateInputProps } from 'src/utils/inputMapping';
-import { validateDate } from 'src/utils/validation';
 import { useFilter } from '../hooks';
 import { endDateChanged, startDateChanged } from '../slice';
 

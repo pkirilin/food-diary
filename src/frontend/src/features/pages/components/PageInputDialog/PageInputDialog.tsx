@@ -1,10 +1,8 @@
 import { type FC, useEffect, type FormEventHandler } from 'react';
+import { formatDate, mapToDateInputProps, validateDate } from '@/shared/lib';
 import { Button } from '@/shared/ui';
 import { AppDialog, DatePicker } from 'src/components';
 import { useInput } from 'src/hooks';
-import { formatDate } from 'src/utils';
-import { mapToDateInputProps } from 'src/utils/inputMapping';
-import { validateDate } from 'src/utils/validation';
 import { type PageCreateEdit } from '../../models';
 
 interface PageInputDialogProps {
