@@ -2,7 +2,7 @@ import { type TextFieldProps } from '@mui/material';
 import { useCallback, useState } from 'react';
 import { CategorySelect, type categoryLib } from '@/entities/category';
 import { ProductInputForm, type productModel } from '@/entities/product';
-import { type UseInputResult } from '@/hooks';
+import { type UseInputResult } from '@/shared/hooks';
 import { type DialogState } from '../model';
 
 interface Args {

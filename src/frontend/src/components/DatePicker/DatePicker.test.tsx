@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { type FC } from 'react';
+import { useInput } from '@/shared/hooks';
 import { mapToDateInputProps, validateDate } from '@/shared/lib';
-import { useInput } from 'src/hooks';
 import { create } from 'src/test-utils';
 import DatePicker from './DatePicker';
 

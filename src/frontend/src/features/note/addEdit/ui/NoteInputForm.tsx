@@ -2,7 +2,7 @@ import { TextField } from '@mui/material';
 import { useEffect, type FC, type FormEventHandler, type ReactElement } from 'react';
 import { noteLib, type noteModel } from '@/entities/note';
 import { type productLib, type productModel } from '@/entities/product';
-import { useInput, type UseInputResult } from '@/hooks';
+import { useInput, type UseInputResult } from '@/shared/hooks';
 import { mapToNumericInputProps, validateQuantity } from '@/shared/lib';
 import { type Note } from '../model';
 

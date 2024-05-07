@@ -22,7 +22,7 @@ export type UseInputResult<TValue, TProps> = InputOptions<TValue> & {
   inputProps: TProps;
 };
 
-export default function useInput<TValue, TProps>({
+export function useInput<TValue, TProps>({
   initialValue,
   errorHelperText,
   validate,

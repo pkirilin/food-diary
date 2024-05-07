@@ -1,6 +1,6 @@
 import { TextField, type TextFieldProps } from '@mui/material';
 import { useEffect, type FC, type FormEventHandler, type ReactElement } from 'react';
-import { useInput, type UseInputResult } from '@/hooks';
+import { useInput, type UseInputResult } from '@/shared/hooks';
 import {
   mapToNumericInputProps,
   mapToSelectProps,
