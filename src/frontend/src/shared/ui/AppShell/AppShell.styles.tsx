@@ -12,7 +12,7 @@ interface NavigationProgressStyledProps extends LinearProgressProps {
 export const NavigationProgressStyled = styled(LinearProgress, {
   shouldForwardProp,
 })<NavigationProgressStyledProps>(({ theme, $withSidebar, $withHeader }) => ({
-  position: 'absolute',
+  position: 'fixed',
   zIndex: theme.zIndex.drawer + 1,
   top: $withHeader ? `${APP_BAR_HEIGHT_XS}px` : 0,
   left: 0,
