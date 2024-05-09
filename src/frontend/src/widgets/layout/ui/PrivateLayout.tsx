@@ -36,8 +36,8 @@ export const PrivateLayout: FC<Props> = ({ children, subheader }) => {
       subheader={{
         banner: <UpdateAppBanner />,
         navigationBar: subheader,
+        navigationBarElevation: pageScrolled ? 1 : 0,
       }}
-      subheaderElevation={pageScrolled ? 1 : 0}
     >
       {children}
     </AppShell>

@@ -16,6 +16,7 @@ interface HeaderProps {
 interface SubheaderProps {
   banner: ReactElement;
   navigationBar?: ReactElement;
+  navigationBarElevation?: number;
 }
 
 interface Props extends PropsWithChildren {
@@ -23,7 +24,6 @@ interface Props extends PropsWithChildren {
   withSidebar: boolean;
   header?: HeaderProps;
   subheader?: SubheaderProps;
-  subheaderElevation?: number;
 }
 
 export const AppShell: FC<Props> = ({
@@ -32,7 +32,6 @@ export const AppShell: FC<Props> = ({
   withSidebar,
   header,
   subheader,
-  subheaderElevation,
 }) => (
   <>
     {header && (
@@ -52,7 +51,7 @@ export const AppShell: FC<Props> = ({
         <SubheaderStyled elevation={0}>
           {subheader.banner}
           {subheader.navigationBar && (
-            <AppBar position="static" color="inherit" elevation={subheaderElevation}>
+            <AppBar position="static" color="inherit" elevation={subheader.navigationBarElevation}>
               <Container disableGutters>
                 <Toolbar>{subheader.navigationBar}</Toolbar>
               </Container>
