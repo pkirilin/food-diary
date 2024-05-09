@@ -1,6 +1,7 @@
 import { type Theme, useMediaQuery, useScrollTrigger } from '@mui/material';
 import { type PropsWithChildren, type FC, type ReactElement } from 'react';
 import { useAuthStatusCheckEffect } from '@/features/auth';
+import { UpdateAppBanner } from '@/features/updateApp';
 import { APP_BAR_HEIGHT_SM, APP_BAR_HEIGHT_XS } from '@/shared/constants';
 import { useToggle } from '@/shared/hooks';
 import { AppShell } from '@/shared/ui';
@@ -32,8 +33,11 @@ export const PrivateLayout: FC<Props> = ({ children, subheader }) => {
         navigationBar: <NavigationBar menuOpened={menuOpened} toggleMenu={toggleMenu} />,
         navigationDrawer: <NavigationDrawer menuOpened={menuOpened} toggleMenu={toggleMenu} />,
       }}
-      subheader={subheader}
-      subheaderElevation={pageScrolled ? 1 : 0}
+      subheader={{
+        banner: <UpdateAppBanner />,
+        navigationBar: subheader,
+        navigationBarElevation: pageScrolled ? 1 : 0,
+      }}
     >
       {children}
     </AppShell>

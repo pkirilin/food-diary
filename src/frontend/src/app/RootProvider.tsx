@@ -4,6 +4,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { type PropsWithChildren, type FC } from 'react';
 import { Provider } from 'react-redux';
 import { type Store } from 'redux';
+import { updateAppModel } from '@/features/updateApp';
 import { theme } from './theme';
 
 interface Props {
@@ -15,8 +16,10 @@ export const RootProvider: FC<PropsWithChildren<Props>> = ({ children, store }) 
     <ThemeProvider theme={theme}>
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <Provider store={store}>
-          <CssBaseline />
-          {children}
+          <updateAppModel.Provider>
+            <CssBaseline />
+            {children}
+          </updateAppModel.Provider>
         </Provider>
       </LocalizationProvider>
     </ThemeProvider>
