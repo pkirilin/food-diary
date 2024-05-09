@@ -1,4 +1,14 @@
-import { Box, Button, Collapse, Container, Divider, Paper, Stack, Typography } from '@mui/material';
+import BrowserUpdatedIcon from '@mui/icons-material/BrowserUpdated';
+import {
+  Avatar,
+  Box,
+  Button,
+  Collapse,
+  Container,
+  Divider,
+  Paper,
+  Typography,
+} from '@mui/material';
 import { type FC } from 'react';
 import { useUpdateApp } from '../model';
 
@@ -7,47 +17,44 @@ export const UpdateAppBanner: FC = () => {
 
   return (
     <Collapse in={updateAvailable}>
-      <Container>
-        <Paper
+      <Container disableGutters>
+        <Box
+          component={Paper}
           role="dialog"
           aria-modal="false"
           aria-label="Update app banner"
           square
-          variant="outlined"
+          variant="elevation"
           tabIndex={-1}
-          sx={{
-            m: 0,
-            p: 2,
-            borderWidth: 0,
-          }}
+          elevation={0}
+          pt={3}
+          pb={1}
+          display="flex"
+          flexDirection={{ xs: 'column', sm: 'row' }}
+          justifyContent={'space-between'}
+          alignItems={{ xs: 'flex-start', sm: 'flex-end' }}
+          gap={{ xs: 0, sm: 1, md: '90px' }}
         >
-          <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" gap={2}>
-            <Box
-              sx={{
-                flexShrink: 1,
-                alignSelf: { xs: 'flex-start', sm: 'center' },
-              }}
-            >
+          <Box display="flex" pl={2} pr={{ xs: 2, sm: 0 }} gap={{ xs: 2, sm: 3 }}>
+            <Avatar sx={theme => ({ bgcolor: theme.palette.primary.main })}>
+              <BrowserUpdatedIcon />
+            </Avatar>
+            <Typography paragraph marginBottom={1}>
               <Typography fontWeight="bold">New update available</Typography>
-              <Typography variant="body2">Click on reload button to update</Typography>
-            </Box>
-            <Stack
-              gap={2}
-              direction="row"
-              sx={{
-                flexShrink: 0,
-                alignSelf: { xs: 'flex-end', sm: 'center' },
-              }}
-            >
-              <Button onClick={close} variant="text">
-                Close
-              </Button>
-              <Button onClick={reload} variant="text">
-                Reload
-              </Button>
-            </Stack>
-          </Stack>
-        </Paper>
+              <Typography variant="body2">
+                Click on reload button to update the application
+              </Typography>
+            </Typography>
+          </Box>
+          <Box display="flex" px={{ xs: 1, sm: 2 }} gap={1} alignSelf="flex-end">
+            <Button onClick={close} variant="text">
+              Close
+            </Button>
+            <Button onClick={reload} variant="text">
+              Reload
+            </Button>
+          </Box>
+        </Box>
       </Container>
       <Divider />
     </Collapse>
