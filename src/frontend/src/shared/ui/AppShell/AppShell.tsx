@@ -2,6 +2,7 @@ import { Container, Toolbar } from '@mui/material';
 import { type PropsWithChildren, type FC, type ReactElement } from 'react';
 import {
   HeaderStyled,
+  MainContainerStyled,
   MainStyled,
   NavigationProgressStyled,
   SubheaderStyled,
@@ -45,7 +46,7 @@ export const AppShell: FC<Props> = ({
     {withNavigationProgress && (
       <NavigationProgressStyled $withSidebar={withSidebar} $withHeader={!!header} />
     )}
-    <MainStyled $withSidebar={withSidebar} $withSubheader={!!subheader}>
+    <MainStyled $withSidebar={withSidebar}>
       {header && <Toolbar />}
       {subheader && (
         <SubheaderStyled position="sticky" color="inherit" elevation={subheaderElevation}>
@@ -55,7 +56,9 @@ export const AppShell: FC<Props> = ({
           </Container>
         </SubheaderStyled>
       )}
-      <Container>{children}</Container>
+      <MainContainerStyled $withPaddingTop={!!subheader?.navigationBar}>
+        {children}
+      </MainContainerStyled>
     </MainStyled>
   </>
 );
