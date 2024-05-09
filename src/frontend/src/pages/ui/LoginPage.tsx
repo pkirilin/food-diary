@@ -8,7 +8,7 @@ import {
 } from 'react-router-dom';
 import { store } from '@/app/store';
 import { authApi, SignInForm } from '@/features/auth';
-import { UpdateAppBanner } from '@/features/user/updateApp';
+import { UpdateAppBanner } from '@/features/updateApp';
 import { API_URL, FAKE_AUTH_ENABLED } from '@/shared/config';
 import { createUrl } from '@/shared/lib';
 import { AppName } from '@/shared/ui';

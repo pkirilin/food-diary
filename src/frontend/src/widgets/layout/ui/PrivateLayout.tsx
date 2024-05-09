@@ -1,7 +1,7 @@
 import { type Theme, useMediaQuery, useScrollTrigger } from '@mui/material';
 import { type PropsWithChildren, type FC, type ReactElement } from 'react';
 import { useAuthStatusCheckEffect } from '@/features/auth';
-import { UpdateAppBanner } from '@/features/user/updateApp';
+import { UpdateAppBanner } from '@/features/updateApp';
 import { APP_BAR_HEIGHT_SM, APP_BAR_HEIGHT_XS } from '@/shared/constants';
 import { useToggle } from '@/shared/hooks';
 import { AppShell } from '@/shared/ui';

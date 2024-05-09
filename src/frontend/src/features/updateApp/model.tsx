@@ -23,7 +23,7 @@ export const Context = createContext<State>({
 export const useUpdateApp = (): State => useContext(Context);
 
 export const Provider: FC<PropsWithChildren> = ({ children }) => {
-  const registerSw = useRegisterSW({
+  const registerSW = useRegisterSW({
     onRegisteredSW: async (_, registration) => {
       await registration?.update();
     },
@@ -32,7 +32,7 @@ export const Provider: FC<PropsWithChildren> = ({ children }) => {
   const {
     needRefresh: [updateAvailable, setUpdateAvailable],
     updateServiceWorker,
-  } = registerSw;
+  } = registerSW;
 
   const reload = useCallback((): Promise<void> => updateServiceWorker(true), [updateServiceWorker]);
 

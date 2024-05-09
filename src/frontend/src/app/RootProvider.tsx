@@ -4,7 +4,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { type PropsWithChildren, type FC } from 'react';
 import { Provider } from 'react-redux';
 import { type Store } from 'redux';
-import { updateAppModel } from '@/features/user/updateApp';
+import { updateAppModel } from '@/features/updateApp';
 import { theme } from './theme';
 
 interface Props {
