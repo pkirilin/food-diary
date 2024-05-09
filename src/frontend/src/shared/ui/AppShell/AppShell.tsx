@@ -1,4 +1,4 @@
-import { Container, Toolbar } from '@mui/material';
+import { AppBar, Container, Toolbar } from '@mui/material';
 import { type PropsWithChildren, type FC, type ReactElement } from 'react';
 import {
   HeaderStyled,
@@ -49,11 +49,15 @@ export const AppShell: FC<Props> = ({
     <MainStyled $withSidebar={withSidebar}>
       {header && <Toolbar />}
       {subheader && (
-        <SubheaderStyled position="sticky" color="inherit" elevation={subheaderElevation}>
-          <Container disableGutters>
-            {subheader.banner}
-            {subheader.navigationBar && <Toolbar>{subheader.navigationBar}</Toolbar>}
-          </Container>
+        <SubheaderStyled elevation={0}>
+          {subheader.banner}
+          {subheader.navigationBar && (
+            <AppBar position="static" color="inherit" elevation={subheaderElevation}>
+              <Container disableGutters>
+                <Toolbar>{subheader.navigationBar}</Toolbar>
+              </Container>
+            </AppBar>
+          )}
         </SubheaderStyled>
       )}
       <MainContainerStyled $withPaddingTop={!!subheader?.navigationBar}>

@@ -1,4 +1,4 @@
-import { AppBar, Container, LinearProgress, type LinearProgressProps } from '@mui/material';
+import { AppBar, Container, LinearProgress, Paper, type LinearProgressProps } from '@mui/material';
 import { styled } from '@mui/material';
 import { APP_BAR_HEIGHT_SM, APP_BAR_HEIGHT_XS, SIDEBAR_DRAWER_WIDTH } from '../../constants';
 
@@ -29,7 +29,9 @@ export const HeaderStyled = styled(AppBar)(({ theme }) => ({
   zIndex: theme.zIndex.drawer + 1,
 }));
 
-export const SubheaderStyled = styled(AppBar)(({ theme }) => ({
+export const SubheaderStyled = styled(Paper)(({ theme }) => ({
+  zIndex: theme.zIndex.drawer,
+  position: 'sticky',
   top: APP_BAR_HEIGHT_XS,
 
   [theme.breakpoints.up('sm')]: {
