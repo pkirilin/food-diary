@@ -1,34 +1,12 @@
-import { useRegisterSW } from 'virtual:pwa-register/react';
 import { Box, Button, Collapse, Container, Divider, Paper, Stack, Typography } from '@mui/material';
-import { useState, type FC, useEffect } from 'react';
+import { type FC } from 'react';
+import { useUpdateApp } from '../model';
 
 export const UpdateAppBanner: FC = () => {
-  // const registerSw = useRegisterSW({
-  //   onRegisteredSW: async (_, registration) => {
-  //     await registration?.update();
-  //   },
-  // });
-
-  // const [needRefresh, setNeedRefresh] = registerSw.needRefresh;
-
-  const [needRefresh, setNeedRefresh] = useState(false);
-
-  useEffect(() => {
-    setTimeout(() => {
-      setNeedRefresh(true);
-    }, 2000);
-  }, []);
-
-  const handleClose = (): void => {
-    setNeedRefresh(false);
-  };
-
-  const handleReload = (): void => {
-    // registerSw.updateServiceWorker(true);
-  };
+  const { updateAvailable, reload, close } = useUpdateApp();
 
   return (
-    <Collapse in={needRefresh}>
+    <Collapse in={updateAvailable}>
       <Container>
         <Paper
           role="dialog"
@@ -61,10 +39,10 @@ export const UpdateAppBanner: FC = () => {
                 alignSelf: { xs: 'flex-end', sm: 'center' },
               }}
             >
-              <Button onClick={handleClose} variant="text">
+              <Button onClick={close} variant="text">
                 Close
               </Button>
-              <Button onClick={handleReload} variant="text">
+              <Button onClick={reload} variant="text">
                 Reload
               </Button>
             </Stack>
