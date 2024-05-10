@@ -13,60 +13,6 @@ test('products are loaded into table', async () => {
   expect(screen.getByLabelText(/bread is in cereals category/i)).toBeVisible();
 });
 
-test('product can be created', async () => {
-  render(<Products />);
-
-  const createButton = await screen.findByRole('button', { name: /open create product dialog/i });
-  await waitFor(() => expect(createButton).toBeEnabled());
-  await userEvent.click(createButton);
-
-  const dialog = within(screen.getByRole('dialog'));
-  const productName = dialog.getByPlaceholderText(/product name/i);
-  const caloriesCost = dialog.getByPlaceholderText(/calories cost/i);
-  const defaultQuantity = dialog.getByPlaceholderText(/default quantity/i);
-  const category = dialog.getByPlaceholderText(/category/i);
-  await userEvent.type(productName, 'Cheesecake');
-  await userEvent.clear(caloriesCost);
-  await userEvent.type(caloriesCost, '321');
-  await userEvent.clear(defaultQuantity);
-  await userEvent.type(defaultQuantity, '123');
-  await userEvent.click(category);
-  await userEvent.click(within(screen.getByRole('listbox')).getByText(/bakery/i));
-  await userEvent.click(dialog.getByLabelText(/create cheesecake/i));
-
-  expect(await screen.findByText(/cheesecake/i));
-  expect(screen.getByLabelText(/cheesecake calories cost is 321/i));
-  expect(screen.getByLabelText(/cheesecake default quantity is 123/i));
-  expect(screen.getByLabelText(/cheesecake is in bakery category/i));
-});
-
-test('product can be edited', async () => {
-  render(<Products />);
-
-  const editButton = await screen.findByRole('button', {
-    name: /open edit product dialog for bread/i,
-  });
-  await userEvent.click(editButton);
-
-  const dialog = within(screen.getByRole('dialog'));
-  const productName = dialog.getByPlaceholderText(/product name/i);
-  const caloriesCost = dialog.getByPlaceholderText(/calories cost/i);
-  const defaultQuantity = dialog.getByPlaceholderText(/default quantity/i);
-  await userEvent.clear(productName);
-  await userEvent.type(productName, 'Rye bread');
-  await userEvent.clear(caloriesCost);
-  await userEvent.type(caloriesCost, '95');
-  await userEvent.clear(defaultQuantity);
-  await userEvent.type(defaultQuantity, '105');
-  await userEvent.click(dialog.getByLabelText(/save/i));
-  await waitForElementToBeRemoved(screen.getByRole('dialog'));
-
-  expect(await screen.findByText(/rye bread/i));
-  expect(screen.getByLabelText(/rye bread calories cost is 95/i));
-  expect(screen.getByLabelText(/rye bread default quantity is 105/i));
-  expect(screen.getByLabelText(/rye bread is in cereals category/i));
-});
-
 test('product can be selected', async () => {
   render(<Products />);
 

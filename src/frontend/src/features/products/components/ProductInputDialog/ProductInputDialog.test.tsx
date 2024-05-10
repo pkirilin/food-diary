@@ -45,6 +45,38 @@ test('I can add new product', async () => {
   });
 });
 
+test('I can edit product', async () => {
+  const user = userEvent.setup();
+  const onSubmitMock = vi.fn();
+  const categories = givenCategories('Vegetables', 'Vegetables new');
+
+  render(
+    givenProductInputDialog()
+      .withCategoriesForSelect(categories)
+      .withProduct({
+        name: 'Potato',
+        caloriesCost: 150,
+        defaultQuantity: 120,
+        category: categories[1],
+      })
+      .withOnSubmitMock(onSubmitMock)
+      .please(),
+  );
+
+  await whenDialogOpened(user);
+  await whenProductNameChanged(user, 'Potato edited');
+  await whenCaloriesCostChanged(user, '140');
+  await whenDefaultQuantityChanged(user, '110');
+  await whenCategorySelected(user, /vegetables new/i);
+  await whenProductSaved(user);
+  await thenFormValueContains(onSubmitMock, {
+    name: 'Potato edited',
+    caloriesCost: 140,
+    defaultQuantity: 110,
+    category: expectCategory('Vegetables new'),
+  });
+});
+
 test('I cannot add product with invalid name, calories cost or default quantity', async () => {
   const user = userEvent.setup();
   const categories = givenCategories('Fruits', 'Vegetables');
