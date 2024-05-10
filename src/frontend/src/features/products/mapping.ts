@@ -2,9 +2,10 @@ import {
   type GetProductsRequest,
   type CreateProductRequest,
   type EditProductRequest,
+  type productModel,
 } from '@/entities/product';
 import { type ProductItemsFilter } from './store';
-import { type Product, type ProductFormData } from './types';
+import { type Product } from './types';
 
 export const toProductFormData = ({
   name,
@@ -12,7 +13,7 @@ export const toProductFormData = ({
   defaultQuantity,
   categoryId,
   categoryName,
-}: Product): ProductFormData => ({
+}: Product): productModel.FormValues => ({
   name,
   caloriesCost,
   defaultQuantity,
@@ -34,25 +35,24 @@ export const toGetProductsRequest = ({
   categoryId: category?.id,
 });
 
-export const toCreateProductRequest = ({
+export const toCreateProductRequest = (
+  categoryId: number,
+  { name, caloriesCost, defaultQuantity }: productModel.FormValues,
+): CreateProductRequest => ({
   name,
   caloriesCost,
   defaultQuantity,
-  category,
-}: ProductFormData): CreateProductRequest => ({
-  name,
-  caloriesCost,
-  defaultQuantity,
-  categoryId: category?.id,
+  categoryId,
 });
 
 export const toEditProductRequest = (
   id: number,
-  { name, caloriesCost, defaultQuantity, category }: ProductFormData,
+  categoryId: number,
+  { name, caloriesCost, defaultQuantity }: productModel.FormValues,
 ): EditProductRequest => ({
   id,
   name,
   caloriesCost,
   defaultQuantity,
-  categoryId: category.id,
+  categoryId,
 });

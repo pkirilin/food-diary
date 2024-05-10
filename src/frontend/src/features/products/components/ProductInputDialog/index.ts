@@ -1,3 +1,1 @@
-import ProductInputDialog from './ProductInputDialog';
-
-export default ProductInputDialog;
+export * from './ProductInputDialog';

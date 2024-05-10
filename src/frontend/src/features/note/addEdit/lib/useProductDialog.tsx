@@ -24,10 +24,10 @@ export const useProductDialog = ({
   onClose,
   onSubmit,
 }: Args): Result => {
-  const [productSubmitDisabled, setProductSubmitDisabled] = useState(true);
+  const [submitDisabled, setSubmitDisabled] = useState(true);
 
-  const handleProductInputFormSubmitDisabledChange = useCallback((disabled: boolean): void => {
-    setProductSubmitDisabled(disabled);
+  const handleSubmitDisabledChange = useCallback((disabled: boolean): void => {
+    setSubmitDisabled(disabled);
   }, []);
 
   return {
@@ -36,7 +36,7 @@ export const useProductDialog = ({
       title: 'New product',
       submitText: 'Add',
       submitLoading: false,
-      submitDisabled: productSubmitDisabled,
+      submitDisabled,
       cancelDisabled: false,
       formId: 'product-form',
       content: (
@@ -54,7 +54,7 @@ export const useProductDialog = ({
             />
           )}
           onSubmit={onSubmit}
-          onSubmitDisabledChange={handleProductInputFormSubmitDisabledChange}
+          onSubmitDisabledChange={handleSubmitDisabledChange}
         />
       ),
       onClose,

@@ -1,34 +1,38 @@
+import { ThemeProvider } from '@mui/material';
 import { screen } from '@testing-library/dom';
 import { type UserEvent } from '@testing-library/user-event';
 import { type ReactElement } from 'react';
 import { type Mock } from 'vitest';
+import { theme } from '@/app/theme';
+import { productModel } from '@/entities/product';
 import { type SelectOption } from '@/shared/types';
 import { WithTriggerButton } from '@tests/sideEffects';
-import { type ProductFormData } from '../../types';
-import ProductInputDialog from './ProductInputDialog';
+import { ProductInputDialog } from './ProductInputDialog';
 
 class ProductInputDialogBuilder {
   private _onSubmitMock: Mock = vi.fn();
-  private _product: ProductFormData | undefined;
+  private _product: productModel.FormValues = productModel.EMPTY_FORM_VALUES;
   private readonly _categories: SelectOption[] = [];
 
   please(): ReactElement {
     return (
-      <WithTriggerButton label="Open">
-        {({ active, onTriggerClick }) => (
-          <ProductInputDialog
-            isOpened={active}
-            setIsOpened={onTriggerClick}
-            title="Product"
-            submitText="Submit"
-            onSubmit={this._onSubmitMock}
-            isLoading={false}
-            categories={this._categories}
-            categoriesLoading={false}
-            product={this._product}
-          />
-        )}
-      </WithTriggerButton>
+      <ThemeProvider theme={theme}>
+        <WithTriggerButton label="Open">
+          {({ active, onTriggerClick }) => (
+            <ProductInputDialog
+              opened={active}
+              title="Product"
+              submitText="Submit"
+              isLoading={false}
+              categories={this._categories}
+              categoriesLoading={false}
+              product={this._product}
+              onSubmit={this._onSubmitMock}
+              onClose={onTriggerClick}
+            />
+          )}
+        </WithTriggerButton>
+      </ThemeProvider>
     );
   }
 
@@ -47,7 +51,7 @@ class ProductInputDialogBuilder {
     caloriesCost = 100,
     defaultQuantity = 100,
     category = this._categories[0],
-  }: Partial<ProductFormData>): this {
+  }: Partial<productModel.FormValues>): this {
     this._product = {
       name,
       caloriesCost,
@@ -104,9 +108,9 @@ export const expectCategory = (name: string): SelectOption =>
 
 export const thenFormValueContains = async (
   onSubmitMock: Mock,
-  product: ProductFormData,
+  product: productModel.FormValues,
 ): Promise<void> => {
-  expect(onSubmitMock).toHaveBeenCalledWith<[ProductFormData]>(product);
+  expect(onSubmitMock).toHaveBeenCalledWith<[productModel.FormValues]>(product);
 };
 
 export const thenProductNameIsInvalid = async (): Promise<void> => {
