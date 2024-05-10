@@ -85,6 +85,7 @@ export const ProductInputForm: FC<ProductInputFormProps> = ({
         placeholder="Product name"
         fullWidth
         autoFocus
+        margin="normal"
       />
       <TextField
         {...caloriesCostInput.inputProps}
