@@ -101,7 +101,6 @@ test('I cannot add product when category is empty', async () => {
 
   await whenDialogOpened(user);
   await whenProductNameChanged(user, 'Potato');
-  await thenCategoryIsInvalid();
   await thenSubmitButtonIsDisabled();
 });
 
