@@ -177,19 +177,3 @@ test('products in table are split by pages', async () => {
   const paginationForTheSecondPage = await screen.findByText(/.*–.* of .*/i);
   expect(paginationForTheSecondPage).not.toHaveTextContent(/1–.* of .*/i);
 });
-
-test('product with empty category cannot be saved', async () => {
-  render(<Products />);
-
-  const editButton = await screen.findByRole('button', {
-    name: /open edit product dialog for bread/i,
-  });
-  await userEvent.click(editButton);
-
-  const dialog = within(screen.getByRole('dialog'));
-  const category = dialog.getByPlaceholderText(/category/i);
-  await userEvent.clear(category);
-
-  expect(dialog.getByLabelText(/save/i)).toBeDisabled();
-  expect(dialog.getByText(/category is required/i)).toBeVisible();
-});

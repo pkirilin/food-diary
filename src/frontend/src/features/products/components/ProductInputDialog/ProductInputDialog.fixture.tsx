@@ -9,6 +9,7 @@ import ProductInputDialog from './ProductInputDialog';
 
 class ProductInputDialogBuilder {
   private _onSubmitMock: Mock = vi.fn();
+  private _product: ProductFormData | undefined;
   private readonly _categories: SelectOption[] = [];
 
   please(): ReactElement {
@@ -24,6 +25,7 @@ class ProductInputDialogBuilder {
             isLoading={false}
             categories={this._categories}
             categoriesLoading={false}
+            product={this._product}
           />
         )}
       </WithTriggerButton>
@@ -35,11 +37,29 @@ class ProductInputDialogBuilder {
     return this;
   }
 
-  withCategoriesForSelect(...categoryNames: string[]): this {
-    this._categories.push(...categoryNames.map((name, index) => ({ id: index + 1, name })));
+  withCategoriesForSelect(categories: SelectOption[]): this {
+    this._categories.push(...categories);
+    return this;
+  }
+
+  withProduct({
+    name = '',
+    caloriesCost = 100,
+    defaultQuantity = 100,
+    category = this._categories[0],
+  }: Partial<ProductFormData>): this {
+    this._product = {
+      name,
+      caloriesCost,
+      defaultQuantity,
+      category,
+    };
     return this;
   }
 }
+
+export const givenCategories = (...categoryNames: string[]): SelectOption[] =>
+  categoryNames.map((name, index) => ({ id: index + 1, name }));
 
 export const givenProductInputDialog = (): ProductInputDialogBuilder =>
   new ProductInputDialogBuilder();
@@ -71,8 +91,12 @@ export const whenCategorySelected = async (user: UserEvent, name: RegExp): Promi
   await user.click(screen.getByRole('option', { name }));
 };
 
+export const whenCategoryCleared = async (user: UserEvent): Promise<void> => {
+  await user.clear(screen.getByRole('combobox', { name: /category/i }));
+};
+
 export const whenProductSaved = async (user: UserEvent): Promise<void> => {
-  await user.click(screen.getByRole('button', { name: 'Submit' }));
+  await user.click(screen.getByRole('button', { name: /submit/i }));
 };
 
 export const expectCategory = (name: string): SelectOption =>
@@ -83,4 +107,12 @@ export const thenFormValueContains = async (
   product: ProductFormData,
 ): Promise<void> => {
   expect(onSubmitMock).toHaveBeenCalledWith<[ProductFormData]>(product);
+};
+
+export const thenCategoryIsInvalid = async (): Promise<void> => {
+  expect(screen.getByRole('combobox', { name: /category/i })).toBeInvalid();
+};
+
+export const thenSubmitButtonIsDisabled = async (): Promise<void> => {
+  expect(screen.getByRole('button', { name: /submit/i })).toBeDisabled();
 };
