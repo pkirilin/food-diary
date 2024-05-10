@@ -67,48 +67,6 @@ test('product can be edited', async () => {
   expect(screen.getByLabelText(/rye bread is in cereals category/i));
 });
 
-test('new product input is validated', async () => {
-  render(<Products />);
-
-  const createButton = await screen.findByRole('button', { name: /open create product dialog/i });
-  await waitFor(() => expect(createButton).toBeEnabled());
-  await userEvent.click(createButton);
-
-  const dialog = within(screen.getByRole('dialog'));
-  const productName = dialog.getByPlaceholderText(/product name/i);
-  const caloriesCost = dialog.getByPlaceholderText(/calories cost/i);
-  await userEvent.clear(productName);
-  await userEvent.type(productName, 'b');
-  await userEvent.clear(caloriesCost);
-  await userEvent.type(caloriesCost, '5001');
-  await userEvent.click(productName);
-
-  expect(productName).toBeInvalid();
-  expect(caloriesCost).toBeInvalid();
-  expect(dialog.getByLabelText(/create b/i)).toBeDisabled();
-});
-
-test('existing product input is validated', async () => {
-  render(<Products />);
-
-  const editButton = await screen.findByRole('button', {
-    name: /open edit product dialog for bread/i,
-  });
-  await userEvent.click(editButton);
-  const dialog = within(screen.getByRole('dialog'));
-  const productName = dialog.getByPlaceholderText(/product name/i);
-  const caloriesCost = dialog.getByPlaceholderText(/calories cost/i);
-  await userEvent.clear(productName);
-  await userEvent.type(productName, 'a');
-  await userEvent.clear(caloriesCost);
-  await userEvent.type(caloriesCost, '5002');
-  await userEvent.click(productName);
-
-  expect(productName).toBeInvalid();
-  expect(caloriesCost).toBeInvalid();
-  expect(dialog.getByRole('button', { name: /save/i })).toBeDisabled();
-});
-
 test('product can be selected', async () => {
   render(<Products />);
 

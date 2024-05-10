@@ -4,8 +4,11 @@ import {
   expectCategory,
   givenCategories,
   givenProductInputDialog,
+  thenCaloriesCostIsInvalid,
   thenCategoryIsInvalid,
+  thenDefaultQuantityIsInvalid,
   thenFormValueContains,
+  thenProductNameIsInvalid,
   thenSubmitButtonIsDisabled,
   whenCaloriesCostChanged,
   whenCategoryCleared,
@@ -40,6 +43,22 @@ test('I can add new product', async () => {
     defaultQuantity: 120,
     category: expectCategory('Vegetables'),
   });
+});
+
+test('I cannot add product with invalid name, calories cost or default quantity', async () => {
+  const user = userEvent.setup();
+  const categories = givenCategories('Fruits', 'Vegetables');
+
+  render(givenProductInputDialog().withCategoriesForSelect(categories).please());
+
+  await whenDialogOpened(user);
+  await whenProductNameChanged(user, 'A');
+  await whenCaloriesCostChanged(user, '0');
+  await whenDefaultQuantityChanged(user, '0');
+  await thenProductNameIsInvalid();
+  await thenCaloriesCostIsInvalid();
+  await thenDefaultQuantityIsInvalid();
+  await thenSubmitButtonIsDisabled();
 });
 
 test('I cannot add product when category is empty', async () => {

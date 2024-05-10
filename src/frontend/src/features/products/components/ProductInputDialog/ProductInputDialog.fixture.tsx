@@ -109,6 +109,18 @@ export const thenFormValueContains = async (
   expect(onSubmitMock).toHaveBeenCalledWith<[ProductFormData]>(product);
 };
 
+export const thenProductNameIsInvalid = async (): Promise<void> => {
+  expect(screen.getByPlaceholderText(/product name/i)).toBeInvalid();
+};
+
+export const thenCaloriesCostIsInvalid = async (): Promise<void> => {
+  expect(screen.getByPlaceholderText(/calories cost/i)).toBeInvalid();
+};
+
+export const thenDefaultQuantityIsInvalid = async (): Promise<void> => {
+  expect(screen.getByPlaceholderText(/default quantity/i)).toBeInvalid();
+};
+
 export const thenCategoryIsInvalid = async (): Promise<void> => {
   expect(screen.getByRole('combobox', { name: /category/i })).toBeInvalid();
 };
