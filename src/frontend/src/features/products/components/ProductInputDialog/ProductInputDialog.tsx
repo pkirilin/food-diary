@@ -154,7 +154,6 @@ const ProductInputDialog: FC<ProductInputDialogProps> = ({
         <Button
           type="submit"
           form="product-input-form"
-          aria-label={`${product ? 'Save' : 'Create'} ${productName.value} and close dialog`}
           variant="text"
           color="primary"
           disabled={isAnyValueInvalid || !isAnyValueChanged}
