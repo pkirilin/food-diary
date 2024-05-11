@@ -2,8 +2,6 @@ import { type FC, useEffect, useState } from 'react';
 import { type categoryLib } from '@/entities/category';
 import { type noteModel } from '@/entities/note';
 import { productLib, type productModel } from '@/entities/product';
-import { useInput } from '@/shared/hooks';
-import { mapToTextInputProps, validateProductName } from '@/shared/lib';
 import { Button, Dialog } from '@/shared/ui';
 import { useNoteDialog } from '../../lib/useNoteDialog';
 import { useProductDialog } from '../../lib/useProductDialog';
@@ -44,13 +42,6 @@ export const NoteInputDialog: FC<Props> = ({
 }) => {
   const productAutocompleteInput = productLib.useAutocompleteInput(product);
 
-  const productNameInput = useInput({
-    initialValue: '',
-    errorHelperText: 'Product name is invalid',
-    validate: validateProductName,
-    mapToInputProps: mapToTextInputProps,
-  });
-
   const { setValue: setProductAutocompleteValue, clearValue: clearProductAutocompleteValue } =
     productAutocompleteInput;
 
@@ -90,15 +81,12 @@ export const NoteInputDialog: FC<Props> = ({
           defaultQuantity: value.defaultQuantity,
           category: value.category,
         });
-
-        productNameInput.setValue(value.name);
       }
     },
   });
 
   const { state: productDialogState } = useProductDialog({
     productFormValues,
-    productNameInput,
     categorySelect,
     onClose: () => {
       setCurrentInputDialogType('note');

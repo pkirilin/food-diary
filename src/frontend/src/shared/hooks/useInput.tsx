@@ -14,6 +14,7 @@ interface UseInputOptions<TValue, TProps> {
   errorHelperText: string;
   validate: ValidatorFunction<TValue>;
   mapToInputProps: MapToInputPropsFunction<TValue, TProps>;
+  touched?: boolean;
 }
 
 export type UseInputResult<TValue, TProps> = InputOptions<TValue> & {
@@ -27,11 +28,12 @@ export function useInput<TValue, TProps>({
   errorHelperText,
   validate,
   mapToInputProps,
+  touched = false,
 }: UseInputOptions<TValue, TProps>): UseInputResult<TValue, TProps> {
   const [value, originalSetValue] = useState<TValue>(initialValue);
   const [helperText, setHelperText] = useState(VALID_HELPER_TEXT);
   const [isInvalid, setIsInvalid] = useState(false);
-  const [isTouched, setIsTouched] = useState(false);
+  const [isTouched, setIsTouched] = useState(touched);
 
   const setValue = useCallback(
     (newValue: TValue) => {

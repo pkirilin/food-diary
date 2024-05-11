@@ -14,6 +14,7 @@ import {
   thenFormValueContains,
   thenProductNameHasValue,
   thenProductNameIsInvalid,
+  thenProductNameIsValid,
   thenSubmitButtonIsDisabled,
   whenCaloriesCostChanged,
   whenCategoryCleared,
@@ -157,4 +158,14 @@ test('Dialog input is cleared on close', async () => {
   await thenCaloriesCostHasValue(60);
   await thenDefaultQuantityHasValue(120);
   await thenCategoryHasValue('Fruits');
+});
+
+test('New product name input is valid by default', async () => {
+  const user = userEvent.setup();
+  const categories = givenCategories('Fruits');
+
+  render(givenProductInputDialog().withCategoriesForSelect(categories).please());
+
+  await whenDialogOpened(user);
+  await thenProductNameIsValid();
 });

@@ -121,6 +121,10 @@ export const thenProductNameIsInvalid = async (): Promise<void> => {
   expect(screen.getByPlaceholderText(/product name/i)).toBeInvalid();
 };
 
+export const thenProductNameIsValid = async (): Promise<void> => {
+  expect(screen.getByPlaceholderText(/product name/i)).toBeValid();
+};
+
 export const thenProductNameHasValue = async (value: string): Promise<void> => {
   expect(screen.getByPlaceholderText(/product name/i)).toHaveValue(value);
 };

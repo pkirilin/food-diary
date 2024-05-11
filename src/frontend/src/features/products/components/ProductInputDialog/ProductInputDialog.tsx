@@ -1,8 +1,6 @@
 import { type FC, useState, useCallback, useEffect } from 'react';
 import { CategorySelect } from '@/entities/category';
 import { ProductInputForm, productLib, type productModel } from '@/entities/product';
-import { useInput } from '@/shared/hooks';
-import { mapToTextInputProps, validateProductName } from '@/shared/lib';
 import { type SelectOption } from '@/shared/types';
 import { Button, Dialog } from '@/shared/ui';
 
@@ -34,21 +32,11 @@ export const ProductInputDialog: FC<ProductInputDialogProps> = ({
   const { values: productFormValues, clearValues: clearProductFormValues } =
     productLib.useFormValues(product);
 
-  const productNameInput = useInput({
-    initialValue: productFormValues.name,
-    errorHelperText: 'Product name is invalid',
-    validate: validateProductName,
-    mapToInputProps: mapToTextInputProps,
-  });
-
-  const { clearValue: clearProductName } = productNameInput;
-
   useEffect(() => {
     if (opened) {
       clearProductFormValues();
-      clearProductName();
     }
-  }, [clearProductFormValues, clearProductName, opened]);
+  }, [clearProductFormValues, opened]);
 
   const handleSubmitDisabledChange = useCallback((disabled: boolean): void => {
     setSubmitDisabled(disabled);
@@ -64,7 +52,6 @@ export const ProductInputDialog: FC<ProductInputDialogProps> = ({
         <ProductInputForm
           id="product-input-form"
           values={productFormValues}
-          productNameInput={productNameInput}
           onSubmit={onSubmit}
           onSubmitDisabledChange={handleSubmitDisabledChange}
           renderCategoryInput={categoryInputProps => (
