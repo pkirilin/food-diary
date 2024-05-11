@@ -1,15 +1,14 @@
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Box, IconButton, Stack, Tooltip, Typography } from '@mui/material';
 import { useState, type FC } from 'react';
-import { useAppSelector } from '@/app/store';
-import { selectCheckedProductIds } from '../selectors';
-import CreateProduct from './CreateProduct';
+import { productLib } from '@/entities/product';
+import { AddProduct } from '@/features/product/addEdit';
 import DeleteProductsDialog from './DeleteProductsDialog';
 import { SearchByCategory } from './SearchByCategory';
 import { SearchByName } from './SearchByName';
 
 const ProductsTableToolbar: FC = () => {
-  const checkedProductIds = useAppSelector(selectCheckedProductIds);
+  const checkedProductIds = productLib.useCheckedProductIds();
   const [isDeleteDialogOpened, setIsDeleteDialogOpened] = useState(false);
   const isSelectionActive = checkedProductIds.length > 0;
 
@@ -54,7 +53,7 @@ const ProductsTableToolbar: FC = () => {
           >
             <SearchByName />
             <SearchByCategory />
-            <CreateProduct />
+            <AddProduct />
           </Stack>
         </Stack>
       )}

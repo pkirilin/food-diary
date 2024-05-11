@@ -1,7 +1,13 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import { productApi } from '@/entities/product';
-import { type SelectOption } from '@/shared/types';
-import { type ProductItemsFilter } from './types';
+import { type ItemsFilterBase, type SelectOption } from '@/shared/types';
+
+export interface ProductItemsFilter extends ItemsFilterBase {
+  pageNumber: number;
+  pageSize: number;
+  productSearchName?: string;
+  category: SelectOption | null;
+}
 
 export interface ProductsState {
   checkedProductIds: number[];
@@ -18,7 +24,7 @@ const initialState: ProductsState = {
   },
 };
 
-const productsSlice = createSlice({
+const productSlice = createSlice({
   name: 'products',
   initialState,
   reducers: {
@@ -72,6 +78,4 @@ const productsSlice = createSlice({
       }),
 });
 
-export const actions = productsSlice.actions;
-
-export default productsSlice.reducer;
+export const { actions, reducer } = productSlice;

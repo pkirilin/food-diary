@@ -2,33 +2,29 @@ import { TablePagination } from '@mui/material';
 import { type FC } from 'react';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '@/app/store';
-import { productApi } from '@/entities/product';
-import { selectProductsQueryArg } from '../selectors';
-import { pageNumberChanged, pageSizeChanged } from '../store';
+import { productLib, productModel } from '@/entities/product';
 
 const ProductsTablePagination: FC = () => {
-  const getProductsQueryArg = useAppSelector(selectProductsQueryArg);
-  const getProductsQuery = productApi.useGetProductsQuery(getProductsQueryArg);
-  const totalProductsCount = getProductsQuery.data?.totalProductsCount ?? 0;
+  const products = productLib.useProducts();
   const { pageNumber, pageSize } = useAppSelector(state => state.products.filter);
   const dispatch = useDispatch();
 
   function handleChangePage(
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent> | null,
+    _: React.MouseEvent<HTMLButtonElement, MouseEvent> | null,
     pageIndex: number,
   ): void {
-    dispatch(pageNumberChanged(pageIndex + 1));
+    dispatch(productModel.actions.pageNumberChanged(pageIndex + 1));
   }
 
   function handleChangeRowsPerPage(event: React.ChangeEvent<HTMLInputElement>): void {
     const newPageSize = Number(event.target.value);
-    dispatch(pageSizeChanged(newPageSize));
+    dispatch(productModel.actions.pageSizeChanged(newPageSize));
   }
 
   return (
     <TablePagination
       component="div"
-      count={totalProductsCount}
+      count={products.totalCount}
       page={pageNumber - 1}
       rowsPerPage={pageSize}
       onPageChange={handleChangePage}

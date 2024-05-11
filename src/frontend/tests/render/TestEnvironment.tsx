@@ -1,7 +1,7 @@
 import { type PropsWithChildren, type FC, useEffect } from 'react';
 import { useSubmit } from 'react-router-dom';
 import { useAppDispatch } from '@/app/store';
-import { pageSizeChanged } from 'src/features/products/store';
+import { productModel } from '@/entities/product';
 
 interface TestEnvironmentProps {
   signOutAfterMilliseconds?: number;
@@ -32,7 +32,7 @@ const TestEnvironment: FC<PropsWithChildren<TestEnvironmentProps>> = ({
 
   useEffect(() => {
     if (pageSizeOverride != null) {
-      dispatch(pageSizeChanged(pageSizeOverride));
+      dispatch(productModel.actions.pageSizeChanged(pageSizeOverride));
     }
   }, [dispatch, pageSizeOverride]);
 

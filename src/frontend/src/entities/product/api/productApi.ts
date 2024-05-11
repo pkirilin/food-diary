@@ -1,6 +1,5 @@
 import { api } from '@/shared/api';
 import { createUrl } from '@/shared/lib';
-import { type ProductsResponse } from '../../../features/products/types';
 import {
   type CreateProductResponse,
   type CreateProductRequest,
@@ -8,11 +7,12 @@ import {
   type EditProductRequest,
   type GetProductsRequest,
   type ProductSelectOption,
+  type GetProductsResponse,
 } from './contracts';
 
 export const productApi = api.injectEndpoints({
   endpoints: builder => ({
-    getProducts: builder.query<ProductsResponse, GetProductsRequest>({
+    getProducts: builder.query<GetProductsResponse, GetProductsRequest>({
       query: request => createUrl('/api/v1/products', { ...request }),
       providesTags: ['product'],
     }),
