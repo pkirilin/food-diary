@@ -8,12 +8,12 @@ interface Result {
   clearValues: () => void;
 }
 
-export const useFormValues = (): Result => {
-  const [values, setValues] = useState<FormValues>(EMPTY_FORM_VALUES);
+export const useFormValues = (initialValues = EMPTY_FORM_VALUES): Result => {
+  const [values, setValues] = useState<FormValues>(initialValues);
 
   const clearValues = useCallback(() => {
-    setValues(EMPTY_FORM_VALUES);
-  }, []);
+    setValues(initialValues);
+  }, [initialValues]);
 
   return {
     values,

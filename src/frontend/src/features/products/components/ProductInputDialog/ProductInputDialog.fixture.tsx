@@ -1,5 +1,5 @@
 import { ThemeProvider } from '@mui/material';
-import { screen } from '@testing-library/dom';
+import { screen, waitForElementToBeRemoved } from '@testing-library/dom';
 import { type UserEvent } from '@testing-library/user-event';
 import { type ReactElement } from 'react';
 import { type Mock } from 'vitest';
@@ -72,6 +72,10 @@ export const whenDialogOpened = async (user: UserEvent): Promise<void> => {
   await user.click(screen.getByRole('button', { name: 'Open' }));
 };
 
+export const whenDialogClosed = async (user: UserEvent): Promise<void> => {
+  await user.click(screen.getByRole('button', { name: /cancel/i }));
+};
+
 export const whenProductNameChanged = async (user: UserEvent, name: string): Promise<void> => {
   await user.clear(screen.getByPlaceholderText(/product name/i));
   await user.type(screen.getByPlaceholderText(/product name/i), name);
@@ -117,18 +121,38 @@ export const thenProductNameIsInvalid = async (): Promise<void> => {
   expect(screen.getByPlaceholderText(/product name/i)).toBeInvalid();
 };
 
+export const thenProductNameHasValue = async (value: string): Promise<void> => {
+  expect(screen.getByPlaceholderText(/product name/i)).toHaveValue(value);
+};
+
 export const thenCaloriesCostIsInvalid = async (): Promise<void> => {
   expect(screen.getByPlaceholderText(/calories cost/i)).toBeInvalid();
+};
+
+export const thenCaloriesCostHasValue = async (value: number): Promise<void> => {
+  expect(screen.getByPlaceholderText(/calories cost/i)).toHaveValue(value);
 };
 
 export const thenDefaultQuantityIsInvalid = async (): Promise<void> => {
   expect(screen.getByPlaceholderText(/default quantity/i)).toBeInvalid();
 };
 
+export const thenDefaultQuantityHasValue = async (value: number): Promise<void> => {
+  expect(screen.getByPlaceholderText(/default quantity/i)).toHaveValue(value);
+};
+
 export const thenCategoryIsInvalid = async (): Promise<void> => {
   expect(screen.getByRole('combobox', { name: /category/i })).toBeInvalid();
 };
 
+export const thenCategoryHasValue = async (value: string): Promise<void> => {
+  expect(screen.getByRole('combobox', { name: /category/i })).toHaveValue(value);
+};
+
 export const thenSubmitButtonIsDisabled = async (): Promise<void> => {
   expect(screen.getByRole('button', { name: /submit/i })).toBeDisabled();
+};
+
+export const thenDialogShouldBeHidden = async (): Promise<void> => {
+  await waitForElementToBeRemoved(screen.getByRole('dialog'));
 };

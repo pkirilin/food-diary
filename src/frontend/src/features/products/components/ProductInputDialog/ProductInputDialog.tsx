@@ -1,6 +1,6 @@
-import { type FC, useState, useCallback } from 'react';
+import { type FC, useState, useCallback, useEffect } from 'react';
 import { CategorySelect } from '@/entities/category';
-import { ProductInputForm, type productModel } from '@/entities/product';
+import { ProductInputForm, productLib, type productModel } from '@/entities/product';
 import { useInput } from '@/shared/hooks';
 import { mapToTextInputProps, validateProductName } from '@/shared/lib';
 import { type SelectOption } from '@/shared/types';
@@ -29,14 +29,26 @@ export const ProductInputDialog: FC<ProductInputDialogProps> = ({
   onSubmit,
   onClose,
 }) => {
+  const [submitDisabled, setSubmitDisabled] = useState(true);
+
+  const { values: productFormValues, clearValues: clearProductFormValues } =
+    productLib.useFormValues(product);
+
   const productNameInput = useInput({
-    initialValue: product.name,
+    initialValue: productFormValues.name,
     errorHelperText: 'Product name is invalid',
     validate: validateProductName,
     mapToInputProps: mapToTextInputProps,
   });
 
-  const [submitDisabled, setSubmitDisabled] = useState(true);
+  const { clearValue: clearProductName } = productNameInput;
+
+  useEffect(() => {
+    if (opened) {
+      clearProductFormValues();
+      clearProductName();
+    }
+  }, [clearProductFormValues, clearProductName, opened]);
 
   const handleSubmitDisabledChange = useCallback((disabled: boolean): void => {
     setSubmitDisabled(disabled);
@@ -51,7 +63,7 @@ export const ProductInputDialog: FC<ProductInputDialogProps> = ({
       content={
         <ProductInputForm
           id="product-input-form"
-          values={product}
+          values={productFormValues}
           productNameInput={productNameInput}
           onSubmit={onSubmit}
           onSubmitDisabledChange={handleSubmitDisabledChange}

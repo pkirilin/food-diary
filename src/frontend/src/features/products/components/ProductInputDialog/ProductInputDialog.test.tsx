@@ -4,16 +4,22 @@ import {
   expectCategory,
   givenCategories,
   givenProductInputDialog,
+  thenCaloriesCostHasValue,
   thenCaloriesCostIsInvalid,
+  thenCategoryHasValue,
   thenCategoryIsInvalid,
+  thenDefaultQuantityHasValue,
   thenDefaultQuantityIsInvalid,
+  thenDialogShouldBeHidden,
   thenFormValueContains,
+  thenProductNameHasValue,
   thenProductNameIsInvalid,
   thenSubmitButtonIsDisabled,
   whenCaloriesCostChanged,
   whenCategoryCleared,
   whenCategorySelected,
   whenDefaultQuantityChanged,
+  whenDialogClosed,
   whenDialogOpened,
   whenProductNameChanged,
   whenProductSaved,
@@ -120,4 +126,35 @@ test('I cannot edit product when category is empty', async () => {
   await whenCategoryCleared(user);
   await thenCategoryIsInvalid();
   await thenSubmitButtonIsDisabled();
+});
+
+test('Dialog input is cleared on close', async () => {
+  const user = userEvent.setup();
+  const categories = givenCategories('Fruits', 'Fruits new');
+
+  render(
+    givenProductInputDialog()
+      .withCategoriesForSelect(categories)
+      .withProduct({
+        name: 'Red apple',
+        caloriesCost: 60,
+        defaultQuantity: 120,
+        category: categories[0],
+      })
+      .please(),
+  );
+
+  await whenDialogOpened(user);
+  await whenProductNameChanged(user, 'Green apple');
+  await whenCaloriesCostChanged(user, '70');
+  await whenDefaultQuantityChanged(user, '110');
+  await whenCategorySelected(user, /fruits new/i);
+  await whenDialogClosed(user);
+  await thenDialogShouldBeHidden();
+
+  await whenDialogOpened(user);
+  await thenProductNameHasValue('Red apple');
+  await thenCaloriesCostHasValue(60);
+  await thenDefaultQuantityHasValue(120);
+  await thenCategoryHasValue('Fruits');
 });
