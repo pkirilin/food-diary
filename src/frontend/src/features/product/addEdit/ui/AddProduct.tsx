@@ -42,7 +42,6 @@ export const AddProduct: FC = () => {
             size="large"
             onClick={handleCreate}
             disabled={products.isLoading || createProductRequest.isLoading}
-            aria-label="Open create product dialog"
           >
             <AddIcon />
           </IconButton>
@@ -50,8 +49,8 @@ export const AddProduct: FC = () => {
       </Tooltip>
       <ProductInputDialog
         opened={isDialogOpened}
-        title="Create product"
-        submitText="Create"
+        title="New product"
+        submitText="Add"
         isLoading={createProductRequest.isLoading || products.isFetching}
         product={product}
         categories={categorySelect.data}
