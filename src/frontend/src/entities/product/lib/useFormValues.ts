@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { EMPTY_FORM_VALUES } from '../model/constants';
 import { type FormValues } from '../model/types';
 
@@ -15,9 +15,12 @@ export const useFormValues = (initialValues = EMPTY_FORM_VALUES): Result => {
     setValues(initialValues);
   }, [initialValues]);
 
-  return {
-    values,
-    setValues,
-    clearValues,
-  };
+  return useMemo(
+    () => ({
+      values,
+      setValues,
+      clearValues,
+    }),
+    [clearValues, values],
+  );
 };
