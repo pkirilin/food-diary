@@ -3,12 +3,11 @@ import { IconButton, Tooltip } from '@mui/material';
 import { type FC, useEffect, useState } from 'react';
 import { useAppSelector } from '@/app/store';
 import { categoryLib } from '@/entities/category';
-import { productApi } from '@/entities/product';
+import { productApi, productLib, type productModel } from '@/entities/product';
 import { toCreateProductRequest } from '../mapping';
 import { useProducts } from '../model';
 import { selectProductsQueryArg } from '../selectors';
-import { type ProductFormData } from '../types';
-import ProductInputDialog from './ProductInputDialog';
+import { ProductInputDialog } from './ProductInputDialog';
 
 const CreateProduct: FC = () => {
   const [isDialogOpened, setIsDialogOpened] = useState(false);
@@ -17,6 +16,7 @@ const CreateProduct: FC = () => {
   const categorySelect = categoryLib.useCategorySelectData();
   const products = useProducts();
   const [createProduct, createProductRequest] = productApi.useCreateProductMutation();
+  const { values: product } = productLib.useFormValues();
 
   useEffect(() => {
     if (createProductRequest.isSuccess && products.isChanged) {
@@ -28,9 +28,15 @@ const CreateProduct: FC = () => {
     setIsDialogOpened(true);
   };
 
-  const handleDialogSubmit = (formData: ProductFormData): void => {
-    const request = toCreateProductRequest(formData);
-    void createProduct(request);
+  const handleDialogSubmit = (formData: productModel.FormValues): void => {
+    if (formData.category) {
+      const request = toCreateProductRequest(formData.category.id, formData);
+      void createProduct(request);
+    }
+  };
+
+  const handleDialogClose = (): void => {
+    setIsDialogOpened(false);
   };
 
   return (
@@ -48,14 +54,15 @@ const CreateProduct: FC = () => {
         </span>
       </Tooltip>
       <ProductInputDialog
-        isOpened={isDialogOpened}
-        setIsOpened={setIsDialogOpened}
+        opened={isDialogOpened}
         title="Create product"
         submitText="Create"
-        onSubmit={handleDialogSubmit}
         isLoading={createProductRequest.isLoading || products.isFetching}
+        product={product}
         categories={categorySelect.data}
         categoriesLoading={categorySelect.isLoading}
+        onSubmit={handleDialogSubmit}
+        onClose={handleDialogClose}
       />
     </>
   );

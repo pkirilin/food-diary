@@ -1,20 +1,24 @@
-import { TextField, type TextFieldProps } from '@mui/material';
+import { TextField } from '@mui/material';
 import { useEffect, type FC, type FormEventHandler, type ReactElement } from 'react';
-import { useInput, type UseInputResult } from '@/shared/hooks';
+import { useInput } from '@/shared/hooks';
 import {
   mapToNumericInputProps,
   mapToSelectProps,
-  validateCaloriesCost,
-  validateQuantity,
+  mapToTextInputProps,
   validateSelectOption,
 } from '@/shared/lib';
 import { type SelectOption, type SelectProps } from '@/shared/types';
-import { EMPTY_FORM_VALUES, type FormValues } from '../model';
+import {
+  validateProductName,
+  type FormValues,
+  validateCaloriesCost,
+  validateDefaultQuantity,
+} from '../model';
 
 export interface ProductInputFormProps {
   id: string;
   values: FormValues;
-  productNameInput: UseInputResult<string, TextFieldProps>;
+  touched?: boolean;
   renderCategoryInput: (props: SelectProps<SelectOption>) => ReactElement;
   onSubmit: (values: FormValues) => void;
   onSubmitDisabledChange: (disabled: boolean) => void;
@@ -23,27 +27,35 @@ export interface ProductInputFormProps {
 export const ProductInputForm: FC<ProductInputFormProps> = ({
   id,
   values,
-  productNameInput,
+  touched = false,
   renderCategoryInput,
   onSubmit,
   onSubmitDisabledChange,
 }) => {
+  const productNameInput = useInput({
+    initialValue: values.name,
+    errorHelperText: 'Product name is invalid',
+    validate: validateProductName,
+    mapToInputProps: mapToTextInputProps,
+    touched,
+  });
+
   const caloriesCostInput = useInput({
-    initialValue: values?.caloriesCost ?? EMPTY_FORM_VALUES.caloriesCost,
+    initialValue: values.caloriesCost,
     errorHelperText: 'Calories cost is invalid',
     validate: validateCaloriesCost,
     mapToInputProps: mapToNumericInputProps,
   });
 
   const defaultQuantityInput = useInput({
-    initialValue: values?.defaultQuantity ?? EMPTY_FORM_VALUES.defaultQuantity,
+    initialValue: values.defaultQuantity,
     errorHelperText: 'Default quantity is invalid',
-    validate: validateQuantity,
+    validate: validateDefaultQuantity,
     mapToInputProps: mapToNumericInputProps,
   });
 
   const categoryInput = useInput({
-    initialValue: values?.category ?? EMPTY_FORM_VALUES.category,
+    initialValue: values.category,
     errorHelperText: 'Category is required',
     validate: validateSelectOption,
     mapToInputProps: mapToSelectProps,
@@ -85,6 +97,7 @@ export const ProductInputForm: FC<ProductInputFormProps> = ({
         placeholder="Product name"
         fullWidth
         autoFocus
+        margin="normal"
       />
       <TextField
         {...caloriesCostInput.inputProps}

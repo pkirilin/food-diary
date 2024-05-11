@@ -39,12 +39,12 @@ export const UpdateAppBanner: FC = () => {
             <Avatar sx={theme => ({ bgcolor: theme.palette.primary.main })}>
               <BrowserUpdatedIcon />
             </Avatar>
-            <Typography paragraph marginBottom={1}>
+            <Box mb={1}>
               <Typography fontWeight="bold">New update available</Typography>
               <Typography variant="body2">
                 Click on reload button to update the application
               </Typography>
-            </Typography>
+            </Box>
           </Box>
           <Box display="flex" px={{ xs: 1, sm: 2 }} gap={1} alignSelf="flex-end">
             <Button onClick={close} variant="text">

@@ -1,13 +1,10 @@
-import { type TextFieldProps } from '@mui/material';
 import { useCallback, useState } from 'react';
 import { CategorySelect, type categoryLib } from '@/entities/category';
 import { ProductInputForm, type productModel } from '@/entities/product';
-import { type UseInputResult } from '@/shared/hooks';
 import { type DialogState } from '../model';
 
 interface Args {
   productFormValues: productModel.FormValues;
-  productNameInput: UseInputResult<string, TextFieldProps>;
   categorySelect: categoryLib.CategorySelectData;
   onClose: () => void;
   onSubmit: (values: productModel.FormValues) => void | Promise<void>;
@@ -19,15 +16,14 @@ interface Result {
 
 export const useProductDialog = ({
   productFormValues,
-  productNameInput,
   categorySelect,
   onClose,
   onSubmit,
 }: Args): Result => {
-  const [productSubmitDisabled, setProductSubmitDisabled] = useState(true);
+  const [submitDisabled, setSubmitDisabled] = useState(true);
 
-  const handleProductInputFormSubmitDisabledChange = useCallback((disabled: boolean): void => {
-    setProductSubmitDisabled(disabled);
+  const handleSubmitDisabledChange = useCallback((disabled: boolean): void => {
+    setSubmitDisabled(disabled);
   }, []);
 
   return {
@@ -36,14 +32,14 @@ export const useProductDialog = ({
       title: 'New product',
       submitText: 'Add',
       submitLoading: false,
-      submitDisabled: productSubmitDisabled,
+      submitDisabled,
       cancelDisabled: false,
       formId: 'product-form',
       content: (
         <ProductInputForm
+          touched
           id="product-form"
           values={productFormValues}
-          productNameInput={productNameInput}
           renderCategoryInput={categoryInputProps => (
             <CategorySelect
               {...categoryInputProps}
@@ -54,7 +50,7 @@ export const useProductDialog = ({
             />
           )}
           onSubmit={onSubmit}
-          onSubmitDisabledChange={handleProductInputFormSubmitDisabledChange}
+          onSubmitDisabledChange={handleSubmitDisabledChange}
         />
       ),
       onClose,

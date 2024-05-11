@@ -1,50 +1,171 @@
-import { render, screen, within } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { type ProductFormData } from '../../types';
-import ProductInputDialog from './ProductInputDialog';
+import {
+  expectCategory,
+  givenCategories,
+  givenProductInputDialog,
+  thenCaloriesCostHasValue,
+  thenCaloriesCostIsInvalid,
+  thenCategoryHasValue,
+  thenCategoryIsInvalid,
+  thenDefaultQuantityHasValue,
+  thenDefaultQuantityIsInvalid,
+  thenDialogShouldBeHidden,
+  thenFormValueContains,
+  thenProductNameHasValue,
+  thenProductNameIsInvalid,
+  thenProductNameIsValid,
+  thenSubmitButtonIsDisabled,
+  whenCaloriesCostChanged,
+  whenCategoryCleared,
+  whenCategorySelected,
+  whenDefaultQuantityChanged,
+  whenDialogClosed,
+  whenDialogOpened,
+  whenProductNameChanged,
+  whenProductSaved,
+} from './ProductInputDialog.fixture';
 
-test('should submit form on valid input', async () => {
+test('I can add new product', async () => {
   const user = userEvent.setup();
   const onSubmitMock = vi.fn();
+  const categories = givenCategories('Fruits', 'Vegetables');
 
   render(
-    <ProductInputDialog
-      isOpened={true}
-      setIsOpened={vi.fn()}
-      title="Test"
-      submitText="Submit"
-      onSubmit={onSubmitMock}
-      isLoading={false}
-      categories={[
-        {
-          id: 1,
-          name: 'Test category',
-        },
-      ]}
-      categoriesLoading={false}
-    />,
+    givenProductInputDialog()
+      .withOnSubmitMock(onSubmitMock)
+      .withCategoriesForSelect(categories)
+      .please(),
   );
 
-  const productName = screen.getByPlaceholderText(/product name/i);
-  const caloriesCost = screen.getByPlaceholderText(/calories cost/i);
-  const defaultQuantity = screen.getByPlaceholderText(/default quantity/i);
-  const category = screen.getByPlaceholderText(/category/i);
-  await user.type(productName, 'Test product');
-  await user.clear(caloriesCost);
-  await user.clear(defaultQuantity);
-  await user.type(defaultQuantity, '50');
-  await user.type(caloriesCost, '150');
-  await user.click(category);
-  await user.click(within(screen.getByRole('listbox')).getByText(/test category/i));
-  await user.click(screen.getByRole('button', { name: /create test product/i }));
-
-  expect(onSubmitMock).toHaveBeenCalledWith({
-    name: 'Test product',
+  await whenDialogOpened(user);
+  await whenProductNameChanged(user, 'Potato');
+  await whenCaloriesCostChanged(user, '150');
+  await whenDefaultQuantityChanged(user, '120');
+  await whenCategorySelected(user, /vegetables/i);
+  await whenProductSaved(user);
+  await thenFormValueContains(onSubmitMock, {
+    name: 'Potato',
     caloriesCost: 150,
-    defaultQuantity: 50,
-    category: {
-      id: 1,
-      name: 'Test category',
-    },
-  } satisfies ProductFormData);
+    defaultQuantity: 120,
+    category: expectCategory('Vegetables'),
+  });
+});
+
+test('I can edit product', async () => {
+  const user = userEvent.setup();
+  const onSubmitMock = vi.fn();
+  const categories = givenCategories('Vegetables', 'Vegetables new');
+
+  render(
+    givenProductInputDialog()
+      .withCategoriesForSelect(categories)
+      .withProduct({
+        name: 'Potato',
+        caloriesCost: 150,
+        defaultQuantity: 120,
+        category: categories[1],
+      })
+      .withOnSubmitMock(onSubmitMock)
+      .please(),
+  );
+
+  await whenDialogOpened(user);
+  await whenProductNameChanged(user, 'Potato edited');
+  await whenCaloriesCostChanged(user, '140');
+  await whenDefaultQuantityChanged(user, '110');
+  await whenCategorySelected(user, /vegetables new/i);
+  await whenProductSaved(user);
+  await thenFormValueContains(onSubmitMock, {
+    name: 'Potato edited',
+    caloriesCost: 140,
+    defaultQuantity: 110,
+    category: expectCategory('Vegetables new'),
+  });
+});
+
+test('I cannot add product with invalid name, calories cost or default quantity', async () => {
+  const user = userEvent.setup();
+  const categories = givenCategories('Fruits', 'Vegetables');
+
+  render(givenProductInputDialog().withCategoriesForSelect(categories).please());
+
+  await whenDialogOpened(user);
+  await whenProductNameChanged(user, 'A');
+  await whenCaloriesCostChanged(user, '0');
+  await whenDefaultQuantityChanged(user, '0');
+  await thenProductNameIsInvalid();
+  await thenCaloriesCostIsInvalid();
+  await thenDefaultQuantityIsInvalid();
+  await thenSubmitButtonIsDisabled();
+});
+
+test('I cannot add product when category is empty', async () => {
+  const user = userEvent.setup();
+  const categories = givenCategories('Fruits', 'Vegetables');
+
+  render(givenProductInputDialog().withCategoriesForSelect(categories).please());
+
+  await whenDialogOpened(user);
+  await whenProductNameChanged(user, 'Potato');
+  await thenSubmitButtonIsDisabled();
+});
+
+test('I cannot edit product when category is empty', async () => {
+  const user = userEvent.setup();
+  const categories = givenCategories('Fruits', 'Vegetables');
+
+  render(
+    givenProductInputDialog()
+      .withCategoriesForSelect(categories)
+      .withProduct({ name: 'Red apple', category: categories[0] })
+      .please(),
+  );
+
+  await whenDialogOpened(user);
+  await whenProductNameChanged(user, 'Green apple');
+  await whenCategoryCleared(user);
+  await thenCategoryIsInvalid();
+  await thenSubmitButtonIsDisabled();
+});
+
+test('Dialog input is cleared on close', async () => {
+  const user = userEvent.setup();
+  const categories = givenCategories('Fruits', 'Fruits new');
+
+  render(
+    givenProductInputDialog()
+      .withCategoriesForSelect(categories)
+      .withProduct({
+        name: 'Red apple',
+        caloriesCost: 60,
+        defaultQuantity: 120,
+        category: categories[0],
+      })
+      .please(),
+  );
+
+  await whenDialogOpened(user);
+  await whenProductNameChanged(user, 'Green apple');
+  await whenCaloriesCostChanged(user, '70');
+  await whenDefaultQuantityChanged(user, '110');
+  await whenCategorySelected(user, /fruits new/i);
+  await whenDialogClosed(user);
+  await thenDialogShouldBeHidden();
+
+  await whenDialogOpened(user);
+  await thenProductNameHasValue('Red apple');
+  await thenCaloriesCostHasValue(60);
+  await thenDefaultQuantityHasValue(120);
+  await thenCategoryHasValue('Fruits');
+});
+
+test('New product name input is valid by default', async () => {
+  const user = userEvent.setup();
+  const categories = givenCategories('Fruits');
+
+  render(givenProductInputDialog().withCategoriesForSelect(categories).please());
+
+  await whenDialogOpened(user);
+  await thenProductNameIsValid();
 });

@@ -1,181 +1,86 @@
-import { TextField } from '@mui/material';
-import {
-  useEffect,
-  type FC,
-  type Dispatch,
-  type SetStateAction,
-  type FormEventHandler,
-} from 'react';
+import { type FC, useState, useCallback, useEffect } from 'react';
 import { CategorySelect } from '@/entities/category';
-import { useInput } from '@/shared/hooks';
-import {
-  mapToNumericInputProps,
-  mapToSelectProps,
-  mapToTextInputProps,
-  validateCaloriesCost,
-  validateProductName,
-  validateQuantity,
-  validateSelectOption,
-} from '@/shared/lib';
+import { ProductInputForm, productLib, type productModel } from '@/entities/product';
 import { type SelectOption } from '@/shared/types';
-import { Button, AppDialog } from '@/shared/ui';
-import { type ProductFormData } from '../../types';
+import { Button, Dialog } from '@/shared/ui';
 
 interface ProductInputDialogProps {
-  isOpened: boolean;
-  setIsOpened: Dispatch<SetStateAction<boolean>>;
+  opened: boolean;
   title: string;
   submitText: string;
-  onSubmit: (product: ProductFormData) => void;
   isLoading: boolean;
   categories: SelectOption[];
   categoriesLoading: boolean;
-  product?: ProductFormData;
+  product: productModel.FormValues;
+  onSubmit: (product: productModel.FormValues) => void;
+  onClose: () => void;
 }
 
-const ProductInputDialog: FC<ProductInputDialogProps> = ({
-  isOpened: isDialogOpened,
-  setIsOpened: setIsDialogOpened,
+export const ProductInputDialog: FC<ProductInputDialogProps> = ({
+  opened,
   title,
   submitText,
-  onSubmit,
   isLoading,
   categories,
   categoriesLoading,
   product,
+  onSubmit,
+  onClose,
 }) => {
-  const { clearValue: clearProductName, ...productName } = useInput({
-    initialValue: product?.name ?? '',
-    errorHelperText: 'Product name is invalid',
-    validate: validateProductName,
-    mapToInputProps: mapToTextInputProps,
-  });
+  const [submitDisabled, setSubmitDisabled] = useState(true);
 
-  const { clearValue: clearCaloriesCost, ...caloriesCost } = useInput({
-    initialValue: product?.caloriesCost ?? 100,
-    errorHelperText: 'Calories cost is invalid',
-    validate: validateCaloriesCost,
-    mapToInputProps: mapToNumericInputProps,
-  });
-
-  const { clearValue: clearDefaultQuantity, ...defaultQuantity } = useInput({
-    initialValue: product?.defaultQuantity ?? 100,
-    errorHelperText: 'Default quantity is invalid',
-    validate: validateQuantity,
-    mapToInputProps: mapToNumericInputProps,
-  });
-
-  const { clearValue: clearCategory, ...category } = useInput({
-    initialValue: product?.category ?? null,
-    errorHelperText: 'Category is required',
-    validate: validateSelectOption,
-    mapToInputProps: mapToSelectProps,
-  });
+  const { values: productFormValues, clearValues: clearProductFormValues } =
+    productLib.useFormValues(product);
 
   useEffect(() => {
-    if (isDialogOpened) {
-      clearProductName();
-      clearCaloriesCost();
-      clearDefaultQuantity();
-      clearCategory();
+    if (opened) {
+      clearProductFormValues();
     }
-  }, [clearCaloriesCost, clearDefaultQuantity, clearCategory, clearProductName, isDialogOpened]);
+  }, [clearProductFormValues, opened]);
 
-  const handleClose = (): void => {
-    setIsDialogOpened(false);
-  };
-
-  const handleSubmit: FormEventHandler<HTMLFormElement> = event => {
-    event.preventDefault();
-
-    if (category.value) {
-      onSubmit({
-        name: productName.value,
-        caloriesCost: caloriesCost.value,
-        defaultQuantity: defaultQuantity.value,
-        category: category.value,
-      });
-    }
-  };
-
-  const isAnyValueInvalid =
-    productName.isInvalid ||
-    caloriesCost.isInvalid ||
-    category.isInvalid ||
-    defaultQuantity.isInvalid;
-
-  const isAnyValueChanged =
-    productName.isTouched ||
-    caloriesCost.isTouched ||
-    category.isTouched ||
-    defaultQuantity.isTouched;
+  const handleSubmitDisabledChange = useCallback((disabled: boolean): void => {
+    setSubmitDisabled(disabled);
+  }, []);
 
   return (
-    <AppDialog
+    <Dialog
+      renderMode="fullScreenOnMobile"
       title={title}
-      isOpened={isDialogOpened}
-      onClose={handleClose}
+      opened={opened}
+      onClose={onClose}
       content={
-        <form id="product-input-form" onSubmit={handleSubmit}>
-          <TextField
-            {...productName.inputProps}
-            autoFocus
-            fullWidth
-            margin="normal"
-            label="Product"
-            placeholder="Enter product name"
-          />
-          <TextField
-            {...caloriesCost.inputProps}
-            type="number"
-            fullWidth
-            margin="normal"
-            label="Calories cost"
-            placeholder="Enter calories cost"
-          />
-          <TextField
-            {...defaultQuantity.inputProps}
-            type="number"
-            fullWidth
-            margin="normal"
-            label="Default quantity"
-            placeholder="Enter default quantity"
-          />
-          <CategorySelect
-            {...category.inputProps}
-            label="Category"
-            placeholder="Select a category"
-            options={categories}
-            optionsLoading={categoriesLoading}
-          />
-        </form>
+        <ProductInputForm
+          id="product-input-form"
+          values={productFormValues}
+          onSubmit={onSubmit}
+          onSubmitDisabledChange={handleSubmitDisabledChange}
+          renderCategoryInput={categoryInputProps => (
+            <CategorySelect
+              {...categoryInputProps}
+              label="Category"
+              placeholder="Select a category"
+              options={categories}
+              optionsLoading={categoriesLoading}
+            />
+          )}
+        />
       }
-      actionSubmit={
+      renderSubmit={submitProps => (
         <Button
+          {...submitProps}
           type="submit"
           form="product-input-form"
-          aria-label={`${product ? 'Save' : 'Create'} ${productName.value} and close dialog`}
-          variant="text"
-          color="primary"
-          disabled={isAnyValueInvalid || !isAnyValueChanged}
+          disabled={submitDisabled}
           loading={isLoading}
         >
           {submitText}
         </Button>
-      }
-      actionCancel={
-        <Button
-          type="button"
-          variant="text"
-          color="inherit"
-          disabled={isLoading}
-          onClick={handleClose}
-        >
+      )}
+      renderCancel={cancelProps => (
+        <Button {...cancelProps} type="button" disabled={isLoading} onClick={onClose}>
           Cancel
         </Button>
-      }
+      )}
     />
   );
 };
-
-export default ProductInputDialog;

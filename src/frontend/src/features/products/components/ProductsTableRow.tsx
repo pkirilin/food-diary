@@ -3,13 +3,13 @@ import { Checkbox, IconButton, TableCell, TableRow, Tooltip } from '@mui/materia
 import { type FC, useEffect, useState, useMemo } from 'react';
 import { useAppDispatch, useAppSelector } from '@/app/store';
 import { categoryLib } from '@/entities/category';
-import { productApi } from '@/entities/product';
+import { productApi, type productModel } from '@/entities/product';
 import { toEditProductRequest, toProductFormData } from '../mapping';
 import { useProducts } from '../model';
 import { selectCheckedProductIds } from '../selectors';
 import { productChecked, productUnchecked } from '../store';
-import { type Product, type ProductFormData } from '../types';
-import ProductInputDialog from './ProductInputDialog';
+import { type Product } from '../types';
+import { ProductInputDialog } from './ProductInputDialog';
 
 interface ProductsTableRowProps {
   product: Product;
@@ -35,9 +35,15 @@ const ProductsTableRow: FC<ProductsTableRowProps> = ({ product }: ProductsTableR
     setIsEditDialogOpened(true);
   };
 
-  const handleEditDialogSubmit = (formData: ProductFormData): void => {
-    const request = toEditProductRequest(product.id, formData);
-    void editProduct(request);
+  const handleEditDialogSubmit = (formData: productModel.FormValues): void => {
+    if (formData.category) {
+      const request = toEditProductRequest(product.id, formData.category.id, formData);
+      void editProduct(request);
+    }
+  };
+
+  const handleEditDialogClose = (): void => {
+    setIsEditDialogOpened(false);
   };
 
   const handleCheckedChange = (): void => {
@@ -92,15 +98,15 @@ const ProductsTableRow: FC<ProductsTableRowProps> = ({ product }: ProductsTableR
         </TableCell>
       </TableRow>
       <ProductInputDialog
-        isOpened={isEditDialogOpened}
-        setIsOpened={setIsEditDialogOpened}
+        opened={isEditDialogOpened}
         title="Edit product"
         submitText="Save"
-        onSubmit={handleEditDialogSubmit}
         isLoading={editProductRequest.isLoading || products.isFetching}
         product={productFormData}
         categories={categorySelect.data}
         categoriesLoading={categorySelect.isLoading}
+        onSubmit={handleEditDialogSubmit}
+        onClose={handleEditDialogClose}
       />
     </>
   );

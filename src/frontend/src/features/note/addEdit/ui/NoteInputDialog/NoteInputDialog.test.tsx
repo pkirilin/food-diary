@@ -300,3 +300,17 @@ describe('when input invalid', () => {
     await thenAddProductButtonIsDisabled();
   });
 });
+
+test('I cannot add note with new product which name is invalid', async () => {
+  const user = userEvent.setup();
+
+  render(
+    givenNoteInputDialog().withQuantity(100).withCategoriesForSelect('Test Category').please(),
+  );
+
+  await whenDialogOpened(user);
+  await whenAddedNotExistingProductOption(user, 'T');
+  await whenProductCategorySelected(user, /test category/i);
+  await thenProductNameIsInvalid();
+  await thenAddProductButtonIsDisabled();
+});
