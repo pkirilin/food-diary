@@ -9,7 +9,7 @@ import {
   Typography,
 } from '@mui/material';
 import { type FC, type ReactElement } from 'react';
-import { type Product } from '../../types';
+import { type Product } from '@/entities/product';
 import ProductsTableRow from '../ProductsTableRow';
 
 interface ProductsTableProps {

@@ -10,7 +10,7 @@ import {
 } from 'react';
 import { useDebounce } from 'use-debounce';
 import { useAppDispatch, useAppSelector } from '@/app/store';
-import { productSearchNameChanged } from '../store';
+import { productModel } from '@/entities/product';
 import * as styles from '../styles';
 
 const DEBOUNCE_QUERY_DELAY = 500;
@@ -30,12 +30,12 @@ export const SearchByName: FC = () => {
     }
 
     if (query === '') {
-      dispatch(productSearchNameChanged(query));
+      dispatch(productModel.actions.productSearchNameChanged(query));
       return;
     }
 
     if (debouncedQuery.length >= DEBOUNCE_QUERY_LENGTH_THRESHOLD) {
-      dispatch(productSearchNameChanged(debouncedQuery));
+      dispatch(productModel.actions.productSearchNameChanged(debouncedQuery));
     }
   }, [queryTouched, query, debouncedQuery, dispatch]);
 

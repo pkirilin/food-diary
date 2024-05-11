@@ -2,8 +2,8 @@ import { Divider, MenuItem, TextField, Typography } from '@mui/material';
 import { type FC, type ChangeEventHandler } from 'react';
 import { useAppDispatch, useAppSelector } from '@/app/store';
 import { categoryLib } from '@/entities/category';
+import { productModel } from '@/entities/product';
 import { type SelectOption } from '@/shared/types';
-import { filterByCategoryChanged } from '../store';
 import * as styles from '../styles';
 
 const ANY_CATEGORY_VALUE = ' ';
@@ -22,7 +22,7 @@ export const SearchByCategory: FC = () => {
 
   const handleChange: ChangeEventHandler<HTMLInputElement> = event => {
     const selectedCategory = findSelectedCategory(event.target.value);
-    dispatch(filterByCategoryChanged(selectedCategory));
+    dispatch(productModel.actions.filterByCategoryChanged(selectedCategory));
   };
 
   return (

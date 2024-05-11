@@ -4,10 +4,10 @@ import {
   type CreateProductRequest,
   type CreateProductResponse,
   type EditProductRequest,
+  type GetProductsResponse,
 } from '@/entities/product';
 import { API_URL } from '@/shared/config';
 import { type SelectOption } from '@/shared/types';
-import { type ProductsResponse } from 'src/features/products';
 import { DelayedHttpResponse } from '../DelayedHttpResponse';
 import * as productsService from './products.service';
 
@@ -29,7 +29,7 @@ export const handlers: HttpHandler[] = [
     const totalProductsCount = productsService.count();
     const categoryNamesMap = productsService.getCategoryNames(products);
 
-    const response: ProductsResponse = {
+    const response: GetProductsResponse = {
       productItems: products.map(({ id, name, caloriesCost, defaultQuantity, categoryId }) => ({
         id,
         name,

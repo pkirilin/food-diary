@@ -1,3 +1,17 @@
+export interface Product {
+  id: number;
+  name: string;
+  caloriesCost: number;
+  defaultQuantity: number;
+  categoryId: number;
+  categoryName: string;
+}
+
+export interface GetProductsResponse {
+  productItems: Product[];
+  totalProductsCount: number;
+}
+
 export interface GetProductsRequest {
   pageNumber: number;
   pageSize: number;

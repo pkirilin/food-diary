@@ -1,20 +1,15 @@
 import AddIcon from '@mui/icons-material/Add';
 import { IconButton, Tooltip } from '@mui/material';
 import { type FC, useEffect, useState } from 'react';
-import { useAppSelector } from '@/app/store';
 import { categoryLib } from '@/entities/category';
 import { productApi, productLib, type productModel } from '@/entities/product';
-import { toCreateProductRequest } from '../mapping';
-import { useProducts } from '../model';
-import { selectProductsQueryArg } from '../selectors';
+import { mapToCreateProductRequest } from '../lib';
 import { ProductInputDialog } from './ProductInputDialog';
 
-const CreateProduct: FC = () => {
+export const AddProduct: FC = () => {
   const [isDialogOpened, setIsDialogOpened] = useState(false);
-  const getProductsQueryArg = useAppSelector(selectProductsQueryArg);
-  const getProductsQuery = productApi.useGetProductsQuery(getProductsQueryArg);
   const categorySelect = categoryLib.useCategorySelectData();
-  const products = useProducts();
+  const products = productLib.useProducts();
   const [createProduct, createProductRequest] = productApi.useCreateProductMutation();
   const { values: product } = productLib.useFormValues();
 
@@ -30,7 +25,7 @@ const CreateProduct: FC = () => {
 
   const handleDialogSubmit = (formData: productModel.FormValues): void => {
     if (formData.category) {
-      const request = toCreateProductRequest(formData.category.id, formData);
+      const request = mapToCreateProductRequest(formData.category.id, formData);
       void createProduct(request);
     }
   };
@@ -46,8 +41,7 @@ const CreateProduct: FC = () => {
           <IconButton
             size="large"
             onClick={handleCreate}
-            disabled={getProductsQuery.isLoading || createProductRequest.isLoading}
-            aria-label="Open create product dialog"
+            disabled={products.isLoading || createProductRequest.isLoading}
           >
             <AddIcon />
           </IconButton>
@@ -55,8 +49,8 @@ const CreateProduct: FC = () => {
       </Tooltip>
       <ProductInputDialog
         opened={isDialogOpened}
-        title="Create product"
-        submitText="Create"
+        title="New product"
+        submitText="Add"
         isLoading={createProductRequest.isLoading || products.isFetching}
         product={product}
         categories={categorySelect.data}
@@ -67,5 +61,3 @@ const CreateProduct: FC = () => {
     </>
   );
 };
-
-export default CreateProduct;

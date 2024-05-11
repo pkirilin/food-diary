@@ -1,7 +1,6 @@
 import { configureAppStore } from '@/app/store';
 import { type SelectOption } from '@/shared/types';
-import { actions } from './slice';
-import { type ProductItemsFilter } from './types';
+import { type ProductItemsFilter, actions } from './productSlice';
 
 const { productChecked, productsChecked, productsUnchecked, productUnchecked } = actions;
 
