@@ -5,13 +5,15 @@ import {
   mapToNumericInputProps,
   mapToSelectProps,
   mapToTextInputProps,
-  validateCaloriesCost,
-  validateProductName,
-  validateQuantity,
   validateSelectOption,
 } from '@/shared/lib';
 import { type SelectOption, type SelectProps } from '@/shared/types';
-import { type FormValues } from '../model';
+import {
+  validateProductName,
+  type FormValues,
+  validateCaloriesCost,
+  validateDefaultQuantity,
+} from '../model';
 
 export interface ProductInputFormProps {
   id: string;
@@ -48,7 +50,7 @@ export const ProductInputForm: FC<ProductInputFormProps> = ({
   const defaultQuantityInput = useInput({
     initialValue: values.defaultQuantity,
     errorHelperText: 'Default quantity is invalid',
-    validate: validateQuantity,
+    validate: validateDefaultQuantity,
     mapToInputProps: mapToNumericInputProps,
   });
 
