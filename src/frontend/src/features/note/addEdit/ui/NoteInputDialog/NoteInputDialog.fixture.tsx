@@ -250,6 +250,10 @@ export const thenProductCategoryIsEmpty = async (): Promise<void> => {
   expect(screen.getByRole('combobox', { name: /category/i })).not.toHaveValue();
 };
 
+export const thenProductCategoryHasValue = async (value: string): Promise<void> => {
+  expect(screen.getByRole('combobox', { name: /category/i })).toHaveValue(value);
+};
+
 export const thenSubmitNoteButtonIsDisabled = async (): Promise<void> => {
   expect(screen.getByRole('button', { name: /submit/i })).toBeDisabled();
 };

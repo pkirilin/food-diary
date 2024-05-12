@@ -1,11 +1,16 @@
+import AddIcon from '@mui/icons-material/Add';
+import EditIcon from '@mui/icons-material/Edit';
+import FiberNewIcon from '@mui/icons-material/FiberNew';
 import {
   CircularProgress,
   type FilterOptionsState,
   Autocomplete,
   createFilterOptions,
+  type SvgIconOwnProps,
+  Box,
 } from '@mui/material';
 import TextField from '@mui/material/TextField';
-import { type FC, type SyntheticEvent } from 'react';
+import { useState, type FC, type SyntheticEvent } from 'react';
 import { type FormValues, type AutocompleteOption, EMPTY_FORM_VALUES } from '../model';
 
 const filter = createFilterOptions<AutocompleteOption>();
@@ -43,6 +48,9 @@ export const ProductAutocomplete: FC<ProductAutocompleteProps> = ({
   error,
   autoFocus,
 }) => {
+  const [newProductIconColor, setNewProductIconColor] =
+    useState<SvgIconOwnProps['color']>('action');
+
   const filterOptions = (
     options: AutocompleteOption[],
     state: FilterOptionsState<AutocompleteOption>,
@@ -138,7 +146,16 @@ export const ProductAutocomplete: FC<ProductAutocompleteProps> = ({
       freeSolo
       getOptionLabel={getOptionLabel}
       filterOptions={filterOptions}
-      renderOption={(props, option) => <li {...props}>{option.name}</li>}
+      renderOption={(props, option) => (
+        <Box component="li" {...props} display="flex" alignItems="center" gap={1}>
+          {option.freeSolo && (
+            <Box display="flex">
+              {option.editing ? <EditIcon fontSize="small" /> : <AddIcon fontSize="small" />}
+            </Box>
+          )}
+          <Box display="flex">{option.name}</Box>
+        </Box>
+      )}
       renderInput={inputParams => (
         <TextField
           {...inputParams}
@@ -147,8 +164,15 @@ export const ProductAutocomplete: FC<ProductAutocompleteProps> = ({
           error={error}
           helperText={helperText}
           autoFocus={autoFocus}
+          onFocus={() => {
+            setNewProductIconColor('primary');
+          }}
+          onBlur={() => {
+            setNewProductIconColor('action');
+          }}
           InputProps={{
             ...inputParams.InputProps,
+            startAdornment: value?.freeSolo ? <FiberNewIcon color={newProductIconColor} /> : null,
             endAdornment: loading ? (
               <CircularProgress color="inherit" size={20} />
             ) : (
