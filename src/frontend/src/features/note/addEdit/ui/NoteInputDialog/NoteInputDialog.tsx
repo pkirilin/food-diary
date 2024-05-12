@@ -91,7 +91,9 @@ export const NoteInputDialog: FC<Props> = ({
     onClose: () => {
       setCurrentInputDialogType('note');
     },
-    onSubmit: ({ name, caloriesCost, defaultQuantity, category }) => {
+    onSubmit: formValues => {
+      const { name, caloriesCost, defaultQuantity, category } = formValues;
+
       setProductAutocompleteValue({
         freeSolo: true,
         editing: true,
@@ -100,6 +102,8 @@ export const NoteInputDialog: FC<Props> = ({
         defaultQuantity,
         category,
       });
+
+      setProductFormValues(formValues);
       setCurrentInputDialogType('note');
     },
   });

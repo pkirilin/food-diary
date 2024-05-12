@@ -31,6 +31,8 @@ import {
   thenProductNameIsInvalid,
   thenProductIsInvalid,
   thenAddProductButtonIsDisabled,
+  whenEditedNotExistingProductOption,
+  thenProductCategoryHasValue,
 } from './NoteInputDialog.fixture';
 
 describe('when opened for existing note', () => {
@@ -313,4 +315,24 @@ test('I cannot add note with new product which name is invalid', async () => {
   await whenProductCategorySelected(user, /test category/i);
   await thenProductNameIsInvalid();
   await thenAddProductButtonIsDisabled();
+});
+
+test(`I can continue editing new product I've added before`, async () => {
+  const user = userEvent.setup();
+
+  render(givenNoteInputDialog().withQuantity(100).withCategoriesForSelect('Vegetables').please());
+
+  await whenDialogOpened(user);
+  await whenAddedNotExistingProductOption(user, 'Potato');
+  await whenProductCaloriesCostChanged(user, 120);
+  await whenProductDefaultQuantityChanged(user, 80);
+  await whenProductCategorySelected(user, /vegetables/i);
+  await whenProductAdded(user);
+  await thenNoteFormShouldBeVisible();
+
+  await whenEditedNotExistingProductOption(user, 'Potato');
+  await thenProductNameHasValue('Potato');
+  await thenProductCaloriesCostHasValue(120);
+  await thenProductDefaultQuantityHasValue(80);
+  await thenProductCategoryHasValue('Vegetables');
 });
