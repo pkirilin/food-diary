@@ -71,6 +71,7 @@ export const NoteInputDialog: FC<Props> = ({
     },
     onProductChange: value => {
       setProductAutocompleteValue(value);
+      clearProductFormValues();
 
       if (value?.freeSolo === true) {
         setCurrentInputDialogType('product');
