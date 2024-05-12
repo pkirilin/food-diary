@@ -1,3 +1,5 @@
+import AddIcon from '@mui/icons-material/Add';
+import EditIcon from '@mui/icons-material/Edit';
 import FiberNewIcon from '@mui/icons-material/FiberNew';
 import {
   CircularProgress,
@@ -5,6 +7,7 @@ import {
   Autocomplete,
   createFilterOptions,
   type SvgIconOwnProps,
+  Box,
 } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import { useState, type FC, type SyntheticEvent } from 'react';
@@ -143,7 +146,16 @@ export const ProductAutocomplete: FC<ProductAutocompleteProps> = ({
       freeSolo
       getOptionLabel={getOptionLabel}
       filterOptions={filterOptions}
-      renderOption={(props, option) => <li {...props}>{option.name}</li>}
+      renderOption={(props, option) => (
+        <Box component="li" {...props} display="flex" alignItems="center" gap={1}>
+          {option.freeSolo && (
+            <Box display="flex">
+              {option.editing ? <EditIcon fontSize="small" /> : <AddIcon fontSize="small" />}
+            </Box>
+          )}
+          <Box display="flex">{option.name}</Box>
+        </Box>
+      )}
       renderInput={inputParams => (
         <TextField
           {...inputParams}
