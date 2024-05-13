@@ -7,6 +7,7 @@ import {
   useContext,
   useMemo,
 } from 'react';
+import { MSW_ENABLED } from '@/shared/config';
 
 export interface State {
   updateAvailable: boolean;
@@ -26,6 +27,11 @@ export const Provider: FC<PropsWithChildren> = ({ children }) => {
   const registerSW = useRegisterSW({
     onRegisteredSW: async (_, registration) => {
       await registration?.update();
+
+      if (MSW_ENABLED) {
+        const { initBrowserMockApi } = await import('@tests/mockApi');
+        await initBrowserMockApi();
+      }
     },
   });
 
