@@ -5805,6 +5805,7 @@ __metadata:
     vite-plugin-pwa: "npm:^0.19.2"
     vitest: "npm:^0.34.6"
     vitest-preview: "npm:^0.0.1"
+    workbox-precaching: "npm:^7.1.0"
     workbox-window: "npm:^7.0.0"
   languageName: unknown
   linkType: soft
@@ -10105,6 +10106,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"workbox-core@npm:7.1.0":
+  version: 7.1.0
+  resolution: "workbox-core@npm:7.1.0"
+  checksum: 10/b890e0e257c12d3a818eee9dabdfdc8d7d228b89f9734f7612f14e664ca5414c511778d5aef5159248db4c6c161587cff6d2332f0543e3628a1e0cd5a1f0b3ac
+  languageName: node
+  linkType: hard
+
 "workbox-expiration@npm:7.0.0":
   version: 7.0.0
   resolution: "workbox-expiration@npm:7.0.0"
@@ -10147,6 +10155,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"workbox-precaching@npm:^7.1.0":
+  version: 7.1.0
+  resolution: "workbox-precaching@npm:7.1.0"
+  dependencies:
+    workbox-core: "npm:7.1.0"
+    workbox-routing: "npm:7.1.0"
+    workbox-strategies: "npm:7.1.0"
+  checksum: 10/4f91a1cb1fbc1af1f467e3aa4f1a315465a7537ea42d3fbc3f85da342b10085a64736e80de42611622b83650c422b8770a1fc7fb5008a75abfc07a8c1393e049
+  languageName: node
+  linkType: hard
+
 "workbox-range-requests@npm:7.0.0":
   version: 7.0.0
   resolution: "workbox-range-requests@npm:7.0.0"
@@ -10179,12 +10198,30 @@ __metadata:
   languageName: node
   linkType: hard
 
+"workbox-routing@npm:7.1.0":
+  version: 7.1.0
+  resolution: "workbox-routing@npm:7.1.0"
+  dependencies:
+    workbox-core: "npm:7.1.0"
+  checksum: 10/3598d65801ae6fb1e05512aff1cc3a642c1e3beace248349c6401f678033433ec3083ea0849a28665f0bb11e2493e9e66b0d066ee5de59a84f70baa3a59d841c
+  languageName: node
+  linkType: hard
+
 "workbox-strategies@npm:7.0.0":
   version: 7.0.0
   resolution: "workbox-strategies@npm:7.0.0"
   dependencies:
     workbox-core: "npm:7.0.0"
   checksum: 10/7d7dbe9dff54c22e01d01238dbf0b3ba259b85c08cbd8b617b9f5104efef948b760848fcf36385d26fd651a2fe57c4faa3d6a4fc2739e05fc684da0a7eb2197a
+  languageName: node
+  linkType: hard
+
+"workbox-strategies@npm:7.1.0":
+  version: 7.1.0
+  resolution: "workbox-strategies@npm:7.1.0"
+  dependencies:
+    workbox-core: "npm:7.1.0"
+  checksum: 10/52734ecce926ba6c135b5c7cb31906e40ad6bc767c77d45e74414b8adbb980f8a81bc1253af64750ce22202d0f1c4f01161785829cfb7bcb3f59408da9130555
   languageName: node
   linkType: hard
 

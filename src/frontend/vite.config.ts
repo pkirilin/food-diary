@@ -13,6 +13,9 @@ export default defineConfig({
   plugins: [
     react(),
     pwa({
+      strategies: 'injectManifest',
+      srcDir: 'src/app',
+      filename: 'serviceWorker.ts',
       manifest: {
         name: 'Food Diary',
         short_name: 'Food Diary',
