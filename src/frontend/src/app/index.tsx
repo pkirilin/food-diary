@@ -1,25 +1,32 @@
 import 'date-fns';
 import { createRoot } from 'react-dom/client';
-import { GOOGLE_ANALYTICS_ENABLED } from '@/shared/config';
+import { GOOGLE_ANALYTICS_ENABLED, MSW_ENABLED } from '@/shared/config';
 import { initGoogleAnalytics } from './googleAnalytics';
 import { Root } from './Root';
 import { RootProvider } from './RootProvider';
 import { store } from './store';
 
-if (GOOGLE_ANALYTICS_ENABLED) {
-  initGoogleAnalytics();
-}
+(async () => {
+  if (!import.meta.env.PROD && MSW_ENABLED) {
+    const { initBrowserMockApi } = await import('@tests/mockApi');
+    await initBrowserMockApi();
+  }
 
-const container = document.getElementById('root');
+  if (GOOGLE_ANALYTICS_ENABLED) {
+    initGoogleAnalytics();
+  }
 
-if (!container) {
-  throw new Error('Failed to find the root element');
-}
+  const container = document.getElementById('root');
 
-const root = createRoot(container);
+  if (!container) {
+    throw new Error('Failed to find the root element');
+  }
 
-root.render(
-  <RootProvider store={store}>
-    <Root />
-  </RootProvider>,
-);
+  const root = createRoot(container);
+
+  root.render(
+    <RootProvider store={store}>
+      <Root />
+    </RootProvider>,
+  );
+})();

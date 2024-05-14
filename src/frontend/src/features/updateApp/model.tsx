@@ -28,10 +28,14 @@ export const Provider: FC<PropsWithChildren> = ({ children }) => {
     onRegisteredSW: async (_, registration) => {
       await registration?.update();
 
-      if (MSW_ENABLED) {
+      if (import.meta.env.PROD && MSW_ENABLED) {
         const { initBrowserMockApi } = await import('@tests/mockApi');
         await initBrowserMockApi();
       }
+    },
+    onRegisterError: error => {
+      // eslint-disable-next-line no-console
+      console.error('Service worker registration error: ', error);
     },
   });
 

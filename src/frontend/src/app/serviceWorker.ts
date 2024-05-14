@@ -3,7 +3,7 @@ import { MSW_ENABLED } from '@/shared/config';
 
 declare let self: ServiceWorkerGlobalScope;
 
-if (MSW_ENABLED) {
+if (import.meta.env.PROD && MSW_ENABLED) {
   importScripts('/mockServiceWorker.js');
 }
 
