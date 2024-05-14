@@ -7,7 +7,6 @@ import {
   useContext,
   useMemo,
   useState,
-  useEffect,
 } from 'react';
 import { RootLoader } from '@/app/Root/RootLoader';
 import { MSW_ENABLED } from '@/shared/config';
@@ -26,30 +25,25 @@ export const Context = createContext<State>({
 
 export const useUpdateApp = (): State => useContext(Context);
 
-export const Provider: FC<PropsWithChildren> = ({ children }) => {
-  const [registered, setRegistered] = useState(false);
+const SHOULD_WAIT_FOR_MSW = import.meta.env.PROD && MSW_ENABLED;
 
-  useEffect(() => {
-    if (!import.meta.env.PROD && MSW_ENABLED) {
-      setRegistered(true);
-    }
-  }, []);
+export const Provider: FC<PropsWithChildren> = ({ children }) => {
+  const [appReadyToStart, setAppReadyToStart] = useState(!SHOULD_WAIT_FOR_MSW);
 
   const registerSW = useRegisterSW({
     onRegisteredSW: async (_, registration) => {
       await registration?.update();
 
-      if (import.meta.env.PROD && MSW_ENABLED) {
+      if (SHOULD_WAIT_FOR_MSW) {
         const { initBrowserMockApi } = await import('@tests/mockApi');
         await initBrowserMockApi();
       }
 
-      setRegistered(true);
+      setAppReadyToStart(true);
     },
     onRegisterError: error => {
       // eslint-disable-next-line no-console
       console.error('Service worker registration error: ', error);
-      setRegistered(false);
     },
   });
 
@@ -73,7 +67,7 @@ export const Provider: FC<PropsWithChildren> = ({ children }) => {
     [close, updateAvailable, reload],
   );
 
-  if (!registered) {
+  if (!appReadyToStart) {
     return <RootLoader />;
   }
 
