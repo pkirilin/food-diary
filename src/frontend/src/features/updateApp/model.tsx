@@ -8,8 +8,8 @@ import {
   useMemo,
   useState,
 } from 'react';
-import { RootLoader } from '@/app/Root/RootLoader';
 import { MSW_ENABLED } from '@/shared/config';
+import { AppLoader } from '@/shared/ui';
 
 export interface State {
   updateAvailable: boolean;
@@ -68,7 +68,7 @@ export const Provider: FC<PropsWithChildren> = ({ children }) => {
   );
 
   if (!appReadyToStart) {
-    return <RootLoader />;
+    return <AppLoader />;
   }
 
   return <Context.Provider value={state}>{children}</Context.Provider>;
