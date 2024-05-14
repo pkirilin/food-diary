@@ -14,6 +14,10 @@ export const initBrowserMockApi = async (): Promise<void> => {
   await initMockApiDb();
 
   await worker.start({
+    serviceWorker: {
+      url: import.meta.env.PROD ? '/serviceWorker.js' : '/mockServiceWorker.js',
+    },
+
     onUnhandledRequest: (request, print) => {
       if (IGNORED_URL_PATTERNS.some(regexp => regexp.test(request.url))) {
         return;

@@ -6,7 +6,10 @@ import {
   createContext,
   useContext,
   useMemo,
+  useState,
 } from 'react';
+import { MSW_ENABLED } from '@/shared/config';
+import { AppLoader } from '@/shared/ui';
 
 export interface State {
   updateAvailable: boolean;
@@ -22,10 +25,25 @@ export const Context = createContext<State>({
 
 export const useUpdateApp = (): State => useContext(Context);
 
+const SHOULD_WAIT_FOR_MSW = import.meta.env.PROD && MSW_ENABLED;
+
 export const Provider: FC<PropsWithChildren> = ({ children }) => {
+  const [appReadyToStart, setAppReadyToStart] = useState(!SHOULD_WAIT_FOR_MSW);
+
   const registerSW = useRegisterSW({
     onRegisteredSW: async (_, registration) => {
       await registration?.update();
+
+      if (SHOULD_WAIT_FOR_MSW) {
+        const { initBrowserMockApi } = await import('@tests/mockApi');
+        await initBrowserMockApi();
+      }
+
+      setAppReadyToStart(true);
+    },
+    onRegisterError: error => {
+      // eslint-disable-next-line no-console
+      console.error('Service worker registration error: ', error);
     },
   });
 
@@ -48,6 +66,10 @@ export const Provider: FC<PropsWithChildren> = ({ children }) => {
     }),
     [close, updateAvailable, reload],
   );
+
+  if (!appReadyToStart) {
+    return <AppLoader />;
+  }
 
   return <Context.Provider value={state}>{children}</Context.Provider>;
 };
