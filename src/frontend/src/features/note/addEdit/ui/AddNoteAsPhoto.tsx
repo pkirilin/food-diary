@@ -5,7 +5,7 @@ import { type FC } from 'react';
 import { Button } from '@/shared/ui';
 
 export const AddNoteAsPhoto: FC = () => (
-  <Button role={undefined} component="label" variant="text" startIcon={<AddAPhotoIcon />}>
+  <Button role={undefined} component="label" variant="text" fullWidth startIcon={<AddAPhotoIcon />}>
     Add photo
     <Input sx={visuallyHidden} type="file" />
   </Button>

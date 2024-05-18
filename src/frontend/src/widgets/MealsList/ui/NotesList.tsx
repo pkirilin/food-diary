@@ -26,7 +26,7 @@ export const NotesList: FC<Props> = ({ pageId, mealType, notes }) => {
         <NotesListItem key={note.id} note={note} pageId={pageId} />
       ))}
       <ListItem disableGutters>
-        <ButtonGroup variant="text" fullWidth>
+        <ButtonGroup variant="text" sx={{ width: '100%' }}>
           <AddNote
             pageId={pageId}
             mealType={mealType}
