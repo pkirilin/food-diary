@@ -161,6 +161,7 @@ export const ProductAutocomplete: FC<ProductAutocompleteProps> = ({
           {...inputParams}
           label="Product"
           placeholder="Select a product"
+          margin="normal"
           error={error}
           helperText={helperText}
           autoFocus={autoFocus}
