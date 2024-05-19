@@ -1,5 +1,5 @@
 import { type FC } from 'react';
-import { useLoaderData } from 'react-router-dom';
+import { type ActionFunction, useLoaderData, redirect } from 'react-router-dom';
 import { store } from '@/app/store';
 import { noteApi, noteLib } from '@/entities/note';
 import { pagesApi, PageDetailHeader, type Page } from '@/features/pages';
@@ -23,6 +23,22 @@ export const loader = withAuthStatusCheck(async ({ params }) => {
 
   return { page: getPageByIdQuery.data.currentPage } satisfies LoaderData;
 });
+
+export const action: ActionFunction = async ({ request, params }) => {
+  const pageId = Number(params.id);
+  const data = await request.formData();
+  const photo = data.get('photo');
+
+  if (photo === null || typeof photo === 'string') {
+    return redirect(`/pages/${pageId}`);
+  }
+
+  // TODO: upload file and get url
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const fileUrl = `https://example.com/files/${photo.name}`;
+
+  return redirect(`/pages/${pageId}`);
+};
 
 export const Component: FC = () => {
   const { page } = useLoaderData() as LoaderData;
