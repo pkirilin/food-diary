@@ -3,6 +3,7 @@ import { type ActionFunction, useLoaderData, redirect } from 'react-router-dom';
 import { store } from '@/app/store';
 import { noteApi, noteLib } from '@/entities/note';
 import { pagesApi, PageDetailHeader, type Page } from '@/features/pages';
+import { MOCK_API_RESPONSE_DELAY } from '@/shared/config';
 import { PrivateLayout } from '@/widgets/layout';
 import { MealsList } from '@/widgets/MealsList';
 import { withAuthStatusCheck } from '../lib';
@@ -34,10 +35,14 @@ export const action: ActionFunction = async ({ request, params }) => {
   }
 
   // TODO: upload file and get url
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const fileUrl = `https://example.com/files/${photo.name}`;
+  await new Promise(resolve => setTimeout(resolve, MOCK_API_RESPONSE_DELAY));
+  const fileUrl = `https://storage.yandexcloud.net/food-diary-images/oranges.png`;
 
-  return redirect(`/pages/${pageId}`);
+  const url = `/pages/${pageId}/add-note-by-photo?${new URLSearchParams({
+    photo: fileUrl,
+  }).toString()}`;
+
+  return redirect(url);
 };
 
 export const Component: FC = () => {

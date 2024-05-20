@@ -40,6 +40,10 @@ export const createAppRouter = (
           lazy: async () => await import('@/pages/ui/PageDetailPage'),
         },
         {
+          path: '/pages/:id/add-note-by-photo',
+          lazy: async () => await import('@/pages/ui/AddNoteByPhotoPage'),
+        },
+        {
           path: '/products',
           lazy: async () => await import('@/pages/ui/ProductsPage'),
         },
