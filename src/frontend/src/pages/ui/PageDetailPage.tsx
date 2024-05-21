@@ -1,9 +1,9 @@
 import { type FC } from 'react';
 import { type ActionFunction, useLoaderData, redirect } from 'react-router-dom';
 import { store } from '@/app/store';
+import { fileApi } from '@/entities/file';
 import { noteApi, noteLib } from '@/entities/note';
 import { pagesApi, PageDetailHeader, type Page } from '@/features/pages';
-import { MOCK_API_RESPONSE_DELAY } from '@/shared/config';
 import { PrivateLayout } from '@/widgets/layout';
 import { MealsList } from '@/widgets/MealsList';
 import { withAuthStatusCheck } from '../lib';
@@ -27,23 +27,23 @@ export const loader = withAuthStatusCheck(async ({ params }) => {
 
 export const action: ActionFunction = async ({ request, params }) => {
   const pageId = Number(params.id);
-  const data = await request.formData();
-  const photos = data.getAll('photos');
+  const formData = await request.formData();
+  const photos = formData.getAll('photos');
 
   if (photos.length < 1) {
     return redirect(`/pages/${pageId}`);
   }
 
-  // TODO: upload file and get url
-  await new Promise(resolve => setTimeout(resolve, MOCK_API_RESPONSE_DELAY));
+  const { files } = await store.dispatch(fileApi.endpoints.uploadFiles.initiate(formData)).unwrap();
 
-  const photoUrls = [
-    `https://storage.yandexcloud.net/food-diary-images/oranges.png`,
-    `https://storage.yandexcloud.net/food-diary-images/oranges.png`,
-  ];
+  if (files.length < 1) {
+    return new Response(null, { status: 500 });
+  }
+
+  const photoUrls = files.map(file => file.url).join(',');
 
   const url = `/pages/${pageId}/add-note-by-photo?${new URLSearchParams({
-    photoUrls: photoUrls.join(','),
+    photoUrls,
   }).toString()}`;
 
   return redirect(url);
