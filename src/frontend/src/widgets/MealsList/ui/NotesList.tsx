@@ -1,7 +1,7 @@
 import { ButtonGroup, List, ListItem } from '@mui/material';
 import { useMemo, type FC } from 'react';
 import { type noteModel } from '@/entities/note';
-import { AddNote, AddNoteAsPhoto } from '@/features/note/addEdit';
+import { AddNote, AddNoteByPhoto } from '@/features/note/addEdit';
 import { NotesListItem } from './NotesListItem';
 
 interface Props {
@@ -32,7 +32,7 @@ export const NotesList: FC<Props> = ({ pageId, mealType, notes }) => {
             mealType={mealType}
             displayOrder={maxDisplayOrderForNotesGroup + 1}
           />
-          <AddNoteAsPhoto pageId={pageId} />
+          <AddNoteByPhoto pageId={pageId} />
         </ButtonGroup>
       </ListItem>
     </List>

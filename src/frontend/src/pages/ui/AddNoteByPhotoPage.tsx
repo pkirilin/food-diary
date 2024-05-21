@@ -7,14 +7,14 @@ import { withAuthStatusCheck } from '../lib';
 
 interface LoaderData {
   page: Page;
-  photoUrl: string;
+  photoUrls: string[];
 }
 
 export const loader = withAuthStatusCheck(async ({ request, params }) => {
   const url = new URL(request.url);
-  const photo = url.searchParams.get('photo');
+  const photoUrls = url.searchParams.get('photoUrls')?.split(',') ?? [];
 
-  if (!photo) {
+  if (photoUrls.length < 1) {
     return new Response(null, { status: 400 });
   }
 
@@ -27,12 +27,12 @@ export const loader = withAuthStatusCheck(async ({ request, params }) => {
 
   return {
     page: getPageByIdQuery.data.currentPage,
-    photoUrl: photo,
+    photoUrls,
   } satisfies LoaderData;
 });
 
 export const Component: FC = () => {
-  const { page, photoUrl } = useLoaderData() as LoaderData;
+  const { page, photoUrls } = useLoaderData() as LoaderData;
 
   return (
     <PrivateLayout subheader={<PageDetailHeader page={page} />}>
@@ -40,7 +40,13 @@ export const Component: FC = () => {
       <p>
         Page: {page.id}, {page.date}
       </p>
-      <img src={photoUrl} alt="Photo" />
+      <ul>
+        {photoUrls.map((photoUrl, index) => (
+          <li key={index}>
+            <img src={photoUrl} alt="Photo" />
+          </li>
+        ))}
+      </ul>
     </PrivateLayout>
   );
 };

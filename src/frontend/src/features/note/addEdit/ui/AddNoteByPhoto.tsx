@@ -9,7 +9,7 @@ interface Props {
   pageId: number;
 }
 
-export const AddNoteAsPhoto: FC<Props> = ({ pageId }) => {
+export const AddNoteByPhoto: FC<Props> = ({ pageId }) => {
   const submit = useSubmit();
 
   const handleFormChange: FormEventHandler<HTMLFormElement> = event => {
@@ -33,7 +33,7 @@ export const AddNoteAsPhoto: FC<Props> = ({ pageId }) => {
         startIcon={<AddAPhotoIcon />}
       >
         Add photo
-        <Input sx={visuallyHidden} type="file" name="photo" />
+        <Input sx={visuallyHidden} type="file" name="photos" />
       </Button>
     </Box>
   );

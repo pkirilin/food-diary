@@ -1,3 +1,3 @@
 export * from './AddNote';
-export * from './AddNoteAsPhoto';
+export * from './AddNoteByPhoto';
 export * from './EditNote';

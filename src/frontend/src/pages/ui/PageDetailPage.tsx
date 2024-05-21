@@ -28,18 +28,22 @@ export const loader = withAuthStatusCheck(async ({ params }) => {
 export const action: ActionFunction = async ({ request, params }) => {
   const pageId = Number(params.id);
   const data = await request.formData();
-  const photo = data.get('photo');
+  const photos = data.getAll('photos');
 
-  if (photo === null || typeof photo === 'string') {
+  if (photos.length < 1) {
     return redirect(`/pages/${pageId}`);
   }
 
   // TODO: upload file and get url
   await new Promise(resolve => setTimeout(resolve, MOCK_API_RESPONSE_DELAY));
-  const fileUrl = `https://storage.yandexcloud.net/food-diary-images/oranges.png`;
+
+  const photoUrls = [
+    `https://storage.yandexcloud.net/food-diary-images/oranges.png`,
+    `https://storage.yandexcloud.net/food-diary-images/oranges.png`,
+  ];
 
   const url = `/pages/${pageId}/add-note-by-photo?${new URLSearchParams({
-    photo: fileUrl,
+    photoUrls: photoUrls.join(','),
   }).toString()}`;
 
   return redirect(url);
