@@ -3,7 +3,7 @@ import { useLoaderData } from 'react-router-dom';
 import { store } from '@/app/store';
 import { pagesApi, type Page, PageDetailHeader } from '@/features/pages';
 import { PrivateLayout } from '@/widgets/layout';
-import { withAuthStatusCheck } from '../lib';
+import { withAuthStatusCheck } from '../../lib';
 
 interface LoaderData {
   page: Page;

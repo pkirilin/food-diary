@@ -42,7 +42,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 
   const photoUrls = files.map(file => file.url).join(',');
 
-  const url = `/pages/${pageId}/add-note-by-photo?${new URLSearchParams({
+  const url = `/pages/${pageId}/notes/new/by-photo?${new URLSearchParams({
     photoUrls,
   }).toString()}`;
 
