@@ -32,7 +32,7 @@ export const NotesList: FC<Props> = ({ pageId, mealType, notes }) => {
             mealType={mealType}
             displayOrder={maxDisplayOrderForNotesGroup + 1}
           />
-          <AddNoteByPhoto pageId={pageId} />
+          <AddNoteByPhoto pageId={pageId} mealType={mealType} />
         </ButtonGroup>
       </ListItem>
     </List>

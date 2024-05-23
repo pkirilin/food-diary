@@ -1,17 +1,22 @@
+import { Typography } from '@mui/material';
 import { type FC } from 'react';
 import { useLoaderData } from 'react-router-dom';
 import { store } from '@/app/store';
-import { pagesApi, type Page, PageDetailHeader } from '@/features/pages';
+import { type noteModel } from '@/entities/note';
+import { pagesApi, type Page } from '@/features/pages';
 import { PrivateLayout } from '@/widgets/layout';
 import { withAuthStatusCheck } from '../../lib';
+import { Subheader } from './Subheader';
 
 interface LoaderData {
   page: Page;
+  mealType: noteModel.MealType;
   photoUrls: string[];
 }
 
 export const loader = withAuthStatusCheck(async ({ request, params }) => {
   const url = new URL(request.url);
+  const mealType: noteModel.MealType = Number(url.searchParams.get('mealType'));
   const photoUrls = url.searchParams.get('photoUrls')?.split(',') ?? [];
 
   if (photoUrls.length < 1) {
@@ -27,19 +32,19 @@ export const loader = withAuthStatusCheck(async ({ request, params }) => {
 
   return {
     page: getPageByIdQuery.data.currentPage,
+    mealType,
     photoUrls,
   } satisfies LoaderData;
 });
 
 export const Component: FC = () => {
-  const { page, photoUrls } = useLoaderData() as LoaderData;
+  const { page, mealType, photoUrls } = useLoaderData() as LoaderData;
 
   return (
-    <PrivateLayout subheader={<PageDetailHeader page={page} />}>
-      <h1>Add note by photo</h1>
-      <p>
-        Page: {page.id}, {page.date}
-      </p>
+    <PrivateLayout subheader={<Subheader page={page} mealType={mealType} />}>
+      <Typography variant="h5" component="h1" marginTop={1}>
+        New note
+      </Typography>
       <ul>
         {photoUrls.map((photoUrl, index) => (
           <li key={index}>

@@ -3,13 +3,15 @@ import { Box, Input } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 import { type FormEventHandler, type FC } from 'react';
 import { Form, useSubmit } from 'react-router-dom';
+import { type noteModel } from '@/entities/note';
 import { Button } from '@/shared/ui';
 
 interface Props {
   pageId: number;
+  mealType: noteModel.MealType;
 }
 
-export const AddNoteByPhoto: FC<Props> = ({ pageId }) => {
+export const AddNoteByPhoto: FC<Props> = ({ pageId, mealType }) => {
   const submit = useSubmit();
 
   const handleFormChange: FormEventHandler<HTMLFormElement> = event => {
@@ -35,6 +37,7 @@ export const AddNoteByPhoto: FC<Props> = ({ pageId }) => {
         Add photo
         <Input sx={visuallyHidden} type="file" name="photos" />
       </Button>
+      <Input type="hidden" name="mealType" value={mealType} />
     </Box>
   );
 };
