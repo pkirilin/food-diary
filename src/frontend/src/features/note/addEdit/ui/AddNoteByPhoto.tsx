@@ -9,9 +9,10 @@ import { Button } from '@/shared/ui';
 interface Props {
   pageId: number;
   mealType: noteModel.MealType;
+  displayOrder: number;
 }
 
-export const AddNoteByPhoto: FC<Props> = ({ pageId, mealType }) => {
+export const AddNoteByPhoto: FC<Props> = ({ pageId, mealType, displayOrder }) => {
   const submit = useSubmit();
 
   const handleFormChange: FormEventHandler<HTMLFormElement> = event => {
@@ -38,6 +39,7 @@ export const AddNoteByPhoto: FC<Props> = ({ pageId, mealType }) => {
         <Input sx={visuallyHidden} type="file" name="photos" />
       </Button>
       <Input type="hidden" name="mealType" value={mealType} />
+      <Input type="hidden" name="displayOrder" value={displayOrder} />
     </Box>
   );
 };
