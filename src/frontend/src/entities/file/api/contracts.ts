@@ -1,6 +1,4 @@
-export interface FileItem {
-  url: string;
-}
+import { type FileItem } from '@/shared/api';
 
 export interface UploadFilesResponse {
   files: FileItem[];

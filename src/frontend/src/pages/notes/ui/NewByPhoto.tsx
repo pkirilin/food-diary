@@ -1,9 +1,16 @@
-import { ImageList, ImageListItem, Typography, Grid } from '@mui/material';
-import { type FC } from 'react';
+import {
+  ImageList,
+  ImageListItem,
+  Typography,
+  Grid,
+  Backdrop,
+  CircularProgress,
+} from '@mui/material';
+import { useEffect, type FC } from 'react';
 import { useLoaderData } from 'react-router-dom';
 import { store } from '@/app/store';
-import { type noteModel } from '@/entities/note';
-import { ProductAutocomplete, productLib } from '@/entities/product';
+import { noteApi, type noteModel } from '@/entities/note';
+import { ProductAutocomplete, productApi, productLib, type productModel } from '@/entities/product';
 import { NoteInputForm } from '@/features/note/addEdit';
 import { pagesApi, type Page } from '@/features/pages';
 import { PrivateLayout } from '@/widgets/layout';
@@ -15,6 +22,7 @@ interface LoaderData {
   mealType: noteModel.MealType;
   displayOrder: number;
   photoUrls: string[];
+  productAutocompleteOptions: productModel.AutocompleteOption[];
 }
 
 export const loader = withAuthStatusCheck(async ({ request, params }) => {
@@ -28,25 +36,60 @@ export const loader = withAuthStatusCheck(async ({ request, params }) => {
   }
 
   const pageId = Number(params.id);
-  const getPageByIdQuery = await store.dispatch(pagesApi.endpoints.getPageById.initiate(pageId));
 
-  if (!getPageByIdQuery.isSuccess) {
+  const [pageQuery, productAutocompleteQuery] = await Promise.all([
+    store.dispatch(pagesApi.endpoints.getPageById.initiate(pageId)),
+    store.dispatch(productApi.endpoints.getProductSelectOptions.initiate()),
+  ]);
+
+  if (!pageQuery.isSuccess || !productAutocompleteQuery.isSuccess) {
     return new Response(null, { status: 500 });
   }
 
   return {
-    page: getPageByIdQuery.data.currentPage,
+    page: pageQuery.data.currentPage,
     mealType,
     displayOrder,
     photoUrls,
+    productAutocompleteOptions:
+      productAutocompleteQuery.data?.map(productLib.mapToAutocompleteOption) ?? [],
   } satisfies LoaderData;
 });
 
 export const Component: FC = () => {
-  const { page, mealType, displayOrder, photoUrls } = useLoaderData() as LoaderData;
-  const productAutocompleteData = productLib.useAutocompleteData();
+  const { page, mealType, displayOrder, photoUrls, productAutocompleteOptions } =
+    useLoaderData() as LoaderData;
   const productAutocompleteInput = productLib.useAutocompleteInput();
+  const { setValue: setProduct } = productAutocompleteInput;
   const { values: productFormValues } = productLib.useFormValues();
+  const [recognizeNote, recognizeNoteResponse] = noteApi.useRecognizeMutation();
+
+  useEffect(() => {
+    recognizeNote({
+      files: photoUrls.map(url => ({ url })),
+    });
+  }, [photoUrls, recognizeNote]);
+
+  useEffect(() => {
+    if (!recognizeNoteResponse.isSuccess) {
+      return;
+    }
+
+    const note = recognizeNoteResponse.data.notes?.at(0);
+
+    if (!note) {
+      return;
+    }
+
+    setProduct({
+      freeSolo: true,
+      editing: true,
+      name: note.productName,
+      caloriesCost: note.productCaloriesCost,
+      defaultQuantity: note.productQuantity,
+      category: null,
+    });
+  }, [recognizeNoteResponse.data?.notes, recognizeNoteResponse.isSuccess, setProduct]);
 
   return (
     <PrivateLayout subheader={<Subheader page={page} mealType={mealType} />}>
@@ -64,6 +107,12 @@ export const Component: FC = () => {
           </ImageList>
         </Grid>
         <Grid item xs={12} md={6}>
+          <Backdrop
+            open={recognizeNoteResponse.isLoading}
+            sx={{ zIndex: theme => theme.zIndex.drawer + 1 }}
+          >
+            <CircularProgress color="inherit" />
+          </Backdrop>
           <NoteInputForm
             id="note-input-form"
             pageId={page.id}
@@ -76,9 +125,8 @@ export const Component: FC = () => {
                 {...productAutocompleteProps}
                 autoFocus
                 formValues={productFormValues}
-                onChange={() => {}}
-                options={productAutocompleteData.options}
-                loading={productAutocompleteData.isLoading}
+                options={productAutocompleteOptions}
+                loading={false}
               />
             )}
             onSubmit={async () => {}}
