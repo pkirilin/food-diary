@@ -80,13 +80,9 @@ export const action: ActionFunction = async ({ request, params }) => {
   const pageId = Number(params.id);
   const formData = await request.formData();
   const note = addEditNoteLib.mapNoteFromFormData(formData);
-
-  if (note.product.freeSolo) {
-    // TODO: create product, then create note using received product id
-    return redirect(`/pages/${pageId}`);
-  }
-
-  // TODO: create note
+  const productId = await addEditNoteLib.addProductIfNotExists(note.product);
+  const createNoteRequest = addEditNoteLib.mapToCreateNoteRequest(note, productId);
+  await store.dispatch(noteApi.endpoints.createNote.initiate(createNoteRequest));
   return redirect(`/pages/${pageId}`);
 };
 
