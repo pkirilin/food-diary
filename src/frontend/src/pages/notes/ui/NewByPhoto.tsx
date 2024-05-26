@@ -9,6 +9,7 @@ import {
 import { useEffect, type FC } from 'react';
 import { useLoaderData } from 'react-router-dom';
 import { store } from '@/app/store';
+import { categoryApi, type categoryModel } from '@/entities/category';
 import { noteApi, type noteModel } from '@/entities/note';
 import { ProductAutocomplete, productApi, productLib, type productModel } from '@/entities/product';
 import { NoteInputForm } from '@/features/note/addEdit';
@@ -23,6 +24,7 @@ interface LoaderData {
   displayOrder: number;
   photoUrls: string[];
   productAutocompleteOptions: productModel.AutocompleteOption[];
+  categoryAutocompleteOptions: categoryModel.AutocompleteOption[];
 }
 
 export const loader = withAuthStatusCheck(async ({ request, params }) => {
@@ -37,12 +39,17 @@ export const loader = withAuthStatusCheck(async ({ request, params }) => {
 
   const pageId = Number(params.id);
 
-  const [pageQuery, productAutocompleteQuery] = await Promise.all([
+  const [pageQuery, productAutocompleteQuery, categoryAutocompleteQuery] = await Promise.all([
     store.dispatch(pagesApi.endpoints.getPageById.initiate(pageId)),
     store.dispatch(productApi.endpoints.getProductSelectOptions.initiate()),
+    store.dispatch(categoryApi.endpoints.getCategorySelectOptions.initiate()),
   ]);
 
-  if (!pageQuery.isSuccess || !productAutocompleteQuery.isSuccess) {
+  if (
+    !pageQuery.isSuccess ||
+    !productAutocompleteQuery.isSuccess ||
+    !categoryAutocompleteQuery.isSuccess
+  ) {
     return new Response(null, { status: 500 });
   }
 
@@ -53,12 +60,20 @@ export const loader = withAuthStatusCheck(async ({ request, params }) => {
     photoUrls,
     productAutocompleteOptions:
       productAutocompleteQuery.data?.map(productLib.mapToAutocompleteOption) ?? [],
+    categoryAutocompleteOptions: categoryAutocompleteQuery.data ?? [],
   } satisfies LoaderData;
 });
 
 export const Component: FC = () => {
-  const { page, mealType, displayOrder, photoUrls, productAutocompleteOptions } =
-    useLoaderData() as LoaderData;
+  const {
+    page,
+    mealType,
+    displayOrder,
+    photoUrls,
+    productAutocompleteOptions,
+    categoryAutocompleteOptions,
+  } = useLoaderData() as LoaderData;
+
   const productAutocompleteInput = productLib.useAutocompleteInput();
   const { setValue: setProduct } = productAutocompleteInput;
   const { values: productFormValues } = productLib.useFormValues();
@@ -76,8 +91,9 @@ export const Component: FC = () => {
     }
 
     const note = recognizeNoteResponse.data.notes?.at(0);
+    const category = categoryAutocompleteOptions.at(0);
 
-    if (!note) {
+    if (!note || !category) {
       return;
     }
 
@@ -87,9 +103,14 @@ export const Component: FC = () => {
       name: note.productName,
       caloriesCost: note.productCaloriesCost,
       defaultQuantity: note.productQuantity,
-      category: null,
+      category,
     });
-  }, [recognizeNoteResponse.data?.notes, recognizeNoteResponse.isSuccess, setProduct]);
+  }, [
+    categoryAutocompleteOptions,
+    recognizeNoteResponse.data?.notes,
+    recognizeNoteResponse.isSuccess,
+    setProduct,
+  ]);
 
   return (
     <PrivateLayout subheader={<Subheader page={page} mealType={mealType} />}>
