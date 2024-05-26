@@ -5,15 +5,27 @@ import {
   Grid,
   Backdrop,
   CircularProgress,
+  Stack,
 } from '@mui/material';
-import { useEffect, type FC } from 'react';
-import { useLoaderData } from 'react-router-dom';
+import { useEffect, type FC, type MouseEventHandler } from 'react';
+import {
+  type ActionFunction,
+  useLoaderData,
+  redirect,
+  useNavigate,
+  useSubmit,
+} from 'react-router-dom';
 import { store } from '@/app/store';
 import { categoryApi, type categoryModel } from '@/entities/category';
 import { noteApi, type noteModel } from '@/entities/note';
 import { ProductAutocomplete, productApi, productLib, type productModel } from '@/entities/product';
-import { NoteInputForm } from '@/features/note/addEdit';
+import {
+  NoteInputForm,
+  addEditNoteLib,
+  type NoteInputFormSubmitHandler,
+} from '@/features/note/addEdit';
 import { pagesApi, type Page } from '@/features/pages';
+import { Button } from '@/shared/ui';
 import { PrivateLayout } from '@/widgets/layout';
 import { withAuthStatusCheck } from '../../lib';
 import { Subheader } from './Subheader';
@@ -64,6 +76,20 @@ export const loader = withAuthStatusCheck(async ({ request, params }) => {
   } satisfies LoaderData;
 });
 
+export const action: ActionFunction = async ({ request, params }) => {
+  const pageId = Number(params.id);
+  const formData = await request.formData();
+  const note = addEditNoteLib.mapNoteFromFormData(formData);
+
+  if (note.product.freeSolo) {
+    // TODO: create product, then create note using received product id
+    return redirect(`/pages/${pageId}`);
+  }
+
+  // TODO: create note
+  return redirect(`/pages/${pageId}`);
+};
+
 export const Component: FC = () => {
   const {
     page,
@@ -73,6 +99,9 @@ export const Component: FC = () => {
     productAutocompleteOptions,
     categoryAutocompleteOptions,
   } = useLoaderData() as LoaderData;
+
+  const navigate = useNavigate();
+  const submit = useSubmit();
 
   const productAutocompleteInput = productLib.useAutocompleteInput();
   const { setValue: setProduct } = productAutocompleteInput;
@@ -112,6 +141,16 @@ export const Component: FC = () => {
     setProduct,
   ]);
 
+  const handleCancel: MouseEventHandler = () => {
+    navigate(`/pages/${page.id}`);
+  };
+
+  const handleSubmit: NoteInputFormSubmitHandler = note => {
+    const formData = addEditNoteLib.mapToFormData(note);
+    submit(formData, { method: 'post', action: `/pages/${page.id}/notes/new/by-photo` });
+    return Promise.resolve();
+  };
+
   return (
     <PrivateLayout subheader={<Subheader page={page} mealType={mealType} />}>
       <Typography variant="h5" component="h1" marginBottom={2}>
@@ -149,9 +188,21 @@ export const Component: FC = () => {
                 loading={false}
               />
             )}
-            onSubmit={async () => {}}
+            onSubmit={handleSubmit}
             onSubmitDisabledChange={() => {}}
           />
+          <Stack
+            direction={{ xs: 'column', md: 'row' }}
+            justifyContent={{ md: 'flex-end' }}
+            spacing={3}
+          >
+            <Button type="button" variant="outlined" onClick={handleCancel}>
+              Cancel
+            </Button>
+            <Button type="submit" form="note-input-form" variant="contained">
+              Add note
+            </Button>
+          </Stack>
         </Grid>
       </Grid>
     </PrivateLayout>

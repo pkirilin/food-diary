@@ -6,6 +6,8 @@ import { useInput, type UseInputResult } from '@/shared/hooks';
 import { mapToNumericInputProps, validateQuantity } from '@/shared/lib';
 import { type Note } from '../model';
 
+export type NoteInputFormSubmitHandler = (note: Note) => Promise<void>;
+
 export interface NoteInputFormProps {
   id: string;
   pageId: number;
@@ -17,7 +19,7 @@ export interface NoteInputFormProps {
   >;
   quantity: number;
   renderProductAutocomplete: (props: productLib.AutocompleteInputProps) => ReactElement;
-  onSubmit: (note: Note) => Promise<void>;
+  onSubmit: NoteInputFormSubmitHandler;
   onSubmitDisabledChange: (disabled: boolean) => void;
 }
 
