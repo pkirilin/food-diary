@@ -123,7 +123,6 @@ export const Component: FC = () => {
             renderProductAutocomplete={productAutocompleteProps => (
               <ProductAutocomplete
                 {...productAutocompleteProps}
-                autoFocus
                 formValues={productFormValues}
                 options={productAutocompleteOptions}
                 loading={false}
