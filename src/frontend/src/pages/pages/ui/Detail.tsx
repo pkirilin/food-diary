@@ -35,9 +35,10 @@ export const action: ActionFunction = async ({ request, params }) => {
   const pageId = Number(params.id);
   const formData = await request.formData();
   const mealType = formData.get('mealType')?.toString();
+  const displayOrder = formData.get('displayOrder')?.toString();
   const photos = formData.getAll('photos');
 
-  if (!mealType || photos.length < 1) {
+  if (!mealType || !displayOrder || photos.length < 1) {
     return redirect(`/pages/${pageId}`);
   }
 
@@ -51,6 +52,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 
   const url = `/pages/${pageId}/notes/new/by-photo?${new URLSearchParams({
     mealType,
+    displayOrder,
     photoUrls,
   }).toString()}`;
 
