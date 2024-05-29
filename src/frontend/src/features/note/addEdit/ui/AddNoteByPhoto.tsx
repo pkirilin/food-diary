@@ -1,5 +1,5 @@
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
-import { Box, Input } from '@mui/material';
+import { Box, Input, styled } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 import { type FormEventHandler, type FC } from 'react';
 import { Form, useSubmit } from 'react-router-dom';
@@ -11,6 +11,8 @@ interface Props {
   mealType: noteModel.MealType;
   displayOrder: number;
 }
+
+const FileInputStyled = styled('input')(() => ({ ...visuallyHidden }));
 
 export const AddNoteByPhoto: FC<Props> = ({ pageId, mealType, displayOrder }) => {
   const submit = useSubmit();
@@ -36,7 +38,7 @@ export const AddNoteByPhoto: FC<Props> = ({ pageId, mealType, displayOrder }) =>
         startIcon={<AddAPhotoIcon />}
       >
         Add photo
-        <Input sx={visuallyHidden} type="file" name="photos" />
+        <FileInputStyled type="file" name="photos" accept=".jpg, .jpeg, .png" />
       </Button>
       <Input type="hidden" name="mealType" value={mealType} />
       <Input type="hidden" name="displayOrder" value={displayOrder} />
