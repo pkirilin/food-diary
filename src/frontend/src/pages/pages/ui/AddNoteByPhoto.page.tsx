@@ -8,25 +8,24 @@ import {
   useSubmit,
 } from 'react-router-dom';
 import { store } from '@/app/store';
-import { categoryApi, type categoryModel } from '@/entities/category';
+import { categoryApi, categoryLib } from '@/entities/category';
 import { noteApi, type noteModel } from '@/entities/note';
-import { ProductAutocomplete, productApi, productLib, type productModel } from '@/entities/product';
+import { ProductAutocomplete, productApi, productLib } from '@/entities/product';
 import {
   NoteInputForm,
   addEditNoteLib,
   type NoteInputFormSubmitHandler,
 } from '@/features/note/addEdit';
-import { pagesApi, type Page } from '@/features/pages';
+import { pagesApi } from '@/features/pages';
 import { Button, Dialog } from '@/shared/ui';
 import { withAuthStatusCheck } from '../../lib';
+import { usePageFromLoader } from '../lib';
 
 interface LoaderData {
-  page: Page;
+  pageId: number;
   mealType: noteModel.MealType;
   displayOrder: number;
   photoUrls: string[];
-  productAutocompleteOptions: productModel.AutocompleteOption[];
-  categoryAutocompleteOptions: categoryModel.AutocompleteOption[];
 }
 
 export const loader = withAuthStatusCheck(async ({ request, params }) => {
@@ -41,28 +40,24 @@ export const loader = withAuthStatusCheck(async ({ request, params }) => {
 
   const pageId = Number(params.pageId);
 
-  const [pageQuery, productAutocompleteQuery, categoryAutocompleteQuery] = await Promise.all([
+  const queryPromises = [
     store.dispatch(pagesApi.endpoints.getPageById.initiate(pageId)),
     store.dispatch(productApi.endpoints.getProductSelectOptions.initiate()),
     store.dispatch(categoryApi.endpoints.getCategorySelectOptions.initiate()),
-  ]);
+  ];
 
-  if (
-    !pageQuery.isSuccess ||
-    !productAutocompleteQuery.isSuccess ||
-    !categoryAutocompleteQuery.isSuccess
-  ) {
+  const queries = await Promise.all(queryPromises);
+  queryPromises.forEach(promise => promise.unsubscribe());
+
+  if (queries.some(query => query.isError)) {
     return new Response(null, { status: 500 });
   }
 
   return {
-    page: pageQuery.data.currentPage,
+    pageId,
     mealType,
     displayOrder,
     photoUrls,
-    productAutocompleteOptions:
-      productAutocompleteQuery.data?.map(productLib.mapToAutocompleteOption) ?? [],
-    categoryAutocompleteOptions: categoryAutocompleteQuery.data ?? [],
   } satisfies LoaderData;
 });
 
@@ -77,14 +72,10 @@ export const action: ActionFunction = async ({ request, params }) => {
 };
 
 export const Component: FC = () => {
-  const {
-    page,
-    mealType,
-    displayOrder,
-    photoUrls,
-    productAutocompleteOptions,
-    categoryAutocompleteOptions,
-  } = useLoaderData() as LoaderData;
+  const { pageId, mealType, displayOrder, photoUrls } = useLoaderData() as LoaderData;
+  const page = usePageFromLoader(pageId);
+  const productAutocomplete = productLib.useAutocompleteData();
+  const categorySelect = categoryLib.useCategorySelectData();
 
   const navigate = useNavigate();
   const submit = useSubmit();
@@ -106,7 +97,7 @@ export const Component: FC = () => {
     }
 
     const note = recognizeNoteResponse.data.notes?.at(0);
-    const category = categoryAutocompleteOptions.at(0);
+    const category = categorySelect.data.at(0);
 
     if (!note || !category) {
       return;
@@ -121,7 +112,7 @@ export const Component: FC = () => {
       category,
     });
   }, [
-    categoryAutocompleteOptions,
+    categorySelect.data,
     recognizeNoteResponse.data?.notes,
     recognizeNoteResponse.isSuccess,
     setProduct,
@@ -169,8 +160,8 @@ export const Component: FC = () => {
                 <ProductAutocomplete
                   {...productAutocompleteProps}
                   formValues={productFormValues}
-                  options={productAutocompleteOptions}
-                  loading={false}
+                  options={productAutocomplete.options}
+                  loading={productAutocomplete.isLoading}
                 />
               )}
               onSubmit={handleSubmit}

@@ -9,12 +9,13 @@ export interface AutocompleteData {
 }
 
 export const useAutocompleteData = (): AutocompleteData => {
-  const query = productApi.useGetProductSelectOptionsQuery();
+  const { data, isLoading } = productApi.useGetProductSelectOptionsQuery();
 
-  const options = useMemo(() => query.data?.map(mapToAutocompleteOption) ?? [], [query.data]);
-
-  return {
-    options,
-    isLoading: query.isLoading,
-  };
+  return useMemo(
+    () => ({
+      options: data?.map(mapToAutocompleteOption) ?? [],
+      isLoading,
+    }),
+    [data, isLoading],
+  );
 };

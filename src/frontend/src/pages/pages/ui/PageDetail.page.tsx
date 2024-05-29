@@ -14,7 +14,7 @@ import { pagesApi, PageDetailHeader } from '@/features/pages';
 import { PrivateLayout } from '@/widgets/layout';
 import { MealsList } from '@/widgets/MealsList';
 import { withAuthStatusCheck } from '../../lib';
-import { usePageLoaderQuery } from '../lib';
+import { usePageFromLoader } from '../lib';
 
 interface LoaderData {
   pageId: number;
@@ -69,7 +69,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 export const Component: FC = () => {
   const { pageId } = useLoaderData() as LoaderData;
   const navigation = useNavigation();
-  const page = usePageLoaderQuery(pageId);
+  const page = usePageFromLoader(pageId);
   const notes = noteLib.useNotes(pageId);
 
   return (

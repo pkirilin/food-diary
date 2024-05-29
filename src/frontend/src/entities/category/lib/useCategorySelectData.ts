@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { type SelectOption } from '@/shared/types';
 import { categoryApi } from '../api';
 
@@ -7,10 +8,13 @@ export interface CategorySelectData {
 }
 
 export const useCategorySelectData = (): CategorySelectData => {
-  const query = categoryApi.useGetCategorySelectOptionsQuery();
+  const { data, isLoading } = categoryApi.useGetCategorySelectOptionsQuery();
 
-  return {
-    data: query.data ?? [],
-    isLoading: query.isLoading,
-  };
+  return useMemo(
+    () => ({
+      data: data ?? [],
+      isLoading,
+    }),
+    [data, isLoading],
+  );
 };
