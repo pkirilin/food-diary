@@ -1,4 +1,4 @@
-import { CircularProgress, ImageList, ImageListItem, Stack, Typography } from '@mui/material';
+import { CircularProgress, ImageList, ImageListItem, Stack } from '@mui/material';
 import { useEffect, type FC } from 'react';
 import {
   type ActionFunction,
@@ -153,9 +153,8 @@ export const Component: FC = () => {
             ))}
           </ImageList>
           {recognizeNoteResponse.isLoading && (
-            <Stack direction="row" spacing={2} justifyContent="center" alignItems="center">
-              <CircularProgress />
-              <Typography>Looking for the meals on images...</Typography>
+            <Stack justifyContent="center" alignItems="center">
+              <CircularProgress sx={theme => ({ marginBottom: theme.spacing(2) })} />
             </Stack>
           )}
           {recognizeNoteResponse.isSuccess && (
@@ -181,12 +180,22 @@ export const Component: FC = () => {
         </Stack>
       }
       renderSubmit={submitProps => (
-        <Button {...submitProps} type="submit" form="note-input-form">
+        <Button
+          {...submitProps}
+          type="submit"
+          form="note-input-form"
+          disabled={recognizeNoteResponse.isLoading}
+        >
           Add
         </Button>
       )}
       renderCancel={cancelProps => (
-        <Button {...cancelProps} type="button" onClick={handleCancel}>
+        <Button
+          {...cancelProps}
+          type="button"
+          onClick={handleCancel}
+          disabled={recognizeNoteResponse.isLoading}
+        >
           Cancel
         </Button>
       )}

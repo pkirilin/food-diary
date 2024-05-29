@@ -1,5 +1,12 @@
+import { Backdrop, CircularProgress } from '@mui/material';
 import { type FC } from 'react';
-import { type ActionFunction, useLoaderData, redirect, Outlet } from 'react-router-dom';
+import {
+  type ActionFunction,
+  useLoaderData,
+  redirect,
+  Outlet,
+  useNavigation,
+} from 'react-router-dom';
 import { store } from '@/app/store';
 import { fileApi } from '@/entities/file';
 import { noteApi, noteLib } from '@/entities/note';
@@ -61,6 +68,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 
 export const Component: FC = () => {
   const { pageId } = useLoaderData() as LoaderData;
+  const navigation = useNavigation();
   const page = usePageLoaderQuery(pageId);
   const notes = noteLib.useNotes(pageId);
 
@@ -68,6 +76,12 @@ export const Component: FC = () => {
     <PrivateLayout subheader={<PageDetailHeader page={page} />}>
       <MealsList pageId={pageId} notes={notes.data} />
       <Outlet />
+      <Backdrop
+        open={navigation.state === 'submitting'}
+        sx={theme => ({ color: theme.palette.common.white, zIndex: theme.zIndex.drawer + 1 })}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </PrivateLayout>
   );
 };
