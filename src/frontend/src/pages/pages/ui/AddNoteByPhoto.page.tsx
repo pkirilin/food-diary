@@ -6,6 +6,7 @@ import {
   redirect,
   useNavigate,
   useSubmit,
+  type LoaderFunction,
 } from 'react-router-dom';
 import { store } from '@/app/store';
 import { categoryApi, categoryLib } from '@/entities/category';
@@ -18,7 +19,6 @@ import {
 } from '@/features/note/addEdit';
 import { pagesApi } from '@/features/pages';
 import { Button, Dialog } from '@/shared/ui';
-import { withAuthStatusCheck } from '../../lib';
 import { usePageFromLoader } from '../lib';
 
 interface LoaderData {
@@ -28,7 +28,7 @@ interface LoaderData {
   photoUrls: string[];
 }
 
-export const loader = withAuthStatusCheck(async ({ request, params }) => {
+export const loader: LoaderFunction = async ({ request, params }) => {
   const url = new URL(request.url);
   const mealType: noteModel.MealType = Number(url.searchParams.get('mealType'));
   const displayOrder = Number(url.searchParams.get('displayOrder'));
@@ -59,7 +59,7 @@ export const loader = withAuthStatusCheck(async ({ request, params }) => {
     displayOrder,
     photoUrls,
   } satisfies LoaderData;
-});
+};
 
 export const action: ActionFunction = async ({ request, params }) => {
   const pageId = Number(params.pageId);
