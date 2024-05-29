@@ -1,13 +1,5 @@
-import {
-  ImageList,
-  ImageListItem,
-  Typography,
-  Grid,
-  Backdrop,
-  CircularProgress,
-  Stack,
-} from '@mui/material';
-import { useEffect, type FC, type MouseEventHandler } from 'react';
+import { CircularProgress, ImageList, ImageListItem, Stack, Typography } from '@mui/material';
+import { useEffect, type FC } from 'react';
 import {
   type ActionFunction,
   useLoaderData,
@@ -25,10 +17,8 @@ import {
   type NoteInputFormSubmitHandler,
 } from '@/features/note/addEdit';
 import { pagesApi, type Page } from '@/features/pages';
-import { Button } from '@/shared/ui';
-import { PrivateLayout } from '@/widgets/layout';
+import { Button, Dialog } from '@/shared/ui';
 import { withAuthStatusCheck } from '../../lib';
-import { Subheader } from './Subheader';
 
 interface LoaderData {
   page: Page;
@@ -49,7 +39,7 @@ export const loader = withAuthStatusCheck(async ({ request, params }) => {
     return new Response(null, { status: 400 });
   }
 
-  const pageId = Number(params.id);
+  const pageId = Number(params.pageId);
 
   const [pageQuery, productAutocompleteQuery, categoryAutocompleteQuery] = await Promise.all([
     store.dispatch(pagesApi.endpoints.getPageById.initiate(pageId)),
@@ -77,7 +67,7 @@ export const loader = withAuthStatusCheck(async ({ request, params }) => {
 });
 
 export const action: ActionFunction = async ({ request, params }) => {
-  const pageId = Number(params.id);
+  const pageId = Number(params.pageId);
   const formData = await request.formData();
   const note = addEditNoteLib.mapNoteFromFormData(formData);
   const productId = await addEditNoteLib.addProductIfNotExists(note.product);
@@ -137,23 +127,24 @@ export const Component: FC = () => {
     setProduct,
   ]);
 
-  const handleCancel: MouseEventHandler = () => {
+  const handleCancel = (): void => {
     navigate(`/pages/${page.id}`);
   };
 
   const handleSubmit: NoteInputFormSubmitHandler = note => {
     const formData = addEditNoteLib.mapToFormData(note);
-    submit(formData, { method: 'post', action: `/pages/${page.id}/notes/new/by-photo` });
+    submit(formData, { method: 'post', action: `/pages/${page.id}/notes/by-photo` });
     return Promise.resolve();
   };
 
   return (
-    <PrivateLayout subheader={<Subheader page={page} mealType={mealType} />}>
-      <Typography variant="h5" component="h1" marginBottom={2}>
-        New note by photo
-      </Typography>
-      <Grid container spacing={3} direction="row-reverse">
-        <Grid item xs={12} md={6}>
+    <Dialog
+      opened
+      renderMode="fullScreenOnMobile"
+      title="New note"
+      onClose={handleCancel}
+      content={
+        <Stack spacing={3}>
           <ImageList cols={2}>
             {photoUrls.map((photoUrl, index) => (
               <ImageListItem key={index}>
@@ -161,46 +152,44 @@ export const Component: FC = () => {
               </ImageListItem>
             ))}
           </ImageList>
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <Backdrop
-            open={recognizeNoteResponse.isLoading}
-            sx={{ zIndex: theme => theme.zIndex.drawer + 1 }}
-          >
-            <CircularProgress color="inherit" />
-          </Backdrop>
-          <NoteInputForm
-            id="note-input-form"
-            pageId={page.id}
-            mealType={mealType}
-            displayOrder={displayOrder}
-            quantity={100}
-            productAutocompleteInput={productAutocompleteInput}
-            renderProductAutocomplete={productAutocompleteProps => (
-              <ProductAutocomplete
-                {...productAutocompleteProps}
-                formValues={productFormValues}
-                options={productAutocompleteOptions}
-                loading={false}
-              />
-            )}
-            onSubmit={handleSubmit}
-            onSubmitDisabledChange={() => {}}
-          />
-          <Stack
-            direction={{ xs: 'column', md: 'row' }}
-            justifyContent={{ md: 'flex-end' }}
-            spacing={3}
-          >
-            <Button type="button" variant="outlined" onClick={handleCancel}>
-              Cancel
-            </Button>
-            <Button type="submit" form="note-input-form" variant="contained">
-              Add note
-            </Button>
-          </Stack>
-        </Grid>
-      </Grid>
-    </PrivateLayout>
+          {recognizeNoteResponse.isLoading && (
+            <Stack direction="row" spacing={2} justifyContent="center" alignItems="center">
+              <CircularProgress />
+              <Typography>Looking for the meals on images...</Typography>
+            </Stack>
+          )}
+          {recognizeNoteResponse.isSuccess && (
+            <NoteInputForm
+              id="note-input-form"
+              pageId={page.id}
+              mealType={mealType}
+              displayOrder={displayOrder}
+              quantity={100}
+              productAutocompleteInput={productAutocompleteInput}
+              renderProductAutocomplete={productAutocompleteProps => (
+                <ProductAutocomplete
+                  {...productAutocompleteProps}
+                  formValues={productFormValues}
+                  options={productAutocompleteOptions}
+                  loading={false}
+                />
+              )}
+              onSubmit={handleSubmit}
+              onSubmitDisabledChange={() => {}}
+            />
+          )}
+        </Stack>
+      }
+      renderSubmit={submitProps => (
+        <Button {...submitProps} type="submit" form="note-input-form">
+          Add
+        </Button>
+      )}
+      renderCancel={cancelProps => (
+        <Button {...cancelProps} type="button" onClick={handleCancel}>
+          Cancel
+        </Button>
+      )}
+    />
   );
 };

@@ -1,5 +1,5 @@
 import { type FC } from 'react';
-import { type ActionFunction, useLoaderData, redirect } from 'react-router-dom';
+import { type ActionFunction, useLoaderData, redirect, Outlet } from 'react-router-dom';
 import { store } from '@/app/store';
 import { fileApi } from '@/entities/file';
 import { noteApi, noteLib } from '@/entities/note';
@@ -14,7 +14,7 @@ interface LoaderData {
 }
 
 export const loader = withAuthStatusCheck(async ({ params }) => {
-  const pageId = Number(params.id);
+  const pageId = Number(params.pageId);
 
   const queryPromises = [
     store.dispatch(pagesApi.endpoints.getPageById.initiate(pageId)),
@@ -32,7 +32,7 @@ export const loader = withAuthStatusCheck(async ({ params }) => {
 });
 
 export const action: ActionFunction = async ({ request, params }) => {
-  const pageId = Number(params.id);
+  const pageId = Number(params.pageId);
   const formData = await request.formData();
   const mealType = formData.get('mealType')?.toString();
   const displayOrder = formData.get('displayOrder')?.toString();
@@ -50,7 +50,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 
   const photoUrls = files.map(file => file.url).join(',');
 
-  const url = `/pages/${pageId}/notes/new/by-photo?${new URLSearchParams({
+  const url = `/pages/${pageId}/notes/by-photo?${new URLSearchParams({
     mealType,
     displayOrder,
     photoUrls,
@@ -67,6 +67,7 @@ export const Component: FC = () => {
   return (
     <PrivateLayout subheader={<PageDetailHeader page={page} />}>
       <MealsList pageId={pageId} notes={notes.data} />
+      <Outlet />
     </PrivateLayout>
   );
 };
