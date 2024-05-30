@@ -68,13 +68,15 @@ export const Component: FC = () => {
   const navigation = useNavigation();
   const page = usePageFromLoader(pageId);
   const notes = noteLib.useNotes(pageId);
+  const uploadingPhotos =
+    navigation.state === 'submitting' && navigation.formData?.get('photos') !== null;
 
   return (
     <PrivateLayout subheader={<PageDetailHeader page={page} />}>
       <MealsList pageId={pageId} notes={notes.data} />
       <Outlet />
       <Backdrop
-        open={navigation.state === 'submitting'}
+        open={uploadingPhotos}
         sx={theme => ({ color: theme.palette.common.white, zIndex: theme.zIndex.drawer + 1 })}
       >
         <CircularProgress color="inherit" />

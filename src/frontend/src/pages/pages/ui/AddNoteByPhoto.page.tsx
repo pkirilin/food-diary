@@ -7,6 +7,7 @@ import {
   useNavigate,
   useSubmit,
   type LoaderFunction,
+  useNavigation,
 } from 'react-router-dom';
 import { store } from '@/app/store';
 import { categoryApi, categoryLib } from '@/entities/category';
@@ -72,6 +73,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 export const Component: FC = () => {
   const { pageId, mealType, photoUrls } = useLoaderData() as LoaderData;
   const navigate = useNavigate();
+  const navigation = useNavigation();
   const submit = useSubmit();
   const page = usePageFromLoader(pageId);
   const nextDisplayOrder = noteLib.useNextDisplayOrder(pageId, mealType);
@@ -81,6 +83,7 @@ export const Component: FC = () => {
   const { setValue: setProduct } = productAutocompleteInput;
   const { values: productFormValues } = productLib.useFormValues();
   const [recognizeNote, recognizeNoteResponse] = noteApi.useRecognizeMutation();
+  const submitDisabled = recognizeNoteResponse.isLoading || navigation.state === 'submitting';
 
   useEffect(() => {
     recognizeNote({
@@ -172,18 +175,14 @@ export const Component: FC = () => {
           {...submitProps}
           type="submit"
           form="note-input-form"
-          disabled={recognizeNoteResponse.isLoading}
+          disabled={submitDisabled}
+          loading={navigation.state === 'submitting'}
         >
           Add
         </Button>
       )}
       renderCancel={cancelProps => (
-        <Button
-          {...cancelProps}
-          type="button"
-          onClick={handleCancel}
-          disabled={recognizeNoteResponse.isLoading}
-        >
+        <Button {...cancelProps} type="button" onClick={handleCancel} disabled={submitDisabled}>
           Cancel
         </Button>
       )}
