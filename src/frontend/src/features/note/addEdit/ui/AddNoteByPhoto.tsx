@@ -9,12 +9,11 @@ import { Button } from '@/shared/ui';
 interface Props {
   pageId: number;
   mealType: noteModel.MealType;
-  displayOrder: number;
 }
 
 const FileInputStyled = styled('input')(() => ({ ...visuallyHidden }));
 
-export const AddNoteByPhoto: FC<Props> = ({ pageId, mealType, displayOrder }) => {
+export const AddNoteByPhoto: FC<Props> = ({ pageId, mealType }) => {
   const submit = useSubmit();
 
   const handleFormChange: FormEventHandler<HTMLFormElement> = event => {
@@ -41,7 +40,6 @@ export const AddNoteByPhoto: FC<Props> = ({ pageId, mealType, displayOrder }) =>
         <FileInputStyled type="file" name="photos" accept=".jpg, .jpeg, .png" />
       </Button>
       <Input type="hidden" name="mealType" value={mealType} />
-      <Input type="hidden" name="displayOrder" value={displayOrder} />
     </Box>
   );
 };

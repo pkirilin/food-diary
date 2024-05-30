@@ -10,7 +10,7 @@ import {
 } from 'react-router-dom';
 import { store } from '@/app/store';
 import { categoryApi, categoryLib } from '@/entities/category';
-import { noteApi, type noteModel } from '@/entities/note';
+import { noteApi, noteLib, type noteModel } from '@/entities/note';
 import { ProductAutocomplete, productApi, productLib } from '@/entities/product';
 import {
   NoteInputForm,
@@ -24,17 +24,15 @@ import { usePageFromLoader } from '../lib';
 interface LoaderData {
   pageId: number;
   mealType: noteModel.MealType;
-  displayOrder: number;
   photoUrls: string[];
 }
 
 export const loader: LoaderFunction = async ({ request, params }) => {
   const url = new URL(request.url);
-  const mealType: noteModel.MealType = Number(url.searchParams.get('mealType'));
-  const displayOrder = Number(url.searchParams.get('displayOrder'));
+  const mealType = noteLib.tryParseMealType(params.mealType);
   const photoUrls = url.searchParams.get('photoUrls')?.split(',') ?? [];
 
-  if (photoUrls.length < 1) {
+  if (mealType === null || photoUrls.length < 1) {
     return new Response(null, { status: 400 });
   }
 
@@ -42,6 +40,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 
   const queryPromises = [
     store.dispatch(pagesApi.endpoints.getPageById.initiate(pageId)),
+    store.dispatch(noteApi.endpoints.getNotes.initiate({ pageId, mealType })),
     store.dispatch(productApi.endpoints.getProductSelectOptions.initiate()),
     store.dispatch(categoryApi.endpoints.getCategorySelectOptions.initiate()),
   ];
@@ -56,7 +55,6 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   return {
     pageId,
     mealType,
-    displayOrder,
     photoUrls,
   } satisfies LoaderData;
 };
@@ -72,14 +70,13 @@ export const action: ActionFunction = async ({ request, params }) => {
 };
 
 export const Component: FC = () => {
-  const { pageId, mealType, displayOrder, photoUrls } = useLoaderData() as LoaderData;
-  const page = usePageFromLoader(pageId);
-  const productAutocomplete = productLib.useAutocompleteData();
-  const categorySelect = categoryLib.useCategorySelectData();
-
+  const { pageId, mealType, photoUrls } = useLoaderData() as LoaderData;
   const navigate = useNavigate();
   const submit = useSubmit();
-
+  const page = usePageFromLoader(pageId);
+  const nextDisplayOrder = noteLib.useNextDisplayOrder(pageId, mealType);
+  const productAutocomplete = productLib.useAutocompleteData();
+  const categorySelect = categoryLib.useCategorySelectData();
   const productAutocompleteInput = productLib.useAutocompleteInput();
   const { setValue: setProduct } = productAutocompleteInput;
   const { values: productFormValues } = productLib.useFormValues();
@@ -124,7 +121,7 @@ export const Component: FC = () => {
 
   const handleSubmit: NoteInputFormSubmitHandler = note => {
     const formData = addEditNoteLib.mapToFormData(note);
-    submit(formData, { method: 'post', action: `/pages/${page.id}/notes/by-photo` });
+    submit(formData, { method: 'post', action: `/pages/${page.id}/notes/${mealType}/by-photo` });
     return Promise.resolve();
   };
 
@@ -153,7 +150,7 @@ export const Component: FC = () => {
               id="note-input-form"
               pageId={page.id}
               mealType={mealType}
-              displayOrder={displayOrder}
+              displayOrder={nextDisplayOrder}
               quantity={100}
               productAutocompleteInput={productAutocompleteInput}
               renderProductAutocomplete={productAutocompleteProps => (

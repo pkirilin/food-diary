@@ -42,10 +42,9 @@ export const action: ActionFunction = async ({ request, params }) => {
   const pageId = Number(params.pageId);
   const formData = await request.formData();
   const mealType = formData.get('mealType')?.toString();
-  const displayOrder = formData.get('displayOrder')?.toString();
   const photos = formData.getAll('photos');
 
-  if (!mealType || !displayOrder || photos.length < 1) {
+  if (!mealType || photos.length < 1) {
     return redirect(`/pages/${pageId}`);
   }
 
@@ -57,9 +56,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 
   const photoUrls = files.map(file => file.url).join(',');
 
-  const url = `/pages/${pageId}/notes/by-photo?${new URLSearchParams({
-    mealType,
-    displayOrder,
+  const url = `/pages/${pageId}/notes/${mealType}/by-photo?${new URLSearchParams({
     photoUrls,
   }).toString()}`;
 

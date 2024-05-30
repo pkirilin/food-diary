@@ -13,15 +13,15 @@ import { NoteInputDialog } from './NoteInputDialog';
 interface Props {
   pageId: number;
   mealType: noteModel.MealType;
-  displayOrder: number;
 }
 
-export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
+export const AddNote: FC<Props> = ({ pageId, mealType }) => {
   const [dialogOpened, toggleDialog] = useToggle();
   const [createNote, createNoteResponse] = noteApi.useCreateNoteMutation();
   const { reset: resetCreateNote } = createNoteResponse;
-  const notes = noteLib.useNotes(pageId);
   const addProductIfNotExists = useAddProductIfNotExists();
+  const notes = noteLib.useNotes(pageId);
+  const nextDisplayOrder = noteLib.useNextDisplayOrder(pageId, mealType);
   const productAutocompleteData = productLib.useAutocompleteData();
   const categorySelect = categoryLib.useCategorySelectData();
 
@@ -46,7 +46,7 @@ export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
         submitText="Add"
         pageId={pageId}
         mealType={mealType}
-        displayOrder={displayOrder}
+        displayOrder={nextDisplayOrder}
         product={null}
         quantity={100}
         productAutocompleteData={productAutocompleteData}
