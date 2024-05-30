@@ -41,7 +41,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 
   const queryPromises = [
     store.dispatch(pagesApi.endpoints.getPageById.initiate(pageId)),
-    store.dispatch(noteApi.endpoints.getNotes.initiate({ pageId, mealType })),
+    store.dispatch(noteApi.endpoints.getNotes.initiate({ pageId })),
     store.dispatch(productApi.endpoints.getProductSelectOptions.initiate()),
     store.dispatch(categoryApi.endpoints.getCategorySelectOptions.initiate()),
   ];
