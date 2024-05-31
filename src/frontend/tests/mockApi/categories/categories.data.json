@@ -1,34 +1,30 @@
 [
   {
     "id": 1,
-    "name": "[AI GENERATED]"
-  },
-  {
-    "id": 2,
     "name": "Cereals"
   },
   {
-    "id": 3,
+    "id": 2,
     "name": "Meat"
   },
   {
-    "id": 4,
+    "id": 3,
     "name": "Vegetables"
   },
   {
-    "id": 5,
+    "id": 4,
     "name": "Dairy"
   },
   {
-    "id": 6,
+    "id": 5,
     "name": "Fruits"
   },
   {
-    "id": 7,
+    "id": 6,
     "name": "Bakery"
   },
   {
-    "id": 8,
+    "id": 7,
     "name": "Frozen foods"
   }
 ]
