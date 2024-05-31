@@ -6,7 +6,7 @@ import { DelayedHttpResponse } from '../DelayedHttpResponse';
 const UPLOAD_FILE_FAKE_RESPONSE: UploadFilesResponse = {
   files: [
     {
-      url: 'https://storage.yandexcloud.net/food-diary-images/oranges.png',
+      url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Oranges_-_whole-halved-segment.jpg/2560px-Oranges_-_whole-halved-segment.jpg',
     },
   ],
 };

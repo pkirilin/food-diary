@@ -106,9 +106,9 @@ export const Component: FC = () => {
     setProduct({
       freeSolo: true,
       editing: true,
-      name: note.productName,
-      caloriesCost: note.productCaloriesCost,
-      defaultQuantity: note.productQuantity,
+      name: note.product.name,
+      caloriesCost: note.product.caloriesCost,
+      defaultQuantity: note.quantity,
       category,
     });
   }, [

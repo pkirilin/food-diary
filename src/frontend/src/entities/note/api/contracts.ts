@@ -27,11 +27,14 @@ export interface RecognizeNoteRequest {
   files: FileItem[];
 }
 
+export interface RecognizeProductItem {
+  name: string;
+  caloriesCost: number;
+}
+
 export interface RecognizeNoteItem {
-  calories: number;
-  productName: string;
-  productQuantity: number;
-  productCaloriesCost: number;
+  product: RecognizeProductItem;
+  quantity: number;
 }
 
 export interface RecognizeNoteResponse {

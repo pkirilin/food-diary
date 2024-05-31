@@ -84,10 +84,11 @@ export const handlers: HttpHandler[] = [
       const { files } = await request.json();
       return await DelayedHttpResponse.json<RecognizeNoteResponse>({
         notes: files.map((file, index) => ({
-          calories: 100,
-          productName: `Product from file ${index + 1}`,
-          productQuantity: 120,
-          productCaloriesCost: 150,
+          product: {
+            name: `Product from file ${index + 1}`,
+            caloriesCost: 150,
+          },
+          quantity: 120,
         })),
       });
     },
