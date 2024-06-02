@@ -1,6 +1,5 @@
 import { http, type HttpHandler, type PathParams } from 'msw';
 import {
-  type RecognizeNoteRequest,
   type CreateNoteRequest,
   type EditNoteRequest,
   type noteModel,
@@ -78,19 +77,18 @@ export const handlers: HttpHandler[] = [
     return await DelayedHttpResponse.ok();
   }),
 
-  http.post<PathParams, RecognizeNoteRequest>(
-    `${API_URL}/api/v1/notes/recognitions`,
-    async ({ request }) => {
-      const { files } = await request.json();
-      return await DelayedHttpResponse.json<RecognizeNoteResponse>({
-        notes: files.map((file, index) => ({
-          product: {
-            name: `Product from file ${index + 1}`,
-            caloriesCost: 150,
-          },
-          quantity: 120,
-        })),
-      });
-    },
-  ),
+  http.post<PathParams, FormData>(`${API_URL}/api/v1/notes/recognitions`, async ({ request }) => {
+    const formData = await request.formData();
+    const files = formData.getAll('files');
+
+    return await DelayedHttpResponse.json<RecognizeNoteResponse>({
+      notes: files.map(file => ({
+        product: {
+          name: file instanceof File ? file.name : '',
+          caloriesCost: Math.floor(Math.random() * 100) + 50,
+        },
+        quantity: Math.floor(Math.random() * 100) + 50,
+      })),
+    });
+  }),
 ];

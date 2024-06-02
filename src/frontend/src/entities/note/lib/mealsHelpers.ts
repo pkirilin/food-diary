@@ -19,8 +19,3 @@ export const getMealName = (mealType: MealType): string => {
 
   return mealName;
 };
-
-export const tryParseMealType = (value?: string): MealType | null => {
-  const mealType: MealType = Number(value);
-  return AVAILABLE_MEALS.has(mealType) ? mealType : null;
-};

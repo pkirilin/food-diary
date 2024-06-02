@@ -1,4 +1,3 @@
-import { type FileItem } from '@/shared/api';
 import { type MealType } from '../model';
 
 export interface GetNotesRequest {
@@ -21,10 +20,6 @@ export interface EditNoteRequest {
   pageId: number;
   productQuantity: number;
   displayOrder: number;
-}
-
-export interface RecognizeNoteRequest {
-  files: FileItem[];
 }
 
 export interface RecognizeProductItem {

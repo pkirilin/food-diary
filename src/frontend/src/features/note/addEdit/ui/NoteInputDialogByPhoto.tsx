@@ -1,0 +1,138 @@
+import { CircularProgress, ImageList, ImageListItem, Stack } from '@mui/material';
+import { useEffect, type FC } from 'react';
+import { type categoryLib } from '@/entities/category';
+import { type RecognizeNoteItem, type noteModel } from '@/entities/note';
+import { ProductAutocomplete, productLib } from '@/entities/product';
+import { NoteInputForm } from '@/features/note/addEdit';
+import { Button, Dialog } from '@/shared/ui';
+import { type UploadedPhoto, type Note } from '../model';
+
+interface Props {
+  opened: boolean;
+  pageId: number;
+  mealType: noteModel.MealType;
+  displayOrder: number;
+  uploadedPhotos: UploadedPhoto[];
+  productAutocompleteData: productLib.AutocompleteData;
+  categorySelect: categoryLib.CategorySelectData;
+  recognizedNotes: RecognizeNoteItem[];
+  recognizeNotesLoading: boolean;
+  recognizeNotesSuccess: boolean;
+  submitLoading: boolean;
+  submitSuccess: boolean;
+  onSubmit: (note: Note) => Promise<void>;
+  onSubmitSuccess: () => void;
+  onCancel: () => void;
+}
+
+export const NoteInputDialogByPhoto: FC<Props> = ({
+  opened,
+  pageId,
+  mealType,
+  displayOrder,
+  uploadedPhotos,
+  productAutocompleteData,
+  categorySelect,
+  recognizedNotes,
+  recognizeNotesLoading,
+  recognizeNotesSuccess,
+  submitLoading,
+  submitSuccess,
+  onSubmit,
+  onSubmitSuccess,
+  onCancel,
+}) => {
+  const productAutocompleteInput = productLib.useAutocompleteInput();
+  const { setValue: setProduct } = productAutocompleteInput;
+  const { values: productFormValues } = productLib.useFormValues();
+  const submitDisabled = recognizeNotesLoading || submitLoading;
+
+  useEffect(() => {
+    if (submitSuccess) {
+      onSubmitSuccess();
+    }
+  }, [onSubmitSuccess, submitSuccess]);
+
+  useEffect(() => {
+    if (!recognizeNotesSuccess) {
+      return;
+    }
+
+    const note = recognizedNotes.at(0);
+    const category = categorySelect.data.at(0);
+
+    if (!note || !category) {
+      return;
+    }
+
+    setProduct({
+      freeSolo: true,
+      editing: true,
+      name: note.product.name,
+      caloriesCost: note.product.caloriesCost,
+      defaultQuantity: note.quantity,
+      category,
+    });
+  }, [categorySelect.data, recognizeNotesSuccess, recognizedNotes, setProduct]);
+
+  return (
+    <Dialog
+      opened={opened}
+      renderMode="fullScreenOnMobile"
+      title="New note"
+      onClose={onCancel}
+      content={
+        <Stack spacing={3}>
+          <ImageList cols={2}>
+            {uploadedPhotos.map((photo, index) => (
+              <ImageListItem key={index}>
+                <img src={photo.src} alt={photo.name} />
+              </ImageListItem>
+            ))}
+          </ImageList>
+          {recognizeNotesLoading && (
+            <Stack justifyContent="center" alignItems="center">
+              <CircularProgress sx={theme => ({ marginBottom: theme.spacing(2) })} />
+            </Stack>
+          )}
+          {recognizeNotesSuccess && (
+            <NoteInputForm
+              id="note-input-form"
+              pageId={pageId}
+              mealType={mealType}
+              displayOrder={displayOrder}
+              quantity={100}
+              productAutocompleteInput={productAutocompleteInput}
+              renderProductAutocomplete={productAutocompleteProps => (
+                <ProductAutocomplete
+                  {...productAutocompleteProps}
+                  formValues={productFormValues}
+                  options={productAutocompleteData.options}
+                  loading={productAutocompleteData.isLoading}
+                />
+              )}
+              onSubmit={onSubmit}
+              onSubmitDisabledChange={() => {}}
+            />
+          )}
+        </Stack>
+      }
+      renderSubmit={submitProps => (
+        <Button
+          {...submitProps}
+          type="submit"
+          form="note-input-form"
+          disabled={submitDisabled}
+          loading={submitLoading}
+        >
+          Add
+        </Button>
+      )}
+      renderCancel={cancelProps => (
+        <Button {...cancelProps} type="button" onClick={onCancel} disabled={submitDisabled}>
+          Cancel
+        </Button>
+      )}
+    />
+  );
+};

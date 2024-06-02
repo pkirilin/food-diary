@@ -1,34 +1,77 @@
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
-import { Box, Input, styled } from '@mui/material';
+import { Box, styled } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
-import { type FormEventHandler, type FC } from 'react';
-import { Form, useSubmit } from 'react-router-dom';
-import { type noteModel } from '@/entities/note';
+import { type FC, useState, type ChangeEventHandler, useCallback } from 'react';
+import { categoryLib } from '@/entities/category';
+import { noteApi, noteLib, type noteModel } from '@/entities/note';
+import { productLib } from '@/entities/product';
+import { useToggle } from '@/shared/hooks';
+import { convertToBase64String } from '@/shared/lib';
 import { Button } from '@/shared/ui';
+import { mapToCreateNoteRequest, useAddProductIfNotExists } from '../lib';
+import { type UploadedPhoto, type Note } from '../model';
+import { NoteInputDialogByPhoto } from './NoteInputDialogByPhoto';
 
 interface Props {
   pageId: number;
   mealType: noteModel.MealType;
+  displayOrder: number;
 }
 
 const FileInputStyled = styled('input')(() => ({ ...visuallyHidden }));
 
-export const AddNoteByPhoto: FC<Props> = ({ pageId, mealType }) => {
-  const submit = useSubmit();
+export const AddNoteByPhoto: FC<Props> = ({ pageId, mealType, displayOrder }) => {
+  const [dialogOpened, toggleDialog] = useToggle();
+  const [recognizeNote, recognizeNoteResponse] = noteApi.useRecognizeMutation();
+  const [addNote, addNoteResponse] = noteApi.useCreateNoteMutation();
+  const addProductIfNotExists = useAddProductIfNotExists();
+  const notes = noteLib.useNotes(pageId);
+  const productAutocompleteData = productLib.useAutocompleteData();
+  const categorySelect = categoryLib.useCategorySelectData();
+  const [uploadedPhotos, setUploadedPhotos] = useState<UploadedPhoto[]>([]);
+  const [submitLoading, setSubmitLoading] = useState(false);
 
-  const handleFormChange: FormEventHandler<HTMLFormElement> = event => {
-    submit(event.currentTarget);
+  const handlePhotoUploaded: ChangeEventHandler<HTMLInputElement> = async event => {
+    const photo = event.target?.files?.item(0);
+
+    if (!photo) {
+      return;
+    }
+
+    const photoBase64 = await convertToBase64String(photo);
+
+    setUploadedPhotos([
+      {
+        src: photoBase64,
+        name: photo.name,
+      },
+    ]);
+
+    toggleDialog();
+
+    const formData = new FormData();
+    formData.append('files', photo);
+    await recognizeNote(formData);
   };
 
+  const handleSubmit = async (note: Note): Promise<void> => {
+    try {
+      setSubmitLoading(true);
+      const productId = await addProductIfNotExists(note.product);
+      const request = mapToCreateNoteRequest(note, productId);
+      await addNote(request);
+    } catch (err) {
+      setSubmitLoading(false);
+    }
+  };
+
+  const handleSubmitSuccess = useCallback(() => {
+    setSubmitLoading(false);
+    toggleDialog();
+  }, [toggleDialog]);
+
   return (
-    <Box
-      component={Form}
-      action={`/pages/${pageId}`}
-      method="post"
-      encType="multipart/form-data"
-      width="100%"
-      onChange={handleFormChange}
-    >
+    <Box component="form" width="100%">
       <Button
         role={undefined}
         component="label"
@@ -37,9 +80,30 @@ export const AddNoteByPhoto: FC<Props> = ({ pageId, mealType }) => {
         startIcon={<AddAPhotoIcon />}
       >
         Add photo
-        <FileInputStyled type="file" name="photos" accept=".jpg, .jpeg, .png" />
+        <FileInputStyled
+          type="file"
+          name="photos"
+          accept=".jpg, .jpeg, .png"
+          onChange={handlePhotoUploaded}
+        />
       </Button>
-      <Input type="hidden" name="mealType" value={mealType} />
+      <NoteInputDialogByPhoto
+        opened={dialogOpened}
+        pageId={pageId}
+        mealType={mealType}
+        displayOrder={displayOrder}
+        uploadedPhotos={uploadedPhotos}
+        recognizedNotes={recognizeNoteResponse.data?.notes ?? []}
+        recognizeNotesLoading={recognizeNoteResponse.isLoading}
+        recognizeNotesSuccess={recognizeNoteResponse.isSuccess}
+        submitLoading={submitLoading}
+        submitSuccess={addNoteResponse.isSuccess && notes.isChanged}
+        productAutocompleteData={productAutocompleteData}
+        categorySelect={categorySelect}
+        onCancel={toggleDialog}
+        onSubmit={handleSubmit}
+        onSubmitSuccess={handleSubmitSuccess}
+      />
     </Box>
   );
 };

@@ -1,18 +1,18 @@
 import { noteApi } from '../api';
-import { type MealType, type NoteItem } from '../model';
+import { type NoteItem } from '../model';
 
-const calculateNextDisplayOrder = (notes: NoteItem[], mealType: MealType): number =>
-  notes
-    .filter(n => n.mealType === mealType)
-    .reduce((maxOrder, note) => (note.displayOrder > maxOrder ? note.displayOrder : maxOrder), -1) +
-  1;
+const getMaxDisplayOrder = (notes: NoteItem[]): number =>
+  notes.reduce(
+    (maxOrder, note) => (note.displayOrder > maxOrder ? note.displayOrder : maxOrder),
+    -1,
+  );
 
-export const useNextDisplayOrder = (pageId: number, mealType: MealType): number => {
+export const useNextDisplayOrder = (pageId: number): number => {
   const { nextDisplayOrder } = noteApi.useGetNotesQuery(
     { pageId },
     {
       selectFromResult: ({ data: notes, isSuccess }) => ({
-        nextDisplayOrder: isSuccess ? calculateNextDisplayOrder(notes, mealType) : 0,
+        nextDisplayOrder: isSuccess ? getMaxDisplayOrder(notes) + 1 : 0,
       }),
     },
   );

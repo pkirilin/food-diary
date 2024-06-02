@@ -37,13 +37,7 @@ export const createAppRouter = (
         },
         {
           path: '/pages/:pageId',
-          lazy: () => import('@/pages/pages/ui/PageDetail.page'),
-          children: [
-            {
-              path: 'notes/:mealType/by-photo',
-              lazy: () => import('@/pages/pages/ui/AddNoteByPhoto.page'),
-            },
-          ],
+          lazy: () => import('@/pages/ui/PageDetailPage'),
         },
         {
           path: '/products',
