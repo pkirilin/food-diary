@@ -86,4 +86,13 @@ public class NotesApiTests(FoodDiaryWebApplicationFactory factory, Infrastructur
             c => c.When_user_retrieves_notes_list_for_page(page),
             c => c.Then_notes_list_contains_no_items());
     }
+
+    [Scenario]
+    public Task I_can_recognize_notes_by_photo()
+    {
+        return Run(
+            c => c.Given_authenticated_user(),
+            c => c.When_user_uploads_file_for_note_recognition("recognizeNoteSamplePhoto.png"),
+            c => c.Then_note_is_successfully_recognized());
+    }
 }

@@ -12,6 +12,7 @@ using MediatR;
 using FoodDiary.Application.Notes.Requests;
 using FoodDiary.Application.Products.Requests;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 
 namespace FoodDiary.API.Controllers.v1;
 
@@ -168,6 +169,14 @@ public class NotesController : ControllerBase
         }
 
         await _mediator.Send(new MoveNoteRequest(noteForMove, moveRequest.DestMeal, moveRequest.Position), cancellationToken);
+        return Ok();
+    }
+
+    [HttpPost("recognitions")]
+    public async Task<IActionResult> RecognizeNote(
+        [FromForm] IEnumerable<IFormFile> files,
+        CancellationToken cancellationToken)
+    {
         return Ok();
     }
 }

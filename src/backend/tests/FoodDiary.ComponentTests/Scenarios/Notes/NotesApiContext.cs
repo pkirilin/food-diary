@@ -15,6 +15,7 @@ public class NotesApiContext(FoodDiaryWebApplicationFactory factory, Infrastruct
     private HttpResponseMessage _createNoteResponse = null!;
     private HttpResponseMessage _updateNoteResponse = null!;
     private HttpResponseMessage _deleteNoteResponse = null!;
+    private HttpResponseMessage _recognizeNoteResponse = null!;
 
     public Task Given_notes(params Note[] notes)
     {
@@ -59,6 +60,23 @@ public class NotesApiContext(FoodDiaryWebApplicationFactory factory, Infrastruct
         _deleteNoteResponse = await ApiClient.DeleteAsync($"/api/v1/notes/{note.Id}");
     }
 
+    public async Task When_user_uploads_file_for_note_recognition(string file)
+    {
+        var filePath = Path.Combine("Scenarios", "Notes", file);
+        await using var stream = File.OpenRead(filePath);
+        using var content = new MultipartFormDataContent();
+        content.Add(new StreamContent(stream), "files", file);
+        
+        var request = new HttpRequestMessage
+        {
+            Method = HttpMethod.Post,
+            RequestUri = new Uri("/api/v1/notes/recognitions", UriKind.Relative),
+            Content = content
+        };
+        
+        _recognizeNoteResponse = await ApiClient.SendAsync(request);
+    }
+
     public Task Then_notes_list_contains_items(params Note[] items)
     {
         var expectedNotesList = items.Select(n => n.ToNoteItemDto());
@@ -95,6 +113,12 @@ public class NotesApiContext(FoodDiaryWebApplicationFactory factory, Infrastruct
     public Task Then_note_is_successfully_deleted()
     {
         _deleteNoteResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        return Task.CompletedTask;
+    }
+
+    public Task Then_note_is_successfully_recognized()
+    {
+        _recognizeNoteResponse.StatusCode.Should().Be(HttpStatusCode.OK);
         return Task.CompletedTask;
     }
 }
