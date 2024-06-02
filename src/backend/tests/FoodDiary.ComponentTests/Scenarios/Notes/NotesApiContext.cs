@@ -65,7 +65,7 @@ public class NotesApiContext(FoodDiaryWebApplicationFactory factory, Infrastruct
         var filePath = Path.Combine("Scenarios", "Notes", file);
         await using var stream = File.OpenRead(filePath);
         using var content = new MultipartFormDataContent();
-        content.Add(new StreamContent(stream), "files", file);
+        content.Add(new StreamContent(stream) { Headers = { { "Content-Type", "image/png" } } }, "files", file);
         
         var request = new HttpRequestMessage
         {

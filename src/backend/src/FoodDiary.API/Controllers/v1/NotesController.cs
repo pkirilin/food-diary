@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using FoodDiary.API.Dtos;
+using FoodDiary.API.Extensions;
 using FoodDiary.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using FoodDiary.API.Requests;
+using FoodDiary.Application.Notes.RecognizeByPhoto;
 using MediatR;
 using FoodDiary.Application.Notes.Requests;
 using FoodDiary.Application.Products.Requests;
@@ -174,9 +177,20 @@ public class NotesController : ControllerBase
 
     [HttpPost("recognitions")]
     public async Task<IActionResult> RecognizeNote(
-        [FromForm] IEnumerable<IFormFile> files,
+        [FromForm] IReadOnlyList<IFormFile> files,
         CancellationToken cancellationToken)
     {
-        return Ok();
+        var fileUrls = files
+            .Select(file => file.ToBase64String())
+            .ToList();
+        
+        var request = new RecognizeNoteByPhotoRequest(fileUrls);
+        var response = await _mediator.Send(request, cancellationToken);
+
+        return response switch
+        {
+            RecognizeNoteByPhotoResponse.Success => Ok(),
+            _ => Conflict()
+        };
     }
 }
