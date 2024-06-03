@@ -32,6 +32,12 @@ public class NotesApiContext(FoodDiaryWebApplicationFactory factory, Infrastruct
         return Factory.SeedDataAsync(new[] { product });
     }
 
+    public async Task Given_OpenAI_api_is_ready()
+    {
+        await Infrastructure.ExternalServices.OpenAiApi.Start();
+        await Infrastructure.ExternalServices.OpenAiApi.SetupNoteSuccessfullyRecognizedByPhoto();
+    }
+
     public async Task When_user_retrieves_notes_list_for_page(Page page)
     {
         _notesList = await ApiClient.GetFromJsonAsync<IReadOnlyList<NoteItemDto>>($"/api/v1/notes?pageId={page.Id}");

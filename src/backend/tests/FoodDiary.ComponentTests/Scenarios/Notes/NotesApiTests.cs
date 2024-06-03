@@ -91,6 +91,7 @@ public class NotesApiTests(FoodDiaryWebApplicationFactory factory, Infrastructur
     public Task I_can_recognize_notes_by_photo()
     {
         return Run(
+            c => c.Given_OpenAI_api_is_ready(),
             c => c.Given_authenticated_user(),
             c => c.When_user_uploads_file_for_note_recognition("recognizeNoteSamplePhoto.png"),
             c => c.Then_note_is_successfully_recognized());
