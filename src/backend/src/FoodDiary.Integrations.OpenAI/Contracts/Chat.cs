@@ -1,23 +1,18 @@
+using System.Text.Json;
 using JetBrains.Annotations;
 
 namespace FoodDiary.Integrations.OpenAI.Contracts;
 
-public class ImageUrl
+public abstract record MessageContent(string Type)
 {
-    public required string Url { get; init; }
-}
-
-public class MessageContent
-{
-    public required string Type { get; init; }
-    public string? Text { get; init; }
-    public ImageUrl? ImageUrl { get; init; }
+    public record TextContent(string Text) : MessageContent("text");
+    public record ImageUrlContent(string Url) : MessageContent("image_url");
 }
 
 public class Message
 {
     public required string Role { get; init; }
-    public required IReadOnlyList<MessageContent> Content { get; init; }
+    public required JsonElement Content { get; init; }
 }
 
 public class Choice

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using FoodDiary.Integrations.OpenAI;
@@ -37,22 +38,11 @@ internal class RecognizeNoteByPhotoRequestHandler(IOpenAiApiClient openAiApiClie
                 new Message
                 {
                     Role = "user",
-                    Content =
-                    [
-                        new MessageContent
-                        {
-                            Type = "text",
-                            Text = BuildPrompt()
-                        },
-                        new MessageContent
-                        {
-                            Type = "image",
-                            ImageUrl = new ImageUrl
-                            {
-                                Url = request.PhotoUrls[0]
-                            }
-                        }
-                    ]
+                    Content = JsonSerializer.SerializeToElement(new MessageContent[]
+                    {
+                        new MessageContent.TextContent(BuildPrompt()),
+                        new MessageContent.ImageUrlContent(request.PhotoUrls[0])
+                    })
                 }
             ]
         };
