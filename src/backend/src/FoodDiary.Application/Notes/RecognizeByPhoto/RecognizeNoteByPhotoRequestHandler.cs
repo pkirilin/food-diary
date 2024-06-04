@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading;
@@ -24,6 +25,11 @@ public record RecognizeNoteByPhotoRequest(IReadOnlyList<string> PhotoUrls) : IRe
 internal class RecognizeNoteByPhotoRequestHandler(IOpenAiApiClient openAiApiClient)
     : IRequestHandler<RecognizeNoteByPhotoRequest, RecognizeNoteByPhotoResponse>
 {
+    private static readonly JsonSerializerOptions SerializerOptions = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+    };
+    
     public async Task<RecognizeNoteByPhotoResponse> Handle(
         RecognizeNoteByPhotoRequest request,
         CancellationToken cancellationToken)
@@ -58,11 +64,33 @@ internal class RecognizeNoteByPhotoRequestHandler(IOpenAiApiClient openAiApiClie
 
     private static string BuildPrompt()
     {
-        return "Describe the following image";
+        return "...";
     }
 
     private static IReadOnlyList<RecognizeNoteItem> ParseRecognizedNotes(CreateChatCompletionResponse response)
     {
-        return [];
+        try
+        {
+            var messageContentElement = response.Choices[0].Message.Content;
+
+            if (messageContentElement.ValueKind != JsonValueKind.String)
+            {
+                // TODO: add logging
+                return [];
+            }
+
+            var messageContent = messageContentElement.GetString() ?? "[]";
+            
+            var recognizedNotes = JsonSerializer.Deserialize<IReadOnlyList<RecognizeNoteItem>>(
+                messageContent,
+                SerializerOptions);
+
+            return recognizedNotes ?? Array.Empty<RecognizeNoteItem>();
+        }
+        catch (Exception e)
+        {
+            // TODO: add logging
+            return [];
+        }
     }
 }

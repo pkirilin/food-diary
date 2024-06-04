@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Http.Json;
 using FoodDiary.API.Dtos;
 using FoodDiary.API.Mapping;
+using FoodDiary.Application.Notes.RecognizeByPhoto;
 using FoodDiary.ComponentTests.Dsl;
 using FoodDiary.ComponentTests.Infrastructure;
 using FoodDiary.Domain.Entities;
@@ -32,10 +33,14 @@ public class NotesApiContext(FoodDiaryWebApplicationFactory factory, Infrastruct
         return Factory.SeedDataAsync(new[] { product });
     }
 
-    public async Task Given_OpenAI_api_is_ready()
+    public Task Given_OpenAI_api_is_ready()
     {
-        await Infrastructure.ExternalServices.OpenAiApi.Start();
-        await Infrastructure.ExternalServices.OpenAiApi.SetupNoteSuccessfullyRecognizedByPhoto();
+        return Infrastructure.ExternalServices.OpenAiApi.Start();
+    }
+    
+    public Task Given_OpenAI_api_can_recognize_notes(params RecognizeNoteItem[] notes)
+    {
+        return Infrastructure.ExternalServices.OpenAiApi.SetupNotesRecognized(notes);
     }
 
     public async Task When_user_retrieves_notes_list_for_page(Page page)

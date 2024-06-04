@@ -13,7 +13,7 @@ public static class DependencyInjection
         services.AddHttpClient<IOpenAiApiClient, OpenAiApiClient>((serviceProvider, client) =>
         {
             var options = serviceProvider.GetRequiredService<IOptions<OpenAiOptions>>().Value;
-            client.BaseAddress = new Uri(options.BaseUrl);
+            client.BaseAddress = new Uri(options.BaseUrl, UriKind.Absolute);
             client.DefaultRequestHeaders.Add("Authorization", $"Bearer {options.ApiKey}");
         });
     }
