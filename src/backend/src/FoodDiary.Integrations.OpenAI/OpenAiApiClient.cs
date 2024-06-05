@@ -11,7 +11,7 @@ internal class OpenAiApiClient(HttpClient httpClient) : IOpenAiApiClient
     {
         PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower
     };
-    
+
     public async Task<CreateChatCompletionResponse> CreateChatCompletion(
         CreateChatCompletionRequest request,
         CancellationToken cancellationToken)
@@ -21,7 +21,7 @@ internal class OpenAiApiClient(HttpClient httpClient) : IOpenAiApiClient
             Encoding.UTF8,
             "application/json");
         
-        var httpResponse = await httpClient.PostAsync("/v1/chat/completions", content, cancellationToken);
+        var httpResponse = await httpClient.PostAsync("v1/chat/completions", content, cancellationToken);
 
         var response = await httpResponse.Content.ReadFromJsonAsync<CreateChatCompletionResponse>(
             SerializerOptions,
