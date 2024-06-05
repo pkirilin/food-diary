@@ -32,6 +32,11 @@ internal class RecognizeNoteRequestHandler(IOpenAiApiClient openAiApiClient)
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase
     };
     
+    private static readonly JsonSerializerOptions OpenAiSerializerOptions = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower
+    };
+    
     public async Task<RecognizeNoteResponse> Handle(
         RecognizeNoteRequest request,
         CancellationToken cancellationToken)
@@ -46,11 +51,13 @@ internal class RecognizeNoteRequestHandler(IOpenAiApiClient openAiApiClient)
                 new Message
                 {
                     Role = "user",
-                    Content = JsonSerializer.SerializeToElement(new MessageContent[]
-                    {
-                        new MessageContent.TextContent(BuildPrompt()),
-                        new MessageContent.ImageUrlContent(request.PhotoUrls[0])
-                    })
+                    Content = JsonSerializer.SerializeToElement(
+                        new object[]
+                        {
+                            new MessageContent.TextContent(BuildPrompt()),
+                            new MessageContent.ImageUrlContent(request.PhotoUrls[0])
+                        },
+                        OpenAiSerializerOptions)
                 }
             ]
         };
