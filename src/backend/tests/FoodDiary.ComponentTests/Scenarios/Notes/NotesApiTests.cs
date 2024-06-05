@@ -100,6 +100,6 @@ public class NotesApiTests(FoodDiaryWebApplicationFactory factory, Infrastructur
             c => c.Given_OpenAI_api_can_recognize_notes(orangeNote),
             c => c.Given_authenticated_user(),
             c => c.When_user_uploads_file_for_note_recognition("recognizeNoteSamplePhoto.png"),
-            c => c.Then_note_is_successfully_recognized());
+            c => c.Then_note_is_successfully_recognized_as(orangeNote));
     }
 }

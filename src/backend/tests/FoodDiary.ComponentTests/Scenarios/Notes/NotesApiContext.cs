@@ -127,9 +127,9 @@ public class NotesApiContext(FoodDiaryWebApplicationFactory factory, Infrastruct
         return Task.CompletedTask;
     }
 
-    public Task Then_note_is_successfully_recognized()
+    public async Task Then_note_is_successfully_recognized_as(RecognizeNoteItem note)
     {
-        _recognizeNoteResponse.StatusCode.Should().Be(HttpStatusCode.OK);
-        return Task.CompletedTask;
+        var response = await _recognizeNoteResponse.Content.ReadFromJsonAsync<RecognizeNoteResponse.Success>();
+        response?.Notes.Should().Contain(note);
     }
 }

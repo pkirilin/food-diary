@@ -184,12 +184,12 @@ public class NotesController : ControllerBase
             .Select(file => file.ToBase64String())
             .ToList();
         
-        var request = new RecognizeNoteByPhotoRequest(fileUrls);
+        var request = new RecognizeNoteRequest(fileUrls);
         var response = await _mediator.Send(request, cancellationToken);
 
         return response switch
         {
-            RecognizeNoteByPhotoResponse.Success => Ok(),
+            RecognizeNoteResponse.Success success => Ok(success),
             _ => Conflict()
         };
     }

@@ -10,28 +10,30 @@ using MediatR;
 
 namespace FoodDiary.Application.Notes.RecognizeByPhoto;
 
+[PublicAPI]
 public record RecognizeProductItem(string Name, int CaloriesCost);
 
+[PublicAPI]
 public record RecognizeNoteItem(RecognizeProductItem Product, int Quantity);
 
-public abstract record RecognizeNoteByPhotoResponse
+public abstract record RecognizeNoteResponse
 {
-    public record Success(IReadOnlyList<RecognizeNoteItem> Notes) : RecognizeNoteByPhotoResponse;
+    public record Success(IReadOnlyList<RecognizeNoteItem> Notes) : RecognizeNoteResponse;
 }
 
-public record RecognizeNoteByPhotoRequest(IReadOnlyList<string> PhotoUrls) : IRequest<RecognizeNoteByPhotoResponse>;
+public record RecognizeNoteRequest(IReadOnlyList<string> PhotoUrls) : IRequest<RecognizeNoteResponse>;
 
 [UsedImplicitly]
-internal class RecognizeNoteByPhotoRequestHandler(IOpenAiApiClient openAiApiClient)
-    : IRequestHandler<RecognizeNoteByPhotoRequest, RecognizeNoteByPhotoResponse>
+internal class RecognizeNoteRequestHandler(IOpenAiApiClient openAiApiClient)
+    : IRequestHandler<RecognizeNoteRequest, RecognizeNoteResponse>
 {
     private static readonly JsonSerializerOptions SerializerOptions = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase
     };
     
-    public async Task<RecognizeNoteByPhotoResponse> Handle(
-        RecognizeNoteByPhotoRequest request,
+    public async Task<RecognizeNoteResponse> Handle(
+        RecognizeNoteRequest request,
         CancellationToken cancellationToken)
     {
         var createChatCompletionRequest = new CreateChatCompletionRequest
@@ -59,7 +61,7 @@ internal class RecognizeNoteByPhotoRequestHandler(IOpenAiApiClient openAiApiClie
         
         var recognizedNotes = ParseRecognizedNotes(createChatCompletionResponse);
 
-        return new RecognizeNoteByPhotoResponse.Success(recognizedNotes);
+        return new RecognizeNoteResponse.Success(recognizedNotes);
     }
 
     private static string BuildPrompt()
