@@ -31,12 +31,12 @@ internal class RecognizeNoteRequestHandler(IOpenAiApiClient openAiApiClient)
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase
     };
-    
+
     private static readonly JsonSerializerOptions OpenAiSerializerOptions = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower
     };
-    
+
     public async Task<RecognizeNoteResponse> Handle(
         RecognizeNoteRequest request,
         CancellationToken cancellationToken)
@@ -46,6 +46,7 @@ internal class RecognizeNoteRequestHandler(IOpenAiApiClient openAiApiClient)
             Model = "gpt-4o",
             MaxTokens = 1000,
             Stream = false,
+            Stop = ["[[END]]"],
             Messages =
             [
                 new Message
@@ -55,7 +56,7 @@ internal class RecognizeNoteRequestHandler(IOpenAiApiClient openAiApiClient)
                         new object[]
                         {
                             new MessageContent.TextContent(BuildPrompt()),
-                            new MessageContent.ImageUrlContent(request.PhotoUrls[0])
+                            new MessageContent.ImageUrlContent(new ImageUrl(request.PhotoUrls[0]))
                         },
                         OpenAiSerializerOptions)
                 }
@@ -65,7 +66,7 @@ internal class RecognizeNoteRequestHandler(IOpenAiApiClient openAiApiClient)
         var createChatCompletionResponse = await openAiApiClient.CreateChatCompletion(
             createChatCompletionRequest,
             cancellationToken);
-        
+
         var recognizedNotes = ParseRecognizedNotes(createChatCompletionResponse);
 
         return new RecognizeNoteResponse.Success(recognizedNotes);
@@ -73,7 +74,7 @@ internal class RecognizeNoteRequestHandler(IOpenAiApiClient openAiApiClient)
 
     private static string BuildPrompt()
     {
-        return "...";
+        return "Describe this image[[END]]";
     }
 
     private static IReadOnlyList<RecognizeNoteItem> ParseRecognizedNotes(CreateChatCompletionResponse response)
@@ -89,7 +90,7 @@ internal class RecognizeNoteRequestHandler(IOpenAiApiClient openAiApiClient)
             }
 
             var messageContent = messageContentElement.GetString() ?? "[]";
-            
+
             var recognizedNotes = JsonSerializer.Deserialize<IReadOnlyList<RecognizeNoteItem>>(
                 messageContent,
                 SerializerOptions);

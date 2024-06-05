@@ -3,10 +3,12 @@ using JetBrains.Annotations;
 
 namespace FoodDiary.Integrations.OpenAI.Contracts;
 
+public record ImageUrl(string Url);
+
 public abstract record MessageContent(string Type)
 {
     public record TextContent(string Text) : MessageContent("text");
-    public record ImageUrlContent(string Url) : MessageContent("image_url");
+    public record ImageUrlContent(ImageUrl ImageUrl) : MessageContent("image_url");
 }
 
 public class Message
@@ -27,6 +29,7 @@ public class CreateChatCompletionRequest
     public required IReadOnlyList<Message> Messages { get; init; }
     public int? MaxTokens { get; init; }
     public bool? Stream { get; init; }
+    public string[]? Stop { get; init; }
 }
 
 public class CreateChatCompletionResponse
