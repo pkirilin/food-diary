@@ -26,13 +26,13 @@ public class NotesController : ControllerBase
 {
     private readonly IMapper _mapper;
     private readonly IMediator _mediator;
-    private readonly IFileOptimizer _fileOptimizer;
+    private readonly IImageOptimizer _imageOptimizer;
 
-    public NotesController(IMapper mapper, IMediator mediator, IFileOptimizer fileOptimizer)
+    public NotesController(IMapper mapper, IMediator mediator, IImageOptimizer imageOptimizer)
     {
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
-        _fileOptimizer = fileOptimizer;
+        _imageOptimizer = imageOptimizer;
     }
 
     /// <summary>
@@ -181,7 +181,7 @@ public class NotesController : ControllerBase
         [FromForm] IReadOnlyList<IFormFile> files,
         CancellationToken cancellationToken)
     {
-        var fileUrls = await _fileOptimizer.ConvertToCompressedAndResizedBase64(files, cancellationToken);
+        var fileUrls = await _imageOptimizer.ConvertToCompactBase64UrlStringArray(files, cancellationToken);
         var request = new RecognizeNoteRequest(fileUrls);
         var response = await _mediator.Send(request, cancellationToken);
 

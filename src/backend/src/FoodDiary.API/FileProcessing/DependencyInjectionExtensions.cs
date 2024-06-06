@@ -6,6 +6,6 @@ public static class DependencyInjectionExtensions
 {
     public static void AddFileProcessing(this IServiceCollection services)
     {
-        services.AddSingleton<IFileOptimizer, FileOptimizer>();
+        services.AddSingleton<IImageOptimizer, ImageOptimizer>();
     }
 }
