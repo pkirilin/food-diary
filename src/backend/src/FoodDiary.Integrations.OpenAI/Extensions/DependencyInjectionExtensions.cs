@@ -4,7 +4,7 @@ using Microsoft.Extensions.Options;
 
 namespace FoodDiary.Integrations.OpenAI.Extensions;
 
-public static class DependencyInjection
+public static class DependencyInjectionExtensions
 {
     public static void AddOpenAiIntegration(this IServiceCollection services, IConfiguration configuration)
     {

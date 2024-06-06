@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using System.Threading.Tasks;
 using FoodDiary.API.Extensions;
+using FoodDiary.API.FileProcessing;
 using FoodDiary.API.Logging;
 using FoodDiary.API.Middlewares;
 using FoodDiary.API.Options;
@@ -116,6 +117,7 @@ public class Startup
         services.ConfigureCustomOptions(_configuration);
         services.Configure<ImportOptions>(_configuration.GetSection("Import"));
 
+        services.AddFileProcessing();
         services.AddInfrastructure();
         services.AddOpenAiIntegration(_configuration);
 

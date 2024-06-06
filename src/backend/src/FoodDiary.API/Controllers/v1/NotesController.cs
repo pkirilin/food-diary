@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using FoodDiary.API.Dtos;
-using FoodDiary.API.Extensions;
+using FoodDiary.API.FileProcessing;
 using FoodDiary.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using FoodDiary.API.Requests;
@@ -27,11 +26,13 @@ public class NotesController : ControllerBase
 {
     private readonly IMapper _mapper;
     private readonly IMediator _mediator;
+    private readonly IFileOptimizer _fileOptimizer;
 
-    public NotesController(IMapper mapper, IMediator mediator)
+    public NotesController(IMapper mapper, IMediator mediator, IFileOptimizer fileOptimizer)
     {
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+        _fileOptimizer = fileOptimizer;
     }
 
     /// <summary>
@@ -180,10 +181,7 @@ public class NotesController : ControllerBase
         [FromForm] IReadOnlyList<IFormFile> files,
         CancellationToken cancellationToken)
     {
-        var fileUrls = files
-            .Select(file => file.ToBase64String())
-            .ToList();
-        
+        var fileUrls = await _fileOptimizer.ConvertToCompressedAndResizedBase64(files, cancellationToken);
         var request = new RecognizeNoteRequest(fileUrls);
         var response = await _mediator.Send(request, cancellationToken);
 
