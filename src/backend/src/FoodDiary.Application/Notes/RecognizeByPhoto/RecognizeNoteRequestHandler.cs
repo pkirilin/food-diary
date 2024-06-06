@@ -36,6 +36,30 @@ internal class RecognizeNoteRequestHandler(IOpenAiApiClient openAiApiClient)
     {
         PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower
     };
+    
+    private const int MaxTokens = 1000;
+    private const string EndToken = "[END]";
+
+    private static readonly string ExampleNoteAsJson = JsonSerializer.Serialize(
+        new RecognizeNoteItem(
+            Product: new RecognizeProductItem(
+                Name: "Bread",
+                CaloriesCost: 125),
+            Quantity: 50),
+        SerializerOptions);
+
+    private static readonly string Prompt =
+        $"""
+         Find all the food, meals, or products in this image. Output them as an array of items using the following JSON format:
+         ```
+         {ExampleNoteAsJson}
+         ```
+         where `quantity` is measured in grams and `caloriesCost` is measured in kilocalories per 100 grams of the product.
+         
+         IMPORTANT: do NOT provide any text notes in your response, only the JSON string WITHOUT the "```" backticks.
+         Also, if possible, DO NOT translate product and category names into English, keep original names from the image.
+         {EndToken}
+         """;
 
     public async Task<RecognizeNoteResponse> Handle(
         RecognizeNoteRequest request,
@@ -44,9 +68,9 @@ internal class RecognizeNoteRequestHandler(IOpenAiApiClient openAiApiClient)
         var createChatCompletionRequest = new CreateChatCompletionRequest
         {
             Model = "gpt-4o",
-            MaxTokens = 1000,
             Stream = false,
-            Stop = ["[[END]]"],
+            Stop = [EndToken],
+            MaxTokens = MaxTokens,
             Messages =
             [
                 new Message
@@ -55,7 +79,7 @@ internal class RecognizeNoteRequestHandler(IOpenAiApiClient openAiApiClient)
                     Content = JsonSerializer.SerializeToElement(
                         new object[]
                         {
-                            new MessageContent.TextContent(BuildPrompt()),
+                            new MessageContent.TextContent(Prompt),
                             new MessageContent.ImageUrlContent(new ImageUrl(request.PhotoUrls[0]))
                         },
                         OpenAiSerializerOptions)
@@ -70,11 +94,6 @@ internal class RecognizeNoteRequestHandler(IOpenAiApiClient openAiApiClient)
         var recognizedNotes = ParseRecognizedNotes(createChatCompletionResponse);
 
         return new RecognizeNoteResponse.Success(recognizedNotes);
-    }
-
-    private static string BuildPrompt()
-    {
-        return "Describe this image[[END]]";
     }
 
     private static IReadOnlyList<RecognizeNoteItem> ParseRecognizedNotes(CreateChatCompletionResponse response)
