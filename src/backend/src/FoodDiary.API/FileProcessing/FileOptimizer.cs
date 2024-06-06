@@ -26,14 +26,14 @@ public class FileOptimizer(ILogger<FileOptimizer> logger) : IFileOptimizer
     
     private const int Size = 512;
     
-    public Task<string[]> ConvertToCompressedAndResizedBase64(
+    public async Task<string[]> ConvertToCompressedAndResizedBase64(
         IEnumerable<IFormFile> files,
         CancellationToken cancellationToken)
     {
         try
         {
             var tasks = files.Select(file => ConvertToCompressedAndResizedBase64String(file, cancellationToken));
-            return Task.WhenAll(tasks);
+            return await Task.WhenAll(tasks);
         }
         catch (AggregateException ae)
         {
@@ -42,7 +42,7 @@ public class FileOptimizer(ILogger<FileOptimizer> logger) : IFileOptimizer
                 logger.LogError(ex, ex.Message);
             }
             
-            return Task.FromResult(Array.Empty<string>());
+            return [];
         }
     }
     
