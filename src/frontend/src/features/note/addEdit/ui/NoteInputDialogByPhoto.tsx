@@ -1,4 +1,11 @@
-import { CircularProgress, ImageList, ImageListItem, Stack } from '@mui/material';
+import {
+  Box,
+  CircularProgress,
+  ImageList,
+  ImageListItem,
+  ImageListItemBar,
+  Stack,
+} from '@mui/material';
 import { useEffect, type FC } from 'react';
 import { type categoryLib } from '@/entities/category';
 import { type RecognizeNoteItem, type noteModel } from '@/entities/note';
@@ -83,10 +90,17 @@ export const NoteInputDialogByPhoto: FC<Props> = ({
       onClose={onCancel}
       content={
         <Stack spacing={3}>
-          <ImageList cols={2}>
+          <ImageList cols={2} gap={16}>
             {uploadedPhotos.map((photo, index) => (
               <ImageListItem key={index}>
-                <img src={photo.src} alt={photo.name} />
+                <Box
+                  component="img"
+                  height="194px"
+                  src={photo.src}
+                  alt={photo.name}
+                  sx={{ objectFit: 'cover' }}
+                />
+                <ImageListItemBar title={photo.name} />
               </ImageListItem>
             ))}
           </ImageList>
