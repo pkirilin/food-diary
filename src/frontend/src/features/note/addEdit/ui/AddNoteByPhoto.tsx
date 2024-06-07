@@ -32,26 +32,30 @@ export const AddNoteByPhoto: FC<Props> = ({ pageId, mealType, displayOrder }) =>
   const [submitLoading, setSubmitLoading] = useState(false);
 
   const handlePhotoUploaded: ChangeEventHandler<HTMLInputElement> = async event => {
-    const photo = event.target?.files?.item(0);
+    try {
+      const photo = event.target?.files?.item(0);
 
-    if (!photo) {
-      return;
+      if (!photo) {
+        return;
+      }
+
+      const photoBase64 = await convertToBase64String(photo);
+
+      setUploadedPhotos([
+        {
+          src: photoBase64,
+          name: photo.name,
+        },
+      ]);
+
+      toggleDialog();
+
+      const formData = new FormData();
+      formData.append('files', photo);
+      await recognizeNote(formData);
+    } finally {
+      event.target.value = '';
     }
-
-    const photoBase64 = await convertToBase64String(photo);
-
-    setUploadedPhotos([
-      {
-        src: photoBase64,
-        name: photo.name,
-      },
-    ]);
-
-    toggleDialog();
-
-    const formData = new FormData();
-    formData.append('files', photo);
-    await recognizeNote(formData);
   };
 
   const handleSubmit = async (note: Note): Promise<void> => {
