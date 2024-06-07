@@ -1,4 +1,5 @@
 import {
+  Alert,
   Box,
   CircularProgress,
   ImageList,
@@ -24,12 +25,14 @@ interface Props {
   categorySelect: categoryLib.CategorySelectData;
   recognizedNotes: RecognizeNoteItem[];
   recognizeNotesLoading: boolean;
+  recognizeNotesError: boolean;
   recognizeNotesSuccess: boolean;
   submitLoading: boolean;
   submitSuccess: boolean;
   onSubmit: (note: Note) => Promise<void>;
   onSubmitSuccess: () => void;
   onCancel: () => void;
+  onRecognizeNotesRetry: () => Promise<void>;
 }
 
 export const NoteInputDialogByPhoto: FC<Props> = ({
@@ -42,12 +45,14 @@ export const NoteInputDialogByPhoto: FC<Props> = ({
   categorySelect,
   recognizedNotes,
   recognizeNotesLoading,
+  recognizeNotesError,
   recognizeNotesSuccess,
   submitLoading,
   submitSuccess,
   onSubmit,
   onSubmitSuccess,
   onCancel,
+  onRecognizeNotesRetry,
 }) => {
   const productAutocompleteInput = productLib.useAutocompleteInput();
   const { setValue: setProduct } = productAutocompleteInput;
@@ -105,9 +110,21 @@ export const NoteInputDialogByPhoto: FC<Props> = ({
             ))}
           </ImageList>
           {recognizeNotesLoading && (
-            <Stack justifyContent="center" alignItems="center">
-              <CircularProgress sx={theme => ({ marginBottom: theme.spacing(2) })} />
+            <Stack justifyContent="center" alignItems="center" mb={2}>
+              <CircularProgress />
             </Stack>
+          )}
+          {recognizeNotesError && (
+            <Alert
+              severity="error"
+              action={
+                <Button color="inherit" size="small" onClick={onRecognizeNotesRetry}>
+                  Retry
+                </Button>
+              }
+            >
+              Failed to recognize note. Please try again.
+            </Alert>
           )}
           {recognizeNotesSuccess && (
             <NoteInputForm

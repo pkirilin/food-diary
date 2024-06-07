@@ -33,29 +33,36 @@ export const AddNoteByPhoto: FC<Props> = ({ pageId, mealType, displayOrder }) =>
 
   const handlePhotoUploaded: ChangeEventHandler<HTMLInputElement> = async event => {
     try {
-      const photo = event.target?.files?.item(0);
+      const file = event.target?.files?.item(0);
 
-      if (!photo) {
+      if (!file) {
         return;
       }
 
-      const photoBase64 = await convertToBase64String(photo);
+      const photoBase64 = await convertToBase64String(file);
 
       setUploadedPhotos([
         {
           src: photoBase64,
-          name: photo.name,
+          name: file.name,
+          file,
         },
       ]);
 
       toggleDialog();
 
       const formData = new FormData();
-      formData.append('files', photo);
+      formData.append('files', file);
       await recognizeNote(formData);
     } finally {
       event.target.value = '';
     }
+  };
+
+  const handleRecognizeNotesRetry = async (): Promise<void> => {
+    const formData = new FormData();
+    formData.append('files', uploadedPhotos[0].file);
+    await recognizeNote(formData);
   };
 
   const handleSubmit = async (note: Note): Promise<void> => {
@@ -99,6 +106,7 @@ export const AddNoteByPhoto: FC<Props> = ({ pageId, mealType, displayOrder }) =>
         uploadedPhotos={uploadedPhotos}
         recognizedNotes={recognizeNoteResponse.data?.notes ?? []}
         recognizeNotesLoading={recognizeNoteResponse.isLoading}
+        recognizeNotesError={recognizeNoteResponse.isError}
         recognizeNotesSuccess={recognizeNoteResponse.isSuccess}
         submitLoading={submitLoading}
         submitSuccess={addNoteResponse.isSuccess && notes.isChanged}
@@ -107,6 +115,7 @@ export const AddNoteByPhoto: FC<Props> = ({ pageId, mealType, displayOrder }) =>
         onCancel={toggleDialog}
         onSubmit={handleSubmit}
         onSubmitSuccess={handleSubmitSuccess}
+        onRecognizeNotesRetry={handleRecognizeNotesRetry}
       />
     </Box>
   );
