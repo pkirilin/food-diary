@@ -6,8 +6,10 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using ImageMagick;
 using JetBrains.Annotations;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using OpenAI;
 using OpenAI.Chat;
 
@@ -22,9 +24,10 @@ public record RecognizeNoteItem(RecognizeProductItem Product, int Quantity);
 public abstract record RecognizeNoteResponse
 {
     public record Success(IReadOnlyList<RecognizeNoteItem> Notes) : RecognizeNoteResponse;
+    public record InvalidRequest(string Message) : RecognizeNoteResponse;
 }
 
-public record RecognizeNoteRequest(IReadOnlyList<byte[]> Photos) : IRequest<RecognizeNoteResponse>;
+public record RecognizeNoteRequest(IReadOnlyList<IFormFile> Files) : IRequest<RecognizeNoteResponse>;
 
 [UsedImplicitly]
 internal class RecognizeNoteRequestHandler(
@@ -39,6 +42,7 @@ internal class RecognizeNoteRequestHandler(
 
     private const string Model = "gpt-4o";
     private const int MaxTokens = 1000;
+    private const int ImageMaxSize = 512;
 
     private static readonly string ExampleNoteAsJson = JsonSerializer.Serialize(
         new RecognizeNoteItem(
@@ -57,13 +61,22 @@ internal class RecognizeNoteRequestHandler(
          where `quantity` is measured in grams and `caloriesCost` is measured in kilocalories per 100 grams of the product.
 
          IMPORTANT: do NOT provide any text notes in your response, only the JSON string WITHOUT the "```" backticks.
-         Also, if possible, DO NOT translate product and category names into English, keep original names from the image.
+         Also, if possible, DO NOT translate product names into English, keep original names from the image.
          """;
 
     public async Task<RecognizeNoteResponse> Handle(
         RecognizeNoteRequest request,
         CancellationToken cancellationToken)
     {
+        var imageFile = FindImage(request.Files);
+        
+        if (imageFile is null)
+        {
+            return new RecognizeNoteResponse.InvalidRequest("No image was provided");
+        }
+        
+        var imageBytes = await ResizeAndConvertToByteArray(imageFile, cancellationToken);
+        
         var chatClient = openAIClient.GetChatClient(Model);
 
         var chatCompletion = await chatClient.CompleteChatAsync(
@@ -72,7 +85,7 @@ internal class RecognizeNoteRequestHandler(
                 [
                     ChatMessageContentPart.CreateTextMessageContentPart(Prompt),
                     ChatMessageContentPart.CreateImageMessageContentPart(
-                        BinaryData.FromBytes(request.Photos[0]),
+                        BinaryData.FromBytes(imageBytes),
                         "image/jpeg")
                 ])
             ],
@@ -84,6 +97,32 @@ internal class RecognizeNoteRequestHandler(
         var recognizedNotes = ParseRecognizedNotes(chatCompletion);
 
         return new RecognizeNoteResponse.Success(recognizedNotes);
+    }
+
+    private static IFormFile? FindImage(IReadOnlyCollection<IFormFile> files)
+    {
+        return files.FirstOrDefault(f => f.ContentType.StartsWith("image/"));
+    }
+
+    private static async Task<byte[]> ResizeAndConvertToByteArray(
+        IFormFile imageFile,
+        CancellationToken cancellationToken)
+    {
+        await using var stream = imageFile.OpenReadStream();
+        using var image = new MagickImage();
+        await image.ReadAsync(stream, cancellationToken);
+        image.Format = MagickFormat.Jpeg;
+
+        if (image.Width > ImageMaxSize)
+        {
+            image.Resize(ImageMaxSize, 0);
+        }
+        else if (image.Height > ImageMaxSize)
+        {
+            image.Resize(0, ImageMaxSize);
+        }
+
+        return image.ToByteArray();
     }
 
     private static IReadOnlyList<RecognizeNoteItem> ParseRecognizedNotes(ClientResult<ChatCompletion> chatCompletion)

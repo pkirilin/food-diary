@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using FoodDiary.API.Dtos;
-using FoodDiary.API.FileProcessing;
 using FoodDiary.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using FoodDiary.API.Requests;
@@ -26,13 +25,11 @@ public class NotesController : ControllerBase
 {
     private readonly IMapper _mapper;
     private readonly IMediator _mediator;
-    private readonly IImageOptimizer _imageOptimizer;
 
-    public NotesController(IMapper mapper, IMediator mediator, IImageOptimizer imageOptimizer)
+    public NotesController(IMapper mapper, IMediator mediator)
     {
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
-        _imageOptimizer = imageOptimizer;
     }
 
     /// <summary>
@@ -181,13 +178,16 @@ public class NotesController : ControllerBase
         [FromForm] IReadOnlyList<IFormFile> files,
         CancellationToken cancellationToken)
     {
-        var fileBytes = await _imageOptimizer.ConvertToCompactByteArrayList(files, cancellationToken);
-        var request = new RecognizeNoteRequest(fileBytes);
+        var request = new RecognizeNoteRequest(files);
         var response = await _mediator.Send(request, cancellationToken);
 
         return response switch
         {
             RecognizeNoteResponse.Success success => Ok(success),
+            RecognizeNoteResponse.InvalidRequest invalidRequest => Problem(
+                statusCode: (int)HttpStatusCode.BadRequest,
+                title: "Invalid request",
+                detail: invalidRequest.Message),
             _ => Conflict()
         };
     }
