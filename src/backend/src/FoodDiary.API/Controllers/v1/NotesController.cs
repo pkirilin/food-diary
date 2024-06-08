@@ -9,7 +9,7 @@ using FoodDiary.API.FileProcessing;
 using FoodDiary.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using FoodDiary.API.Requests;
-using FoodDiary.Application.Notes.RecognizeByPhoto;
+using FoodDiary.Application.Notes.Recognize;
 using MediatR;
 using FoodDiary.Application.Notes.Requests;
 using FoodDiary.Application.Products.Requests;
@@ -181,8 +181,8 @@ public class NotesController : ControllerBase
         [FromForm] IReadOnlyList<IFormFile> files,
         CancellationToken cancellationToken)
     {
-        var fileUrls = await _imageOptimizer.ConvertToCompactBase64UrlStringArray(files, cancellationToken);
-        var request = new RecognizeNoteRequest(fileUrls);
+        var fileBytes = await _imageOptimizer.ConvertToCompactByteArrayList(files, cancellationToken);
+        var request = new RecognizeNoteRequest(fileBytes);
         var response = await _mediator.Send(request, cancellationToken);
 
         return response switch

@@ -1,4 +1,4 @@
-using FoodDiary.Application.Notes.RecognizeByPhoto;
+using FoodDiary.Application.Notes.Recognize;
 
 namespace FoodDiary.ComponentTests.Dsl;
 

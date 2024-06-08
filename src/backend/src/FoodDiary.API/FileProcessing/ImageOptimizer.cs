@@ -11,7 +11,7 @@ namespace FoodDiary.API.FileProcessing;
 
 public interface IImageOptimizer
 {
-    Task<string[]> ConvertToCompactBase64UrlStringArray(
+    Task<byte[][]> ConvertToCompactByteArrayList(
         IEnumerable<IFormFile> files,
         CancellationToken cancellationToken);
 }
@@ -20,13 +20,13 @@ public class ImageOptimizer(ILogger<ImageOptimizer> logger) : IImageOptimizer
 {
     private const int CompactSize = 512;
     
-    public async Task<string[]> ConvertToCompactBase64UrlStringArray(
+    public async Task<byte[][]> ConvertToCompactByteArrayList(
         IEnumerable<IFormFile> files,
         CancellationToken cancellationToken)
     {
         try
         {
-            var tasks = files.Select(file => ConvertToCompactBase64UrlString(file, cancellationToken));
+            var tasks = files.Select(file => ConvertToCompactByteArray(file, cancellationToken));
             return await Task.WhenAll(tasks);
         }
         catch (AggregateException ae)
@@ -40,7 +40,7 @@ public class ImageOptimizer(ILogger<ImageOptimizer> logger) : IImageOptimizer
         }
     }
     
-    private static async Task<string> ConvertToCompactBase64UrlString(
+    private static async Task<byte[]> ConvertToCompactByteArray(
         IFormFile file,
         CancellationToken cancellationToken)
     {
@@ -53,7 +53,9 @@ public class ImageOptimizer(ILogger<ImageOptimizer> logger) : IImageOptimizer
         {
             image.Resize(CompactSize, 0);
         }
-        
-        return $"data:image/jpeg;base64,{image.ToBase64()}";
+
+        return image.ToByteArray();
+
+        // return $"data:image/jpeg;base64,{image.ToBase64()}";
     }
 }

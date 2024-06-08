@@ -1,6 +1,7 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Text.Json;
-using FoodDiary.Application.Notes.RecognizeByPhoto;
+using FoodDiary.Application.Notes.Recognize;
 using MbDotNet;
 using MbDotNet.Models;
 using MbDotNet.Models.Imposters;
@@ -8,7 +9,8 @@ using MbDotNet.Models.Stubs;
 
 namespace FoodDiary.ComponentTests.Infrastructure.ExternalServices;
 
-public class OpenAiApi(IClient mountebankClient)
+[SuppressMessage("ReSharper", "InconsistentNaming")]
+public class OpenAIApi(IClient mountebankClient)
 {
     private static readonly JsonSerializerOptions SerializerOptions = new()
     {
@@ -19,7 +21,7 @@ public class OpenAiApi(IClient mountebankClient)
 
     public Task Start()
     {
-        var imposter = new HttpImposter(Port, nameof(OpenAiApi), new HttpImposterOptions());
+        var imposter = new HttpImposter(Port, nameof(OpenAIApi), new HttpImposterOptions());
         return mountebankClient.OverwriteAllImposters([imposter]);
     }
 
@@ -27,7 +29,7 @@ public class OpenAiApi(IClient mountebankClient)
     {
         return mountebankClient.AddHttpImposterStubAsync(Port, new HttpStub()
             .OnPathAndMethodEqual("/v1/chat/completions", Method.Post)
-            .ReturnsJson(HttpStatusCode.BadRequest, new
+            .ReturnsJson(HttpStatusCode.OK, new
             {
                 choices = new[]
                 {

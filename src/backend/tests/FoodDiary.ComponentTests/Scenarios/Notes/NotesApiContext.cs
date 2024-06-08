@@ -2,7 +2,7 @@ using System.Net;
 using System.Net.Http.Json;
 using FoodDiary.API.Dtos;
 using FoodDiary.API.Mapping;
-using FoodDiary.Application.Notes.RecognizeByPhoto;
+using FoodDiary.Application.Notes.Recognize;
 using FoodDiary.ComponentTests.Dsl;
 using FoodDiary.ComponentTests.Infrastructure;
 using FoodDiary.Domain.Entities;

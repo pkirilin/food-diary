@@ -119,7 +119,7 @@ public class Startup
 
         services.AddFileProcessing();
         services.AddInfrastructure();
-        services.AddOpenAiIntegration(_configuration);
+        services.AddOpenAIIntegration(_configuration);
 
         services.AddRepositories();
         services.AddUtils();
