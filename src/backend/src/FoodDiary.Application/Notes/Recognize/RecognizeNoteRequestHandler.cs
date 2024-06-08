@@ -10,6 +10,7 @@ using ImageMagick;
 using JetBrains.Annotations;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using OpenAI;
 using OpenAI.Chat;
 
@@ -21,10 +22,18 @@ public record RecognizeProductItem(string Name, int CaloriesCost);
 [PublicAPI]
 public record RecognizeNoteItem(RecognizeProductItem Product, int Quantity);
 
+[PublicAPI]
+public enum ErrorType
+{
+    NoImagesProvided,
+    ImageDoesNotContainFood
+}
+
 public abstract record RecognizeNoteResponse
 {
     public record Success(IReadOnlyList<RecognizeNoteItem> Notes) : RecognizeNoteResponse;
-    public record InvalidRequest(string Message) : RecognizeNoteResponse;
+    public record InvalidRequest(ErrorType Type) : RecognizeNoteResponse;
+    public record InvalidModelResponse : RecognizeNoteResponse;
 }
 
 public record RecognizeNoteRequest(IReadOnlyList<IFormFile> Files) : IRequest<RecognizeNoteResponse>;
@@ -32,7 +41,8 @@ public record RecognizeNoteRequest(IReadOnlyList<IFormFile> Files) : IRequest<Re
 [UsedImplicitly]
 internal class RecognizeNoteRequestHandler(
     [SuppressMessage("ReSharper", "InconsistentNaming")]
-    OpenAIClient openAIClient)
+    OpenAIClient openAIClient,
+    ILogger<RecognizeNoteRequestHandler> logger)
     : IRequestHandler<RecognizeNoteRequest, RecognizeNoteResponse>
 {
     private const string Model = "gpt-4o";
@@ -76,7 +86,7 @@ internal class RecognizeNoteRequestHandler(
         
         if (imageFile is null)
         {
-            return new RecognizeNoteResponse.InvalidRequest("No image was provided");
+            return new RecognizeNoteResponse.InvalidRequest(ErrorType.NoImagesProvided);
         }
         
         var imageBytes = await ResizeAndConvertToByteArray(imageFile, cancellationToken);
@@ -95,14 +105,22 @@ internal class RecognizeNoteRequestHandler(
             ],
             CompletionOptions);
 
-        var recognizedNotes = ParseRecognizedNotes(chatCompletion);
+        if (!TryParseNotesFromModelResponse(chatCompletion, out var recognizedNotes))
+        {
+            return new RecognizeNoteResponse.InvalidModelResponse();
+        }
+
+        if (!recognizedNotes.Any())
+        {
+            return new RecognizeNoteResponse.InvalidRequest(ErrorType.ImageDoesNotContainFood);
+        }
 
         return new RecognizeNoteResponse.Success(recognizedNotes);
     }
 
     private static IFormFile? FindImage(IReadOnlyCollection<IFormFile> files)
     {
-        return files.FirstOrDefault(f => f.ContentType.StartsWith("image/"));
+        return files.FirstOrDefault(file => file.ContentType.StartsWith("image/"));
     }
 
     private static async Task<byte[]> ResizeAndConvertToByteArray(
@@ -126,22 +144,38 @@ internal class RecognizeNoteRequestHandler(
         return image.ToByteArray();
     }
 
-    private static IReadOnlyList<RecognizeNoteItem> ParseRecognizedNotes(ClientResult<ChatCompletion> chatCompletion)
+    private bool TryParseNotesFromModelResponse(
+        ClientResult<ChatCompletion> chatCompletion,
+        out IReadOnlyList<RecognizeNoteItem> recognizedNotes)
     {
+        var content = chatCompletion.Value.Content.ElementAtOrDefault(0);
+        
+        if (content is null)
+        {
+            recognizedNotes = [];
+            return false;
+        }
+        
         try
         {
-            var messageContent = chatCompletion.Value.Content.ElementAtOrDefault(0)?.Text ?? "[]";
+            var notes = JsonSerializer.Deserialize<IReadOnlyList<RecognizeNoteItem>>(content.Text, SerializerOptions);
 
-            var recognizedNotes = JsonSerializer.Deserialize<IReadOnlyList<RecognizeNoteItem>>(
-                messageContent,
-                SerializerOptions);
+            if (notes is null)
+            {
+                recognizedNotes = [];
+                return false;
+            }
 
-            return recognizedNotes ?? Array.Empty<RecognizeNoteItem>();
+            recognizedNotes = notes;
+            return true;
         }
-        catch (Exception e)
+        catch (Exception)
         {
-            // TODO: add logging
-            return [];
+            recognizedNotes = [];
+            logger.LogError("Failed to parse recognized notes from {Model} model response: {ContentText}",
+                Model,
+                content.Text);
+            return false;
         }
     }
 }

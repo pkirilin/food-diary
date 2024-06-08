@@ -187,7 +187,10 @@ public class NotesController : ControllerBase
             RecognizeNoteResponse.InvalidRequest invalidRequest => Problem(
                 statusCode: (int)HttpStatusCode.BadRequest,
                 title: "Invalid request",
-                detail: invalidRequest.Message),
+                type: invalidRequest.Type.ToString()),
+            RecognizeNoteResponse.InvalidModelResponse => Problem(
+                statusCode: (int)HttpStatusCode.InternalServerError,
+                title: "Server error"),
             _ => Conflict()
         };
     }
