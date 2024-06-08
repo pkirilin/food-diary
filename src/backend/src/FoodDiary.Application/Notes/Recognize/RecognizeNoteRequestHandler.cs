@@ -35,14 +35,13 @@ internal class RecognizeNoteRequestHandler(
     OpenAIClient openAIClient)
     : IRequestHandler<RecognizeNoteRequest, RecognizeNoteResponse>
 {
+    private const string Model = "gpt-4o";
+    private const int ImageMaxSize = 512;
+    
     private static readonly JsonSerializerOptions SerializerOptions = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase
     };
-
-    private const string Model = "gpt-4o";
-    private const int MaxTokens = 1000;
-    private const int ImageMaxSize = 512;
 
     private static readonly string ExampleNoteAsJson = JsonSerializer.Serialize(
         new RecognizeNoteItem(
@@ -63,6 +62,11 @@ internal class RecognizeNoteRequestHandler(
          IMPORTANT: do NOT provide any text notes in your response, only the JSON string WITHOUT the "```" backticks.
          Also, if possible, DO NOT translate product names into English, keep original names from the image.
          """;
+
+    private static readonly ChatCompletionOptions CompletionOptions = new()
+    {
+        MaxTokens = 1000
+    };
 
     public async Task<RecognizeNoteResponse> Handle(
         RecognizeNoteRequest request,
@@ -89,10 +93,7 @@ internal class RecognizeNoteRequestHandler(
                         "image/jpeg")
                 ])
             ],
-            new ChatCompletionOptions
-            {
-                MaxTokens = MaxTokens
-            });
+            CompletionOptions);
 
         var recognizedNotes = ParseRecognizedNotes(chatCompletion);
 
