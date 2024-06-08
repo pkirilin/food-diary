@@ -12,7 +12,7 @@ public static class DependencyInjectionExtensions
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public static void AddOpenAIIntegration(this IServiceCollection services, IConfiguration configuration)
     {
-        services.Configure<OpenAIOptions>(configuration.GetSection("OpenAI"));
+        services.Configure<OpenAIOptions>(configuration.GetSection("Integrations:OpenAI"));
 
         services.AddSingleton<OpenAIClient>(serviceProvider =>
         {
