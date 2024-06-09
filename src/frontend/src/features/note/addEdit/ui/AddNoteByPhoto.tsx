@@ -6,7 +6,7 @@ import { categoryLib } from '@/entities/category';
 import { noteApi, noteLib, type noteModel } from '@/entities/note';
 import { productLib } from '@/entities/product';
 import { useToggle } from '@/shared/hooks';
-import { convertToBase64String } from '@/shared/lib';
+import { compressImage, convertToBase64String } from '@/shared/lib';
 import { Button } from '@/shared/ui';
 import { mapToCreateNoteRequest, useAddProductIfNotExists } from '../lib';
 import { type UploadedPhoto, type Note } from '../model';
@@ -40,10 +40,11 @@ export const AddNoteByPhoto: FC<Props> = ({ pageId, mealType, displayOrder }) =>
       }
 
       const photoBase64 = await convertToBase64String(file);
+      const photoBase64Compressed = await compressImage(photoBase64, 512);
 
       setUploadedPhotos([
         {
-          src: photoBase64,
+          src: photoBase64Compressed,
           name: file.name,
           file,
         },
@@ -94,7 +95,7 @@ export const AddNoteByPhoto: FC<Props> = ({ pageId, mealType, displayOrder }) =>
         <FileInputStyled
           type="file"
           name="photos"
-          accept=".jpg, .jpeg, .png"
+          accept="image/*"
           onChange={handlePhotoUploaded}
         />
       </Button>
