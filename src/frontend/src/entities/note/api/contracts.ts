@@ -21,3 +21,17 @@ export interface EditNoteRequest {
   productQuantity: number;
   displayOrder: number;
 }
+
+export interface RecognizeProductItem {
+  name: string;
+  caloriesCost: number;
+}
+
+export interface RecognizeNoteItem {
+  product: RecognizeProductItem;
+  quantity: number;
+}
+
+export interface RecognizeNoteResponse {
+  notes: RecognizeNoteItem[];
+}

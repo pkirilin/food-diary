@@ -2,35 +2,41 @@ import { type FC } from 'react';
 import { useLoaderData } from 'react-router-dom';
 import { store } from '@/app/store';
 import { noteApi, noteLib } from '@/entities/note';
-import { pagesApi, PageDetailHeader, type Page } from '@/features/pages';
+import { pagesApi, PageDetailHeader } from '@/features/pages';
 import { PrivateLayout } from '@/widgets/layout';
 import { MealsList } from '@/widgets/MealsList';
-import { withAuthStatusCheck } from '../lib';
+import { withAuthStatusCheck, usePageFromLoader } from '../lib';
 
 interface LoaderData {
-  page: Page;
+  pageId: number;
 }
 
 export const loader = withAuthStatusCheck(async ({ params }) => {
-  const pageId = Number(params.id);
-  const getPageByIdQuery = await store.dispatch(pagesApi.endpoints.getPageById.initiate(pageId));
+  const pageId = Number(params.pageId);
 
-  if (!getPageByIdQuery.isSuccess) {
+  const queryPromises = [
+    store.dispatch(pagesApi.endpoints.getPageById.initiate(pageId)),
+    store.dispatch(noteApi.endpoints.getNotes.initiate({ pageId })),
+  ];
+
+  const queries = await Promise.all(queryPromises);
+  queryPromises.forEach(promise => promise.unsubscribe());
+
+  if (queries.some(query => query.isError)) {
     return new Response(null, { status: 500 });
   }
 
-  await store.dispatch(noteApi.endpoints.getNotes.initiate({ pageId }));
-
-  return { page: getPageByIdQuery.data.currentPage } satisfies LoaderData;
+  return { pageId } satisfies LoaderData;
 });
 
 export const Component: FC = () => {
-  const { page } = useLoaderData() as LoaderData;
-  const notes = noteLib.useNotes(page.id);
+  const { pageId } = useLoaderData() as LoaderData;
+  const page = usePageFromLoader(pageId);
+  const notes = noteLib.useNotes(pageId);
 
   return (
     <PrivateLayout subheader={<PageDetailHeader page={page} />}>
-      <MealsList pageId={page.id} notes={notes.data} />
+      <MealsList pageId={pageId} notes={notes.data} />
     </PrivateLayout>
   );
 };

@@ -1,6 +1,9 @@
+import { store } from '@/app/store';
 import { type CreateProductRequest, productApi, type productModel } from '@/entities/product';
 
-const toCreateProductRequest = ({
+type AddProductIfNotExistsFn = (product: productModel.AutocompleteOption) => Promise<number>;
+
+const mapToCreateProductRequest = ({
   name,
   caloriesCost,
   defaultQuantity,
@@ -12,7 +15,19 @@ const toCreateProductRequest = ({
   categoryId: category?.id ?? 0,
 });
 
-type AddProductIfNotExistsFn = (product: productModel.AutocompleteOption) => Promise<number>;
+export const addProductIfNotExists: AddProductIfNotExistsFn = async product => {
+  if (!product.freeSolo) {
+    return product.id;
+  }
+
+  const request = mapToCreateProductRequest(product);
+
+  const { id } = await store
+    .dispatch(productApi.endpoints.createProduct.initiate(request))
+    .unwrap();
+
+  return id;
+};
 
 export const useAddProductIfNotExists = (): AddProductIfNotExistsFn => {
   const [createProduct] = productApi.useCreateProductMutation();
@@ -22,8 +37,8 @@ export const useAddProductIfNotExists = (): AddProductIfNotExistsFn => {
       return product.id;
     }
 
-    const createProductRequest = toCreateProductRequest(product);
-    const { id } = await createProduct(createProductRequest).unwrap();
+    const request = mapToCreateProductRequest(product);
+    const { id } = await createProduct(request).unwrap();
     return id;
   };
 };

@@ -46,6 +46,9 @@ This information can be extremely useful for people who want to keep track of en
     dotnet user-secrets --project src/backend/src/FoodDiary.API set "Auth:AllowedEmails:0" "<your_email>"
 
     dotnet user-secrets --project src/backend/src/FoodDiary.API set "ConnectionStrings:Default" "<your_db_connection_string>"
+
+    # Optional, used in recognize note by photo feature
+    dotnet user-secrets --project src/backend/src/FoodDiary.API set "Integrations:OpenAI:ApiKey" "<your_OpenAI_api_key>"
     ```
 
     _Allowed email should be compatible with Google Identity Provider_

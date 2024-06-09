@@ -12,12 +12,14 @@ public class ExternalServicesFixture : IAsyncLifetime
         .WithImage("bbyars/mountebank:2.9.1")
         .WithPortBinding(2525, 2525)
         .WithPortBinding(GoogleIdentityProvider.Port, GoogleIdentityProvider.Port)
+        .WithPortBinding(OpenAIApi.Port, OpenAIApi.Port)
         .Build();
     
     private static readonly IClient MountebankClient = new MountebankClient(
         new Uri("http://localhost:2525", UriKind.Absolute));
 
     public GoogleIdentityProvider GoogleIdentityProvider { get; } = new(MountebankClient);
+    public OpenAIApi OpenAiApi { get; } = new(MountebankClient);
 
     public Task InitializeAsync()
     {

@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="2023.3.0" />
+    <PackageReference Include="Magick.NET-Q8-AnyCPU" Version="13.9.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Abstractions" Version="2.2.0" />
   </ItemGroup>
@@ -18,6 +19,7 @@
     <ProjectReference Include="..\FoodDiary.Domain\FoodDiary.Domain.csproj" />
     <ProjectReference Include="..\FoodDiary.Export.GoogleDocs\FoodDiary.Export.GoogleDocs.csproj" />
     <ProjectReference Include="..\FoodDiary.Import\FoodDiary.Import.csproj" />
+    <ProjectReference Include="..\FoodDiary.Integrations.OpenAI\FoodDiary.Integrations.OpenAI.csproj" />
   </ItemGroup>
 
 </Project>

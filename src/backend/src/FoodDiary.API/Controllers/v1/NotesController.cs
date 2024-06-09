@@ -8,10 +8,12 @@ using FoodDiary.API.Dtos;
 using FoodDiary.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using FoodDiary.API.Requests;
+using FoodDiary.Application.Notes.Recognize;
 using MediatR;
 using FoodDiary.Application.Notes.Requests;
 using FoodDiary.Application.Products.Requests;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 
 namespace FoodDiary.API.Controllers.v1;
 
@@ -169,5 +171,27 @@ public class NotesController : ControllerBase
 
         await _mediator.Send(new MoveNoteRequest(noteForMove, moveRequest.DestMeal, moveRequest.Position), cancellationToken);
         return Ok();
+    }
+
+    [HttpPost("recognitions")]
+    public async Task<IActionResult> RecognizeNote(
+        [FromForm] IReadOnlyList<IFormFile> files,
+        CancellationToken cancellationToken)
+    {
+        var request = new RecognizeNoteRequest(files);
+        var response = await _mediator.Send(request, cancellationToken);
+
+        return response switch
+        {
+            RecognizeNoteResponse.Success success => Ok(success),
+            RecognizeNoteResponse.InvalidRequest invalidRequest => Problem(
+                statusCode: (int)HttpStatusCode.BadRequest,
+                title: "Invalid request",
+                type: invalidRequest.Type.ToString()),
+            RecognizeNoteResponse.InvalidModelResponse => Problem(
+                statusCode: (int)HttpStatusCode.InternalServerError,
+                title: "Server error"),
+            _ => Conflict()
+        };
     }
 }

@@ -39,6 +39,9 @@
     <None Update="Scenarios\Import\testImportFile.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Scenarios\Notes\recognizeNoteSamplePhoto.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

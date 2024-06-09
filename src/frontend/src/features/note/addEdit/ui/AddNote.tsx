@@ -20,8 +20,8 @@ export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
   const [dialogOpened, toggleDialog] = useToggle();
   const [createNote, createNoteResponse] = noteApi.useCreateNoteMutation();
   const { reset: resetCreateNote } = createNoteResponse;
-  const notes = noteLib.useNotes(pageId);
   const addProductIfNotExists = useAddProductIfNotExists();
+  const notes = noteLib.useNotes(pageId);
   const productAutocompleteData = productLib.useAutocompleteData();
   const categorySelect = categoryLib.useCategorySelectData();
 

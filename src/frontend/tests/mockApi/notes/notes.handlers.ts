@@ -1,5 +1,10 @@
 import { http, type HttpHandler, type PathParams } from 'msw';
-import { type CreateNoteRequest, type EditNoteRequest, type noteModel } from '@/entities/note';
+import {
+  type CreateNoteRequest,
+  type EditNoteRequest,
+  type noteModel,
+  type RecognizeNoteResponse,
+} from '@/entities/note';
 import { API_URL } from '@/shared/config';
 import { DelayedHttpResponse } from '../DelayedHttpResponse';
 import * as notesService from './notes.service';
@@ -70,5 +75,20 @@ export const handlers: HttpHandler[] = [
     const id = parseInt(params.id);
     notesService.deleteOne(id);
     return await DelayedHttpResponse.ok();
+  }),
+
+  http.post<PathParams, FormData>(`${API_URL}/api/v1/notes/recognitions`, async ({ request }) => {
+    const formData = await request.formData();
+    const files = formData.getAll('files');
+
+    return await DelayedHttpResponse.json<RecognizeNoteResponse>({
+      notes: files.map(file => ({
+        product: {
+          name: file instanceof File ? file.name : '',
+          caloriesCost: Math.floor(Math.random() * 100) + 50,
+        },
+        quantity: Math.floor(Math.random() * 100) + 50,
+      })),
+    });
   }),
 ];

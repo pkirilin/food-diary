@@ -23,3 +23,9 @@ export interface Note {
   productQuantity: number;
   displayOrder: number;
 }
+
+export interface UploadedPhoto {
+  src: string;
+  name: string;
+  file: File;
+}

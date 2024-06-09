@@ -9,6 +9,7 @@ using FoodDiary.Configuration;
 using FoodDiary.Configuration.Extensions;
 using FoodDiary.Import.Extensions;
 using FoodDiary.Infrastructure.Extensions;
+using FoodDiary.Integrations.OpenAI.Extensions;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -114,8 +115,9 @@ public class Startup
 
         services.ConfigureCustomOptions(_configuration);
         services.Configure<ImportOptions>(_configuration.GetSection("Import"));
-
+        
         services.AddInfrastructure();
+        services.AddOpenAIIntegration(_configuration);
 
         services.AddRepositories();
         services.AddUtils();

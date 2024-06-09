@@ -3,6 +3,7 @@ import {
   type CreateNoteRequest,
   type GetNotesRequest,
   type noteModel,
+  type RecognizeNoteResponse,
 } from '@/entities/note';
 import { api } from '@/shared/api';
 import { createUrl } from '@/shared/lib';
@@ -38,6 +39,14 @@ export const noteApi = api.injectEndpoints({
         url: `/api/v1/notes/${id}`,
       }),
       invalidatesTags: ['note', 'page'],
+    }),
+
+    recognize: builder.mutation<RecognizeNoteResponse, FormData>({
+      query: body => ({
+        method: 'POST',
+        url: `/api/v1/notes/recognitions`,
+        body,
+      }),
     }),
   }),
 });
