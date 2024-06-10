@@ -75,7 +75,7 @@ internal class RecognizeNoteRequestHandler(
 
     private static readonly ChatCompletionOptions CompletionOptions = new()
     {
-        MaxTokens = 1000
+        MaxTokens = 4000
     };
 
     public async Task<RecognizeNoteResponse> Handle(

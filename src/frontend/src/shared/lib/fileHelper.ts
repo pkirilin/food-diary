@@ -33,12 +33,15 @@ export const convertToBase64String = (file: File): Promise<string> =>
     reader.readAsDataURL(file);
   });
 
-export const compressImage = (base64Image: string, size: number): Promise<string> =>
+const replaceFileExtension = (fileNameWithExtension: string, newExtension: string): string =>
+  fileNameWithExtension.replace(/\.[^/.]+$/, `.${newExtension}`);
+
+export const resizeImage = (base64: string, size: number, fileName: string): Promise<File> =>
   new Promise((resolve, reject) => {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     const image = new Image();
-    image.src = base64Image;
+    image.src = base64;
 
     image.onload = () => {
       const width = Math.min(size, image.width);
@@ -49,9 +52,20 @@ export const compressImage = (base64Image: string, size: number): Promise<string
 
       ctx?.drawImage(image, 0, 0, canvas.width, canvas.height);
 
-      const compressedBase64Image = canvas.toDataURL(`image/jpeg`, 1);
-
-      return resolve(compressedBase64Image);
+      canvas.toBlob(
+        blob => {
+          if (blob) {
+            const compressedFile = new File([blob], replaceFileExtension(fileName, 'jpg'), {
+              type: 'image/jpeg',
+            });
+            resolve(compressedFile);
+          } else {
+            reject(new Error('Failed to create File object from blob'));
+          }
+        },
+        'image/jpeg',
+        1,
+      );
     };
 
     image.onerror = reject;
