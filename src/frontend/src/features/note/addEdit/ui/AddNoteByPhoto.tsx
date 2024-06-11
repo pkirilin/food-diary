@@ -6,7 +6,7 @@ import { categoryLib } from '@/entities/category';
 import { noteApi, noteLib, type noteModel } from '@/entities/note';
 import { productLib } from '@/entities/product';
 import { useToggle } from '@/shared/hooks';
-import { convertToBase64String } from '@/shared/lib';
+import { convertToBase64String, resizeImage } from '@/shared/lib';
 import { Button } from '@/shared/ui';
 import { mapToCreateNoteRequest, useAddProductIfNotExists } from '../lib';
 import { type UploadedPhoto, type Note } from '../model';
@@ -35,15 +35,17 @@ export const AddNoteByPhoto: FC<Props> = ({ pageId, mealType, displayOrder }) =>
     try {
       const file = event.target?.files?.item(0);
 
-      if (!file) {
+      if (!file || !file.type.startsWith('image')) {
         return;
       }
 
-      const photoBase64 = await convertToBase64String(file);
+      const base64 = await convertToBase64String(file);
+      const resizedFile = await resizeImage(base64, 512, file.name);
+      const resizedBase64 = await convertToBase64String(resizedFile);
 
       setUploadedPhotos([
         {
-          src: photoBase64,
+          src: resizedBase64,
           name: file.name,
           file,
         },
@@ -52,7 +54,7 @@ export const AddNoteByPhoto: FC<Props> = ({ pageId, mealType, displayOrder }) =>
       toggleDialog();
 
       const formData = new FormData();
-      formData.append('files', file);
+      formData.append('files', resizedFile);
       await recognizeNote(formData);
     } finally {
       event.target.value = '';
@@ -94,7 +96,7 @@ export const AddNoteByPhoto: FC<Props> = ({ pageId, mealType, displayOrder }) =>
         <FileInputStyled
           type="file"
           name="photos"
-          accept=".jpg, .jpeg, .png"
+          accept="image/*"
           onChange={handlePhotoUploaded}
         />
       </Button>

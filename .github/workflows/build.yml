@@ -145,3 +145,5 @@ jobs:
             ConnectionStrings__Default=${{ secrets.YC_REVISION_SECRETS_DB_CONNECTION_STRING }}
             GoogleAuth__ClientId=${{ secrets.YC_REVISION_SECRETS_GOOGLE_CLIENT_ID }}
             GoogleAuth__ClientSecret=${{ secrets.YC_REVISION_SECRETS_GOOGLE_CLIENT_SECRET }}
+            Integrations__OpenAI__BaseUrl=${{ secrets.YC_REVISION_SECRETS_INTEGRATIONS_OPENAI_BASEURL }}
+            Integrations__OpenAI__ApiKey=${{ secrets.YC_REVISION_SECRETS_INTEGRATIONS_OPENAI_APIKEY }}

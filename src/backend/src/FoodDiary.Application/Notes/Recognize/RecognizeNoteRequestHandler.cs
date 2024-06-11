@@ -2,6 +2,7 @@ using System;
 using System.ClientModel;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading;
@@ -48,6 +49,8 @@ internal class RecognizeNoteRequestHandler(
     private const string Model = "gpt-4o";
     private const int ImageMaxSize = 512;
     
+    private static readonly ImageOptimizer ImageOptimizer = new();
+    
     private static readonly JsonSerializerOptions SerializerOptions = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase
@@ -75,7 +78,7 @@ internal class RecognizeNoteRequestHandler(
 
     private static readonly ChatCompletionOptions CompletionOptions = new()
     {
-        MaxTokens = 1000
+        MaxTokens = 4000
     };
 
     public async Task<RecognizeNoteResponse> Handle(
@@ -89,7 +92,7 @@ internal class RecognizeNoteRequestHandler(
             return new RecognizeNoteResponse.InvalidRequest(ErrorType.NoImagesProvided);
         }
         
-        var imageBytes = await ResizeAndConvertToByteArray(imageFile, cancellationToken);
+        var optimizedImageBytes = await OptimizeImage(imageFile, cancellationToken);
         
         var chatClient = openAIClient.GetChatClient(Model);
 
@@ -99,7 +102,7 @@ internal class RecognizeNoteRequestHandler(
                 [
                     ChatMessageContentPart.CreateTextMessageContentPart(Prompt),
                     ChatMessageContentPart.CreateImageMessageContentPart(
-                        BinaryData.FromBytes(imageBytes),
+                        BinaryData.FromBytes(optimizedImageBytes),
                         "image/jpeg")
                 ])
             ],
@@ -123,15 +126,18 @@ internal class RecognizeNoteRequestHandler(
         return files.FirstOrDefault(file => file.ContentType.StartsWith("image/"));
     }
 
-    private static async Task<byte[]> ResizeAndConvertToByteArray(
-        IFormFile imageFile,
-        CancellationToken cancellationToken)
+    private static async Task<byte[]> OptimizeImage(IFormFile imageFile, CancellationToken cancellationToken)
     {
         await using var stream = imageFile.OpenReadStream();
+        using var memoryStream = new MemoryStream();
+        await stream.CopyToAsync(memoryStream, cancellationToken);
+        memoryStream.Position = 0;
+        ImageOptimizer.Compress(memoryStream);
+        
         using var image = new MagickImage();
-        await image.ReadAsync(stream, cancellationToken);
+        await image.ReadAsync(memoryStream, cancellationToken);
         image.Format = MagickFormat.Jpeg;
-
+        
         if (image.Width > ImageMaxSize)
         {
             image.Resize(ImageMaxSize, 0);
@@ -140,7 +146,7 @@ internal class RecognizeNoteRequestHandler(
         {
             image.Resize(0, ImageMaxSize);
         }
-
+        
         return image.ToByteArray();
     }
 
