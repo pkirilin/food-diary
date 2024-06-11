@@ -135,7 +135,7 @@ internal class RecognizeNoteRequestHandler(
         ImageOptimizer.Compress(memoryStream);
         
         using var image = new MagickImage();
-        await image.ReadAsync(stream, cancellationToken);
+        await image.ReadAsync(memoryStream, cancellationToken);
         image.Format = MagickFormat.Jpeg;
         
         if (image.Width > ImageMaxSize)
