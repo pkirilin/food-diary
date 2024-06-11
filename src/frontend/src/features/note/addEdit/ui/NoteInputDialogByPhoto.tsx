@@ -57,7 +57,7 @@ export const NoteInputDialogByPhoto: FC<Props> = ({
   const productAutocompleteInput = productLib.useAutocompleteInput();
   const { setValue: setProduct } = productAutocompleteInput;
   const { values: productFormValues } = productLib.useFormValues();
-  const submitDisabled = recognizeNotesLoading || submitLoading;
+  const submitDisabled = recognizeNotesLoading || recognizeNotesError || submitLoading;
 
   useEffect(() => {
     if (submitSuccess) {
