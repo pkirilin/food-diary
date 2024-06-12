@@ -16,7 +16,27 @@ The diary consists of **pages**. Each page is associated with some date and cont
 
 This information can be extremely useful for people who want to keep track of energy value of meals they eat every day.
 
-## Local start
+## Quick start (docker-compose)
+
+1. Setup [Google OAuth 2.0 client](https://support.google.com/cloud/answer/6158849) you will use for sign in
+    - Add Authorized JavaScript origins: <https://localhost:8080>
+    - Add Authorized redirect URIs: <https://localhost:8080/signin-google>
+
+2. Create a copy of `.env.example` file and save it as `.env`:
+
+    ```shell
+    cat .env.example >> .env
+    ```
+
+3. Fill your credentials, then run:
+
+    ```shell
+    docker-compose up -d
+    ```
+
+4. Navigate to <https://localhost:8080>
+
+## Development
 
 1. Start PostgreSQL database:
 

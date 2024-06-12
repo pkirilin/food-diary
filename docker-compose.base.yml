@@ -1,0 +1,39 @@
+services:
+  db:
+    ports:
+      - "8090:5432"
+    image: postgres:15.1-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: FoodDiary
+      PGPORT: 8090
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -p 8090 -U postgres"]
+      interval: 10s
+      retries: 5
+  web:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "8080:443"
+    environment:
+      - ASPNETCORE_URLS=https://+:443
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=test
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/app.pfx
+      - ConnectionStrings__Default=User ID=postgres;Password=postgres;Host=db;Port=8090;Database=FoodDiary
+      - Auth__AllowedEmails__0=${USER_EMAIL}
+      - GoogleAuth__ClientId=${GOOGLE_CLIENT_ID}
+      - GoogleAuth__ClientSecret=${GOOGLE_CLIENT_SECRET}
+      - Google__ExportFolderId=${GOOGLE_DRIVE_EXPORT_FOLDER_ID}
+      - Integrations__OpenAI__BaseUrl=${OPENAI_BASE_URL}
+      - Integrations__OpenAI__ApiKey=${OPENAI_API_KEY}
+    volumes:
+      - ./certs:/https:ro
+    entrypoint: >
+      /bin/bash -c "cp /https/ca.cert.crt /usr/local/share/ca-certificates/ca.cert.crt &&
+        chmod 644 /usr/local/share/ca-certificates/ca.cert.crt &&
+        update-ca-certificates &&
+        dotnet migrator/FoodDiary.Migrator.dll &&
+        dotnet FoodDiary.API.dll"

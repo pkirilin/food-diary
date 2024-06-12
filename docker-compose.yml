@@ -1,11 +1,11 @@
 services:
   db:
     extends:
-      file: ../docker-compose.base.yml
+      file: ./docker-compose.base.yml
       service: db
   web:
     extends:
-      file: ../docker-compose.base.yml
+      file: ./docker-compose.base.yml
       service: web
     depends_on:
       db:
