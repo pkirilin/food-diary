@@ -1,9 +1,12 @@
 services:
   db:
     extends:
-      file: ../docker-compose.yml
+      file: ../docker-compose.base.yml
       service: db
   web:
     extends:
-      file: ../docker-compose.yml
+      file: ../docker-compose.base.yml
       service: web
+    depends_on:
+      db:
+        condition: service_healthy
