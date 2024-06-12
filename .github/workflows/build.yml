@@ -60,7 +60,9 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
     - name: Setup Docker Compose
-      uses: docker/setup-buildx-action@v2
+      uses: hoverkraft-tech/compose-action@v1.5.1
+      with:
+        up-flags: "-d --build"
     - name: Show docker-compose version
       run: docker-compose version
     - name: Start containers
