@@ -63,10 +63,10 @@ jobs:
             App__Logging__WriteLogsInJsonFormat=true
             App__Logging__UseYandexCloudLogsFormat=true
           revision-secrets: |
-            Auth__AllowedEmails__0=${{ secrets.YC_REVISION_SECRETS_ALLOWED_EMAILS }}
-            Google__ExportFolderId=${{ secrets.YC_REVISION_SECRETS_EXPORT_FOLDER_ID }}
-            ConnectionStrings__Default=${{ secrets.YC_REVISION_SECRETS_DB_CONNECTION_STRING }}
-            GoogleAuth__ClientId=${{ secrets.YC_REVISION_SECRETS_GOOGLE_CLIENT_ID }}
-            GoogleAuth__ClientSecret=${{ secrets.YC_REVISION_SECRETS_GOOGLE_CLIENT_SECRET }}
-            Integrations__OpenAI__BaseUrl=${{ secrets.YC_REVISION_SECRETS_INTEGRATIONS_OPENAI_BASEURL }}
-            Integrations__OpenAI__ApiKey=${{ secrets.YC_REVISION_SECRETS_INTEGRATIONS_OPENAI_APIKEY }}
+            Auth__AllowedEmails__0=${{ vars.YC_REVISION_SECRETS_ID }}/${{ vars.YC_REVISION_SECRETS_VERSION }}/auth-allowed-emails
+            Google__ExportFolderId=${{ vars.YC_REVISION_SECRETS_ID }}/${{ vars.YC_REVISION_SECRETS_VERSION }}/google-export-folder-id
+            ConnectionStrings__Default=${{ vars.YC_REVISION_SECRETS_ID }}/${{ vars.YC_REVISION_SECRETS_VERSION }}/database-connection-string
+            GoogleAuth__ClientId=${{ vars.YC_REVISION_SECRETS_ID }}/${{ vars.YC_REVISION_SECRETS_VERSION }}/google-client-id
+            GoogleAuth__ClientSecret=${{ vars.YC_REVISION_SECRETS_ID }}/${{ vars.YC_REVISION_SECRETS_VERSION }}/google-client-secret
+            Integrations__OpenAI__BaseUrl=${{ vars.YC_REVISION_SECRETS_ID }}/${{ vars.YC_REVISION_SECRETS_VERSION }}/integrations-openai-base-url
+            Integrations__OpenAI__ApiKey=${{ vars.YC_REVISION_SECRETS_ID }}/${{ vars.YC_REVISION_SECRETS_VERSION }}/integrations-openai-api-key
