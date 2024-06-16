@@ -54,11 +54,8 @@ export const NoteInputDialogByPhoto: FC<Props> = ({
 }) => {
   const productAutocompleteInput = productLib.useAutocompleteInput();
 
-  const {
-    setValue: setProduct,
-    setValue: setProductAutocompleteValue,
-    clearValue: clearProductAutocompleteValue,
-  } = productAutocompleteInput;
+  const { setValue: setProductAutocompleteValue, clearValue: clearProductAutocompleteValue } =
+    productAutocompleteInput;
 
   const {
     values: productFormValues,
@@ -161,9 +158,16 @@ export const NoteInputDialogByPhoto: FC<Props> = ({
 
     onNoteSubmitDisabledChange(false);
 
-    setProduct({
+    setProductAutocompleteValue({
       freeSolo: true,
       editing: true,
+      name: note.product.name,
+      caloriesCost: note.product.caloriesCost,
+      defaultQuantity: note.quantity,
+      category,
+    });
+
+    setProductFormValues({
       name: note.product.name,
       caloriesCost: note.product.caloriesCost,
       defaultQuantity: note.quantity,
@@ -174,7 +178,8 @@ export const NoteInputDialogByPhoto: FC<Props> = ({
     onNoteSubmitDisabledChange,
     recognizeNotesSuccess,
     recognizedNotes,
-    setProduct,
+    setProductAutocompleteValue,
+    setProductFormValues,
   ]);
 
   if (!currentDialogState) {
