@@ -1,7 +1,7 @@
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import { Box, styled } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
-import { type FC, useState, type ChangeEventHandler } from 'react';
+import { type FC, useState, type ChangeEventHandler, useCallback } from 'react';
 import { categoryLib } from '@/entities/category';
 import { noteApi, noteLib, type noteModel } from '@/entities/note';
 import { productLib } from '@/entities/product';
@@ -24,6 +24,7 @@ export const AddNoteByPhoto: FC<Props> = ({ pageId, mealType, displayOrder }) =>
   const [dialogOpened, toggleDialog] = useToggle();
   const [recognizeNote, recognizeNoteResponse] = noteApi.useRecognizeMutation();
   const [addNote, addNoteResponse] = noteApi.useCreateNoteMutation();
+  const { reset: resetAddNote } = addNoteResponse;
   const addProductIfNotExists = useAddProductIfNotExists();
   const notes = noteLib.useNotes(pageId);
   const productAutocompleteData = productLib.useAutocompleteData();
@@ -72,6 +73,11 @@ export const AddNoteByPhoto: FC<Props> = ({ pageId, mealType, displayOrder }) =>
     await addNote(request);
   };
 
+  const handleSubmitSuccess = useCallback(() => {
+    toggleDialog();
+    resetAddNote();
+  }, [resetAddNote, toggleDialog]);
+
   return (
     <Box component="form" width="100%">
       <Button
@@ -104,7 +110,7 @@ export const AddNoteByPhoto: FC<Props> = ({ pageId, mealType, displayOrder }) =>
         categorySelect={categorySelect}
         onClose={toggleDialog}
         onSubmit={handleSubmit}
-        onSubmitSuccess={toggleDialog}
+        onSubmitSuccess={handleSubmitSuccess}
         onRecognizeNotesRetry={handleRecognizeNotesRetry}
       />
     </Box>

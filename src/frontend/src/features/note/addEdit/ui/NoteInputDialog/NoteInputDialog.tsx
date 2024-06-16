@@ -109,22 +109,18 @@ export const NoteInputDialog: FC<Props> = ({
   });
 
   useEffect(() => {
-    if (opened && submitSuccess) {
-      onClose();
+    if (opened) {
       clearProductFormValues();
       clearProductAutocompleteValue();
+    }
+  }, [clearProductAutocompleteValue, clearProductFormValues, opened]);
+
+  useEffect(() => {
+    if (submitSuccess) {
       onSubmitSuccess();
       onNoteSubmitSuccess();
     }
-  }, [
-    clearProductAutocompleteValue,
-    clearProductFormValues,
-    onClose,
-    onNoteSubmitSuccess,
-    onSubmitSuccess,
-    opened,
-    submitSuccess,
-  ]);
+  }, [onNoteSubmitSuccess, onSubmitSuccess, submitSuccess]);
 
   const dialogStates: DialogState[] = [noteDialogState, productDialogState];
 
