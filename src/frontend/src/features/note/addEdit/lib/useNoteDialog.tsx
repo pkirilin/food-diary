@@ -22,6 +22,7 @@ interface Args {
 interface Result {
   state: DialogState;
   onSubmitSuccess: () => void;
+  onSubmitDisabledChange: (disabled: boolean) => void;
 }
 
 export const useNoteDialog = ({
@@ -93,5 +94,6 @@ export const useNoteDialog = ({
       onClose,
     },
     onSubmitSuccess: handleSubmitSuccess,
+    onSubmitDisabledChange: handleSubmitDisabledChange,
   };
 };

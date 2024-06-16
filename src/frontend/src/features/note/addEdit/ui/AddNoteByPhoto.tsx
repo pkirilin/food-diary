@@ -1,7 +1,7 @@
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import { Box, styled } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
-import { type FC, useState, type ChangeEventHandler, useCallback } from 'react';
+import { type FC, useState, type ChangeEventHandler } from 'react';
 import { categoryLib } from '@/entities/category';
 import { noteApi, noteLib, type noteModel } from '@/entities/note';
 import { productLib } from '@/entities/product';
@@ -29,7 +29,6 @@ export const AddNoteByPhoto: FC<Props> = ({ pageId, mealType, displayOrder }) =>
   const productAutocompleteData = productLib.useAutocompleteData();
   const categorySelect = categoryLib.useCategorySelectData();
   const [uploadedPhotos, setUploadedPhotos] = useState<UploadedPhoto[]>([]);
-  const [submitLoading, setSubmitLoading] = useState(false);
 
   const handlePhotoUploaded: ChangeEventHandler<HTMLInputElement> = async event => {
     try {
@@ -68,20 +67,10 @@ export const AddNoteByPhoto: FC<Props> = ({ pageId, mealType, displayOrder }) =>
   };
 
   const handleSubmit = async (note: Note): Promise<void> => {
-    try {
-      setSubmitLoading(true);
-      const productId = await addProductIfNotExists(note.product);
-      const request = mapToCreateNoteRequest(note, productId);
-      await addNote(request);
-    } catch (err) {
-      setSubmitLoading(false);
-    }
+    const productId = await addProductIfNotExists(note.product);
+    const request = mapToCreateNoteRequest(note, productId);
+    await addNote(request);
   };
-
-  const handleSubmitSuccess = useCallback(() => {
-    setSubmitLoading(false);
-    toggleDialog();
-  }, [toggleDialog]);
 
   return (
     <Box component="form" width="100%">
@@ -110,13 +99,12 @@ export const AddNoteByPhoto: FC<Props> = ({ pageId, mealType, displayOrder }) =>
         recognizeNotesLoading={recognizeNoteResponse.isLoading}
         recognizeNotesError={recognizeNoteResponse.isError}
         recognizeNotesSuccess={recognizeNoteResponse.isSuccess}
-        submitLoading={submitLoading}
         submitSuccess={addNoteResponse.isSuccess && notes.isChanged}
         productAutocompleteData={productAutocompleteData}
         categorySelect={categorySelect}
-        onCancel={toggleDialog}
+        onClose={toggleDialog}
         onSubmit={handleSubmit}
-        onSubmitSuccess={handleSubmitSuccess}
+        onSubmitSuccess={toggleDialog}
         onRecognizeNotesRetry={handleRecognizeNotesRetry}
       />
     </Box>

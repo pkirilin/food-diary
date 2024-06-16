@@ -3,8 +3,7 @@ import { type categoryLib } from '@/entities/category';
 import { type noteModel } from '@/entities/note';
 import { productLib, type productModel } from '@/entities/product';
 import { Button, Dialog } from '@/shared/ui';
-import { useNoteDialog } from '../../lib/useNoteDialog';
-import { useProductDialog } from '../../lib/useProductDialog';
+import { useNoteDialog, useProductDialog } from '../../lib';
 import { type Note, type DialogState, type DialogStateType } from '../../model';
 
 interface Props {
