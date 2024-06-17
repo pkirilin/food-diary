@@ -24,12 +24,12 @@ export const AddNoteByPhoto: FC<Props> = ({ pageId, mealType, displayOrder }) =>
   const [dialogOpened, toggleDialog] = useToggle();
   const [recognizeNote, recognizeNoteResponse] = noteApi.useRecognizeMutation();
   const [addNote, addNoteResponse] = noteApi.useCreateNoteMutation();
+  const { reset: resetAddNote } = addNoteResponse;
   const addProductIfNotExists = useAddProductIfNotExists();
   const notes = noteLib.useNotes(pageId);
   const productAutocompleteData = productLib.useAutocompleteData();
   const categorySelect = categoryLib.useCategorySelectData();
   const [uploadedPhotos, setUploadedPhotos] = useState<UploadedPhoto[]>([]);
-  const [submitLoading, setSubmitLoading] = useState(false);
 
   const handlePhotoUploaded: ChangeEventHandler<HTMLInputElement> = async event => {
     try {
@@ -68,20 +68,15 @@ export const AddNoteByPhoto: FC<Props> = ({ pageId, mealType, displayOrder }) =>
   };
 
   const handleSubmit = async (note: Note): Promise<void> => {
-    try {
-      setSubmitLoading(true);
-      const productId = await addProductIfNotExists(note.product);
-      const request = mapToCreateNoteRequest(note, productId);
-      await addNote(request);
-    } catch (err) {
-      setSubmitLoading(false);
-    }
+    const productId = await addProductIfNotExists(note.product);
+    const request = mapToCreateNoteRequest(note, productId);
+    await addNote(request);
   };
 
   const handleSubmitSuccess = useCallback(() => {
-    setSubmitLoading(false);
     toggleDialog();
-  }, [toggleDialog]);
+    resetAddNote();
+  }, [resetAddNote, toggleDialog]);
 
   return (
     <Box component="form" width="100%">
@@ -110,11 +105,10 @@ export const AddNoteByPhoto: FC<Props> = ({ pageId, mealType, displayOrder }) =>
         recognizeNotesLoading={recognizeNoteResponse.isLoading}
         recognizeNotesError={recognizeNoteResponse.isError}
         recognizeNotesSuccess={recognizeNoteResponse.isSuccess}
-        submitLoading={submitLoading}
         submitSuccess={addNoteResponse.isSuccess && notes.isChanged}
         productAutocompleteData={productAutocompleteData}
         categorySelect={categorySelect}
-        onCancel={toggleDialog}
+        onClose={toggleDialog}
         onSubmit={handleSubmit}
         onSubmitSuccess={handleSubmitSuccess}
         onRecognizeNotesRetry={handleRecognizeNotesRetry}

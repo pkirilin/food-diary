@@ -3,8 +3,7 @@ import { type categoryLib } from '@/entities/category';
 import { type noteModel } from '@/entities/note';
 import { productLib, type productModel } from '@/entities/product';
 import { Button, Dialog } from '@/shared/ui';
-import { useNoteDialog } from '../../lib/useNoteDialog';
-import { useProductDialog } from '../../lib/useProductDialog';
+import { useNoteDialog, useProductDialog } from '../../lib';
 import { type Note, type DialogState, type DialogStateType } from '../../model';
 
 interface Props {
@@ -110,22 +109,18 @@ export const NoteInputDialog: FC<Props> = ({
   });
 
   useEffect(() => {
-    if (opened && submitSuccess) {
-      onClose();
+    if (opened) {
       clearProductFormValues();
       clearProductAutocompleteValue();
+    }
+  }, [clearProductAutocompleteValue, clearProductFormValues, opened]);
+
+  useEffect(() => {
+    if (submitSuccess) {
       onSubmitSuccess();
       onNoteSubmitSuccess();
     }
-  }, [
-    clearProductAutocompleteValue,
-    clearProductFormValues,
-    onClose,
-    onNoteSubmitSuccess,
-    onSubmitSuccess,
-    opened,
-    submitSuccess,
-  ]);
+  }, [onNoteSubmitSuccess, onSubmitSuccess, submitSuccess]);
 
   const dialogStates: DialogState[] = [noteDialogState, productDialogState];
 

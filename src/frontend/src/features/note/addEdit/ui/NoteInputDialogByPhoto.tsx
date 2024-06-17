@@ -7,13 +7,13 @@ import {
   ImageListItemBar,
   Stack,
 } from '@mui/material';
-import { useEffect, type FC } from 'react';
+import { useEffect, type FC, useState } from 'react';
 import { type categoryLib } from '@/entities/category';
 import { type RecognizeNoteItem, type noteModel } from '@/entities/note';
-import { ProductAutocomplete, productLib } from '@/entities/product';
-import { NoteInputForm } from '@/features/note/addEdit';
+import { productLib } from '@/entities/product';
 import { Button, Dialog } from '@/shared/ui';
-import { type UploadedPhoto, type Note } from '../model';
+import { useNoteDialog, useProductDialog } from '../lib';
+import { type UploadedPhoto, type Note, type DialogState, type DialogStateType } from '../model';
 
 interface Props {
   opened: boolean;
@@ -27,11 +27,10 @@ interface Props {
   recognizeNotesLoading: boolean;
   recognizeNotesError: boolean;
   recognizeNotesSuccess: boolean;
-  submitLoading: boolean;
   submitSuccess: boolean;
   onSubmit: (note: Note) => Promise<void>;
   onSubmitSuccess: () => void;
-  onCancel: () => void;
+  onClose: () => void;
   onRecognizeNotesRetry: () => Promise<void>;
 }
 
@@ -47,26 +46,105 @@ export const NoteInputDialogByPhoto: FC<Props> = ({
   recognizeNotesLoading,
   recognizeNotesError,
   recognizeNotesSuccess,
-  submitLoading,
   submitSuccess,
   onSubmit,
   onSubmitSuccess,
-  onCancel,
+  onClose,
   onRecognizeNotesRetry,
 }) => {
   const productAutocompleteInput = productLib.useAutocompleteInput();
-  const { setValue: setProduct } = productAutocompleteInput;
-  const { values: productFormValues } = productLib.useFormValues();
-  const submitDisabled = recognizeNotesLoading || recognizeNotesError || submitLoading;
+
+  const { setValue: setProductAutocompleteValue, clearValue: clearProductAutocompleteValue } =
+    productAutocompleteInput;
+
+  const {
+    values: productFormValues,
+    setValues: setProductFormValues,
+    clearValues: clearProductFormValues,
+  } = productLib.useFormValues();
+
+  const [currentInputDialogType, setCurrentInputDialogType] = useState<DialogStateType>('note');
+
+  const {
+    state: noteDialogState,
+    onSubmitSuccess: onNoteSubmitSuccess,
+    onSubmitDisabledChange: onNoteSubmitDisabledChange,
+  } = useNoteDialog({
+    pageId,
+    mealType,
+    displayOrder,
+    title: 'New note',
+    submitText: 'Add',
+    quantity: 100,
+    productAutocompleteData,
+    productAutocompleteInput,
+    productFormValues,
+    onSubmit,
+    onClose: () => {
+      onClose();
+      clearProductFormValues();
+      clearProductAutocompleteValue();
+    },
+    onProductChange: value => {
+      setProductAutocompleteValue(value);
+      clearProductFormValues();
+
+      if (value?.freeSolo === true) {
+        setCurrentInputDialogType('product');
+
+        setProductFormValues({
+          name: value.name,
+          caloriesCost: value.caloriesCost,
+          defaultQuantity: value.defaultQuantity,
+          category: value.category,
+        });
+      }
+    },
+  });
+
+  const { state: productDialogState } = useProductDialog({
+    productFormValues,
+    categorySelect,
+    onClose: () => {
+      setCurrentInputDialogType('note');
+    },
+    onSubmit: formValues => {
+      const { name, caloriesCost, defaultQuantity, category } = formValues;
+
+      setProductAutocompleteValue({
+        freeSolo: true,
+        editing: true,
+        name,
+        caloriesCost,
+        defaultQuantity,
+        category,
+      });
+
+      setProductFormValues(formValues);
+      setCurrentInputDialogType('note');
+    },
+  });
+
+  const dialogStates: DialogState[] = [noteDialogState, productDialogState];
+  const currentDialogState = dialogStates.find(s => s.type === currentInputDialogType);
+
+  useEffect(() => {
+    if (opened) {
+      clearProductFormValues();
+      clearProductAutocompleteValue();
+    }
+  }, [clearProductAutocompleteValue, clearProductFormValues, opened]);
 
   useEffect(() => {
     if (submitSuccess) {
       onSubmitSuccess();
+      onNoteSubmitSuccess();
     }
-  }, [onSubmitSuccess, submitSuccess]);
+  }, [onNoteSubmitSuccess, onSubmitSuccess, submitSuccess]);
 
   useEffect(() => {
     if (!recognizeNotesSuccess) {
+      onNoteSubmitDisabledChange(true);
       return;
     }
 
@@ -74,10 +152,13 @@ export const NoteInputDialogByPhoto: FC<Props> = ({
     const category = categorySelect.data.at(0);
 
     if (!note || !category) {
+      onNoteSubmitDisabledChange(true);
       return;
     }
 
-    setProduct({
+    onNoteSubmitDisabledChange(false);
+
+    setProductAutocompleteValue({
       freeSolo: true,
       editing: true,
       name: note.product.name,
@@ -85,14 +166,32 @@ export const NoteInputDialogByPhoto: FC<Props> = ({
       defaultQuantity: note.quantity,
       category,
     });
-  }, [categorySelect.data, recognizeNotesSuccess, recognizedNotes, setProduct]);
+
+    setProductFormValues({
+      name: note.product.name,
+      caloriesCost: note.product.caloriesCost,
+      defaultQuantity: note.quantity,
+      category,
+    });
+  }, [
+    categorySelect.data,
+    onNoteSubmitDisabledChange,
+    recognizeNotesSuccess,
+    recognizedNotes,
+    setProductAutocompleteValue,
+    setProductFormValues,
+  ]);
+
+  if (!currentDialogState) {
+    return null;
+  }
 
   return (
     <Dialog
       opened={opened}
       renderMode="fullScreenOnMobile"
-      title="New note"
-      onClose={onCancel}
+      title={currentDialogState.title}
+      onClose={currentDialogState.onClose}
       content={
         <Stack spacing={3}>
           <ImageList cols={2} gap={16}>
@@ -126,42 +225,28 @@ export const NoteInputDialogByPhoto: FC<Props> = ({
               Failed to recognize note. Please try again.
             </Alert>
           )}
-          {recognizeNotesSuccess && (
-            <NoteInputForm
-              id="note-input-form"
-              pageId={pageId}
-              mealType={mealType}
-              displayOrder={displayOrder}
-              quantity={100}
-              productAutocompleteInput={productAutocompleteInput}
-              renderProductAutocomplete={productAutocompleteProps => (
-                <ProductAutocomplete
-                  {...productAutocompleteProps}
-                  formValues={productFormValues}
-                  options={productAutocompleteData.options}
-                  loading={productAutocompleteData.isLoading}
-                />
-              )}
-              onSubmit={onSubmit}
-              onSubmitDisabledChange={() => {}}
-            />
-          )}
+          {recognizeNotesSuccess && currentDialogState.content}
         </Stack>
       }
+      renderCancel={cancelProps => (
+        <Button
+          {...cancelProps}
+          type="button"
+          disabled={currentDialogState.cancelDisabled}
+          onClick={currentDialogState.onClose}
+        >
+          Cancel
+        </Button>
+      )}
       renderSubmit={submitProps => (
         <Button
           {...submitProps}
           type="submit"
-          form="note-input-form"
-          disabled={submitDisabled}
-          loading={submitLoading}
+          form={currentDialogState.formId}
+          disabled={currentDialogState.submitDisabled}
+          loading={currentDialogState.submitLoading}
         >
-          Add
-        </Button>
-      )}
-      renderCancel={cancelProps => (
-        <Button {...cancelProps} type="button" onClick={onCancel} disabled={submitDisabled}>
-          Cancel
+          {currentDialogState.submitText}
         </Button>
       )}
     />

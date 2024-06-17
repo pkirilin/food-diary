@@ -18,8 +18,8 @@ interface Props {
 
 export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
   const [dialogOpened, toggleDialog] = useToggle();
-  const [createNote, createNoteResponse] = noteApi.useCreateNoteMutation();
-  const { reset: resetCreateNote } = createNoteResponse;
+  const [addNote, addNoteResponse] = noteApi.useCreateNoteMutation();
+  const { reset: resetAddNote } = addNoteResponse;
   const addProductIfNotExists = useAddProductIfNotExists();
   const notes = noteLib.useNotes(pageId);
   const productAutocompleteData = productLib.useAutocompleteData();
@@ -28,12 +28,13 @@ export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
   const handleSubmit = async (note: Note): Promise<void> => {
     const productId = await addProductIfNotExists(note.product);
     const request = mapToCreateNoteRequest(note, productId);
-    await createNote(request);
+    await addNote(request);
   };
 
   const handleSubmitSuccess = useCallback(() => {
-    resetCreateNote();
-  }, [resetCreateNote]);
+    toggleDialog();
+    resetAddNote();
+  }, [resetAddNote, toggleDialog]);
 
   return (
     <>
@@ -51,7 +52,7 @@ export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
         quantity={100}
         productAutocompleteData={productAutocompleteData}
         categorySelect={categorySelect}
-        submitSuccess={createNoteResponse.isSuccess && notes.isChanged}
+        submitSuccess={addNoteResponse.isSuccess && notes.isChanged}
         onClose={toggleDialog}
         onSubmit={handleSubmit}
         onSubmitSuccess={handleSubmitSuccess}
