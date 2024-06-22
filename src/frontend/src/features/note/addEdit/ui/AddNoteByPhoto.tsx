@@ -8,7 +8,7 @@ import { productLib } from '@/entities/product';
 import { useToggle } from '@/shared/hooks';
 import { convertToBase64String, resizeImage } from '@/shared/lib';
 import { Button } from '@/shared/ui';
-import { mapToCreateNoteRequest, useAddProductIfNotExists } from '../lib';
+import { mapToCreateNoteRequest, useAddProductIfNotExists, useRecognizeNotes } from '../lib';
 import { type UploadedPhoto, type Note } from '../model';
 import { NoteInputDialogByPhoto } from './NoteInputDialogByPhoto';
 
@@ -22,14 +22,16 @@ const FileInputStyled = styled('input')(() => ({ ...visuallyHidden }));
 
 export const AddNoteByPhoto: FC<Props> = ({ pageId, mealType, displayOrder }) => {
   const [dialogOpened, toggleDialog] = useToggle();
-  const [recognizeNote, recognizeNoteResponse] = noteApi.useRecognizeMutation();
-  const [addNote, addNoteResponse] = noteApi.useCreateNoteMutation();
-  const { reset: resetAddNote } = addNoteResponse;
+  const [uploadedPhotos, setUploadedPhotos] = useState<UploadedPhoto[]>([]);
+
+  const [addNote, { isSuccess: addNoteSuccess, reset: addNoteReset }] =
+    noteApi.useCreateNoteMutation();
   const addProductIfNotExists = useAddProductIfNotExists();
+  const [recognizeNotes, recognizeNoteResult] = useRecognizeNotes();
+
   const notes = noteLib.useNotes(pageId);
   const productAutocompleteData = productLib.useAutocompleteData();
   const categorySelect = categoryLib.useCategorySelectData();
-  const [uploadedPhotos, setUploadedPhotos] = useState<UploadedPhoto[]>([]);
 
   const handlePhotoUploaded: ChangeEventHandler<HTMLInputElement> = async event => {
     try {
@@ -52,19 +54,14 @@ export const AddNoteByPhoto: FC<Props> = ({ pageId, mealType, displayOrder }) =>
       ]);
 
       toggleDialog();
-
-      const formData = new FormData();
-      formData.append('files', resizedFile);
-      await recognizeNote(formData);
+      await recognizeNotes(resizedFile);
     } finally {
       event.target.value = '';
     }
   };
 
   const handleRecognizeNotesRetry = async (): Promise<void> => {
-    const formData = new FormData();
-    formData.append('files', uploadedPhotos[0].file);
-    await recognizeNote(formData);
+    await recognizeNotes(uploadedPhotos[0].file);
   };
 
   const handleSubmit = async (note: Note): Promise<void> => {
@@ -75,8 +72,8 @@ export const AddNoteByPhoto: FC<Props> = ({ pageId, mealType, displayOrder }) =>
 
   const handleSubmitSuccess = useCallback(() => {
     toggleDialog();
-    resetAddNote();
-  }, [resetAddNote, toggleDialog]);
+    addNoteReset();
+  }, [addNoteReset, toggleDialog]);
 
   return (
     <Box component="form" width="100%">
@@ -101,11 +98,8 @@ export const AddNoteByPhoto: FC<Props> = ({ pageId, mealType, displayOrder }) =>
         mealType={mealType}
         displayOrder={displayOrder}
         uploadedPhotos={uploadedPhotos}
-        recognizedNotes={recognizeNoteResponse.data?.notes ?? []}
-        recognizeNotesLoading={recognizeNoteResponse.isLoading}
-        recognizeNotesError={recognizeNoteResponse.isError}
-        recognizeNotesSuccess={recognizeNoteResponse.isSuccess}
-        submitSuccess={addNoteResponse.isSuccess && notes.isChanged}
+        recognizeNotesResult={recognizeNoteResult}
+        submitSuccess={addNoteSuccess && notes.isChanged}
         productAutocompleteData={productAutocompleteData}
         categorySelect={categorySelect}
         onClose={toggleDialog}
