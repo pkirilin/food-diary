@@ -25,7 +25,7 @@ public class OpenAIApi(IClient mountebankClient)
         return mountebankClient.OverwriteAllImposters([imposter]);
     }
 
-    public Task SetupNotesRecognized(IReadOnlyList<RecognizeNoteItem> notes)
+    public Task SetupNotesRecognizedSuccessfully(IReadOnlyList<RecognizeNoteItem> notes)
     {
         return mountebankClient.AddHttpImposterStubAsync(Port, new HttpStub()
             .OnPathAndMethodEqual("/v1/chat/completions", Method.Post)
@@ -43,5 +43,13 @@ public class OpenAIApi(IClient mountebankClient)
                     }
                 }
             }));
+    }
+
+    public Task SetupNotesRecognizedWithError(HttpStatusCode statusCode)
+    {
+        return mountebankClient.AddHttpImposterStubAsync(Port, new HttpStub()
+            .OnPathAndMethodEqual("/v1/chat/completions", Method.Post)
+            .ReturnsStatus(statusCode)
+        );
     }
 }

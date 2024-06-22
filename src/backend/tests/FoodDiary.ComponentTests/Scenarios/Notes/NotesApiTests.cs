@@ -1,3 +1,4 @@
+using System.Net;
 using FoodDiary.ComponentTests.Dsl;
 using FoodDiary.ComponentTests.Infrastructure;
 
@@ -101,5 +102,19 @@ public class NotesApiTests(FoodDiaryWebApplicationFactory factory, Infrastructur
             c => c.Given_authenticated_user(),
             c => c.When_user_uploads_file_for_note_recognition("recognizeNoteSamplePhoto.png"),
             c => c.Then_note_is_successfully_recognized_as(orangeNote));
+    }
+    
+    [Scenario]
+    [InlineData(HttpStatusCode.Unauthorized)]
+    [InlineData(HttpStatusCode.PaymentRequired)]
+    [InlineData(HttpStatusCode.Forbidden)]
+    public Task I_receive_internal_server_error_when_OpenAI_fails_to_recognize_notes(HttpStatusCode statusCode)
+    {
+        return Run(
+            c => c.Given_OpenAI_api_is_ready(),
+            c => c.Given_OpenAI_request_failed_with_error(statusCode),
+            c => c.Given_authenticated_user(),
+            c => c.When_user_uploads_file_for_note_recognition("recognizeNoteSamplePhoto.png"),
+            c => c.Then_recognize_note_response_returns_error(HttpStatusCode.InternalServerError));
     }
 }

@@ -6,6 +6,7 @@ using FoodDiary.Application.Notes.Recognize;
 using FoodDiary.ComponentTests.Dsl;
 using FoodDiary.ComponentTests.Infrastructure;
 using FoodDiary.Domain.Entities;
+using Microsoft.AspNetCore.Mvc;
 
 namespace FoodDiary.ComponentTests.Scenarios.Notes;
 
@@ -40,7 +41,12 @@ public class NotesApiContext(FoodDiaryWebApplicationFactory factory, Infrastruct
     
     public Task Given_OpenAI_api_can_recognize_notes(params RecognizeNoteItem[] notes)
     {
-        return Infrastructure.ExternalServices.OpenAiApi.SetupNotesRecognized(notes);
+        return Infrastructure.ExternalServices.OpenAiApi.SetupNotesRecognizedSuccessfully(notes);
+    }
+    
+    public Task Given_OpenAI_request_failed_with_error(HttpStatusCode error)
+    {
+        return Infrastructure.ExternalServices.OpenAiApi.SetupNotesRecognizedWithError(error);
     }
 
     public async Task When_user_retrieves_notes_list_for_page(Page page)
@@ -126,10 +132,18 @@ public class NotesApiContext(FoodDiaryWebApplicationFactory factory, Infrastruct
         _deleteNoteResponse.StatusCode.Should().Be(HttpStatusCode.OK);
         return Task.CompletedTask;
     }
-
+    
     public async Task Then_note_is_successfully_recognized_as(RecognizeNoteItem note)
     {
         var response = await _recognizeNoteResponse.Content.ReadFromJsonAsync<RecognizeNoteResponse.Success>();
         response?.Notes.Should().Contain(note);
+    }
+
+    public async Task Then_recognize_note_response_returns_error(HttpStatusCode statusCode)
+    {
+        _recognizeNoteResponse.StatusCode.Should().Be(statusCode);
+        var response = await _recognizeNoteResponse.Content.ReadFromJsonAsync<ProblemDetails>();
+        response!.Title.Should().NotBeNullOrWhiteSpace();
+        response.Detail.Should().NotBeNullOrWhiteSpace();
     }
 }

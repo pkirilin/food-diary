@@ -112,6 +112,7 @@ public class Startup
             .AddCheck("readiness", () => HealthCheckResult.Healthy(), ["ready"]);
         
         services.AddSerilog((provider, logger) => logger.Configure(provider));
+        services.AddProblemDetails();
 
         services.ConfigureCustomOptions(_configuration);
         services.Configure<ImportOptions>(_configuration.GetSection("Import"));
