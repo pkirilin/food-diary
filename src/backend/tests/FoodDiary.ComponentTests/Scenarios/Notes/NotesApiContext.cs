@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
+using System.Text.Json;
 using FoodDiary.API.Dtos;
 using FoodDiary.API.Mapping;
 using FoodDiary.Application.Notes.Recognize;
@@ -13,6 +14,11 @@ namespace FoodDiary.ComponentTests.Scenarios.Notes;
 public class NotesApiContext(FoodDiaryWebApplicationFactory factory, InfrastructureFixture infrastructure)
     : BaseContext(factory, infrastructure)
 {
+    private static readonly JsonSerializerOptions SerializerOptions = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+    };
+    
     private IReadOnlyList<NoteItemDto>? _notesList;
     private HttpResponseMessage _createNoteResponse = null!;
     private HttpResponseMessage _updateNoteResponse = null!;
@@ -41,12 +47,18 @@ public class NotesApiContext(FoodDiaryWebApplicationFactory factory, Infrastruct
     
     public Task Given_OpenAI_api_can_recognize_notes(params RecognizeNoteItem[] notes)
     {
-        return Infrastructure.ExternalServices.OpenAiApi.SetupNotesRecognizedSuccessfully(notes);
+        var content = JsonSerializer.Serialize(notes, SerializerOptions);
+        return Infrastructure.ExternalServices.OpenAiApi.SetupCompletionSuccess(content);
+    }
+    
+    public Task Given_OpenAI_completion_response_is_not_recognized_notes_json()
+    {
+        return Infrastructure.ExternalServices.OpenAiApi.SetupCompletionSuccess("Sorry, I didn't understand that.");
     }
     
     public Task Given_OpenAI_request_failed_with_error(HttpStatusCode error)
     {
-        return Infrastructure.ExternalServices.OpenAiApi.SetupNotesRecognizedWithError(error);
+        return Infrastructure.ExternalServices.OpenAiApi.SetupCompletionFailure(error);
     }
 
     public async Task When_user_retrieves_notes_list_for_page(Page page)
@@ -135,7 +147,7 @@ public class NotesApiContext(FoodDiaryWebApplicationFactory factory, Infrastruct
     
     public async Task Then_note_is_successfully_recognized_as(RecognizeNoteItem note)
     {
-        var response = await _recognizeNoteResponse.Content.ReadFromJsonAsync<RecognizeNoteResponse.Success>();
+        var response = await _recognizeNoteResponse.Content.ReadFromJsonAsync<RecognizeNoteResponse>();
         response?.Notes.Should().Contain(note);
     }
 

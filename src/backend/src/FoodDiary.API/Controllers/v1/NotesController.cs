@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using FoodDiary.API.Dtos;
+using FoodDiary.API.Mapping;
 using FoodDiary.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using FoodDiary.API.Requests;
@@ -179,19 +180,7 @@ public class NotesController : ControllerBase
         CancellationToken cancellationToken)
     {
         var request = new RecognizeNoteRequest(files);
-        var response = await _mediator.Send(request, cancellationToken);
-
-        return response switch
-        {
-            RecognizeNoteResponse.Success success => Ok(success),
-            RecognizeNoteResponse.InvalidRequest invalidRequest => Problem(
-                statusCode: (int)HttpStatusCode.BadRequest,
-                title: "Invalid request",
-                type: invalidRequest.Type.ToString()),
-            RecognizeNoteResponse.InvalidModelResponse => Problem(
-                statusCode: (int)HttpStatusCode.InternalServerError,
-                title: "Server error"),
-            _ => Conflict()
-        };
+        var result = await _mediator.Send(request, cancellationToken);
+        return result.ToActionResult();
     }
 }

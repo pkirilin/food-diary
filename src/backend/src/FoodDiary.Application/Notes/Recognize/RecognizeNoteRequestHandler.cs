@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using OpenAI;
 using OpenAI.Chat;
+using RecognizeNoteResult = FoodDiary.Application.Result<FoodDiary.Application.Notes.Recognize.RecognizeNoteResponse>;
 
 namespace FoodDiary.Application.Notes.Recognize;
 
@@ -24,33 +25,22 @@ public record RecognizeProductItem(string Name, int CaloriesCost);
 public record RecognizeNoteItem(RecognizeProductItem Product, int Quantity);
 
 [PublicAPI]
-public enum ErrorType
-{
-    NoImagesProvided,
-    ImageDoesNotContainFood
-}
+public record RecognizeNoteResponse(IReadOnlyList<RecognizeNoteItem> Notes);
 
-public abstract record RecognizeNoteResponse
-{
-    public record Success(IReadOnlyList<RecognizeNoteItem> Notes) : RecognizeNoteResponse;
-    public record InvalidRequest(ErrorType Type) : RecognizeNoteResponse;
-    public record InvalidModelResponse : RecognizeNoteResponse;
-}
-
-public record RecognizeNoteRequest(IReadOnlyList<IFormFile> Files) : IRequest<RecognizeNoteResponse>;
+public record RecognizeNoteRequest(IReadOnlyList<IFormFile> Files) : IRequest<RecognizeNoteResult>;
 
 [UsedImplicitly]
 internal class RecognizeNoteRequestHandler(
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     OpenAIClient openAIClient,
     ILogger<RecognizeNoteRequestHandler> logger)
-    : IRequestHandler<RecognizeNoteRequest, RecognizeNoteResponse>
+    : IRequestHandler<RecognizeNoteRequest, RecognizeNoteResult>
 {
     private const string Model = "gpt-4o";
     private const int ImageMaxSize = 512;
-    
+
     private static readonly ImageOptimizer ImageOptimizer = new();
-    
+
     private static readonly JsonSerializerOptions SerializerOptions = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase
@@ -81,19 +71,19 @@ internal class RecognizeNoteRequestHandler(
         MaxTokens = 4000
     };
 
-    public async Task<RecognizeNoteResponse> Handle(
+    public async Task<RecognizeNoteResult> Handle(
         RecognizeNoteRequest request,
         CancellationToken cancellationToken)
     {
         var imageFile = FindImage(request.Files);
-        
+
         if (imageFile is null)
         {
-            return new RecognizeNoteResponse.InvalidRequest(ErrorType.NoImagesProvided);
+            return RecognizeNoteResult.ValidationError("No images provided");
         }
-        
+
         var optimizedImageBytes = await OptimizeImage(imageFile, cancellationToken);
-        
+
         var chatClient = openAIClient.GetChatClient(Model);
 
         var chatCompletion = await chatClient.CompleteChatAsync(
@@ -108,17 +98,9 @@ internal class RecognizeNoteRequestHandler(
             ],
             CompletionOptions);
 
-        if (!TryParseNotesFromModelResponse(chatCompletion, out var recognizedNotes))
-        {
-            return new RecognizeNoteResponse.InvalidModelResponse();
-        }
-
-        if (!recognizedNotes.Any())
-        {
-            return new RecognizeNoteResponse.InvalidRequest(ErrorType.ImageDoesNotContainFood);
-        }
-
-        return new RecognizeNoteResponse.Success(recognizedNotes);
+        return !TryParseNotesFromModelResponse(chatCompletion, out var recognizedNotes)
+            ? RecognizeNoteResult.InternalServerError("Model response was invalid")
+            : new RecognizeNoteResult.Success(new RecognizeNoteResponse(recognizedNotes));
     }
 
     private static IFormFile? FindImage(IReadOnlyCollection<IFormFile> files)
@@ -133,11 +115,11 @@ internal class RecognizeNoteRequestHandler(
         await stream.CopyToAsync(memoryStream, cancellationToken);
         memoryStream.Position = 0;
         ImageOptimizer.Compress(memoryStream);
-        
+
         using var image = new MagickImage();
         await image.ReadAsync(memoryStream, cancellationToken);
         image.Format = MagickFormat.Jpeg;
-        
+
         if (image.Width > ImageMaxSize)
         {
             image.Resize(ImageMaxSize, 0);
@@ -146,7 +128,7 @@ internal class RecognizeNoteRequestHandler(
         {
             image.Resize(0, ImageMaxSize);
         }
-        
+
         return image.ToByteArray();
     }
 
@@ -155,13 +137,13 @@ internal class RecognizeNoteRequestHandler(
         out IReadOnlyList<RecognizeNoteItem> recognizedNotes)
     {
         var content = chatCompletion.Value.Content.ElementAtOrDefault(0);
-        
+
         if (content is null)
         {
             recognizedNotes = [];
             return false;
         }
-        
+
         try
         {
             var notes = JsonSerializer.Deserialize<IReadOnlyList<RecognizeNoteItem>>(content.Text, SerializerOptions);
