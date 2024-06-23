@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { noteApi, type RecognizeNoteItem } from '@/entities/note';
-import { isProblemDetailsError, type ProblemDetails } from '@/shared/api';
+import { parseClientError, type ClientError } from '@/shared/api';
 
 type FetchFn = (file: File) => Promise<void>;
 
@@ -8,7 +8,7 @@ export interface RecognizeNotesResult {
   notes: RecognizeNoteItem[];
   isLoading: boolean;
   isSuccess: boolean;
-  error?: ProblemDetails;
+  error?: ClientError;
 }
 
 export const useRecognizeNotes = (): [FetchFn, RecognizeNotesResult] => {
@@ -29,7 +29,7 @@ export const useRecognizeNotes = (): [FetchFn, RecognizeNotesResult] => {
       isLoading,
       isSuccess,
       notes: data?.notes ?? [],
-      error: isError && isProblemDetailsError(error) ? error.data : undefined,
+      error: isError ? parseClientError(error) : undefined,
     }),
     [data, error, isError, isLoading, isSuccess],
   );

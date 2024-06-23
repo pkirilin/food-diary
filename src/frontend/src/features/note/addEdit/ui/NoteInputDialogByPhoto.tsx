@@ -218,7 +218,7 @@ export const NoteInputDialogByPhoto: FC<Props> = ({
               }
             >
               <AlertTitle>{recognizeNotesResult.error.title}</AlertTitle>
-              {recognizeNotesResult.error.detail}
+              {recognizeNotesResult.error.message}
             </Alert>
           )}
           {recognizeNotesResult.isSuccess && currentDialogState.content}
