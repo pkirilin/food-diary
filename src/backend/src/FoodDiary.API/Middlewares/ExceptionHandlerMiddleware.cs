@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ClientModel;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,12 +12,17 @@ namespace FoodDiary.API.Middlewares;
 public class ExceptionHandlerMiddleware
 {
     private readonly RequestDelegate _next;
+    private readonly IProblemDetailsService _problemDetailsService;
     private readonly ILogger<ExceptionHandlerMiddleware> _logger;
 
-    public ExceptionHandlerMiddleware(RequestDelegate next, ILoggerFactory loggerFactory)
+    public ExceptionHandlerMiddleware(
+        RequestDelegate next,
+        ILoggerFactory loggerFactory,
+        IProblemDetailsService problemDetailsService)
     {
         _next = next ?? throw new ArgumentNullException(nameof(next));
-        _logger = loggerFactory?.CreateLogger<ExceptionHandlerMiddleware>() ?? throw new ArgumentNullException(nameof(loggerFactory));
+        _problemDetailsService = problemDetailsService;
+        _logger = loggerFactory.CreateLogger<ExceptionHandlerMiddleware>() ?? throw new ArgumentNullException(nameof(loggerFactory));
     }
     
     public async Task Invoke(HttpContext context)
@@ -32,6 +38,10 @@ public class ExceptionHandlerMiddleware
         catch (ImportException e)
         {
             await HandleExceptionAsync(context, e, HttpStatusCode.BadRequest);
+        }
+        catch (ClientResultException e)
+        {
+            await HandleExceptionAsProblemDetailsAsync(context, e, HttpStatusCode.InternalServerError, e.Message.Trim());
         }
         catch (Exception e)
         {
@@ -56,5 +66,25 @@ public class ExceptionHandlerMiddleware
         context.Response.ContentType = "text";
         context.Response.StatusCode = (int)statusCode;
         return context.Response.WriteAsync(e.Message, Encoding.UTF8);
+    }
+    
+    private async ValueTask<bool> HandleExceptionAsProblemDetailsAsync(
+        HttpContext context,
+        Exception exception,
+        HttpStatusCode statusCode,
+        string detail)
+    {
+        context.Response.StatusCode = (int)statusCode;
+        
+        return await _problemDetailsService.TryWriteAsync(new ProblemDetailsContext
+        {
+            HttpContext = context,
+            Exception = exception,
+            ProblemDetails =
+            {
+                Title = "An error occurred",
+                Detail = detail
+            }
+        });
     }
 }

@@ -1,7 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
-using System.Text.Json;
-using FoodDiary.Application.Notes.Recognize;
 using MbDotNet;
 using MbDotNet.Models;
 using MbDotNet.Models.Imposters;
@@ -12,11 +10,6 @@ namespace FoodDiary.ComponentTests.Infrastructure.ExternalServices;
 [SuppressMessage("ReSharper", "InconsistentNaming")]
 public class OpenAIApi(IClient mountebankClient)
 {
-    private static readonly JsonSerializerOptions SerializerOptions = new()
-    {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-    };
-    
     public const int Port = 4646;
 
     public Task Start()
@@ -25,7 +18,7 @@ public class OpenAIApi(IClient mountebankClient)
         return mountebankClient.OverwriteAllImposters([imposter]);
     }
 
-    public Task SetupNotesRecognized(IReadOnlyList<RecognizeNoteItem> notes)
+    public Task SetupCompletionSuccess(string content)
     {
         return mountebankClient.AddHttpImposterStubAsync(Port, new HttpStub()
             .OnPathAndMethodEqual("/v1/chat/completions", Method.Post)
@@ -38,10 +31,18 @@ public class OpenAIApi(IClient mountebankClient)
                         message = new
                         {
                             role = "assistant",
-                            content = JsonSerializer.Serialize(notes, SerializerOptions)
+                            content
                         }
                     }
                 }
             }));
+    }
+
+    public Task SetupCompletionFailure(HttpStatusCode statusCode)
+    {
+        return mountebankClient.AddHttpImposterStubAsync(Port, new HttpStub()
+            .OnPathAndMethodEqual("/v1/chat/completions", Method.Post)
+            .ReturnsStatus(statusCode)
+        );
     }
 }

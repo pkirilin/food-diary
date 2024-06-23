@@ -31,8 +31,9 @@ export const EditNote: FC<Props> = ({ note, pageId, renderTrigger }) => {
   };
 
   const handleSubmitSuccess = useCallback(() => {
+    toggleDialog();
     resetEditNote();
-  }, [resetEditNote]);
+  }, [resetEditNote, toggleDialog]);
 
   return (
     <>

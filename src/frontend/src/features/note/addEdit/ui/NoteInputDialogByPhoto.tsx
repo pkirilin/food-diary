@@ -1,5 +1,6 @@
 import {
   Alert,
+  AlertTitle,
   Box,
   CircularProgress,
   ImageList,
@@ -9,10 +10,10 @@ import {
 } from '@mui/material';
 import { useEffect, type FC, useState } from 'react';
 import { type categoryLib } from '@/entities/category';
-import { type RecognizeNoteItem, type noteModel } from '@/entities/note';
+import { type noteModel } from '@/entities/note';
 import { productLib } from '@/entities/product';
 import { Button, Dialog } from '@/shared/ui';
-import { useNoteDialog, useProductDialog } from '../lib';
+import { type RecognizeNotesResult, useNoteDialog, useProductDialog } from '../lib';
 import { type UploadedPhoto, type Note, type DialogState, type DialogStateType } from '../model';
 
 interface Props {
@@ -23,10 +24,7 @@ interface Props {
   uploadedPhotos: UploadedPhoto[];
   productAutocompleteData: productLib.AutocompleteData;
   categorySelect: categoryLib.CategorySelectData;
-  recognizedNotes: RecognizeNoteItem[];
-  recognizeNotesLoading: boolean;
-  recognizeNotesError: boolean;
-  recognizeNotesSuccess: boolean;
+  recognizeNotesResult: RecognizeNotesResult;
   submitSuccess: boolean;
   onSubmit: (note: Note) => Promise<void>;
   onSubmitSuccess: () => void;
@@ -42,10 +40,7 @@ export const NoteInputDialogByPhoto: FC<Props> = ({
   uploadedPhotos,
   productAutocompleteData,
   categorySelect,
-  recognizedNotes,
-  recognizeNotesLoading,
-  recognizeNotesError,
-  recognizeNotesSuccess,
+  recognizeNotesResult,
   submitSuccess,
   onSubmit,
   onSubmitSuccess,
@@ -143,12 +138,12 @@ export const NoteInputDialogByPhoto: FC<Props> = ({
   }, [onNoteSubmitSuccess, onSubmitSuccess, submitSuccess]);
 
   useEffect(() => {
-    if (!recognizeNotesSuccess) {
+    if (!recognizeNotesResult.isSuccess) {
       onNoteSubmitDisabledChange(true);
       return;
     }
 
-    const note = recognizedNotes.at(0);
+    const note = recognizeNotesResult.notes.at(0);
     const category = categorySelect.data.at(0);
 
     if (!note || !category) {
@@ -176,8 +171,8 @@ export const NoteInputDialogByPhoto: FC<Props> = ({
   }, [
     categorySelect.data,
     onNoteSubmitDisabledChange,
-    recognizeNotesSuccess,
-    recognizedNotes,
+    recognizeNotesResult.isSuccess,
+    recognizeNotesResult.notes,
     setProductAutocompleteValue,
     setProductFormValues,
   ]);
@@ -208,12 +203,12 @@ export const NoteInputDialogByPhoto: FC<Props> = ({
               </ImageListItem>
             ))}
           </ImageList>
-          {recognizeNotesLoading && (
+          {recognizeNotesResult.isLoading && (
             <Stack justifyContent="center" alignItems="center" mb={2}>
               <CircularProgress />
             </Stack>
           )}
-          {recognizeNotesError && (
+          {recognizeNotesResult.error && (
             <Alert
               severity="error"
               action={
@@ -222,10 +217,18 @@ export const NoteInputDialogByPhoto: FC<Props> = ({
                 </Button>
               }
             >
-              Failed to recognize note. Please try again.
+              <AlertTitle>{recognizeNotesResult.error.title}</AlertTitle>
+              {recognizeNotesResult.error.message}
             </Alert>
           )}
-          {recognizeNotesSuccess && currentDialogState.content}
+          {recognizeNotesResult.isSuccess && (
+            <>
+              {recognizeNotesResult.notes.length > 0 && currentDialogState.content}
+              {recognizeNotesResult.notes.length === 0 && (
+                <Alert severity="warning">No food found on your photo</Alert>
+              )}
+            </>
+          )}
         </Stack>
       }
       renderCancel={cancelProps => (
