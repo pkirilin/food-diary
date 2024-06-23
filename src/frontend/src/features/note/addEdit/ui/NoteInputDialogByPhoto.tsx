@@ -221,7 +221,14 @@ export const NoteInputDialogByPhoto: FC<Props> = ({
               {recognizeNotesResult.error.message}
             </Alert>
           )}
-          {recognizeNotesResult.isSuccess && currentDialogState.content}
+          {recognizeNotesResult.isSuccess && (
+            <>
+              {recognizeNotesResult.notes.length > 0 && currentDialogState.content}
+              {recognizeNotesResult.notes.length === 0 && (
+                <Alert severity="warning">No food found on your photo</Alert>
+              )}
+            </>
+          )}
         </Stack>
       }
       renderCancel={cancelProps => (
