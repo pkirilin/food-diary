@@ -38,5 +38,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="frontend\" />
+    <Folder Include="Middlewares\" />
   </ItemGroup>
 </Project>

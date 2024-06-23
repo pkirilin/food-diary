@@ -1,8 +1,8 @@
 ﻿using System.Reflection;
 using System.Threading.Tasks;
+using FoodDiary.API.ErrorHandling;
 using FoodDiary.API.Extensions;
 using FoodDiary.API.Logging;
-using FoodDiary.API.Middlewares;
 using FoodDiary.API.Options;
 using FoodDiary.Application.Extensions;
 using FoodDiary.Configuration;
@@ -113,6 +113,7 @@ public class Startup
         
         services.AddSerilog((provider, logger) => logger.Configure(provider));
         services.AddProblemDetails();
+        services.AddExceptionHandler<ExceptionHandler>();
 
         services.ConfigureCustomOptions(_configuration);
         services.Configure<ImportOptions>(_configuration.GetSection("Import"));
@@ -152,8 +153,8 @@ public class Startup
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "FoodDiary API v1");
             });
         }
-
-        app.UseMiddleware<ExceptionHandlerMiddleware>();
+        
+        app.UseExceptionHandler();
         app.UseSpaStaticFiles();
         app.UseSerilogRequestLogging();
         app.UseRouting();
