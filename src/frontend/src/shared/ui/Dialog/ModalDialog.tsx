@@ -17,11 +17,22 @@ const ModalDialog: FC<Props> = ({
   title,
   opened,
   content,
+  disableContentPadding,
+  pinToTop,
   renderSubmit,
   renderCancel,
   onClose,
 }) => (
-  <MuiDialog open={opened} onClose={onClose} fullWidth>
+  <MuiDialog
+    open={opened}
+    onClose={onClose}
+    fullWidth
+    sx={{
+      '& .MuiDialog-container': {
+        alignItems: pinToTop ? 'flex-start' : undefined,
+      },
+    }}
+  >
     <IconButton
       aria-label="close"
       onClick={onClose}
@@ -35,7 +46,9 @@ const ModalDialog: FC<Props> = ({
       <CloseIcon />
     </IconButton>
     <MuiDialogTitle>{title}</MuiDialogTitle>
-    <MuiDialogContent dividers>{content}</MuiDialogContent>
+    <MuiDialogContent sx={{ padding: disableContentPadding ? 0 : undefined }} dividers>
+      {content}
+    </MuiDialogContent>
     <MuiDialogActions
       disableSpacing
       sx={theme => ({

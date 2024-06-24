@@ -4,6 +4,8 @@ import { type productModel } from '@/entities/product';
 
 export type DialogStateType = 'note' | 'product';
 
+export type InputMethod = 'default' | 'photo';
+
 export interface DialogState {
   type: DialogStateType;
   title: string;

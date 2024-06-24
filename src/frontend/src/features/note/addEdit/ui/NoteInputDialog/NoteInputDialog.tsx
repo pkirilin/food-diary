@@ -1,10 +1,15 @@
+import KeyboardIcon from '@mui/icons-material/Keyboard';
+import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
+import { TabContext, TabList } from '@mui/lab';
+import { Box, Tab } from '@mui/material';
 import { type FC, useEffect, useState } from 'react';
 import { type categoryLib } from '@/entities/category';
 import { type noteModel } from '@/entities/note';
 import { productLib, type productModel } from '@/entities/product';
 import { Button, Dialog } from '@/shared/ui';
 import { useNoteDialog, useProductDialog } from '../../lib';
-import { type Note, type DialogState, type DialogStateType } from '../../model';
+import { type Note, type DialogState, type DialogStateType, type InputMethod } from '../../model';
+import { TabPanelStyled } from './NoteInputDialog.styles';
 
 interface Props {
   opened: boolean;
@@ -50,7 +55,15 @@ export const NoteInputDialog: FC<Props> = ({
     clearValues: clearProductFormValues,
   } = productLib.useFormValues();
 
+  const [selectedInputMethod, setSelectedInputMethod] = useState<InputMethod>('default');
   const [currentInputDialogType, setCurrentInputDialogType] = useState<DialogStateType>('note');
+
+  const handleSelectedInputMethodChange = (
+    _: React.SyntheticEvent,
+    newValue: InputMethod,
+  ): void => {
+    setSelectedInputMethod(newValue);
+  };
 
   const { state: noteDialogState, onSubmitSuccess: onNoteSubmitSuccess } = useNoteDialog({
     pageId,
@@ -132,10 +145,39 @@ export const NoteInputDialog: FC<Props> = ({
 
   return (
     <Dialog
+      disableContentPadding
+      pinToTop
       renderMode="fullScreenOnMobile"
       opened={opened}
       title={currentDialogState.title}
-      content={currentDialogState.content}
+      content={
+        <TabContext value={selectedInputMethod}>
+          <Box px={3} sx={{ borderBottom: 1, borderColor: 'divider' }}>
+            <TabList
+              variant="scrollable"
+              scrollButtons="auto"
+              onChange={handleSelectedInputMethodChange}
+            >
+              <Tab
+                icon={<KeyboardIcon />}
+                iconPosition="start"
+                label="From input"
+                value={'default' satisfies InputMethod}
+              />
+              <Tab
+                icon={<PhotoCameraIcon />}
+                iconPosition="start"
+                label="From photo"
+                value={'photo' satisfies InputMethod}
+              />
+            </TabList>
+          </Box>
+          <TabPanelStyled value={'default' satisfies InputMethod}>
+            {currentDialogState.content}
+          </TabPanelStyled>
+          <TabPanelStyled value={'photo' satisfies InputMethod}>WIP</TabPanelStyled>
+        </TabContext>
+      }
       onClose={currentDialogState.onClose}
       renderCancel={cancelProps => (
         <Button

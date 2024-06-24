@@ -7,6 +7,8 @@ export interface DialogBaseProps {
   title: string;
   opened: boolean;
   content: ReactElement;
+  disableContentPadding?: boolean;
+  pinToTop?: boolean;
   onClose: () => void;
   renderSubmit: RenderActionFn;
 }
