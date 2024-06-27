@@ -8,12 +8,14 @@ import { type Note } from '../../model';
 import { NoteInputDialogV2 } from '../NoteInputDialogV2';
 
 interface Props {
-  pageId: number;
-  mealType: noteModel.MealType;
-  displayOrder: number;
   dialogTitle: string;
   submitText: string;
   submitSuccess: boolean;
+  pageId: number;
+  mealType: noteModel.MealType;
+  displayOrder: number;
+  product: productModel.AutocompleteOption | null;
+  quantity: number;
   productAutocompleteData: productLib.AutocompleteData;
   categorySelect: categoryLib.CategorySelectData;
   renderTrigger: (onClick: () => void) => ReactElement;
@@ -27,6 +29,8 @@ export const AddOrEditNoteFlow: FC<Props> = ({
   dialogTitle,
   submitText,
   submitSuccess,
+  product,
+  quantity,
   productAutocompleteData,
   categorySelect,
   renderTrigger,
@@ -36,7 +40,7 @@ export const AddOrEditNoteFlow: FC<Props> = ({
   const [productDialogOpened, toggleProductDialog] = useToggle();
   const [noteSubmitLoading, setNoteSubmitLoading] = useState(false);
   const productForm = productLib.useFormValues();
-  const productAutocompleteInput = productLib.useAutocompleteInput(null);
+  const productAutocompleteInput = productLib.useAutocompleteInput(product);
 
   useEffect(() => {
     if (submitSuccess) {
@@ -116,7 +120,7 @@ export const AddOrEditNoteFlow: FC<Props> = ({
         pageId={pageId}
         mealType={mealType}
         displayOrder={displayOrder}
-        quantity={100}
+        quantity={quantity}
         productAutocompleteData={productAutocompleteData}
         productAutocompleteInput={productAutocompleteInput}
         productFormValues={productForm.values}

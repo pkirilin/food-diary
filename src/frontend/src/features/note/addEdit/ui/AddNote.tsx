@@ -44,10 +44,12 @@ export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
       )}
       dialogTitle="New note"
       submitText="Add"
+      submitSuccess={addNoteResponse.isSuccess && notes.isChanged}
       pageId={pageId}
       mealType={mealType}
       displayOrder={displayOrder}
-      submitSuccess={addNoteResponse.isSuccess && notes.isChanged}
+      product={null}
+      quantity={100}
       productAutocompleteData={productAutocompleteData}
       categorySelect={categorySelect}
       onSubmit={handleNoteSubmit}
