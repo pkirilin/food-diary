@@ -7,9 +7,9 @@ import { type noteModel } from '@/entities/note';
 import { ProductAutocomplete, type productLib, type productModel } from '@/entities/product';
 import { type UseInputResult } from '@/shared/hooks';
 import { Button, Dialog } from '@/shared/ui';
-import { type Note, type InputMethod } from '../../model';
-import { NoteInputForm } from '../NoteInputForm';
-import { TabPanelStyled } from './NoteInputDialog.styles';
+import { type Note, type InputMethod } from '../model';
+import { TabPanelStyled } from './NoteInputDialog/NoteInputDialog.styles';
+import { NoteInputForm } from './NoteInputForm';
 
 interface Props {
   opened: boolean;
