@@ -25,7 +25,7 @@ export const EditNote: FC<Props> = ({ note, pageId, renderTrigger }) => {
   const categorySelect = categoryLib.useCategorySelectData();
 
   const handleSubmit = async (formData: Note): Promise<void> => {
-    const productId = await addProductIfNotExists(formData.product);
+    const productId = await addProductIfNotExists.sendRequest(formData.product);
     const request = mapToEditNoteRequest(note.id, productId, formData);
     await editNote(request);
   };

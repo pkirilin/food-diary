@@ -65,7 +65,7 @@ export const AddNoteByPhoto: FC<Props> = ({ pageId, mealType, displayOrder }) =>
   };
 
   const handleSubmit = async (note: Note): Promise<void> => {
-    const productId = await addProductIfNotExists(note.product);
+    const productId = await addProductIfNotExists.sendRequest(note.product);
     const request = mapToCreateNoteRequest(note, productId);
     await addNote(request);
   };

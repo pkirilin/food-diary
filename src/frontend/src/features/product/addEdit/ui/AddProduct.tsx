@@ -52,7 +52,7 @@ export const AddProduct: FC = () => {
         title="New product"
         submitText="Add"
         isLoading={createProductRequest.isLoading || products.isFetching}
-        product={product}
+        productFormValues={product}
         categories={categorySelect.data}
         categoriesLoading={categorySelect.isLoading}
         onSubmit={handleDialogSubmit}

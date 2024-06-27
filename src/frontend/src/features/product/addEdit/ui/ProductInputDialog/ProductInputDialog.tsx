@@ -1,6 +1,6 @@
-import { type FC, useState, useCallback, useEffect } from 'react';
+import { type FC, useState, useCallback } from 'react';
 import { CategorySelect } from '@/entities/category';
-import { ProductInputForm, productLib, type productModel } from '@/entities/product';
+import { ProductInputForm, type productModel } from '@/entities/product';
 import { type SelectOption } from '@/shared/types';
 import { Button, Dialog } from '@/shared/ui';
 
@@ -11,7 +11,7 @@ interface ProductInputDialogProps {
   isLoading: boolean;
   categories: SelectOption[];
   categoriesLoading: boolean;
-  product: productModel.FormValues;
+  productFormValues: productModel.FormValues;
   onSubmit: (product: productModel.FormValues) => void;
   onClose: () => void;
 }
@@ -23,20 +23,11 @@ export const ProductInputDialog: FC<ProductInputDialogProps> = ({
   isLoading,
   categories,
   categoriesLoading,
-  product,
+  productFormValues,
   onSubmit,
   onClose,
 }) => {
   const [submitDisabled, setSubmitDisabled] = useState(true);
-
-  const { values: productFormValues, clearValues: clearProductFormValues } =
-    productLib.useFormValues(product);
-
-  useEffect(() => {
-    if (opened) {
-      clearProductFormValues();
-    }
-  }, [clearProductFormValues, opened]);
 
   const handleSubmitDisabledChange = useCallback((disabled: boolean): void => {
     setSubmitDisabled(disabled);
@@ -44,6 +35,7 @@ export const ProductInputDialog: FC<ProductInputDialogProps> = ({
 
   return (
     <Dialog
+      pinToTop
       renderMode="fullScreenOnMobile"
       title={title}
       opened={opened}
