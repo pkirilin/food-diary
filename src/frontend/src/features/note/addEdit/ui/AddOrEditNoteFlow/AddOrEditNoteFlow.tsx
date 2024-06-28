@@ -133,6 +133,7 @@ export const AddOrEditNoteFlow: FC<Props> = ({
         onProductChange={handleProductChange}
       />
       <ProductInputDialog
+        freeSolo
         opened={productDialogOpened}
         title="New product"
         submitText="Add"

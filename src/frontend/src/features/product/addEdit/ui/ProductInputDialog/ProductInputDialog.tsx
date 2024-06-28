@@ -12,6 +12,7 @@ interface ProductInputDialogProps {
   categories: SelectOption[];
   categoriesLoading: boolean;
   productFormValues: productModel.FormValues;
+  freeSolo?: boolean;
   onSubmit: (product: productModel.FormValues) => void;
   onClose: () => void;
 }
@@ -24,6 +25,7 @@ export const ProductInputDialog: FC<ProductInputDialogProps> = ({
   categories,
   categoriesLoading,
   productFormValues,
+  freeSolo,
   onSubmit,
   onClose,
 }) => {
@@ -43,6 +45,7 @@ export const ProductInputDialog: FC<ProductInputDialogProps> = ({
       content={
         <ProductInputForm
           id="product-input-form"
+          touched={freeSolo}
           values={productFormValues}
           onSubmit={onSubmit}
           onSubmitDisabledChange={handleSubmitDisabledChange}

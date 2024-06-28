@@ -97,3 +97,34 @@ class AddOrEditNoteFlowBuilder {
 
 export const givenAddOrEditNoteFlow = (): AddOrEditNoteFlowBuilder =>
   new AddOrEditNoteFlowBuilder();
+
+export const expectExistingProduct = ({
+  name,
+  defaultQuantity,
+}: Omit<productModel.AutocompleteExistingOption, 'id'>): productModel.AutocompleteExistingOption =>
+  expect.objectContaining<productModel.AutocompleteExistingOption>({
+    id: expect.any(Number),
+    name,
+    defaultQuantity,
+  });
+
+export const expectNewProduct = ({
+  name,
+  caloriesCost,
+  defaultQuantity,
+  category,
+}: Omit<
+  productModel.AutocompleteFreeSoloOption,
+  'freeSolo' | 'editing'
+>): productModel.AutocompleteFreeSoloOption =>
+  expect.objectContaining<productModel.AutocompleteFreeSoloOption>({
+    freeSolo: true,
+    editing: true,
+    name,
+    caloriesCost,
+    defaultQuantity,
+    category,
+  });
+
+export const expectCategory = (name: string): SelectOption =>
+  expect.objectContaining<Partial<SelectOption>>({ name });

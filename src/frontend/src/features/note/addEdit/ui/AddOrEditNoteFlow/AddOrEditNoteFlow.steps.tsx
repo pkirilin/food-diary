@@ -2,8 +2,6 @@ import { screen } from '@testing-library/dom';
 import { type UserEvent } from '@testing-library/user-event';
 import { type Mock } from 'vitest';
 import { noteModel } from '@/entities/note';
-import { type productModel } from '@/entities/product';
-import { type SelectOption } from '@/shared/types';
 import { type Note } from '../../model';
 
 export const whenDialogOpened = async (user: UserEvent): Promise<void> => {
@@ -78,37 +76,6 @@ export const whenProductAdded = async (user: UserEvent): Promise<void> => {
   await user.click(screen.getByRole('button', { name: /add/i }));
 };
 
-export const expectExistingProduct = ({
-  name,
-  defaultQuantity,
-}: Omit<productModel.AutocompleteExistingOption, 'id'>): productModel.AutocompleteExistingOption =>
-  expect.objectContaining<productModel.AutocompleteExistingOption>({
-    id: expect.any(Number),
-    name,
-    defaultQuantity,
-  });
-
-export const expectNewProduct = ({
-  name,
-  caloriesCost,
-  defaultQuantity,
-  category,
-}: Omit<
-  productModel.AutocompleteFreeSoloOption,
-  'freeSolo' | 'editing'
->): productModel.AutocompleteFreeSoloOption =>
-  expect.objectContaining<productModel.AutocompleteFreeSoloOption>({
-    freeSolo: true,
-    editing: true,
-    name,
-    caloriesCost,
-    defaultQuantity,
-    category,
-  });
-
-export const expectCategory = (name: string): SelectOption =>
-  expect.objectContaining<Partial<SelectOption>>({ name });
-
 export const thenProductHasValue = async (value: string): Promise<void> => {
   expect(screen.getByRole('combobox', { name: /product/i })).toHaveValue(value);
 };
@@ -126,11 +93,11 @@ export const thenDialogShouldBeHidden = async (): Promise<void> => {
 };
 
 export const thenProductFormShouldBeVisible = async (): Promise<void> => {
-  expect(screen.getByRole('dialog', { name: /product/i }));
+  expect(await screen.findByRole('dialog', { name: /product/i }));
 };
 
 export const thenNoteFormShouldBeVisible = async (): Promise<void> => {
-  expect(await screen.findByText(/note/i));
+  expect(await screen.findByRole('dialog', { name: /note/i }));
 };
 
 export const thenProductNameHasValue = async (value: string): Promise<void> => {
