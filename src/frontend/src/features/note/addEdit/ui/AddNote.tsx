@@ -4,8 +4,8 @@ import { categoryLib } from '@/entities/category';
 import { noteApi, type noteModel, noteLib } from '@/entities/note';
 import { productLib } from '@/entities/product';
 import { Button } from '@/shared/ui';
+import { useAddProductIfNotExists } from '../lib';
 import { mapToCreateNoteRequest } from '../lib/mapping';
-import { useAddProductIfNotExists } from '../lib/useAddProductIfNotExists';
 import { type Note } from '../model';
 import { AddOrEditNoteFlow } from './AddOrEditNoteFlow';
 
@@ -23,9 +23,9 @@ export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
   const categorySelect = categoryLib.useCategorySelectData();
   const productAutocompleteData = productLib.useAutocompleteData();
 
-  const handleNoteSubmit = async (note: Note): Promise<void> => {
-    const productId = await addProductIfNotExists.sendRequest(note.product);
-    const request = mapToCreateNoteRequest(note, productId);
+  const handleSubmit = async (formData: Note): Promise<void> => {
+    const productId = await addProductIfNotExists.sendRequest(formData.product);
+    const request = mapToCreateNoteRequest(formData, productId);
     await addNote(request).unwrap();
   };
 
@@ -52,7 +52,7 @@ export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
       quantity={100}
       productAutocompleteData={productAutocompleteData}
       categorySelect={categorySelect}
-      onSubmit={handleNoteSubmit}
+      onSubmit={handleSubmit}
     />
   );
 };
