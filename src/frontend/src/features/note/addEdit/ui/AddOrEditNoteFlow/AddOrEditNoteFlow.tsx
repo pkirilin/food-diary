@@ -91,15 +91,19 @@ export const AddOrEditNoteFlow: FC<Props> = ({
     productForm.clearValues();
 
     if (value?.freeSolo === true) {
-      productForm.setValues({
-        name: value.name,
-        caloriesCost: value.caloriesCost,
-        defaultQuantity: value.defaultQuantity,
-        category: value.category,
-      });
+      // Timeout to avoid instant validation of the dialog's form
+      // Also fixes "Warning: An update to ... inside a test was not wrapped in act(...)" in tests
+      setTimeout(() => {
+        productForm.setValues({
+          name: value.name,
+          caloriesCost: value.caloriesCost,
+          defaultQuantity: value.defaultQuantity,
+          category: value.category,
+        });
 
-      toggleNoteDialog();
-      toggleProductDialog();
+        toggleNoteDialog();
+        toggleProductDialog();
+      });
     }
   };
 

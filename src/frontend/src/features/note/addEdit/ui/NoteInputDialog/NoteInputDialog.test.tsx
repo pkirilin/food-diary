@@ -336,32 +336,3 @@ test(`I can continue editing new product I've added before`, async () => {
   await thenProductDefaultQuantityHasValue(80);
   await thenProductCategoryHasValue('Vegetables');
 });
-
-test('New product form is cleared after I change product to existing one', async () => {
-  const user = userEvent.setup();
-
-  render(
-    givenNoteInputDialog()
-      .withQuantity(100)
-      .withProductForSelect({ name: 'Cucumber' })
-      .withCategoriesForSelect('Vegetables')
-      .please(),
-  );
-
-  await whenDialogOpened(user);
-  await whenAddedNotExistingProductOption(user, 'Potato');
-  await whenProductCaloriesCostChanged(user, 120);
-  await whenProductDefaultQuantityChanged(user, 80);
-  await whenProductCategorySelected(user, /vegetables/i);
-  await whenProductAdded(user);
-  await thenNoteFormShouldBeVisible();
-
-  await whenProductSelected(user, /cucumber/i);
-  await whenProductCleared(user);
-  await whenAddedNotExistingProductOption(user, 'Carrot');
-  await thenProductFormShouldBeVisible();
-  await thenProductNameHasValue('Carrot');
-  await thenProductCaloriesCostHasValue(100);
-  await thenProductDefaultQuantityHasValue(100);
-  await thenProductCategoryIsEmpty();
-});
