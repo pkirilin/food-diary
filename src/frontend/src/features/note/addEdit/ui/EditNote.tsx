@@ -1,4 +1,4 @@
-import { useMemo, type FC, type ReactElement } from 'react';
+import { useMemo, type FC, type ReactElement, useCallback } from 'react';
 import { categoryLib } from '@/entities/category';
 import { noteApi, noteLib, type noteModel } from '@/entities/note';
 import { productLib } from '@/entities/product';
@@ -14,7 +14,7 @@ interface Props {
 }
 
 export const EditNote: FC<Props> = ({ note, pageId, renderTrigger }) => {
-  const [editNote, editNoteResponse] = noteApi.useEditNoteMutation();
+  const [editNote, { reset, ...editNoteResponse }] = noteApi.useEditNoteMutation();
   const addProductIfNotExists = useAddProductIfNotExists();
 
   const notes = noteLib.useNotes(pageId);
@@ -27,6 +27,10 @@ export const EditNote: FC<Props> = ({ note, pageId, renderTrigger }) => {
     const request = mapToEditNoteRequest(note.id, productId, formData);
     await editNote(request).unwrap();
   };
+
+  const handleSubmitSuccess = useCallback(() => {
+    reset();
+  }, [reset]);
 
   return (
     <AddOrEditNoteFlow
@@ -42,6 +46,7 @@ export const EditNote: FC<Props> = ({ note, pageId, renderTrigger }) => {
       productAutocompleteData={productAutocompleteData}
       categorySelect={categorySelect}
       onSubmit={handleSubmit}
+      onSubmitSuccess={handleSubmitSuccess}
     />
   );
 };

@@ -20,6 +20,7 @@ interface Props {
   categorySelect: categoryLib.CategorySelectData;
   renderTrigger: (onClick: () => void) => ReactElement;
   onSubmit: (note: Note) => Promise<void>;
+  onSubmitSuccess: () => void;
 }
 
 export const AddOrEditNoteFlow: FC<Props> = ({
@@ -35,6 +36,7 @@ export const AddOrEditNoteFlow: FC<Props> = ({
   categorySelect,
   renderTrigger,
   onSubmit,
+  onSubmitSuccess,
 }) => {
   const [noteDialogOpened, toggleNoteDialog] = useToggle();
   const [productDialogOpened, toggleProductDialog] = useToggle();
@@ -44,10 +46,11 @@ export const AddOrEditNoteFlow: FC<Props> = ({
 
   useEffect(() => {
     if (submitSuccess) {
+      onSubmitSuccess();
       toggleNoteDialog();
       setNoteSubmitLoading(false);
     }
-  }, [submitSuccess, toggleNoteDialog]);
+  }, [onSubmitSuccess, submitSuccess, toggleNoteDialog]);
 
   const handleTriggerClick = (): void => {
     toggleNoteDialog();

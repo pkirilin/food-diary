@@ -1,5 +1,5 @@
 import AddIcon from '@mui/icons-material/Add';
-import { type FC } from 'react';
+import { useCallback, type FC } from 'react';
 import { categoryLib } from '@/entities/category';
 import { noteApi, type noteModel, noteLib } from '@/entities/note';
 import { productLib } from '@/entities/product';
@@ -16,7 +16,7 @@ interface Props {
 }
 
 export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
-  const [addNote, addNoteResponse] = noteApi.useCreateNoteMutation();
+  const [addNote, { reset, ...addNoteResponse }] = noteApi.useCreateNoteMutation();
   const addProductIfNotExists = useAddProductIfNotExists();
 
   const notes = noteLib.useNotes(pageId);
@@ -28,6 +28,10 @@ export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
     const request = mapToCreateNoteRequest(formData, productId);
     await addNote(request).unwrap();
   };
+
+  const handleSubmitSuccess = useCallback(() => {
+    reset();
+  }, [reset]);
 
   return (
     <AddOrEditNoteFlow
@@ -53,6 +57,7 @@ export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
       productAutocompleteData={productAutocompleteData}
       categorySelect={categorySelect}
       onSubmit={handleSubmit}
+      onSubmitSuccess={handleSubmitSuccess}
     />
   );
 };

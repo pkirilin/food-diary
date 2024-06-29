@@ -40,6 +40,7 @@ class AddOrEditNoteFlowBuilder {
             isLoading: false,
           }}
           onSubmit={this._onSubmitMock}
+          onSubmitSuccess={vi.fn()}
         />
       </ThemeProvider>
     );
