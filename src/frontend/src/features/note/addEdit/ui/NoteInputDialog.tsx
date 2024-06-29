@@ -9,6 +9,7 @@ import { type UseInputResult } from '@/shared/hooks';
 import { Button, Dialog } from '@/shared/ui';
 import { type Note, type InputMethod } from '../model';
 import { NoteInputForm } from './NoteInputForm';
+import { NoteInputFromPhotoFlow } from './NoteInputFromPhotoFlow';
 
 interface Props {
   opened: boolean;
@@ -46,7 +47,7 @@ export const NoteInputDialog: FC<Props> = ({
   onSubmit,
   onProductChange,
 }) => {
-  const [selectedInputMethod, setSelectedInputMethod] = useState<InputMethod>('default');
+  const [selectedInputMethod, setSelectedInputMethod] = useState<InputMethod>('fromInput');
   const [submitDisabled, setSubmitDisabled] = useState(true);
 
   const handleSelectedInputMethodChange = (_: React.SyntheticEvent, value: InputMethod): void => {
@@ -56,6 +57,8 @@ export const NoteInputDialog: FC<Props> = ({
   const handleSubmitDisabledChange = useCallback((disabled: boolean): void => {
     setSubmitDisabled(disabled);
   }, []);
+
+  const handleFileUploaded = async (_: File): Promise<void> => {};
 
   return (
     <Dialog
@@ -76,17 +79,17 @@ export const NoteInputDialog: FC<Props> = ({
                 icon={<KeyboardIcon />}
                 iconPosition="start"
                 label="From input"
-                value={'default' satisfies InputMethod}
+                value={'fromInput' satisfies InputMethod}
               />
               <Tab
                 icon={<PhotoCameraIcon />}
                 iconPosition="start"
                 label="From photo"
-                value={'photo' satisfies InputMethod}
+                value={'fromPhoto' satisfies InputMethod}
               />
             </TabList>
           </Box>
-          <Box pb={0} component={TabPanel} value={'default' satisfies InputMethod}>
+          <Box pb={0} component={TabPanel} value={'fromInput' satisfies InputMethod}>
             <NoteInputForm
               id="note-input-form"
               pageId={pageId}
@@ -108,7 +111,9 @@ export const NoteInputDialog: FC<Props> = ({
               onSubmitDisabledChange={handleSubmitDisabledChange}
             />
           </Box>
-          <TabPanel value={'photo' satisfies InputMethod}>WIP</TabPanel>
+          <TabPanel value={'fromPhoto' satisfies InputMethod}>
+            <NoteInputFromPhotoFlow onUploadSuccess={handleFileUploaded} />
+          </TabPanel>
         </TabContext>
       }
       onClose={onClose}
