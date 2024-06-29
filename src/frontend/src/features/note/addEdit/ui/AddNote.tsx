@@ -20,6 +20,8 @@ export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
   const addProductIfNotExists = useAddProductIfNotExists();
 
   const notes = noteLib.useNotes(pageId);
+  const noteForm = noteLib.useFormValues({ pageId, mealType, displayOrder, quantity: 100 });
+
   const categorySelect = categoryLib.useCategorySelectData();
   const productAutocompleteData = productLib.useAutocompleteData();
 
@@ -49,11 +51,8 @@ export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
       dialogTitle="New note"
       submitText="Add"
       submitSuccess={addNoteResponse.isSuccess && notes.isChanged}
-      pageId={pageId}
-      mealType={mealType}
-      displayOrder={displayOrder}
       product={null}
-      quantity={100}
+      noteFormValues={noteForm.values}
       productAutocompleteData={productAutocompleteData}
       categorySelect={categorySelect}
       onSubmit={handleSubmit}

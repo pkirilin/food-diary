@@ -16,3 +16,10 @@ export interface NoteItem {
   productDefaultQuantity: number;
   calories: number;
 }
+
+export interface FormValues {
+  pageId: number;
+  mealType: MealType;
+  displayOrder: number;
+  quantity: number;
+}

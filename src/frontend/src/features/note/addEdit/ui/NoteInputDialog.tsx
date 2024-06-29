@@ -16,10 +16,7 @@ interface Props {
   title: string;
   submitText: string;
   submitLoading: boolean;
-  mealType: noteModel.MealType;
-  pageId: number;
-  quantity: number;
-  displayOrder: number;
+  noteFormValues: noteModel.FormValues;
   productAutocompleteData: productLib.AutocompleteData;
   productAutocompleteInput: UseInputResult<
     productModel.AutocompleteOption | null,
@@ -36,10 +33,7 @@ export const NoteInputDialog: FC<Props> = ({
   title,
   submitText,
   submitLoading,
-  mealType,
-  pageId,
-  displayOrder,
-  quantity,
+  noteFormValues,
   productAutocompleteData,
   productAutocompleteInput,
   productFormValues,
@@ -92,14 +86,11 @@ export const NoteInputDialog: FC<Props> = ({
           <Box pb={0} component={TabPanel} value={'fromInput' satisfies InputMethod}>
             <NoteInputForm
               id="note-input-form"
-              pageId={pageId}
-              mealType={mealType}
-              displayOrder={displayOrder}
+              values={noteFormValues}
               productAutocompleteInput={productAutocompleteInput}
-              quantity={quantity}
-              renderProductAutocomplete={productAutocompleteProps => (
+              renderProductAutocomplete={() => (
                 <ProductAutocomplete
-                  {...productAutocompleteProps}
+                  {...productAutocompleteInput.inputProps}
                   autoFocus
                   formValues={productFormValues}
                   onChange={onProductChange}

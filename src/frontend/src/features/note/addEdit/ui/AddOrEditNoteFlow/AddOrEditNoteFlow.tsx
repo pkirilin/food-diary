@@ -11,11 +11,8 @@ interface Props {
   dialogTitle: string;
   submitText: string;
   submitSuccess: boolean;
-  pageId: number;
-  mealType: noteModel.MealType;
-  displayOrder: number;
   product: productModel.AutocompleteOption | null;
-  quantity: number;
+  noteFormValues: noteModel.FormValues;
   productAutocompleteData: productLib.AutocompleteData;
   categorySelect: categoryLib.CategorySelectData;
   renderTrigger: (onClick: () => void) => ReactElement;
@@ -24,14 +21,11 @@ interface Props {
 }
 
 export const AddOrEditNoteFlow: FC<Props> = ({
-  pageId,
-  mealType,
-  displayOrder,
   dialogTitle,
   submitText,
   submitSuccess,
   product,
-  quantity,
+  noteFormValues,
   productAutocompleteData,
   categorySelect,
   renderTrigger,
@@ -124,10 +118,7 @@ export const AddOrEditNoteFlow: FC<Props> = ({
         title={dialogTitle}
         submitText={submitText}
         submitLoading={noteSubmitLoading}
-        pageId={pageId}
-        mealType={mealType}
-        displayOrder={displayOrder}
-        quantity={quantity}
+        noteFormValues={noteFormValues}
         productAutocompleteData={productAutocompleteData}
         productAutocompleteInput={productAutocompleteInput}
         productFormValues={productForm.values}

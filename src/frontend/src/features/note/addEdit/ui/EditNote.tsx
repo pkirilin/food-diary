@@ -18,6 +18,13 @@ export const EditNote: FC<Props> = ({ note, pageId, renderTrigger }) => {
   const addProductIfNotExists = useAddProductIfNotExists();
 
   const notes = noteLib.useNotes(pageId);
+  const noteForm = noteLib.useFormValues({
+    pageId,
+    mealType: note.mealType,
+    displayOrder: note.displayOrder,
+    quantity: note.productQuantity,
+  });
+
   const categorySelect = categoryLib.useCategorySelectData();
   const productAutocompleteData = productLib.useAutocompleteData();
   const product = useMemo(() => mapToProductSelectOption(note), [note]);
@@ -38,11 +45,8 @@ export const EditNote: FC<Props> = ({ note, pageId, renderTrigger }) => {
       dialogTitle="Edit note"
       submitText="Save"
       submitSuccess={editNoteResponse.isSuccess && notes.isChanged}
-      pageId={pageId}
-      mealType={note.mealType}
-      displayOrder={note.displayOrder}
       product={product}
-      quantity={note.productQuantity}
+      noteFormValues={noteForm.values}
       productAutocompleteData={productAutocompleteData}
       categorySelect={categorySelect}
       onSubmit={handleSubmit}

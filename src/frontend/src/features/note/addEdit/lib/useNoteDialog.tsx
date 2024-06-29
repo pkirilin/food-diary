@@ -72,14 +72,16 @@ export const useNoteDialog = ({
       content: (
         <NoteInputForm
           id="note-form"
-          pageId={pageId}
-          mealType={mealType}
-          displayOrder={displayOrder}
+          values={{
+            pageId,
+            mealType,
+            displayOrder,
+            quantity,
+          }}
           productAutocompleteInput={productAutocompleteInput}
-          quantity={quantity}
-          renderProductAutocomplete={productAutocompleteProps => (
+          renderProductAutocomplete={productAutocompleteInputProps => (
             <ProductAutocomplete
-              {...productAutocompleteProps}
+              {...productAutocompleteInputProps}
               autoFocus
               formValues={productFormValues}
               onChange={onProductChange}

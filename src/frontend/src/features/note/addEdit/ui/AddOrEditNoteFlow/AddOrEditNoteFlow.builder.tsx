@@ -26,11 +26,13 @@ class AddOrEditNoteFlowBuilder {
           dialogTitle="Note"
           submitText="Submit"
           submitSuccess={false}
-          pageId={1}
-          mealType={noteModel.MealType.Breakfast}
-          displayOrder={1}
           product={this.getSelectedProduct()}
-          quantity={this._quantity}
+          noteFormValues={{
+            pageId: 1,
+            mealType: noteModel.MealType.Breakfast,
+            displayOrder: 1,
+            quantity: this._quantity,
+          }}
           productAutocompleteData={{
             options: this._products,
             isLoading: false,
