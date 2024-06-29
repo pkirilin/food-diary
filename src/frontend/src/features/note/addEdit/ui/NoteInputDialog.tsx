@@ -1,6 +1,6 @@
 import KeyboardIcon from '@mui/icons-material/Keyboard';
 import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
-import { TabContext, TabList } from '@mui/lab';
+import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { Box, Tab } from '@mui/material';
 import { type FC, useState, useCallback } from 'react';
 import { type noteModel } from '@/entities/note';
@@ -8,7 +8,6 @@ import { ProductAutocomplete, type productLib, type productModel } from '@/entit
 import { type UseInputResult } from '@/shared/hooks';
 import { Button, Dialog } from '@/shared/ui';
 import { type Note, type InputMethod } from '../model';
-import { TabPanelStyled } from './NoteInputDialog/NoteInputDialog.styles';
 import { NoteInputForm } from './NoteInputForm';
 
 interface Props {
@@ -31,7 +30,7 @@ interface Props {
   onProductChange: (product: productModel.AutocompleteOption | null) => void;
 }
 
-export const NoteInputDialogV2: FC<Props> = ({
+export const NoteInputDialog: FC<Props> = ({
   opened,
   title,
   submitText,
@@ -87,7 +86,7 @@ export const NoteInputDialogV2: FC<Props> = ({
               />
             </TabList>
           </Box>
-          <TabPanelStyled value={'default' satisfies InputMethod}>
+          <Box pb={0} component={TabPanel} value={'default' satisfies InputMethod}>
             <NoteInputForm
               id="note-input-form"
               pageId={pageId}
@@ -108,8 +107,8 @@ export const NoteInputDialogV2: FC<Props> = ({
               onSubmit={onSubmit}
               onSubmitDisabledChange={handleSubmitDisabledChange}
             />
-          </TabPanelStyled>
-          <TabPanelStyled value={'photo' satisfies InputMethod}>WIP</TabPanelStyled>
+          </Box>
+          <TabPanel value={'photo' satisfies InputMethod}>WIP</TabPanel>
         </TabContext>
       }
       onClose={onClose}

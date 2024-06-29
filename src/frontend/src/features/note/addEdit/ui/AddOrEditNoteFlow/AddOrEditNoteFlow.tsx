@@ -5,7 +5,7 @@ import { productLib, type productModel } from '@/entities/product';
 import { ProductInputDialog } from '@/features/product/addEdit/ui/ProductInputDialog';
 import { useToggle } from '@/shared/hooks';
 import { type Note } from '../../model';
-import { NoteInputDialogV2 } from '../NoteInputDialogV2';
+import { NoteInputDialog } from '../NoteInputDialog';
 
 interface Props {
   dialogTitle: string;
@@ -119,7 +119,7 @@ export const AddOrEditNoteFlow: FC<Props> = ({
   return (
     <>
       {renderTrigger(handleTriggerClick)}
-      <NoteInputDialogV2
+      <NoteInputDialog
         opened={noteDialogOpened}
         title={dialogTitle}
         submitText={submitText}
