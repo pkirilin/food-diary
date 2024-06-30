@@ -5,14 +5,26 @@ import { theme } from '@/app/theme';
 import { noteModel } from '@/entities/note';
 import { type productModel, type ProductSelectOption } from '@/entities/product';
 import { type SelectOption } from '@/shared/types';
+import { type RenderDialogProps } from '../../lib';
+import { AddNoteDialog } from '../AddNoteDialog';
+import { EditNoteDialog } from '../EditNoteDialog';
 import { AddOrEditNoteFlow } from './AddOrEditNoteFlow';
 
 class AddOrEditNoteFlowBuilder {
   private readonly _products: ProductSelectOption[] = [];
   private readonly _categories: SelectOption[] = [];
   private _selectedProductName: string | null = null;
-  private _quantity: number = 100;
   private _onSubmitMock: Mock = vi.fn();
+
+  private _renderDialog: (props: RenderDialogProps) => ReactElement =
+    this.renderAddDialog.bind(this);
+
+  private readonly _noteFormValues: noteModel.FormValues = {
+    pageId: 1,
+    mealType: noteModel.MealType.Breakfast,
+    displayOrder: 1,
+    quantity: 100,
+  };
 
   please(): ReactElement {
     return (
@@ -23,16 +35,9 @@ class AddOrEditNoteFlowBuilder {
               Open
             </button>
           )}
-          dialogTitle="Note"
-          submitText="Submit"
+          renderDialog={this._renderDialog}
           submitSuccess={false}
           product={this.getSelectedProduct()}
-          noteFormValues={{
-            pageId: 1,
-            mealType: noteModel.MealType.Breakfast,
-            displayOrder: 1,
-            quantity: this._quantity,
-          }}
           productAutocompleteData={{
             options: this._products,
             isLoading: false,
@@ -46,6 +51,11 @@ class AddOrEditNoteFlowBuilder {
         />
       </ThemeProvider>
     );
+  }
+
+  withEditDialog(): this {
+    this._renderDialog = this.renderEditDialog.bind(this);
+    return this;
   }
 
   withProductForSelect({
@@ -72,7 +82,7 @@ class AddOrEditNoteFlowBuilder {
   }
 
   withQuantity(quantity: number): this {
-    this._quantity = quantity;
+    this._noteFormValues.quantity = quantity;
     return this;
   }
 
@@ -95,6 +105,14 @@ class AddOrEditNoteFlowBuilder {
     }
 
     return { ...product };
+  }
+
+  private renderAddDialog(props: RenderDialogProps): ReactElement {
+    return <AddNoteDialog {...props} noteFormValues={this._noteFormValues} />;
+  }
+
+  private renderEditDialog(props: RenderDialogProps): ReactElement {
+    return <EditNoteDialog {...props} noteFormValues={this._noteFormValues} />;
   }
 }
 

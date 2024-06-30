@@ -2,57 +2,39 @@ import KeyboardIcon from '@mui/icons-material/Keyboard';
 import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { Box, Tab } from '@mui/material';
-import { type FC, useState, useCallback } from 'react';
+import { type FC, useState } from 'react';
 import { type noteModel } from '@/entities/note';
-import { ProductAutocomplete, type productLib, type productModel } from '@/entities/product';
-import { type UseInputResult } from '@/shared/hooks';
+import { ProductAutocomplete } from '@/entities/product';
 import { Button, Dialog } from '@/shared/ui';
-import { type Note, type InputMethod } from '../model';
+import { type RenderDialogProps } from '../lib';
+import { type InputMethod } from '../model';
 import { NoteInputForm } from './NoteInputForm';
 import { NoteInputFromPhotoFlow } from './NoteInputFromPhotoFlow';
 
-interface Props {
-  opened: boolean;
-  title: string;
-  submitText: string;
-  submitLoading: boolean;
+interface Props extends RenderDialogProps {
   noteFormValues: noteModel.FormValues;
-  productAutocompleteData: productLib.AutocompleteData;
-  productAutocompleteInput: UseInputResult<
-    productModel.AutocompleteOption | null,
-    productLib.AutocompleteInputProps
-  >;
-  productFormValues: productModel.FormValues;
-  onClose: () => void;
-  onSubmit: (note: Note) => Promise<void>;
-  onProductChange: (product: productModel.AutocompleteOption | null) => void;
 }
 
-export const NoteInputDialog: FC<Props> = ({
+export const AddNoteDialog: FC<Props> = ({
   opened,
-  title,
-  submitText,
   submitLoading,
+  submitDisabled,
   noteFormValues,
-  productAutocompleteData,
-  productAutocompleteInput,
   productFormValues,
+  productAutocompleteInput,
+  productAutocompleteData,
   onClose,
   onSubmit,
+  onSubmitDisabledChange,
   onProductChange,
 }) => {
   const [selectedInputMethod, setSelectedInputMethod] = useState<InputMethod>('fromInput');
-  const [submitDisabled, setSubmitDisabled] = useState(true);
 
   const handleSelectedInputMethodChange = (_: React.SyntheticEvent, value: InputMethod): void => {
     setSelectedInputMethod(value);
   };
 
-  const handleSubmitDisabledChange = useCallback((disabled: boolean): void => {
-    setSubmitDisabled(disabled);
-  }, []);
-
-  const handleFileUploaded = async (_: File): Promise<void> => {};
+  const handleFileUpload = async (_: File): Promise<void> => {};
 
   return (
     <Dialog
@@ -60,7 +42,7 @@ export const NoteInputDialog: FC<Props> = ({
       pinToTop
       renderMode="fullScreenOnMobile"
       opened={opened}
-      title={title}
+      title="New note"
       content={
         <TabContext value={selectedInputMethod}>
           <Box px={3} sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -88,9 +70,9 @@ export const NoteInputDialog: FC<Props> = ({
               id="note-input-form"
               values={noteFormValues}
               productAutocompleteInput={productAutocompleteInput}
-              renderProductAutocomplete={() => (
+              renderProductAutocomplete={productAutocompleteProps => (
                 <ProductAutocomplete
-                  {...productAutocompleteInput.inputProps}
+                  {...productAutocompleteProps}
                   autoFocus
                   formValues={productFormValues}
                   onChange={onProductChange}
@@ -99,11 +81,11 @@ export const NoteInputDialog: FC<Props> = ({
                 />
               )}
               onSubmit={onSubmit}
-              onSubmitDisabledChange={handleSubmitDisabledChange}
+              onSubmitDisabledChange={onSubmitDisabledChange}
             />
           </Box>
           <TabPanel value={'fromPhoto' satisfies InputMethod}>
-            <NoteInputFromPhotoFlow onUploadSuccess={handleFileUploaded} />
+            <NoteInputFromPhotoFlow onUploadSuccess={handleFileUpload} />
           </TabPanel>
         </TabContext>
       }
@@ -121,7 +103,7 @@ export const NoteInputDialog: FC<Props> = ({
           disabled={submitDisabled}
           loading={submitLoading}
         >
-          {submitText}
+          Add
         </Button>
       )}
     />

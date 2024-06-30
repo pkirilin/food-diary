@@ -90,7 +90,7 @@ test('I can add new note with existing product and valid quantity', async () => 
   await steps.whenDialogOpened(user);
   await steps.whenProductSelected(user, /test product/i);
   await steps.whenQuantityChanged(user, 150);
-  await steps.whenNoteSaved(user);
+  await steps.whenNoteAdded(user);
   await steps.thenFormValueContains(onSubmitMock, {
     product: expectExistingProduct({
       name: 'Test product',
@@ -124,7 +124,7 @@ test('I can add new note with new product', async () => {
   await steps.thenQuantityHasValue(175);
 
   await steps.whenQuantityChanged(user, 150);
-  await steps.whenNoteSaved(user);
+  await steps.whenNoteAdded(user);
   await steps.thenFormValueContains(onSubmitMock, {
     product: expectNewProduct({
       name: 'New super product',
@@ -147,6 +147,7 @@ test('I can save existing note with new product', async () => {
       .withCategoriesForSelect('Test Category')
       .withOnSubmit(onSubmitMock)
       .withSelectedProduct('Test product')
+      .withEditDialog()
       .please(),
   );
 
@@ -244,7 +245,7 @@ test('I cannot add note if input invalid', async () => {
   await steps.whenDialogOpened(user);
   await steps.whenProductCleared(user);
   await steps.thenProductIsInvalid();
-  await steps.thenSubmitNoteButtonIsDisabled();
+  await steps.thenAddNoteButtonIsDisabled();
 });
 
 test('I cannot add note with new product if its name changed to invalid', async () => {

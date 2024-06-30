@@ -6,6 +6,7 @@ import { useAddProductIfNotExists } from '../lib';
 import { mapToEditNoteRequest, mapToProductSelectOption } from '../lib/mapping';
 import { type Note } from '../model';
 import { AddOrEditNoteFlow } from './AddOrEditNoteFlow';
+import { EditNoteDialog } from './EditNoteDialog';
 
 interface Props {
   note: noteModel.NoteItem;
@@ -25,8 +26,9 @@ export const EditNote: FC<Props> = ({ note, pageId, renderTrigger }) => {
     quantity: note.productQuantity,
   });
 
-  const categorySelect = categoryLib.useCategorySelectData();
   const productAutocompleteData = productLib.useAutocompleteData();
+  const categorySelect = categoryLib.useCategorySelectData();
+
   const product = useMemo(() => mapToProductSelectOption(note), [note]);
 
   const handleSubmit = async (formData: Note): Promise<void> => {
@@ -42,11 +44,11 @@ export const EditNote: FC<Props> = ({ note, pageId, renderTrigger }) => {
   return (
     <AddOrEditNoteFlow
       renderTrigger={renderTrigger}
-      dialogTitle="Edit note"
-      submitText="Save"
+      renderDialog={dialogProps => (
+        <EditNoteDialog {...dialogProps} noteFormValues={noteForm.values} />
+      )}
       submitSuccess={editNoteResponse.isSuccess && notes.isChanged}
       product={product}
-      noteFormValues={noteForm.values}
       productAutocompleteData={productAutocompleteData}
       categorySelect={categorySelect}
       onSubmit={handleSubmit}

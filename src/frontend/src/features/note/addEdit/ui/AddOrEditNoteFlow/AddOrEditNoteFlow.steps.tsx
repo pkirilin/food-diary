@@ -42,8 +42,12 @@ export const whenQuantityChanged = async (user: UserEvent, value: number): Promi
   await user.type(screen.getByPlaceholderText(/product quantity/i), `${value}`);
 };
 
+export const whenNoteAdded = async (user: UserEvent): Promise<void> => {
+  await user.click(screen.getByRole('button', { name: /add/i }));
+};
+
 export const whenNoteSaved = async (user: UserEvent): Promise<void> => {
-  await user.click(screen.getByRole('button', { name: /submit/i }));
+  await user.click(screen.getByRole('button', { name: /save/i }));
 };
 
 export const whenProductNameChanged = async (user: UserEvent, name: string): Promise<void> => {
@@ -124,8 +128,12 @@ export const thenProductCategoryHasValue = async (value: string): Promise<void> 
   expect(screen.getByRole('combobox', { name: /category/i })).toHaveValue(value);
 };
 
-export const thenSubmitNoteButtonIsDisabled = async (): Promise<void> => {
-  expect(screen.getByRole('button', { name: /submit/i })).toBeDisabled();
+export const thenAddNoteButtonIsDisabled = async (): Promise<void> => {
+  expect(screen.getByRole('button', { name: /add/i })).toBeDisabled();
+};
+
+export const thenSaveNoteButtonIsDisabled = async (): Promise<void> => {
+  expect(screen.getByRole('button', { name: /save/i })).toBeDisabled();
 };
 
 export const thenAddProductButtonIsDisabled = async (): Promise<void> => {

@@ -1,42 +1,44 @@
-import { type FC, useEffect, useState, type ReactElement } from 'react';
+import { type FC, useEffect, useState, type ReactElement, useCallback } from 'react';
 import { type categoryLib } from '@/entities/category';
-import { type noteModel } from '@/entities/note';
 import { productLib, type productModel } from '@/entities/product';
 import { ProductInputDialog } from '@/features/product/addEdit/ui/ProductInputDialog';
 import { useToggle } from '@/shared/hooks';
+import { type RenderDialogProps } from '../../lib';
 import { type Note } from '../../model';
-import { NoteInputDialog } from '../NoteInputDialog';
 
 interface Props {
-  dialogTitle: string;
-  submitText: string;
   submitSuccess: boolean;
   product: productModel.AutocompleteOption | null;
-  noteFormValues: noteModel.FormValues;
   productAutocompleteData: productLib.AutocompleteData;
   categorySelect: categoryLib.CategorySelectData;
   renderTrigger: (onClick: () => void) => ReactElement;
+  renderDialog: (props: RenderDialogProps) => ReactElement;
   onSubmit: (note: Note) => Promise<void>;
   onSubmitSuccess: () => void;
 }
 
 export const AddOrEditNoteFlow: FC<Props> = ({
-  dialogTitle,
-  submitText,
   submitSuccess,
   product,
-  noteFormValues,
   productAutocompleteData,
   categorySelect,
   renderTrigger,
+  renderDialog,
   onSubmit,
   onSubmitSuccess,
 }) => {
   const [noteDialogOpened, toggleNoteDialog] = useToggle();
   const [productDialogOpened, toggleProductDialog] = useToggle();
+
   const [noteSubmitLoading, setNoteSubmitLoading] = useState(false);
+  const [noteSubmitDisabled, setNoteSubmitDisabled] = useState(true);
+
   const productForm = productLib.useFormValues();
   const productAutocompleteInput = productLib.useAutocompleteInput(product);
+
+  const handleSubmitDisabledChange = useCallback((disabled: boolean): void => {
+    setNoteSubmitDisabled(disabled);
+  }, []);
 
   useEffect(() => {
     if (submitSuccess) {
@@ -113,19 +115,18 @@ export const AddOrEditNoteFlow: FC<Props> = ({
   return (
     <>
       {renderTrigger(handleTriggerClick)}
-      <NoteInputDialog
-        opened={noteDialogOpened}
-        title={dialogTitle}
-        submitText={submitText}
-        submitLoading={noteSubmitLoading}
-        noteFormValues={noteFormValues}
-        productAutocompleteData={productAutocompleteData}
-        productAutocompleteInput={productAutocompleteInput}
-        productFormValues={productForm.values}
-        onClose={handleNoteCancel}
-        onSubmit={handleNoteSubmit}
-        onProductChange={handleProductChange}
-      />
+      {renderDialog({
+        opened: noteDialogOpened,
+        submitLoading: noteSubmitLoading,
+        submitDisabled: noteSubmitDisabled,
+        productAutocompleteInput,
+        productAutocompleteData,
+        productFormValues: productForm.values,
+        onClose: handleNoteCancel,
+        onSubmit: handleNoteSubmit,
+        onSubmitDisabledChange: handleSubmitDisabledChange,
+        onProductChange: handleProductChange,
+      })}
       <ProductInputDialog
         freeSolo
         opened={productDialogOpened}
