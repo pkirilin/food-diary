@@ -5,7 +5,7 @@ import { theme } from '@/app/theme';
 import { noteModel } from '@/entities/note';
 import { type productModel, type ProductSelectOption } from '@/entities/product';
 import { type SelectOption } from '@/shared/types';
-import { type RenderDialogProps } from '../../lib';
+import { EMPTY_RECOGNIZE_NOTES_RESULT, type RenderDialogProps } from '../../lib';
 import { AddNoteDialog } from '../AddNoteDialog';
 import { EditNoteDialog } from '../EditNoteDialog';
 import { AddOrEditNoteFlow } from './AddOrEditNoteFlow';
@@ -46,6 +46,8 @@ class AddOrEditNoteFlowBuilder {
             data: this._categories,
             isLoading: false,
           }}
+          recognizeNotesResult={EMPTY_RECOGNIZE_NOTES_RESULT}
+          onCancel={vi.fn()}
           onSubmit={this._onSubmitMock}
           onSubmitSuccess={vi.fn()}
         />
@@ -108,7 +110,21 @@ class AddOrEditNoteFlowBuilder {
   }
 
   private renderAddDialog(props: RenderDialogProps): ReactElement {
-    return <AddNoteDialog {...props} noteFormValues={this._noteFormValues} />;
+    return (
+      <AddNoteDialog
+        {...props}
+        noteFormValues={this._noteFormValues}
+        recognizeNotesResult={{
+          notes: [],
+          isLoading: false,
+          isSuccess: false,
+        }}
+        selectedInputMethod="fromInput"
+        uploadedPhotos={[]}
+        onUploadSuccess={vi.fn()}
+        onSelectedInputMethodChange={vi.fn()}
+      />
+    );
   }
 
   private renderEditDialog(props: RenderDialogProps): ReactElement {

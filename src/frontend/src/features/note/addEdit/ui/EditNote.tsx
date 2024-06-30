@@ -2,7 +2,7 @@ import { useMemo, type FC, type ReactElement, useCallback } from 'react';
 import { categoryLib } from '@/entities/category';
 import { noteApi, noteLib, type noteModel } from '@/entities/note';
 import { productLib } from '@/entities/product';
-import { useAddProductIfNotExists } from '../lib';
+import { useAddProductIfNotExists, EMPTY_RECOGNIZE_NOTES_RESULT } from '../lib';
 import { mapToEditNoteRequest, mapToProductSelectOption } from '../lib/mapping';
 import { type Note } from '../model';
 import { AddOrEditNoteFlow } from './AddOrEditNoteFlow';
@@ -51,6 +51,8 @@ export const EditNote: FC<Props> = ({ note, pageId, renderTrigger }) => {
       product={product}
       productAutocompleteData={productAutocompleteData}
       categorySelect={categorySelect}
+      recognizeNotesResult={EMPTY_RECOGNIZE_NOTES_RESULT}
+      onCancel={() => {}}
       onSubmit={handleSubmit}
       onSubmitSuccess={handleSubmitSuccess}
     />

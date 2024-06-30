@@ -2,17 +2,22 @@ import KeyboardIcon from '@mui/icons-material/Keyboard';
 import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { Box, Tab } from '@mui/material';
-import { type FC, useState } from 'react';
+import { type FC } from 'react';
 import { type noteModel } from '@/entities/note';
 import { ProductAutocomplete } from '@/entities/product';
 import { Button, Dialog } from '@/shared/ui';
-import { type RenderDialogProps } from '../lib';
-import { type InputMethod } from '../model';
+import { type RecognizeNotesResult, type RenderDialogProps } from '../lib';
+import { type UploadedPhoto, type InputMethod } from '../model';
 import { NoteInputForm } from './NoteInputForm';
 import { NoteInputFromPhotoFlow } from './NoteInputFromPhotoFlow';
 
 interface Props extends RenderDialogProps {
   noteFormValues: noteModel.FormValues;
+  recognizeNotesResult: RecognizeNotesResult;
+  uploadedPhotos: UploadedPhoto[];
+  selectedInputMethod: InputMethod;
+  onUploadSuccess: (photos: UploadedPhoto[]) => Promise<void>;
+  onSelectedInputMethodChange: (value: InputMethod) => void;
 }
 
 export const AddNoteDialog: FC<Props> = ({
@@ -23,18 +28,20 @@ export const AddNoteDialog: FC<Props> = ({
   productFormValues,
   productAutocompleteInput,
   productAutocompleteData,
+  recognizeNotesResult,
+  uploadedPhotos,
+  selectedInputMethod,
   onClose,
   onSubmit,
   onSubmitDisabledChange,
   onProductChange,
+  onUploadSuccess,
+  onProductFormValuesChange,
+  onSelectedInputMethodChange,
 }) => {
-  const [selectedInputMethod, setSelectedInputMethod] = useState<InputMethod>('fromInput');
-
   const handleSelectedInputMethodChange = (_: React.SyntheticEvent, value: InputMethod): void => {
-    setSelectedInputMethod(value);
+    onSelectedInputMethodChange(value);
   };
-
-  const handleFileUpload = async (_: File): Promise<void> => {};
 
   return (
     <Dialog
@@ -85,7 +92,23 @@ export const AddNoteDialog: FC<Props> = ({
             />
           </Box>
           <TabPanel value={'fromPhoto' satisfies InputMethod}>
-            <NoteInputFromPhotoFlow onUploadSuccess={handleFileUpload} />
+            <NoteInputFromPhotoFlow
+              opened={opened}
+              submitLoading={submitLoading}
+              submitDisabled={submitDisabled}
+              noteFormValues={noteFormValues}
+              productFormValues={productFormValues}
+              productAutocompleteData={productAutocompleteData}
+              productAutocompleteInput={productAutocompleteInput}
+              recognizeNotesResult={recognizeNotesResult}
+              uploadedPhotos={uploadedPhotos}
+              onClose={onClose}
+              onSubmit={onSubmit}
+              onSubmitDisabledChange={onSubmitDisabledChange}
+              onProductChange={onProductChange}
+              onUploadSuccess={onUploadSuccess}
+              onProductFormValuesChange={onProductFormValuesChange}
+            />
           </TabPanel>
         </TabContext>
       }

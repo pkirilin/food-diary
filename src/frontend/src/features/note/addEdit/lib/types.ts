@@ -12,4 +12,5 @@ export interface RenderDialogProps {
   onSubmit: (note: Note) => Promise<void>;
   onSubmitDisabledChange: (disabled: boolean) => void;
   onProductChange: (value: productModel.AutocompleteOption | null) => void;
+  onProductFormValuesChange: (values: productModel.FormValues) => void;
 }
