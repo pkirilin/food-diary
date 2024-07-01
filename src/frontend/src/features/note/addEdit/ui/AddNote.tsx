@@ -13,16 +13,16 @@ import { AddOrEditNoteFlow } from './AddOrEditNoteFlow';
 interface Props {
   pageId: number;
   mealType: noteModel.MealType;
-  displayOrder: number;
 }
 
-export const AddNote: FC<Props> = ({ pageId, mealType, displayOrder }) => {
+export const AddNote: FC<Props> = ({ pageId, mealType }) => {
   const [addNote, { reset, ...addNoteResponse }] = noteApi.useCreateNoteMutation();
 
   const addProductIfNotExists = useAddProductIfNotExists();
   const [recognizeNotes, recognizeNotesResult] = useRecognizeNotes();
 
   const notes = noteLib.useNotes(pageId);
+  const displayOrder = noteLib.useNextDisplayOrder(pageId);
 
   const noteForm = noteLib.useFormValues({
     pageId,
