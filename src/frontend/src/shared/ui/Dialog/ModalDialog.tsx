@@ -17,7 +17,8 @@ const ModalDialog: FC<Props> = ({
   title,
   opened,
   content,
-  disableContentPadding,
+  disableContentPaddingTop,
+  disableContentPaddingBottom,
   pinToTop,
   renderSubmit,
   renderCancel,
@@ -46,7 +47,13 @@ const ModalDialog: FC<Props> = ({
       <CloseIcon />
     </IconButton>
     <MuiDialogTitle>{title}</MuiDialogTitle>
-    <MuiDialogContent sx={{ padding: disableContentPadding ? 0 : undefined }} dividers>
+    <MuiDialogContent
+      sx={{
+        paddingTop: disableContentPaddingTop ? 0 : undefined,
+        paddingBottom: disableContentPaddingBottom ? 0 : undefined,
+      }}
+      dividers
+    >
       {content}
     </MuiDialogContent>
     <MuiDialogActions

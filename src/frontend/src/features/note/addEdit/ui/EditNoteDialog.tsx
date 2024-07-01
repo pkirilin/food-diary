@@ -1,4 +1,3 @@
-import { Box } from '@mui/material';
 import { type FC } from 'react';
 import { type noteModel } from '@/entities/note';
 import { ProductAutocomplete } from '@/entities/product';
@@ -25,30 +24,29 @@ export const EditNoteDialog: FC<Props> = ({
 }) => {
   return (
     <Dialog
-      disableContentPadding
+      disableContentPaddingBottom
+      pinToTop
       renderMode="fullScreenOnMobile"
       opened={opened}
       title="Edit note"
       content={
-        <Box pt={3} pb={1} px={3}>
-          <NoteInputForm
-            id="note-input-form"
-            values={noteFormValues}
-            productAutocompleteInput={productAutocompleteInput}
-            renderProductAutocomplete={productAutocompleteProps => (
-              <ProductAutocomplete
-                {...productAutocompleteProps}
-                autoFocus
-                formValues={productFormValues}
-                onChange={onProductChange}
-                options={productAutocompleteData.options}
-                loading={productAutocompleteData.isLoading}
-              />
-            )}
-            onSubmit={onSubmit}
-            onSubmitDisabledChange={onSubmitDisabledChange}
-          />
-        </Box>
+        <NoteInputForm
+          id="note-input-form"
+          values={noteFormValues}
+          productAutocompleteInput={productAutocompleteInput}
+          renderProductAutocomplete={productAutocompleteProps => (
+            <ProductAutocomplete
+              {...productAutocompleteProps}
+              autoFocus
+              formValues={productFormValues}
+              onChange={onProductChange}
+              options={productAutocompleteData.options}
+              loading={productAutocompleteData.isLoading}
+            />
+          )}
+          onSubmit={onSubmit}
+          onSubmitDisabledChange={onSubmitDisabledChange}
+        />
       }
       onClose={onClose}
       renderCancel={cancelProps => (

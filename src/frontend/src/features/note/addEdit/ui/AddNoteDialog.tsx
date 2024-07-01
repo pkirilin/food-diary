@@ -45,14 +45,15 @@ export const AddNoteDialog: FC<Props> = ({
 
   return (
     <Dialog
-      disableContentPadding
+      disableContentPaddingTop
+      disableContentPaddingBottom
       pinToTop
       renderMode="fullScreenOnMobile"
       opened={opened}
       title="New note"
       content={
         <TabContext value={selectedInputMethod}>
-          <Box px={3} sx={{ borderBottom: 1, borderColor: 'divider' }}>
+          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
             <TabList
               variant="scrollable"
               scrollButtons="auto"
@@ -72,7 +73,7 @@ export const AddNoteDialog: FC<Props> = ({
               />
             </TabList>
           </Box>
-          <Box pb={0} component={TabPanel} value={'fromInput' satisfies InputMethod}>
+          <Box px={0} pb={0} component={TabPanel} value={'fromInput' satisfies InputMethod}>
             <NoteInputForm
               id="note-input-form"
               values={noteFormValues}
@@ -91,7 +92,16 @@ export const AddNoteDialog: FC<Props> = ({
               onSubmitDisabledChange={onSubmitDisabledChange}
             />
           </Box>
-          <TabPanel value={'fromPhoto' satisfies InputMethod}>
+          <Box
+            px={0}
+            pb={
+              recognizeNotesResult.isSuccess && recognizeNotesResult.notes.length > 0
+                ? 0
+                : undefined
+            }
+            component={TabPanel}
+            value={'fromPhoto' satisfies InputMethod}
+          >
             <NoteInputFromPhotoFlow
               opened={opened}
               submitLoading={submitLoading}
@@ -109,7 +119,7 @@ export const AddNoteDialog: FC<Props> = ({
               onUploadSuccess={onUploadSuccess}
               onProductFormValuesChange={onProductFormValuesChange}
             />
-          </TabPanel>
+          </Box>
         </TabContext>
       }
       onClose={onClose}

@@ -27,7 +27,8 @@ const FullScreenDialog: FC<Props> = ({
   title,
   opened,
   content,
-  disableContentPadding,
+  disableContentPaddingTop,
+  disableContentPaddingBottom,
   onClose,
   renderSubmit,
 }) => (
@@ -47,7 +48,9 @@ const FullScreenDialog: FC<Props> = ({
         })}
       </Toolbar>
     </AppBar>
-    <Box p={disableContentPadding ? 0 : 2}>{content}</Box>
+    <Box pt={disableContentPaddingTop ? 0 : 2} pb={disableContentPaddingBottom ? 0 : 2} px={2}>
+      {content}
+    </Box>
   </MuiDialog>
 );
 
