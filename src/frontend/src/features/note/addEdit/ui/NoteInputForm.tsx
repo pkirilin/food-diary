@@ -1,18 +1,15 @@
 import { TextField } from '@mui/material';
 import { useEffect, type FC, type FormEventHandler, type ReactElement } from 'react';
 import { noteLib, type noteModel } from '@/entities/note';
-import { type productLib, type productModel } from '@/entities/product';
-import { type UseInputResult, useInput } from '@/shared/hooks';
+import { type productLib } from '@/entities/product';
+import { useInput } from '@/shared/hooks';
 import { mapToNumericInputProps, validateQuantity } from '@/shared/lib';
 import { type Note } from '../model';
 
 interface Props {
   id: string;
   values: noteModel.FormValues;
-  productAutocompleteInput: UseInputResult<
-    productModel.AutocompleteOption | null,
-    productLib.AutocompleteInputProps
-  >;
+  productAutocompleteInput: productLib.AutocompleteInput;
   renderProductAutocomplete: (props: productLib.AutocompleteInputProps) => ReactElement;
   onSubmit: (note: Note) => Promise<void>;
   onSubmitDisabledChange: (disabled: boolean) => void;
