@@ -19,7 +19,8 @@ export const EditNote: FC<Props> = ({ note, pageId, renderTrigger }) => {
   const addProductIfNotExists = useAddProductIfNotExists();
 
   const notes = noteLib.useNotes(pageId);
-  const noteForm = noteLib.useFormValues({
+
+  const { clearValues: clearNoteForm, ...noteForm } = noteLib.useFormValues({
     pageId,
     mealType: note.mealType,
     displayOrder: note.displayOrder,
@@ -39,7 +40,8 @@ export const EditNote: FC<Props> = ({ note, pageId, renderTrigger }) => {
 
   const handleSubmitSuccess = useCallback(() => {
     reset();
-  }, [reset]);
+    clearNoteForm();
+  }, [clearNoteForm, reset]);
 
   return (
     <AddOrEditNoteFlow
