@@ -3,20 +3,25 @@ import { type ReactElement } from 'react';
 import { type Mock } from 'vitest';
 import { theme } from '@/app/theme';
 import { noteModel } from '@/entities/note';
-import { type productModel, type ProductSelectOption } from '@/entities/product';
+import {
+  ProductAutocomplete,
+  type productModel,
+  type ProductSelectOption,
+} from '@/entities/product';
 import { type SelectOption } from '@/shared/types';
-import { EMPTY_RECOGNIZE_NOTES_RESULT, type RenderDialogProps } from '../../lib';
-import { AddNoteDialog } from '../AddNoteDialog';
-import { EditNoteDialog } from '../EditNoteDialog';
-import { AddOrEditNoteFlow } from './AddOrEditNoteFlow';
+import { EMPTY_RECOGNIZE_NOTES_RESULT, type RenderContentProps } from '../../lib';
+import { AddNoteDialogContent } from '../AddNoteDialogContent';
+import { NoteInputForm } from '../NoteInputForm';
+import { NoteInputFlow } from './NoteInputFlow';
 
-class AddOrEditNoteFlowBuilder {
+class NoteInputFlowBuilder {
   private readonly _products: ProductSelectOption[] = [];
   private readonly _categories: SelectOption[] = [];
+  private _submitText = 'Add';
   private _selectedProductName: string | null = null;
   private _onSubmitMock: Mock = vi.fn();
 
-  private _renderDialog: (props: RenderDialogProps) => ReactElement =
+  private _renderDialog: (props: RenderContentProps) => ReactElement =
     this.renderAddDialog.bind(this);
 
   private readonly _noteFormValues: noteModel.FormValues = {
@@ -29,13 +34,14 @@ class AddOrEditNoteFlowBuilder {
   please(): ReactElement {
     return (
       <ThemeProvider theme={theme}>
-        <AddOrEditNoteFlow
+        <NoteInputFlow
           renderTrigger={handleClick => (
             <button type="button" onClick={handleClick}>
               Open
             </button>
           )}
-          renderDialog={this._renderDialog}
+          renderContent={this._renderDialog}
+          submitText={this._submitText}
           submitSuccess={false}
           product={this.getSelectedProduct()}
           productAutocompleteData={{
@@ -57,6 +63,7 @@ class AddOrEditNoteFlowBuilder {
 
   withEditDialog(): this {
     this._renderDialog = this.renderEditDialog.bind(this);
+    this._submitText = 'Save';
     return this;
   }
 
@@ -109,9 +116,9 @@ class AddOrEditNoteFlowBuilder {
     return { ...product };
   }
 
-  private renderAddDialog(props: RenderDialogProps): ReactElement {
+  private renderAddDialog(props: RenderContentProps): ReactElement {
     return (
-      <AddNoteDialog
+      <AddNoteDialogContent
         {...props}
         noteFormValues={this._noteFormValues}
         recognizeNotesResult={{
@@ -127,13 +134,37 @@ class AddOrEditNoteFlowBuilder {
     );
   }
 
-  private renderEditDialog(props: RenderDialogProps): ReactElement {
-    return <EditNoteDialog {...props} noteFormValues={this._noteFormValues} />;
+  private renderEditDialog({
+    productAutocompleteInput,
+    productAutocompleteData,
+    productFormValues,
+    onProductChange,
+    onSubmit,
+    onSubmitDisabledChange,
+  }: RenderContentProps): ReactElement {
+    return (
+      <NoteInputForm
+        id="note-input-form"
+        values={this._noteFormValues}
+        productAutocompleteInput={productAutocompleteInput}
+        renderProductAutocomplete={productAutocompleteProps => (
+          <ProductAutocomplete
+            {...productAutocompleteProps}
+            autoFocus
+            formValues={productFormValues}
+            onChange={onProductChange}
+            options={productAutocompleteData.options}
+            loading={productAutocompleteData.isLoading}
+          />
+        )}
+        onSubmit={onSubmit}
+        onSubmitDisabledChange={onSubmitDisabledChange}
+      />
+    );
   }
 }
 
-export const givenAddOrEditNoteFlow = (): AddOrEditNoteFlowBuilder =>
-  new AddOrEditNoteFlowBuilder();
+export const givenNoteInputFlow = (): NoteInputFlowBuilder => new NoteInputFlowBuilder();
 
 export const expectExistingProduct = ({
   name,

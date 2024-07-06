@@ -1,12 +1,12 @@
 import { useMemo, type FC, type ReactElement, useCallback } from 'react';
 import { categoryLib } from '@/entities/category';
 import { noteApi, noteLib, type noteModel } from '@/entities/note';
-import { productLib } from '@/entities/product';
+import { ProductAutocomplete, productLib } from '@/entities/product';
 import { useAddProductIfNotExists, EMPTY_RECOGNIZE_NOTES_RESULT } from '../lib';
 import { mapToEditNoteRequest, mapToProductSelectOption } from '../lib/mapping';
 import { type Note } from '../model';
-import { AddOrEditNoteFlow } from './AddOrEditNoteFlow';
-import { EditNoteDialog } from './EditNoteDialog';
+import { NoteInputFlow } from './NoteInputFlow';
+import { NoteInputForm } from './NoteInputForm';
 
 interface Props {
   note: noteModel.NoteItem;
@@ -43,18 +43,45 @@ export const EditNote: FC<Props> = ({ note, pageId, renderTrigger }) => {
     clearNoteForm();
   }, [clearNoteForm, reset]);
 
+  const handleCancel = useCallback(() => {
+    clearNoteForm();
+  }, [clearNoteForm]);
+
   return (
-    <AddOrEditNoteFlow
+    <NoteInputFlow
       renderTrigger={renderTrigger}
-      renderDialog={dialogProps => (
-        <EditNoteDialog {...dialogProps} noteFormValues={noteForm.values} />
+      renderContent={({
+        productAutocompleteInput,
+        productFormValues,
+        onProductChange,
+        onSubmit,
+        onSubmitDisabledChange,
+      }) => (
+        <NoteInputForm
+          id="note-input-form"
+          values={noteForm.values}
+          productAutocompleteInput={productAutocompleteInput}
+          renderProductAutocomplete={productAutocompleteProps => (
+            <ProductAutocomplete
+              {...productAutocompleteProps}
+              autoFocus
+              formValues={productFormValues}
+              onChange={onProductChange}
+              options={productAutocompleteData.options}
+              loading={productAutocompleteData.isLoading}
+            />
+          )}
+          onSubmit={onSubmit}
+          onSubmitDisabledChange={onSubmitDisabledChange}
+        />
       )}
+      submitText="Save"
       submitSuccess={editNoteResponse.isSuccess && notes.isChanged}
       product={product}
       productAutocompleteData={productAutocompleteData}
       categorySelect={categorySelect}
       recognizeNotesResult={EMPTY_RECOGNIZE_NOTES_RESULT}
-      onCancel={() => {}}
+      onCancel={handleCancel}
       onSubmit={handleSubmit}
       onSubmitSuccess={handleSubmitSuccess}
     />

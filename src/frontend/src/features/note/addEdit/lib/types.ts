@@ -1,8 +1,7 @@
 import { type productLib, type productModel } from '@/entities/product';
 import { type Note } from '../model';
 
-export interface RenderDialogProps {
-  opened: boolean;
+export interface RenderContentProps {
   submitLoading: boolean;
   submitDisabled: boolean;
   productAutocompleteInput: productLib.AutocompleteInput;

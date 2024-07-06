@@ -7,8 +7,8 @@ import { Button } from '@/shared/ui';
 import { useAddProductIfNotExists, useRecognizeNotes } from '../lib';
 import { mapToCreateNoteRequest } from '../lib/mapping';
 import { type UploadedPhoto, type Note, type InputMethod } from '../model';
-import { AddNoteDialog } from './AddNoteDialog';
-import { AddOrEditNoteFlow } from './AddOrEditNoteFlow';
+import { AddNoteDialogContent } from './AddNoteDialogContent';
+import { NoteInputFlow } from './NoteInputFlow';
 
 interface Props {
   pageId: number;
@@ -24,7 +24,7 @@ export const AddNote: FC<Props> = ({ pageId, mealType }) => {
   const notes = noteLib.useNotes(pageId);
   const displayOrder = noteLib.useNextDisplayOrder(pageId);
 
-  const noteForm = noteLib.useFormValues({
+  const { clearValues: clearNoteForm, ...noteForm } = noteLib.useFormValues({
     pageId,
     mealType,
     displayOrder,
@@ -46,12 +46,14 @@ export const AddNote: FC<Props> = ({ pageId, mealType }) => {
   const handleSubmitSuccess = useCallback(() => {
     reset();
     setSelectedInputMethod('fromInput');
-  }, [reset]);
+    clearNoteForm();
+  }, [clearNoteForm, reset]);
 
   const handleCancel = useCallback(() => {
     setUploadedPhotos([]);
     setSelectedInputMethod('fromInput');
-  }, []);
+    clearNoteForm();
+  }, [clearNoteForm]);
 
   const handleUploadSuccess = async (photos: UploadedPhoto[]): Promise<void> => {
     setUploadedPhotos(photos);
@@ -59,7 +61,7 @@ export const AddNote: FC<Props> = ({ pageId, mealType }) => {
   };
 
   return (
-    <AddOrEditNoteFlow
+    <NoteInputFlow
       renderTrigger={handleAddNoteClick => (
         <Button
           variant="text"
@@ -71,8 +73,8 @@ export const AddNote: FC<Props> = ({ pageId, mealType }) => {
           Add note
         </Button>
       )}
-      renderDialog={dialogProps => (
-        <AddNoteDialog
+      renderContent={dialogProps => (
+        <AddNoteDialogContent
           {...dialogProps}
           noteFormValues={noteForm.values}
           recognizeNotesResult={recognizeNotesResult}
@@ -82,6 +84,7 @@ export const AddNote: FC<Props> = ({ pageId, mealType }) => {
           onSelectedInputMethodChange={setSelectedInputMethod}
         />
       )}
+      submitText="Add"
       submitSuccess={addNoteResponse.isSuccess && notes.isChanged}
       product={null}
       productAutocompleteData={productAutocompleteData}

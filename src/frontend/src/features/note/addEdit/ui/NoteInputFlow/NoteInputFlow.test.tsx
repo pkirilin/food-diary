@@ -4,15 +4,15 @@ import {
   expectCategory,
   expectExistingProduct,
   expectNewProduct,
-  givenAddOrEditNoteFlow,
-} from './AddOrEditNoteFlow.builder';
-import * as steps from './AddOrEditNoteFlow.steps';
+  givenNoteInputFlow,
+} from './NoteInputFlow.builder';
+import * as steps from './NoteInputFlow.steps';
 
 test('Quantity is taken from note quantity when dialog opened', async () => {
   const user = userEvent.setup();
 
   render(
-    givenAddOrEditNoteFlow()
+    givenNoteInputFlow()
       .withProductForSelect({ name: 'Test product', defaultQuantity: 123 })
       .withSelectedProduct('Test product')
       .withQuantity(321)
@@ -27,7 +27,7 @@ test('Quantity is taken from note quantity when dialog opened, closed without sa
   const user = userEvent.setup();
 
   render(
-    givenAddOrEditNoteFlow()
+    givenNoteInputFlow()
       .withProductForSelect({ name: 'First product', defaultQuantity: 200 })
       .withProductForSelect({ name: 'Second product', defaultQuantity: 300 })
       .withSelectedProduct('First product')
@@ -48,7 +48,7 @@ test(`Quantity is taken from product's default quantity when adding note`, async
   const user = userEvent.setup();
 
   render(
-    givenAddOrEditNoteFlow()
+    givenNoteInputFlow()
       .withQuantity(100)
       .withProductForSelect({ name: 'Test product', defaultQuantity: 123 })
       .please(),
@@ -63,7 +63,7 @@ test(`Quantity is taken from product's default quantity when saving note`, async
   const user = userEvent.setup();
 
   render(
-    givenAddOrEditNoteFlow()
+    givenNoteInputFlow()
       .withProductForSelect({ name: 'First product', defaultQuantity: 200 })
       .withProductForSelect({ name: 'Second product', defaultQuantity: 300 })
       .withSelectedProduct('First product')
@@ -80,7 +80,7 @@ test('I can add new note with existing product and valid quantity', async () => 
   const onSubmitMock = vi.fn();
 
   render(
-    givenAddOrEditNoteFlow()
+    givenNoteInputFlow()
       .withQuantity(100)
       .withProductForSelect({ name: 'Test product', defaultQuantity: 123 })
       .withOnSubmit(onSubmitMock)
@@ -105,7 +105,7 @@ test('I can add new note with new product', async () => {
   const onSubmitMock = vi.fn();
 
   render(
-    givenAddOrEditNoteFlow()
+    givenNoteInputFlow()
       .withQuantity(100)
       .withCategoriesForSelect('Test Category')
       .withOnSubmit(onSubmitMock)
@@ -141,7 +141,7 @@ test('I can save existing note with new product', async () => {
   const onSubmitMock = vi.fn();
 
   render(
-    givenAddOrEditNoteFlow()
+    givenNoteInputFlow()
       .withQuantity(100)
       .withProductForSelect({ name: 'Test product', defaultQuantity: 123 })
       .withCategoriesForSelect('Test Category')
@@ -178,7 +178,7 @@ test('I can close note dialog without save and add another note', async () => {
   const user = userEvent.setup();
 
   render(
-    givenAddOrEditNoteFlow()
+    givenNoteInputFlow()
       .withQuantity(100)
       .withCategoriesForSelect('Test Category')
       .withProductForSelect({ name: 'Chicken' })
@@ -202,7 +202,7 @@ test('I can close product dialog without save and add another product', async ()
   const user = userEvent.setup();
 
   render(
-    givenAddOrEditNoteFlow()
+    givenNoteInputFlow()
       .withQuantity(100)
       .withCategoriesForSelect('Test Category')
       .withProductForSelect({ name: 'Chicken' })
@@ -234,7 +234,7 @@ test('I cannot add note if input invalid', async () => {
   const user = userEvent.setup();
 
   render(
-    givenAddOrEditNoteFlow()
+    givenNoteInputFlow()
       .withQuantity(100)
       .withCategoriesForSelect('Test Category')
       .withProductForSelect({ name: 'Chicken' })
@@ -251,9 +251,7 @@ test('I cannot add note if input invalid', async () => {
 test('I cannot add note with new product if its name changed to invalid', async () => {
   const user = userEvent.setup();
 
-  render(
-    givenAddOrEditNoteFlow().withQuantity(100).withCategoriesForSelect('Test Category').please(),
-  );
+  render(givenNoteInputFlow().withQuantity(100).withCategoriesForSelect('Test Category').please());
 
   await steps.whenDialogOpened(user);
   await steps.whenAddedNotExistingProductOption(user, 'Test');
@@ -266,9 +264,7 @@ test('I cannot add note with new product if its name changed to invalid', async 
 test('I cannot add note with new product if its name is invalid', async () => {
   const user = userEvent.setup();
 
-  render(
-    givenAddOrEditNoteFlow().withQuantity(100).withCategoriesForSelect('Test Category').please(),
-  );
+  render(givenNoteInputFlow().withQuantity(100).withCategoriesForSelect('Test Category').please());
 
   await steps.whenDialogOpened(user);
   await steps.whenAddedNotExistingProductOption(user, 'T');
@@ -280,7 +276,7 @@ test('I cannot add note with new product if its name is invalid', async () => {
 test(`I can continue editing new product I've added before`, async () => {
   const user = userEvent.setup();
 
-  render(givenAddOrEditNoteFlow().withQuantity(100).withCategoriesForSelect('Vegetables').please());
+  render(givenNoteInputFlow().withQuantity(100).withCategoriesForSelect('Vegetables').please());
 
   await steps.whenDialogOpened(user);
   await steps.whenAddedNotExistingProductOption(user, 'Potato');
@@ -302,7 +298,7 @@ test('New product form is cleared after I change product to existing one', async
   const user = userEvent.setup();
 
   render(
-    givenAddOrEditNoteFlow()
+    givenNoteInputFlow()
       .withQuantity(100)
       .withProductForSelect({ name: 'Cucumber' })
       .withCategoriesForSelect('Vegetables')

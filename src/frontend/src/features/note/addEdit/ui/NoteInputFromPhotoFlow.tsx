@@ -13,11 +13,11 @@ import { type noteModel } from '@/entities/note';
 import { ProductAutocomplete, type productModel } from '@/entities/product';
 import { convertToBase64String, resizeImage } from '@/shared/lib';
 import { Button, UploadButton } from '@/shared/ui';
-import { type RenderDialogProps, type RecognizeNotesResult } from '../lib';
+import { type RecognizeNotesResult, type RenderContentProps } from '../lib';
 import { type UploadedPhoto } from '../model';
 import { NoteInputForm } from './NoteInputForm';
 
-interface Props extends RenderDialogProps {
+interface Props extends RenderContentProps {
   noteFormValues: noteModel.FormValues;
   recognizeNotesResult: RecognizeNotesResult;
   uploadedPhotos: UploadedPhoto[];
