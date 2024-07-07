@@ -90,6 +90,7 @@ export const AddNote: FC<Props> = ({ pageId, mealType }) => {
       productAutocompleteData={productAutocompleteData}
       categorySelect={categorySelect}
       recognizeNotesResult={recognizeNotesResult}
+      disableContentPaddingTop
       onCancel={handleCancel}
       onSubmit={handleSubmit}
       onSubmitSuccess={handleSubmitSuccess}

@@ -25,6 +25,7 @@ interface Props {
   productAutocompleteData: productLib.AutocompleteData;
   categorySelect: categoryLib.CategorySelectData;
   recognizeNotesResult: RecognizeNotesResult;
+  disableContentPaddingTop?: boolean;
   renderTrigger: (onClick: () => void) => ReactElement;
   renderContent: (props: RenderContentProps) => ReactElement;
   onCancel: () => void;
@@ -39,6 +40,7 @@ export const NoteInputFlow: FC<Props> = ({
   productAutocompleteData,
   categorySelect,
   recognizeNotesResult,
+  disableContentPaddingTop,
   renderTrigger,
   renderContent,
   onCancel,
@@ -242,6 +244,8 @@ export const NoteInputFlow: FC<Props> = ({
       <Dialog
         pinToTop
         renderMode="fullScreenOnMobile"
+        disableContentPaddingTop={disableContentPaddingTop}
+        disableContentPaddingBottom
         opened={dialogOpened}
         title={dialogState.title}
         content={dialogState.content}
