@@ -1,7 +1,4 @@
-import { store } from '@/app/store';
 import { type CreateProductRequest, productApi, type productModel } from '@/entities/product';
-
-type AddProductIfNotExistsFn = (product: productModel.AutocompleteOption) => Promise<number>;
 
 const mapToCreateProductRequest = ({
   name,
@@ -15,30 +12,28 @@ const mapToCreateProductRequest = ({
   categoryId: category?.id ?? 0,
 });
 
-export const addProductIfNotExists: AddProductIfNotExistsFn = async product => {
-  if (!product.freeSolo) {
-    return product.id;
-  }
+type AddProductIfNotExistsFn = (product: productModel.AutocompleteOption) => Promise<number>;
 
-  const request = mapToCreateProductRequest(product);
+interface Result {
+  sendRequest: AddProductIfNotExistsFn;
+  isLoading: boolean;
+}
 
-  const { id } = await store
-    .dispatch(productApi.endpoints.createProduct.initiate(request))
-    .unwrap();
+export const useAddProductIfNotExists = (): Result => {
+  const [addProduct, { isLoading }] = productApi.useCreateProductMutation();
 
-  return id;
-};
-
-export const useAddProductIfNotExists = (): AddProductIfNotExistsFn => {
-  const [createProduct] = productApi.useCreateProductMutation();
-
-  return async product => {
+  const sendRequest: AddProductIfNotExistsFn = async product => {
     if (!product.freeSolo) {
       return product.id;
     }
 
     const request = mapToCreateProductRequest(product);
-    const { id } = await createProduct(request).unwrap();
+    const { id } = await addProduct(request).unwrap();
     return id;
+  };
+
+  return {
+    sendRequest,
+    isLoading,
   };
 };

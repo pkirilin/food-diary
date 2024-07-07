@@ -45,7 +45,7 @@ export const EditProduct: FC<Props> = ({ product, renderTrigger }) => {
         title="Edit product"
         submitText="Save"
         isLoading={editProductRequest.isLoading || products.isFetching}
-        product={productFormData}
+        productFormValues={productFormData}
         categories={categorySelect.data}
         categoriesLoading={categorySelect.isLoading}
         onSubmit={handleEditDialogSubmit}

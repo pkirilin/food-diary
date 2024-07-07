@@ -8,3 +8,4 @@ export * from './DatePicker';
 export * from './Dialog';
 export * from './AppDialog';
 export * from './LoadingContainer';
+export * from './UploadButton';

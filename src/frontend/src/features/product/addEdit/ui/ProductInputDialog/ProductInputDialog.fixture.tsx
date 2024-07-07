@@ -26,7 +26,7 @@ class ProductInputDialogBuilder {
               isLoading={false}
               categories={this._categories}
               categoriesLoading={false}
-              product={this._product}
+              productFormValues={this._product}
               onSubmit={this._onSubmitMock}
               onClose={onTriggerClick}
             />

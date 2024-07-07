@@ -1,33 +1,24 @@
 import { TextField } from '@mui/material';
 import { useEffect, type FC, type FormEventHandler, type ReactElement } from 'react';
 import { noteLib, type noteModel } from '@/entities/note';
-import { type productLib, type productModel } from '@/entities/product';
-import { useInput, type UseInputResult } from '@/shared/hooks';
+import { type productLib } from '@/entities/product';
+import { useInput } from '@/shared/hooks';
 import { mapToNumericInputProps, validateQuantity } from '@/shared/lib';
 import { type Note } from '../model';
 
-export interface NoteInputFormProps {
+interface Props {
   id: string;
-  pageId: number;
-  mealType: noteModel.MealType;
-  displayOrder: number;
-  productAutocompleteInput: UseInputResult<
-    productModel.AutocompleteOption | null,
-    productLib.AutocompleteInputProps
-  >;
-  quantity: number;
+  values: noteModel.FormValues;
+  productAutocompleteInput: productLib.AutocompleteInput;
   renderProductAutocomplete: (props: productLib.AutocompleteInputProps) => ReactElement;
   onSubmit: (note: Note) => Promise<void>;
   onSubmitDisabledChange: (disabled: boolean) => void;
 }
 
-export const NoteInputForm: FC<NoteInputFormProps> = ({
+export const NoteInputForm: FC<Props> = ({
   id,
-  pageId,
-  mealType,
-  displayOrder,
+  values,
   productAutocompleteInput,
-  quantity,
   renderProductAutocomplete,
   onSubmit,
   onSubmitDisabledChange,
@@ -37,7 +28,7 @@ export const NoteInputForm: FC<NoteInputFormProps> = ({
     clearValue: clearQuantity,
     ...quantityInput
   } = useInput({
-    initialValue: quantity,
+    initialValue: values.quantity,
     errorHelperText: 'Quantity is invalid',
     validate: validateQuantity,
     mapToInputProps: mapToNumericInputProps,
@@ -71,9 +62,9 @@ export const NoteInputForm: FC<NoteInputFormProps> = ({
     }
 
     onSubmit({
-      pageId,
-      mealType,
-      displayOrder,
+      pageId: values.pageId,
+      mealType: values.mealType,
+      displayOrder: values.displayOrder,
       productQuantity: quantityInput.value,
       product: productAutocompleteInput.value,
     });
@@ -83,7 +74,7 @@ export const NoteInputForm: FC<NoteInputFormProps> = ({
     <form id={id} onSubmit={handleSubmit}>
       <TextField
         label="Meal"
-        value={noteLib.getMealName(mealType)}
+        value={noteLib.getMealName(values.mealType)}
         margin="normal"
         fullWidth
         inputProps={{ readOnly: true }}

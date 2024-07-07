@@ -1,5 +1,4 @@
+export * from './types';
 export * from './mapping';
 export * from './useAddProductIfNotExists';
-export * from './useNoteDialog';
-export * from './useProductDialog';
 export * from './useRecognizeNotes';

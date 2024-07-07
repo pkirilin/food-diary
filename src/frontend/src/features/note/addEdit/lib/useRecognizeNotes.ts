@@ -4,6 +4,12 @@ import { parseClientError, type ClientError } from '@/shared/api';
 
 type FetchFn = (file: File) => Promise<void>;
 
+export const EMPTY_RECOGNIZE_NOTES_RESULT: RecognizeNotesResult = {
+  notes: [],
+  isLoading: false,
+  isSuccess: false,
+};
+
 export interface RecognizeNotesResult {
   notes: RecognizeNoteItem[];
   isLoading: boolean;

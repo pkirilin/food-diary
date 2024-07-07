@@ -15,7 +15,7 @@ import {
   validateDefaultQuantity,
 } from '../model';
 
-export interface ProductInputFormProps {
+interface Props {
   id: string;
   values: FormValues;
   touched?: boolean;
@@ -24,7 +24,7 @@ export interface ProductInputFormProps {
   onSubmitDisabledChange: (disabled: boolean) => void;
 }
 
-export const ProductInputForm: FC<ProductInputFormProps> = ({
+export const ProductInputForm: FC<Props> = ({
   id,
   values,
   touched = false,
