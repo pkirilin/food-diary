@@ -3,11 +3,11 @@ import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 import { VitePWA as pwa } from 'vite-plugin-pwa';
 
-declare module 'vite' {
-  export interface UserConfig {
-    test: VitestUserConfig['test'];
-  }
-}
+// declare module 'vite' {
+//   export interface UserConfig {
+//     test: VitestUserConfig['test'];
+//   }
+// }
 
 export default defineConfig({
   plugins: [
