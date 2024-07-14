@@ -101,7 +101,8 @@ export const ProductInputForm: FC<Props> = ({
       />
       <TextField
         {...caloriesCostInput.inputProps}
-        type="number"
+        type="text"
+        inputMode="numeric"
         fullWidth
         margin="normal"
         label="Calories cost"
@@ -109,7 +110,8 @@ export const ProductInputForm: FC<Props> = ({
       />
       <TextField
         {...defaultQuantityInput.inputProps}
-        type="number"
+        type="text"
+        inputMode="numeric"
         fullWidth
         margin="normal"
         label="Default quantity"

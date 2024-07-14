@@ -31,7 +31,11 @@ export const mapToNumericInputProps: MapToInputPropsFunction<number, TextFieldPr
   error: isInvalid,
   helperText,
   onChange: event => {
-    setValue(event.target.value ? Number(event.target.value) : 0);
+    const numValue = Number(event.target.value);
+    setValue(isNaN(numValue) ? 0 : numValue);
+  },
+  onFocus: event => {
+    event.target.select();
   },
 });
 

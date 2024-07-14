@@ -134,7 +134,7 @@ export const thenCaloriesCostIsInvalid = async (): Promise<void> => {
 };
 
 export const thenCaloriesCostHasValue = async (value: number): Promise<void> => {
-  expect(screen.getByPlaceholderText(/calories cost/i)).toHaveValue(value);
+  expect(screen.getByPlaceholderText(/calories cost/i)).toHaveValue(value.toString());
 };
 
 export const thenDefaultQuantityIsInvalid = async (): Promise<void> => {
@@ -142,7 +142,7 @@ export const thenDefaultQuantityIsInvalid = async (): Promise<void> => {
 };
 
 export const thenDefaultQuantityHasValue = async (value: number): Promise<void> => {
-  expect(screen.getByPlaceholderText(/default quantity/i)).toHaveValue(value);
+  expect(screen.getByPlaceholderText(/default quantity/i)).toHaveValue(value.toString());
 };
 
 export const thenCategoryIsInvalid = async (): Promise<void> => {
