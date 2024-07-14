@@ -221,6 +221,7 @@ test('I can close product dialog without save and add another product', async ()
   await steps.whenProductCategorySelected(user, /test category/i);
   await steps.whenDialogClosed(user);
   await steps.thenNoteFormShouldBeVisible();
+  await steps.thenProductHasValue('Chicken');
 
   await steps.whenAddedNotExistingProductOption(user, 'Rye bread');
   await steps.thenProductFormShouldBeVisible();

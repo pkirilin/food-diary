@@ -141,8 +141,8 @@ export const ProductAutocomplete: FC<ProductAutocompleteProps> = ({
       onChange={handleOptionChange}
       options={options}
       selectOnFocus
-      clearOnBlur
       handleHomeEndKeys
+      blurOnSelect
       freeSolo
       getOptionLabel={getOptionLabel}
       filterOptions={filterOptions}

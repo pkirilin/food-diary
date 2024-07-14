@@ -149,6 +149,7 @@ export const NoteInputFlow: FC<Props> = ({
 
   const handleProductCancel = (): void => {
     productForm.clearValues();
+    productAutocompleteInput.clearValue();
     setDialogStateType('note');
   };
 
