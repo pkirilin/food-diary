@@ -21,6 +21,18 @@ export const whenProductCleared = async (user: UserEvent): Promise<void> => {
   await user.clear(screen.getByRole('combobox', { name: /product/i }));
 };
 
+export const whenProductSelectedNameChanged = async (
+  user: UserEvent,
+  name: string,
+): Promise<void> => {
+  await user.clear(screen.getByRole('combobox', { name: /product/i }));
+  await user.type(screen.getByRole('combobox', { name: /product/i }), name);
+};
+
+export const whenProductSelectClosed = async (user: UserEvent): Promise<void> => {
+  await user.click(screen.getByRole('combobox', { name: /product/i }));
+};
+
 export const whenAddedNotExistingProductOption = async (
   user: UserEvent,
   name: string,

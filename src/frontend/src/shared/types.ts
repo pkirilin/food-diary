@@ -33,6 +33,7 @@ export interface InputOptions<TValue> {
   setValue: (newValue: TValue) => void;
   helperText: string;
   isInvalid: boolean;
+  forceValidate: () => void;
 }
 
 export type MapToInputPropsFunction<TValue, TProps> = (options: InputOptions<TValue>) => TProps;

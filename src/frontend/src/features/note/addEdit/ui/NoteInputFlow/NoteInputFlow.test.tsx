@@ -231,7 +231,7 @@ test('I can close product dialog without save and add another product', async ()
   await steps.thenProductCategoryIsEmpty();
 });
 
-test('I cannot add note if input invalid', async () => {
+test('I cannot add note if product is empty', async () => {
   const user = userEvent.setup();
 
   render(
@@ -245,6 +245,25 @@ test('I cannot add note if input invalid', async () => {
 
   await steps.whenDialogOpened(user);
   await steps.whenProductCleared(user);
+  await steps.thenProductIsInvalid();
+  await steps.thenAddNoteButtonIsDisabled();
+});
+
+test(`I cannot add note if product has value that wasn't explicitly added`, async () => {
+  const user = userEvent.setup();
+
+  render(
+    givenNoteInputFlow()
+      .withQuantity(100)
+      .withCategoriesForSelect('Test Category')
+      .withProductForSelect({ name: 'Chicken' })
+      .withSelectedProduct('Chicken')
+      .please(),
+  );
+
+  await steps.whenDialogOpened(user);
+  await steps.whenProductSelectedNameChanged(user, 'ch');
+  await steps.whenProductSelectClosed(user);
   await steps.thenProductIsInvalid();
   await steps.thenAddNoteButtonIsDisabled();
 });

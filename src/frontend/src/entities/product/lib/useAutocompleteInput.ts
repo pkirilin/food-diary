@@ -5,7 +5,7 @@ import { type ProductAutocompleteProps } from '../ui/ProductAutocomplete';
 
 export type AutocompleteInputProps = Pick<
   ProductAutocompleteProps,
-  'value' | 'onChange' | 'error' | 'helperText'
+  'value' | 'onChange' | 'error' | 'helperText' | 'forceValidate'
 >;
 
 export type AutocompleteInput = UseInputResult<AutocompleteOption | null, AutocompleteInputProps>;
@@ -13,13 +13,14 @@ export type AutocompleteInput = UseInputResult<AutocompleteOption | null, Autoco
 const mapToInputProps: MapToInputPropsFunction<
   AutocompleteOption | null,
   AutocompleteInputProps
-> = ({ value, setValue, isInvalid, helperText }) => ({
+> = ({ value, setValue, isInvalid, helperText, forceValidate }) => ({
   value,
   onChange: newValue => {
     setValue(newValue);
   },
   error: isInvalid,
   helperText,
+  forceValidate,
 });
 
 const validate: ValidatorFunction<AutocompleteOption | null> = value => value !== null;
