@@ -245,7 +245,7 @@ export const NoteInputFlow: FC<Props> = ({
       <Dialog
         pinToTop
         renderMode="fullScreenOnMobile"
-        disableContentPaddingTop={disableContentPaddingTop}
+        disableContentPaddingTop={dialogStateType === 'note' && disableContentPaddingTop}
         disableContentPaddingBottom
         opened={dialogOpened}
         title={dialogState.title}
