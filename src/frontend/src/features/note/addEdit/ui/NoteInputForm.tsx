@@ -83,12 +83,14 @@ export const NoteInputForm: FC<Props> = ({
       {renderProductAutocomplete(productAutocompleteInput.inputProps)}
       <TextField
         {...quantityInput.inputProps}
-        type="text"
-        inputMode="numeric"
         label="Quantity"
         placeholder="Product quantity, g"
         margin="normal"
         fullWidth
+        inputProps={{
+          type: 'text',
+          inputMode: 'numeric',
+        }}
       />
     </form>
   );

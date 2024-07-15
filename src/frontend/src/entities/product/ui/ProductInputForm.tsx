@@ -101,21 +101,25 @@ export const ProductInputForm: FC<Props> = ({
       />
       <TextField
         {...caloriesCostInput.inputProps}
-        type="text"
-        inputMode="numeric"
         fullWidth
         margin="normal"
         label="Calories cost"
         placeholder="Enter calories cost"
+        inputProps={{
+          type: 'text',
+          inputMode: 'numeric',
+        }}
       />
       <TextField
         {...defaultQuantityInput.inputProps}
-        type="text"
-        inputMode="numeric"
         fullWidth
         margin="normal"
         label="Default quantity"
         placeholder="Enter default quantity"
+        inputProps={{
+          type: 'text',
+          inputMode: 'numeric',
+        }}
       />
       {renderCategoryInput(categoryInput.inputProps)}
     </form>
