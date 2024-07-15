@@ -77,8 +77,8 @@ export const whenDialogClosed = async (user: UserEvent): Promise<void> => {
 };
 
 export const whenProductNameChanged = async (user: UserEvent, name: string): Promise<void> => {
-  await user.clear(screen.getByPlaceholderText(/product name/i));
-  await user.type(screen.getByPlaceholderText(/product name/i), name);
+  await user.clear(screen.getByRole('textbox', { name: /name/i }));
+  await user.type(screen.getByRole('textbox', { name: /name/i }), name);
 };
 
 export const whenCaloriesCostChanged = async (user: UserEvent, cost: string): Promise<void> => {
