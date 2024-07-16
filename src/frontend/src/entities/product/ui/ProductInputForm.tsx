@@ -1,4 +1,4 @@
-import { TextField } from '@mui/material';
+import { InputAdornment, TextField } from '@mui/material';
 import { useEffect, type FC, type FormEventHandler, type ReactElement } from 'react';
 import { useInput } from '@/shared/hooks';
 import {
@@ -109,6 +109,9 @@ export const ProductInputForm: FC<Props> = ({
           type: 'text',
           inputMode: 'numeric',
         }}
+        InputProps={{
+          endAdornment: <InputAdornment position="end">kcal</InputAdornment>,
+        }}
       />
       <TextField
         {...defaultQuantityInput.inputProps}
@@ -119,6 +122,9 @@ export const ProductInputForm: FC<Props> = ({
         inputProps={{
           type: 'text',
           inputMode: 'numeric',
+        }}
+        InputProps={{
+          endAdornment: <InputAdornment position="end">g</InputAdornment>,
         }}
       />
       {renderCategoryInput(categoryInput.inputProps)}
