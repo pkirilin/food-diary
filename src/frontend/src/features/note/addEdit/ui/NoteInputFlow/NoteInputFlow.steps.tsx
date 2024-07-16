@@ -21,6 +21,18 @@ export const whenProductCleared = async (user: UserEvent): Promise<void> => {
   await user.clear(screen.getByRole('combobox', { name: /product/i }));
 };
 
+export const whenProductSelectedNameChanged = async (
+  user: UserEvent,
+  name: string,
+): Promise<void> => {
+  await user.clear(screen.getByRole('combobox', { name: /product/i }));
+  await user.type(screen.getByRole('combobox', { name: /product/i }), name);
+};
+
+export const whenProductSelectClosed = async (user: UserEvent): Promise<void> => {
+  await user.click(screen.getByRole('combobox', { name: /product/i }));
+};
+
 export const whenAddedNotExistingProductOption = async (
   user: UserEvent,
   name: string,
@@ -89,7 +101,7 @@ export const thenProductIsInvalid = async (): Promise<void> => {
 };
 
 export const thenQuantityHasValue = async (value: number): Promise<void> => {
-  expect(await screen.findByPlaceholderText(/product quantity/i)).toHaveValue(value);
+  expect(await screen.findByPlaceholderText(/product quantity/i)).toHaveValue(value.toString());
 };
 
 export const thenDialogShouldBeHidden = async (): Promise<void> => {
@@ -113,11 +125,11 @@ export const thenProductNameIsInvalid = async (): Promise<void> => {
 };
 
 export const thenProductCaloriesCostHasValue = async (value: number): Promise<void> => {
-  expect(screen.getByPlaceholderText(/calories cost/i)).toHaveValue(value);
+  expect(screen.getByPlaceholderText(/calories cost/i)).toHaveValue(value.toString());
 };
 
 export const thenProductDefaultQuantityHasValue = async (value: number): Promise<void> => {
-  expect(screen.getByPlaceholderText(/default quantity/i)).toHaveValue(value);
+  expect(screen.getByPlaceholderText(/default quantity/i)).toHaveValue(value.toString());
 };
 
 export const thenProductCategoryIsEmpty = async (): Promise<void> => {

@@ -77,8 +77,8 @@ export const whenDialogClosed = async (user: UserEvent): Promise<void> => {
 };
 
 export const whenProductNameChanged = async (user: UserEvent, name: string): Promise<void> => {
-  await user.clear(screen.getByPlaceholderText(/product name/i));
-  await user.type(screen.getByPlaceholderText(/product name/i), name);
+  await user.clear(screen.getByRole('textbox', { name: /name/i }));
+  await user.type(screen.getByRole('textbox', { name: /name/i }), name);
 };
 
 export const whenCaloriesCostChanged = async (user: UserEvent, cost: string): Promise<void> => {
@@ -110,6 +110,10 @@ export const whenProductSaved = async (user: UserEvent): Promise<void> => {
 export const expectCategory = (name: string): SelectOption =>
   expect.objectContaining<Partial<SelectOption>>({ name });
 
+export const thenProductFormIsVisible = async (): Promise<void> => {
+  expect(await screen.findByRole('dialog', { name: /product/i })).toBeVisible();
+};
+
 export const thenFormValueContains = async (
   onSubmitMock: Mock,
   product: productModel.FormValues,
@@ -134,7 +138,7 @@ export const thenCaloriesCostIsInvalid = async (): Promise<void> => {
 };
 
 export const thenCaloriesCostHasValue = async (value: number): Promise<void> => {
-  expect(screen.getByPlaceholderText(/calories cost/i)).toHaveValue(value);
+  expect(screen.getByPlaceholderText(/calories cost/i)).toHaveValue(value.toString());
 };
 
 export const thenDefaultQuantityIsInvalid = async (): Promise<void> => {
@@ -142,7 +146,7 @@ export const thenDefaultQuantityIsInvalid = async (): Promise<void> => {
 };
 
 export const thenDefaultQuantityHasValue = async (value: number): Promise<void> => {
-  expect(screen.getByPlaceholderText(/default quantity/i)).toHaveValue(value);
+  expect(screen.getByPlaceholderText(/default quantity/i)).toHaveValue(value.toString());
 };
 
 export const thenCategoryIsInvalid = async (): Promise<void> => {

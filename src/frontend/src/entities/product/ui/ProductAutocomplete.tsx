@@ -8,6 +8,7 @@ import {
   createFilterOptions,
   type SvgIconOwnProps,
   Box,
+  type AutocompleteCloseReason,
 } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import { useState, type FC, type SyntheticEvent } from 'react';
@@ -31,22 +32,24 @@ export interface ProductAutocompleteProps {
   options: readonly AutocompleteOption[];
   loading: boolean;
   value: AutocompleteOption | null;
-  onChange: (selectedProduct: AutocompleteOption | null) => void;
   formValues: FormValues;
+  forceValidate: () => void;
   helperText?: string;
   error?: boolean;
   autoFocus?: boolean;
+  onChange: (selectedProduct: AutocompleteOption | null) => void;
 }
 
 export const ProductAutocomplete: FC<ProductAutocompleteProps> = ({
   options,
   loading,
   value,
-  onChange,
   formValues,
+  forceValidate,
   helperText,
   error,
   autoFocus,
+  onChange,
 }) => {
   const [newProductIconColor, setNewProductIconColor] =
     useState<SvgIconOwnProps['color']>('action');
@@ -135,14 +138,21 @@ export const ProductAutocomplete: FC<ProductAutocompleteProps> = ({
     onChange(selectedProduct);
   };
 
+  const handleClose = (_: SyntheticEvent, reason: AutocompleteCloseReason): void => {
+    if (reason === 'blur' || reason === 'escape' || reason === 'toggleInput') {
+      forceValidate();
+    }
+  };
+
   return (
     <Autocomplete
       value={value}
       onChange={handleOptionChange}
+      onClose={handleClose}
       options={options}
       selectOnFocus
-      clearOnBlur
       handleHomeEndKeys
+      blurOnSelect="touch"
       freeSolo
       getOptionLabel={getOptionLabel}
       filterOptions={filterOptions}

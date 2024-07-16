@@ -1,6 +1,6 @@
-import { type FC } from 'react';
+import { Autocomplete, CircularProgress, TextField } from '@mui/material';
+import { type SyntheticEvent, type FC } from 'react';
 import { type SelectOption, type SelectProps } from '@/shared/types';
-import { AppSelect } from '@/shared/ui';
 
 interface CategorySelectProps extends SelectProps<SelectOption> {
   options: SelectOption[];
@@ -17,20 +17,36 @@ export const CategorySelect: FC<CategorySelectProps> = ({
   options,
   optionsLoading,
 }) => {
-  const handleChange = (value: SelectOption | null): void => {
-    setValue(value);
+  const handleChange = (_: SyntheticEvent, newValue: SelectOption | null): void => {
+    setValue(newValue);
   };
 
   return (
-    <AppSelect
-      options={options}
+    <Autocomplete
+      blurOnSelect="touch"
       value={value}
+      options={options}
+      getOptionLabel={option => option.name}
+      isOptionEqualToValue={(first, second) => first.name === second.name}
       onChange={handleChange}
-      isLoading={optionsLoading}
-      isInvalid={isInvalid}
-      label={label}
-      placeholder={placeholder}
-      helperText={helperText}
+      renderInput={params => (
+        <TextField
+          {...params}
+          label={label}
+          placeholder={placeholder}
+          error={isInvalid}
+          helperText={helperText}
+          margin="normal"
+          InputProps={{
+            ...params.InputProps,
+            endAdornment: optionsLoading ? (
+              <CircularProgress color="inherit" size={20} />
+            ) : (
+              params.InputProps.endAdornment
+            ),
+          }}
+        />
+      )}
     />
   );
 };

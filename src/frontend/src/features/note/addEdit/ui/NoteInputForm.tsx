@@ -1,4 +1,4 @@
-import { TextField } from '@mui/material';
+import { InputAdornment, TextField } from '@mui/material';
 import { useEffect, type FC, type FormEventHandler, type ReactElement } from 'react';
 import { noteLib, type noteModel } from '@/entities/note';
 import { type productLib } from '@/entities/product';
@@ -83,11 +83,17 @@ export const NoteInputForm: FC<Props> = ({
       {renderProductAutocomplete(productAutocompleteInput.inputProps)}
       <TextField
         {...quantityInput.inputProps}
-        type="number"
         label="Quantity"
-        placeholder="Product quantity, g"
+        placeholder="Product quantity"
         margin="normal"
         fullWidth
+        inputProps={{
+          type: 'text',
+          inputMode: 'numeric',
+        }}
+        InputProps={{
+          endAdornment: <InputAdornment position="end">g</InputAdornment>,
+        }}
       />
     </form>
   );

@@ -12,6 +12,7 @@ import {
   thenDefaultQuantityIsInvalid,
   thenDialogShouldBeHidden,
   thenFormValueContains,
+  thenProductFormIsVisible,
   thenProductNameHasValue,
   thenProductNameIsInvalid,
   thenProductNameIsValid,
@@ -39,6 +40,8 @@ test('I can add new product', async () => {
   );
 
   await whenDialogOpened(user);
+  await thenProductFormIsVisible();
+
   await whenProductNameChanged(user, 'Potato');
   await whenCaloriesCostChanged(user, '150');
   await whenDefaultQuantityChanged(user, '120');
@@ -71,6 +74,8 @@ test('I can edit product', async () => {
   );
 
   await whenDialogOpened(user);
+  await thenProductFormIsVisible();
+
   await whenProductNameChanged(user, 'Potato edited');
   await whenCaloriesCostChanged(user, '140');
   await whenDefaultQuantityChanged(user, '110');

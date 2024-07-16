@@ -149,6 +149,7 @@ export const NoteInputFlow: FC<Props> = ({
 
   const handleProductCancel = (): void => {
     productForm.clearValues();
+    productAutocompleteInput.clearValue();
     setDialogStateType('note');
   };
 
@@ -244,7 +245,7 @@ export const NoteInputFlow: FC<Props> = ({
       <Dialog
         pinToTop
         renderMode="fullScreenOnMobile"
-        disableContentPaddingTop={disableContentPaddingTop}
+        disableContentPaddingTop={dialogStateType === 'note' && disableContentPaddingTop}
         disableContentPaddingBottom
         opened={dialogOpened}
         title={dialogState.title}

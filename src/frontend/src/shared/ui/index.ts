@@ -1,6 +1,5 @@
 export * from './AppFab';
 export * from './AppName';
-export * from './AppSelect';
 export * from './AppShell';
 export * from './AppLoader';
 export * from './Button';

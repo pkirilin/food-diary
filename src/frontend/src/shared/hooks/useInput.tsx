@@ -50,6 +50,11 @@ export function useInput<TValue, TProps>({
     setIsTouched(false);
   }, [initialValue, originalSetValue, setIsTouched]);
 
+  const forceValidate = useCallback(() => {
+    setIsTouched(true);
+    setIsInvalid(!validate(value));
+  }, [validate, value]);
+
   useEffect(() => {
     if (isTouched) {
       const isInvalid = !validate(value);
@@ -64,6 +69,7 @@ export function useInput<TValue, TProps>({
       value,
       setValue,
       clearValue,
+      forceValidate,
       helperText,
       isInvalid,
       isTouched,
@@ -72,8 +78,9 @@ export function useInput<TValue, TProps>({
         setValue,
         helperText,
         isInvalid,
+        forceValidate,
       }),
     }),
-    [clearValue, helperText, isInvalid, isTouched, mapToInputProps, setValue, value],
+    [clearValue, forceValidate, helperText, isInvalid, isTouched, mapToInputProps, setValue, value],
   );
 }
