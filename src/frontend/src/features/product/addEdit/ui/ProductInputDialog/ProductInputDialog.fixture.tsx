@@ -110,6 +110,10 @@ export const whenProductSaved = async (user: UserEvent): Promise<void> => {
 export const expectCategory = (name: string): SelectOption =>
   expect.objectContaining<Partial<SelectOption>>({ name });
 
+export const thenProductFormIsVisible = async (): Promise<void> => {
+  expect(await screen.findByRole('dialog', { name: /product/i })).toBeVisible();
+};
+
 export const thenFormValueContains = async (
   onSubmitMock: Mock,
   product: productModel.FormValues,
