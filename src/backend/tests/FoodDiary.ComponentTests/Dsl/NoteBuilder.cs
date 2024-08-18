@@ -19,6 +19,7 @@ public class NoteBuilder
     public NoteBuilder WithPage(Page page)
     {
         _note.Page = page;
+        _note.Date = page.Date;
         return this;
     }
     

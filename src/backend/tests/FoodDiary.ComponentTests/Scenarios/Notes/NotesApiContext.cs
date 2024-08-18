@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
 using FoodDiary.API.Dtos;
+using FoodDiary.API.Features.Notes.Create;
 using FoodDiary.API.Mapping;
 using FoodDiary.Application.Notes.Recognize;
 using FoodDiary.ComponentTests.Dsl;
@@ -68,9 +69,16 @@ public class NotesApiContext(FoodDiaryWebApplicationFactory factory, Infrastruct
 
     public async Task When_user_creates_note(Note note)
     {
-        var request = Create.NoteCreateEditRequest()
-            .From(note)
-            .Please();
+        var request = new CreateNoteRequest
+        {
+            Date = note.Date.GetValueOrDefault(),
+            MealType = note.MealType,
+            ProductId = note.Product.Id,
+            PageId = note.Page.Id,
+            ProductQuantity = note.ProductQuantity,
+            DisplayOrder = note.DisplayOrder
+        };
+        
         _createNoteResponse = await ApiClient.PostAsJsonAsync("/api/v1/notes", request);
     }
     

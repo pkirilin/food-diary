@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using FoodDiary.API.ErrorHandling;
 using FoodDiary.API.Extensions;
+using FoodDiary.API.Features;
 using FoodDiary.API.Logging;
 using FoodDiary.API.Options;
 using FoodDiary.Application.Extensions;
@@ -125,6 +126,7 @@ public class Startup
         services.AddUtils();
         services.AddPagesJsonImportServices();
         services.AddApplicationDependencies();
+        services.AddFeatures();
 
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
     }

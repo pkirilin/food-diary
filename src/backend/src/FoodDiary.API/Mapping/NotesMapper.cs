@@ -8,6 +8,7 @@ public static class NotesMapper
     public static NoteItemDto ToNoteItemDto(this Note note) => new()
     {
         Id = note.Id,
+        Date = note.Date,
         PageId = note.PageId,
         MealType = note.MealType,
         DisplayOrder = note.DisplayOrder,

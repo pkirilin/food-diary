@@ -17,7 +17,7 @@ public static class ResultExtensions
         };
     }
 
-    private static ObjectResult ToActionResult(this Error error)
+    public static ObjectResult ToActionResult(this Error error)
     {
         var status = error switch
         {

@@ -5,8 +5,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using FoodDiary.API.Dtos;
+using FoodDiary.API.Features.Notes.Create;
 using FoodDiary.API.Mapping;
-using FoodDiary.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using FoodDiary.API.Requests;
 using FoodDiary.Application.Notes.Recognize;
@@ -15,6 +15,7 @@ using FoodDiary.Application.Notes.Requests;
 using FoodDiary.Application.Products.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using CreateNoteRequest = FoodDiary.API.Features.Notes.Create.CreateNoteRequest;
 
 namespace FoodDiary.API.Controllers.v1;
 
@@ -49,31 +50,23 @@ public class NotesController : ControllerBase
         var notesListResponse = _mapper.Map<IEnumerable<NoteItemDto>>(noteEntities);
         return Ok(notesListResponse);
     }
-
-    /// <summary>
-    /// Creates new note
-    /// </summary>
-    /// <param name="noteData">New note info</param>
-    /// <param name="cancellationToken"></param>
+    
     [HttpPost]
     [ProducesResponseType((int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-    public async Task<IActionResult> CreateNote([FromBody] NoteCreateEditRequest noteData, CancellationToken cancellationToken)
+    public async Task<IActionResult> CreateNote(
+        [FromBody] CreateNoteRequest request,
+        [FromServices] CreateNoteRequestHandler handler,
+        CancellationToken cancellationToken)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+        var response = await handler.Handle(request, cancellationToken);
 
-        var product = await _mediator.Send(new GetProductByIdRequest(noteData.ProductId), cancellationToken);
-
-        if (product == null)
+        return response switch
         {
-            ModelState.AddModelError(nameof(noteData.ProductId), "Selected product does not exist");
-            return BadRequest(ModelState);
-        }
-
-        var note = _mapper.Map<Note>(noteData);
-        await _mediator.Send(new CreateNoteRequest(note), cancellationToken);
-        return Ok();
+            CreateNoteResponse.Success => Ok(),
+            CreateNoteResponse.Failure f => f.Error.ToActionResult(),
+            _ => StatusCode(StatusCodes.Status501NotImplemented)
+        };
     }
 
     /// <summary>
