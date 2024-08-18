@@ -9,8 +9,8 @@ public class NoteConfiguration : IEntityTypeConfiguration<Note>
     public void Configure(EntityTypeBuilder<Note> builder)
     {
         builder.ToTable("Notes");
-
         builder.HasKey(n => n.Id);
+        builder.HasIndex(n => n.Date);
 
         builder.HasOne(n => n.Product)
             .WithMany(p => p.Notes)
