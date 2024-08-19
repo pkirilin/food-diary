@@ -5,8 +5,8 @@ using FoodDiary.API.Dtos;
 using FoodDiary.API.Features.Notes.Create;
 using FoodDiary.API.Mapping;
 using FoodDiary.Application.Notes.Recognize;
-using FoodDiary.ComponentTests.Dsl;
 using FoodDiary.ComponentTests.Infrastructure;
+using FoodDiary.Contracts.Notes;
 using FoodDiary.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
@@ -84,12 +84,17 @@ public class NotesApiContext(FoodDiaryWebApplicationFactory factory, Infrastruct
     
     public async Task When_user_updates_product_with_quantity_for_note(Note note, Product product, int quantity)
     {
-        var request = Create.NoteCreateEditRequest()
-            .From(note)
-            .WithProduct(product)
-            .WithProductQuantity(quantity)
-            .Please();
-        _updateNoteResponse = await ApiClient.PutAsJsonAsync($"/api/v1/notes/{note.Id}", request);
+        var body = new UpdateNoteRequestBody
+        {
+            Date = note.Date,
+            MealType = note.MealType,
+            PageId = note.PageId,
+            ProductId = product.Id,
+            ProductQuantity = quantity,
+            DisplayOrder = note.DisplayOrder
+        };
+        
+        _updateNoteResponse = await ApiClient.PutAsJsonAsync($"/api/v1/notes/{note.Id}", body);
     }
 
     public async Task When_user_deletes_note(Note note)

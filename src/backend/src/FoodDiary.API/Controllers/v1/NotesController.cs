@@ -12,7 +12,8 @@ using FoodDiary.API.Requests;
 using FoodDiary.Application.Notes.Recognize;
 using MediatR;
 using FoodDiary.Application.Notes.Requests;
-using FoodDiary.Application.Products.Requests;
+using FoodDiary.Application.Notes.Update;
+using FoodDiary.Contracts.Notes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using CreateNoteRequest = FoodDiary.API.Features.Notes.Create.CreateNoteRequest;
@@ -69,37 +70,25 @@ public class NotesController : ControllerBase
         };
     }
 
-    /// <summary>
-    /// Updates existing note
-    /// </summary>
-    /// <param name="id">Note for update id</param>
-    /// <param name="updatedNoteData">Updated note info</param>
-    /// <param name="cancellationToken"></param>
-    [HttpPut("{id}")]
+    [HttpPut("{id:int}")]
     [ProducesResponseType((int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
     [ProducesResponseType((int)HttpStatusCode.NotFound)]
-    public async Task<IActionResult> EditNote([FromRoute] int id, [FromBody] NoteCreateEditRequest updatedNoteData, CancellationToken cancellationToken)
+    public async Task<IActionResult> UpdateNote(
+        [FromRoute] int id,
+        [FromBody] UpdateNoteRequestBody body,
+        [FromServices] UpdateNoteCommandHandler handler,
+        CancellationToken cancellationToken)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-
-        var product = await _mediator.Send(new GetProductByIdRequest(updatedNoteData.ProductId), cancellationToken);
-
-        if (product == null)
+        var command = body.ToUpdateNoteCommand(id);
+        var result = await handler.Handle(command, cancellationToken);
+        
+        return result switch
         {
-            ModelState.AddModelError(nameof(updatedNoteData.ProductId), "Selected product does not exist");
-            return BadRequest(ModelState);
-        }
-
-        var originalNote = await _mediator.Send(new GetNoteByIdRequest(id), cancellationToken);
-
-        if (originalNote == null)
-            return NotFound();
-
-        originalNote = _mapper.Map(updatedNoteData, originalNote);
-        await _mediator.Send(new EditNoteRequest(originalNote), cancellationToken);
-        return Ok();
+            UpdateNoteResult.Success => Ok(),
+            UpdateNoteResult.Failure f => f.Error.ToActionResult(),
+            _ => StatusCode(StatusCodes.Status501NotImplemented)
+        };
     }
 
     /// <summary>
