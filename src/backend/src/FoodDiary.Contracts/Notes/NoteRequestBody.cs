@@ -5,7 +5,7 @@ using JetBrains.Annotations;
 namespace FoodDiary.Contracts.Notes;
 
 [PublicAPI]
-public class UpdateNoteRequestBody
+public class NoteRequestBody
 {
     [Required]
     public required DateOnly? Date { get; init; }

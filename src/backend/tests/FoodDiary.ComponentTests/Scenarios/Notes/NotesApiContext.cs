@@ -2,11 +2,10 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
 using FoodDiary.API.Dtos;
-using FoodDiary.API.Features.Notes.Create;
 using FoodDiary.API.Mapping;
 using FoodDiary.Application.Notes.Recognize;
+using FoodDiary.ComponentTests.Dsl;
 using FoodDiary.ComponentTests.Infrastructure;
-using FoodDiary.Contracts.Notes;
 using FoodDiary.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
@@ -69,30 +68,20 @@ public class NotesApiContext(FoodDiaryWebApplicationFactory factory, Infrastruct
 
     public async Task When_user_creates_note(Note note)
     {
-        var request = new CreateNoteRequest
-        {
-            Date = note.Date.GetValueOrDefault(),
-            MealType = note.MealType,
-            ProductId = note.Product.Id,
-            PageId = note.Page.Id,
-            ProductQuantity = note.ProductQuantity,
-            DisplayOrder = note.DisplayOrder
-        };
+        var body = Create.NoteRequestBody()
+            .From(note)
+            .Please();
         
-        _createNoteResponse = await ApiClient.PostAsJsonAsync("/api/v1/notes", request);
+        _createNoteResponse = await ApiClient.PostAsJsonAsync("/api/v1/notes", body);
     }
     
     public async Task When_user_updates_product_with_quantity_for_note(Note note, Product product, int quantity)
     {
-        var body = new UpdateNoteRequestBody
-        {
-            Date = note.Date,
-            MealType = note.MealType,
-            PageId = note.PageId,
-            ProductId = product.Id,
-            ProductQuantity = quantity,
-            DisplayOrder = note.DisplayOrder
-        };
+        var body = Create.NoteRequestBody()
+            .From(note)
+            .WithProduct(product)
+            .WithProductQuantity(quantity)
+            .Please();
         
         _updateNoteResponse = await ApiClient.PutAsJsonAsync($"/api/v1/notes/{note.Id}", body);
     }

@@ -11,4 +11,5 @@ public static class Create
     public static RecognizeNoteItemBuilder RecognizeNoteItem() => new();
 
     public static ProductCreateEditRequestBuilder ProductCreateEditRequest() => new();
+    public static NoteRequestBodyBuilder NoteRequestBody() => new();
 }

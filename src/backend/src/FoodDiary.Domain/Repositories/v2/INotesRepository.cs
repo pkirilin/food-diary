@@ -10,5 +10,7 @@ public interface INotesRepository
 {
     Task<Note?> FindById(int id, CancellationToken cancellationToken);
     
+    Task Add(Note note, CancellationToken cancellationToken);
+    
     Task Update(Note note, CancellationToken cancellationToken);
 }

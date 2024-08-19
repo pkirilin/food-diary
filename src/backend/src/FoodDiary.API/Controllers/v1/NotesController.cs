@@ -5,10 +5,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using FoodDiary.API.Dtos;
-using FoodDiary.API.Features.Notes.Create;
 using FoodDiary.API.Mapping;
 using Microsoft.AspNetCore.Mvc;
 using FoodDiary.API.Requests;
+using FoodDiary.Application.Notes.Create;
 using FoodDiary.Application.Notes.Recognize;
 using MediatR;
 using FoodDiary.Application.Notes.Requests;
@@ -16,7 +16,6 @@ using FoodDiary.Application.Notes.Update;
 using FoodDiary.Contracts.Notes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using CreateNoteRequest = FoodDiary.API.Features.Notes.Create.CreateNoteRequest;
 
 namespace FoodDiary.API.Controllers.v1;
 
@@ -56,16 +55,17 @@ public class NotesController : ControllerBase
     [ProducesResponseType((int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
     public async Task<IActionResult> CreateNote(
-        [FromBody] CreateNoteRequest request,
-        [FromServices] CreateNoteRequestHandler handler,
+        [FromBody] NoteRequestBody body,
+        [FromServices] CreateNoteCommandHandler handler,
         CancellationToken cancellationToken)
     {
-        var response = await handler.Handle(request, cancellationToken);
+        var command = body.ToCreateNoteCommand();
+        var result = await handler.Handle(command, cancellationToken);
 
-        return response switch
+        return result switch
         {
-            CreateNoteResponse.Success => Ok(),
-            CreateNoteResponse.Failure f => f.Error.ToActionResult(),
+            CreateNoteResult.Success => Ok(),
+            CreateNoteResult.Failure f => f.Error.ToActionResult(),
             _ => StatusCode(StatusCodes.Status501NotImplemented)
         };
     }
@@ -76,7 +76,7 @@ public class NotesController : ControllerBase
     [ProducesResponseType((int)HttpStatusCode.NotFound)]
     public async Task<IActionResult> UpdateNote(
         [FromRoute] int id,
-        [FromBody] UpdateNoteRequestBody body,
+        [FromBody] NoteRequestBody body,
         [FromServices] UpdateNoteCommandHandler handler,
         CancellationToken cancellationToken)
     {

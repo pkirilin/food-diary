@@ -12,6 +12,12 @@ public class NotesRepository(FoodDiaryContext context) : INotesRepository
         return await context.Notes.FindAsync([id], cancellationToken);
     }
 
+    public Task Add(Note note, CancellationToken cancellationToken)
+    {
+        context.Notes.Add(note);
+        return context.SaveChangesAsync(cancellationToken);
+    }
+
     public Task Update(Note note, CancellationToken cancellationToken)
     {
         context.Update(note);
