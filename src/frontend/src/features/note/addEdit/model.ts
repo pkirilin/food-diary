@@ -4,6 +4,7 @@ import { type productModel } from '@/entities/product';
 export type InputMethod = 'fromInput' | 'fromPhoto';
 
 export interface Note {
+  date: string;
   mealType: noteModel.MealType;
   pageId: number;
   product: productModel.AutocompleteOption;

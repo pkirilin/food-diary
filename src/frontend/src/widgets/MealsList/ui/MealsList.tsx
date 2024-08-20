@@ -6,11 +6,12 @@ import { MealsListItem } from './MealsListItem';
 interface Props extends PropsWithChildren {
   notes: noteModel.NoteItem[];
   pageId: number;
+  date: string;
 }
 
 const MEAL_TYPES = noteLib.getMealTypes();
 
-export const MealsList: FC<Props> = ({ notes, pageId }: Props) => {
+export const MealsList: FC<Props> = ({ notes, pageId, date }: Props) => {
   const notesGroupedByMealType = useMemo(() => noteLib.groupByMealType(notes), [notes]);
 
   return (
@@ -19,6 +20,7 @@ export const MealsList: FC<Props> = ({ notes, pageId }: Props) => {
         <MealsListItem
           key={mealType}
           pageId={pageId}
+          date={date}
           mealType={mealType}
           notes={notesGroupedByMealType.get(mealType) ?? []}
         />

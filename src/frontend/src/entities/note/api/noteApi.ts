@@ -1,5 +1,5 @@
 import {
-  type EditNoteRequest,
+  type UpdateNoteRequest,
   type CreateNoteRequest,
   type GetNotesRequest,
   type noteModel,
@@ -24,7 +24,7 @@ export const noteApi = api.injectEndpoints({
       invalidatesTags: ['note', 'page'],
     }),
 
-    editNote: builder.mutation<void, EditNoteRequest>({
+    updateNote: builder.mutation<void, UpdateNoteRequest>({
       query: ({ id, ...request }) => ({
         method: 'PUT',
         url: `/api/v1/notes/${id}`,

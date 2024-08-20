@@ -8,6 +8,7 @@ export enum MealType {
 
 export interface NoteItem {
   id: number;
+  date: string;
   mealType: MealType;
   displayOrder: number;
   productId: number;
@@ -19,6 +20,7 @@ export interface NoteItem {
 
 export interface FormValues {
   pageId: number;
+  date: string;
   mealType: MealType;
   displayOrder: number;
   quantity: number;

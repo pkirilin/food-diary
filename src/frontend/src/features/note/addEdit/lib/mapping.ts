@@ -1,4 +1,4 @@
-import { type noteModel, type CreateNoteRequest, type EditNoteRequest } from '@/entities/note';
+import { type noteModel, type CreateNoteRequest, type UpdateNoteRequest } from '@/entities/note';
 import { type ProductSelectOption } from '@/entities/product';
 import { type Note } from '../model';
 
@@ -13,9 +13,10 @@ export const mapToProductSelectOption = ({
 });
 
 export const mapToCreateNoteRequest = (
-  { mealType, pageId, productQuantity, displayOrder }: Note,
+  { date, mealType, pageId, productQuantity, displayOrder }: Note,
   productId: number,
 ): CreateNoteRequest => ({
+  date,
   mealType,
   productId,
   pageId,
@@ -26,9 +27,10 @@ export const mapToCreateNoteRequest = (
 export const mapToEditNoteRequest = (
   id: number,
   productId: number,
-  { mealType, pageId, productQuantity, displayOrder }: Note,
-): EditNoteRequest => ({
+  { date, mealType, pageId, productQuantity, displayOrder }: Note,
+): UpdateNoteRequest => ({
   id,
+  date,
   mealType,
   productId,
   pageId,

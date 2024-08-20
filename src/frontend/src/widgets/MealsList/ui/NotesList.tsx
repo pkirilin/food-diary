@@ -6,17 +6,18 @@ import { NotesListItem } from './NotesListItem';
 
 interface Props {
   pageId: number;
+  date: string;
   mealType: noteModel.MealType;
   notes: noteModel.NoteItem[];
 }
 
-export const NotesList: FC<Props> = ({ pageId, mealType, notes }) => (
+export const NotesList: FC<Props> = ({ pageId, date, mealType, notes }) => (
   <List disablePadding>
     {notes.map(note => (
       <NotesListItem key={note.id} note={note} pageId={pageId} />
     ))}
     <ListItem disableGutters>
-      <AddNote pageId={pageId} mealType={mealType} />
+      <AddNote pageId={pageId} date={date} mealType={mealType} />
     </ListItem>
   </List>
 );

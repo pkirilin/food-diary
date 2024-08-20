@@ -2,10 +2,10 @@ import { type MealType } from '../model';
 
 export interface GetNotesRequest {
   pageId: number;
-  mealType?: MealType;
 }
 
 export interface CreateNoteRequest {
+  date: string;
   mealType: MealType;
   productId: number;
   pageId: number;
@@ -13,8 +13,9 @@ export interface CreateNoteRequest {
   displayOrder: number;
 }
 
-export interface EditNoteRequest {
+export interface UpdateNoteRequest {
   id: number;
+  date: string;
   mealType: MealType;
   productId: number;
   pageId: number;
