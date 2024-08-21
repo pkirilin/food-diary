@@ -9,5 +9,5 @@ interface INoteJsonImporter
     /// Creates note from JSON
     /// </summary>
     /// <returns>Imported note entity</returns>
-    Note ImportNote(JsonExportNoteDto noteFromJson);
+    Note ImportNote(JsonExportPageDto pageFromJson, JsonExportNoteDto noteFromJson);
 }

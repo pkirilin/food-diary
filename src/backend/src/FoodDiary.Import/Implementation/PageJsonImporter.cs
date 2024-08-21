@@ -41,7 +41,7 @@ internal class PageJsonImporter : IPageJsonImporter
         }
 
         importedPage.Notes = pageFromJson.Notes
-            .Select(n => _noteImporter.ImportNote(n))
+            .Select(n => _noteImporter.ImportNote(pageFromJson, n))
             .ToList();
     }
 }
