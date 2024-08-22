@@ -15,13 +15,14 @@ interface Props {
 }
 
 export const EditNote: FC<Props> = ({ note, pageId, renderTrigger }) => {
-  const [editNote, { reset, ...editNoteResponse }] = noteApi.useEditNoteMutation();
+  const [updateNote, { reset, ...updateNoteResponse }] = noteApi.useUpdateNoteMutation();
   const addProductIfNotExists = useAddProductIfNotExists();
 
   const notes = noteLib.useNotes(pageId);
 
   const { clearValues: clearNoteForm, ...noteForm } = noteLib.useFormValues({
     pageId,
+    date: note.date,
     mealType: note.mealType,
     displayOrder: note.displayOrder,
     quantity: note.productQuantity,
@@ -35,7 +36,7 @@ export const EditNote: FC<Props> = ({ note, pageId, renderTrigger }) => {
   const handleSubmit = async (formData: Note): Promise<void> => {
     const productId = await addProductIfNotExists.sendRequest(formData.product);
     const request = mapToEditNoteRequest(note.id, productId, formData);
-    await editNote(request).unwrap();
+    await updateNote(request).unwrap();
   };
 
   const handleSubmitSuccess = useCallback(() => {
@@ -76,7 +77,7 @@ export const EditNote: FC<Props> = ({ note, pageId, renderTrigger }) => {
         />
       )}
       submitText="Save"
-      submitSuccess={editNoteResponse.isSuccess && notes.isChanged}
+      submitSuccess={updateNoteResponse.isSuccess && notes.isChanged}
       product={product}
       productAutocompleteData={productAutocompleteData}
       categorySelect={categorySelect}

@@ -10,4 +10,8 @@
     <PackageReference Include="JetBrains.Annotations" Version="2023.3.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\FoodDiary.Domain\FoodDiary.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -6,13 +6,14 @@ using System.Threading.Tasks;
 using AutoMapper;
 using FoodDiary.API.Dtos;
 using FoodDiary.API.Mapping;
-using FoodDiary.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using FoodDiary.API.Requests;
+using FoodDiary.Application.Notes.Create;
 using FoodDiary.Application.Notes.Recognize;
 using MediatR;
 using FoodDiary.Application.Notes.Requests;
-using FoodDiary.Application.Products.Requests;
+using FoodDiary.Application.Notes.Update;
+using FoodDiary.Contracts.Notes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 
@@ -49,64 +50,45 @@ public class NotesController : ControllerBase
         var notesListResponse = _mapper.Map<IEnumerable<NoteItemDto>>(noteEntities);
         return Ok(notesListResponse);
     }
-
-    /// <summary>
-    /// Creates new note
-    /// </summary>
-    /// <param name="noteData">New note info</param>
-    /// <param name="cancellationToken"></param>
+    
     [HttpPost]
     [ProducesResponseType((int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-    public async Task<IActionResult> CreateNote([FromBody] NoteCreateEditRequest noteData, CancellationToken cancellationToken)
+    public async Task<IActionResult> CreateNote(
+        [FromBody] NoteRequestBody body,
+        [FromServices] CreateNoteCommandHandler handler,
+        CancellationToken cancellationToken)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+        var command = body.ToCreateNoteCommand();
+        var result = await handler.Handle(command, cancellationToken);
 
-        var product = await _mediator.Send(new GetProductByIdRequest(noteData.ProductId), cancellationToken);
-
-        if (product == null)
+        return result switch
         {
-            ModelState.AddModelError(nameof(noteData.ProductId), "Selected product does not exist");
-            return BadRequest(ModelState);
-        }
-
-        var note = _mapper.Map<Note>(noteData);
-        await _mediator.Send(new CreateNoteRequest(note), cancellationToken);
-        return Ok();
+            CreateNoteResult.Success => Ok(),
+            CreateNoteResult.Failure f => f.Error.ToActionResult(),
+            _ => StatusCode(StatusCodes.Status501NotImplemented)
+        };
     }
 
-    /// <summary>
-    /// Updates existing note
-    /// </summary>
-    /// <param name="id">Note for update id</param>
-    /// <param name="updatedNoteData">Updated note info</param>
-    /// <param name="cancellationToken"></param>
-    [HttpPut("{id}")]
+    [HttpPut("{id:int}")]
     [ProducesResponseType((int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
     [ProducesResponseType((int)HttpStatusCode.NotFound)]
-    public async Task<IActionResult> EditNote([FromRoute] int id, [FromBody] NoteCreateEditRequest updatedNoteData, CancellationToken cancellationToken)
+    public async Task<IActionResult> UpdateNote(
+        [FromRoute] int id,
+        [FromBody] NoteRequestBody body,
+        [FromServices] UpdateNoteCommandHandler handler,
+        CancellationToken cancellationToken)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-
-        var product = await _mediator.Send(new GetProductByIdRequest(updatedNoteData.ProductId), cancellationToken);
-
-        if (product == null)
+        var command = body.ToUpdateNoteCommand(id);
+        var result = await handler.Handle(command, cancellationToken);
+        
+        return result switch
         {
-            ModelState.AddModelError(nameof(updatedNoteData.ProductId), "Selected product does not exist");
-            return BadRequest(ModelState);
-        }
-
-        var originalNote = await _mediator.Send(new GetNoteByIdRequest(id), cancellationToken);
-
-        if (originalNote == null)
-            return NotFound();
-
-        originalNote = _mapper.Map(updatedNoteData, originalNote);
-        await _mediator.Send(new EditNoteRequest(originalNote), cancellationToken);
-        return Ok();
+            UpdateNoteResult.Success => Ok(),
+            UpdateNoteResult.Failure f => f.Error.ToActionResult(),
+            _ => StatusCode(StatusCodes.Status501NotImplemented)
+        };
     }
 
     /// <summary>

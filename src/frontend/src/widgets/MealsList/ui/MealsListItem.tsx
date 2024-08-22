@@ -6,11 +6,12 @@ import { NotesList } from './NotesList';
 
 interface Props {
   pageId: number;
+  date: string;
   mealType: noteModel.MealType;
   notes: noteModel.NoteItem[];
 }
 
-export const MealsListItem: FC<Props> = ({ pageId, mealType, notes }) => {
+export const MealsListItem: FC<Props> = ({ pageId, date, mealType, notes }) => {
   const totalCalories = useMemo(() => notes.reduce((sum, note) => sum + note.calories, 0), [notes]);
 
   return (
@@ -21,7 +22,7 @@ export const MealsListItem: FC<Props> = ({ pageId, mealType, notes }) => {
           totalCalories={totalCalories}
         />
         <Paper component="section">
-          <NotesList pageId={pageId} mealType={mealType} notes={notes} />
+          <NotesList pageId={pageId} date={date} mealType={mealType} notes={notes} />
         </Paper>
       </Box>
     </ListItem>

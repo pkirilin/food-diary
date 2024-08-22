@@ -1,3 +1,4 @@
+using FoodDiary.ComponentTests.Infrastructure.DateAndTime;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Enums;
 
@@ -8,6 +9,7 @@ public class NoteBuilder
     private readonly Note _note = new()
     {
         Id = Random.Shared.Next(),
+        Date = DateOnly.Parse(FakeDateTimeProvider.CurrentFakeDateAsString),
         MealType = MealType.Breakfast,
         Page = Create.Page(DateTime.UtcNow.ToString("u")[..10]).Please(),
         Product = Create.Product().Please(),
@@ -19,6 +21,7 @@ public class NoteBuilder
     public NoteBuilder WithPage(Page page)
     {
         _note.Page = page;
+        _note.Date = page.Date;
         return this;
     }
     

@@ -13,6 +13,7 @@ export const db = factory({
 
   note: {
     id: primaryKey(Number),
+    date: Date,
     mealType: Number,
     displayOrder: Number,
     quantity: Number,

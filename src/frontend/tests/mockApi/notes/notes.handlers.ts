@@ -1,7 +1,7 @@
 import { http, type HttpHandler, type PathParams } from 'msw';
 import {
   type CreateNoteRequest,
-  type EditNoteRequest,
+  type UpdateNoteRequest,
   type noteModel,
   type RecognizeNoteResponse,
 } from '@/entities/note';
@@ -26,11 +26,12 @@ export const handlers: HttpHandler[] = [
     const productsMap = notesService.getProducts(notes);
 
     const response = notes.map<noteModel.NoteItem>(
-      ({ id, mealType, displayOrder, productId, quantity }) => {
+      ({ id, date, mealType, displayOrder, productId, quantity }) => {
         const product = productsMap.get(productId);
 
         return {
           id,
+          date,
           mealType,
           displayOrder,
           productId: product?.id ?? 0,
@@ -56,7 +57,7 @@ export const handlers: HttpHandler[] = [
     return await DelayedHttpResponse.ok();
   }),
 
-  http.put<{ id: string }, EditNoteRequest>(
+  http.put<{ id: string }, UpdateNoteRequest>(
     `${API_URL}/api/v1/notes/:id`,
     async ({ params, request }) => {
       const id = parseInt(params.id);

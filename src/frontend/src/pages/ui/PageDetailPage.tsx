@@ -36,7 +36,7 @@ export const Component: FC = () => {
 
   return (
     <PrivateLayout subheader={<PageDetailHeader page={page} />}>
-      <MealsList pageId={pageId} notes={notes.data} />
+      <MealsList pageId={pageId} date={page.date} notes={notes.data} />
     </PrivateLayout>
   );
 };

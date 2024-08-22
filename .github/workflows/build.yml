@@ -60,7 +60,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
     - name: Start containers
-      run: docker-compose up -d --build
+      run: docker compose up -d --build
     - name: Setup node
       uses: actions/setup-node@v4
       with:
@@ -81,7 +81,7 @@ jobs:
         retention-days: 30
     - name: Stop containers
       if: always()
-      run: docker-compose down
+      run: docker compose down
   run-migrations:
     runs-on: ubuntu-latest
     needs: e2e-tests

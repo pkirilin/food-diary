@@ -1,5 +1,7 @@
 ﻿using System.Reflection;
 using System.Runtime.CompilerServices;
+using FoodDiary.Application.Notes.Create;
+using FoodDiary.Application.Notes.Update;
 using FoodDiary.Application.Services.Categories;
 using FoodDiary.Application.Services.Export;
 using FoodDiary.Application.Services.Products;
@@ -17,6 +19,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddMediatR(Assembly.GetExecutingAssembly());
         services.AddApplicationServices();
+        services.AddNotes();
     }
 
     private static void AddApplicationServices(this IServiceCollection services)
@@ -27,5 +30,11 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IExportService, ExportService>();
         services.AddScoped<IExportDataLoader, ExportDataLoader>();
         services.AddGoogleDocsExportService();
+    }
+    
+    private static void AddNotes(this IServiceCollection services)
+    {
+        services.AddScoped<CreateNoteCommandHandler>();
+        services.AddScoped<UpdateNoteCommandHandler>();
     }
 }

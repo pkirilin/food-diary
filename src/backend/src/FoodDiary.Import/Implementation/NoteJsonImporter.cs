@@ -15,7 +15,7 @@ class NoteJsonImporter : INoteJsonImporter
         _productImporter = productImporter ?? throw new ArgumentNullException(nameof(productImporter));
     }
 
-    public Note ImportNote(JsonExportNoteDto noteFromJson)
+    public Note ImportNote(JsonExportPageDto pageFromJson, JsonExportNoteDto noteFromJson)
     {
         if (noteFromJson == null)
             throw new ArgumentNullException(nameof(noteFromJson));
@@ -24,6 +24,7 @@ class NoteJsonImporter : INoteJsonImporter
 
         return new Note
         {
+            Date = pageFromJson.Date,
             MealType = (MealType)noteFromJson.MealType,
             DisplayOrder = noteFromJson.DisplayOrder,
             ProductQuantity = noteFromJson.ProductQuantity,

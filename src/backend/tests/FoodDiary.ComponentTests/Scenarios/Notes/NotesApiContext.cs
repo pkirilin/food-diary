@@ -68,20 +68,22 @@ public class NotesApiContext(FoodDiaryWebApplicationFactory factory, Infrastruct
 
     public async Task When_user_creates_note(Note note)
     {
-        var request = Create.NoteCreateEditRequest()
+        var body = Create.NoteRequestBody()
             .From(note)
             .Please();
-        _createNoteResponse = await ApiClient.PostAsJsonAsync("/api/v1/notes", request);
+        
+        _createNoteResponse = await ApiClient.PostAsJsonAsync("/api/v1/notes", body);
     }
     
     public async Task When_user_updates_product_with_quantity_for_note(Note note, Product product, int quantity)
     {
-        var request = Create.NoteCreateEditRequest()
+        var body = Create.NoteRequestBody()
             .From(note)
             .WithProduct(product)
             .WithProductQuantity(quantity)
             .Please();
-        _updateNoteResponse = await ApiClient.PutAsJsonAsync($"/api/v1/notes/{note.Id}", request);
+        
+        _updateNoteResponse = await ApiClient.PutAsJsonAsync($"/api/v1/notes/{note.Id}", body);
     }
 
     public async Task When_user_deletes_note(Note note)

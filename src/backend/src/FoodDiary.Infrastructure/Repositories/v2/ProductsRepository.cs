@@ -9,13 +9,22 @@ namespace FoodDiary.Infrastructure.Repositories.v2;
 
 internal class ProductsRepository(FoodDiaryContext context) : IProductsRepository
 {
-    public Task<Product[]> GetAllOrderedByNameAsync(CancellationToken cancellationToken) =>
-        context.Products
+    public Task<Product[]> GetAllOrderedByNameAsync(CancellationToken cancellationToken)
+    {
+        return context.Products
             .OrderBy(p => p.Name)
             .ToArrayAsync(cancellationToken);
+    }
 
-    public Task<Product> FindByExactName(string name, CancellationToken cancellationToken) =>
-        context.Products.FirstOrDefaultAsync(p => p.Name == name, cancellationToken);
+    public async Task<Product> FindById(int id, CancellationToken cancellationToken)
+    {
+        return await context.Products.FindAsync([id], cancellationToken);
+    }
+
+    public Task<Product> FindByExactName(string name, CancellationToken cancellationToken)
+    {
+        return context.Products.FirstOrDefaultAsync(p => p.Name == name, cancellationToken);
+    }
 
     public async Task Create(Product product, CancellationToken cancellationToken)
     {
