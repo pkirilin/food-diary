@@ -2,8 +2,12 @@ import { http, type HttpHandler, type PathParams } from 'msw';
 import {
   type CreateNoteRequest,
   type UpdateNoteRequest,
-  type noteModel,
   type RecognizeNoteResponse,
+  type NoteItem,
+  type GetNotesByDateResponse,
+  type GetNotesAggregatedResponse,
+  type NoteAggregatedItem,
+  type noteModel,
 } from '@/entities/note';
 import { API_URL } from '@/shared/config';
 import { DelayedHttpResponse } from '../DelayedHttpResponse';
@@ -38,12 +42,61 @@ export const handlers: HttpHandler[] = [
           productName: product?.name ?? '',
           productQuantity: quantity,
           productDefaultQuantity: product?.defaultQuantity ?? 0,
-          calories: product ? notesService.calculateCalories(quantity, product) : 0,
+          calories: notesService.calculateCalories(quantity, product?.defaultQuantity ?? 0),
         };
       },
     );
 
     return await DelayedHttpResponse.json(response);
+  }),
+
+  http.get(`${API_URL}/api/v1/notes/:date`, async ({ params }) => {
+    const date = params.date;
+
+    if (typeof date !== 'string') {
+      return await DelayedHttpResponse.badRequest();
+    }
+
+    const dbNotes = notesService.getByDate(date);
+    const productsMap = notesService.getProducts(dbNotes);
+
+    const notes = dbNotes.map<NoteItem>(
+      ({ id, date, mealType, displayOrder, productId, quantity }) => {
+        const product = productsMap.get(productId);
+
+        return {
+          id,
+          date,
+          mealType,
+          displayOrder,
+          productId: product?.id ?? 0,
+          productName: product?.name ?? '',
+          productQuantity: quantity,
+          productDefaultQuantity: product?.defaultQuantity ?? 0,
+          calories: notesService.calculateCalories(quantity, product?.caloriesCost ?? 0),
+        };
+      },
+    );
+
+    return await DelayedHttpResponse.json<GetNotesByDateResponse>({ notes });
+  }),
+
+  http.get(`${API_URL}/api/v1/notes/aggregated`, async ({ request }) => {
+    const url = new URL(request.url);
+    const from = url.searchParams.get('from') ?? '';
+    const to = url.searchParams.get('to') ?? '';
+    const dbNotes = notesService.getAggregated(from, to);
+    const productsMap = notesService.getProducts(dbNotes);
+
+    const notes = dbNotes.map<NoteAggregatedItem>(({ date, quantity, productId }) => ({
+      date,
+      caloriesCount: notesService.calculateCalories(
+        quantity,
+        productsMap.get(productId)?.caloriesCost ?? 0,
+      ),
+    }));
+
+    return await DelayedHttpResponse.json<GetNotesAggregatedResponse>({ notes });
   }),
 
   http.post<PathParams, CreateNoteRequest>(`${API_URL}/api/v1/notes`, async ({ request }) => {

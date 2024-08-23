@@ -1,9 +1,13 @@
 import {
   type UpdateNoteRequest,
   type CreateNoteRequest,
-  type GetNotesRequest,
-  type noteModel,
+  type GetNotesByDateRequest,
   type RecognizeNoteResponse,
+  type GetNotesAggregatedRequest,
+  type GetNotesByDateResponse,
+  type GetNotesAggregatedResponse,
+  type noteModel,
+  type GetNotesRequest,
 } from '@/entities/note';
 import { api } from '@/shared/api';
 import { createUrl } from '@/shared/lib';
@@ -12,6 +16,16 @@ export const noteApi = api.injectEndpoints({
   endpoints: builder => ({
     getNotes: builder.query<noteModel.NoteItem[], GetNotesRequest>({
       query: request => createUrl('/api/v1/notes', { ...request }),
+      providesTags: ['note'],
+    }),
+
+    notesByDate: builder.query<GetNotesByDateResponse, GetNotesByDateRequest>({
+      query: ({ date }) => `/api/v1/notes/${date}`,
+      providesTags: ['note'],
+    }),
+
+    notesAggregated: builder.query<GetNotesAggregatedResponse, GetNotesAggregatedRequest>({
+      query: request => createUrl('/api/v1/notes/aggregated', { ...request }),
       providesTags: ['note'],
     }),
 

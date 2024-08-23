@@ -14,6 +14,30 @@ export const get = (pageId: number, mealType: number | null): DbNote[] =>
     },
   });
 
+export const getByDate = (date: string): DbNote[] =>
+  db.note.findMany({
+    where: {
+      date: { equals: date },
+    },
+    orderBy: {
+      displayOrder: 'asc',
+    },
+  });
+
+export const getAggregated = (from: string, to: string): DbNote[] => {
+  return db.note.findMany({
+    where: {
+      date: {
+        gte: from,
+        lte: to,
+      },
+    },
+    orderBy: {
+      date: 'asc',
+    },
+  });
+};
+
 export const getProducts = (notes: DbNote[]): Map<number, DbProduct> => {
   return notes
     .map(n => n.productId)
@@ -36,8 +60,8 @@ export const getProducts = (notes: DbNote[]): Map<number, DbProduct> => {
     }, new Map<number, DbProduct>());
 };
 
-export const calculateCalories = (quantity: number, product: DbProduct): number =>
-  Math.floor((quantity * product.caloriesCost) / 100);
+export const calculateCalories = (quantity: number, caloriesCost: number): number =>
+  Math.floor((quantity * caloriesCost) / 100);
 
 export const create = ({
   mealType,

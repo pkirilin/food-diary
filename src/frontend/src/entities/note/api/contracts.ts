@@ -4,6 +4,40 @@ export interface GetNotesRequest {
   pageId: number;
 }
 
+export interface GetNotesByDateRequest {
+  date: string;
+}
+
+export interface GetNotesByDateResponse {
+  notes: NoteItem[];
+}
+
+export interface NoteItem {
+  id: number;
+  date: string;
+  mealType: MealType;
+  displayOrder: number;
+  productId: number;
+  productName: string;
+  productQuantity: number;
+  productDefaultQuantity: number;
+  calories: number;
+}
+
+export interface GetNotesAggregatedRequest {
+  from: string;
+  to: string;
+}
+
+export interface GetNotesAggregatedResponse {
+  notes: NoteAggregatedItem[];
+}
+
+export interface NoteAggregatedItem {
+  date: string;
+  caloriesCount: number;
+}
+
 export interface CreateNoteRequest {
   date: string;
   mealType: MealType;
