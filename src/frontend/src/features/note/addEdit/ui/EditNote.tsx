@@ -10,18 +10,16 @@ import { NoteInputForm } from './NoteInputForm';
 
 interface Props {
   note: noteModel.NoteItem;
-  pageId: number;
   renderTrigger: (onClick: () => void) => ReactElement;
 }
 
-export const EditNote: FC<Props> = ({ note, pageId, renderTrigger }) => {
+export const EditNote: FC<Props> = ({ note, renderTrigger }) => {
   const [updateNote, { reset, ...updateNoteResponse }] = noteApi.useUpdateNoteMutation();
   const addProductIfNotExists = useAddProductIfNotExists();
 
-  const notes = noteLib.useNotes(pageId);
+  const notes = noteLib.useNotes(note.date);
 
   const { clearValues: clearNoteForm, ...noteForm } = noteLib.useFormValues({
-    pageId,
     date: note.date,
     mealType: note.mealType,
     displayOrder: note.displayOrder,

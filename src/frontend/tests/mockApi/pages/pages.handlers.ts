@@ -32,7 +32,7 @@ export const handlers: HttpHandler[] = [
 
     const response: PagesSearchResult = {
       pageItems: pages.map(({ id, date }) => {
-        const notes = pagesService.getNotes(id);
+        const notes = pagesService.getNotes(formatDate(new Date(date)));
         const countCalories = pagesService.calculateCalories(notes);
 
         return {

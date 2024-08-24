@@ -62,7 +62,6 @@ export const NoteInputForm: FC<Props> = ({
     }
 
     onSubmit({
-      pageId: values.pageId,
       date: values.date,
       mealType: values.mealType,
       displayOrder: values.displayOrder,

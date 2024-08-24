@@ -7,49 +7,12 @@ import {
   type GetNotesByDateResponse,
   type GetNotesAggregatedResponse,
   type NoteAggregatedItem,
-  type noteModel,
 } from '@/entities/note';
 import { API_URL } from '@/shared/config';
 import { DelayedHttpResponse } from '../DelayedHttpResponse';
 import * as notesService from './notes.service';
 
-const parseIntOrNull = (value: string | null): number | null =>
-  value === null ? null : parseInt(value);
-
 export const handlers: HttpHandler[] = [
-  http.get(`${API_URL}/api/v1/notes`, async ({ request }) => {
-    const url = new URL(request.url);
-    const pageId = parseIntOrNull(url.searchParams.get('pageId'));
-    const mealType = parseIntOrNull(url.searchParams.get('mealType'));
-
-    if (pageId === null) {
-      return await DelayedHttpResponse.badRequest();
-    }
-
-    const notes = notesService.get(pageId, mealType);
-    const productsMap = notesService.getProducts(notes);
-
-    const response = notes.map<noteModel.NoteItem>(
-      ({ id, date, mealType, displayOrder, productId, quantity }) => {
-        const product = productsMap.get(productId);
-
-        return {
-          id,
-          date,
-          mealType,
-          displayOrder,
-          productId: product?.id ?? 0,
-          productName: product?.name ?? '',
-          productQuantity: quantity,
-          productDefaultQuantity: product?.defaultQuantity ?? 0,
-          calories: notesService.calculateCalories(quantity, product?.defaultQuantity ?? 0),
-        };
-      },
-    );
-
-    return await DelayedHttpResponse.json(response);
-  }),
-
   http.get(`${API_URL}/api/v1/notes/:date`, async ({ params }) => {
     const date = params.date;
 
@@ -103,7 +66,7 @@ export const handlers: HttpHandler[] = [
     const body = await request.json();
     const result = notesService.create(body);
 
-    if (result === 'PageNotFound' || result === 'ProductNotFound') {
+    if (result === 'ProductNotFound') {
       return await DelayedHttpResponse.badRequest();
     }
 
@@ -117,7 +80,7 @@ export const handlers: HttpHandler[] = [
       const body = await request.json();
       const result = notesService.update(id, body);
 
-      if (result === 'PageNotFound' || result === 'ProductNotFound') {
+      if (result === 'ProductNotFound') {
         return await DelayedHttpResponse.badRequest();
       }
 

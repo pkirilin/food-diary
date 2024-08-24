@@ -42,7 +42,6 @@ export interface CreateNoteRequest {
   date: string;
   mealType: MealType;
   productId: number;
-  pageId: number;
   productQuantity: number;
   displayOrder: number;
 }
@@ -52,7 +51,6 @@ export interface UpdateNoteRequest {
   date: string;
   mealType: MealType;
   productId: number;
-  pageId: number;
   productQuantity: number;
   displayOrder: number;
 }

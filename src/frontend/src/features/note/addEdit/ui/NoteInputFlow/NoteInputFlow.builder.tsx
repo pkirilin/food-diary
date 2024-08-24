@@ -25,7 +25,6 @@ class NoteInputFlowBuilder {
     this.renderAddDialog.bind(this);
 
   private readonly _noteFormValues: noteModel.FormValues = {
-    pageId: 1,
     date: '2022-01-01',
     mealType: noteModel.MealType.Breakfast,
     displayOrder: 1,

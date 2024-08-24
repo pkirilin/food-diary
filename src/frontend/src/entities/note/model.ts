@@ -19,7 +19,6 @@ export interface NoteItem {
 }
 
 export interface FormValues {
-  pageId: number;
   date: string;
   mealType: MealType;
   displayOrder: number;

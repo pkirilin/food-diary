@@ -17,7 +17,6 @@ import { DeleteNote } from '@/features/note/delete';
 
 interface Props {
   note: noteModel.NoteItem;
-  pageId: number;
 }
 
 const SecondaryTextStyled = styled(Typography)<TypographyProps>(({ theme }) => ({
@@ -26,14 +25,13 @@ const SecondaryTextStyled = styled(Typography)<TypographyProps>(({ theme }) => (
   fontWeight: theme.typography.fontWeightMedium,
 }));
 
-export const NotesListItem: FC<Props> = ({ note, pageId }) => (
+export const NotesListItem: FC<Props> = ({ note }) => (
   <ListItem
     key={note.id}
     disablePadding
     secondaryAction={
       <DeleteNote
         note={note}
-        pageId={pageId}
         renderTrigger={openDeleteDialog => (
           <Tooltip title="Delete note" placement="left">
             <IconButton edge="end" onClick={openDeleteDialog}>
@@ -46,7 +44,6 @@ export const NotesListItem: FC<Props> = ({ note, pageId }) => (
   >
     <EditNote
       note={note}
-      pageId={pageId}
       renderTrigger={openDialog => (
         <ListItemButton onClick={openDialog}>
           <Grid

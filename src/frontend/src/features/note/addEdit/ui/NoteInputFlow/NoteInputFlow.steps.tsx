@@ -158,7 +158,6 @@ export const thenFormValueContains = async (
 ): Promise<void> => {
   expect(onSubmitMock).toHaveBeenCalledWith<[Note]>({
     mealType: noteModel.MealType.Breakfast,
-    pageId: 1,
     date: '2022-01-01',
     displayOrder: 1,
     product,

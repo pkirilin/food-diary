@@ -14,17 +14,15 @@ interface LoaderData {
 export const loader = withAuthStatusCheck(async ({ params }) => {
   const pageId = Number(params.pageId);
 
-  const queryPromises = [
-    store.dispatch(pagesApi.endpoints.getPageById.initiate(pageId)),
-    store.dispatch(noteApi.endpoints.getNotes.initiate({ pageId })),
-  ];
+  const pageQuery = await store.dispatch(pagesApi.endpoints.getPageById.initiate(pageId));
 
-  const queries = await Promise.all(queryPromises);
-  queryPromises.forEach(promise => promise.unsubscribe());
-
-  if (queries.some(query => query.isError)) {
+  if (!pageQuery.data) {
     return new Response(null, { status: 500 });
   }
+
+  await store.dispatch(
+    noteApi.endpoints.notesByDate.initiate({ date: pageQuery.data.currentPage.date }),
+  );
 
   return { pageId } satisfies LoaderData;
 });
@@ -32,11 +30,11 @@ export const loader = withAuthStatusCheck(async ({ params }) => {
 export const Component: FC = () => {
   const { pageId } = useLoaderData() as LoaderData;
   const page = usePageFromLoader(pageId);
-  const notes = noteLib.useNotes(pageId);
+  const notes = noteLib.useNotes(page.date);
 
   return (
     <PrivateLayout subheader={<PageDetailHeader page={page} />}>
-      <MealsList pageId={pageId} date={page.date} notes={notes.data} />
+      <MealsList date={page.date} notes={notes.data} />
     </PrivateLayout>
   );
 };

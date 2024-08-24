@@ -7,17 +7,16 @@ interface Result {
   isChanged: boolean;
 }
 
-export const useNotes = (pageId: number): Result => {
-  return noteApi.useGetNotesQuery(
+export const useNotes = (date: string): Result =>
+  noteApi.useNotesByDateQuery(
     {
-      pageId,
+      date,
     },
     {
       selectFromResult: ({ data, isFetching, isSuccess }) => ({
-        data: data ?? [],
+        data: data?.notes ?? [],
         isFetching,
         isChanged: !isFetching && isSuccess,
       }),
     },
   );
-};

@@ -47,16 +47,16 @@ export const getById = (id: number): DbPage | null =>
     },
   });
 
-export const getNotes = (pageId: number): DbNote[] => {
+export const getNotes = (date: string): DbNote[] => {
   const notes = db.note.findMany({
     where: {
-      pageId: { equals: pageId },
+      date: { equals: date },
     },
   });
 
   const compareNotes = (first: DbNote, second: DbNote): number => {
-    const pageIdDiff = first.pageId - second.pageId;
-    return pageIdDiff === 0 ? first.displayOrder - second.displayOrder : pageIdDiff;
+    const dateDiff = new Date(first.date).getTime() - new Date(second.date).getTime();
+    return dateDiff === 0 ? first.displayOrder - second.displayOrder : dateDiff;
   };
 
   return notes.sort(compareNotes);
@@ -136,12 +136,6 @@ export const update = (id: number, { date }: PageCreateEdit): void => {
 };
 
 export const deleteMany = (pageIds: number[]): void => {
-  db.note.deleteMany({
-    where: {
-      pageId: { in: pageIds },
-    },
-  });
-
   db.page.deleteMany({
     where: {
       id: { in: pageIds },

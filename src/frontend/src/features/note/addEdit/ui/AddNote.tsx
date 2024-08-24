@@ -11,22 +11,20 @@ import { AddNoteDialogContent } from './AddNoteDialogContent';
 import { NoteInputFlow } from './NoteInputFlow';
 
 interface Props {
-  pageId: number;
   date: string;
   mealType: noteModel.MealType;
 }
 
-export const AddNote: FC<Props> = ({ pageId, date, mealType }) => {
+export const AddNote: FC<Props> = ({ date, mealType }) => {
   const [addNote, { reset, ...addNoteResponse }] = noteApi.useCreateNoteMutation();
 
   const addProductIfNotExists = useAddProductIfNotExists();
   const [recognizeNotes, recognizeNotesResult] = useRecognizeNotes();
 
-  const notes = noteLib.useNotes(pageId);
-  const displayOrder = noteLib.useNextDisplayOrder(pageId);
+  const notes = noteLib.useNotes(date);
+  const displayOrder = noteLib.useNextDisplayOrder(date);
 
   const { clearValues: clearNoteForm, ...noteForm } = noteLib.useFormValues({
-    pageId,
     date,
     mealType,
     displayOrder,

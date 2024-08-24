@@ -5,19 +5,18 @@ import { AddNote } from '@/features/note/addEdit';
 import { NotesListItem } from './NotesListItem';
 
 interface Props {
-  pageId: number;
   date: string;
   mealType: noteModel.MealType;
   notes: noteModel.NoteItem[];
 }
 
-export const NotesList: FC<Props> = ({ pageId, date, mealType, notes }) => (
+export const NotesList: FC<Props> = ({ date, mealType, notes }) => (
   <List disablePadding>
     {notes.map(note => (
-      <NotesListItem key={note.id} note={note} pageId={pageId} />
+      <NotesListItem key={note.id} note={note} />
     ))}
     <ListItem disableGutters>
-      <AddNote pageId={pageId} date={date} mealType={mealType} />
+      <AddNote date={date} mealType={mealType} />
     </ListItem>
   </List>
 );

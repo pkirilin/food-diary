@@ -13,13 +13,12 @@ export const mapToProductSelectOption = ({
 });
 
 export const mapToCreateNoteRequest = (
-  { date, mealType, pageId, productQuantity, displayOrder }: Note,
+  { date, mealType, productQuantity, displayOrder }: Note,
   productId: number,
 ): CreateNoteRequest => ({
   date,
   mealType,
   productId,
-  pageId,
   productQuantity,
   displayOrder,
 });
@@ -27,13 +26,12 @@ export const mapToCreateNoteRequest = (
 export const mapToEditNoteRequest = (
   id: number,
   productId: number,
-  { date, mealType, pageId, productQuantity, displayOrder }: Note,
+  { date, mealType, productQuantity, displayOrder }: Note,
 ): UpdateNoteRequest => ({
   id,
   date,
   mealType,
   productId,
-  pageId,
   productQuantity,
   displayOrder,
 });

@@ -5,12 +5,11 @@ import { DeleteNoteDialog } from './DeleteNoteDialog';
 
 interface Props {
   note: noteModel.NoteItem;
-  pageId: number;
   renderTrigger: (openDialog: () => void) => ReactElement;
 }
 
-export const DeleteNote: FC<Props> = ({ note, pageId, renderTrigger }) => {
-  const notes = noteLib.useNotes(pageId);
+export const DeleteNote: FC<Props> = ({ note, renderTrigger }) => {
+  const notes = noteLib.useNotes(note.date);
   const [deleteNote, deleteNoteResponse] = noteApi.useDeleteNoteMutation();
   const [dialogOpened, toggleDialog] = useToggle();
 
