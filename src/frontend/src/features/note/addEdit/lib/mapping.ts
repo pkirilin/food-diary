@@ -1,4 +1,4 @@
-import { type noteModel, type CreateNoteRequest, type UpdateNoteRequest } from '@/entities/note';
+import { type CreateNoteRequest, type UpdateNoteRequest, type NoteItem } from '@/entities/note';
 import { type ProductSelectOption } from '@/entities/product';
 import { type Note } from '../model';
 
@@ -6,7 +6,7 @@ export const mapToProductSelectOption = ({
   productId,
   productName,
   productDefaultQuantity,
-}: noteModel.NoteItem): ProductSelectOption => ({
+}: NoteItem): ProductSelectOption => ({
   id: productId,
   name: productName,
   defaultQuantity: productDefaultQuantity,

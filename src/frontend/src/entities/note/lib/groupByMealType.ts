@@ -1,4 +1,5 @@
-import { type NoteItem, type MealType } from '../model';
+import { type NoteItem } from '../api';
+import { type MealType } from '../model';
 
 const assignNoteToGroup = (
   groups: Map<MealType, NoteItem[]>,

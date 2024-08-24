@@ -1,13 +1,13 @@
 import { List, ListItem } from '@mui/material';
 import { type FC } from 'react';
-import { type noteModel } from '@/entities/note';
+import { type NoteItem, type noteModel } from '@/entities/note';
 import { AddNote } from '@/features/note/addEdit';
 import { NotesListItem } from './NotesListItem';
 
 interface Props {
   date: string;
   mealType: noteModel.MealType;
-  notes: noteModel.NoteItem[];
+  notes: NoteItem[];
 }
 
 export const NotesList: FC<Props> = ({ date, mealType, notes }) => (

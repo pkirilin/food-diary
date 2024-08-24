@@ -1,5 +1,4 @@
-import { noteApi } from '../api';
-import { type NoteItem } from '../model';
+import { type NoteItem, noteApi } from '../api';
 
 const getMaxDisplayOrder = (notes: NoteItem[]): number =>
   notes.reduce(

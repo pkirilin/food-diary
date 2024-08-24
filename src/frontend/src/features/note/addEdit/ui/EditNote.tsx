@@ -1,6 +1,6 @@
 import { useMemo, type FC, type ReactElement, useCallback } from 'react';
 import { categoryLib } from '@/entities/category';
-import { noteApi, noteLib, type noteModel } from '@/entities/note';
+import { type NoteItem, noteApi, noteLib } from '@/entities/note';
 import { ProductAutocomplete, productLib } from '@/entities/product';
 import { useAddProductIfNotExists, EMPTY_RECOGNIZE_NOTES_RESULT } from '../lib';
 import { mapToEditNoteRequest, mapToProductSelectOption } from '../lib/mapping';
@@ -9,7 +9,7 @@ import { NoteInputFlow } from './NoteInputFlow';
 import { NoteInputForm } from './NoteInputForm';
 
 interface Props {
-  note: noteModel.NoteItem;
+  note: NoteItem;
   renderTrigger: (onClick: () => void) => ReactElement;
 }
 

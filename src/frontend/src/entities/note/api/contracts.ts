@@ -1,9 +1,5 @@
 import { type MealType } from '../model';
 
-export interface GetNotesRequest {
-  pageId: number;
-}
-
 export interface GetNotesByDateRequest {
   date: string;
 }

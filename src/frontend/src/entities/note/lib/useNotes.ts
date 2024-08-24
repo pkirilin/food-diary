@@ -1,5 +1,4 @@
-import { noteApi } from '../api/noteApi';
-import { type NoteItem } from '../model';
+import { type NoteItem, noteApi } from '../api';
 
 interface Result {
   data: NoteItem[];

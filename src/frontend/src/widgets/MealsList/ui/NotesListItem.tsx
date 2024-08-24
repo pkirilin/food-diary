@@ -11,12 +11,12 @@ import {
   type TypographyProps,
 } from '@mui/material';
 import { type FC } from 'react';
-import { type noteModel } from '@/entities/note';
+import { type NoteItem } from '@/entities/note';
 import { EditNote } from '@/features/note/addEdit';
 import { DeleteNote } from '@/features/note/delete';
 
 interface Props {
-  note: noteModel.NoteItem;
+  note: NoteItem;
 }
 
 const SecondaryTextStyled = styled(Typography)<TypographyProps>(({ theme }) => ({
