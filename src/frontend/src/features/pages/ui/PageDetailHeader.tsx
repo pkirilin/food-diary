@@ -8,7 +8,7 @@ import {
   styled,
   Box,
 } from '@mui/material';
-import { useMemo, type FC } from 'react';
+import { type FC } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { noteLib } from '@/entities/note';
 import { formatDate } from '@/shared/lib';
@@ -26,11 +26,7 @@ const TextStyled = styled(Typography)<TypographyProps>(({ theme }) => ({
 
 export const PageDetailHeader: FC<Props> = ({ page }) => {
   const notes = noteLib.useNotes(page.date);
-
-  const totalCalories = useMemo(
-    () => notes.data.reduce((sum, note) => sum + note.calories, 0),
-    [notes],
-  );
+  const totalCalories = noteLib.useCalories(notes.data);
 
   return (
     <Box display="flex" alignItems="center" gap={3} width="100%">

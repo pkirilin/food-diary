@@ -1,3 +1,6 @@
 import format from 'date-fns/format';
 
+/**
+ * @deprecated Use dateLib instead
+ */
 export const formatDate = (date: Date): string => format(date, 'yyyy-MM-dd');
