@@ -24,19 +24,28 @@ export const getByDate = (date: string): DbNote[] =>
     },
   });
 
-export const getAggregated = (from: string, to: string): DbNote[] => {
-  return db.note.findMany({
-    where: {
-      date: {
-        gte: from,
-        lte: to,
+export const getHistory = (from: string, to: string): Map<string, DbNote[]> =>
+  db.note
+    .findMany({
+      where: {
+        date: {
+          gte: from,
+          lte: to,
+        },
       },
-    },
-    orderBy: {
-      date: 'asc',
-    },
-  });
-};
+      orderBy: {
+        date: 'asc',
+      },
+    })
+    .reduce((groups, note) => {
+      const group = groups.get(note.date);
+      if (group) {
+        group.push(note);
+      } else {
+        groups.set(note.date, [note]);
+      }
+      return groups;
+    }, new Map<string, DbNote[]>());
 
 export const getProducts = (notes: DbNote[]): Map<number, DbProduct> => {
   return notes

@@ -1,7 +1,6 @@
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { IconButton, Stack, Tooltip, Typography } from '@mui/material';
+import { Stack, Typography } from '@mui/material';
 import { type FC } from 'react';
-import { useLoaderData, Link } from 'react-router-dom';
+import { useLoaderData } from 'react-router-dom';
 import { store } from '@/app/store';
 import { type NoteItem, noteApi, noteLib } from '@/entities/note';
 import { MSW_ENABLED } from '@/shared/config';
@@ -37,15 +36,12 @@ export const Component: FC = () => {
     <PrivateLayout
       subheader={
         <Stack width="100%" direction="row" justifyContent="space-between" alignItems="center">
-          <Stack direction="row" alignItems="center" gap={3}>
-            <Tooltip title="History">
-              <IconButton edge="start" component={Link} to="/history">
-                <ArrowBackIcon />
-              </IconButton>
-            </Tooltip>
-            <Typography fontWeight="bold">{dateLib.formatToUserFriendlyString(date)}</Typography>
-          </Stack>
-          <Typography fontWeight="bold">{totalCalories} kcal</Typography>
+          <Typography variant="h6" component="h1">
+            {dateLib.formatToUserFriendlyString(date)}
+          </Typography>
+          <Typography variant="h6" component="span">
+            {totalCalories} kcal
+          </Typography>
         </Stack>
       }
     >

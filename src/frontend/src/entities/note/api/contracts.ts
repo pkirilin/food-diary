@@ -20,16 +20,16 @@ export interface NoteItem {
   calories: number;
 }
 
-export interface GetNotesAggregatedRequest {
+export interface GetNotesHistoryRequest {
   from: string;
   to: string;
 }
 
-export interface GetNotesAggregatedResponse {
-  notes: NoteAggregatedItem[];
+export interface GetNotesHistoryResponse {
+  notesHistory: NoteHistoryItem[];
 }
 
-export interface NoteAggregatedItem {
+export interface NoteHistoryItem {
   date: string;
   caloriesCount: number;
 }

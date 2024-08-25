@@ -5,14 +5,46 @@ import {
   type RecognizeNoteResponse,
   type NoteItem,
   type GetNotesByDateResponse,
-  type GetNotesAggregatedResponse,
-  type NoteAggregatedItem,
+  type GetNotesHistoryResponse,
 } from '@/entities/note';
 import { API_URL } from '@/shared/config';
 import { DelayedHttpResponse } from '../DelayedHttpResponse';
 import * as notesService from './notes.service';
 
 export const handlers: HttpHandler[] = [
+  http.get(`${API_URL}/api/v1/notes/history`, async () => {
+    // const url = new URL(request.url);
+    // const from = url.searchParams.get('from') ?? '';
+    // const to = url.searchParams.get('to') ?? '';
+    // const notesMap = notesService.getHistory(from, to);
+    // const productsMap = notesService.getProducts(dbNotes);
+
+    // const notes = Array.from(notesMap.entries()).map<NoteHistoryItem>(([date, notes]) => ({
+    //   date,
+    //   caloriesCount: notesService.calculateCalories(
+    //     quantity,
+    //     productsMap.get(productId)?.caloriesCost ?? 0,
+    //   ),
+    // }));
+
+    return await DelayedHttpResponse.json<GetNotesHistoryResponse>({
+      notesHistory: [
+        {
+          date: '2022-01-01',
+          caloriesCount: 1200,
+        },
+        {
+          date: '2022-01-02',
+          caloriesCount: 1300,
+        },
+        {
+          date: '2022-01-03',
+          caloriesCount: 1400,
+        },
+      ],
+    });
+  }),
+
   http.get(`${API_URL}/api/v1/notes/:date`, async ({ params }) => {
     const date = params.date;
 
@@ -42,24 +74,6 @@ export const handlers: HttpHandler[] = [
     );
 
     return await DelayedHttpResponse.json<GetNotesByDateResponse>({ notes });
-  }),
-
-  http.get(`${API_URL}/api/v1/notes/aggregated`, async ({ request }) => {
-    const url = new URL(request.url);
-    const from = url.searchParams.get('from') ?? '';
-    const to = url.searchParams.get('to') ?? '';
-    const dbNotes = notesService.getAggregated(from, to);
-    const productsMap = notesService.getProducts(dbNotes);
-
-    const notes = dbNotes.map<NoteAggregatedItem>(({ date, quantity, productId }) => ({
-      date,
-      caloriesCount: notesService.calculateCalories(
-        quantity,
-        productsMap.get(productId)?.caloriesCost ?? 0,
-      ),
-    }));
-
-    return await DelayedHttpResponse.json<GetNotesAggregatedResponse>({ notes });
   }),
 
   http.post<PathParams, CreateNoteRequest>(`${API_URL}/api/v1/notes`, async ({ request }) => {
