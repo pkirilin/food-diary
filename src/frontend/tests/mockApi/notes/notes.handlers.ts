@@ -6,43 +6,34 @@ import {
   type NoteItem,
   type GetNotesByDateResponse,
   type GetNotesHistoryResponse,
+  type NoteHistoryItem,
 } from '@/entities/note';
 import { API_URL } from '@/shared/config';
 import { DelayedHttpResponse } from '../DelayedHttpResponse';
 import * as notesService from './notes.service';
 
 export const handlers: HttpHandler[] = [
-  http.get(`${API_URL}/api/v1/notes/history`, async () => {
-    // const url = new URL(request.url);
-    // const from = url.searchParams.get('from') ?? '';
-    // const to = url.searchParams.get('to') ?? '';
-    // const notesMap = notesService.getHistory(from, to);
-    // const productsMap = notesService.getProducts(dbNotes);
+  http.get(`${API_URL}/api/v1/notes/history`, async ({ request }) => {
+    const url = new URL(request.url);
+    const from = url.searchParams.get('from') ?? '';
+    const to = url.searchParams.get('to') ?? '';
+    const notesMap = notesService.getHistory(from, to);
+    const productsMap = notesService.getProducts(Array.from(notesMap.values()).flat());
 
-    // const notes = Array.from(notesMap.entries()).map<NoteHistoryItem>(([date, notes]) => ({
-    //   date,
-    //   caloriesCount: notesService.calculateCalories(
-    //     quantity,
-    //     productsMap.get(productId)?.caloriesCost ?? 0,
-    //   ),
-    // }));
+    const notesHistory = Array.from(notesMap.entries()).map<NoteHistoryItem>(([date, notes]) => ({
+      date,
+      caloriesCount: notes.reduce(
+        (sum, note) =>
+          sum +
+          notesService.calculateCalories(
+            note.quantity,
+            productsMap.get(note.productId)?.caloriesCost ?? 0,
+          ),
+        0,
+      ),
+    }));
 
-    return await DelayedHttpResponse.json<GetNotesHistoryResponse>({
-      notesHistory: [
-        {
-          date: '2022-01-01',
-          caloriesCount: 1200,
-        },
-        {
-          date: '2022-01-02',
-          caloriesCount: 1300,
-        },
-        {
-          date: '2022-01-03',
-          caloriesCount: 1400,
-        },
-      ],
-    });
+    return await DelayedHttpResponse.json<GetNotesHistoryResponse>({ notesHistory });
   }),
 
   http.get(`${API_URL}/api/v1/notes/:date`, async ({ params }) => {
