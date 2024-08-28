@@ -20,8 +20,8 @@ import {
   Typography,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
-import { type FC } from 'react';
-import { useLoaderData } from 'react-router-dom';
+import { useState, type FC } from 'react';
+import { useLoaderData, useSubmit } from 'react-router-dom';
 import { store } from '@/app/store';
 import { type NoteHistoryItem, noteApi } from '@/entities/note';
 import { MSW_ENABLED } from '@/shared/config';
@@ -32,28 +32,39 @@ import { withAuthStatusCheck } from '../lib';
 
 interface LoaderData {
   notes: NoteHistoryItem[];
-  today: Date;
+  date: Date;
 }
 
-export const loader = withAuthStatusCheck(async () => {
-  const today = MSW_ENABLED ? new Date('2023-10-19') : new Date();
+const getFallbackMonth = (): number => (MSW_ENABLED ? 10 : new Date().getMonth() + 1);
+const getFallbackYear = (): number => (MSW_ENABLED ? 2023 : new Date().getFullYear());
+
+const getEndOfMonth = (date: Date): string =>
+  dateLib.formatToISOStringWithoutTime(dateLib.getEndOfMonth(date));
+
+export const loader = withAuthStatusCheck(async ({ request }) => {
+  const url = new URL(request.url);
+  const month = url.searchParams.get('month') ?? getFallbackMonth();
+  const year = url.searchParams.get('year') ?? getFallbackYear();
+  const date = new Date(+year, +month - 1);
 
   const notesHistoryQuery = await store.dispatch(
     noteApi.endpoints.notesHistory.initiate({
-      from: dateLib.formatToISOStringWithoutTime(dateLib.getWeeksBefore(today, 2)),
-      to: MSW_ENABLED ? '2023-10-21' : dateLib.formatToISOStringWithoutTime(today),
+      from: dateLib.formatToISOStringWithoutTime(date),
+      to: getEndOfMonth(date),
     }),
   );
 
   return {
     notes: notesHistoryQuery.data?.notesHistory ?? [],
-    today,
+    date,
   } satisfies LoaderData;
 });
 
 export const Component: FC = () => {
-  const { notes, today } = useLoaderData() as LoaderData;
+  const { notes, date } = useLoaderData() as LoaderData;
   const [filterVisible, toggleFilter] = useToggle();
+  const [filterDate, setFilterDate] = useState(date);
+  const submit = useSubmit();
 
   return (
     <PrivateLayout
@@ -88,8 +99,18 @@ export const Component: FC = () => {
         <DatePicker
           views={['year', 'month']}
           label="Year and Month"
-          value={today}
-          onChange={_ => {}}
+          value={filterDate}
+          onChange={newValue => {
+            if (newValue) {
+              setFilterDate(newValue);
+              submit(
+                new URLSearchParams({
+                  month: (newValue.getMonth() + 1).toString(),
+                  year: newValue.getFullYear().toString(),
+                }),
+              );
+            }
+          }}
           renderInput={params => <TextField {...params} size="small" margin="normal" />}
         />
       </Collapse>
