@@ -21,12 +21,12 @@ import {
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import { useState, type FC } from 'react';
-import { useLoaderData, useSubmit } from 'react-router-dom';
+import { useLoaderData, useSubmit, Link } from 'react-router-dom';
 import { store } from '@/app/store';
 import { type NoteHistoryItem, noteApi } from '@/entities/note';
 import { MSW_ENABLED } from '@/shared/config';
 import { useToggle } from '@/shared/hooks';
-import { dateLib } from '@/shared/lib';
+import { createUrl, dateLib } from '@/shared/lib';
 import { PrivateLayout } from '@/widgets/layout';
 import { withAuthStatusCheck } from '../lib';
 
@@ -118,7 +118,7 @@ export const Component: FC = () => {
         <List disablePadding>
           {notes.map(({ date, caloriesCount }) => (
             <ListItem key={date} disableGutters>
-              <ListItemButton>
+              <ListItemButton component={Link} to={createUrl('/', { date })}>
                 <ListItemIcon>
                   <CalendarTodayIcon />
                 </ListItemIcon>
