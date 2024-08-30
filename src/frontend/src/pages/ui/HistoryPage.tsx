@@ -82,7 +82,7 @@ export const Component: FC = () => {
 
           <Box display="flex" gap={1}>
             <Tooltip title="Add notes">
-              <IconButton>
+              <IconButton component={Link} to="/">
                 <AddIcon />
               </IconButton>
             </Tooltip>
