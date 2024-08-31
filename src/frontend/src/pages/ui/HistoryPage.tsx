@@ -1,16 +1,7 @@
 import AddIcon from '@mui/icons-material/Add';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import FilterAltOffIcon from '@mui/icons-material/FilterAltOff';
-import {
-  Box,
-  Collapse,
-  IconButton,
-  Paper,
-  Stack,
-  TextField,
-  Tooltip,
-  Typography,
-} from '@mui/material';
+import { Box, Collapse, IconButton, Stack, TextField, Tooltip, Typography } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import { useState, type FC } from 'react';
 import { useLoaderData, useSubmit, Link } from 'react-router-dom';
@@ -90,6 +81,7 @@ export const Component: FC = () => {
     >
       <Collapse in={filterVisible}>
         <DatePicker
+          openTo="month"
           views={['year', 'month']}
           label="Year and Month"
           value={filterDate}
@@ -107,9 +99,7 @@ export const Component: FC = () => {
           renderInput={params => <TextField {...params} size="small" margin="normal" />}
         />
       </Collapse>
-      <Stack mt={2} spacing={2} component={Paper}>
-        <NotesHistoryList notes={notes} />
-      </Stack>
+      <NotesHistoryList notes={notes} />
     </PrivateLayout>
   );
 };

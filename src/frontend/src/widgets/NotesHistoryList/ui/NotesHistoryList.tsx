@@ -8,6 +8,8 @@ import {
   ListItemIcon,
   ListItemSecondaryAction,
   ListItemText,
+  Paper,
+  Typography,
 } from '@mui/material';
 import { type FC } from 'react';
 import { Link } from 'react-router-dom';
@@ -18,21 +20,33 @@ interface Props {
   notes: NoteHistoryItem[];
 }
 
-export const NotesHistoryList: FC<Props> = ({ notes }) => (
-  <List disablePadding>
-    {notes.map(({ date, caloriesCount }) => (
-      <ListItem key={date} disableGutters>
-        <ListItemButton component={Link} to={createUrl('/', { date })}>
-          <ListItemIcon>
-            <CalendarTodayIcon />
-          </ListItemIcon>
-          <ListItemText primary={dateLib.formatToUserFriendlyString(date)} />
-          <Box component={ListItemSecondaryAction} display="flex" alignItems="center" gap={1}>
-            <ListItemText secondary={`${caloriesCount} kcal`} />
-            <ChevronRightIcon />
-          </Box>
-        </ListItemButton>
-      </ListItem>
-    ))}
-  </List>
-);
+export const NotesHistoryList: FC<Props> = ({ notes }) => {
+  if (notes.length === 0) {
+    return (
+      <Typography py={2} color="GrayText">
+        No items found
+      </Typography>
+    );
+  }
+
+  return (
+    <Box mt={2} component={Paper}>
+      <List disablePadding>
+        {notes.map(({ date, caloriesCount }) => (
+          <ListItem key={date} disableGutters>
+            <ListItemButton component={Link} to={createUrl('/', { date })}>
+              <ListItemIcon>
+                <CalendarTodayIcon />
+              </ListItemIcon>
+              <ListItemText primary={dateLib.formatToUserFriendlyString(date)} />
+              <Box component={ListItemSecondaryAction} display="flex" alignItems="center" gap={1}>
+                <ListItemText secondary={`${caloriesCount} kcal`} />
+                <ChevronRightIcon />
+              </Box>
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+    </Box>
+  );
+};
