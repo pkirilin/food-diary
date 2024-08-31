@@ -18,8 +18,8 @@ public class NotesApiTests(FoodDiaryWebApplicationFactory factory, Infrastructur
         
         var notes = new
         {
-            Chicken = Create.Note().WithPage(page).WithProduct("Chicken", 150).Please(),
-            Rice = Create.Note().WithPage(page).WithProduct("Rice", 100).Please()
+            Chicken = Create.Note().WithDate("2024-01-04").WithProduct("Chicken", 150).Please(),
+            Rice = Create.Note().WithDate("2024-01-04").WithProduct("Rice", 100).Please()
         };
         
         return Run(
@@ -35,7 +35,7 @@ public class NotesApiTests(FoodDiaryWebApplicationFactory factory, Infrastructur
         var page = Create.Page("2024-01-04").Please();
         var product = Create.Product("Chicken").Please();
         var note = Create.Note()
-            .WithPage(page)
+            .WithDate("2024-01-04")
             .WithProduct(product, 150)
             .Please();
         
@@ -77,7 +77,7 @@ public class NotesApiTests(FoodDiaryWebApplicationFactory factory, Infrastructur
     public Task I_can_delete_single_note()
     {
         var page = Create.Page("2024-01-04").Please();
-        var note = Create.Note().WithPage(page).Please();
+        var note = Create.Note().WithDate("2024-01-04").Please();
         
         return Run(
             c => c.Given_authenticated_user(),

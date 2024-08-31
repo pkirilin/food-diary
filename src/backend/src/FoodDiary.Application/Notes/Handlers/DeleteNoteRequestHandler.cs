@@ -23,7 +23,7 @@ class DeleteNoteRequestHandler : IRequestHandler<DeleteNoteRequest, int>
     public async Task<int> Handle(DeleteNoteRequest request, CancellationToken cancellationToken)
     {
         var notesWithoutDeletedQuery = _noteRepository.GetQuery()
-            .Where(n => n.PageId == request.Entity.PageId)
+            .Where(n => n.Date == request.Entity.Date)
             .Where(n => n.MealType == request.Entity.MealType)
             .Where(n => n.Id != request.Entity.Id);
         var notesWithoutDeleted = await _noteRepository.GetByQueryAsync(notesWithoutDeletedQuery, cancellationToken);

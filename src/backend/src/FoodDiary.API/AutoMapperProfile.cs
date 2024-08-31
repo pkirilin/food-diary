@@ -25,8 +25,6 @@ public class AutoMapperProfile : Profile
             .ForMember(
                 dest => dest.ProductName,
                 o => o.MapFrom(src => src.Product.Name));
-
-        CreateMap<NoteCreateEditRequest, Note>();
     }
 
     private void CreateCategoryMappings()

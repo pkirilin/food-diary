@@ -21,9 +21,7 @@ public class NoteItemDto
 
     public int DisplayOrder { get; init; }
 
-    public int PageId { get; init; }
-
-    public string ProductName { get; init; }
+    public required string ProductName { get; init; }
 
     public int Calories { get; init; }
 }

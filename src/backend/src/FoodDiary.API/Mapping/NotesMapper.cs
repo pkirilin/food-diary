@@ -12,7 +12,6 @@ public static class NotesMapper
     {
         Id = note.Id,
         Date = note.Date,
-        PageId = note.PageId,
         MealType = note.MealType,
         DisplayOrder = note.DisplayOrder,
         ProductId = note.ProductId,
@@ -25,7 +24,6 @@ public static class NotesMapper
         body.Date.GetValueOrDefault(),
         body.MealType,
         body.ProductId,
-        body.PageId,
         body.ProductQuantity,
         body.DisplayOrder
     );
@@ -35,7 +33,6 @@ public static class NotesMapper
         body.Date.GetValueOrDefault(),
         body.MealType,
         body.ProductId,
-        body.PageId,
         body.ProductQuantity,
         body.DisplayOrder
     );

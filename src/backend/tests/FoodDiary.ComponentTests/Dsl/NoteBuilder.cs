@@ -11,7 +11,7 @@ public class NoteBuilder
         Id = Random.Shared.Next(),
         Date = DateOnly.Parse(FakeDateTimeProvider.CurrentFakeDateAsString),
         MealType = MealType.Breakfast,
-        Page = Create.Page(DateTime.UtcNow.ToString("u")[..10]).Please(),
+        // Page = Create.Page(DateTime.UtcNow.ToString("u")[..10]).Please(),
         Product = Create.Product().Please(),
         ProductQuantity = 100
     };
@@ -22,6 +22,12 @@ public class NoteBuilder
     {
         _note.Page = page;
         _note.Date = page.Date;
+        return this;
+    }
+    
+    public NoteBuilder WithDate(string date)
+    {
+        _note.Date = DateOnly.Parse(date);
         return this;
     }
     

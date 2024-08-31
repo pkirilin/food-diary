@@ -92,7 +92,6 @@ public class ImportApiContext(FoodDiaryWebApplicationFactory factory, Infrastruc
         notesList.Should()
             .BeEquivalentTo(expectedNotesList, options => options
                 .Excluding(note => note.Id)
-                .Excluding(note => note.PageId)
                 .Excluding(note => note.ProductId)
                 .Excluding(note => note.Calories))
             .And.AllSatisfy(note => { note.Calories.Should().BePositive(); });
