@@ -125,37 +125,6 @@ public class NotesController : ControllerBase
         return Ok();
     }
 
-    /// <summary>
-    /// Moves note by specified parameters
-    /// </summary>
-    /// <param name="moveRequest">Parameters for moving note</param>
-    /// <param name="cancellationToken"></param>
-    [HttpPut("move")]
-    [ProducesResponseType((int)HttpStatusCode.OK)]
-    [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-    [ProducesResponseType((int)HttpStatusCode.NotFound)]
-    public async Task<IActionResult> MoveNote([FromBody] NoteMoveRequest moveRequest, CancellationToken cancellationToken)
-    {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-
-        var noteForMove = await _mediator.Send(new GetNoteByIdRequest(moveRequest.NoteId), cancellationToken);
-
-        if (noteForMove == null)
-            return NotFound();
-
-        var orderLimit = await _mediator.Send(new GetOrderForNewNoteRequest(noteForMove.PageId, moveRequest.DestMeal), cancellationToken);
-
-        if (moveRequest.Position < 0 || moveRequest.Position > orderLimit)
-        {
-            ModelState.AddModelError(String.Empty, "Note cannot be moved on target meal group to the specified position");
-            return BadRequest(ModelState);
-        }
-
-        await _mediator.Send(new MoveNoteRequest(noteForMove, moveRequest.DestMeal, moveRequest.Position), cancellationToken);
-        return Ok();
-    }
-
     [HttpPost("recognitions")]
     public async Task<IActionResult> RecognizeNote(
         [FromForm] IReadOnlyList<IFormFile> files,
