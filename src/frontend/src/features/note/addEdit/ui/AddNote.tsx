@@ -5,7 +5,7 @@ import { noteApi, type noteModel, noteLib } from '@/entities/note';
 import { productLib } from '@/entities/product';
 import { Button } from '@/shared/ui';
 import { useAddProductIfNotExists, useRecognizeNotes } from '../lib';
-import { mapToCreateNoteRequest } from '../lib/mapping';
+import { mapToNoteRequestBody } from '../lib/mapping';
 import { type UploadedPhoto, type Note, type InputMethod } from '../model';
 import { AddNoteDialogContent } from './AddNoteDialogContent';
 import { NoteInputFlow } from './NoteInputFlow';
@@ -39,7 +39,7 @@ export const AddNote: FC<Props> = ({ date, mealType }) => {
 
   const handleSubmit = async (formData: Note): Promise<void> => {
     const productId = await addProductIfNotExists.sendRequest(formData.product);
-    const request = mapToCreateNoteRequest(formData, productId);
+    const request = mapToNoteRequestBody(formData, productId);
     await addNote(request).unwrap();
   };
 

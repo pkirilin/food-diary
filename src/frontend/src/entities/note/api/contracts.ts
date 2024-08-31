@@ -34,7 +34,7 @@ export interface NoteHistoryItem {
   caloriesCount: number;
 }
 
-export interface CreateNoteRequest {
+export interface NoteRequestBody {
   date: string;
   mealType: MealType;
   productId: number;
@@ -44,11 +44,7 @@ export interface CreateNoteRequest {
 
 export interface UpdateNoteRequest {
   id: number;
-  date: string;
-  mealType: MealType;
-  productId: number;
-  productQuantity: number;
-  displayOrder: number;
+  note: NoteRequestBody;
 }
 
 export interface RecognizeProductItem {

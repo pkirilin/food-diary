@@ -1,12 +1,11 @@
 import { http, type HttpHandler, type PathParams } from 'msw';
 import {
-  type CreateNoteRequest,
-  type UpdateNoteRequest,
   type RecognizeNoteResponse,
   type NoteItem,
   type GetNotesByDateResponse,
   type GetNotesHistoryResponse,
   type NoteHistoryItem,
+  type NoteRequestBody,
 } from '@/entities/note';
 import { API_URL } from '@/shared/config';
 import { DelayedHttpResponse } from '../DelayedHttpResponse';
@@ -67,7 +66,7 @@ export const handlers: HttpHandler[] = [
     return await DelayedHttpResponse.json<GetNotesByDateResponse>({ notes });
   }),
 
-  http.post<PathParams, CreateNoteRequest>(`${API_URL}/api/v1/notes`, async ({ request }) => {
+  http.post<PathParams, NoteRequestBody>(`${API_URL}/api/v1/notes`, async ({ request }) => {
     const body = await request.json();
     const result = notesService.create(body);
 
@@ -78,12 +77,12 @@ export const handlers: HttpHandler[] = [
     return await DelayedHttpResponse.ok();
   }),
 
-  http.put<{ id: string }, UpdateNoteRequest>(
+  http.put<{ id: string }, NoteRequestBody>(
     `${API_URL}/api/v1/notes/:id`,
     async ({ params, request }) => {
       const id = parseInt(params.id);
-      const body = await request.json();
-      const result = notesService.update(id, body);
+      const note = await request.json();
+      const result = notesService.update({ id, note });
 
       if (result === 'ProductNotFound') {
         return await DelayedHttpResponse.badRequest();

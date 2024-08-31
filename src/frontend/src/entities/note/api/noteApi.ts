@@ -1,11 +1,11 @@
 import {
   type UpdateNoteRequest,
-  type CreateNoteRequest,
   type GetNotesByDateRequest,
   type RecognizeNoteResponse,
   type GetNotesHistoryRequest,
   type GetNotesByDateResponse,
   type GetNotesHistoryResponse,
+  type NoteRequestBody,
 } from '@/entities/note';
 import { api } from '@/shared/api';
 import { createUrl } from '@/shared/lib';
@@ -22,7 +22,7 @@ export const noteApi = api.injectEndpoints({
       providesTags: ['note'],
     }),
 
-    createNote: builder.mutation<void, CreateNoteRequest>({
+    createNote: builder.mutation<void, NoteRequestBody>({
       query: request => ({
         method: 'POST',
         url: '/api/v1/notes',

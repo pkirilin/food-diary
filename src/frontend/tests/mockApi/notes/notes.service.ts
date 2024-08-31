@@ -1,4 +1,4 @@
-import { type CreateNoteRequest, type UpdateNoteRequest } from '@/entities/note';
+import { type NoteRequestBody, type UpdateNoteRequest } from '@/entities/note';
 import { db, type DbNote, type DbProduct } from '../db';
 
 type Result = 'Success' | 'ProductNotFound';
@@ -77,7 +77,7 @@ export const create = ({
   productQuantity,
   displayOrder,
   productId,
-}: CreateNoteRequest): Result => {
+}: NoteRequestBody): Result => {
   const product = db.product.findFirst({
     where: {
       id: { equals: productId },
@@ -107,10 +107,9 @@ export const create = ({
   return 'Success';
 };
 
-export const update = (
-  id: number,
-  { mealType, productQuantity, displayOrder, productId }: UpdateNoteRequest,
-): Result => {
+export const update = ({ id, note }: UpdateNoteRequest): Result => {
+  const { mealType, productQuantity: quantity, displayOrder, productId } = note;
+
   const product = db.product.findFirst({
     where: {
       id: { equals: productId },
@@ -127,7 +126,7 @@ export const update = (
     },
     data: {
       mealType,
-      quantity: productQuantity,
+      quantity,
       displayOrder,
       productId,
     },

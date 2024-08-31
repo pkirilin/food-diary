@@ -3,7 +3,7 @@ import { categoryLib } from '@/entities/category';
 import { type NoteItem, noteApi, noteLib } from '@/entities/note';
 import { ProductAutocomplete, productLib } from '@/entities/product';
 import { useAddProductIfNotExists, EMPTY_RECOGNIZE_NOTES_RESULT } from '../lib';
-import { mapToEditNoteRequest, mapToProductSelectOption } from '../lib/mapping';
+import { mapToUpdateNoteRequest, mapToProductSelectOption } from '../lib/mapping';
 import { type Note } from '../model';
 import { NoteInputFlow } from './NoteInputFlow';
 import { NoteInputForm } from './NoteInputForm';
@@ -33,7 +33,7 @@ export const EditNote: FC<Props> = ({ note, renderTrigger }) => {
 
   const handleSubmit = async (formData: Note): Promise<void> => {
     const productId = await addProductIfNotExists.sendRequest(formData.product);
-    const request = mapToEditNoteRequest(note.id, productId, formData);
+    const request = mapToUpdateNoteRequest(note.id, productId, formData);
     await updateNote(request).unwrap();
   };
 

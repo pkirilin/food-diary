@@ -1,4 +1,4 @@
-import { type CreateNoteRequest, type UpdateNoteRequest, type NoteItem } from '@/entities/note';
+import { type UpdateNoteRequest, type NoteItem, type NoteRequestBody } from '@/entities/note';
 import { type ProductSelectOption } from '@/entities/product';
 import { type Note } from '../model';
 
@@ -12,10 +12,10 @@ export const mapToProductSelectOption = ({
   defaultQuantity: productDefaultQuantity,
 });
 
-export const mapToCreateNoteRequest = (
+export const mapToNoteRequestBody = (
   { date, mealType, productQuantity, displayOrder }: Note,
   productId: number,
-): CreateNoteRequest => ({
+): NoteRequestBody => ({
   date,
   mealType,
   productId,
@@ -23,15 +23,11 @@ export const mapToCreateNoteRequest = (
   displayOrder,
 });
 
-export const mapToEditNoteRequest = (
+export const mapToUpdateNoteRequest = (
   id: number,
   productId: number,
-  { date, mealType, productQuantity, displayOrder }: Note,
+  note: Note,
 ): UpdateNoteRequest => ({
   id,
-  date,
-  mealType,
-  productId,
-  productQuantity,
-  displayOrder,
+  note: mapToNoteRequestBody(note, productId),
 });
