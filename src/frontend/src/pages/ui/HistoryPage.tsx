@@ -1,18 +1,10 @@
 import AddIcon from '@mui/icons-material/Add';
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import FilterAltOffIcon from '@mui/icons-material/FilterAltOff';
 import {
   Box,
   Collapse,
   IconButton,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemSecondaryAction,
-  ListItemText,
   Paper,
   Stack,
   TextField,
@@ -26,8 +18,9 @@ import { store } from '@/app/store';
 import { type NoteHistoryItem, noteApi } from '@/entities/note';
 import { MSW_ENABLED } from '@/shared/config';
 import { useToggle } from '@/shared/hooks';
-import { createUrl, dateLib } from '@/shared/lib';
+import { dateLib } from '@/shared/lib';
 import { PrivateLayout } from '@/widgets/layout';
+import { NotesHistoryList } from '@/widgets/NotesHistoryList';
 import { withAuthStatusCheck } from '../lib';
 
 interface LoaderData {
@@ -115,22 +108,7 @@ export const Component: FC = () => {
         />
       </Collapse>
       <Stack mt={2} spacing={2} component={Paper}>
-        <List disablePadding>
-          {notes.map(({ date, caloriesCount }) => (
-            <ListItem key={date} disableGutters>
-              <ListItemButton component={Link} to={createUrl('/', { date })}>
-                <ListItemIcon>
-                  <CalendarTodayIcon />
-                </ListItemIcon>
-                <ListItemText primary={dateLib.formatToUserFriendlyString(date)} />
-                <Box component={ListItemSecondaryAction} display="flex" alignItems="center" gap={1}>
-                  <ListItemText secondary={`${caloriesCount} kcal`} />
-                  <ChevronRightIcon />
-                </Box>
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
+        <NotesHistoryList notes={notes} />
       </Stack>
     </PrivateLayout>
   );
