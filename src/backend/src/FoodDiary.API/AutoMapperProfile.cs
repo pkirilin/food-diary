@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using FoodDiary.API.Mapping;
 using FoodDiary.API.Dtos;
 using FoodDiary.Domain.Entities;
 using FoodDiary.API.Requests;
@@ -11,20 +10,8 @@ public class AutoMapperProfile : Profile
 {
     public AutoMapperProfile()
     {
-        CreateNoteMappings();
         CreateCategoryMappings();
         CreateProductMappings();
-    }
-
-    private void CreateNoteMappings()
-    {
-        CreateMap<Note, NoteItemDto>()
-            .ForMember(
-                dest => dest.Calories,
-                o => o.MapFrom<NoteCaloriesCountValueResolver>())
-            .ForMember(
-                dest => dest.ProductName,
-                o => o.MapFrom(src => src.Product.Name));
     }
 
     private void CreateCategoryMappings()
