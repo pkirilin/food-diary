@@ -74,6 +74,7 @@ public class NoteBuilder
     public NoteBuilder From(Note note)
     {
         _note.Id = note.Id;
+        _note.Date = note.Date;
         _note.MealType = note.MealType;
         _note.PageId = note.PageId;
         _note.ProductId = note.ProductId;

@@ -1,13 +1,15 @@
 using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
-using FoodDiary.API.Dtos;
 using FoodDiary.API.Mapping;
 using FoodDiary.Application.Notes.Recognize;
 using FoodDiary.ComponentTests.Dsl;
 using FoodDiary.ComponentTests.Infrastructure;
+using FoodDiary.Contracts.Notes;
 using FoodDiary.Domain.Entities;
+using FoodDiary.Domain.Utils;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace FoodDiary.ComponentTests.Scenarios.Notes;
 
@@ -19,7 +21,7 @@ public class NotesApiContext(FoodDiaryWebApplicationFactory factory, Infrastruct
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase
     };
     
-    private IReadOnlyList<NoteItemDto>? _notesList;
+    private GetNotesByDateResponse? _getNotesByDateResponse;
     private HttpResponseMessage _createNoteResponse = null!;
     private HttpResponseMessage _updateNoteResponse = null!;
     private HttpResponseMessage _deleteNoteResponse = null!;
@@ -61,9 +63,10 @@ public class NotesApiContext(FoodDiaryWebApplicationFactory factory, Infrastruct
         return Infrastructure.ExternalServices.OpenAiApi.SetupCompletionFailure(error);
     }
 
-    public async Task When_user_retrieves_notes_list_for_page(Page page)
+    public async Task When_user_retrieves_notes_list_for_date(string date)
     {
-        _notesList = await ApiClient.GetFromJsonAsync<IReadOnlyList<NoteItemDto>>($"/api/v1/notes?pageId={page.Id}");
+        _getNotesByDateResponse = await ApiClient
+            .GetFromJsonAsync<GetNotesByDateResponse>($"/api/v1/notes?date={date}");
     }
 
     public async Task When_user_creates_note(Note note)
@@ -110,9 +113,10 @@ public class NotesApiContext(FoodDiaryWebApplicationFactory factory, Infrastruct
 
     public Task Then_notes_list_contains_items(params Note[] items)
     {
-        var expectedNotesList = items.Select(n => n.ToNoteItemDto());
+        var caloriesCalculator = Factory.Services.GetRequiredService<ICaloriesCalculator>();
+        var expectedNotesList = items.Select(n => n.ToNoteItem(caloriesCalculator));
 
-        _notesList.Should()
+        _getNotesByDateResponse?.Notes.Should()
             .BeEquivalentTo(expectedNotesList, options => options
                 .Excluding(note => note.Id)
                 .Excluding(note => note.ProductId)
@@ -124,7 +128,7 @@ public class NotesApiContext(FoodDiaryWebApplicationFactory factory, Infrastruct
     
     public Task Then_notes_list_contains_no_items()
     {
-        _notesList.Should().BeEmpty();
+        _getNotesByDateResponse?.Notes.Should().BeEmpty();
         return Task.CompletedTask;
     }
 
