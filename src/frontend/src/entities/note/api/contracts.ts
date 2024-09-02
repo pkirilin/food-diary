@@ -1,10 +1,10 @@
 import { type MealType } from '../model';
 
-export interface GetNotesByDateRequest {
+export interface GetNotesRequest {
   date: string;
 }
 
-export interface GetNotesByDateResponse {
+export interface GetNotesResponse {
   notes: NoteItem[];
 }
 

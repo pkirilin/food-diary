@@ -21,7 +21,7 @@ const getFallbackDate = (): string =>
 export const loader = withAuthStatusCheck(async ({ request }) => {
   const url = new URL(request.url);
   const date = url.searchParams.get('date') ?? getFallbackDate();
-  const notesByDateQuery = await store.dispatch(noteApi.endpoints.notesByDate.initiate({ date }));
+  const notesByDateQuery = await store.dispatch(noteApi.endpoints.notes.initiate({ date }));
 
   return {
     date,

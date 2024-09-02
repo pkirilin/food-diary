@@ -20,9 +20,7 @@ export const loader = withAuthStatusCheck(async ({ params }) => {
     return new Response(null, { status: 500 });
   }
 
-  await store.dispatch(
-    noteApi.endpoints.notesByDate.initiate({ date: pageQuery.data.currentPage.date }),
-  );
+  await store.dispatch(noteApi.endpoints.notes.initiate({ date: pageQuery.data.currentPage.date }));
 
   return { pageId } satisfies LoaderData;
 });

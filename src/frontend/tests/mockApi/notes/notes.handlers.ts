@@ -2,7 +2,7 @@ import { http, type HttpHandler, type PathParams } from 'msw';
 import {
   type RecognizeNoteResponse,
   type NoteItem,
-  type GetNotesByDateResponse,
+  type GetNotesResponse,
   type GetNotesHistoryResponse,
   type NoteHistoryItem,
   type NoteRequestBody,
@@ -12,33 +12,11 @@ import { DelayedHttpResponse } from '../DelayedHttpResponse';
 import * as notesService from './notes.service';
 
 export const handlers: HttpHandler[] = [
-  http.get(`${API_URL}/api/v1/notes/history`, async ({ request }) => {
+  http.get(`${API_URL}/api/v1/notes`, async ({ request }) => {
     const url = new URL(request.url);
-    const from = url.searchParams.get('from') ?? '';
-    const to = url.searchParams.get('to') ?? '';
-    const notesMap = notesService.getHistory(from, to);
-    const productsMap = notesService.getProducts(Array.from(notesMap.values()).flat());
+    const date = url.searchParams.get('date');
 
-    const notesHistory = Array.from(notesMap.entries()).map<NoteHistoryItem>(([date, notes]) => ({
-      date,
-      caloriesCount: notes.reduce(
-        (sum, note) =>
-          sum +
-          notesService.calculateCalories(
-            note.quantity,
-            productsMap.get(note.productId)?.caloriesCost ?? 0,
-          ),
-        0,
-      ),
-    }));
-
-    return await DelayedHttpResponse.json<GetNotesHistoryResponse>({ notesHistory });
-  }),
-
-  http.get(`${API_URL}/api/v1/notes/:date`, async ({ params }) => {
-    const date = params.date;
-
-    if (typeof date !== 'string') {
+    if (!date) {
       return await DelayedHttpResponse.badRequest();
     }
 
@@ -63,7 +41,30 @@ export const handlers: HttpHandler[] = [
       },
     );
 
-    return await DelayedHttpResponse.json<GetNotesByDateResponse>({ notes });
+    return await DelayedHttpResponse.json<GetNotesResponse>({ notes });
+  }),
+
+  http.get(`${API_URL}/api/v1/notes/history`, async ({ request }) => {
+    const url = new URL(request.url);
+    const from = url.searchParams.get('from') ?? '';
+    const to = url.searchParams.get('to') ?? '';
+    const notesMap = notesService.getHistory(from, to);
+    const productsMap = notesService.getProducts(Array.from(notesMap.values()).flat());
+
+    const notesHistory = Array.from(notesMap.entries()).map<NoteHistoryItem>(([date, notes]) => ({
+      date,
+      caloriesCount: notes.reduce(
+        (sum, note) =>
+          sum +
+          notesService.calculateCalories(
+            note.quantity,
+            productsMap.get(note.productId)?.caloriesCost ?? 0,
+          ),
+        0,
+      ),
+    }));
+
+    return await DelayedHttpResponse.json<GetNotesHistoryResponse>({ notesHistory });
   }),
 
   http.post<PathParams, NoteRequestBody>(`${API_URL}/api/v1/notes`, async ({ request }) => {

@@ -7,7 +7,7 @@ const getMaxDisplayOrder = (notes: NoteItem[]): number =>
   );
 
 export const useNextDisplayOrder = (date: string): number => {
-  const { nextDisplayOrder } = noteApi.useNotesByDateQuery(
+  const { nextDisplayOrder } = noteApi.useNotesQuery(
     { date },
     {
       selectFromResult: ({ data, isSuccess }) => ({

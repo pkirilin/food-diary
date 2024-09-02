@@ -7,7 +7,7 @@ interface Result {
 }
 
 export const useNotes = (date: string): Result =>
-  noteApi.useNotesByDateQuery(
+  noteApi.useNotesQuery(
     {
       date,
     },
