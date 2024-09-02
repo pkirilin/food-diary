@@ -21,7 +21,7 @@ public class NotesApiContext(FoodDiaryWebApplicationFactory factory, Infrastruct
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase
     };
     
-    private GetNotesByDateResponse? _getNotesByDateResponse;
+    private GetNotesResponse? _getNotesResponse;
     private HttpResponseMessage _createNoteResponse = null!;
     private HttpResponseMessage _updateNoteResponse = null!;
     private HttpResponseMessage _deleteNoteResponse = null!;
@@ -31,15 +31,10 @@ public class NotesApiContext(FoodDiaryWebApplicationFactory factory, Infrastruct
     {
         return Factory.SeedDataAsync(notes);
     }
-    
-    public Task Given_page(Page page)
-    {
-        return Factory.SeedDataAsync(new[] { page });
-    }
-    
+
     public Task Given_product(Product product)
     {
-        return Factory.SeedDataAsync(new[] { product });
+        return Factory.SeedDataAsync([product]);
     }
 
     public Task Given_OpenAI_api_is_ready()
@@ -65,8 +60,7 @@ public class NotesApiContext(FoodDiaryWebApplicationFactory factory, Infrastruct
 
     public async Task When_user_retrieves_notes_list_for_date(string date)
     {
-        _getNotesByDateResponse = await ApiClient
-            .GetFromJsonAsync<GetNotesByDateResponse>($"/api/v1/notes?date={date}");
+        _getNotesResponse = await ApiClient.GetFromJsonAsync<GetNotesResponse>($"/api/v1/notes?date={date}");
     }
 
     public async Task When_user_creates_note(Note note)
@@ -116,7 +110,7 @@ public class NotesApiContext(FoodDiaryWebApplicationFactory factory, Infrastruct
         var caloriesCalculator = Factory.Services.GetRequiredService<ICaloriesCalculator>();
         var expectedNotesList = items.Select(n => n.ToNoteItem(caloriesCalculator));
 
-        _getNotesByDateResponse?.Notes.Should()
+        _getNotesResponse?.Notes.Should()
             .BeEquivalentTo(expectedNotesList, options => options
                 .Excluding(note => note.Id)
                 .Excluding(note => note.ProductId)
@@ -128,7 +122,7 @@ public class NotesApiContext(FoodDiaryWebApplicationFactory factory, Infrastruct
     
     public Task Then_notes_list_contains_no_items()
     {
-        _getNotesByDateResponse?.Notes.Should().BeEmpty();
+        _getNotesResponse?.Notes.Should().BeEmpty();
         return Task.CompletedTask;
     }
 

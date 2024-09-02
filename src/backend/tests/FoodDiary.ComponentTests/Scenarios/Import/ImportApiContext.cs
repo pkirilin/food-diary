@@ -89,7 +89,7 @@ public class ImportApiContext(FoodDiaryWebApplicationFactory factory, Infrastruc
     
     public async Task Then_notes_list_contains_items(params Note[] items)
     {
-        var response = await ApiClient.GetFromJsonAsync<GetNotesByDateResponse>($"/api/v1/notes?date={_notesDate}");
+        var response = await ApiClient.GetFromJsonAsync<GetNotesResponse>($"/api/v1/notes?date={_notesDate}");
         var caloriesCalculator = Factory.Services.GetRequiredService<ICaloriesCalculator>();
         var expectedNotesList = items.Select(n => n.ToNoteItem(caloriesCalculator));
 

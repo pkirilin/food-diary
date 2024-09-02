@@ -5,14 +5,14 @@ using JetBrains.Annotations;
 namespace FoodDiary.Contracts.Notes;
 
 [PublicAPI]
-public class GetNotesByDateRequest
+public class GetNotesRequest
 {
     [Required]
     public DateOnly? Date { get; init; }
 }
 
 [PublicAPI]
-public record GetNotesByDateResponse(IReadOnlyCollection<NoteItem> Notes);
+public record GetNotesResponse(IReadOnlyCollection<NoteItem> Notes);
 
 [PublicAPI]
 public record NoteItem(
@@ -24,5 +24,4 @@ public record NoteItem(
     int ProductDefaultQuantity,
     int DisplayOrder,
     string ProductName,
-    int Calories
-);
+    int Calories);

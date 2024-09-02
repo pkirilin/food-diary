@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using FoodDiary.API.Mapping;
 using Microsoft.AspNetCore.Mvc;
 using FoodDiary.Application.Notes.Create;
-using FoodDiary.Application.Notes.GetByDate;
+using FoodDiary.Application.Notes.Get;
 using FoodDiary.Application.Notes.Recognize;
 using MediatR;
 using FoodDiary.Application.Notes.Requests;
@@ -32,15 +32,15 @@ public class NotesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetNotesByDate(
-        [FromQuery] GetNotesByDateRequest request,
-        [FromServices] GetNotesByDateQueryHandler handler,
+    public async Task<IActionResult> GetNotes(
+        [FromQuery] GetNotesRequest request,
+        [FromServices] GetNotesQueryHandler handler,
         [FromServices] ICaloriesCalculator caloriesCalculator,
         CancellationToken cancellationToken)
     {
-        var query = request.ToGetNotesByDateQuery();
+        var query = request.ToGetNotesQuery();
         var result = await handler.Handle(query, cancellationToken);
-        return Ok(result.ToGetNotesByDateResponse(caloriesCalculator));
+        return Ok(result.ToGetNotesResponse(caloriesCalculator));
     }
     
     [HttpPost]
