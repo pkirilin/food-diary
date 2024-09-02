@@ -1,6 +1,7 @@
 using System.Linq;
 using FoodDiary.Application.Notes.Create;
 using FoodDiary.Application.Notes.Get;
+using FoodDiary.Application.Notes.GetHistory;
 using FoodDiary.Application.Notes.Update;
 using FoodDiary.Contracts.Notes;
 using FoodDiary.Domain.Entities;
@@ -20,9 +21,14 @@ public static class NotesMapper
         ProductQuantity: note.ProductQuantity,
         ProductDefaultQuantity: note.Product.DefaultQuantity,
         Calories: calculator.Calculate(note));
-
+    
     public static GetNotesQuery ToGetNotesQuery(this GetNotesRequest request) => new(
         request.Date.GetValueOrDefault()
+    );
+
+    public static GetNotesHistoryQuery ToGetNotesHistoryQuery(this GetNotesHistoryRequest request) => new(
+        request.From.GetValueOrDefault(),
+        request.To.GetValueOrDefault()
     );
 
     public static GetNotesResponse ToGetNotesResponse(
@@ -30,6 +36,17 @@ public static class NotesMapper
         ICaloriesCalculator calculator) => new(
         result.Notes
             .Select(n => n.ToNoteItem(calculator))
+            .ToList()
+    );
+
+    public static GetNotesHistoryResponse ToGetNotesHistoryResponse(
+        this GetNotesHistoryQueryResult result,
+        ICaloriesCalculator calculator) => new(
+        result.Notes
+            .GroupBy(n => n.Date)
+            .Select(g => new NotesHistoryItem(
+                Date: g.Key.GetValueOrDefault(),
+                CaloriesCount: calculator.Calculate(g.ToArray())))
             .ToList()
     );
 

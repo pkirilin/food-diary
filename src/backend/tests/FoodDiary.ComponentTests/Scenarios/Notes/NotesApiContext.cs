@@ -22,6 +22,7 @@ public class NotesApiContext(FoodDiaryWebApplicationFactory factory, Infrastruct
     };
     
     private GetNotesResponse? _getNotesResponse;
+    private GetNotesHistoryResponse? _getNotesHistoryResponse;
     private HttpResponseMessage _createNoteResponse = null!;
     private HttpResponseMessage _updateNoteResponse = null!;
     private HttpResponseMessage _deleteNoteResponse = null!;
@@ -61,6 +62,12 @@ public class NotesApiContext(FoodDiaryWebApplicationFactory factory, Infrastruct
     public async Task When_user_retrieves_notes_list_for_date(string date)
     {
         _getNotesResponse = await ApiClient.GetFromJsonAsync<GetNotesResponse>($"/api/v1/notes?date={date}");
+    }
+    
+    public async Task When_user_retrieves_notes_history(string from, string to)
+    {
+        _getNotesHistoryResponse = await ApiClient
+            .GetFromJsonAsync<GetNotesHistoryResponse>($"/api/v1/notes/history?from={from}&to={to}");
     }
 
     public async Task When_user_creates_note(Note note)
@@ -123,6 +130,12 @@ public class NotesApiContext(FoodDiaryWebApplicationFactory factory, Infrastruct
     public Task Then_notes_list_contains_no_items()
     {
         _getNotesResponse?.Notes.Should().BeEmpty();
+        return Task.CompletedTask;
+    }
+    
+    public Task Then_notes_history_contains_items(params NotesHistoryItem[] items)
+    {
+        _getNotesHistoryResponse?.NotesHistory.Should().BeEquivalentTo(items);
         return Task.CompletedTask;
     }
 

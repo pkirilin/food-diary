@@ -7,6 +7,7 @@ using FoodDiary.API.Mapping;
 using Microsoft.AspNetCore.Mvc;
 using FoodDiary.Application.Notes.Create;
 using FoodDiary.Application.Notes.Get;
+using FoodDiary.Application.Notes.GetHistory;
 using FoodDiary.Application.Notes.Recognize;
 using MediatR;
 using FoodDiary.Application.Notes.Requests;
@@ -41,6 +42,18 @@ public class NotesController : ControllerBase
         var query = request.ToGetNotesQuery();
         var result = await handler.Handle(query, cancellationToken);
         return Ok(result.ToGetNotesResponse(caloriesCalculator));
+    }
+
+    [HttpGet("history")]
+    public async Task<IActionResult> GetNotesHistory(
+        [FromQuery] GetNotesHistoryRequest request,
+        [FromServices] GetNotesHistoryQueryHandler handler,
+        [FromServices] ICaloriesCalculator caloriesCalculator,
+        CancellationToken cancellationToken)
+    {
+        var query = request.ToGetNotesHistoryQuery();
+        var result = await handler.Handle(query, cancellationToken);
+        return Ok(result.ToGetNotesHistoryResponse(caloriesCalculator));
     }
     
     [HttpPost]

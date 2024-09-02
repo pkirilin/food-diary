@@ -12,6 +12,8 @@ public interface INotesRepository
 {
     Task<IReadOnlyCollection<Note>> FindByDate(DateOnly date, CancellationToken cancellationToken);
     
+    Task<IReadOnlyCollection<Note>> FindByDateRange(DateOnly from, DateOnly to, CancellationToken cancellationToken);
+    
     Task<Note?> FindById(int id, CancellationToken cancellationToken);
     
     Task Add(Note note, CancellationToken cancellationToken);

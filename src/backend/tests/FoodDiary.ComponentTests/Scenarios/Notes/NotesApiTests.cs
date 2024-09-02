@@ -26,6 +26,29 @@ public class NotesApiTests(FoodDiaryWebApplicationFactory factory, Infrastructur
             c => c.When_user_retrieves_notes_list_for_date("2024-01-04"),
             c => c.Then_notes_list_contains_items(notes.Chicken, notes.Rice));
     }
+    
+    [Scenario]
+    public Task I_can_retrieve_notes_history_list()
+    {
+        var notes = new
+        {
+            Chicken = Create.Note().WithDate("2024-01-04").WithProduct("Chicken", 150).Please(),
+            Rice = Create.Note().WithDate("2024-01-04").WithProduct("Rice", 100).Please(),
+            Broccoli = Create.Note().WithDate("2024-01-05").WithProduct("Broccoli", 50).Please()
+        };
+
+        var history = new
+        {
+            Jan04 = Create.NoteHistoryItem("2024-01-04", 250),
+            Jan05 = Create.NoteHistoryItem("2024-01-05", 50)
+        };
+        
+        return Run(
+            c => c.Given_authenticated_user(),
+            c => c.Given_notes(notes.Chicken, notes.Broccoli, notes.Rice),
+            c => c.When_user_retrieves_notes_history("2024-01-01", "2024-01-31"),
+            c => c.Then_notes_history_contains_items(history.Jan04, history.Jan05));
+    }
 
     [Scenario]
     public Task I_can_create_note()
