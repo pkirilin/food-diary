@@ -5,28 +5,26 @@ import { noteApi, type noteModel, noteLib } from '@/entities/note';
 import { productLib } from '@/entities/product';
 import { Button } from '@/shared/ui';
 import { useAddProductIfNotExists, useRecognizeNotes } from '../lib';
-import { mapToCreateNoteRequest } from '../lib/mapping';
+import { mapToNoteRequestBody } from '../lib/mapping';
 import { type UploadedPhoto, type Note, type InputMethod } from '../model';
 import { AddNoteDialogContent } from './AddNoteDialogContent';
 import { NoteInputFlow } from './NoteInputFlow';
 
 interface Props {
-  pageId: number;
   date: string;
   mealType: noteModel.MealType;
 }
 
-export const AddNote: FC<Props> = ({ pageId, date, mealType }) => {
+export const AddNote: FC<Props> = ({ date, mealType }) => {
   const [addNote, { reset, ...addNoteResponse }] = noteApi.useCreateNoteMutation();
 
   const addProductIfNotExists = useAddProductIfNotExists();
   const [recognizeNotes, recognizeNotesResult] = useRecognizeNotes();
 
-  const notes = noteLib.useNotes(pageId);
-  const displayOrder = noteLib.useNextDisplayOrder(pageId);
+  const notes = noteLib.useNotes(date);
+  const displayOrder = noteLib.useNextDisplayOrder(date);
 
   const { clearValues: clearNoteForm, ...noteForm } = noteLib.useFormValues({
-    pageId,
     date,
     mealType,
     displayOrder,
@@ -41,7 +39,7 @@ export const AddNote: FC<Props> = ({ pageId, date, mealType }) => {
 
   const handleSubmit = async (formData: Note): Promise<void> => {
     const productId = await addProductIfNotExists.sendRequest(formData.product);
-    const request = mapToCreateNoteRequest(formData, productId);
+    const request = mapToNoteRequestBody(formData, productId);
     await addNote(request).unwrap();
   };
 

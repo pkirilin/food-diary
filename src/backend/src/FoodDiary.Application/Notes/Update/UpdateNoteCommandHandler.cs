@@ -11,7 +11,6 @@ public record UpdateNoteCommand(
     DateOnly Date,
     MealType MealType,
     int ProductId,
-    int PageId,
     int ProductQuantity,
     int DisplayOrder);
 
@@ -49,7 +48,6 @@ public class UpdateNoteCommandHandler(IProductsRepository productsRepository, IN
         note.Date = command.Date;
         note.MealType = command.MealType;
         note.ProductId = command.ProductId;
-        note.PageId = command.PageId;
         note.ProductQuantity = command.ProductQuantity;
         note.DisplayOrder = command.DisplayOrder;
         

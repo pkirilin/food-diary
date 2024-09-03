@@ -11,7 +11,6 @@ public record CreateNoteCommand(
     DateOnly Date,
     MealType MealType,
     int ProductId,
-    int PageId,
     int ProductQuantity,
     int DisplayOrder);
 
@@ -41,7 +40,6 @@ public class CreateNoteCommandHandler(IProductsRepository productsRepository, IN
             Date = command.Date,
             MealType = command.MealType,
             ProductId = command.ProductId,
-            PageId = command.PageId,
             ProductQuantity = command.ProductQuantity,
             DisplayOrder = command.DisplayOrder
         };

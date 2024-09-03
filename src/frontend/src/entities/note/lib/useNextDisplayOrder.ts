@@ -1,5 +1,4 @@
-import { noteApi } from '../api';
-import { type NoteItem } from '../model';
+import { type NoteItem, noteApi } from '../api';
 
 const getMaxDisplayOrder = (notes: NoteItem[]): number =>
   notes.reduce(
@@ -7,12 +6,12 @@ const getMaxDisplayOrder = (notes: NoteItem[]): number =>
     -1,
   );
 
-export const useNextDisplayOrder = (pageId: number): number => {
-  const { nextDisplayOrder } = noteApi.useGetNotesQuery(
-    { pageId },
+export const useNextDisplayOrder = (date: string): number => {
+  const { nextDisplayOrder } = noteApi.useNotesQuery(
+    { date },
     {
-      selectFromResult: ({ data: notes, isSuccess }) => ({
-        nextDisplayOrder: isSuccess ? getMaxDisplayOrder(notes) + 1 : 0,
+      selectFromResult: ({ data, isSuccess }) => ({
+        nextDisplayOrder: isSuccess ? getMaxDisplayOrder(data.notes) + 1 : 0,
       }),
     },
   );

@@ -11,7 +11,6 @@ public class NoteRequestBodyBuilder
     private int _productQuantity;
     private int _displayOrder;
     private int _productId;
-    private int _pageId;
 
     public NoteRequestBody Please() => new()
     {
@@ -19,8 +18,7 @@ public class NoteRequestBodyBuilder
         MealType = _mealType,
         ProductQuantity = _productQuantity,
         DisplayOrder = _displayOrder,
-        ProductId = _productId,
-        PageId = _pageId
+        ProductId = _productId
     };
 
     public NoteRequestBodyBuilder From(Note note)
@@ -30,7 +28,6 @@ public class NoteRequestBodyBuilder
         _productQuantity = note.ProductQuantity;
         _displayOrder = note.DisplayOrder;
         _productId = note.Product.Id;
-        _pageId = note.Page.Id;
         return this;
     }
     

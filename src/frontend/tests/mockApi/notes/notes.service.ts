@@ -1,18 +1,51 @@
-import { type CreateNoteRequest, type UpdateNoteRequest } from '@/entities/note';
+import { type NoteRequestBody, type UpdateNoteRequest } from '@/entities/note';
 import { db, type DbNote, type DbProduct } from '../db';
 
-type Result = 'Success' | 'PageNotFound' | 'ProductNotFound';
+type Result = 'Success' | 'ProductNotFound';
 
-export const get = (pageId: number, mealType: number | null): DbNote[] =>
+export const get = (date: string, mealType: number | null): DbNote[] =>
   db.note.findMany({
     where: {
-      pageId: { equals: pageId },
+      date: { equals: date },
       mealType: mealType === null ? {} : { equals: mealType },
     },
     orderBy: {
       displayOrder: 'asc',
     },
   });
+
+export const getByDate = (date: string): DbNote[] =>
+  db.note.findMany({
+    where: {
+      date: { equals: date },
+    },
+    orderBy: {
+      displayOrder: 'asc',
+    },
+  });
+
+export const getHistory = (from: string, to: string): Map<string, DbNote[]> =>
+  db.note
+    .findMany({
+      where: {
+        date: {
+          gte: from,
+          lte: to,
+        },
+      },
+      orderBy: {
+        date: 'asc',
+      },
+    })
+    .reduce((groups, note) => {
+      const group = groups.get(note.date);
+      if (group) {
+        group.push(note);
+      } else {
+        groups.set(note.date, [note]);
+      }
+      return groups;
+    }, new Map<string, DbNote[]>());
 
 export const getProducts = (notes: DbNote[]): Map<number, DbProduct> => {
   return notes
@@ -36,26 +69,16 @@ export const getProducts = (notes: DbNote[]): Map<number, DbProduct> => {
     }, new Map<number, DbProduct>());
 };
 
-export const calculateCalories = (quantity: number, product: DbProduct): number =>
-  Math.floor((quantity * product.caloriesCost) / 100);
+export const calculateCalories = (quantity: number, caloriesCost: number): number =>
+  Math.floor((quantity * caloriesCost) / 100);
 
 export const create = ({
+  date,
   mealType,
   productQuantity,
   displayOrder,
   productId,
-  pageId,
-}: CreateNoteRequest): Result => {
-  const page = db.page.findFirst({
-    where: {
-      id: { equals: pageId },
-    },
-  });
-
-  if (!page) {
-    return 'PageNotFound';
-  }
-
+}: NoteRequestBody): Result => {
   const product = db.product.findFirst({
     where: {
       id: { equals: productId },
@@ -76,33 +99,23 @@ export const create = ({
 
   db.note.create({
     id: maxId + 1,
+    date,
     mealType,
     quantity: productQuantity,
     displayOrder,
     productId,
-    pageId,
   });
 
   return 'Success';
 };
 
-export const update = (
-  id: number,
-  { mealType, productQuantity, displayOrder, productId, pageId }: UpdateNoteRequest,
-): Result => {
-  const page = db.page.findFirst({
-    where: {
-      id: { equals: pageId },
-    },
-  });
-
-  if (!page) {
-    return 'PageNotFound';
-  }
+export const update = ({ id, note }: UpdateNoteRequest): Result => {
+  const { date, mealType, productQuantity: quantity, displayOrder, productId } = note;
+  const tmp = note;
 
   const product = db.product.findFirst({
     where: {
-      id: { equals: productId },
+      id: { equals: tmp.productId },
     },
   });
 
@@ -115,11 +128,11 @@ export const update = (
       id: { equals: id },
     },
     data: {
+      date,
       mealType,
-      quantity: productQuantity,
+      quantity,
       displayOrder,
       productId,
-      pageId,
     },
   });
 

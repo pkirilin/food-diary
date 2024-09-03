@@ -6,7 +6,6 @@ export type InputMethod = 'fromInput' | 'fromPhoto';
 export interface Note {
   date: string;
   mealType: noteModel.MealType;
-  pageId: number;
   product: productModel.AutocompleteOption;
   productQuantity: number;
   displayOrder: number;

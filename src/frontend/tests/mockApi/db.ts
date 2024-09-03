@@ -17,7 +17,6 @@ export const db = factory({
     mealType: Number,
     displayOrder: Number,
     quantity: Number,
-    pageId: Number,
     productId: Number,
   },
 

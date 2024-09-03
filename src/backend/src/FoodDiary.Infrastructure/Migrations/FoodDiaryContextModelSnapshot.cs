@@ -58,7 +58,7 @@ namespace FoodDiary.Infrastructure.Migrations
                     b.Property<int>("MealType")
                         .HasColumnType("integer");
 
-                    b.Property<int>("PageId")
+                    b.Property<int?>("PageId")
                         .HasColumnType("integer");
 
                     b.Property<int>("ProductId")
@@ -152,9 +152,7 @@ namespace FoodDiary.Infrastructure.Migrations
                 {
                     b.HasOne("FoodDiary.Domain.Entities.Page", "Page")
                         .WithMany("Notes")
-                        .HasForeignKey("PageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PageId");
 
                     b.HasOne("FoodDiary.Domain.Entities.Product", "Product")
                         .WithMany("Notes")

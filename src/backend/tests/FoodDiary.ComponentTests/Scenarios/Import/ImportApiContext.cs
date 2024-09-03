@@ -4,7 +4,10 @@ using FoodDiary.API.Dtos;
 using FoodDiary.API.Mapping;
 using FoodDiary.ComponentTests.Dsl;
 using FoodDiary.ComponentTests.Infrastructure;
+using FoodDiary.Contracts.Notes;
 using FoodDiary.Domain.Entities;
+using FoodDiary.Domain.Utils;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace FoodDiary.ComponentTests.Scenarios.Import;
 
@@ -12,7 +15,7 @@ public class ImportApiContext(FoodDiaryWebApplicationFactory factory, Infrastruc
     : BaseContext(factory, infrastructure)
 {
     private HttpResponseMessage _importJsonResponse = null!;
-    private int _createdPageId;
+    private DateOnly _notesDate;
 
     public Task Given_categories(params Category[] categories)
     {
@@ -76,7 +79,7 @@ public class ImportApiContext(FoodDiaryWebApplicationFactory factory, Infrastruc
         
         var createdPage = pagesListResult?.PageItems.FirstOrDefault(p => p.Date == expectedPageDates.FirstOrDefault());
         createdPage.Should().NotBeNull();
-        _createdPageId = createdPage!.Id;
+        _notesDate = createdPage!.Date;
 
         pagesListResult?.PageItems
             .Select(p => p.Date)
@@ -86,13 +89,13 @@ public class ImportApiContext(FoodDiaryWebApplicationFactory factory, Infrastruc
     
     public async Task Then_notes_list_contains_items(params Note[] items)
     {
-        var notesList = await ApiClient.GetFromJsonAsync<List<NoteItemDto>>($"/api/v1/notes?pageId={_createdPageId}");
-        var expectedNotesList = items.Select(n => n.ToNoteItemDto());
+        var response = await ApiClient.GetFromJsonAsync<GetNotesResponse>($"/api/v1/notes?date={_notesDate}");
+        var caloriesCalculator = Factory.Services.GetRequiredService<ICaloriesCalculator>();
+        var expectedNotesList = items.Select(n => n.ToNoteItem(caloriesCalculator));
 
-        notesList.Should()
+        response?.Notes.Should()
             .BeEquivalentTo(expectedNotesList, options => options
                 .Excluding(note => note.Id)
-                .Excluding(note => note.PageId)
                 .Excluding(note => note.ProductId)
                 .Excluding(note => note.Calories))
             .And.AllSatisfy(note => { note.Calories.Should().BePositive(); });

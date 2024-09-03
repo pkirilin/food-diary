@@ -1,26 +1,50 @@
 import { type MealType } from '../model';
 
 export interface GetNotesRequest {
-  pageId: number;
+  date: string;
 }
 
-export interface CreateNoteRequest {
+export interface GetNotesResponse {
+  notes: NoteItem[];
+}
+
+export interface NoteItem {
+  id: number;
+  date: string;
+  mealType: MealType;
+  displayOrder: number;
+  productId: number;
+  productName: string;
+  productQuantity: number;
+  productDefaultQuantity: number;
+  calories: number;
+}
+
+export interface GetNotesHistoryRequest {
+  from: string;
+  to: string;
+}
+
+export interface GetNotesHistoryResponse {
+  notesHistory: NoteHistoryItem[];
+}
+
+export interface NoteHistoryItem {
+  date: string;
+  caloriesCount: number;
+}
+
+export interface NoteRequestBody {
   date: string;
   mealType: MealType;
   productId: number;
-  pageId: number;
   productQuantity: number;
   displayOrder: number;
 }
 
 export interface UpdateNoteRequest {
   id: number;
-  date: string;
-  mealType: MealType;
-  productId: number;
-  pageId: number;
-  productQuantity: number;
-  displayOrder: number;
+  note: NoteRequestBody;
 }
 
 export interface RecognizeProductItem {

@@ -1,5 +1,4 @@
-import { noteApi } from '../api/noteApi';
-import { type NoteItem } from '../model';
+import { type NoteItem, noteApi } from '../api';
 
 interface Result {
   data: NoteItem[];
@@ -7,17 +6,16 @@ interface Result {
   isChanged: boolean;
 }
 
-export const useNotes = (pageId: number): Result => {
-  return noteApi.useGetNotesQuery(
+export const useNotes = (date: string): Result =>
+  noteApi.useNotesQuery(
     {
-      pageId,
+      date,
     },
     {
       selectFromResult: ({ data, isFetching, isSuccess }) => ({
-        data: data ?? [],
+        data: data?.notes ?? [],
         isFetching,
         isChanged: !isFetching && isSuccess,
       }),
     },
   );
-};

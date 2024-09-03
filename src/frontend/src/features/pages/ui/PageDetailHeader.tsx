@@ -8,9 +8,9 @@ import {
   styled,
   Box,
 } from '@mui/material';
-import { useMemo, type FC } from 'react';
+import { type FC } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { noteApi } from '@/entities/note';
+import { noteLib } from '@/entities/note';
 import { formatDate } from '@/shared/lib';
 import { type Page } from '../models';
 
@@ -25,9 +25,8 @@ const TextStyled = styled(Typography)<TypographyProps>(({ theme }) => ({
 }));
 
 export const PageDetailHeader: FC<Props> = ({ page }) => {
-  const getNotesQuery = noteApi.useGetNotesQuery({ pageId: page.id });
-  const notes = useMemo(() => getNotesQuery.data ?? [], [getNotesQuery.data]);
-  const totalCalories = useMemo(() => notes.reduce((sum, note) => sum + note.calories, 0), [notes]);
+  const notes = noteLib.useNotes(page.date);
+  const totalCalories = noteLib.useCalories(notes.data);
 
   return (
     <Box display="flex" alignItems="center" gap={3} width="100%">

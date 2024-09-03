@@ -1,5 +1,5 @@
 import { type ReactNode } from 'react';
-import { createBrowserRouter, redirect } from 'react-router-dom';
+import { createBrowserRouter } from 'react-router-dom';
 import { ErrorPage } from '@/pages/ui/ErrorPage';
 import { RootPage } from '@/pages/ui/RootPage';
 
@@ -13,7 +13,7 @@ export const createAppRouter = (
       children: [
         {
           path: '/',
-          loader: () => redirect('/pages'),
+          lazy: async () => await import('@/pages/ui/IndexPage'),
         },
         {
           path: '/login',
@@ -46,6 +46,10 @@ export const createAppRouter = (
         {
           path: '/categories',
           lazy: async () => await import('@/pages/ui/CategoriesPage'),
+        },
+        {
+          path: '/history',
+          lazy: async () => await import('@/pages/ui/HistoryPage'),
         },
       ],
     },

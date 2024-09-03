@@ -1,27 +1,25 @@
 import { useMemo, type FC, type ReactElement, useCallback } from 'react';
 import { categoryLib } from '@/entities/category';
-import { noteApi, noteLib, type noteModel } from '@/entities/note';
+import { type NoteItem, noteApi, noteLib } from '@/entities/note';
 import { ProductAutocomplete, productLib } from '@/entities/product';
 import { useAddProductIfNotExists, EMPTY_RECOGNIZE_NOTES_RESULT } from '../lib';
-import { mapToEditNoteRequest, mapToProductSelectOption } from '../lib/mapping';
+import { mapToUpdateNoteRequest, mapToProductSelectOption } from '../lib/mapping';
 import { type Note } from '../model';
 import { NoteInputFlow } from './NoteInputFlow';
 import { NoteInputForm } from './NoteInputForm';
 
 interface Props {
-  note: noteModel.NoteItem;
-  pageId: number;
+  note: NoteItem;
   renderTrigger: (onClick: () => void) => ReactElement;
 }
 
-export const EditNote: FC<Props> = ({ note, pageId, renderTrigger }) => {
+export const EditNote: FC<Props> = ({ note, renderTrigger }) => {
   const [updateNote, { reset, ...updateNoteResponse }] = noteApi.useUpdateNoteMutation();
   const addProductIfNotExists = useAddProductIfNotExists();
 
-  const notes = noteLib.useNotes(pageId);
+  const notes = noteLib.useNotes(note.date);
 
   const { clearValues: clearNoteForm, ...noteForm } = noteLib.useFormValues({
-    pageId,
     date: note.date,
     mealType: note.mealType,
     displayOrder: note.displayOrder,
@@ -35,7 +33,7 @@ export const EditNote: FC<Props> = ({ note, pageId, renderTrigger }) => {
 
   const handleSubmit = async (formData: Note): Promise<void> => {
     const productId = await addProductIfNotExists.sendRequest(formData.product);
-    const request = mapToEditNoteRequest(note.id, productId, formData);
+    const request = mapToUpdateNoteRequest(note.id, productId, formData);
     await updateNote(request).unwrap();
   };
 

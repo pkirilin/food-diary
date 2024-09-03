@@ -1,13 +1,15 @@
 using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
-using FoodDiary.API.Dtos;
 using FoodDiary.API.Mapping;
 using FoodDiary.Application.Notes.Recognize;
 using FoodDiary.ComponentTests.Dsl;
 using FoodDiary.ComponentTests.Infrastructure;
+using FoodDiary.Contracts.Notes;
 using FoodDiary.Domain.Entities;
+using FoodDiary.Domain.Utils;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace FoodDiary.ComponentTests.Scenarios.Notes;
 
@@ -19,7 +21,8 @@ public class NotesApiContext(FoodDiaryWebApplicationFactory factory, Infrastruct
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase
     };
     
-    private IReadOnlyList<NoteItemDto>? _notesList;
+    private GetNotesResponse? _getNotesResponse;
+    private GetNotesHistoryResponse? _getNotesHistoryResponse;
     private HttpResponseMessage _createNoteResponse = null!;
     private HttpResponseMessage _updateNoteResponse = null!;
     private HttpResponseMessage _deleteNoteResponse = null!;
@@ -29,15 +32,10 @@ public class NotesApiContext(FoodDiaryWebApplicationFactory factory, Infrastruct
     {
         return Factory.SeedDataAsync(notes);
     }
-    
-    public Task Given_page(Page page)
-    {
-        return Factory.SeedDataAsync(new[] { page });
-    }
-    
+
     public Task Given_product(Product product)
     {
-        return Factory.SeedDataAsync(new[] { product });
+        return Factory.SeedDataAsync([product]);
     }
 
     public Task Given_OpenAI_api_is_ready()
@@ -61,9 +59,15 @@ public class NotesApiContext(FoodDiaryWebApplicationFactory factory, Infrastruct
         return Infrastructure.ExternalServices.OpenAiApi.SetupCompletionFailure(error);
     }
 
-    public async Task When_user_retrieves_notes_list_for_page(Page page)
+    public async Task When_user_retrieves_notes_list_for_date(string date)
     {
-        _notesList = await ApiClient.GetFromJsonAsync<IReadOnlyList<NoteItemDto>>($"/api/v1/notes?pageId={page.Id}");
+        _getNotesResponse = await ApiClient.GetFromJsonAsync<GetNotesResponse>($"/api/v1/notes?date={date}");
+    }
+    
+    public async Task When_user_retrieves_notes_history(string from, string to)
+    {
+        _getNotesHistoryResponse = await ApiClient
+            .GetFromJsonAsync<GetNotesHistoryResponse>($"/api/v1/notes/history?from={from}&to={to}");
     }
 
     public async Task When_user_creates_note(Note note)
@@ -110,12 +114,12 @@ public class NotesApiContext(FoodDiaryWebApplicationFactory factory, Infrastruct
 
     public Task Then_notes_list_contains_items(params Note[] items)
     {
-        var expectedNotesList = items.Select(n => n.ToNoteItemDto());
+        var caloriesCalculator = Factory.Services.GetRequiredService<ICaloriesCalculator>();
+        var expectedNotesList = items.Select(n => n.ToNoteItem(caloriesCalculator));
 
-        _notesList.Should()
+        _getNotesResponse?.Notes.Should()
             .BeEquivalentTo(expectedNotesList, options => options
                 .Excluding(note => note.Id)
-                .Excluding(note => note.PageId)
                 .Excluding(note => note.ProductId)
                 .Excluding(note => note.Calories))
             .And.AllSatisfy(note => { note.Calories.Should().BePositive(); });
@@ -125,7 +129,13 @@ public class NotesApiContext(FoodDiaryWebApplicationFactory factory, Infrastruct
     
     public Task Then_notes_list_contains_no_items()
     {
-        _notesList.Should().BeEmpty();
+        _getNotesResponse?.Notes.Should().BeEmpty();
+        return Task.CompletedTask;
+    }
+    
+    public Task Then_notes_history_contains_items(params NotesHistoryItem[] items)
+    {
+        _getNotesHistoryResponse?.NotesHistory.Should().BeEquivalentTo(items);
         return Task.CompletedTask;
     }
 

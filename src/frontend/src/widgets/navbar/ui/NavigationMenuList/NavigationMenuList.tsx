@@ -1,4 +1,5 @@
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import CategoryIcon from '@mui/icons-material/Category';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import { List } from '@mui/material';
@@ -9,8 +10,18 @@ import { type NavLink } from './types';
 
 const NAV_LINKS: NavLink[] = [
   {
+    icon: <CalendarTodayIcon />,
+    title: 'Today',
+    path: '/',
+  },
+  {
     icon: <CalendarMonthIcon />,
-    title: 'Pages',
+    title: 'History',
+    path: '/history',
+  },
+  {
+    icon: <CalendarMonthIcon />,
+    title: 'Pages (deprecated)',
     path: '/pages',
   },
   {

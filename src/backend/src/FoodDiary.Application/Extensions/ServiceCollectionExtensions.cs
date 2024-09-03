@@ -1,6 +1,8 @@
 ﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using FoodDiary.Application.Notes.Create;
+using FoodDiary.Application.Notes.Get;
+using FoodDiary.Application.Notes.GetHistory;
 using FoodDiary.Application.Notes.Update;
 using FoodDiary.Application.Services.Categories;
 using FoodDiary.Application.Services.Export;
@@ -34,6 +36,8 @@ public static class ServiceCollectionExtensions
     
     private static void AddNotes(this IServiceCollection services)
     {
+        services.AddScoped<GetNotesQueryHandler>();
+        services.AddScoped<GetNotesHistoryQueryHandler>();
         services.AddScoped<CreateNoteCommandHandler>();
         services.AddScoped<UpdateNoteCommandHandler>();
     }

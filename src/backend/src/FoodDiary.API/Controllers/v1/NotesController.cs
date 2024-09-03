@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoMapper;
-using FoodDiary.API.Dtos;
 using FoodDiary.API.Mapping;
 using Microsoft.AspNetCore.Mvc;
-using FoodDiary.API.Requests;
 using FoodDiary.Application.Notes.Create;
+using FoodDiary.Application.Notes.Get;
+using FoodDiary.Application.Notes.GetHistory;
 using FoodDiary.Application.Notes.Recognize;
 using MediatR;
 using FoodDiary.Application.Notes.Requests;
 using FoodDiary.Application.Notes.Update;
 using FoodDiary.Contracts.Notes;
+using FoodDiary.Domain.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 
@@ -25,30 +25,35 @@ namespace FoodDiary.API.Controllers.v1;
 [ApiExplorerSettings(GroupName = "v1")]
 public class NotesController : ControllerBase
 {
-    private readonly IMapper _mapper;
     private readonly IMediator _mediator;
 
-    public NotesController(IMapper mapper, IMediator mediator)
+    public NotesController(IMediator mediator)
     {
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
     }
 
-    /// <summary>
-    /// Gets all notes by specified parameters
-    /// </summary>
-    /// <param name="notesRequest">Notes search parameters</param>
-    /// <param name="cancellationToken"></param>
     [HttpGet]
-    [ProducesResponseType(typeof(IEnumerable<NoteItemDto>), (int)HttpStatusCode.OK)]
-    public async Task<IActionResult> GetNotes([FromQuery] NotesSearchRequest notesRequest, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetNotes(
+        [FromQuery] GetNotesRequest request,
+        [FromServices] GetNotesQueryHandler handler,
+        [FromServices] ICaloriesCalculator caloriesCalculator,
+        CancellationToken cancellationToken)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+        var query = request.ToGetNotesQuery();
+        var result = await handler.Handle(query, cancellationToken);
+        return Ok(result.ToGetNotesResponse(caloriesCalculator));
+    }
 
-        var noteEntities = await _mediator.Send(new GetNotesRequest(notesRequest.PageId, notesRequest.MealType), cancellationToken);
-        var notesListResponse = _mapper.Map<IEnumerable<NoteItemDto>>(noteEntities);
-        return Ok(notesListResponse);
+    [HttpGet("history")]
+    public async Task<IActionResult> GetNotesHistory(
+        [FromQuery] GetNotesHistoryRequest request,
+        [FromServices] GetNotesHistoryQueryHandler handler,
+        [FromServices] ICaloriesCalculator caloriesCalculator,
+        CancellationToken cancellationToken)
+    {
+        var query = request.ToGetNotesHistoryQuery();
+        var result = await handler.Handle(query, cancellationToken);
+        return Ok(result.ToGetNotesHistoryResponse(caloriesCalculator));
     }
     
     [HttpPost]
@@ -122,37 +127,6 @@ public class NotesController : ControllerBase
     {
         var notesForDelete = await _mediator.Send(new GetNotesByIdsRequest(ids), cancellationToken);
         await _mediator.Send(new DeleteNotesRequest(notesForDelete), cancellationToken);
-        return Ok();
-    }
-
-    /// <summary>
-    /// Moves note by specified parameters
-    /// </summary>
-    /// <param name="moveRequest">Parameters for moving note</param>
-    /// <param name="cancellationToken"></param>
-    [HttpPut("move")]
-    [ProducesResponseType((int)HttpStatusCode.OK)]
-    [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-    [ProducesResponseType((int)HttpStatusCode.NotFound)]
-    public async Task<IActionResult> MoveNote([FromBody] NoteMoveRequest moveRequest, CancellationToken cancellationToken)
-    {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-
-        var noteForMove = await _mediator.Send(new GetNoteByIdRequest(moveRequest.NoteId), cancellationToken);
-
-        if (noteForMove == null)
-            return NotFound();
-
-        var orderLimit = await _mediator.Send(new GetOrderForNewNoteRequest(noteForMove.PageId, moveRequest.DestMeal), cancellationToken);
-
-        if (moveRequest.Position < 0 || moveRequest.Position > orderLimit)
-        {
-            ModelState.AddModelError(String.Empty, "Note cannot be moved on target meal group to the specified position");
-            return BadRequest(ModelState);
-        }
-
-        await _mediator.Send(new MoveNoteRequest(noteForMove, moveRequest.DestMeal, moveRequest.Position), cancellationToken);
         return Ok();
     }
 

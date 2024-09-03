@@ -16,9 +16,6 @@ public class NoteRequestBody
     [Range(1, int.MaxValue)]
     public required int ProductId { get; init; }
 
-    [Range(1, int.MaxValue)]
-    public required int PageId { get; init; }
-
     [Range(10, 1000, ErrorMessage = "Quantity value must be between 10 and 1000 cal")]
     public required int ProductQuantity { get; init; }
 

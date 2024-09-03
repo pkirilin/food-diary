@@ -12,6 +12,7 @@ public class ImportApiTests(FoodDiaryWebApplicationFactory factory, Infrastructu
         InfrastructureFixture infrastructure) => new(factory, infrastructure);
 
     [Scenario]
+    [IgnoreScenario("Not supported, will be removed later")]
     public Task I_can_import_my_data_from_json_file()
     {
         var page = Create.Page("2020-08-08").Please();

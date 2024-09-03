@@ -1,16 +1,15 @@
 import { type ReactElement, type FC, useEffect } from 'react';
-import { noteApi, noteLib, type noteModel } from '@/entities/note';
+import { type NoteItem, noteApi, noteLib } from '@/entities/note';
 import { useToggle } from '@/shared/hooks';
 import { DeleteNoteDialog } from './DeleteNoteDialog';
 
 interface Props {
-  note: noteModel.NoteItem;
-  pageId: number;
+  note: NoteItem;
   renderTrigger: (openDialog: () => void) => ReactElement;
 }
 
-export const DeleteNote: FC<Props> = ({ note, pageId, renderTrigger }) => {
-  const notes = noteLib.useNotes(pageId);
+export const DeleteNote: FC<Props> = ({ note, renderTrigger }) => {
+  const notes = noteLib.useNotes(note.date);
   const [deleteNote, deleteNoteResponse] = noteApi.useDeleteNoteMutation();
   const [dialogOpened, toggleDialog] = useToggle();
 
@@ -20,7 +19,7 @@ export const DeleteNote: FC<Props> = ({ note, pageId, renderTrigger }) => {
     }
   }, [deleteNoteResponse.isSuccess, notes.isChanged, toggleDialog]);
 
-  const handleSubmit = ({ id }: noteModel.NoteItem): void => {
+  const handleSubmit = ({ id }: NoteItem): void => {
     void deleteNote(id);
   };
 

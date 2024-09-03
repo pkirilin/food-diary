@@ -1,18 +1,17 @@
 import { Box, ListItem, Paper } from '@mui/material';
-import { useMemo, type FC } from 'react';
-import { noteLib, type noteModel } from '@/entities/note';
+import { type FC } from 'react';
+import { type NoteItem, noteLib, type noteModel } from '@/entities/note';
 import { MealsListItemHeader } from './MealsListItemHeader';
 import { NotesList } from './NotesList';
 
 interface Props {
-  pageId: number;
   date: string;
   mealType: noteModel.MealType;
-  notes: noteModel.NoteItem[];
+  notes: NoteItem[];
 }
 
-export const MealsListItem: FC<Props> = ({ pageId, date, mealType, notes }) => {
-  const totalCalories = useMemo(() => notes.reduce((sum, note) => sum + note.calories, 0), [notes]);
+export const MealsListItem: FC<Props> = ({ date, mealType, notes }) => {
+  const totalCalories = noteLib.useCalories(notes);
 
   return (
     <ListItem disableGutters disablePadding>
@@ -22,7 +21,7 @@ export const MealsListItem: FC<Props> = ({ pageId, date, mealType, notes }) => {
           totalCalories={totalCalories}
         />
         <Paper component="section">
-          <NotesList pageId={pageId} date={date} mealType={mealType} notes={notes} />
+          <NotesList date={date} mealType={mealType} notes={notes} />
         </Paper>
       </Box>
     </ListItem>

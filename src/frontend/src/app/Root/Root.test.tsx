@@ -10,7 +10,7 @@ test('user can login and logout', async () => {
   const signInButton = await screen.findByRole('button', { name: /sign in/i });
   await user.click(signInButton);
   expect(await screen.findByRole('navigation')).toBeVisible();
-  expect(screen.getByRole('heading', { name: /Pages/i })).toBeVisible();
+  expect(await screen.findByRole('heading', { name: /19 oct 2023/i })).toBeVisible();
 
   const logoutButton = await screen.findByRole('button', { name: /logout/i });
   await user.click(logoutButton);
@@ -25,7 +25,7 @@ test('user must login again if session expired', async () => {
   const signInButton = await screen.findByRole('button', { name: /sign in/i });
   await user.click(signInButton);
   expect(await screen.findByRole('navigation')).toBeVisible();
-  expect(screen.getByRole('heading', { name: /Pages/i })).toBeVisible();
+  expect(await screen.findByRole('heading', { name: /19 oct 2023/i })).toBeVisible();
 
   vi.useFakeTimers();
   vi.advanceTimersByTime(signOutAfterMilliseconds);

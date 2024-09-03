@@ -1,21 +1,28 @@
 import {
   type UpdateNoteRequest,
-  type CreateNoteRequest,
   type GetNotesRequest,
-  type noteModel,
   type RecognizeNoteResponse,
+  type GetNotesHistoryRequest,
+  type GetNotesResponse,
+  type GetNotesHistoryResponse,
+  type NoteRequestBody,
 } from '@/entities/note';
 import { api } from '@/shared/api';
 import { createUrl } from '@/shared/lib';
 
 export const noteApi = api.injectEndpoints({
   endpoints: builder => ({
-    getNotes: builder.query<noteModel.NoteItem[], GetNotesRequest>({
-      query: request => createUrl('/api/v1/notes', { ...request }),
+    notes: builder.query<GetNotesResponse, GetNotesRequest>({
+      query: ({ date }) => `/api/v1/notes?date=${date}`,
+      providesTags: (_response, _error, { date }) => [{ type: 'note', id: date }],
+    }),
+
+    notesHistory: builder.query<GetNotesHistoryResponse, GetNotesHistoryRequest>({
+      query: request => createUrl('/api/v1/notes/history', { ...request }),
       providesTags: ['note'],
     }),
 
-    createNote: builder.mutation<void, CreateNoteRequest>({
+    createNote: builder.mutation<void, NoteRequestBody>({
       query: request => ({
         method: 'POST',
         url: '/api/v1/notes',
@@ -25,10 +32,10 @@ export const noteApi = api.injectEndpoints({
     }),
 
     updateNote: builder.mutation<void, UpdateNoteRequest>({
-      query: ({ id, ...request }) => ({
+      query: ({ id, note }) => ({
         method: 'PUT',
         url: `/api/v1/notes/${id}`,
-        body: request,
+        body: note,
       }),
       invalidatesTags: ['note', 'page'],
     }),
