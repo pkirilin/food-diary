@@ -32,10 +32,10 @@ export const noteApi = api.injectEndpoints({
     }),
 
     updateNote: builder.mutation<void, UpdateNoteRequest>({
-      query: ({ id, ...request }) => ({
+      query: ({ id, note }) => ({
         method: 'PUT',
         url: `/api/v1/notes/${id}`,
-        body: request,
+        body: note,
       }),
       invalidatesTags: ['note', 'page'],
     }),

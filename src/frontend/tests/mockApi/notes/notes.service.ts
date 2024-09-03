@@ -73,6 +73,7 @@ export const calculateCalories = (quantity: number, caloriesCost: number): numbe
   Math.floor((quantity * caloriesCost) / 100);
 
 export const create = ({
+  date,
   mealType,
   productQuantity,
   displayOrder,
@@ -98,6 +99,7 @@ export const create = ({
 
   db.note.create({
     id: maxId + 1,
+    date,
     mealType,
     quantity: productQuantity,
     displayOrder,
@@ -108,11 +110,12 @@ export const create = ({
 };
 
 export const update = ({ id, note }: UpdateNoteRequest): Result => {
-  const { mealType, productQuantity: quantity, displayOrder, productId } = note;
+  const { date, mealType, productQuantity: quantity, displayOrder, productId } = note;
+  const tmp = note;
 
   const product = db.product.findFirst({
     where: {
-      id: { equals: productId },
+      id: { equals: tmp.productId },
     },
   });
 
@@ -125,6 +128,7 @@ export const update = ({ id, note }: UpdateNoteRequest): Result => {
       id: { equals: id },
     },
     data: {
+      date,
       mealType,
       quantity,
       displayOrder,

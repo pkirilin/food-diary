@@ -2,7 +2,7 @@ import { Box, Stack, Typography } from '@mui/material';
 import { type FC } from 'react';
 import { useLoaderData } from 'react-router-dom';
 import { store } from '@/app/store';
-import { type NoteItem, noteApi, noteLib } from '@/entities/note';
+import { noteApi, noteLib } from '@/entities/note';
 import { SelectDate } from '@/features/note/selectDate';
 import { MSW_ENABLED } from '@/shared/config';
 import { dateLib } from '@/shared/lib';
@@ -12,7 +12,6 @@ import { withAuthStatusCheck } from '../lib';
 
 interface LoaderData {
   date: string;
-  notes: NoteItem[];
 }
 
 const getFallbackDate = (): string =>
@@ -21,17 +20,17 @@ const getFallbackDate = (): string =>
 export const loader = withAuthStatusCheck(async ({ request }) => {
   const url = new URL(request.url);
   const date = url.searchParams.get('date') ?? getFallbackDate();
-  const notesByDateQuery = await store.dispatch(noteApi.endpoints.notes.initiate({ date }));
+  await store.dispatch(noteApi.endpoints.notes.initiate({ date }));
 
   return {
     date,
-    notes: notesByDateQuery.data?.notes ?? [],
   } satisfies LoaderData;
 });
 
 export const Component: FC = () => {
-  const { date, notes } = useLoaderData() as LoaderData;
-  const totalCalories = noteLib.useCalories(notes);
+  const { date } = useLoaderData() as LoaderData;
+  const notes = noteLib.useNotes(date);
+  const totalCalories = noteLib.useCalories(notes.data);
 
   return (
     <PrivateLayout
@@ -55,7 +54,7 @@ export const Component: FC = () => {
         </Stack>
       }
     >
-      <MealsList date={date} notes={notes} />
+      <MealsList date={date} notes={notes.data} />
     </PrivateLayout>
   );
 };
