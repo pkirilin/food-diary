@@ -14,7 +14,7 @@ export const noteApi = api.injectEndpoints({
   endpoints: builder => ({
     notes: builder.query<GetNotesResponse, GetNotesRequest>({
       query: ({ date }) => `/api/v1/notes?date=${date}`,
-      providesTags: (_response, _error, { date }) => [{ type: 'note', id: date }],
+      providesTags: ['note'],
     }),
 
     notesHistory: builder.query<GetNotesHistoryResponse, GetNotesHistoryRequest>({
