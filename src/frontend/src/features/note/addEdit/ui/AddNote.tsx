@@ -13,16 +13,16 @@ import { NoteInputFlow } from './NoteInputFlow';
 interface Props {
   date: string;
   mealType: noteModel.MealType;
+  displayOrder: number;
 }
 
-export const AddNote: FC<Props> = ({ date, mealType }) => {
+export const AddNote: FC<Props> = ({ date, mealType, displayOrder }) => {
   const [addNote, { reset, ...addNoteResponse }] = noteApi.useCreateNoteMutation();
 
   const addProductIfNotExists = useAddProductIfNotExists();
   const [recognizeNotes, recognizeNotesResult] = useRecognizeNotes();
 
   const notes = noteLib.useNotes(date);
-  const displayOrder = noteLib.useNextDisplayOrder(date);
 
   const { clearValues: clearNoteForm, ...noteForm } = noteLib.useFormValues({
     date,
