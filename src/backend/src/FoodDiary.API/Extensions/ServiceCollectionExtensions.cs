@@ -21,7 +21,6 @@ public static class ServiceCollectionExtensions
 
     public static void AddUtils(this IServiceCollection services)
     {
-        services.AddTransient<IMealNameResolver, RuMealNameResolver>();
         services.AddTransient<ICaloriesCalculator, CaloriesCalculator>();
         services.AddTransient<INotesOrderCalculator, NotesOrderCalculator>();
     }

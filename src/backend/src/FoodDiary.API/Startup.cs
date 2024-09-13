@@ -79,8 +79,6 @@ public class Startup
                 options.Scope.Add(Constants.AuthenticationScopes.Openid);
                 options.Scope.Add(Constants.AuthenticationScopes.Profile);
                 options.Scope.Add(Constants.AuthenticationScopes.Email);
-                options.Scope.Add(Constants.AuthenticationScopes.GoogleDocs);
-                options.Scope.Add(Constants.AuthenticationScopes.GoogleDrive);
                 
                 options.Events.OnRedirectToAuthorizationEndpoint = context =>
                 {

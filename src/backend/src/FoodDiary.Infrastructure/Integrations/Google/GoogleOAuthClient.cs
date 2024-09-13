@@ -22,9 +22,7 @@ public class GoogleOAuthClient(HttpClient httpClient, IOptions<GoogleAuthOptions
             new("refresh_token", refreshToken),
             new("scope", $"{Constants.AuthenticationScopes.Openid} " +
                          $"{Constants.AuthenticationScopes.Profile} " +
-                         $"{Constants.AuthenticationScopes.Email} " +
-                         $"{Constants.AuthenticationScopes.GoogleDocs} " +
-                         $"{Constants.AuthenticationScopes.GoogleDrive}")
+                         $"{Constants.AuthenticationScopes.Email} ")
         };
 
         var request = new HttpRequestMessage(HttpMethod.Post, options.Value.TokenEndpoint)
