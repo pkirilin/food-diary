@@ -28,7 +28,7 @@ export const noteApi = api.injectEndpoints({
         url: '/api/v1/notes',
         body: request,
       }),
-      invalidatesTags: ['note', 'page'],
+      invalidatesTags: ['note'],
     }),
 
     updateNote: builder.mutation<void, UpdateNoteRequest>({
@@ -37,7 +37,7 @@ export const noteApi = api.injectEndpoints({
         url: `/api/v1/notes/${id}`,
         body: note,
       }),
-      invalidatesTags: ['note', 'page'],
+      invalidatesTags: ['note'],
     }),
 
     deleteNote: builder.mutation<void, number>({
@@ -45,7 +45,7 @@ export const noteApi = api.injectEndpoints({
         method: 'DELETE',
         url: `/api/v1/notes/${id}`,
       }),
-      invalidatesTags: ['note', 'page'],
+      invalidatesTags: ['note'],
     }),
 
     recognize: builder.mutation<RecognizeNoteResponse, FormData>({

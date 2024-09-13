@@ -32,14 +32,6 @@ export const createAppRouter = (
           lazy: async () => await import('@/pages/ui/PostLogoutPage'),
         },
         {
-          path: '/pages',
-          lazy: async () => await import('@/pages/ui/PagesPage'),
-        },
-        {
-          path: '/pages/:pageId',
-          lazy: () => import('@/pages/ui/PageDetailPage'),
-        },
-        {
           path: '/products',
           lazy: async () => await import('@/pages/ui/ProductsPage'),
         },
