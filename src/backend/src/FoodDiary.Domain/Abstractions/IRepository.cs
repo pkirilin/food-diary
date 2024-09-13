@@ -11,8 +11,6 @@ public interface IRepository<TEntity> where TEntity : class
 
     IQueryable<TEntity> GetQueryWithoutTracking();
 
-    Task<List<TEntity>> GetAllAsync(CancellationToken cancellationToken);
-
     Task<List<TEntity>> GetByQueryAsync(IQueryable<TEntity> query, CancellationToken cancellationToken);
 
     Task<TEntity> GetByIdAsync(int id, CancellationToken cancellationToken);
@@ -24,10 +22,6 @@ public interface IRepository<TEntity> where TEntity : class
     void Update(TEntity entity);
 
     void Remove(TEntity entity);
-
-    void AddRange(IEnumerable<TEntity> entities);
-
-    void UpdateRange(IEnumerable<TEntity> entities);
 
     void RemoveRange(IEnumerable<TEntity> entities);
 

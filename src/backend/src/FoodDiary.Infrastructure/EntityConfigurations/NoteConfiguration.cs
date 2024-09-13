@@ -15,9 +15,5 @@ public class NoteConfiguration : IEntityTypeConfiguration<Note>
         builder.HasOne(n => n.Product)
             .WithMany(p => p.Notes)
             .HasForeignKey(n => n.ProductId);
-
-        builder.HasOne(n => n.Page)
-            .WithMany(p => p.Notes)
-            .HasForeignKey(n => n.PageId);
     }
 }

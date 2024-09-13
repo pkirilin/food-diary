@@ -11,8 +11,6 @@ public class Note
     public int ProductId { get; set; }
     public int ProductQuantity { get; set; }
     public int DisplayOrder { get; set; }
-    public int? PageId { get; set; }
-
-    public Page Page { get; set; }
+    
     public Product Product { get; set; }
 }

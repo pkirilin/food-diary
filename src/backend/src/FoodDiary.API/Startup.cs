@@ -7,7 +7,6 @@ using FoodDiary.API.Options;
 using FoodDiary.Application.Extensions;
 using FoodDiary.Configuration;
 using FoodDiary.Configuration.Extensions;
-using FoodDiary.Import.Extensions;
 using FoodDiary.Infrastructure.Extensions;
 using FoodDiary.Integrations.OpenAI.Extensions;
 using Microsoft.AspNetCore.Authentication.Google;
@@ -121,7 +120,6 @@ public class Startup
 
         services.AddRepositories();
         services.AddUtils();
-        services.AddPagesJsonImportServices();
         services.AddApplicationDependencies();
 
         services.AddAutoMapper(Assembly.GetExecutingAssembly());

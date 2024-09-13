@@ -29,11 +29,6 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
         return GetQuery().AsNoTracking();
     }
 
-    public virtual Task<List<TEntity>> GetAllAsync(CancellationToken cancellationToken)
-    {
-        return TargetDbSet.ToListAsync(cancellationToken);
-    }
-
     public virtual Task<List<TEntity>> GetByQueryAsync(IQueryable<TEntity> query, CancellationToken cancellationToken)
     {
         return query.ToListAsync(cancellationToken);
@@ -63,16 +58,6 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
     public virtual void Remove(TEntity entity)
     {
         TargetDbSet.Remove(entity);
-    }
-
-    public virtual void AddRange(IEnumerable<TEntity> entities)
-    {
-        TargetDbSet.AddRange(entities);
-    }
-
-    public virtual void UpdateRange(IEnumerable<TEntity> entities)
-    {
-        TargetDbSet.UpdateRange(entities);
     }
 
     public virtual void RemoveRange(IEnumerable<TEntity> entities)

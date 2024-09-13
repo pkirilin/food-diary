@@ -31,7 +31,6 @@ public static class InfrastructureExtensions
             .PersistKeysToDbContext<FoodDiaryContext>();
 
         services.AddScoped<IFoodDiaryUnitOfWork, FoodDiaryUnitOfWork>();
-        services.AddScoped<IPagesRepository, PagesRepository>();
         services.AddScoped<IProductsRepository, ProductsRepository>();
         services.AddScoped<INotesRepository, NotesRepository>();
     }

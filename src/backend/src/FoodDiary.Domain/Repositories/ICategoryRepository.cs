@@ -4,7 +4,7 @@ using FoodDiary.Domain.Entities;
 
 namespace FoodDiary.Domain.Repositories;
 
-public interface ICategoryRepository : IRepository<Category>, ILookupRepository<string, Category>
+public interface ICategoryRepository : IRepository<Category>
 {
     IQueryable<Category> LoadProducts(IQueryable<Category> query); 
 }

@@ -11,7 +11,6 @@ internal class ConfiguredLightBddScopeAttribute : LightBddScopeAttribute
     {
         configuration
             .ValueFormattingConfiguration()
-            .RegisterExplicit(typeof(Page), new PageFormatter())
             .RegisterExplicit(typeof(Note), new NoteFormatter(new CaloriesCalculator()))
             .RegisterExplicit(typeof(Product), new ProductFormatter())
             .RegisterExplicit(typeof(Category), new CategoryFormatter());
