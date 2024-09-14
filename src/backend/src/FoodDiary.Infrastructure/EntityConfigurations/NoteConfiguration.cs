@@ -12,6 +12,9 @@ public class NoteConfiguration : IEntityTypeConfiguration<Note>
         builder.HasKey(n => n.Id);
         builder.HasIndex(n => n.Date);
 
+        builder.Property(n => n.Date)
+            .HasDefaultValueSql("CURRENT_DATE");
+
         builder.HasOne(n => n.Product)
             .WithMany(p => p.Notes)
             .HasForeignKey(n => n.ProductId);

@@ -13,7 +13,7 @@ public static class NotesMapper
 {
     public static NoteItem ToNoteItem(this Note note, ICaloriesCalculator calculator) => new(
         Id: note.Id,
-        Date: note.Date.GetValueOrDefault(),
+        Date: note.Date,
         MealType: note.MealType,
         DisplayOrder: note.DisplayOrder,
         ProductId: note.ProductId,
@@ -45,7 +45,7 @@ public static class NotesMapper
         result.Notes
             .GroupBy(n => n.Date)
             .Select(g => new NotesHistoryItem(
-                Date: g.Key.GetValueOrDefault(),
+                Date: g.Key,
                 CaloriesCount: calculator.Calculate(g.ToArray())))
             .ToList()
     );
