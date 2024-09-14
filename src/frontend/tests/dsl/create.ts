@@ -2,7 +2,6 @@ import { type ReactElement } from 'react';
 
 import createCategoryAutocompleteResultBuilder from './builders/categoryAutocompleteResultBuilder';
 import createComponentBuilder from './builders/componentBuilder';
-import createPagesSearchResultBuilder from './builders/pagesSearchResultBuilder';
 import createProductAutocompleteResultBuilder from './builders/productAutocompleteResultBuilder';
 
 /**
@@ -10,7 +9,6 @@ import createProductAutocompleteResultBuilder from './builders/productAutocomple
  */
 const create = {
   component: (ui: ReactElement) => createComponentBuilder(ui),
-  pagesSearchResult: () => createPagesSearchResultBuilder(),
   categoryAutocompleteResult: () => createCategoryAutocompleteResultBuilder(),
   productAutocompleteResult: () => createProductAutocompleteResultBuilder(),
 };

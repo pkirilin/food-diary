@@ -1,7 +1,5 @@
 using FoodDiary.API;
 using FoodDiary.ComponentTests.Infrastructure.DateAndTime;
-using FoodDiary.ComponentTests.Infrastructure.ExternalServices;
-using FoodDiary.Export.GoogleDocs;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
@@ -32,8 +30,6 @@ public class FoodDiaryWebApplicationFactory : WebApplicationFactory<Startup>
         builder.ConfigureTestServices(services =>
         {
             services.AddFakeDateAndTime();
-            services.AddSingleton<IGoogleDriveClient, FakeGoogleDriveClient>();
-            services.AddSingleton<IGoogleDocsClient, FakeGoogleDocsClient>();
 
             services
                 .AddDataProtection()

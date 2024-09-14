@@ -23,7 +23,7 @@ public class NoteRequestBodyBuilder
 
     public NoteRequestBodyBuilder From(Note note)
     {
-        _date = note.Date.GetValueOrDefault();
+        _date = note.Date;
         _mealType = note.MealType;
         _productQuantity = note.ProductQuantity;
         _displayOrder = note.DisplayOrder;

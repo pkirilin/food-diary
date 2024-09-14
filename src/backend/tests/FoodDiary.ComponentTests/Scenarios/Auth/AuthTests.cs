@@ -10,7 +10,6 @@ public class AuthTests(FoodDiaryWebApplicationFactory factory, InfrastructureFix
         InfrastructureFixture infrastructure) => new(factory, infrastructure);
     
     [Scenario]
-    [InlineData("/api/v1/pages")]
     [InlineData("/api/v1/notes")]
     [InlineData("/api/v1/products")]
     [InlineData("/api/v1/categories")]

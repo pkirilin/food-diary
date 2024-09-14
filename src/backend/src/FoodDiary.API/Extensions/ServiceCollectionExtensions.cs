@@ -13,7 +13,6 @@ public static class ServiceCollectionExtensions
 {
     public static void AddRepositories(this IServiceCollection services)
     {
-        services.AddTransient<IPageRepository, PageRepository>();
         services.AddTransient<INoteRepository, NoteRepository>();
         services.AddTransient<ICategoryRepository, CategoryRepository>();
         services.AddTransient<IProductRepository, ProductRepository>();
@@ -21,7 +20,6 @@ public static class ServiceCollectionExtensions
 
     public static void AddUtils(this IServiceCollection services)
     {
-        services.AddTransient<IMealNameResolver, RuMealNameResolver>();
         services.AddTransient<ICaloriesCalculator, CaloriesCalculator>();
         services.AddTransient<INotesOrderCalculator, NotesOrderCalculator>();
     }

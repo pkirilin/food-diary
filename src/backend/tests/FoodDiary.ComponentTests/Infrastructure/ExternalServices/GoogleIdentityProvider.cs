@@ -26,9 +26,7 @@ public class GoogleIdentityProvider(IClient mountebankClient)
                 expires_in = 3599,
                 scope = $"{Constants.AuthenticationScopes.Openid} " +
                         $"{Constants.AuthenticationScopes.GoogleProfile} " +
-                        $"{Constants.AuthenticationScopes.GoogleEmail} " +
-                        $"{Constants.AuthenticationScopes.GoogleDocs} " +
-                        $"{Constants.AuthenticationScopes.GoogleDrive}",
+                        $"{Constants.AuthenticationScopes.GoogleEmail} ",
                 token_type = "Bearer",
                 id_token = "new_fake_id_token"
             }));

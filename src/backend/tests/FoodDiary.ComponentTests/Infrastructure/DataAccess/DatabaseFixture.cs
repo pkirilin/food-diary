@@ -36,7 +36,6 @@ public class DatabaseFixture : IAsyncLifetime
         var command = connection.CreateCommand();
         command.CommandText = """
                               truncate table "Notes" cascade;
-                              truncate table "Pages" cascade;
                               truncate table "Products" cascade;
                               truncate table "Categories" cascade;
                               """;

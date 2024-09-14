@@ -15,8 +15,6 @@ public static class Constants
         public const string Email = "email";
         public const string GoogleProfile = "https://www.googleapis.com/auth/userinfo.profile";
         public const string GoogleEmail = "https://www.googleapis.com/auth/userinfo.email";
-        public const string GoogleDocs = "https://www.googleapis.com/auth/documents";
-        public const string GoogleDrive = "https://www.googleapis.com/auth/drive";
     }
 
     public static class AuthenticationParameters

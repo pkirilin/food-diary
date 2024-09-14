@@ -5,9 +5,7 @@ using FoodDiary.Application.Notes.Get;
 using FoodDiary.Application.Notes.GetHistory;
 using FoodDiary.Application.Notes.Update;
 using FoodDiary.Application.Services.Categories;
-using FoodDiary.Application.Services.Export;
 using FoodDiary.Application.Services.Products;
-using FoodDiary.Export.GoogleDocs.Extensions;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -28,10 +26,6 @@ public static class ServiceCollectionExtensions
     {
         services.AddScoped<IProductsService, ProductsService>();
         services.AddScoped<ICategoriesService, CategoriesService>();
-
-        services.AddScoped<IExportService, ExportService>();
-        services.AddScoped<IExportDataLoader, ExportDataLoader>();
-        services.AddGoogleDocsExportService();
     }
     
     private static void AddNotes(this IServiceCollection services)

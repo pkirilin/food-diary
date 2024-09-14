@@ -20,11 +20,6 @@ const NAV_LINKS: NavLink[] = [
     path: '/history',
   },
   {
-    icon: <CalendarMonthIcon />,
-    title: 'Pages (deprecated)',
-    path: '/pages',
-  },
-  {
     icon: <RestaurantIcon />,
     title: 'Products',
     path: '/products',
