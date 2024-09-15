@@ -1,11 +1,11 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore as configureStoreRtk } from '@reduxjs/toolkit';
 import { type TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import { productModel } from '@/entities/product';
 import { api } from '../shared/api';
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export const configureAppStore = () =>
-  configureStore({
+export const configureStore = () =>
+  configureStoreRtk({
     reducer: {
       [api.reducerPath]: api.reducer,
       products: productModel.reducer,
@@ -14,11 +14,10 @@ export const configureAppStore = () =>
     middleware: getDefaultMiddleware => getDefaultMiddleware().concat(api.middleware),
   });
 
-export const store: ReturnType<typeof configureAppStore> = configureAppStore();
+export const store: ReturnType<typeof configureStore> = configureStore();
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
-export type AppStore = ReturnType<typeof configureAppStore>;
 
 export const useAppDispatch: () => AppDispatch = useDispatch;
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
