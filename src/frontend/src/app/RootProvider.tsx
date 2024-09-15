@@ -1,9 +1,9 @@
 import { CssBaseline, StyledEngineProvider, ThemeProvider } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { type Store } from '@reduxjs/toolkit';
 import { type PropsWithChildren, type FC } from 'react';
 import { Provider } from 'react-redux';
-import { type Store } from 'redux';
 import { updateAppModel } from '@/features/updateApp';
 import { theme } from './theme';
 
