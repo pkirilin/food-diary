@@ -17,7 +17,11 @@ export const LoadingContainer: FC<Props> = ({ children, loading }) => {
   );
 
   return (
-    <Box position="relative">
+    <Box
+      sx={{
+        position: 'relative',
+      }}
+    >
       <Fade in={loading} timeout={timeout}>
         <CircularProgress
           sx={{

@@ -36,13 +36,21 @@ export const Component: FC = () => {
     <PrivateLayout
       subheader={
         <Stack
-          width="100%"
           direction="row"
-          justifyContent="space-between"
-          alignItems="center"
           spacing={1}
+          sx={{
+            width: '100%',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
         >
-          <Box display="flex" alignItems="center" gap={3}>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 3,
+            }}
+          >
             <SelectDate currentDate={new Date(date)} />
             <Typography variant="h6" component="h1">
               {dateLib.formatToUserFriendlyString(date)}

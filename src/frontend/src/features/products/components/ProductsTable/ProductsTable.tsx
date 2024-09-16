@@ -30,7 +30,13 @@ const ProductsTable: FC<ProductsTableProps> = ({ products, checkedIds, onChecked
       return (
         <TableRow>
           <TableCell colSpan={4} align="center">
-            <Typography color="textSecondary">No products found</Typography>
+            <Typography
+              sx={{
+                color: 'textSecondary',
+              }}
+            >
+              No products found
+            </Typography>
           </TableCell>
         </TableRow>
       );

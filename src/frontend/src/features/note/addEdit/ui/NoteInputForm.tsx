@@ -77,8 +77,10 @@ export const NoteInputForm: FC<Props> = ({
         value={noteLib.getMealName(values.mealType)}
         margin="normal"
         fullWidth
-        inputProps={{ readOnly: true }}
         helperText=" "
+        slotProps={{
+          htmlInput: { readOnly: true },
+        }}
       />
       {renderProductAutocomplete(productAutocompleteInput.inputProps)}
       <TextField
@@ -87,12 +89,15 @@ export const NoteInputForm: FC<Props> = ({
         placeholder="Product quantity"
         margin="normal"
         fullWidth
-        inputProps={{
-          type: 'text',
-          inputMode: 'numeric',
-        }}
-        InputProps={{
-          endAdornment: <InputAdornment position="end">g</InputAdornment>,
+        slotProps={{
+          input: {
+            endAdornment: <InputAdornment position="end">g</InputAdornment>,
+          },
+
+          htmlInput: {
+            type: 'text',
+            inputMode: 'numeric',
+          },
         }}
       />
     </form>

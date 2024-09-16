@@ -63,7 +63,14 @@ export const AddNoteDialogContent: FC<Props> = ({
           />
         </TabList>
       </Box>
-      <Box px={0} pb={0} component={TabPanel} value={'fromInput' satisfies InputMethod}>
+      <Box
+        component={TabPanel}
+        value={'fromInput' satisfies InputMethod}
+        sx={{
+          px: 0,
+          pb: 0,
+        }}
+      >
         <NoteInputForm
           id="note-input-form"
           values={noteFormValues}
@@ -83,10 +90,13 @@ export const AddNoteDialogContent: FC<Props> = ({
         />
       </Box>
       <Box
-        px={0}
-        pb={recognizeNotesResult.isSuccess && recognizeNotesResult.notes.length > 0 ? 0 : undefined}
         component={TabPanel}
         value={'fromPhoto' satisfies InputMethod}
+        sx={{
+          px: 0,
+          pb:
+            recognizeNotesResult.isSuccess && recognizeNotesResult.notes.length > 0 ? 0 : undefined,
+        }}
       >
         <NoteInputFromPhotoFlow
           submitLoading={submitLoading}

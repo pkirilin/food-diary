@@ -6,8 +6,22 @@ interface Props {
 }
 
 export const AuthCallbackProgress: FC<Props> = ({ label }) => (
-  <Box height="100vh" display="flex" justifyContent="center" alignItems="center">
-    <Box display="flex" alignItems="center" gap={2} p={4}>
+  <Box
+    sx={{
+      height: '100vh',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+    }}
+  >
+    <Box
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 2,
+        p: 4,
+      }}
+    >
       <CircularProgress />
       <Typography>{label}</Typography>
     </Box>

@@ -157,13 +157,33 @@ export const ProductAutocomplete: FC<ProductAutocompleteProps> = ({
       getOptionLabel={getOptionLabel}
       filterOptions={filterOptions}
       renderOption={(props, option) => (
-        <Box component="li" {...props} display="flex" alignItems="center" gap={1}>
+        <Box
+          component="li"
+          {...props}
+          sx={[
+            {
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1,
+            },
+          ]}
+        >
           {option.freeSolo && (
-            <Box display="flex">
+            <Box
+              sx={{
+                display: 'flex',
+              }}
+            >
               {option.editing ? <EditIcon fontSize="small" /> : <AddIcon fontSize="small" />}
             </Box>
           )}
-          <Box display="flex">{option.name}</Box>
+          <Box
+            sx={{
+              display: 'flex',
+            }}
+          >
+            {option.name}
+          </Box>
         </Box>
       )}
       renderInput={inputParams => (
@@ -181,14 +201,16 @@ export const ProductAutocomplete: FC<ProductAutocompleteProps> = ({
           onBlur={() => {
             setNewProductIconColor('action');
           }}
-          InputProps={{
-            ...inputParams.InputProps,
-            startAdornment: value?.freeSolo ? <FiberNewIcon color={newProductIconColor} /> : null,
-            endAdornment: loading ? (
-              <CircularProgress color="inherit" size={20} />
-            ) : (
-              inputParams.InputProps.endAdornment
-            ),
+          slotProps={{
+            input: {
+              ...inputParams.InputProps,
+              startAdornment: value?.freeSolo ? <FiberNewIcon color={newProductIconColor} /> : null,
+              endAdornment: loading ? (
+                <CircularProgress color="inherit" size={20} />
+              ) : (
+                inputParams.InputProps.endAdornment
+              ),
+            },
           }}
         />
       )}

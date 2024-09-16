@@ -42,7 +42,16 @@ export const action: ActionFunction = async ({ request }) => {
 
 export const Component: FC = () => (
   <>
-    <Box component={Paper} elevation={0} position="fixed" top={0} left={0} right={0}>
+    <Box
+      component={Paper}
+      elevation={0}
+      sx={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+      }}
+    >
       <UpdateAppBanner />
     </Box>
     <CenteredLayout>

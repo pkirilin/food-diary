@@ -37,13 +37,15 @@ export const CategorySelect: FC<CategorySelectProps> = ({
           error={isInvalid}
           helperText={helperText}
           margin="normal"
-          InputProps={{
-            ...params.InputProps,
-            endAdornment: optionsLoading ? (
-              <CircularProgress color="inherit" size={20} />
-            ) : (
-              params.InputProps.endAdornment
-            ),
+          slotProps={{
+            input: {
+              ...params.InputProps,
+              endAdornment: optionsLoading ? (
+                <CircularProgress color="inherit" size={20} />
+              ) : (
+                params.InputProps.endAdornment
+              ),
+            },
           }}
         />
       )}
