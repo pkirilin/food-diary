@@ -23,14 +23,24 @@ interface Props {
 export const NotesHistoryList: FC<Props> = ({ notes }) => {
   if (notes.length === 0) {
     return (
-      <Typography py={2} color="GrayText">
+      <Typography
+        sx={{
+          py: 2,
+          color: 'GrayText',
+        }}
+      >
         No items found
       </Typography>
     );
   }
 
   return (
-    <Box mt={2} component={Paper}>
+    <Box
+      component={Paper}
+      sx={{
+        mt: 2,
+      }}
+    >
       <List disablePadding>
         {notes.map(({ date, caloriesCount }) => (
           <ListItem key={date} disableGutters>
@@ -39,7 +49,14 @@ export const NotesHistoryList: FC<Props> = ({ notes }) => {
                 <CalendarTodayIcon />
               </ListItemIcon>
               <ListItemText primary={dateLib.formatToUserFriendlyString(date)} />
-              <Box component={ListItemSecondaryAction} display="flex" alignItems="center" gap={1}>
+              <Box
+                component={ListItemSecondaryAction}
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 1,
+                }}
+              >
                 <ListItemText secondary={`${caloriesCount} kcal`} />
                 <ChevronRightIcon />
               </Box>

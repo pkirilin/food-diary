@@ -31,6 +31,12 @@ export const Button: FC<ButtonProps> = ({
     }}
   >
     {loading && <CircularProgress size={16} color={color} sx={{ position: 'absolute' }} />}
-    <Box visibility={loading ? 'hidden' : 'visible'}>{children}</Box>
+    <Box
+      sx={{
+        visibility: loading ? 'hidden' : 'visible',
+      }}
+    >
+      {children}
+    </Box>
   </MuiButton>
 );

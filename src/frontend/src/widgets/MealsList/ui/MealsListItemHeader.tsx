@@ -13,7 +13,15 @@ const TextStyled = styled(Typography)<TypographyProps>(({ theme }) => ({
 }));
 
 export const MealsListItemHeader: FC<Props> = ({ mealName, totalCalories }) => (
-  <Stack direction="row" spacing={2} justifyContent="space-between" mt={2} mb={3}>
+  <Stack
+    direction="row"
+    spacing={2}
+    sx={{
+      justifyContent: 'space-between',
+      mt: 2,
+      mb: 3,
+    }}
+  >
     <TextStyled component="h2">{mealName}</TextStyled>
     <TextStyled component="span">{`${totalCalories} kcal`}</TextStyled>
   </Stack>

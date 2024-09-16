@@ -27,26 +27,52 @@ export const UpdateAppBanner: FC = () => {
           variant="elevation"
           tabIndex={-1}
           elevation={0}
-          pt={3}
-          pb={1}
-          display="flex"
-          flexDirection={{ xs: 'column', sm: 'row' }}
-          justifyContent={'space-between'}
-          alignItems={{ xs: 'flex-start', sm: 'flex-end' }}
-          gap={{ xs: 0, sm: 1, md: '90px' }}
+          sx={{
+            pt: 3,
+            pb: 1,
+            display: 'flex',
+            flexDirection: { xs: 'column', sm: 'row' },
+            justifyContent: 'space-between',
+            alignItems: { xs: 'flex-start', sm: 'flex-end' },
+            gap: { xs: 0, sm: 1, md: '90px' },
+          }}
         >
-          <Box display="flex" pl={2} pr={{ xs: 2, sm: 0 }} gap={{ xs: 2, sm: 3 }}>
+          <Box
+            sx={{
+              display: 'flex',
+              pl: 2,
+              pr: { xs: 2, sm: 0 },
+              gap: { xs: 2, sm: 3 },
+            }}
+          >
             <Avatar sx={theme => ({ bgcolor: theme.palette.primary.main })}>
               <BrowserUpdatedIcon />
             </Avatar>
-            <Box mb={1}>
-              <Typography fontWeight="bold">New update available</Typography>
+            <Box
+              sx={{
+                mb: 1,
+              }}
+            >
+              <Typography
+                sx={{
+                  fontWeight: 'bold',
+                }}
+              >
+                New update available
+              </Typography>
               <Typography variant="body2">
                 Click on reload button to update the application
               </Typography>
             </Box>
           </Box>
-          <Box display="flex" px={{ xs: 1, sm: 2 }} gap={1} alignSelf="flex-end">
+          <Box
+            sx={{
+              display: 'flex',
+              px: { xs: 1, sm: 2 },
+              gap: 1,
+              alignSelf: 'flex-end',
+            }}
+          >
             <Button onClick={close} variant="text">
               Close
             </Button>

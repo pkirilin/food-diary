@@ -15,7 +15,11 @@ export const MealsListItem: FC<Props> = ({ date, mealType, notes }) => {
 
   return (
     <ListItem disableGutters disablePadding>
-      <Box width="100%">
+      <Box
+        sx={{
+          width: '100%',
+        }}
+      >
         <MealsListItemHeader
           mealName={noteLib.getMealName(mealType)}
           totalCalories={totalCalories}

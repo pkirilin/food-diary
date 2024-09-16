@@ -25,7 +25,12 @@ export const NavigationDrawer: FC<Props> = ({ menuOpened, toggleMenu }) => {
         component: 'nav',
       }}
     >
-      <Box component={Toolbar} display={{ xs: 'block', md: 'none' }} />
+      <Box
+        component={Toolbar}
+        sx={{
+          display: { xs: 'block', md: 'none' },
+        }}
+      />
       <NavigationMenuList />
     </Drawer>
   );

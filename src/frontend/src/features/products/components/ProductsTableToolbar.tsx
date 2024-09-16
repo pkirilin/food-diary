@@ -17,10 +17,26 @@ const ProductsTableToolbar: FC = () => {
   };
 
   return (
-    <Box p={2}>
+    <Box
+      sx={{
+        p: 2,
+      }}
+    >
       {isSelectionActive && (
-        <Stack direction="row" spacing={2} alignItems="center">
-          <Typography flexGrow={1}>{checkedProductIds.length} selected</Typography>
+        <Stack
+          direction="row"
+          spacing={2}
+          sx={{
+            alignItems: 'center',
+          }}
+        >
+          <Typography
+            sx={{
+              flexGrow: 1,
+            }}
+          >
+            {checkedProductIds.length} selected
+          </Typography>
           <Tooltip title="Delete product">
             <IconButton
               onClick={handleDeleteClick}
@@ -34,22 +50,31 @@ const ProductsTableToolbar: FC = () => {
       )}
       {!isSelectionActive && (
         <Stack
-          width="100%"
           spacing={{ xs: 3, sm: 2 }}
           direction={{ xs: 'column', sm: 'row' }}
-          alignItems={{ xs: 'flex-start', sm: 'center' }}
-          justifyContent="space-between"
+          sx={{
+            width: '100%',
+            alignItems: { xs: 'flex-start', sm: 'center' },
+            justifyContent: 'space-between',
+          }}
         >
-          <Typography variant="h2" flexGrow={1}>
+          <Typography
+            variant="h2"
+            sx={{
+              flexGrow: 1,
+            }}
+          >
             Products
           </Typography>
           <Stack
-            width="100%"
-            flex={1}
             spacing={{ xs: 3, sm: 2 }}
             direction={{ xs: 'column', sm: 'row' }}
-            justifyContent="space-between"
-            alignItems={{ xs: 'flex-start', sm: 'center' }}
+            sx={{
+              width: '100%',
+              flex: 1,
+              justifyContent: 'space-between',
+              alignItems: { xs: 'flex-start', sm: 'center' },
+            }}
           >
             <SearchByName />
             <SearchByCategory />

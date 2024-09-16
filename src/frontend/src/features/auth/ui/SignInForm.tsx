@@ -5,7 +5,14 @@ import GoogleIcon from './GoogleIcon';
 
 export const SignInForm: FC = () => {
   return (
-    <Box component={Form} method="post" action="/login" width="100%">
+    <Box
+      component={Form}
+      method="post"
+      action="/login"
+      sx={{
+        width: '100%',
+      }}
+    >
       <Button
         fullWidth
         type="submit"

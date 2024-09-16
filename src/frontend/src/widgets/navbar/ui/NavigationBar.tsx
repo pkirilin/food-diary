@@ -16,14 +16,22 @@ export const NavigationBar: FC<Props> = ({ menuOpened, toggleMenu }) => {
 
   return (
     <Box
-      display="flex"
-      justifyContent="space-between"
-      alignItems="center"
-      gap={1}
-      flex={1}
-      width="100%"
+      sx={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        gap: 1,
+        flex: 1,
+        width: '100%',
+      }}
     >
-      <Box display="flex" gap={3} alignItems="center">
+      <Box
+        sx={{
+          display: 'flex',
+          gap: 3,
+          alignItems: 'center',
+        }}
+      >
         <IconButton
           color="inherit"
           edge="start"

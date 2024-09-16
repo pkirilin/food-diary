@@ -9,7 +9,15 @@ interface CategoriesListProps {
 
 const CategoriesList: FC<CategoriesListProps> = ({ categories }) => {
   if (categories.length === 0) {
-    return <Typography color="GrayText">No categories found</Typography>;
+    return (
+      <Typography
+        sx={{
+          color: 'GrayText',
+        }}
+      >
+        No categories found
+      </Typography>
+    );
   }
 
   return (

@@ -54,17 +54,24 @@ export const Component: FC = () => {
     <PrivateLayout
       subheader={
         <Stack
-          width="100%"
           direction="row"
-          justifyContent="space-between"
-          alignItems="center"
           spacing={1}
+          sx={{
+            width: '100%',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
         >
           <Typography variant="h6" component="h1">
             History
           </Typography>
 
-          <Box display="flex" gap={1}>
+          <Box
+            sx={{
+              display: 'flex',
+              gap: 1,
+            }}
+          >
             <Tooltip title="Add notes">
               <IconButton component={Link} to="/">
                 <AddIcon />

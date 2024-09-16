@@ -70,17 +70,25 @@ export const NoteInputFromPhotoFlow: FC<Props> = ({
           <ImageListItem key={index}>
             <Box
               component="img"
-              height="194px"
               src={photo.src}
               alt={photo.name}
-              sx={{ objectFit: 'cover' }}
+              sx={{
+                height: '194px',
+                objectFit: 'cover',
+              }}
             />
             <ImageListItemBar title={photo.name} />
           </ImageListItem>
         ))}
       </ImageList>
       {recognizeNotesResult.isLoading && (
-        <Stack justifyContent="center" alignItems="center" mb={2}>
+        <Stack
+          sx={{
+            justifyContent: 'center',
+            alignItems: 'center',
+            mb: 2,
+          }}
+        >
           <CircularProgress />
         </Stack>
       )}

@@ -157,13 +157,33 @@ export const ProductAutocomplete: FC<ProductAutocompleteProps> = ({
       getOptionLabel={getOptionLabel}
       filterOptions={filterOptions}
       renderOption={(props, option) => (
-        <Box component="li" {...props} display="flex" alignItems="center" gap={1}>
+        <Box
+          component="li"
+          {...props}
+          sx={[
+            {
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1,
+            },
+          ]}
+        >
           {option.freeSolo && (
-            <Box display="flex">
+            <Box
+              sx={{
+                display: 'flex',
+              }}
+            >
               {option.editing ? <EditIcon fontSize="small" /> : <AddIcon fontSize="small" />}
             </Box>
           )}
-          <Box display="flex">{option.name}</Box>
+          <Box
+            sx={{
+              display: 'flex',
+            }}
+          >
+            {option.name}
+          </Box>
         </Box>
       )}
       renderInput={inputParams => (
