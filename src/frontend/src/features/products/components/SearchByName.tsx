@@ -62,19 +62,21 @@ export const SearchByName: FC = () => {
       value={query}
       onChange={handleQueryChange}
       sx={styles.searchField}
-      InputProps={{
-        startAdornment: (
-          <InputAdornment position="start">
-            <SearchIcon fontSize="small" />
-          </InputAdornment>
-        ),
-        endAdornment: query ? (
-          <InputAdornment position="end">
-            <IconButton size="small" onClick={handleQueryClear}>
-              <ClearIcon fontSize="small" />
-            </IconButton>
-          </InputAdornment>
-        ) : null,
+      slotProps={{
+        input: {
+          startAdornment: (
+            <InputAdornment position="start">
+              <SearchIcon fontSize="small" />
+            </InputAdornment>
+          ),
+          endAdornment: query ? (
+            <InputAdornment position="end">
+              <IconButton size="small" onClick={handleQueryClear}>
+                <ClearIcon fontSize="small" />
+              </IconButton>
+            </InputAdornment>
+          ) : null,
+        },
       }}
     />
   );

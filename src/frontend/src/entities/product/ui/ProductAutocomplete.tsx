@@ -181,14 +181,16 @@ export const ProductAutocomplete: FC<ProductAutocompleteProps> = ({
           onBlur={() => {
             setNewProductIconColor('action');
           }}
-          InputProps={{
-            ...inputParams.InputProps,
-            startAdornment: value?.freeSolo ? <FiberNewIcon color={newProductIconColor} /> : null,
-            endAdornment: loading ? (
-              <CircularProgress color="inherit" size={20} />
-            ) : (
-              inputParams.InputProps.endAdornment
-            ),
+          slotProps={{
+            input: {
+              ...inputParams.InputProps,
+              startAdornment: value?.freeSolo ? <FiberNewIcon color={newProductIconColor} /> : null,
+              endAdornment: loading ? (
+                <CircularProgress color="inherit" size={20} />
+              ) : (
+                inputParams.InputProps.endAdornment
+              ),
+            },
           }}
         />
       )}

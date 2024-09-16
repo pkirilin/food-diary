@@ -105,12 +105,15 @@ export const ProductInputForm: FC<Props> = ({
         margin="normal"
         label="Calories cost"
         placeholder="Enter calories cost"
-        inputProps={{
-          type: 'text',
-          inputMode: 'numeric',
-        }}
-        InputProps={{
-          endAdornment: <InputAdornment position="end">kcal</InputAdornment>,
+        slotProps={{
+          input: {
+            endAdornment: <InputAdornment position="end">kcal</InputAdornment>,
+          },
+
+          htmlInput: {
+            type: 'text',
+            inputMode: 'numeric',
+          },
         }}
       />
       <TextField
@@ -119,12 +122,15 @@ export const ProductInputForm: FC<Props> = ({
         margin="normal"
         label="Default quantity"
         placeholder="Enter default quantity"
-        inputProps={{
-          type: 'text',
-          inputMode: 'numeric',
-        }}
-        InputProps={{
-          endAdornment: <InputAdornment position="end">g</InputAdornment>,
+        slotProps={{
+          input: {
+            endAdornment: <InputAdornment position="end">g</InputAdornment>,
+          },
+
+          htmlInput: {
+            type: 'text',
+            inputMode: 'numeric',
+          },
         }}
       />
       {renderCategoryInput(categoryInput.inputProps)}
