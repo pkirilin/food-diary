@@ -3,7 +3,6 @@ export * from './AppName';
 export * from './AppShell';
 export * from './AppLoader';
 export * from './Button';
-export * from './DatePicker';
 export * from './Dialog';
 export * from './AppDialog';
 export * from './LoadingContainer';

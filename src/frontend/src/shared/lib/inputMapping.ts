@@ -5,7 +5,6 @@ import {
   type SelectOption,
   type SelectProps,
 } from '@/shared/types';
-import { type DatePickerProps } from '../ui';
 
 export const mapToTextInputProps: MapToInputPropsFunction<string, TextFieldProps> = ({
   value,
@@ -39,20 +38,6 @@ export const mapToNumericInputProps: MapToInputPropsFunction<number, TextFieldPr
   },
   onFocus: event => {
     event.target.select();
-  },
-});
-
-export const mapToDateInputProps: MapToInputPropsFunction<Date | null, DatePickerProps> = ({
-  value,
-  setValue,
-  isInvalid,
-  helperText,
-}) => ({
-  date: value,
-  isInvalid,
-  helperText,
-  onChange: newValue => {
-    setValue(newValue);
   },
 });
 

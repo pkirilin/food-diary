@@ -3,7 +3,7 @@ import { type ReactElement } from 'react';
 import { RouterProvider, createMemoryRouter } from 'react-router-dom';
 import { Root } from '@/app/Root';
 import { RootProvider } from '@/app/RootProvider';
-import { configureAppStore } from '@/app/store';
+import { configureStore } from '@/app/store';
 import TestEnvironment from './TestEnvironment';
 
 interface RenderOptions {
@@ -16,7 +16,7 @@ export const renderApp = ({
   pageSizeOverride,
 }: RenderOptions = {}): void => {
   rtlRender(
-    <RootProvider store={configureAppStore()}>
+    <RootProvider store={configureStore()}>
       <Root>
         <TestEnvironment
           signOutAfterMilliseconds={signOutAfterMilliseconds}
@@ -31,7 +31,7 @@ export function render(
   ui: ReactElement,
   { signOutAfterMilliseconds, pageSizeOverride }: RenderOptions = {},
 ): RenderResult {
-  const store = configureAppStore();
+  const store = configureStore();
 
   const router = createMemoryRouter([
     {
