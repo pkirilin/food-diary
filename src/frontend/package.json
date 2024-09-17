@@ -24,7 +24,7 @@
     "@mui/material": "^6.1.0",
     "@mui/system": "^6.1.0",
     "@mui/utils": "^6.1.0",
-    "@mui/x-date-pickers": "^5.0.20",
+    "@mui/x-date-pickers": "^7.17.0",
     "@reduxjs/toolkit": "^2.2.7",
     "date-fns": "^2.28.0",
     "prop-types": "^15.6.0",

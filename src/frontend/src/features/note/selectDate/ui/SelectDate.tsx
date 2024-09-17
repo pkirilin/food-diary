@@ -1,5 +1,5 @@
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import { IconButton, Popover, TextField, Tooltip } from '@mui/material';
+import { IconButton, Popover, Tooltip } from '@mui/material';
 import { StaticDatePicker } from '@mui/x-date-pickers';
 import { useState, type FC } from 'react';
 import { useSubmit } from 'react-router-dom';
@@ -51,7 +51,6 @@ export const SelectDate: FC<Props> = ({ currentDate }) => {
               setAnchorEl(null);
             }
           }}
-          renderInput={params => <TextField {...params} />}
         />
       </Popover>
     </>

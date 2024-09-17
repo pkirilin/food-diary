@@ -1,7 +1,7 @@
 import AddIcon from '@mui/icons-material/Add';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import FilterAltOffIcon from '@mui/icons-material/FilterAltOff';
-import { Box, Collapse, IconButton, Stack, TextField, Tooltip, Typography } from '@mui/material';
+import { Box, Collapse, IconButton, Stack, Tooltip, Typography } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import { useState, type FC } from 'react';
 import { useLoaderData, useSubmit, Link } from 'react-router-dom';
@@ -91,6 +91,7 @@ export const Component: FC = () => {
           openTo="month"
           views={['year', 'month']}
           label="Year and Month"
+          slotProps={{ textField: { size: 'small', margin: 'normal' } }}
           value={filterDate}
           onChange={newValue => {
             if (newValue) {
@@ -103,7 +104,6 @@ export const Component: FC = () => {
               );
             }
           }}
-          renderInput={params => <TextField {...params} size="small" margin="normal" />}
         />
       </Collapse>
       <NotesHistoryList notes={notes} />
