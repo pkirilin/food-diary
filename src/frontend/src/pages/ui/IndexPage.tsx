@@ -31,6 +31,7 @@ export const Component: FC = () => {
   const { date } = useLoaderData() as LoaderData;
   const notes = noteLib.useNotes(date);
   const totalCalories = noteLib.useCalories(notes.data);
+  const currentDate = new Date(date);
 
   return (
     <PrivateLayout
@@ -51,9 +52,9 @@ export const Component: FC = () => {
               gap: 3,
             }}
           >
-            <SelectDate currentDate={new Date(date)} />
+            <SelectDate currentDate={currentDate} />
             <Typography variant="h6" component="h1">
-              {dateLib.formatToUserFriendlyString(date)}
+              {dateLib.formatToUserFriendlyString(currentDate)}
             </Typography>
           </Box>
           <Typography variant="h6" component="span">
