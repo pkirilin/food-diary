@@ -1,10 +1,11 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import * as IndexPage from '@/pages/ui/IndexPage';
 import { AUTH_CHECK_INTERVAL } from '@/shared/config';
-import { renderApp } from '@tests/render';
+import { renderRoute } from '@tests/render';
 
 test('user can login and logout', async () => {
-  renderApp();
+  renderRoute(IndexPage);
   const user = userEvent.setup();
 
   const signInButton = await screen.findByRole('button', { name: /sign in/i });
@@ -19,7 +20,7 @@ test('user can login and logout', async () => {
 
 test('user must login again if session expired', async () => {
   const signOutAfterMilliseconds = 1000;
-  renderApp({ signOutAfterMilliseconds });
+  renderRoute(IndexPage, { signOutAfterMilliseconds });
   const user = userEvent.setup();
 
   const signInButton = await screen.findByRole('button', { name: /sign in/i });
@@ -31,6 +32,5 @@ test('user must login again if session expired', async () => {
   vi.advanceTimersByTime(signOutAfterMilliseconds);
   vi.advanceTimersByTime(AUTH_CHECK_INTERVAL);
   vi.useRealTimers();
-
   expect(await screen.findByRole('button', { name: /sign in/i })).toBeVisible();
 });

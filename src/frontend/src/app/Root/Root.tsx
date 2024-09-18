@@ -1,8 +1,6 @@
-import { type PropsWithChildren, type FC } from 'react';
+import { type FC } from 'react';
 import { RouterProvider } from 'react-router-dom';
 import { AppLoader } from '@/shared/ui';
-import { createAppRouter } from '../router';
+import { router } from '../routing';
 
-export const Root: FC<PropsWithChildren> = ({ children }) => (
-  <RouterProvider router={createAppRouter(children)} fallbackElement={<AppLoader />} />
-);
+export const Root: FC = () => <RouterProvider router={router} fallbackElement={<AppLoader />} />;
