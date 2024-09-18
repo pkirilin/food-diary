@@ -1,18 +1,32 @@
 import CloseIcon from '@mui/icons-material/Close';
 import MenuIcon from '@mui/icons-material/Menu';
-import { Box, IconButton, type Theme, useMediaQuery } from '@mui/material';
+import { Box, IconButton } from '@mui/material';
 import { type ReactElement, type FC } from 'react';
+import { useMatches } from 'react-router-dom';
 import { useToggle } from '@/shared/hooks';
 import { NavigationDrawer } from '../navbar/ui/NavigationDrawer';
 
-interface Props {
-  title: ReactElement;
-  action: ReactElement;
+export interface NavigationLoaderData {
+  navigation: {
+    title: string | (() => ReactElement);
+    action?: () => ReactElement;
+  };
 }
 
-export const Navigation: FC<Props> = ({ title, action }) => {
+const fallbackNavigation: NavigationLoaderData = {
+  navigation: {
+    title: '',
+  },
+};
+
+export const isNavigationLoaderData = (data: unknown): data is NavigationLoaderData =>
+  typeof data === 'object' && data !== null && 'navigation' in data;
+
+export const Navigation: FC = () => {
   const [drawerVisible, toggleDrawer] = useToggle();
-  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
+  const matches = useMatches();
+  const route = matches[matches.length - 1];
+  const { navigation } = isNavigationLoaderData(route.data) ? route.data : fallbackNavigation;
 
   return (
     <Box
@@ -38,12 +52,12 @@ export const Navigation: FC<Props> = ({ title, action }) => {
           aria-label={drawerVisible ? 'Close menu' : 'Open menu'}
           onClick={toggleDrawer}
         >
-          {isMobile && drawerVisible ? <CloseIcon /> : <MenuIcon />}
+          {drawerVisible ? <CloseIcon /> : <MenuIcon />}
         </IconButton>
         <NavigationDrawer visible={drawerVisible} toggle={toggleDrawer} />
-        {title}
+        {typeof navigation.title === 'string' ? navigation.title : navigation.title()}
       </Box>
-      {action}
+      {navigation.action?.()}
     </Box>
   );
 };
