@@ -1,3 +1,4 @@
+import { Container } from '@mui/material';
 import { createBrowserRouter } from 'react-router-dom';
 import { AuthenticatedLayout } from './AuthenticatedLayout';
 import { Error } from './Error';
@@ -6,7 +7,11 @@ import { UnauthenticatedLayout } from './UnauthenticatedLayout';
 export const router = createBrowserRouter([
   {
     element: <AuthenticatedLayout />,
-    errorElement: <Error />,
+    errorElement: (
+      <Container sx={{ py: 2 }}>
+        <Error />
+      </Container>
+    ),
     children: [
       {
         errorElement: <Error />,
@@ -33,7 +38,11 @@ export const router = createBrowserRouter([
   },
   {
     element: <UnauthenticatedLayout />,
-    errorElement: <Error />,
+    errorElement: (
+      <Container sx={{ py: 2 }}>
+        <Error />
+      </Container>
+    ),
     children: [
       {
         path: '/login',

@@ -1,11 +1,14 @@
 import { Link, Typography } from '@mui/material';
 import { type FC } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { ErrorLayout } from '@/widgets/layout';
+import { AppShell } from '@/shared/ui';
+import { useNavigationProgress } from './useNavigationProgress';
 
 export const Error: FC = () => {
+  const navigationProgress = useNavigationProgress();
+
   return (
-    <ErrorLayout>
+    <AppShell withNavigationProgress={navigationProgress.visible} withSidebar={false}>
       <Typography variant="h1" gutterBottom>
         Oops!
       </Typography>
@@ -15,6 +18,6 @@ export const Error: FC = () => {
       <Link component={RouterLink} to="/">
         Return to home
       </Link>
-    </ErrorLayout>
+    </AppShell>
   );
 };
