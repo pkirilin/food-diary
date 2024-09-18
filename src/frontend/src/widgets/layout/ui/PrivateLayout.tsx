@@ -31,7 +31,7 @@ export const PrivateLayout: FC<Props> = ({ children, subheader }) => {
       withSidebar={menuOpened}
       header={{
         navigationBar: <NavigationBar menuOpened={menuOpened} toggleMenu={toggleMenu} />,
-        navigationDrawer: <NavigationDrawer menuOpened={menuOpened} toggleMenu={toggleMenu} />,
+        navigationDrawer: <NavigationDrawer visible={menuOpened} toggle={toggleMenu} />,
       }}
       subheader={{
         banner: <UpdateAppBanner />,

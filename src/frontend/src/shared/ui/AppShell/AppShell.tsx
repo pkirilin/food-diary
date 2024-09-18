@@ -9,8 +9,9 @@ import {
 } from './AppShell.styles';
 
 interface HeaderProps {
-  navigationBar: ReactElement;
-  navigationDrawer: ReactElement;
+  navigationBar?: ReactElement;
+  navigationDrawer?: ReactElement;
+  navigation?: ReactElement;
 }
 
 interface SubheaderProps {
@@ -21,7 +22,7 @@ interface SubheaderProps {
 
 interface Props extends PropsWithChildren {
   withNavigationProgress: boolean;
-  withSidebar: boolean;
+  withSidebar?: boolean;
   header?: HeaderProps;
   subheader?: SubheaderProps;
 }
@@ -29,7 +30,7 @@ interface Props extends PropsWithChildren {
 export const AppShell: FC<Props> = ({
   children,
   withNavigationProgress,
-  withSidebar,
+  withSidebar = false,
   header,
   subheader,
 }) => (
@@ -37,7 +38,7 @@ export const AppShell: FC<Props> = ({
     {header && (
       <>
         <HeaderStyled>
-          <Toolbar>{header.navigationBar}</Toolbar>
+          <Toolbar>{header.navigation ? header.navigation : header.navigationBar}</Toolbar>
         </HeaderStyled>
         {header.navigationDrawer}
       </>

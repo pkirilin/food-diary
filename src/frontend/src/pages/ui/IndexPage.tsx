@@ -1,13 +1,16 @@
-import { Box, Stack, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 import { type FC } from 'react';
 import { useLoaderData } from 'react-router-dom';
 import { store } from '@/app/store';
 import { noteApi, noteLib } from '@/entities/note';
 import { SelectDate } from '@/features/note/selectDate';
+import { UpdateAppBanner } from '@/features/updateApp';
 import { MSW_ENABLED } from '@/shared/config';
 import { dateLib } from '@/shared/lib';
-import { PrivateLayout } from '@/widgets/layout';
+import { AppShell } from '@/shared/ui';
+import { useNavigationProgress } from '@/widgets/layout/lib';
 import { MealsList } from '@/widgets/MealsList';
+import { Navigation } from '@/widgets/Navigation';
 import { withAuthStatusCheck } from '../lib';
 
 interface LoaderData {
@@ -32,38 +35,28 @@ export const Component: FC = () => {
   const notes = noteLib.useNotes(date);
   const totalCalories = noteLib.useCalories(notes.data);
   const currentDate = new Date(date);
+  const navigationProgressVisible = useNavigationProgress();
 
   return (
-    <PrivateLayout
-      subheader={
-        <Stack
-          direction="row"
-          spacing={1}
-          sx={{
-            width: '100%',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-        >
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 3,
-            }}
-          >
-            <SelectDate currentDate={currentDate} />
-            <Typography variant="h6" component="h1">
-              {dateLib.formatToUserFriendlyString(currentDate)}
-            </Typography>
-          </Box>
-          <Typography variant="h6" component="span">
-            {totalCalories} kcal
-          </Typography>
-        </Stack>
-      }
+    <AppShell
+      withNavigationProgress={navigationProgressVisible}
+      header={{
+        navigation: (
+          <Navigation
+            title={<SelectDate currentDate={currentDate} />}
+            action={
+              <Typography variant="h6" component="span">
+                {totalCalories} kcal
+              </Typography>
+            }
+          />
+        ),
+      }}
+      subheader={{
+        banner: <UpdateAppBanner />,
+      }}
     >
       <MealsList date={date} notes={notes.data} />
-    </PrivateLayout>
+    </AppShell>
   );
 };

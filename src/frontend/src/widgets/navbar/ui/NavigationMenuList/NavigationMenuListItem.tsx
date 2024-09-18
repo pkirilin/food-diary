@@ -25,14 +25,7 @@ export const NavigationMenuListItem: FC<Props> = ({ navLink }) => {
           },
         })}
       >
-        <Box
-          component={ListItemIcon}
-          sx={{
-            ml: { xs: '-3px', sm: '4px' },
-          }}
-        >
-          {navLink.icon}
-        </Box>
+        <Box component={ListItemIcon}>{navLink.icon}</Box>
         <ListItemText primary={navLink.title} />
       </ListItemButton>
     </ListItem>

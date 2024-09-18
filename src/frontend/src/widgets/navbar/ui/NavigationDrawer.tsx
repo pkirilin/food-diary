@@ -1,37 +1,32 @@
-import { type Theme, useMediaQuery, Box, Drawer, Toolbar } from '@mui/material';
+import { Divider, Drawer } from '@mui/material';
 import { type FC } from 'react';
-import { APP_BAR_HEIGHT_SM, SIDEBAR_DRAWER_WIDTH } from '@/shared/constants';
+import { APP_BAR_HEIGHT_SM, APP_BAR_HEIGHT_XS, SIDEBAR_DRAWER_WIDTH } from '@/shared/constants';
 import { NavigationMenuList } from './NavigationMenuList';
+import { ProfileActionsList } from './ProfileActionsList';
 
 interface Props {
-  menuOpened: boolean;
-  toggleMenu: () => void;
+  visible: boolean;
+  toggle: () => void;
 }
 
-export const NavigationDrawer: FC<Props> = ({ menuOpened, toggleMenu }) => {
-  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
-
-  return (
-    <Drawer
-      variant={isMobile ? 'temporary' : 'persistent'}
-      open={menuOpened}
-      onClose={toggleMenu}
-      ModalProps={{ keepMounted: isMobile }}
-      PaperProps={{
-        sx: {
-          marginTop: { xs: 0, md: `${APP_BAR_HEIGHT_SM}px` },
-          width: `${SIDEBAR_DRAWER_WIDTH}px`,
+export const NavigationDrawer: FC<Props> = ({ visible, toggle }) => (
+  <Drawer
+    open={visible}
+    onClose={toggle}
+    ModalProps={{ keepMounted: true }}
+    PaperProps={{
+      sx: {
+        width: `${SIDEBAR_DRAWER_WIDTH}px`,
+        top: {
+          xs: APP_BAR_HEIGHT_XS,
+          sm: APP_BAR_HEIGHT_SM,
         },
-        component: 'nav',
-      }}
-    >
-      <Box
-        component={Toolbar}
-        sx={{
-          display: { xs: 'block', md: 'none' },
-        }}
-      />
-      <NavigationMenuList />
-    </Drawer>
-  );
-};
+      },
+      component: 'nav',
+    }}
+  >
+    <NavigationMenuList />
+    <Divider />
+    <ProfileActionsList />
+  </Drawer>
+);
