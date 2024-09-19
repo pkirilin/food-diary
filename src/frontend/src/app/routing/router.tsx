@@ -21,16 +21,16 @@ export const router = createBrowserRouter([
             lazy: () => import('@/pages/ui/IndexPage'),
           },
           {
+            path: '/history',
+            lazy: () => import('@/pages/ui/HistoryPage'),
+          },
+          {
             path: '/products',
             lazy: () => import('@/pages/ui/ProductsPage'),
           },
           {
             path: '/categories',
             lazy: () => import('@/pages/ui/CategoriesPage'),
-          },
-          {
-            path: '/history',
-            lazy: () => import('@/pages/ui/HistoryPage'),
           },
         ],
       },

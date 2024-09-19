@@ -1,22 +1,15 @@
-import AddIcon from '@mui/icons-material/Add';
-import FilterAltIcon from '@mui/icons-material/FilterAlt';
-import FilterAltOffIcon from '@mui/icons-material/FilterAltOff';
-import { Box, Collapse, IconButton, Stack, Tooltip, Typography } from '@mui/material';
-import { DatePicker } from '@mui/x-date-pickers';
-import { useState, type FC } from 'react';
-import { useLoaderData, useSubmit, Link } from 'react-router-dom';
+import { type FC } from 'react';
+import { useLoaderData } from 'react-router-dom';
 import { store } from '@/app/store';
 import { type NoteHistoryItem, noteApi } from '@/entities/note';
 import { MSW_ENABLED } from '@/shared/config';
-import { useToggle } from '@/shared/hooks';
 import { dateLib } from '@/shared/lib';
-import { PrivateLayout } from '@/widgets/layout';
-import { NotesHistoryList } from '@/widgets/NotesHistoryList';
+import { type NavigationLoaderData } from '@/widgets/Navigation';
+import { FilterNotesHistory, NotesHistoryList } from '@/widgets/NotesHistoryList';
 import { withAuthStatusCheck } from '../lib';
 
-interface LoaderData {
+interface LoaderData extends NavigationLoaderData {
   notes: NoteHistoryItem[];
-  date: Date;
 }
 
 const getFallbackMonth = (): number => (MSW_ENABLED ? 10 : new Date().getMonth() + 1);
@@ -40,73 +33,15 @@ export const loader = withAuthStatusCheck(async ({ request }) => {
 
   return {
     notes: notesHistoryQuery.data?.notesHistory ?? [],
-    date,
+    navigation: {
+      title: 'History',
+      action: () => <FilterNotesHistory date={date} />,
+    },
   } satisfies LoaderData;
 });
 
 export const Component: FC = () => {
-  const { notes, date } = useLoaderData() as LoaderData;
-  const [filterVisible, toggleFilter] = useToggle();
-  const [filterDate, setFilterDate] = useState(date);
-  const submit = useSubmit();
+  const { notes } = useLoaderData() as LoaderData;
 
-  return (
-    <PrivateLayout
-      subheader={
-        <Stack
-          direction="row"
-          spacing={1}
-          sx={{
-            width: '100%',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-        >
-          <Typography variant="h6" component="h1">
-            History
-          </Typography>
-
-          <Box
-            sx={{
-              display: 'flex',
-              gap: 1,
-            }}
-          >
-            <Tooltip title="Add notes">
-              <IconButton component={Link} to="/">
-                <AddIcon />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title={filterVisible ? 'Hide filter' : 'Show filter'}>
-              <IconButton edge="end" onClick={toggleFilter}>
-                {filterVisible ? <FilterAltOffIcon /> : <FilterAltIcon />}
-              </IconButton>
-            </Tooltip>
-          </Box>
-        </Stack>
-      }
-    >
-      <Collapse in={filterVisible}>
-        <DatePicker
-          openTo="month"
-          views={['year', 'month']}
-          label="Year and Month"
-          slotProps={{ textField: { size: 'small', margin: 'normal' } }}
-          value={filterDate}
-          onChange={newValue => {
-            if (newValue) {
-              setFilterDate(newValue);
-              submit(
-                new URLSearchParams({
-                  month: (newValue.getMonth() + 1).toString(),
-                  year: newValue.getFullYear().toString(),
-                }),
-              );
-            }
-          }}
-        />
-      </Collapse>
-      <NotesHistoryList notes={notes} />
-    </PrivateLayout>
-  );
+  return <NotesHistoryList notes={notes} />;
 };

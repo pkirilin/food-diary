@@ -1,6 +1,6 @@
 import CloseIcon from '@mui/icons-material/Close';
 import MenuIcon from '@mui/icons-material/Menu';
-import { Box, IconButton } from '@mui/material';
+import { Box, IconButton, Typography } from '@mui/material';
 import { type ReactElement, type FC } from 'react';
 import { useMatches } from 'react-router-dom';
 import { useToggle } from '@/shared/hooks';
@@ -35,17 +35,9 @@ export const Navigation: FC = () => {
         justifyContent: 'space-between',
         alignItems: 'center',
         gap: 1,
-        flex: 1,
-        width: '100%',
       }}
     >
-      <Box
-        sx={{
-          display: 'flex',
-          gap: 3,
-          alignItems: 'center',
-        }}
-      >
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
         <IconButton
           color="inherit"
           edge="start"
@@ -55,7 +47,13 @@ export const Navigation: FC = () => {
           {drawerVisible ? <CloseIcon /> : <MenuIcon />}
         </IconButton>
         <NavigationDrawer visible={drawerVisible} toggle={toggleDrawer} />
-        {typeof navigation.title === 'string' ? navigation.title : navigation.title()}
+        {typeof navigation.title === 'string' ? (
+          <Typography variant="h6" component="span">
+            {navigation.title}
+          </Typography>
+        ) : (
+          navigation.title()
+        )}
       </Box>
       {navigation.action?.()}
     </Box>
