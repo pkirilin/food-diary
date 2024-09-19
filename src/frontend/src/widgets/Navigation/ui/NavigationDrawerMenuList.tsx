@@ -5,8 +5,8 @@ import RestaurantIcon from '@mui/icons-material/Restaurant';
 import { List } from '@mui/material';
 import { Box } from '@mui/system';
 import { type FC } from 'react';
-import { NavigationMenuListItem } from './NavigationMenuListItem';
-import { type NavLink } from './types';
+import { type NavLink } from '../model';
+import { NavigationDrawerMenuListItem } from './NavigationDrawerMenuListItem';
 
 const NAV_LINKS: NavLink[] = [
   {
@@ -31,10 +31,10 @@ const NAV_LINKS: NavLink[] = [
   },
 ];
 
-export const NavigationMenuList: FC = () => (
+export const NavigationDrawerMenuList: FC = () => (
   <Box component={List}>
     {NAV_LINKS.map((navLink, index) => (
-      <NavigationMenuListItem key={`${index}-${navLink.title}`} navLink={navLink} />
+      <NavigationDrawerMenuListItem key={`${index}-${navLink.title}`} navLink={navLink} />
     ))}
   </Box>
 );

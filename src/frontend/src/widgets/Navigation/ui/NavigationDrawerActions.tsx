@@ -3,7 +3,7 @@ import { List, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui
 import { type FC } from 'react';
 import { useSubmit } from 'react-router-dom';
 
-export const ProfileActionsList: FC = () => {
+export const NavigationDrawerActions: FC = () => {
   const submit = useSubmit();
 
   return (

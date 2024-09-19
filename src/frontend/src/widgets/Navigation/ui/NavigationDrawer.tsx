@@ -2,8 +2,8 @@ import CloseIcon from '@mui/icons-material/Close';
 import { Divider, Drawer, IconButton, Toolbar, Tooltip } from '@mui/material';
 import { type FC } from 'react';
 import { SIDEBAR_DRAWER_WIDTH } from '@/shared/constants';
-import { NavigationMenuList } from './NavigationMenuList';
-import { ProfileActionsList } from './ProfileActionsList';
+import { NavigationDrawerActions } from './NavigationDrawerActions';
+import { NavigationDrawerMenuList } from './NavigationDrawerMenuList';
 
 interface Props {
   visible: boolean;
@@ -29,8 +29,8 @@ export const NavigationDrawer: FC<Props> = ({ visible, toggle }) => (
         </IconButton>
       </Tooltip>
     </Toolbar>
-    <NavigationMenuList />
+    <NavigationDrawerMenuList />
     <Divider />
-    <ProfileActionsList />
+    <NavigationDrawerActions />
   </Drawer>
 );
