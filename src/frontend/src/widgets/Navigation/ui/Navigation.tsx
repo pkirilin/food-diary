@@ -7,8 +7,8 @@ import { NavigationDrawer } from './NavigationDrawer';
 
 export interface NavigationLoaderData {
   navigation: {
-    title: string | (() => ReactElement);
-    action?: () => ReactElement;
+    title: string | ReactElement;
+    action?: ReactElement;
   };
 }
 
@@ -18,7 +18,7 @@ const fallbackNavigation: NavigationLoaderData = {
   },
 };
 
-export const isNavigationLoaderData = (data: unknown): data is NavigationLoaderData =>
+const isNavigationLoaderData = (data: unknown): data is NavigationLoaderData =>
   typeof data === 'object' && data !== null && 'navigation' in data;
 
 export const Navigation: FC = () => {
@@ -66,10 +66,10 @@ export const Navigation: FC = () => {
             {loaderData.navigation.title}
           </Typography>
         ) : (
-          loaderData.navigation.title()
+          loaderData.navigation.title
         )}
       </Box>
-      {loaderData.navigation.action?.()}
+      {loaderData.navigation.action}
     </Box>
   );
 };

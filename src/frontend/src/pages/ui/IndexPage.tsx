@@ -25,8 +25,8 @@ export const loader: LoaderFunction = async ({ request }) => {
   return {
     date,
     navigation: {
-      title: () => <SelectDate currentDate={new Date(date)} />,
-      action: () => (
+      title: <SelectDate currentDate={new Date(date)} />,
+      action: (
         <Typography variant="h6" component="span">
           {totalCalories} kcal
         </Typography>

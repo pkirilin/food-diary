@@ -34,7 +34,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     notes: notesHistoryQuery.data?.notesHistory ?? [],
     navigation: {
       title: 'History',
-      action: () => <FilterNotesHistory date={date} />,
+      action: <FilterNotesHistory date={date} />,
     },
   } satisfies LoaderData;
 };
