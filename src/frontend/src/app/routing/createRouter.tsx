@@ -1,7 +1,5 @@
-import { Container } from '@mui/material';
 import { createBrowserRouter } from 'react-router-dom';
 import { Error } from './Error';
-import { UnauthenticatedLayout } from './UnauthenticatedLayout';
 
 export const createRouter = (): ReturnType<typeof createBrowserRouter> =>
   createBrowserRouter([
@@ -32,12 +30,7 @@ export const createRouter = (): ReturnType<typeof createBrowserRouter> =>
       ],
     },
     {
-      element: <UnauthenticatedLayout />,
-      errorElement: (
-        <Container sx={{ py: 2 }}>
-          <Error />
-        </Container>
-      ),
+      lazy: () => import('./UnauthenticatedLayout'),
       children: [
         {
           path: '/login',
