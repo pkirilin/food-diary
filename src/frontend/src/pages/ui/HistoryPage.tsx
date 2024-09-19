@@ -1,12 +1,11 @@
 import { type FC } from 'react';
-import { useLoaderData } from 'react-router-dom';
+import { type LoaderFunction, useLoaderData } from 'react-router-dom';
 import { store } from '@/app/store';
 import { type NoteHistoryItem, noteApi } from '@/entities/note';
 import { MSW_ENABLED } from '@/shared/config';
 import { dateLib } from '@/shared/lib';
 import { type NavigationLoaderData } from '@/widgets/Navigation';
 import { FilterNotesHistory, NotesHistoryList } from '@/widgets/NotesHistoryList';
-import { withAuthStatusCheck } from '../lib';
 
 interface LoaderData extends NavigationLoaderData {
   notes: NoteHistoryItem[];
@@ -18,7 +17,7 @@ const getFallbackYear = (): number => (MSW_ENABLED ? 2023 : new Date().getFullYe
 const getEndOfMonth = (date: Date): string =>
   dateLib.formatToISOStringWithoutTime(dateLib.getEndOfMonth(date));
 
-export const loader = withAuthStatusCheck(async ({ request }) => {
+export const loader: LoaderFunction = async ({ request }) => {
   const url = new URL(request.url);
   const month = url.searchParams.get('month') ?? getFallbackMonth();
   const year = url.searchParams.get('year') ?? getFallbackYear();
@@ -38,7 +37,7 @@ export const loader = withAuthStatusCheck(async ({ request }) => {
       action: () => <FilterNotesHistory date={date} />,
     },
   } satisfies LoaderData;
-});
+};
 
 export const Component: FC = () => {
   const { notes } = useLoaderData() as LoaderData;

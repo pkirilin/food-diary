@@ -1,6 +1,6 @@
 import { Typography } from '@mui/material';
 import { type FC } from 'react';
-import { useLoaderData } from 'react-router-dom';
+import { type LoaderFunction, useLoaderData } from 'react-router-dom';
 import { store } from '@/app/store';
 import { noteApi, noteLib } from '@/entities/note';
 import { SelectDate } from '@/features/note/selectDate';
@@ -8,7 +8,6 @@ import { MSW_ENABLED } from '@/shared/config';
 import { dateLib } from '@/shared/lib';
 import { MealsList } from '@/widgets/MealsList';
 import { type NavigationLoaderData } from '@/widgets/Navigation';
-import { withAuthStatusCheck } from '../lib';
 
 interface LoaderData extends NavigationLoaderData {
   date: string;
@@ -17,7 +16,7 @@ interface LoaderData extends NavigationLoaderData {
 const getFallbackDate = (): string =>
   MSW_ENABLED ? '2023-10-19' : dateLib.formatToISOStringWithoutTime(new Date());
 
-export const loader = withAuthStatusCheck(async ({ request }) => {
+export const loader: LoaderFunction = async ({ request }) => {
   const url = new URL(request.url);
   const date = url.searchParams.get('date') ?? getFallbackDate();
   const notesQuery = await store.dispatch(noteApi.endpoints.notes.initiate({ date }));
@@ -34,7 +33,7 @@ export const loader = withAuthStatusCheck(async ({ request }) => {
       ),
     },
   } satisfies LoaderData;
-});
+};
 
 export const Component: FC = () => {
   const { date } = useLoaderData() as LoaderData;
