@@ -2,7 +2,7 @@ import { Link, Typography } from '@mui/material';
 import { type FC } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { AppShell } from '@/shared/ui';
-import { useNavigationProgress } from './useNavigationProgress';
+import { useNavigationProgress } from '@/widgets/Navigation';
 
 export const Error: FC = () => {
   const navigationProgress = useNavigationProgress();

@@ -1,6 +1,6 @@
 import { type PropsWithChildren, type FC } from 'react';
 import { AppShell } from '@/shared/ui';
-import { useNavigationProgress } from './useNavigationProgress';
+import { useNavigationProgress } from '@/widgets/Navigation';
 
 export const ErrorLayout: FC<PropsWithChildren> = ({ children }) => {
   const navigationProgress = useNavigationProgress();
