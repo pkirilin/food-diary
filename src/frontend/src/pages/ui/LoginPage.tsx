@@ -11,8 +11,7 @@ import { authApi, SignInForm } from '@/features/auth';
 import { UpdateAppBanner } from '@/features/updateApp';
 import { API_URL, FAKE_AUTH_ENABLED } from '@/shared/config';
 import { createUrl } from '@/shared/lib';
-import { AppName } from '@/shared/ui';
-import { CenteredLayout } from '@/widgets/layout';
+import { AppName, Center } from '@/shared/ui';
 import { ok } from '../lib';
 
 export const loader: LoaderFunction = async () => {
@@ -54,11 +53,11 @@ export const Component: FC = () => (
     >
       <UpdateAppBanner />
     </Box>
-    <CenteredLayout>
+    <Center>
       <Paper p={{ xs: 3, sm: 4 }} spacing={3} width="100%" alignItems="center" component={Stack}>
         <AppName />
         <SignInForm />
       </Paper>
-    </CenteredLayout>
+    </Center>
   </>
 );

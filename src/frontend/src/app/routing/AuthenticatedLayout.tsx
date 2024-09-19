@@ -13,7 +13,8 @@ import { APP_BAR_HEIGHT_SM, APP_BAR_HEIGHT_XS } from '@/shared/constants';
 import { createUrl } from '@/shared/lib';
 import { Navigation, useNavigationProgress } from '@/widgets/Navigation';
 import { store } from '../store';
-import { Error } from './Error';
+import { ErrorLayout } from './ErrorLayout';
+import { ErrorPage } from './ErrorPage';
 
 export const loader: LoaderFunction = async ({ request }) => {
   const authStatusQuery = await store.dispatch(
@@ -32,13 +33,13 @@ export const loader: LoaderFunction = async ({ request }) => {
 export const shouldRevalidate: ShouldRevalidateFunction = () => true;
 
 export const ErrorBoundary: FC = () => (
-  <Container sx={{ py: 2 }}>
-    <Error />
-  </Container>
+  <ErrorLayout>
+    <ErrorPage />
+  </ErrorLayout>
 );
 
 export const Component: FC = () => {
-  const progress = useNavigationProgress();
+  const navigationProgress = useNavigationProgress();
 
   useAuthStatusCheckEffect();
 
@@ -53,7 +54,7 @@ export const Component: FC = () => {
         </Toolbar>
         <LinearProgress
           sx={theme => ({
-            display: progress.visible ? 'block' : 'none',
+            display: navigationProgress.visible ? 'block' : 'none',
             position: 'absolute',
             top: APP_BAR_HEIGHT_XS,
             left: 0,

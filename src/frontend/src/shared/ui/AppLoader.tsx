@@ -1,12 +1,11 @@
 import { Box, Grow, LinearProgress, Stack } from '@mui/material';
 import { type FC } from 'react';
-import { AppName } from '@/shared/ui';
-import { CenteredLayout } from '@/widgets/layout';
+import { AppName, Center } from '@/shared/ui';
 
 export const AppLoader: FC = () => (
   <Grow in>
     <Box>
-      <CenteredLayout>
+      <Center>
         <Stack
           spacing={3}
           sx={{
@@ -18,7 +17,7 @@ export const AppLoader: FC = () => (
           <AppName />
           <LinearProgress sx={{ width: '100%' }} />
         </Stack>
-      </CenteredLayout>
+      </Center>
     </Box>
   </Grow>
 );

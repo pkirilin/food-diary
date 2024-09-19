@@ -3,6 +3,7 @@ export * from './AppName';
 export * from './AppShell';
 export * from './AppLoader';
 export * from './Button';
+export * from './Center';
 export * from './Dialog';
 export * from './AppDialog';
 export * from './LoadingContainer';

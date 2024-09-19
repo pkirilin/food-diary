@@ -1,7 +1,7 @@
 import { Box } from '@mui/material';
 import { type PropsWithChildren, type FC } from 'react';
 
-export const CenteredLayout: FC<PropsWithChildren> = ({ children }) => (
+export const Center: FC<PropsWithChildren> = ({ children }) => (
   <Box
     sx={{
       height: '100vh',

@@ -3,7 +3,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { Box, IconButton, Typography } from '@mui/material';
 import { type ReactElement, type FC, useEffect, useState } from 'react';
 import { useLocation, useMatches, useNavigation } from 'react-router-dom';
-import { NavigationDrawer } from '../navbar/ui/NavigationDrawer';
+import { NavigationDrawer } from './NavigationDrawer';
 
 export interface NavigationLoaderData {
   navigation: {

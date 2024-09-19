@@ -1,5 +1,5 @@
 import { createBrowserRouter } from 'react-router-dom';
-import { Error } from './Error';
+import { ErrorPage } from './ErrorPage';
 
 export const createRouter = (): ReturnType<typeof createBrowserRouter> =>
   createBrowserRouter([
@@ -7,7 +7,7 @@ export const createRouter = (): ReturnType<typeof createBrowserRouter> =>
       lazy: () => import('./AuthenticatedLayout'),
       children: [
         {
-          errorElement: <Error />,
+          errorElement: <ErrorPage />,
           children: [
             {
               path: '/',
