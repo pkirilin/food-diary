@@ -3,7 +3,6 @@ import { type LoaderFunction } from 'react-router-dom';
 import { store } from '@/app/store';
 import { categoryApi } from '@/entities/category';
 import { Categories } from '@/features/categories';
-import { PrivateLayout } from '@/widgets/layout';
 import { ok } from '../lib';
 
 export const loader: LoaderFunction = async () => {
@@ -11,8 +10,4 @@ export const loader: LoaderFunction = async () => {
   return ok();
 };
 
-export const Component: FC = () => (
-  <PrivateLayout>
-    <Categories />
-  </PrivateLayout>
-);
+export const Component: FC = () => <Categories />;
