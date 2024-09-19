@@ -11,10 +11,11 @@ import { authApi, useAuthStatusCheckEffect } from '@/features/auth';
 import { ok } from '@/pages/lib';
 import { APP_BAR_HEIGHT_SM, APP_BAR_HEIGHT_XS } from '@/shared/constants';
 import { createUrl } from '@/shared/lib';
-import { Navigation, useNavigationProgress } from '@/widgets/Navigation';
+import { Navigation } from '@/widgets/Navigation';
 import { store } from '../store';
 import { ErrorLayout } from './ErrorLayout';
 import { ErrorPage } from './ErrorPage';
+import { useNavigationProgress } from './useNavigationProgress';
 
 export const loader: LoaderFunction = async ({ request }) => {
   const authStatusQuery = await store.dispatch(
