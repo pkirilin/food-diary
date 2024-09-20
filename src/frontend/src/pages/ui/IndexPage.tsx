@@ -1,4 +1,3 @@
-import { Typography } from '@mui/material';
 import { type FC } from 'react';
 import { type LoaderFunction, useLoaderData } from 'react-router-dom';
 import { store } from '@/app/store';
@@ -6,7 +5,7 @@ import { noteApi, noteLib } from '@/entities/note';
 import { SelectDate } from '@/features/note/selectDate';
 import { MSW_ENABLED } from '@/shared/config';
 import { dateLib } from '@/shared/lib';
-import { MealsList } from '@/widgets/MealsList';
+import { MealsList, MealsListTotalCalories } from '@/widgets/MealsList';
 import { type NavigationLoaderData } from '@/widgets/Navigation';
 
 interface LoaderData extends NavigationLoaderData {
@@ -19,18 +18,13 @@ const getFallbackDate = (): string =>
 export const loader: LoaderFunction = async ({ request }) => {
   const url = new URL(request.url);
   const date = url.searchParams.get('date') ?? getFallbackDate();
-  const notesQuery = await store.dispatch(noteApi.endpoints.notes.initiate({ date }));
-  const totalCalories = noteLib.calculateCalories(notesQuery.data?.notes ?? []);
+  await store.dispatch(noteApi.endpoints.notes.initiate({ date }));
 
   return {
     date,
     navigation: {
       title: <SelectDate currentDate={new Date(date)} />,
-      action: (
-        <Typography variant="h6" component="span">
-          {totalCalories} kcal
-        </Typography>
-      ),
+      action: <MealsListTotalCalories date={date} />,
     },
   } satisfies LoaderData;
 };
