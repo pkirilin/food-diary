@@ -1,13 +1,13 @@
 import { Box, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 import { type FC } from 'react';
 import { Link as RouterLink, useMatch } from 'react-router-dom';
-import { type NavLink } from './types';
+import { type NavLink } from '../model';
 
 interface Props {
   navLink: NavLink;
 }
 
-export const NavigationMenuListItem: FC<Props> = ({ navLink }) => {
+export const NavigationDrawerMenuListItem: FC<Props> = ({ navLink }) => {
   const match = useMatch(`${navLink.path}/*`);
   const active = !!match;
 
@@ -25,14 +25,7 @@ export const NavigationMenuListItem: FC<Props> = ({ navLink }) => {
           },
         })}
       >
-        <Box
-          component={ListItemIcon}
-          sx={{
-            ml: { xs: '-3px', sm: '4px' },
-          }}
-        >
-          {navLink.icon}
-        </Box>
+        <Box component={ListItemIcon}>{navLink.icon}</Box>
         <ListItemText primary={navLink.title} />
       </ListItemButton>
     </ListItem>

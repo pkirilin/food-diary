@@ -1,5 +1,8 @@
 import { useMemo } from 'react';
 import { type NoteItem } from '../api';
 
+const calculateCalories = (notes: NoteItem[]): number =>
+  notes.reduce((sum, note) => sum + note.calories, 0);
+
 export const useCalories = (notes: NoteItem[]): number =>
-  useMemo(() => notes.reduce((sum, note) => sum + note.calories, 0), [notes]);
+  useMemo(() => calculateCalories(notes), [notes]);

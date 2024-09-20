@@ -1,20 +1,24 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigation } from 'react-router-dom';
 
-export const useNavigationProgress = (): boolean => {
+interface NavigationProgress {
+  visible: boolean;
+}
+
+export const useNavigationProgress = (): NavigationProgress => {
   const location = useLocation();
   const navigation = useNavigation();
-  const [navigationProgressVisible, setNavigationProgressVisible] = useState(false);
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     if (navigation.state === 'loading') {
-      setNavigationProgressVisible(true);
+      setVisible(true);
     }
   }, [navigation.state]);
 
   useEffect(() => {
-    setNavigationProgressVisible(false);
+    setVisible(false);
   }, [location]);
 
-  return navigationProgressVisible;
+  return { visible };
 };

@@ -1,9 +1,11 @@
 import 'date-fns';
 import { createRoot } from 'react-dom/client';
+import { RouterProvider } from 'react-router-dom';
 import { GOOGLE_ANALYTICS_ENABLED, MSW_ENABLED } from '@/shared/config';
+import { AppLoader } from '@/shared/ui';
 import { initGoogleAnalytics } from './googleAnalytics';
-import { Root } from './Root';
 import { RootProvider } from './RootProvider';
+import { createRouter } from './routing';
 import { store } from './store';
 
 (async () => {
@@ -24,9 +26,13 @@ import { store } from './store';
 
   const root = createRoot(container);
 
+  // IMPORTANT: router should be created before msw started
+  // Otherwise, loaders will activate and start fetching data before msw started
+  const router = createRouter();
+
   root.render(
     <RootProvider store={store}>
-      <Root />
+      <RouterProvider router={router} fallbackElement={<AppLoader />} />
     </RootProvider>,
   );
 })();

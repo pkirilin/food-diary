@@ -1,17 +1,13 @@
 import { type FC } from 'react';
+import { type LoaderFunction } from 'react-router-dom';
 import { store } from '@/app/store';
 import { categoryApi } from '@/entities/category';
 import { Categories } from '@/features/categories';
-import { PrivateLayout } from '@/widgets/layout';
-import { ok, withAuthStatusCheck } from '../lib';
+import { ok } from '../lib';
 
-export const loader = withAuthStatusCheck(async () => {
+export const loader: LoaderFunction = async () => {
   await store.dispatch(categoryApi.endpoints.getCategories.initiate({}));
   return ok();
-});
+};
 
-export const Component: FC = () => (
-  <PrivateLayout>
-    <Categories />
-  </PrivateLayout>
-);
+export const Component: FC = () => <Categories />;

@@ -1,5 +1,6 @@
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import { IconButton, Popover, Tooltip } from '@mui/material';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
+import { ButtonBase, Popover, Typography } from '@mui/material';
 import { StaticDatePicker } from '@mui/x-date-pickers';
 import { useState, type FC } from 'react';
 import { useSubmit } from 'react-router-dom';
@@ -16,17 +17,16 @@ export const SelectDate: FC<Props> = ({ currentDate }) => {
 
   return (
     <>
-      <Tooltip title="Select date">
-        <IconButton
-          edge="start"
-          aria-describedby={id}
-          onClick={event => {
-            setAnchorEl(event.currentTarget);
-          }}
-        >
-          <CalendarMonthIcon />
-        </IconButton>
-      </Tooltip>
+      <ButtonBase
+        onClick={event => {
+          setAnchorEl(event.currentTarget);
+        }}
+      >
+        <Typography variant="h6" component="div">
+          {dateLib.formatToUserFriendlyString(currentDate)}
+        </Typography>
+        {anchorEl ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}
+      </ButtonBase>
       <Popover
         id={id}
         open={!!anchorEl}
