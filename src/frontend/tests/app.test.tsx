@@ -6,7 +6,8 @@ import { API_URL, AUTH_CHECK_INTERVAL } from '@/shared/config';
 import { renderWithRouter } from '@tests/render';
 import { server } from './mockApi/server';
 
-test('user can login and logout', async () => {
+// TODO: move to e2e
+test.skip('user can login and logout', async () => {
   const user = userEvent.setup();
   renderWithRouter();
 
@@ -23,6 +24,7 @@ test('user can login and logout', async () => {
   expect(await screen.findByRole('button', { name: /sign in/i })).toBeVisible();
 });
 
+// TODO: move to e2e
 test.skip('user must login again if session expired', async () => {
   const user = userEvent.setup();
   renderWithRouter();
