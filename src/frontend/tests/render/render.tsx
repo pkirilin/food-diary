@@ -1,8 +1,10 @@
 import { type RenderResult, render as rtlRender } from '@testing-library/react';
 import { type ReactElement } from 'react';
-import { type RouteObject, RouterProvider, createMemoryRouter } from 'react-router-dom';
+import { RouterProvider, createMemoryRouter } from 'react-router-dom';
 import { RootProvider } from '@/app/RootProvider';
+import { createRouter } from '@/app/routing';
 import { configureStore } from '@/app/store';
+import { AppLoader } from '@/shared/ui';
 import TestEnvironment from './TestEnvironment';
 
 interface RenderOptions {
@@ -39,39 +41,13 @@ export function render(
   return result;
 }
 
-export const renderRoute = (
-  route: RouteObject,
-  { signOutAfterMilliseconds, pageSizeOverride }: RenderOptions = {},
-): RenderResult => {
+export const renderWithRouter = (): void => {
   const store = configureStore();
+  const router = createRouter();
 
-  const router = createMemoryRouter([
-    {
-      path: '/',
-      element: (
-        <TestEnvironment
-          signOutAfterMilliseconds={signOutAfterMilliseconds}
-          pageSizeOverride={pageSizeOverride}
-        >
-          {route.Component && <route.Component></route.Component>}
-        </TestEnvironment>
-      ),
-      loader: route.loader,
-      action: route.action,
-    },
-    {
-      path: '/login',
-      lazy: () => import('@/pages/ui/LoginPage'),
-    },
-    {
-      path: '/logout',
-      lazy: () => import('@/pages/ui/LogoutPage'),
-    },
-  ]);
-
-  return rtlRender(
+  rtlRender(
     <RootProvider store={store}>
-      <RouterProvider router={router} />
+      <RouterProvider router={router} fallbackElement={<AppLoader />} />
     </RootProvider>,
   );
 };
