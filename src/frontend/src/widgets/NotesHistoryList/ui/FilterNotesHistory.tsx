@@ -38,7 +38,11 @@ export const FilterNotesHistory: FC<Props> = ({ date }) => {
         title="Filter history"
         opened={filterVisible}
         onClose={toggleFilter}
-        renderCancel={props => <Button {...props}>Cancel</Button>}
+        renderCancel={props => (
+          <Button {...props} onClick={toggleFilter}>
+            Cancel
+          </Button>
+        )}
         renderSubmit={props => (
           <Button
             {...props}
