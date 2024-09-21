@@ -1,6 +1,7 @@
 import { type FC } from 'react';
 import { type LoaderFunction } from 'react-router-dom';
 import { type NavigationLoaderData } from '@/widgets/Navigation';
+import { WeightChart } from '@/widgets/WeightChart';
 
 interface LoaderData extends NavigationLoaderData {}
 
@@ -11,4 +12,4 @@ export const loader: LoaderFunction = () =>
     },
   }) satisfies LoaderData;
 
-export const Component: FC = () => <div>Weight page</div>;
+export const Component: FC = () => <WeightChart />;
