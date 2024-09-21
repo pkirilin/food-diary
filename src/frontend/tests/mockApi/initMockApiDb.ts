@@ -5,10 +5,12 @@ export const initMockApiDb = async (): Promise<void> => {
   const { fillNotes } = await import('./notes');
   const { fillProducts } = await import('./products');
   const { fillCategories } = await import('./categories');
+  const { fillWeightLogs } = await import('./weightLogs');
 
   drop(db);
   fillUsers();
   fillNotes();
   fillProducts();
   fillCategories();
+  fillWeightLogs();
 };

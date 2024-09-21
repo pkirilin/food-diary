@@ -27,6 +27,11 @@ export const db = factory({
     defaultQuantity: Number,
     categoryId: Number,
   },
+
+  weightLog: {
+    date: primaryKey(Date),
+    value: Number,
+  },
 });
 
 export type DbUser = ReturnType<typeof db.user.findMany>[0];
