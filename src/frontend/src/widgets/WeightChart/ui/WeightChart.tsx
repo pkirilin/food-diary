@@ -12,9 +12,11 @@ const mapToDatasetElementType = ({
 });
 
 export const WeightChart: FC = () => {
-  const { dataset } = weightLogsApi.useWeightLogsQuery(null, {
+  const { dataset, xAxisMinDate, xAxisMaxDate } = weightLogsApi.useWeightLogsQuery(null, {
     selectFromResult: ({ data }) => ({
       dataset: data?.weightLogs?.map(mapToDatasetElementType) ?? [],
+      xAxisMinDate: dateLib.getStartOfMonth(data?.weightLogs?.at(0)?.date ?? new Date()),
+      xAxisMaxDate: dateLib.getEndOfMonth(data?.weightLogs?.at(0)?.date ?? new Date()),
     }),
   });
 
@@ -24,8 +26,8 @@ export const WeightChart: FC = () => {
         {
           dataKey: 'date',
           valueFormatter: (value: Date) => dateLib.formatToUserFriendlyString(value),
-          min: new Date('2022-01-01'),
-          max: new Date('2022-01-30'),
+          min: xAxisMinDate,
+          max: xAxisMaxDate,
         },
       ]}
       series={[
