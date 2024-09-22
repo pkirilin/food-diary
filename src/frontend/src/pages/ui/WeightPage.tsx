@@ -28,33 +28,38 @@ export const loader: LoaderFunction = async () => {
 export const Component: FC = () => {
   const { weightLogs } = weightLogsApi.useWeightLogsQuery(null, {
     selectFromResult: ({ data }) => ({
-      weightLogs: data?.weightLogs ?? [],
+      weightLogs: Array.from(data?.weightLogs ?? []).reverse(),
     }),
   });
-
-  const lastLog = weightLogs.at(-1);
 
   return (
     <>
       <WeightChart />
-      {lastLog && (
-        <List>
-          <ListSubheader
-            disableGutters
-            sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
-          >
-            <span>Last logged</span>
-            <AddWeightLog />
-          </ListSubheader>
-
+      <List>
+        <ListSubheader
+          disableGutters
+          sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+        >
+          <span>Last logged</span>
+          <AddWeightLog />
+        </ListSubheader>
+        {weightLogs.length === 0 && (
           <ListItem disableGutters disablePadding>
             <ListItemText
-              primary={`${lastLog.value} kg`}
-              secondary={dateLib.formatToUserFriendlyString(lastLog.date)}
+              primary="You have not logged any weights yet"
+              primaryTypographyProps={{ color: 'textSecondary' }}
             />
           </ListItem>
-        </List>
-      )}
+        )}
+        {weightLogs.map(log => (
+          <ListItem key={log.date} disableGutters disablePadding>
+            <ListItemText
+              primary={`${log.value} kg`}
+              secondary={dateLib.formatToUserFriendlyString(log.date)}
+            />
+          </ListItem>
+        ))}
+      </List>
     </>
   );
 };
