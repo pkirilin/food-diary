@@ -17,12 +17,18 @@ interface UseInputOptions<TValue, TProps> {
   touched?: boolean;
 }
 
+/**
+ * @deprecated Use react-hook-form + zod instead
+ */
 export type UseInputResult<TValue, TProps> = InputOptions<TValue> & {
   clearValue: () => void;
   isTouched: boolean;
   inputProps: TProps;
 };
 
+/**
+ * @deprecated Use react-hook-form + zod instead
+ */
 export function useInput<TValue, TProps>({
   initialValue,
   errorHelperText,

@@ -1,1 +1,1 @@
-export * from './AddWeightLog';
+export * from './LogWeightButton';

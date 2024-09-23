@@ -3,7 +3,7 @@ import { type FC } from 'react';
 import { type LoaderFunction } from 'react-router-dom';
 import { store } from '@/app/store';
 import { weightLogsApi } from '@/entities/weightLog';
-import { AddWeightLog } from '@/features/logWeight';
+import { LogWeightButton } from '@/features/logWeight';
 import { dateLib } from '@/shared/lib';
 import { type NavigationLoaderData } from '@/widgets/Navigation';
 import { WeightChart } from '@/widgets/WeightChart';
@@ -41,7 +41,7 @@ export const Component: FC = () => {
           sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
         >
           <span>Last logged</span>
-          <AddWeightLog />
+          <LogWeightButton />
         </ListSubheader>
         {weightLogs.length === 0 && (
           <ListItem disableGutters disablePadding>

@@ -2296,6 +2296,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@hookform/resolvers@npm:^3.9.0":
+  version: 3.9.0
+  resolution: "@hookform/resolvers@npm:3.9.0"
+  peerDependencies:
+    react-hook-form: ^7.0.0
+  checksum: 10/b878e92cebc703106a70987437ab4add0e71a327a0bb9864f82ab480b5d9a38b0d639f6154b138c3c4828af0db00c1b413279c102715146b19edc76b9786f1c3
+  languageName: node
+  linkType: hard
+
 "@humanwhocodes/config-array@npm:^0.11.14":
   version: 0.11.14
   resolution: "@humanwhocodes/config-array@npm:0.11.14"
@@ -6591,6 +6600,7 @@ __metadata:
   dependencies:
     "@emotion/react": "npm:^11.9.3"
     "@emotion/styled": "npm:^11.9.3"
+    "@hookform/resolvers": "npm:^3.9.0"
     "@mswjs/data": "npm:^0.16.1"
     "@mui/icons-material": "npm:^6.1.0"
     "@mui/lab": "npm:6.0.0-beta.9"
@@ -6632,6 +6642,7 @@ __metadata:
     react: "npm:^18.1.0"
     react-dom: "npm:^18.1.0"
     react-ga4: "npm:^2.1.0"
+    react-hook-form: "npm:^7.53.0"
     react-redux: "npm:^9.1.2"
     react-router-dom: "npm:^6.26.1"
     typescript: "npm:5.2.2"
@@ -6642,6 +6653,7 @@ __metadata:
     vitest-preview: "npm:^0.0.1"
     workbox-precaching: "npm:^7.1.0"
     workbox-window: "npm:^7.1.0"
+    zod: "npm:^3.23.8"
   languageName: unknown
   linkType: soft
 
@@ -8985,6 +8997,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-hook-form@npm:^7.53.0":
+  version: 7.53.0
+  resolution: "react-hook-form@npm:7.53.0"
+  peerDependencies:
+    react: ^16.8.0 || ^17 || ^18 || ^19
+  checksum: 10/b7d73696b7c10e042f6ea6fcec01f951091146bfbc89d1378327a970bcd724b968e93fae1657bddada75caf648cfaf8693c5ba03c25e96816b755079d29f65da
+  languageName: node
+  linkType: hard
+
 "react-is@npm:^16.13.1, react-is@npm:^16.7.0":
   version: 16.13.1
   resolution: "react-is@npm:16.13.1"
@@ -11177,5 +11198,12 @@ __metadata:
   version: 0.1.0
   resolution: "yocto-queue@npm:0.1.0"
   checksum: 10/f77b3d8d00310def622123df93d4ee654fc6a0096182af8bd60679ddcdfb3474c56c6c7190817c84a2785648cdee9d721c0154eb45698c62176c322fb46fc700
+  languageName: node
+  linkType: hard
+
+"zod@npm:^3.23.8":
+  version: 3.23.8
+  resolution: "zod@npm:3.23.8"
+  checksum: 10/846fd73e1af0def79c19d510ea9e4a795544a67d5b34b7e1c4d0425bf6bfd1c719446d94cdfa1721c1987d891321d61f779e8236fde517dc0e524aa851a6eff1
   languageName: node
   linkType: hard
