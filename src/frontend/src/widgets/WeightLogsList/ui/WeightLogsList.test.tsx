@@ -1,0 +1,24 @@
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { RootProvider } from '@/app/RootProvider';
+import { configureStore } from '@/app/store';
+import { WeightLogsList } from './WeightLogsList';
+
+test('I can log my current weight', async () => {
+  const store = configureStore();
+  const user = userEvent.setup();
+
+  render(
+    <RootProvider store={store}>
+      <WeightLogsList />
+    </RootProvider>,
+  );
+
+  await user.click(screen.getByRole('button', { name: 'Log weight' }));
+  expect(await screen.findByRole('dialog')).toBeVisible();
+
+  await user.clear(screen.getByPlaceholderText(/weight/i));
+  await user.type(screen.getByPlaceholderText(/weight/i), '75');
+  await user.click(screen.getByRole('button', { name: /save/i }));
+  expect(await screen.findByText(/75 kg/i)).toBeVisible();
+});
