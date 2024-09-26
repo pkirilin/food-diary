@@ -1,20 +1,20 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import AddIcon from '@mui/icons-material/Add';
 import { InputAdornment, TextField } from '@mui/material';
-import { type FC } from 'react';
+import { useEffect, type FC } from 'react';
 import { useForm, type SubmitHandler, Controller } from 'react-hook-form';
 import { weightLogsApi } from '@/entities/weightLog';
 import { useToggle } from '@/shared/hooks';
 import { dateLib } from '@/shared/lib';
 import { Button, Dialog } from '@/shared/ui';
-import { type Inputs, schema } from '../model';
+import { type FormValues, schema } from '../model';
 
 const formId = 'log-weight-form';
 
 export const LogWeightButton: FC = () => {
   const [dialogVisible, toggleDialog] = useToggle();
 
-  const { control, handleSubmit, formState } = useForm<Inputs>({
+  const { control, handleSubmit, formState, reset } = useForm<FormValues>({
     mode: 'onChange',
     resolver: zodResolver(schema),
     defaultValues: {
@@ -25,7 +25,7 @@ export const LogWeightButton: FC = () => {
 
   const [addWeightLog] = weightLogsApi.useAddMutation();
 
-  const onSubmit: SubmitHandler<Inputs> = async ({ weight }) => {
+  const onSubmit: SubmitHandler<FormValues> = async ({ weight }) => {
     // TODO: add test
     const { error } = await addWeightLog({
       date: dateLib.formatToISOStringWithoutTime(new Date()),
@@ -37,7 +37,11 @@ export const LogWeightButton: FC = () => {
     }
   };
 
-  // TODO: clear inputs on open/close
+  useEffect(() => {
+    if (!dialogVisible) {
+      reset();
+    }
+  }, [dialogVisible, reset]);
 
   return (
     <>
@@ -45,6 +49,7 @@ export const LogWeightButton: FC = () => {
         Log weight
       </Button>
       <Dialog
+        disableContentPaddingBottom
         renderMode="fullScreenOnMobile"
         title="Log weight"
         opened={dialogVisible}

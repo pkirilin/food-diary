@@ -5,4 +5,4 @@ export const schema = z.object({
   weight: weightSchema,
 });
 
-export type Inputs = z.infer<typeof schema>;
+export type FormValues = z.infer<typeof schema>;
