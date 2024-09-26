@@ -4,7 +4,9 @@ import { InputAdornment, TextField } from '@mui/material';
 import { type FC } from 'react';
 import { useForm, type SubmitHandler, Controller } from 'react-hook-form';
 import { z } from 'zod';
+import { weightLogsApi } from '@/entities/weightLog';
 import { useToggle } from '@/shared/hooks';
+import { dateLib } from '@/shared/lib';
 import { Button, Dialog } from '@/shared/ui';
 
 interface Inputs {
@@ -15,7 +17,8 @@ const formId = 'log-weight-form';
 
 const weightSchema = z
   .string()
-  .trim()
+  .or(z.number())
+  .transform(value => String(value).trim())
   .refine(value => /^\d+([.,]\d+)?$/.test(value), {
     message: "Must be a valid number with either '.' or ',' as decimal separator",
   })
@@ -44,12 +47,24 @@ export const LogWeightButton: FC = () => {
   const { control, handleSubmit, formState } = useForm<Inputs>({
     mode: 'onChange',
     resolver: zodResolver(schema),
+    defaultValues: {
+      // TODO: fill with last logged weight value
+      weight: 50,
+    },
   });
 
-  const onSubmit: SubmitHandler<Inputs> = data => {
-    // TODO: handle input
+  const [addWeightLog] = weightLogsApi.useAddMutation();
+
+  const onSubmit: SubmitHandler<Inputs> = async ({ weight }) => {
     // TODO: add test
-    console.log(data);
+    const { error } = await addWeightLog({
+      date: dateLib.formatToISOStringWithoutTime(new Date()),
+      value: weight,
+    });
+
+    if (!error) {
+      toggleDialog();
+    }
   };
 
   // TODO: clear inputs on open/close
@@ -67,8 +82,6 @@ export const LogWeightButton: FC = () => {
         content={
           <form id={formId} onSubmit={handleSubmit(onSubmit)}>
             <Controller
-              // TODO: fill this with last logged weight value
-              defaultValue={50}
               name="weight"
               control={control}
               render={({ field, fieldState }) => (
@@ -89,6 +102,7 @@ export const LogWeightButton: FC = () => {
                       endAdornment: <InputAdornment position="end">kg</InputAdornment>,
                     },
                     htmlInput: {
+                      type: 'text',
                       inputMode: 'decimal',
                     },
                   }}
@@ -103,7 +117,13 @@ export const LogWeightButton: FC = () => {
           </Button>
         )}
         renderSubmit={props => (
-          <Button {...props} type="submit" form={formId} disabled={!formState.isValid}>
+          <Button
+            {...props}
+            type="submit"
+            form={formId}
+            disabled={!formState.isValid}
+            loading={formState.isSubmitting}
+          >
             Save
           </Button>
         )}

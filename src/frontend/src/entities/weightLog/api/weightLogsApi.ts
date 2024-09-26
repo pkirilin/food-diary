@@ -9,6 +9,11 @@ export interface WeightLogItem {
   value: number;
 }
 
+export interface WeightLogBody {
+  date: string;
+  value: number;
+}
+
 export const weightLogsApi = api.injectEndpoints({
   endpoints: create => ({
     weightLogs: create.query<GetWeightLogsResponse, null>({
@@ -16,6 +21,16 @@ export const weightLogsApi = api.injectEndpoints({
         method: 'GET',
         url: '/api/weight-logs',
       }),
+      providesTags: ['weightLog'],
+    }),
+
+    add: create.mutation<void, WeightLogBody>({
+      query: body => ({
+        method: 'POST',
+        url: '/api/weight-logs',
+        body,
+      }),
+      invalidatesTags: ['weightLog'],
     }),
   }),
 });
