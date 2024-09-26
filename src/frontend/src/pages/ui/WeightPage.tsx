@@ -28,7 +28,7 @@ export const loader: LoaderFunction = async () => {
 export const Component: FC = () => {
   const { weightLogs } = weightLogsApi.useWeightLogsQuery(null, {
     selectFromResult: ({ data }) => ({
-      weightLogs: Array.from(data?.weightLogs ?? []).reverse(),
+      weightLogs: data?.weightLogs ?? [],
     }),
   });
 

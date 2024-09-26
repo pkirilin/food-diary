@@ -10,16 +10,22 @@ import { Button, Dialog } from '@/shared/ui';
 import { type FormValues, schema } from '../model';
 
 const formId = 'log-weight-form';
+const defaultWeight = 70;
 
 export const LogWeightButton: FC = () => {
   const [dialogVisible, toggleDialog] = useToggle();
+
+  const { lastLoggedWeight } = weightLogsApi.useWeightLogsQuery(null, {
+    selectFromResult: ({ data }) => ({
+      lastLoggedWeight: data?.weightLogs[0]?.value ?? defaultWeight,
+    }),
+  });
 
   const { control, handleSubmit, formState, reset } = useForm<FormValues>({
     mode: 'onChange',
     resolver: zodResolver(schema),
     defaultValues: {
-      // TODO: fill with last logged weight value
-      weight: 50,
+      weight: lastLoggedWeight,
     },
   });
 

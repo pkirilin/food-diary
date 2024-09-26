@@ -14,7 +14,7 @@ const mapToDatasetElementType = ({
 export const WeightChart: FC = () => {
   const { dataset, xAxisMinDate, xAxisMaxDate } = weightLogsApi.useWeightLogsQuery(null, {
     selectFromResult: ({ data }) => ({
-      dataset: data?.weightLogs?.map(mapToDatasetElementType) ?? [],
+      dataset: data?.weightLogs?.map(mapToDatasetElementType).reverse() ?? [],
       xAxisMinDate: dateLib.getStartOfMonth(data?.weightLogs?.at(0)?.date ?? new Date()),
       xAxisMaxDate: dateLib.getEndOfMonth(data?.weightLogs?.at(0)?.date ?? new Date()),
     }),
