@@ -7,7 +7,11 @@ import { DelayedHttpResponse } from '../DelayedHttpResponse';
 export const handlers: HttpHandler[] = [
   http.get(`${API_URL}/api/weight-logs`, () =>
     DelayedHttpResponse.json<GetWeightLogsResponse>({
-      weightLogs: db.weightLog.getAll().map(({ date, value }) => ({ date, value })),
+      weightLogs: db.weightLog
+        .findMany({
+          orderBy: { date: 'desc' },
+        })
+        .map(({ date, value }) => ({ date, value })),
     }),
   ),
 

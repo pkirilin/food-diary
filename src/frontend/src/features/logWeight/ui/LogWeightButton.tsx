@@ -32,7 +32,6 @@ export const LogWeightButton: FC = () => {
   const [addWeightLog] = weightLogsApi.useAddMutation();
 
   const onSubmit: SubmitHandler<FormValues> = async ({ weight }) => {
-    // TODO: add test
     const { error } = await addWeightLog({
       date: dateLib.formatToISOStringWithoutTime(new Date()),
       value: weight,
