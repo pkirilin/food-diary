@@ -3,7 +3,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { InputAdornment, TextField } from '@mui/material';
 import { useEffect, type FC } from 'react';
 import { useForm, type SubmitHandler, Controller } from 'react-hook-form';
-import { weightLogsApi } from '@/entities/weightLog';
+import { type GetWeightLogsRequest, weightLogsApi } from '@/entities/weightLog';
 import { useToggle } from '@/shared/hooks';
 import { dateLib } from '@/shared/lib';
 import { Button, Dialog } from '@/shared/ui';
@@ -12,10 +12,14 @@ import { type FormValues, schema } from '../model';
 const formId = 'log-weight-form';
 const defaultWeight = 70;
 
-export const LogWeightButton: FC = () => {
+interface Props {
+  weightLogsRequest: GetWeightLogsRequest;
+}
+
+export const LogWeightButton: FC<Props> = ({ weightLogsRequest }) => {
   const [dialogVisible, toggleDialog] = useToggle();
 
-  const { lastLoggedWeight } = weightLogsApi.useWeightLogsQuery(null, {
+  const { lastLoggedWeight } = weightLogsApi.useWeightLogsQuery(weightLogsRequest, {
     selectFromResult: ({ data }) => ({
       lastLoggedWeight: data?.weightLogs[0]?.value ?? defaultWeight,
     }),

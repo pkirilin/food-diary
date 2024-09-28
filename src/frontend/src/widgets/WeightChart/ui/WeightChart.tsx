@@ -1,6 +1,6 @@
 import { LineChart } from '@mui/x-charts/LineChart';
 import { type FC } from 'react';
-import { type WeightLogItem, weightLogsApi } from '@/entities/weightLog';
+import { type WeightLogItem, weightLogsApi, type GetWeightLogsRequest } from '@/entities/weightLog';
 import { dateLib } from '@/shared/lib';
 
 const mapToDatasetElementType = ({
@@ -11,12 +11,14 @@ const mapToDatasetElementType = ({
   value,
 });
 
-export const WeightChart: FC = () => {
-  const { dataset, xAxisMinDate, xAxisMaxDate } = weightLogsApi.useWeightLogsQuery(null, {
+interface Props {
+  weightLogsRequest: GetWeightLogsRequest;
+}
+
+export const WeightChart: FC<Props> = ({ weightLogsRequest }) => {
+  const { dataset } = weightLogsApi.useWeightLogsQuery(weightLogsRequest, {
     selectFromResult: ({ data }) => ({
       dataset: data?.weightLogs?.map(mapToDatasetElementType).reverse() ?? [],
-      xAxisMinDate: dateLib.getStartOfMonth(data?.weightLogs?.at(0)?.date ?? new Date()),
-      xAxisMaxDate: dateLib.getEndOfMonth(data?.weightLogs?.at(0)?.date ?? new Date()),
     }),
   });
 
@@ -26,8 +28,6 @@ export const WeightChart: FC = () => {
         {
           dataKey: 'date',
           valueFormatter: (value: Date) => dateLib.formatToUserFriendlyString(value),
-          min: xAxisMinDate,
-          max: xAxisMaxDate,
         },
       ]}
       series={[

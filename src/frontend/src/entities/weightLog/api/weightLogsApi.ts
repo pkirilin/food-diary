@@ -1,7 +1,13 @@
 import { api } from '@/shared/api';
+import { createUrl } from '@/shared/lib';
 
 export interface GetWeightLogsResponse {
   weightLogs: WeightLogItem[];
+}
+
+export interface GetWeightLogsRequest {
+  from: string;
+  to: string;
 }
 
 export interface WeightLogItem {
@@ -16,10 +22,10 @@ export interface WeightLogBody {
 
 export const weightLogsApi = api.injectEndpoints({
   endpoints: create => ({
-    weightLogs: create.query<GetWeightLogsResponse, null>({
-      query: () => ({
+    weightLogs: create.query<GetWeightLogsResponse, GetWeightLogsRequest>({
+      query: request => ({
         method: 'GET',
-        url: '/api/weight-logs',
+        url: createUrl('/api/weight-logs', { ...request }),
       }),
       providesTags: ['weightLog'],
     }),

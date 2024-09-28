@@ -10,7 +10,7 @@ test('I can log my current weight', async () => {
 
   render(
     <RootProvider store={store}>
-      <WeightLogsList />
+      <WeightLogsList weightLogsRequest={{ from: '2022-01-01', to: '2022-01-31' }} />
     </RootProvider>,
   );
 

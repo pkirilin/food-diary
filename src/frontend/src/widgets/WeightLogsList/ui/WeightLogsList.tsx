@@ -1,11 +1,15 @@
 import { List, ListSubheader, ListItem, ListItemText } from '@mui/material';
 import { type FC } from 'react';
-import { weightLogsApi } from '@/entities/weightLog';
+import { type GetWeightLogsRequest, weightLogsApi } from '@/entities/weightLog';
 import { LogWeightButton } from '@/features/logWeight';
 import { dateLib } from '@/shared/lib';
 
-export const WeightLogsList: FC = () => {
-  const { weightLogs } = weightLogsApi.useWeightLogsQuery(null, {
+interface Props {
+  weightLogsRequest: GetWeightLogsRequest;
+}
+
+export const WeightLogsList: FC<Props> = ({ weightLogsRequest }) => {
+  const { weightLogs } = weightLogsApi.useWeightLogsQuery(weightLogsRequest, {
     selectFromResult: ({ data }) => ({
       weightLogs: data?.weightLogs ?? [],
     }),
@@ -18,7 +22,7 @@ export const WeightLogsList: FC = () => {
         sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
       >
         <span>Last logged</span>
-        <LogWeightButton />
+        <LogWeightButton weightLogsRequest={weightLogsRequest} />
       </ListSubheader>
       {weightLogs.length === 0 && (
         <ListItem disableGutters disablePadding>
