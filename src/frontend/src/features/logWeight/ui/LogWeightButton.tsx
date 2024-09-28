@@ -21,7 +21,7 @@ export const LogWeightButton: FC = () => {
     }),
   });
 
-  const { control, handleSubmit, formState, reset } = useForm<FormValues>({
+  const { control, handleSubmit, formState, reset, setValue } = useForm<FormValues>({
     mode: 'onChange',
     resolver: zodResolver(schema),
     defaultValues: {
@@ -47,6 +47,10 @@ export const LogWeightButton: FC = () => {
       reset();
     }
   }, [dialogVisible, reset]);
+
+  useEffect(() => {
+    setValue('weight', lastLoggedWeight);
+  }, [lastLoggedWeight, setValue]);
 
   return (
     <>

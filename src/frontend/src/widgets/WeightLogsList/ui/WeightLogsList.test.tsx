@@ -16,6 +16,7 @@ test('I can log my current weight', async () => {
 
   await user.click(screen.getByRole('button', { name: 'Log weight' }));
   expect(await screen.findByRole('dialog')).toBeVisible();
+  expect(await screen.findByPlaceholderText(/weight/i)).toHaveValue('73');
 
   await user.clear(screen.getByPlaceholderText(/weight/i));
   await user.type(screen.getByPlaceholderText(/weight/i), '75');
