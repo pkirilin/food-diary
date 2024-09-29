@@ -32,14 +32,16 @@ export const WeightLogsList: FC<Props> = ({ weightLogsRequest }) => {
           />
         </ListItem>
       )}
-      {weightLogs.map(log => (
-        <ListItem key={log.date} disableGutters disablePadding>
-          <ListItemText
-            primary={`${log.value} kg`}
-            secondary={dateLib.formatToUserFriendlyString(log.date)}
-          />
-        </ListItem>
-      ))}
+      {weightLogs
+        .map(({ value, date }) => ({
+          weight: value,
+          date: dateLib.formatToUserFriendlyString(date),
+        }))
+        .map(({ weight, date }) => (
+          <ListItem key={date} disableGutters disablePadding aria-label={`${weight} kg on ${date}`}>
+            <ListItemText primary={`${weight} kg`} secondary={date} />
+          </ListItem>
+        ))}
     </List>
   );
 };

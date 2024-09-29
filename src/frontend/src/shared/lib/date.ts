@@ -4,3 +4,4 @@ export const formatToISOStringWithoutTime = format('yyyy-MM-dd');
 export const formatToUserFriendlyString = format('d MMM yyyy');
 export const getStartOfMonth = startOfMonth();
 export const getEndOfMonth = endOfMonth();
+export const getCurrentDate = (): Date => new Date();

@@ -37,7 +37,7 @@ export const LogWeightButton: FC<Props> = ({ weightLogsRequest }) => {
 
   const onSubmit: SubmitHandler<FormValues> = async ({ weight }) => {
     const { error } = await addWeightLog({
-      date: dateLib.formatToISOStringWithoutTime(new Date()),
+      date: dateLib.formatToISOStringWithoutTime(dateLib.getCurrentDate()),
       value: weight,
     });
 
