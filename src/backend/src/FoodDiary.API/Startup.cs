@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using FoodDiary.API.ErrorHandling;
 using FoodDiary.API.Extensions;
+using FoodDiary.API.Features.WeightTracking;
 using FoodDiary.API.Logging;
 using FoodDiary.API.Options;
 using FoodDiary.Application.Extensions;
@@ -161,6 +162,7 @@ public class Startup
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();
+            endpoints.MapWeightLogs();
             
             endpoints.MapHealthChecks("/healthz/live", new HealthCheckOptions
             {
