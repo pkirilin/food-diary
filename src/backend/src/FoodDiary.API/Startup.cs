@@ -122,6 +122,7 @@ public class Startup
         services.AddRepositories();
         services.AddUtils();
         services.AddApplicationDependencies();
+        services.AddWeightLogs();
 
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
     }
