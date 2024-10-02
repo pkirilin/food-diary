@@ -24,7 +24,9 @@ public class WeightLogsApiContext(FoodDiaryWebApplicationFactory factory, Infras
 
     public Task Then_response_contains_weightLogs(params WeightLog[] items)
     {
-        _getWeightLogsResponse?.WeightLogs.Should().BeEquivalentTo(items.Select(wl => wl.ToWeightLogItem()));
+        _getWeightLogsResponse?.WeightLogs.Should()
+            .ContainInOrder(items.Select(wl => wl.ToWeightLogItem()))
+            .And.HaveSameCount(items);
         return Task.CompletedTask;
     }
 }

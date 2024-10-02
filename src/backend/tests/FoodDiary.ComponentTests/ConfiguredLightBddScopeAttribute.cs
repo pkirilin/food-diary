@@ -1,5 +1,6 @@
 using FoodDiary.ComponentTests.Formatting;
 using FoodDiary.Domain.Entities;
+using FoodDiary.Domain.WeightTracking;
 using FoodDiary.Infrastructure.Utils;
 using LightBDD.Core.Configuration;
 
@@ -13,6 +14,7 @@ internal class ConfiguredLightBddScopeAttribute : LightBddScopeAttribute
             .ValueFormattingConfiguration()
             .RegisterExplicit(typeof(Note), new NoteFormatter(new CaloriesCalculator()))
             .RegisterExplicit(typeof(Product), new ProductFormatter())
-            .RegisterExplicit(typeof(Category), new CategoryFormatter());
+            .RegisterExplicit(typeof(Category), new CategoryFormatter())
+            .RegisterExplicit(typeof(WeightLog), new WeightLogFormatter());
     }
 }

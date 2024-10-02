@@ -13,18 +13,19 @@ public class WeightLogsApiTests(FoodDiaryWebApplicationFactory factory, Infrastr
     [Scenario]
     public Task I_can_get_weight_logs()
     {
-        // var weightLogs = new WeightLog[]
-        // {
-        //     new() { Date = DateOnly.Parse("2024-10-01"), Weight = 75.6m },
-        //     new() { Date = DateOnly.Parse("2024-10-02"), Weight = 76.5m },
-        //     new() { Date = DateOnly.Parse("2024-10-03"), Weight = 76.2m }
-        // };
-        //
+        var weightLogs = new WeightLog[]
+        {
+            new() { Date = DateOnly.Parse("2024-10-01"), Weight = 75.6m },
+            new() { Date = DateOnly.Parse("2024-10-02"), Weight = 76.5m },
+            new() { Date = DateOnly.Parse("2024-10-03"), Weight = 76.2m },
+            new() { Date = DateOnly.Parse("2024-10-04"), Weight = 75.9m }
+        };
+        
         return Run(
             c => c.Given_authenticated_user(),
-            // c => c.Given_existing_weightLogs(weightLogs),
-            c => c.When_user_gets_weightLogs("2024-10-01", "2024-10-10"),
-            c => c.Then_response_contains_weightLogs());
+            c => c.Given_existing_weightLogs(weightLogs),
+            c => c.When_user_gets_weightLogs("2024-10-02", "2024-10-03"),
+            c => c.Then_response_contains_weightLogs(weightLogs[2], weightLogs[1]));
     }
     
     // [Scenario]

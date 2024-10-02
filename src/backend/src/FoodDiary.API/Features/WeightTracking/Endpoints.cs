@@ -14,7 +14,8 @@ public static class Endpoints
 {
     public static void MapWeightLogs(this IEndpointRouteBuilder app)
     {
-        var weightLogs = app.MapGroup("/api/weight-logs");
+        var weightLogs = app.MapGroup("/api/weight-logs")
+            .RequireAuthorization(Constants.AuthorizationPolicies.GoogleAllowedEmails);
 
         weightLogs.MapGet("/", (
                 [Required] DateOnly? from,
