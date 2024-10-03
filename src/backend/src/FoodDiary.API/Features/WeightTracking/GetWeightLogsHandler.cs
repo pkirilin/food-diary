@@ -1,13 +1,12 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using FoodDiary.API.Features.WeightTracking;
 using FoodDiary.API.Features.WeightTracking.Contracts;
 using FoodDiary.Infrastructure;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
-namespace FoodDiary.API.Features;
+namespace FoodDiary.API.Features.WeightTracking;
 
 public class GetWeightLogsHandler(FoodDiaryContext context)
 {

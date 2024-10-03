@@ -3,7 +3,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Threading;
 using FoodDiary.API.Features.WeightTracking.Contracts;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,19 +17,22 @@ public static class Endpoints
             .RequireAuthorization(Constants.AuthorizationPolicies.GoogleAllowedEmails);
 
         weightLogs.MapGet("/", (
-                [Required] DateOnly? from,
-                [Required] DateOnly? to,
-                [FromServices] GetWeightLogsHandler handler,
-                CancellationToken cancellationToken) =>
-            handler.Handle(
-                new GetWeightLogsRequest(from.GetValueOrDefault(), to.GetValueOrDefault()),
-                cancellationToken));
-        
-        weightLogs.MapPost("/", (WeightLogBody request) => Results.Ok());
+            [Required] DateOnly? from,
+            [Required] DateOnly? to,
+            [FromServices] GetWeightLogsHandler handler,
+            CancellationToken cancellationToken) => handler.Handle(
+            new GetWeightLogsRequest(from.GetValueOrDefault(), to.GetValueOrDefault()),
+            cancellationToken));
+
+        weightLogs.MapPost("/", (
+            [FromBody] WeightLogBody request,
+            [FromServices] AddWeightLogHandler handler,
+            CancellationToken cancellationToken) => handler.Handle(request, cancellationToken));
     }
-    
+
     public static void AddWeightLogs(this IServiceCollection services)
     {
         services.AddScoped<GetWeightLogsHandler>();
+        services.AddScoped<AddWeightLogHandler>();
     }
 }
