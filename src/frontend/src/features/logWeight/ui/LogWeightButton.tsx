@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import AddIcon from '@mui/icons-material/Add';
 import { InputAdornment, TextField } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
-import { useEffect, type FC } from 'react';
+import { useEffect, type FC, useMemo } from 'react';
 import { useForm, type SubmitHandler, Controller } from 'react-hook-form';
 import { type GetWeightLogsRequest, weightLogsApi } from '@/entities/weightLog';
 import { useToggle } from '@/shared/hooks';
@@ -21,15 +21,14 @@ interface Props {
 export const LogWeightButton: FC<Props> = ({ weightLogsRequest }) => {
   const [dialogVisible, toggleDialog] = useToggle();
 
-  const { lastLoggedWeight, nextWeightLogDate } = weightLogsApi.useWeightLogsQuery(
-    weightLogsRequest,
-    {
-      selectFromResult: ({ data }) => ({
-        lastLoggedWeight: data?.weightLogs[0]?.value ?? defaultWeight,
-        nextWeightLogDate: getNextWeightLogDate(data?.weightLogs ?? []),
-      }),
-    },
-  );
+  const { lastLoggedWeight, weightLogs } = weightLogsApi.useWeightLogsQuery(weightLogsRequest, {
+    selectFromResult: ({ data }) => ({
+      lastLoggedWeight: data?.weightLogs[0]?.value ?? defaultWeight,
+      weightLogs: data?.weightLogs ?? [],
+    }),
+  });
+
+  const nextWeightLogDate = useMemo(() => getNextWeightLogDate(weightLogs), [weightLogs]);
 
   const { control, handleSubmit, formState, reset, setValue } = useForm<FormValues>({
     mode: 'onChange',
@@ -70,7 +69,6 @@ export const LogWeightButton: FC<Props> = ({ weightLogsRequest }) => {
         Log weight
       </Button>
       <Dialog
-        disableContentPaddingBottom
         renderMode="fullScreenOnMobile"
         title="Log weight"
         opened={dialogVisible}
