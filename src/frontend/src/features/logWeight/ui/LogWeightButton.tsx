@@ -1,6 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import AddIcon from '@mui/icons-material/Add';
 import { InputAdornment, TextField } from '@mui/material';
+import { DatePicker } from '@mui/x-date-pickers';
 import { useEffect, type FC } from 'react';
 import { useForm, type SubmitHandler, Controller } from 'react-hook-form';
 import { type GetWeightLogsRequest, weightLogsApi } from '@/entities/weightLog';
@@ -29,15 +30,16 @@ export const LogWeightButton: FC<Props> = ({ weightLogsRequest }) => {
     mode: 'onChange',
     resolver: zodResolver(schema),
     defaultValues: {
+      date: dateLib.getCurrentDate(),
       weight: lastLoggedWeight,
     },
   });
 
   const [addWeightLog] = weightLogsApi.useAddMutation();
 
-  const onSubmit: SubmitHandler<FormValues> = async ({ weight }) => {
+  const onSubmit: SubmitHandler<FormValues> = async ({ date, weight }) => {
     const { error } = await addWeightLog({
-      date: dateLib.formatToISOStringWithoutTime(dateLib.getCurrentDate()),
+      date: dateLib.formatToISOStringWithoutTime(date),
       value: weight,
     });
 
@@ -69,6 +71,25 @@ export const LogWeightButton: FC<Props> = ({ weightLogsRequest }) => {
         onClose={toggleDialog}
         content={
           <form id={formId} onSubmit={handleSubmit(onSubmit)}>
+            <Controller
+              name="date"
+              control={control}
+              render={({ field, fieldState }) => (
+                <DatePicker
+                  {...field}
+                  label="Date"
+                  format={dateLib.DateFormat.UserFriendly}
+                  slotProps={{
+                    textField: {
+                      fullWidth: true,
+                      margin: 'normal',
+                      error: !!fieldState.error,
+                      helperText: fieldState.error?.message ?? ' ',
+                    },
+                  }}
+                />
+              )}
+            />
             <Controller
               name="weight"
               control={control}
