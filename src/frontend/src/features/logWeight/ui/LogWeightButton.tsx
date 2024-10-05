@@ -9,6 +9,7 @@ import { useToggle } from '@/shared/hooks';
 import { dateLib } from '@/shared/lib';
 import { Button, Dialog } from '@/shared/ui';
 import { type FormValues, schema } from '../model';
+import { getNextWeightLogDate } from '../model/getNextWeightLogDate';
 
 const formId = 'log-weight-form';
 const defaultWeight = 70;
@@ -20,17 +21,21 @@ interface Props {
 export const LogWeightButton: FC<Props> = ({ weightLogsRequest }) => {
   const [dialogVisible, toggleDialog] = useToggle();
 
-  const { lastLoggedWeight } = weightLogsApi.useWeightLogsQuery(weightLogsRequest, {
-    selectFromResult: ({ data }) => ({
-      lastLoggedWeight: data?.weightLogs[0]?.value ?? defaultWeight,
-    }),
-  });
+  const { lastLoggedWeight, nextWeightLogDate } = weightLogsApi.useWeightLogsQuery(
+    weightLogsRequest,
+    {
+      selectFromResult: ({ data }) => ({
+        lastLoggedWeight: data?.weightLogs[0]?.value ?? defaultWeight,
+        nextWeightLogDate: getNextWeightLogDate(data?.weightLogs ?? []),
+      }),
+    },
+  );
 
   const { control, handleSubmit, formState, reset, setValue } = useForm<FormValues>({
     mode: 'onChange',
     resolver: zodResolver(schema),
     defaultValues: {
-      date: dateLib.getCurrentDate(),
+      date: nextWeightLogDate,
       weight: lastLoggedWeight,
     },
   });
@@ -55,8 +60,9 @@ export const LogWeightButton: FC<Props> = ({ weightLogsRequest }) => {
   }, [dialogVisible, reset]);
 
   useEffect(() => {
+    setValue('date', nextWeightLogDate);
     setValue('weight', lastLoggedWeight);
-  }, [lastLoggedWeight, setValue]);
+  }, [lastLoggedWeight, nextWeightLogDate, setValue]);
 
   return (
     <>

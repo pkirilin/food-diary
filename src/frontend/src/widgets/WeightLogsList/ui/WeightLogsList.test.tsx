@@ -5,10 +5,6 @@ import { configureStore } from '@/app/store';
 import { dateLib } from '@/shared/lib';
 import { WeightLogsList } from './WeightLogsList';
 
-beforeEach(() => {
-  vi.spyOn(dateLib, 'getCurrentDate').mockReturnValue(new Date('2022-01-30'));
-});
-
 afterEach(() => {
   vi.restoreAllMocks();
 });
@@ -16,6 +12,7 @@ afterEach(() => {
 test('I can log my current weight', async () => {
   const store = configureStore();
   const user = userEvent.setup();
+  vi.spyOn(dateLib, 'getCurrentDate').mockReturnValue(new Date('2022-01-30'));
 
   render(
     <RootProvider store={store}>
@@ -23,7 +20,7 @@ test('I can log my current weight', async () => {
     </RootProvider>,
   );
 
-  await user.click(screen.getByRole('button', { name: 'Log weight' }));
+  await user.click(screen.getByRole('button', { name: /log weight/i }));
   expect(await screen.findByRole('dialog')).toBeVisible();
 
   const dateField = await screen.findByRole('textbox', { name: /date/i });

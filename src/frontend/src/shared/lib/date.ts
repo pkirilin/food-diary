@@ -1,3 +1,4 @@
+import { addDays, differenceInDays } from 'date-fns';
 import { format, startOfMonth, endOfMonth } from 'date-fns/fp';
 
 export const enum DateFormat {
@@ -9,4 +10,10 @@ export const formatToISOStringWithoutTime = format(DateFormat.Iso);
 export const formatToUserFriendlyString = format(DateFormat.UserFriendly);
 export const getStartOfMonth = startOfMonth();
 export const getEndOfMonth = endOfMonth();
-export const getCurrentDate = (): Date => new Date();
+
+export const getCurrentDate = (): Date => {
+  const today = new Date();
+  return new Date(today.getFullYear(), today.getMonth(), today.getDate());
+};
+
+export { addDays, differenceInDays };
