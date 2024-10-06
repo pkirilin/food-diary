@@ -41,12 +41,7 @@ export const WeightChart: FC<Props> = ({ weightLogsRequest }) => {
       }}
       dataset={dataset}
       height={300}
-      margin={{
-        top: 16,
-        right: 8,
-        bottom: 24,
-        left: 32,
-      }}
+      margin={{ top: 16 }}
     />
   );
 };
