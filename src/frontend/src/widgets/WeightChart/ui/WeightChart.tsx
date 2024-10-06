@@ -1,3 +1,4 @@
+import { useTheme } from '@mui/material';
 import { LineChart } from '@mui/x-charts/LineChart';
 import { type FC } from 'react';
 import { type WeightLogItem, weightLogsApi, type GetWeightLogsRequest } from '@/entities/weightLog';
@@ -16,6 +17,8 @@ interface Props {
 }
 
 export const WeightChart: FC<Props> = ({ weightLogsRequest }) => {
+  const theme = useTheme();
+
   const { dataset } = weightLogsApi.useWeightLogsQuery(weightLogsRequest, {
     selectFromResult: ({ data }) => ({
       dataset: data?.weightLogs?.map(mapToDatasetElementType).reverse() ?? [],
@@ -24,6 +27,7 @@ export const WeightChart: FC<Props> = ({ weightLogsRequest }) => {
 
   return (
     <LineChart
+      colors={[theme.palette.primary.main]}
       xAxis={[
         {
           dataKey: 'date',
