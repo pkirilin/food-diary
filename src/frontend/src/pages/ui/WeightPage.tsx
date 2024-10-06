@@ -12,11 +12,13 @@ interface LoaderData extends NavigationLoaderData {
 }
 
 export const loader: LoaderFunction = async () => {
-  const currentDate = new Date();
+  const today = dateLib.getCurrentDate();
+  const endOfCurrentMonth = dateLib.getEndOfMonth(today);
+  const startOfThreeMonthsAgo = dateLib.subMonths(endOfCurrentMonth, 3);
 
   const weightLogsRequest: GetWeightLogsRequest = {
-    from: dateLib.formatToISOStringWithoutTime(dateLib.getStartOfMonth(currentDate)),
-    to: dateLib.formatToISOStringWithoutTime(dateLib.getEndOfMonth(currentDate)),
+    from: dateLib.formatToISOStringWithoutTime(startOfThreeMonthsAgo),
+    to: dateLib.formatToISOStringWithoutTime(endOfCurrentMonth),
   };
 
   const weightLogsQueryPromise = store.dispatch(
