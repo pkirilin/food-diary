@@ -6,7 +6,7 @@ describe('getCurrentDate', () => {
   });
 
   test('should return current date without time', () => {
-    vi.useFakeTimers().setSystemTime(new Date('2024-10-05'));
+    vi.useFakeTimers().setSystemTime(new Date('2024-10-05T12:34:56.789Z'));
 
     const today = getCurrentDate();
 
