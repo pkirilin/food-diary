@@ -1,6 +1,7 @@
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import CategoryIcon from '@mui/icons-material/Category';
+import MonitorWeightIcon from '@mui/icons-material/MonitorWeight';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import { List } from '@mui/material';
 import { Box } from '@mui/system';
@@ -18,6 +19,11 @@ const NAV_LINKS: NavLink[] = [
     icon: <CalendarMonthIcon />,
     title: 'History',
     path: '/history',
+  },
+  {
+    icon: <MonitorWeightIcon />,
+    title: 'Weight',
+    path: '/weight',
   },
   {
     icon: <RestaurantIcon />,

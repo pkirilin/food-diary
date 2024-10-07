@@ -18,6 +18,10 @@ export const createRouter = (): ReturnType<typeof createBrowserRouter> =>
               lazy: () => import('@/pages/ui/HistoryPage'),
             },
             {
+              path: '/weight',
+              lazy: () => import('@/pages/ui/WeightPage'),
+            },
+            {
               path: '/products',
               lazy: () => import('@/pages/ui/ProductsPage'),
             },
