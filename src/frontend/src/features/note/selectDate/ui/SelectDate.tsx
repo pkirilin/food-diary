@@ -42,7 +42,8 @@ export const SelectDate: FC<Props> = ({ currentDate }) => {
         <StaticDatePicker
           displayStaticWrapperAs="desktop"
           value={currentDate}
-          onChange={newDate => {
+          views={['year', 'month', 'day']}
+          onAccept={newDate => {
             if (newDate) {
               submit(new URLSearchParams({ date: dateLib.formatToISOStringWithoutTime(newDate) }), {
                 method: 'GET',

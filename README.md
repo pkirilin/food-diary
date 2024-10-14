@@ -8,13 +8,9 @@
 
 ## Main idea and goal
 
-The diary consists of **pages**. Each page is associated with some date and contains **notes** grouped by meal types (_breakfast, lunch etc._). Note contains information about **product** and its quantity. Products are grouped by **categories**. Each product has _name_ and _calories cost_ per 100 g of product's quantity recorded. Using this information the application is capable of calculating calories count of:
+The diary is organized by dates. Each date contains **notes** that are grouped by meal types (*breakfast*, *lunch*, etc.). A note includes information about a **product** and its quantity. Products are categorized into **categories**. Each product has a name and a calorie cost per 100 g of the product's quantity recorded. Using this information, the application can calculate the calorie count of a single note or a group of notes (for a specific meal type or date).
 
-- single note
-- notes group (e.g. for specific meal type)
-- the entire page.
-
-This information can be extremely useful for people who want to keep track of energy value of meals they eat every day.
+This information can be extremely useful for people who want to keep track of the energy value of the meals they consume daily.
 
 ## Quick start (docker-compose)
 
@@ -48,7 +44,7 @@ This information can be extremely useful for people who want to keep track of en
         -d postgres:15.1-alpine
     ```
 
-    _Optional_: PgAdmin can be started like this:
+    *Optional*: PgAdmin can be started like this:
 
     ```shell
     docker run -p 5050:80 --name pgadmin -e "PGADMIN_DEFAULT_EMAIL=name@example.com" -e "PGADMIN_DEFAULT_PASSWORD=postgres" -d dpage/pgadmin4
@@ -71,7 +67,7 @@ This information can be extremely useful for people who want to keep track of en
     dotnet user-secrets --project src/backend/src/FoodDiary.API set "Integrations:OpenAI:ApiKey" "<your_OpenAI_api_key>"
     ```
 
-    _Allowed email should be compatible with Google Identity Provider_
+    *Allowed email should be compatible with Google Identity Provider*
 
 1. Run migrations:
 

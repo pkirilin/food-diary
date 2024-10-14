@@ -6,8 +6,14 @@ import { Categories } from '@/features/categories';
 import { ok } from '../lib';
 
 export const loader: LoaderFunction = async () => {
-  await store.dispatch(categoryApi.endpoints.getCategories.initiate({}));
-  return ok();
+  const categoriesQueryPromise = store.dispatch(categoryApi.endpoints.getCategories.initiate({}));
+
+  try {
+    await categoriesQueryPromise;
+    return ok();
+  } finally {
+    categoriesQueryPromise.unsubscribe();
+  }
 };
 
 export const Component: FC = () => <Categories />;

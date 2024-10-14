@@ -23,20 +23,26 @@ export const loader: LoaderFunction = async ({ request }) => {
   const year = url.searchParams.get('year') ?? getFallbackYear();
   const date = new Date(+year, +month - 1);
 
-  const notesHistoryQuery = await store.dispatch(
+  const notesHistoryQueryPromise = store.dispatch(
     noteApi.endpoints.notesHistory.initiate({
       from: dateLib.formatToISOStringWithoutTime(date),
       to: getEndOfMonth(date),
     }),
   );
 
-  return {
-    notes: notesHistoryQuery.data?.notesHistory ?? [],
-    navigation: {
-      title: 'History',
-      action: <FilterNotesHistory date={date} />,
-    },
-  } satisfies LoaderData;
+  try {
+    const notesHistoryQuery = await notesHistoryQueryPromise;
+
+    return {
+      notes: notesHistoryQuery.data?.notesHistory ?? [],
+      navigation: {
+        title: 'History',
+        action: <FilterNotesHistory date={date} />,
+      },
+    } satisfies LoaderData;
+  } finally {
+    notesHistoryQueryPromise.unsubscribe();
+  }
 };
 
 export const Component: FC = () => {
