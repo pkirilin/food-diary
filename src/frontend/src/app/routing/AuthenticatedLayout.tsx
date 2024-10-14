@@ -18,17 +18,23 @@ import { ErrorPage } from './ErrorPage';
 import { useNavigationProgress } from './useNavigationProgress';
 
 export const loader: LoaderFunction = async ({ request }) => {
-  const authStatusQuery = await store.dispatch(
+  const authStatusQueryPromise = store.dispatch(
     authApi.endpoints.getStatus.initiate({}, { forceRefetch: true }),
   );
 
-  if (!authStatusQuery.data?.isAuthenticated) {
-    const returnUrl = new URL(request.url).searchParams.get('returnUrl') ?? '/';
-    const loginUrl = createUrl('/login', { returnUrl });
-    return redirect(loginUrl);
-  }
+  try {
+    const authStatusQuery = await authStatusQueryPromise;
 
-  return ok();
+    if (!authStatusQuery.data?.isAuthenticated) {
+      const returnUrl = new URL(request.url).searchParams.get('returnUrl') ?? '/';
+      const loginUrl = createUrl('/login', { returnUrl });
+      return redirect(loginUrl);
+    }
+
+    return ok();
+  } finally {
+    authStatusQueryPromise.unsubscribe();
+  }
 };
 
 export const shouldRevalidate: ShouldRevalidateFunction = () => true;

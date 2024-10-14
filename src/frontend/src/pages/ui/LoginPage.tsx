@@ -15,15 +15,21 @@ import { AppName, Center } from '@/shared/ui';
 import { ok } from '../lib';
 
 export const loader: LoaderFunction = async () => {
-  const getAuthStatusQuery = await store.dispatch(
+  const authStatusQueryPromise = store.dispatch(
     authApi.endpoints.getStatus.initiate({}, { forceRefetch: true }),
   );
 
-  if (getAuthStatusQuery.data?.isAuthenticated) {
-    return redirect('/');
-  }
+  try {
+    const authStatusQuery = await authStatusQueryPromise;
 
-  return ok();
+    if (authStatusQuery.data?.isAuthenticated) {
+      return redirect('/');
+    }
+
+    return ok();
+  } finally {
+    authStatusQueryPromise.unsubscribe();
+  }
 };
 
 export const action: ActionFunction = async ({ request }) => {

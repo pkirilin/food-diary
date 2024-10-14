@@ -6,9 +6,15 @@ import { Products } from '@/features/products';
 import { ok } from '../lib';
 
 export const loader: LoaderFunction = async () => {
-  const getProductsRequest = productLib.mapToGetProductsRequest(store.getState().products.filter);
-  await store.dispatch(productApi.endpoints.getProducts.initiate(getProductsRequest));
-  return ok();
+  const request = productLib.mapToGetProductsRequest(store.getState().products.filter);
+  const productsQueryPromise = store.dispatch(productApi.endpoints.getProducts.initiate(request));
+
+  try {
+    await productsQueryPromise;
+    return ok();
+  } finally {
+    productsQueryPromise.unsubscribe();
+  }
 };
 
 export const Component: FC = () => <Products />;

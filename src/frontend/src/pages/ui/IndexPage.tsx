@@ -18,15 +18,21 @@ const getFallbackDate = (): string =>
 export const loader: LoaderFunction = async ({ request }) => {
   const url = new URL(request.url);
   const date = url.searchParams.get('date') ?? getFallbackDate();
-  await store.dispatch(noteApi.endpoints.notes.initiate({ date }));
+  const notesQueryPromise = store.dispatch(noteApi.endpoints.notes.initiate({ date }));
 
-  return {
-    date,
-    navigation: {
-      title: <SelectDate currentDate={new Date(date)} />,
-      action: <MealsListTotalCalories date={date} />,
-    },
-  } satisfies LoaderData;
+  try {
+    await notesQueryPromise;
+
+    return {
+      date,
+      navigation: {
+        title: <SelectDate currentDate={new Date(date)} />,
+        action: <MealsListTotalCalories date={date} />,
+      },
+    } satisfies LoaderData;
+  } finally {
+    notesQueryPromise.unsubscribe();
+  }
 };
 
 export const Component: FC = () => {
