@@ -29,6 +29,7 @@ public class NotesRepository(FoodDiaryContext context) : INotesRepository
             .AsNoTracking()
             .Where(n => n.Date >= from && n.Date <= to)
             .Include(n => n.Product)
+            .OrderByDescending(n => n.Date)
             .ToListAsync(cancellationToken);
     }
 
