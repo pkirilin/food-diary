@@ -5,7 +5,7 @@ on:
       
 jobs:
   run-migrations:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
       - name: Setup .NET
@@ -16,7 +16,7 @@ jobs:
         run: dotnet run --configuration Release --project src/backend/src/FoodDiary.Migrator/FoodDiary.Migrator.csproj "${{ secrets.Migrator_DatabaseConnectionString }}"
 
   push-image:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: run-migrations
     steps:
       - uses: actions/checkout@v4
@@ -38,7 +38,7 @@ jobs:
           file: ./Dockerfile
 
   deploy-yandex-cloud:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: push-image
     steps:
       - name: Checkout to the branch
@@ -57,7 +57,7 @@ jobs:
           imageToDeploy: index.docker.io/${{ secrets.AzureAppService_ContainerUsername_6ff515138c474569b14fb663d02b6c5d }}/food-diary:${{ github.sha }}
 
   deploy-container-apps:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: push-image
     steps:
       - name: Checkout to the branch
@@ -76,7 +76,7 @@ jobs:
           imageToDeploy: index.docker.io/${{ secrets.AzureAppService_ContainerUsername_6ff515138c474569b14fb663d02b6c5d }}/food-diary:${{ github.sha }}
 
   deploy-app-service:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: push-image
     environment:
       name: 'production'

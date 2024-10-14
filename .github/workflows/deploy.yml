@@ -10,7 +10,7 @@ env:
       
 jobs:
   run-migrations:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
       - name: Setup .NET
@@ -21,7 +21,7 @@ jobs:
         run: dotnet run --configuration Release --project src/backend/src/FoodDiary.Migrator/FoodDiary.Migrator.csproj "${{ secrets.Migrator_DatabaseConnectionString }}"
 
   build-and-push-image:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: run-migrations
     steps:
       - name: Checkout to the branch
@@ -39,7 +39,7 @@ jobs:
           docker push cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG
 
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: build-and-push-image
     steps:
       - name: Deploy Serverless Container
