@@ -22,6 +22,11 @@ export const productApi = api.injectEndpoints({
       providesTags: ['product'],
     }),
 
+    productsAutocomplete: builder.query<ProductSelectOption[], null>({
+      query: () => '/api/v1/products/autocomplete',
+      providesTags: ['product'],
+    }),
+
     createProduct: builder.mutation<CreateProductResponse, CreateProductRequest>({
       query: product => ({
         method: 'POST',
