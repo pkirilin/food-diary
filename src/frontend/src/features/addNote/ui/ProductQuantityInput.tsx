@@ -3,8 +3,8 @@ import { TextField } from '@mui/material';
 import { type FC } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+import { useAppSelector } from '@/app/store';
 import { noteApi } from '@/entities/note';
-import { MealType } from '@/entities/note/model';
 import { Button } from '@/shared/ui';
 
 const schema = z.object({
@@ -22,18 +22,22 @@ export const ProductQuantityInput: FC = () => {
   });
 
   const [createNote] = noteApi.useCreateNoteMutation();
+  const noteDraft = useAppSelector(state => state.addNote.draft);
 
   // TODO: add validation
   return (
     <form
-      onSubmit={handleSubmit(data => {
-        // TODO: fill with real values
+      onSubmit={handleSubmit(({ quantity }) => {
+        if (!noteDraft?.product || noteDraft.product.freeSolo) {
+          return;
+        }
+
         createNote({
-          date: '2024-10-01',
-          mealType: MealType.Breakfast,
-          productId: 1,
-          productQuantity: data.quantity,
-          displayOrder: 1,
+          date: noteDraft.date,
+          mealType: noteDraft.mealType,
+          displayOrder: noteDraft.displayOrder,
+          productId: noteDraft.product.id,
+          productQuantity: quantity,
         });
       })}
     >

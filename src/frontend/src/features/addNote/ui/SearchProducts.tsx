@@ -15,7 +15,7 @@ import { useForm } from 'react-hook-form';
 import { useDebounce } from 'use-debounce';
 import { useAppDispatch } from '@/app/store';
 import { type ProductSelectOption, productApi } from '@/entities/product';
-import { actions } from './model';
+import { actions } from '../model';
 
 interface FormValues {
   query: string;
@@ -42,6 +42,7 @@ export const SearchProducts: FC = () => {
   const [visibleProducts, setVisibleProducts] = useState<ProductSelectOption[]>([]);
   const dispatch = useAppDispatch();
 
+  // TODO: fix rerenders
   useEffect(() => {
     if (debouncedQuery.length > 0) {
       setVisibleProducts(

@@ -1,18 +1,29 @@
 import AddIcon from '@mui/icons-material/Add';
 import { type FC } from 'react';
 import { useAppDispatch, useAppSelector } from '@/app/store';
+import { type noteModel } from '@/entities/note';
 import { Button, Dialog } from '@/shared/ui';
-import { actions } from './model';
+import { actions } from '../model';
 import { NoteInputFlow } from './NoteInputFlow';
 
-export const AddNoteButton: FC = () => {
+interface Props {
+  date: string;
+  mealType: noteModel.MealType;
+  displayOrder: number;
+}
+
+export const AddNoteButton: FC<Props> = ({ date, mealType, displayOrder }) => {
   const noteDraft = useAppSelector(state => state.addNote.draft);
   const dispatch = useAppDispatch();
 
   return (
-    <div>
-      <Button startIcon={<AddIcon />} onClick={() => dispatch(actions.draftCreated())}>
-        Add note
+    <>
+      <Button
+        fullWidth
+        startIcon={<AddIcon />}
+        onClick={() => dispatch(actions.draftCreated({ date, mealType, displayOrder }))}
+      >
+        Add note (v2)
       </Button>
       <Dialog
         pinToTop
@@ -29,6 +40,6 @@ export const AddNoteButton: FC = () => {
         // TODO: make prop optional?
         renderSubmit={() => <div></div>}
       />
-    </div>
+    </>
   );
 };

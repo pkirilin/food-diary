@@ -1,8 +1,11 @@
 import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { noteApi } from '@/entities/note';
+import { noteApi, type noteModel } from '@/entities/note';
 import { type ProductSelectOption, type productModel } from '@/entities/product';
 
 interface NoteDraft {
+  date: string;
+  mealType: noteModel.MealType;
+  displayOrder: number;
   product?: productModel.AutocompleteOption;
 }
 
@@ -17,8 +20,8 @@ export const addNoteSlice = createSlice({
   name: 'addNote',
   initialState,
   reducers: {
-    draftCreated: state => {
-      state.draft = {};
+    draftCreated: (state, { payload }: PayloadAction<NoteDraft>) => {
+      state.draft = payload;
     },
 
     draftDiscarded: state => {
@@ -26,14 +29,14 @@ export const addNoteSlice = createSlice({
     },
 
     productSelected: (state, { payload }: PayloadAction<ProductSelectOption>) => {
-      state.draft = {
-        product: {
+      if (state.draft) {
+        state.draft.product = {
           freeSolo: false,
           id: payload.id,
           name: payload.name,
           defaultQuantity: payload.defaultQuantity,
-        },
-      };
+        };
+      }
     },
   },
 
