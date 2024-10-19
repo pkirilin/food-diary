@@ -13,7 +13,7 @@ interface Props {
 }
 
 export const AddNoteButton: FC<Props> = ({ date, mealType, displayOrder }) => {
-  const noteDraft = useAppSelector(state => state.addNote.draft);
+  const dialogVisible = useAppSelector(state => state.addNote.draft?.mealType === mealType);
   const dispatch = useAppDispatch();
 
   return (
@@ -29,7 +29,7 @@ export const AddNoteButton: FC<Props> = ({ date, mealType, displayOrder }) => {
         pinToTop
         renderMode="fullScreenOnMobile"
         title="New note"
-        opened={!!noteDraft}
+        opened={dialogVisible}
         onClose={() => dispatch(actions.draftDiscarded())}
         content={<NoteInputFlow />}
         renderCancel={props => (

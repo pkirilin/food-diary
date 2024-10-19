@@ -1,4 +1,4 @@
-import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
+import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
 import SearchIcon from '@mui/icons-material/Search';
 import {
   List,
@@ -23,6 +23,7 @@ interface FormValues {
 
 // TODO: reduce duration
 const DEBOUNCE_QUERY_DELAY = 500;
+const EMPTY_PRODUCTS: ProductSelectOption[] = [];
 
 // TODO: add tests
 export const SearchProducts: FC = () => {
@@ -34,7 +35,7 @@ export const SearchProducts: FC = () => {
   });
 
   const { products } = productApi.useProductsAutocompleteQuery(null, {
-    selectFromResult: ({ data }) => ({ products: data ?? [] }),
+    selectFromResult: ({ data }) => ({ products: data ?? EMPTY_PRODUCTS }),
   });
 
   const query = watch('query');
@@ -42,8 +43,8 @@ export const SearchProducts: FC = () => {
   const [visibleProducts, setVisibleProducts] = useState<ProductSelectOption[]>([]);
   const dispatch = useAppDispatch();
 
-  // TODO: fix rerenders
   useEffect(() => {
+    // TODO: fix whitespaces not ignored, add threshold
     if (debouncedQuery.length > 0) {
       setVisibleProducts(
         products.filter(product =>
@@ -72,8 +73,13 @@ export const SearchProducts: FC = () => {
             ),
             endAdornment: (
               <InputAdornment position="end">
-                <IconButton edge="end">
-                  <InsertPhotoIcon />
+                <IconButton
+                  edge="end"
+                  onClick={() => {
+                    // TODO: add note from photo
+                  }}
+                >
+                  <PhotoCameraIcon />
                 </IconButton>
               </InputAdornment>
             ),
