@@ -1,40 +1,33 @@
 import AddIcon from '@mui/icons-material/Add';
 import { type FC } from 'react';
-import { useToggle } from '@/shared/hooks';
+import { useAppDispatch, useAppSelector } from '@/app/store';
 import { Button, Dialog } from '@/shared/ui';
-import { SearchProducts } from './SearchProducts';
-
-const formId = 'add-note-form';
+import { actions } from './model';
+import { NoteInputFlow } from './NoteInputFlow';
 
 export const AddNoteButton: FC = () => {
-  const [dialogVisible, toggleDialog] = useToggle();
+  const noteDraft = useAppSelector(state => state.addNote.draft);
+  const dispatch = useAppDispatch();
 
   return (
     <div>
-      <Button startIcon={<AddIcon />} onClick={toggleDialog}>
+      <Button startIcon={<AddIcon />} onClick={() => dispatch(actions.draftCreated())}>
         Add note
       </Button>
       <Dialog
         pinToTop
         renderMode="fullScreenOnMobile"
         title="New note"
-        opened={dialogVisible}
-        onClose={toggleDialog}
-        content={
-          <form id={formId}>
-            <SearchProducts />
-          </form>
-        }
+        opened={!!noteDraft}
+        onClose={() => dispatch(actions.draftDiscarded())}
+        content={<NoteInputFlow />}
         renderCancel={props => (
           <Button {...props} type="button">
             Cancel
           </Button>
         )}
-        renderSubmit={props => (
-          <Button {...props} type="submit" form={formId}>
-            Add
-          </Button>
-        )}
+        // TODO: make prop optional?
+        renderSubmit={() => <div></div>}
       />
     </div>
   );

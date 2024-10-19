@@ -13,14 +13,18 @@ import {
 import { useState, type FC, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDebounce } from 'use-debounce';
+import { useAppDispatch } from '@/app/store';
 import { type ProductSelectOption, productApi } from '@/entities/product';
+import { actions } from './model';
 
 interface FormValues {
   query: string;
 }
 
+// TODO: reduce duration
 const DEBOUNCE_QUERY_DELAY = 500;
 
+// TODO: add tests
 export const SearchProducts: FC = () => {
   const { register, watch, formState } = useForm<FormValues>({
     mode: 'onTouched',
@@ -36,6 +40,7 @@ export const SearchProducts: FC = () => {
   const query = watch('query');
   const [debouncedQuery] = useDebounce(query, DEBOUNCE_QUERY_DELAY);
   const [visibleProducts, setVisibleProducts] = useState<ProductSelectOption[]>([]);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (debouncedQuery.length > 0) {
@@ -78,7 +83,7 @@ export const SearchProducts: FC = () => {
         {visibleProducts.length > 0 && <ListSubheader disableGutters>Search results</ListSubheader>}
         {visibleProducts.map(product => (
           <ListItem key={product.id} disableGutters disablePadding>
-            <ListItemButton>
+            <ListItemButton onClick={() => dispatch(actions.productSelected(product))}>
               <ListItemText>{product.name}</ListItemText>
             </ListItemButton>
           </ListItem>
