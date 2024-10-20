@@ -21,14 +21,15 @@ interface FormValues {
   query: string;
 }
 
-// TODO: reduce duration
-const DEBOUNCE_QUERY_DELAY = 500;
+const DEBOUNCE_QUERY_DELAY = 300;
+const DEBOUNCE_QUERY_LENGTH_THRESHOLD = 3;
 const EMPTY_PRODUCTS: ProductSelectOption[] = [];
 
 // TODO: add tests
+// TODO: desktop adaptation
 export const SearchProducts: FC = () => {
-  const { register, watch, formState } = useForm<FormValues>({
-    mode: 'onTouched',
+  const { register, watch } = useForm<FormValues>({
+    mode: 'onChange',
     defaultValues: {
       query: '',
     },
@@ -44,8 +45,7 @@ export const SearchProducts: FC = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    // TODO: fix whitespaces not ignored, add threshold
-    if (debouncedQuery.length > 0) {
+    if (debouncedQuery.trim().length >= DEBOUNCE_QUERY_LENGTH_THRESHOLD) {
       setVisibleProducts(
         products.filter(product =>
           product.name.trim().toLowerCase().includes(debouncedQuery.trim().toLowerCase()),
@@ -54,7 +54,7 @@ export const SearchProducts: FC = () => {
     } else {
       setVisibleProducts([]);
     }
-  }, [products, debouncedQuery, formState.touchedFields.query]);
+  }, [products, debouncedQuery]);
 
   return (
     <>
@@ -64,6 +64,7 @@ export const SearchProducts: FC = () => {
         variant="outlined"
         type="search"
         placeholder="Search products"
+        margin="dense"
         slotProps={{
           input: {
             startAdornment: (
