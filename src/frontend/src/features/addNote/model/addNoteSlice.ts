@@ -38,6 +38,12 @@ export const addNoteSlice = createSlice({
         };
       }
     },
+
+    productDiscarded: state => {
+      if (state.draft) {
+        delete state.draft.product;
+      }
+    },
   },
 
   extraReducers: builder => {

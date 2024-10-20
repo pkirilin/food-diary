@@ -1,11 +1,13 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { TextField } from '@mui/material';
+import BackspaceIcon from '@mui/icons-material/Backspace';
+import { IconButton, InputAdornment, TextField } from '@mui/material';
 import { type FC } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { useAppSelector } from '@/app/store';
+import { useAppDispatch, useAppSelector } from '@/app/store';
 import { noteApi } from '@/entities/note';
 import { Button } from '@/shared/ui';
+import { actions } from '../model';
 
 const schema = z.object({
   quantity: z.coerce.number().min(1).max(1000),
@@ -23,6 +25,7 @@ export const ProductQuantityInput: FC = () => {
 
   const [createNote] = noteApi.useCreateNoteMutation();
   const noteDraft = useAppSelector(state => state.addNote.draft);
+  const dispatch = useAppDispatch();
 
   // TODO: add validation
   return (
@@ -42,6 +45,22 @@ export const ProductQuantityInput: FC = () => {
       })}
     >
       <TextField
+        label="Product"
+        value={noteDraft?.product?.name}
+        fullWidth
+        slotProps={{
+          input: {
+            readOnly: true,
+            endAdornment: (
+              <IconButton edge="end" onClick={() => dispatch(actions.productDiscarded())}>
+                <BackspaceIcon />
+              </IconButton>
+            ),
+          },
+        }}
+        margin="normal"
+      />
+      <TextField
         {...register('quantity')}
         fullWidth
         margin="normal"
@@ -49,6 +68,11 @@ export const ProductQuantityInput: FC = () => {
         label="Quantity"
         placeholder="Product quantity, g"
         inputMode="numeric"
+        slotProps={{
+          input: {
+            endAdornment: <InputAdornment position="end">g</InputAdornment>,
+          },
+        }}
       />
       <Button type="submit" variant="contained" fullWidth>
         Add
