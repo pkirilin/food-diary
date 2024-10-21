@@ -1,21 +1,11 @@
 import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
 import SearchIcon from '@mui/icons-material/Search';
-import {
-  List,
-  ListSubheader,
-  ListItem,
-  ListItemButton,
-  ListItemText,
-  IconButton,
-  InputAdornment,
-  TextField,
-} from '@mui/material';
+import { IconButton, InputAdornment, TextField } from '@mui/material';
 import { useState, type FC, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDebounce } from 'use-debounce';
-import { useAppDispatch } from '@/app/store';
 import { type ProductSelectOption, productApi } from '@/entities/product';
-import { actions } from '../model';
+import { FoundProductsList } from './FoundProductsList';
 
 interface FormValues {
   query: string;
@@ -41,18 +31,17 @@ export const SearchProducts: FC = () => {
 
   const query = watch('query');
   const [debouncedQuery] = useDebounce(query, DEBOUNCE_QUERY_DELAY);
-  const [visibleProducts, setVisibleProducts] = useState<ProductSelectOption[]>([]);
-  const dispatch = useAppDispatch();
+  const [foundProducts, setFoundProducts] = useState<ProductSelectOption[]>([]);
 
   useEffect(() => {
     if (debouncedQuery.trim().length >= DEBOUNCE_QUERY_LENGTH_THRESHOLD) {
-      setVisibleProducts(
+      setFoundProducts(
         products.filter(product =>
           product.name.trim().toLowerCase().includes(debouncedQuery.trim().toLowerCase()),
         ),
       );
     } else {
-      setVisibleProducts([]);
+      setFoundProducts([]);
     }
   }, [products, debouncedQuery]);
 
@@ -87,17 +76,7 @@ export const SearchProducts: FC = () => {
           },
         }}
       />
-      {/* TODO: add loading state */}
-      <List>
-        {visibleProducts.length > 0 && <ListSubheader disableGutters>Search results</ListSubheader>}
-        {visibleProducts.map(product => (
-          <ListItem key={product.id} disableGutters disablePadding>
-            <ListItemButton onClick={() => dispatch(actions.productSelected(product))}>
-              <ListItemText>{product.name}</ListItemText>
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
+      <FoundProductsList foundProducts={foundProducts} />
     </>
   );
 };
