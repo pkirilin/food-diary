@@ -87,6 +87,7 @@ export const SearchProducts: FC = () => {
           },
         }}
       />
+      {/* TODO: add loading state */}
       <List>
         {visibleProducts.length > 0 && <ListSubheader disableGutters>Search results</ListSubheader>}
         {visibleProducts.map(product => (

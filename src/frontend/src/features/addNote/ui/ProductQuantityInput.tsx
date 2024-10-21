@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import BackspaceIcon from '@mui/icons-material/Backspace';
 import { IconButton, InputAdornment, TextField } from '@mui/material';
 import { type FC } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useAppDispatch, useAppSelector } from '@/app/store';
 import { noteApi } from '@/entities/note';
@@ -10,13 +10,14 @@ import { Button } from '@/shared/ui';
 import { actions } from '../model';
 
 const schema = z.object({
-  quantity: z.coerce.number().min(1).max(1000),
+  quantity: z.coerce.number({ message: 'Expected an integer number' }).min(1).max(999),
 });
 
 type FormValues = z.infer<typeof schema>;
 
 export const ProductQuantityInput: FC = () => {
-  const { register, handleSubmit } = useForm<FormValues>({
+  const { control, formState, handleSubmit } = useForm<FormValues>({
+    mode: 'onChange',
     resolver: zodResolver(schema),
     defaultValues: {
       quantity: 100,
@@ -27,7 +28,6 @@ export const ProductQuantityInput: FC = () => {
   const noteDraft = useAppSelector(state => state.addNote.draft);
   const dispatch = useAppDispatch();
 
-  // TODO: add validation
   return (
     <form
       onSubmit={handleSubmit(({ quantity }) => {
@@ -60,21 +60,36 @@ export const ProductQuantityInput: FC = () => {
         }}
         margin="normal"
       />
-      <TextField
-        {...register('quantity')}
-        fullWidth
-        margin="normal"
-        helperText=" "
-        label="Quantity"
-        placeholder="Product quantity, g"
-        inputMode="numeric"
-        slotProps={{
-          input: {
-            endAdornment: <InputAdornment position="end">g</InputAdornment>,
-          },
-        }}
+      <Controller
+        name="quantity"
+        control={control}
+        render={({ field, fieldState }) => (
+          <TextField
+            {...field}
+            fullWidth
+            margin="normal"
+            label="Quantity"
+            placeholder="Product quantity, g"
+            error={!!fieldState.error}
+            helperText={fieldState.error?.message ?? ' '}
+            slotProps={{
+              input: {
+                endAdornment: <InputAdornment position="end">g</InputAdornment>,
+              },
+              htmlInput: {
+                inputMode: 'numeric',
+              },
+            }}
+          />
+        )}
       />
-      <Button type="submit" variant="contained" fullWidth>
+      <Button
+        type="submit"
+        variant="contained"
+        fullWidth
+        disabled={!formState.isValid}
+        loading={formState.isSubmitting}
+      >
         Add
       </Button>
     </form>
