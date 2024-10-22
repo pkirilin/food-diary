@@ -15,7 +15,7 @@ const schema = z.object({
 
 type FormValues = z.infer<typeof schema>;
 
-export const ProductQuantityInput: FC = () => {
+export const QuantityForm: FC = () => {
   const { control, formState, handleSubmit } = useForm<FormValues>({
     mode: 'onChange',
     resolver: zodResolver(schema),

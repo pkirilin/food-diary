@@ -1,7 +1,7 @@
 import { type FC } from 'react';
 import { useAppSelector } from '@/app/store';
 import { ProductForm } from './ProductForm';
-import { ProductQuantityInput } from './ProductQuantityInput';
+import { QuantityForm } from './QuantityForm';
 import { SearchProducts } from './SearchProducts';
 
 export const NoteInputFlow: FC = () => {
@@ -12,7 +12,7 @@ export const NoteInputFlow: FC = () => {
   }
 
   if (!product.freeSolo) {
-    return <ProductQuantityInput />;
+    return <QuantityForm />;
   }
 
   return (
