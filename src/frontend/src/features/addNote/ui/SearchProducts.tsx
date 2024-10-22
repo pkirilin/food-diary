@@ -76,7 +76,7 @@ export const SearchProducts: FC = () => {
           },
         }}
       />
-      <FoundProductsList foundProducts={foundProducts} />
+      <FoundProductsList foundProducts={foundProducts} query={debouncedQuery} />
     </>
   );
 };

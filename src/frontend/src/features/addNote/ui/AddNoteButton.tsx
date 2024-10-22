@@ -25,6 +25,7 @@ export const AddNoteButton: FC<Props> = ({ date, mealType, displayOrder }) => {
       >
         Add note (v2)
       </Button>
+      {/* TODO: use custom dialog with navigation, drop desktop support? */}
       <Dialog
         pinToTop
         renderMode="fullScreenOnMobile"

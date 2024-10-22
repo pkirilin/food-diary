@@ -1,3 +1,4 @@
+import AddIcon from '@mui/icons-material/Add';
 import {
   List,
   ListSubheader,
@@ -6,20 +7,28 @@ import {
   ListItemText,
   CircularProgress,
   Box,
+  ListItemIcon,
 } from '@mui/material';
-import { type FC } from 'react';
+import { useMemo, type FC } from 'react';
 import { useAppDispatch } from '@/app/store';
 import { type ProductSelectOption, productApi } from '@/entities/product';
 import { actions } from '../model';
 
 interface Props {
   foundProducts: ProductSelectOption[];
+  query: string;
 }
 
-export const FoundProductsList: FC<Props> = ({ foundProducts }) => {
+export const FoundProductsList: FC<Props> = ({ foundProducts, query }) => {
   const { productsLoading } = productApi.useProductsAutocompleteQuery(null, {
     selectFromResult: ({ isLoading }) => ({ productsLoading: isLoading }),
   });
+
+  // TODO: add tests
+  const suggestAddingNewProduct = useMemo(
+    () => query.trim().length > 0 && foundProducts.every(p => p.name !== query),
+    [foundProducts, query],
+  );
 
   const dispatch = useAppDispatch();
 
@@ -33,6 +42,16 @@ export const FoundProductsList: FC<Props> = ({ foundProducts }) => {
 
   return (
     <List>
+      {suggestAddingNewProduct && (
+        <ListItem disableGutters disablePadding>
+          <ListItemButton onClick={() => dispatch(actions.productAdded(query))}>
+            <ListItemIcon>
+              <AddIcon />
+            </ListItemIcon>
+            <ListItemText>{`Add "${query}"`}</ListItemText>
+          </ListItemButton>
+        </ListItem>
+      )}
       {foundProducts.length > 0 && <ListSubheader disableGutters>Found products</ListSubheader>}
       {foundProducts.map(product => (
         <ListItem key={product.id} disableGutters disablePadding>

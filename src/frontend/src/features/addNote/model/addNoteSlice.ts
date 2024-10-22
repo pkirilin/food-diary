@@ -44,6 +44,19 @@ export const addNoteSlice = createSlice({
         delete state.draft.product;
       }
     },
+
+    productAdded: (state, { payload }: PayloadAction<string>) => {
+      if (state.draft) {
+        state.draft.product = {
+          freeSolo: true,
+          editing: false,
+          name: payload,
+          defaultQuantity: 100,
+          caloriesCost: 100,
+          category: null,
+        };
+      }
+    },
   },
 
   extraReducers: builder => {

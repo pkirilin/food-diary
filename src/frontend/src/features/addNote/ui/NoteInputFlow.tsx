@@ -1,5 +1,6 @@
 import { type FC } from 'react';
 import { useAppSelector } from '@/app/store';
+import { ProductForm } from './ProductForm';
 import { ProductQuantityInput } from './ProductQuantityInput';
 import { SearchProducts } from './SearchProducts';
 
@@ -14,6 +15,12 @@ export const NoteInputFlow: FC = () => {
     return <ProductQuantityInput />;
   }
 
-  // TODO: handle new product creation on the fly
-  return <div>New product - not implemented yet</div>;
+  return (
+    <ProductForm
+      defaultValues={{ name: product.name }}
+      onSubmit={() => {
+        // TODO: save product values to the store
+      }}
+    />
+  );
 };
