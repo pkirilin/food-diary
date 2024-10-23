@@ -20,6 +20,7 @@ export const ProductForm: FC<Props> = ({
   onSubmit,
 }) => {
   const { control, formState, handleSubmit } = useForm<ProductFormValues>({
+    mode: 'onChange',
     resolver: zodResolver(productFormSchema),
     defaultValues,
   });
@@ -49,7 +50,7 @@ export const ProductForm: FC<Props> = ({
             {...field}
             fullWidth
             label="Calories cost"
-            placeholder="Calories cost per 100g, kcal"
+            placeholder="Calories cost per 100 g, kcal"
             margin="normal"
             error={!!fieldState.error}
             helperText={fieldState.error?.message ?? ' '}

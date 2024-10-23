@@ -9,7 +9,8 @@ export const productFormSchema = z.object({
       id: z.number(),
       name: z.string().min(3).max(50),
     })
-    .nullable(),
+    .nullable()
+    .refine(data => data !== null, { message: 'Category is required' }),
 });
 
 export type ProductFormValues = z.infer<typeof productFormSchema>;
