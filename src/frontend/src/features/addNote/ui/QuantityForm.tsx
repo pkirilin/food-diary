@@ -10,7 +10,7 @@ import { Button } from '@/shared/ui';
 import { actions } from '../model';
 
 const schema = z.object({
-  quantity: z.coerce.number({ message: 'Expected an integer number' }).min(1).max(999),
+  quantity: z.coerce.number().int().min(1).max(999),
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -48,9 +48,11 @@ export const QuantityForm: FC = () => {
         label="Product"
         value={noteDraft?.product?.name}
         fullWidth
+        margin="normal"
         slotProps={{
           input: {
             readOnly: true,
+            // TODO: drop
             endAdornment: (
               <IconButton edge="end" onClick={() => dispatch(actions.productDiscarded())}>
                 <BackspaceIcon />
@@ -58,7 +60,6 @@ export const QuantityForm: FC = () => {
             ),
           },
         }}
-        margin="normal"
       />
       <Controller
         name="quantity"
@@ -74,10 +75,8 @@ export const QuantityForm: FC = () => {
             helperText={fieldState.error?.message ?? ' '}
             slotProps={{
               input: {
-                endAdornment: <InputAdornment position="end">g</InputAdornment>,
-              },
-              htmlInput: {
                 inputMode: 'numeric',
+                endAdornment: <InputAdornment position="end">g</InputAdornment>,
               },
             }}
           />

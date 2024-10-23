@@ -1,6 +1,7 @@
 import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { noteApi, type noteModel } from '@/entities/note';
 import { type ProductSelectOption, type productModel } from '@/entities/product';
+import { type ProductFormValues } from './productForm';
 
 interface NoteDraft {
   date: string;
@@ -49,11 +50,26 @@ export const addNoteSlice = createSlice({
       if (state.draft) {
         state.draft.product = {
           freeSolo: true,
-          editing: false,
+          editing: true,
           name: payload,
           defaultQuantity: 100,
           caloriesCost: 100,
           category: null,
+        };
+      }
+    },
+
+    // TODO: productEdited
+
+    productSaved: (state, { payload }: PayloadAction<ProductFormValues>) => {
+      if (state.draft) {
+        state.draft.product = {
+          freeSolo: true,
+          editing: false,
+          name: payload.name,
+          caloriesCost: payload.caloriesCost,
+          defaultQuantity: payload.defaultQuantity,
+          category: payload.category,
         };
       }
     },
