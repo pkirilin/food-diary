@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import BackspaceIcon from '@mui/icons-material/Backspace';
+import CancelIcon from '@mui/icons-material/Cancel';
 import { IconButton, InputAdornment, TextField } from '@mui/material';
 import { type FC } from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -15,7 +15,7 @@ const schema = z.object({
 
 type FormValues = z.infer<typeof schema>;
 
-export const QuantityForm: FC = () => {
+export const NoteForm: FC = () => {
   const { control, formState, handleSubmit } = useForm<FormValues>({
     mode: 'onChange',
     resolver: zodResolver(schema),
@@ -52,10 +52,9 @@ export const QuantityForm: FC = () => {
         slotProps={{
           input: {
             readOnly: true,
-            // TODO: drop
             endAdornment: (
               <IconButton edge="end" onClick={() => dispatch(actions.productDiscarded())}>
-                <BackspaceIcon />
+                <CancelIcon />
               </IconButton>
             ),
           },

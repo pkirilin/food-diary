@@ -5,8 +5,8 @@ import { type productModel } from '@/entities/product';
 import { type SelectOption } from '@/shared/types';
 import { actions } from '../model';
 import { type ProductFormValues } from '../model/productForm';
+import { NoteForm } from './NoteForm';
 import { ProductForm } from './ProductForm';
-import { QuantityForm } from './QuantityForm';
 import { SearchProducts } from './SearchProducts';
 
 const toProductFormValues = (
@@ -39,5 +39,5 @@ export const NoteInputFlow: FC = () => {
     );
   }
 
-  return <QuantityForm />;
+  return <NoteForm />;
 };

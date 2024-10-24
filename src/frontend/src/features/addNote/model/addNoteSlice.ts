@@ -59,8 +59,6 @@ export const addNoteSlice = createSlice({
       }
     },
 
-    // TODO: productEdited
-
     productSaved: (state, { payload }: PayloadAction<ProductFormValues>) => {
       if (state.draft) {
         state.draft.product = {
