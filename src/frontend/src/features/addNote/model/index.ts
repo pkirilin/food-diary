@@ -1,3 +1,3 @@
 import { addNoteSlice } from './addNoteSlice';
 
-export const { actions, reducer } = addNoteSlice;
+export const { actions, selectors, reducer } = addNoteSlice;

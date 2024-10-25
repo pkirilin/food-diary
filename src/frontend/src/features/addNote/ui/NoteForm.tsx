@@ -1,13 +1,12 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import CancelIcon from '@mui/icons-material/Cancel';
-import { IconButton, InputAdornment, TextField } from '@mui/material';
-import { type FC } from 'react';
+import { IconButton, InputAdornment, TextField, Tooltip } from '@mui/material';
+import { useEffect, type FC } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useAppDispatch, useAppSelector } from '@/app/store';
 import { noteApi } from '@/entities/note';
-import { Button } from '@/shared/ui';
-import { actions } from '../model';
+import { actions, selectors } from '../model';
 
 const schema = z.object({
   quantity: z.coerce.number().int().min(1).max(999),
@@ -26,12 +25,19 @@ export const NoteForm: FC = () => {
 
   const [createNote] = noteApi.useCreateNoteMutation();
   const noteDraft = useAppSelector(state => state.addNote.draft);
+  const activeFormId = useAppSelector(selectors.activeFormId);
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(actions.draftValidated(formState.isValid));
+  }, [dispatch, formState.isValid]);
 
   return (
     <form
+      id={activeFormId}
       onSubmit={handleSubmit(({ quantity }) => {
         if (!noteDraft?.product || noteDraft.product.freeSolo) {
+          // TODO: create free solo products
           return;
         }
 
@@ -44,22 +50,27 @@ export const NoteForm: FC = () => {
         });
       })}
     >
+      {/* TODO: show if product is new */}
       <TextField
         label="Product"
         value={noteDraft?.product?.name}
         fullWidth
         margin="normal"
+        helperText=" "
         slotProps={{
           input: {
             readOnly: true,
             endAdornment: (
-              <IconButton edge="end" onClick={() => dispatch(actions.productDiscarded())}>
-                <CancelIcon />
-              </IconButton>
+              <Tooltip title="Discard and choose another product" placement="left">
+                <IconButton edge="end" onClick={() => dispatch(actions.productDiscarded())}>
+                  <CancelIcon />
+                </IconButton>
+              </Tooltip>
             ),
           },
         }}
       />
+      {/* TODO: set quantity as product's default quantity on init */}
       <Controller
         name="quantity"
         control={control}
@@ -81,15 +92,6 @@ export const NoteForm: FC = () => {
           />
         )}
       />
-      <Button
-        type="submit"
-        variant="contained"
-        fullWidth
-        disabled={!formState.isValid}
-        loading={formState.isSubmitting}
-      >
-        Add
-      </Button>
     </form>
   );
 };

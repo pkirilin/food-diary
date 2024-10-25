@@ -16,7 +16,6 @@ const DEBOUNCE_QUERY_LENGTH_THRESHOLD = 3;
 const EMPTY_PRODUCTS: ProductSelectOption[] = [];
 
 // TODO: add tests
-// TODO: desktop adaptation
 export const SearchProducts: FC = () => {
   const { register, watch } = useForm<FormValues>({
     mode: 'onChange',

@@ -8,6 +8,7 @@ interface NoteDraft {
   mealType: noteModel.MealType;
   displayOrder: number;
   product?: productModel.AutocompleteOption;
+  isValid?: boolean;
 }
 
 export interface State {
@@ -20,6 +21,12 @@ const initialState: State = {};
 export const addNoteSlice = createSlice({
   name: 'addNote',
   initialState,
+  selectors: {
+    activeFormId: state =>
+      state.draft?.product?.freeSolo && state.draft?.product?.editing
+        ? 'product-form'
+        : 'note-form',
+  },
   reducers: {
     draftCreated: (state, { payload }: PayloadAction<NoteDraft>) => {
       state.draft = payload;
@@ -27,6 +34,12 @@ export const addNoteSlice = createSlice({
 
     draftDiscarded: state => {
       state.draft = initialState.draft;
+    },
+
+    draftValidated: (state, { payload }: PayloadAction<boolean>) => {
+      if (state.draft) {
+        state.draft.isValid = payload;
+      }
     },
 
     productSelected: (state, { payload }: PayloadAction<ProductSelectOption>) => {
@@ -43,6 +56,7 @@ export const addNoteSlice = createSlice({
     productDiscarded: state => {
       if (state.draft) {
         delete state.draft.product;
+        state.draft.isValid = false;
       }
     },
 

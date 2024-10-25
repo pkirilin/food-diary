@@ -1,23 +1,26 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Autocomplete, CircularProgress, InputAdornment, TextField } from '@mui/material';
-import { type FC } from 'react';
+import { useEffect, type FC } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { type SelectOption } from '@/shared/types';
-import { Button } from '@/shared/ui';
 import { type ProductFormValues, productFormSchema } from '../model/productForm';
 
 interface Props {
+  formId: string;
   defaultValues: ProductFormValues;
   categories: SelectOption[];
   categoriesLoading: boolean;
   onSubmit: (data: ProductFormValues) => void;
+  onValidate: (isValid: boolean) => void;
 }
 
 export const ProductForm: FC<Props> = ({
+  formId,
   defaultValues,
   categories,
   categoriesLoading,
   onSubmit,
+  onValidate,
 }) => {
   const { control, formState, handleSubmit } = useForm<ProductFormValues>({
     mode: 'onChange',
@@ -25,8 +28,12 @@ export const ProductForm: FC<Props> = ({
     defaultValues,
   });
 
+  useEffect(() => {
+    onValidate(formState.isValid);
+  }, [formState.isValid, onValidate]);
+
   return (
-    <form onSubmit={handleSubmit(data => onSubmit(data))}>
+    <form id={formId} onSubmit={handleSubmit(data => onSubmit(data))}>
       <Controller
         name="name"
         control={control}
@@ -42,6 +49,7 @@ export const ProductForm: FC<Props> = ({
           />
         )}
       />
+      {/* TODO: maybe show calories cost and quantity in the single row? */}
       <Controller
         name="caloriesCost"
         control={control}
@@ -118,15 +126,6 @@ export const ProductForm: FC<Props> = ({
           />
         )}
       />
-      <Button
-        fullWidth
-        variant="outlined"
-        type="submit"
-        disabled={!formState.isValid}
-        loading={formState.isSubmitting}
-      >
-        Save
-      </Button>
     </form>
   );
 };
