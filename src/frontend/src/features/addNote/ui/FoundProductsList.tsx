@@ -9,7 +9,7 @@ import {
   Box,
   ListItemIcon,
 } from '@mui/material';
-import { useMemo, type FC } from 'react';
+import { useMemo, type FC, type MouseEventHandler } from 'react';
 import { useAppDispatch } from '@/app/store';
 import { type ProductSelectOption, productApi } from '@/entities/product';
 import { actions } from '../model';
@@ -32,6 +32,16 @@ export const FoundProductsList: FC<Props> = ({ foundProducts, query }) => {
 
   const dispatch = useAppDispatch();
 
+  const handleAddProduct: MouseEventHandler = () =>
+    dispatch(
+      actions.productAdded({
+        name: query,
+        defaultQuantity: 100,
+        caloriesCost: 100,
+        category: null,
+      }),
+    );
+
   if (foundProducts.length > 0 && productsLoading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
@@ -44,7 +54,7 @@ export const FoundProductsList: FC<Props> = ({ foundProducts, query }) => {
     <List>
       {suggestAddingNewProduct && (
         <ListItem disableGutters disablePadding>
-          <ListItemButton onClick={() => dispatch(actions.productAdded(query))}>
+          <ListItemButton onClick={handleAddProduct}>
             <ListItemIcon>
               <AddIcon />
             </ListItemIcon>

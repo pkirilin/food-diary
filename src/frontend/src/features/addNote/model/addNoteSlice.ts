@@ -63,15 +63,15 @@ export const addNoteSlice = createSlice({
       }
     },
 
-    productAdded: (state, { payload }: PayloadAction<string>) => {
+    productAdded: (state, { payload }: PayloadAction<ProductFormValues>) => {
       if (state.draft) {
         state.draft.product = {
           freeSolo: true,
           editing: true,
-          name: payload,
-          defaultQuantity: 100,
-          caloriesCost: 100,
-          category: null,
+          name: payload.name,
+          defaultQuantity: payload.defaultQuantity,
+          caloriesCost: payload.caloriesCost,
+          category: payload.category,
         };
       }
     },

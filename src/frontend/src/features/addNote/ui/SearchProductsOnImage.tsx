@@ -1,11 +1,21 @@
-import { CircularProgress, Alert, AlertTitle } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import {
+  CircularProgress,
+  Alert,
+  AlertTitle,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+} from '@mui/material';
 import { Stack } from '@mui/system';
-import { useEffect, type FC, useCallback } from 'react';
+import { useEffect, type FC, useCallback, type MouseEventHandler } from 'react';
+import { useAppDispatch } from '@/app/store';
 import { noteApi } from '@/entities/note';
 import { parseClientError } from '@/shared/api';
 import { Button } from '@/shared/ui';
-import { type Image } from '../model';
-import { FoundProductsList } from './FoundProductsList';
+import { actions, type Image } from '../model';
 
 interface Props {
   image: Image;
@@ -13,6 +23,7 @@ interface Props {
 
 export const SearchProductsOnImage: FC<Props> = ({ image }) => {
   const [recognize, recognizeResult] = noteApi.useRecognizeMutation();
+  const dispatch = useAppDispatch();
 
   const sendRecognizeRequest = useCallback(async (): Promise<void> => {
     const formData = new FormData();
@@ -57,12 +68,34 @@ export const SearchProductsOnImage: FC<Props> = ({ image }) => {
     );
   }
 
-  const product = recognizeResult.data?.notes?.at(0)?.product;
+  const note = recognizeResult.data?.notes?.at(0);
 
-  if (!product) {
+  if (!note?.product) {
     return <Alert severity="warning">No food found on your image</Alert>;
   }
 
-  // TODO: set foundProducts as well
-  return <FoundProductsList foundProducts={[]} query={product.name.trim()} />;
+  const productName = note.product.name.trim();
+
+  const handleAddProduct: MouseEventHandler = () =>
+    dispatch(
+      actions.productAdded({
+        name: productName,
+        defaultQuantity: note.quantity,
+        caloriesCost: note.product.caloriesCost,
+        category: null,
+      }),
+    );
+
+  return (
+    <List>
+      <ListItem disableGutters disablePadding>
+        <ListItemButton onClick={handleAddProduct}>
+          <ListItemIcon>
+            <AddIcon />
+          </ListItemIcon>
+          <ListItemText>{`Add "${productName}"`}</ListItemText>
+        </ListItemButton>
+      </ListItem>
+    </List>
+  );
 };
