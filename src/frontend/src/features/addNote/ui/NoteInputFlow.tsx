@@ -5,10 +5,11 @@ import { type productModel } from '@/entities/product';
 import { type SelectOption } from '@/shared/types';
 import { actions, selectors } from '../model';
 import { type ProductFormValues } from '../model/productForm';
+import { ImagePreview } from './ImagePreview';
 import { NoteForm } from './NoteForm';
 import { ProductForm } from './ProductForm';
 import { SearchProducts } from './SearchProducts';
-import { SearchProductsFromImage } from './SearchProductsFromImage';
+import { SearchProductsOnImage } from './SearchProductsOnImage';
 
 const toProductFormValues = (
   { name, caloriesCost, defaultQuantity, category }: productModel.AutocompleteFreeSoloOption,
@@ -33,7 +34,12 @@ export const NoteInputFlow: FC = () => {
   );
 
   if (!product && image) {
-    return <SearchProductsFromImage />;
+    return (
+      <>
+        <ImagePreview image={image} onRemove={() => dispatch(actions.imageRemoved())} />
+        <SearchProductsOnImage image={image} />
+      </>
+    );
   }
 
   if (!product) {
