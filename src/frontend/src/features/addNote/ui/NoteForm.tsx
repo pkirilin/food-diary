@@ -14,12 +14,16 @@ const schema = z.object({
 
 type FormValues = z.infer<typeof schema>;
 
-export const NoteForm: FC = () => {
+interface Props {
+  quantity: number;
+}
+
+export const NoteForm: FC<Props> = ({ quantity }) => {
   const { control, formState, handleSubmit } = useForm<FormValues>({
     mode: 'onChange',
     resolver: zodResolver(schema),
     defaultValues: {
-      quantity: 100,
+      quantity,
     },
   });
 
@@ -70,7 +74,6 @@ export const NoteForm: FC = () => {
           },
         }}
       />
-      {/* TODO: set quantity as product's default quantity on init */}
       <Controller
         name="quantity"
         control={control}

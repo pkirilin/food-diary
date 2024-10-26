@@ -59,5 +59,5 @@ export const NoteInputFlow: FC = () => {
     );
   }
 
-  return <NoteForm />;
+  return <NoteForm quantity={product.defaultQuantity} />;
 };
