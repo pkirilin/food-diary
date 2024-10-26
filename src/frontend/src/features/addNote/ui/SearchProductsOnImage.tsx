@@ -27,10 +27,9 @@ export const SearchProductsOnImage: FC<Props> = ({ image }) => {
 
   const sendRecognizeRequest = useCallback(async (): Promise<void> => {
     const formData = new FormData();
-    // TODO: add file name and content type
-    formData.append('files', new File([image.base64], 'TEST.jpeg'));
+    formData.append('files', new File([image.base64], image.name));
     await recognize(formData);
-  }, [image.base64, recognize]);
+  }, [image.base64, image.name, recognize]);
 
   useEffect(() => {
     sendRecognizeRequest();

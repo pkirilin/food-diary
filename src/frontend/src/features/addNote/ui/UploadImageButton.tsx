@@ -10,6 +10,7 @@ export const UploadImageButton: FC = () => {
   const dispatch = useAppDispatch();
 
   const handleFileChange: ChangeEventHandler<HTMLInputElement> = event => {
+    // TODO: compress
     const file = event.target?.files?.item(0);
 
     if (file) {
@@ -20,7 +21,13 @@ export const UploadImageButton: FC = () => {
             'Image upload failed: expected a string, but received: ' + typeof reader.result,
           );
         }
-        dispatch(actions.imageUploaded({ base64: reader.result }));
+
+        dispatch(
+          actions.imageUploaded({
+            name: file.name,
+            base64: reader.result,
+          }),
+        );
       };
       reader.readAsDataURL(file);
     }

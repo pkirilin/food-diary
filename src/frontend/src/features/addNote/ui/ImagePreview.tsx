@@ -27,10 +27,8 @@ export const ImagePreview: FC<Props> = ({ image, onRemove }) => (
           objectFit: 'cover',
         }}
       />
-      {/* TODO: add title */}
       <ImageListItemBar
-        title="Some image"
-        subtitle="Some info"
+        title={image.name}
         position="below"
         actionIcon={
           <Tooltip title="Remove uploaded image">
