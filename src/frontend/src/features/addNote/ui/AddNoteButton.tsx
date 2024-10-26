@@ -14,7 +14,9 @@ interface Props {
 
 export const AddNoteButton: FC<Props> = ({ date, mealType, displayOrder }) => {
   const activeFormId = useAppSelector(selectors.activeFormId);
-  const canAddNote = useAppSelector(state => state.addNote.draft?.isValid);
+  const dialogTitle = useAppSelector(selectors.dialogTitle);
+  const canSubmit = useAppSelector(state => state.addNote.draft?.isValid);
+  const isSubmitting = useAppSelector(state => state.addNote.draft?.isSubmitting);
   const dialogVisible = useAppSelector(state => state.addNote.draft?.mealType === mealType);
   const dispatch = useAppDispatch();
 
@@ -34,7 +36,7 @@ export const AddNoteButton: FC<Props> = ({ date, mealType, displayOrder }) => {
       <Dialog
         pinToTop
         renderMode="fullScreenOnMobile"
-        title="New note"
+        title={dialogTitle}
         opened={dialogVisible}
         onClose={closeDialog}
         content={<NoteInputFlow />}
@@ -44,7 +46,13 @@ export const AddNoteButton: FC<Props> = ({ date, mealType, displayOrder }) => {
           </Button>
         )}
         renderSubmit={props => (
-          <Button {...props} type="submit" form={activeFormId} disabled={!canAddNote}>
+          <Button
+            {...props}
+            type="submit"
+            form={activeFormId}
+            disabled={!canSubmit}
+            loading={isSubmitting}
+          >
             Save
           </Button>
         )}

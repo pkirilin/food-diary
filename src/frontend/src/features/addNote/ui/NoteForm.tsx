@@ -54,7 +54,6 @@ export const NoteForm: FC<Props> = ({ quantity }) => {
         });
       })}
     >
-      {/* TODO: show if product is new */}
       <TextField
         label="Product"
         value={noteDraft?.product?.name}

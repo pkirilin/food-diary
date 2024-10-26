@@ -1,4 +1,4 @@
-import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { type PayloadAction, createSlice, isAnyOf } from '@reduxjs/toolkit';
 import { noteApi, type noteModel } from '@/entities/note';
 import { type ProductSelectOption, type productModel } from '@/entities/product';
 import { type ProductFormValues } from './productForm';
@@ -10,6 +10,7 @@ interface NoteDraft {
   displayOrder: number;
   product?: productModel.AutocompleteOption;
   isValid?: boolean;
+  isSubmitting?: boolean;
 }
 
 interface State {
@@ -19,15 +20,16 @@ interface State {
 
 const initialState: State = {};
 
+const isEditingProduct = (state: State): boolean =>
+  (state.draft?.product?.freeSolo && state.draft?.product?.editing) ?? false;
+
 // TODO: support edit note as well
 export const addNoteSlice = createSlice({
   name: 'addNote',
   initialState,
   selectors: {
-    activeFormId: state =>
-      state.draft?.product?.freeSolo && state.draft?.product?.editing
-        ? 'product-form'
-        : 'note-form',
+    activeFormId: state => (isEditingProduct(state) ? 'product-form' : 'note-form'),
+    dialogTitle: state => (isEditingProduct(state) ? 'New product' : 'New note'),
   },
   reducers: {
     draftCreated: (state, { payload }: PayloadAction<NoteDraft>) => {
@@ -99,10 +101,20 @@ export const addNoteSlice = createSlice({
   },
 
   extraReducers: builder => {
-    // TODO: clear draft after notes refreshed
-    builder.addMatcher(noteApi.endpoints.createNote.matchFulfilled, state => {
-      delete state.draft;
-      delete state.image;
+    builder.addMatcher(
+      isAnyOf(noteApi.endpoints.createNote.matchPending, noteApi.endpoints.notes.matchPending),
+      state => {
+        if (state.draft) {
+          state.draft.isSubmitting = true;
+        }
+      },
+    );
+
+    builder.addMatcher(noteApi.endpoints.notes.matchFulfilled, state => {
+      if (state.draft) {
+        delete state.draft;
+        delete state.image;
+      }
     });
   },
 });
