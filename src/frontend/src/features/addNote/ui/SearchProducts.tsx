@@ -1,11 +1,11 @@
-import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
 import SearchIcon from '@mui/icons-material/Search';
-import { IconButton, InputAdornment, TextField } from '@mui/material';
+import { InputAdornment, TextField } from '@mui/material';
 import { useState, type FC, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDebounce } from 'use-debounce';
 import { type ProductSelectOption, productApi } from '@/entities/product';
 import { FoundProductsList } from './FoundProductsList';
+import { UploadImageButton } from './UploadImageButton';
 
 interface FormValues {
   query: string;
@@ -62,14 +62,7 @@ export const SearchProducts: FC = () => {
             ),
             endAdornment: (
               <InputAdornment position="end">
-                <IconButton
-                  edge="end"
-                  onClick={() => {
-                    // TODO: add note from photo
-                  }}
-                >
-                  <PhotoCameraIcon />
-                </IconButton>
+                <UploadImageButton />
               </InputAdornment>
             ),
           },

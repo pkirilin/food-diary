@@ -2,6 +2,7 @@ import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { noteApi, type noteModel } from '@/entities/note';
 import { type ProductSelectOption, type productModel } from '@/entities/product';
 import { type ProductFormValues } from './productForm';
+import { type Image } from './types';
 
 interface NoteDraft {
   date: string;
@@ -11,8 +12,9 @@ interface NoteDraft {
   isValid?: boolean;
 }
 
-export interface State {
+interface State {
   draft?: NoteDraft;
+  image?: Image;
 }
 
 const initialState: State = {};
@@ -33,7 +35,8 @@ export const addNoteSlice = createSlice({
     },
 
     draftDiscarded: state => {
-      state.draft = initialState.draft;
+      delete state.draft;
+      delete state.image;
     },
 
     draftValidated: (state, { payload }: PayloadAction<boolean>) => {
@@ -85,12 +88,21 @@ export const addNoteSlice = createSlice({
         };
       }
     },
+
+    imageUploaded: (state, { payload }: PayloadAction<Image>) => {
+      state.image = payload;
+    },
+
+    imageRemoved: state => {
+      delete state.image;
+    },
   },
 
   extraReducers: builder => {
     // TODO: clear draft after notes refreshed
     builder.addMatcher(noteApi.endpoints.createNote.matchFulfilled, state => {
-      state.draft = initialState.draft;
+      delete state.draft;
+      delete state.image;
     });
   },
 });
