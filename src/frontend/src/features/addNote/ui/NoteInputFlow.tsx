@@ -2,24 +2,13 @@ import { useCallback, type FC } from 'react';
 import { useAppDispatch, useAppSelector } from '@/app/store';
 import { categoryLib } from '@/entities/category';
 import { type CreateProductRequest, productApi } from '@/entities/product';
-import { type SelectOption } from '@/shared/types';
-import { type ProductDraft, actions, selectors } from '../model';
-import { type ProductFormValues } from '../model/productForm';
+import { actions, selectors } from '../model';
+import { type ProductFormValues } from '../model/productSchema';
 import { ImagePreview } from './ImagePreview';
 import { NoteForm } from './NoteForm';
 import { ProductForm } from './ProductForm';
 import { SearchProducts } from './SearchProducts';
 import { SearchProductsOnImage } from './SearchProductsOnImage';
-
-const toProductFormValues = (
-  { name, caloriesCost, defaultQuantity, category }: ProductDraft,
-  categories: SelectOption[],
-): ProductFormValues => ({
-  name,
-  caloriesCost,
-  defaultQuantity,
-  category: categories.at(0) ?? category,
-});
 
 const toCreateProductRequest = (
   { name, caloriesCost, defaultQuantity }: ProductFormValues,
@@ -33,6 +22,7 @@ const toCreateProductRequest = (
 
 export const NoteInputFlow: FC = () => {
   const product = useAppSelector(state => state.addNote.note?.product);
+  const noteDraft = useAppSelector(state => state.addNote.note);
   const productDraft = useAppSelector(state => state.addNote.product);
   const image = useAppSelector(state => state.addNote.image);
   const activeFormId = useAppSelector(selectors.activeFormId);
@@ -59,7 +49,7 @@ export const NoteInputFlow: FC = () => {
     return (
       <ProductForm
         formId={activeFormId}
-        defaultValues={toProductFormValues(productDraft, categorySelect.data)}
+        defaultValues={productDraft}
         categories={categorySelect.data}
         categoriesLoading={categorySelect.isLoading}
         onSubmit={handleCreateProduct}
@@ -81,5 +71,9 @@ export const NoteInputFlow: FC = () => {
     return <SearchProducts />;
   }
 
-  return <NoteForm quantity={product.defaultQuantity} />;
+  if (!noteDraft) {
+    return null;
+  }
+
+  return <NoteForm defaultValues={{ ...noteDraft, quantity: product.defaultQuantity }} />;
 };

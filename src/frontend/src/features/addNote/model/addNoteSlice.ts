@@ -1,22 +1,16 @@
 import { type PayloadAction, createSlice, isAnyOf } from '@reduxjs/toolkit';
-import { noteApi, type noteModel } from '@/entities/note';
+import { noteApi } from '@/entities/note';
 import { productApi, type ProductSelectOption } from '@/entities/product';
-import { type ProductFormValues } from './productForm';
-import { type ProductDraft, type Image } from './types';
+import { type NoteFormValues } from './noteSchema';
+import { type ProductFormValues } from './productSchema';
+import { type Image } from './types';
 
 interface State {
-  note?: NoteDraft;
-  product?: ProductDraft;
+  note?: NoteFormValues;
+  product?: ProductFormValues;
   image?: Image;
   isValid: boolean;
   isSubmitting: boolean;
-}
-
-interface NoteDraft {
-  date: string;
-  mealType: noteModel.MealType;
-  displayOrder: number;
-  product?: ProductSelectOption;
 }
 
 const initialState: State = {
@@ -33,7 +27,7 @@ export const addNoteSlice = createSlice({
     dialogTitle: state => (state.product ? 'New product' : 'New note'),
   },
   reducers: {
-    noteDraftCreated: (state, { payload }: PayloadAction<NoteDraft>) => {
+    noteDraftSaved: (state, { payload }: PayloadAction<NoteFormValues>) => {
       state.note = payload;
     },
 
@@ -53,21 +47,15 @@ export const addNoteSlice = createSlice({
       }
     },
 
-    productDraftDiscarded: state => {
-      if (state.note?.product) {
-        delete state.note.product;
-        delete state.product;
-        state.isValid = false;
-      }
+    productDraftSaved: (state, { payload }: PayloadAction<ProductFormValues>) => {
+      state.product = payload;
     },
 
-    productDraftSaved: (state, { payload }: PayloadAction<ProductFormValues>) => {
-      state.product = {
-        name: payload.name,
-        caloriesCost: payload.caloriesCost,
-        defaultQuantity: payload.defaultQuantity,
-        category: payload.category,
-      };
+    productDraftDiscarded: state => {
+      if (state.note) {
+        state.note.product = null;
+        delete state.product;
+      }
     },
 
     imageUploaded: (state, { payload }: PayloadAction<Image>) => {
@@ -116,6 +104,7 @@ export const addNoteSlice = createSlice({
           name: state.product.name,
           defaultQuantity: state.product.defaultQuantity,
         };
+        delete state.product;
         state.isSubmitting = false;
       }
     });

@@ -3,7 +3,7 @@ import { Autocomplete, CircularProgress, InputAdornment, TextField } from '@mui/
 import { useEffect, type FC } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { type SelectOption } from '@/shared/types';
-import { type ProductFormValues, productFormSchema } from '../model/productForm';
+import { type ProductFormValues, productSchema } from '../model';
 
 interface Props {
   formId: string;
@@ -22,15 +22,21 @@ export const ProductForm: FC<Props> = ({
   onSubmit,
   onValidate,
 }) => {
-  const { control, formState, handleSubmit } = useForm<ProductFormValues>({
+  const { control, formState, handleSubmit, setValue } = useForm<ProductFormValues>({
     mode: 'onChange',
-    resolver: zodResolver(productFormSchema),
+    resolver: zodResolver(productSchema),
     defaultValues,
   });
 
   useEffect(() => {
     onValidate(formState.isValid);
   }, [formState.isValid, onValidate]);
+
+  useEffect(() => {
+    if (categories.length > 0) {
+      setValue('category', categories[0], { shouldValidate: true });
+    }
+  }, [categories, setValue]);
 
   return (
     <form id={formId} onSubmit={handleSubmit(data => onSubmit(data))}>

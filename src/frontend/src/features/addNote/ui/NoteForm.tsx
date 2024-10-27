@@ -3,28 +3,19 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import { IconButton, InputAdornment, TextField, Tooltip } from '@mui/material';
 import { useEffect, type FC } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { z } from 'zod';
 import { useAppDispatch, useAppSelector } from '@/app/store';
 import { noteApi } from '@/entities/note';
-import { actions, selectors } from '../model';
-
-const schema = z.object({
-  quantity: z.coerce.number().int().min(1).max(999),
-});
-
-type FormValues = z.infer<typeof schema>;
+import { actions, selectors, noteSchema, type NoteFormValues } from '../model';
 
 interface Props {
-  quantity: number;
+  defaultValues: NoteFormValues;
 }
 
-export const NoteForm: FC<Props> = ({ quantity }) => {
-  const { control, formState, handleSubmit } = useForm<FormValues>({
+export const NoteForm: FC<Props> = ({ defaultValues }) => {
+  const { control, formState, handleSubmit } = useForm<NoteFormValues>({
     mode: 'onChange',
-    resolver: zodResolver(schema),
-    defaultValues: {
-      quantity,
-    },
+    resolver: zodResolver(noteSchema),
+    defaultValues,
   });
 
   const [createNote] = noteApi.useCreateNoteMutation();
@@ -53,6 +44,7 @@ export const NoteForm: FC<Props> = ({ quantity }) => {
         });
       })}
     >
+      {/* TODO: show meal type */}
       <TextField
         label="Product"
         value={noteDraft?.product?.name}

@@ -1,5 +1,5 @@
 import AddIcon from '@mui/icons-material/Add';
-import { type FC } from 'react';
+import { type MouseEventHandler, type FC } from 'react';
 import { useAppDispatch, useAppSelector } from '@/app/store';
 import { type noteModel } from '@/entities/note';
 import { Button, Dialog } from '@/shared/ui';
@@ -20,17 +20,25 @@ export const AddNoteButton: FC<Props> = ({ date, mealType, displayOrder }) => {
   const dialogVisible = useAppSelector(state => state.addNote.note?.mealType === mealType);
   const dispatch = useAppDispatch();
 
-  const handleCloseDialog = (): void => {
+  const handleDialogOpen: MouseEventHandler = () => {
+    dispatch(
+      actions.noteDraftSaved({
+        date,
+        mealType,
+        displayOrder,
+        product: null,
+        quantity: 100,
+      }),
+    );
+  };
+
+  const handleDialogClose = (): void => {
     dispatch(actions.noteDraftDiscarded());
   };
 
   return (
     <>
-      <Button
-        fullWidth
-        startIcon={<AddIcon />}
-        onClick={() => dispatch(actions.noteDraftCreated({ date, mealType, displayOrder }))}
-      >
+      <Button fullWidth startIcon={<AddIcon />} onClick={handleDialogOpen}>
         Add note (v2)
       </Button>
       <Dialog
@@ -38,10 +46,10 @@ export const AddNoteButton: FC<Props> = ({ date, mealType, displayOrder }) => {
         renderMode="fullScreenOnMobile"
         title={dialogTitle}
         opened={dialogVisible}
-        onClose={handleCloseDialog}
+        onClose={handleDialogClose}
         content={<NoteInputFlow />}
         renderCancel={props => (
-          <Button {...props} type="button" onClick={handleCloseDialog}>
+          <Button {...props} type="button" onClick={handleDialogClose}>
             Cancel
           </Button>
         )}
