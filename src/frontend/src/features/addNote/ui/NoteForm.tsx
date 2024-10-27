@@ -4,7 +4,7 @@ import { IconButton, InputAdornment, TextField, Tooltip } from '@mui/material';
 import { useEffect, type FC } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useAppDispatch, useAppSelector } from '@/app/store';
-import { noteApi } from '@/entities/note';
+import { noteApi, noteLib, noteModel } from '@/entities/note';
 import { actions, selectors, noteSchema, type NoteFormValues } from '../model';
 
 interface Props {
@@ -44,7 +44,18 @@ export const NoteForm: FC<Props> = ({ defaultValues }) => {
         });
       })}
     >
-      {/* TODO: show meal type */}
+      <TextField
+        label="Meal type"
+        value={noteLib.getMealName(noteDraft?.mealType ?? noteModel.MealType.Breakfast)}
+        fullWidth
+        margin="normal"
+        helperText=" "
+        slotProps={{
+          input: {
+            readOnly: true,
+          },
+        }}
+      />
       <TextField
         label="Product"
         value={noteDraft?.product?.name}
