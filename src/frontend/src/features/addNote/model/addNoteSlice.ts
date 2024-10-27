@@ -55,6 +55,7 @@ export const addNoteSlice = createSlice({
       if (state.note) {
         state.note.product = null;
         delete state.product;
+        delete state.image;
       }
     },
 

@@ -32,7 +32,6 @@ export const SearchProductsOnImage: FC<Props> = ({ image }) => {
   }, [image.base64, image.name, recognize]);
 
   useEffect(() => {
-    // TODO: prevent duplicate request after product discarded
     sendRecognizeRequest();
   }, [sendRecognizeRequest]);
 
