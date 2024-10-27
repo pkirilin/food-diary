@@ -10,7 +10,7 @@ interface Props {
   defaultValues: ProductFormValues;
   categories: SelectOption[];
   categoriesLoading: boolean;
-  onSubmit: (data: ProductFormValues) => void;
+  onSubmit: (data: ProductFormValues) => Promise<void>;
   onValidate: (isValid: boolean) => void;
 }
 

@@ -1,7 +1,7 @@
 import { useCallback, type FC } from 'react';
 import { useAppDispatch, useAppSelector } from '@/app/store';
 import { categoryLib } from '@/entities/category';
-import { type productModel } from '@/entities/product';
+import { type CreateProductRequest, productApi, type productModel } from '@/entities/product';
 import { type SelectOption } from '@/shared/types';
 import { actions, selectors } from '../model';
 import { type ProductFormValues } from '../model/productForm';
@@ -21,17 +21,38 @@ const toProductFormValues = (
   category: categories.at(0) ?? category,
 });
 
+const toCreateProductRequest = (
+  { name, caloriesCost, defaultQuantity }: ProductFormValues,
+  categoryId: number,
+): CreateProductRequest => ({
+  name,
+  caloriesCost,
+  defaultQuantity,
+  categoryId,
+});
+
 export const NoteInputFlow: FC = () => {
   const product = useAppSelector(state => state.addNote.draft?.product);
   const image = useAppSelector(state => state.addNote.image);
   const activeFormId = useAppSelector(selectors.activeFormId);
-  const categorySelect = categoryLib.useCategorySelectData();
   const dispatch = useAppDispatch();
 
-  const validateProduct = useCallback(
+  const categorySelect = categoryLib.useCategorySelectData();
+  const [createProduct] = productApi.useCreateProductMutation();
+
+  const handleValidateProduct = useCallback(
     (isValid: boolean) => dispatch(actions.draftValidated(isValid)),
     [dispatch],
   );
+
+  const handleCreateProduct = async (data: ProductFormValues): Promise<void> => {
+    if (!data.category) {
+      return;
+    }
+
+    dispatch(actions.productSaved(data));
+    await createProduct(toCreateProductRequest(data, data.category.id));
+  };
 
   if (!product && image) {
     return (
@@ -46,15 +67,15 @@ export const NoteInputFlow: FC = () => {
     return <SearchProducts />;
   }
 
-  if (product.freeSolo && product.editing) {
+  if (product.freeSolo) {
     return (
       <ProductForm
         formId={activeFormId}
         defaultValues={toProductFormValues(product, categorySelect.data)}
         categories={categorySelect.data}
         categoriesLoading={categorySelect.isLoading}
-        onSubmit={data => dispatch(actions.productSaved(data))}
-        onValidate={validateProduct}
+        onSubmit={handleCreateProduct}
+        onValidate={handleValidateProduct}
       />
     );
   }

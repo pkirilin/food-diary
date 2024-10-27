@@ -41,7 +41,6 @@ export const NoteForm: FC<Props> = ({ quantity }) => {
       id={activeFormId}
       onSubmit={handleSubmit(({ quantity }) => {
         if (!noteDraft?.product || noteDraft.product.freeSolo) {
-          // TODO: create free solo products
           return;
         }
 

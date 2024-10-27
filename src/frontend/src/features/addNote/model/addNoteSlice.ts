@@ -1,6 +1,6 @@
 import { type PayloadAction, createSlice, isAnyOf } from '@reduxjs/toolkit';
 import { noteApi, type noteModel } from '@/entities/note';
-import { type ProductSelectOption, type productModel } from '@/entities/product';
+import { productApi, type ProductSelectOption, type productModel } from '@/entities/product';
 import { type ProductFormValues } from './productForm';
 import { type Image } from './types';
 
@@ -8,6 +8,7 @@ interface NoteDraft {
   date: string;
   mealType: noteModel.MealType;
   displayOrder: number;
+  // TODO: change type to ProductDraft
   product?: productModel.AutocompleteOption;
   isValid?: boolean;
   isSubmitting?: boolean;
@@ -82,7 +83,7 @@ export const addNoteSlice = createSlice({
       if (state.draft) {
         state.draft.product = {
           freeSolo: true,
-          editing: false,
+          editing: true,
           name: payload.name,
           caloriesCost: payload.caloriesCost,
           defaultQuantity: payload.defaultQuantity,
@@ -102,7 +103,11 @@ export const addNoteSlice = createSlice({
 
   extraReducers: builder => {
     builder.addMatcher(
-      isAnyOf(noteApi.endpoints.createNote.matchPending, noteApi.endpoints.notes.matchPending),
+      isAnyOf(
+        noteApi.endpoints.createNote.matchPending,
+        noteApi.endpoints.notes.matchPending,
+        productApi.endpoints.createProduct.matchPending,
+      ),
       state => {
         if (state.draft) {
           state.draft.isSubmitting = true;
@@ -114,6 +119,17 @@ export const addNoteSlice = createSlice({
       if (state.draft) {
         delete state.draft;
         delete state.image;
+      }
+    });
+
+    builder.addMatcher(productApi.endpoints.createProduct.matchFulfilled, (state, { payload }) => {
+      if (state.draft?.product) {
+        state.draft.product = {
+          id: payload.id,
+          name: state.draft.product.name,
+          defaultQuantity: state.draft.product.defaultQuantity,
+        };
+        state.draft.isSubmitting = false;
       }
     });
   },
