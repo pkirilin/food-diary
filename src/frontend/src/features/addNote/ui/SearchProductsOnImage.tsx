@@ -32,6 +32,7 @@ export const SearchProductsOnImage: FC<Props> = ({ image }) => {
   }, [image.base64, image.name, recognize]);
 
   useEffect(() => {
+    // TODO: prevent duplicate request after product discarded
     sendRecognizeRequest();
   }, [sendRecognizeRequest]);
 
@@ -77,7 +78,7 @@ export const SearchProductsOnImage: FC<Props> = ({ image }) => {
 
   const handleAddProduct: MouseEventHandler = () =>
     dispatch(
-      actions.productAdded({
+      actions.productDraftSaved({
         name: productName,
         defaultQuantity: note.quantity,
         caloriesCost: note.product.caloriesCost,

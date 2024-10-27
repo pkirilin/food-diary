@@ -34,7 +34,7 @@ export const FoundProductsList: FC<Props> = ({ foundProducts, query }) => {
 
   const handleAddProduct: MouseEventHandler = () =>
     dispatch(
-      actions.productAdded({
+      actions.productDraftSaved({
         name: query,
         defaultQuantity: 100,
         caloriesCost: 100,

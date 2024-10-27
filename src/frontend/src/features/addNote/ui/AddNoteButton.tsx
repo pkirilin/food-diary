@@ -15,13 +15,13 @@ interface Props {
 export const AddNoteButton: FC<Props> = ({ date, mealType, displayOrder }) => {
   const activeFormId = useAppSelector(selectors.activeFormId);
   const dialogTitle = useAppSelector(selectors.dialogTitle);
-  const canSubmit = useAppSelector(state => state.addNote.draft?.isValid);
-  const isSubmitting = useAppSelector(state => state.addNote.draft?.isSubmitting);
-  const dialogVisible = useAppSelector(state => state.addNote.draft?.mealType === mealType);
+  const canSubmit = useAppSelector(state => state.addNote.isValid);
+  const isSubmitting = useAppSelector(state => state.addNote.isSubmitting);
+  const dialogVisible = useAppSelector(state => state.addNote.note?.mealType === mealType);
   const dispatch = useAppDispatch();
 
-  const closeDialog = (): void => {
-    dispatch(actions.draftDiscarded());
+  const handleCloseDialog = (): void => {
+    dispatch(actions.noteDraftDiscarded());
   };
 
   return (
@@ -29,7 +29,7 @@ export const AddNoteButton: FC<Props> = ({ date, mealType, displayOrder }) => {
       <Button
         fullWidth
         startIcon={<AddIcon />}
-        onClick={() => dispatch(actions.draftCreated({ date, mealType, displayOrder }))}
+        onClick={() => dispatch(actions.noteDraftCreated({ date, mealType, displayOrder }))}
       >
         Add note (v2)
       </Button>
@@ -38,10 +38,10 @@ export const AddNoteButton: FC<Props> = ({ date, mealType, displayOrder }) => {
         renderMode="fullScreenOnMobile"
         title={dialogTitle}
         opened={dialogVisible}
-        onClose={closeDialog}
+        onClose={handleCloseDialog}
         content={<NoteInputFlow />}
         renderCancel={props => (
-          <Button {...props} type="button" onClick={closeDialog}>
+          <Button {...props} type="button" onClick={handleCloseDialog}>
             Cancel
           </Button>
         )}

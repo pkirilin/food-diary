@@ -28,7 +28,7 @@ export const NoteForm: FC<Props> = ({ quantity }) => {
   });
 
   const [createNote] = noteApi.useCreateNoteMutation();
-  const noteDraft = useAppSelector(state => state.addNote.draft);
+  const noteDraft = useAppSelector(state => state.addNote.note);
   const activeFormId = useAppSelector(selectors.activeFormId);
   const dispatch = useAppDispatch();
 
@@ -40,7 +40,7 @@ export const NoteForm: FC<Props> = ({ quantity }) => {
     <form
       id={activeFormId}
       onSubmit={handleSubmit(({ quantity }) => {
-        if (!noteDraft?.product || noteDraft.product.freeSolo) {
+        if (!noteDraft?.product) {
           return;
         }
 
@@ -64,7 +64,7 @@ export const NoteForm: FC<Props> = ({ quantity }) => {
             readOnly: true,
             endAdornment: (
               <Tooltip title="Discard and choose another product" placement="left">
-                <IconButton edge="end" onClick={() => dispatch(actions.productDiscarded())}>
+                <IconButton edge="end" onClick={() => dispatch(actions.productDraftDiscarded())}>
                   <CancelIcon />
                 </IconButton>
               </Tooltip>
