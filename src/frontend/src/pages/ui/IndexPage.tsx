@@ -1,7 +1,7 @@
 import { type FC } from 'react';
 import { type LoaderFunction, useLoaderData } from 'react-router-dom';
 import { store } from '@/app/store';
-import { noteApi, noteLib } from '@/entities/note';
+import { noteApi } from '@/entities/note';
 import { SelectDate } from '@/features/note/selectDate';
 import { MSW_ENABLED } from '@/shared/config';
 import { dateLib } from '@/shared/lib';
@@ -37,7 +37,6 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export const Component: FC = () => {
   const { date } = useLoaderData() as LoaderData;
-  const notes = noteLib.useNotes(date);
 
-  return <MealsList date={date} notes={notes.data} />;
+  return <MealsList date={date} />;
 };
