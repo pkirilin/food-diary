@@ -39,7 +39,7 @@ export const AddNoteButton: FC<Props> = ({ date, mealType, displayOrder }) => {
   return (
     <>
       <Button fullWidth startIcon={<AddIcon />} onClick={handleDialogOpen}>
-        Add note (v2)
+        Add note
       </Button>
       <Dialog
         pinToTop
@@ -61,7 +61,7 @@ export const AddNoteButton: FC<Props> = ({ date, mealType, displayOrder }) => {
             disabled={!canSubmit}
             loading={isSubmitting}
           >
-            Save
+            Add
           </Button>
         )}
       />
