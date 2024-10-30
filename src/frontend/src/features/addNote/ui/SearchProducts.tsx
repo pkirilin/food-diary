@@ -4,6 +4,7 @@ import { useState, type FC, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDebounce } from 'use-debounce';
 import { type ProductSelectOption, productApi } from '@/entities/product';
+import { searchProductsByName } from '../lib/searchProductsByName';
 import { FoundProductsList } from './FoundProductsList';
 import { UploadImageButton } from './UploadImageButton';
 
@@ -12,10 +13,8 @@ interface FormValues {
 }
 
 const DEBOUNCE_QUERY_DELAY = 300;
-const DEBOUNCE_QUERY_LENGTH_THRESHOLD = 3;
 const EMPTY_PRODUCTS: ProductSelectOption[] = [];
 
-// TODO: add tests
 export const SearchProducts: FC = () => {
   const { register, watch } = useForm<FormValues>({
     mode: 'onChange',
@@ -33,17 +32,10 @@ export const SearchProducts: FC = () => {
   const [foundProducts, setFoundProducts] = useState<ProductSelectOption[]>([]);
 
   useEffect(() => {
-    if (debouncedQuery.trim().length >= DEBOUNCE_QUERY_LENGTH_THRESHOLD) {
-      setFoundProducts(
-        products.filter(product =>
-          product.name.trim().toLowerCase().includes(debouncedQuery.trim().toLowerCase()),
-        ),
-      );
-    } else {
-      setFoundProducts([]);
-    }
+    setFoundProducts(searchProductsByName(products, debouncedQuery));
   }, [products, debouncedQuery]);
 
+  // TODO: add auto focuses
   return (
     <>
       <TextField
