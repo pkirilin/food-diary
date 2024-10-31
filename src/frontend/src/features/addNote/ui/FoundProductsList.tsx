@@ -12,6 +12,7 @@ import {
 import { useMemo, type FC, type MouseEventHandler } from 'react';
 import { useAppDispatch } from '@/app/store';
 import { type ProductSelectOption, productApi } from '@/entities/product';
+import { shouldSuggestAddingNewProduct } from '../lib/shouldSuggestAddingNewProduct';
 import { actions } from '../model';
 
 interface Props {
@@ -24,9 +25,8 @@ export const FoundProductsList: FC<Props> = ({ foundProducts, query }) => {
     selectFromResult: ({ isLoading }) => ({ productsLoading: isLoading }),
   });
 
-  // TODO: add tests
   const suggestAddingNewProduct = useMemo(
-    () => query.trim().length > 0 && foundProducts.every(p => p.name !== query),
+    () => shouldSuggestAddingNewProduct(foundProducts, query),
     [foundProducts, query],
   );
 
