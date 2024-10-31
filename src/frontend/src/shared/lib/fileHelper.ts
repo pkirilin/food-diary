@@ -16,7 +16,6 @@ export function downloadFile(blob: Blob, fileName: string): void {
   window.URL.revokeObjectURL(downloadLink.href);
 }
 
-// TODO: remove after old note input UI is removed
 export const convertToBase64String = (file: File): Promise<string> =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();

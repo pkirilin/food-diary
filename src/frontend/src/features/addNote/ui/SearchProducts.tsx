@@ -1,5 +1,6 @@
+import ClearIcon from '@mui/icons-material/Clear';
 import SearchIcon from '@mui/icons-material/Search';
-import { InputAdornment, TextField } from '@mui/material';
+import { IconButton, InputAdornment, TextField } from '@mui/material';
 import { useState, type FC, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDebounce } from 'use-debounce';
@@ -16,7 +17,7 @@ const DEBOUNCE_QUERY_DELAY = 300;
 const EMPTY_PRODUCTS: ProductSelectOption[] = [];
 
 export const SearchProducts: FC = () => {
-  const { register, watch } = useForm<FormValues>({
+  const { register, watch, reset } = useForm<FormValues>({
     mode: 'onChange',
     defaultValues: {
       query: '',
@@ -42,7 +43,7 @@ export const SearchProducts: FC = () => {
         fullWidth
         autoFocus
         variant="outlined"
-        type="search"
+        role="search"
         placeholder="Search products"
         margin="dense"
         slotProps={{
@@ -52,9 +53,13 @@ export const SearchProducts: FC = () => {
                 <SearchIcon />
               </InputAdornment>
             ),
-            // TODO: style clear button
             endAdornment: (
               <InputAdornment position="end">
+                {query && (
+                  <IconButton onClick={() => reset()}>
+                    <ClearIcon />
+                  </IconButton>
+                )}
                 <UploadImageButton />
               </InputAdornment>
             ),
