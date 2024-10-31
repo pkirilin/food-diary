@@ -47,6 +47,7 @@ export const ProductForm: FC<Props> = ({
           <TextField
             {...field}
             fullWidth
+            autoFocus
             label="Name"
             placeholder="Product name"
             margin="normal"
@@ -55,7 +56,6 @@ export const ProductForm: FC<Props> = ({
           />
         )}
       />
-      {/* TODO: maybe show calories cost and quantity in the single row? */}
       <Controller
         name="caloriesCost"
         control={control}
@@ -68,6 +68,7 @@ export const ProductForm: FC<Props> = ({
             margin="normal"
             error={!!fieldState.error}
             helperText={fieldState.error?.message ?? ' '}
+            onFocus={event => event.target.select()}
             slotProps={{
               input: {
                 inputMode: 'numeric',
@@ -89,6 +90,7 @@ export const ProductForm: FC<Props> = ({
             margin="normal"
             error={!!fieldState.error}
             helperText={fieldState.error?.message ?? ' '}
+            onFocus={event => event.target.select()}
             slotProps={{
               input: {
                 inputMode: 'numeric',

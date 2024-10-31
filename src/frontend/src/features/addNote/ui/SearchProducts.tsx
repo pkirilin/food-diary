@@ -35,12 +35,12 @@ export const SearchProducts: FC = () => {
     setFoundProducts(searchProductsByName(products, debouncedQuery));
   }, [products, debouncedQuery]);
 
-  // TODO: add auto focuses
   return (
     <>
       <TextField
         {...register('query')}
         fullWidth
+        autoFocus
         variant="outlined"
         type="search"
         placeholder="Search products"
@@ -52,6 +52,7 @@ export const SearchProducts: FC = () => {
                 <SearchIcon />
               </InputAdornment>
             ),
+            // TODO: style clear button
             endAdornment: (
               <InputAdornment position="end">
                 <UploadImageButton />
