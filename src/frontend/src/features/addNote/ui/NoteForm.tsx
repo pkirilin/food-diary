@@ -82,7 +82,6 @@ export const NoteForm: FC<Props> = ({ defaultValues }) => {
           <TextField
             {...field}
             fullWidth
-            autoFocus
             margin="normal"
             label="Quantity"
             placeholder="Product quantity, g"
