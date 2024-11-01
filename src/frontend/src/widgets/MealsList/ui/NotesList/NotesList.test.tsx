@@ -18,11 +18,10 @@ test('I can add new note with existing product', async () => {
   );
 
   await user.click(screen.getByRole('button', { name: /add note/i }));
-  expect(await screen.findByRole('dialog', { name: /new note/i })).toBeVisible();
+  expect(await screen.findByRole('dialog', { name: /lunch/i })).toBeVisible();
 
   await user.type(screen.getByPlaceholderText(/search products/i), 'che');
   await user.click(await screen.findByRole('button', { name: /cheese/i }));
-  expect(screen.getByRole('textbox', { name: /meal type/i })).toHaveValue('Lunch');
   expect(screen.getByRole('textbox', { name: /product/i })).toHaveValue('Cheese');
 
   await user.clear(screen.getByPlaceholderText(/quantity/i));
@@ -45,7 +44,7 @@ test('I can add new note with adding new product "on the fly"', async () => {
   );
 
   await user.click(screen.getByRole('button', { name: /add note/i }));
-  expect(await screen.findByRole('dialog', { name: /new note/i })).toBeVisible();
+  expect(await screen.findByRole('dialog', { name: /lunch/i })).toBeVisible();
 
   await user.type(screen.getByPlaceholderText(/search products/i), 'Ora');
   await user.click(await screen.findByRole('button', { name: /add "ora"/i }));
@@ -59,7 +58,7 @@ test('I can add new note with adding new product "on the fly"', async () => {
   await user.click(screen.getByRole('combobox', { name: /category/i }));
   await user.click(screen.getByRole('option', { name: /fruits/i }));
   await user.click(screen.getByRole('button', { name: /add/i }));
-  expect(await screen.findByRole('dialog', { name: /new note/i })).toBeVisible();
+  expect(await screen.findByRole('dialog', { name: /lunch/i })).toBeVisible();
   expect(screen.getByRole('textbox', { name: /product/i })).toHaveValue('Orange');
   expect(screen.getByPlaceholderText(/quantity/i)).toHaveValue('200');
 

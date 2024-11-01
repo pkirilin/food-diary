@@ -1,5 +1,5 @@
 import { type PayloadAction, createSlice, isAnyOf } from '@reduxjs/toolkit';
-import { noteApi } from '@/entities/note';
+import { noteApi, noteLib, noteModel } from '@/entities/note';
 import { productApi, type ProductSelectOption } from '@/entities/product';
 import { type NoteFormValues } from './noteSchema';
 import { type ProductFormValues } from './productSchema';
@@ -24,18 +24,17 @@ export const addNoteSlice = createSlice({
   initialState,
   selectors: {
     activeFormId: state => (state.product ? 'product-form' : 'note-form'),
-    dialogTitle: state => (state.product ? 'New product' : 'New note'),
+    dialogTitle: state =>
+      state.product
+        ? 'New product'
+        : noteLib.getMealName(state?.note?.mealType ?? noteModel.MealType.Breakfast),
   },
   reducers: {
     noteDraftSaved: (state, { payload }: PayloadAction<NoteFormValues>) => {
       state.note = payload;
     },
 
-    noteDraftDiscarded: state => {
-      delete state.note;
-      delete state.product;
-      delete state.image;
-    },
+    noteDraftDiscarded: () => initialState,
 
     draftValidated: (state, { payload }: PayloadAction<boolean>) => {
       state.isValid = payload;
@@ -91,12 +90,7 @@ export const addNoteSlice = createSlice({
       },
     );
 
-    builder.addMatcher(noteApi.endpoints.notes.matchFulfilled, state => {
-      state.isSubmitting = false;
-      delete state.note;
-      delete state.product;
-      delete state.image;
-    });
+    builder.addMatcher(noteApi.endpoints.notes.matchFulfilled, () => initialState);
 
     builder.addMatcher(productApi.endpoints.createProduct.matchFulfilled, (state, { payload }) => {
       if (state.note && state.product) {
