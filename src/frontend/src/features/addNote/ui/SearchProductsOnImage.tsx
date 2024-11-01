@@ -26,8 +26,11 @@ export const SearchProductsOnImage: FC<Props> = ({ image }) => {
   const dispatch = useAppDispatch();
 
   const sendRecognizeRequest = useCallback(async (): Promise<void> => {
+    const response = await fetch(image.base64);
+    const blob = await response.blob();
+    const file = new File([blob], image.name, { type: blob.type });
     const formData = new FormData();
-    formData.append('files', new File([image.base64], image.name));
+    formData.append('files', file);
     await recognize(formData);
   }, [image.base64, image.name, recognize]);
 
@@ -65,6 +68,10 @@ export const SearchProductsOnImage: FC<Props> = ({ image }) => {
         {error.message}
       </Alert>
     );
+  }
+
+  if (!recognizeResult.data) {
+    return null;
   }
 
   const note = recognizeResult.data?.notes?.at(0);
