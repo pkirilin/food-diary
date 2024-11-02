@@ -78,8 +78,11 @@ export const NoteForm: FC<Props> = ({ defaultValues }) => {
             onFocus={event => event.target.select()}
             slotProps={{
               input: {
-                inputMode: 'numeric',
                 endAdornment: <InputAdornment position="end">g</InputAdornment>,
+              },
+              htmlInput: {
+                type: 'text',
+                inputMode: 'numeric',
               },
             }}
           />

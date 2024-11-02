@@ -71,8 +71,11 @@ export const ProductForm: FC<Props> = ({
             onFocus={event => event.target.select()}
             slotProps={{
               input: {
-                inputMode: 'numeric',
                 endAdornment: <InputAdornment position="end">kcal</InputAdornment>,
+              },
+              htmlInput: {
+                type: 'text',
+                inputMode: 'numeric',
               },
             }}
           />
@@ -93,8 +96,11 @@ export const ProductForm: FC<Props> = ({
             onFocus={event => event.target.select()}
             slotProps={{
               input: {
-                inputMode: 'numeric',
                 endAdornment: <InputAdornment position="end">g</InputAdornment>,
+              },
+              htmlInput: {
+                type: 'text',
+                inputMode: 'numeric',
               },
             }}
           />
