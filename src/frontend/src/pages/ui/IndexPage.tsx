@@ -1,7 +1,7 @@
 import { type FC } from 'react';
 import { type LoaderFunction, useLoaderData } from 'react-router-dom';
 import { store } from '@/app/store';
-import { noteApi } from '@/entities/note';
+import { noteApi, noteModel } from '@/entities/note';
 import { SelectDate } from '@/features/note/selectDate';
 import { MSW_ENABLED } from '@/shared/config';
 import { dateLib } from '@/shared/lib';
@@ -21,13 +21,17 @@ export const loader: LoaderFunction = async ({ request }) => {
   const notesQueryPromise = store.dispatch(noteApi.endpoints.notes.initiate({ date }));
 
   try {
-    await notesQueryPromise;
+    const notesQuery = await notesQueryPromise;
+
+    if (notesQuery.isSuccess) {
+      store.dispatch(noteModel.actions.notesLoaded(notesQuery.data));
+    }
 
     return {
       date,
       navigation: {
         title: <SelectDate currentDate={new Date(date)} />,
-        action: <MealsListTotalCalories date={date} />,
+        action: <MealsListTotalCalories />,
       },
     } satisfies LoaderData;
   } finally {
