@@ -12,23 +12,17 @@ public class NotesApiTests(FoodDiaryWebApplicationFactory factory, Infrastructur
         FoodDiaryWebApplicationFactory factory,
         InfrastructureFixture infrastructure) => new(factory, infrastructure);
 
-    private static NoteBuilder Breakfast() => Create.Note()
-        .WithDate("2024-01-04")
-        .WithMealType(MealType.Breakfast);
-    
-    private static NoteBuilder Lunch() => Create.Note()
-        .WithDate("2024-01-04")
-        .WithMealType(MealType.Lunch);
-
     [Scenario]
     public Task I_can_retrieve_notes_list()
     {
+        var breakfast = Create.Note().WithDate("2024-01-04").WithMealType(MealType.Breakfast);
+        var lunch = Create.Note().WithDate("2024-01-04").WithMealType(MealType.Lunch);
         var notes = new
         {
-            Chicken = Breakfast().WithProduct("Chicken", 150).WithDisplayOrder(0).Please(),
-            Rice = Breakfast().WithProduct("Rice", 100).WithDisplayOrder(1).Please(),
-            Cheese = Lunch().WithProduct("Cheese", 350).WithDisplayOrder(0).Please(),
-            Bread = Lunch().WithProduct("Bread", 250).WithDisplayOrder(1).Please(),
+            Chicken = breakfast.WithProduct("Chicken", 150).WithDisplayOrder(0).Please(),
+            Rice = breakfast.WithProduct("Rice", 100).WithDisplayOrder(1).Please(),
+            Cheese = lunch.WithProduct("Cheese", 350).WithDisplayOrder(0).Please(),
+            Bread = lunch.WithProduct("Bread", 250).WithDisplayOrder(1).Please(),
         };
         
         return Run(

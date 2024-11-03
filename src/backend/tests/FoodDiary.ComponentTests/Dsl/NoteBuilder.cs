@@ -6,58 +6,66 @@ namespace FoodDiary.ComponentTests.Dsl;
 
 public class NoteBuilder
 {
-    private readonly Note _note = new()
+    private int? _id;
+    private DateOnly _date = DateOnly.Parse(FakeDateTimeProvider.CurrentFakeDateAsString);
+    private MealType _mealType = MealType.Breakfast;
+    private Product _product = Create.Product().Please();
+    private int _productId;
+    private int _productQuantity = 100;
+    private int _displayOrder = 1;
+    
+    public Note Please() => new()
     {
-        Id = Random.Shared.Next(),
-        Date = DateOnly.Parse(FakeDateTimeProvider.CurrentFakeDateAsString),
-        MealType = MealType.Breakfast,
-        Product = Create.Product().Please(),
-        ProductQuantity = 100
+        Id = _id ?? Random.Shared.Next(),
+        Date = _date,
+        MealType = _mealType,
+        Product = _product,
+        ProductId = _productId,
+        ProductQuantity = _productQuantity,
+        DisplayOrder = _displayOrder
     };
-
-    public Note Please() => _note;
     
     public NoteBuilder WithDate(string date)
     {
-        _note.Date = DateOnly.Parse(date);
+        _date = DateOnly.Parse(date);
         return this;
     }
 
     public NoteBuilder WithProduct(Product product, int quantity)
     {
-        _note.Product = product;
-        _note.ProductQuantity = quantity;
+        _product = product;
+        _productQuantity = quantity;
         return this;
     }
 
     public NoteBuilder WithProduct(string productName, int quantity)
     {
-        _note.Product = Create.Product(productName).Please();
-        _note.ProductQuantity = quantity;
+        _product = Create.Product(productName).Please();
+        _productQuantity = quantity;
         return this;
     }
     
     public NoteBuilder WithMealType(MealType mealType)
     {
-        _note.MealType = mealType;
+        _mealType = mealType;
         return this;
     }
     
     public NoteBuilder WithDisplayOrder(int displayOrder)
     {
-        _note.DisplayOrder = displayOrder;
+        _displayOrder = displayOrder;
         return this;
     }
 
     public NoteBuilder From(Note note)
     {
-        _note.Id = note.Id;
-        _note.Date = note.Date;
-        _note.MealType = note.MealType;
-        _note.ProductId = note.ProductId;
-        _note.ProductQuantity = note.ProductQuantity;
-        _note.DisplayOrder = note.DisplayOrder;
-        _note.Product = note.Product;
+        _id = note.Id;
+        _date = note.Date;
+        _mealType = note.MealType;
+        _product = note.Product;
+        _productId = note.ProductId;
+        _productQuantity = note.ProductQuantity;
+        _displayOrder = note.DisplayOrder;
         return this;
     }
 }
