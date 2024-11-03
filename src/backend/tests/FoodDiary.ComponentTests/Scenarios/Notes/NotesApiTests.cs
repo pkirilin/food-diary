@@ -16,13 +16,21 @@ public class NotesApiTests(FoodDiaryWebApplicationFactory factory, Infrastructur
     {
         var notes = new
         {
-            Chicken = Create.Note().WithDate("2024-01-04").WithProduct("Chicken", 150).Please(),
-            Rice = Create.Note().WithDate("2024-01-04").WithProduct("Rice", 100).Please()
+            Chicken = Create.Note()
+                .WithDate("2024-01-04")
+                .WithProduct("Chicken", 150)
+                .WithDisplayOrder(0)
+                .Please(),
+            Rice = Create.Note()
+                .WithDate("2024-01-04")
+                .WithProduct("Rice", 100)
+                .WithDisplayOrder(1)
+                .Please()
         };
         
         return Run(
             c => c.Given_authenticated_user(),
-            c => c.Given_notes(notes.Chicken, notes.Rice),
+            c => c.Given_notes(notes.Rice, notes.Chicken),
             c => c.When_user_retrieves_notes_list_for_date("2024-01-04"),
             c => c.Then_notes_list_contains_items(notes.Chicken, notes.Rice));
     }

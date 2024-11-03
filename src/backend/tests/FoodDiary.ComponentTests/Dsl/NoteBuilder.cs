@@ -36,6 +36,12 @@ public class NoteBuilder
         _note.ProductQuantity = quantity;
         return this;
     }
+    
+    public NoteBuilder WithDisplayOrder(int displayOrder)
+    {
+        _note.DisplayOrder = displayOrder;
+        return this;
+    }
 
     public NoteBuilder From(Note note)
     {
