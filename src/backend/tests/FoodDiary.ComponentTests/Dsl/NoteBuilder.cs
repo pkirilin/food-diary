@@ -37,6 +37,12 @@ public class NoteBuilder
         return this;
     }
     
+    public NoteBuilder WithMealType(MealType mealType)
+    {
+        _note.MealType = mealType;
+        return this;
+    }
+    
     public NoteBuilder WithDisplayOrder(int displayOrder)
     {
         _note.DisplayOrder = displayOrder;

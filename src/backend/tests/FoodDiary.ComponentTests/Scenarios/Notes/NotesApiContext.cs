@@ -123,7 +123,8 @@ public class NotesApiContext(FoodDiaryWebApplicationFactory factory, Infrastruct
                 .Excluding(note => note.ProductId)
                 .Excluding(note => note.Calories))
             .And.AllSatisfy(note => { note.Calories.Should().BePositive(); })
-            .And.BeInAscendingOrder(note => note.DisplayOrder);
+            .And.BeInAscendingOrder(note => note.MealType)
+            .And.ThenBeInAscendingOrder(note => note.DisplayOrder);
         
         return Task.CompletedTask;
     }
