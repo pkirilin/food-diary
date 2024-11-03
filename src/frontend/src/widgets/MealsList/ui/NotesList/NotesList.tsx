@@ -1,16 +1,17 @@
 import { List, ListItem } from '@mui/material';
 import { type FC } from 'react';
-import { noteLib, type NoteItem, type noteModel } from '@/entities/note';
-import { AddNote } from '@/features/note/addEdit';
+import { useAppSelector } from '@/app/store';
+import { noteLib, type noteModel } from '@/entities/note';
+import { AddNoteButton } from '@/features/addNote';
 import { NotesListItem } from './NotesListItem';
 
 interface Props {
   date: string;
   mealType: noteModel.MealType;
-  notes: NoteItem[];
 }
 
-export const NotesList: FC<Props> = ({ date, mealType, notes }) => {
+export const NotesList: FC<Props> = ({ date, mealType }) => {
+  const notes = useAppSelector(state => state.notes.byMealType[mealType]);
   const displayOrder = noteLib.useNextDisplayOrder(notes);
 
   return (
@@ -19,7 +20,7 @@ export const NotesList: FC<Props> = ({ date, mealType, notes }) => {
         <NotesListItem key={note.id} note={note} />
       ))}
       <ListItem disableGutters>
-        <AddNote date={date} mealType={mealType} displayOrder={displayOrder} />
+        <AddNoteButton date={date} mealType={mealType} displayOrder={displayOrder} />
       </ListItem>
     </List>
   );
