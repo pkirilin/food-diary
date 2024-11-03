@@ -18,7 +18,6 @@ const initialState: State = {
   isSubmitting: false,
 };
 
-// TODO: support edit note as well
 export const addNoteSlice = createSlice({
   name: 'addNote',
   initialState,

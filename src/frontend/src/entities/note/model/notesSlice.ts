@@ -1,6 +1,5 @@
 import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { type NoteItem, noteApi, type GetNotesResponse } from '../api';
-import { calculateCalories } from '../lib';
 import { MealType } from './types';
 
 interface NotesState {
@@ -21,6 +20,9 @@ const makeNoteGroups = (notes: NoteItem[]): Record<MealType, NoteItem[]> =>
       [MealType.Dinner]: [],
     },
   );
+
+const calculateCalories = (notes: NoteItem[]): number =>
+  notes.reduce((sum, note) => sum + note.calories, 0);
 
 const initialState: NotesState = {
   byMealType: makeNoteGroups([]),
