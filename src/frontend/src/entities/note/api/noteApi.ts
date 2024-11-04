@@ -12,14 +12,16 @@ import { api } from '@/shared/api';
 import { createUrl } from '@/shared/lib';
 import { MealType } from '../model';
 
+export type GetNotesResponseAggregated = Record<MealType, NoteItem[]>;
+
 export const noteApi = api.injectEndpoints({
   endpoints: builder => ({
-    notes: builder.query<Record<MealType, NoteItem[]>, GetNotesRequest>({
+    notes: builder.query<GetNotesResponseAggregated, GetNotesRequest>({
       query: ({ date }) => `/api/v1/notes?date=${date}`,
       providesTags: ['note'],
       transformResponse: ({ notes }: GetNotesResponse) =>
         notes.reduce(
-          (groups: Record<MealType, NoteItem[]>, note) => {
+          (groups: GetNotesResponseAggregated, note) => {
             groups[note.mealType].push(note);
             return groups;
           },
