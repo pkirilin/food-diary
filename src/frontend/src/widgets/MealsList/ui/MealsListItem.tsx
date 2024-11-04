@@ -8,7 +8,7 @@ import {
   styled,
 } from '@mui/material';
 import { type FC } from 'react';
-import { noteApi, noteLib, type noteModel } from '@/entities/note';
+import { noteApi, noteLib, noteModel } from '@/entities/note';
 import { NotesList } from './NotesList';
 
 interface Props {
@@ -27,7 +27,7 @@ export const MealsListItem: FC<Props> = ({ date, mealType }) => {
     { date },
     {
       selectFromResult: ({ data, isSuccess }) => ({
-        totalCalories: isSuccess ? data[mealType].reduce((sum, note) => sum + note.calories, 0) : 0,
+        totalCalories: isSuccess ? noteModel.querySelectors.totalCaloriesByMeal(data, mealType) : 0,
       }),
     },
   );

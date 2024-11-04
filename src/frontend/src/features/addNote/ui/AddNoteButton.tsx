@@ -1,9 +1,8 @@
 import AddIcon from '@mui/icons-material/Add';
 import { type MouseEventHandler, type FC } from 'react';
 import { useAppDispatch, useAppSelector } from '@/app/store';
-import { noteApi, type noteModel } from '@/entities/note';
+import { noteApi, noteModel } from '@/entities/note';
 import { Button, Dialog } from '@/shared/ui';
-import { getNextDisplayOrder } from '../lib/getNextDisplayOrder';
 import { actions, selectors } from '../model';
 import { NoteInputFlow } from './NoteInputFlow';
 
@@ -25,7 +24,7 @@ export const AddNoteButton: FC<Props> = ({ date, mealType }) => {
     {
       selectFromResult: ({ isLoading, isSuccess, data }) => ({
         canAddNote: !isLoading,
-        displayOrder: isSuccess ? getNextDisplayOrder(data[mealType]) : 0,
+        displayOrder: isSuccess ? noteModel.querySelectors.nextDisplayOrder(data, mealType) : 0,
       }),
     },
   );

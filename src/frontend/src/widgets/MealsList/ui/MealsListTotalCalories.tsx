@@ -1,6 +1,6 @@
 import { Typography } from '@mui/material';
 import { type FC } from 'react';
-import { noteApi } from '@/entities/note';
+import { noteApi, noteModel } from '@/entities/note';
 
 interface Props {
   date: string;
@@ -11,11 +11,7 @@ export const MealsListTotalCalories: FC<Props> = ({ date }) => {
     { date },
     {
       selectFromResult: ({ data, isSuccess }) => ({
-        totalCalories: isSuccess
-          ? Object.values(data)
-              .flat()
-              .reduce((sum, note) => sum + note.calories, 0)
-          : 0,
+        totalCalories: isSuccess ? noteModel.querySelectors.totalCalories(data) : 0,
       }),
     },
   );
