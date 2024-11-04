@@ -26,7 +26,7 @@ export const Button: FC<ButtonProps> = ({
     sx={{
       '&.Mui-disabled': {
         color: loading ? 'inherit' : color,
-        display: disabled && hiddenWhenDisabled ? 'none' : 'block',
+        display: disabled && hiddenWhenDisabled ? 'none' : 'inherit',
       },
     }}
   >

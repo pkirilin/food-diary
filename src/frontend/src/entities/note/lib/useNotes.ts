@@ -13,7 +13,7 @@ export const useNotes = (date: string): Result =>
     },
     {
       selectFromResult: ({ data, isFetching, isSuccess }) => ({
-        data: data?.notes ?? [],
+        data: isSuccess ? Object.values(data).flat() : [],
         isFetching,
         isChanged: !isFetching && isSuccess,
       }),

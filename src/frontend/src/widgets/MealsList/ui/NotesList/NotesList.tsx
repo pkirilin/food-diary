@@ -1,7 +1,6 @@
 import { List, ListItem } from '@mui/material';
 import { type FC } from 'react';
-import { useAppSelector } from '@/app/store';
-import { noteLib, type noteModel } from '@/entities/note';
+import { noteApi, noteLib, type noteModel } from '@/entities/note';
 import { AddNoteButton } from '@/features/addNote';
 import { NotesListItem } from './NotesListItem';
 
@@ -11,7 +10,13 @@ interface Props {
 }
 
 export const NotesList: FC<Props> = ({ date, mealType }) => {
-  const notes = useAppSelector(state => state.notes.byMealType[mealType]);
+  const { notes } = noteApi.useNotesQuery(
+    { date },
+    {
+      selectFromResult: ({ data, isSuccess }) => ({ notes: isSuccess ? data[mealType] : [] }),
+    },
+  );
+
   const displayOrder = noteLib.useNextDisplayOrder(notes);
 
   return (

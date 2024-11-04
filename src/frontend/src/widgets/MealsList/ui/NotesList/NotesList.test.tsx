@@ -1,4 +1,4 @@
-import { render, screen, waitForElementToBeRemoved } from '@testing-library/react';
+import { render, screen, waitFor, waitForElementToBeRemoved } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { RootProvider } from '@/app/RootProvider';
 import { configureStore } from '@/app/store';
@@ -9,7 +9,6 @@ import { NotesList } from './NotesList';
 test('I can add new note with existing product', async () => {
   const user = userEvent.setup();
   const store = configureStore();
-  await store.dispatch(noteApi.endpoints.notes.initiate({ date: '2023-10-19' }));
 
   render(
     <RootProvider store={store}>
@@ -17,7 +16,9 @@ test('I can add new note with existing product', async () => {
     </RootProvider>,
   );
 
-  await user.click(screen.getByRole('button', { name: /add note/i }));
+  const addNoteButton = screen.getByRole('button', { name: /add note/i });
+  await waitFor(() => expect(addNoteButton).not.toBeDisabled());
+  await user.click(addNoteButton);
   expect(await screen.findByRole('dialog', { name: /lunch/i })).toBeVisible();
 
   await user.type(screen.getByPlaceholderText(/search products/i), 'che');

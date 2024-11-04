@@ -6,15 +6,31 @@ import {
   type GetNotesResponse,
   type GetNotesHistoryResponse,
   type NoteRequestBody,
+  type NoteItem,
 } from '@/entities/note';
 import { api } from '@/shared/api';
 import { createUrl } from '@/shared/lib';
+import { MealType } from '../model';
 
 export const noteApi = api.injectEndpoints({
   endpoints: builder => ({
-    notes: builder.query<GetNotesResponse, GetNotesRequest>({
+    notes: builder.query<Record<MealType, NoteItem[]>, GetNotesRequest>({
       query: ({ date }) => `/api/v1/notes?date=${date}`,
       providesTags: ['note'],
+      transformResponse: ({ notes }: GetNotesResponse) =>
+        notes.reduce(
+          (groups: Record<MealType, NoteItem[]>, note) => {
+            groups[note.mealType].push(note);
+            return groups;
+          },
+          {
+            [MealType.Breakfast]: [],
+            [MealType.SecondBreakfast]: [],
+            [MealType.Lunch]: [],
+            [MealType.AfternoonSnack]: [],
+            [MealType.Dinner]: [],
+          },
+        ),
     }),
 
     notesHistory: builder.query<GetNotesHistoryResponse, GetNotesHistoryRequest>({
