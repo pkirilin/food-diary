@@ -3,16 +3,16 @@ import { type MouseEventHandler, type FC } from 'react';
 import { useAppDispatch, useAppSelector } from '@/app/store';
 import { noteApi, type noteModel } from '@/entities/note';
 import { Button, Dialog } from '@/shared/ui';
+import { getNextDisplayOrder } from '../lib/getNextDisplayOrder';
 import { actions, selectors } from '../model';
 import { NoteInputFlow } from './NoteInputFlow';
 
 interface Props {
   date: string;
   mealType: noteModel.MealType;
-  displayOrder: number;
 }
 
-export const AddNoteButton: FC<Props> = ({ date, mealType, displayOrder }) => {
+export const AddNoteButton: FC<Props> = ({ date, mealType }) => {
   const activeFormId = useAppSelector(selectors.activeFormId);
   const dialogTitle = useAppSelector(selectors.dialogTitle);
   const canSubmit = useAppSelector(state => state.addNote.isValid);
@@ -20,10 +20,13 @@ export const AddNoteButton: FC<Props> = ({ date, mealType, displayOrder }) => {
   const dialogVisible = useAppSelector(state => state.addNote.note?.mealType === mealType);
   const dispatch = useAppDispatch();
 
-  const { canAddNote } = noteApi.useNotesQuery(
+  const { canAddNote, displayOrder } = noteApi.useNotesQuery(
     { date },
     {
-      selectFromResult: ({ isLoading }) => ({ canAddNote: !isLoading }),
+      selectFromResult: ({ isLoading, isSuccess, data }) => ({
+        canAddNote: !isLoading,
+        displayOrder: isSuccess ? getNextDisplayOrder(data[mealType]) : 0,
+      }),
     },
   );
 
