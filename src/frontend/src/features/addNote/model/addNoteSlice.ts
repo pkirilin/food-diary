@@ -74,7 +74,9 @@ export const addNoteSlice = createSlice({
         productApi.endpoints.createProduct.matchPending,
       ),
       state => {
-        state.isSubmitting = true;
+        if (state.note) {
+          state.isSubmitting = true;
+        }
       },
     );
 
@@ -85,7 +87,9 @@ export const addNoteSlice = createSlice({
         productApi.endpoints.createProduct.matchRejected,
       ),
       state => {
-        state.isSubmitting = false;
+        if (state.note) {
+          state.isSubmitting = false;
+        }
       },
     );
 

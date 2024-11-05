@@ -1,2 +1,2 @@
 export * from './types';
-export * from './notesSlice';
+export * as querySelectors from './querySelectors';

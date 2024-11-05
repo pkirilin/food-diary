@@ -1,7 +1,6 @@
 import { List, ListItem } from '@mui/material';
 import { type FC } from 'react';
-import { useAppSelector } from '@/app/store';
-import { noteLib, type noteModel } from '@/entities/note';
+import { noteApi, type noteModel } from '@/entities/note';
 import { AddNoteButton } from '@/features/addNote';
 import { NotesListItem } from './NotesListItem';
 
@@ -11,8 +10,12 @@ interface Props {
 }
 
 export const NotesList: FC<Props> = ({ date, mealType }) => {
-  const notes = useAppSelector(state => state.notes.byMealType[mealType]);
-  const displayOrder = noteLib.useNextDisplayOrder(notes);
+  const { notes } = noteApi.useNotesQuery(
+    { date },
+    {
+      selectFromResult: ({ data, isSuccess }) => ({ notes: isSuccess ? data[mealType] : [] }),
+    },
+  );
 
   return (
     <List disablePadding>
@@ -20,7 +23,7 @@ export const NotesList: FC<Props> = ({ date, mealType }) => {
         <NotesListItem key={note.id} note={note} />
       ))}
       <ListItem disableGutters>
-        <AddNoteButton date={date} mealType={mealType} displayOrder={displayOrder} />
+        <AddNoteButton date={date} mealType={mealType} />
       </ListItem>
     </List>
   );

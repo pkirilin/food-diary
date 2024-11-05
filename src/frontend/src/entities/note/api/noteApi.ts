@@ -9,12 +9,18 @@ import {
 } from '@/entities/note';
 import { api } from '@/shared/api';
 import { createUrl } from '@/shared/lib';
+import { type GetNotesByMealsResponse, createEmptyGetNotesByMealsResponse } from '../lib';
 
 export const noteApi = api.injectEndpoints({
   endpoints: builder => ({
-    notes: builder.query<GetNotesResponse, GetNotesRequest>({
+    notes: builder.query<GetNotesByMealsResponse, GetNotesRequest>({
       query: ({ date }) => `/api/v1/notes?date=${date}`,
       providesTags: ['note'],
+      transformResponse: ({ notes }: GetNotesResponse) =>
+        notes.reduce((groups: GetNotesByMealsResponse, note) => {
+          groups[note.mealType].push(note);
+          return groups;
+        }, createEmptyGetNotesByMealsResponse()),
     }),
 
     notesHistory: builder.query<GetNotesHistoryResponse, GetNotesHistoryRequest>({

@@ -8,8 +8,7 @@ import {
   styled,
 } from '@mui/material';
 import { type FC } from 'react';
-import { useAppSelector } from '@/app/store';
-import { noteLib, noteModel } from '@/entities/note';
+import { noteApi, noteLib, noteModel } from '@/entities/note';
 import { NotesList } from './NotesList';
 
 interface Props {
@@ -24,8 +23,13 @@ const TextStyled = styled(Typography)<TypographyProps>(({ theme }) => ({
 }));
 
 export const MealsListItem: FC<Props> = ({ date, mealType }) => {
-  const totalCalories = useAppSelector(state =>
-    noteModel.selectors.totalCaloriesByMeal(state, mealType),
+  const { totalCalories } = noteApi.useNotesQuery(
+    { date },
+    {
+      selectFromResult: ({ data, isSuccess }) => ({
+        totalCalories: isSuccess ? noteModel.querySelectors.totalCaloriesByMeal(data, mealType) : 0,
+      }),
+    },
   );
 
   const mealName = noteLib.getMealName(mealType);

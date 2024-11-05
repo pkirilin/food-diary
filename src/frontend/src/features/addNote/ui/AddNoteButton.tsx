@@ -1,7 +1,7 @@
 import AddIcon from '@mui/icons-material/Add';
 import { type MouseEventHandler, type FC } from 'react';
 import { useAppDispatch, useAppSelector } from '@/app/store';
-import { type noteModel } from '@/entities/note';
+import { noteApi, noteModel } from '@/entities/note';
 import { Button, Dialog } from '@/shared/ui';
 import { actions, selectors } from '../model';
 import { NoteInputFlow } from './NoteInputFlow';
@@ -9,16 +9,25 @@ import { NoteInputFlow } from './NoteInputFlow';
 interface Props {
   date: string;
   mealType: noteModel.MealType;
-  displayOrder: number;
 }
 
-export const AddNoteButton: FC<Props> = ({ date, mealType, displayOrder }) => {
+export const AddNoteButton: FC<Props> = ({ date, mealType }) => {
   const activeFormId = useAppSelector(selectors.activeFormId);
   const dialogTitle = useAppSelector(selectors.dialogTitle);
   const canSubmit = useAppSelector(state => state.addNote.isValid);
   const isSubmitting = useAppSelector(state => state.addNote.isSubmitting);
   const dialogVisible = useAppSelector(state => state.addNote.note?.mealType === mealType);
   const dispatch = useAppDispatch();
+
+  const { canAddNote, displayOrder } = noteApi.useNotesQuery(
+    { date },
+    {
+      selectFromResult: ({ isLoading, isSuccess, data }) => ({
+        canAddNote: !isLoading,
+        displayOrder: isSuccess ? noteModel.querySelectors.nextDisplayOrder(data, mealType) : 0,
+      }),
+    },
+  );
 
   const handleDialogOpen: MouseEventHandler = () => {
     dispatch(
@@ -38,7 +47,7 @@ export const AddNoteButton: FC<Props> = ({ date, mealType, displayOrder }) => {
 
   return (
     <>
-      <Button fullWidth startIcon={<AddIcon />} onClick={handleDialogOpen}>
+      <Button fullWidth startIcon={<AddIcon />} onClick={handleDialogOpen} disabled={!canAddNote}>
         Add note
       </Button>
       <Dialog
