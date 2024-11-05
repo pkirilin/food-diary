@@ -1,6 +1,7 @@
 using System.Net;
 using FoodDiary.ComponentTests.Dsl;
 using FoodDiary.ComponentTests.Infrastructure;
+using FoodDiary.Domain.Enums;
 
 namespace FoodDiary.ComponentTests.Scenarios.Notes;
 
@@ -14,17 +15,21 @@ public class NotesApiTests(FoodDiaryWebApplicationFactory factory, Infrastructur
     [Scenario]
     public Task I_can_retrieve_notes_list()
     {
+        var breakfast = Create.Note().WithDate("2024-01-04").WithMealType(MealType.Breakfast);
+        var lunch = Create.Note().WithDate("2024-01-04").WithMealType(MealType.Lunch);
         var notes = new
         {
-            Chicken = Create.Note().WithDate("2024-01-04").WithProduct("Chicken", 150).Please(),
-            Rice = Create.Note().WithDate("2024-01-04").WithProduct("Rice", 100).Please()
+            Chicken = breakfast.WithProduct("Chicken", 150).WithDisplayOrder(0).Please(),
+            Rice = breakfast.WithProduct("Rice", 100).WithDisplayOrder(1).Please(),
+            Cheese = lunch.WithProduct("Cheese", 350).WithDisplayOrder(0).Please(),
+            Bread = lunch.WithProduct("Bread", 250).WithDisplayOrder(1).Please(),
         };
         
         return Run(
             c => c.Given_authenticated_user(),
-            c => c.Given_notes(notes.Chicken, notes.Rice),
+            c => c.Given_notes(notes.Rice, notes.Bread, notes.Chicken, notes.Cheese),
             c => c.When_user_retrieves_notes_list_for_date("2024-01-04"),
-            c => c.Then_notes_list_contains_items(notes.Chicken, notes.Rice));
+            c => c.Then_notes_list_contains_items(notes.Chicken, notes.Rice, notes.Cheese, notes.Bread));
     }
     
     [Scenario]
