@@ -15,7 +15,7 @@ export const AppLoader: FC = () => (
           }}
         >
           <AppName />
-          <LinearProgress sx={{ width: '100%' }} />
+          <LinearProgress sx={{ width: '250px' }} />
         </Stack>
       </Center>
     </Box>

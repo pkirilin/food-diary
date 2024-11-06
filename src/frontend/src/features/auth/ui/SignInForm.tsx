@@ -10,15 +10,16 @@ export const SignInForm: FC = () => {
       method="post"
       action="/login"
       sx={{
-        width: '100%',
+        display: 'flex',
+        justifyContent: 'center',
       }}
     >
       <Button
-        fullWidth
         type="submit"
         startIcon={<GoogleIcon />}
         variant="outlined"
         sx={theme => ({
+          width: '250px',
           textTransform: 'none',
           color: theme.palette.text.secondary,
           borderColor: theme.palette.divider,
