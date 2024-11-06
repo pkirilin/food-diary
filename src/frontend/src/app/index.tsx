@@ -9,6 +9,10 @@ import { createRouter } from './routing';
 import { store } from './store';
 
 (async () => {
+  // IMPORTANT: router should be created before msw started
+  // Otherwise, loaders will activate and start fetching data before msw started
+  const router = createRouter();
+
   if (!import.meta.env.PROD && MSW_ENABLED) {
     const { initBrowserMockApi } = await import('@tests/mockApi');
     await initBrowserMockApi();
@@ -25,10 +29,6 @@ import { store } from './store';
   }
 
   const root = createRoot(container);
-
-  // IMPORTANT: router should be created before msw started
-  // Otherwise, loaders will activate and start fetching data before msw started
-  const router = createRouter();
 
   root.render(
     <RootProvider store={store}>
