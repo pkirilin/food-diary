@@ -10,7 +10,7 @@ export const Center: FC<PropsWithChildren> = ({ children }) => (
   >
     <Box
       sx={{
-        width: { xs: '100%', sm: '425px' },
+        width: '100%',
         p: 3,
         position: 'absolute',
         top: '35%',

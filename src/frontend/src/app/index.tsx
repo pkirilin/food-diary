@@ -26,7 +26,7 @@ import { store } from './store';
 
   const root = createRoot(container);
 
-  // IMPORTANT: router should be created before msw started
+  // IMPORTANT: router should be created after msw started
   // Otherwise, loaders will activate and start fetching data before msw started
   const router = createRouter();
 

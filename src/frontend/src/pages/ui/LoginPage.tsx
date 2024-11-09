@@ -1,4 +1,4 @@
-import { Box, Paper, Stack } from '@mui/material';
+import { Box, Container, Paper, Stack } from '@mui/material';
 import { type FC } from 'react';
 import {
   type LoaderFunction,
@@ -7,9 +7,9 @@ import {
   redirectDocument,
 } from 'react-router-dom';
 import { store } from '@/app/store';
-import { authApi, SignInForm } from '@/features/auth';
+import { authApi, DemoModeWarning, SignInForm } from '@/features/auth';
 import { UpdateAppBanner } from '@/features/updateApp';
-import { API_URL, FAKE_AUTH_ENABLED } from '@/shared/config';
+import { API_URL, DEMO_MODE_ENABLED, FAKE_AUTH_ENABLED } from '@/shared/config';
 import { createUrl } from '@/shared/lib';
 import { AppName, Center } from '@/shared/ui';
 import { ok } from '../lib';
@@ -60,10 +60,24 @@ export const Component: FC = () => (
       <UpdateAppBanner />
     </Box>
     <Center>
-      <Paper p={{ xs: 3, sm: 4 }} spacing={3} width="100%" alignItems="center" component={Stack}>
-        <AppName />
-        <SignInForm />
-      </Paper>
+      <Container maxWidth="md" disableGutters>
+        {DEMO_MODE_ENABLED && (
+          <Box sx={{ mb: 3 }}>
+            <DemoModeWarning />
+          </Box>
+        )}
+        <Paper
+          component={Stack}
+          p={{ xs: 3, sm: 4 }}
+          margin="auto"
+          spacing={3}
+          width="100%"
+          alignItems="center"
+        >
+          <AppName />
+          <SignInForm />
+        </Paper>
+      </Container>
     </Center>
   </>
 );
