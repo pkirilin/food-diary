@@ -80,7 +80,7 @@ const RAW_RUNTIME_STATE =
           ["vite-plugin-pwa", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:0.20.0"],\
           ["vitest", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:2.0.2"],\
           ["vitest-preview", "npm:0.0.1"],\
-          ["workbox-precaching", "npm:7.1.0"],\
+          ["workbox-precaching", "npm:7.3.0"],\
           ["workbox-window", "npm:7.1.0"],\
           ["zod", "npm:3.23.8"]\
         ],\
@@ -9073,7 +9073,7 @@ const RAW_RUNTIME_STATE =
           ["vite-plugin-pwa", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:0.20.0"],\
           ["vitest", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:2.0.2"],\
           ["vitest-preview", "npm:0.0.1"],\
-          ["workbox-precaching", "npm:7.1.0"],\
+          ["workbox-precaching", "npm:7.3.0"],\
           ["workbox-window", "npm:7.1.0"],\
           ["zod", "npm:3.23.8"]\
         ],\
@@ -14048,6 +14048,13 @@ const RAW_RUNTIME_STATE =
           ["workbox-core", "npm:7.1.0"]\
         ],\
         "linkType": "HARD"\
+      }],\
+      ["npm:7.3.0", {\
+        "packageLocation": "./.yarn/cache/workbox-core-npm-7.3.0-359ba53731-228fb7018a.zip/node_modules/workbox-core/",\
+        "packageDependencies": [\
+          ["workbox-core", "npm:7.3.0"]\
+        ],\
+        "linkType": "HARD"\
       }]\
     ]],\
     ["workbox-expiration", [\
@@ -14094,6 +14101,16 @@ const RAW_RUNTIME_STATE =
           ["workbox-strategies", "npm:7.1.0"]\
         ],\
         "linkType": "HARD"\
+      }],\
+      ["npm:7.3.0", {\
+        "packageLocation": "./.yarn/cache/workbox-precaching-npm-7.3.0-20291c9c48-d14135c471.zip/node_modules/workbox-precaching/",\
+        "packageDependencies": [\
+          ["workbox-precaching", "npm:7.3.0"],\
+          ["workbox-core", "npm:7.3.0"],\
+          ["workbox-routing", "npm:7.3.0"],\
+          ["workbox-strategies", "npm:7.3.0"]\
+        ],\
+        "linkType": "HARD"\
       }]\
     ]],\
     ["workbox-range-requests", [\
@@ -14129,6 +14146,14 @@ const RAW_RUNTIME_STATE =
           ["workbox-core", "npm:7.1.0"]\
         ],\
         "linkType": "HARD"\
+      }],\
+      ["npm:7.3.0", {\
+        "packageLocation": "./.yarn/cache/workbox-routing-npm-7.3.0-f6056bbf85-0d729f9c5c.zip/node_modules/workbox-routing/",\
+        "packageDependencies": [\
+          ["workbox-routing", "npm:7.3.0"],\
+          ["workbox-core", "npm:7.3.0"]\
+        ],\
+        "linkType": "HARD"\
       }]\
     ]],\
     ["workbox-strategies", [\
@@ -14137,6 +14162,14 @@ const RAW_RUNTIME_STATE =
         "packageDependencies": [\
           ["workbox-strategies", "npm:7.1.0"],\
           ["workbox-core", "npm:7.1.0"]\
+        ],\
+        "linkType": "HARD"\
+      }],\
+      ["npm:7.3.0", {\
+        "packageLocation": "./.yarn/cache/workbox-strategies-npm-7.3.0-183136585c-61ba672075.zip/node_modules/workbox-strategies/",\
+        "packageDependencies": [\
+          ["workbox-strategies", "npm:7.3.0"],\
+          ["workbox-core", "npm:7.3.0"]\
         ],\
         "linkType": "HARD"\
       }]\
