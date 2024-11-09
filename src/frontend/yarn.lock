@@ -5293,6 +5293,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"debug@npm:^4.3.6":
+  version: 4.3.7
+  resolution: "debug@npm:4.3.7"
+  dependencies:
+    ms: "npm:^2.1.3"
+  peerDependenciesMeta:
+    supports-color:
+      optional: true
+  checksum: 10/71168908b9a78227ab29d5d25fe03c5867750e31ce24bf2c44a86efc5af041758bb56569b0a3d48a9b5344c00a24a777e6f4100ed6dfd9534a42c1dde285125a
+  languageName: node
+  linkType: hard
+
 "decimal.js@npm:^10.4.3":
   version: 10.4.3
   resolution: "decimal.js@npm:10.4.3"
@@ -6480,7 +6492,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-glob@npm:^3.2.9, fast-glob@npm:^3.3.1, fast-glob@npm:^3.3.2":
+"fast-glob@npm:^3.2.9, fast-glob@npm:^3.3.1":
   version: 3.3.2
   resolution: "fast-glob@npm:3.3.2"
   dependencies:
@@ -6513,6 +6525,18 @@ __metadata:
   dependencies:
     reusify: "npm:^1.0.4"
   checksum: 10/67c01b1c972e2d5b6fea197a1a39d5d582982aea69ff4c504badac71080d8396d4843b165a9686e907c233048f15a86bbccb0e7f83ba771f6fa24bcde059d0c3
+  languageName: node
+  linkType: hard
+
+"fdir@npm:^6.4.2":
+  version: 6.4.2
+  resolution: "fdir@npm:6.4.2"
+  peerDependencies:
+    picomatch: ^3 || ^4
+  peerDependenciesMeta:
+    picomatch:
+      optional: true
+  checksum: 10/5ff80d1d2034e75cc68be175401c9f64c4938a6b2c1e9a0c27f2d211ffbe491fd86d29e4576825d9da8aff9bd465f0283427c2dddc11653457906c46d3bbc448
   languageName: node
   linkType: hard
 
@@ -6656,7 +6680,7 @@ __metadata:
     typescript: "npm:5.2.2"
     use-debounce: "npm:^10.0.0"
     vite: "npm:^5.3.3"
-    vite-plugin-pwa: "npm:^0.20.0"
+    vite-plugin-pwa: "npm:^0.20.5"
     vitest: "npm:^2.0.2"
     vitest-preview: "npm:^0.0.1"
     workbox-precaching: "npm:^7.1.0"
@@ -8272,7 +8296,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ms@npm:2.1.3, ms@npm:^2.1.1":
+"ms@npm:2.1.3, ms@npm:^2.1.1, ms@npm:^2.1.3":
   version: 2.1.3
   resolution: "ms@npm:2.1.3"
   checksum: 10/aa92de608021b242401676e35cfa5aa42dd70cbdc082b916da7fb925c542173e36bce97ea3e804923fe92c0ad991434e4a38327e15a1b5b5f945d66df615ae6d
@@ -8809,6 +8833,13 @@ __metadata:
   version: 2.3.1
   resolution: "picomatch@npm:2.3.1"
   checksum: 10/60c2595003b05e4535394d1da94850f5372c9427ca4413b71210f437f7b2ca091dbd611c45e8b37d10036fa8eade25c1b8951654f9d3973bfa66a2ff4d3b08bc
+  languageName: node
+  linkType: hard
+
+"picomatch@npm:^4.0.2":
+  version: 4.0.2
+  resolution: "picomatch@npm:4.0.2"
+  checksum: 10/ce617b8da36797d09c0baacb96ca8a44460452c89362d7cb8f70ca46b4158ba8bc3606912de7c818eb4a939f7f9015cef3c766ec8a0c6bfc725fdc078e39c717
   languageName: node
   linkType: hard
 
@@ -10112,6 +10143,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tinyglobby@npm:^0.2.0":
+  version: 0.2.10
+  resolution: "tinyglobby@npm:0.2.10"
+  dependencies:
+    fdir: "npm:^6.4.2"
+    picomatch: "npm:^4.0.2"
+  checksum: 10/10c976866d849702edc47fc3fef27d63f074c40f75ef17171ecc1452967900699fa1e62373681dd58e673ddff2e3f6094bcd0a2101e3e4b30f4c2b9da41397f2
+  languageName: node
+  linkType: hard
+
 "tinypool@npm:^1.0.0":
   version: 1.0.0
   resolution: "tinypool@npm:1.0.0"
@@ -10577,24 +10618,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite-plugin-pwa@npm:^0.20.0":
-  version: 0.20.0
-  resolution: "vite-plugin-pwa@npm:0.20.0"
+"vite-plugin-pwa@npm:^0.20.5":
+  version: 0.20.5
+  resolution: "vite-plugin-pwa@npm:0.20.5"
   dependencies:
-    debug: "npm:^4.3.4"
-    fast-glob: "npm:^3.3.2"
+    debug: "npm:^4.3.6"
     pretty-bytes: "npm:^6.1.1"
+    tinyglobby: "npm:^0.2.0"
     workbox-build: "npm:^7.1.0"
     workbox-window: "npm:^7.1.0"
   peerDependencies:
-    "@vite-pwa/assets-generator": ^0.2.4
+    "@vite-pwa/assets-generator": ^0.2.6
     vite: ^3.1.0 || ^4.0.0 || ^5.0.0
     workbox-build: ^7.1.0
     workbox-window: ^7.1.0
   peerDependenciesMeta:
     "@vite-pwa/assets-generator":
       optional: true
-  checksum: 10/8850b1f73580ea392821960096ec2cd107059fd0198c7a0ddfcd3d0b2d6be78ea089ecd13f71952871715e3ed1803200230b131b6dc3097818a77d2397ea9bd0
+  checksum: 10/dd1480f87a3777b5029905d7a155707d666c856ab2d7755d43cba0ff2f90b6a95735ed9dd1fc8f4516c16bfebbe68c8dafbcfd2b51169ee7c5d86915a50f6f23
   languageName: node
   linkType: hard
 
