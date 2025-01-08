@@ -12,7 +12,9 @@ Food Diary is a web application that helps you track your daily calorie intake a
 
 ## Motivation
 
-<!-- what does this project do and why did I build it -->
+This project was created by @pkirilin in 2018 after experiencing health issues related to obesity. Tracking calories and weight became important but time-consuming. The need for an automated solution, combined with a desire to gain practical development experience, led to the creation of Food Diary.
+
+Food Diary serves as a free, open-source alternative to popular calorie and weight tracking apps. While not intended as a complete replacement for commercial solutions, it provides essential tracking features for health-conscious individuals seeking a simple, transparent tool to monitor their nutrition and weight progress.
 
 ## Features
 
