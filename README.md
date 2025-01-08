@@ -18,15 +18,27 @@ Food Diary serves as a free, open-source alternative to popular calorie and weig
 
 ## Features
 
-<!-- - tracking calories
-- tracking weight
-- add notes from photo using AI features
-- PWA support (can be used on any device, both desktop and mobile)
-- {more features...} -->
+- Calorie tracking
+- Weight tracking
+- Personal food database with products and their nutritional values
+- PWA support and cross-device accessibility
+- AI-powered food recognition from photos
 
-## Screenshots
-
-<!-- ... -->
+<table style="border-collapse: collapse; border: none;">
+  <tr>
+    <td>
+      <img src="docs/images/calorie-tracking.png" alt="calorie-tracking-screen">
+    </td>
+    <td>
+      <img src="docs/images/weight-tracking.png" alt="weight-tracking-screen">
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2">
+      <img src="docs/images/calorie-tracking-desktop.png" alt="calorie-tracking-desktop">
+    </td>
+  </tr>
+</table>
 
 ## Installation
 
