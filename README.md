@@ -17,6 +17,7 @@ Curious to see how the app works? [View the demo app here](https://pkirilin-food
   - [Setting up Frontend with mocked auth and API](#setting-up-frontend-with-mocked-auth-and-api)
     - [Frontend environment variables](#frontend-environment-variables)
   - [Managing database migrations](#managing-database-migrations)
+- [Contacts](#contacts)
 - [Copyright](#copyright)
   - [Favicon](#favicon)
 
@@ -196,6 +197,10 @@ dotnet ef migrations add SampleMigrationName \
     -p src/backend/src/FoodDiary.Infrastructure \
     -o Migrations
 ```
+
+## Contacts
+
+If you encounter any issues or have questions, feel free to open a GitHub issue or reach out to [kirilin.pav@gmail.com](mailto:kirilin.pav@gmail.com).
 
 ## Copyright
 
