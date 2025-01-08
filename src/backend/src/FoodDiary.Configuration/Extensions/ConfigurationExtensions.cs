@@ -9,7 +9,6 @@ public static class ConfigurationExtensions
     {
         services.Configure<AppOptions>(configuration.GetSection("App"));
         services.Configure<AuthOptions>(configuration.GetSection("Auth"));
-        services.Configure<GoogleOptions>(configuration.GetSection("Google"));
         services.Configure<GoogleAuthOptions>(configuration.GetSection("GoogleAuth"));
     }
 }
