@@ -4,7 +4,7 @@
 
 Food Diary is a web application that helps you track your daily calorie intake and monitor weight changes with AI-powered features and cross-device accessibility.
 
-## [Live demo](https://pkirilin-food-diary-demo.netlify.app/)
+[Live demo](https://pkirilin-food-diary-demo.netlify.app/)
 
 ## Table of contents
 
@@ -193,10 +193,13 @@ dotnet ef migrations add SampleMigrationName \
     -o Migrations
 ```
 
-## Contribute
+## Copyright
 
-## Support
+### Favicon
 
-<!-- Developer contacts (email, telegram) for support in case of any issues, suggestions questions, or feedback -->
+This favicon was generated using the following graphics from Twitter Twemoji:
 
-## License
+- Graphics Title: 1f96c.svg
+- Graphics Author: Copyright 2020 Twitter, Inc and other contributors (<https://github.com/twitter/twemoji>)
+- Graphics Source: <https://github.com/twitter/twemoji/blob/master/assets/svg/1f96c.svg>
+- Graphics License: CC-BY 4.0 (<https://creativecommons.org/licenses/by/4.0/>)
