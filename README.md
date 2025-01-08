@@ -2,13 +2,14 @@
 
 [![food-diary](https://github.com/pkirilin/food-diary/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/pkirilin/food-diary/actions/workflows/build.yml)
 
-Food Diary is a web application that helps you track your daily calorie intake and monitor weight changes with AI-powered features and cross-device accessibility.
+Food Diary is a free, open-source, and lightweight web app for simple calorie and weight tracking. It was initially created in 2018 to help [the author](https://github.com/pkirilin) address personal health challenges caused by being overweight.
 
-[Live demo](https://pkirilin-food-diary-demo.netlify.app/)
+While it may not fully replace popular commercial calorie and weight tracking apps, Food Diary offers essential features as a free alternative for people who care about their health and well-being.
+
+Curious to see how the app works? [View the demo app here](https://pkirilin-food-diary-demo.netlify.app/).
 
 ## Table of contents
 
-- [Motivation](#motivation)
 - [Features](#features)
 - [Installation](#installation)
 - [Development](#development)
@@ -19,18 +20,12 @@ Food Diary is a web application that helps you track your daily calorie intake a
 - [Copyright](#copyright)
   - [Favicon](#favicon)
 
-## Motivation
-
-This project was created by @pkirilin in 2018 after experiencing health issues related to obesity. Tracking calories and weight became important but time-consuming. The need for an automated solution, combined with a desire to gain practical development experience, led to the creation of Food Diary.
-
-Food Diary serves as a free, open-source alternative to popular calorie and weight tracking apps. While not intended as a complete replacement for commercial solutions, it provides essential tracking features for health-conscious individuals seeking a simple, transparent tool to monitor their nutrition and weight progress.
-
 ## Features
 
 - Calorie tracking
 - Weight tracking
 - Personal food database with products and their nutritional values
-- PWA support and cross-device accessibility
+- PWA and multi-device support
 - AI-powered food recognition from photos
 
 <table style="border-collapse: collapse; border: none;">
