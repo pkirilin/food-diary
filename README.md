@@ -8,7 +8,16 @@ Food Diary is a web application that helps you track your daily calorie intake a
 
 ## Table of contents
 
-<!-- links for easy navigation between sections... -->
+- [Motivation](#motivation)
+- [Features](#features)
+- [Installation](#installation)
+- [Development](#development)
+  - [Setting up the entire app (Frontend and Backend)](#setting-up-the-entire-app-frontend-and-backend)
+  - [Setting up Frontend with mocked auth and API](#setting-up-frontend-with-mocked-auth-and-api)
+    - [Frontend environment variables](#frontend-environment-variables)
+  - [Managing database migrations](#managing-database-migrations)
+- [Copyright](#copyright)
+  - [Favicon](#favicon)
 
 ## Motivation
 
@@ -70,7 +79,7 @@ Navigate to <https://localhost:8080>
 
 ## Development
 
-### Setting up the entire app (Frontend + Backend)
+### Setting up the entire app (Frontend and Backend)
 
 Before starting, ensure you have the following installed on your machine:
 
