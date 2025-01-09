@@ -30,18 +30,18 @@ Curious to see how the app works? [View the demo app here](https://pkirilin-food
 - PWA and multi-device support
 - AI-powered food recognition from photos
 
-<table style="border-collapse: collapse; border: none;">
+<table style="border: none;">
   <tr>
-    <td>
-      <img src="docs/images/calorie-tracking.png" alt="calorie-tracking-screen">
+    <td style="border: none;">
+      <img src="docs/images/calorie-tracking.png" alt="Food Diary app mobile screen showing daily calorie tracking interface with meal entries and nutritional summary">
     </td>
-    <td>
-      <img src="docs/images/weight-tracking.png" alt="weight-tracking-screen">
+    <td style="border: none;">
+      <img src="docs/images/weight-tracking.png" alt="Food Diary app mobile screen showing weight tracking interface with chart and weight logs">
     </td>
   </tr>
   <tr>
-    <td colspan="2">
-      <img src="docs/images/calorie-tracking-desktop.png" alt="calorie-tracking-desktop">
+    <td colspan="2" style="border: none;">
+      <img src="docs/images/calorie-tracking-desktop.png" alt="Food Diary app desktop screen showing daily calorie tracking interface with meal entries and nutritional summary">
     </td>
   </tr>
 </table>
