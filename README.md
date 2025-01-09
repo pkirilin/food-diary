@@ -4,7 +4,7 @@
 
 Food Diary is a free, open-source, and lightweight web app for simple calorie and weight tracking. It was initially created in 2018 to help [the author](https://github.com/pkirilin) address personal health challenges caused by being overweight.
 
-While it may not fully replace popular commercial calorie and weight tracking apps, Food Diary offers essential features as a free alternative for people who care about their health and well-being.
+While it doesn't fully replace popular commercial calorie and weight tracking apps, Food Diary offers essential features as a free alternative for people who care about their health and well-being.
 
 Curious to see how the app works? [View the demo app here](https://pkirilin-food-diary-demo.netlify.app/).
 
@@ -200,7 +200,7 @@ dotnet ef migrations add SampleMigrationName \
 
 ## Contacts
 
-If you encounter any issues or have questions, feel free to open a GitHub issue or reach out to [kirilin.pav@gmail.com](mailto:kirilin.pav@gmail.com).
+For any issues, suggestions, questions, or contribution guidance, please open a GitHub issue or reach out to [kirilin.pav@gmail.com](mailto:kirilin.pav@gmail.com).
 
 ## Copyright
 
