@@ -26,7 +26,6 @@ services:
       - Auth__AllowedEmails__0=${USER_EMAIL}
       - GoogleAuth__ClientId=${GOOGLE_CLIENT_ID}
       - GoogleAuth__ClientSecret=${GOOGLE_CLIENT_SECRET}
-      - Google__ExportFolderId=${GOOGLE_DRIVE_EXPORT_FOLDER_ID}
       - Integrations__OpenAI__BaseUrl=${OPENAI_BASE_URL}
       - Integrations__OpenAI__ApiKey=${OPENAI_API_KEY}
     volumes:

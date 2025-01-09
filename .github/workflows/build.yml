@@ -141,7 +141,6 @@ jobs:
             App__Logging__UseYandexCloudLogsFormat=true
           revision-secrets: |
             Auth__AllowedEmails__0=${{ vars.YC_REVISION_SECRETS_ID }}/${{ vars.YC_REVISION_SECRETS_VERSION }}/auth-allowed-emails
-            Google__ExportFolderId=${{ vars.YC_REVISION_SECRETS_ID }}/${{ vars.YC_REVISION_SECRETS_VERSION }}/google-export-folder-id
             ConnectionStrings__Default=${{ vars.YC_REVISION_SECRETS_ID }}/${{ vars.YC_REVISION_SECRETS_VERSION }}/database-connection-string
             GoogleAuth__ClientId=${{ vars.YC_REVISION_SECRETS_ID }}/${{ vars.YC_REVISION_SECRETS_VERSION }}/google-client-id
             GoogleAuth__ClientSecret=${{ vars.YC_REVISION_SECRETS_ID }}/${{ vars.YC_REVISION_SECRETS_VERSION }}/google-client-secret

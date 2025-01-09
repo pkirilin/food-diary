@@ -1,98 +1,148 @@
-# food-diary
+# Food Diary
 
 [![food-diary](https://github.com/pkirilin/food-diary/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/pkirilin/food-diary/actions/workflows/build.yml)
 
-## Introduction
+Food Diary is a free, open-source, and lightweight web app for simple calorie and weight tracking. It was initially created in 2018 to help [the author](https://github.com/pkirilin) address personal health challenges caused by being overweight.
 
-**food-diary** is a web application for tracking calories count for meals eaten daily. It represents an interactive diary, which is able to record notes about products and their quantities and calculate calories for each note (or group of notes) recorded.
+While it doesn't fully replace popular commercial calorie and weight tracking apps, Food Diary offers essential features as a free alternative for people who care about their health and well-being.
 
-## Main idea and goal
+Curious to see how the app works? [View the demo app here](https://pkirilin-food-diary-demo.netlify.app/).
 
-The diary is organized by dates. Each date contains **notes** that are grouped by meal types (*breakfast*, *lunch*, etc.). A note includes information about a **product** and its quantity. Products are categorized into **categories**. Each product has a name and a calorie cost per 100 g of the product's quantity recorded. Using this information, the application can calculate the calorie count of a single note or a group of notes (for a specific meal type or date).
+## Table of contents
 
-This information can be extremely useful for people who want to keep track of the energy value of the meals they consume daily.
+- [Features](#features)
+- [Installation](#installation)
+- [Development](#development)
+  - [Setting up the entire app (Frontend and Backend)](#setting-up-the-entire-app-frontend-and-backend)
+  - [Setting up Frontend with mocked auth and API](#setting-up-frontend-with-mocked-auth-and-api)
+    - [Frontend environment variables](#frontend-environment-variables)
+  - [Managing database migrations](#managing-database-migrations)
+- [Contacts](#contacts)
+- [Copyright](#copyright)
+  - [Favicon](#favicon)
+- [License](#license)
 
-## Quick start (docker-compose)
+## Features
 
-1. Setup [Google OAuth 2.0 client](https://support.google.com/cloud/answer/6158849) you will use for sign in
-    - Add Authorized JavaScript origins: <https://localhost:8080>
-    - Add Authorized redirect URIs: <https://localhost:8080/signin-google>
+- Calorie tracking
+- Weight tracking
+- Personal food database with products and their nutritional values
+- PWA and multi-device support
+- AI-powered food recognition from photos
 
-2. Create a copy of `.env.example` file and save it as `.env`:
+<table>
+  <tr>
+    <td>
+      <img src="docs/images/calorie-tracking.png" alt="Food Diary app mobile screen showing daily calorie tracking interface with meal entries and nutritional summary">
+    </td>
+    <td>
+      <img src="docs/images/weight-tracking.png" alt="Food Diary app mobile screen showing weight tracking interface with chart and weight logs">
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2">
+      <img src="docs/images/calorie-tracking-desktop.png" alt="Food Diary app desktop screen showing daily calorie tracking interface with meal entries and nutritional summary">
+    </td>
+  </tr>
+</table>
 
-    ```shell
-    cat .env.example >> .env
-    ```
+## Installation
 
-3. Fill your credentials, then run:
+Clone the repository:
 
-    ```shell
-    docker-compose up -d
-    ```
+```shell
+git clone https://github.com/pkirilin/food-diary.git
+cd food-diary
+```
 
-4. Navigate to <https://localhost:8080>
+Setup [Google OAuth 2.0 client](https://support.google.com/cloud/answer/6158849) you will use for sign in:
+
+- Add Authorized JavaScript origins: <https://localhost:8080>
+- Add Authorized redirect URIs: <https://localhost:8080/signin-google>
+
+Create a copy of `.env.example` file and save it as `.env`:
+
+```shell
+cat .env.example >> .env
+```
+
+Fill your credentials, then run:
+
+```shell
+docker-compose up -d
+```
+
+Navigate to <https://localhost:8080>
 
 ## Development
 
-1. Start PostgreSQL database:
+### Setting up the entire app (Frontend and Backend)
 
-    ```shell
-    docker run -p 5432:5432 --name postgres \
-        -e POSTGRES_USER=postgres \
-        -e POSTGRES_PASSWORD=postgres \
-        -e POSTGRES_DB=FoodDiary \
-        -d postgres:15.1-alpine
-    ```
+Before starting, ensure you have the following installed on your machine:
 
-    *Optional*: PgAdmin can be started like this:
+- [Docker](https://www.docker.com/)
+- [.NET SDK](https://dotnet.microsoft.com/en-us/download) (8.0.100 or higher)
+- [Node.js](https://nodejs.org/en) (18.16.0 or higher)
+- [yarn](https://yarnpkg.com/getting-started/install)
 
-    ```shell
-    docker run -p 5050:80 --name pgadmin -e "PGADMIN_DEFAULT_EMAIL=name@example.com" -e "PGADMIN_DEFAULT_PASSWORD=postgres" -d dpage/pgadmin4
-    ```
+Start PostgreSQL database container:
 
-1. Install .NET SDK 8.0.100 or higher
+```shell
+docker run -p 5432:5432 --name postgres \
+    -e POSTGRES_USER=postgres \
+    -e POSTGRES_PASSWORD=postgres \
+    -e POSTGRES_DB=FoodDiary \
+    -d postgres:15.1-alpine
+```
 
-1. Install Node.js 18.16.0 or higher
+*Start PgAdmin if you need it (optional):*
 
-1. Install [yarn](https://yarnpkg.com/getting-started/install) package manager
+```shell
+docker run -p 5050:80 --name pgadmin -e "PGADMIN_DEFAULT_EMAIL=name@example.com" -e "PGADMIN_DEFAULT_PASSWORD=postgres" -d dpage/pgadmin4
+```
 
-1. Fill necessary secrets:
+Fill necessary secrets:
 
-    ```shell
-    dotnet user-secrets --project src/backend/src/FoodDiary.API set "Auth:AllowedEmails:0" "<your_email>"
+```shell
+dotnet user-secrets --project src/backend/src/FoodDiary.API set "Auth:AllowedEmails:0" "<your_email>@gmail.com"
 
-    dotnet user-secrets --project src/backend/src/FoodDiary.API set "ConnectionStrings:Default" "<your_db_connection_string>"
+dotnet user-secrets --project src/backend/src/FoodDiary.API set "ConnectionStrings:Default" "<your_db_connection_string>"
 
-    # Optional, used in recognize note by photo feature
-    dotnet user-secrets --project src/backend/src/FoodDiary.API set "Integrations:OpenAI:ApiKey" "<your_OpenAI_api_key>"
-    ```
+# Optional, used in recognize note by photo feature
+dotnet user-secrets --project src/backend/src/FoodDiary.API set "Integrations:OpenAI:ApiKey" "<your_OpenAI_api_key>"
+```
 
-    *Allowed email should be compatible with Google Identity Provider*
+Run database migrations:
 
-1. Run migrations:
+```shell
+dotnet run --project src/backend/src/FoodDiary.Migrator
+```
 
-    ```shell
-    dotnet run --project src/backend/src/FoodDiary.Migrator
-    ```
+Start Web API:
 
-1. Start backend application:
+```shell
+dotnet run --project src/backend/src/FoodDiary.API
+```
 
-    ```shell
-    dotnet run --project src/backend/src/FoodDiary.API
-    ```
+Start frontend application (in separate terminal window):
 
-1. Start frontend application:
+```shell
+cd src/frontend
+yarn start
+```
 
-    ```shell
-    cd src/frontend
-    yarn start
-    ```
+Navigate to <https://localhost:8080>
 
-1. Navigate to <https://localhost:8080>
+### Setting up Frontend with mocked auth and API
 
-## How to run frontend without backend
+If you'd like to work on the frontend without running the backend, you can use mocked authentication and API responses.
 
-Go to frontend project directory:
+Before starting, ensure you have the following installed on your machine:
+
+- [Node.js](https://nodejs.org/en) (18.16.0 or higher)
+- [yarn](https://yarnpkg.com/getting-started/install)
+
+Navigate to the frontend directory:
 
 ```shell
 cd src/frontend
@@ -104,7 +154,7 @@ Create local env config:
 touch env.local
 ```
 
-Fill `env.local` with this values:
+Fill `env.local` with these values:
 
 ```text
 VITE_APP_MSW_ENABLED=true
@@ -112,7 +162,19 @@ VITE_APP_FAKE_AUTH_ENABLED=true
 VITE_APP_FAKE_AUTH_LOGIN_ON_INIT=true
 ```
 
-## Frontend environment variables
+For the full list of environment variables, see the [Frontend environment variables](#frontend-environment-variables) section.
+
+Launch the frontend application:
+
+```shell
+yarn start
+```
+
+Navigate to <http://localhost:5173>. The app will now use mocked responses for authentication and API calls.
+
+#### Frontend environment variables
+
+The following environment variables are available for configuring the frontend:
 
 Name                                       | Type      | Description
 -------------------------------------------|-----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -126,16 +188,22 @@ Name                                       | Type      | Description
 `VITE_APP_GOOGLE_ANALYTICS_MEASUREMENT_ID` | `string`  | Measurement (data stream) ID for Google Analytics
 `VITE_APP_MOCK_API_RESPONSE_DELAY` | `number` | Sets delay (in milliseconds) before all mock API responses. Not used if `VITE_APP_MSW_ENABLED` is `false`
 
-## How to generate database migrations
+### Managing database migrations
+
+To create a new migration, run the following command:
 
 ```shell
-dotnet ef migrations add <migration_name> \
+dotnet ef migrations add SampleMigrationName \
     -s src/backend/src/FoodDiary.API \
     -p src/backend/src/FoodDiary.Infrastructure \
     -o Migrations
 ```
 
-## Copyright notes
+## Contacts
+
+For any issues, suggestions, questions, or contribution guidance, please open a GitHub issue or reach out to [kirilin.pav@gmail.com](mailto:kirilin.pav@gmail.com).
+
+## Copyright
 
 ### Favicon
 
@@ -145,3 +213,7 @@ This favicon was generated using the following graphics from Twitter Twemoji:
 - Graphics Author: Copyright 2020 Twitter, Inc and other contributors (<https://github.com/twitter/twemoji>)
 - Graphics Source: <https://github.com/twitter/twemoji/blob/master/assets/svg/1f96c.svg>
 - Graphics License: CC-BY 4.0 (<https://creativecommons.org/licenses/by/4.0/>)
+
+## License
+
+The project is licensed under the AGPLv3. See the [LICENSE](LICENSE) file for more information.
