@@ -20,6 +20,7 @@ Curious to see how the app works? [View the demo app here](https://pkirilin-food
 - [Contacts](#contacts)
 - [Copyright](#copyright)
   - [Favicon](#favicon)
+- [License](#license)
 
 ## Features
 
@@ -212,3 +213,7 @@ This favicon was generated using the following graphics from Twitter Twemoji:
 - Graphics Author: Copyright 2020 Twitter, Inc and other contributors (<https://github.com/twitter/twemoji>)
 - Graphics Source: <https://github.com/twitter/twemoji/blob/master/assets/svg/1f96c.svg>
 - Graphics License: CC-BY 4.0 (<https://creativecommons.org/licenses/by/4.0/>)
+
+## License
+
+The project is licensed under the AGPLv3. See the [LICENSE](LICENSE) file for more information.
