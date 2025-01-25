@@ -1,42 +1,36 @@
-import AddIcon from '@mui/icons-material/Add';
-import { type MouseEventHandler, type FC } from 'react';
+import { type ReactElement, type FC } from 'react';
 import { useAppDispatch, useAppSelector } from '@/app/store';
-import { noteApi, noteModel } from '@/entities/note';
+import { type NoteItem } from '@/entities/note';
 import { Button, Dialog } from '@/shared/ui';
 import { actions, selectors } from '../model';
 import { NoteInputFlow } from './NoteInputFlow';
 
 interface Props {
-  date: string;
-  mealType: noteModel.MealType;
+  note: NoteItem;
+  renderTrigger: (openDialog: () => void) => ReactElement;
 }
 
-export const AddNoteButton: FC<Props> = ({ date, mealType }) => {
-  const activeFormId = useAppSelector(selectors.activeFormId);
-  const dialogVisible = useAppSelector(state => selectors.addDialogVisible(state, mealType));
+export const EditNote: FC<Props> = ({ note, renderTrigger }) => {
   const dialogTitle = useAppSelector(selectors.dialogTitle);
+  const dialogVisible = useAppSelector(state => selectors.editDialogVisible(state, note));
+  const activeFormId = useAppSelector(selectors.activeFormId);
   const canSubmit = useAppSelector(state => state.addNote.isValid);
   const isSubmitting = useAppSelector(state => state.addNote.isSubmitting);
   const dispatch = useAppDispatch();
 
-  const { canAddNote, displayOrder } = noteApi.useNotesQuery(
-    { date },
-    {
-      selectFromResult: ({ isLoading, isSuccess, data }) => ({
-        canAddNote: !isLoading,
-        displayOrder: isSuccess ? noteModel.querySelectors.nextDisplayOrder(data, mealType) : 0,
-      }),
-    },
-  );
-
-  const handleDialogOpen: MouseEventHandler = () => {
+  const handleDialogOpen = (): void => {
     dispatch(
       actions.noteDraftSaved({
-        date,
-        mealType,
-        displayOrder,
-        product: null,
-        quantity: 100,
+        id: note.id,
+        date: note.date,
+        mealType: note.mealType,
+        displayOrder: note.displayOrder,
+        product: {
+          id: note.productId,
+          name: note.productName,
+          defaultQuantity: note.productDefaultQuantity,
+        },
+        quantity: note.productQuantity,
       }),
     );
   };
@@ -47,9 +41,7 @@ export const AddNoteButton: FC<Props> = ({ date, mealType }) => {
 
   return (
     <>
-      <Button fullWidth startIcon={<AddIcon />} onClick={handleDialogOpen} disabled={!canAddNote}>
-        Add note
-      </Button>
+      {renderTrigger(handleDialogOpen)}
       <Dialog
         pinToTop
         renderMode="fullScreenOnMobile"
@@ -70,7 +62,7 @@ export const AddNoteButton: FC<Props> = ({ date, mealType }) => {
             disabled={!canSubmit}
             loading={isSubmitting}
           >
-            Add
+            Save
           </Button>
         )}
       />

@@ -3,6 +3,7 @@ import { noteModel } from '@/entities/note';
 import { quantitySchema } from './quantitySchema';
 
 export const noteSchema = z.object({
+  id: z.number().optional(),
   date: z.string(),
   mealType: z.nativeEnum(noteModel.MealType),
   displayOrder: z.coerce.number().int().min(0),

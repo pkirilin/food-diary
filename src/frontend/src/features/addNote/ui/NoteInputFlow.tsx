@@ -75,5 +75,5 @@ export const NoteInputFlow: FC = () => {
     return null;
   }
 
-  return <NoteForm defaultValues={{ ...noteDraft, quantity: product.defaultQuantity }} />;
+  return <NoteForm defaultValues={noteDraft} />;
 };
