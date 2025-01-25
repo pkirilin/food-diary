@@ -1,5 +1,5 @@
 import { type PayloadAction, createSlice, isAnyOf } from '@reduxjs/toolkit';
-import { noteApi, noteLib, noteModel } from '@/entities/note';
+import { type NoteItem, noteApi, noteLib, noteModel } from '@/entities/note';
 import { productApi, type ProductSelectOption } from '@/entities/product';
 import { type NoteFormValues } from './noteSchema';
 import { type ProductFormValues } from './productSchema';
@@ -23,10 +23,17 @@ export const addNoteSlice = createSlice({
   initialState,
   selectors: {
     activeFormId: state => (state.product ? 'product-form' : 'note-form'),
+
     dialogTitle: state =>
       state.product
         ? 'New product'
         : noteLib.getMealName(state?.note?.mealType ?? noteModel.MealType.Breakfast),
+
+    addDialogVisible: (state, mealType: noteModel.MealType): boolean =>
+      Boolean(state.note && !('id' in state.note) && state.note.mealType === mealType),
+
+    editDialogVisible: (state, note: NoteItem): boolean =>
+      Boolean(state.note && state.note.id === note.id),
   },
   reducers: {
     noteDraftSaved: (state, { payload }: PayloadAction<NoteFormValues>) => {
@@ -42,6 +49,7 @@ export const addNoteSlice = createSlice({
     productSelected: (state, { payload }: PayloadAction<ProductSelectOption>) => {
       if (state.note) {
         state.note.product = payload;
+        state.note.quantity = payload.defaultQuantity;
       }
     },
 
@@ -70,6 +78,7 @@ export const addNoteSlice = createSlice({
     builder.addMatcher(
       isAnyOf(
         noteApi.endpoints.createNote.matchPending,
+        noteApi.endpoints.updateNote.matchPending,
         noteApi.endpoints.notes.matchPending,
         productApi.endpoints.createProduct.matchPending,
       ),
@@ -83,6 +92,7 @@ export const addNoteSlice = createSlice({
     builder.addMatcher(
       isAnyOf(
         noteApi.endpoints.createNote.matchRejected,
+        noteApi.endpoints.updateNote.matchRejected,
         noteApi.endpoints.notes.matchRejected,
         productApi.endpoints.createProduct.matchRejected,
       ),
@@ -102,6 +112,7 @@ export const addNoteSlice = createSlice({
           name: state.product.name,
           defaultQuantity: state.product.defaultQuantity,
         };
+        state.note.quantity = state.product.defaultQuantity;
         delete state.product;
         state.isSubmitting = false;
       }
