@@ -70,3 +70,30 @@ test('I can add new note with adding new product "on the fly"', async () => {
 
   expect(screen.getByRole('button', { name: /orange 250 g 150 kcal/i })).toBeVisible();
 });
+
+test('I can change quantity for existing note', async () => {
+  const user = userEvent.setup();
+  const store = configureStore();
+  await store.dispatch(noteApi.endpoints.notes.initiate({ date: '2023-10-19' }));
+
+  render(
+    <RootProvider store={store}>
+      <NotesList date="2023-10-19" mealType={MealType.Lunch} />
+    </RootProvider>,
+  );
+
+  const noteButton = await screen.findByRole('button', { name: /cheese 200 g 804 kcal/i });
+  await user.click(noteButton);
+
+  expect(await screen.findByRole('dialog', { name: /lunch/i })).toBeVisible();
+  expect(screen.getByRole('textbox', { name: /product/i })).toHaveValue('Cheese');
+  expect(screen.getByPlaceholderText(/quantity/i)).toHaveValue('200');
+
+  await user.clear(screen.getByPlaceholderText(/quantity/i));
+  await user.type(screen.getByPlaceholderText(/quantity/i), '150');
+  await user.click(screen.getByRole('button', { name: /save/i }));
+  await waitForElementToBeRemoved(screen.getByRole('dialog'));
+
+  expect(screen.getAllByRole('button', { name: /cheese/i })).toHaveLength(1);
+  expect(screen.getByRole('button', { name: /cheese 150 g 603 kcal/i })).toBeVisible();
+});

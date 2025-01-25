@@ -78,6 +78,7 @@ export const addNoteSlice = createSlice({
     builder.addMatcher(
       isAnyOf(
         noteApi.endpoints.createNote.matchPending,
+        noteApi.endpoints.updateNote.matchPending,
         noteApi.endpoints.notes.matchPending,
         productApi.endpoints.createProduct.matchPending,
       ),
@@ -91,6 +92,7 @@ export const addNoteSlice = createSlice({
     builder.addMatcher(
       isAnyOf(
         noteApi.endpoints.createNote.matchRejected,
+        noteApi.endpoints.updateNote.matchRejected,
         noteApi.endpoints.notes.matchRejected,
         productApi.endpoints.createProduct.matchRejected,
       ),

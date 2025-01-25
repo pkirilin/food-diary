@@ -1,8 +1,9 @@
 import { useCallback, type FC } from 'react';
 import { useAppDispatch, useAppSelector } from '@/app/store';
 import { categoryLib } from '@/entities/category';
+import { noteApi } from '@/entities/note';
 import { type CreateProductRequest, productApi } from '@/entities/product';
-import { actions, selectors } from '../model';
+import { type NoteFormValues, actions, selectors } from '../model';
 import { type ProductFormValues } from '../model/productSchema';
 import { ImagePreview } from './ImagePreview';
 import { NoteForm } from './NoteForm';
@@ -30,19 +31,50 @@ export const NoteInputFlow: FC = () => {
 
   const categorySelect = categoryLib.useCategorySelectData();
   const [createProduct] = productApi.useCreateProductMutation();
+  const [createNote] = noteApi.useCreateNoteMutation();
+  const [updateNote] = noteApi.useUpdateNoteMutation();
 
   const handleValidateProduct = useCallback(
     (isValid: boolean) => dispatch(actions.draftValidated(isValid)),
     [dispatch],
   );
 
-  const handleCreateProduct = async (data: ProductFormValues): Promise<void> => {
-    if (!data.category) {
+  const handleCreateProduct = async (formValues: ProductFormValues): Promise<void> => {
+    if (!formValues.category) {
       return;
     }
 
-    dispatch(actions.productDraftSaved(data));
-    await createProduct(toCreateProductRequest(data, data.category.id));
+    dispatch(actions.productDraftSaved(formValues));
+    await createProduct(toCreateProductRequest(formValues, formValues.category.id));
+  };
+
+  const handleSubmitNote = async ({
+    id,
+    date,
+    mealType,
+    displayOrder,
+    product,
+    quantity,
+  }: NoteFormValues): Promise<void> => {
+    if (!product) {
+      throw new Error('Product should not be empty');
+    }
+
+    const note = {
+      date,
+      mealType,
+      displayOrder,
+      productId: product.id,
+      productQuantity: quantity,
+    };
+
+    const shouldUpdate = typeof id === 'number';
+
+    if (shouldUpdate) {
+      await updateNote({ id, note });
+    } else {
+      await createNote(note);
+    }
   };
 
   if (!product && productDraft) {
@@ -75,5 +107,5 @@ export const NoteInputFlow: FC = () => {
     return null;
   }
 
-  return <NoteForm defaultValues={noteDraft} />;
+  return <NoteForm defaultValues={noteDraft} onSubmit={handleSubmitNote} />;
 };

@@ -4,21 +4,20 @@ import { IconButton, InputAdornment, TextField, Tooltip } from '@mui/material';
 import { useEffect, type FC } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useAppDispatch, useAppSelector } from '@/app/store';
-import { noteApi } from '@/entities/note';
 import { actions, selectors, noteSchema, type NoteFormValues } from '../model';
 
 interface Props {
   defaultValues: NoteFormValues;
+  onSubmit: (values: NoteFormValues) => Promise<void>;
 }
 
-export const NoteForm: FC<Props> = ({ defaultValues }) => {
+export const NoteForm: FC<Props> = ({ defaultValues, onSubmit }) => {
   const { control, formState, handleSubmit } = useForm<NoteFormValues>({
     mode: 'onChange',
     resolver: zodResolver(noteSchema),
     defaultValues,
   });
 
-  const [createNote] = noteApi.useCreateNoteMutation();
   const noteDraft = useAppSelector(state => state.addNote.note);
   const activeFormId = useAppSelector(selectors.activeFormId);
   const dispatch = useAppDispatch();
@@ -28,22 +27,7 @@ export const NoteForm: FC<Props> = ({ defaultValues }) => {
   }, [dispatch, formState.isValid]);
 
   return (
-    <form
-      id={activeFormId}
-      onSubmit={handleSubmit(({ quantity }) => {
-        if (!noteDraft?.product) {
-          return;
-        }
-
-        createNote({
-          date: noteDraft.date,
-          mealType: noteDraft.mealType,
-          displayOrder: noteDraft.displayOrder,
-          productId: noteDraft.product.id,
-          productQuantity: quantity,
-        });
-      })}
-    >
+    <form id={activeFormId} onSubmit={handleSubmit(values => onSubmit(values))}>
       <TextField
         label="Product"
         value={noteDraft?.product?.name}
