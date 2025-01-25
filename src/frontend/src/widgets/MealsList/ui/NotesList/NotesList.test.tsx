@@ -1,21 +1,13 @@
-import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { RootProvider } from '@/app/RootProvider';
-import { configureStore } from '@/app/store';
-import { noteApi } from '@/entities/note';
 import { MealType } from '@/entities/note/model';
-import { NotesList } from './NotesList';
 import * as steps from './NotesList.steps';
 
 test('I can add new note with existing product', async () => {
   const user = userEvent.setup();
-  const store = configureStore();
 
-  render(
-    <RootProvider store={store}>
-      <NotesList date="2023-10-19" mealType={MealType.Lunch} />
-    </RootProvider>,
-  );
+  await steps.givenNotesList({
+    mealType: MealType.Lunch,
+  });
 
   await steps.whenAddNoteButtonClicked(user);
   await steps.thenDialogVisible(/lunch/i);
@@ -23,7 +15,6 @@ test('I can add new note with existing product', async () => {
   await steps.whenProductSearched(user, 'che');
   await steps.whenExistingProductSelected(user, /cheese/i);
   steps.thenProductHasValue('Cheese');
-
   await steps.whenQuantityChanged(user, 120);
   await steps.whenNoteAdded(user);
   await steps.thenDialogNotVisible();
@@ -32,14 +23,11 @@ test('I can add new note with existing product', async () => {
 
 test('I can add new note with adding new product "on the fly"', async () => {
   const user = userEvent.setup();
-  const store = configureStore();
-  await store.dispatch(noteApi.endpoints.notes.initiate({ date: '2023-10-19' }));
 
-  render(
-    <RootProvider store={store}>
-      <NotesList date="2023-10-19" mealType={MealType.Lunch} />
-    </RootProvider>,
-  );
+  await steps.givenNotesList({
+    mealType: MealType.Lunch,
+    preloadNotes: true,
+  });
 
   await steps.whenAddNoteButtonClicked(user);
   await steps.thenDialogVisible(/lunch/i);
@@ -65,14 +53,11 @@ test('I can add new note with adding new product "on the fly"', async () => {
 
 test('I can change quantity for existing note', async () => {
   const user = userEvent.setup();
-  const store = configureStore();
-  await store.dispatch(noteApi.endpoints.notes.initiate({ date: '2023-10-19' }));
 
-  render(
-    <RootProvider store={store}>
-      <NotesList date="2023-10-19" mealType={MealType.Lunch} />
-    </RootProvider>,
-  );
+  await steps.givenNotesList({
+    mealType: MealType.Lunch,
+    preloadNotes: true,
+  });
 
   await steps.whenNoteClicked(user, /cheese 200 g 804 kcal/i);
   await steps.thenDialogVisible(/lunch/i);

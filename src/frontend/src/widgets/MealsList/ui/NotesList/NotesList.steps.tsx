@@ -1,5 +1,32 @@
-import { screen, waitFor, waitForElementToBeRemoved } from '@testing-library/react';
+import { render, screen, waitFor, waitForElementToBeRemoved } from '@testing-library/react';
 import { type UserEvent } from '@testing-library/user-event';
+import { RootProvider } from '@/app/RootProvider';
+import { configureStore } from '@/app/store';
+import { noteApi, type noteModel } from '@/entities/note';
+import { NotesList } from './NotesList';
+
+interface GivenNotesListArgs {
+  mealType: noteModel.MealType;
+  preloadNotes?: boolean;
+}
+
+export const givenNotesList = async ({
+  mealType,
+  preloadNotes = false,
+}: GivenNotesListArgs): Promise<void> => {
+  const store = configureStore();
+  const date = '2023-10-19';
+
+  if (preloadNotes) {
+    await store.dispatch(noteApi.endpoints.notes.initiate({ date }));
+  }
+
+  render(
+    <RootProvider store={store}>
+      <NotesList date={date} mealType={mealType} />
+    </RootProvider>,
+  );
+};
 
 export const whenAddNoteButtonClicked = async (user: UserEvent): Promise<void> => {
   const addNoteButton = screen.getByRole('button', { name: /add note/i });
