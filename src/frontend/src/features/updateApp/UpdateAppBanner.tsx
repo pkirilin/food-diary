@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 import { type FC } from 'react';
 import { APP_BAR_HEIGHT_SM, APP_BAR_HEIGHT_XS } from '@/shared/constants';
-import { useUpdateApp } from '../model';
+import { useUpdateApp } from './useUpdateApp';
 
 interface Props {
   withAppBar?: boolean;
@@ -72,18 +72,8 @@ export const UpdateAppBanner: FC<Props> = ({ withAppBar }) => {
             <Avatar sx={theme => ({ bgcolor: theme.palette.primary.main })}>
               <BrowserUpdatedIcon />
             </Avatar>
-            <Box
-              sx={{
-                mb: 1,
-              }}
-            >
-              <Typography
-                sx={{
-                  fontWeight: 'bold',
-                }}
-              >
-                New update available
-              </Typography>
+            <Box sx={{ mb: 1 }}>
+              <Typography sx={{ fontWeight: 'bold' }}>New update available</Typography>
               <Typography variant="body2">
                 Click on reload button to update the application
               </Typography>
