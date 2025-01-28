@@ -8,6 +8,7 @@ import {
   type ShouldRevalidateFunction,
 } from 'react-router-dom';
 import { authApi, useAuthStatusCheckEffect } from '@/features/auth';
+import { UpdateAppBanner } from '@/features/updateApp';
 import { ok } from '@/pages/lib';
 import { APP_BAR_HEIGHT_SM, APP_BAR_HEIGHT_XS } from '@/shared/constants';
 import { createUrl } from '@/shared/lib';
@@ -73,6 +74,7 @@ export const Component: FC = () => {
           })}
         />
       </AppBar>
+      <UpdateAppBanner withAppBar />
       <Container sx={{ py: { xs: 2, md: 3 } }}>
         <Outlet />
       </Container>
