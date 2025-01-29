@@ -1,2 +1,1 @@
-export * from './ui';
-export * as updateAppModel from './model';
+export * from './UpdateAppBanner';
