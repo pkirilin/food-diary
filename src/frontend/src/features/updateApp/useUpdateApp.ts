@@ -1,5 +1,4 @@
 import { useRegisterSW } from 'virtual:pwa-register/react';
-import { useEffect, useState } from 'react';
 import { MSW_ENABLED } from '@/shared/config';
 
 interface UseUpdateAppResult {
@@ -11,12 +10,6 @@ interface UseUpdateAppResult {
 const SHOULD_WAIT_FOR_MSW = import.meta.env.PROD && MSW_ENABLED;
 
 export const useUpdateApp = (): UseUpdateAppResult => {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
   const registerSW = useRegisterSW({
     onRegisteredSW: async (_, registration) => {
       await registration?.update();
@@ -38,7 +31,7 @@ export const useUpdateApp = (): UseUpdateAppResult => {
   } = registerSW;
 
   return {
-    updateAvailable: mounted && updateAvailable,
+    updateAvailable,
     reload: () => updateServiceWorker(true),
     close: () => setUpdateAvailable(false),
   };
