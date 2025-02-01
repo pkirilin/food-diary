@@ -161,8 +161,8 @@ public class ProductsController : ControllerBase
         [FromServices] SearchProductsHandler handler,
         CancellationToken cancellationToken)
     {
-        var products = await handler.Handle(cancellationToken);
-        return Ok(products);
+        var result = await handler.Handle(cancellationToken);
+        return Ok(result.Products);
     }
 
     private IActionResult ProductAlreadyExists(ProductCreateEditRequest product)

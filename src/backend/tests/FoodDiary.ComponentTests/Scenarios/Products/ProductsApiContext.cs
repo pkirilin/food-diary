@@ -17,7 +17,7 @@ public class ProductsApiContext(FoodDiaryWebApplicationFactory factory, Infrastr
     : BaseContext(factory, infrastructure)
 {
     private ProductsSearchResultDto? _productsResponse;
-    private SearchProductsResult? _productsForAutocompleteResponse;
+    private SearchProductsResult.Product[]? _productsForAutocompleteResponse;
     private HttpResponseMessage _createProductResponse = null!;
     private HttpResponseMessage _updateProductResponse = null!;
     private HttpResponseMessage _deleteProductResponse = null!;
@@ -77,7 +77,7 @@ public class ProductsApiContext(FoodDiaryWebApplicationFactory factory, Infrastr
     public async Task When_user_searches_products_for_autocomplete()
     {
         _productsForAutocompleteResponse = await ApiClient
-            .GetFromJsonAsync<SearchProductsResult>("api/v1/products/autocomplete");
+            .GetFromJsonAsync<SearchProductsResult.Product[]>("api/v1/products/autocomplete");
     }
 
     public async Task When_user_creates_product(Product product)
@@ -137,7 +137,7 @@ public class ProductsApiContext(FoodDiaryWebApplicationFactory factory, Infrastr
     
     public Task Then_products_list_for_autocomplete_contains_items(params string[] items)
     {
-        _productsForAutocompleteResponse?.Products.Select(p => p.Name)
+        _productsForAutocompleteResponse?.Select(p => p.Name)
             .Should().ContainInOrder(items)
             .And.HaveSameCount(items);
         
