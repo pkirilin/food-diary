@@ -10,9 +10,9 @@ using FoodDiary.API.Requests;
 using MediatR;
 using FoodDiary.Application.Products.Requests;
 using System.Linq;
+using FoodDiary.API.Features.Products;
 using FoodDiary.API.Mapping;
 using FoodDiary.Application.Products.Create;
-using FoodDiary.Application.Services.Products;
 using Microsoft.AspNetCore.Authorization;
 
 namespace FoodDiary.API.Controllers.v1;
@@ -25,13 +25,11 @@ public class ProductsController : ControllerBase
 {
     private readonly IMapper _mapper;
     private readonly IMediator _mediator;
-    private readonly IProductsService _productsService;
 
-    public ProductsController(IMapper mapper, IMediator mediator, IProductsService productsService)
+    public ProductsController(IMapper mapper, IMediator mediator)
     {
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
-        _productsService = productsService;
     }
 
     /// <summary>
@@ -159,9 +157,11 @@ public class ProductsController : ControllerBase
     }
         
     [HttpGet("autocomplete")]
-    public async Task<IActionResult> GetProductsForAutocomplete(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetProductsForAutocomplete(
+        [FromServices] SearchProductsHandler handler,
+        CancellationToken cancellationToken)
     {
-        var products = await _productsService.GetAutocompleteItemsAsync(cancellationToken);
+        var products = await handler.Handle(cancellationToken);
         return Ok(products);
     }
 

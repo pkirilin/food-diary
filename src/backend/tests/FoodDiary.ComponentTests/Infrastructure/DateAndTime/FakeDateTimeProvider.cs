@@ -4,7 +4,10 @@ namespace FoodDiary.ComponentTests.Infrastructure.DateAndTime;
 
 public class FakeDateTimeProvider : TimeProvider
 {
-    public const string CurrentFakeDateAsString = "2024-01-01";
+    private const string CurrentFakeDateAsString = "2024-01-01";
+    
+    public static DateOnly Today() => DateOnly.Parse(CurrentFakeDateAsString);
+    public static DateOnly Yesterday() => Today().AddDays(-1);
 
     public override DateTimeOffset GetUtcNow() =>
         DateTime.SpecifyKind(
