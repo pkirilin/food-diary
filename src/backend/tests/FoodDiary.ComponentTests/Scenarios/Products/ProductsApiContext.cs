@@ -24,10 +24,15 @@ public class ProductsApiContext(FoodDiaryWebApplicationFactory factory, Infrastr
     private HttpResponseMessage _deleteMultipleProductsResponse = null!;
     
     private readonly ProductsCatalog _products = new();
-
+    
     public Task Given_products(params Product[] products)
     {
         return Factory.SeedDataAsync(products);
+    }
+    
+    public async Task Given_product(string product)
+    {
+        await Factory.SeedDataAsync([_products.TryGetOrAdd(product, out _)]);
     }
 
     private async Task Given_product_logged_on(string productName, DateOnly loggedOn)
@@ -132,10 +137,8 @@ public class ProductsApiContext(FoodDiaryWebApplicationFactory factory, Infrastr
     
     public Task Then_products_list_for_autocomplete_contains_items(params string[] items)
     {
-        _productsForAutocompleteResponse?.Products
-            .Select(p => p.Name)
-            .Should()
-            .ContainInOrder(items)
+        _productsForAutocompleteResponse?.Products.Select(p => p.Name)
+            .Should().ContainInOrder(items)
             .And.HaveSameCount(items);
         
         return Task.CompletedTask;

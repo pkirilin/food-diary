@@ -17,19 +17,20 @@ public class SearchProductsHandler(FoodDiaryContext context)
                 n => n.ProductId,
                 (p, notes) => new { Product = p, Notes = notes })
             .SelectMany(
-                g => g.Notes,
+                // Turns inner join to left join: we need all products even if they have no notes
+                g => g.Notes.DefaultIfEmpty(),
                 (g, note) => new { g.Product, Note = note })
-            .GroupBy(g => new { g.Note.ProductId, g.Product.Name, g.Product.DefaultQuantity })
+            .GroupBy(g => new { g.Product.Id, g.Product.Name, g.Product.DefaultQuantity })
             .Select(g => new
             {
-                g.Key.ProductId,
+                g.Key.Id,
                 g.Key.Name,
                 g.Key.DefaultQuantity,
-                LastUsedOn = g.Max(x => x.Note.Date)
+                LastUsedOn = g.Max(x => x.Note == null ? default : x.Note.Date)
             })
-            .OrderByDescending(x => x.LastUsedOn)
-            .ThenBy(x => x.Name)
-            .Select(g => new SearchProductsResult.Product(g.ProductId, g.Name, g.DefaultQuantity))
+            .OrderByDescending(p => p.LastUsedOn)
+            .ThenBy(p => p.Name)
+            .Select(p => new SearchProductsResult.Product(p.Id, p.Name, p.DefaultQuantity))
             .ToListAsync(cancellationToken);
 
         return new SearchProductsResult(products);

@@ -44,13 +44,13 @@ public class ProductsApiTests(FoodDiaryWebApplicationFactory factory, Infrastruc
     {
         return Run(
             c => c.Given_authenticated_user(),
+            c => c.Given_product("Chicken"),
             c => c.Given_product_logged_yesterday("Beef"),
             c => c.Given_product_logged_yesterday("Apple"),
             c => c.Given_product_logged_today("Eggs"),
             c => c.Given_product_logged_today("Apple"),
-            c => c.Given_product_logged_today("Chicken"),
             c => c.When_user_searches_products_for_autocomplete(),
-            c => c.Then_products_list_for_autocomplete_contains_items("Apple", "Chicken", "Eggs", "Beef"));
+            c => c.Then_products_list_for_autocomplete_contains_items("Apple", "Eggs", "Beef", "Chicken"));
     }
 
     [Scenario]
