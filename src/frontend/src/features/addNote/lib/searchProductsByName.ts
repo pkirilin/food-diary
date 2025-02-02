@@ -1,6 +1,6 @@
 import { type ProductSelectOption } from '@/entities/product';
 
-const QUERY_LENGTH_THRESHOLD = 3;
+export const QUERY_LENGTH_THRESHOLD = 3;
 
 export const searchProductsByName = (
   sourceProducts: ProductSelectOption[],
