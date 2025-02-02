@@ -42,15 +42,15 @@ public class ProductsApiTests(FoodDiaryWebApplicationFactory factory, Infrastruc
     [Scenario]
     public Task I_can_search_products_for_autocomplete()
     {
-        var apple = Create.Product("Apple").Please();
-        var chicken = Create.Product("Chicken").Please();
-        var milk = Create.Product("Milk").Please();
-        
         return Run(
             c => c.Given_authenticated_user(),
-            c => c.Given_products(apple, chicken, milk),
+            c => c.Given_product("Chicken"),
+            c => c.Given_product_logged_yesterday("Beef"),
+            c => c.Given_product_logged_yesterday("Apple"),
+            c => c.Given_product_logged_today("Eggs"),
+            c => c.Given_product_logged_today("Apple"),
             c => c.When_user_searches_products_for_autocomplete(),
-            c => c.Then_products_list_for_autocomplete_contains_items(chicken, apple, milk));
+            c => c.Then_products_list_for_autocomplete_contains_items("Apple", "Eggs", "Beef", "Chicken"));
     }
 
     [Scenario]

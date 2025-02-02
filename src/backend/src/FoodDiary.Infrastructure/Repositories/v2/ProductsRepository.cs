@@ -1,4 +1,3 @@
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FoodDiary.Domain.Entities;
@@ -9,13 +8,6 @@ namespace FoodDiary.Infrastructure.Repositories.v2;
 
 internal class ProductsRepository(FoodDiaryContext context) : IProductsRepository
 {
-    public Task<Product[]> GetAllOrderedByNameAsync(CancellationToken cancellationToken)
-    {
-        return context.Products
-            .OrderBy(p => p.Name)
-            .ToArrayAsync(cancellationToken);
-    }
-
     public async Task<Product> FindById(int id, CancellationToken cancellationToken)
     {
         return await context.Products.FindAsync([id], cancellationToken);

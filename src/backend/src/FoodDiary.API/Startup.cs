@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using FoodDiary.API.ErrorHandling;
 using FoodDiary.API.Extensions;
+using FoodDiary.API.Features.Products;
 using FoodDiary.API.Features.WeightTracking;
 using FoodDiary.API.Logging;
 using FoodDiary.API.Options;
@@ -122,6 +123,7 @@ public class Startup
         services.AddRepositories();
         services.AddUtils();
         services.AddApplicationDependencies();
+        services.AddProducts();
         services.AddWeightLogs();
 
         services.AddAutoMapper(Assembly.GetExecutingAssembly());

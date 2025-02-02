@@ -7,9 +7,9 @@ namespace FoodDiary.ComponentTests.Dsl;
 public class NoteBuilder
 {
     private int? _id;
-    private DateOnly _date = DateOnly.Parse(FakeDateTimeProvider.CurrentFakeDateAsString);
+    private DateOnly _date = FakeDateTimeProvider.Today();
     private MealType _mealType = MealType.Breakfast;
-    private Product _product = Create.Product().Please();
+    private Product? _product = Create.Product().Please();
     private int _productId;
     private int _productQuantity = 100;
     private int _displayOrder = 1;
@@ -30,11 +30,24 @@ public class NoteBuilder
         _date = DateOnly.Parse(date);
         return this;
     }
+    
+    public NoteBuilder WithDate(DateOnly date)
+    {
+        _date = date;
+        return this;
+    }
 
     public NoteBuilder WithProduct(Product product, int quantity)
     {
         _product = product;
         _productQuantity = quantity;
+        return this;
+    }
+    
+    public NoteBuilder WithExistingProduct(Product product)
+    {
+        _product = null;
+        _productId = product.Id;
         return this;
     }
 
