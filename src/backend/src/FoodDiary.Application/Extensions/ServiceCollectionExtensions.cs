@@ -5,7 +5,6 @@ using FoodDiary.Application.Notes.Get;
 using FoodDiary.Application.Notes.GetHistory;
 using FoodDiary.Application.Notes.Update;
 using FoodDiary.Application.Services.Categories;
-using FoodDiary.Application.Services.Products;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -24,7 +23,6 @@ public static class ServiceCollectionExtensions
 
     private static void AddApplicationServices(this IServiceCollection services)
     {
-        services.AddScoped<IProductsService, ProductsService>();
         services.AddScoped<ICategoriesService, CategoriesService>();
     }
     

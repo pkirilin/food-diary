@@ -1,5 +1,5 @@
-import { type Product, type GetProductsRequest, type ProductSelectOption } from '../api';
-import { type AutocompleteOption, type FormValues, type ProductItemsFilter } from '../model';
+import { type Product, type GetProductsRequest } from '../api';
+import { type FormValues, type ProductItemsFilter } from '../model';
 
 export const mapToGetProductsRequest = ({
   pageNumber,
@@ -27,14 +27,4 @@ export const mapToProductFormData = ({
     id: categoryId,
     name: categoryName,
   },
-});
-
-export const mapToAutocompleteOption = ({
-  id,
-  name,
-  defaultQuantity,
-}: ProductSelectOption): AutocompleteOption => ({
-  id,
-  name,
-  defaultQuantity,
 });

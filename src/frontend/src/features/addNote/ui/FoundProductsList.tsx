@@ -12,6 +12,7 @@ import {
 import { useMemo, type FC, type MouseEventHandler } from 'react';
 import { useAppDispatch } from '@/app/store';
 import { type ProductSelectOption, productApi } from '@/entities/product';
+import { QUERY_LENGTH_THRESHOLD } from '../lib/searchProductsByName';
 import { shouldSuggestAddingNewProduct } from '../lib/shouldSuggestAddingNewProduct';
 import { actions } from '../model';
 
@@ -21,8 +22,8 @@ interface Props {
 }
 
 export const FoundProductsList: FC<Props> = ({ foundProducts, query }) => {
-  const { productsLoading } = productApi.useProductsAutocompleteQuery(null, {
-    selectFromResult: ({ isLoading }) => ({ productsLoading: isLoading }),
+  const { isFetching } = productApi.useProductsAutocompleteQuery(null, {
+    selectFromResult: ({ isFetching }) => ({ isFetching }),
   });
 
   const suggestAddingNewProduct = useMemo(
@@ -42,7 +43,7 @@ export const FoundProductsList: FC<Props> = ({ foundProducts, query }) => {
       }),
     );
 
-  if (foundProducts.length > 0 && productsLoading) {
+  if (query.length >= QUERY_LENGTH_THRESHOLD && isFetching) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
         <CircularProgress />

@@ -3,10 +3,11 @@ using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using FoodDiary.API.Dtos;
+using FoodDiary.API.Features.Products.Contracts;
 using FoodDiary.API.Mapping;
-using FoodDiary.Application.Services.Products;
 using FoodDiary.ComponentTests.Dsl;
 using FoodDiary.ComponentTests.Infrastructure;
+using FoodDiary.ComponentTests.Infrastructure.DateAndTime;
 using FoodDiary.Contracts.Products;
 using FoodDiary.Domain.Entities;
 
@@ -16,16 +17,46 @@ public class ProductsApiContext(FoodDiaryWebApplicationFactory factory, Infrastr
     : BaseContext(factory, infrastructure)
 {
     private ProductsSearchResultDto? _productsResponse;
-    private ProductAutocompleteItemDto[]? _productsForAutocompleteResponse;
+    private SearchProductsResult.Product[]? _productsForAutocompleteResponse;
     private HttpResponseMessage _createProductResponse = null!;
     private HttpResponseMessage _updateProductResponse = null!;
     private HttpResponseMessage _deleteProductResponse = null!;
     private HttpResponseMessage _deleteMultipleProductsResponse = null!;
-
+    
+    private readonly ProductsCatalog _products = new();
+    
     public Task Given_products(params Product[] products)
     {
         return Factory.SeedDataAsync(products);
     }
+    
+    public async Task Given_product(string product)
+    {
+        await Factory.SeedDataAsync([_products.TryGetOrAdd(product, out _)]);
+    }
+
+    private async Task Given_product_logged_on(string productName, DateOnly loggedOn)
+    {
+        var product = _products.TryGetOrAdd(productName, out var isNewProduct);
+
+        if (isNewProduct)
+        {
+            await Factory.SeedDataAsync([product]);
+        }
+        
+        await Factory.SeedDataAsync([
+            Create.Note()
+                .WithDate(loggedOn)
+                .WithExistingProduct(product)
+                .Please()
+        ]);
+    }
+
+    public Task Given_product_logged_yesterday(string product) =>
+        Given_product_logged_on(product, FakeDateTimeProvider.Yesterday());
+
+    public Task Given_product_logged_today(string product) =>
+        Given_product_logged_on(product, FakeDateTimeProvider.Today());
     
     public Task Given_categories(params Category[] categories)
     {
@@ -46,7 +77,7 @@ public class ProductsApiContext(FoodDiaryWebApplicationFactory factory, Infrastr
     public async Task When_user_searches_products_for_autocomplete()
     {
         _productsForAutocompleteResponse = await ApiClient
-            .GetFromJsonAsync<ProductAutocompleteItemDto[]>("api/v1/products/autocomplete");
+            .GetFromJsonAsync<SearchProductsResult.Product[]>("api/v1/products/autocomplete");
     }
 
     public async Task When_user_creates_product(Product product)
@@ -104,13 +135,11 @@ public class ProductsApiContext(FoodDiaryWebApplicationFactory factory, Infrastr
         return Task.CompletedTask;
     }
     
-    public Task Then_products_list_for_autocomplete_contains_items(params Product[] items)
+    public Task Then_products_list_for_autocomplete_contains_items(params string[] items)
     {
-        var expectedProductsList = items.Select(p => p.ToProductAutocompleteItemDto());
-
-        _productsForAutocompleteResponse.Should()
-            .BeEquivalentTo(expectedProductsList, options => options.Excluding(p => p.Id))
-            .And.BeInAscendingOrder(p => p.Name);
+        _productsForAutocompleteResponse?.Select(p => p.Name)
+            .Should().ContainInOrder(items)
+            .And.HaveSameCount(items);
         
         return Task.CompletedTask;
     }

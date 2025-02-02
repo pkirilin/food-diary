@@ -17,14 +17,6 @@ export const productApi = api.injectEndpoints({
       providesTags: ['product'],
     }),
 
-    /**
-     * @deprecated use productsAutocomplete instead
-     */
-    getProductSelectOptions: builder.query<ProductSelectOption[], void>({
-      query: () => '/api/v1/products/autocomplete',
-      providesTags: ['product'],
-    }),
-
     productsAutocomplete: builder.query<ProductSelectOption[], null>({
       query: () => '/api/v1/products/autocomplete',
       providesTags: ['product'],
