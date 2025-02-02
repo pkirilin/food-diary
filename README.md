@@ -81,7 +81,7 @@ Navigate to <https://localhost:8080>
 Before starting, ensure you have the following installed on your machine:
 
 - [Docker](https://www.docker.com/)
-- [.NET SDK](https://dotnet.microsoft.com/en-us/download) (8.0.100 or higher)
+- [.NET SDK](https://dotnet.microsoft.com/en-us/download) (8.0.0 or higher)
 - [Node.js](https://nodejs.org/en) (18.16.0 or higher)
 - [yarn](https://yarnpkg.com/getting-started/install)
 
