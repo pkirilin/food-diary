@@ -1,14 +1,12 @@
 using System.Net;
 using FoodDiary.ComponentTests.Dsl;
+using FoodDiary.ComponentTests.Infrastructure;
 using FoodDiary.Domain.Enums;
-using LightBDD.Framework;
 
 namespace FoodDiary.ComponentTests.Scenarios.Notes;
 
-public class NotesApiTests : FeatureFixture
-{
-    private IBddRunner<NotesApiContext> CtxRunner => Runner.WithContext<NotesApiContext>();
-    
+public class NotesApiTests(InfrastructureFixture infrastructure) : TestScenarios<NotesApiContext>(infrastructure)
+{    
     [Scenario]
     public Task I_can_retrieve_notes_list()
     {
