@@ -3,13 +3,9 @@ using FoodDiary.ComponentTests.Infrastructure;
 
 namespace FoodDiary.ComponentTests.Scenarios.Products;
 
-public class ProductsApiTests(FoodDiaryWebApplicationFactory factory, InfrastructureFixture infrastructure)
-    : ScenarioBase<ProductsApiContext>(factory, infrastructure)
+public class ProductsApiTests(InfrastructureFixture infrastructure)
+    : BaseTest<ProductsApiContext>(infrastructure)
 {
-    protected override ProductsApiContext CreateContext(
-        FoodDiaryWebApplicationFactory factory,
-        InfrastructureFixture infrastructure) => new(factory, infrastructure);
-
     [Scenario]
     public Task I_can_retrieve_products_list()
     {
@@ -17,7 +13,7 @@ public class ProductsApiTests(FoodDiaryWebApplicationFactory factory, Infrastruc
         var chicken = Create.Product("Chicken").Please();
         var milk = Create.Product("Milk").Please();
         
-        return Run(
+        return CtxRunner.RunScenarioAsync(
             c => c.Given_authenticated_user(),
             c => c.Given_products(chicken, apple, milk),
             c => c.When_user_retrieves_products_list(),
@@ -32,7 +28,7 @@ public class ProductsApiTests(FoodDiaryWebApplicationFactory factory, Infrastruc
         var milk = Create.Product("Milk").Please();
         var chicken = Create.Product("Chicken").Please();
         
-        return Run(
+        return CtxRunner.RunScenarioAsync(
             c => c.Given_authenticated_user(),
             c => c.Given_products(apple, mozzarellaCheese, milk, chicken),
             c => c.When_user_searches_products_by_name("ch"),
@@ -42,7 +38,7 @@ public class ProductsApiTests(FoodDiaryWebApplicationFactory factory, Infrastruc
     [Scenario]
     public Task I_can_search_products_for_autocomplete()
     {
-        return Run(
+        return CtxRunner.RunScenarioAsync(
             c => c.Given_authenticated_user(),
             c => c.Given_product("Chicken"),
             c => c.Given_product_logged_yesterday("Beef"),
@@ -58,7 +54,7 @@ public class ProductsApiTests(FoodDiaryWebApplicationFactory factory, Infrastruc
     {
         var chicken = Create.Product("Chicken").Please();
         
-        return Run(
+        return CtxRunner.RunScenarioAsync(
             c => c.Given_authenticated_user(),
             c => c.Given_categories(chicken.Category),
             c => c.When_user_creates_product(chicken),
@@ -73,7 +69,7 @@ public class ProductsApiTests(FoodDiaryWebApplicationFactory factory, Infrastruc
         var chicken = Create.Product("Chicken").Please();
         var boiledChicken = Create.Product().From(chicken).WithName("Boiled chicken").Please();
         
-        return Run(
+        return CtxRunner.RunScenarioAsync(
             c => c.Given_authenticated_user(),
             c => c.Given_products(chicken),
             c => c.When_user_renames_product(chicken, "Boiled chicken"),
@@ -87,7 +83,7 @@ public class ProductsApiTests(FoodDiaryWebApplicationFactory factory, Infrastruc
     {
         var milk = Create.Product("Milk").Please();
         
-        return Run(
+        return CtxRunner.RunScenarioAsync(
             c => c.Given_authenticated_user(),
             c => c.Given_products(milk),
             c => c.When_user_deletes_product(milk),
@@ -102,7 +98,7 @@ public class ProductsApiTests(FoodDiaryWebApplicationFactory factory, Infrastruc
         var oats = Create.Product("Oats").Please();
         var milk = Create.Product("Milk").Please();
         
-        return Run(
+        return CtxRunner.RunScenarioAsync(
             c => c.Given_authenticated_user(),
             c => c.Given_products(milk),
             c => c.When_user_deletes_products(oats, milk),

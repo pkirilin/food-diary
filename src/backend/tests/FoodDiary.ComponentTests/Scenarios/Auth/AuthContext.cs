@@ -1,14 +1,19 @@
 using System.Net;
 using System.Net.Http.Json;
 using FoodDiary.ComponentTests.Infrastructure;
+using FoodDiary.ComponentTests.Infrastructure.ExternalServices;
 using FoodDiary.Contracts.Auth;
+using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FoodDiary.ComponentTests.Scenarios.Auth;
 
-public class AuthContext(FoodDiaryWebApplicationFactory factory, InfrastructureFixture infrastructure)
-    : BaseContext(factory, infrastructure)
+[UsedImplicitly]
+public class AuthContext(
+    FoodDiaryWebApplicationFactory factory,
+    ExternalServicesFixture externalServices) : BaseContext(factory)
 {
+    private GoogleIdentityProvider GoogleIdentityProvider => externalServices.GoogleIdentityProvider;
     private HttpResponseMessage? _response;
     private GetAuthStatusResponse? _getStatusResponse;
 
@@ -26,17 +31,17 @@ public class AuthContext(FoodDiaryWebApplicationFactory factory, InfrastructureF
 
     public Task Given_google_identity_provider_is_ready()
     {
-        return Infrastructure.ExternalServices.GoogleIdentityProvider.Start();
+        return GoogleIdentityProvider.Start();
     }
 
     public Task Given_user_access_token_can_be_refreshed()
     {
-        return Infrastructure.ExternalServices.GoogleIdentityProvider.SetupAccessTokenSuccessfullyRefreshed();
+        return GoogleIdentityProvider.SetupAccessTokenSuccessfullyRefreshed();
     }
 
     public Task Given_user_info_can_be_retrieved()
     {
-        return Infrastructure.ExternalServices.GoogleIdentityProvider.SetupUserInfoSuccessfullyReceived();
+        return GoogleIdentityProvider.SetupUserInfoSuccessfullyReceived();
     }
 
     public async Task When_user_is_trying_to_access_resource(string resource)

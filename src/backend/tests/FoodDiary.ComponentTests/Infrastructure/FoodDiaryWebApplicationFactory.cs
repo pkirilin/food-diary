@@ -1,4 +1,5 @@
 using FoodDiary.API;
+using FoodDiary.ComponentTests.Infrastructure.DataAccess;
 using FoodDiary.ComponentTests.Infrastructure.DateAndTime;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.DataProtection;
@@ -11,7 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace FoodDiary.ComponentTests.Infrastructure;
 
 [UsedImplicitly]
-public class FoodDiaryWebApplicationFactory : WebApplicationFactory<Startup>
+public class FoodDiaryWebApplicationFactory(DatabaseFixture database) : WebApplicationFactory<Startup>
 {
     private const string EnvironmentName = "ComponentTests";
     
@@ -30,6 +31,7 @@ public class FoodDiaryWebApplicationFactory : WebApplicationFactory<Startup>
         builder.ConfigureTestServices(services =>
         {
             services.AddFakeDateAndTime();
+            services.AddTestDb(database);
 
             services
                 .AddDataProtection()

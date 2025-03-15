@@ -3,20 +3,15 @@ using FoodDiary.ComponentTests.Infrastructure;
 
 namespace FoodDiary.ComponentTests.Scenarios.Categories;
 
-public class CategoriesApiTests(FoodDiaryWebApplicationFactory factory, InfrastructureFixture infrastructure)
-    : ScenarioBase<CategoriesApiContext>(factory, infrastructure)
+public class CategoriesApiTests(InfrastructureFixture infrastructure) : BaseTest<CategoriesApiContext>(infrastructure)
 {
-    protected override CategoriesApiContext CreateContext(
-        FoodDiaryWebApplicationFactory factory,
-        InfrastructureFixture infrastructure) => new(factory, infrastructure);
-
     [Scenario]
     public Task I_can_retrieve_categories_list()
     {
         var cereals = Create.Category("Cereals").Please();
         var dairy = Create.Category("Dairy").Please();
         
-        return Run(
+        return CtxRunner.RunScenarioAsync(
             c => c.Given_authenticated_user(),
             c => c.Given_categories(dairy, cereals),
             c => c.When_user_retrieves_categories_list(),
@@ -28,7 +23,7 @@ public class CategoriesApiTests(FoodDiaryWebApplicationFactory factory, Infrastr
     {
         var frozenFoods = Create.Category("Frozen foods").Please();
         
-        return Run(
+        return CtxRunner.RunScenarioAsync(
             c => c.Given_authenticated_user(),
             c => c.When_user_creates_category("Frozen foods"),
             c => c.Then_category_is_successfully_created(),
@@ -45,7 +40,7 @@ public class CategoriesApiTests(FoodDiaryWebApplicationFactory factory, Infrastr
             .WithName("Frozen products")
             .Please();
         
-        return Run(
+        return CtxRunner.RunScenarioAsync(
             c => c.Given_authenticated_user(),
             c => c.Given_categories(frozenFoods),
             c => c.When_user_renames_category(frozenFoods, "Frozen products"),
@@ -59,7 +54,7 @@ public class CategoriesApiTests(FoodDiaryWebApplicationFactory factory, Infrastr
     {
         var frozenFoods = Create.Category("Frozen foods").Please();
         
-        return Run(
+        return CtxRunner.RunScenarioAsync(
             c => c.Given_authenticated_user(),
             c => c.Given_categories(frozenFoods),
             c => c.When_user_deletes_category(frozenFoods),
@@ -74,7 +69,7 @@ public class CategoriesApiTests(FoodDiaryWebApplicationFactory factory, Infrastr
         var cereals = Create.Category("Cereals").Please();
         var dairy = Create.Category("Dairy").Please();
         
-        return Run(
+        return CtxRunner.RunScenarioAsync(
             c => c.Given_authenticated_user(),
             c => c.Given_categories(dairy, cereals),
             c => c.When_user_searches_categories_for_autocomplete(),

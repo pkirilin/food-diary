@@ -4,11 +4,12 @@ using FoodDiary.API.Features.WeightTracking;
 using FoodDiary.API.Features.WeightTracking.Contracts;
 using FoodDiary.ComponentTests.Infrastructure;
 using FoodDiary.Domain.WeightTracking;
+using JetBrains.Annotations;
 
 namespace FoodDiary.ComponentTests.Scenarios.WeightTracking;
 
-public class WeightLogsApiContext(FoodDiaryWebApplicationFactory factory, InfrastructureFixture infrastructure)
-    : BaseContext(factory, infrastructure)
+[UsedImplicitly]
+public class WeightLogsApiContext(FoodDiaryWebApplicationFactory factory) : BaseContext(factory)
 {
     private GetWeightLogsResponse? _getWeightLogsResponse;
     private HttpResponseMessage? _addWeightLogResponse;

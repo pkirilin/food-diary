@@ -5,13 +5,8 @@ using FoodDiary.Domain.Enums;
 
 namespace FoodDiary.ComponentTests.Scenarios.Notes;
 
-public class NotesApiTests(FoodDiaryWebApplicationFactory factory, InfrastructureFixture infrastructure)
-    : ScenarioBase<NotesApiContext>(factory, infrastructure)
-{
-    protected override NotesApiContext CreateContext(
-        FoodDiaryWebApplicationFactory factory,
-        InfrastructureFixture infrastructure) => new(factory, infrastructure);
-
+public class NotesApiTests(InfrastructureFixture infrastructure) : BaseTest<NotesApiContext>(infrastructure)
+{    
     [Scenario]
     public Task I_can_retrieve_notes_list()
     {
@@ -25,7 +20,7 @@ public class NotesApiTests(FoodDiaryWebApplicationFactory factory, Infrastructur
             Bread = lunch.WithProduct("Bread", 250).WithDisplayOrder(1).Please(),
         };
         
-        return Run(
+        return CtxRunner.RunScenarioAsync(
             c => c.Given_authenticated_user(),
             c => c.Given_notes(notes.Rice, notes.Bread, notes.Chicken, notes.Cheese),
             c => c.When_user_retrieves_notes_list_for_date("2024-01-04"),
@@ -48,7 +43,7 @@ public class NotesApiTests(FoodDiaryWebApplicationFactory factory, Infrastructur
             Jan05 = Create.NoteHistoryItem("2024-01-05", 50)
         };
         
-        return Run(
+        return CtxRunner.RunScenarioAsync(
             c => c.Given_authenticated_user(),
             c => c.Given_notes(notes.Chicken, notes.Broccoli, notes.Rice),
             c => c.When_user_retrieves_notes_history("2024-01-01", "2024-01-31"),
@@ -64,7 +59,7 @@ public class NotesApiTests(FoodDiaryWebApplicationFactory factory, Infrastructur
             .WithProduct(product, 150)
             .Please();
         
-        return Run(
+        return CtxRunner.RunScenarioAsync(
             c => c.Given_authenticated_user(),
             c => c.Given_product(product),
             c => c.When_user_creates_note(note),
@@ -88,7 +83,7 @@ public class NotesApiTests(FoodDiaryWebApplicationFactory factory, Infrastructur
             .WithProduct(newProduct, 200)
             .Please();
         
-        return Run(
+        return CtxRunner.RunScenarioAsync(
             c => c.Given_authenticated_user(),
             c => c.Given_notes(originalNote),
             c => c.Given_product(newProduct),
@@ -103,7 +98,7 @@ public class NotesApiTests(FoodDiaryWebApplicationFactory factory, Infrastructur
     {
         var note = Create.Note().WithDate("2024-01-04").Please();
         
-        return Run(
+        return CtxRunner.RunScenarioAsync(
             c => c.Given_authenticated_user(),
             c => c.Given_notes(note),
             c => c.When_user_deletes_note(note),
@@ -120,7 +115,7 @@ public class NotesApiTests(FoodDiaryWebApplicationFactory factory, Infrastructur
             .WithQuantity(400)
             .Please();
         
-        return Run(
+        return CtxRunner.RunScenarioAsync(
             c => c.Given_OpenAI_api_is_ready(),
             c => c.Given_OpenAI_api_can_recognize_notes(orangeNote),
             c => c.Given_authenticated_user(),
@@ -131,7 +126,7 @@ public class NotesApiTests(FoodDiaryWebApplicationFactory factory, Infrastructur
     [Scenario]
     public Task I_cannot_recognize_notes_when_OpenAI_model_response_is_invalid()
     {
-        return Run(
+        return CtxRunner.RunScenarioAsync(
             c => c.Given_OpenAI_api_is_ready(),
             c => c.Given_OpenAI_completion_response_is_not_recognized_notes_json(),
             c => c.Given_authenticated_user(),
@@ -145,7 +140,7 @@ public class NotesApiTests(FoodDiaryWebApplicationFactory factory, Infrastructur
     [InlineData(HttpStatusCode.Forbidden)]
     public Task I_cannot_recognize_notes_when_OpenAI_request_fails(HttpStatusCode statusCode)
     {
-        return Run(
+        return CtxRunner.RunScenarioAsync(
             c => c.Given_OpenAI_api_is_ready(),
             c => c.Given_OpenAI_request_failed_with_error(statusCode),
             c => c.Given_authenticated_user(),

@@ -1,14 +1,15 @@
 using System.Net;
 using System.Net.Http.Json;
 using FoodDiary.ComponentTests.Infrastructure;
+using JetBrains.Annotations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FoodDiary.ComponentTests.Scenarios.ErrorHandling;
 
-public class ErrorHandlingContext(FoodDiaryWebApplicationFactory factory, InfrastructureFixture infrastructure)
-    : BaseContext(factory, infrastructure)
+[UsedImplicitly]
+public class ErrorHandlingContext(FoodDiaryWebApplicationFactory factory) : BaseContext(factory)
 {
     private HttpResponseMessage? _response;
     private HttpStatusCode _statusCode;

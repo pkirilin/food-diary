@@ -7,11 +7,12 @@ using FoodDiary.Application.Services.Categories;
 using FoodDiary.ComponentTests.Infrastructure;
 using FoodDiary.Contracts.Categories;
 using FoodDiary.Domain.Entities;
+using JetBrains.Annotations;
 
 namespace FoodDiary.ComponentTests.Scenarios.Categories;
 
-public class CategoriesApiContext(FoodDiaryWebApplicationFactory factory, InfrastructureFixture infrastructure)
-    : BaseContext(factory, infrastructure)
+[UsedImplicitly]
+public class CategoriesApiContext(FoodDiaryWebApplicationFactory factory) : BaseContext(factory)
 {
     private IReadOnlyList<CategoryItemDto>? _categoriesList;
     private IReadOnlyList<CategoryAutocompleteItemDto>? _categoriesListForAutocomplete;

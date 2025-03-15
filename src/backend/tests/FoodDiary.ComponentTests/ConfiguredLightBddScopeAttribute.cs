@@ -10,8 +10,7 @@ internal class ConfiguredLightBddScopeAttribute : LightBddScopeAttribute
 {
     protected override void OnConfigure(LightBddConfiguration configuration)
     {
-        configuration
-            .ValueFormattingConfiguration()
+        configuration.ValueFormattingConfiguration()
             .RegisterExplicit(typeof(Note), new NoteFormatter(new CaloriesCalculator()))
             .RegisterExplicit(typeof(Product), new ProductFormatter())
             .RegisterExplicit(typeof(Category), new CategoryFormatter())

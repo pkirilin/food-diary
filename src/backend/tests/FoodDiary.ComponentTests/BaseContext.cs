@@ -2,10 +2,8 @@ using FoodDiary.API;
 using FoodDiary.ComponentTests.Infrastructure;
 using FoodDiary.ComponentTests.Infrastructure.Auth;
 using FoodDiary.Configuration;
-using FoodDiary.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -19,14 +17,12 @@ public abstract class BaseContext
     
     protected WebApplicationFactory<Startup> Factory;
     protected HttpClient ApiClient => _apiClient ??= Factory.CreateClient();
-    protected readonly InfrastructureFixture Infrastructure; 
-
-    protected BaseContext(FoodDiaryWebApplicationFactory factory, InfrastructureFixture infrastructure)
+    
+    protected BaseContext(FoodDiaryWebApplicationFactory factory)
     {
         _authOptions = factory.Services.GetRequiredService<IOptions<AuthOptions>>();
         _defaultUserEmail = _authOptions.Value.AllowedEmails.First();
-        Factory = WithTestDatabase(factory, infrastructure);
-        Infrastructure = infrastructure;
+        Factory = factory;
     }
 
     public Task Given_authenticated_user()
@@ -55,30 +51,6 @@ public abstract class BaseContext
                     options.ShouldAuthenticate = true;
                     options.IssuedUtc = tokenIssuedOn;
                 });
-            });
-        });
-    }
-
-    private static WebApplicationFactory<Startup> WithTestDatabase(
-        FoodDiaryWebApplicationFactory factory,
-        InfrastructureFixture infrastructure)
-    {
-        return factory.WithWebHostBuilder(builder =>
-        {
-            builder.ConfigureTestServices(services =>
-            {
-                var dbContextOptionsDescriptor = services
-                    .FirstOrDefault(d => d.ServiceType == typeof(DbContextOptions<FoodDiaryContext>));
-
-                if (dbContextOptionsDescriptor is not null)
-                {
-                    services.Remove(dbContextOptionsDescriptor);
-
-                    services.AddDbContext<FoodDiaryContext>(options =>
-                    {
-                        options.UseNpgsql(infrastructure.Database.ConnectionString);
-                    });
-                }
             });
         });
     }

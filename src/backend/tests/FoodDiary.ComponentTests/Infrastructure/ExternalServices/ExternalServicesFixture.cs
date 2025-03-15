@@ -6,7 +6,7 @@ using MbDotNet;
 namespace FoodDiary.ComponentTests.Infrastructure.ExternalServices;
 
 [UsedImplicitly]
-public class ExternalServicesFixture : IAsyncLifetime
+public class ExternalServicesFixture
 {
     private static readonly IContainer MountebankContainer = new ContainerBuilder()
         .WithImage("bbyars/mountebank:2.9.1")
@@ -21,12 +21,12 @@ public class ExternalServicesFixture : IAsyncLifetime
     public GoogleIdentityProvider GoogleIdentityProvider { get; } = new(MountebankClient);
     public OpenAIApi OpenAiApi { get; } = new(MountebankClient);
 
-    public Task InitializeAsync()
+    public Task Start()
     {
         return MountebankContainer.StartAsync();
     }
 
-    public Task DisposeAsync()
+    public Task Stop()
     {
         return MountebankContainer.StopAsync();
     }
