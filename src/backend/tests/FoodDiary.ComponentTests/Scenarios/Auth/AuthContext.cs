@@ -3,10 +3,12 @@ using System.Net.Http.Json;
 using FoodDiary.ComponentTests.Infrastructure;
 using FoodDiary.ComponentTests.Infrastructure.ExternalServices;
 using FoodDiary.Contracts.Auth;
+using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FoodDiary.ComponentTests.Scenarios.Auth;
 
+[UsedImplicitly]
 public class AuthContext(
     FoodDiaryWebApplicationFactory factory,
     ExternalServicesFixture externalServices) : BaseContext(factory)

@@ -1,5 +1,6 @@
 using FoodDiary.ComponentTests.Infrastructure.DataAccess;
 using FoodDiary.ComponentTests.Infrastructure.ExternalServices;
+using FoodDiary.ComponentTests.Scenarios.Auth;
 using FoodDiary.ComponentTests.Scenarios.Notes;
 using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,19 +12,22 @@ public class InfrastructureFixture : IAsyncLifetime, IDisposable
 {
     public ServiceProvider Services { get; } = ConfigureServices();
     public DatabaseFixture Database => Services.GetRequiredService<DatabaseFixture>();
-    public ExternalServicesFixture ExternalServices => Services.GetRequiredService<ExternalServicesFixture>();
+    private ExternalServicesFixture ExternalServices => Services.GetRequiredService<ExternalServicesFixture>();
 
     private static ServiceProvider ConfigureServices()
     {
         var services = new ServiceCollection();
 
-        services.AddScoped<NotesApiContext>();
-        
-        return services
+        services
+            .AddScoped<AuthContext>()
+            .AddScoped<NotesApiContext>();
+
+        services
             .AddSingleton<FoodDiaryWebApplicationFactory>()
             .AddSingleton<DatabaseFixture>()
-            .AddSingleton<ExternalServicesFixture>()
-            .BuildServiceProvider();
+            .AddSingleton<ExternalServicesFixture>();
+        
+        return services.BuildServiceProvider();
     }
     
     public Task InitializeAsync()

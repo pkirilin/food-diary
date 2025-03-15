@@ -1,11 +1,9 @@
-using LightBDD.Framework;
+using FoodDiary.ComponentTests.Infrastructure;
 
 namespace FoodDiary.ComponentTests.Scenarios.Auth;
 
-public class AuthTests : FeatureFixture
+public class AuthTests(InfrastructureFixture infrastructure) : TestScenarios<AuthContext>(infrastructure)
 {
-    private IBddRunner<AuthContext> CtxRunner => Runner.WithContext<AuthContext>();
-    
     [Scenario]
     [InlineData("/api/v1/notes")]
     [InlineData("/api/v1/products")]
