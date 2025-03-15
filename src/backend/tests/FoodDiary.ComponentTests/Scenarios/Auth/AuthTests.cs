@@ -2,7 +2,7 @@ using FoodDiary.ComponentTests.Infrastructure;
 
 namespace FoodDiary.ComponentTests.Scenarios.Auth;
 
-public class AuthTests(InfrastructureFixture infrastructure) : TestScenarios<AuthContext>(infrastructure)
+public class AuthTests(InfrastructureFixture infrastructure) : BaseTest<AuthContext>(infrastructure)
 {
     [Scenario]
     [InlineData("/api/v1/notes")]

@@ -10,9 +10,11 @@ using FoodDiary.ComponentTests.Infrastructure;
 using FoodDiary.ComponentTests.Infrastructure.DateAndTime;
 using FoodDiary.Contracts.Products;
 using FoodDiary.Domain.Entities;
+using JetBrains.Annotations;
 
 namespace FoodDiary.ComponentTests.Scenarios.Products;
 
+[UsedImplicitly]
 public class ProductsApiContext(FoodDiaryWebApplicationFactory factory) : BaseContext(factory)
 {
     private ProductsSearchResultDto? _productsResponse;

@@ -1,7 +1,11 @@
 using FoodDiary.ComponentTests.Infrastructure.DataAccess;
 using FoodDiary.ComponentTests.Infrastructure.ExternalServices;
 using FoodDiary.ComponentTests.Scenarios.Auth;
+using FoodDiary.ComponentTests.Scenarios.Categories;
+using FoodDiary.ComponentTests.Scenarios.ErrorHandling;
 using FoodDiary.ComponentTests.Scenarios.Notes;
+using FoodDiary.ComponentTests.Scenarios.Products;
+using FoodDiary.ComponentTests.Scenarios.WeightTracking;
 using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,6 +15,7 @@ namespace FoodDiary.ComponentTests.Infrastructure;
 public class InfrastructureFixture : IAsyncLifetime, IDisposable
 {
     public ServiceProvider Services { get; } = ConfigureServices();
+    
     public DatabaseFixture Database => Services.GetRequiredService<DatabaseFixture>();
     private ExternalServicesFixture ExternalServices => Services.GetRequiredService<ExternalServicesFixture>();
 
@@ -20,7 +25,11 @@ public class InfrastructureFixture : IAsyncLifetime, IDisposable
 
         services
             .AddScoped<AuthContext>()
-            .AddScoped<NotesApiContext>();
+            .AddScoped<ErrorHandlingContext>()
+            .AddScoped<CategoriesApiContext>()
+            .AddScoped<NotesApiContext>()
+            .AddScoped<ProductsApiContext>()
+            .AddScoped<WeightLogsApiContext>();
 
         services
             .AddSingleton<FoodDiaryWebApplicationFactory>()

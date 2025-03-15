@@ -5,7 +5,7 @@ using FoodDiary.Domain.Enums;
 
 namespace FoodDiary.ComponentTests.Scenarios.Notes;
 
-public class NotesApiTests(InfrastructureFixture infrastructure) : TestScenarios<NotesApiContext>(infrastructure)
+public class NotesApiTests(InfrastructureFixture infrastructure) : BaseTest<NotesApiContext>(infrastructure)
 {    
     [Scenario]
     public Task I_can_retrieve_notes_list()

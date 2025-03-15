@@ -7,9 +7,11 @@ using FoodDiary.Application.Services.Categories;
 using FoodDiary.ComponentTests.Infrastructure;
 using FoodDiary.Contracts.Categories;
 using FoodDiary.Domain.Entities;
+using JetBrains.Annotations;
 
 namespace FoodDiary.ComponentTests.Scenarios.Categories;
 
+[UsedImplicitly]
 public class CategoriesApiContext(FoodDiaryWebApplicationFactory factory) : BaseContext(factory)
 {
     private IReadOnlyList<CategoryItemDto>? _categoriesList;

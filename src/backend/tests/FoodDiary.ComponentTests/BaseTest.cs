@@ -4,8 +4,11 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace FoodDiary.ComponentTests;
 
+[CollectionDefinition(nameof(InfrastructureCollection))]
+public class InfrastructureCollection : ICollectionFixture<InfrastructureFixture>;
+
 [Collection(nameof(InfrastructureCollection))]
-public abstract class TestScenarios<TContext>(InfrastructureFixture infrastructure) :
+public abstract class BaseTest<TContext>(InfrastructureFixture infrastructure) :
     FeatureFixture,
     IClassFixture<InfrastructureFixture>,
     IAsyncLifetime

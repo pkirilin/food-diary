@@ -3,13 +3,9 @@ using FoodDiary.Domain.WeightTracking;
 
 namespace FoodDiary.ComponentTests.Scenarios.WeightTracking;
 
-public class WeightLogsApiTests(FoodDiaryWebApplicationFactory factory, InfrastructureFixture infrastructure)
-    : ScenarioBase<WeightLogsApiContext>(factory, infrastructure)
+public class WeightLogsApiTests(InfrastructureFixture infrastructure)
+    : BaseTest<WeightLogsApiContext>(infrastructure)
 {
-    protected override WeightLogsApiContext CreateContext(
-        FoodDiaryWebApplicationFactory factory,
-        InfrastructureFixture infrastructure) => new(factory);
-
     private static WeightLog[] GivenWeightLogs() =>
     [
         new() { Date = DateOnly.Parse("2024-10-01"), Weight = 75.6m },
@@ -23,7 +19,7 @@ public class WeightLogsApiTests(FoodDiaryWebApplicationFactory factory, Infrastr
     {
         var weightLogs = GivenWeightLogs();
         
-        return Run(
+        return CtxRunner.RunScenarioAsync(
             c => c.Given_authenticated_user(),
             c => c.Given_existing_weightLogs(GivenWeightLogs()),
             c => c.When_user_gets_weightLogs("2024-10-02", "2024-10-03"),
@@ -36,7 +32,7 @@ public class WeightLogsApiTests(FoodDiaryWebApplicationFactory factory, Infrastr
         var weightLogs = GivenWeightLogs();
         var newWeightLog = new WeightLog { Date = DateOnly.Parse("2024-10-05"), Weight = 76.3m };
         
-        return Run(
+        return CtxRunner.RunScenarioAsync(
             c => c.Given_authenticated_user(),
             c => c.Given_existing_weightLogs(),
             c => c.When_user_adds_weightLog(newWeightLog),
