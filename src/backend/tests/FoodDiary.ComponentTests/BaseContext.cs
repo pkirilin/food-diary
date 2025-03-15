@@ -17,14 +17,12 @@ public abstract class BaseContext
     
     protected WebApplicationFactory<Startup> Factory;
     protected HttpClient ApiClient => _apiClient ??= Factory.CreateClient();
-    protected readonly InfrastructureFixture Infrastructure;
-
-    protected BaseContext(FoodDiaryWebApplicationFactory factory, InfrastructureFixture infrastructure)
+    
+    protected BaseContext(FoodDiaryWebApplicationFactory factory)
     {
         _authOptions = factory.Services.GetRequiredService<IOptions<AuthOptions>>();
         _defaultUserEmail = _authOptions.Value.AllowedEmails.First();
         Factory = factory;
-        Infrastructure = infrastructure;
     }
 
     public Task Given_authenticated_user()

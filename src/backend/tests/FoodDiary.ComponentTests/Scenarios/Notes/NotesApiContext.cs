@@ -5,22 +5,27 @@ using FoodDiary.API.Mapping;
 using FoodDiary.Application.Notes.Recognize;
 using FoodDiary.ComponentTests.Dsl;
 using FoodDiary.ComponentTests.Infrastructure;
+using FoodDiary.ComponentTests.Infrastructure.ExternalServices;
 using FoodDiary.Contracts.Notes;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Utils;
+using JetBrains.Annotations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FoodDiary.ComponentTests.Scenarios.Notes;
 
-public class NotesApiContext(FoodDiaryWebApplicationFactory factory, InfrastructureFixture infrastructure)
-    : BaseContext(factory, infrastructure)
+[UsedImplicitly]
+public class NotesApiContext(
+    FoodDiaryWebApplicationFactory factory,
+    ExternalServicesFixture externalServices) : BaseContext(factory)
 {
     private static readonly JsonSerializerOptions SerializerOptions = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase
     };
-    
+
+    private OpenAIApi OpenAiApi => externalServices.OpenAiApi;
     private GetNotesResponse? _getNotesResponse;
     private GetNotesHistoryResponse? _getNotesHistoryResponse;
     private HttpResponseMessage _createNoteResponse = null!;
@@ -40,23 +45,23 @@ public class NotesApiContext(FoodDiaryWebApplicationFactory factory, Infrastruct
 
     public Task Given_OpenAI_api_is_ready()
     {
-        return Infrastructure.ExternalServices.OpenAiApi.Start();
+        return OpenAiApi.Start();
     }
     
     public Task Given_OpenAI_api_can_recognize_notes(params RecognizeNoteItem[] notes)
     {
         var content = JsonSerializer.Serialize(notes, SerializerOptions);
-        return Infrastructure.ExternalServices.OpenAiApi.SetupCompletionSuccess(content);
+        return OpenAiApi.SetupCompletionSuccess(content);
     }
     
     public Task Given_OpenAI_completion_response_is_not_recognized_notes_json()
     {
-        return Infrastructure.ExternalServices.OpenAiApi.SetupCompletionSuccess("Sorry, I didn't understand that.");
+        return OpenAiApi.SetupCompletionSuccess("Sorry, I didn't understand that.");
     }
     
     public Task Given_OpenAI_request_failed_with_error(HttpStatusCode error)
     {
-        return Infrastructure.ExternalServices.OpenAiApi.SetupCompletionFailure(error);
+        return OpenAiApi.SetupCompletionFailure(error);
     }
 
     public async Task When_user_retrieves_notes_list_for_date(string date)

@@ -8,7 +8,7 @@ public class CategoriesApiTests(FoodDiaryWebApplicationFactory factory, Infrastr
 {
     protected override CategoriesApiContext CreateContext(
         FoodDiaryWebApplicationFactory factory,
-        InfrastructureFixture infrastructure) => new(factory, infrastructure);
+        InfrastructureFixture infrastructure) => new(factory);
 
     [Scenario]
     public Task I_can_retrieve_categories_list()

@@ -10,8 +10,7 @@ using FoodDiary.Domain.Entities;
 
 namespace FoodDiary.ComponentTests.Scenarios.Categories;
 
-public class CategoriesApiContext(FoodDiaryWebApplicationFactory factory, InfrastructureFixture infrastructure)
-    : BaseContext(factory, infrastructure)
+public class CategoriesApiContext(FoodDiaryWebApplicationFactory factory) : BaseContext(factory)
 {
     private IReadOnlyList<CategoryItemDto>? _categoriesList;
     private IReadOnlyList<CategoryAutocompleteItemDto>? _categoriesListForAutocomplete;

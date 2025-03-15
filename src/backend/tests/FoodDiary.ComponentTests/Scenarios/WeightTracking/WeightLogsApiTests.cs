@@ -8,7 +8,7 @@ public class WeightLogsApiTests(FoodDiaryWebApplicationFactory factory, Infrastr
 {
     protected override WeightLogsApiContext CreateContext(
         FoodDiaryWebApplicationFactory factory,
-        InfrastructureFixture infrastructure) => new(factory, infrastructure);
+        InfrastructureFixture infrastructure) => new(factory);
 
     private static WeightLog[] GivenWeightLogs() =>
     [

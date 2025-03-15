@@ -8,7 +8,7 @@ public class ProductsApiTests(FoodDiaryWebApplicationFactory factory, Infrastruc
 {
     protected override ProductsApiContext CreateContext(
         FoodDiaryWebApplicationFactory factory,
-        InfrastructureFixture infrastructure) => new(factory, infrastructure);
+        InfrastructureFixture infrastructure) => new(factory);
 
     [Scenario]
     public Task I_can_retrieve_products_list()

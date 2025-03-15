@@ -13,8 +13,7 @@ using FoodDiary.Domain.Entities;
 
 namespace FoodDiary.ComponentTests.Scenarios.Products;
 
-public class ProductsApiContext(FoodDiaryWebApplicationFactory factory, InfrastructureFixture infrastructure)
-    : BaseContext(factory, infrastructure)
+public class ProductsApiContext(FoodDiaryWebApplicationFactory factory) : BaseContext(factory)
 {
     private ProductsSearchResultDto? _productsResponse;
     private SearchProductsResult.Product[]? _productsForAutocompleteResponse;

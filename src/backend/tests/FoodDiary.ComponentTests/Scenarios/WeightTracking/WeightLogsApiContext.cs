@@ -7,8 +7,7 @@ using FoodDiary.Domain.WeightTracking;
 
 namespace FoodDiary.ComponentTests.Scenarios.WeightTracking;
 
-public class WeightLogsApiContext(FoodDiaryWebApplicationFactory factory, InfrastructureFixture infrastructure)
-    : BaseContext(factory, infrastructure)
+public class WeightLogsApiContext(FoodDiaryWebApplicationFactory factory) : BaseContext(factory)
 {
     private GetWeightLogsResponse? _getWeightLogsResponse;
     private HttpResponseMessage? _addWeightLogResponse;

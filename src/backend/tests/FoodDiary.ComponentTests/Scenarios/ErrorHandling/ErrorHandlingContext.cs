@@ -7,8 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace FoodDiary.ComponentTests.Scenarios.ErrorHandling;
 
-public class ErrorHandlingContext(FoodDiaryWebApplicationFactory factory, InfrastructureFixture infrastructure)
-    : BaseContext(factory, infrastructure)
+public class ErrorHandlingContext(FoodDiaryWebApplicationFactory factory) : BaseContext(factory)
 {
     private HttpResponseMessage? _response;
     private HttpStatusCode _statusCode;

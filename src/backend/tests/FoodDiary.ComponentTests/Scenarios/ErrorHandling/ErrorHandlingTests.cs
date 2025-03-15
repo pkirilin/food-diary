@@ -8,7 +8,7 @@ public class ErrorHandlingTests(FoodDiaryWebApplicationFactory factory, Infrastr
 {
     protected override ErrorHandlingContext CreateContext(
         FoodDiaryWebApplicationFactory factory,
-        InfrastructureFixture infrastructure) => new(factory, infrastructure);
+        InfrastructureFixture infrastructure) => new(factory);
 
     [Scenario]
     public Task I_receive_unhandled_errors_in_problem_details_format()
