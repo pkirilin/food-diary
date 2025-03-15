@@ -8,10 +8,7 @@ namespace FoodDiary.ComponentTests;
 public class InfrastructureCollection : ICollectionFixture<InfrastructureFixture>;
 
 [Collection(nameof(InfrastructureCollection))]
-public abstract class BaseTest<TContext>(InfrastructureFixture infrastructure) :
-    FeatureFixture,
-    IClassFixture<InfrastructureFixture>,
-    IAsyncLifetime
+public abstract class BaseTest<TContext>(InfrastructureFixture infrastructure) : FeatureFixture, IAsyncLifetime
     where TContext : notnull
 {
     protected IBddRunner<TContext> CtxRunner
