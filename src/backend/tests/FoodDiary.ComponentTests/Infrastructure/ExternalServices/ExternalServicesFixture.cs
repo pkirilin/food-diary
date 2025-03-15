@@ -1,12 +1,13 @@
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Containers;
 using JetBrains.Annotations;
+using LightBDD.Core.Execution;
 using MbDotNet;
 
 namespace FoodDiary.ComponentTests.Infrastructure.ExternalServices;
 
 [UsedImplicitly]
-public class ExternalServicesFixture : IAsyncLifetime
+public class ExternalServicesFixture : IGlobalResourceSetUp
 {
     private static readonly IContainer MountebankContainer = new ContainerBuilder()
         .WithImage("bbyars/mountebank:2.9.1")
@@ -21,12 +22,12 @@ public class ExternalServicesFixture : IAsyncLifetime
     public GoogleIdentityProvider GoogleIdentityProvider { get; } = new(MountebankClient);
     public OpenAIApi OpenAiApi { get; } = new(MountebankClient);
 
-    public Task InitializeAsync()
+    public Task SetUpAsync()
     {
         return MountebankContainer.StartAsync();
     }
 
-    public Task DisposeAsync()
+    public Task TearDownAsync()
     {
         return MountebankContainer.StopAsync();
     }

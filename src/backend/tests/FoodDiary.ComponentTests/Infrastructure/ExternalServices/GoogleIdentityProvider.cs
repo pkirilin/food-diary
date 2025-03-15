@@ -3,17 +3,30 @@ using MbDotNet;
 using MbDotNet.Models;
 using MbDotNet.Models.Imposters;
 using MbDotNet.Models.Stubs;
+using Polly;
+using Polly.Retry;
 
 namespace FoodDiary.ComponentTests.Infrastructure.ExternalServices;
 
 public class GoogleIdentityProvider(IClient mountebankClient)
 {
+    private static readonly ResiliencePipeline Pipeline = new ResiliencePipelineBuilder()
+        .AddRetry(new RetryStrategyOptions
+        {
+            MaxRetryAttempts = 3
+        })
+        .Build();
+    
     public const int Port = 4545;
 
-    public Task Start()
+    public async Task Start()
     {
-        var imposter = new HttpImposter(Port, nameof(GoogleIdentityProvider), new HttpImposterOptions());
-        return mountebankClient.OverwriteAllImposters([imposter]);
+        // Added retry to fix "System.Net.Http.HttpIOException: The response ended prematurely" error
+        await Pipeline.ExecuteAsync(async cancellationToken =>
+        {
+            var imposter = new HttpImposter(Port, nameof(GoogleIdentityProvider), new HttpImposterOptions());
+            await mountebankClient.OverwriteAllImposters([imposter], cancellationToken);
+        });
     }
 
     public Task SetupAccessTokenSuccessfullyRefreshed()

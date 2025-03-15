@@ -26,7 +26,8 @@ internal class ConfiguredLightBddScopeAttribute : LightBddScopeAttribute
             .UseContainer(BuildServiceProvider(), _ => { });
 
         configuration.ExecutionExtensionsConfiguration()
-            .RegisterGlobalSetUp<InfrastructureFixture>();
+            .RegisterGlobalSetUp<DatabaseFixture>()
+            .RegisterGlobalSetUp<ExternalServicesFixture>();
     }
 
     private static ServiceProvider BuildServiceProvider() => new ServiceCollection()

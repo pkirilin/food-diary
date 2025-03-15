@@ -3,6 +3,7 @@ using FoodDiary.ComponentTests.Infrastructure;
 
 namespace FoodDiary.ComponentTests;
 
+// TODO: remove
 [Collection(nameof(InfrastructureCollection))]
 public abstract class ScenarioBase<TContext>(
     FoodDiaryWebApplicationFactory factory,
