@@ -1,7 +1,5 @@
 using System;
-using System.ClientModel;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -11,9 +9,8 @@ using ImageMagick;
 using JetBrains.Annotations;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
-using OpenAI;
-using OpenAI.Chat;
 using RecognizeNoteResult = FoodDiary.Application.Result<FoodDiary.Application.Notes.Recognize.RecognizeNoteResponse>;
 
 namespace FoodDiary.Application.Notes.Recognize;
@@ -31,10 +28,8 @@ public record RecognizeNoteRequest(IReadOnlyList<IFormFile> Files) : IRequest<Re
 
 [UsedImplicitly]
 internal class RecognizeNoteRequestHandler(
-    [SuppressMessage("ReSharper", "InconsistentNaming")]
-    OpenAIClient openAIClient,
-    ILogger<RecognizeNoteRequestHandler> logger)
-    : IRequestHandler<RecognizeNoteRequest, RecognizeNoteResult>
+    IChatClient chatClient,
+    ILogger<RecognizeNoteRequestHandler> logger) : IRequestHandler<RecognizeNoteRequest, RecognizeNoteResult>
 {
     private const string Model = "gpt-4o";
     private const int ImageMaxSize = 512;
@@ -66,9 +61,9 @@ internal class RecognizeNoteRequestHandler(
          Also, if possible, DO NOT translate product names into English, keep original names from the image.
          """;
 
-    private static readonly ChatCompletionOptions CompletionOptions = new()
+    private static readonly ChatOptions ChatOptions = new()
     {
-        MaxTokens = 4000
+        MaxOutputTokens = 4000
     };
 
     public async Task<RecognizeNoteResult> Handle(
@@ -84,21 +79,15 @@ internal class RecognizeNoteRequestHandler(
 
         var optimizedImageBytes = await OptimizeImage(imageFile, cancellationToken);
 
-        var chatClient = openAIClient.GetChatClient(Model);
+        var chatMessage = new ChatMessage(ChatRole.User,
+        [
+            new TextContent(Prompt),
+            new DataContent(optimizedImageBytes, "image/jpeg")
+        ]);
 
-        var chatCompletion = await chatClient.CompleteChatAsync(
-            [
-                ChatMessage.CreateUserMessage(
-                [
-                    ChatMessageContentPart.CreateTextMessageContentPart(Prompt),
-                    ChatMessageContentPart.CreateImageMessageContentPart(
-                        BinaryData.FromBytes(optimizedImageBytes),
-                        "image/jpeg")
-                ])
-            ],
-            CompletionOptions);
+        var chatResponse = await chatClient.GetResponseAsync(chatMessage, ChatOptions, cancellationToken);
 
-        return !TryParseNotesFromModelResponse(chatCompletion, out var recognizedNotes)
+        return !TryParseNotesFromModelResponse(chatResponse, out var recognizedNotes)
             ? RecognizeNoteResult.InternalServerError("Model response was invalid")
             : new RecognizeNoteResult.Success(new RecognizeNoteResponse(recognizedNotes));
     }
@@ -133,20 +122,12 @@ internal class RecognizeNoteRequestHandler(
     }
 
     private bool TryParseNotesFromModelResponse(
-        ClientResult<ChatCompletion> chatCompletion,
+        ChatResponse response,
         out IReadOnlyList<RecognizeNoteItem> recognizedNotes)
     {
-        var content = chatCompletion.Value.Content.ElementAtOrDefault(0);
-
-        if (content is null)
-        {
-            recognizedNotes = [];
-            return false;
-        }
-
         try
         {
-            var notes = JsonSerializer.Deserialize<IReadOnlyList<RecognizeNoteItem>>(content.Text, SerializerOptions);
+            var notes = JsonSerializer.Deserialize<IReadOnlyList<RecognizeNoteItem>>(response.Text, SerializerOptions);
 
             if (notes is null)
             {
@@ -160,9 +141,9 @@ internal class RecognizeNoteRequestHandler(
         catch (Exception)
         {
             recognizedNotes = [];
-            logger.LogError("Failed to parse recognized notes from {Model} model response: {ContentText}",
-                Model,
-                content.Text);
+            logger.LogError(
+                "Failed to parse recognized notes from {Model} model response: {ContentText}",
+                Model, response.Text);
             return false;
         }
     }
