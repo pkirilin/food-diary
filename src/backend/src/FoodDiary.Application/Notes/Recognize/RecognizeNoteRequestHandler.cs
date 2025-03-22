@@ -31,7 +31,6 @@ internal class RecognizeNoteRequestHandler(
     IChatClient chatClient,
     ILogger<RecognizeNoteRequestHandler> logger) : IRequestHandler<RecognizeNoteRequest, RecognizeNoteResult>
 {
-    private const string Model = "gpt-4o";
     private const int ImageMaxSize = 512;
 
     private static readonly ImageOptimizer ImageOptimizer = new();
@@ -142,8 +141,8 @@ internal class RecognizeNoteRequestHandler(
         {
             recognizedNotes = [];
             logger.LogError(
-                "Failed to parse recognized notes from {Model} model response: {ContentText}",
-                Model, response.Text);
+                "Failed to parse recognized notes from {ModelId} model response: {ContentText}",
+                response.ModelId, response.Text);
             return false;
         }
     }
