@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using OpenAI;
 
@@ -27,6 +28,7 @@ public static class DependencyInjectionExtensions
         services.AddChatClient(provider => provider.GetRequiredService<OpenAIClient>()
             .AsChatClient("gpt-4o")
             .AsBuilder()
+            .UseLogging(provider.GetRequiredService<ILoggerFactory>())
             .Build());
     }
 }
