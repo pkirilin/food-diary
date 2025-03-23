@@ -1,7 +1,6 @@
 using System;
-using System.ClientModel;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -11,96 +10,91 @@ using ImageMagick;
 using JetBrains.Annotations;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
-using OpenAI;
-using OpenAI.Chat;
 using RecognizeNoteResult = FoodDiary.Application.Result<FoodDiary.Application.Notes.Recognize.RecognizeNoteResponse>;
 
 namespace FoodDiary.Application.Notes.Recognize;
 
-[PublicAPI]
-public record RecognizeProductItem(string Name, int CaloriesCost);
+public class FoodItemOnTheImage
+{
+    [Description("Product name, e.g. Bread. Always start with a uppercase letter, avoid CAPS")]
+    public required string Name { get; init; }
 
-[PublicAPI]
-public record RecognizeNoteItem(RecognizeProductItem Product, int Quantity);
+    [Description("Product quantity in grams, e.g. 50")]
+    public required int Quantity { get; init; } = 100;
 
-[PublicAPI]
-public record RecognizeNoteResponse(IReadOnlyList<RecognizeNoteItem> Notes);
+    [Description("Product calories cost in kilocalories per 100 grams of quantity, e.g. 125")]
+    public required int CaloriesCost { get; init; } = 100;
+    
+    [Description("Product brand name, e.g. Nestle")]
+    public string? BrandName { get; init; }
+}
+
+public enum ObjectTypeOnImage
+{
+    NotAFood,
+    PackagedFoodWithLabel,
+    OtherFood
+}
 
 public record RecognizeNoteRequest(IReadOnlyList<IFormFile> Files) : IRequest<RecognizeNoteResult>;
 
 [UsedImplicitly]
 internal class RecognizeNoteRequestHandler(
-    [SuppressMessage("ReSharper", "InconsistentNaming")]
-    OpenAIClient openAIClient,
-    ILogger<RecognizeNoteRequestHandler> logger)
-    : IRequestHandler<RecognizeNoteRequest, RecognizeNoteResult>
+    IChatClient chatClient,
+    ILogger<RecognizeNoteRequestHandler> logger) : IRequestHandler<RecognizeNoteRequest, RecognizeNoteResult>
 {
-    private const string Model = "gpt-4o";
-    private const int ImageMaxSize = 512;
-
     private static readonly ImageOptimizer ImageOptimizer = new();
 
-    private static readonly JsonSerializerOptions SerializerOptions = new()
+    private const string SystemPrompt =
+        "You are a bot in the calorie tracking app helping users track their calorie intake by analyzing food images";
+
+    private const string UserPrompt =
+        """
+        Analyze this image and find all the food, meals, or products in it.
+        Also, if possible, do not translate product names into English, keep original names from the image.
+        """;
+
+    private static readonly ChatOptions ChatOptions = new()
     {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        Temperature = 0.9f,
+        Tools = [AIFunctionFactory.Create(ReadRequirementsTool)],
+        ToolMode = ChatToolMode.RequireSpecific(nameof(ReadRequirementsTool))
     };
 
-    private static readonly string ExampleNoteAsJson = JsonSerializer.Serialize(
-        new RecognizeNoteItem(
-            Product: new RecognizeProductItem(
-                Name: "Bread",
-                CaloriesCost: 125),
-            Quantity: 50),
-        SerializerOptions);
-
-    private static readonly string Prompt =
-        $"""
-         Find all the food, meals, or products in this image. Output them as an array of items using the following JSON format:
-         ```
-         {ExampleNoteAsJson}
-         ```
-         where `quantity` is measured in grams and `caloriesCost` is measured in kilocalories per 100 grams of the product.
-
-         IMPORTANT: do NOT provide any text notes in your response, only the JSON string WITHOUT the "```" backticks.
-         Also, if possible, DO NOT translate product names into English, keep original names from the image.
-         """;
-
-    private static readonly ChatCompletionOptions CompletionOptions = new()
-    {
-        MaxTokens = 4000
-    };
-
-    public async Task<RecognizeNoteResult> Handle(
-        RecognizeNoteRequest request,
-        CancellationToken cancellationToken)
+    public async Task<RecognizeNoteResult> Handle(RecognizeNoteRequest request, CancellationToken cancellationToken)
     {
         var imageFile = FindImage(request.Files);
-
+        
         if (imageFile is null)
         {
             return RecognizeNoteResult.ValidationError("No images provided");
         }
 
         var optimizedImageBytes = await OptimizeImage(imageFile, cancellationToken);
+        
+        var systemMessage = new ChatMessage(ChatRole.System, SystemPrompt);
+        
+        var userMessage = new ChatMessage(ChatRole.User,
+        [
+            new TextContent(UserPrompt),
+            new DataContent(optimizedImageBytes, "image/jpeg")
+        ]);
 
-        var chatClient = openAIClient.GetChatClient(Model);
+        var chatResponse = await chatClient.GetResponseAsync<FoodItemOnTheImage>(
+            messages: [systemMessage, userMessage],
+            JsonSerializerOptions.Web,
+            options: ChatOptions,
+            cancellationToken: cancellationToken);
 
-        var chatCompletion = await chatClient.CompleteChatAsync(
-            [
-                ChatMessage.CreateUserMessage(
-                [
-                    ChatMessageContentPart.CreateTextMessageContentPart(Prompt),
-                    ChatMessageContentPart.CreateImageMessageContentPart(
-                        BinaryData.FromBytes(optimizedImageBytes),
-                        "image/jpeg")
-                ])
-            ],
-            CompletionOptions);
+        if (!chatResponse.TryGetResult(out var foodOnImage) && foodOnImage is null)
+        {
+            logger.LogError("Could not deserialize model response {ModelResponse}", chatResponse.Text);
+            return RecognizeNoteResult.InternalServerError("Model response was invalid");
+        }
 
-        return !TryParseNotesFromModelResponse(chatCompletion, out var recognizedNotes)
-            ? RecognizeNoteResult.InternalServerError("Model response was invalid")
-            : new RecognizeNoteResult.Success(new RecognizeNoteResponse(recognizedNotes));
+        return new RecognizeNoteResult.Success(new RecognizeNoteResponse([foodOnImage.ToRecognizeNoteItem()]));
     }
 
     private static IFormFile? FindImage(IReadOnlyCollection<IFormFile> files)
@@ -114,56 +108,25 @@ internal class RecognizeNoteRequestHandler(
         using var memoryStream = new MemoryStream();
         await stream.CopyToAsync(memoryStream, cancellationToken);
         memoryStream.Position = 0;
-        ImageOptimizer.Compress(memoryStream);
+        ImageOptimizer.LosslessCompress(memoryStream);
 
         using var image = new MagickImage();
         await image.ReadAsync(memoryStream, cancellationToken);
         image.Format = MagickFormat.Jpeg;
-
-        if (image.Width > ImageMaxSize)
-        {
-            image.Resize(ImageMaxSize, 0);
-        }
-        else if (image.Height > ImageMaxSize)
-        {
-            image.Resize(0, ImageMaxSize);
-        }
-
+        
         return image.ToByteArray();
     }
 
-    private bool TryParseNotesFromModelResponse(
-        ClientResult<ChatCompletion> chatCompletion,
-        out IReadOnlyList<RecognizeNoteItem> recognizedNotes)
+    private static string ReadRequirementsTool(ObjectTypeOnImage objectType)
     {
-        var content = chatCompletion.Value.Content.ElementAtOrDefault(0);
-
-        if (content is null)
+        return objectType switch
         {
-            recognizedNotes = [];
-            return false;
-        }
-
-        try
-        {
-            var notes = JsonSerializer.Deserialize<IReadOnlyList<RecognizeNoteItem>>(content.Text, SerializerOptions);
-
-            if (notes is null)
-            {
-                recognizedNotes = [];
-                return false;
-            }
-
-            recognizedNotes = notes;
-            return true;
-        }
-        catch (Exception)
-        {
-            recognizedNotes = [];
-            logger.LogError("Failed to parse recognized notes from {Model} model response: {ContentText}",
-                Model,
-                content.Text);
-            return false;
-        }
+            ObjectTypeOnImage.NotAFood => string.Empty,
+            ObjectTypeOnImage.PackagedFoodWithLabel =>
+                "Analyze the label text and output product name, quantity (weight), and energy value. Be precise and always stick to the label text. Keep the original language from the label",
+            ObjectTypeOnImage.OtherFood =>
+                "Analyze the food on this image and output product name in standard English. Try to be specific and precise. Avoid generic names",
+            _ => throw new ArgumentOutOfRangeException(nameof(objectType), objectType, null)
+        };
     }
 }
