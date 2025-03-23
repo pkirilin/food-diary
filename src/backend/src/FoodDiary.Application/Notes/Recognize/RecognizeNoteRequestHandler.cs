@@ -42,7 +42,6 @@ public record RecognizeNoteRequest(IReadOnlyList<IFormFile> Files) : IRequest<Re
 internal class RecognizeNoteRequestHandler(IChatClient chatClient)
     : IRequestHandler<RecognizeNoteRequest, RecognizeNoteResult>
 {
-    private const int ImageMaxSize = 512;
     private static readonly ImageOptimizer ImageOptimizer = new();
 
     private const string SystemPrompt =
@@ -100,21 +99,12 @@ internal class RecognizeNoteRequestHandler(IChatClient chatClient)
         using var memoryStream = new MemoryStream();
         await stream.CopyToAsync(memoryStream, cancellationToken);
         memoryStream.Position = 0;
-        ImageOptimizer.Compress(memoryStream);
+        ImageOptimizer.LosslessCompress(memoryStream);
 
         using var image = new MagickImage();
         await image.ReadAsync(memoryStream, cancellationToken);
         image.Format = MagickFormat.Jpeg;
-
-        if (image.Width > ImageMaxSize)
-        {
-            image.Resize(ImageMaxSize, 0);
-        }
-        else if (image.Height > ImageMaxSize)
-        {
-            image.Resize(0, ImageMaxSize);
-        }
-
+        
         return image.ToByteArray();
     }
 }
