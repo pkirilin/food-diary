@@ -11,6 +11,7 @@ using JetBrains.Annotations;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.AI;
+using Microsoft.Extensions.Logging;
 using RecognizeNoteResult = FoodDiary.Application.Result<FoodDiary.Application.Notes.Recognize.RecognizeNoteResponse>;
 
 namespace FoodDiary.Application.Notes.Recognize;
@@ -40,8 +41,9 @@ public enum ObjectTypeOnImage
 public record RecognizeNoteRequest(IReadOnlyList<IFormFile> Files) : IRequest<RecognizeNoteResult>;
 
 [UsedImplicitly]
-internal class RecognizeNoteRequestHandler(IChatClient chatClient)
-    : IRequestHandler<RecognizeNoteRequest, RecognizeNoteResult>
+internal class RecognizeNoteRequestHandler(
+    IChatClient chatClient,
+    ILogger<RecognizeNoteRequestHandler> logger) : IRequestHandler<RecognizeNoteRequest, RecognizeNoteResult>
 {
     private static readonly ImageOptimizer ImageOptimizer = new();
 
@@ -88,6 +90,7 @@ internal class RecognizeNoteRequestHandler(IChatClient chatClient)
 
         if (!chatResponse.TryGetResult(out var foodOnImage) && foodOnImage is null)
         {
+            logger.LogError("Could not deserialize model response {ModelResponse}", chatResponse.Text);
             return RecognizeNoteResult.InternalServerError("Model response was invalid");
         }
 
