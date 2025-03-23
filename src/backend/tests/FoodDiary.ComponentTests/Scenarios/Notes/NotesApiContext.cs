@@ -48,9 +48,9 @@ public class NotesApiContext(
         return OpenAiApi.Start();
     }
     
-    public Task Given_OpenAI_api_can_recognize_notes(params RecognizeNoteItem[] notes)
+    public Task Given_OpenAI_api_can_recognize_food(FoodItemOnTheImage food)
     {
-        var content = JsonSerializer.Serialize(notes, SerializerOptions);
+        var content = JsonSerializer.Serialize(food, SerializerOptions);
         return OpenAiApi.SetupCompletionSuccess(content);
     }
     
@@ -164,10 +164,13 @@ public class NotesApiContext(
         return Task.CompletedTask;
     }
     
-    public async Task Then_note_is_successfully_recognized_as(RecognizeNoteItem note)
+    public async Task Then_note_is_successfully_recognized_as(FoodItemOnTheImage food)
     {
         var response = await _recognizeNoteResponse.Content.ReadFromJsonAsync<RecognizeNoteResponse>();
-        response?.Notes.Should().Contain(note);
+        var note = response?.Notes[0];
+        note?.Product.Name.Should().Be(food.Name);
+        note?.Product.CaloriesCost.Should().Be(food.CaloriesCost);
+        note?.Quantity.Should().Be(food.Quantity);
     }
 
     public async Task Then_recognize_note_response_returns_error(HttpStatusCode statusCode)

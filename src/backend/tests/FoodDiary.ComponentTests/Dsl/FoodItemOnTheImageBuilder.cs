@@ -2,33 +2,30 @@ using FoodDiary.Application.Notes.Recognize;
 
 namespace FoodDiary.ComponentTests.Dsl;
 
-public class RecognizeNoteItemBuilder
+public class FoodItemOnTheImageBuilder
 {
     private string _name = string.Empty;
     private int _caloriesCost = 100;
     private int _quantity = 100;
     
-    public RecognizeNoteItem Please()
+    public FoodItemOnTheImage Please()
     {
-        return new RecognizeNoteItem
+        return new FoodItemOnTheImage
         {
-            Product = new RecognizeProductItem
-            {
-                Name = _name,
-                CaloriesCost = _caloriesCost
-            },
+            Name = _name,
+            CaloriesCost = _caloriesCost,
             Quantity = _quantity
         };
     }
     
-    public RecognizeNoteItemBuilder WithProduct(string name, int caloriesCost)
+    public FoodItemOnTheImageBuilder WithProduct(string name, int caloriesCost)
     {
         _name = name;
         _caloriesCost = caloriesCost;
         return this;
     }
     
-    public RecognizeNoteItemBuilder WithQuantity(int quantity)
+    public FoodItemOnTheImageBuilder WithQuantity(int quantity)
     {
         _quantity = quantity;
         return this;

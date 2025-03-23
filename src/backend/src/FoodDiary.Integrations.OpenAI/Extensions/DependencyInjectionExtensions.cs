@@ -29,6 +29,7 @@ public static class DependencyInjectionExtensions
             .AsChatClient("gpt-4o")
             .AsBuilder()
             .UseLogging(provider.GetRequiredService<ILoggerFactory>())
+            .UseFunctionInvocation()
             .Build());
     }
 }

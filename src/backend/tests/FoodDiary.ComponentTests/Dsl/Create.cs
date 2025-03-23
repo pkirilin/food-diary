@@ -8,7 +8,7 @@ public static class Create
     public static ProductBuilder Product(string? name = null) => new(name);
     public static NoteBuilder Note() => new();
     
-    public static RecognizeNoteItemBuilder RecognizeNoteItem() => new();
+    public static FoodItemOnTheImageBuilder FoodItemOnTheImage() => new();
     
     public static NotesHistoryItem NoteHistoryItem(string date, int caloriesCount) => new(
         DateOnly.Parse(date),

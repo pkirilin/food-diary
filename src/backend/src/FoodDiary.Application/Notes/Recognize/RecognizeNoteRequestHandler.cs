@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -14,27 +15,26 @@ using RecognizeNoteResult = FoodDiary.Application.Result<FoodDiary.Application.N
 
 namespace FoodDiary.Application.Notes.Recognize;
 
-[PublicAPI]
-public class RecognizeProductItem
+public class FoodItemOnTheImage
 {
     [Description("Product name, e.g. Bread")]
     public required string Name { get; init; }
-    
-    [Description("Product calories cost in kilocalories per 100 grams of quantity, e.g. 125")]
-    public required int CaloriesCost { get; init; }
-}
 
-[PublicAPI]
-public class RecognizeNoteItem
-{
-    public required RecognizeProductItem Product { get; init; }
-    
     [Description("Product quantity in grams, e.g. 50")]
-    public required int Quantity { get; init; } 
+    public required int Quantity { get; init; } = 100;
+
+    [Description("Product calories cost in kilocalories per 100 grams of quantity, e.g. 125")]
+    public required int CaloriesCost { get; init; } = 100;
+    
+    public string? BrandName { get; init; }
 }
 
-[PublicAPI]
-public record RecognizeNoteResponse(IReadOnlyList<RecognizeNoteItem> Notes);
+public enum ObjectTypeOnImage
+{
+    NotAFood,
+    PackagedFoodWithLabel,
+    OtherFood
+}
 
 public record RecognizeNoteRequest(IReadOnlyList<IFormFile> Files) : IRequest<RecognizeNoteResult>;
 
@@ -53,7 +53,12 @@ internal class RecognizeNoteRequestHandler(IChatClient chatClient)
         Also, if possible, do not translate product names into English, keep original names from the image.
         """;
 
-    private static readonly ChatOptions ChatOptions = new();
+    private static readonly ChatOptions ChatOptions = new()
+    {
+        Temperature = 0.9f,
+        Tools = [AIFunctionFactory.Create(ReadRequirementsTool)],
+        ToolMode = ChatToolMode.RequireSpecific(nameof(ReadRequirementsTool))
+    };
 
     public async Task<RecognizeNoteResult> Handle(RecognizeNoteRequest request, CancellationToken cancellationToken)
     {
@@ -74,18 +79,18 @@ internal class RecognizeNoteRequestHandler(IChatClient chatClient)
             new DataContent(optimizedImageBytes, "image/jpeg")
         ]);
 
-        var chatResponse = await chatClient.GetResponseAsync<RecognizeNoteItem>(
+        var chatResponse = await chatClient.GetResponseAsync<FoodItemOnTheImage>(
             messages: [systemMessage, userMessage],
             JsonSerializerOptions.Web,
             options: ChatOptions,
             cancellationToken: cancellationToken);
 
-        if (!chatResponse.TryGetResult(out var recognizedNote) && recognizedNote is null)
+        if (!chatResponse.TryGetResult(out var foodOnImage) && foodOnImage is null)
         {
             return RecognizeNoteResult.InternalServerError("Model response was invalid");
         }
 
-        return new RecognizeNoteResult.Success(new RecognizeNoteResponse([recognizedNote]));
+        return new RecognizeNoteResult.Success(new RecognizeNoteResponse([foodOnImage.ToRecognizeNoteItem()]));
     }
 
     private static IFormFile? FindImage(IReadOnlyCollection<IFormFile> files)
@@ -106,5 +111,18 @@ internal class RecognizeNoteRequestHandler(IChatClient chatClient)
         image.Format = MagickFormat.Jpeg;
         
         return image.ToByteArray();
+    }
+
+    private static string ReadRequirementsTool(ObjectTypeOnImage objectType)
+    {
+        return objectType switch
+        {
+            ObjectTypeOnImage.NotAFood => string.Empty,
+            ObjectTypeOnImage.PackagedFoodWithLabel =>
+                "Analyze the label text and output product name, quantity (weight), and energy value. Be precise and always stick to the label text. Keep the original language from the label",
+            ObjectTypeOnImage.OtherFood =>
+                "Analyze the food on this image and output product name in standard English. Try to be specific and precise. Avoid generic names",
+            _ => throw new ArgumentOutOfRangeException(nameof(objectType), objectType, null)
+        };
     }
 }
