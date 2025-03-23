@@ -113,6 +113,7 @@ public class NotesApiTests(InfrastructureFixture infrastructure) : BaseTest<Note
         var orange = Create.FoodItemOnTheImage()
             .WithProduct("Orange", caloriesCost: 50)
             .WithQuantity(400)
+            .WithBrandName("Green Village")
             .Please();
         
         return CtxRunner.RunScenarioAsync(

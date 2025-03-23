@@ -168,7 +168,9 @@ public class NotesApiContext(
     {
         var response = await _recognizeNoteResponse.Content.ReadFromJsonAsync<RecognizeNoteResponse>();
         var note = response?.Notes[0];
-        note?.Product.Name.Should().Be(food.Name);
+        note?.Product.Name.Should()
+            .Contain(food.Name).And
+            .Contain(food.BrandName);
         note?.Product.CaloriesCost.Should().Be(food.CaloriesCost);
         note?.Quantity.Should().Be(food.Quantity);
     }

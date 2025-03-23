@@ -7,6 +7,7 @@ public class FoodItemOnTheImageBuilder
     private string _name = string.Empty;
     private int _caloriesCost = 100;
     private int _quantity = 100;
+    private string? _brandName;
     
     public FoodItemOnTheImage Please()
     {
@@ -14,7 +15,8 @@ public class FoodItemOnTheImageBuilder
         {
             Name = _name,
             CaloriesCost = _caloriesCost,
-            Quantity = _quantity
+            Quantity = _quantity,
+            BrandName = _brandName
         };
     }
     
@@ -30,4 +32,10 @@ public class FoodItemOnTheImageBuilder
         _quantity = quantity;
         return this;
     }
+
+    public FoodItemOnTheImageBuilder WithBrandName(string? brandName)
+    {
+        _brandName = brandName;
+        return this;
+    } 
 }
