@@ -17,7 +17,7 @@ namespace FoodDiary.Application.Notes.Recognize;
 
 public class FoodItemOnTheImage
 {
-    [Description("Product name, e.g. Bread")]
+    [Description("Product name, e.g. Bread. Always start with a uppercase letter, avoid CAPS")]
     public required string Name { get; init; }
 
     [Description("Product quantity in grams, e.g. 50")]
@@ -26,6 +26,7 @@ public class FoodItemOnTheImage
     [Description("Product calories cost in kilocalories per 100 grams of quantity, e.g. 125")]
     public required int CaloriesCost { get; init; } = 100;
     
+    [Description("Product brand name, e.g. Nestle")]
     public string? BrandName { get; init; }
 }
 
@@ -63,7 +64,7 @@ internal class RecognizeNoteRequestHandler(IChatClient chatClient)
     public async Task<RecognizeNoteResult> Handle(RecognizeNoteRequest request, CancellationToken cancellationToken)
     {
         var imageFile = FindImage(request.Files);
-
+        
         if (imageFile is null)
         {
             return RecognizeNoteResult.ValidationError("No images provided");
