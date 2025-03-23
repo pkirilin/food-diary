@@ -10,9 +10,15 @@ public class RecognizeNoteItemBuilder
     
     public RecognizeNoteItem Please()
     {
-        var product = new RecognizeProductItem(_name, _caloriesCost);
-        
-        return new RecognizeNoteItem(product, _quantity);
+        return new RecognizeNoteItem
+        {
+            Product = new RecognizeProductItem
+            {
+                Name = _name,
+                CaloriesCost = _caloriesCost
+            },
+            Quantity = _quantity
+        };
     }
     
     public RecognizeNoteItemBuilder WithProduct(string name, int caloriesCost)

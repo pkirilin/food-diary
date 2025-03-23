@@ -1,5 +1,5 @@
-using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -10,16 +10,28 @@ using JetBrains.Annotations;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.AI;
-using Microsoft.Extensions.Logging;
 using RecognizeNoteResult = FoodDiary.Application.Result<FoodDiary.Application.Notes.Recognize.RecognizeNoteResponse>;
 
 namespace FoodDiary.Application.Notes.Recognize;
 
 [PublicAPI]
-public record RecognizeProductItem(string Name, int CaloriesCost);
+public class RecognizeProductItem
+{
+    [Description("Product name, e.g. Bread")]
+    public required string Name { get; init; }
+    
+    [Description("Product calories cost in kilocalories per 100 grams of quantity, e.g. 125")]
+    public required int CaloriesCost { get; init; }
+}
 
 [PublicAPI]
-public record RecognizeNoteItem(RecognizeProductItem Product, int Quantity);
+public class RecognizeNoteItem
+{
+    public required RecognizeProductItem Product { get; init; }
+    
+    [Description("Product quantity in grams, e.g. 50")]
+    public required int Quantity { get; init; } 
+}
 
 [PublicAPI]
 public record RecognizeNoteResponse(IReadOnlyList<RecognizeNoteItem> Notes);
@@ -27,47 +39,24 @@ public record RecognizeNoteResponse(IReadOnlyList<RecognizeNoteItem> Notes);
 public record RecognizeNoteRequest(IReadOnlyList<IFormFile> Files) : IRequest<RecognizeNoteResult>;
 
 [UsedImplicitly]
-internal class RecognizeNoteRequestHandler(
-    IChatClient chatClient,
-    ILogger<RecognizeNoteRequestHandler> logger) : IRequestHandler<RecognizeNoteRequest, RecognizeNoteResult>
+internal class RecognizeNoteRequestHandler(IChatClient chatClient)
+    : IRequestHandler<RecognizeNoteRequest, RecognizeNoteResult>
 {
     private const int ImageMaxSize = 512;
-
     private static readonly ImageOptimizer ImageOptimizer = new();
 
-    private static readonly JsonSerializerOptions SerializerOptions = new()
-    {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-    };
+    private const string SystemPrompt =
+        "You are a bot in the calorie tracking app helping users track their calorie intake by analyzing food images";
 
-    private static readonly string ExampleNoteAsJson = JsonSerializer.Serialize(
-        new RecognizeNoteItem(
-            Product: new RecognizeProductItem(
-                Name: "Bread",
-                CaloriesCost: 125),
-            Quantity: 50),
-        SerializerOptions);
+    private const string UserPrompt =
+        """
+        Analyze this image and find all the food, meals, or products in it.
+        Also, if possible, do not translate product names into English, keep original names from the image.
+        """;
 
-    private static readonly string Prompt =
-        $"""
-         Find all the food, meals, or products in this image. Output them as an array of items using the following JSON format:
-         ```
-         {ExampleNoteAsJson}
-         ```
-         where `quantity` is measured in grams and `caloriesCost` is measured in kilocalories per 100 grams of the product.
+    private static readonly ChatOptions ChatOptions = new();
 
-         IMPORTANT: do NOT provide any text notes in your response, only the JSON string WITHOUT the "```" backticks.
-         Also, if possible, DO NOT translate product names into English, keep original names from the image.
-         """;
-
-    private static readonly ChatOptions ChatOptions = new()
-    {
-        MaxOutputTokens = 4000
-    };
-
-    public async Task<RecognizeNoteResult> Handle(
-        RecognizeNoteRequest request,
-        CancellationToken cancellationToken)
+    public async Task<RecognizeNoteResult> Handle(RecognizeNoteRequest request, CancellationToken cancellationToken)
     {
         var imageFile = FindImage(request.Files);
 
@@ -77,18 +66,27 @@ internal class RecognizeNoteRequestHandler(
         }
 
         var optimizedImageBytes = await OptimizeImage(imageFile, cancellationToken);
-
-        var chatMessage = new ChatMessage(ChatRole.User,
+        
+        var systemMessage = new ChatMessage(ChatRole.System, SystemPrompt);
+        
+        var userMessage = new ChatMessage(ChatRole.User,
         [
-            new TextContent(Prompt),
+            new TextContent(UserPrompt),
             new DataContent(optimizedImageBytes, "image/jpeg")
         ]);
 
-        var chatResponse = await chatClient.GetResponseAsync(chatMessage, ChatOptions, cancellationToken);
+        var chatResponse = await chatClient.GetResponseAsync<RecognizeNoteItem>(
+            messages: [systemMessage, userMessage],
+            JsonSerializerOptions.Web,
+            options: ChatOptions,
+            cancellationToken: cancellationToken);
 
-        return !TryParseNotesFromModelResponse(chatResponse, out var recognizedNotes)
-            ? RecognizeNoteResult.InternalServerError("Model response was invalid")
-            : new RecognizeNoteResult.Success(new RecognizeNoteResponse(recognizedNotes));
+        if (!chatResponse.TryGetResult(out var recognizedNote) && recognizedNote is null)
+        {
+            return RecognizeNoteResult.InternalServerError("Model response was invalid");
+        }
+
+        return new RecognizeNoteResult.Success(new RecognizeNoteResponse([recognizedNote]));
     }
 
     private static IFormFile? FindImage(IReadOnlyCollection<IFormFile> files)
@@ -118,32 +116,5 @@ internal class RecognizeNoteRequestHandler(
         }
 
         return image.ToByteArray();
-    }
-
-    private bool TryParseNotesFromModelResponse(
-        ChatResponse response,
-        out IReadOnlyList<RecognizeNoteItem> recognizedNotes)
-    {
-        try
-        {
-            var notes = JsonSerializer.Deserialize<IReadOnlyList<RecognizeNoteItem>>(response.Text, SerializerOptions);
-
-            if (notes is null)
-            {
-                recognizedNotes = [];
-                return false;
-            }
-
-            recognizedNotes = notes;
-            return true;
-        }
-        catch (Exception)
-        {
-            recognizedNotes = [];
-            logger.LogError(
-                "Failed to parse recognized notes from {ModelId} model response: {ContentText}",
-                response.ModelId, response.Text);
-            return false;
-        }
     }
 }
