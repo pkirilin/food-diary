@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import CancelIcon from '@mui/icons-material/Cancel';
+import EditIcon from '@mui/icons-material/Edit';
 import { IconButton, InputAdornment, TextField, Tooltip } from '@mui/material';
-import { useEffect, type FC } from 'react';
+import { useEffect, type FC, type MouseEventHandler } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useAppDispatch, useAppSelector } from '@/app/store';
 import { actions, selectors, noteSchema, type NoteFormValues } from '../model';
@@ -9,10 +9,11 @@ import { actions, selectors, noteSchema, type NoteFormValues } from '../model';
 interface Props {
   defaultValues: NoteFormValues;
   onSubmit: (values: NoteFormValues) => Promise<void>;
+  onEditProductStarted: (productId: number) => Promise<void>;
 }
 
-export const NoteForm: FC<Props> = ({ defaultValues, onSubmit }) => {
-  const { control, formState, handleSubmit } = useForm<NoteFormValues>({
+export const NoteForm: FC<Props> = ({ defaultValues, onSubmit, onEditProductStarted }) => {
+  const { control, formState, handleSubmit, getValues } = useForm<NoteFormValues>({
     mode: 'onChange',
     resolver: zodResolver(noteSchema),
     defaultValues,
@@ -26,6 +27,14 @@ export const NoteForm: FC<Props> = ({ defaultValues, onSubmit }) => {
     dispatch(actions.draftValidated(formState.isValid));
   }, [dispatch, formState.isValid]);
 
+  const handleEditProductStarted: MouseEventHandler = async () => {
+    const { product } = getValues();
+
+    if (product) {
+      onEditProductStarted(product.id);
+    }
+  };
+
   return (
     <form id={activeFormId} onSubmit={handleSubmit(values => onSubmit(values))}>
       <TextField
@@ -38,11 +47,13 @@ export const NoteForm: FC<Props> = ({ defaultValues, onSubmit }) => {
           input: {
             readOnly: true,
             endAdornment: (
-              <Tooltip title="Discard and choose another product" placement="left">
-                <IconButton edge="end" onClick={() => dispatch(actions.productDraftDiscarded())}>
-                  <CancelIcon />
-                </IconButton>
-              </Tooltip>
+              <InputAdornment position="end">
+                <Tooltip title="Edit product">
+                  <IconButton edge="end" onClick={handleEditProductStarted}>
+                    <EditIcon />
+                  </IconButton>
+                </Tooltip>
+              </InputAdornment>
             ),
           },
         }}

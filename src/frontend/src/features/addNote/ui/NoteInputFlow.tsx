@@ -31,6 +31,7 @@ export const NoteInputFlow: FC = () => {
 
   const categorySelect = categoryLib.useCategorySelectData();
   const [createProduct] = productApi.useCreateProductMutation();
+  const [getProductById] = productApi.useLazyProductByIdQuery();
   const [createNote] = noteApi.useCreateNoteMutation();
   const [updateNote] = noteApi.useUpdateNoteMutation();
 
@@ -46,6 +47,28 @@ export const NoteInputFlow: FC = () => {
 
     dispatch(actions.productDraftSaved(formValues));
     await createProduct(toCreateProductRequest(formValues, formValues.category.id));
+  };
+
+  const handleEditProductStarted = async (productId: number): Promise<void> => {
+    const productQuery = await getProductById(productId);
+
+    if (!productQuery.isSuccess) {
+      return;
+    }
+
+    const { name, defaultQuantity, caloriesCost, category } = productQuery.data;
+
+    dispatch(
+      actions.productDraftEditStarted({
+        name,
+        defaultQuantity,
+        caloriesCost,
+        category: {
+          id: category.id,
+          name: category.name,
+        },
+      }),
+    );
   };
 
   const handleSubmitNote = async ({
@@ -107,5 +130,11 @@ export const NoteInputFlow: FC = () => {
     return null;
   }
 
-  return <NoteForm defaultValues={noteDraft} onSubmit={handleSubmitNote} />;
+  return (
+    <NoteForm
+      defaultValues={noteDraft}
+      onSubmit={handleSubmitNote}
+      onEditProductStarted={handleEditProductStarted}
+    />
+  );
 };

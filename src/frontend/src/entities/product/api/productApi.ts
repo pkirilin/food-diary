@@ -8,12 +8,18 @@ import {
   type GetProductsRequest,
   type ProductSelectOption,
   type GetProductsResponse,
+  type GetProductByIdResponse,
 } from './contracts';
 
 export const productApi = api.injectEndpoints({
   endpoints: builder => ({
     getProducts: builder.query<GetProductsResponse, GetProductsRequest>({
       query: request => createUrl('/api/v1/products', { ...request }),
+      providesTags: ['product'],
+    }),
+
+    productById: builder.query<GetProductByIdResponse, number>({
+      query: id => `/api/v1/products/${id}`,
       providesTags: ['product'],
     }),
 
