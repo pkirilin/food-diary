@@ -7,5 +7,6 @@ public static class ProductsExtensions
     public static void AddProducts(this IServiceCollection services)
     {
         services.AddScoped<SearchProductsHandler>();
+        services.AddScoped<GetProductByIdHandler>();
     }
 }

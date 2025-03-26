@@ -19,6 +19,18 @@ public class ProductsApiTests(InfrastructureFixture infrastructure)
             c => c.When_user_retrieves_products_list(),
             c => c.Then_products_list_contains_items(chicken, apple, milk));
     }
+    
+    [Scenario]
+    public Task I_can_get_product_by_id()
+    {
+        var apple = Create.Product("Apple").Please();
+        
+        return CtxRunner.RunScenarioAsync(
+            c => c.Given_authenticated_user(),
+            c => c.Given_products(apple),
+            c => c.When_user_retrieves_product_by_id(apple.Id),
+            c => c.Then_product_is_successfully_retrieved(apple));
+    }
 
     [Scenario]
     public Task I_can_search_products_by_name()

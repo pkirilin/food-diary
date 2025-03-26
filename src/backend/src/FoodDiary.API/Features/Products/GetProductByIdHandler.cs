@@ -2,6 +2,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FoodDiary.API.Features.Products.Contracts;
+using FoodDiary.API.Features.Products.Extensions;
 using FoodDiary.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,23 +20,13 @@ public class GetProductByIdHandler(FoodDiaryContext context)
     public async Task<GetProductByIdHandlerResult> Handle(int id, CancellationToken cancellationToken)
     {
         var product = await context.Products
-            .Select(p => new GetProductByIdResponse
-            {
-                Id = p.Id,
-                Name = p.Name,
-                DefaultQuantity = p.DefaultQuantity,
-                CaloriesCost = p.CaloriesCost,
-                Category = new Category
-                {
-                    Id = p.CategoryId,
-                    Name = p.Category.Name
-                }
-            })
-            .FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
+            .Where(p => p.Id == id)
+            .Include(p => p.Category)
+            .Select(p => p.ToGetProductByIdResponse())
+            .FirstOrDefaultAsync(cancellationToken);
 
-        if (product is null)
-            return new GetProductByIdHandlerResult.NotFound();
-
-        return new GetProductByIdHandlerResult.Success(product);
+        return product is null
+            ? new GetProductByIdHandlerResult.NotFound()
+            : new GetProductByIdHandlerResult.Success(product);
     }
 }
