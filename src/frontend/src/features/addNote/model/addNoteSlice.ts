@@ -64,6 +64,14 @@ export const addNoteSlice = createSlice({
       }
     },
 
+    productDraftDiscarded: state => {
+      if (state.note) {
+        state.note.product = null;
+        delete state.product;
+        delete state.image;
+      }
+    },
+
     imageUploaded: (state, { payload }: PayloadAction<Image>) => {
       state.image = payload;
     },

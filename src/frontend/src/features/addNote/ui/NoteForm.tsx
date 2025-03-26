@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import CancelIcon from '@mui/icons-material/Cancel';
 import EditIcon from '@mui/icons-material/Edit';
 import { IconButton, InputAdornment, TextField, Tooltip } from '@mui/material';
 import { useEffect, type FC, type MouseEventHandler } from 'react';
@@ -49,8 +50,13 @@ export const NoteForm: FC<Props> = ({ defaultValues, onSubmit, onEditProductStar
             endAdornment: (
               <InputAdornment position="end">
                 <Tooltip title="Edit product">
-                  <IconButton edge="end" onClick={handleEditProductStarted}>
+                  <IconButton onClick={handleEditProductStarted}>
                     <EditIcon />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Discard and choose another product">
+                  <IconButton edge="end" onClick={() => dispatch(actions.productDraftDiscarded())}>
+                    <CancelIcon />
                   </IconButton>
                 </Tooltip>
               </InputAdornment>
