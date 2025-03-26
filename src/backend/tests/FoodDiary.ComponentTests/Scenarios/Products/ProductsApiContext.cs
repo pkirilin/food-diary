@@ -11,6 +11,7 @@ using FoodDiary.ComponentTests.Infrastructure.DateAndTime;
 using FoodDiary.Contracts.Products;
 using FoodDiary.Domain.Entities;
 using JetBrains.Annotations;
+using Category = FoodDiary.Domain.Entities.Category;
 
 namespace FoodDiary.ComponentTests.Scenarios.Products;
 
