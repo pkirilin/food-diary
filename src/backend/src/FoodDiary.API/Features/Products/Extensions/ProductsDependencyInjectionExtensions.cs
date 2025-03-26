@@ -1,8 +1,8 @@
 using Microsoft.Extensions.DependencyInjection;
 
-namespace FoodDiary.API.Features.Products;
+namespace FoodDiary.API.Features.Products.Extensions;
 
-public static class ProductsExtensions
+public static class ProductsDependencyInjectionExtensions
 {
     public static void AddProducts(this IServiceCollection services)
     {
