@@ -1,7 +1,14 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import CancelIcon from '@mui/icons-material/Cancel';
 import EditIcon from '@mui/icons-material/Edit';
-import { IconButton, InputAdornment, TextField, Tooltip } from '@mui/material';
+import {
+  Box,
+  CircularProgress,
+  IconButton,
+  InputAdornment,
+  TextField,
+  Tooltip,
+} from '@mui/material';
 import { useEffect, type FC, type MouseEventHandler } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useAppDispatch, useAppSelector } from '@/app/store';
@@ -9,11 +16,17 @@ import { actions, selectors, noteSchema, type NoteFormValues } from '../model';
 
 interface Props {
   defaultValues: NoteFormValues;
+  loadingProduct: boolean;
   onSubmit: (values: NoteFormValues) => Promise<void>;
   onEditProductStarted: (productId: number) => Promise<void>;
 }
 
-export const NoteForm: FC<Props> = ({ defaultValues, onSubmit, onEditProductStarted }) => {
+export const NoteForm: FC<Props> = ({
+  defaultValues,
+  loadingProduct,
+  onSubmit,
+  onEditProductStarted,
+}) => {
   const { control, formState, handleSubmit, getValues } = useForm<NoteFormValues>({
     mode: 'onChange',
     resolver: zodResolver(noteSchema),
@@ -49,13 +62,23 @@ export const NoteForm: FC<Props> = ({ defaultValues, onSubmit, onEditProductStar
             readOnly: true,
             endAdornment: (
               <InputAdornment position="end">
-                <Tooltip title="Edit product">
-                  <IconButton onClick={handleEditProductStarted}>
-                    <EditIcon />
-                  </IconButton>
-                </Tooltip>
+                {loadingProduct ? (
+                  <Box p={1}>
+                    <CircularProgress size={20} />
+                  </Box>
+                ) : (
+                  <Tooltip title="Edit product">
+                    <IconButton onClick={handleEditProductStarted}>
+                      <EditIcon />
+                    </IconButton>
+                  </Tooltip>
+                )}
                 <Tooltip title="Discard and choose another product">
-                  <IconButton edge="end" onClick={() => dispatch(actions.productDraftDiscarded())}>
+                  <IconButton
+                    edge="end"
+                    disabled={loadingProduct}
+                    onClick={() => dispatch(actions.productDraftDiscarded())}
+                  >
                     <CancelIcon />
                   </IconButton>
                 </Tooltip>

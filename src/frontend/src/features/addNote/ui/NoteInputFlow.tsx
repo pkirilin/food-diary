@@ -44,7 +44,7 @@ export const NoteInputFlow: FC = () => {
   const categorySelect = categoryLib.useCategorySelectData();
   const [createProduct] = productApi.useCreateProductMutation();
   const [editProduct] = productApi.useEditProductMutation();
-  const [getProductById] = productApi.useLazyProductByIdQuery();
+  const [getProductById, { isFetching: loadingProduct }] = productApi.useLazyProductByIdQuery();
   const [createNote] = noteApi.useCreateNoteMutation();
   const [updateNote] = noteApi.useUpdateNoteMutation();
 
@@ -159,6 +159,7 @@ export const NoteInputFlow: FC = () => {
   return (
     <NoteForm
       defaultValues={noteDraft}
+      loadingProduct={loadingProduct}
       onSubmit={handleSubmitNote}
       onEditProductStarted={handleEditProductStarted}
     />

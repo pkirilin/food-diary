@@ -154,5 +154,19 @@ export const addNoteSlice = createSlice({
         delete state.product;
       }
     });
+
+    builder.addMatcher(productApi.endpoints.productById.matchPending, state => {
+      state.isValid = false;
+    });
+
+    builder.addMatcher(
+      isAnyOf(
+        productApi.endpoints.productById.matchFulfilled,
+        productApi.endpoints.productById.matchRejected,
+      ),
+      state => {
+        state.isValid = true;
+      },
+    );
   },
 });
