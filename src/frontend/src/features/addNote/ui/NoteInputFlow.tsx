@@ -65,7 +65,10 @@ export const NoteInputFlow: FC = () => {
     const shouldUpdate = typeof id === 'number';
 
     if (shouldUpdate) {
-      await editProduct(toEditProductRequest(formValues, id, category.id));
+      await editProduct({
+        ...toEditProductRequest(formValues, id, category.id),
+        skipNoteInvalidation: true,
+      });
     } else {
       await createProduct(toCreateProductRequest(formValues, category.id));
     }
