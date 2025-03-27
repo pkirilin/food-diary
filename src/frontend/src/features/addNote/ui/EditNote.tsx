@@ -15,7 +15,7 @@ export const EditNote: FC<Props> = ({ note, renderTrigger }) => {
   const dialogVisible = useAppSelector(state => selectors.editDialogVisible(state, note));
   const activeFormId = useAppSelector(selectors.activeFormId);
   const submitText = useAppSelector(selectors.submitText);
-  const canSubmit = useAppSelector(state => state.addNote.isValid);
+  const canSubmit = useAppSelector(state => state.addNote.canSubmit);
   const isSubmitting = useAppSelector(state => state.addNote.isSubmitting);
   const dispatch = useAppDispatch();
 

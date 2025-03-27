@@ -9,12 +9,12 @@ interface State {
   note?: NoteFormValues;
   product?: ProductFormValues;
   image?: Image;
-  isValid: boolean;
+  canSubmit: boolean;
   isSubmitting: boolean;
 }
 
 const initialState: State = {
-  isValid: false,
+  canSubmit: false,
   isSubmitting: false,
 };
 
@@ -49,7 +49,7 @@ export const addNoteSlice = createSlice({
     noteDraftDiscarded: () => initialState,
 
     draftValidated: (state, { payload }: PayloadAction<boolean>) => {
-      state.isValid = payload;
+      state.canSubmit = payload;
     },
 
     productSelected: (state, { payload }: PayloadAction<ProductSelectOption>) => {
@@ -156,7 +156,7 @@ export const addNoteSlice = createSlice({
     });
 
     builder.addMatcher(productApi.endpoints.productById.matchPending, state => {
-      state.isValid = false;
+      state.canSubmit = false;
     });
 
     builder.addMatcher(
@@ -165,7 +165,7 @@ export const addNoteSlice = createSlice({
         productApi.endpoints.productById.matchRejected,
       ),
       state => {
-        state.isValid = true;
+        state.canSubmit = true;
       },
     );
   },
