@@ -24,10 +24,16 @@ export const addNoteSlice = createSlice({
   selectors: {
     activeFormId: state => (state.product ? 'product-form' : 'note-form'),
 
-    dialogTitle: state =>
-      state.product
-        ? 'New product'
-        : noteLib.getMealName(state?.note?.mealType ?? noteModel.MealType.Breakfast),
+    dialogTitle: ({ note, product }) =>
+      product ? 'Product' : noteLib.getMealName(note?.mealType ?? noteModel.MealType.Breakfast),
+
+    submitText: ({ note, product }) => {
+      if (product) {
+        return typeof product.id === 'number' ? 'Save' : 'Add';
+      }
+
+      return note && typeof note.id === 'number' ? 'Save' : 'Add';
+    },
 
     addDialogVisible: (state, mealType: noteModel.MealType): boolean =>
       Boolean(state.note && !('id' in state.note) && state.note.mealType === mealType),
@@ -88,6 +94,7 @@ export const addNoteSlice = createSlice({
         noteApi.endpoints.updateNote.matchPending,
         noteApi.endpoints.notes.matchPending,
         productApi.endpoints.createProduct.matchPending,
+        productApi.endpoints.editProduct.matchPending,
       ),
       state => {
         if (state.note) {
@@ -102,6 +109,7 @@ export const addNoteSlice = createSlice({
         noteApi.endpoints.updateNote.matchRejected,
         noteApi.endpoints.notes.matchRejected,
         productApi.endpoints.createProduct.matchRejected,
+        productApi.endpoints.editProduct.matchRejected,
       ),
       state => {
         if (state.note) {
