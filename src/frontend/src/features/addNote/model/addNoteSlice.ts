@@ -120,16 +120,38 @@ export const addNoteSlice = createSlice({
 
     builder.addMatcher(noteApi.endpoints.notes.matchFulfilled, () => initialState);
 
-    builder.addMatcher(productApi.endpoints.createProduct.matchFulfilled, (state, { payload }) => {
+    builder.addMatcher(
+      productApi.endpoints.createProduct.matchFulfilled,
+      (state, { payload, meta }) => {
+        if (state.note && state.product) {
+          const product = meta.arg.originalArgs;
+
+          state.isSubmitting = false;
+          state.note.quantity = product.defaultQuantity;
+          state.note.product = {
+            id: payload.id,
+            name: product.name,
+            defaultQuantity: product.defaultQuantity,
+          };
+
+          delete state.product;
+        }
+      },
+    );
+
+    builder.addMatcher(productApi.endpoints.editProduct.matchFulfilled, (state, { meta }) => {
       if (state.note && state.product) {
-        state.note.product = {
-          id: payload.id,
-          name: state.product.name,
-          defaultQuantity: state.product.defaultQuantity,
-        };
-        state.note.quantity = state.product.defaultQuantity;
-        delete state.product;
+        const product = meta.arg.originalArgs;
+
         state.isSubmitting = false;
+        state.note.quantity = product.defaultQuantity;
+        state.note.product = {
+          id: product.id,
+          name: product.name,
+          defaultQuantity: product.defaultQuantity,
+        };
+
+        delete state.product;
       }
     });
   },
