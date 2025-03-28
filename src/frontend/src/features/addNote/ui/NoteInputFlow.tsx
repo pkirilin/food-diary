@@ -2,7 +2,13 @@ import { useCallback, type FC } from 'react';
 import { useAppDispatch, useAppSelector } from '@/app/store';
 import { categoryLib } from '@/entities/category';
 import { noteApi } from '@/entities/note';
-import { type CreateProductRequest, productApi, type EditProductRequest } from '@/entities/product';
+import { productApi } from '@/entities/product';
+import {
+  toCreateProductRequest,
+  toEditProductRequest,
+  toNoteRequestBody,
+  toProductFormValues,
+} from '../lib/mapping';
 import { type NoteFormValues, actions, selectors } from '../model';
 import { type ProductFormValues } from '../model/productSchema';
 import { ImagePreview } from './ImagePreview';
@@ -10,28 +16,6 @@ import { NoteForm } from './NoteForm';
 import { ProductForm } from './ProductForm';
 import { SearchProducts } from './SearchProducts';
 import { SearchProductsOnImage } from './SearchProductsOnImage';
-
-const toCreateProductRequest = (
-  { name, caloriesCost, defaultQuantity }: ProductFormValues,
-  categoryId: number,
-): CreateProductRequest => ({
-  name,
-  caloriesCost,
-  defaultQuantity,
-  categoryId,
-});
-
-const toEditProductRequest = (
-  { name, caloriesCost, defaultQuantity }: ProductFormValues,
-  productId: number,
-  categoryId: number,
-): EditProductRequest => ({
-  id: productId,
-  name,
-  caloriesCost,
-  defaultQuantity,
-  categoryId,
-});
 
 export const NoteInputFlow: FC = () => {
   const product = useAppSelector(state => state.addNote.note?.product);
@@ -53,70 +37,47 @@ export const NoteInputFlow: FC = () => {
     [dispatch],
   );
 
-  const handleSubmitProduct = async (formValues: ProductFormValues): Promise<void> => {
-    const { id, category } = formValues;
+  const handleSubmitProduct = async (product: ProductFormValues): Promise<void> => {
+    const { id, category } = product;
 
     if (!category) {
       return;
     }
 
-    dispatch(actions.productDraftSaved(formValues));
+    dispatch(actions.productDraftSaved(product));
 
     const shouldUpdate = typeof id === 'number';
 
     if (shouldUpdate) {
       await editProduct({
-        ...toEditProductRequest(formValues, id, category.id),
-        skipNoteInvalidation: true,
+        ...toEditProductRequest(product, id, category.id),
+        skipNotesRefetching: true,
       });
     } else {
-      await createProduct(toCreateProductRequest(formValues, category.id));
+      await createProduct(toCreateProductRequest(product, category.id));
     }
   };
 
-  const handleEditProductStarted = async (productId: number): Promise<void> => {
+  const handleEditProduct = async (productId: number): Promise<void> => {
     const productByIdQuery = await getProductById(productId);
 
     if (!productByIdQuery.isSuccess) {
       return;
     }
 
-    const { name, defaultQuantity, caloriesCost, category } = productByIdQuery.data;
+    const product = toProductFormValues(productByIdQuery.data, productId);
 
-    dispatch(
-      actions.productDraftEditStarted({
-        id: productId,
-        name,
-        defaultQuantity,
-        caloriesCost,
-        category: {
-          id: category.id,
-          name: category.name,
-        },
-      }),
-    );
+    dispatch(actions.productDraftEditStarted(product));
   };
 
-  const handleSubmitNote = async ({
-    id,
-    date,
-    mealType,
-    displayOrder,
-    product,
-    quantity,
-  }: NoteFormValues): Promise<void> => {
+  const handleSubmitNote = async (formValues: NoteFormValues): Promise<void> => {
+    const { id, product } = formValues;
+
     if (!product) {
       throw new Error('Product should not be empty');
     }
 
-    const note = {
-      date,
-      mealType,
-      displayOrder,
-      productId: product.id,
-      productQuantity: quantity,
-    };
-
+    const note = toNoteRequestBody(formValues, product);
     const shouldUpdate = typeof id === 'number';
 
     if (shouldUpdate) {
@@ -161,7 +122,7 @@ export const NoteInputFlow: FC = () => {
       defaultValues={noteDraft}
       loadingProduct={loadingProduct}
       onSubmit={handleSubmitNote}
-      onEditProductStarted={handleEditProductStarted}
+      onEditProduct={handleEditProduct}
     />
   );
 };

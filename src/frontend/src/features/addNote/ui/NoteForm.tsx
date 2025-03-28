@@ -18,15 +18,10 @@ interface Props {
   defaultValues: NoteFormValues;
   loadingProduct: boolean;
   onSubmit: (values: NoteFormValues) => Promise<void>;
-  onEditProductStarted: (productId: number) => Promise<void>;
+  onEditProduct: (productId: number) => Promise<void>;
 }
 
-export const NoteForm: FC<Props> = ({
-  defaultValues,
-  loadingProduct,
-  onSubmit,
-  onEditProductStarted,
-}) => {
+export const NoteForm: FC<Props> = ({ defaultValues, loadingProduct, onSubmit, onEditProduct }) => {
   const { control, formState, handleSubmit, getValues } = useForm<NoteFormValues>({
     mode: 'onChange',
     resolver: zodResolver(noteSchema),
@@ -41,11 +36,11 @@ export const NoteForm: FC<Props> = ({
     dispatch(actions.draftValidated(formState.isValid));
   }, [dispatch, formState.isValid]);
 
-  const handleEditProductStarted: MouseEventHandler = async () => {
+  const handleEditProduct: MouseEventHandler = async () => {
     const { product } = getValues();
 
     if (product) {
-      onEditProductStarted(product.id);
+      onEditProduct(product.id);
     }
   };
 
@@ -68,7 +63,7 @@ export const NoteForm: FC<Props> = ({
                   </Box>
                 ) : (
                   <Tooltip title="Edit product">
-                    <IconButton onClick={handleEditProductStarted}>
+                    <IconButton onClick={handleEditProduct}>
                       <EditIcon />
                     </IconButton>
                   </Tooltip>

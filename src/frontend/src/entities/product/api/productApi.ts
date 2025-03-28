@@ -11,10 +11,6 @@ import {
   type GetProductByIdResponse,
 } from './contracts';
 
-interface CacheInvalidationOptions {
-  skipNoteInvalidation?: boolean;
-}
-
 export const productApi = api.injectEndpoints({
   endpoints: builder => ({
     getProducts: builder.query<GetProductsResponse, GetProductsRequest>({
@@ -41,13 +37,13 @@ export const productApi = api.injectEndpoints({
       invalidatesTags: ['product'],
     }),
 
-    editProduct: builder.mutation<void, EditProductRequest & CacheInvalidationOptions>({
-      query: ({ id, ...body }) => ({
+    editProduct: builder.mutation<void, EditProductRequest>({
+      query: ({ id, skipNotesRefetching: _, ...body }) => ({
         method: 'PUT',
         url: `/api/v1/products/${id}`,
         body,
       }),
-      invalidatesTags: (_arg, _err, { skipNoteInvalidation }) =>
+      invalidatesTags: (_arg, _err, { skipNotesRefetching: skipNoteInvalidation }) =>
         skipNoteInvalidation ? ['product'] : ['product', 'note'],
     }),
 
