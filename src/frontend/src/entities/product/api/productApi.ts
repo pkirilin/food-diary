@@ -43,8 +43,8 @@ export const productApi = api.injectEndpoints({
         url: `/api/v1/products/${id}`,
         body,
       }),
-      invalidatesTags: (_arg, _err, { skipNotesRefetching: skipNoteInvalidation }) =>
-        skipNoteInvalidation ? ['product'] : ['product', 'note'],
+      invalidatesTags: (_arg, _err, { skipNotesRefetching }) =>
+        skipNotesRefetching ? ['product'] : ['product', 'note'],
     }),
 
     deleteProducts: builder.mutation<void, DeleteProductsRequest>({
