@@ -15,6 +15,7 @@ test('I can add new note with existing product', async () => {
   await steps.whenProductSearched(user, 'che');
   await steps.whenExistingProductSelected(user, /cheese/i);
   steps.thenProductHasValue('Cheese');
+
   await steps.whenQuantityChanged(user, 120);
   await steps.whenNoteAdded(user);
   await steps.thenDialogNotVisible();
@@ -34,7 +35,7 @@ test('I can add new note with adding new product "on the fly"', async () => {
 
   await steps.whenProductSearched(user, 'Ora');
   await steps.whenProductAddedFromInput(user, 'Ora');
-  await steps.thenDialogVisible(/new product/i);
+  await steps.thenDialogVisible(/product/i);
 
   await steps.whenProductNameCompleted(user, 'nge');
   await steps.whenProductCaloriesCostSet(user, 60);
@@ -68,4 +69,25 @@ test('I can change quantity for existing note', async () => {
   await steps.whenNoteSaved(user);
   await steps.thenDialogNotVisible();
   steps.thenSingleNoteVisible(/cheese 150 g 603 kcal/i);
+});
+
+test('I can edit product via note form', async () => {
+  const user = userEvent.setup();
+
+  await steps.givenNotesList({
+    mealType: MealType.Lunch,
+  });
+
+  await steps.whenAddNoteButtonClicked(user);
+  await steps.thenDialogVisible(/lunch/i);
+
+  await steps.whenProductSearched(user, 'che');
+  await steps.whenExistingProductSelected(user, /cheese/i);
+  await steps.whenProductEditClicked(user);
+  await steps.thenDialogVisible(/product/i);
+
+  await steps.whenProductNameEdited(user, 'Mozarella cheese');
+  await steps.whenProductSaved(user);
+  await steps.thenDialogVisible(/lunch/i);
+  steps.thenProductHasValue('Mozarella cheese');
 });

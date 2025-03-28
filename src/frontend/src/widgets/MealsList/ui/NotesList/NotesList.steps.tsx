@@ -68,6 +68,11 @@ export const whenProductNameCompleted = async (user: UserEvent, nameEnd: string)
   await user.type(screen.getByPlaceholderText(/name/i), nameEnd);
 };
 
+export const whenProductNameEdited = async (user: UserEvent, name: string): Promise<void> => {
+  await user.clear(screen.getByPlaceholderText(/name/i));
+  await user.type(screen.getByPlaceholderText(/name/i), name);
+};
+
 export const whenProductCaloriesCostSet = async (
   user: UserEvent,
   calories: number,
@@ -96,12 +101,20 @@ export const whenProductAdded = async (user: UserEvent): Promise<void> => {
   await user.click(screen.getByRole('button', { name: /add/i }));
 };
 
+export const whenProductSaved = async (user: UserEvent): Promise<void> => {
+  await user.click(screen.getByRole('button', { name: /save/i }));
+};
+
 export const whenNoteAdded = async (user: UserEvent): Promise<void> => {
   await user.click(screen.getByRole('button', { name: /add/i }));
 };
 
 export const whenNoteSaved = async (user: UserEvent): Promise<void> => {
   await user.click(screen.getByRole('button', { name: /save/i }));
+};
+
+export const whenProductEditClicked = async (user: UserEvent): Promise<void> => {
+  await user.click(screen.getByRole('button', { name: /edit product/i }));
 };
 
 export const thenDialogVisible = async (dialogTitle: RegExp): Promise<void> => {

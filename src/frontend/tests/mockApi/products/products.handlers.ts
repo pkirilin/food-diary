@@ -5,6 +5,7 @@ import {
   type CreateProductResponse,
   type EditProductRequest,
   type GetProductsResponse,
+  type GetProductByIdResponse,
 } from '@/entities/product';
 import { API_URL } from '@/shared/config';
 import { type SelectOption } from '@/shared/types';
@@ -50,6 +51,26 @@ export const handlers: HttpHandler[] = [
       .map<ProductSelectOption>(({ id, name, defaultQuantity }) => ({ id, name, defaultQuantity }));
 
     return DelayedHttpResponse.json(response);
+  }),
+
+  http.get<{ id: string }>(`${API_URL}/api/v1/products/:id`, ({ params }) => {
+    const id = parseInt(params.id);
+    const product = productsService.getById(id);
+
+    if (!product) {
+      return DelayedHttpResponse.notFound();
+    }
+
+    return DelayedHttpResponse.json<GetProductByIdResponse>({
+      id: product.id,
+      name: product.name,
+      caloriesCost: product.caloriesCost,
+      defaultQuantity: product.defaultQuantity,
+      category: {
+        id: product.categoryId,
+        name: productsService.getCategoryNames([product]).get(product.categoryId) ?? 'NULL',
+      },
+    });
   }),
 
   http.post<PathParams, CreateProductRequest>(`${API_URL}/api/v1/products`, async ({ request }) => {

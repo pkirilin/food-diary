@@ -9,12 +9,12 @@ interface State {
   note?: NoteFormValues;
   product?: ProductFormValues;
   image?: Image;
-  isValid: boolean;
+  canSubmit: boolean;
   isSubmitting: boolean;
 }
 
 const initialState: State = {
-  isValid: false,
+  canSubmit: false,
   isSubmitting: false,
 };
 
@@ -24,10 +24,16 @@ export const addNoteSlice = createSlice({
   selectors: {
     activeFormId: state => (state.product ? 'product-form' : 'note-form'),
 
-    dialogTitle: state =>
-      state.product
-        ? 'New product'
-        : noteLib.getMealName(state?.note?.mealType ?? noteModel.MealType.Breakfast),
+    dialogTitle: ({ note, product }) =>
+      product ? 'Product' : noteLib.getMealName(note?.mealType ?? noteModel.MealType.Breakfast),
+
+    submitText: ({ note, product }) => {
+      if (product) {
+        return typeof product.id === 'number' ? 'Save' : 'Add';
+      }
+
+      return note && typeof note.id === 'number' ? 'Save' : 'Add';
+    },
 
     addDialogVisible: (state, mealType: noteModel.MealType): boolean =>
       Boolean(state.note && !('id' in state.note) && state.note.mealType === mealType),
@@ -43,7 +49,7 @@ export const addNoteSlice = createSlice({
     noteDraftDiscarded: () => initialState,
 
     draftValidated: (state, { payload }: PayloadAction<boolean>) => {
-      state.isValid = payload;
+      state.canSubmit = payload;
     },
 
     productSelected: (state, { payload }: PayloadAction<ProductSelectOption>) => {
@@ -55,6 +61,13 @@ export const addNoteSlice = createSlice({
 
     productDraftSaved: (state, { payload }: PayloadAction<ProductFormValues>) => {
       state.product = payload;
+    },
+
+    productDraftEditStarted: (state, { payload }: PayloadAction<ProductFormValues>) => {
+      if (state.note?.product) {
+        state.product = payload;
+        state.note.product = null;
+      }
     },
 
     productDraftDiscarded: state => {
@@ -81,6 +94,7 @@ export const addNoteSlice = createSlice({
         noteApi.endpoints.updateNote.matchPending,
         noteApi.endpoints.notes.matchPending,
         productApi.endpoints.createProduct.matchPending,
+        productApi.endpoints.editProduct.matchPending,
       ),
       state => {
         if (state.note) {
@@ -95,6 +109,7 @@ export const addNoteSlice = createSlice({
         noteApi.endpoints.updateNote.matchRejected,
         noteApi.endpoints.notes.matchRejected,
         productApi.endpoints.createProduct.matchRejected,
+        productApi.endpoints.editProduct.matchRejected,
       ),
       state => {
         if (state.note) {
@@ -105,17 +120,53 @@ export const addNoteSlice = createSlice({
 
     builder.addMatcher(noteApi.endpoints.notes.matchFulfilled, () => initialState);
 
-    builder.addMatcher(productApi.endpoints.createProduct.matchFulfilled, (state, { payload }) => {
+    builder.addMatcher(
+      productApi.endpoints.createProduct.matchFulfilled,
+      (state, { payload, meta }) => {
+        if (state.note && state.product) {
+          const product = meta.arg.originalArgs;
+
+          state.isSubmitting = false;
+          state.note.quantity = product.defaultQuantity;
+          state.note.product = {
+            id: payload.id,
+            name: product.name,
+            defaultQuantity: product.defaultQuantity,
+          };
+
+          delete state.product;
+        }
+      },
+    );
+
+    builder.addMatcher(productApi.endpoints.editProduct.matchFulfilled, (state, { meta }) => {
       if (state.note && state.product) {
-        state.note.product = {
-          id: payload.id,
-          name: state.product.name,
-          defaultQuantity: state.product.defaultQuantity,
-        };
-        state.note.quantity = state.product.defaultQuantity;
-        delete state.product;
+        const product = meta.arg.originalArgs;
+
         state.isSubmitting = false;
+        state.note.quantity = product.defaultQuantity;
+        state.note.product = {
+          id: product.id,
+          name: product.name,
+          defaultQuantity: product.defaultQuantity,
+        };
+
+        delete state.product;
       }
     });
+
+    builder.addMatcher(productApi.endpoints.productById.matchPending, state => {
+      state.canSubmit = false;
+    });
+
+    builder.addMatcher(
+      isAnyOf(
+        productApi.endpoints.productById.matchFulfilled,
+        productApi.endpoints.productById.matchRejected,
+      ),
+      state => {
+        state.canSubmit = true;
+      },
+    );
   },
 });

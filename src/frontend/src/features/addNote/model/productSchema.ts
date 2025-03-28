@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { quantitySchema } from './quantitySchema';
 
 export const productSchema = z.object({
+  id: z.number().optional(),
   name: z.string().min(3).max(100),
   caloriesCost: z.coerce.number().int().min(1).max(4999),
   defaultQuantity: quantitySchema,

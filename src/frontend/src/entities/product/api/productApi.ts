@@ -8,12 +8,18 @@ import {
   type GetProductsRequest,
   type ProductSelectOption,
   type GetProductsResponse,
+  type GetProductByIdResponse,
 } from './contracts';
 
 export const productApi = api.injectEndpoints({
   endpoints: builder => ({
     getProducts: builder.query<GetProductsResponse, GetProductsRequest>({
       query: request => createUrl('/api/v1/products', { ...request }),
+      providesTags: ['product'],
+    }),
+
+    productById: builder.query<GetProductByIdResponse, number>({
+      query: id => `/api/v1/products/${id}`,
       providesTags: ['product'],
     }),
 
@@ -32,12 +38,13 @@ export const productApi = api.injectEndpoints({
     }),
 
     editProduct: builder.mutation<void, EditProductRequest>({
-      query: ({ id, ...body }) => ({
+      query: ({ id, skipNotesRefetching: _, ...body }) => ({
         method: 'PUT',
         url: `/api/v1/products/${id}`,
         body,
       }),
-      invalidatesTags: ['product', 'note'],
+      invalidatesTags: (_arg, _err, { skipNotesRefetching }) =>
+        skipNotesRefetching ? ['product'] : ['product', 'note'],
     }),
 
     deleteProducts: builder.mutation<void, DeleteProductsRequest>({

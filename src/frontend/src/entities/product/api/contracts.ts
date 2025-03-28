@@ -7,6 +7,11 @@ export interface Product {
   categoryName: string;
 }
 
+export interface Category {
+  id: number;
+  name: string;
+}
+
 export interface GetProductsResponse {
   productItems: Product[];
   totalProductsCount: number;
@@ -17,6 +22,14 @@ export interface GetProductsRequest {
   pageSize: number;
   productSearchName?: string;
   categoryId?: number;
+}
+
+export interface GetProductByIdResponse {
+  id: number;
+  name: string;
+  caloriesCost: number;
+  defaultQuantity: number;
+  category: Category;
 }
 
 export interface ProductSelectOption {
@@ -42,6 +55,7 @@ export interface EditProductRequest {
   caloriesCost: number;
   defaultQuantity: number;
   categoryId: number;
+  skipNotesRefetching?: boolean;
 }
 
 export interface DeleteProductsRequest {

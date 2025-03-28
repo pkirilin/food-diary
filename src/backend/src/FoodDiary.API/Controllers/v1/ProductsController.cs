@@ -14,6 +14,7 @@ using FoodDiary.API.Features.Products;
 using FoodDiary.API.Mapping;
 using FoodDiary.Application.Products.Create;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 
 namespace FoodDiary.API.Controllers.v1;
 
@@ -66,6 +67,22 @@ public class ProductsController : ControllerBase
         return Ok(searchResultDto);
     }
     
+    [HttpGet("{id:int}")]
+    public async Task<IActionResult> GetProductById(
+        [FromRoute] int id,
+        [FromServices] GetProductByIdHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var result = await handler.Handle(id, cancellationToken);
+        
+        return result switch
+        {
+            GetProductByIdHandlerResult.Success success => Ok(success.Product),
+            GetProductByIdHandlerResult.NotFound => NotFound(),
+            _ => StatusCode(StatusCodes.Status501NotImplemented)
+        };
+    }
+
     [HttpPost]
     [ProducesResponseType((int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
