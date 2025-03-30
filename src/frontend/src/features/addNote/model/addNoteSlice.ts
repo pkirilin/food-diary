@@ -1,7 +1,7 @@
 import { type PayloadAction, createSlice, isAnyOf } from '@reduxjs/toolkit';
 import { type NoteItem, noteApi, noteLib, noteModel } from '@/entities/note';
 import { productApi, type ProductSelectOption } from '@/entities/product';
-import { type NoteFormValues } from './noteSchema';
+import { type NoteFormValuesProduct, type NoteFormValues } from './noteSchema';
 import { type ProductFormValues } from './productSchema';
 import { type Image } from './types';
 
@@ -9,12 +9,12 @@ interface State {
   note?: NoteFormValues;
   product?: ProductFormValues;
   image?: Image;
-  isValid: boolean;
+  canSubmit: boolean;
   isSubmitting: boolean;
 }
 
 const initialState: State = {
-  isValid: false,
+  canSubmit: false,
   isSubmitting: false,
 };
 
@@ -24,10 +24,16 @@ export const addNoteSlice = createSlice({
   selectors: {
     activeFormId: state => (state.product ? 'product-form' : 'note-form'),
 
-    dialogTitle: state =>
-      state.product
-        ? 'New product'
-        : noteLib.getMealName(state?.note?.mealType ?? noteModel.MealType.Breakfast),
+    dialogTitle: ({ note, product }) =>
+      product ? 'Product' : noteLib.getMealName(note?.mealType ?? noteModel.MealType.Breakfast),
+
+    submitText: ({ note, product }) => {
+      if (product) {
+        return typeof product.id === 'number' ? 'Save' : 'Add';
+      }
+
+      return note && typeof note.id === 'number' ? 'Save' : 'Add';
+    },
 
     addDialogVisible: (state, mealType: noteModel.MealType): boolean =>
       Boolean(state.note && !('id' in state.note) && state.note.mealType === mealType),
@@ -42,8 +48,10 @@ export const addNoteSlice = createSlice({
 
     noteDraftDiscarded: () => initialState,
 
+    noteDraftSubmitted: () => initialState,
+
     draftValidated: (state, { payload }: PayloadAction<boolean>) => {
-      state.isValid = payload;
+      state.canSubmit = payload;
     },
 
     productSelected: (state, { payload }: PayloadAction<ProductSelectOption>) => {
@@ -57,11 +65,32 @@ export const addNoteSlice = createSlice({
       state.product = payload;
     },
 
+    productDraftEditStarted: (state, { payload }: PayloadAction<ProductFormValues>) => {
+      if (state.note?.product) {
+        state.product = payload;
+        state.note.product = null;
+      }
+    },
+
     productDraftDiscarded: state => {
       if (state.note) {
         state.note.product = null;
         delete state.product;
         delete state.image;
+      }
+    },
+
+    productDraftSubmitted: (state, { payload }: PayloadAction<NoteFormValuesProduct>) => {
+      if (state.note) {
+        state.isSubmitting = false;
+        state.note.quantity = payload.defaultQuantity;
+        state.note.product = {
+          id: payload.id,
+          name: payload.name,
+          defaultQuantity: payload.defaultQuantity,
+        };
+
+        delete state.product;
       }
     },
 
@@ -81,11 +110,10 @@ export const addNoteSlice = createSlice({
         noteApi.endpoints.updateNote.matchPending,
         noteApi.endpoints.notes.matchPending,
         productApi.endpoints.createProduct.matchPending,
+        productApi.endpoints.editProduct.matchPending,
       ),
       state => {
-        if (state.note) {
-          state.isSubmitting = true;
-        }
+        state.isSubmitting = true;
       },
     );
 
@@ -95,27 +123,29 @@ export const addNoteSlice = createSlice({
         noteApi.endpoints.updateNote.matchRejected,
         noteApi.endpoints.notes.matchRejected,
         productApi.endpoints.createProduct.matchRejected,
+        productApi.endpoints.editProduct.matchRejected,
       ),
       state => {
-        if (state.note) {
-          state.isSubmitting = false;
-        }
+        state.isSubmitting = false;
       },
     );
 
-    builder.addMatcher(noteApi.endpoints.notes.matchFulfilled, () => initialState);
-
-    builder.addMatcher(productApi.endpoints.createProduct.matchFulfilled, (state, { payload }) => {
-      if (state.note && state.product) {
-        state.note.product = {
-          id: payload.id,
-          name: state.product.name,
-          defaultQuantity: state.product.defaultQuantity,
-        };
-        state.note.quantity = state.product.defaultQuantity;
-        delete state.product;
-        state.isSubmitting = false;
-      }
+    builder.addMatcher(noteApi.endpoints.notes.matchFulfilled, state => {
+      state.isSubmitting = false;
     });
+
+    builder.addMatcher(productApi.endpoints.productById.matchPending, state => {
+      state.canSubmit = false;
+    });
+
+    builder.addMatcher(
+      isAnyOf(
+        productApi.endpoints.productById.matchFulfilled,
+        productApi.endpoints.productById.matchRejected,
+      ),
+      state => {
+        state.canSubmit = true;
+      },
+    );
   },
 });

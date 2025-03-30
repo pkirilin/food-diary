@@ -1,18 +1,30 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import CancelIcon from '@mui/icons-material/Cancel';
-import { IconButton, InputAdornment, TextField, Tooltip } from '@mui/material';
-import { useEffect, type FC } from 'react';
+import EditIcon from '@mui/icons-material/Edit';
+import {
+  Box,
+  CircularProgress,
+  IconButton,
+  InputAdornment,
+  TextField,
+  Tooltip,
+} from '@mui/material';
+import { useEffect, type FC, type MouseEventHandler } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useAppDispatch, useAppSelector } from '@/app/store';
 import { actions, selectors, noteSchema, type NoteFormValues } from '../model';
 
 interface Props {
   defaultValues: NoteFormValues;
-  onSubmit: (values: NoteFormValues) => Promise<void>;
+  loadingProduct: boolean;
+  onSubmit: OnSubmitNoteFn;
+  onEditProduct: (productId: number) => Promise<void>;
 }
 
-export const NoteForm: FC<Props> = ({ defaultValues, onSubmit }) => {
-  const { control, formState, handleSubmit } = useForm<NoteFormValues>({
+export type OnSubmitNoteFn = (note: NoteFormValues) => Promise<void>;
+
+export const NoteForm: FC<Props> = ({ defaultValues, loadingProduct, onSubmit, onEditProduct }) => {
+  const { control, formState, handleSubmit, getValues } = useForm<NoteFormValues>({
     mode: 'onChange',
     resolver: zodResolver(noteSchema),
     defaultValues,
@@ -26,6 +38,14 @@ export const NoteForm: FC<Props> = ({ defaultValues, onSubmit }) => {
     dispatch(actions.draftValidated(formState.isValid));
   }, [dispatch, formState.isValid]);
 
+  const handleEditProduct: MouseEventHandler = async () => {
+    const { product } = getValues();
+
+    if (product) {
+      onEditProduct(product.id);
+    }
+  };
+
   return (
     <form id={activeFormId} onSubmit={handleSubmit(values => onSubmit(values))}>
       <TextField
@@ -38,11 +58,28 @@ export const NoteForm: FC<Props> = ({ defaultValues, onSubmit }) => {
           input: {
             readOnly: true,
             endAdornment: (
-              <Tooltip title="Discard and choose another product" placement="left">
-                <IconButton edge="end" onClick={() => dispatch(actions.productDraftDiscarded())}>
-                  <CancelIcon />
-                </IconButton>
-              </Tooltip>
+              <InputAdornment position="end">
+                {loadingProduct ? (
+                  <Box p={1}>
+                    <CircularProgress size={20} />
+                  </Box>
+                ) : (
+                  <Tooltip title="Edit product">
+                    <IconButton onClick={handleEditProduct}>
+                      <EditIcon />
+                    </IconButton>
+                  </Tooltip>
+                )}
+                <Tooltip title="Discard and choose another product">
+                  <IconButton
+                    edge="end"
+                    disabled={loadingProduct}
+                    onClick={() => dispatch(actions.productDraftDiscarded())}
+                  >
+                    <CancelIcon />
+                  </IconButton>
+                </Tooltip>
+              </InputAdornment>
             ),
           },
         }}

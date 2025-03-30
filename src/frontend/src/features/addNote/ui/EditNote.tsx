@@ -14,7 +14,8 @@ export const EditNote: FC<Props> = ({ note, renderTrigger }) => {
   const dialogTitle = useAppSelector(selectors.dialogTitle);
   const dialogVisible = useAppSelector(state => selectors.editDialogVisible(state, note));
   const activeFormId = useAppSelector(selectors.activeFormId);
-  const canSubmit = useAppSelector(state => state.addNote.isValid);
+  const submitText = useAppSelector(selectors.submitText);
+  const canSubmit = useAppSelector(state => state.addNote.canSubmit);
   const isSubmitting = useAppSelector(state => state.addNote.isSubmitting);
   const dispatch = useAppDispatch();
 
@@ -48,7 +49,7 @@ export const EditNote: FC<Props> = ({ note, renderTrigger }) => {
         title={dialogTitle}
         opened={dialogVisible}
         onClose={handleDialogClose}
-        content={<NoteInputFlow />}
+        content={<NoteInputFlow date={note.date} />}
         renderCancel={props => (
           <Button {...props} type="button" onClick={handleDialogClose}>
             Cancel
@@ -62,7 +63,7 @@ export const EditNote: FC<Props> = ({ note, renderTrigger }) => {
             disabled={!canSubmit}
             loading={isSubmitting}
           >
-            Save
+            {submitText}
           </Button>
         )}
       />

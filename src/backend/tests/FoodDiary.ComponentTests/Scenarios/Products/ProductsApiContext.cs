@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.Json;
 using FoodDiary.API.Dtos;
 using FoodDiary.API.Features.Products.Contracts;
+using FoodDiary.API.Features.Products.Extensions;
 using FoodDiary.API.Mapping;
 using FoodDiary.ComponentTests.Dsl;
 using FoodDiary.ComponentTests.Infrastructure;
@@ -19,6 +20,7 @@ public class ProductsApiContext(FoodDiaryWebApplicationFactory factory) : BaseCo
 {
     private ProductsSearchResultDto? _productsResponse;
     private SearchProductsResult.Product[]? _productsForAutocompleteResponse;
+    private HttpResponseMessage _getProductByIdResponse = null!;
     private HttpResponseMessage _createProductResponse = null!;
     private HttpResponseMessage _updateProductResponse = null!;
     private HttpResponseMessage _deleteProductResponse = null!;
@@ -59,7 +61,7 @@ public class ProductsApiContext(FoodDiaryWebApplicationFactory factory) : BaseCo
     public Task Given_product_logged_today(string product) =>
         Given_product_logged_on(product, FakeDateTimeProvider.Today());
     
-    public Task Given_categories(params Category[] categories)
+    public Task Given_categories(params Domain.Entities.Category[] categories)
     {
         return Factory.SeedDataAsync(categories);
     }
@@ -117,6 +119,11 @@ public class ProductsApiContext(FoodDiaryWebApplicationFactory factory) : BaseCo
         _deleteMultipleProductsResponse = await ApiClient.SendAsync(request);
     }
     
+    public async Task When_user_retrieves_product_by_id(int id)
+    {
+        _getProductByIdResponse = await ApiClient.GetAsync($"/api/v1/products/{id}");
+    }
+    
     public Task Then_products_list_contains_items(params Product[] items)
     {
         var expectedProductsList = items.Select(p => p.ToProductItemDto());
@@ -169,5 +176,12 @@ public class ProductsApiContext(FoodDiaryWebApplicationFactory factory) : BaseCo
     {
         _deleteMultipleProductsResponse.StatusCode.Should().Be(HttpStatusCode.OK);
         return Task.CompletedTask;
+    }
+
+    public async Task Then_product_is_successfully_retrieved(Product product)
+    {
+        _getProductByIdResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        var response = await _getProductByIdResponse.Content.ReadFromJsonAsync<GetProductByIdResponse>();
+        response.Should().BeEquivalentTo(product.ToGetProductByIdResponse());
     }
 }

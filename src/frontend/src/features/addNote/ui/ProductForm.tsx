@@ -10,9 +10,11 @@ interface Props {
   defaultValues: ProductFormValues;
   categories: SelectOption[];
   categoriesLoading: boolean;
-  onSubmit: (data: ProductFormValues) => Promise<void>;
+  onSubmit: OnSubmitProductFn;
   onValidate: (isValid: boolean) => void;
 }
+
+export type OnSubmitProductFn = (product: ProductFormValues) => Promise<void>;
 
 export const ProductForm: FC<Props> = ({
   formId,

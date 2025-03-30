@@ -30,6 +30,13 @@ export const get = ({
   return productItems;
 };
 
+export const getById = (id: number): DbProduct | null =>
+  db.product.findFirst({
+    where: {
+      id: { equals: id },
+    },
+  });
+
 export const getAll = (): DbProduct[] => db.product.getAll();
 
 export const getCategoryNames = (products: DbProduct[]): Map<number, string> => {
