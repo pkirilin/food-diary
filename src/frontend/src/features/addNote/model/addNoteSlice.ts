@@ -48,6 +48,8 @@ export const addNoteSlice = createSlice({
 
     noteDraftDiscarded: () => initialState,
 
+    noteDraftSubmitted: () => initialState,
+
     draftValidated: (state, { payload }: PayloadAction<boolean>) => {
       state.canSubmit = payload;
     },
@@ -97,9 +99,7 @@ export const addNoteSlice = createSlice({
         productApi.endpoints.editProduct.matchPending,
       ),
       state => {
-        if (state.note) {
-          state.isSubmitting = true;
-        }
+        state.isSubmitting = true;
       },
     );
 
@@ -112,13 +112,13 @@ export const addNoteSlice = createSlice({
         productApi.endpoints.editProduct.matchRejected,
       ),
       state => {
-        if (state.note) {
-          state.isSubmitting = false;
-        }
+        state.isSubmitting = false;
       },
     );
 
-    builder.addMatcher(noteApi.endpoints.notes.matchFulfilled, () => initialState);
+    builder.addMatcher(noteApi.endpoints.notes.matchFulfilled, state => {
+      state.isSubmitting = false;
+    });
 
     builder.addMatcher(
       productApi.endpoints.createProduct.matchFulfilled,

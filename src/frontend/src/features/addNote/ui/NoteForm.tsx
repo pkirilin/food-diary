@@ -12,12 +12,13 @@ import {
 import { useEffect, type FC, type MouseEventHandler } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useAppDispatch, useAppSelector } from '@/app/store';
+import { type SubmitNoteFn } from '../lib/useSubmitNote';
 import { actions, selectors, noteSchema, type NoteFormValues } from '../model';
 
 interface Props {
   defaultValues: NoteFormValues;
   loadingProduct: boolean;
-  onSubmit: (values: NoteFormValues) => Promise<void>;
+  onSubmit: SubmitNoteFn;
   onEditProduct: (productId: number) => Promise<void>;
 }
 

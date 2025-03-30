@@ -1,10 +1,9 @@
-import { type NoteRequestBody } from '@/entities/note';
 import {
   type GetProductByIdResponse,
   type CreateProductRequest,
   type EditProductRequest,
 } from '@/entities/product';
-import { type NoteFormValuesProduct, type NoteFormValues, type ProductFormValues } from '../model';
+import { type ProductFormValues } from '../model';
 
 export const toCreateProductRequest = (
   { name, caloriesCost, defaultQuantity }: ProductFormValues,
@@ -26,17 +25,6 @@ export const toEditProductRequest = (
   caloriesCost,
   defaultQuantity,
   categoryId,
-});
-
-export const toNoteRequestBody = (
-  { date, mealType, displayOrder, quantity }: NoteFormValues,
-  product: NoteFormValuesProduct,
-): NoteRequestBody => ({
-  date,
-  mealType,
-  displayOrder,
-  productId: product.id,
-  productQuantity: quantity,
 });
 
 export const toProductFormValues = (

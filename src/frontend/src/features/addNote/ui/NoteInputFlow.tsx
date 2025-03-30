@@ -1,15 +1,10 @@
 import { useCallback, type FC } from 'react';
 import { useAppDispatch, useAppSelector } from '@/app/store';
 import { categoryLib } from '@/entities/category';
-import { noteApi } from '@/entities/note';
 import { productApi } from '@/entities/product';
-import {
-  toCreateProductRequest,
-  toEditProductRequest,
-  toNoteRequestBody,
-  toProductFormValues,
-} from '../lib/mapping';
-import { type NoteFormValues, actions, selectors } from '../model';
+import { toCreateProductRequest, toEditProductRequest, toProductFormValues } from '../lib/mapping';
+import { useSubmitNote } from '../lib/useSubmitNote';
+import { actions, selectors } from '../model';
 import { type ProductFormValues } from '../model/productSchema';
 import { ImagePreview } from './ImagePreview';
 import { NoteForm } from './NoteForm';
@@ -29,8 +24,8 @@ export const NoteInputFlow: FC = () => {
   const [createProduct] = productApi.useCreateProductMutation();
   const [editProduct] = productApi.useEditProductMutation();
   const [getProductById, { isFetching: loadingProduct }] = productApi.useLazyProductByIdQuery();
-  const [createNote] = noteApi.useCreateNoteMutation();
-  const [updateNote] = noteApi.useUpdateNoteMutation();
+
+  const handleSubmitNote = useSubmitNote();
 
   const handleValidateProduct = useCallback(
     (isValid: boolean) => dispatch(actions.draftValidated(isValid)),
@@ -68,23 +63,6 @@ export const NoteInputFlow: FC = () => {
     const product = toProductFormValues(productByIdQuery.data, productId);
 
     dispatch(actions.productDraftEditStarted(product));
-  };
-
-  const handleSubmitNote = async (formValues: NoteFormValues): Promise<void> => {
-    const { id, product } = formValues;
-
-    if (!product) {
-      throw new Error('Product should not be empty');
-    }
-
-    const note = toNoteRequestBody(formValues, product);
-    const shouldUpdate = typeof id === 'number';
-
-    if (shouldUpdate) {
-      await updateNote({ id, note });
-    } else {
-      await createNote(note);
-    }
   };
 
   if (!product && productDraft) {
