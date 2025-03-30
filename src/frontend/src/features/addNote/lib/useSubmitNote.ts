@@ -2,6 +2,7 @@ import { useLoaderData } from 'react-router-dom';
 import { useAppDispatch } from '@/app/store';
 import { noteApi, type NoteRequestBody } from '@/entities/note';
 import { actions, type NoteFormValuesProduct, type NoteFormValues } from '../model';
+import { type OnSubmitNoteFn } from '../ui/NoteForm';
 
 const toNoteRequestBody = (
   { date, mealType, displayOrder, quantity }: NoteFormValues,
@@ -14,9 +15,8 @@ const toNoteRequestBody = (
   productQuantity: quantity,
 });
 
-export type SubmitNoteFn = (note: NoteFormValues) => Promise<void>;
-
-export const useSubmitNote = (): SubmitNoteFn => {
+export const useSubmitNote = (): OnSubmitNoteFn => {
+  // TODO: use date from props?
   const { date } = useLoaderData() as { date: string };
   const [createNote] = noteApi.useCreateNoteMutation();
   const [updateNote] = noteApi.useUpdateNoteMutation();
@@ -64,6 +64,6 @@ export const useSubmitNote = (): SubmitNoteFn => {
     const request = toNoteRequestBody(note, product);
     const shouldUpdate = typeof id === 'number';
 
-    return shouldUpdate ? await handleUpdate(id, request) : await handleCreate(request);
+    shouldUpdate ? await handleUpdate(id, request) : await handleCreate(request);
   };
 };

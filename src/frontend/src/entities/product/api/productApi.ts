@@ -38,13 +38,12 @@ export const productApi = api.injectEndpoints({
     }),
 
     editProduct: builder.mutation<void, EditProductRequest>({
-      query: ({ id, skipNotesRefetching: _, ...body }) => ({
+      query: ({ id, ...body }) => ({
         method: 'PUT',
         url: `/api/v1/products/${id}`,
         body,
       }),
-      invalidatesTags: (_arg, _err, { skipNotesRefetching }) =>
-        skipNotesRefetching ? ['product'] : ['product', 'note'],
+      invalidatesTags: ['product', 'note'],
     }),
 
     deleteProducts: builder.mutation<void, DeleteProductsRequest>({

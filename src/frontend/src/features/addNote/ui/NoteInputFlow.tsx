@@ -2,10 +2,10 @@ import { useCallback, type FC } from 'react';
 import { useAppDispatch, useAppSelector } from '@/app/store';
 import { categoryLib } from '@/entities/category';
 import { productApi } from '@/entities/product';
-import { toCreateProductRequest, toEditProductRequest, toProductFormValues } from '../lib/mapping';
+import { toProductFormValues } from '../lib/mapping';
 import { useSubmitNote } from '../lib/useSubmitNote';
+import { useSubmitProduct } from '../lib/useSubmitProduct';
 import { actions, selectors } from '../model';
-import { type ProductFormValues } from '../model/productSchema';
 import { ImagePreview } from './ImagePreview';
 import { NoteForm } from './NoteForm';
 import { ProductForm } from './ProductForm';
@@ -21,37 +21,15 @@ export const NoteInputFlow: FC = () => {
   const dispatch = useAppDispatch();
 
   const categorySelect = categoryLib.useCategorySelectData();
-  const [createProduct] = productApi.useCreateProductMutation();
-  const [editProduct] = productApi.useEditProductMutation();
   const [getProductById, { isFetching: loadingProduct }] = productApi.useLazyProductByIdQuery();
 
   const handleSubmitNote = useSubmitNote();
+  const handleSubmitProduct = useSubmitProduct();
 
   const handleValidateProduct = useCallback(
     (isValid: boolean) => dispatch(actions.draftValidated(isValid)),
     [dispatch],
   );
-
-  const handleSubmitProduct = async (product: ProductFormValues): Promise<void> => {
-    const { id, category } = product;
-
-    if (!category) {
-      return;
-    }
-
-    dispatch(actions.productDraftSaved(product));
-
-    const shouldUpdate = typeof id === 'number';
-
-    if (shouldUpdate) {
-      await editProduct({
-        ...toEditProductRequest(product, id, category.id),
-        skipNotesRefetching: true,
-      });
-    } else {
-      await createProduct(toCreateProductRequest(product, category.id));
-    }
-  };
 
   const handleEditProduct = async (productId: number): Promise<void> => {
     const productByIdQuery = await getProductById(productId);

@@ -55,7 +55,6 @@ export interface EditProductRequest {
   caloriesCost: number;
   defaultQuantity: number;
   categoryId: number;
-  skipNotesRefetching?: boolean;
 }
 
 export interface DeleteProductsRequest {
