@@ -28,7 +28,7 @@ export const NoteInputFlow: FC<Props> = ({ date }) => {
   const [getProductById, { isFetching: loadingProduct }] = productApi.useLazyProductByIdQuery();
 
   const handleSubmitNote = useSubmitNote(date);
-  const handleSubmitProduct = useSubmitProduct();
+  const handleSubmitProduct = useSubmitProduct(date);
 
   const handleValidateProduct = useCallback(
     (isValid: boolean) => dispatch(actions.draftValidated(isValid)),

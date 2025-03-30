@@ -1,7 +1,7 @@
 import { type PayloadAction, createSlice, isAnyOf } from '@reduxjs/toolkit';
 import { type NoteItem, noteApi, noteLib, noteModel } from '@/entities/note';
 import { productApi, type ProductSelectOption } from '@/entities/product';
-import { type NoteFormValues } from './noteSchema';
+import { type NoteFormValuesProduct, type NoteFormValues } from './noteSchema';
 import { type ProductFormValues } from './productSchema';
 import { type Image } from './types';
 
@@ -80,6 +80,20 @@ export const addNoteSlice = createSlice({
       }
     },
 
+    productDraftSubmitted: (state, { payload }: PayloadAction<NoteFormValuesProduct>) => {
+      if (state.note) {
+        state.isSubmitting = false;
+        state.note.quantity = payload.defaultQuantity;
+        state.note.product = {
+          id: payload.id,
+          name: payload.name,
+          defaultQuantity: payload.defaultQuantity,
+        };
+
+        delete state.product;
+      }
+    },
+
     imageUploaded: (state, { payload }: PayloadAction<Image>) => {
       state.image = payload;
     },
@@ -118,41 +132,6 @@ export const addNoteSlice = createSlice({
 
     builder.addMatcher(noteApi.endpoints.notes.matchFulfilled, state => {
       state.isSubmitting = false;
-    });
-
-    builder.addMatcher(
-      productApi.endpoints.createProduct.matchFulfilled,
-      (state, { payload, meta }) => {
-        if (state.note && state.product) {
-          const product = meta.arg.originalArgs;
-
-          state.isSubmitting = false;
-          state.note.quantity = product.defaultQuantity;
-          state.note.product = {
-            id: payload.id,
-            name: product.name,
-            defaultQuantity: product.defaultQuantity,
-          };
-
-          delete state.product;
-        }
-      },
-    );
-
-    builder.addMatcher(productApi.endpoints.editProduct.matchFulfilled, (state, { meta }) => {
-      if (state.note && state.product) {
-        const product = meta.arg.originalArgs;
-
-        state.isSubmitting = false;
-        state.note.quantity = product.defaultQuantity;
-        state.note.product = {
-          id: product.id,
-          name: product.name,
-          defaultQuantity: product.defaultQuantity,
-        };
-
-        delete state.product;
-      }
     });
 
     builder.addMatcher(productApi.endpoints.productById.matchPending, state => {

@@ -1,5 +1,11 @@
 import { useAppDispatch } from '@/app/store';
-import { type CreateProductRequest, type EditProductRequest, productApi } from '@/entities/product';
+import { noteApi } from '@/entities/note';
+import {
+  type CreateProductRequest,
+  type EditProductRequest,
+  productApi,
+  type CreateProductResponse,
+} from '@/entities/product';
 import { actions, type ProductFormValues } from '../model';
 import { type OnSubmitProductFn } from '../ui/ProductForm';
 
@@ -25,7 +31,23 @@ const toEditProductRequest = (
   categoryId,
 });
 
-export const useSubmitProduct = (): OnSubmitProductFn => {
+const isCreateProductResponse = (response: unknown): response is CreateProductResponse => {
+  return typeof response === 'object' && response !== null && 'id' in response;
+};
+
+const resolveProductId = ({ id }: ProductFormValues, mutationResponse: unknown): number => {
+  if (isCreateProductResponse(mutationResponse)) {
+    return mutationResponse.id;
+  }
+
+  if (typeof id !== 'number') {
+    throw new Error('Expected existing product to have an id, but received: ' + typeof id);
+  }
+
+  return id;
+};
+
+export const useSubmitProduct = (date: string): OnSubmitProductFn => {
   const [createProduct] = productApi.useCreateProductMutation();
   const [editProduct] = productApi.useEditProductMutation();
   const dispatch = useAppDispatch();
@@ -41,8 +63,26 @@ export const useSubmitProduct = (): OnSubmitProductFn => {
 
     const shouldUpdate = typeof id === 'number';
 
-    shouldUpdate
+    const mutationResponse = shouldUpdate
       ? await editProduct(toEditProductRequest(product, id, category.id))
       : await createProduct(toCreateProductRequest(product, category.id));
+
+    if (mutationResponse.error) {
+      return;
+    }
+
+    const notesResponse = await dispatch(noteApi.util.getRunningQueryThunk('notes', { date }));
+
+    if (notesResponse?.error) {
+      return;
+    }
+
+    dispatch(
+      actions.productDraftSubmitted({
+        id: resolveProductId(product, mutationResponse.data),
+        name: product.name,
+        defaultQuantity: product.defaultQuantity,
+      }),
+    );
   };
 };
