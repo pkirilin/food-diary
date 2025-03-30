@@ -49,7 +49,7 @@ export const EditNote: FC<Props> = ({ note, renderTrigger }) => {
         title={dialogTitle}
         opened={dialogVisible}
         onClose={handleDialogClose}
-        content={<NoteInputFlow />}
+        content={<NoteInputFlow date={note.date} />}
         renderCancel={props => (
           <Button {...props} type="button" onClick={handleDialogClose}>
             Cancel

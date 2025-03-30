@@ -12,7 +12,11 @@ import { ProductForm } from './ProductForm';
 import { SearchProducts } from './SearchProducts';
 import { SearchProductsOnImage } from './SearchProductsOnImage';
 
-export const NoteInputFlow: FC = () => {
+interface Props {
+  date: string;
+}
+
+export const NoteInputFlow: FC<Props> = ({ date }) => {
   const product = useAppSelector(state => state.addNote.note?.product);
   const noteDraft = useAppSelector(state => state.addNote.note);
   const productDraft = useAppSelector(state => state.addNote.product);
@@ -23,7 +27,7 @@ export const NoteInputFlow: FC = () => {
   const categorySelect = categoryLib.useCategorySelectData();
   const [getProductById, { isFetching: loadingProduct }] = productApi.useLazyProductByIdQuery();
 
-  const handleSubmitNote = useSubmitNote();
+  const handleSubmitNote = useSubmitNote(date);
   const handleSubmitProduct = useSubmitProduct();
 
   const handleValidateProduct = useCallback(

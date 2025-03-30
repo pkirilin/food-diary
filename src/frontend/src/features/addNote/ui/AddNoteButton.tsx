@@ -57,7 +57,7 @@ export const AddNoteButton: FC<Props> = ({ date, mealType }) => {
         title={dialogTitle}
         opened={dialogVisible}
         onClose={handleDialogClose}
-        content={<NoteInputFlow />}
+        content={<NoteInputFlow date={date} />}
         renderCancel={props => (
           <Button {...props} type="button" onClick={handleDialogClose}>
             Cancel

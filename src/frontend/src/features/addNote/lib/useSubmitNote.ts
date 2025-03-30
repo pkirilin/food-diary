@@ -1,4 +1,3 @@
-import { useLoaderData } from 'react-router-dom';
 import { useAppDispatch } from '@/app/store';
 import { noteApi, type NoteRequestBody } from '@/entities/note';
 import { actions, type NoteFormValuesProduct, type NoteFormValues } from '../model';
@@ -15,9 +14,7 @@ const toNoteRequestBody = (
   productQuantity: quantity,
 });
 
-export const useSubmitNote = (): OnSubmitNoteFn => {
-  // TODO: use date from props?
-  const { date } = useLoaderData() as { date: string };
+export const useSubmitNote = (date: string): OnSubmitNoteFn => {
   const [createNote] = noteApi.useCreateNoteMutation();
   const [updateNote] = noteApi.useUpdateNoteMutation();
   const dispatch = useAppDispatch();
