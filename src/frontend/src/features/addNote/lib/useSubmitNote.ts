@@ -19,38 +19,6 @@ export const useSubmitNote = (date: string): OnSubmitNoteFn => {
   const [updateNote] = noteApi.useUpdateNoteMutation();
   const dispatch = useAppDispatch();
 
-  const handleCreate = async (note: NoteRequestBody): Promise<void> => {
-    const createResponse = await createNote(note);
-
-    if (createResponse.error) {
-      return;
-    }
-
-    const notesResponse = await dispatch(noteApi.util.getRunningQueryThunk('notes', { date }));
-
-    if (notesResponse?.error) {
-      return;
-    }
-
-    dispatch(actions.noteDraftSubmitted());
-  };
-
-  const handleUpdate = async (id: number, note: NoteRequestBody): Promise<void> => {
-    const updateResponse = await updateNote({ id, note });
-
-    if (updateResponse.error) {
-      return;
-    }
-
-    const notesResponse = await dispatch(noteApi.util.getRunningQueryThunk('notes', { date }));
-
-    if (notesResponse?.error) {
-      return;
-    }
-
-    dispatch(actions.noteDraftSubmitted());
-  };
-
   return async note => {
     const { id, product } = note;
 
@@ -58,9 +26,22 @@ export const useSubmitNote = (date: string): OnSubmitNoteFn => {
       throw new Error('Product should not be empty');
     }
 
-    const request = toNoteRequestBody(note, product);
     const shouldUpdate = typeof id === 'number';
 
-    shouldUpdate ? await handleUpdate(id, request) : await handleCreate(request);
+    const mutationResponse = shouldUpdate
+      ? await updateNote({ id, note: toNoteRequestBody(note, product) })
+      : await createNote(toNoteRequestBody(note, product));
+
+    if (mutationResponse.error) {
+      return;
+    }
+
+    const notesResponse = await dispatch(noteApi.util.getRunningQueryThunk('notes', { date }));
+
+    if (notesResponse?.error) {
+      return;
+    }
+
+    dispatch(actions.noteDraftSubmitted());
   };
 };
