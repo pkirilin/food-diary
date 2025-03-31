@@ -28,11 +28,14 @@ export const useSubmitNote = (date: string): OnSubmitNoteFn => {
 
     const shouldUpdate = typeof id === 'number';
 
+    dispatch(actions.noteDraftSaveStarted());
+
     const mutationResponse = shouldUpdate
       ? await updateNote({ id, note: toNoteRequestBody(note, product) })
       : await createNote(toNoteRequestBody(note, product));
 
     if (mutationResponse.error) {
+      dispatch(actions.noteDraftSaveFailed());
       return;
     }
 
@@ -42,6 +45,6 @@ export const useSubmitNote = (date: string): OnSubmitNoteFn => {
       return;
     }
 
-    dispatch(actions.noteDraftSubmitted());
+    dispatch(actions.noteDraftSaved());
   };
 };

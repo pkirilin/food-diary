@@ -1,5 +1,5 @@
 import { type PayloadAction, createSlice, isAnyOf } from '@reduxjs/toolkit';
-import { type NoteItem, noteApi, noteLib, noteModel } from '@/entities/note';
+import { type NoteItem, noteLib, noteModel } from '@/entities/note';
 import { productApi, type ProductSelectOption } from '@/entities/product';
 import { type NoteFormValuesProduct, type NoteFormValues } from './noteSchema';
 import { type ProductFormValues } from './productSchema';
@@ -42,13 +42,21 @@ export const addNoteSlice = createSlice({
       Boolean(state.note && state.note.id === note.id),
   },
   reducers: {
-    noteDraftSaved: (state, { payload }: PayloadAction<NoteFormValues>) => {
+    noteDraftCreated: (state, { payload }: PayloadAction<NoteFormValues>) => {
       state.note = payload;
     },
 
     noteDraftDiscarded: () => initialState,
 
-    noteDraftSubmitted: () => initialState,
+    noteDraftSaveStarted: state => {
+      state.isSubmitting = true;
+    },
+
+    noteDraftSaveFailed: state => {
+      state.isSubmitting = false;
+    },
+
+    noteDraftSaved: () => initialState,
 
     draftValidated: (state, { payload }: PayloadAction<boolean>) => {
       state.canSubmit = payload;
@@ -61,7 +69,7 @@ export const addNoteSlice = createSlice({
       }
     },
 
-    productDraftSaved: (state, { payload }: PayloadAction<ProductFormValues>) => {
+    productDraftCreated: (state, { payload }: PayloadAction<ProductFormValues>) => {
       state.product = payload;
     },
 
@@ -80,7 +88,15 @@ export const addNoteSlice = createSlice({
       }
     },
 
-    productDraftSubmitted: (state, { payload }: PayloadAction<NoteFormValuesProduct>) => {
+    productDraftSaveStarted: state => {
+      state.isSubmitting = true;
+    },
+
+    productDraftSaveFailed: state => {
+      state.isSubmitting = false;
+    },
+
+    productDraftSaved: (state, { payload }: PayloadAction<NoteFormValuesProduct>) => {
       if (state.note) {
         state.isSubmitting = false;
         state.note.quantity = payload.defaultQuantity;
@@ -104,36 +120,6 @@ export const addNoteSlice = createSlice({
   },
 
   extraReducers: builder => {
-    builder.addMatcher(
-      isAnyOf(
-        noteApi.endpoints.createNote.matchPending,
-        noteApi.endpoints.updateNote.matchPending,
-        noteApi.endpoints.notes.matchPending,
-        productApi.endpoints.createProduct.matchPending,
-        productApi.endpoints.editProduct.matchPending,
-      ),
-      state => {
-        state.isSubmitting = true;
-      },
-    );
-
-    builder.addMatcher(
-      isAnyOf(
-        noteApi.endpoints.createNote.matchRejected,
-        noteApi.endpoints.updateNote.matchRejected,
-        noteApi.endpoints.notes.matchRejected,
-        productApi.endpoints.createProduct.matchRejected,
-        productApi.endpoints.editProduct.matchRejected,
-      ),
-      state => {
-        state.isSubmitting = false;
-      },
-    );
-
-    builder.addMatcher(noteApi.endpoints.notes.matchFulfilled, state => {
-      state.isSubmitting = false;
-    });
-
     builder.addMatcher(productApi.endpoints.productById.matchPending, state => {
       state.canSubmit = false;
     });

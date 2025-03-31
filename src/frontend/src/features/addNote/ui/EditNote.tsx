@@ -21,7 +21,7 @@ export const EditNote: FC<Props> = ({ note, renderTrigger }) => {
 
   const handleDialogOpen = (): void => {
     dispatch(
-      actions.noteDraftSaved({
+      actions.noteDraftCreated({
         id: note.id,
         date: note.date,
         mealType: note.mealType,

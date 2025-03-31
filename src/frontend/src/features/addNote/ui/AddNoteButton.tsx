@@ -32,7 +32,7 @@ export const AddNoteButton: FC<Props> = ({ date, mealType }) => {
 
   const handleDialogOpen: MouseEventHandler = () => {
     dispatch(
-      actions.noteDraftSaved({
+      actions.noteDraftCreated({
         date,
         mealType,
         displayOrder,

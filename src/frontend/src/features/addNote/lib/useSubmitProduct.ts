@@ -59,15 +59,16 @@ export const useSubmitProduct = (date: string): OnSubmitProductFn => {
       return;
     }
 
-    dispatch(actions.productDraftSaved(product));
-
     const shouldUpdate = typeof id === 'number';
+
+    dispatch(actions.productDraftSaveStarted());
 
     const mutationResponse = shouldUpdate
       ? await editProduct(toEditProductRequest(product, id, category.id))
       : await createProduct(toCreateProductRequest(product, category.id));
 
     if (mutationResponse.error) {
+      dispatch(actions.productDraftSaveFailed());
       return;
     }
 
@@ -78,7 +79,7 @@ export const useSubmitProduct = (date: string): OnSubmitProductFn => {
     }
 
     dispatch(
-      actions.productDraftSubmitted({
+      actions.productDraftSaved({
         id: resolveProductId(product, mutationResponse.data),
         name: product.name,
         defaultQuantity: product.defaultQuantity,
