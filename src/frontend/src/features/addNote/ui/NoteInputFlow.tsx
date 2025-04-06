@@ -1,8 +1,7 @@
 import { type FC } from 'react';
 import { useAppDispatch, useAppSelector } from '@/app/store';
 import { categoryLib } from '@/entities/category';
-import { productApi } from '@/entities/product';
-import { toProductFormValues } from '../lib/mapping';
+import { useEditProduct } from '../lib/useEditProduct';
 import { useSubmitNote } from '../lib/useSubmitNote';
 import { useSubmitProduct } from '../lib/useSubmitProduct';
 import { actions, selectors } from '../model';
@@ -25,22 +24,10 @@ export const NoteInputFlow: FC<Props> = ({ date }) => {
   const dispatch = useAppDispatch();
 
   const categorySelect = categoryLib.useCategorySelectData();
-  const [getProductById, { isFetching: loadingProduct }] = productApi.useLazyProductByIdQuery();
 
   const handleSubmitNote = useSubmitNote(date);
   const handleSubmitProduct = useSubmitProduct(date);
-
-  const handleEditProduct = async (productId: number): Promise<void> => {
-    const productByIdQuery = await getProductById(productId);
-
-    if (!productByIdQuery.isSuccess) {
-      return;
-    }
-
-    const product = toProductFormValues(productByIdQuery.data, productId);
-
-    dispatch(actions.productDraftEditStarted(product));
-  };
+  const [handleEditProduct, productFetching] = useEditProduct();
 
   if (!product && productDraft) {
     return (
@@ -74,7 +61,7 @@ export const NoteInputFlow: FC<Props> = ({ date }) => {
   return (
     <NoteForm
       defaultValues={noteDraft}
-      loadingProduct={loadingProduct}
+      productFetching={productFetching}
       onSubmit={handleSubmitNote}
       onEditProduct={handleEditProduct}
     />

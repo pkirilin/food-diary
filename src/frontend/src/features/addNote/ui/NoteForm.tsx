@@ -16,14 +16,21 @@ import { actions, selectors, noteSchema, type NoteFormValues } from '../model';
 
 interface Props {
   defaultValues: NoteFormValues;
-  loadingProduct: boolean;
+  productFetching: boolean;
   onSubmit: OnSubmitNoteFn;
-  onEditProduct: (productId: number) => Promise<void>;
+  onEditProduct: OnEditProductFn;
 }
 
 export type OnSubmitNoteFn = (note: NoteFormValues) => Promise<void>;
 
-export const NoteForm: FC<Props> = ({ defaultValues, loadingProduct, onSubmit, onEditProduct }) => {
+export type OnEditProductFn = (productId: number) => Promise<void>;
+
+export const NoteForm: FC<Props> = ({
+  defaultValues,
+  productFetching,
+  onSubmit,
+  onEditProduct,
+}) => {
   const { control, handleSubmit, getValues } = useForm<NoteFormValues>({
     mode: 'onSubmit',
     resolver: zodResolver(noteSchema),
@@ -55,7 +62,7 @@ export const NoteForm: FC<Props> = ({ defaultValues, loadingProduct, onSubmit, o
             readOnly: true,
             endAdornment: (
               <InputAdornment position="end">
-                {loadingProduct ? (
+                {productFetching ? (
                   <Box p={1}>
                     <CircularProgress size={20} />
                   </Box>
@@ -69,7 +76,7 @@ export const NoteForm: FC<Props> = ({ defaultValues, loadingProduct, onSubmit, o
                 <Tooltip title="Discard and choose another product">
                   <IconButton
                     edge="end"
-                    disabled={loadingProduct}
+                    disabled={productFetching}
                     onClick={() => dispatch(actions.productDraftDiscarded())}
                   >
                     <CancelIcon />
