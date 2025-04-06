@@ -15,7 +15,7 @@ export const EditNote: FC<Props> = ({ note, renderTrigger }) => {
   const dialogVisible = useAppSelector(state => selectors.editDialogVisible(state, note));
   const activeFormId = useAppSelector(selectors.activeFormId);
   const submitText = useAppSelector(selectors.submitText);
-  const canSubmit = useAppSelector(state => state.addNote.canSubmit);
+  const submitDisabled = useAppSelector(state => state.addNote.submitDisabled);
   const isSubmitting = useAppSelector(state => state.addNote.isSubmitting);
   const dispatch = useAppDispatch();
 
@@ -60,7 +60,7 @@ export const EditNote: FC<Props> = ({ note, renderTrigger }) => {
             {...props}
             type="submit"
             form={activeFormId}
-            disabled={!canSubmit}
+            disabled={submitDisabled}
             loading={isSubmitting}
           >
             {submitText}

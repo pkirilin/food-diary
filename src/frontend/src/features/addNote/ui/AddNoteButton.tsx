@@ -16,7 +16,7 @@ export const AddNoteButton: FC<Props> = ({ date, mealType }) => {
   const dialogVisible = useAppSelector(state => selectors.addDialogVisible(state, mealType));
   const dialogTitle = useAppSelector(selectors.dialogTitle);
   const submitText = useAppSelector(selectors.submitText);
-  const canSubmit = useAppSelector(state => state.addNote.canSubmit);
+  const submitDisabled = useAppSelector(state => state.addNote.submitDisabled);
   const isSubmitting = useAppSelector(state => state.addNote.isSubmitting);
   const dispatch = useAppDispatch();
 
@@ -68,7 +68,7 @@ export const AddNoteButton: FC<Props> = ({ date, mealType }) => {
             {...props}
             type="submit"
             form={activeFormId}
-            disabled={!canSubmit}
+            disabled={submitDisabled}
             loading={isSubmitting}
           >
             {submitText}

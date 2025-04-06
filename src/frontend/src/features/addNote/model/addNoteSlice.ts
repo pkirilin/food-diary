@@ -9,12 +9,12 @@ interface State {
   note?: NoteFormValues;
   product?: ProductFormValues;
   image?: Image;
-  canSubmit: boolean;
+  submitDisabled: boolean;
   isSubmitting: boolean;
 }
 
 const initialState: State = {
-  canSubmit: true,
+  submitDisabled: false,
   isSubmitting: false,
 };
 
@@ -100,16 +100,16 @@ export const addNoteSlice = createSlice({
     },
 
     productForEditLoadStarted: state => {
-      state.canSubmit = false;
+      state.submitDisabled = true;
     },
 
     productForEditLoadFailed: state => {
-      state.canSubmit = true;
+      state.submitDisabled = false;
     },
 
     productForEditLoaded: (state, { payload }: PayloadAction<ProductFormValues>) => {
       state.product = payload;
-      state.canSubmit = true;
+      state.submitDisabled = false;
 
       if (state.note?.product) {
         state.note.product = null;
