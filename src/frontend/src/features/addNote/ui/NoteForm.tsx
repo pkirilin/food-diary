@@ -16,9 +16,9 @@ import { actions, selectors, noteSchema, type NoteFormValues } from '../model';
 
 interface Props {
   defaultValues: NoteFormValues;
-  productFetching: boolean;
+  productForEditLoading: boolean;
   onSubmit: OnSubmitNoteFn;
-  onEditProduct: OnEditProductFn;
+  onLoadProductForEdit: OnEditProductFn;
 }
 
 export type OnSubmitNoteFn = (note: NoteFormValues) => Promise<void>;
@@ -27,9 +27,9 @@ export type OnEditProductFn = (productId: number) => Promise<void>;
 
 export const NoteForm: FC<Props> = ({
   defaultValues,
-  productFetching,
+  productForEditLoading,
   onSubmit,
-  onEditProduct,
+  onLoadProductForEdit,
 }) => {
   const { control, handleSubmit, getValues } = useForm<NoteFormValues>({
     mode: 'onSubmit',
@@ -45,7 +45,7 @@ export const NoteForm: FC<Props> = ({
     const { product } = getValues();
 
     if (product) {
-      onEditProduct(product.id);
+      onLoadProductForEdit(product.id);
     }
   };
 
@@ -62,7 +62,7 @@ export const NoteForm: FC<Props> = ({
             readOnly: true,
             endAdornment: (
               <InputAdornment position="end">
-                {productFetching ? (
+                {productForEditLoading ? (
                   <Box p={1}>
                     <CircularProgress size={20} />
                   </Box>
@@ -76,7 +76,7 @@ export const NoteForm: FC<Props> = ({
                 <Tooltip title="Discard and choose another product">
                   <IconButton
                     edge="end"
-                    disabled={productFetching}
+                    disabled={productForEditLoading}
                     onClick={() => dispatch(actions.productDraftDiscarded())}
                   >
                     <CancelIcon />

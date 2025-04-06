@@ -1,7 +1,7 @@
 import { type FC } from 'react';
 import { useAppDispatch, useAppSelector } from '@/app/store';
 import { categoryLib } from '@/entities/category';
-import { useEditProduct } from '../lib/useEditProduct';
+import { useLoadProductForEdit } from '../lib/useLoadProductForEdit';
 import { useSubmitNote } from '../lib/useSubmitNote';
 import { useSubmitProduct } from '../lib/useSubmitProduct';
 import { actions, selectors } from '../model';
@@ -27,7 +27,7 @@ export const NoteInputFlow: FC<Props> = ({ date }) => {
 
   const handleSubmitNote = useSubmitNote(date);
   const handleSubmitProduct = useSubmitProduct(date);
-  const [handleEditProduct, productFetching] = useEditProduct();
+  const [handleLoadProductForEdit, productForEditLoading] = useLoadProductForEdit();
 
   if (!product && productDraft) {
     return (
@@ -61,9 +61,9 @@ export const NoteInputFlow: FC<Props> = ({ date }) => {
   return (
     <NoteForm
       defaultValues={noteDraft}
-      productFetching={productFetching}
+      productForEditLoading={productForEditLoading}
       onSubmit={handleSubmitNote}
-      onEditProduct={handleEditProduct}
+      onLoadProductForEdit={handleLoadProductForEdit}
     />
   );
 };

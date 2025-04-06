@@ -1,6 +1,6 @@
-import { type PayloadAction, createSlice, isAnyOf } from '@reduxjs/toolkit';
+import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { type NoteItem, noteLib, noteModel } from '@/entities/note';
-import { productApi, type ProductSelectOption } from '@/entities/product';
+import { type ProductSelectOption } from '@/entities/product';
 import { type NoteFormValuesProduct, type NoteFormValues } from './noteSchema';
 import { type ProductFormValues } from './productSchema';
 import { type Image } from './types';
@@ -69,13 +69,6 @@ export const addNoteSlice = createSlice({
       state.product = payload;
     },
 
-    productDraftEditStarted: (state, { payload }: PayloadAction<ProductFormValues>) => {
-      if (state.note?.product) {
-        state.product = payload;
-        state.note.product = null;
-      }
-    },
-
     productDraftDiscarded: state => {
       if (state.note) {
         state.note.product = null;
@@ -106,6 +99,23 @@ export const addNoteSlice = createSlice({
       }
     },
 
+    productForEditLoadStarted: state => {
+      state.canSubmit = false;
+    },
+
+    productForEditLoadFailed: state => {
+      state.canSubmit = true;
+    },
+
+    productForEditLoaded: (state, { payload }: PayloadAction<ProductFormValues>) => {
+      state.product = payload;
+      state.canSubmit = true;
+
+      if (state.note?.product) {
+        state.note.product = null;
+      }
+    },
+
     imageUploaded: (state, { payload }: PayloadAction<Image>) => {
       state.image = payload;
     },
@@ -113,21 +123,5 @@ export const addNoteSlice = createSlice({
     imageRemoved: state => {
       delete state.image;
     },
-  },
-
-  extraReducers: builder => {
-    builder.addMatcher(productApi.endpoints.productById.matchPending, state => {
-      state.canSubmit = false;
-    });
-
-    builder.addMatcher(
-      isAnyOf(
-        productApi.endpoints.productById.matchFulfilled,
-        productApi.endpoints.productById.matchRejected,
-      ),
-      state => {
-        state.canSubmit = true;
-      },
-    );
   },
 });
