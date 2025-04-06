@@ -18,7 +18,7 @@ const initialState: State = {
   isSubmitting: false,
 };
 
-export const addNoteSlice = createSlice({
+export const noteInputSlice = createSlice({
   name: 'addNote',
   initialState,
   selectors: {
