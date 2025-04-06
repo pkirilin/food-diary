@@ -11,7 +11,6 @@ interface Props {
   categories: SelectOption[];
   categoriesLoading: boolean;
   onSubmit: OnSubmitProductFn;
-  onValidate: (isValid: boolean) => void;
 }
 
 export type OnSubmitProductFn = (product: ProductFormValues) => Promise<void>;
@@ -22,17 +21,12 @@ export const ProductForm: FC<Props> = ({
   categories,
   categoriesLoading,
   onSubmit,
-  onValidate,
 }) => {
-  const { control, formState, handleSubmit, setValue } = useForm<ProductFormValues>({
-    mode: 'onChange',
+  const { control, handleSubmit, setValue } = useForm<ProductFormValues>({
+    mode: 'onSubmit',
     resolver: zodResolver(productSchema),
     defaultValues,
   });
-
-  useEffect(() => {
-    onValidate(formState.isValid);
-  }, [formState.isValid, onValidate]);
 
   useEffect(() => {
     if (categories.length > 0) {

@@ -9,7 +9,7 @@ import {
   TextField,
   Tooltip,
 } from '@mui/material';
-import { useEffect, type FC, type MouseEventHandler } from 'react';
+import { type FC, type MouseEventHandler } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useAppDispatch, useAppSelector } from '@/app/store';
 import { actions, selectors, noteSchema, type NoteFormValues } from '../model';
@@ -24,8 +24,8 @@ interface Props {
 export type OnSubmitNoteFn = (note: NoteFormValues) => Promise<void>;
 
 export const NoteForm: FC<Props> = ({ defaultValues, loadingProduct, onSubmit, onEditProduct }) => {
-  const { control, formState, handleSubmit, getValues } = useForm<NoteFormValues>({
-    mode: 'onChange',
+  const { control, handleSubmit, getValues } = useForm<NoteFormValues>({
+    mode: 'onSubmit',
     resolver: zodResolver(noteSchema),
     defaultValues,
   });
@@ -33,10 +33,6 @@ export const NoteForm: FC<Props> = ({ defaultValues, loadingProduct, onSubmit, o
   const noteDraft = useAppSelector(state => state.addNote.note);
   const activeFormId = useAppSelector(selectors.activeFormId);
   const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    dispatch(actions.draftValidated(formState.isValid));
-  }, [dispatch, formState.isValid]);
 
   const handleEditProduct: MouseEventHandler = async () => {
     const { product } = getValues();

@@ -14,7 +14,7 @@ interface State {
 }
 
 const initialState: State = {
-  canSubmit: false,
+  canSubmit: true,
   isSubmitting: false,
 };
 
@@ -57,10 +57,6 @@ export const addNoteSlice = createSlice({
     },
 
     noteDraftSaved: () => initialState,
-
-    draftValidated: (state, { payload }: PayloadAction<boolean>) => {
-      state.canSubmit = payload;
-    },
 
     productSelected: (state, { payload }: PayloadAction<ProductSelectOption>) => {
       if (state.note) {

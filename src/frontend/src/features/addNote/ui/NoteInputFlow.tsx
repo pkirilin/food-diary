@@ -1,4 +1,4 @@
-import { useCallback, type FC } from 'react';
+import { type FC } from 'react';
 import { useAppDispatch, useAppSelector } from '@/app/store';
 import { categoryLib } from '@/entities/category';
 import { productApi } from '@/entities/product';
@@ -30,11 +30,6 @@ export const NoteInputFlow: FC<Props> = ({ date }) => {
   const handleSubmitNote = useSubmitNote(date);
   const handleSubmitProduct = useSubmitProduct(date);
 
-  const handleValidateProduct = useCallback(
-    (isValid: boolean) => dispatch(actions.draftValidated(isValid)),
-    [dispatch],
-  );
-
   const handleEditProduct = async (productId: number): Promise<void> => {
     const productByIdQuery = await getProductById(productId);
 
@@ -55,7 +50,6 @@ export const NoteInputFlow: FC<Props> = ({ date }) => {
         categories={categorySelect.data}
         categoriesLoading={categorySelect.isLoading}
         onSubmit={handleSubmitProduct}
-        onValidate={handleValidateProduct}
       />
     );
   }
