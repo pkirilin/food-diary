@@ -21,6 +21,8 @@ export const NoteInputFlow: FC<Props> = ({ date }) => {
   const productDraft = useAppSelector(state => state.addNote.product);
   const image = useAppSelector(state => state.addNote.image);
   const activeFormId = useAppSelector(selectors.activeFormId);
+  const isSubmitting = useAppSelector(state => state.addNote.isSubmitting);
+  const submitDisabled = useAppSelector(state => state.addNote.submitDisabled);
   const dispatch = useAppDispatch();
 
   const categorySelect = categoryLib.useCategorySelectData();
@@ -62,6 +64,8 @@ export const NoteInputFlow: FC<Props> = ({ date }) => {
     <NoteForm
       defaultValues={noteDraft}
       productForEditLoading={productForEditLoading}
+      isSubmitting={isSubmitting}
+      submitDisabled={submitDisabled}
       onSubmit={handleSubmitNote}
       onLoadProductForEdit={handleLoadProductForEdit}
     />

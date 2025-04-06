@@ -17,6 +17,8 @@ import { actions, selectors, noteSchema, type NoteFormValues } from '../model';
 interface Props {
   defaultValues: NoteFormValues;
   productForEditLoading: boolean;
+  isSubmitting: boolean;
+  submitDisabled: boolean;
   onSubmit: OnSubmitNoteFn;
   onLoadProductForEdit: OnEditProductFn;
 }
@@ -28,6 +30,8 @@ export type OnEditProductFn = (productId: number) => Promise<void>;
 export const NoteForm: FC<Props> = ({
   defaultValues,
   productForEditLoading,
+  isSubmitting,
+  submitDisabled,
   onSubmit,
   onLoadProductForEdit,
 }) => {
@@ -68,7 +72,10 @@ export const NoteForm: FC<Props> = ({
                   </Box>
                 ) : (
                   <Tooltip title="Edit product">
-                    <IconButton onClick={handleEditProduct}>
+                    <IconButton
+                      disabled={isSubmitting || submitDisabled}
+                      onClick={handleEditProduct}
+                    >
                       <EditIcon />
                     </IconButton>
                   </Tooltip>
@@ -76,7 +83,7 @@ export const NoteForm: FC<Props> = ({
                 <Tooltip title="Discard and choose another product">
                   <IconButton
                     edge="end"
-                    disabled={productForEditLoading}
+                    disabled={isSubmitting || submitDisabled}
                     onClick={() => dispatch(actions.productDraftDiscarded())}
                   >
                     <CancelIcon />
