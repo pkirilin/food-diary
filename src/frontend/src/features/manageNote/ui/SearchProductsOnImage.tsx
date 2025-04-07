@@ -84,7 +84,7 @@ export const SearchProductsOnImage: FC<Props> = ({ image }) => {
 
   const handleAddProduct: MouseEventHandler = () =>
     dispatch(
-      actions.productDraftSaved({
+      actions.productDraftCreated({
         name: productName,
         defaultQuantity: note.quantity,
         caloriesCost: note.product.caloriesCost,

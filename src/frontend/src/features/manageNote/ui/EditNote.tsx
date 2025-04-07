@@ -15,13 +15,13 @@ export const EditNote: FC<Props> = ({ note, renderTrigger }) => {
   const dialogVisible = useAppSelector(state => selectors.editDialogVisible(state, note));
   const activeFormId = useAppSelector(selectors.activeFormId);
   const submitText = useAppSelector(selectors.submitText);
-  const canSubmit = useAppSelector(state => state.addNote.canSubmit);
-  const isSubmitting = useAppSelector(state => state.addNote.isSubmitting);
+  const submitDisabled = useAppSelector(state => state.manageNote.submitDisabled);
+  const isSubmitting = useAppSelector(state => state.manageNote.isSubmitting);
   const dispatch = useAppDispatch();
 
   const handleDialogOpen = (): void => {
     dispatch(
-      actions.noteDraftSaved({
+      actions.noteDraftCreated({
         id: note.id,
         date: note.date,
         mealType: note.mealType,
@@ -60,7 +60,7 @@ export const EditNote: FC<Props> = ({ note, renderTrigger }) => {
             {...props}
             type="submit"
             form={activeFormId}
-            disabled={!canSubmit}
+            disabled={submitDisabled}
             loading={isSubmitting}
           >
             {submitText}

@@ -16,8 +16,8 @@ export const AddNoteButton: FC<Props> = ({ date, mealType }) => {
   const dialogVisible = useAppSelector(state => selectors.addDialogVisible(state, mealType));
   const dialogTitle = useAppSelector(selectors.dialogTitle);
   const submitText = useAppSelector(selectors.submitText);
-  const canSubmit = useAppSelector(state => state.addNote.canSubmit);
-  const isSubmitting = useAppSelector(state => state.addNote.isSubmitting);
+  const submitDisabled = useAppSelector(state => state.manageNote.submitDisabled);
+  const isSubmitting = useAppSelector(state => state.manageNote.isSubmitting);
   const dispatch = useAppDispatch();
 
   const { canAddNote, displayOrder } = noteApi.useNotesQuery(
@@ -32,7 +32,7 @@ export const AddNoteButton: FC<Props> = ({ date, mealType }) => {
 
   const handleDialogOpen: MouseEventHandler = () => {
     dispatch(
-      actions.noteDraftSaved({
+      actions.noteDraftCreated({
         date,
         mealType,
         displayOrder,
@@ -68,7 +68,7 @@ export const AddNoteButton: FC<Props> = ({ date, mealType }) => {
             {...props}
             type="submit"
             form={activeFormId}
-            disabled={!canSubmit}
+            disabled={submitDisabled}
             loading={isSubmitting}
           >
             {submitText}

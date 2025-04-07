@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import { type FC } from 'react';
 import { type NoteItem } from '@/entities/note';
-import { EditNote } from '@/features/addNote';
+import { EditNote } from '@/features/manageNote';
 import { DeleteNote } from '@/features/note/delete';
 
 interface Props {

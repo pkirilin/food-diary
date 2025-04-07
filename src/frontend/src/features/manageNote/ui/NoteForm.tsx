@@ -9,40 +9,47 @@ import {
   TextField,
   Tooltip,
 } from '@mui/material';
-import { useEffect, type FC, type MouseEventHandler } from 'react';
+import { type FC, type MouseEventHandler } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useAppDispatch, useAppSelector } from '@/app/store';
 import { actions, selectors, noteSchema, type NoteFormValues } from '../model';
 
 interface Props {
   defaultValues: NoteFormValues;
-  loadingProduct: boolean;
+  productForEditLoading: boolean;
+  isSubmitting: boolean;
+  submitDisabled: boolean;
   onSubmit: OnSubmitNoteFn;
-  onEditProduct: (productId: number) => Promise<void>;
+  onLoadProductForEdit: OnEditProductFn;
 }
 
 export type OnSubmitNoteFn = (note: NoteFormValues) => Promise<void>;
 
-export const NoteForm: FC<Props> = ({ defaultValues, loadingProduct, onSubmit, onEditProduct }) => {
-  const { control, formState, handleSubmit, getValues } = useForm<NoteFormValues>({
-    mode: 'onChange',
+export type OnEditProductFn = (productId: number) => Promise<void>;
+
+export const NoteForm: FC<Props> = ({
+  defaultValues,
+  productForEditLoading,
+  isSubmitting,
+  submitDisabled,
+  onSubmit,
+  onLoadProductForEdit,
+}) => {
+  const { control, handleSubmit, getValues } = useForm<NoteFormValues>({
+    mode: 'onSubmit',
     resolver: zodResolver(noteSchema),
     defaultValues,
   });
 
-  const noteDraft = useAppSelector(state => state.addNote.note);
+  const noteDraft = useAppSelector(state => state.manageNote.note);
   const activeFormId = useAppSelector(selectors.activeFormId);
   const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    dispatch(actions.draftValidated(formState.isValid));
-  }, [dispatch, formState.isValid]);
 
   const handleEditProduct: MouseEventHandler = async () => {
     const { product } = getValues();
 
     if (product) {
-      onEditProduct(product.id);
+      onLoadProductForEdit(product.id);
     }
   };
 
@@ -59,13 +66,16 @@ export const NoteForm: FC<Props> = ({ defaultValues, loadingProduct, onSubmit, o
             readOnly: true,
             endAdornment: (
               <InputAdornment position="end">
-                {loadingProduct ? (
+                {productForEditLoading ? (
                   <Box p={1}>
                     <CircularProgress size={20} />
                   </Box>
                 ) : (
                   <Tooltip title="Edit product">
-                    <IconButton onClick={handleEditProduct}>
+                    <IconButton
+                      disabled={isSubmitting || submitDisabled}
+                      onClick={handleEditProduct}
+                    >
                       <EditIcon />
                     </IconButton>
                   </Tooltip>
@@ -73,7 +83,7 @@ export const NoteForm: FC<Props> = ({ defaultValues, loadingProduct, onSubmit, o
                 <Tooltip title="Discard and choose another product">
                   <IconButton
                     edge="end"
-                    disabled={loadingProduct}
+                    disabled={isSubmitting || submitDisabled}
                     onClick={() => dispatch(actions.productDraftDiscarded())}
                   >
                     <CancelIcon />

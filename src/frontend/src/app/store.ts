@@ -1,7 +1,7 @@
 import { configureStore as configureStoreRtk } from '@reduxjs/toolkit';
 import { useDispatch, useSelector } from 'react-redux';
 import { productModel } from '@/entities/product';
-import { addNoteModel } from '@/features/addNote';
+import { manageNoteModel } from '@/features/manageNote';
 import { api } from '../shared/api';
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -10,7 +10,7 @@ export const configureStore = () =>
     reducer: {
       [api.reducerPath]: api.reducer,
       products: productModel.reducer,
-      addNote: addNoteModel.reducer,
+      manageNote: manageNoteModel.reducer,
     },
 
     middleware: getDefaultMiddleware => getDefaultMiddleware().concat(api.middleware),

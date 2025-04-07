@@ -1,8 +1,7 @@
-import { useCallback, type FC } from 'react';
+import { type FC } from 'react';
 import { useAppDispatch, useAppSelector } from '@/app/store';
 import { categoryLib } from '@/entities/category';
-import { productApi } from '@/entities/product';
-import { toProductFormValues } from '../lib/mapping';
+import { useLoadProductForEdit } from '../lib/useLoadProductForEdit';
 import { useSubmitNote } from '../lib/useSubmitNote';
 import { useSubmitProduct } from '../lib/useSubmitProduct';
 import { actions, selectors } from '../model';
@@ -17,35 +16,20 @@ interface Props {
 }
 
 export const NoteInputFlow: FC<Props> = ({ date }) => {
-  const product = useAppSelector(state => state.addNote.note?.product);
-  const noteDraft = useAppSelector(state => state.addNote.note);
-  const productDraft = useAppSelector(state => state.addNote.product);
-  const image = useAppSelector(state => state.addNote.image);
+  const product = useAppSelector(state => state.manageNote.note?.product);
+  const noteDraft = useAppSelector(state => state.manageNote.note);
+  const productDraft = useAppSelector(state => state.manageNote.product);
+  const image = useAppSelector(state => state.manageNote.image);
   const activeFormId = useAppSelector(selectors.activeFormId);
+  const isSubmitting = useAppSelector(state => state.manageNote.isSubmitting);
+  const submitDisabled = useAppSelector(state => state.manageNote.submitDisabled);
   const dispatch = useAppDispatch();
 
   const categorySelect = categoryLib.useCategorySelectData();
-  const [getProductById, { isFetching: loadingProduct }] = productApi.useLazyProductByIdQuery();
 
   const handleSubmitNote = useSubmitNote(date);
   const handleSubmitProduct = useSubmitProduct(date);
-
-  const handleValidateProduct = useCallback(
-    (isValid: boolean) => dispatch(actions.draftValidated(isValid)),
-    [dispatch],
-  );
-
-  const handleEditProduct = async (productId: number): Promise<void> => {
-    const productByIdQuery = await getProductById(productId);
-
-    if (!productByIdQuery.isSuccess) {
-      return;
-    }
-
-    const product = toProductFormValues(productByIdQuery.data, productId);
-
-    dispatch(actions.productDraftEditStarted(product));
-  };
+  const [handleLoadProductForEdit, productForEditLoading] = useLoadProductForEdit();
 
   if (!product && productDraft) {
     return (
@@ -55,7 +39,6 @@ export const NoteInputFlow: FC<Props> = ({ date }) => {
         categories={categorySelect.data}
         categoriesLoading={categorySelect.isLoading}
         onSubmit={handleSubmitProduct}
-        onValidate={handleValidateProduct}
       />
     );
   }
@@ -80,9 +63,11 @@ export const NoteInputFlow: FC<Props> = ({ date }) => {
   return (
     <NoteForm
       defaultValues={noteDraft}
-      loadingProduct={loadingProduct}
+      productForEditLoading={productForEditLoading}
+      isSubmitting={isSubmitting}
+      submitDisabled={submitDisabled}
       onSubmit={handleSubmitNote}
-      onEditProduct={handleEditProduct}
+      onLoadProductForEdit={handleLoadProductForEdit}
     />
   );
 };
