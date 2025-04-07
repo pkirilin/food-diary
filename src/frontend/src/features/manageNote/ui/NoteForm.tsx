@@ -41,7 +41,7 @@ export const NoteForm: FC<Props> = ({
     defaultValues,
   });
 
-  const noteDraft = useAppSelector(state => state.addNote.note);
+  const noteDraft = useAppSelector(state => state.manageNote.note);
   const activeFormId = useAppSelector(selectors.activeFormId);
   const dispatch = useAppDispatch();
 

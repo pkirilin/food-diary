@@ -16,13 +16,13 @@ interface Props {
 }
 
 export const NoteInputFlow: FC<Props> = ({ date }) => {
-  const product = useAppSelector(state => state.addNote.note?.product);
-  const noteDraft = useAppSelector(state => state.addNote.note);
-  const productDraft = useAppSelector(state => state.addNote.product);
-  const image = useAppSelector(state => state.addNote.image);
+  const product = useAppSelector(state => state.manageNote.note?.product);
+  const noteDraft = useAppSelector(state => state.manageNote.note);
+  const productDraft = useAppSelector(state => state.manageNote.product);
+  const image = useAppSelector(state => state.manageNote.image);
   const activeFormId = useAppSelector(selectors.activeFormId);
-  const isSubmitting = useAppSelector(state => state.addNote.isSubmitting);
-  const submitDisabled = useAppSelector(state => state.addNote.submitDisabled);
+  const isSubmitting = useAppSelector(state => state.manageNote.isSubmitting);
+  const submitDisabled = useAppSelector(state => state.manageNote.submitDisabled);
   const dispatch = useAppDispatch();
 
   const categorySelect = categoryLib.useCategorySelectData();

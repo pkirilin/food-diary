@@ -1,7 +1,7 @@
 import { List, ListItem } from '@mui/material';
 import { type FC } from 'react';
 import { noteApi, type noteModel } from '@/entities/note';
-import { AddNoteButton } from '@/features/addNote';
+import { AddNoteButton } from '@/features/manageNote';
 import { NotesListItem } from './NotesListItem';
 
 interface Props {

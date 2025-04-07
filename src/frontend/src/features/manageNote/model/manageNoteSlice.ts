@@ -18,8 +18,8 @@ const initialState: State = {
   isSubmitting: false,
 };
 
-export const noteInputSlice = createSlice({
-  name: 'addNote',
+export const manageNoteSlice = createSlice({
+  name: 'manageNote',
   initialState,
   selectors: {
     activeFormId: state => (state.product ? 'product-form' : 'note-form'),
