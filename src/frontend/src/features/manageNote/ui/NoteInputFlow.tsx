@@ -8,8 +8,8 @@ import { actions, selectors } from '../model';
 import { ImagePreview } from './ImagePreview';
 import { NoteForm } from './NoteForm';
 import { ProductForm } from './ProductForm';
-import { SearchProducts } from './SearchProducts';
-import { SearchProductsOnImage } from './SearchProductsOnImage';
+import { ProductSearch } from './ProductSearch';
+import { ProductSearchResultsOnImage } from './ProductSearchResultsOnImage';
 
 interface Props {
   date: string;
@@ -47,13 +47,13 @@ export const NoteInputFlow: FC<Props> = ({ date }) => {
     return (
       <>
         <ImagePreview image={image} onRemove={() => dispatch(actions.imageRemoved())} />
-        <SearchProductsOnImage image={image} />
+        <ProductSearchResultsOnImage image={image} />
       </>
     );
   }
 
   if (!product) {
-    return <SearchProducts />;
+    return <ProductSearch />;
   }
 
   if (!noteDraft) {
