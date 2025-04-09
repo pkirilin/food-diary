@@ -21,7 +21,7 @@ interface Props {
   image: Image;
 }
 
-export const SearchProductsOnImage: FC<Props> = ({ image }) => {
+export const ProductSearchResultsOnImage: FC<Props> = ({ image }) => {
   const [recognize, recognizeResult] = noteApi.useRecognizeMutation();
   const dispatch = useAppDispatch();
 

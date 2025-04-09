@@ -12,19 +12,28 @@ import {
 import { useMemo, type FC, type MouseEventHandler } from 'react';
 import { useAppDispatch } from '@/app/store';
 import { type ProductSelectOption, productApi } from '@/entities/product';
-import { QUERY_LENGTH_THRESHOLD } from '../lib/searchProductsByName';
+import { QUERY_LENGTH_THRESHOLD, searchProductsByName } from '../lib/searchProductsByName';
 import { shouldSuggestAddingNewProduct } from '../lib/shouldSuggestAddingNewProduct';
 import { actions } from '../model';
 
 interface Props {
-  foundProducts: ProductSelectOption[];
   query: string;
 }
 
-export const FoundProductsList: FC<Props> = ({ foundProducts, query }) => {
-  const { isFetching } = productApi.useProductsAutocompleteQuery(null, {
-    selectFromResult: ({ isFetching }) => ({ isFetching }),
+const EMPTY_PRODUCTS: ProductSelectOption[] = [];
+
+export const ProductSearchResults: FC<Props> = ({ query }) => {
+  const { allProducts, isFetching } = productApi.useProductsAutocompleteQuery(null, {
+    selectFromResult: ({ data, isFetching }) => ({
+      allProducts: data ?? EMPTY_PRODUCTS,
+      isFetching,
+    }),
   });
+
+  const foundProducts = useMemo<ProductSelectOption[]>(
+    () => searchProductsByName(allProducts, query),
+    [allProducts, query],
+  );
 
   const suggestAddingNewProduct = useMemo(
     () => shouldSuggestAddingNewProduct(foundProducts, query),

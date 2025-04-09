@@ -1,36 +1,16 @@
 import ClearIcon from '@mui/icons-material/Clear';
 import SearchIcon from '@mui/icons-material/Search';
 import { IconButton, InputAdornment, TextField } from '@mui/material';
-import { useState, type FC, type ChangeEventHandler, useMemo } from 'react';
+import { useState, type FC } from 'react';
 import { useDebounce } from 'use-debounce';
-import { type ProductSelectOption, productApi } from '@/entities/product';
-import { searchProductsByName } from '../lib/searchProductsByName';
-import { FoundProductsList } from './FoundProductsList';
+import { ProductSearchResults } from './ProductSearchResults';
 import { UploadImageButton } from './UploadImageButton';
 
 const DEBOUNCE_QUERY_DELAY = 300;
-const EMPTY_PRODUCTS: ProductSelectOption[] = [];
 
-export const SearchProducts: FC = () => {
+export const ProductSearch: FC = () => {
   const [query, setQuery] = useState('');
   const [debouncedQuery] = useDebounce(query, DEBOUNCE_QUERY_DELAY);
-
-  const { products } = productApi.useProductsAutocompleteQuery(null, {
-    selectFromResult: ({ data }) => ({ products: data ?? EMPTY_PRODUCTS }),
-  });
-
-  const foundProducts = useMemo<ProductSelectOption[]>(
-    () => searchProductsByName(products, debouncedQuery),
-    [products, debouncedQuery],
-  );
-
-  const handleQueryChange: ChangeEventHandler<HTMLInputElement> = event => {
-    setQuery(event.target.value);
-  };
-
-  const handleClear = (): void => {
-    setQuery('');
-  };
 
   return (
     <>
@@ -42,7 +22,7 @@ export const SearchProducts: FC = () => {
         placeholder="Search products"
         margin="dense"
         value={query}
-        onChange={handleQueryChange}
+        onChange={event => setQuery(event.target.value)}
         slotProps={{
           input: {
             startAdornment: (
@@ -53,7 +33,7 @@ export const SearchProducts: FC = () => {
             endAdornment: (
               <InputAdornment position="end">
                 {query && (
-                  <IconButton onClick={handleClear}>
+                  <IconButton onClick={() => setQuery('')}>
                     <ClearIcon />
                   </IconButton>
                 )}
@@ -63,7 +43,7 @@ export const SearchProducts: FC = () => {
           },
         }}
       />
-      <FoundProductsList foundProducts={foundProducts} query={debouncedQuery} />
+      <ProductSearchResults query={debouncedQuery} />
     </>
   );
 };
