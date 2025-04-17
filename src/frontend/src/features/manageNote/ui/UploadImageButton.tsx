@@ -22,8 +22,7 @@ export const UploadImageButton: FC = () => {
           );
         }
 
-        const resizedFile = await imageLib.resize(reader.result, 512, file.name);
-        const base64 = await imageLib.convertToBase64String(resizedFile);
+        const base64 = await imageLib.convertToBase64String(file);
 
         dispatch(
           actions.imageUploaded({
