@@ -6,6 +6,8 @@ import { useAppDispatch } from '@/app/store';
 import { imageLib } from '@/shared/lib';
 import { actions } from '../model';
 
+const IMAGE_SIZE = 1024;
+
 export const UploadImageButton: FC = () => {
   const imageInputRef = useRef<HTMLInputElement | null>(null);
   const dispatch = useAppDispatch();
@@ -22,7 +24,7 @@ export const UploadImageButton: FC = () => {
           );
         }
 
-        const resizedFile = await imageLib.resize(reader.result, 512, file.name);
+        const resizedFile = await imageLib.resize(reader.result, IMAGE_SIZE, file.name);
         const base64 = await imageLib.convertToBase64String(resizedFile);
 
         dispatch(
