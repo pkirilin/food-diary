@@ -1,3 +1,3 @@
-import { convertToBase64String } from './fileHelper';
+import { resizeImage as resize, convertToBase64String } from './fileHelper';
 
-export { convertToBase64String };
+export { resize, convertToBase64String };
