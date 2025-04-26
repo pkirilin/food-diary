@@ -151,10 +151,10 @@ cd src/frontend
 Create local env config:
 
 ```shell
-touch env.local
+touch .env.local
 ```
 
-Fill `env.local` with these values:
+Fill `.env.local` with these values:
 
 ```text
 VITE_APP_MSW_ENABLED=true
