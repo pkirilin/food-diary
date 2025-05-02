@@ -10,7 +10,7 @@ import {
   ListItemText,
 } from '@mui/material';
 import { Stack } from '@mui/system';
-import { useEffect, type FC, useCallback, type MouseEventHandler } from 'react';
+import { type FC, type MouseEventHandler } from 'react';
 import { useAppDispatch } from '@/app/store';
 import { noteApi } from '@/entities/note';
 import { parseClientError } from '@/shared/api';
@@ -25,18 +25,14 @@ export const ProductSearchResultsOnImage: FC<Props> = ({ image }) => {
   const [recognize, recognizeResult] = noteApi.useRecognizeMutation();
   const dispatch = useAppDispatch();
 
-  const sendRecognizeRequest = useCallback(async (): Promise<void> => {
+  const sendRecognizeRequest = async (image: Image): Promise<void> => {
     const response = await fetch(image.base64);
     const blob = await response.blob();
     const file = new File([blob], image.name, { type: blob.type });
     const formData = new FormData();
     formData.append('files', file);
     await recognize(formData);
-  }, [image.base64, image.name, recognize]);
-
-  useEffect(() => {
-    sendRecognizeRequest();
-  }, [sendRecognizeRequest]);
+  };
 
   if (recognizeResult.isLoading) {
     return (
@@ -59,7 +55,7 @@ export const ProductSearchResultsOnImage: FC<Props> = ({ image }) => {
       <Alert
         severity="error"
         action={
-          <Button color="inherit" size="small" onClick={sendRecognizeRequest}>
+          <Button color="inherit" size="small" onClick={() => sendRecognizeRequest(image)}>
             Retry
           </Button>
         }
