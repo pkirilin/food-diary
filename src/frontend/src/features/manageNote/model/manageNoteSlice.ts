@@ -1,14 +1,16 @@
 import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { type NoteItem, noteLib, noteModel } from '@/entities/note';
+import { type NoteItem, noteLib, noteModel, type RecognizeNoteResponse } from '@/entities/note';
 import { type ProductSelectOption } from '@/entities/product';
+import { type ClientError } from '@/shared/api';
 import { type NoteFormValuesProduct, type NoteFormValues } from './noteSchema';
 import { type ProductFormValues } from './productSchema';
-import { type Image } from './types';
+import { type NoteRecognitionState, type Image } from './types';
 
 interface State {
   note?: NoteFormValues;
   product?: ProductFormValues;
   image?: Image;
+  noteRecognition: NoteRecognitionState;
   submitDisabled: boolean;
   isSubmitting: boolean;
 }
@@ -16,6 +18,10 @@ interface State {
 const initialState: State = {
   submitDisabled: false,
   isSubmitting: false,
+  noteRecognition: {
+    suggestions: [],
+    isLoading: false,
+  },
 };
 
 export const manageNoteSlice = createSlice({
@@ -122,6 +128,24 @@ export const manageNoteSlice = createSlice({
 
     imageRemoved: state => {
       delete state.image;
+    },
+
+    noteRecognitionSucceded: (state, { payload }: PayloadAction<RecognizeNoteResponse>) => {
+      state.submitDisabled = false;
+      state.noteRecognition.suggestions = payload.notes ?? [];
+      state.noteRecognition.isLoading = false;
+    },
+
+    noteRecognitionStarted: state => {
+      state.submitDisabled = true;
+      state.noteRecognition.isLoading = true;
+    },
+
+    noteRecognitionFailed: (state, { payload }: PayloadAction<ClientError>) => {
+      state.submitDisabled = false;
+      state.noteRecognition.isLoading = false;
+      state.noteRecognition.error = payload;
+      state.noteRecognition.suggestions = [];
     },
   },
 });

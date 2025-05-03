@@ -4,17 +4,20 @@ import { visuallyHidden } from '@mui/utils';
 import { useRef, type FC, type ChangeEventHandler } from 'react';
 import { useAppDispatch } from '@/app/store';
 import { imageLib } from '@/shared/lib';
-import { actions } from '../model';
+import { useRecognizeNotes } from '../lib/useRecognizeNotes';
+import { actions, type Image } from '../model';
 
 export const UploadImageButton: FC = () => {
   const imageInputRef = useRef<HTMLInputElement | null>(null);
   const dispatch = useAppDispatch();
+  const recognizeNotes = useRecognizeNotes();
 
-  const handleFileChange: ChangeEventHandler<HTMLInputElement> = event => {
+  const handleFileChange: ChangeEventHandler<HTMLInputElement> = async event => {
     const file = event.target?.files?.item(0);
 
     if (file) {
       const reader = new FileReader();
+
       reader.onloadend = async () => {
         if (typeof reader.result !== 'string') {
           throw new Error(
@@ -25,13 +28,15 @@ export const UploadImageButton: FC = () => {
         const resizedFile = await imageLib.resize(reader.result, 512, file.name);
         const base64 = await imageLib.convertToBase64String(resizedFile);
 
-        dispatch(
-          actions.imageUploaded({
-            name: file.name,
-            base64,
-          }),
-        );
+        const image: Image = {
+          name: file.name,
+          base64,
+        };
+
+        dispatch(actions.imageUploaded(image));
+        await recognizeNotes(image);
       };
+
       reader.readAsDataURL(file);
     }
   };
