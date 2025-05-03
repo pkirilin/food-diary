@@ -43,7 +43,7 @@ const RAW_RUNTIME_STATE =
           ["@testing-library/jest-dom", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:6.4.6"],\
           ["@testing-library/react", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:16.0.0"],\
           ["@testing-library/user-event", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:14.5.2"],\
-          ["@types/node", "npm:18.18.13"],\
+          ["@types/node", "npm:22.15.3"],\
           ["@types/react", "npm:18.2.39"],\
           ["@types/react-dom", "npm:18.2.17"],\
           ["@types/react-redux", "npm:7.1.33"],\
@@ -5422,6 +5422,14 @@ const RAW_RUNTIME_STATE =
           ["undici-types", "npm:5.26.5"]\
         ],\
         "linkType": "HARD"\
+      }],\
+      ["npm:22.15.3", {\
+        "packageLocation": "./.yarn/cache/@types-node-npm-22.15.3-ab71dd4f9d-6b4ff03c36.zip/node_modules/@types/node/",\
+        "packageDependencies": [\
+          ["@types/node", "npm:22.15.3"],\
+          ["undici-types", "npm:6.21.0"]\
+        ],\
+        "linkType": "HARD"\
       }]\
     ]],\
     ["@types/parse-json", [\
@@ -9072,7 +9080,7 @@ const RAW_RUNTIME_STATE =
           ["@testing-library/jest-dom", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:6.4.6"],\
           ["@testing-library/react", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:16.0.0"],\
           ["@testing-library/user-event", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:14.5.2"],\
-          ["@types/node", "npm:18.18.13"],\
+          ["@types/node", "npm:22.15.3"],\
           ["@types/react", "npm:18.2.39"],\
           ["@types/react-dom", "npm:18.2.17"],\
           ["@types/react-redux", "npm:7.1.33"],\
@@ -13332,6 +13340,13 @@ const RAW_RUNTIME_STATE =
           ["undici-types", "npm:5.26.5"]\
         ],\
         "linkType": "HARD"\
+      }],\
+      ["npm:6.21.0", {\
+        "packageLocation": "./.yarn/cache/undici-types-npm-6.21.0-eb2b0ed56a-ec8f41aa43.zip/node_modules/undici-types/",\
+        "packageDependencies": [\
+          ["undici-types", "npm:6.21.0"]\
+        ],\
+        "linkType": "HARD"\
       }]\
     ]],\
     ["unicode-canonical-property-names-ecmascript", [\
@@ -13658,7 +13673,7 @@ const RAW_RUNTIME_STATE =
           ["vite", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:5.3.3"],\
           ["@types/less", null],\
           ["@types/lightningcss", null],\
-          ["@types/node", "npm:18.18.13"],\
+          ["@types/node", "npm:22.15.3"],\
           ["@types/sass", null],\
           ["@types/stylus", null],\
           ["@types/sugarss", null],\
@@ -13795,7 +13810,7 @@ const RAW_RUNTIME_STATE =
           ["@types/edge-runtime__vm", null],\
           ["@types/happy-dom", null],\
           ["@types/jsdom", null],\
-          ["@types/node", "npm:18.18.13"],\
+          ["@types/node", "npm:22.15.3"],\
           ["@types/vitest__browser", null],\
           ["@types/vitest__ui", null],\
           ["@vitest/browser", null],\
