@@ -11,10 +11,9 @@ import {
 } from '@mui/material';
 import { Stack } from '@mui/system';
 import { type FC, type MouseEventHandler } from 'react';
-import { useAppDispatch } from '@/app/store';
-import { noteApi } from '@/entities/note';
-import { parseClientError } from '@/shared/api';
+import { useAppDispatch, useAppSelector } from '@/app/store';
 import { Button } from '@/shared/ui';
+import { useRecognizeNotes } from '../lib/useRecognizeNotes';
 import { actions, type Image } from '../model';
 
 interface Props {
@@ -22,19 +21,14 @@ interface Props {
 }
 
 export const ProductSearchResultsOnImage: FC<Props> = ({ image }) => {
-  const [recognize, recognizeResult] = noteApi.useRecognizeMutation();
+  const { suggestions, isLoading, error } = useAppSelector(
+    state => state.manageNote.noteRecognition,
+  );
+
   const dispatch = useAppDispatch();
+  const recognizeNotes = useRecognizeNotes();
 
-  const sendRecognizeRequest = async (image: Image): Promise<void> => {
-    const response = await fetch(image.base64);
-    const blob = await response.blob();
-    const file = new File([blob], image.name, { type: blob.type });
-    const formData = new FormData();
-    formData.append('files', file);
-    await recognize(formData);
-  };
-
-  if (recognizeResult.isLoading) {
+  if (isLoading) {
     return (
       <Stack
         sx={{
@@ -48,14 +42,12 @@ export const ProductSearchResultsOnImage: FC<Props> = ({ image }) => {
     );
   }
 
-  if (recognizeResult.isError) {
-    const error = parseClientError(recognizeResult.error);
-
+  if (error) {
     return (
       <Alert
         severity="error"
         action={
-          <Button color="inherit" size="small" onClick={() => sendRecognizeRequest(image)}>
+          <Button color="inherit" size="small" onClick={() => recognizeNotes(image)}>
             Retry
           </Button>
         }
@@ -66,11 +58,7 @@ export const ProductSearchResultsOnImage: FC<Props> = ({ image }) => {
     );
   }
 
-  if (!recognizeResult.data) {
-    return null;
-  }
-
-  const note = recognizeResult.data?.notes?.at(0);
+  const note = suggestions.at(0);
 
   if (!note?.product) {
     return <Alert severity="warning">No food found on your image</Alert>;

@@ -3,23 +3,14 @@ import { Box, IconButton, Tooltip } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 import { useRef, type FC, type ChangeEventHandler } from 'react';
 import { useAppDispatch } from '@/app/store';
-import { noteApi } from '@/entities/note';
 import { imageLib } from '@/shared/lib';
-import { type Image, actions } from '../model';
+import { useRecognizeNotes } from '../lib/useRecognizeNotes';
+import { actions, type Image } from '../model';
 
 export const UploadImageButton: FC = () => {
   const imageInputRef = useRef<HTMLInputElement | null>(null);
   const dispatch = useAppDispatch();
-  const [recognize] = noteApi.useRecognizeMutation();
-
-  const sendRecognizeRequest = async (image: Image): Promise<void> => {
-    const response = await fetch(image.base64);
-    const blob = await response.blob();
-    const file = new File([blob], image.name, { type: blob.type });
-    const formData = new FormData();
-    formData.append('files', file);
-    await recognize(formData);
-  };
+  const recognizeNotes = useRecognizeNotes();
 
   const handleFileChange: ChangeEventHandler<HTMLInputElement> = async event => {
     const file = event.target?.files?.item(0);
@@ -43,7 +34,7 @@ export const UploadImageButton: FC = () => {
         };
 
         dispatch(actions.imageUploaded(image));
-        sendRecognizeRequest(image);
+        await recognizeNotes(image);
       };
 
       reader.readAsDataURL(file);
