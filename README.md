@@ -82,7 +82,7 @@ Before starting, ensure you have the following installed on your machine:
 
 - [Docker](https://www.docker.com/)
 - [.NET SDK](https://dotnet.microsoft.com/en-us/download) (8.0.0 or higher)
-- [Node.js](https://nodejs.org/en) (18.16.0 or higher)
+- [Node.js](https://nodejs.org/en) (22 or higher)
 - [yarn](https://yarnpkg.com/getting-started/install)
 
 Start PostgreSQL database container:
@@ -139,7 +139,7 @@ If you'd like to work on the frontend without running the backend, you can use m
 
 Before starting, ensure you have the following installed on your machine:
 
-- [Node.js](https://nodejs.org/en) (18.16.0 or higher)
+- [Node.js](https://nodejs.org/en) (22 or higher)
 - [yarn](https://yarnpkg.com/getting-started/install)
 
 Navigate to the frontend directory:
