@@ -4,7 +4,7 @@ import { type ProductSelectOption } from '@/entities/product';
 import { type ClientError } from '@/shared/api';
 import { type NoteFormValuesProduct, type NoteFormValues } from './noteSchema';
 import { type ProductFormValues } from './productSchema';
-import { type NoteRecognitionState, type Image } from './types';
+import { type NoteRecognitionState, type Image, type ManageNoteScreenState } from './types';
 
 interface State {
   note?: NoteFormValues;
@@ -28,6 +28,36 @@ export const manageNoteSlice = createSlice({
   name: 'manageNote',
   initialState,
   selectors: {
+    // TODO: add unit tests
+    // TODO: add memoization
+    activeScreen: ({ note, product, image }): ManageNoteScreenState => {
+      if (product) {
+        return {
+          type: 'product-input',
+          formId: 'product-form',
+          product,
+        };
+      }
+
+      if (image) {
+        return {
+          type: 'image-upload',
+          image,
+        };
+      }
+
+      if (!note?.product) {
+        return { type: 'product-search' };
+      }
+
+      return {
+        type: 'note-input',
+        formId: 'note-form',
+        note,
+      };
+    },
+
+    // TODO: replace with activeScreen, move to custom hook?
     activeFormId: state => (state.product ? 'product-form' : 'note-form'),
 
     dialogTitle: ({ note, product }) =>

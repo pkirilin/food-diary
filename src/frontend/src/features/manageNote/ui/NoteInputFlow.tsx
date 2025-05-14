@@ -1,4 +1,4 @@
-import { type FC } from 'react';
+import { type FC, type ReactNode } from 'react';
 import { useAppDispatch, useAppSelector } from '@/app/store';
 import { categoryLib } from '@/entities/category';
 import { useLoadProductForEdit } from '../lib/useLoadProductForEdit';
@@ -16,11 +16,7 @@ interface Props {
 }
 
 export const NoteInputFlow: FC<Props> = ({ date }) => {
-  const product = useAppSelector(state => state.manageNote.note?.product);
-  const noteDraft = useAppSelector(state => state.manageNote.note);
-  const productDraft = useAppSelector(state => state.manageNote.product);
-  const image = useAppSelector(state => state.manageNote.image);
-  const activeFormId = useAppSelector(selectors.activeFormId);
+  const activeScreen = useAppSelector(selectors.activeScreen);
   const isSubmitting = useAppSelector(state => state.manageNote.isSubmitting);
   const submitDisabled = useAppSelector(state => state.manageNote.submitDisabled);
   const dispatch = useAppDispatch();
@@ -31,43 +27,45 @@ export const NoteInputFlow: FC<Props> = ({ date }) => {
   const handleSubmitProduct = useSubmitProduct(date);
   const [handleLoadProductForEdit, productForEditLoading] = useLoadProductForEdit();
 
-  if (!product && productDraft) {
-    return (
-      <ProductForm
-        formId={activeFormId}
-        defaultValues={productDraft}
-        categories={categorySelect.data}
-        categoriesLoading={categorySelect.isLoading}
-        onSubmit={handleSubmitProduct}
-      />
-    );
-  }
+  const renderActiveScreen = (): ReactNode => {
+    switch (activeScreen.type) {
+      case 'product-search':
+        return <ProductSearch />;
+      case 'note-input':
+        return (
+          <NoteForm
+            defaultValues={activeScreen.note}
+            productForEditLoading={productForEditLoading}
+            isSubmitting={isSubmitting}
+            submitDisabled={submitDisabled}
+            onSubmit={handleSubmitNote}
+            onLoadProductForEdit={handleLoadProductForEdit}
+          />
+        );
+      case 'product-input':
+        return (
+          <ProductForm
+            formId={activeScreen.formId}
+            defaultValues={activeScreen.product}
+            categories={categorySelect.data}
+            categoriesLoading={categorySelect.isLoading}
+            onSubmit={handleSubmitProduct}
+          />
+        );
+      case 'image-upload':
+        return (
+          <>
+            <ImagePreview
+              image={activeScreen.image}
+              onRemove={() => dispatch(actions.imageRemoved())}
+            />
+            <ProductSearchResultsOnImage image={activeScreen.image} />
+          </>
+        );
+      default:
+        return null;
+    }
+  };
 
-  if (!product && image) {
-    return (
-      <>
-        <ImagePreview image={image} onRemove={() => dispatch(actions.imageRemoved())} />
-        <ProductSearchResultsOnImage image={image} />
-      </>
-    );
-  }
-
-  if (!product) {
-    return <ProductSearch />;
-  }
-
-  if (!noteDraft) {
-    return null;
-  }
-
-  return (
-    <NoteForm
-      defaultValues={noteDraft}
-      productForEditLoading={productForEditLoading}
-      isSubmitting={isSubmitting}
-      submitDisabled={submitDisabled}
-      onSubmit={handleSubmitNote}
-      onLoadProductForEdit={handleLoadProductForEdit}
-    />
-  );
+  return renderActiveScreen();
 };
