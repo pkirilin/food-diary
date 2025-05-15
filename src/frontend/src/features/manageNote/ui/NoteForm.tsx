@@ -11,16 +11,17 @@ import {
 } from '@mui/material';
 import { type FC, type MouseEventHandler } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { useAppDispatch, useAppSelector } from '@/app/store';
-import { actions, selectors, noteSchema, type NoteFormValues } from '../model';
+import { noteSchema, type NoteFormValues } from '../model';
 
 interface Props {
+  formId: string;
   defaultValues: NoteFormValues;
   productForEditLoading: boolean;
   isSubmitting: boolean;
   submitDisabled: boolean;
   onSubmit: OnSubmitNoteFn;
   onLoadProductForEdit: OnEditProductFn;
+  onDiscardProduct: () => void;
 }
 
 export type OnSubmitNoteFn = (note: NoteFormValues) => Promise<void>;
@@ -28,22 +29,20 @@ export type OnSubmitNoteFn = (note: NoteFormValues) => Promise<void>;
 export type OnEditProductFn = (productId: number) => Promise<void>;
 
 export const NoteForm: FC<Props> = ({
+  formId,
   defaultValues,
   productForEditLoading,
   isSubmitting,
   submitDisabled,
   onSubmit,
   onLoadProductForEdit,
+  onDiscardProduct,
 }) => {
   const { control, handleSubmit, getValues } = useForm<NoteFormValues>({
     mode: 'onSubmit',
     resolver: zodResolver(noteSchema),
     defaultValues,
   });
-
-  const noteDraft = useAppSelector(state => state.manageNote.note);
-  const activeFormId = useAppSelector(selectors.activeFormId);
-  const dispatch = useAppDispatch();
 
   const handleEditProduct: MouseEventHandler = async () => {
     const { product } = getValues();
@@ -54,10 +53,11 @@ export const NoteForm: FC<Props> = ({
   };
 
   return (
-    <form id={activeFormId} onSubmit={handleSubmit(values => onSubmit(values))}>
+    <form id={formId} onSubmit={handleSubmit(values => onSubmit(values))}>
       <TextField
         label="Product"
-        value={noteDraft?.product?.name}
+        value={defaultValues.product?.name}
+        variant="outlined"
         fullWidth
         margin="normal"
         helperText=" "
@@ -84,7 +84,7 @@ export const NoteForm: FC<Props> = ({
                   <IconButton
                     edge="end"
                     disabled={isSubmitting || submitDisabled}
-                    onClick={() => dispatch(actions.productDraftDiscarded())}
+                    onClick={onDiscardProduct}
                   >
                     <CancelIcon />
                   </IconButton>

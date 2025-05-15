@@ -30,22 +30,26 @@ export const NoteInputDialog: FC<Props> = ({ date, mealType, note }) => {
   const submitText = useAppSelector(selectors.submitText);
   const submitDisabled = useAppSelector(state => state.manageNote.submitDisabled);
   const isSubmitting = useAppSelector(state => state.manageNote.isSubmitting);
+  const dispatch = useAppDispatch();
 
   const handleSubmitNote = useSubmitNote(date);
   const handleSubmitProduct = useSubmitProduct(date);
   const [handleLoadProductForEdit, productForEditLoading] = useLoadProductForEdit();
+
+  const handleDialogClose = (): void => {
+    dispatch(actions.noteDraftDiscarded());
+  };
+
+  const handleDiscardProduct = (): void => {
+    dispatch(actions.productDraftDiscarded());
+  };
+
   const categorySelect = categoryLib.useCategorySelectData();
 
   const inputScreenActive =
     activeScreen.type === 'note-input' ||
     activeScreen.type === 'product-input' ||
     activeScreen.type === 'image-upload';
-
-  const dispatch = useAppDispatch();
-
-  const handleDialogClose = (): void => {
-    dispatch(actions.noteDraftDiscarded());
-  };
 
   const renderContent = (): ReactElement => {
     switch (activeScreen.type) {
@@ -54,12 +58,14 @@ export const NoteInputDialog: FC<Props> = ({ date, mealType, note }) => {
       case 'note-input':
         return (
           <NoteForm
+            formId={activeScreen.formId}
             defaultValues={activeScreen.note}
             productForEditLoading={productForEditLoading}
             isSubmitting={isSubmitting}
             submitDisabled={submitDisabled}
             onSubmit={handleSubmitNote}
             onLoadProductForEdit={handleLoadProductForEdit}
+            onDiscardProduct={handleDiscardProduct}
           />
         );
       case 'product-input':
