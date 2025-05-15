@@ -6,7 +6,7 @@ import { type NoteFormValuesProduct, type NoteFormValues } from './noteSchema';
 import { type ProductFormValues } from './productSchema';
 import { type NoteRecognitionState, type Image, type ManageNoteScreenState } from './types';
 
-interface State {
+export interface State {
   note?: NoteFormValues;
   product?: ProductFormValues;
   image?: Image;
@@ -15,7 +15,7 @@ interface State {
   isSubmitting: boolean;
 }
 
-const initialState: State = {
+export const initialState: State = {
   submitDisabled: false,
   isSubmitting: false,
   noteRecognition: {
@@ -124,7 +124,6 @@ export const manageNoteSlice = createSlice({
       state.isSubmitting = false;
     },
 
-    // TODO: reset image and recognize note state
     productDraftSaved: (state, { payload }: PayloadAction<NoteFormValuesProduct>) => {
       if (state.note) {
         state.isSubmitting = false;
@@ -135,7 +134,10 @@ export const manageNoteSlice = createSlice({
           defaultQuantity: payload.defaultQuantity,
         };
 
+        state.noteRecognition = initialState.noteRecognition;
+
         delete state.product;
+        delete state.image;
       }
     },
 
