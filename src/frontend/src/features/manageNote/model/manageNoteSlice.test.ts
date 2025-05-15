@@ -1,5 +1,24 @@
 import { noteModel } from '@/entities/note';
-import { type State, manageNoteSlice, initialState } from './manageNoteSlice';
+import { type ManageNoteState, manageNoteSlice, initialState } from './manageNoteSlice';
+
+describe('selectors.activeScreen', () => {
+  test('should show product-search screen when empty note draft created', () => {
+    const activeScreen = manageNoteSlice.selectors.activeScreen({
+      manageNote: {
+        ...initialState,
+        note: {
+          date: '2025-01-01',
+          mealType: noteModel.MealType.Breakfast,
+          displayOrder: 1,
+          product: null,
+          quantity: 120,
+        },
+      },
+    });
+
+    expect(activeScreen.type).toBe('product-search');
+  });
+});
 
 describe('actions.productDraftSaved', () => {
   test('should reset image and recognizeNote state', () => {
@@ -9,7 +28,7 @@ describe('actions.productDraftSaved', () => {
       defaultQuantity: 123,
     });
 
-    const givenState: State = {
+    const givenState: ManageNoteState = {
       ...initialState,
       note: {
         id: 1,

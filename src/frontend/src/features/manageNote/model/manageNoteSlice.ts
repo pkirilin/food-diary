@@ -6,7 +6,7 @@ import { type NoteFormValuesProduct, type NoteFormValues } from './noteSchema';
 import { type ProductFormValues } from './productSchema';
 import { type NoteRecognitionState, type Image, type ManageNoteScreenState } from './types';
 
-export interface State {
+export interface ManageNoteState {
   note?: NoteFormValues;
   product?: ProductFormValues;
   image?: Image;
@@ -15,7 +15,7 @@ export interface State {
   isSubmitting: boolean;
 }
 
-export const initialState: State = {
+export const initialState: ManageNoteState = {
   submitDisabled: false,
   isSubmitting: false,
   noteRecognition: {
@@ -28,12 +28,11 @@ export const manageNoteSlice = createSlice({
   name: 'manageNote',
   initialState,
   selectors: {
-    // TODO: add unit tests
     activeScreen: createSelector(
       [
-        (state: State) => state.note,
-        (state: State) => state.product,
-        (state: State) => state.image,
+        (state: ManageNoteState) => state.note,
+        (state: ManageNoteState) => state.product,
+        (state: ManageNoteState) => state.image,
       ],
       (note, product, image): ManageNoteScreenState => {
         if (product) {
