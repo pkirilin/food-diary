@@ -1,4 +1,4 @@
-import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { type PayloadAction, createSlice, createSelector } from '@reduxjs/toolkit';
 import { type NoteItem, noteLib, noteModel, type RecognizeNoteResponse } from '@/entities/note';
 import { type ProductSelectOption } from '@/entities/product';
 import { type ClientError } from '@/shared/api';
@@ -29,33 +29,39 @@ export const manageNoteSlice = createSlice({
   initialState,
   selectors: {
     // TODO: add unit tests
-    // TODO: add memoization
-    activeScreen: ({ note, product, image }): ManageNoteScreenState => {
-      if (product) {
+    activeScreen: createSelector(
+      [
+        (state: State) => state.note,
+        (state: State) => state.product,
+        (state: State) => state.image,
+      ],
+      (note, product, image): ManageNoteScreenState => {
+        if (product) {
+          return {
+            type: 'product-input',
+            formId: 'product-form',
+            product,
+          };
+        }
+
+        if (image) {
+          return {
+            type: 'image-upload',
+            image,
+          };
+        }
+
+        if (!note?.product) {
+          return { type: 'product-search' };
+        }
+
         return {
-          type: 'product-input',
-          formId: 'product-form',
-          product,
+          type: 'note-input',
+          formId: 'note-form',
+          note,
         };
-      }
-
-      if (image) {
-        return {
-          type: 'image-upload',
-          image,
-        };
-      }
-
-      if (!note?.product) {
-        return { type: 'product-search' };
-      }
-
-      return {
-        type: 'note-input',
-        formId: 'note-form',
-        note,
-      };
-    },
+      },
+    ),
 
     // TODO: replace with activeScreen, move to custom hook?
     activeFormId: state => (state.product ? 'product-form' : 'note-form'),
@@ -121,6 +127,7 @@ export const manageNoteSlice = createSlice({
       state.isSubmitting = false;
     },
 
+    // TODO: reset image and recognize note state
     productDraftSaved: (state, { payload }: PayloadAction<NoteFormValuesProduct>) => {
       if (state.note) {
         state.isSubmitting = false;
