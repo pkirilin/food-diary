@@ -1,6 +1,8 @@
-import { type FC, type ReactNode } from 'react';
+import { type FC, type ReactElement } from 'react';
 import { useAppDispatch, useAppSelector } from '@/app/store';
 import { categoryLib } from '@/entities/category';
+import { type noteModel, type NoteItem } from '@/entities/note';
+import { Button, Dialog } from '@/shared/ui';
 import { useLoadProductForEdit } from '../lib/useLoadProductForEdit';
 import { useSubmitNote } from '../lib/useSubmitNote';
 import { useSubmitProduct } from '../lib/useSubmitProduct';
@@ -13,21 +15,39 @@ import { ProductSearchResultsOnImage } from './ProductSearchResultsOnImage';
 
 interface Props {
   date: string;
+  mealType: noteModel.MealType;
+  note?: NoteItem;
 }
 
-export const NoteInputFlow: FC<Props> = ({ date }) => {
-  const activeScreen = useAppSelector(selectors.activeScreen);
-  const isSubmitting = useAppSelector(state => state.manageNote.isSubmitting);
-  const submitDisabled = useAppSelector(state => state.manageNote.submitDisabled);
-  const dispatch = useAppDispatch();
+export const NoteInputDialog: FC<Props> = ({ date, mealType, note }) => {
+  const dialogVisible = useAppSelector(state =>
+    note ? selectors.editDialogVisible(state, note) : selectors.addDialogVisible(state, mealType),
+  );
 
-  const categorySelect = categoryLib.useCategorySelectData();
+  const activeScreen = useAppSelector(selectors.activeScreen);
+  const dialogTitle = useAppSelector(selectors.dialogTitle);
+  const activeFormId = useAppSelector(selectors.activeFormId);
+  const submitText = useAppSelector(selectors.submitText);
+  const submitDisabled = useAppSelector(state => state.manageNote.submitDisabled);
+  const isSubmitting = useAppSelector(state => state.manageNote.isSubmitting);
 
   const handleSubmitNote = useSubmitNote(date);
   const handleSubmitProduct = useSubmitProduct(date);
   const [handleLoadProductForEdit, productForEditLoading] = useLoadProductForEdit();
+  const categorySelect = categoryLib.useCategorySelectData();
 
-  const renderActiveScreen = (): ReactNode => {
+  const inputScreenActive =
+    activeScreen.type === 'note-input' ||
+    activeScreen.type === 'product-input' ||
+    activeScreen.type === 'image-upload';
+
+  const dispatch = useAppDispatch();
+
+  const handleDialogClose = (): void => {
+    dispatch(actions.noteDraftDiscarded());
+  };
+
+  const renderContent = (): ReactElement => {
     switch (activeScreen.type) {
       case 'product-search':
         return <ProductSearch />;
@@ -62,10 +82,33 @@ export const NoteInputFlow: FC<Props> = ({ date }) => {
             <ProductSearchResultsOnImage image={activeScreen.image} />
           </>
         );
-      default:
-        return null;
     }
   };
 
-  return renderActiveScreen();
+  return (
+    <Dialog
+      pinToTop
+      renderMode="fullScreenOnMobile"
+      title={dialogTitle}
+      opened={dialogVisible}
+      onClose={handleDialogClose}
+      content={renderContent()}
+      renderCancel={props => (
+        <Button {...props} type="button" onClick={handleDialogClose}>
+          Cancel
+        </Button>
+      )}
+      renderSubmit={props => (
+        <Button
+          {...props}
+          type="submit"
+          form={activeFormId}
+          disabled={!inputScreenActive || submitDisabled}
+          loading={isSubmitting}
+        >
+          {submitText}
+        </Button>
+      )}
+    />
+  );
 };

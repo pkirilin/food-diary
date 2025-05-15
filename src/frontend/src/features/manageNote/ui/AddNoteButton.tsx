@@ -1,10 +1,10 @@
 import AddIcon from '@mui/icons-material/Add';
 import { type MouseEventHandler, type FC } from 'react';
-import { useAppDispatch, useAppSelector } from '@/app/store';
+import { useAppDispatch } from '@/app/store';
 import { noteApi, noteModel } from '@/entities/note';
-import { Button, Dialog } from '@/shared/ui';
-import { actions, selectors } from '../model';
-import { NoteInputFlow } from './NoteInputFlow';
+import { Button } from '@/shared/ui';
+import { actions } from '../model';
+import { NoteInputDialog } from './NoteInputDialog';
 
 interface Props {
   date: string;
@@ -12,14 +12,6 @@ interface Props {
 }
 
 export const AddNoteButton: FC<Props> = ({ date, mealType }) => {
-  const activeFormId = useAppSelector(selectors.activeFormId);
-  const dialogVisible = useAppSelector(state => selectors.addDialogVisible(state, mealType));
-  const dialogTitle = useAppSelector(selectors.dialogTitle);
-  const submitText = useAppSelector(selectors.submitText);
-  const submitDisabled = useAppSelector(state => state.manageNote.submitDisabled);
-  const isSubmitting = useAppSelector(state => state.manageNote.isSubmitting);
-  const dispatch = useAppDispatch();
-
   const { canAddNote, displayOrder } = noteApi.useNotesQuery(
     { date },
     {
@@ -29,6 +21,8 @@ export const AddNoteButton: FC<Props> = ({ date, mealType }) => {
       }),
     },
   );
+
+  const dispatch = useAppDispatch();
 
   const handleDialogOpen: MouseEventHandler = () => {
     dispatch(
@@ -42,39 +36,12 @@ export const AddNoteButton: FC<Props> = ({ date, mealType }) => {
     );
   };
 
-  const handleDialogClose = (): void => {
-    dispatch(actions.noteDraftDiscarded());
-  };
-
   return (
     <>
       <Button fullWidth startIcon={<AddIcon />} onClick={handleDialogOpen} disabled={!canAddNote}>
         Add note
       </Button>
-      <Dialog
-        pinToTop
-        renderMode="fullScreenOnMobile"
-        title={dialogTitle}
-        opened={dialogVisible}
-        onClose={handleDialogClose}
-        content={<NoteInputFlow date={date} />}
-        renderCancel={props => (
-          <Button {...props} type="button" onClick={handleDialogClose}>
-            Cancel
-          </Button>
-        )}
-        renderSubmit={props => (
-          <Button
-            {...props}
-            type="submit"
-            form={activeFormId}
-            disabled={submitDisabled}
-            loading={isSubmitting}
-          >
-            {submitText}
-          </Button>
-        )}
-      />
+      <NoteInputDialog date={date} mealType={mealType} />
     </>
   );
 };
