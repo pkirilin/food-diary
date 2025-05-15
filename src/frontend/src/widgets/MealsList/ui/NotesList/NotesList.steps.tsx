@@ -121,11 +121,27 @@ export const thenDialogVisible = async (dialogTitle: RegExp): Promise<void> => {
   expect(await screen.findByRole('dialog', { name: dialogTitle })).toBeVisible();
 };
 
+export const thenNoteCannotBeAdded = async (): Promise<void> => {
+  expect(screen.getByRole('button', { name: /add/i })).toBeDisabled();
+};
+
+export const thenNoteCanBeAdded = async (): Promise<void> => {
+  expect(screen.getByRole('button', { name: /add/i })).not.toBeDisabled();
+};
+
+export const thenProductCanBeAdded = async (): Promise<void> => {
+  expect(screen.getByRole('button', { name: /add/i })).not.toBeDisabled();
+};
+
+export const thenProductCanBeSaved = async (): Promise<void> => {
+  expect(screen.getByRole('button', { name: /save/i })).not.toBeDisabled();
+};
+
 export const thenDialogNotVisible = async (): Promise<void> => {
   await waitForElementToBeRemoved(screen.getByRole('dialog'));
 };
 
-export const thenProductHasValue = (expectedValue: string): void => {
+export const thenProductHasValue = async (expectedValue: string): Promise<void> => {
   expect(screen.getByRole('textbox', { name: /product/i })).toHaveValue(expectedValue);
 };
 
@@ -133,6 +149,6 @@ export const thenQuantityHasValue = (expectedValue: string): void => {
   expect(screen.getByPlaceholderText(/quantity/i)).toHaveValue(expectedValue);
 };
 
-export const thenSingleNoteVisible = (noteName: RegExp): void => {
+export const thenSingleNoteVisible = async (noteName: RegExp): Promise<void> => {
   expect(screen.getByRole('button', { name: noteName })).toBeVisible();
 };

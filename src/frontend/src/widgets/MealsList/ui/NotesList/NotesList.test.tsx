@@ -11,15 +11,17 @@ test('I can add new note with existing product', async () => {
 
   await steps.whenAddNoteButtonClicked(user);
   await steps.thenDialogVisible(/lunch/i);
+  await steps.thenNoteCannotBeAdded();
 
   await steps.whenProductSearched(user, 'che');
   await steps.whenExistingProductSelected(user, /cheese/i);
-  steps.thenProductHasValue('Cheese');
+  await steps.thenProductHasValue('Cheese');
+  await steps.thenNoteCanBeAdded();
 
   await steps.whenQuantityChanged(user, 120);
   await steps.whenNoteAdded(user);
   await steps.thenDialogNotVisible();
-  steps.thenSingleNoteVisible(/cheese 120 g 482 kcal/i);
+  await steps.thenSingleNoteVisible(/cheese 120 g 482 kcal/i);
 });
 
 test('I can add new note with adding new product "on the fly"', async () => {
@@ -36,6 +38,7 @@ test('I can add new note with adding new product "on the fly"', async () => {
   await steps.whenProductSearched(user, 'Ora');
   await steps.whenProductAddedFromInput(user, 'Ora');
   await steps.thenDialogVisible(/product/i);
+  await steps.thenProductCanBeAdded();
 
   await steps.whenProductNameCompleted(user, 'nge');
   await steps.whenProductCaloriesCostSet(user, 60);
@@ -43,13 +46,13 @@ test('I can add new note with adding new product "on the fly"', async () => {
   await steps.whenProductCategorySelected(user, /fruits/i);
   await steps.whenProductAdded(user);
   await steps.thenDialogVisible(/lunch/i);
-  steps.thenProductHasValue('Orange');
+  await steps.thenProductHasValue('Orange');
   steps.thenQuantityHasValue('200');
 
   await steps.whenQuantityChanged(user, 250);
   await steps.whenNoteAdded(user);
   await steps.thenDialogNotVisible();
-  steps.thenSingleNoteVisible(/orange 250 g 150 kcal/i);
+  await steps.thenSingleNoteVisible(/orange 250 g 150 kcal/i);
 });
 
 test('I can change quantity for existing note', async () => {
@@ -62,13 +65,13 @@ test('I can change quantity for existing note', async () => {
 
   await steps.whenNoteClicked(user, /cheese 200 g 804 kcal/i);
   await steps.thenDialogVisible(/lunch/i);
-  steps.thenProductHasValue('Cheese');
+  await steps.thenProductHasValue('Cheese');
   steps.thenQuantityHasValue('200');
 
   await steps.whenQuantityChanged(user, 150);
   await steps.whenNoteSaved(user);
   await steps.thenDialogNotVisible();
-  steps.thenSingleNoteVisible(/cheese 150 g 603 kcal/i);
+  await steps.thenSingleNoteVisible(/cheese 150 g 603 kcal/i);
 });
 
 test('I can edit product via note form', async () => {
@@ -85,9 +88,10 @@ test('I can edit product via note form', async () => {
   await steps.whenExistingProductSelected(user, /cheese/i);
   await steps.whenProductEditClicked(user);
   await steps.thenDialogVisible(/product/i);
+  await steps.thenProductCanBeSaved();
 
   await steps.whenProductNameEdited(user, 'Mozarella cheese');
   await steps.whenProductSaved(user);
   await steps.thenDialogVisible(/lunch/i);
-  steps.thenProductHasValue('Mozarella cheese');
+  await steps.thenProductHasValue('Mozarella cheese');
 });
