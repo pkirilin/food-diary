@@ -63,9 +63,6 @@ export const manageNoteSlice = createSlice({
       },
     ),
 
-    // TODO: replace with activeScreen, move to custom hook?
-    activeFormId: state => (state.product ? 'product-form' : 'note-form'),
-
     dialogTitle: ({ note, product }) =>
       product ? 'Product' : noteLib.getMealName(note?.mealType ?? noteModel.MealType.Breakfast),
 

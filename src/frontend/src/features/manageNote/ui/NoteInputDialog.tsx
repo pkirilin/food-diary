@@ -26,7 +26,6 @@ export const NoteInputDialog: FC<Props> = ({ date, mealType, note }) => {
 
   const activeScreen = useAppSelector(selectors.activeScreen);
   const dialogTitle = useAppSelector(selectors.dialogTitle);
-  const activeFormId = useAppSelector(selectors.activeFormId);
   const submitText = useAppSelector(selectors.submitText);
   const submitDisabled = useAppSelector(state => state.manageNote.submitDisabled);
   const isSubmitting = useAppSelector(state => state.manageNote.isSubmitting);
@@ -50,6 +49,11 @@ export const NoteInputDialog: FC<Props> = ({ date, mealType, note }) => {
     activeScreen.type === 'note-input' ||
     activeScreen.type === 'product-input' ||
     activeScreen.type === 'image-upload';
+
+  const activeFormId =
+    activeScreen.type === 'note-input' || activeScreen.type === 'product-input'
+      ? activeScreen.formId
+      : undefined;
 
   const renderContent = (): ReactElement => {
     switch (activeScreen.type) {
