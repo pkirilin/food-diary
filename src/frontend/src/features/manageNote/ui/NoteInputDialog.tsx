@@ -46,14 +46,9 @@ export const NoteInputDialog: FC<Props> = ({ date, mealType, note }) => {
   const categorySelect = categoryLib.useCategorySelectData();
 
   const inputScreenActive =
-    activeScreen.type === 'note-input' ||
-    activeScreen.type === 'product-input' ||
-    activeScreen.type === 'image-upload';
+    activeScreen.type === 'note-input' || activeScreen.type === 'product-input';
 
-  const activeFormId =
-    activeScreen.type === 'note-input' || activeScreen.type === 'product-input'
-      ? activeScreen.formId
-      : undefined;
+  const activeFormId = inputScreenActive ? activeScreen.formId : undefined;
 
   const renderContent = (): ReactElement => {
     switch (activeScreen.type) {
