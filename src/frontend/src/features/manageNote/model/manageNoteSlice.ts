@@ -1,12 +1,12 @@
-import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { type PayloadAction, createSlice, createSelector } from '@reduxjs/toolkit';
 import { type NoteItem, noteLib, noteModel, type RecognizeNoteResponse } from '@/entities/note';
 import { type ProductSelectOption } from '@/entities/product';
 import { type ClientError } from '@/shared/api';
 import { type NoteFormValuesProduct, type NoteFormValues } from './noteSchema';
 import { type ProductFormValues } from './productSchema';
-import { type NoteRecognitionState, type Image } from './types';
+import { type NoteRecognitionState, type Image, type ManageNoteScreenState } from './types';
 
-interface State {
+export interface ManageNoteState {
   note?: NoteFormValues;
   product?: ProductFormValues;
   image?: Image;
@@ -15,7 +15,7 @@ interface State {
   isSubmitting: boolean;
 }
 
-const initialState: State = {
+export const initialState: ManageNoteState = {
   submitDisabled: false,
   isSubmitting: false,
   noteRecognition: {
@@ -28,7 +28,39 @@ export const manageNoteSlice = createSlice({
   name: 'manageNote',
   initialState,
   selectors: {
-    activeFormId: state => (state.product ? 'product-form' : 'note-form'),
+    activeScreen: createSelector(
+      [
+        (state: ManageNoteState) => state.note,
+        (state: ManageNoteState) => state.product,
+        (state: ManageNoteState) => state.image,
+      ],
+      (note, product, image): ManageNoteScreenState => {
+        if (product) {
+          return {
+            type: 'product-input',
+            formId: 'product-form',
+            product,
+          };
+        }
+
+        if (image) {
+          return {
+            type: 'image-upload',
+            image,
+          };
+        }
+
+        if (!note?.product) {
+          return { type: 'product-search' };
+        }
+
+        return {
+          type: 'note-input',
+          formId: 'note-form',
+          note,
+        };
+      },
+    ),
 
     dialogTitle: ({ note, product }) =>
       product ? 'Product' : noteLib.getMealName(note?.mealType ?? noteModel.MealType.Breakfast),
@@ -101,7 +133,10 @@ export const manageNoteSlice = createSlice({
           defaultQuantity: payload.defaultQuantity,
         };
 
+        state.noteRecognition = initialState.noteRecognition;
+
         delete state.product;
+        delete state.image;
       }
     },
 
