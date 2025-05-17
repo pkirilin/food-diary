@@ -92,7 +92,12 @@ public class ProductsController : ControllerBase
             productData.Name,
             productData.CaloriesCost,
             productData.DefaultQuantity,
-            productData.CategoryId);
+            productData.CategoryId,
+            productData.Protein,
+            productData.Fats,
+            productData.Carbs,
+            productData.Sugar,
+            productData.Salt);
 
         var response = await _mediator.Send(request, cancellationToken);
 

@@ -9,7 +9,12 @@ public class ProductBuilder
         Id = Random.Shared.Next(),
         CaloriesCost = 100,
         DefaultQuantity = 100,
-        Category = Create.Category().Please()
+        Category = Create.Category().Please(),
+        Protein = 10,
+        Fats = 5,
+        Carbs = 3,
+        Sugar = 8,
+        Salt = 2
     };
 
     public ProductBuilder(string? name)
