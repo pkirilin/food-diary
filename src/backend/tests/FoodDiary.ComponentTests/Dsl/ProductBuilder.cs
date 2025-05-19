@@ -21,7 +21,7 @@ public class ProductBuilder
     {
         _product.Name = string.IsNullOrWhiteSpace(name) ? $"TestProduct-{Guid.NewGuid()}" : name;
     }
-    
+
     public Product Please() => _product;
 
     public ProductBuilder From(Product product)
@@ -35,35 +35,10 @@ public class ProductBuilder
         _product.Notes = product.Notes;
         return this;
     }
-    
+
     public ProductBuilder WithName(string name)
     {
         _product.Name = name;
-        return this;
-    }
-
-    public ProductBuilder WithCategory(Category category)
-    {
-        _product.Category = category;
-        return this;
-    }
-    
-    public ProductBuilder WithExistingCategory(Category category)
-    {
-        _product.Category = null;
-        _product.CategoryId = category.Id;
-        return this;
-    }
-
-    public ProductBuilder WithDefaultQuantity(int defaultQuantity)
-    {
-        _product.DefaultQuantity = defaultQuantity;
-        return this;
-    }
-    
-    public ProductBuilder WithCaloriesCost(int caloriesCost)
-    {
-        _product.CaloriesCost = caloriesCost;
         return this;
     }
 }

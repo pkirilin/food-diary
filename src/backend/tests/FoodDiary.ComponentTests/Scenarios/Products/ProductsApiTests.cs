@@ -71,8 +71,8 @@ public class ProductsApiTests(InfrastructureFixture infrastructure)
             c => c.Given_categories(chicken.Category),
             c => c.When_user_creates_product(chicken),
             c => c.Then_product_is_successfully_created(),
-            c => c.When_user_retrieves_products_list(),
-            c => c.Then_products_list_contains_items(chicken));
+            c => c.When_user_retrieves_created_product_by_id(),
+            c => c.Then_product_is_successfully_retrieved(chicken));
     }
 
     [Scenario]
@@ -86,8 +86,8 @@ public class ProductsApiTests(InfrastructureFixture infrastructure)
             c => c.Given_products(chicken),
             c => c.When_user_renames_product(chicken, "Boiled chicken"),
             c => c.Then_product_is_successfully_updated(),
-            c => c.When_user_retrieves_products_list(),
-            c => c.Then_products_list_contains_items(boiledChicken));
+            c => c.When_user_retrieves_product_by_id(boiledChicken.Id),
+            c => c.Then_product_is_successfully_retrieved(boiledChicken));
     }
 
     [Scenario]
