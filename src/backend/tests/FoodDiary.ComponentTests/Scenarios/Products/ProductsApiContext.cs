@@ -21,7 +21,7 @@ public class ProductsApiContext(FoodDiaryWebApplicationFactory factory) : BaseCo
     private ProductsSearchResultDto? _productsResponse;
     private SearchProductsResult.Product[]? _productsForAutocompleteResponse;
     private HttpResponseMessage _getProductByIdResponse = null!;
-    private HttpResponseMessage _createProductResponse = null!;
+    private CreateProductResponse? _createProductResponse;
     private HttpResponseMessage _updateProductResponse = null!;
     private HttpResponseMessage _deleteProductResponse = null!;
     private HttpResponseMessage _deleteMultipleProductsResponse = null!;
@@ -89,7 +89,8 @@ public class ProductsApiContext(FoodDiaryWebApplicationFactory factory) : BaseCo
             .From(product)
             .Please();
         
-        _createProductResponse = await ApiClient.PostAsJsonAsync("/api/v1/products", request);
+        var response = await ApiClient.PostAsJsonAsync("/api/v1/products", request);
+        _createProductResponse = await response.Content.ReadFromJsonAsync<CreateProductResponse>();
     }
 
     public async Task When_user_renames_product(Product product, string newName)
@@ -124,6 +125,9 @@ public class ProductsApiContext(FoodDiaryWebApplicationFactory factory) : BaseCo
         _getProductByIdResponse = await ApiClient.GetAsync($"/api/v1/products/{id}");
     }
     
+    public Task When_user_retrieves_created_product_by_id()
+        => When_user_retrieves_product_by_id(_createProductResponse?.Id ?? 0);
+    
     public Task Then_products_list_contains_items(params Product[] items)
     {
         var expectedProductsList = items.Select(p => p.ToProductItemDto());
@@ -152,12 +156,11 @@ public class ProductsApiContext(FoodDiaryWebApplicationFactory factory) : BaseCo
         return Task.CompletedTask;
     }
 
-    public async Task Then_product_is_successfully_created()
+    public Task Then_product_is_successfully_created()
     {
-        _createProductResponse.StatusCode.Should().Be(HttpStatusCode.OK);
-        var response = await _createProductResponse.Content.ReadFromJsonAsync<CreateProductResponse>();
-        response.Should().NotBeNull();
-        response!.Id.Should().BePositive();
+        _createProductResponse.Should().NotBeNull();
+        _createProductResponse?.Id.Should().BePositive();
+        return Task.CompletedTask;
     }
     
     public Task Then_product_is_successfully_updated()
@@ -181,7 +184,12 @@ public class ProductsApiContext(FoodDiaryWebApplicationFactory factory) : BaseCo
     public async Task Then_product_is_successfully_retrieved(Product product)
     {
         _getProductByIdResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        
         var response = await _getProductByIdResponse.Content.ReadFromJsonAsync<GetProductByIdResponse>();
-        response.Should().BeEquivalentTo(product.ToGetProductByIdResponse());
+        
+        response.Should()
+            .BeEquivalentTo(product.ToGetProductByIdResponse(), options => options
+                .Excluding(p => p.Id)
+                .Excluding(p => p.Category.Id));
     }
 }

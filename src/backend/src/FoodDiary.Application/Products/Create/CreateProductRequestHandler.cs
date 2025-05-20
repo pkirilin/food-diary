@@ -11,7 +11,12 @@ public record CreateProductRequest(
     string Name,
     int CaloriesCost,
     int DefaultQuantity,
-    int CategoryId) : IRequest<CreateProductResponse>;
+    int CategoryId,
+    decimal? Protein,
+    decimal? Fats,
+    decimal? Carbs,
+    decimal? Sugar,
+    decimal? Salt) : IRequest<CreateProductResponse>;
 
 public abstract record CreateProductResponse
 {
@@ -38,7 +43,12 @@ internal class CreateProductRequestHandler(
             Name = request.Name,
             CaloriesCost = request.CaloriesCost,
             DefaultQuantity = request.DefaultQuantity,
-            CategoryId = request.CategoryId
+            CategoryId = request.CategoryId,
+            Protein = request.Protein,
+            Fats = request.Fats,
+            Carbs = request.Carbs,
+            Sugar = request.Sugar,
+            Salt = request.Salt
         };
 
         await repository.Create(product, cancellationToken);

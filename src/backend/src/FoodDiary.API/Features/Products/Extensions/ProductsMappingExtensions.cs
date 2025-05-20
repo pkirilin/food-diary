@@ -13,6 +13,11 @@ public static class ProductsMappingExtensions
             Name = p.Name,
             DefaultQuantity = p.DefaultQuantity,
             CaloriesCost = p.CaloriesCost,
+            Protein = p.Protein,
+            Fats = p.Fats,
+            Carbs = p.Carbs,
+            Sugar = p.Sugar,
+            Salt = p.Salt,
             Category = new Contracts.Category
             {
                 Id = p.CategoryId,

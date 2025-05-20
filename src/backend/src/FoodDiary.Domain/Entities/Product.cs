@@ -23,6 +23,12 @@ public class Product
 
     public int CategoryId { get; set; }
 
+    public required decimal? Protein { get; init; }
+    public required decimal? Fats { get; init; }
+    public required decimal? Carbs { get; init; }
+    public required decimal? Sugar { get; init; }
+    public required decimal? Salt { get; init; }
+
     public Category Category { get; set; }
 
     public virtual ICollection<Note> Notes { get; set; }
