@@ -5,12 +5,13 @@ import {
   type EditProductRequest,
   productApi,
   type CreateProductResponse,
+  type productModel,
+  type OnSubmitProductFn,
 } from '@/entities/product';
-import { actions, type ProductFormValues } from '../model';
-import { type OnSubmitProductFn } from '../ui/ProductForm';
+import { actions } from '../model';
 
 const toCreateProductRequest = (
-  { name, caloriesCost, defaultQuantity }: ProductFormValues,
+  { name, caloriesCost, defaultQuantity }: productModel.ProductFormValues,
   categoryId: number,
 ): CreateProductRequest => ({
   name,
@@ -20,7 +21,7 @@ const toCreateProductRequest = (
 });
 
 const toEditProductRequest = (
-  { name, caloriesCost, defaultQuantity }: ProductFormValues,
+  { name, caloriesCost, defaultQuantity }: productModel.ProductFormValues,
   productId: number,
   categoryId: number,
 ): EditProductRequest => ({
@@ -35,7 +36,10 @@ const isCreateProductResponse = (response: unknown): response is CreateProductRe
   return typeof response === 'object' && response !== null && 'id' in response;
 };
 
-const resolveProductId = ({ id }: ProductFormValues, mutationResponse: unknown): number => {
+const resolveProductId = (
+  { id }: productModel.ProductFormValues,
+  mutationResponse: unknown,
+): number => {
   if (isCreateProductResponse(mutationResponse)) {
     return mutationResponse.id;
   }
@@ -52,7 +56,7 @@ export const useSubmitProduct = (date: string): OnSubmitProductFn => {
   const [editProduct] = productApi.useEditProductMutation();
   const dispatch = useAppDispatch();
 
-  return async (product: ProductFormValues): Promise<void> => {
+  return async (product: productModel.ProductFormValues): Promise<void> => {
     const { id, category } = product;
 
     if (!category) {

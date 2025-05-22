@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { quantitySchema } from './quantitySchema';
+import { quantitySchema } from '@/shared/lib';
 
 export const productSchema = z.object({
   id: z.number().optional(),
