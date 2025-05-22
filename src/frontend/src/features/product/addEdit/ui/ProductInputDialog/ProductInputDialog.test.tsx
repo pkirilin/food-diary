@@ -16,7 +16,6 @@ import {
   thenProductNameHasValue,
   thenProductNameIsInvalid,
   thenProductNameIsValid,
-  thenSubmitButtonIsDisabled,
   whenCaloriesCostChanged,
   whenCategoryCleared,
   whenCategorySelected,
@@ -99,24 +98,13 @@ test('I cannot add product with invalid name, calories cost or default quantity'
   await whenProductNameChanged(user, 'A');
   await whenCaloriesCostChanged(user, '0');
   await whenDefaultQuantityChanged(user, '0');
+  await whenProductSaved(user);
   await thenProductNameIsInvalid();
   await thenCaloriesCostIsInvalid();
   await thenDefaultQuantityIsInvalid();
-  await thenSubmitButtonIsDisabled();
 });
 
-test('I cannot add product when category is empty', async () => {
-  const user = userEvent.setup();
-  const categories = givenCategories('Fruits', 'Vegetables');
-
-  render(givenProductInputDialog().withCategoriesForSelect(categories).please());
-
-  await whenDialogOpened(user);
-  await whenProductNameChanged(user, 'Potato');
-  await thenSubmitButtonIsDisabled();
-});
-
-test('I cannot edit product when category is empty', async () => {
+test('I cannot save product when category is empty', async () => {
   const user = userEvent.setup();
   const categories = givenCategories('Fruits', 'Vegetables');
 
@@ -130,8 +118,8 @@ test('I cannot edit product when category is empty', async () => {
   await whenDialogOpened(user);
   await whenProductNameChanged(user, 'Green apple');
   await whenCategoryCleared(user);
+  await whenProductSaved(user);
   await thenCategoryIsInvalid();
-  await thenSubmitButtonIsDisabled();
 });
 
 test('Dialog input is cleared on close', async () => {

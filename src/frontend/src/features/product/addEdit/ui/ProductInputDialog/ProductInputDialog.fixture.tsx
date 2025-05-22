@@ -157,10 +157,6 @@ export const thenCategoryHasValue = async (value: string): Promise<void> => {
   expect(screen.getByRole('combobox', { name: /category/i })).toHaveValue(value);
 };
 
-export const thenSubmitButtonIsDisabled = async (): Promise<void> => {
-  expect(screen.getByRole('button', { name: /submit/i })).toBeDisabled();
-};
-
 export const thenDialogShouldBeHidden = async (): Promise<void> => {
   await waitForElementToBeRemoved(screen.getByRole('dialog'));
 };
