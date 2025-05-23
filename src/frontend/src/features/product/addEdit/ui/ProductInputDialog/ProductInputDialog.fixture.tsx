@@ -11,7 +11,7 @@ import { ProductInputDialog } from './ProductInputDialog';
 
 class ProductInputDialogBuilder {
   private _onSubmitMock: Mock = vi.fn();
-  private _product: productModel.FormValues = productModel.EMPTY_FORM_VALUES;
+  private _product: productModel.ProductFormValues = productModel.EMPTY_FORM_VALUES;
   private readonly _categories: SelectOption[] = [];
 
   please(): ReactElement {
@@ -51,7 +51,7 @@ class ProductInputDialogBuilder {
     caloriesCost = 100,
     defaultQuantity = 100,
     category = this._categories[0],
-  }: Partial<productModel.FormValues>): this {
+  }: Partial<productModel.ProductFormValues>): this {
     this._product = {
       name,
       caloriesCost,
@@ -116,9 +116,9 @@ export const thenProductFormIsVisible = async (): Promise<void> => {
 
 export const thenFormValueContains = async (
   onSubmitMock: Mock,
-  product: productModel.FormValues,
+  product: productModel.ProductFormValues,
 ): Promise<void> => {
-  expect(onSubmitMock).toHaveBeenCalledWith<[productModel.FormValues]>(product);
+  expect(onSubmitMock).toHaveBeenCalledWith<[productModel.ProductFormValues]>(product);
 };
 
 export const thenProductNameIsInvalid = async (): Promise<void> => {

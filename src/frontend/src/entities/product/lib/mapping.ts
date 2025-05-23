@@ -1,5 +1,5 @@
 import { type Product, type GetProductsRequest } from '../api';
-import { type FormValues, type ProductItemsFilter } from '../model';
+import { type ProductFormValues, type ProductItemsFilter } from '../model';
 
 export const mapToGetProductsRequest = ({
   pageNumber,
@@ -19,7 +19,7 @@ export const mapToProductFormData = ({
   defaultQuantity,
   categoryId,
   categoryName,
-}: Product): FormValues => ({
+}: Product): ProductFormValues => ({
   name,
   caloriesCost,
   defaultQuantity,

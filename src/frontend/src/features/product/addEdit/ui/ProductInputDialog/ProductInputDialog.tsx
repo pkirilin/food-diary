@@ -10,8 +10,8 @@ interface ProductInputDialogProps {
   isLoading: boolean;
   categories: SelectOption[];
   categoriesLoading: boolean;
-  productFormValues: productModel.FormValues;
-  onSubmit: (product: productModel.FormValues) => Promise<void>;
+  productFormValues: productModel.ProductFormValues;
+  onSubmit: (product: productModel.ProductFormValues) => Promise<void>;
   onClose: () => void;
 }
 

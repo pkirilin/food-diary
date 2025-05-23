@@ -1,6 +1,6 @@
-import { type FormValues } from './types';
+import { type ProductFormValues } from './productSchema';
 
-export const EMPTY_FORM_VALUES: FormValues = {
+export const EMPTY_FORM_VALUES: ProductFormValues = {
   name: '',
   defaultQuantity: 100,
   caloriesCost: 100,
