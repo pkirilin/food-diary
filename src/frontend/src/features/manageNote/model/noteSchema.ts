@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { noteModel } from '@/entities/note';
-import { quantitySchema } from './quantitySchema';
+import { quantitySchema } from '@/shared/lib';
 
 const productSchema = z.object({
   id: z.number(),

@@ -2,6 +2,7 @@ import { type FC, type ReactElement } from 'react';
 import { useAppDispatch, useAppSelector } from '@/app/store';
 import { categoryLib } from '@/entities/category';
 import { type noteModel, type NoteItem } from '@/entities/note';
+import { ProductForm } from '@/entities/product';
 import { Button, Dialog } from '@/shared/ui';
 import { useLoadProductForEdit } from '../lib/useLoadProductForEdit';
 import { useSubmitNote } from '../lib/useSubmitNote';
@@ -9,7 +10,6 @@ import { useSubmitProduct } from '../lib/useSubmitProduct';
 import { actions, selectors } from '../model';
 import { ImagePreview } from './ImagePreview';
 import { NoteForm } from './NoteForm';
-import { ProductForm } from './ProductForm';
 import { ProductSearch } from './ProductSearch';
 import { ProductSearchResultsOnImage } from './ProductSearchResultsOnImage';
 

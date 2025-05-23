@@ -1,7 +1,7 @@
 import { type RecognizeNoteItem } from '@/entities/note';
+import { type productModel } from '@/entities/product';
 import { type ClientError } from '@/shared/api';
 import { type NoteFormValues } from './noteSchema';
-import { type ProductFormValues } from './productSchema';
 
 export interface Image {
   name: string;
@@ -27,7 +27,7 @@ interface NoteInputScreenState {
 interface ProductInputScreenState {
   type: 'product-input';
   formId: 'product-form';
-  product: ProductFormValues;
+  product: productModel.ProductFormValues;
 }
 
 interface ImageUploadScreenState {

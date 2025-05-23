@@ -1,6 +1,5 @@
-import { type FC, useState, useCallback } from 'react';
-import { CategorySelect } from '@/entities/category';
-import { ProductInputForm, type productModel } from '@/entities/product';
+import { type FC } from 'react';
+import { ProductForm, type productModel } from '@/entities/product';
 import { type SelectOption } from '@/shared/types';
 import { Button, Dialog } from '@/shared/ui';
 
@@ -11,9 +10,8 @@ interface ProductInputDialogProps {
   isLoading: boolean;
   categories: SelectOption[];
   categoriesLoading: boolean;
-  productFormValues: productModel.FormValues;
-  freeSolo?: boolean;
-  onSubmit: (product: productModel.FormValues) => void;
+  productFormValues: productModel.ProductFormValues;
+  onSubmit: (product: productModel.ProductFormValues) => Promise<void>;
   onClose: () => void;
 }
 
@@ -25,16 +23,9 @@ export const ProductInputDialog: FC<ProductInputDialogProps> = ({
   categories,
   categoriesLoading,
   productFormValues,
-  freeSolo,
   onSubmit,
   onClose,
 }) => {
-  const [submitDisabled, setSubmitDisabled] = useState(true);
-
-  const handleSubmitDisabledChange = useCallback((disabled: boolean): void => {
-    setSubmitDisabled(disabled);
-  }, []);
-
   return (
     <Dialog
       pinToTop
@@ -43,31 +34,16 @@ export const ProductInputDialog: FC<ProductInputDialogProps> = ({
       opened={opened}
       onClose={onClose}
       content={
-        <ProductInputForm
-          id="product-input-form"
-          touched={freeSolo}
-          values={productFormValues}
+        <ProductForm
+          formId="product-input-form"
+          defaultValues={productFormValues}
+          categories={categories}
+          categoriesLoading={categoriesLoading}
           onSubmit={onSubmit}
-          onSubmitDisabledChange={handleSubmitDisabledChange}
-          renderCategoryInput={categoryInputProps => (
-            <CategorySelect
-              {...categoryInputProps}
-              label="Category"
-              placeholder="Select a category"
-              options={categories}
-              optionsLoading={categoriesLoading}
-            />
-          )}
         />
       }
       renderSubmit={submitProps => (
-        <Button
-          {...submitProps}
-          type="submit"
-          form="product-input-form"
-          disabled={submitDisabled}
-          loading={isLoading}
-        >
+        <Button {...submitProps} type="submit" form="product-input-form" loading={isLoading}>
           {submitText}
         </Button>
       )}

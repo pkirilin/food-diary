@@ -26,10 +26,12 @@ export const EditProduct: FC<Props> = ({ product, renderTrigger }) => {
     setIsEditDialogOpened(true);
   };
 
-  const handleEditDialogSubmit = (formData: productModel.FormValues): void => {
+  const handleEditDialogSubmit = async (
+    formData: productModel.ProductFormValues,
+  ): Promise<void> => {
     if (formData.category) {
       const request = mapToEditProductRequest(product.id, formData.category.id, formData);
-      void editProduct(request);
+      await editProduct(request);
     }
   };
 

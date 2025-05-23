@@ -1,12 +1,12 @@
 import { useAppDispatch } from '@/app/store';
-import { type GetProductByIdResponse, productApi } from '@/entities/product';
-import { type ProductFormValues, actions } from '../model';
+import { type GetProductByIdResponse, productApi, type productModel } from '@/entities/product';
+import { actions } from '../model';
 import { type OnEditProductFn as OnLoadProductForEditFn } from '../ui/NoteForm';
 
 const toProductFormValues = (
   { name, defaultQuantity, caloriesCost, category }: GetProductByIdResponse,
   productId: number,
-): ProductFormValues => ({
+): productModel.ProductFormValues => ({
   id: productId,
   name,
   defaultQuantity,

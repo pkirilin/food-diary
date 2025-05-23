@@ -6,7 +6,7 @@ import {
 
 export const mapToCreateProductRequest = (
   categoryId: number,
-  { name, caloriesCost, defaultQuantity }: productModel.FormValues,
+  { name, caloriesCost, defaultQuantity }: productModel.ProductFormValues,
 ): CreateProductRequest => ({
   name,
   caloriesCost,
@@ -17,7 +17,7 @@ export const mapToCreateProductRequest = (
 export const mapToEditProductRequest = (
   id: number,
   categoryId: number,
-  { name, caloriesCost, defaultQuantity }: productModel.FormValues,
+  { name, caloriesCost, defaultQuantity }: productModel.ProductFormValues,
 ): EditProductRequest => ({
   id,
   name,

@@ -23,10 +23,10 @@ export const AddProduct: FC = () => {
     setIsDialogOpened(true);
   };
 
-  const handleDialogSubmit = (formData: productModel.FormValues): void => {
+  const handleDialogSubmit = async (formData: productModel.ProductFormValues): Promise<void> => {
     if (formData.category) {
       const request = mapToCreateProductRequest(formData.category.id, formData);
-      void createProduct(request);
+      await createProduct(request);
     }
   };
 

@@ -1,15 +1,15 @@
 import { useCallback, useMemo, useState } from 'react';
+import { type ProductFormValues } from '../model';
 import { EMPTY_FORM_VALUES } from '../model/constants';
-import { type FormValues } from '../model/types';
 
 interface Result {
-  values: FormValues;
-  setValues: (values: FormValues) => void;
+  values: ProductFormValues;
+  setValues: (values: ProductFormValues) => void;
   clearValues: () => void;
 }
 
 export const useFormValues = (initialValues = EMPTY_FORM_VALUES): Result => {
-  const [values, setValues] = useState<FormValues>(initialValues);
+  const [values, setValues] = useState<ProductFormValues>(initialValues);
 
   const clearValues = useCallback(() => {
     setValues(initialValues);
