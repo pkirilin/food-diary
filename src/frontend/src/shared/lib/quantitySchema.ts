@@ -1,3 +1,3 @@
 import { z } from 'zod';
 
-export const quantitySchema = z.coerce.number().int().min(1).max(999);
+export const quantitySchema = z.coerce.number().int().min(10).max(1000);
