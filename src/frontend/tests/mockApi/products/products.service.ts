@@ -78,6 +78,7 @@ export const create = ({
   caloriesCost,
   defaultQuantity,
   categoryId,
+  protein,
 }: CreateProductRequest): CreateProductResult => {
   const category = db.category.findFirst({
     where: {
@@ -101,12 +102,14 @@ export const create = ({
 
   const id = maxId + 1;
 
+  // TODO: show error when property is missing
   db.product.create({
     id,
     name,
     caloriesCost,
     defaultQuantity,
     categoryId,
+    protein,
   });
 
   return { type: 'Success', id };
@@ -116,7 +119,7 @@ type UpdateProductResult = 'Success' | 'CategoryNotFound';
 
 export const update = (
   id: number,
-  { name, caloriesCost, defaultQuantity, categoryId }: EditProductRequest,
+  { name, caloriesCost, defaultQuantity, categoryId, protein }: EditProductRequest,
 ): UpdateProductResult => {
   const category = db.category.findFirst({
     where: {
@@ -132,11 +135,13 @@ export const update = (
     where: {
       id: { equals: id },
     },
+    // TODO: show error when property is missing
     data: {
       name,
       caloriesCost,
       defaultQuantity,
       categoryId,
+      protein,
     },
   });
 

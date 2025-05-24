@@ -1,4 +1,4 @@
-import { factory, primaryKey } from '@mswjs/data';
+import { factory, nullable, primaryKey } from '@mswjs/data';
 
 export const db = factory({
   user: {
@@ -26,6 +26,7 @@ export const db = factory({
     caloriesCost: Number,
     defaultQuantity: Number,
     categoryId: Number,
+    protein: nullable(Number),
   },
 
   weightLog: {

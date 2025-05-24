@@ -24,6 +24,7 @@ import {
   whenDialogOpened,
   whenProductNameChanged,
   whenProductSaved,
+  whenProteinChanged,
 } from './ProductInputDialog.fixture';
 
 test('I can add new product', async () => {
@@ -51,6 +52,7 @@ test('I can add new product', async () => {
     caloriesCost: 150,
     defaultQuantity: 120,
     category: expectCategory('Vegetables'),
+    protein: null,
   });
 });
 
@@ -79,12 +81,14 @@ test('I can edit product', async () => {
   await whenCaloriesCostChanged(user, '140');
   await whenDefaultQuantityChanged(user, '110');
   await whenCategorySelected(user, /vegetables new/i);
+  await whenProteinChanged(user, '1.2');
   await whenProductSaved(user);
   await thenFormValueContains(onSubmitMock, {
     name: 'Potato edited',
     caloriesCost: 140,
     defaultQuantity: 110,
     category: expectCategory('Vegetables new'),
+    protein: 1.2,
   });
 });
 

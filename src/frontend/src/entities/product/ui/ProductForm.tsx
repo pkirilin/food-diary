@@ -107,6 +107,7 @@ export const ProductForm: FC<Props> = ({
         name="protein"
         control={control}
         render={({ field, fieldState }) => (
+          // TODO: map null to empty string
           <TextField
             {...field}
             fullWidth
@@ -127,12 +128,40 @@ export const ProductForm: FC<Props> = ({
               },
               htmlInput: {
                 type: 'text',
-                inputMode: 'numeric',
+                inputMode: 'decimal',
               },
             }}
           />
         )}
       />
+      {/* <Controller
+        name="weight"
+        control={control}
+        render={({ field, fieldState }) => (
+          <TextField
+            {...field}
+            onFocus={event => {
+              event.target.select();
+            }}
+            label="Weight"
+            placeholder="Enter your weight"
+            margin="normal"
+            fullWidth
+            autoFocus
+            error={!!fieldState.error}
+            helperText={fieldState.error?.message ?? ' '}
+            slotProps={{
+              input: {
+                endAdornment: <InputAdornment position="end">kg</InputAdornment>,
+              },
+              htmlInput: {
+                type: 'text',
+                inputMode: 'decimal',
+              },
+            }}
+          />
+        )}
+      /> */}
       <Controller
         name="category"
         control={control}

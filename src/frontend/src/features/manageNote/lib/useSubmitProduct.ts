@@ -11,17 +11,18 @@ import {
 import { actions } from '../model';
 
 const toCreateProductRequest = (
-  { name, caloriesCost, defaultQuantity }: productModel.ProductFormValues,
+  { name, caloriesCost, defaultQuantity, protein }: productModel.ProductFormValues,
   categoryId: number,
 ): CreateProductRequest => ({
   name,
   caloriesCost,
   defaultQuantity,
   categoryId,
+  protein,
 });
 
 const toEditProductRequest = (
-  { name, caloriesCost, defaultQuantity }: productModel.ProductFormValues,
+  { name, caloriesCost, defaultQuantity, protein }: productModel.ProductFormValues,
   productId: number,
   categoryId: number,
 ): EditProductRequest => ({
@@ -30,6 +31,7 @@ const toEditProductRequest = (
   caloriesCost,
   defaultQuantity,
   categoryId,
+  protein,
 });
 
 const isCreateProductResponse = (response: unknown): response is CreateProductResponse => {

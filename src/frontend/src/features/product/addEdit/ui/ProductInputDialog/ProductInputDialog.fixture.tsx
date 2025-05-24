@@ -51,12 +51,14 @@ class ProductInputDialogBuilder {
     caloriesCost = 100,
     defaultQuantity = 100,
     category = this._categories[0],
+    protein = null,
   }: Partial<productModel.ProductFormValues>): this {
     this._product = {
       name,
       caloriesCost,
       defaultQuantity,
       category,
+      protein,
     };
     return this;
   }
@@ -97,6 +99,11 @@ export const whenDefaultQuantityChanged = async (
 export const whenCategorySelected = async (user: UserEvent, name: RegExp): Promise<void> => {
   await user.click(screen.getByRole('combobox', { name: /category/i }));
   await user.click(screen.getByRole('option', { name }));
+};
+
+export const whenProteinChanged = async (user: UserEvent, protein: string): Promise<void> => {
+  await user.clear(screen.getByPlaceholderText(/protein/i));
+  await user.type(screen.getByPlaceholderText(/protein/i), protein);
 };
 
 export const whenCategoryCleared = async (user: UserEvent): Promise<void> => {

@@ -4,7 +4,7 @@ import { actions } from '../model';
 import { type OnEditProductFn as OnLoadProductForEditFn } from '../ui/NoteForm';
 
 const toProductFormValues = (
-  { name, defaultQuantity, caloriesCost, category }: GetProductByIdResponse,
+  { name, defaultQuantity, caloriesCost, category, protein }: GetProductByIdResponse,
   productId: number,
 ): productModel.ProductFormValues => ({
   id: productId,
@@ -15,6 +15,7 @@ const toProductFormValues = (
     id: category.id,
     name: category.name,
   },
+  protein,
 });
 
 export const useLoadProductForEdit = (): [OnLoadProductForEditFn, boolean] => {

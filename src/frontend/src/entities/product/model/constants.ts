@@ -5,4 +5,5 @@ export const EMPTY_FORM_VALUES: ProductFormValues = {
   defaultQuantity: 100,
   caloriesCost: 100,
   category: null,
+  protein: null,
 };
