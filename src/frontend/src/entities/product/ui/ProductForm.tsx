@@ -4,6 +4,7 @@ import { useEffect, type FC } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { type SelectOption } from '@/shared/types';
 import { type ProductFormValues, productSchema } from '../model';
+import { NutrientIcon } from './NutrientIcon';
 
 interface Props {
   formId: string;
@@ -92,6 +93,36 @@ export const ProductForm: FC<Props> = ({
             onFocus={event => event.target.select()}
             slotProps={{
               input: {
+                endAdornment: <InputAdornment position="end">g</InputAdornment>,
+              },
+              htmlInput: {
+                type: 'text',
+                inputMode: 'numeric',
+              },
+            }}
+          />
+        )}
+      />
+      <Controller
+        name="protein"
+        control={control}
+        render={({ field, fieldState }) => (
+          <TextField
+            {...field}
+            fullWidth
+            label="Protein"
+            placeholder="Protein, g"
+            margin="normal"
+            error={!!fieldState.error}
+            helperText={fieldState.error?.message ?? ' '}
+            onFocus={event => event.target.select()}
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <NutrientIcon type="protein" />
+                  </InputAdornment>
+                ),
                 endAdornment: <InputAdornment position="end">g</InputAdornment>,
               },
               htmlInput: {
