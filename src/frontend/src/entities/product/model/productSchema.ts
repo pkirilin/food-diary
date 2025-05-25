@@ -1,17 +1,6 @@
 import { z } from 'zod';
 import { quantitySchema } from '@/shared/lib';
-
-// TODO: add tests
-const nutrientQuantitySchema = z
-  .string()
-  .or(z.number())
-  .transform(value => String(value).trim())
-  .refine(value => /^\d+([.,]\d+)?$/.test(value), {
-    message: "Must be a valid number with either '.' or ',' as decimal separator",
-  })
-  .transform(value => Number(value.replace(',', '.')))
-  .pipe(z.coerce.number().min(0).max(1000).nullable())
-  .refine(value => value !== null && !isNaN(value), { message: 'Must be a valid number' });
+import { nutrientQuantitySchema } from './nutrientQuantitySchema';
 
 export const productSchema = z.object({
   id: z.number().optional(),
