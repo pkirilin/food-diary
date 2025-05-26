@@ -4,7 +4,7 @@ import { useEffect, type FC } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { type SelectOption } from '@/shared/types';
 import { type ProductFormValues, productSchema } from '../model';
-import { NutrientIcon } from './NutrientIcon';
+import { NutrientInput } from './NutrientInput';
 
 interface Props {
   formId: string;
@@ -103,39 +103,6 @@ export const ProductForm: FC<Props> = ({
           />
         )}
       />
-      {/* TODO: redesign */}
-      <Controller
-        name="protein"
-        control={control}
-        render={({ field, fieldState }) => (
-          // TODO: move to component
-          <TextField
-            {...field}
-            value={field.value ?? ''}
-            fullWidth
-            label="Protein"
-            placeholder="Protein, g"
-            margin="normal"
-            error={!!fieldState.error}
-            helperText={fieldState.error?.message ?? ' '}
-            onFocus={event => event.target.select()}
-            slotProps={{
-              input: {
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <NutrientIcon type="protein" />
-                  </InputAdornment>
-                ),
-                endAdornment: <InputAdornment position="end">g</InputAdornment>,
-              },
-              htmlInput: {
-                type: 'text',
-                inputMode: 'decimal',
-              },
-            }}
-          />
-        )}
-      />
       <Controller
         name="category"
         control={control}
@@ -167,6 +134,20 @@ export const ProductForm: FC<Props> = ({
                 }}
               />
             )}
+          />
+        )}
+      />
+      <Controller
+        name="protein"
+        control={control}
+        render={({ field, fieldState }) => (
+          <NutrientInput
+            {...field}
+            nutrientType="protein"
+            label="Protein"
+            placeholder="Protein, g"
+            error={!!fieldState.error}
+            helperText={fieldState.error?.message ?? ' '}
           />
         )}
       />
