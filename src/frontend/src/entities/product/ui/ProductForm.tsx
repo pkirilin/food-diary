@@ -151,6 +151,62 @@ export const ProductForm: FC<Props> = ({
           />
         )}
       />
+      <Controller
+        name="fats"
+        control={control}
+        render={({ field, fieldState }) => (
+          <NutrientInput
+            {...field}
+            nutrientType="fats"
+            label="Fats"
+            placeholder="Fats, g"
+            error={!!fieldState.error}
+            helperText={fieldState.error?.message ?? ' '}
+          />
+        )}
+      />
+      <Controller
+        name="carbs"
+        control={control}
+        render={({ field, fieldState }) => (
+          <NutrientInput
+            {...field}
+            nutrientType="carbs"
+            label="Carbs"
+            placeholder="Carbs, g"
+            error={!!fieldState.error}
+            helperText={fieldState.error?.message ?? ' '}
+          />
+        )}
+      />
+      <Controller
+        name="sugar"
+        control={control}
+        render={({ field, fieldState }) => (
+          <NutrientInput
+            {...field}
+            nutrientType="sugar"
+            label="Sugar"
+            placeholder="Sugar, g"
+            error={!!fieldState.error}
+            helperText={fieldState.error?.message ?? ' '}
+          />
+        )}
+      />
+      <Controller
+        name="salt"
+        control={control}
+        render={({ field, fieldState }) => (
+          <NutrientInput
+            {...field}
+            nutrientType="salt"
+            label="Salt"
+            placeholder="Salt, g"
+            error={!!fieldState.error}
+            helperText={fieldState.error?.message ?? ' '}
+          />
+        )}
+      />
     </form>
   );
 };

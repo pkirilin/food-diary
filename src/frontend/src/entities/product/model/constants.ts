@@ -6,4 +6,8 @@ export const EMPTY_FORM_VALUES: ProductFormValues = {
   caloriesCost: 100,
   category: null,
   protein: null,
+  fats: null,
+  carbs: null,
+  sugar: null,
+  salt: null,
 };

@@ -17,14 +17,18 @@ import {
   thenProductNameIsInvalid,
   thenProductNameIsValid,
   whenCaloriesCostChanged,
+  whenCarbsChanged,
   whenCategoryCleared,
   whenCategorySelected,
   whenDefaultQuantityChanged,
   whenDialogClosed,
   whenDialogOpened,
+  whenFatsChanged,
   whenProductNameChanged,
   whenProductSaved,
   whenProteinChanged,
+  whenSaltChanged,
+  whenSugarChanged,
 } from './ProductInputDialog.fixture';
 
 test('I can add new product', async () => {
@@ -53,6 +57,10 @@ test('I can add new product', async () => {
     defaultQuantity: 120,
     category: expectCategory('Vegetables'),
     protein: null,
+    fats: null,
+    carbs: null,
+    sugar: null,
+    salt: null,
   });
 });
 
@@ -82,6 +90,10 @@ test('I can edit product', async () => {
   await whenDefaultQuantityChanged(user, '110');
   await whenCategorySelected(user, /vegetables new/i);
   await whenProteinChanged(user, '1.2');
+  await whenFatsChanged(user, '0.4');
+  await whenCarbsChanged(user, '25.8');
+  await whenSugarChanged(user, '0.7');
+  await whenSaltChanged(user, '0.05');
   await whenProductSaved(user);
   await thenFormValueContains(onSubmitMock, {
     name: 'Potato edited',
@@ -89,6 +101,10 @@ test('I can edit product', async () => {
     defaultQuantity: 110,
     category: expectCategory('Vegetables new'),
     protein: 1.2,
+    fats: 0.4,
+    carbs: 25.8,
+    sugar: 0.7,
+    salt: 0.05,
   });
 });
 

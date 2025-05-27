@@ -32,12 +32,27 @@ export const handlers: HttpHandler[] = [
 
     const response: GetProductsResponse = {
       productItems: products.map(
-        ({ id, name, caloriesCost, defaultQuantity, categoryId, protein }) => ({
+        ({
+          id,
+          name,
+          caloriesCost,
+          defaultQuantity,
+          categoryId,
+          protein,
+          fats,
+          carbs,
+          sugar,
+          salt,
+        }) => ({
           id,
           name,
           caloriesCost,
           defaultQuantity,
           protein,
+          fats,
+          carbs,
+          sugar,
+          salt,
           categoryId,
           categoryName: categoryNamesMap.get(categoryId) ?? 'NULL',
         }),
@@ -70,6 +85,10 @@ export const handlers: HttpHandler[] = [
       caloriesCost: product.caloriesCost,
       defaultQuantity: product.defaultQuantity,
       protein: product.protein,
+      fats: product.fats,
+      carbs: product.carbs,
+      sugar: product.sugar,
+      salt: product.salt,
       category: {
         id: product.categoryId,
         name: productsService.getCategoryNames([product]).get(product.categoryId) ?? 'NULL',

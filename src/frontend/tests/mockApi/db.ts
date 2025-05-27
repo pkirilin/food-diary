@@ -27,6 +27,10 @@ export const db = factory({
     defaultQuantity: Number,
     categoryId: Number,
     protein: nullable(Number),
+    fats: nullable(Number),
+    carbs: nullable(Number),
+    sugar: nullable(Number),
+    salt: nullable(Number),
   },
 
   weightLog: {

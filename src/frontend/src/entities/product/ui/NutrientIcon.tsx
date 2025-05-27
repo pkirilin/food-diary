@@ -8,5 +8,5 @@ interface Props {
 export const NutrientIcon: FC<Props> = ({ type }) => {
   const { IconComponent, color } = nutrients[type];
 
-  return <IconComponent sx={{ color }} />;
+  return <IconComponent sx={{ color, fontSize: 20 }} />;
 };

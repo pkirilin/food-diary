@@ -52,6 +52,10 @@ class ProductInputDialogBuilder {
     defaultQuantity = 100,
     category = this._categories[0],
     protein = null,
+    fats = null,
+    carbs = null,
+    sugar = null,
+    salt = null,
   }: Partial<productModel.ProductFormValues>): this {
     this._product = {
       name,
@@ -59,6 +63,10 @@ class ProductInputDialogBuilder {
       defaultQuantity,
       category,
       protein,
+      fats,
+      carbs,
+      sugar,
+      salt,
     };
     return this;
   }
@@ -104,6 +112,26 @@ export const whenCategorySelected = async (user: UserEvent, name: RegExp): Promi
 export const whenProteinChanged = async (user: UserEvent, protein: string): Promise<void> => {
   await user.clear(screen.getByPlaceholderText(/protein/i));
   await user.type(screen.getByPlaceholderText(/protein/i), protein);
+};
+
+export const whenFatsChanged = async (user: UserEvent, fats: string): Promise<void> => {
+  await user.clear(screen.getByPlaceholderText(/fats/i));
+  await user.type(screen.getByPlaceholderText(/fats/i), fats);
+};
+
+export const whenCarbsChanged = async (user: UserEvent, carbs: string): Promise<void> => {
+  await user.clear(screen.getByPlaceholderText(/carbs/i));
+  await user.type(screen.getByPlaceholderText(/carbs/i), carbs);
+};
+
+export const whenSugarChanged = async (user: UserEvent, sugar: string): Promise<void> => {
+  await user.clear(screen.getByPlaceholderText(/sugar/i));
+  await user.type(screen.getByPlaceholderText(/sugar/i), sugar);
+};
+
+export const whenSaltChanged = async (user: UserEvent, salt: string): Promise<void> => {
+  await user.clear(screen.getByPlaceholderText(/salt/i));
+  await user.type(screen.getByPlaceholderText(/salt/i), salt);
 };
 
 export const whenCategoryCleared = async (user: UserEvent): Promise<void> => {

@@ -15,6 +15,10 @@ export const productSchema = z.object({
     .nullable()
     .refine(category => category !== null, { message: 'Category is required' }),
   protein: nutrientQuantitySchema,
+  fats: nutrientQuantitySchema,
+  carbs: nutrientQuantitySchema,
+  sugar: nutrientQuantitySchema,
+  salt: nutrientQuantitySchema,
 });
 
 export type ProductFormValues = z.infer<typeof productSchema>;
