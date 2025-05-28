@@ -24,6 +24,7 @@ import {
   whenDialogClosed,
   whenDialogOpened,
   whenFatsChanged,
+  whenNutrientsPanelExpanded,
   whenProductNameChanged,
   whenProductSaved,
   whenProteinChanged,
@@ -89,6 +90,7 @@ test('I can edit product', async () => {
   await whenCaloriesCostChanged(user, '140');
   await whenDefaultQuantityChanged(user, '110');
   await whenCategorySelected(user, /vegetables new/i);
+  await whenNutrientsPanelExpanded(user);
   await whenProteinChanged(user, '1.2');
   await whenFatsChanged(user, '0.4');
   await whenCarbsChanged(user, '25.8');

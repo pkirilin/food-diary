@@ -1,5 +1,16 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Autocomplete, CircularProgress, InputAdornment, TextField } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Autocomplete,
+  CircularProgress,
+  Grid2,
+  InputAdornment,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { useEffect, type FC } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { type SelectOption } from '@/shared/types';
@@ -137,76 +148,99 @@ export const ProductForm: FC<Props> = ({
           />
         )}
       />
-      <Controller
-        name="protein"
-        control={control}
-        render={({ field, fieldState }) => (
-          <NutrientInput
-            {...field}
-            nutrientType="protein"
-            label="Protein"
-            placeholder="Protein, g"
-            error={!!fieldState.error}
-            helperText={fieldState.error?.message ?? ' '}
-          />
-        )}
-      />
-      <Controller
-        name="fats"
-        control={control}
-        render={({ field, fieldState }) => (
-          <NutrientInput
-            {...field}
-            nutrientType="fats"
-            label="Fats"
-            placeholder="Fats, g"
-            error={!!fieldState.error}
-            helperText={fieldState.error?.message ?? ' '}
-          />
-        )}
-      />
-      <Controller
-        name="carbs"
-        control={control}
-        render={({ field, fieldState }) => (
-          <NutrientInput
-            {...field}
-            nutrientType="carbs"
-            label="Carbs"
-            placeholder="Carbs, g"
-            error={!!fieldState.error}
-            helperText={fieldState.error?.message ?? ' '}
-          />
-        )}
-      />
-      <Controller
-        name="sugar"
-        control={control}
-        render={({ field, fieldState }) => (
-          <NutrientInput
-            {...field}
-            nutrientType="sugar"
-            label="Sugar"
-            placeholder="Sugar, g"
-            error={!!fieldState.error}
-            helperText={fieldState.error?.message ?? ' '}
-          />
-        )}
-      />
-      <Controller
-        name="salt"
-        control={control}
-        render={({ field, fieldState }) => (
-          <NutrientInput
-            {...field}
-            nutrientType="salt"
-            label="Salt"
-            placeholder="Salt, g"
-            error={!!fieldState.error}
-            helperText={fieldState.error?.message ?? ' '}
-          />
-        )}
-      />
+      <Accordion variant="outlined">
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="nutrients-panel-content"
+          id="nutrients-panel-header"
+        >
+          <Typography component="span">Nutrients per 100 g</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Grid2 container spacing={2}>
+            <Grid2 size={6}>
+              <Controller
+                name="protein"
+                control={control}
+                render={({ field, fieldState }) => (
+                  <NutrientInput
+                    {...field}
+                    nutrientType="protein"
+                    label="Protein"
+                    placeholder="Protein, g"
+                    error={!!fieldState.error}
+                    helperText={fieldState.error?.message ?? ' '}
+                  />
+                )}
+              />
+            </Grid2>
+            <Grid2 size={6}>
+              <Controller
+                name="fats"
+                control={control}
+                render={({ field, fieldState }) => (
+                  <NutrientInput
+                    {...field}
+                    nutrientType="fats"
+                    label="Fats"
+                    placeholder="Fats, g"
+                    error={!!fieldState.error}
+                    helperText={fieldState.error?.message ?? ' '}
+                  />
+                )}
+              />
+            </Grid2>
+            <Grid2 size={6}>
+              <Controller
+                name="carbs"
+                control={control}
+                render={({ field, fieldState }) => (
+                  <NutrientInput
+                    {...field}
+                    nutrientType="carbs"
+                    label="Carbs"
+                    placeholder="Carbs, g"
+                    error={!!fieldState.error}
+                    helperText={fieldState.error?.message ?? ' '}
+                  />
+                )}
+              />
+            </Grid2>
+            <Grid2 size={6}>
+              <Controller
+                name="sugar"
+                control={control}
+                render={({ field, fieldState }) => (
+                  <NutrientInput
+                    {...field}
+                    nutrientType="sugar"
+                    label="Sugar"
+                    placeholder="Sugar, g"
+                    error={!!fieldState.error}
+                    helperText={fieldState.error?.message ?? ' '}
+                  />
+                )}
+              />
+            </Grid2>
+            <Grid2 size={6}>
+              <Controller
+                name="salt"
+                control={control}
+                render={({ field, fieldState }) => (
+                  <NutrientInput
+                    {...field}
+                    nutrientType="salt"
+                    label="Salt"
+                    placeholder="Salt, g"
+                    error={!!fieldState.error}
+                    helperText={fieldState.error?.message ?? ' '}
+                  />
+                )}
+              />
+            </Grid2>
+          </Grid2>
+        </AccordionDetails>
+      </Accordion>
     </form>
   );
 };

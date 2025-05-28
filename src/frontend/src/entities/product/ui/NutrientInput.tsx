@@ -19,10 +19,10 @@ export const NutrientInput = forwardRef<HTMLDivElement | null, Props>(
       {...props}
       ref={ref}
       fullWidth
-      label={label}
+      label={`${label} (optional)`}
       placeholder={placeholder}
       value={value ?? ''}
-      margin="dense"
+      margin="none"
       size="small"
       onFocus={event => event.target.select()}
       slotProps={{
