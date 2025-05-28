@@ -74,6 +74,10 @@ export const ProductSearchResultsOnImage: FC<Props> = ({ image }) => {
         caloriesCost: note.product.caloriesCost,
         category: null,
         protein: null,
+        fats: null,
+        carbs: null,
+        sugar: null,
+        salt: null,
       }),
     );
 
