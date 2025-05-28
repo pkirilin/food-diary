@@ -20,7 +20,7 @@ const toProductFormValues = (
   id: productId,
   name,
   defaultQuantity,
-  caloriesCost,
+  calories: caloriesCost,
   category: {
     id: category.id,
     name: category.name,

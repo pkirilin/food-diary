@@ -6,7 +6,6 @@ export const productSchema = z.object({
   id: z.number().optional(),
   name: z.string().min(3).max(100),
   defaultQuantity: quantitySchema,
-  caloriesCost: z.coerce.number().int().min(1).max(1000),
   category: z
     .object({
       id: z.number(),
@@ -14,6 +13,7 @@ export const productSchema = z.object({
     })
     .nullable()
     .refine(category => category !== null, { message: 'Category is required' }),
+  calories: z.coerce.number().int().min(1).max(1000),
   protein: nutrientQuantitySchema,
   fats: nutrientQuantitySchema,
   carbs: nutrientQuantitySchema,

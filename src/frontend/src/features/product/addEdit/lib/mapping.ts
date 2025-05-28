@@ -8,7 +8,7 @@ export const mapToCreateProductRequest = (
   categoryId: number,
   {
     name,
-    caloriesCost,
+    calories: caloriesCost,
     defaultQuantity,
     protein,
     fats,
@@ -33,7 +33,7 @@ export const mapToEditProductRequest = (
   categoryId: number,
   {
     name,
-    caloriesCost,
+    calories: caloriesCost,
     defaultQuantity,
     protein,
     fats,

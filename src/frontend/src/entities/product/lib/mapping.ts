@@ -26,7 +26,7 @@ export const mapToProductFormData = ({
   salt,
 }: Product): ProductFormValues => ({
   name,
-  caloriesCost,
+  calories: caloriesCost,
   defaultQuantity,
   category: {
     id: categoryId,

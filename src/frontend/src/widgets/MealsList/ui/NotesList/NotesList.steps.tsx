@@ -73,12 +73,9 @@ export const whenProductNameEdited = async (user: UserEvent, name: string): Prom
   await user.type(screen.getByPlaceholderText(/name/i), name);
 };
 
-export const whenProductCaloriesCostSet = async (
-  user: UserEvent,
-  calories: number,
-): Promise<void> => {
-  await user.clear(screen.getByPlaceholderText(/calories cost/i));
-  await user.type(screen.getByPlaceholderText(/calories cost/i), calories.toString());
+export const whenProductCaloriesSet = async (user: UserEvent, calories: number): Promise<void> => {
+  await user.clear(screen.getByPlaceholderText(/calories/i));
+  await user.type(screen.getByPlaceholderText(/calories/i), calories.toString());
 };
 
 export const whenProductDefaultQuantitySet = async (

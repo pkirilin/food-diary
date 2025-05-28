@@ -48,7 +48,7 @@ class ProductInputDialogBuilder {
 
   withProduct({
     name = '',
-    caloriesCost = 100,
+    calories = 100,
     defaultQuantity = 100,
     category = this._categories[0],
     protein = null,
@@ -59,7 +59,7 @@ class ProductInputDialogBuilder {
   }: Partial<productModel.ProductFormValues>): this {
     this._product = {
       name,
-      caloriesCost,
+      calories,
       defaultQuantity,
       category,
       protein,
@@ -91,9 +91,9 @@ export const whenProductNameChanged = async (user: UserEvent, name: string): Pro
   await user.type(screen.getByRole('textbox', { name: /name/i }), name);
 };
 
-export const whenCaloriesCostChanged = async (user: UserEvent, cost: string): Promise<void> => {
-  await user.clear(screen.getByPlaceholderText(/calories cost/i));
-  await user.type(screen.getByPlaceholderText(/calories cost/i), cost);
+export const whenCaloriesChanged = async (user: UserEvent, cost: string): Promise<void> => {
+  await user.clear(screen.getByPlaceholderText(/calories/i));
+  await user.type(screen.getByPlaceholderText(/calories/i), cost);
 };
 
 export const whenDefaultQuantityChanged = async (
@@ -172,12 +172,12 @@ export const thenProductNameHasValue = async (value: string): Promise<void> => {
   expect(screen.getByPlaceholderText(/product name/i)).toHaveValue(value);
 };
 
-export const thenCaloriesCostIsInvalid = async (): Promise<void> => {
-  expect(screen.getByPlaceholderText(/calories cost/i)).toBeInvalid();
+export const thenCaloriesIsInvalid = async (): Promise<void> => {
+  expect(screen.getByPlaceholderText(/calories/i)).toBeInvalid();
 };
 
-export const thenCaloriesCostHasValue = async (value: number): Promise<void> => {
-  expect(screen.getByPlaceholderText(/calories cost/i)).toHaveValue(value.toString());
+export const thenCaloriesHasValue = async (value: number): Promise<void> => {
+  expect(screen.getByPlaceholderText(/calories/i)).toHaveValue(value.toString());
 };
 
 export const thenDefaultQuantityIsInvalid = async (): Promise<void> => {

@@ -13,7 +13,7 @@ import { actions } from '../model';
 const toCreateProductRequest = (
   {
     name,
-    caloriesCost,
+    calories: caloriesCost,
     defaultQuantity,
     protein,
     fats,
@@ -37,7 +37,7 @@ const toCreateProductRequest = (
 const toEditProductRequest = (
   {
     name,
-    caloriesCost,
+    calories: caloriesCost,
     defaultQuantity,
     protein,
     fats,

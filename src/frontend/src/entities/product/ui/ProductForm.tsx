@@ -102,14 +102,14 @@ export const ProductForm: FC<Props> = ({
       <Grid2 container spacing={2}>
         <Grid2 size={6}>
           <Controller
-            name="caloriesCost"
+            name="calories"
             control={control}
             render={({ field, fieldState }) => (
               <TextField
                 {...field}
                 fullWidth
-                label="Calories cost"
-                placeholder="Calories cost per 100 g, kcal"
+                label="Calories"
+                placeholder="Calories per 100 g, kcal"
                 margin="normal"
                 error={!!fieldState.error}
                 helperText={fieldState.error?.message ?? ' '}
