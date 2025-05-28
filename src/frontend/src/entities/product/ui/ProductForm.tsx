@@ -15,6 +15,7 @@ import { useEffect, type FC } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { type SelectOption } from '@/shared/types';
 import { type ProductFormValues, productSchema } from '../model';
+import { NutrientIcon } from './NutrientIcon';
 import { NutrientInput } from './NutrientInput';
 
 interface Props {
@@ -65,56 +66,6 @@ export const ProductForm: FC<Props> = ({
         )}
       />
       <Controller
-        name="caloriesCost"
-        control={control}
-        render={({ field, fieldState }) => (
-          <TextField
-            {...field}
-            fullWidth
-            label="Calories cost"
-            placeholder="Calories cost per 100 g, kcal"
-            margin="normal"
-            error={!!fieldState.error}
-            helperText={fieldState.error?.message ?? ' '}
-            onFocus={event => event.target.select()}
-            slotProps={{
-              input: {
-                endAdornment: <InputAdornment position="end">kcal</InputAdornment>,
-              },
-              htmlInput: {
-                type: 'text',
-                inputMode: 'numeric',
-              },
-            }}
-          />
-        )}
-      />
-      <Controller
-        name="defaultQuantity"
-        control={control}
-        render={({ field, fieldState }) => (
-          <TextField
-            {...field}
-            fullWidth
-            label="Default quantity"
-            placeholder="Default quantity, g"
-            margin="normal"
-            error={!!fieldState.error}
-            helperText={fieldState.error?.message ?? ' '}
-            onFocus={event => event.target.select()}
-            slotProps={{
-              input: {
-                endAdornment: <InputAdornment position="end">g</InputAdornment>,
-              },
-              htmlInput: {
-                type: 'text',
-                inputMode: 'numeric',
-              },
-            }}
-          />
-        )}
-      />
-      <Controller
         name="category"
         control={control}
         render={({ field, fieldState }) => (
@@ -148,6 +99,67 @@ export const ProductForm: FC<Props> = ({
           />
         )}
       />
+      <Grid2 container spacing={2}>
+        <Grid2 size={6}>
+          <Controller
+            name="caloriesCost"
+            control={control}
+            render={({ field, fieldState }) => (
+              <TextField
+                {...field}
+                fullWidth
+                label="Calories cost"
+                placeholder="Calories cost per 100 g, kcal"
+                margin="normal"
+                error={!!fieldState.error}
+                helperText={fieldState.error?.message ?? ' '}
+                onFocus={event => event.target.select()}
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <NutrientIcon type="calories" size="medium" />
+                      </InputAdornment>
+                    ),
+                    endAdornment: <InputAdornment position="end">kcal</InputAdornment>,
+                  },
+                  htmlInput: {
+                    type: 'text',
+                    inputMode: 'numeric',
+                  },
+                }}
+              />
+            )}
+          />
+        </Grid2>
+        <Grid2 size={6}>
+          <Controller
+            name="defaultQuantity"
+            control={control}
+            render={({ field, fieldState }) => (
+              <TextField
+                {...field}
+                fullWidth
+                label="Default quantity"
+                placeholder="Default quantity, g"
+                margin="normal"
+                error={!!fieldState.error}
+                helperText={fieldState.error?.message ?? ' '}
+                onFocus={event => event.target.select()}
+                slotProps={{
+                  input: {
+                    endAdornment: <InputAdornment position="end">g</InputAdornment>,
+                  },
+                  htmlInput: {
+                    type: 'text',
+                    inputMode: 'numeric',
+                  },
+                }}
+              />
+            )}
+          />
+        </Grid2>
+      </Grid2>
       <Accordion variant="outlined">
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}

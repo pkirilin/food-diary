@@ -3,11 +3,12 @@ import CookieOutlinedIcon from '@mui/icons-material/CookieOutlined';
 import FitnessCenterOutlinedIcon from '@mui/icons-material/FitnessCenterOutlined';
 import GrainOutlinedIcon from '@mui/icons-material/GrainOutlined';
 import WaterDropOutlinedIcon from '@mui/icons-material/WaterDropOutlined';
+import WhatshotOutlinedIcon from '@mui/icons-material/WhatshotOutlined';
 import { type SvgIconProps } from '@mui/material';
-import { blue, pink, grey, amber, purple } from '@mui/material/colors';
+import { blue, pink, grey, amber, purple, green } from '@mui/material/colors';
 import { type ComponentType } from 'react';
 
-export type NutrientType = 'protein' | 'fats' | 'carbs' | 'sugar' | 'salt';
+export type NutrientType = 'calories' | 'protein' | 'fats' | 'carbs' | 'sugar' | 'salt';
 
 interface NutrientConfig {
   readonly IconComponent: ComponentType<SvgIconProps>;
@@ -17,6 +18,10 @@ interface NutrientConfig {
 type NutrientsDictionary = Readonly<Record<NutrientType, NutrientConfig>>;
 
 export const nutrients: NutrientsDictionary = {
+  calories: {
+    IconComponent: WhatshotOutlinedIcon,
+    color: green[500],
+  },
   protein: {
     IconComponent: FitnessCenterOutlinedIcon,
     color: blue[500],
