@@ -11,7 +11,7 @@ namespace FoodDiary.API.Mapping;
 
 public static class NotesMapper
 {
-    public static NoteItem ToNoteItem(this Note note, ICaloriesCalculator calculator) => new(
+    public static GetNotesResponse.Note ToGetNotesResponse(this Note note, ICaloriesCalculator calculator) => new(
         Id: note.Id,
         Date: note.Date,
         MealType: note.MealType,
@@ -20,8 +20,20 @@ public static class NotesMapper
         ProductName: note.Product.Name,
         ProductQuantity: note.ProductQuantity,
         ProductDefaultQuantity: note.Product.DefaultQuantity,
-        Calories: calculator.Calculate(note));
-    
+        Calories: calculator.Calculate(note),
+        Product: note.Product.GetNotesResponse());
+
+    private static GetNotesResponse.Product GetNotesResponse(this Product product) => new(
+        Id: product.Id,
+        Name: product.Name,
+        DefaultQuantity: product.DefaultQuantity,
+        Calories: product.CaloriesCost,
+        Protein: product.Protein,
+        Fats: product.Fats,
+        Carbs: product.Carbs,
+        Sugar: product.Sugar,
+        Salt: product.Salt);
+
     public static GetNotesQuery ToGetNotesQuery(this GetNotesRequest request) => new(
         request.Date.GetValueOrDefault()
     );
@@ -34,10 +46,9 @@ public static class NotesMapper
     public static GetNotesResponse ToGetNotesResponse(
         this GetNotesQueryResult result,
         ICaloriesCalculator calculator) => new(
-        result.Notes
-            .Select(n => n.ToNoteItem(calculator))
-            .ToList()
-    );
+        Notes: result.Notes
+            .Select(n => n.ToGetNotesResponse(calculator))
+            .ToList());
 
     public static GetNotesHistoryResponse ToGetNotesHistoryResponse(
         this GetNotesHistoryQueryResult result,
