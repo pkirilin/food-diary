@@ -12,6 +12,7 @@ using FoodDiary.Domain.Utils;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+#pragma warning disable CS0618 // Type or member is obsolete
 
 namespace FoodDiary.ComponentTests.Scenarios.Notes;
 
@@ -120,7 +121,7 @@ public class NotesApiContext(
     public Task Then_notes_list_contains_items(params Note[] items)
     {
         var caloriesCalculator = Factory.Services.GetRequiredService<ICaloriesCalculator>();
-        var expectedNotesList = items.Select(n => n.ToNoteItem(caloriesCalculator));
+        var expectedNotesList = items.Select(n => n.ToGetNotesResponse(caloriesCalculator));
 
         _getNotesResponse?.Notes.Should()
             .BeEquivalentTo(expectedNotesList, options => options
