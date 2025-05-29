@@ -41,7 +41,7 @@ test('I can add new note with adding new product "on the fly"', async () => {
   await steps.thenProductCanBeAdded();
 
   await steps.whenProductNameCompleted(user, 'nge');
-  await steps.whenProductCaloriesCostSet(user, 60);
+  await steps.whenProductCaloriesSet(user, 60);
   await steps.whenProductDefaultQuantitySet(user, 200);
   await steps.whenProductCategorySelected(user, /fruits/i);
   await steps.whenProductAdded(user);

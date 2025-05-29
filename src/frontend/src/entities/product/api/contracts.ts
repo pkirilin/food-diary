@@ -5,6 +5,11 @@ export interface Product {
   defaultQuantity: number;
   categoryId: number;
   categoryName: string;
+  protein: number | null;
+  fats: number | null;
+  carbs: number | null;
+  sugar: number | null;
+  salt: number | null;
 }
 
 export interface Category {
@@ -30,6 +35,11 @@ export interface GetProductByIdResponse {
   caloriesCost: number;
   defaultQuantity: number;
   category: Category;
+  protein: number | null;
+  fats: number | null;
+  carbs: number | null;
+  sugar: number | null;
+  salt: number | null;
 }
 
 export interface ProductSelectOption {
@@ -43,6 +53,11 @@ export interface CreateProductRequest {
   caloriesCost: number;
   defaultQuantity: number;
   categoryId: number;
+  protein: number | null;
+  fats: number | null;
+  carbs: number | null;
+  sugar: number | null;
+  salt: number | null;
 }
 
 export interface CreateProductResponse {
@@ -55,6 +70,11 @@ export interface EditProductRequest {
   caloriesCost: number;
   defaultQuantity: number;
   categoryId: number;
+  protein: number | null;
+  fats: number | null;
+  carbs: number | null;
+  sugar: number | null;
+  salt: number | null;
 }
 
 export interface DeleteProductsRequest {

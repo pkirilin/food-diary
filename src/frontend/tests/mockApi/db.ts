@@ -1,4 +1,5 @@
-import { factory, primaryKey } from '@mswjs/data';
+import { factory, nullable, primaryKey } from '@mswjs/data';
+import { type DATABASE_INSTANCE, type InternalEntityProperties } from '@mswjs/data/lib/glossary';
 
 export const db = factory({
   user: {
@@ -26,6 +27,11 @@ export const db = factory({
     caloriesCost: Number,
     defaultQuantity: Number,
     categoryId: Number,
+    protein: nullable(Number),
+    fats: nullable(Number),
+    carbs: nullable(Number),
+    sugar: nullable(Number),
+    salt: nullable(Number),
   },
 
   weightLog: {
@@ -34,7 +40,19 @@ export const db = factory({
   },
 });
 
-export type DbUser = ReturnType<typeof db.user.findMany>[0];
-export type DbNote = ReturnType<typeof db.note.findMany>[0];
-export type DbProduct = ReturnType<typeof db.product.findMany>[0];
-export type DbCategory = ReturnType<typeof db.category.findMany>[0];
+type EntityKey = Exclude<keyof typeof db, typeof DATABASE_INSTANCE>;
+
+type EntityWithInternalProperties<K extends EntityKey> = ReturnType<(typeof db)[K]['findMany']>[0];
+
+type EntityOf<K extends EntityKey> = Omit<
+  EntityWithInternalProperties<K>,
+  keyof InternalEntityProperties<K>
+>;
+
+type UpdatableEntityOf<K extends EntityKey> = Omit<EntityOf<K>, 'id'>;
+
+export type DbUser = EntityOf<'user'>;
+export type DbNote = EntityOf<'note'>;
+export type DbProduct = EntityOf<'product'>;
+export type DbUpdatableProduct = UpdatableEntityOf<'product'>;
+export type DbCategory = EntityOf<'category'>;

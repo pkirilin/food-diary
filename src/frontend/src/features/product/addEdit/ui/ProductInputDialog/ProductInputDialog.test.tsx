@@ -4,8 +4,8 @@ import {
   expectCategory,
   givenCategories,
   givenProductInputDialog,
-  thenCaloriesCostHasValue,
-  thenCaloriesCostIsInvalid,
+  thenCaloriesHasValue,
+  thenCaloriesIsInvalid,
   thenCategoryHasValue,
   thenCategoryIsInvalid,
   thenDefaultQuantityHasValue,
@@ -16,14 +16,20 @@ import {
   thenProductNameHasValue,
   thenProductNameIsInvalid,
   thenProductNameIsValid,
-  whenCaloriesCostChanged,
+  whenCaloriesChanged,
+  whenCarbsChanged,
   whenCategoryCleared,
   whenCategorySelected,
   whenDefaultQuantityChanged,
   whenDialogClosed,
   whenDialogOpened,
+  whenFatsChanged,
+  whenNutritionComponentsPanelExpanded,
   whenProductNameChanged,
   whenProductSaved,
+  whenProteinChanged,
+  whenSaltChanged,
+  whenSugarChanged,
 } from './ProductInputDialog.fixture';
 
 test('I can add new product', async () => {
@@ -42,15 +48,20 @@ test('I can add new product', async () => {
   await thenProductFormIsVisible();
 
   await whenProductNameChanged(user, 'Potato');
-  await whenCaloriesCostChanged(user, '150');
+  await whenCaloriesChanged(user, '150');
   await whenDefaultQuantityChanged(user, '120');
   await whenCategorySelected(user, /vegetables/i);
   await whenProductSaved(user);
   await thenFormValueContains(onSubmitMock, {
     name: 'Potato',
-    caloriesCost: 150,
+    calories: 150,
     defaultQuantity: 120,
     category: expectCategory('Vegetables'),
+    protein: null,
+    fats: null,
+    carbs: null,
+    sugar: null,
+    salt: null,
   });
 });
 
@@ -64,7 +75,7 @@ test('I can edit product', async () => {
       .withCategoriesForSelect(categories)
       .withProduct({
         name: 'Potato',
-        caloriesCost: 150,
+        calories: 150,
         defaultQuantity: 120,
         category: categories[1],
       })
@@ -76,15 +87,26 @@ test('I can edit product', async () => {
   await thenProductFormIsVisible();
 
   await whenProductNameChanged(user, 'Potato edited');
-  await whenCaloriesCostChanged(user, '140');
+  await whenCaloriesChanged(user, '140');
   await whenDefaultQuantityChanged(user, '110');
   await whenCategorySelected(user, /vegetables new/i);
+  await whenNutritionComponentsPanelExpanded(user);
+  await whenProteinChanged(user, '1.2');
+  await whenFatsChanged(user, '0.4');
+  await whenCarbsChanged(user, '25.8');
+  await whenSugarChanged(user, '0.7');
+  await whenSaltChanged(user, '0.05');
   await whenProductSaved(user);
   await thenFormValueContains(onSubmitMock, {
     name: 'Potato edited',
-    caloriesCost: 140,
+    calories: 140,
     defaultQuantity: 110,
     category: expectCategory('Vegetables new'),
+    protein: 1.2,
+    fats: 0.4,
+    carbs: 25.8,
+    sugar: 0.7,
+    salt: 0.05,
   });
 });
 
@@ -96,11 +118,11 @@ test('I cannot add product with invalid name, calories cost or default quantity'
 
   await whenDialogOpened(user);
   await whenProductNameChanged(user, 'A');
-  await whenCaloriesCostChanged(user, '0');
+  await whenCaloriesChanged(user, '0');
   await whenDefaultQuantityChanged(user, '0');
   await whenProductSaved(user);
   await thenProductNameIsInvalid();
-  await thenCaloriesCostIsInvalid();
+  await thenCaloriesIsInvalid();
   await thenDefaultQuantityIsInvalid();
 });
 
@@ -131,7 +153,7 @@ test('Dialog input is cleared on close', async () => {
       .withCategoriesForSelect(categories)
       .withProduct({
         name: 'Red apple',
-        caloriesCost: 60,
+        calories: 60,
         defaultQuantity: 120,
         category: categories[0],
       })
@@ -140,7 +162,7 @@ test('Dialog input is cleared on close', async () => {
 
   await whenDialogOpened(user);
   await whenProductNameChanged(user, 'Green apple');
-  await whenCaloriesCostChanged(user, '70');
+  await whenCaloriesChanged(user, '70');
   await whenDefaultQuantityChanged(user, '110');
   await whenCategorySelected(user, /fruits new/i);
   await whenDialogClosed(user);
@@ -148,7 +170,7 @@ test('Dialog input is cleared on close', async () => {
 
   await whenDialogOpened(user);
   await thenProductNameHasValue('Red apple');
-  await thenCaloriesCostHasValue(60);
+  await thenCaloriesHasValue(60);
   await thenDefaultQuantityHasValue(120);
   await thenCategoryHasValue('Fruits');
 });
