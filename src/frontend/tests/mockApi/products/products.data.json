@@ -4,56 +4,96 @@
     "name": "Bread",
     "caloriesCost": 250,
     "defaultQuantity": 50,
-    "categoryId": 1
+    "categoryId": 1,
+    "protein": 8.1,
+    "fats": 1.2,
+    "carbs": 49.7,
+    "sugar": 3.1,
+    "salt": 1.2
   },
   {
     "id": 2,
     "name": "Beef",
     "caloriesCost": 500,
     "defaultQuantity": 100,
-    "categoryId": 2
+    "categoryId": 2,
+    "protein": 26.1,
+    "fats": 15.2,
+    "carbs": 0,
+    "sugar": 0,
+    "salt": 0.2
   },
   {
     "id": 3,
     "name": "Tomato",
     "caloriesCost": 20,
     "defaultQuantity": 100,
-    "categoryId": 3
+    "categoryId": 3,
+    "protein": 0.9,
+    "fats": 0.2,
+    "carbs": 3.9,
+    "sugar": 2.6,
+    "salt": 0.01
   },
   {
     "id": 4,
     "name": "Milk",
     "caloriesCost": 60,
     "defaultQuantity": 100,
-    "categoryId": 4
+    "categoryId": 4,
+    "protein": 3.4,
+    "fats": 3.6,
+    "carbs": 4.8,
+    "sugar": 4.8,
+    "salt": 0.1
   },
   {
     "id": 5,
     "name": "Apple",
     "caloriesCost": 52,
     "defaultQuantity": 150,
-    "categoryId": 5
+    "categoryId": 5,
+    "protein": 0.3,
+    "fats": 0.2,
+    "carbs": 14,
+    "sugar": 10.4,
+    "salt": 0
   },
   {
     "id": 6,
     "name": "Oats",
     "caloriesCost": 379,
     "defaultQuantity": 100,
-    "categoryId": 1
+    "categoryId": 1,
+    "protein": 16.9,
+    "fats": 6.9,
+    "carbs": 66.3,
+    "sugar": 0.8,
+    "salt": 0
   },
   {
     "id": 7,
     "name": "Chicken",
     "caloriesCost": 239,
     "defaultQuantity": 150,
-    "categoryId": 2
+    "categoryId": 2,
+    "protein": 27,
+    "fats": 14,
+    "carbs": 0,
+    "sugar": 0,
+    "salt": 0.3
   },
   {
     "id": 8,
     "name": "Spinach",
     "caloriesCost": 23,
     "defaultQuantity": 120,
-    "categoryId": 3
+    "categoryId": 3,
+    "protein": 2.9,
+    "fats": 0.4,
+    "carbs": 3.6,
+    "sugar": 0.4,
+    "salt": 0.08
   },
   {
     "id": 9,

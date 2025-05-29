@@ -1,5 +1,5 @@
 import { type CreateProductRequest, type EditProductRequest } from '@/entities/product';
-import { db, type DbProduct } from '../db';
+import { db, type DbUpdatableProduct, type DbProduct } from '../db';
 
 interface GetProductsRequest {
   pageNumber: number;
@@ -78,6 +78,11 @@ export const create = ({
   caloriesCost,
   defaultQuantity,
   categoryId,
+  protein,
+  fats,
+  carbs,
+  sugar,
+  salt,
 }: CreateProductRequest): CreateProductResult => {
   const category = db.category.findFirst({
     where: {
@@ -107,7 +112,12 @@ export const create = ({
     caloriesCost,
     defaultQuantity,
     categoryId,
-  });
+    protein,
+    fats,
+    carbs,
+    sugar,
+    salt,
+  } satisfies DbProduct);
 
   return { type: 'Success', id };
 };
@@ -116,7 +126,17 @@ type UpdateProductResult = 'Success' | 'CategoryNotFound';
 
 export const update = (
   id: number,
-  { name, caloriesCost, defaultQuantity, categoryId }: EditProductRequest,
+  {
+    name,
+    caloriesCost,
+    defaultQuantity,
+    categoryId,
+    protein,
+    fats,
+    carbs,
+    sugar,
+    salt,
+  }: EditProductRequest,
 ): UpdateProductResult => {
   const category = db.category.findFirst({
     where: {
@@ -137,7 +157,12 @@ export const update = (
       caloriesCost,
       defaultQuantity,
       categoryId,
-    },
+      protein,
+      fats,
+      carbs,
+      sugar,
+      salt,
+    } satisfies DbUpdatableProduct,
   });
 
   return 'Success';

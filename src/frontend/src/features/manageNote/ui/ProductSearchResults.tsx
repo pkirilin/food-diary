@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import { useMemo, type FC, type MouseEventHandler } from 'react';
 import { useAppDispatch } from '@/app/store';
-import { type ProductSelectOption, productApi } from '@/entities/product';
+import { type ProductSelectOption, productApi, productModel } from '@/entities/product';
 import { QUERY_LENGTH_THRESHOLD, searchProductsByName } from '../lib/searchProductsByName';
 import { shouldSuggestAddingNewProduct } from '../lib/shouldSuggestAddingNewProduct';
 import { actions } from '../model';
@@ -45,10 +45,8 @@ export const ProductSearchResults: FC<Props> = ({ query }) => {
   const handleAddProduct: MouseEventHandler = () =>
     dispatch(
       actions.productDraftCreated({
+        ...productModel.EMPTY_FORM_VALUES,
         name: query,
-        defaultQuantity: 100,
-        caloriesCost: 100,
-        category: null,
       }),
     );
 

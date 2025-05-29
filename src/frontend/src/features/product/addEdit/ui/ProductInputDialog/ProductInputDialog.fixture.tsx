@@ -48,15 +48,25 @@ class ProductInputDialogBuilder {
 
   withProduct({
     name = '',
-    caloriesCost = 100,
+    calories = 100,
     defaultQuantity = 100,
     category = this._categories[0],
+    protein = null,
+    fats = null,
+    carbs = null,
+    sugar = null,
+    salt = null,
   }: Partial<productModel.ProductFormValues>): this {
     this._product = {
       name,
-      caloriesCost,
+      calories,
       defaultQuantity,
       category,
+      protein,
+      fats,
+      carbs,
+      sugar,
+      salt,
     };
     return this;
   }
@@ -81,9 +91,9 @@ export const whenProductNameChanged = async (user: UserEvent, name: string): Pro
   await user.type(screen.getByRole('textbox', { name: /name/i }), name);
 };
 
-export const whenCaloriesCostChanged = async (user: UserEvent, cost: string): Promise<void> => {
-  await user.clear(screen.getByPlaceholderText(/calories cost/i));
-  await user.type(screen.getByPlaceholderText(/calories cost/i), cost);
+export const whenCaloriesChanged = async (user: UserEvent, cost: string): Promise<void> => {
+  await user.clear(screen.getByPlaceholderText(/calories/i));
+  await user.type(screen.getByPlaceholderText(/calories/i), cost);
 };
 
 export const whenDefaultQuantityChanged = async (
@@ -97,6 +107,35 @@ export const whenDefaultQuantityChanged = async (
 export const whenCategorySelected = async (user: UserEvent, name: RegExp): Promise<void> => {
   await user.click(screen.getByRole('combobox', { name: /category/i }));
   await user.click(screen.getByRole('option', { name }));
+};
+
+export const whenNutritionComponentsPanelExpanded = async (user: UserEvent): Promise<void> => {
+  await user.click(screen.getByRole('button', { name: /nutrition/i }));
+};
+
+export const whenProteinChanged = async (user: UserEvent, protein: string): Promise<void> => {
+  await user.clear(screen.getByPlaceholderText(/protein/i));
+  await user.type(screen.getByPlaceholderText(/protein/i), protein);
+};
+
+export const whenFatsChanged = async (user: UserEvent, fats: string): Promise<void> => {
+  await user.clear(screen.getByPlaceholderText(/fats/i));
+  await user.type(screen.getByPlaceholderText(/fats/i), fats);
+};
+
+export const whenCarbsChanged = async (user: UserEvent, carbs: string): Promise<void> => {
+  await user.clear(screen.getByPlaceholderText(/carbs/i));
+  await user.type(screen.getByPlaceholderText(/carbs/i), carbs);
+};
+
+export const whenSugarChanged = async (user: UserEvent, sugar: string): Promise<void> => {
+  await user.clear(screen.getByPlaceholderText(/sugar/i));
+  await user.type(screen.getByPlaceholderText(/sugar/i), sugar);
+};
+
+export const whenSaltChanged = async (user: UserEvent, salt: string): Promise<void> => {
+  await user.clear(screen.getByPlaceholderText(/salt/i));
+  await user.type(screen.getByPlaceholderText(/salt/i), salt);
 };
 
 export const whenCategoryCleared = async (user: UserEvent): Promise<void> => {
@@ -133,12 +172,12 @@ export const thenProductNameHasValue = async (value: string): Promise<void> => {
   expect(screen.getByPlaceholderText(/product name/i)).toHaveValue(value);
 };
 
-export const thenCaloriesCostIsInvalid = async (): Promise<void> => {
-  expect(screen.getByPlaceholderText(/calories cost/i)).toBeInvalid();
+export const thenCaloriesIsInvalid = async (): Promise<void> => {
+  expect(screen.getByPlaceholderText(/calories/i)).toBeInvalid();
 };
 
-export const thenCaloriesCostHasValue = async (value: number): Promise<void> => {
-  expect(screen.getByPlaceholderText(/calories cost/i)).toHaveValue(value.toString());
+export const thenCaloriesHasValue = async (value: number): Promise<void> => {
+  expect(screen.getByPlaceholderText(/calories/i)).toHaveValue(value.toString());
 };
 
 export const thenDefaultQuantityIsInvalid = async (): Promise<void> => {

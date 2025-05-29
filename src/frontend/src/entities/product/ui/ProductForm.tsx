@@ -1,9 +1,22 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Autocomplete, CircularProgress, InputAdornment, TextField } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Autocomplete,
+  CircularProgress,
+  Grid2,
+  InputAdornment,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { useEffect, type FC } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { type SelectOption } from '@/shared/types';
 import { type ProductFormValues, productSchema } from '../model';
+import { NutritionComponentIcon } from './NutritionComponentIcon';
+import { NutritionComponentInput } from './NutritionComponentInput';
 
 interface Props {
   formId: string;
@@ -53,56 +66,6 @@ export const ProductForm: FC<Props> = ({
         )}
       />
       <Controller
-        name="caloriesCost"
-        control={control}
-        render={({ field, fieldState }) => (
-          <TextField
-            {...field}
-            fullWidth
-            label="Calories cost"
-            placeholder="Calories cost per 100 g, kcal"
-            margin="normal"
-            error={!!fieldState.error}
-            helperText={fieldState.error?.message ?? ' '}
-            onFocus={event => event.target.select()}
-            slotProps={{
-              input: {
-                endAdornment: <InputAdornment position="end">kcal</InputAdornment>,
-              },
-              htmlInput: {
-                type: 'text',
-                inputMode: 'numeric',
-              },
-            }}
-          />
-        )}
-      />
-      <Controller
-        name="defaultQuantity"
-        control={control}
-        render={({ field, fieldState }) => (
-          <TextField
-            {...field}
-            fullWidth
-            label="Default quantity"
-            placeholder="Default quantity, g"
-            margin="normal"
-            error={!!fieldState.error}
-            helperText={fieldState.error?.message ?? ' '}
-            onFocus={event => event.target.select()}
-            slotProps={{
-              input: {
-                endAdornment: <InputAdornment position="end">g</InputAdornment>,
-              },
-              htmlInput: {
-                type: 'text',
-                inputMode: 'numeric',
-              },
-            }}
-          />
-        )}
-      />
-      <Controller
         name="category"
         control={control}
         render={({ field, fieldState }) => (
@@ -136,6 +99,160 @@ export const ProductForm: FC<Props> = ({
           />
         )}
       />
+      <Grid2 container spacing={2}>
+        <Grid2 size={6}>
+          <Controller
+            name="calories"
+            control={control}
+            render={({ field, fieldState }) => (
+              <TextField
+                {...field}
+                fullWidth
+                label="Calories"
+                placeholder="Calories per 100 g, kcal"
+                margin="normal"
+                error={!!fieldState.error}
+                helperText={fieldState.error?.message ?? ' '}
+                onFocus={event => event.target.select()}
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <NutritionComponentIcon type="calories" size="medium" />
+                      </InputAdornment>
+                    ),
+                    endAdornment: <InputAdornment position="end">kcal</InputAdornment>,
+                  },
+                  htmlInput: {
+                    type: 'text',
+                    inputMode: 'numeric',
+                  },
+                }}
+              />
+            )}
+          />
+        </Grid2>
+        <Grid2 size={6}>
+          <Controller
+            name="defaultQuantity"
+            control={control}
+            render={({ field, fieldState }) => (
+              <TextField
+                {...field}
+                fullWidth
+                label="Default quantity"
+                placeholder="Default quantity, g"
+                margin="normal"
+                error={!!fieldState.error}
+                helperText={fieldState.error?.message ?? ' '}
+                onFocus={event => event.target.select()}
+                slotProps={{
+                  input: {
+                    endAdornment: <InputAdornment position="end">g</InputAdornment>,
+                  },
+                  htmlInput: {
+                    type: 'text',
+                    inputMode: 'numeric',
+                  },
+                }}
+              />
+            )}
+          />
+        </Grid2>
+      </Grid2>
+      <Accordion variant="outlined">
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="nutrition-components-panel-content"
+          id="nutrition-components-panel-header"
+        >
+          <Typography component="span">Nutrition</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Grid2 container spacing={2}>
+            <Grid2 size={6}>
+              <Controller
+                name="protein"
+                control={control}
+                render={({ field, fieldState }) => (
+                  <NutritionComponentInput
+                    {...field}
+                    nutritionComponentType="protein"
+                    label="Protein"
+                    placeholder="Protein, g"
+                    error={!!fieldState.error}
+                    helperText={fieldState.error?.message ?? ' '}
+                  />
+                )}
+              />
+            </Grid2>
+            <Grid2 size={6}>
+              <Controller
+                name="fats"
+                control={control}
+                render={({ field, fieldState }) => (
+                  <NutritionComponentInput
+                    {...field}
+                    nutritionComponentType="fats"
+                    label="Fats"
+                    placeholder="Fats, g"
+                    error={!!fieldState.error}
+                    helperText={fieldState.error?.message ?? ' '}
+                  />
+                )}
+              />
+            </Grid2>
+            <Grid2 size={6}>
+              <Controller
+                name="carbs"
+                control={control}
+                render={({ field, fieldState }) => (
+                  <NutritionComponentInput
+                    {...field}
+                    nutritionComponentType="carbs"
+                    label="Carbs"
+                    placeholder="Carbs, g"
+                    error={!!fieldState.error}
+                    helperText={fieldState.error?.message ?? ' '}
+                  />
+                )}
+              />
+            </Grid2>
+            <Grid2 size={6}>
+              <Controller
+                name="sugar"
+                control={control}
+                render={({ field, fieldState }) => (
+                  <NutritionComponentInput
+                    {...field}
+                    nutritionComponentType="sugar"
+                    label="Sugar"
+                    placeholder="Sugar, g"
+                    error={!!fieldState.error}
+                    helperText={fieldState.error?.message ?? ' '}
+                  />
+                )}
+              />
+            </Grid2>
+            <Grid2 size={6}>
+              <Controller
+                name="salt"
+                control={control}
+                render={({ field, fieldState }) => (
+                  <NutritionComponentInput
+                    {...field}
+                    nutritionComponentType="salt"
+                    label="Salt"
+                    placeholder="Salt, g"
+                    error={!!fieldState.error}
+                    helperText={fieldState.error?.message ?? ' '}
+                  />
+                )}
+              />
+            </Grid2>
+          </Grid2>
+        </AccordionDetails>
+      </Accordion>
     </form>
   );
 };
