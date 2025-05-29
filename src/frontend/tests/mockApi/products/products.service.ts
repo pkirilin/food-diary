@@ -1,5 +1,5 @@
 import { type CreateProductRequest, type EditProductRequest } from '@/entities/product';
-import { db, type DbProduct } from '../db';
+import { db, type DbUpdatableProduct, type DbProduct } from '../db';
 
 interface GetProductsRequest {
   pageNumber: number;
@@ -79,6 +79,10 @@ export const create = ({
   defaultQuantity,
   categoryId,
   protein,
+  fats,
+  carbs,
+  sugar,
+  salt,
 }: CreateProductRequest): CreateProductResult => {
   const category = db.category.findFirst({
     where: {
@@ -102,7 +106,6 @@ export const create = ({
 
   const id = maxId + 1;
 
-  // TODO: show error when property is missing
   db.product.create({
     id,
     name,
@@ -110,7 +113,11 @@ export const create = ({
     defaultQuantity,
     categoryId,
     protein,
-  });
+    fats,
+    carbs,
+    sugar,
+    salt,
+  } satisfies DbProduct);
 
   return { type: 'Success', id };
 };
@@ -119,7 +126,17 @@ type UpdateProductResult = 'Success' | 'CategoryNotFound';
 
 export const update = (
   id: number,
-  { name, caloriesCost, defaultQuantity, categoryId, protein }: EditProductRequest,
+  {
+    name,
+    caloriesCost,
+    defaultQuantity,
+    categoryId,
+    protein,
+    fats,
+    carbs,
+    sugar,
+    salt,
+  }: EditProductRequest,
 ): UpdateProductResult => {
   const category = db.category.findFirst({
     where: {
@@ -135,14 +152,17 @@ export const update = (
     where: {
       id: { equals: id },
     },
-    // TODO: show error when property is missing
     data: {
       name,
       caloriesCost,
       defaultQuantity,
       categoryId,
       protein,
-    },
+      fats,
+      carbs,
+      sugar,
+      salt,
+    } satisfies DbUpdatableProduct,
   });
 
   return 'Success';
