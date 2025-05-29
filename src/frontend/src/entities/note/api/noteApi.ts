@@ -17,7 +17,7 @@ export const noteApi = api.injectEndpoints({
       query: ({ date }) => `/api/v1/notes?date=${date}`,
       providesTags: ['note'],
       transformResponse: ({ notes }: GetNotesResponse) =>
-        notes.reduce((groups: GetNotesByMealsResponse, note) => {
+        notes.reduce((groups, note) => {
           groups[note.mealType].push(note);
           return groups;
         }, createEmptyGetNotesByMealsResponse()),
