@@ -1,6 +1,6 @@
-import { nutrientQuantitySchema } from './nutrientQuantitySchema';
+import { NutritionComponentQuantitySchema } from './NutritionComponentQuantitySchema';
 
-describe('nutrientQuantitySchema', () => {
+describe('NutritionComponentQuantitySchema', () => {
   test.each([
     [null, null],
     ['', null],
@@ -13,7 +13,7 @@ describe('nutrientQuantitySchema', () => {
     ['1,1', 1.1],
     ['1.23', 1.23],
   ])('should parse "%s" to %s', (input, expected) => {
-    const { success, data } = nutrientQuantitySchema.safeParse(input);
+    const { success, data } = NutritionComponentQuantitySchema.safeParse(input);
 
     expect(success).toBeTruthy();
     expect(data).toBe(expected);
@@ -22,7 +22,7 @@ describe('nutrientQuantitySchema', () => {
   test.each(['-1', '100500', '1.', 'x1,5', '1.5x', '1.1.1', '1,1,1', '1.234', '1,234'])(
     'should show error for "%s"',
     input => {
-      const { success } = nutrientQuantitySchema.safeParse(input);
+      const { success } = NutritionComponentQuantitySchema.safeParse(input);
 
       expect(success).toBeFalsy();
     },

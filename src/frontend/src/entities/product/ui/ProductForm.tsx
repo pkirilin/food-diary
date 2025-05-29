@@ -15,8 +15,8 @@ import { useEffect, type FC } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { type SelectOption } from '@/shared/types';
 import { type ProductFormValues, productSchema } from '../model';
-import { NutrientIcon } from './NutrientIcon';
-import { NutrientInput } from './NutrientInput';
+import { NutritionComponentIcon } from './NutritionComponentIcon';
+import { NutritionComponentInput } from './NutritionComponentInput';
 
 interface Props {
   formId: string;
@@ -118,7 +118,7 @@ export const ProductForm: FC<Props> = ({
                   input: {
                     startAdornment: (
                       <InputAdornment position="start">
-                        <NutrientIcon type="calories" size="medium" />
+                        <NutritionComponentIcon type="calories" size="medium" />
                       </InputAdornment>
                     ),
                     endAdornment: <InputAdornment position="end">kcal</InputAdornment>,
@@ -163,10 +163,10 @@ export const ProductForm: FC<Props> = ({
       <Accordion variant="outlined">
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
-          aria-controls="nutrients-panel-content"
-          id="nutrients-panel-header"
+          aria-controls="nutrition-components-panel-content"
+          id="nutrition-components-panel-header"
         >
-          <Typography component="span">Nutrients per 100 g</Typography>
+          <Typography component="span">Nutrition</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <Grid2 container spacing={2}>
@@ -175,9 +175,9 @@ export const ProductForm: FC<Props> = ({
                 name="protein"
                 control={control}
                 render={({ field, fieldState }) => (
-                  <NutrientInput
+                  <NutritionComponentInput
                     {...field}
-                    nutrientType="protein"
+                    nutritionComponentType="protein"
                     label="Protein"
                     placeholder="Protein, g"
                     error={!!fieldState.error}
@@ -191,9 +191,9 @@ export const ProductForm: FC<Props> = ({
                 name="fats"
                 control={control}
                 render={({ field, fieldState }) => (
-                  <NutrientInput
+                  <NutritionComponentInput
                     {...field}
-                    nutrientType="fats"
+                    nutritionComponentType="fats"
                     label="Fats"
                     placeholder="Fats, g"
                     error={!!fieldState.error}
@@ -207,9 +207,9 @@ export const ProductForm: FC<Props> = ({
                 name="carbs"
                 control={control}
                 render={({ field, fieldState }) => (
-                  <NutrientInput
+                  <NutritionComponentInput
                     {...field}
-                    nutrientType="carbs"
+                    nutritionComponentType="carbs"
                     label="Carbs"
                     placeholder="Carbs, g"
                     error={!!fieldState.error}
@@ -223,9 +223,9 @@ export const ProductForm: FC<Props> = ({
                 name="sugar"
                 control={control}
                 render={({ field, fieldState }) => (
-                  <NutrientInput
+                  <NutritionComponentInput
                     {...field}
-                    nutrientType="sugar"
+                    nutritionComponentType="sugar"
                     label="Sugar"
                     placeholder="Sugar, g"
                     error={!!fieldState.error}
@@ -239,9 +239,9 @@ export const ProductForm: FC<Props> = ({
                 name="salt"
                 control={control}
                 render={({ field, fieldState }) => (
-                  <NutrientInput
+                  <NutritionComponentInput
                     {...field}
-                    nutrientType="salt"
+                    nutritionComponentType="salt"
                     label="Salt"
                     placeholder="Salt, g"
                     error={!!fieldState.error}

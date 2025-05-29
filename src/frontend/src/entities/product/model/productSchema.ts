@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { quantitySchema } from '@/shared/lib';
-import { nutrientQuantitySchema } from './nutrientQuantitySchema';
+import { NutritionComponentQuantitySchema } from './NutritionComponentQuantitySchema';
 
 export const productSchema = z.object({
   id: z.number().optional(),
@@ -14,11 +14,11 @@ export const productSchema = z.object({
     .nullable()
     .refine(category => category !== null, { message: 'Category is required' }),
   calories: z.coerce.number().int().min(1).max(1000),
-  protein: nutrientQuantitySchema,
-  fats: nutrientQuantitySchema,
-  carbs: nutrientQuantitySchema,
-  sugar: nutrientQuantitySchema,
-  salt: nutrientQuantitySchema,
+  protein: NutritionComponentQuantitySchema,
+  fats: NutritionComponentQuantitySchema,
+  carbs: NutritionComponentQuantitySchema,
+  sugar: NutritionComponentQuantitySchema,
+  salt: NutritionComponentQuantitySchema,
 });
 
 export type ProductFormValues = z.infer<typeof productSchema>;

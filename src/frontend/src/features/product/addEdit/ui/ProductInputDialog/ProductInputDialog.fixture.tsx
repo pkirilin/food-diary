@@ -109,8 +109,8 @@ export const whenCategorySelected = async (user: UserEvent, name: RegExp): Promi
   await user.click(screen.getByRole('option', { name }));
 };
 
-export const whenNutrientsPanelExpanded = async (user: UserEvent): Promise<void> => {
-  await user.click(screen.getByRole('button', { name: /nutrients per 100 g/i }));
+export const whenNutritionComponentsPanelExpanded = async (user: UserEvent): Promise<void> => {
+  await user.click(screen.getByRole('button', { name: /nutrition/i }));
 };
 
 export const whenProteinChanged = async (user: UserEvent, protein: string): Promise<void> => {
