@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -15,28 +14,6 @@ using Microsoft.Extensions.Logging;
 using RecognizeNoteResult = FoodDiary.Application.Result<FoodDiary.Application.Notes.Recognize.RecognizeNoteResponse>;
 
 namespace FoodDiary.Application.Notes.Recognize;
-
-public class FoodItemOnTheImage
-{
-    [Description("Product name, e.g. Bread. Always start with a uppercase letter, avoid CAPS")]
-    public required string Name { get; init; }
-
-    [Description("Product quantity in grams, e.g. 50")]
-    public required int Quantity { get; init; } = 100;
-
-    [Description("Product calories cost in kilocalories per 100 grams of quantity, e.g. 125")]
-    public required int CaloriesCost { get; init; } = 100;
-    
-    [Description("Product brand name, e.g. Nestle")]
-    public string? BrandName { get; init; }
-}
-
-public enum ObjectTypeOnImage
-{
-    NotAFood,
-    PackagedFoodWithLabel,
-    OtherFood
-}
 
 public record RecognizeNoteRequest(IReadOnlyList<IFormFile> Files) : IRequest<RecognizeNoteResult>;
 
@@ -123,7 +100,7 @@ internal class RecognizeNoteRequestHandler(
         {
             ObjectTypeOnImage.NotAFood => string.Empty,
             ObjectTypeOnImage.PackagedFoodWithLabel =>
-                "Analyze the label text and output product name, quantity (weight), and energy value. Be precise and always stick to the label text. Keep the original language from the label",
+                "Analyze the label text and output product name, quantity (weight), energy, and nutritional values. Be precise and always stick to the label text. Keep the original language from the label",
             ObjectTypeOnImage.OtherFood =>
                 "Analyze the food on this image and output product name in standard English. Try to be specific and precise. Avoid generic names",
             _ => throw new ArgumentOutOfRangeException(nameof(objectType), objectType, null)

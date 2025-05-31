@@ -50,6 +50,11 @@ export interface UpdateNoteRequest {
 export interface RecognizeProductItem {
   name: string;
   caloriesCost: number;
+  protein: number | null;
+  fats: number | null;
+  carbs: number | null;
+  sugar: number | null;
+  salt: number | null;
 }
 
 export interface RecognizeNoteItem {

@@ -35,7 +35,7 @@ export const ProductForm: FC<Props> = ({
   categoriesLoading,
   onSubmit,
 }) => {
-  const { control, handleSubmit, setValue } = useForm<ProductFormValues>({
+  const { control, handleSubmit, setValue, getValues } = useForm<ProductFormValues>({
     mode: 'onSubmit',
     resolver: zodResolver(productSchema),
     defaultValues,
@@ -46,6 +46,14 @@ export const ProductForm: FC<Props> = ({
       setValue('category', categories[0], { shouldValidate: true });
     }
   }, [categories, setValue]);
+
+  const atLeastOneNutritionFieldHasValue = getValues([
+    'protein',
+    'fats',
+    'carbs',
+    'sugar',
+    'salt',
+  ]).some(value => value !== null);
 
   return (
     <form id={formId} onSubmit={handleSubmit(data => onSubmit(data))}>
@@ -160,7 +168,7 @@ export const ProductForm: FC<Props> = ({
           />
         </Grid2>
       </Grid2>
-      <Accordion variant="outlined">
+      <Accordion variant="outlined" defaultExpanded={atLeastOneNutritionFieldHasValue}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="nutrition-components-panel-content"

@@ -108,6 +108,11 @@ export const handlers: HttpHandler[] = [
         product: {
           name: file instanceof File ? file.name : '',
           caloriesCost: Math.floor(Math.random() * 100) + 50,
+          protein: 12.3,
+          fats: 5.67,
+          carbs: 21,
+          sugar: null,
+          salt: 0.1,
         },
         quantity: Math.floor(Math.random() * 100) + 50,
       })),

@@ -64,20 +64,21 @@ export const ProductSearchResultsOnImage: FC<Props> = ({ image }) => {
     return <Alert severity="warning">No food found on your image</Alert>;
   }
 
-  const productName = note.product.name.trim();
+  const { product, quantity } = note;
+  const productName = product.name.trim();
 
   const handleAddProduct: MouseEventHandler = () =>
     dispatch(
       actions.productDraftCreated({
         name: productName,
-        defaultQuantity: note.quantity,
-        calories: note.product.caloriesCost,
+        defaultQuantity: quantity,
         category: null,
-        protein: null,
-        fats: null,
-        carbs: null,
-        sugar: null,
-        salt: null,
+        calories: product.caloriesCost,
+        protein: product.protein,
+        fats: product.fats,
+        carbs: product.carbs,
+        sugar: product.sugar,
+        salt: product.salt,
       }),
     );
 
