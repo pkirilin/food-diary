@@ -165,15 +165,20 @@ public class NotesApiContext(
         return Task.CompletedTask;
     }
     
-    public async Task Then_note_is_successfully_recognized_as(FoodItemOnTheImage food)
+    public async Task Then_note_is_successfully_recognized_as(Product product, int quantity)
     {
         var response = await _recognizeNoteResponse.Content.ReadFromJsonAsync<RecognizeNoteResponse>();
-        var note = response?.Notes[0];
-        note?.Product.Name.Should()
-            .Contain(food.Name).And
-            .Contain(food.BrandName);
-        note?.Product.CaloriesCost.Should().Be(food.CaloriesCost);
-        note?.Quantity.Should().Be(food.Quantity);
+        var recognizedNote = response?.Notes[0];
+
+        recognizedNote.Should().NotBeNull();
+        recognizedNote!.Quantity.Should().Be(quantity);
+        recognizedNote.Product.Name.Should().Be(product.Name);
+        recognizedNote.Product.CaloriesCost.Should().Be(product.CaloriesCost);
+        recognizedNote.Product.Protein.Should().Be(product.Protein);
+        recognizedNote.Product.Fats.Should().Be(product.Fats);
+        recognizedNote.Product.Carbs.Should().Be(product.Carbs);
+        recognizedNote.Product.Sugar.Should().Be(product.Sugar);
+        recognizedNote.Product.Salt.Should().Be(product.Salt);
     }
 
     public async Task Then_recognize_note_response_returns_error(HttpStatusCode statusCode)

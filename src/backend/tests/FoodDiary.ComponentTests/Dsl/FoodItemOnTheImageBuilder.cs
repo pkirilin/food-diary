@@ -5,25 +5,40 @@ namespace FoodDiary.ComponentTests.Dsl;
 public class FoodItemOnTheImageBuilder
 {
     private string _name = string.Empty;
-    private int _caloriesCost = 100;
+    private int _calories = 100;
     private int _quantity = 100;
     private string? _brandName;
+    private decimal? _protein;
+    private decimal? _fats;
+    private decimal? _carbs;
+    private decimal? _sugar;
+    private decimal? _salt;
     
     public FoodItemOnTheImage Please()
     {
         return new FoodItemOnTheImage
         {
             Name = _name,
-            CaloriesCost = _caloriesCost,
+            Calories = _calories,
             Quantity = _quantity,
-            BrandName = _brandName
+            BrandName = _brandName,
+            Protein = _protein,
+            Fats = _fats,
+            Carbs = _carbs,
+            Sugar = _sugar,
+            Salt = _salt
         };
     }
     
-    public FoodItemOnTheImageBuilder WithProduct(string name, int caloriesCost)
+    public FoodItemOnTheImageBuilder WithProduct(string name)
     {
         _name = name;
-        _caloriesCost = caloriesCost;
+        return this;
+    }
+    
+    public FoodItemOnTheImageBuilder WithCalories(int calories)
+    {
+        _calories = calories;
         return this;
     }
     
@@ -36,6 +51,21 @@ public class FoodItemOnTheImageBuilder
     public FoodItemOnTheImageBuilder WithBrandName(string? brandName)
     {
         _brandName = brandName;
+        return this;
+    }
+    
+    public FoodItemOnTheImageBuilder WithNutritionComponents(
+        decimal? protein,
+        decimal? fats,
+        decimal? carbs,
+        decimal? sugar,
+        decimal? salt)
+    {
+        _protein = protein;
+        _fats = fats;
+        _carbs = carbs;
+        _sugar = sugar;
+        _salt = salt;
         return this;
     } 
 }

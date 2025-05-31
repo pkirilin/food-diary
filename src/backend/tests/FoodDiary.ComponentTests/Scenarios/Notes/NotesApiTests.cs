@@ -110,18 +110,28 @@ public class NotesApiTests(InfrastructureFixture infrastructure) : BaseTest<Note
     [Scenario]
     public Task I_can_recognize_notes_by_photo()
     {
-        var orange = Create.FoodItemOnTheImage()
-            .WithProduct("Orange", caloriesCost: 50)
+        var givenFood = Create.FoodItemOnTheImage()
+            .WithProduct("Orange")
+            .WithCalories(50)
             .WithQuantity(400)
             .WithBrandName("Green Village")
+            .WithNutritionComponents(protein: 0.12m, fats: 0.234m, carbs: 10, sugar: 2, salt: 0.367m)
             .Please();
+        
+        var recognizedProduct = Create.Product()
+            .WithName("Orange (Green Village)")
+            .WithCalories(50)
+            .WithNutritionComponents(protein: 0.12m, fats: 0.23m, carbs: 10, sugar: 2, salt: 0.37m)
+            .Please();
+        
+        const int recognizedQuantity = 400;
         
         return CtxRunner.RunScenarioAsync(
             c => c.Given_OpenAI_api_is_ready(),
-            c => c.Given_OpenAI_api_can_recognize_food(orange),
+            c => c.Given_OpenAI_api_can_recognize_food(givenFood),
             c => c.Given_authenticated_user(),
             c => c.When_user_uploads_file_for_note_recognition("recognizeNoteSamplePhoto.png"),
-            c => c.Then_note_is_successfully_recognized_as(orange));
+            c => c.Then_note_is_successfully_recognized_as(recognizedProduct, recognizedQuantity));
     }
     
     [Scenario]
