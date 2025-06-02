@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using ImageMagick;
@@ -61,7 +60,6 @@ internal class RecognizeNoteRequestHandler(
 
         var chatResponse = await chatClient.GetResponseAsync<FoodItemOnTheImage>(
             messages: [systemMessage, userMessage],
-            JsonSerializerOptions.Web,
             options: ChatOptions,
             cancellationToken: cancellationToken);
 
