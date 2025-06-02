@@ -20,6 +20,7 @@
     <ProjectReference Include="..\FoodDiary.Application\FoodDiary.Application.csproj" />
     <ProjectReference Include="..\FoodDiary.Constants\FoodDiary.Constants.csproj" />
     <ProjectReference Include="..\FoodDiary.Infrastructure\FoodDiary.Infrastructure.csproj" />
+    <ProjectReference Include="..\FoodDiary.Integrations.Anthropic\FoodDiary.Integrations.Anthropic.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MediatR" Version="10.0.1" />

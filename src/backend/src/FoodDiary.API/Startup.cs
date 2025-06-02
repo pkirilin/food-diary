@@ -10,6 +10,7 @@ using FoodDiary.Application.Extensions;
 using FoodDiary.Configuration;
 using FoodDiary.Configuration.Extensions;
 using FoodDiary.Infrastructure.Extensions;
+using FoodDiary.Integrations.Anthropic.Extensions;
 using FoodDiary.Integrations.OpenAI.Extensions;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Builder;
@@ -119,6 +120,7 @@ public class Startup
         
         services.AddInfrastructure();
         services.AddOpenAIIntegration(_configuration);
+        services.AddAnthropicIntegration(_configuration);
 
         services.AddRepositories();
         services.AddUtils();
