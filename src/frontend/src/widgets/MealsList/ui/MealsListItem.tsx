@@ -1,26 +1,14 @@
-import {
-  Box,
-  ListItem,
-  Paper,
-  Stack,
-  Typography,
-  type TypographyProps,
-  styled,
-} from '@mui/material';
+import { ListItem, Stack, Typography, Card, CardContent, CardActions } from '@mui/material';
 import { type FC } from 'react';
 import { noteApi, noteLib, noteModel } from '@/entities/note';
+import { NutritionComponentLabel } from '@/entities/product';
+import { AddNoteButton } from '@/features/manageNote';
 import { NotesList } from './NotesList';
 
 interface Props {
   date: string;
   mealType: noteModel.MealType;
 }
-
-const TextStyled = styled(Typography)<TypographyProps>(({ theme }) => ({
-  ...theme.typography.body1,
-  fontWeight: theme.typography.fontWeightBold,
-  color: theme.palette.text.secondary,
-}));
 
 export const MealsListItem: FC<Props> = ({ date, mealType }) => {
   const { totalCalories } = noteApi.useNotesQuery(
@@ -40,27 +28,25 @@ export const MealsListItem: FC<Props> = ({ date, mealType }) => {
       disablePadding
       aria-label={`${mealName}, ${totalCalories} kilocalories`}
     >
-      <Box
-        sx={{
-          width: '100%',
-        }}
-      >
-        <Stack
-          direction="row"
-          spacing={2}
-          sx={{
-            justifyContent: 'space-between',
-            mt: 2,
-            mb: 3,
-          }}
-        >
-          <TextStyled component="h2">{mealName}</TextStyled>
-          <TextStyled component="span">{`${totalCalories} kcal`}</TextStyled>
+      <Stack width="100%">
+        <Stack direction="row" justifyContent="space-between" spacing={1} p={2}>
+          <Typography fontWeight="bold">{mealName}</Typography>
+          <NutritionComponentLabel
+            nutritionComponentType="calories"
+            value={totalCalories}
+            size="medium"
+            bold
+          />
         </Stack>
-        <Paper component="section">
-          <NotesList date={date} mealType={mealType} />
-        </Paper>
-      </Box>
+        <Card sx={{ minWidth: '100%' }}>
+          <CardContent sx={{ padding: 0 }}>
+            <NotesList date={date} mealType={mealType} />
+          </CardContent>
+          <CardActions>
+            <AddNoteButton date={date} mealType={mealType} />
+          </CardActions>
+        </Card>
+      </Stack>
     </ListItem>
   );
 };

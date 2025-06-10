@@ -2,7 +2,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { IconButton, ListItemButton, ListItemText, Stack, Collapse, Button } from '@mui/material';
+import { ListItemButton, ListItemText, Stack, Collapse, Button } from '@mui/material';
 import { useState, type FC, type MouseEventHandler } from 'react';
 import { type NoteItem } from '@/entities/note';
 import { NutritionComponentLabel } from '@/entities/product/ui/NutritionComponentLabel';
@@ -25,10 +25,12 @@ export const NotesListItem: FC<Props> = ({ note }) => {
       <ListItemButton onClick={handleExpandToggle}>
         <ListItemText primary={note.productName} secondary={`${note.productQuantity} g`} />
         <Stack direction="row" spacing={1} alignItems="center">
-          <NutritionComponentLabel nutritionComponentType="calories" value={note.calories} />
-          <IconButton onClick={handleExpandToggle}>
-            {expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-          </IconButton>
+          <NutritionComponentLabel
+            nutritionComponentType="calories"
+            value={note.calories}
+            size="small"
+          />
+          {expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
         </Stack>
       </ListItemButton>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
