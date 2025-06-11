@@ -7,6 +7,7 @@ import { MSW_ENABLED } from '@/shared/config';
 import { dateLib } from '@/shared/lib';
 import { MealsList, MealsListTotalCalories } from '@/widgets/MealsList';
 import { type NavigationLoaderData } from '@/widgets/Navigation';
+import { NutritionSummaryWidget } from '@/widgets/NutritionSummaryWidget';
 
 interface LoaderData extends NavigationLoaderData {
   date: string;
@@ -38,5 +39,10 @@ export const loader: LoaderFunction = async ({ request }) => {
 export const Component: FC = () => {
   const { date } = useLoaderData() as LoaderData;
 
-  return <MealsList date={date} />;
+  return (
+    <>
+      <NutritionSummaryWidget />
+      <MealsList date={date} />
+    </>
+  );
 };

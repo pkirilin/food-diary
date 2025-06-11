@@ -185,7 +185,7 @@ export const ProductForm: FC<Props> = ({
                 render={({ field, fieldState }) => (
                   <NutritionComponentInput
                     {...field}
-                    nutritionComponentType="protein"
+                    type="protein"
                     label="Protein"
                     placeholder="Protein, g"
                     error={!!fieldState.error}
@@ -201,7 +201,7 @@ export const ProductForm: FC<Props> = ({
                 render={({ field, fieldState }) => (
                   <NutritionComponentInput
                     {...field}
-                    nutritionComponentType="fats"
+                    type="fats"
                     label="Fats"
                     placeholder="Fats, g"
                     error={!!fieldState.error}
@@ -217,7 +217,7 @@ export const ProductForm: FC<Props> = ({
                 render={({ field, fieldState }) => (
                   <NutritionComponentInput
                     {...field}
-                    nutritionComponentType="carbs"
+                    type="carbs"
                     label="Carbs"
                     placeholder="Carbs, g"
                     error={!!fieldState.error}
@@ -233,7 +233,7 @@ export const ProductForm: FC<Props> = ({
                 render={({ field, fieldState }) => (
                   <NutritionComponentInput
                     {...field}
-                    nutritionComponentType="sugar"
+                    type="sugar"
                     label="Sugar"
                     placeholder="Sugar, g"
                     error={!!fieldState.error}
@@ -249,7 +249,7 @@ export const ProductForm: FC<Props> = ({
                 render={({ field, fieldState }) => (
                   <NutritionComponentInput
                     {...field}
-                    nutritionComponentType="salt"
+                    type="salt"
                     label="Salt"
                     placeholder="Salt, g"
                     error={!!fieldState.error}

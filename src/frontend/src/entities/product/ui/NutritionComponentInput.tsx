@@ -6,7 +6,7 @@ import { NutritionComponentIcon } from './NutritionComponentIcon';
 interface Props {
   label: string;
   placeholder: string;
-  nutritionComponentType: NutritionComponent;
+  type: NutritionComponent;
   value: number | null;
   error: boolean;
   helperText: string;
@@ -14,7 +14,7 @@ interface Props {
 }
 
 export const NutritionComponentInput = forwardRef<HTMLDivElement | null, Props>(
-  ({ label, placeholder, nutritionComponentType, value, ...props }, ref) => (
+  ({ label, placeholder, type, value, ...props }, ref) => (
     <TextField
       {...props}
       ref={ref}
@@ -29,7 +29,7 @@ export const NutritionComponentInput = forwardRef<HTMLDivElement | null, Props>(
         input: {
           startAdornment: (
             <InputAdornment position="start">
-              <NutritionComponentIcon type={nutritionComponentType} />
+              <NutritionComponentIcon type={type} />
             </InputAdornment>
           ),
           endAdornment: <InputAdornment position="end">g</InputAdornment>,

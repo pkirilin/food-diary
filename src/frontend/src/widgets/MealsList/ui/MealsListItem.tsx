@@ -29,7 +29,7 @@ export const MealsListItem: FC<Props> = ({ date, mealType }) => {
       aria-label={`${mealName}, ${totalCalories} kilocalories`}
     >
       <Stack width="100%">
-        <Stack direction="row" justifyContent="space-between" spacing={1} p={2}>
+        <Stack direction="row" justifyContent="space-between" spacing={1} py={2}>
           <Typography fontWeight="bold">{mealName}</Typography>
           <NutritionComponentLabel
             nutritionComponentType="calories"
