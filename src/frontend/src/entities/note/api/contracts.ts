@@ -18,6 +18,19 @@ export interface NoteItem {
   productQuantity: number;
   productDefaultQuantity: number;
   calories: number;
+  product: Product;
+}
+
+interface Product {
+  id: number;
+  name: string;
+  defaultQuantity: number;
+  calories: number;
+  protein: number | null;
+  fats: number | null;
+  carbs: number | null;
+  sugar: number | null;
+  salt: number | null;
 }
 
 export interface GetNotesHistoryRequest {

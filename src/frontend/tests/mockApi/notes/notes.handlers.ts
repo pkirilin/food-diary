@@ -37,6 +37,17 @@ export const handlers: HttpHandler[] = [
           productQuantity: quantity,
           productDefaultQuantity: product?.defaultQuantity ?? 0,
           calories: notesService.calculateCalories(quantity, product?.caloriesCost ?? 0),
+          product: {
+            id: product?.id ?? 0,
+            name: product?.name ?? '',
+            defaultQuantity: product?.defaultQuantity ?? 0,
+            calories: product?.caloriesCost ?? 0,
+            protein: product?.protein ?? null,
+            fats: product?.fats ?? null,
+            carbs: product?.carbs ?? null,
+            sugar: product?.sugar ?? null,
+            salt: product?.salt ?? null,
+          },
         };
       },
     );
