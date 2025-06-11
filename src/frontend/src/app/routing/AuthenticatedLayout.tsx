@@ -75,9 +75,7 @@ export const Component: FC = () => {
         />
       </AppBar>
       <UpdateAppBanner withAppBar />
-      <Container sx={{ py: { xs: 2, md: 3 } }}>
-        <Outlet />
-      </Container>
+      <Outlet />
     </>
   );
 };

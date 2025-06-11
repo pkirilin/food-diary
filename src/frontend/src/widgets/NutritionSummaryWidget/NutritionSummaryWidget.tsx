@@ -1,17 +1,37 @@
-import { Stack, Typography } from '@mui/material';
+import { Box, Container, Stack, Typography, useScrollTrigger } from '@mui/material';
 import { type FC } from 'react';
 import { NutritionComponentIcon } from '@/entities/product/ui/NutritionComponentIcon';
+import { APP_BAR_HEIGHT_SM, APP_BAR_HEIGHT_XS } from '@/shared/constants';
 
-export const NutritionSummaryWidget: FC = () => (
-  <Stack direction="row" spacing={1} justifyContent="space-between" pb={1}>
-    <Stack direction="row" spacing={1} alignItems="center">
-      <NutritionComponentIcon type="calories" size="medium" />
-      <Typography variant="h6" component="span" fontWeight="bold">
-        Calories
-      </Typography>
-    </Stack>
-    <Typography variant="h6" component="span" fontWeight="bold">
-      1234 kcal
-    </Typography>
-  </Stack>
-);
+export const NutritionSummaryWidget: FC = () => {
+  const scrolled = useScrollTrigger();
+
+  return (
+    <Box
+      sx={theme => ({
+        top: APP_BAR_HEIGHT_XS,
+        position: 'sticky',
+        zIndex: 1,
+        backgroundColor: theme.palette.background.paper,
+        boxShadow: scrolled ? theme.shadows[2] : 'none',
+        paddingY: 1,
+
+        [theme.breakpoints.up('sm')]: {
+          top: APP_BAR_HEIGHT_SM,
+        },
+      })}
+    >
+      <Stack component={Container} direction="row" spacing={1} justifyContent="space-between">
+        <Stack direction="row" spacing={1} alignItems="center">
+          <NutritionComponentIcon type="calories" size="medium" />
+          <Typography variant="h6" component="span" fontWeight="bold">
+            Calories
+          </Typography>
+        </Stack>
+        <Typography variant="h6" component="span" fontWeight="bold">
+          1234 kcal
+        </Typography>
+      </Stack>
+    </Box>
+  );
+};

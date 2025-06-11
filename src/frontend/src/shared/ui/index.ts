@@ -6,3 +6,4 @@ export * from './Center';
 export * from './Dialog';
 export * from './AppDialog';
 export * from './LoadingContainer';
+export * from './PageContainer';

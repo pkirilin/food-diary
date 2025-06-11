@@ -5,6 +5,7 @@ import { noteApi } from '@/entities/note';
 import { SelectDate } from '@/features/note/selectDate';
 import { MSW_ENABLED } from '@/shared/config';
 import { dateLib } from '@/shared/lib';
+import { PageContainer } from '@/shared/ui';
 import { MealsList, MealsListTotalCalories } from '@/widgets/MealsList';
 import { type NavigationLoaderData } from '@/widgets/Navigation';
 import { NutritionSummaryWidget } from '@/widgets/NutritionSummaryWidget';
@@ -42,7 +43,9 @@ export const Component: FC = () => {
   return (
     <>
       <NutritionSummaryWidget />
-      <MealsList date={date} />
+      <PageContainer disablePaddingTop>
+        <MealsList date={date} />
+      </PageContainer>
     </>
   );
 };

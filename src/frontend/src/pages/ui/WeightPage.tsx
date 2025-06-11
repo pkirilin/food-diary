@@ -4,6 +4,7 @@ import { useLoaderData, type LoaderFunction } from 'react-router-dom';
 import { store } from '@/app/store';
 import { type GetWeightLogsRequest, weightLogsApi } from '@/entities/weightLog';
 import { dateLib } from '@/shared/lib';
+import { PageContainer } from '@/shared/ui';
 import { type NavigationLoaderData } from '@/widgets/Navigation';
 import { WeightChart } from '@/widgets/WeightChart';
 import { WeightLogsList } from '@/widgets/WeightLogsList';
@@ -44,12 +45,12 @@ export const Component: FC = () => {
   const to = dateLib.formatToUserFriendlyString(weightLogsRequest.to);
 
   return (
-    <>
+    <PageContainer>
       <Typography variant="h6" component="h1">
         {from} — {to}
       </Typography>
       <WeightChart weightLogsRequest={weightLogsRequest} />
       <WeightLogsList weightLogsRequest={weightLogsRequest} />
-    </>
+    </PageContainer>
   );
 };
