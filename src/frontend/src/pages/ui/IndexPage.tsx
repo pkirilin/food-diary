@@ -6,7 +6,7 @@ import { SelectDate } from '@/features/note/selectDate';
 import { MSW_ENABLED } from '@/shared/config';
 import { dateLib } from '@/shared/lib';
 import { PageContainer } from '@/shared/ui';
-import { MealsList, MealsListTotalCalories } from '@/widgets/MealsList';
+import { MealsList } from '@/widgets/MealsList';
 import { type NavigationLoaderData } from '@/widgets/Navigation';
 import { NutritionSummaryWidget } from '@/widgets/NutritionSummaryWidget';
 
@@ -29,7 +29,6 @@ export const loader: LoaderFunction = async ({ request }) => {
       date,
       navigation: {
         title: <SelectDate currentDate={new Date(date)} />,
-        action: <MealsListTotalCalories date={date} />,
       },
     } satisfies LoaderData;
   } finally {
