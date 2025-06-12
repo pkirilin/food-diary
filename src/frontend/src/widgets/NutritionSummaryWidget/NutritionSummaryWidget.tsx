@@ -1,10 +1,16 @@
 import { Box, Container, Stack, Typography, useScrollTrigger } from '@mui/material';
 import { type FC } from 'react';
+import { noteLib } from '@/entities/note';
 import { NutritionComponentIcon } from '@/entities/product/ui/NutritionComponentIcon';
 import { APP_BAR_HEIGHT_SM, APP_BAR_HEIGHT_XS } from '@/shared/constants';
 
-export const NutritionSummaryWidget: FC = () => {
+interface Props {
+  date: string;
+}
+
+export const NutritionSummaryWidget: FC<Props> = ({ date }) => {
   const scrolled = useScrollTrigger();
+  const totalCalories = noteLib.useTotalCalories(date);
 
   return (
     <Box
@@ -29,7 +35,7 @@ export const NutritionSummaryWidget: FC = () => {
           </Typography>
         </Stack>
         <Typography variant="h6" component="span" fontWeight="bold">
-          1234 kcal
+          {totalCalories} kcal
         </Typography>
       </Stack>
     </Box>

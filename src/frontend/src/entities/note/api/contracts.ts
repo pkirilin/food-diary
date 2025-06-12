@@ -13,15 +13,27 @@ export interface NoteItem {
   date: string;
   mealType: MealType;
   displayOrder: number;
+  /**
+   * @deprecated use product.id
+   */
   productId: number;
+  /**
+   * @deprecated use product.name
+   */
   productName: string;
   productQuantity: number;
+  /**
+   * @deprecated use product.defaultQuantity
+   */
   productDefaultQuantity: number;
+  /**
+   * @deprecated use product.calories (calories per 100 g) instead of these calories per productQuantity
+   */
   calories: number;
   product: Product;
 }
 
-interface Product {
+export interface Product {
   id: number;
   name: string;
   defaultQuantity: number;

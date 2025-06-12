@@ -1,6 +1,6 @@
 import { ListItem, Stack, Typography, Card, CardContent, CardActions } from '@mui/material';
 import { type FC } from 'react';
-import { noteApi, noteLib, noteModel } from '@/entities/note';
+import { noteLib, type noteModel } from '@/entities/note';
 import { NutritionComponentLabel } from '@/entities/product';
 import { AddNoteButton } from '@/features/manageNote';
 import { NotesList } from './NotesList';
@@ -11,29 +11,21 @@ interface Props {
 }
 
 export const MealsListItem: FC<Props> = ({ date, mealType }) => {
-  const { totalCalories } = noteApi.useNotesQuery(
-    { date },
-    {
-      selectFromResult: ({ data, isSuccess }) => ({
-        totalCalories: isSuccess ? noteModel.querySelectors.totalCaloriesByMeal(data, mealType) : 0,
-      }),
-    },
-  );
-
+  const mealCalories = noteLib.useMealCalories(date, mealType);
   const mealName = noteLib.getMealName(mealType);
 
   return (
     <ListItem
       disableGutters
       disablePadding
-      aria-label={`${mealName}, ${totalCalories} kilocalories`}
+      aria-label={`${mealName}, ${mealCalories} kilocalories`}
     >
       <Stack width="100%">
         <Stack direction="row" justifyContent="space-between" spacing={1} py={2}>
           <Typography fontWeight="bold">{mealName}</Typography>
           <NutritionComponentLabel
             nutritionComponentType="calories"
-            value={totalCalories}
+            value={mealCalories}
             size="medium"
             bold
           />
