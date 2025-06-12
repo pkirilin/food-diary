@@ -9,7 +9,11 @@ interface Props {
 }
 
 export const NutritionSummaryWidget: FC<Props> = ({ date }) => {
-  const scrolled = useScrollTrigger();
+  const scrolled = useScrollTrigger({
+    threshold: APP_BAR_HEIGHT_XS / 2,
+    disableHysteresis: true,
+  });
+
   const totalCalories = noteLib.useTotalCalories(date);
 
   return (
@@ -28,15 +32,16 @@ export const NutritionSummaryWidget: FC<Props> = ({ date }) => {
       })}
     >
       <Stack component={Container} direction="row" spacing={1} justifyContent="space-between">
+        <Typography variant="h6" component="span" fontWeight="bold">
+          Total calories
+        </Typography>
+
         <Stack direction="row" spacing={1} alignItems="center">
           <NutritionComponentIcon type="calories" size="medium" />
           <Typography variant="h6" component="span" fontWeight="bold">
-            Calories
+            {totalCalories} kcal
           </Typography>
         </Stack>
-        <Typography variant="h6" component="span" fontWeight="bold">
-          {totalCalories} kcal
-        </Typography>
       </Stack>
     </Box>
   );
