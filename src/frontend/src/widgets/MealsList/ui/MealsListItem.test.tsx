@@ -1,4 +1,3 @@
-import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { noteModel } from '@/entities/note';
 import * as steps from './MealsListItem.steps';
@@ -6,10 +5,8 @@ import * as steps from './MealsListItem.steps';
 test('I can see my meals with calculated calories', async () => {
   await steps.givenMealsListItem({ mealType: noteModel.MealType.Lunch });
 
-  expect(
-    await screen.findByRole('listitem', { name: /lunch, [1-9][0-9]* kilocalories/i }),
-  ).toBeVisible();
-  expect(screen.getAllByRole('button').length).toBeGreaterThan(0);
+  await steps.thenMealHeaderIsVisible();
+  await steps.thenMealsAreVisible();
 });
 
 test('I can add new note with existing product', async () => {

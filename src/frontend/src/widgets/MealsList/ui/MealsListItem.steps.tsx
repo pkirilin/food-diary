@@ -111,6 +111,15 @@ export const whenProductEditClicked = async (user: UserEvent): Promise<void> => 
   await user.click(screen.getByRole('button', { name: /edit product/i }));
 };
 
+export const thenMealHeaderIsVisible = async (): Promise<void> => {
+  const header = await screen.findByRole('listitem', { name: /lunch, [1-9][0-9]* kilocalories/i });
+  expect(header).toBeVisible();
+};
+
+export const thenMealsAreVisible = async (): Promise<void> => {
+  expect(screen.getAllByRole('button').length).toBeGreaterThan(1);
+};
+
 export const thenDialogVisible = async (dialogTitle: RegExp): Promise<void> => {
   expect(await screen.findByRole('dialog', { name: dialogTitle })).toBeVisible();
 };
