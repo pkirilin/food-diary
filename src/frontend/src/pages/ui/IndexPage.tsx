@@ -42,7 +42,7 @@ export const Component: FC = () => {
   return (
     <>
       <NutritionSummaryWidget date={date} />
-      <PageContainer disablePaddingTop>
+      <PageContainer $disablePaddingTop>
         <MealsList date={date} />
       </PageContainer>
     </>
