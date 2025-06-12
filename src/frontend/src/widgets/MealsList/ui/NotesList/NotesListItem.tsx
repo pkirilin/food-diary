@@ -4,7 +4,7 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { ListItemButton, ListItemText, Stack, Collapse, Button } from '@mui/material';
 import { useState, type FC, type MouseEventHandler } from 'react';
-import { type NoteItem } from '@/entities/note';
+import { noteModel, type NoteItem } from '@/entities/note';
 import { NutritionComponentLabel } from '@/entities/product/ui/NutritionComponentLabel';
 import { EditNote } from '@/features/manageNote';
 import { DeleteNote } from '@/features/note/delete';
@@ -15,6 +15,7 @@ interface Props {
 
 export const NotesListItem: FC<Props> = ({ note }) => {
   const [expanded, setExpanded] = useState(false);
+  const calories = noteModel.calculateCalories(note);
 
   const handleExpandToggle: MouseEventHandler = () => {
     setExpanded(prev => !prev);
@@ -23,11 +24,11 @@ export const NotesListItem: FC<Props> = ({ note }) => {
   return (
     <>
       <ListItemButton onClick={handleExpandToggle}>
-        <ListItemText primary={note.productName} secondary={`${note.productQuantity} g`} />
+        <ListItemText primary={note.product.name} secondary={`${note.productQuantity} g`} />
         <Stack direction="row" spacing={1} alignItems="center">
           <NutritionComponentLabel
             nutritionComponentType="calories"
-            value={note.calories}
+            value={calories}
             size="small"
           />
           {expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}

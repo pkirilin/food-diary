@@ -20,11 +20,7 @@ const create = {
     date: '2025-06-10',
     mealType: MealType.Breakfast,
     displayOrder: 1,
-    productId: product.id,
-    productName: product.name,
     productQuantity,
-    productDefaultQuantity: product.defaultQuantity,
-    calories: 100,
     product,
   }),
   product: ({ calories = 100 }: Partial<Product>): Product => ({

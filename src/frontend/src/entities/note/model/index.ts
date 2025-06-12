@@ -1,4 +1,3 @@
 export * from './types';
+export * from './note';
 export * as querySelectors from './querySelectors';
-export * as noteModel from './note';
-export * as notesListModel from './notesList';
