@@ -21,16 +21,22 @@ export const MealsListItem: FC<Props> = ({ date, mealType }) => {
       aria-label={`${mealName}, ${mealCalories} kilocalories`}
     >
       <Stack width="100%">
-        <Stack direction="row" justifyContent="space-between" spacing={1} py={2}>
-          <Typography fontWeight="bold">{mealName}</Typography>
-          <NutritionComponentLabel
-            nutritionComponentType="calories"
-            value={mealCalories}
-            size="medium"
-            bold
-          />
-        </Stack>
         <Card sx={{ minWidth: '100%' }}>
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            spacing={1}
+            p={2}
+            bgcolor={theme => theme.palette.grey[100]}
+          >
+            <Typography fontWeight="bold">{mealName}</Typography>
+            <NutritionComponentLabel
+              nutritionComponentType="calories"
+              value={mealCalories}
+              size="medium"
+              bold
+            />
+          </Stack>
           <CardContent sx={{ padding: 0 }}>
             <NotesList date={date} mealType={mealType} />
           </CardContent>
