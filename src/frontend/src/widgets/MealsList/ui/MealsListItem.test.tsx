@@ -14,7 +14,7 @@ test('I can add new note with existing product', async () => {
 
   await steps.givenMealsListItem({ mealType: noteModel.MealType.Lunch });
 
-  await steps.whenAddNoteButtonClicked(user);
+  await steps.whenAddNoteButtonClicked(user, 'Lunch');
   await steps.thenDialogVisible(/lunch/i);
   await steps.thenNoteCannotBeAdded();
 
@@ -34,7 +34,7 @@ test('I can add new note with adding new product "on the fly"', async () => {
 
   await steps.givenMealsListItem({ mealType: noteModel.MealType.Lunch });
 
-  await steps.whenAddNoteButtonClicked(user);
+  await steps.whenAddNoteButtonClicked(user, 'Lunch');
   await steps.thenDialogVisible(/lunch/i);
 
   await steps.whenProductSearched(user, 'Ora');
@@ -79,7 +79,7 @@ test('I can edit product via note form', async () => {
 
   await steps.givenMealsListItem({ mealType: noteModel.MealType.Lunch });
 
-  await steps.whenAddNoteButtonClicked(user);
+  await steps.whenAddNoteButtonClicked(user, 'Lunch');
   await steps.thenDialogVisible(/lunch/i);
 
   await steps.whenProductSearched(user, 'che');

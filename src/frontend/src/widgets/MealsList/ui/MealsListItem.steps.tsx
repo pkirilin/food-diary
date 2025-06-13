@@ -20,8 +20,11 @@ export const givenMealsListItem = async ({ mealType }: GivenMealsListItemArgs): 
   );
 };
 
-export const whenAddNoteButtonClicked = async (user: UserEvent): Promise<void> => {
-  const addNoteButton = screen.getByRole('button', { name: /add note/i });
+export const whenAddNoteButtonClicked = async (
+  user: UserEvent,
+  mealName: string,
+): Promise<void> => {
+  const addNoteButton = screen.getByRole('button', { name: new RegExp(`add ${mealName}`, 'i') });
   await waitFor(() => expect(addNoteButton).not.toBeDisabled());
   await user.click(addNoteButton);
 };
