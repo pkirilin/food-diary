@@ -2,7 +2,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { ListItemButton, ListItemText, Stack, Collapse, Button } from '@mui/material';
+import { ListItemButton, ListItemText, Stack, Collapse, Button, Box, alpha } from '@mui/material';
 import { useState, type FC, type MouseEventHandler } from 'react';
 import { noteModel, type NoteItem } from '@/entities/note';
 import { NutritionComponentLabel } from '@/entities/product/ui/NutritionComponentLabel';
@@ -23,7 +23,7 @@ export const NotesListItem: FC<Props> = ({ note }) => {
 
   return (
     <>
-      <ListItemButton onClick={handleExpandToggle}>
+      <ListItemButton onClick={handleExpandToggle} selected={expanded}>
         <ListItemText primary={note.product.name} secondary={`${note.productQuantity} g`} />
         <Stack direction="row" spacing={1} alignItems="center">
           <NutritionComponentLabel
@@ -35,7 +35,13 @@ export const NotesListItem: FC<Props> = ({ note }) => {
         </Stack>
       </ListItemButton>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
-        <Stack direction="row" justifyContent="right" p={2} spacing={2}>
+        <Stack
+          direction="row"
+          justifyContent="right"
+          p={2}
+          spacing={2}
+          bgcolor={theme => alpha(theme.palette.primary.main, theme.palette.action.selectedOpacity)}
+        >
           <EditNote
             note={note}
             renderTrigger={openDialog => (
