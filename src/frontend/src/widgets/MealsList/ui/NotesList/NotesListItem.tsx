@@ -2,7 +2,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { ListItemButton, ListItemText, Stack, Collapse, Button, Box, alpha } from '@mui/material';
+import { ListItemButton, ListItemText, Stack, Collapse, Button, alpha } from '@mui/material';
 import { useState, type FC, type MouseEventHandler } from 'react';
 import { noteModel, type NoteItem } from '@/entities/note';
 import { NutritionComponentLabel } from '@/entities/product/ui/NutritionComponentLabel';
