@@ -5,8 +5,10 @@ import { noteApi } from '@/entities/note';
 import { SelectDate } from '@/features/note/selectDate';
 import { MSW_ENABLED } from '@/shared/config';
 import { dateLib } from '@/shared/lib';
-import { MealsList, MealsListTotalCalories } from '@/widgets/MealsList';
+import { PageContainer } from '@/shared/ui';
+import { MealsList } from '@/widgets/MealsList';
 import { type NavigationLoaderData } from '@/widgets/Navigation';
+import { NutritionSummaryWidget } from '@/widgets/NutritionSummaryWidget';
 
 interface LoaderData extends NavigationLoaderData {
   date: string;
@@ -27,7 +29,6 @@ export const loader: LoaderFunction = async ({ request }) => {
       date,
       navigation: {
         title: <SelectDate currentDate={new Date(date)} />,
-        action: <MealsListTotalCalories date={date} />,
       },
     } satisfies LoaderData;
   } finally {
@@ -38,5 +39,12 @@ export const loader: LoaderFunction = async ({ request }) => {
 export const Component: FC = () => {
   const { date } = useLoaderData() as LoaderData;
 
-  return <MealsList date={date} />;
+  return (
+    <>
+      <NutritionSummaryWidget date={date} />
+      <PageContainer>
+        <MealsList date={date} />
+      </PageContainer>
+    </>
+  );
 };

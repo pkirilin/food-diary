@@ -1,7 +1,6 @@
-import { List, ListItem } from '@mui/material';
+import { List } from '@mui/material';
 import { type FC } from 'react';
 import { noteApi, type noteModel } from '@/entities/note';
-import { AddNoteButton } from '@/features/manageNote';
 import { NotesListItem } from './NotesListItem';
 
 interface Props {
@@ -22,9 +21,6 @@ export const NotesList: FC<Props> = ({ date, mealType }) => {
       {notes.map(note => (
         <NotesListItem key={note.id} note={note} />
       ))}
-      <ListItem disableGutters>
-        <AddNoteButton date={date} mealType={mealType} />
-      </ListItem>
     </List>
   );
 };

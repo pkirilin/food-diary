@@ -22,25 +22,11 @@ interface Props {
 
 export const NotesHistoryList: FC<Props> = ({ notes }) => {
   if (notes.length === 0) {
-    return (
-      <Typography
-        sx={{
-          py: 2,
-          color: 'GrayText',
-        }}
-      >
-        No items found
-      </Typography>
-    );
+    return <Typography color="textSecondary">No items found</Typography>;
   }
 
   return (
-    <Box
-      component={Paper}
-      sx={{
-        mt: 2,
-      }}
-    >
+    <Paper>
       <List disablePadding>
         {notes.map(({ date, caloriesCount }) => (
           <ListItem key={date} disableGutters>
@@ -64,6 +50,6 @@ export const NotesHistoryList: FC<Props> = ({ notes }) => {
           </ListItem>
         ))}
       </List>
-    </Box>
+    </Paper>
   );
 };

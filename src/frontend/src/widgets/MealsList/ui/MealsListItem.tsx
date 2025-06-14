@@ -1,14 +1,8 @@
-import {
-  Box,
-  ListItem,
-  Paper,
-  Stack,
-  Typography,
-  type TypographyProps,
-  styled,
-} from '@mui/material';
+import { ListItem, Stack, Typography, Card, CardContent, CardActions } from '@mui/material';
 import { type FC } from 'react';
-import { noteApi, noteLib, noteModel } from '@/entities/note';
+import { noteLib, type noteModel } from '@/entities/note';
+import { NutritionComponentLabel } from '@/entities/product';
+import { AddNoteButton } from '@/features/manageNote';
 import { NotesList } from './NotesList';
 
 interface Props {
@@ -16,51 +10,36 @@ interface Props {
   mealType: noteModel.MealType;
 }
 
-const TextStyled = styled(Typography)<TypographyProps>(({ theme }) => ({
-  ...theme.typography.body1,
-  fontWeight: theme.typography.fontWeightBold,
-  color: theme.palette.text.secondary,
-}));
-
 export const MealsListItem: FC<Props> = ({ date, mealType }) => {
-  const { totalCalories } = noteApi.useNotesQuery(
-    { date },
-    {
-      selectFromResult: ({ data, isSuccess }) => ({
-        totalCalories: isSuccess ? noteModel.querySelectors.totalCaloriesByMeal(data, mealType) : 0,
-      }),
-    },
-  );
-
+  const mealCalories = noteLib.useMealCalories(date, mealType);
   const mealName = noteLib.getMealName(mealType);
 
   return (
     <ListItem
       disableGutters
       disablePadding
-      aria-label={`${mealName}, ${totalCalories} kilocalories`}
+      aria-label={`${mealName}, ${mealCalories} kilocalories`}
     >
-      <Box
-        sx={{
-          width: '100%',
-        }}
-      >
-        <Stack
-          direction="row"
-          spacing={2}
-          sx={{
-            justifyContent: 'space-between',
-            mt: 2,
-            mb: 3,
-          }}
-        >
-          <TextStyled component="h2">{mealName}</TextStyled>
-          <TextStyled component="span">{`${totalCalories} kcal`}</TextStyled>
-        </Stack>
-        <Paper component="section">
-          <NotesList date={date} mealType={mealType} />
-        </Paper>
-      </Box>
+      <Stack width="100%">
+        <Card sx={{ minWidth: '100%' }}>
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            spacing={1}
+            p={2}
+            bgcolor={theme => theme.palette.grey[100]}
+          >
+            <Typography fontWeight="bold">{mealName}</Typography>
+            <NutritionComponentLabel type="calories" value={mealCalories} size="medium" bold />
+          </Stack>
+          <CardContent sx={{ padding: 0 }}>
+            <NotesList date={date} mealType={mealType} />
+          </CardContent>
+          <CardActions>
+            <AddNoteButton date={date} mealType={mealType} />
+          </CardActions>
+        </Card>
+      </Stack>
     </ListItem>
   );
 };

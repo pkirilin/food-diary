@@ -14,7 +14,7 @@ import {
 import { useEffect, type FC } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { type SelectOption } from '@/shared/types';
-import { type ProductFormValues, productSchema } from '../model';
+import { type ProductFormValues, productSchema, nutritionComponents } from '../model';
 import { NutritionComponentIcon } from './NutritionComponentIcon';
 import { NutritionComponentInput } from './NutritionComponentInput';
 
@@ -129,7 +129,11 @@ export const ProductForm: FC<Props> = ({
                         <NutritionComponentIcon type="calories" size="medium" />
                       </InputAdornment>
                     ),
-                    endAdornment: <InputAdornment position="end">kcal</InputAdornment>,
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        {nutritionComponents.calories.unit}
+                      </InputAdornment>
+                    ),
                   },
                   htmlInput: {
                     type: 'text',
@@ -185,7 +189,7 @@ export const ProductForm: FC<Props> = ({
                 render={({ field, fieldState }) => (
                   <NutritionComponentInput
                     {...field}
-                    nutritionComponentType="protein"
+                    type="protein"
                     label="Protein"
                     placeholder="Protein, g"
                     error={!!fieldState.error}
@@ -201,7 +205,7 @@ export const ProductForm: FC<Props> = ({
                 render={({ field, fieldState }) => (
                   <NutritionComponentInput
                     {...field}
-                    nutritionComponentType="fats"
+                    type="fats"
                     label="Fats"
                     placeholder="Fats, g"
                     error={!!fieldState.error}
@@ -217,7 +221,7 @@ export const ProductForm: FC<Props> = ({
                 render={({ field, fieldState }) => (
                   <NutritionComponentInput
                     {...field}
-                    nutritionComponentType="carbs"
+                    type="carbs"
                     label="Carbs"
                     placeholder="Carbs, g"
                     error={!!fieldState.error}
@@ -233,7 +237,7 @@ export const ProductForm: FC<Props> = ({
                 render={({ field, fieldState }) => (
                   <NutritionComponentInput
                     {...field}
-                    nutritionComponentType="sugar"
+                    type="sugar"
                     label="Sugar"
                     placeholder="Sugar, g"
                     error={!!fieldState.error}
@@ -249,7 +253,7 @@ export const ProductForm: FC<Props> = ({
                 render={({ field, fieldState }) => (
                   <NutritionComponentInput
                     {...field}
-                    nutritionComponentType="salt"
+                    type="salt"
                     label="Salt"
                     placeholder="Salt, g"
                     error={!!fieldState.error}

@@ -2,40 +2,40 @@ import { render, screen, waitFor, waitForElementToBeRemoved } from '@testing-lib
 import { type UserEvent } from '@testing-library/user-event';
 import { RootProvider } from '@/app/RootProvider';
 import { configureStore } from '@/app/store';
-import { noteApi, type noteModel } from '@/entities/note';
-import { NotesList } from './NotesList';
+import { type noteModel } from '@/entities/note';
+import { MealsListItem } from './MealsListItem';
 
-interface GivenNotesListArgs {
+interface GivenMealsListItemArgs {
   mealType: noteModel.MealType;
-  preloadNotes?: boolean;
 }
 
-export const givenNotesList = async ({
-  mealType,
-  preloadNotes = false,
-}: GivenNotesListArgs): Promise<void> => {
+export const givenMealsListItem = async ({ mealType }: GivenMealsListItemArgs): Promise<void> => {
   const store = configureStore();
   const date = '2023-10-19';
 
-  if (preloadNotes) {
-    await store.dispatch(noteApi.endpoints.notes.initiate({ date }));
-  }
-
   render(
     <RootProvider store={store}>
-      <NotesList date={date} mealType={mealType} />
+      <MealsListItem date={date} mealType={mealType} />
     </RootProvider>,
   );
 };
 
-export const whenAddNoteButtonClicked = async (user: UserEvent): Promise<void> => {
-  const addNoteButton = screen.getByRole('button', { name: /add note/i });
+export const whenAddNoteButtonClicked = async (
+  user: UserEvent,
+  mealName: string,
+): Promise<void> => {
+  const addNoteButton = screen.getByRole('button', { name: new RegExp(`add ${mealName}`, 'i') });
   await waitFor(() => expect(addNoteButton).not.toBeDisabled());
   await user.click(addNoteButton);
 };
 
-export const whenNoteClicked = async (user: UserEvent, noteName: RegExp): Promise<void> => {
+export const whenNoteExpanded = async (user: UserEvent, noteName: RegExp): Promise<void> => {
   const noteButton = await screen.findByRole('button', { name: noteName });
+  await user.click(noteButton);
+};
+
+export const whenEditNoteClicked = async (user: UserEvent): Promise<void> => {
+  const noteButton = await screen.findByRole('button', { name: /edit/i });
   await user.click(noteButton);
 };
 
@@ -112,6 +112,15 @@ export const whenNoteSaved = async (user: UserEvent): Promise<void> => {
 
 export const whenProductEditClicked = async (user: UserEvent): Promise<void> => {
   await user.click(screen.getByRole('button', { name: /edit product/i }));
+};
+
+export const thenMealHeaderIsVisible = async (): Promise<void> => {
+  const header = await screen.findByRole('listitem', { name: /lunch, [1-9][0-9]* kilocalories/i });
+  expect(header).toBeVisible();
+};
+
+export const thenMealsAreVisible = async (): Promise<void> => {
+  expect(screen.getAllByRole('button').length).toBeGreaterThan(1);
 };
 
 export const thenDialogVisible = async (dialogTitle: RegExp): Promise<void> => {

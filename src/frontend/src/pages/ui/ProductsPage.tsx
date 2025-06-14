@@ -3,6 +3,7 @@ import { type LoaderFunction } from 'react-router-dom';
 import { store } from '@/app/store';
 import { productApi, productLib } from '@/entities/product';
 import { Products } from '@/features/products';
+import { PageContainer } from '@/shared/ui';
 import { ok } from '../lib';
 
 export const loader: LoaderFunction = async () => {
@@ -17,4 +18,8 @@ export const loader: LoaderFunction = async () => {
   }
 };
 
-export const Component: FC = () => <Products />;
+export const Component: FC = () => (
+  <PageContainer>
+    <Products />
+  </PageContainer>
+);

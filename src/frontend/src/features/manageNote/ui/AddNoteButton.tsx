@@ -1,7 +1,7 @@
 import AddIcon from '@mui/icons-material/Add';
 import { type MouseEventHandler, type FC } from 'react';
 import { useAppDispatch } from '@/app/store';
-import { noteApi, noteModel } from '@/entities/note';
+import { noteApi, noteLib, noteModel } from '@/entities/note';
 import { Button } from '@/shared/ui';
 import { actions } from '../model';
 import { NoteInputDialog } from './NoteInputDialog';
@@ -22,6 +22,8 @@ export const AddNoteButton: FC<Props> = ({ date, mealType }) => {
     },
   );
 
+  const mealName = noteLib.getMealName(mealType);
+
   const dispatch = useAppDispatch();
 
   const handleDialogOpen: MouseEventHandler = () => {
@@ -39,7 +41,7 @@ export const AddNoteButton: FC<Props> = ({ date, mealType }) => {
   return (
     <>
       <Button fullWidth startIcon={<AddIcon />} onClick={handleDialogOpen} disabled={!canAddNote}>
-        Add note
+        Add {mealName}
       </Button>
       <NoteInputDialog date={date} mealType={mealType} />
     </>

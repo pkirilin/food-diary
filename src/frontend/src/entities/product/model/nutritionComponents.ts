@@ -10,9 +10,12 @@ import { type ComponentType } from 'react';
 
 export type NutritionComponent = 'calories' | 'protein' | 'fats' | 'carbs' | 'sugar' | 'salt';
 
+type Unit = 'kcal' | 'g';
+
 interface NutritionComponentConfig {
   readonly IconComponent: ComponentType<SvgIconProps>;
   readonly color: string;
+  readonly unit: Unit;
 }
 
 type NutritionComponentsDictionary = Readonly<Record<NutritionComponent, NutritionComponentConfig>>;
@@ -21,25 +24,31 @@ export const nutritionComponents: NutritionComponentsDictionary = {
   calories: {
     IconComponent: WhatshotOutlinedIcon,
     color: green[500],
+    unit: 'kcal',
   },
   protein: {
     IconComponent: FitnessCenterOutlinedIcon,
     color: blue[500],
+    unit: 'g',
   },
   fats: {
     IconComponent: WaterDropOutlinedIcon,
     color: amber[500],
+    unit: 'g',
   },
   carbs: {
     IconComponent: GrainOutlinedIcon,
     color: purple[500],
+    unit: 'g',
   },
   sugar: {
     IconComponent: CookieOutlinedIcon,
     color: pink[500],
+    unit: 'g',
   },
   salt: {
     IconComponent: AdjustOutlinedIcon,
     color: grey[500],
+    unit: 'g',
   },
 };

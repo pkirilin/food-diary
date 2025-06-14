@@ -4,6 +4,7 @@ import { store } from '@/app/store';
 import { type NoteHistoryItem, noteApi } from '@/entities/note';
 import { MSW_ENABLED } from '@/shared/config';
 import { dateLib } from '@/shared/lib';
+import { PageContainer } from '@/shared/ui';
 import { type NavigationLoaderData } from '@/widgets/Navigation';
 import { FilterNotesHistory, NotesHistoryList } from '@/widgets/NotesHistoryList';
 
@@ -48,5 +49,9 @@ export const loader: LoaderFunction = async ({ request }) => {
 export const Component: FC = () => {
   const { notes } = useLoaderData() as LoaderData;
 
-  return <NotesHistoryList notes={notes} />;
+  return (
+    <PageContainer>
+      <NotesHistoryList notes={notes} />
+    </PageContainer>
+  );
 };

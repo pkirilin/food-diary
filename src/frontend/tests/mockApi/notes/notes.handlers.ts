@@ -23,23 +23,28 @@ export const handlers: HttpHandler[] = [
     const dbNotes = notesService.getByDate(date);
     const productsMap = notesService.getProducts(dbNotes);
 
-    const notes = dbNotes.map<NoteItem>(
-      ({ id, date, mealType, displayOrder, productId, quantity }) => {
-        const product = productsMap.get(productId);
+    const notes = dbNotes.map(({ id, date, mealType, displayOrder, productId, quantity }) => {
+      const product = productsMap.get(productId);
 
-        return {
-          id,
-          date,
-          mealType,
-          displayOrder,
-          productId: product?.id ?? 0,
-          productName: product?.name ?? '',
-          productQuantity: quantity,
-          productDefaultQuantity: product?.defaultQuantity ?? 0,
-          calories: notesService.calculateCalories(quantity, product?.caloriesCost ?? 0),
-        };
-      },
-    );
+      return {
+        id,
+        date,
+        mealType,
+        displayOrder,
+        productQuantity: quantity,
+        product: {
+          id: product?.id ?? 0,
+          name: product?.name ?? '',
+          defaultQuantity: product?.defaultQuantity ?? 0,
+          calories: product?.caloriesCost ?? 0,
+          protein: product?.protein ?? null,
+          fats: product?.fats ?? null,
+          carbs: product?.carbs ?? null,
+          sugar: product?.sugar ?? null,
+          salt: product?.salt ?? null,
+        },
+      } satisfies NoteItem;
+    });
 
     return await DelayedHttpResponse.json<GetNotesResponse>({ notes });
   }),
