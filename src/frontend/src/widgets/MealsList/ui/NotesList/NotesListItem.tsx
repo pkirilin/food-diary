@@ -26,11 +26,7 @@ export const NotesListItem: FC<Props> = ({ note }) => {
       <ListItemButton onClick={handleExpandToggle} selected={expanded}>
         <ListItemText primary={note.product.name} secondary={`${note.productQuantity} g`} />
         <Stack direction="row" spacing={1} alignItems="center">
-          <NutritionComponentLabel
-            nutritionComponentType="calories"
-            value={calories}
-            size="small"
-          />
+          <NutritionComponentLabel type="calories" value={calories} size="small" />
           {expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
         </Stack>
       </ListItemButton>

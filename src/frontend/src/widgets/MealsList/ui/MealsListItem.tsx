@@ -30,12 +30,7 @@ export const MealsListItem: FC<Props> = ({ date, mealType }) => {
             bgcolor={theme => theme.palette.grey[100]}
           >
             <Typography fontWeight="bold">{mealName}</Typography>
-            <NutritionComponentLabel
-              nutritionComponentType="calories"
-              value={mealCalories}
-              size="medium"
-              bold
-            />
+            <NutritionComponentLabel type="calories" value={mealCalories} size="medium" bold />
           </Stack>
           <CardContent sx={{ padding: 0 }}>
             <NotesList date={date} mealType={mealType} />
