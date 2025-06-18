@@ -33,7 +33,7 @@ export const nutritionComponents: NutritionComponentsDictionary = {
   },
   fats: {
     IconComponent: WaterDropOutlinedIcon,
-    color: amber[500],
+    color: amber.A700,
     unit: 'g',
   },
   carbs: {
