@@ -3,11 +3,22 @@ import { nutritionComponents, type NutritionComponent } from '../model/nutrition
 
 interface Props {
   type: NutritionComponent;
-  size?: 'small' | 'medium';
+  size?: 'small' | 'medium' | number;
 }
 
 export const NutritionComponentIcon: FC<Props> = ({ type, size = 'small' }) => {
   const { IconComponent, color } = nutritionComponents[type];
 
-  return <IconComponent sx={{ color, fontSize: size === 'small' ? 20 : 24 }} />;
+  const getFontSize = (): number => {
+    switch (size) {
+      case 'small':
+        return 20;
+      case 'medium':
+        return 24;
+      default:
+        return size;
+    }
+  };
+
+  return <IconComponent sx={{ color, fontSize: getFontSize() }} />;
 };
