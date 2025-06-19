@@ -22,15 +22,18 @@ export const MealsListItem: FC<Props> = ({ date, mealType }) => {
     >
       <Stack width="100%">
         <Card sx={{ minWidth: '100%' }}>
-          <Stack
-            direction="row"
-            justifyContent="space-between"
-            spacing={1}
-            p={2}
-            bgcolor={theme => theme.palette.grey[100]}
-          >
-            <Typography fontWeight="bold">{mealName}</Typography>
-            <NutritionComponentLabel type="calories" value={mealCalories} size="medium" bold />
+          <Stack direction="column" p={2} spacing={1} bgcolor={theme => theme.palette.grey[100]}>
+            <Stack direction="row" justifyContent="space-between">
+              <Typography fontWeight="bold">{mealName}</Typography>
+              <NutritionComponentLabel type="calories" size="small" value={mealCalories} bold />
+            </Stack>
+            <Stack direction="row" spacing={2} py={1} overflow="scroll">
+              <NutritionComponentLabel type="protein" size="small" value={123} bold />
+              <NutritionComponentLabel type="fats" size="small" value={12} bold />
+              <NutritionComponentLabel type="carbs" size="small" value={123} bold />
+              <NutritionComponentLabel type="sugar" size="small" value={12} bold />
+              <NutritionComponentLabel type="salt" size="small" value={12} bold />
+            </Stack>
           </Stack>
           <CardContent sx={{ padding: 0 }}>
             <NotesList date={date} mealType={mealType} />

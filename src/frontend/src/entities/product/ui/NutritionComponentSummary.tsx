@@ -13,7 +13,7 @@ export const NutritionComponentSummary: FC<Props> = ({ value, type }) => {
   const { unit, color } = nutritionComponents[type];
 
   return (
-    <Stack direction="row" spacing={1} alignItems="center">
+    <Stack direction="row" alignItems="center">
       <Box display="flex" justifyContent="center" alignItems="center" p={1}>
         <NutritionComponentIcon type={type} size="medium" />
       </Box>
@@ -26,8 +26,8 @@ export const NutritionComponentSummary: FC<Props> = ({ value, type }) => {
         >
           {type}
         </Typography>
-        <Stack direction="row" spacing={1} alignItems="baseline">
-          <Typography variant="h6" component="span" color={color} fontWeight="bold">
+        <Stack direction="row" spacing={0.5} alignItems="baseline">
+          <Typography variant="subtitle1" component="span" color={color} fontWeight="bold">
             {value}
           </Typography>
           <Typography variant="body2" component="span" color="textSecondary">

@@ -32,28 +32,36 @@ export const NotesListItem: FC<Props> = ({ note }) => {
       </ListItemButton>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <Stack
-          direction="row"
-          justifyContent="right"
-          p={2}
+          direction="column"
+          px={2}
           spacing={2}
           bgcolor={theme => alpha(theme.palette.primary.main, theme.palette.action.selectedOpacity)}
         >
-          <EditNote
-            note={note}
-            renderTrigger={openDialog => (
-              <Button startIcon={<EditIcon />} color="info" onClick={openDialog}>
-                Edit
-              </Button>
-            )}
-          />
-          <DeleteNote
-            note={note}
-            renderTrigger={openDeleteDialog => (
-              <Button startIcon={<DeleteIcon />} color="error" onClick={openDeleteDialog}>
-                Delete
-              </Button>
-            )}
-          />
+          <Stack direction="row" py={1} spacing={2} overflow="scroll">
+            <NutritionComponentLabel type="protein" size="small" value={123} />
+            <NutritionComponentLabel type="fats" size="small" value={12} />
+            <NutritionComponentLabel type="carbs" size="small" value={123} />
+            <NutritionComponentLabel type="sugar" size="small" value={12} />
+            <NutritionComponentLabel type="salt" size="small" value={12} />
+          </Stack>
+          <Stack direction="row" justifyContent="right" spacing={2}>
+            <EditNote
+              note={note}
+              renderTrigger={openDialog => (
+                <Button startIcon={<EditIcon />} color="info" onClick={openDialog}>
+                  Edit
+                </Button>
+              )}
+            />
+            <DeleteNote
+              note={note}
+              renderTrigger={openDeleteDialog => (
+                <Button startIcon={<DeleteIcon />} color="error" onClick={openDeleteDialog}>
+                  Delete
+                </Button>
+              )}
+            />
+          </Stack>
         </Stack>
       </Collapse>
     </>

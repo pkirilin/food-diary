@@ -5,14 +5,12 @@ import {
   Grid2 as Grid,
   Slide,
   Stack,
-  Typography,
   useScrollTrigger,
 } from '@mui/material';
 import { Fragment, type FC } from 'react';
 import { noteLib } from '@/entities/note';
 import { NutritionComponentLabel } from '@/entities/product';
-import { nutritionComponents, type NutritionComponent } from '@/entities/product/model';
-import { NutritionComponentIcon } from '@/entities/product/ui/NutritionComponentIcon';
+import { type NutritionComponent } from '@/entities/product/model';
 import { NutritionComponentSummary } from '@/entities/product/ui/NutritionComponentSummary';
 import { APP_BAR_HEIGHT_SM, APP_BAR_HEIGHT_XS } from '@/shared/constants';
 
@@ -111,34 +109,17 @@ export const NutritionSummaryWidget: FC<Props> = ({ date }) => {
   return (
     <Box px={1} py={2} component={Container}>
       <Grid container spacing={2}>
-        <Grid size={12}>
-          {/* TODO: move to component */}
-          <Stack
-            p={1}
-            direction="row"
-            spacing={1}
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <Typography variant="h6" component="span" fontWeight="bold">
-              Total calories
-            </Typography>
-            <Stack direction="row" spacing={1} alignItems="center">
-              <NutritionComponentIcon type="calories" size="medium" />
-              <Typography variant="h6" component="span" fontWeight="bold">
-                {totalCalories} {nutritionComponents.calories.unit}
-              </Typography>
-            </Stack>
-          </Stack>
+        <Grid size={4}>
+          <NutritionComponentSummary value={totalCalories} type="calories" />
         </Grid>
         <Grid size={4}>
-          <NutritionComponentSummary value={12} type="protein" />
+          <NutritionComponentSummary value={123} type="protein" />
         </Grid>
         <Grid size={4}>
           <NutritionComponentSummary value={12} type="fats" />
         </Grid>
         <Grid size={4}>
-          <NutritionComponentSummary value={12} type="carbs" />
+          <NutritionComponentSummary value={123} type="carbs" />
         </Grid>
         <Grid size={4}>
           <NutritionComponentSummary value={12} type="sugar" />

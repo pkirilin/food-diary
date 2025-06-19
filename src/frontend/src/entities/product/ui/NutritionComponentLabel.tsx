@@ -14,7 +14,7 @@ export const NutritionComponentLabel: FC<Props> = ({ value, type, size, bold }) 
   const { unit } = nutritionComponents[type];
 
   return (
-    <Stack direction="row" spacing={'4px'}>
+    <Stack direction="row" spacing={size === 'small' ? 0.25 : 0.5}>
       <NutritionComponentIcon size={size} type={type} />
       <Typography
         variant={size === 'small' ? 'body2' : 'body1'}
