@@ -24,8 +24,7 @@ interface NutritionSummaryData {
 
 export const NutritionSummaryWidget: FC<Props> = ({ date }) => {
   const scrolled = useScrollTrigger({
-    // TODO: calculate threshold
-    threshold: 300,
+    threshold: 100,
     disableHysteresis: true,
   });
 
