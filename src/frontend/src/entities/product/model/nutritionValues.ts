@@ -8,19 +8,19 @@ import { type SvgIconProps } from '@mui/material';
 import { blue, pink, grey, amber, purple, green } from '@mui/material/colors';
 import { type ComponentType } from 'react';
 
-export type NutritionComponent = 'calories' | 'protein' | 'fats' | 'carbs' | 'sugar' | 'salt';
+export type NutritionValueType = 'calories' | 'protein' | 'fats' | 'carbs' | 'sugar' | 'salt';
 
 type Unit = 'kcal' | 'g';
 
-interface NutritionComponentConfig {
+interface NutritionValueConfig {
   readonly IconComponent: ComponentType<SvgIconProps>;
   readonly color: string;
   readonly unit: Unit;
 }
 
-type NutritionComponentsDictionary = Readonly<Record<NutritionComponent, NutritionComponentConfig>>;
+type NutritionValuesDictionary = Readonly<Record<NutritionValueType, NutritionValueConfig>>;
 
-export const nutritionComponents: NutritionComponentsDictionary = {
+export const nutritionValues: NutritionValuesDictionary = {
   calories: {
     IconComponent: WhatshotOutlinedIcon,
     color: green[500],

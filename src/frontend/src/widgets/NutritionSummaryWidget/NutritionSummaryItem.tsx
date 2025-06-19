@@ -1,21 +1,19 @@
 import { Box, Stack, Typography } from '@mui/material';
 import { type FC } from 'react';
-import { nutritionComponents, type NutritionComponent } from '../model';
-import { NutritionComponentIcon } from './NutritionComponentIcon';
+import { NutritionValueIcon, productModel } from '@/entities/product';
 
 interface Props {
   value: number;
-  type: NutritionComponent;
+  type: productModel.NutritionValueType;
 }
 
-// TODO: fix naming
-export const NutritionComponentSummary: FC<Props> = ({ value, type }) => {
-  const { unit, color } = nutritionComponents[type];
+export const NutritionSummaryItem: FC<Props> = ({ value, type }) => {
+  const { unit, color } = productModel.nutritionValues[type];
 
   return (
     <Stack direction="row" alignItems="center">
       <Box display="flex" justifyContent="center" alignItems="center" p={1}>
-        <NutritionComponentIcon type={type} size="medium" />
+        <NutritionValueIcon type={type} size="medium" />
       </Box>
       <Stack>
         <Typography

@@ -1,2 +1,3 @@
 export * from './ProductForm';
-export * from './NutritionComponentLabel';
+export * from './NutritionValueDisplay';
+export * from './NutritionValueIcon';

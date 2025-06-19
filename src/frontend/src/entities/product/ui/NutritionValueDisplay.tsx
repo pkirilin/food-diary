@@ -1,21 +1,21 @@
 import { Stack, Typography } from '@mui/material';
 import { type FC } from 'react';
-import { nutritionComponents, type NutritionComponent } from '../model';
-import { NutritionComponentIcon } from './NutritionComponentIcon';
+import { nutritionValues, type NutritionValueType } from '../model';
+import { NutritionValueIcon } from './NutritionValueIcon';
 
 interface Props {
   value: number;
-  type: NutritionComponent;
+  type: NutritionValueType;
   size: 'small' | 'medium';
   bold?: boolean;
 }
 
-export const NutritionComponentLabel: FC<Props> = ({ value, type, size, bold }) => {
-  const { unit } = nutritionComponents[type];
+export const NutritionValueDisplay: FC<Props> = ({ value, type, size, bold }) => {
+  const { unit } = nutritionValues[type];
 
   return (
     <Stack direction="row" spacing={size === 'small' ? 0.25 : 0.5}>
-      <NutritionComponentIcon size={size} type={type} />
+      <NutritionValueIcon size={size} type={type} />
       <Typography
         variant={size === 'small' ? 'body2' : 'body1'}
         fontWeight={bold ? 'bold' : 'normal'}

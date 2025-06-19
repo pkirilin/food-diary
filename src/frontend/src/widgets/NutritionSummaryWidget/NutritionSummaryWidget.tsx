@@ -9,18 +9,17 @@ import {
 } from '@mui/material';
 import { Fragment, type FC } from 'react';
 import { noteLib } from '@/entities/note';
-import { NutritionComponentLabel } from '@/entities/product';
-import { type NutritionComponent } from '@/entities/product/model';
-import { NutritionComponentSummary } from '@/entities/product/ui/NutritionComponentSummary';
+import { NutritionValueDisplay, type productModel } from '@/entities/product';
 import { APP_BAR_HEIGHT_SM, APP_BAR_HEIGHT_XS } from '@/shared/constants';
+import { NutritionSummaryItem } from '@/widgets/NutritionSummaryWidget/NutritionSummaryItem';
 
 interface Props {
   date: string;
 }
 
-interface NutritionSummaryItem {
+interface NutritionSummaryData {
   value: number;
-  type: NutritionComponent;
+  type: productModel.NutritionValueType;
 }
 
 export const NutritionSummaryWidget: FC<Props> = ({ date }) => {
@@ -33,7 +32,7 @@ export const NutritionSummaryWidget: FC<Props> = ({ date }) => {
   const totalCalories = noteLib.useTotalCalories(date);
 
   // TODO: calculate nutrition summary
-  const nutritionSummaryItems: NutritionSummaryItem[] = [
+  const nutritionSummaryItems: NutritionSummaryData[] = [
     {
       value: totalCalories,
       type: 'calories',
@@ -93,8 +92,7 @@ export const NutritionSummaryWidget: FC<Props> = ({ date }) => {
           >
             {nutritionSummaryItems.map(({ value, type }, index) => (
               <Fragment key={type}>
-                {/* TODO: use better naming to avoid relation with NutritionComponentInput */}
-                <NutritionComponentLabel value={value} type={type} size="medium" bold />
+                <NutritionValueDisplay value={value} type={type} size="medium" bold />
                 {index < nutritionSummaryItems.length - 1 && (
                   <Divider orientation="vertical" flexItem />
                 )}
@@ -110,22 +108,22 @@ export const NutritionSummaryWidget: FC<Props> = ({ date }) => {
     <Box px={1} py={2} component={Container}>
       <Grid container spacing={2}>
         <Grid size={4}>
-          <NutritionComponentSummary value={totalCalories} type="calories" />
+          <NutritionSummaryItem value={totalCalories} type="calories" />
         </Grid>
         <Grid size={4}>
-          <NutritionComponentSummary value={123} type="protein" />
+          <NutritionSummaryItem value={123} type="protein" />
         </Grid>
         <Grid size={4}>
-          <NutritionComponentSummary value={12} type="fats" />
+          <NutritionSummaryItem value={12} type="fats" />
         </Grid>
         <Grid size={4}>
-          <NutritionComponentSummary value={123} type="carbs" />
+          <NutritionSummaryItem value={123} type="carbs" />
         </Grid>
         <Grid size={4}>
-          <NutritionComponentSummary value={12} type="sugar" />
+          <NutritionSummaryItem value={12} type="sugar" />
         </Grid>
         <Grid size={4}>
-          <NutritionComponentSummary value={12} type="salt" />
+          <NutritionSummaryItem value={12} type="salt" />
         </Grid>
       </Grid>
     </Box>

@@ -1,19 +1,19 @@
 import { InputAdornment, TextField } from '@mui/material';
 import { forwardRef, type ChangeEventHandler } from 'react';
-import { nutritionComponents, type NutritionComponent } from '../model';
-import { NutritionComponentIcon } from './NutritionComponentIcon';
+import { nutritionValues, type NutritionValueType } from '../model';
+import { NutritionValueIcon } from './NutritionValueIcon';
 
 interface Props {
   label: string;
   placeholder: string;
-  type: NutritionComponent;
+  type: NutritionValueType;
   value: number | null;
   error: boolean;
   helperText: string;
   onChange: ChangeEventHandler;
 }
 
-export const NutritionComponentInput = forwardRef<HTMLDivElement | null, Props>(
+export const NutritionValueInput = forwardRef<HTMLDivElement | null, Props>(
   ({ label, placeholder, type, value, ...props }, ref) => (
     <TextField
       {...props}
@@ -29,11 +29,11 @@ export const NutritionComponentInput = forwardRef<HTMLDivElement | null, Props>(
         input: {
           startAdornment: (
             <InputAdornment position="start">
-              <NutritionComponentIcon type={type} />
+              <NutritionValueIcon type={type} />
             </InputAdornment>
           ),
           endAdornment: (
-            <InputAdornment position="end">{nutritionComponents[type].unit}</InputAdornment>
+            <InputAdornment position="end">{nutritionValues[type].unit}</InputAdornment>
           ),
         },
         htmlInput: {
@@ -45,4 +45,4 @@ export const NutritionComponentInput = forwardRef<HTMLDivElement | null, Props>(
   ),
 );
 
-NutritionComponentInput.displayName = 'NutritionComponentInput';
+NutritionValueInput.displayName = 'NutritionComponentInput';
