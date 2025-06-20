@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const NutritionComponentQuantitySchema = z
+export const NutritionValueSchema = z
   .union([z.string(), z.number(), z.null()])
   .transform(value => (value === null ? '' : String(value).trim()))
   .refine(value => value === '' || /^\d+([.,]\d{1,2})?$/.test(value), {

@@ -14,35 +14,35 @@ interface Props {
 }
 
 export const NutritionValueInput = forwardRef<HTMLDivElement | null, Props>(
-  ({ label, placeholder, type, value, ...props }, ref) => (
-    <TextField
-      {...props}
-      ref={ref}
-      fullWidth
-      label={`${label} (optional)`}
-      placeholder={placeholder}
-      value={value ?? ''}
-      margin="none"
-      size="small"
-      onFocus={event => event.target.select()}
-      slotProps={{
-        input: {
-          startAdornment: (
-            <InputAdornment position="start">
-              <NutritionValueIcon type={type} />
-            </InputAdornment>
-          ),
-          endAdornment: (
-            <InputAdornment position="end">{nutritionValuesConfig[type].unit}</InputAdornment>
-          ),
-        },
-        htmlInput: {
-          type: 'text',
-          inputMode: 'decimal',
-        },
-      }}
-    />
-  ),
+  function NutritionValueInput({ label, placeholder, type, value, ...props }, ref) {
+    return (
+      <TextField
+        {...props}
+        ref={ref}
+        fullWidth
+        label={`${label} (optional)`}
+        placeholder={placeholder}
+        value={value ?? ''}
+        margin="none"
+        size="small"
+        onFocus={event => event.target.select()}
+        slotProps={{
+          input: {
+            startAdornment: (
+              <InputAdornment position="start">
+                <NutritionValueIcon type={type} />
+              </InputAdornment>
+            ),
+            endAdornment: (
+              <InputAdornment position="end">{nutritionValuesConfig[type].unit}</InputAdornment>
+            ),
+          },
+          htmlInput: {
+            type: 'text',
+            inputMode: 'decimal',
+          },
+        }}
+      />
+    );
+  },
 );
-
-NutritionValueInput.displayName = 'NutritionComponentInput';
