@@ -7,19 +7,14 @@ import {
   Stack,
   useScrollTrigger,
 } from '@mui/material';
-import { Fragment, type FC } from 'react';
+import { type FC } from 'react';
 import { noteLib } from '@/entities/note';
-import { NutritionValueDisplay, type productModel } from '@/entities/product';
+import { NutritionValueDisplay } from '@/entities/product';
 import { APP_BAR_HEIGHT_SM, APP_BAR_HEIGHT_XS } from '@/shared/constants';
 import { NutritionSummaryItem } from '@/widgets/NutritionSummaryWidget/NutritionSummaryItem';
 
 interface Props {
   date: string;
-}
-
-interface NutritionSummaryData {
-  value: number;
-  type: productModel.NutritionValueType;
 }
 
 export const NutritionSummaryWidget: FC<Props> = ({ date }) => {
@@ -28,35 +23,7 @@ export const NutritionSummaryWidget: FC<Props> = ({ date }) => {
     disableHysteresis: true,
   });
 
-  const totalCalories = noteLib.useTotalCalories(date);
-
-  // TODO: calculate nutrition summary
-  const nutritionSummaryItems: NutritionSummaryData[] = [
-    {
-      value: totalCalories,
-      type: 'calories',
-    },
-    {
-      value: 12,
-      type: 'protein',
-    },
-    {
-      value: 34,
-      type: 'fats',
-    },
-    {
-      value: 56,
-      type: 'carbs',
-    },
-    {
-      value: 78,
-      type: 'sugar',
-    },
-    {
-      value: 90,
-      type: 'salt',
-    },
-  ];
+  const { calories, protein, fats, carbs, sugar, salt } = noteLib.useNutritionValues(date);
 
   if (scrolled) {
     return (
@@ -89,14 +56,17 @@ export const NutritionSummaryWidget: FC<Props> = ({ date }) => {
               },
             }}
           >
-            {nutritionSummaryItems.map(({ value, type }, index) => (
-              <Fragment key={type}>
-                <NutritionValueDisplay value={value} type={type} size="medium" bold />
-                {index < nutritionSummaryItems.length - 1 && (
-                  <Divider orientation="vertical" flexItem />
-                )}
-              </Fragment>
-            ))}
+            <NutritionValueDisplay type="calories" value={calories} size="medium" bold />
+            <Divider orientation="vertical" flexItem />
+            <NutritionValueDisplay type="protein" value={protein} size="medium" bold />
+            <Divider orientation="vertical" flexItem />
+            <NutritionValueDisplay type="fats" value={fats} size="medium" bold />
+            <Divider orientation="vertical" flexItem />
+            <NutritionValueDisplay type="carbs" value={carbs} size="medium" bold />
+            <Divider orientation="vertical" flexItem />
+            <NutritionValueDisplay type="sugar" value={sugar} size="medium" bold />
+            <Divider orientation="vertical" flexItem />
+            <NutritionValueDisplay type="salt" value={salt} size="medium" bold />
           </Stack>
         </Box>
       </Slide>
@@ -107,22 +77,22 @@ export const NutritionSummaryWidget: FC<Props> = ({ date }) => {
     <Box px={1} py={2} component={Container}>
       <Grid container spacing={2}>
         <Grid size={4}>
-          <NutritionSummaryItem value={totalCalories} type="calories" />
+          <NutritionSummaryItem type="calories" value={calories} />
         </Grid>
         <Grid size={4}>
-          <NutritionSummaryItem value={123} type="protein" />
+          <NutritionSummaryItem type="protein" value={protein} />
         </Grid>
         <Grid size={4}>
-          <NutritionSummaryItem value={12} type="fats" />
+          <NutritionSummaryItem type="fats" value={fats} />
         </Grid>
         <Grid size={4}>
-          <NutritionSummaryItem value={123} type="carbs" />
+          <NutritionSummaryItem type="carbs" value={carbs} />
         </Grid>
         <Grid size={4}>
-          <NutritionSummaryItem value={12} type="sugar" />
+          <NutritionSummaryItem type="sugar" value={sugar} />
         </Grid>
         <Grid size={4}>
-          <NutritionSummaryItem value={12} type="salt" />
+          <NutritionSummaryItem type="salt" value={salt} />
         </Grid>
       </Grid>
     </Box>

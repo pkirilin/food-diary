@@ -15,7 +15,10 @@ interface Props {
 
 export const NotesListItem: FC<Props> = ({ note }) => {
   const [expanded, setExpanded] = useState(false);
-  const calories = noteModel.calculateCalories(note);
+
+  const { calories, protein, fats, carbs, sugar, salt } = noteModel.calculateNutritionValues([
+    note,
+  ]);
 
   const handleExpandToggle: MouseEventHandler = () => {
     setExpanded(prev => !prev);
@@ -38,11 +41,11 @@ export const NotesListItem: FC<Props> = ({ note }) => {
           bgcolor={theme => alpha(theme.palette.primary.main, theme.palette.action.selectedOpacity)}
         >
           <Stack direction="row" py={1} spacing={2} overflow="scroll">
-            <NutritionValueDisplay type="protein" size="small" value={123} />
-            <NutritionValueDisplay type="fats" size="small" value={12} />
-            <NutritionValueDisplay type="carbs" size="small" value={123} />
-            <NutritionValueDisplay type="sugar" size="small" value={12} />
-            <NutritionValueDisplay type="salt" size="small" value={12} />
+            <NutritionValueDisplay type="protein" size="small" value={protein} />
+            <NutritionValueDisplay type="fats" size="small" value={fats} />
+            <NutritionValueDisplay type="carbs" size="small" value={carbs} />
+            <NutritionValueDisplay type="sugar" size="small" value={sugar} />
+            <NutritionValueDisplay type="salt" size="small" value={salt} />
           </Stack>
           <Stack direction="row" justifyContent="right" spacing={2}>
             <EditNote

@@ -5,9 +5,6 @@ import { addNullable, calculateNutritionValue } from '../lib/calculationHelpers'
 export const calculateCalories = ({ product, productQuantity }: NoteItem): number =>
   Math.floor((product.calories * productQuantity) / 100);
 
-export const calculateTotalCalories = (notes: NoteItem[]): number =>
-  notes.reduce((sum, note) => sum + calculateCalories(note), 0);
-
 export const calculateNutritionValues = (notes: NoteItem[]): productModel.NutritionValues => {
   const nutritionValues: productModel.NutritionValues = {
     calories: 0,
