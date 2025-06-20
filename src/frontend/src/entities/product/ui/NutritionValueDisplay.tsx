@@ -1,6 +1,6 @@
 import { Stack, Typography } from '@mui/material';
 import { type FC } from 'react';
-import { nutritionValues, type NutritionValueType } from '../model';
+import { nutritionValuesConfig, type NutritionValueType } from '../model';
 import { NutritionValueIcon } from './NutritionValueIcon';
 
 interface Props {
@@ -11,7 +11,7 @@ interface Props {
 }
 
 export const NutritionValueDisplay: FC<Props> = ({ value, type, size, bold }) => {
-  const { unit } = nutritionValues[type];
+  const { unit } = nutritionValuesConfig[type];
 
   return (
     <Stack direction="row" spacing={size === 'small' ? 0.25 : 0.5}>

@@ -10,6 +10,12 @@ import { type ComponentType } from 'react';
 
 export type NutritionValueType = 'calories' | 'protein' | 'fats' | 'carbs' | 'sugar' | 'salt';
 
+type RequiredNutritionValueType = Extract<NutritionValueType, 'calories'>;
+type OptionalNutritionValueType = Exclude<NutritionValueType, 'calories'>;
+
+export type NutritionValues = Record<RequiredNutritionValueType, number> &
+  Record<OptionalNutritionValueType, number | null>;
+
 type Unit = 'kcal' | 'g';
 
 interface NutritionValueConfig {
@@ -18,9 +24,9 @@ interface NutritionValueConfig {
   readonly unit: Unit;
 }
 
-type NutritionValuesDictionary = Readonly<Record<NutritionValueType, NutritionValueConfig>>;
+type NutritionValuesConfig = Readonly<Record<NutritionValueType, NutritionValueConfig>>;
 
-export const nutritionValues: NutritionValuesDictionary = {
+export const nutritionValuesConfig: NutritionValuesConfig = {
   calories: {
     IconComponent: WhatshotOutlinedIcon,
     color: green[500],

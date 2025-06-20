@@ -1,6 +1,6 @@
 import { InputAdornment, TextField } from '@mui/material';
 import { forwardRef, type ChangeEventHandler } from 'react';
-import { nutritionValues, type NutritionValueType } from '../model';
+import { nutritionValuesConfig, type NutritionValueType } from '../model';
 import { NutritionValueIcon } from './NutritionValueIcon';
 
 interface Props {
@@ -33,7 +33,7 @@ export const NutritionValueInput = forwardRef<HTMLDivElement | null, Props>(
             </InputAdornment>
           ),
           endAdornment: (
-            <InputAdornment position="end">{nutritionValues[type].unit}</InputAdornment>
+            <InputAdornment position="end">{nutritionValuesConfig[type].unit}</InputAdornment>
           ),
         },
         htmlInput: {

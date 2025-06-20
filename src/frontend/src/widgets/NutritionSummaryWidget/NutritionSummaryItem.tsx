@@ -8,7 +8,7 @@ interface Props {
 }
 
 export const NutritionSummaryItem: FC<Props> = ({ value, type }) => {
-  const { unit, color } = productModel.nutritionValues[type];
+  const { unit, color } = productModel.nutritionValuesConfig[type];
 
   return (
     <Stack direction="row" alignItems="center">

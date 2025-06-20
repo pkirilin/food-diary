@@ -14,7 +14,7 @@ import {
 import { useEffect, type FC } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { type SelectOption } from '@/shared/types';
-import { type ProductFormValues, productSchema, nutritionValues } from '../model';
+import { type ProductFormValues, productSchema, nutritionValuesConfig } from '../model';
 import { NutritionValueIcon } from './NutritionValueIcon';
 import { NutritionValueInput } from './NutritionValueInput';
 
@@ -131,7 +131,7 @@ export const ProductForm: FC<Props> = ({
                     ),
                     endAdornment: (
                       <InputAdornment position="end">
-                        {nutritionValues.calories.unit}
+                        {nutritionValuesConfig.calories.unit}
                       </InputAdornment>
                     ),
                   },

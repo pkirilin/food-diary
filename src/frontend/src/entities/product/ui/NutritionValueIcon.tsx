@@ -1,5 +1,5 @@
 import { type FC } from 'react';
-import { nutritionValues, type NutritionValueType } from '../model/nutritionValues';
+import { nutritionValuesConfig, type NutritionValueType } from '../model/nutritionValues';
 
 interface Props {
   type: NutritionValueType;
@@ -7,7 +7,7 @@ interface Props {
 }
 
 export const NutritionValueIcon: FC<Props> = ({ type, size = 'small' }) => {
-  const { IconComponent, color } = nutritionValues[type];
+  const { IconComponent, color } = nutritionValuesConfig[type];
 
   const getFontSize = (): number => {
     switch (size) {
