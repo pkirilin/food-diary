@@ -19,7 +19,7 @@ interface Props {
 
 export const NutritionSummaryWidget: FC<Props> = ({ date }) => {
   const scrolled = useScrollTrigger({
-    threshold: 100,
+    threshold: 180,
     disableHysteresis: true,
   });
 
