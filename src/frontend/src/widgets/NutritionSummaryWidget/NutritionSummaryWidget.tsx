@@ -1,8 +1,17 @@
-import { Box, Container, Stack, Typography, useScrollTrigger } from '@mui/material';
+import {
+  Box,
+  Container,
+  Divider,
+  Grid2 as Grid,
+  Slide,
+  Stack,
+  useScrollTrigger,
+} from '@mui/material';
 import { type FC } from 'react';
 import { noteLib } from '@/entities/note';
-import { NutritionComponentIcon } from '@/entities/product/ui/NutritionComponentIcon';
+import { NutritionValueDisplay } from '@/entities/product';
 import { APP_BAR_HEIGHT_SM, APP_BAR_HEIGHT_XS } from '@/shared/constants';
+import { NutritionSummaryItem } from '@/widgets/NutritionSummaryWidget/NutritionSummaryItem';
 
 interface Props {
   date: string;
@@ -10,39 +19,82 @@ interface Props {
 
 export const NutritionSummaryWidget: FC<Props> = ({ date }) => {
   const scrolled = useScrollTrigger({
-    threshold: APP_BAR_HEIGHT_XS / 2,
+    threshold: 180,
     disableHysteresis: true,
   });
 
-  const totalCalories = noteLib.useTotalCalories(date);
+  const { calories, protein, fats, carbs, sugar, salt } = noteLib.useNutritionValues(date);
+
+  if (scrolled) {
+    return (
+      <Slide in={scrolled}>
+        <Box
+          sx={theme => ({
+            top: APP_BAR_HEIGHT_XS,
+            position: 'sticky',
+            zIndex: 1,
+            backgroundColor: theme.palette.background.paper,
+            boxShadow: theme.shadows[2],
+            paddingY: 2,
+            overflowX: 'scroll',
+
+            [theme.breakpoints.up('sm')]: {
+              top: APP_BAR_HEIGHT_SM,
+            },
+          })}
+        >
+          {/* TODO(optional): add scroll buttons */}
+          <Stack
+            component={Container}
+            direction="row"
+            spacing={2}
+            sx={{
+              '&::after': {
+                content: '""',
+                minWidth: theme => theme.spacing(2),
+                display: 'block',
+              },
+            }}
+          >
+            <NutritionValueDisplay type="calories" value={calories} size="medium" bold />
+            <Divider orientation="vertical" flexItem />
+            <NutritionValueDisplay type="protein" value={protein} size="medium" bold />
+            <Divider orientation="vertical" flexItem />
+            <NutritionValueDisplay type="fats" value={fats} size="medium" bold />
+            <Divider orientation="vertical" flexItem />
+            <NutritionValueDisplay type="carbs" value={carbs} size="medium" bold />
+            <Divider orientation="vertical" flexItem />
+            <NutritionValueDisplay type="sugar" value={sugar} size="medium" bold />
+            <Divider orientation="vertical" flexItem />
+            <NutritionValueDisplay type="salt" value={salt} size="medium" bold />
+          </Stack>
+        </Box>
+      </Slide>
+    );
+  }
 
   return (
-    <Box
-      sx={theme => ({
-        top: APP_BAR_HEIGHT_XS,
-        position: 'sticky',
-        zIndex: 1,
-        backgroundColor: theme.palette.background.paper,
-        boxShadow: scrolled ? theme.shadows[2] : 'none',
-        paddingY: 1,
-
-        [theme.breakpoints.up('sm')]: {
-          top: APP_BAR_HEIGHT_SM,
-        },
-      })}
-    >
-      <Stack component={Container} direction="row" spacing={1} justifyContent="space-between">
-        <Typography variant="h6" component="span" fontWeight="bold">
-          Total calories
-        </Typography>
-
-        <Stack direction="row" spacing={1} alignItems="center">
-          <NutritionComponentIcon type="calories" size="medium" />
-          <Typography variant="h6" component="span" fontWeight="bold">
-            {totalCalories} kcal
-          </Typography>
-        </Stack>
-      </Stack>
+    <Box px={1} py={2} component={Container}>
+      <Grid container spacing={2}>
+        <Grid size={4}>
+          <NutritionSummaryItem type="calories" value={calories} />
+        </Grid>
+        <Grid size={4}>
+          <NutritionSummaryItem type="protein" value={protein} />
+        </Grid>
+        <Grid size={4}>
+          <NutritionSummaryItem type="fats" value={fats} />
+        </Grid>
+        <Grid size={4}>
+          <NutritionSummaryItem type="carbs" value={carbs} />
+        </Grid>
+        <Grid size={4}>
+          <NutritionSummaryItem type="sugar" value={sugar} />
+        </Grid>
+        <Grid size={4}>
+          <NutritionSummaryItem type="salt" value={salt} />
+        </Grid>
+      </Grid>
     </Box>
   );
 };

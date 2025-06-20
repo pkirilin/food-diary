@@ -14,9 +14,9 @@ import {
 import { useEffect, type FC } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { type SelectOption } from '@/shared/types';
-import { type ProductFormValues, productSchema, nutritionComponents } from '../model';
-import { NutritionComponentIcon } from './NutritionComponentIcon';
-import { NutritionComponentInput } from './NutritionComponentInput';
+import { type ProductFormValues, productSchema, nutritionValuesConfig } from '../model';
+import { NutritionValueIcon } from './NutritionValueIcon';
+import { NutritionValueInput } from './NutritionValueInput';
 
 interface Props {
   formId: string;
@@ -126,12 +126,12 @@ export const ProductForm: FC<Props> = ({
                   input: {
                     startAdornment: (
                       <InputAdornment position="start">
-                        <NutritionComponentIcon type="calories" size="medium" />
+                        <NutritionValueIcon type="calories" size="medium" />
                       </InputAdornment>
                     ),
                     endAdornment: (
                       <InputAdornment position="end">
-                        {nutritionComponents.calories.unit}
+                        {nutritionValuesConfig.calories.unit}
                       </InputAdornment>
                     ),
                   },
@@ -187,7 +187,7 @@ export const ProductForm: FC<Props> = ({
                 name="protein"
                 control={control}
                 render={({ field, fieldState }) => (
-                  <NutritionComponentInput
+                  <NutritionValueInput
                     {...field}
                     type="protein"
                     label="Protein"
@@ -203,7 +203,7 @@ export const ProductForm: FC<Props> = ({
                 name="fats"
                 control={control}
                 render={({ field, fieldState }) => (
-                  <NutritionComponentInput
+                  <NutritionValueInput
                     {...field}
                     type="fats"
                     label="Fats"
@@ -219,7 +219,7 @@ export const ProductForm: FC<Props> = ({
                 name="carbs"
                 control={control}
                 render={({ field, fieldState }) => (
-                  <NutritionComponentInput
+                  <NutritionValueInput
                     {...field}
                     type="carbs"
                     label="Carbs"
@@ -235,7 +235,7 @@ export const ProductForm: FC<Props> = ({
                 name="sugar"
                 control={control}
                 render={({ field, fieldState }) => (
-                  <NutritionComponentInput
+                  <NutritionValueInput
                     {...field}
                     type="sugar"
                     label="Sugar"
@@ -251,7 +251,7 @@ export const ProductForm: FC<Props> = ({
                 name="salt"
                 control={control}
                 render={({ field, fieldState }) => (
-                  <NutritionComponentInput
+                  <NutritionValueInput
                     {...field}
                     type="salt"
                     label="Salt"
