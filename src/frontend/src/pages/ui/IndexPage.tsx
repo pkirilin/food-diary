@@ -1,3 +1,4 @@
+import { Box, Slide, useScrollTrigger } from '@mui/material';
 import { type FC } from 'react';
 import { type LoaderFunction, useLoaderData } from 'react-router-dom';
 import { store } from '@/app/store';
@@ -8,7 +9,10 @@ import { dateLib } from '@/shared/lib';
 import { PageContainer } from '@/shared/ui';
 import { MealsList } from '@/widgets/MealsList';
 import { type NavigationLoaderData } from '@/widgets/Navigation';
-import { NutritionSummaryWidget } from '@/widgets/NutritionSummaryWidget';
+import {
+  NutritionSummaryWidget,
+  NutritionSummaryWidgetBar,
+} from '@/widgets/NutritionSummaryWidget';
 
 interface LoaderData extends NavigationLoaderData {
   date: string;
@@ -39,12 +43,30 @@ export const loader: LoaderFunction = async ({ request }) => {
 export const Component: FC = () => {
   const { date } = useLoaderData() as LoaderData;
 
+  const scrolled = useScrollTrigger({
+    threshold: 180,
+    disableHysteresis: true,
+  });
+
   return (
-    <>
+    <Box>
       <NutritionSummaryWidget date={date} />
       <PageContainer>
         <MealsList date={date} />
       </PageContainer>
-    </>
+      <Slide in={scrolled} direction="up">
+        <Box
+          position="sticky"
+          bottom={0}
+          bgcolor={theme => theme.palette.background.paper}
+          boxShadow={theme => theme.shadows[8]}
+          borderTop={theme => `1px solid ${theme.palette.divider}`}
+          zIndex={theme => theme.zIndex.appBar}
+          overflow={['auto', 'hidden']}
+        >
+          <NutritionSummaryWidgetBar date={date} />
+        </Box>
+      </Slide>
+    </Box>
   );
 };

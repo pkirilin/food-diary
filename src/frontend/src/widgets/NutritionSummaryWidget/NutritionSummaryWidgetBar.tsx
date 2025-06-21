@@ -1,0 +1,43 @@
+import { Container, Divider, Stack } from '@mui/material';
+import { type FC } from 'react';
+import { noteLib } from '@/entities/note';
+import { NutritionValueDisplay } from '@/entities/product';
+
+interface Props {
+  date: string;
+}
+
+export const NutritionSummaryWidgetBar: FC<Props> = ({ date }) => {
+  const { calories, protein, fats, carbs, sugar, salt } = noteLib.useNutritionValues(date);
+
+  // TODO(optional): add scroll buttons
+  return (
+    <Container>
+      <Stack
+        py={1}
+        direction="row"
+        spacing={2}
+        // Adds extra space after the last item. Padding doesn't work with overflow
+        sx={{
+          '&::after': {
+            content: '""',
+            minWidth: theme => theme.spacing(2),
+            display: 'block',
+          },
+        }}
+      >
+        <NutritionValueDisplay type="calories" value={calories} size="medium" bold />
+        <Divider orientation="vertical" flexItem />
+        <NutritionValueDisplay type="protein" value={protein} size="medium" bold />
+        <Divider orientation="vertical" flexItem />
+        <NutritionValueDisplay type="fats" value={fats} size="medium" bold />
+        <Divider orientation="vertical" flexItem />
+        <NutritionValueDisplay type="carbs" value={carbs} size="medium" bold />
+        <Divider orientation="vertical" flexItem />
+        <NutritionValueDisplay type="sugar" value={sugar} size="medium" bold />
+        <Divider orientation="vertical" flexItem />
+        <NutritionValueDisplay type="salt" value={salt} size="medium" bold />
+      </Stack>
+    </Container>
+  );
+};
