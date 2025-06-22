@@ -1,15 +1,14 @@
-import { Box, Container, Divider, Grid2 as Grid, Stack } from '@mui/material';
+import { Box, Container, Grid2 as Grid } from '@mui/material';
 import { type FC } from 'react';
-import { noteLib } from '@/entities/note';
-import { NutritionValueDisplay } from '@/entities/product';
+import { type productModel } from '@/entities/product';
 import { NutritionSummaryItem } from '@/widgets/NutritionSummaryWidget/NutritionSummaryItem';
 
 interface Props {
-  date: string;
+  nutritionValues: productModel.NutritionValues;
 }
 
-export const NutritionSummaryWidget: FC<Props> = ({ date }) => {
-  const { calories, protein, fats, carbs, sugar, salt } = noteLib.useNutritionValues(date);
+export const NutritionSummaryWidget: FC<Props> = ({ nutritionValues }) => {
+  const { calories, protein, fats, carbs, sugar, salt } = nutritionValues;
 
   return (
     <Box px={1} py={2} component={Container}>

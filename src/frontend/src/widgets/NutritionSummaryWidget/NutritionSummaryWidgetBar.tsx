@@ -1,20 +1,19 @@
 import { Container, Divider, Stack } from '@mui/material';
 import { type FC } from 'react';
-import { noteLib } from '@/entities/note';
-import { NutritionValueDisplay } from '@/entities/product';
+import { NutritionValueDisplay, type productModel } from '@/entities/product';
 
 interface Props {
-  date: string;
+  nutritionValues: productModel.NutritionValues;
 }
 
-export const NutritionSummaryWidgetBar: FC<Props> = ({ date }) => {
-  const { calories, protein, fats, carbs, sugar, salt } = noteLib.useNutritionValues(date);
+export const NutritionSummaryWidgetBar: FC<Props> = ({ nutritionValues }) => {
+  const { calories, protein, fats, carbs, sugar, salt } = nutritionValues;
 
   // TODO(optional): add scroll buttons
   return (
     <Container>
       <Stack
-        py={1}
+        py={2}
         direction="row"
         spacing={2}
         // Adds extra space after the last item. Padding doesn't work with overflow
