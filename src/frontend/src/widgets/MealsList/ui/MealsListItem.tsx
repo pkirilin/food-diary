@@ -27,7 +27,7 @@ export const MealsListItem: FC<Props> = ({ date, mealType }) => {
               <Typography fontWeight="bold">{mealName}</Typography>
               <NutritionValueDisplay type="calories" size="small" value={calories} bold />
             </Stack>
-            <Stack direction="row" spacing={2} py={1} overflow="scroll">
+            <Stack direction="row" spacing={2} py={1} overflow={['auto', 'hidden']}>
               <NutritionValueDisplay type="protein" size="small" value={protein} bold />
               <NutritionValueDisplay type="fats" size="small" value={fats} bold />
               <NutritionValueDisplay type="carbs" size="small" value={carbs} bold />

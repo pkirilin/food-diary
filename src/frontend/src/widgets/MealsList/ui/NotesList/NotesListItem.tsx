@@ -40,7 +40,7 @@ export const NotesListItem: FC<Props> = ({ note }) => {
           spacing={2}
           bgcolor={theme => alpha(theme.palette.primary.main, theme.palette.action.selectedOpacity)}
         >
-          <Stack direction="row" py={1} spacing={2} overflow="scroll">
+          <Stack direction="row" py={1} spacing={2} overflow={['auto', 'hidden']}>
             <NutritionValueDisplay type="protein" size="small" value={protein} />
             <NutritionValueDisplay type="fats" size="small" value={fats} />
             <NutritionValueDisplay type="carbs" size="small" value={carbs} />
