@@ -26,7 +26,7 @@ export const NutritionSummaryItem: FC<Props> = ({ value, type }) => {
         </Typography>
         <Stack direction="row" spacing={0.5} alignItems="baseline">
           <Typography variant="subtitle1" component="span" color={color} fontWeight="bold">
-            {value ?? '-'}
+            {value ?? <>&mdash;</>}
           </Typography>
           <Typography variant="body2" component="span" color="textSecondary">
             {unit}
