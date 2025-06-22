@@ -5,6 +5,7 @@ import { store } from '@/app/store';
 import { noteApi, noteLib } from '@/entities/note';
 import { SelectDate } from '@/features/note/selectDate';
 import { MSW_ENABLED } from '@/shared/config';
+import { APP_BAR_HEIGHT_SM, APP_BAR_HEIGHT_XS } from '@/shared/constants';
 import { dateLib } from '@/shared/lib';
 import { PageContainer } from '@/shared/ui';
 import { MealsList } from '@/widgets/MealsList';
@@ -51,23 +52,23 @@ export const Component: FC = () => {
 
   return (
     <Box>
-      <NutritionSummaryWidget nutritionValues={nutritionValues} />
-      <PageContainer>
-        <MealsList date={date} />
-      </PageContainer>
-      <Slide in={scrolled} direction="up">
+      <Slide in={scrolled} direction="down">
         <Box
-          position="sticky"
-          bottom={0}
+          position="fixed"
+          top={{ xs: APP_BAR_HEIGHT_XS, sm: APP_BAR_HEIGHT_SM }}
           bgcolor={theme => theme.palette.background.paper}
-          boxShadow={theme => theme.shadows[8]}
-          borderTop={theme => `1px solid ${theme.palette.divider}`}
-          zIndex={theme => theme.zIndex.appBar}
+          boxShadow={theme => theme.shadows[2]}
+          zIndex={theme => theme.zIndex.appBar - 1}
           overflow={['auto', 'hidden']}
+          width="100%"
         >
           <NutritionSummaryWidgetBar nutritionValues={nutritionValues} />
         </Box>
       </Slide>
+      <NutritionSummaryWidget nutritionValues={nutritionValues} />
+      <PageContainer>
+        <MealsList date={date} />
+      </PageContainer>
     </Box>
   );
 };
