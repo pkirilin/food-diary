@@ -9,7 +9,6 @@ interface Props {
 export const NutritionSummaryWidgetBar: FC<Props> = ({ nutritionValues }) => {
   const { calories, protein, fats, carbs, sugar, salt } = nutritionValues;
 
-  // TODO(optional): add scroll buttons
   return (
     <Container>
       <Stack
