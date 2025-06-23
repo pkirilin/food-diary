@@ -1,48 +1,42 @@
-import { Box, Container, Stack, Typography, useScrollTrigger } from '@mui/material';
+import { Box, Card, CardContent, CardHeader, Container, Grid2 as Grid } from '@mui/material';
 import { type FC } from 'react';
-import { noteLib } from '@/entities/note';
-import { NutritionComponentIcon } from '@/entities/product/ui/NutritionComponentIcon';
-import { APP_BAR_HEIGHT_SM, APP_BAR_HEIGHT_XS } from '@/shared/constants';
+import { type productModel } from '@/entities/product';
+import { NutritionSummaryItem } from '@/widgets/NutritionSummaryWidget/NutritionSummaryItem';
 
 interface Props {
-  date: string;
+  nutritionValues: productModel.NutritionValues;
 }
 
-export const NutritionSummaryWidget: FC<Props> = ({ date }) => {
-  const scrolled = useScrollTrigger({
-    threshold: APP_BAR_HEIGHT_XS / 2,
-    disableHysteresis: true,
-  });
-
-  const totalCalories = noteLib.useTotalCalories(date);
+export const NutritionSummaryWidget: FC<Props> = ({ nutritionValues }) => {
+  const { calories, protein, fats, carbs, sugar, salt } = nutritionValues;
 
   return (
-    <Box
-      sx={theme => ({
-        top: APP_BAR_HEIGHT_XS,
-        position: 'sticky',
-        zIndex: 1,
-        backgroundColor: theme.palette.background.paper,
-        boxShadow: scrolled ? theme.shadows[2] : 'none',
-        paddingY: 1,
-
-        [theme.breakpoints.up('sm')]: {
-          top: APP_BAR_HEIGHT_SM,
-        },
-      })}
-    >
-      <Stack component={Container} direction="row" spacing={1} justifyContent="space-between">
-        <Typography variant="h6" component="span" fontWeight="bold">
-          Total calories
-        </Typography>
-
-        <Stack direction="row" spacing={1} alignItems="center">
-          <NutritionComponentIcon type="calories" size="medium" />
-          <Typography variant="h6" component="span" fontWeight="bold">
-            {totalCalories} kcal
-          </Typography>
-        </Stack>
-      </Stack>
+    <Box pt={3} pb={1} component={Container}>
+      <Card>
+        <CardHeader title="Daily Nutrition Summary" titleTypographyProps={{ variant: 'h6' }} />
+        <CardContent>
+          <Grid container spacing={2}>
+            <Grid size={4} display="flex" justifyContent="center">
+              <NutritionSummaryItem type="calories" value={calories} />
+            </Grid>
+            <Grid size={4} display="flex" justifyContent="center">
+              <NutritionSummaryItem type="protein" value={protein} />
+            </Grid>
+            <Grid size={4} display="flex" justifyContent="center">
+              <NutritionSummaryItem type="fats" value={fats} />
+            </Grid>
+            <Grid size={4} display="flex" justifyContent="center">
+              <NutritionSummaryItem type="carbs" value={carbs} />
+            </Grid>
+            <Grid size={4} display="flex" justifyContent="center">
+              <NutritionSummaryItem type="sugar" value={sugar} />
+            </Grid>
+            <Grid size={4} display="flex" justifyContent="center">
+              <NutritionSummaryItem type="salt" value={salt} />
+            </Grid>
+          </Grid>
+        </CardContent>
+      </Card>
     </Box>
   );
 };

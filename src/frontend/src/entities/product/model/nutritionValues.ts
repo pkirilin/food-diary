@@ -8,19 +8,25 @@ import { type SvgIconProps } from '@mui/material';
 import { blue, pink, grey, amber, purple, green } from '@mui/material/colors';
 import { type ComponentType } from 'react';
 
-export type NutritionComponent = 'calories' | 'protein' | 'fats' | 'carbs' | 'sugar' | 'salt';
+export type NutritionValueType = 'calories' | 'protein' | 'fats' | 'carbs' | 'sugar' | 'salt';
+
+type RequiredNutritionValueType = Extract<NutritionValueType, 'calories'>;
+type OptionalNutritionValueType = Exclude<NutritionValueType, 'calories'>;
+
+export type NutritionValues = Record<RequiredNutritionValueType, number> &
+  Record<OptionalNutritionValueType, number | null>;
 
 type Unit = 'kcal' | 'g';
 
-interface NutritionComponentConfig {
+interface NutritionValueConfig {
   readonly IconComponent: ComponentType<SvgIconProps>;
   readonly color: string;
   readonly unit: Unit;
 }
 
-type NutritionComponentsDictionary = Readonly<Record<NutritionComponent, NutritionComponentConfig>>;
+type NutritionValuesConfig = Readonly<Record<NutritionValueType, NutritionValueConfig>>;
 
-export const nutritionComponents: NutritionComponentsDictionary = {
+export const nutritionValuesConfig: NutritionValuesConfig = {
   calories: {
     IconComponent: WhatshotOutlinedIcon,
     color: green[500],
@@ -33,7 +39,7 @@ export const nutritionComponents: NutritionComponentsDictionary = {
   },
   fats: {
     IconComponent: WaterDropOutlinedIcon,
-    color: amber[500],
+    color: amber.A700,
     unit: 'g',
   },
   carbs: {

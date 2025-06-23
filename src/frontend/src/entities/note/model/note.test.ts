@@ -1,33 +1,7 @@
-import { type Product, type NoteItem } from '../api';
-import { calculateCalories } from './note';
-import { MealType } from './types';
-
-const defaultProduct: Product = {
-  id: 1,
-  name: 'Sample product',
-  defaultQuantity: 100,
-  calories: 100,
-  protein: null,
-  fats: null,
-  carbs: null,
-  sugar: null,
-  salt: null,
-};
-
-const create = {
-  note: ({ product = defaultProduct, productQuantity = 100 }: Partial<NoteItem>): NoteItem => ({
-    id: 1,
-    date: '2025-06-10',
-    mealType: MealType.Breakfast,
-    displayOrder: 1,
-    productQuantity,
-    product,
-  }),
-  product: ({ calories = 100 }: Partial<Product>): Product => ({
-    ...defaultProduct,
-    calories,
-  }),
-} as const;
+import { describe, expect } from 'vitest';
+import { type NoteItem } from '../api';
+import { create } from '../lib/dsl';
+import { calculateCalories, calculateNutritionValues } from './note';
 
 describe('calculateCalories', () => {
   test.for([
@@ -50,4 +24,53 @@ describe('calculateCalories', () => {
       expect(calculateCalories(note)).toBe(expected);
     },
   );
+});
+
+describe('calculateNutritionValues', () => {
+  test('should sum nutrition values for multiple notes and ignore null values', () => {
+    const notes: NoteItem[] = [
+      create.note({
+        product: create.product({
+          calories: 120,
+          protein: 10,
+          fats: 5,
+          carbs: 20,
+          sugar: null,
+          salt: null,
+        }),
+        productQuantity: 80,
+      }),
+      create.note({
+        product: create.product({
+          calories: 300,
+          protein: 20,
+          fats: 10,
+          carbs: 40,
+          sugar: 16,
+          salt: 2,
+        }),
+        productQuantity: 60,
+      }),
+      create.note({
+        product: create.product({
+          calories: 170,
+          protein: null,
+          fats: null,
+          carbs: null,
+          sugar: 0.1,
+          salt: null,
+        }),
+        productQuantity: 120,
+      }),
+    ];
+
+    const { calories, protein, fats, carbs, sugar, salt } = calculateNutritionValues(notes);
+
+    expect(calories).toBe(480);
+    expect(protein).toBe(20);
+    expect(fats).toBe(10);
+    expect(carbs).toBe(40);
+    expect(sugar).toBe(9.72);
+    expect(salt).toBe(1.2);
+  });
 });
