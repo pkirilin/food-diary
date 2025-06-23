@@ -22,10 +22,10 @@ export const MealsListItem: FC<Props> = ({ date, mealType }) => {
     <ListItem disableGutters disablePadding aria-label={`${mealName}, ${calories} kilocalories`}>
       <Stack width="100%">
         <Card sx={{ minWidth: '100%' }}>
-          <Stack direction="column" p={2} spacing={1} bgcolor={theme => theme.palette.grey[100]}>
-            <Stack direction="row" justifyContent="space-between">
+          <Stack direction="column" p={2} spacing={2} bgcolor={theme => theme.palette.grey[100]}>
+            <Stack direction="row" justifyContent="space-between" alignItems="center">
               <Typography fontWeight="bold">{mealName}</Typography>
-              <NutritionValueDisplay type="calories" size="small" value={calories} bold />
+              <NutritionValueDisplay type="calories" size="medium" value={calories} bold />
             </Stack>
             <Stack direction="row" spacing={2} py={1} overflow={['auto', 'hidden']}>
               <NutritionValueDisplay type="protein" size="small" value={protein} bold />
