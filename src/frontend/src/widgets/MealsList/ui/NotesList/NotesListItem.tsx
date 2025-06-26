@@ -37,6 +37,7 @@ export const NotesListItem: FC<Props> = ({ note }) => {
         <Stack
           direction="column"
           px={2}
+          pb={2}
           spacing={2}
           bgcolor={theme => alpha(theme.palette.primary.main, theme.palette.action.selectedOpacity)}
         >

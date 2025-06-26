@@ -67,7 +67,9 @@ export const Component: FC = () => {
       </Slide>
       <NutritionSummaryWidget nutritionValues={nutritionValues} />
       <PageContainer>
-        <MealsList date={date} />
+        <Box pb={4}>
+          <MealsList date={date} />
+        </Box>
       </PageContainer>
     </Box>
   );
