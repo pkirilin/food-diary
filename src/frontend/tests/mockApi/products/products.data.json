@@ -89,11 +89,11 @@
     "caloriesCost": 23,
     "defaultQuantity": 120,
     "categoryId": 3,
-    "protein": 2.9,
-    "fats": 0.4,
-    "carbs": 3.6,
-    "sugar": 0.4,
-    "salt": 0.08
+    "protein": null,
+    "fats": null,
+    "carbs": null,
+    "sugar": null,
+    "salt": null
   },
   {
     "id": 9,
