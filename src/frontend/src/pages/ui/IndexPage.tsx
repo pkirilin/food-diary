@@ -1,8 +1,8 @@
-import { Box, Slide, useScrollTrigger } from '@mui/material';
+import { Alert, Box, Slide, Stack, useScrollTrigger } from '@mui/material';
 import { type FC } from 'react';
 import { type LoaderFunction, useLoaderData } from 'react-router-dom';
 import { store } from '@/app/store';
-import { noteApi, noteLib } from '@/entities/note';
+import { noteApi, noteLib, noteModel } from '@/entities/note';
 import { SelectDate } from '@/features/note/selectDate';
 import { MSW_ENABLED } from '@/shared/config';
 import { APP_BAR_HEIGHT_SM, APP_BAR_HEIGHT_XS } from '@/shared/constants';
@@ -43,7 +43,9 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export const Component: FC = () => {
   const { date } = useLoaderData() as LoaderData;
-  const nutritionValues = noteLib.useNutritionValues(date);
+  const { data: notes } = noteLib.useNotes(date);
+  const nutritionValues = noteModel.calculateNutritionValues(notes);
+  const hasNutritionalValues = notes.every(noteModel.hasNutritionalValues);
 
   const scrolled = useScrollTrigger({
     threshold: 180,
@@ -65,11 +67,14 @@ export const Component: FC = () => {
           <NutritionSummaryWidgetBar nutritionValues={nutritionValues} />
         </Box>
       </Slide>
-      <NutritionSummaryWidget nutritionValues={nutritionValues} />
       <PageContainer>
-        <Box pb={4}>
+        <Stack spacing={3} pb={4}>
+          {!hasNutritionalValues && (
+            <Alert severity="warning">Some nutritional values are missing</Alert>
+          )}
+          <NutritionSummaryWidget nutritionValues={nutritionValues} />
           <MealsList date={date} />
-        </Box>
+        </Stack>
       </PageContainer>
     </Box>
   );
