@@ -14,7 +14,7 @@ export const MealsListItem: FC<Props> = ({ date, mealType }) => {
   const mealName = noteLib.getMealName(mealType);
   const { data: notes } = noteLib.useNotes(date, mealType);
   const { calories, protein, fats, carbs, sugar, salt } = noteModel.calculateNutritionValues(notes);
-  const hasNutritionValues = notes.every(noteModel.hasNutritionValues);
+  const hasMissingNutritionValues = notes.every(noteModel.hasMissingNutritionValues);
 
   return (
     <ListItem disableGutters disablePadding aria-label={`${mealName}, ${calories} kilocalories`}>
@@ -24,7 +24,7 @@ export const MealsListItem: FC<Props> = ({ date, mealType }) => {
             <Stack direction="row" justifyContent="space-between" alignItems="center">
               <Typography fontWeight="bold">{mealName}</Typography>
               <Stack direction="row" spacing={1} alignItems="center">
-                {!hasNutritionValues && <Badge color="warning" variant="dot" />}
+                {hasMissingNutritionValues && <Badge color="warning" variant="dot" />}
                 <NutritionValueDisplay type="calories" size="medium" value={calories} bold />
               </Stack>
             </Stack>

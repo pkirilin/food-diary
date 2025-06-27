@@ -20,7 +20,7 @@
     "protein": 26.1,
     "fats": 15.2,
     "carbs": 0,
-    "sugar": 0,
+    "sugar": null,
     "salt": 0.2
   },
   {

@@ -47,7 +47,7 @@ export const calculateNutritionValues = (notes: NoteItem[]): productModel.Nutrit
   return nutritionValues;
 };
 
-export const hasNutritionValues = ({ product }: NoteItem): boolean =>
+export const hasMissingNutritionValues = ({ product }: NoteItem): boolean =>
   [product.protein, product.fats, product.carbs, product.sugar, product.salt].every(
-    value => value !== null,
+    value => value === null,
   );
