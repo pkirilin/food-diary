@@ -4,7 +4,16 @@ using JetBrains.Annotations;
 namespace FoodDiary.API.Features.Products.Contracts;
 
 [PublicAPI]
-public record SearchProductsResult(IReadOnlyCollection<SearchProductsResult.Product> Products)
+public record SearchProductsResponse(IReadOnlyCollection<SearchProductsResponse.Product> Products)
 {
-    public record Product(int Id, string Name, int DefaultQuantity);
+    public record Product(
+        int Id,
+        string Name,
+        int DefaultQuantity,
+        int Calories,
+        decimal? Protein,
+        decimal? Fats,
+        decimal? Carbs,
+        decimal? Sugar,
+        decimal? Salt);
 }

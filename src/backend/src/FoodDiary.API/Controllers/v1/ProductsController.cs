@@ -11,6 +11,7 @@ using MediatR;
 using FoodDiary.Application.Products.Requests;
 using System.Linq;
 using FoodDiary.API.Features.Products;
+using FoodDiary.API.Features.Products.Extensions;
 using FoodDiary.API.Mapping;
 using FoodDiary.Application.Products.Create;
 using Microsoft.AspNetCore.Authorization;
@@ -184,7 +185,7 @@ public class ProductsController : ControllerBase
         CancellationToken cancellationToken)
     {
         var result = await handler.Handle(cancellationToken);
-        return Ok(result.Products);
+        return Ok(result.ToResponse());
     }
 
     private IActionResult ProductAlreadyExists(ProductCreateEditRequest product)

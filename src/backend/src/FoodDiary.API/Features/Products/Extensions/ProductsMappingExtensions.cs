@@ -1,3 +1,4 @@
+using System.Linq;
 using FoodDiary.API.Features.Products.Contracts;
 using FoodDiary.Domain.Entities;
 
@@ -24,5 +25,26 @@ public static class ProductsMappingExtensions
                 Name = p.Category.Name
             }
         };
+    }
+    
+    public static SearchProductsResponse.Product[] ToResponse(this SearchProductsResult result)
+    {
+        return result.Products
+            .Select(p => p.ToResponseProduct())
+            .ToArray();
+    }
+
+    private static SearchProductsResponse.Product ToResponseProduct(this Product product)
+    {
+        return new SearchProductsResponse.Product(
+            Id: product.Id,
+            Name: product.Name,
+            DefaultQuantity: product.DefaultQuantity,
+            Calories: product.CaloriesCost,
+            Protein: product.Protein,
+            Fats: product.Fats,
+            Carbs: product.Carbs,
+            Sugar: product.Sugar,
+            Salt: product.Salt);
     }
 }
