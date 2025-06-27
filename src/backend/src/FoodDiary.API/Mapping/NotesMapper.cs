@@ -11,19 +11,15 @@ namespace FoodDiary.API.Mapping;
 
 public static class NotesMapper
 {
-    public static GetNotesResponse.Note ToGetNotesResponse(this Note note, ICaloriesCalculator calculator) => new(
+    public static GetNotesResponse.Note ToGetNotesResponse(this Note note) => new(
         Id: note.Id,
         Date: note.Date,
         MealType: note.MealType,
         DisplayOrder: note.DisplayOrder,
-        ProductId: note.ProductId,
-        ProductName: note.Product.Name,
         ProductQuantity: note.ProductQuantity,
-        ProductDefaultQuantity: note.Product.DefaultQuantity,
-        Calories: calculator.Calculate(note),
-        Product: note.Product.GetNotesResponse());
+        Product: note.Product.ToGetNotesResponse());
 
-    private static GetNotesResponse.Product GetNotesResponse(this Product product) => new(
+    private static GetNotesResponse.Product ToGetNotesResponse(this Product product) => new(
         Id: product.Id,
         Name: product.Name,
         DefaultQuantity: product.DefaultQuantity,
@@ -43,11 +39,9 @@ public static class NotesMapper
         request.To.GetValueOrDefault()
     );
 
-    public static GetNotesResponse ToGetNotesResponse(
-        this GetNotesQueryResult result,
-        ICaloriesCalculator calculator) => new(
+    public static GetNotesResponse ToGetNotesResponse(this GetNotesQueryResult result) => new(
         Notes: result.Notes
-            .Select(n => n.ToGetNotesResponse(calculator))
+            .Select(n => n.ToGetNotesResponse())
             .ToList());
 
     public static GetNotesHistoryResponse ToGetNotesHistoryResponse(
