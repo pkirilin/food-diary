@@ -30,7 +30,7 @@ export const NotesListItem: FC<Props> = ({ note }) => {
     note,
   ]);
 
-  const hasNutritionalValues = noteModel.hasNutritionalValues(note);
+  const hasNutritionValues = noteModel.hasNutritionValues(note);
 
   const handleExpandToggle: MouseEventHandler = () => {
     setExpanded(prev => !prev);
@@ -41,7 +41,7 @@ export const NotesListItem: FC<Props> = ({ note }) => {
       <ListItemButton onClick={handleExpandToggle} selected={expanded}>
         <ListItemText primary={note.product.name} secondary={`${note.productQuantity} g`} />
         <Stack direction="row" spacing={1} alignItems="center">
-          {!hasNutritionalValues && <Badge color="warning" variant="dot" />}
+          {!hasNutritionValues && <Badge color="warning" variant="dot" />}
           <NutritionValueDisplay type="calories" value={calories} size="small" />
           {expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
         </Stack>
@@ -61,9 +61,9 @@ export const NotesListItem: FC<Props> = ({ note }) => {
             <NutritionValueDisplay type="sugar" size="small" value={sugar} />
             <NutritionValueDisplay type="salt" size="small" value={salt} />
           </Stack>
-          {!hasNutritionalValues && (
+          {!hasNutritionValues && (
             <Alert severity="warning" icon={<WarningAmberOutlinedIcon sx={{ fontSize: 20 }} />}>
-              Nutritional values are missing
+              Nutrition values are missing
             </Alert>
           )}
           <Stack direction="row" justifyContent="right" spacing={2}>

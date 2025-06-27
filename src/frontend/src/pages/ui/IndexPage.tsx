@@ -45,7 +45,7 @@ export const Component: FC = () => {
   const { date } = useLoaderData() as LoaderData;
   const { data: notes } = noteLib.useNotes(date);
   const nutritionValues = noteModel.calculateNutritionValues(notes);
-  const hasNutritionalValues = notes.every(noteModel.hasNutritionalValues);
+  const hasNutritionValues = notes.every(noteModel.hasNutritionValues);
 
   const scrolled = useScrollTrigger({
     threshold: 180,
@@ -69,10 +69,12 @@ export const Component: FC = () => {
       </Slide>
       <PageContainer>
         <Stack spacing={3} pb={4}>
-          {!hasNutritionalValues && (
-            <Alert severity="warning">Some nutritional values are missing</Alert>
-          )}
-          <NutritionSummaryWidget nutritionValues={nutritionValues} />
+          <Stack spacing={{ xs: 2, sm: 3 }}>
+            {!hasNutritionValues && (
+              <Alert severity="warning">Some nutrition values are missing</Alert>
+            )}
+            <NutritionSummaryWidget nutritionValues={nutritionValues} />
+          </Stack>
           <MealsList date={date} />
         </Stack>
       </PageContainer>
