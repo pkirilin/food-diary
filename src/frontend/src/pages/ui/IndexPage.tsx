@@ -45,7 +45,7 @@ export const Component: FC = () => {
   const { date } = useLoaderData() as LoaderData;
   const { data: notes } = noteLib.useNotes(date);
   const nutritionValues = noteModel.calculateNutritionValues(notes);
-  const hasMissingNutritionValues = notes.every(noteModel.hasMissingNutritionValues);
+  const hasMissingNutritionValues = notes.some(noteModel.hasMissingNutritionValues);
 
   const scrolled = useScrollTrigger({
     threshold: 180,
