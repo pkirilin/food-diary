@@ -22,11 +22,11 @@ export const MealsListItem: FC<Props> = ({ date, mealType }) => {
         <Card sx={{ minWidth: '100%' }}>
           <Stack direction="column" p={2} spacing={2} bgcolor={theme => theme.palette.grey[100]}>
             <Stack direction="row" justifyContent="space-between" alignItems="center">
+              <Typography fontWeight="bold">{mealName}</Typography>
               <Stack direction="row" spacing={1} alignItems="center">
-                <Typography fontWeight="bold">{mealName}</Typography>
                 {!hasNutritionalValues && <Badge color="warning" variant="dot" />}
+                <NutritionValueDisplay type="calories" size="medium" value={calories} bold />
               </Stack>
-              <NutritionValueDisplay type="calories" size="medium" value={calories} bold />
             </Stack>
             <Stack direction="row" spacing={2} py={1} overflow={['auto', 'hidden']}>
               <NutritionValueDisplay type="protein" size="small" value={protein} bold />

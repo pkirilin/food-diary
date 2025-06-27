@@ -11,7 +11,6 @@ import {
   Button,
   alpha,
   Badge,
-  Typography,
   Alert,
 } from '@mui/material';
 import { useState, type FC, type MouseEventHandler } from 'react';
@@ -40,18 +39,9 @@ export const NotesListItem: FC<Props> = ({ note }) => {
   return (
     <>
       <ListItemButton onClick={handleExpandToggle} selected={expanded}>
-        <ListItemText
-          primary={
-            <Stack direction="row" spacing={1} alignItems="center">
-              <Typography variant="body1" component="span">
-                {note.product.name}
-              </Typography>
-              {!hasNutritionalValues && <Badge color="warning" variant="dot" />}
-            </Stack>
-          }
-          secondary={`${note.productQuantity} g`}
-        />
+        <ListItemText primary={note.product.name} secondary={`${note.productQuantity} g`} />
         <Stack direction="row" spacing={1} alignItems="center">
+          {!hasNutritionalValues && <Badge color="warning" variant="dot" />}
           <NutritionValueDisplay type="calories" value={calories} size="small" />
           {expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
         </Stack>
