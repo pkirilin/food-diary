@@ -19,11 +19,7 @@ export const EditNote: FC<Props> = ({ note, renderTrigger }) => {
         date: note.date,
         mealType: note.mealType,
         displayOrder: note.displayOrder,
-        product: {
-          id: note.product.id,
-          name: note.product.name,
-          defaultQuantity: note.product.defaultQuantity,
-        },
+        product: note.product,
         quantity: note.productQuantity,
       }),
     );

@@ -12,8 +12,11 @@ import {
 import { useMemo, type FC, type MouseEventHandler } from 'react';
 import { useAppDispatch } from '@/app/store';
 import { type ProductSelectOption, productApi, productModel } from '@/entities/product';
-import { QUERY_LENGTH_THRESHOLD, searchProductsByName } from '../lib/searchProductsByName';
-import { shouldSuggestAddingNewProduct } from '../lib/shouldSuggestAddingNewProduct';
+import {
+  QUERY_LENGTH_THRESHOLD,
+  searchProductsByName,
+  shouldSuggestAddingNewProduct,
+} from '../lib/searchProducts';
 import { actions } from '../model';
 
 interface Props {

@@ -115,6 +115,12 @@ export const useSubmitProduct = (date: string): OnSubmitProductFn => {
         id: resolveProductId(product, mutationResponse.data),
         name: product.name,
         defaultQuantity: product.defaultQuantity,
+        calories: product.calories,
+        protein: product.protein,
+        fats: product.fats,
+        carbs: product.carbs,
+        sugar: product.sugar,
+        salt: product.salt,
       }),
     );
   };

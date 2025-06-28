@@ -97,7 +97,17 @@ export const manageNoteSlice = createSlice({
 
     productSelected: (state, { payload }: PayloadAction<ProductSelectOption>) => {
       if (state.note) {
-        state.note.product = payload;
+        state.note.product = {
+          id: payload.id,
+          name: payload.name,
+          defaultQuantity: payload.defaultQuantity,
+          calories: payload.calories,
+          protein: payload.protein,
+          fats: payload.fats,
+          carbs: payload.carbs,
+          sugar: payload.sugar,
+          salt: payload.salt,
+        };
         state.note.quantity = payload.defaultQuantity;
       }
     },
@@ -126,12 +136,7 @@ export const manageNoteSlice = createSlice({
       if (state.note) {
         state.isSubmitting = false;
         state.note.quantity = payload.defaultQuantity;
-        state.note.product = {
-          id: payload.id,
-          name: payload.name,
-          defaultQuantity: payload.defaultQuantity,
-        };
-
+        state.note.product = payload;
         state.noteRecognition = initialState.noteRecognition;
 
         delete state.product;
