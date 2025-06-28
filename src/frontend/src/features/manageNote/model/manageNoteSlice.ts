@@ -95,6 +95,7 @@ export const manageNoteSlice = createSlice({
 
     noteDraftSaved: () => initialState,
 
+    // TODO: use NoteFormValuesProduct payload
     productSelected: (state, { payload }: PayloadAction<ProductSelectOption>) => {
       if (state.note) {
         state.note.product = {

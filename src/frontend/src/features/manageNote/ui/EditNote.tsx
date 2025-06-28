@@ -13,6 +13,7 @@ export const EditNote: FC<Props> = ({ note, renderTrigger }) => {
   const dispatch = useAppDispatch();
 
   const handleDialogOpen = (): void => {
+    // TODO: use mapper
     dispatch(
       actions.noteDraftCreated({
         id: note.id,

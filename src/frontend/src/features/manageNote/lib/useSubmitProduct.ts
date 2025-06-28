@@ -10,6 +10,7 @@ import {
 } from '@/entities/product';
 import { actions } from '../model';
 
+// TODO: move to mapper
 const toCreateProductRequest = (
   {
     name,
@@ -34,6 +35,7 @@ const toCreateProductRequest = (
   salt,
 });
 
+// TODO: move to mapper
 const toEditProductRequest = (
   {
     name,
@@ -110,6 +112,7 @@ export const useSubmitProduct = (date: string): OnSubmitProductFn => {
       return;
     }
 
+    // TODO: use mapper
     dispatch(
       actions.productDraftSaved({
         id: resolveProductId(product, mutationResponse.data),
