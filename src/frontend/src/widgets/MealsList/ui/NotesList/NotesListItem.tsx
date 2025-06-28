@@ -15,9 +15,11 @@ import {
 } from '@mui/material';
 import { useState, type FC, type MouseEventHandler } from 'react';
 import { noteModel, type NoteItem } from '@/entities/note';
+import { productModel } from '@/entities/product';
 import { NutritionValueDisplay } from '@/entities/product/ui/NutritionValueDisplay';
 import { EditNote } from '@/features/manageNote';
 import { DeleteNote } from '@/features/note/delete';
+import { toOptionalNutritionValues } from '../../lib/mapping';
 
 interface Props {
   note: NoteItem;
@@ -30,7 +32,8 @@ export const NotesListItem: FC<Props> = ({ note }) => {
     note,
   ]);
 
-  const hasMissingNutritionValues = noteModel.hasMissingNutritionValues(note);
+  const nutritionValues = toOptionalNutritionValues(note.product);
+  const hasMissingNutritionValues = productModel.hasMissingNutritionValues(nutritionValues);
 
   const handleExpandToggle: MouseEventHandler = () => {
     setExpanded(prev => !prev);

@@ -1,8 +1,9 @@
 import { ListItem, Stack, Typography, Card, CardContent, CardActions, Badge } from '@mui/material';
 import { type FC } from 'react';
 import { noteLib, noteModel } from '@/entities/note';
-import { NutritionValueDisplay } from '@/entities/product';
+import { NutritionValueDisplay, productModel } from '@/entities/product';
 import { AddNoteButton } from '@/features/manageNote';
+import { toOptionalNutritionValues } from '../lib/mapping';
 import { NotesList } from './NotesList';
 
 interface Props {
@@ -14,7 +15,10 @@ export const MealsListItem: FC<Props> = ({ date, mealType }) => {
   const mealName = noteLib.getMealName(mealType);
   const { data: notes } = noteLib.useNotes(date, mealType);
   const { calories, protein, fats, carbs, sugar, salt } = noteModel.calculateNutritionValues(notes);
-  const hasMissingNutritionValues = notes.some(noteModel.hasMissingNutritionValues);
+
+  const hasMissingNutritionValues = notes
+    .map(note => toOptionalNutritionValues(note.product))
+    .some(productModel.hasMissingNutritionValues);
 
   return (
     <ListItem disableGutters disablePadding aria-label={`${mealName}, ${calories} kilocalories`}>
