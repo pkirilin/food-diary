@@ -1,6 +1,6 @@
 import { type PayloadAction, createSlice, createSelector } from '@reduxjs/toolkit';
 import { type NoteItem, noteLib, noteModel, type RecognizeNoteResponse } from '@/entities/note';
-import { type productModel, type ProductSelectOption } from '@/entities/product';
+import { type productModel } from '@/entities/product';
 import { type ClientError } from '@/shared/api';
 import { type NoteFormValuesProduct, type NoteFormValues } from './noteSchema';
 import { type NoteRecognitionState, type Image, type ManageNoteScreenState } from './types';
@@ -95,20 +95,9 @@ export const manageNoteSlice = createSlice({
 
     noteDraftSaved: () => initialState,
 
-    // TODO: use NoteFormValuesProduct payload
-    productSelected: (state, { payload }: PayloadAction<ProductSelectOption>) => {
+    productSelected: (state, { payload }: PayloadAction<NoteFormValuesProduct>) => {
       if (state.note) {
-        state.note.product = {
-          id: payload.id,
-          name: payload.name,
-          defaultQuantity: payload.defaultQuantity,
-          calories: payload.calories,
-          protein: payload.protein,
-          fats: payload.fats,
-          carbs: payload.carbs,
-          sugar: payload.sugar,
-          salt: payload.salt,
-        };
+        state.note.product = payload;
         state.note.quantity = payload.defaultQuantity;
       }
     },

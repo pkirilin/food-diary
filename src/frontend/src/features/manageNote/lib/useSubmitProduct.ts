@@ -8,9 +8,8 @@ import {
   type productModel,
   type OnSubmitProductFn,
 } from '@/entities/product';
-import { actions } from '../model';
+import { type NoteFormValuesProduct, actions } from '../model';
 
-// TODO: move to mapper
 const toCreateProductRequest = (
   {
     name,
@@ -35,7 +34,6 @@ const toCreateProductRequest = (
   salt,
 });
 
-// TODO: move to mapper
 const toEditProductRequest = (
   {
     name,
@@ -55,6 +53,30 @@ const toEditProductRequest = (
   caloriesCost,
   defaultQuantity,
   categoryId,
+  protein,
+  fats,
+  carbs,
+  sugar,
+  salt,
+});
+
+const toNoteFormValuesProduct = (
+  id: number,
+  {
+    name,
+    defaultQuantity,
+    calories,
+    protein,
+    fats,
+    carbs,
+    sugar,
+    salt,
+  }: productModel.ProductFormValues,
+): NoteFormValuesProduct => ({
+  id,
+  name,
+  defaultQuantity,
+  calories,
   protein,
   fats,
   carbs,
@@ -112,19 +134,9 @@ export const useSubmitProduct = (date: string): OnSubmitProductFn => {
       return;
     }
 
-    // TODO: use mapper
-    dispatch(
-      actions.productDraftSaved({
-        id: resolveProductId(product, mutationResponse.data),
-        name: product.name,
-        defaultQuantity: product.defaultQuantity,
-        calories: product.calories,
-        protein: product.protein,
-        fats: product.fats,
-        carbs: product.carbs,
-        sugar: product.sugar,
-        salt: product.salt,
-      }),
-    );
+    const productId = resolveProductId(product, mutationResponse.data);
+    const productDraft = toNoteFormValuesProduct(productId, product);
+
+    dispatch(actions.productDraftSaved(productDraft));
   };
 };

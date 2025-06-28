@@ -13,8 +13,7 @@ import {
 import { type ReactNode, type FC, type MouseEventHandler } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { productModel } from '@/entities/product';
-import { toOptionalNutritionValues } from '../lib/mapping';
-import { noteSchema, type NoteFormValues } from '../model';
+import { noteSchema, type NoteFormValues, type NoteFormValuesProduct } from '../model';
 
 interface Props {
   formId: string;
@@ -26,6 +25,20 @@ interface Props {
   onLoadProductForEdit: OnEditProductFn;
   onDiscardProduct: () => void;
 }
+
+const toOptionalNutritionValues = ({
+  protein,
+  fats,
+  carbs,
+  sugar,
+  salt,
+}: NoteFormValuesProduct): productModel.OptionalNutritionValues => ({
+  protein,
+  fats,
+  carbs,
+  sugar,
+  salt,
+});
 
 export type OnSubmitNoteFn = (note: NoteFormValues) => Promise<void>;
 
