@@ -1,6 +1,6 @@
 import { type PayloadAction, createSlice, createSelector } from '@reduxjs/toolkit';
 import { type NoteItem, noteLib, noteModel, type RecognizeNoteResponse } from '@/entities/note';
-import { type productModel, type ProductSelectOption } from '@/entities/product';
+import { type productModel } from '@/entities/product';
 import { type ClientError } from '@/shared/api';
 import { type NoteFormValuesProduct, type NoteFormValues } from './noteSchema';
 import { type NoteRecognitionState, type Image, type ManageNoteScreenState } from './types';
@@ -95,7 +95,7 @@ export const manageNoteSlice = createSlice({
 
     noteDraftSaved: () => initialState,
 
-    productSelected: (state, { payload }: PayloadAction<ProductSelectOption>) => {
+    productSelected: (state, { payload }: PayloadAction<NoteFormValuesProduct>) => {
       if (state.note) {
         state.note.product = payload;
         state.note.quantity = payload.defaultQuantity;
@@ -126,12 +126,7 @@ export const manageNoteSlice = createSlice({
       if (state.note) {
         state.isSubmitting = false;
         state.note.quantity = payload.defaultQuantity;
-        state.note.product = {
-          id: payload.id,
-          name: payload.name,
-          defaultQuantity: payload.defaultQuantity,
-        };
-
+        state.note.product = payload;
         state.noteRecognition = initialState.noteRecognition;
 
         delete state.product;

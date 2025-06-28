@@ -1,11 +1,14 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using FoodDiary.API.Features.Products.Contracts;
+using FoodDiary.Domain.Entities;
 using FoodDiary.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
 namespace FoodDiary.API.Features.Products;
+
+public record SearchProductsResult(IReadOnlyCollection<Product> Products);
 
 public class SearchProductsHandler(FoodDiaryContext context)
 {
@@ -20,17 +23,15 @@ public class SearchProductsHandler(FoodDiaryContext context)
                 // Turns inner join to left join: we need all products even if they have no notes
                 g => g.Notes.DefaultIfEmpty(),
                 (g, note) => new { g.Product, Note = note })
-            .GroupBy(g => new { g.Product.Id, g.Product.Name, g.Product.DefaultQuantity })
+            .GroupBy(g => g.Product)
             .Select(g => new
             {
-                g.Key.Id,
-                g.Key.Name,
-                g.Key.DefaultQuantity,
+                Product = g.Key,
                 LastUsedOn = g.Max(x => x.Note == null ? default : x.Note.Date)
             })
             .OrderByDescending(p => p.LastUsedOn)
-            .ThenBy(p => p.Name)
-            .Select(p => new SearchProductsResult.Product(p.Id, p.Name, p.DefaultQuantity))
+            .ThenBy(g => g.Product.Name)
+            .Select(g => g.Product)
             .ToListAsync(cancellationToken);
 
         return new SearchProductsResult(products);

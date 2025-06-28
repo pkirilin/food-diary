@@ -19,7 +19,7 @@ namespace FoodDiary.ComponentTests.Scenarios.Products;
 public class ProductsApiContext(FoodDiaryWebApplicationFactory factory) : BaseContext(factory)
 {
     private ProductsSearchResultDto? _productsResponse;
-    private SearchProductsResult.Product[]? _productsForAutocompleteResponse;
+    private SearchProductsResponse.Product[]? _productsForAutocompleteResponse;
     private HttpResponseMessage _getProductByIdResponse = null!;
     private CreateProductResponse? _createProductResponse;
     private HttpResponseMessage _updateProductResponse = null!;
@@ -80,7 +80,7 @@ public class ProductsApiContext(FoodDiaryWebApplicationFactory factory) : BaseCo
     public async Task When_user_searches_products_for_autocomplete()
     {
         _productsForAutocompleteResponse = await ApiClient
-            .GetFromJsonAsync<SearchProductsResult.Product[]>("api/v1/products/autocomplete");
+            .GetFromJsonAsync<SearchProductsResponse.Product[]>("api/v1/products/autocomplete");
     }
 
     public async Task When_user_creates_product(Product product)

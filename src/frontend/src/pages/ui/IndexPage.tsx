@@ -1,14 +1,15 @@
-import { Box, Slide, useScrollTrigger } from '@mui/material';
+import { Alert, Box, Slide, Stack, useScrollTrigger } from '@mui/material';
 import { type FC } from 'react';
 import { type LoaderFunction, useLoaderData } from 'react-router-dom';
 import { store } from '@/app/store';
-import { noteApi, noteLib } from '@/entities/note';
+import { noteApi, noteLib, noteModel } from '@/entities/note';
+import { productModel } from '@/entities/product';
 import { SelectDate } from '@/features/note/selectDate';
 import { MSW_ENABLED } from '@/shared/config';
 import { APP_BAR_HEIGHT_SM, APP_BAR_HEIGHT_XS } from '@/shared/constants';
 import { dateLib } from '@/shared/lib';
 import { PageContainer } from '@/shared/ui';
-import { MealsList } from '@/widgets/MealsList';
+import { MealsList, toOptionalNutritionValues } from '@/widgets/MealsList';
 import { type NavigationLoaderData } from '@/widgets/Navigation';
 import {
   NutritionSummaryWidget,
@@ -43,7 +44,12 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export const Component: FC = () => {
   const { date } = useLoaderData() as LoaderData;
-  const nutritionValues = noteLib.useNutritionValues(date);
+  const { data: notes } = noteLib.useNotes(date);
+  const nutritionValues = noteModel.calculateNutritionValues(notes);
+
+  const hasMissingNutritionValues = notes
+    .map(note => toOptionalNutritionValues(note.product))
+    .some(productModel.hasMissingNutritionValues);
 
   const scrolled = useScrollTrigger({
     threshold: 180,
@@ -65,9 +71,16 @@ export const Component: FC = () => {
           <NutritionSummaryWidgetBar nutritionValues={nutritionValues} />
         </Box>
       </Slide>
-      <NutritionSummaryWidget nutritionValues={nutritionValues} />
       <PageContainer>
-        <MealsList date={date} />
+        <Stack spacing={3} pb={4}>
+          <Stack spacing={{ xs: 2, sm: 3 }}>
+            {hasMissingNutritionValues && (
+              <Alert severity="warning">Some nutrition values are missing</Alert>
+            )}
+            <NutritionSummaryWidget nutritionValues={nutritionValues} />
+          </Stack>
+          <MealsList date={date} />
+        </Stack>
       </PageContainer>
     </Box>
   );

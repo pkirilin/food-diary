@@ -12,15 +12,40 @@ import {
 import { useMemo, type FC, type MouseEventHandler } from 'react';
 import { useAppDispatch } from '@/app/store';
 import { type ProductSelectOption, productApi, productModel } from '@/entities/product';
-import { QUERY_LENGTH_THRESHOLD, searchProductsByName } from '../lib/searchProductsByName';
-import { shouldSuggestAddingNewProduct } from '../lib/shouldSuggestAddingNewProduct';
-import { actions } from '../model';
+import {
+  QUERY_LENGTH_THRESHOLD,
+  searchProductsByName,
+  shouldSuggestAddingNewProduct,
+} from '../lib/searchProducts';
+import { type NoteFormValuesProduct, actions } from '../model';
 
 interface Props {
   query: string;
 }
 
 const EMPTY_PRODUCTS: ProductSelectOption[] = [];
+
+const toNoteProductFormValues = ({
+  id,
+  name,
+  defaultQuantity,
+  calories,
+  protein,
+  fats,
+  carbs,
+  sugar,
+  salt,
+}: ProductSelectOption): NoteFormValuesProduct => ({
+  id,
+  name,
+  defaultQuantity,
+  calories,
+  protein,
+  fats,
+  carbs,
+  sugar,
+  salt,
+});
 
 export const ProductSearchResults: FC<Props> = ({ query }) => {
   const { allProducts, isFetching } = productApi.useProductsAutocompleteQuery(null, {
@@ -50,6 +75,10 @@ export const ProductSearchResults: FC<Props> = ({ query }) => {
       }),
     );
 
+  const handleSelectProduct = (product: ProductSelectOption): void => {
+    dispatch(actions.productSelected(toNoteProductFormValues(product)));
+  };
+
   if (query.length >= QUERY_LENGTH_THRESHOLD && isFetching) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
@@ -73,7 +102,7 @@ export const ProductSearchResults: FC<Props> = ({ query }) => {
       {foundProducts.length > 0 && <ListSubheader disableGutters>Found products</ListSubheader>}
       {foundProducts.map(product => (
         <ListItem key={product.id} disableGutters disablePadding>
-          <ListItemButton onClick={() => dispatch(actions.productSelected(product))}>
+          <ListItemButton onClick={() => handleSelectProduct(product)}>
             <ListItemText>{product.name}</ListItemText>
           </ListItemButton>
         </ListItem>

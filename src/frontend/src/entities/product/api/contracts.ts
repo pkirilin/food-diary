@@ -46,6 +46,12 @@ export interface ProductSelectOption {
   id: number;
   name: string;
   defaultQuantity: number;
+  calories: number;
+  protein: number | null;
+  fats: number | null;
+  carbs: number | null;
+  sugar: number | null;
+  salt: number | null;
 }
 
 export interface CreateProductRequest {

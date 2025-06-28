@@ -8,11 +8,8 @@ using FoodDiary.ComponentTests.Infrastructure;
 using FoodDiary.ComponentTests.Infrastructure.ExternalServices;
 using FoodDiary.Contracts.Notes;
 using FoodDiary.Domain.Entities;
-using FoodDiary.Domain.Utils;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
-#pragma warning disable CS0618 // Type or member is obsolete
 
 namespace FoodDiary.ComponentTests.Scenarios.Notes;
 
@@ -120,15 +117,12 @@ public class NotesApiContext(
 
     public Task Then_notes_list_contains_items(params Note[] items)
     {
-        var caloriesCalculator = Factory.Services.GetRequiredService<ICaloriesCalculator>();
-        var expectedNotesList = items.Select(n => n.ToGetNotesResponse(caloriesCalculator));
+        var expectedNotesList = items.Select(n => n.ToGetNotesResponse());
 
         _getNotesResponse?.Notes.Should()
             .BeEquivalentTo(expectedNotesList, options => options
-                .Excluding(note => note.Id)
-                .Excluding(note => note.ProductId)
-                .Excluding(note => note.Calories))
-            .And.AllSatisfy(note => { note.Calories.Should().BePositive(); })
+                .Excluding(note => note.Id))
+            .And.AllSatisfy(note => { note.Product.Calories.Should().BePositive(); })
             .And.BeInAscendingOrder(note => note.MealType)
             .And.ThenBeInAscendingOrder(note => note.DisplayOrder);
         

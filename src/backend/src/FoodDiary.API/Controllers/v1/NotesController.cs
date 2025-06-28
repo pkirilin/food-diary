@@ -41,7 +41,7 @@ public class NotesController : ControllerBase
     {
         var query = request.ToGetNotesQuery();
         var result = await handler.Handle(query, cancellationToken);
-        return Ok(result.ToGetNotesResponse(caloriesCalculator));
+        return Ok(result.ToGetNotesResponse());
     }
 
     [HttpGet("history")]

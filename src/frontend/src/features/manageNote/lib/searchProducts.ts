@@ -16,3 +16,7 @@ export const searchProductsByName = (
     product.name.trim().toLowerCase().includes(queryTrimmed.toLowerCase()),
   );
 };
+export const shouldSuggestAddingNewProduct = (
+  products: ProductSelectOption[],
+  query: string,
+): boolean => query.trim().length > 0 && products.every(product => product.name !== query);

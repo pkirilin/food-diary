@@ -8,7 +8,7 @@ import {
   type productModel,
   type OnSubmitProductFn,
 } from '@/entities/product';
-import { actions } from '../model';
+import { type NoteFormValuesProduct, actions } from '../model';
 
 const toCreateProductRequest = (
   {
@@ -53,6 +53,30 @@ const toEditProductRequest = (
   caloriesCost,
   defaultQuantity,
   categoryId,
+  protein,
+  fats,
+  carbs,
+  sugar,
+  salt,
+});
+
+const toNoteFormValuesProduct = (
+  id: number,
+  {
+    name,
+    defaultQuantity,
+    calories,
+    protein,
+    fats,
+    carbs,
+    sugar,
+    salt,
+  }: productModel.ProductFormValues,
+): NoteFormValuesProduct => ({
+  id,
+  name,
+  defaultQuantity,
+  calories,
   protein,
   fats,
   carbs,
@@ -110,12 +134,9 @@ export const useSubmitProduct = (date: string): OnSubmitProductFn => {
       return;
     }
 
-    dispatch(
-      actions.productDraftSaved({
-        id: resolveProductId(product, mutationResponse.data),
-        name: product.name,
-        defaultQuantity: product.defaultQuantity,
-      }),
-    );
+    const productId = resolveProductId(product, mutationResponse.data);
+    const productDraft = toNoteFormValuesProduct(productId, product);
+
+    dispatch(actions.productDraftSaved(productDraft));
   };
 };

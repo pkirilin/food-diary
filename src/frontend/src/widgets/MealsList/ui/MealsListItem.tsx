@@ -1,8 +1,9 @@
-import { ListItem, Stack, Typography, Card, CardContent, CardActions } from '@mui/material';
+import { ListItem, Stack, Typography, Card, CardContent, CardActions, Badge } from '@mui/material';
 import { type FC } from 'react';
-import { noteLib, type noteModel } from '@/entities/note';
-import { NutritionValueDisplay } from '@/entities/product';
+import { noteLib, noteModel } from '@/entities/note';
+import { NutritionValueDisplay, productModel } from '@/entities/product';
 import { AddNoteButton } from '@/features/manageNote';
+import { toOptionalNutritionValues } from '../lib/mapping';
 import { NotesList } from './NotesList';
 
 interface Props {
@@ -11,12 +12,13 @@ interface Props {
 }
 
 export const MealsListItem: FC<Props> = ({ date, mealType }) => {
-  const { calories, protein, fats, carbs, sugar, salt } = noteLib.useNutritionValues(
-    date,
-    mealType,
-  );
-
   const mealName = noteLib.getMealName(mealType);
+  const { data: notes } = noteLib.useNotes(date, mealType);
+  const { calories, protein, fats, carbs, sugar, salt } = noteModel.calculateNutritionValues(notes);
+
+  const hasMissingNutritionValues = notes
+    .map(note => toOptionalNutritionValues(note.product))
+    .some(productModel.hasMissingNutritionValues);
 
   return (
     <ListItem disableGutters disablePadding aria-label={`${mealName}, ${calories} kilocalories`}>
@@ -25,7 +27,10 @@ export const MealsListItem: FC<Props> = ({ date, mealType }) => {
           <Stack direction="column" p={2} spacing={2} bgcolor={theme => theme.palette.grey[100]}>
             <Stack direction="row" justifyContent="space-between" alignItems="center">
               <Typography fontWeight="bold">{mealName}</Typography>
-              <NutritionValueDisplay type="calories" size="medium" value={calories} bold />
+              <Stack direction="row" spacing={1} alignItems="center">
+                {hasMissingNutritionValues && <Badge color="warning" variant="dot" />}
+                <NutritionValueDisplay type="calories" size="medium" value={calories} bold />
+              </Stack>
             </Stack>
             <Stack direction="row" spacing={2} py={1} overflow={['auto', 'hidden']}>
               <NutritionValueDisplay type="protein" size="small" value={protein} bold />

@@ -1,6 +1,6 @@
 import { noteModel } from '@/entities/note';
 import { type ManageNoteState, manageNoteSlice, initialState } from './manageNoteSlice';
-import { type NoteFormValues } from './noteSchema';
+import { type NoteFormValuesProduct, type NoteFormValues } from './noteSchema';
 import { type NoteRecognitionState, type Image } from './types';
 
 const create = {
@@ -14,6 +14,17 @@ const create = {
     displayOrder: 1,
     product: null,
     quantity: 120,
+  }),
+  product: (name = ''): NoteFormValuesProduct => ({
+    id: 1,
+    name,
+    defaultQuantity: 123,
+    calories: 100,
+    protein: null,
+    fats: null,
+    carbs: null,
+    sugar: null,
+    salt: null,
   }),
   image: (name: string): Image => ({
     name,
@@ -48,11 +59,8 @@ describe('selectors.activeScreen', () => {
 
 describe('actions.productDraftSaved', () => {
   test('should reset image and recognizeNote state', () => {
-    const action = manageNoteSlice.actions.productDraftSaved({
-      id: 1,
-      name: 'test',
-      defaultQuantity: 123,
-    });
+    const product = create.product('test');
+    const action = manageNoteSlice.actions.productDraftSaved(product);
 
     const givenState = create.state({
       note: create.note(),

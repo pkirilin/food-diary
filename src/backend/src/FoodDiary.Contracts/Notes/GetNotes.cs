@@ -18,16 +18,8 @@ public record GetNotesResponse(IReadOnlyCollection<GetNotesResponse.Note> Notes)
         int Id,
         DateOnly Date,
         MealType MealType,
-        [property: Obsolete($"Use {nameof(Product.Id)} instead")]
-        int ProductId,
         int ProductQuantity,
-        [property: Obsolete($"Use {nameof(Product.DefaultQuantity)} instead")]
-        int ProductDefaultQuantity,
         int DisplayOrder,
-        [property: Obsolete($"Use {nameof(Product.Name)} instead")]
-        string ProductName,
-        [property: Obsolete($"Use {nameof(Product.Calories)} instead and calculate on client")]
-        int Calories,
         Product Product);
 
     public record Product(

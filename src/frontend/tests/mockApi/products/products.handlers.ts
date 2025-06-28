@@ -66,7 +66,19 @@ export const handlers: HttpHandler[] = [
   http.get(`${API_URL}/api/v1/products/autocomplete`, () => {
     const response: SelectOption[] = productsService
       .getAll()
-      .map<ProductSelectOption>(({ id, name, defaultQuantity }) => ({ id, name, defaultQuantity }));
+      .map<ProductSelectOption>(
+        ({ id, name, defaultQuantity, caloriesCost, protein, fats, carbs, sugar, salt }) => ({
+          id,
+          name,
+          defaultQuantity,
+          calories: caloriesCost,
+          protein,
+          fats,
+          carbs,
+          sugar,
+          salt,
+        }),
+      );
 
     return DelayedHttpResponse.json(response);
   }),

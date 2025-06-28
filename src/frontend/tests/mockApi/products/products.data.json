@@ -20,7 +20,7 @@
     "protein": 26.1,
     "fats": 15.2,
     "carbs": 0,
-    "sugar": 0,
+    "sugar": null,
     "salt": 0.2
   },
   {
@@ -41,11 +41,11 @@
     "caloriesCost": 60,
     "defaultQuantity": 100,
     "categoryId": 4,
-    "protein": 3.4,
-    "fats": 3.6,
-    "carbs": 4.8,
-    "sugar": 4.8,
-    "salt": 0.1
+    "protein": null,
+    "fats": null,
+    "carbs": null,
+    "sugar": null,
+    "salt": null
   },
   {
     "id": 5,
@@ -85,15 +85,15 @@
   },
   {
     "id": 8,
-    "name": "Spinach",
+    "name": "Spinach Leaves - Organic, Washed, Ready to Eat",
     "caloriesCost": 23,
     "defaultQuantity": 120,
     "categoryId": 3,
-    "protein": 2.9,
-    "fats": 0.4,
-    "carbs": 3.6,
-    "sugar": 0.4,
-    "salt": 0.08
+    "protein": null,
+    "fats": null,
+    "carbs": null,
+    "sugar": null,
+    "salt": null
   },
   {
     "id": 9,
