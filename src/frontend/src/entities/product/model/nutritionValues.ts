@@ -13,8 +13,8 @@ export type NutritionValueType = 'calories' | 'protein' | 'fats' | 'carbs' | 'su
 type RequiredNutritionValueType = Extract<NutritionValueType, 'calories'>;
 type OptionalNutritionValueType = Exclude<NutritionValueType, 'calories'>;
 
-export type NutritionValues = Record<RequiredNutritionValueType, number> &
-  Record<OptionalNutritionValueType, number | null>;
+export type OptionalNutritionValues = Record<OptionalNutritionValueType, number | null>;
+export type NutritionValues = Record<RequiredNutritionValueType, number> & OptionalNutritionValues;
 
 type Unit = 'kcal' | 'g';
 
@@ -58,3 +58,6 @@ export const nutritionValuesConfig: NutritionValuesConfig = {
     unit: 'g',
   },
 };
+
+export const hasMissingNutritionValues = (nutritionValues: OptionalNutritionValues): boolean =>
+  Object.values(nutritionValues).every(value => value === null);

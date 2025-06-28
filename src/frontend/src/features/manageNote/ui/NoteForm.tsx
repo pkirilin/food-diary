@@ -12,7 +12,9 @@ import {
 } from '@mui/material';
 import { type ReactNode, type FC, type MouseEventHandler } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { noteSchema, type NoteFormValues, type NoteFormValuesProduct } from '../model';
+import { productModel } from '@/entities/product';
+import { toOptionalNutritionValues } from '../lib/mapping';
+import { noteSchema, type NoteFormValues } from '../model';
 
 interface Props {
   formId: string;
@@ -28,15 +30,6 @@ interface Props {
 export type OnSubmitNoteFn = (note: NoteFormValues) => Promise<void>;
 
 export type OnEditProductFn = (productId: number) => Promise<void>;
-
-const hasMissingNutritionValues = ({
-  protein,
-  fats,
-  carbs,
-  sugar,
-  salt,
-}: NoteFormValuesProduct): boolean =>
-  [protein, fats, carbs, sugar, salt].every(value => value === null);
 
 export const NoteForm: FC<Props> = ({
   formId,
@@ -65,7 +58,13 @@ export const NoteForm: FC<Props> = ({
   const renderHelperText = (): ReactNode => {
     const { product } = getValues();
 
-    if (product && hasMissingNutritionValues(product)) {
+    if (!product) {
+      return ' ';
+    }
+
+    const nutritionValues = toOptionalNutritionValues(product);
+
+    if (productModel.hasMissingNutritionValues(nutritionValues)) {
       return (
         <Typography variant="caption" component="span" color="warning">
           Nutrition values are missing
