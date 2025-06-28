@@ -2,38 +2,40 @@
 
 [![food-diary](https://github.com/pkirilin/food-diary/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/pkirilin/food-diary/actions/workflows/build.yml)
 
-Food Diary is a free, open-source, and lightweight web app for simple calorie and weight tracking. It was initially created in 2018 to help [the author](https://github.com/pkirilin) address personal health challenges caused by being overweight.
+Food Diary is a free, open-source, and lightweight web app for nutrition and weight tracking. It was initially created in 2018 to help [the author](https://github.com/pkirilin) address personal health challenges caused by being overweight.
 
-While it doesn't fully replace popular commercial calorie and weight tracking apps, Food Diary offers essential features as a free alternative for people who care about their health and well-being.
+While it doesn't fully replace popular commercial nutrition and weight tracking apps, Food Diary offers essential features as a free alternative for people who care about their health and well-being.
 
 Curious to see how the app works? [View the demo app here](https://pkirilin-food-diary-demo.netlify.app/).
 
 ## Table of contents
 
-- [Features](#features)
-- [Installation](#installation)
-- [Development](#development)
-  - [Setting up the entire app (Frontend and Backend)](#setting-up-the-entire-app-frontend-and-backend)
-  - [Setting up Frontend with mocked auth and API](#setting-up-frontend-with-mocked-auth-and-api)
-    - [Frontend environment variables](#frontend-environment-variables)
-  - [Managing database migrations](#managing-database-migrations)
-- [Contacts](#contacts)
-- [Copyright](#copyright)
-  - [Favicon](#favicon)
-- [License](#license)
+- [Food Diary](#food-diary)
+  - [Table of contents](#table-of-contents)
+  - [Features](#features)
+  - [Installation](#installation)
+  - [Development](#development)
+    - [Setting up the entire app (Frontend and Backend)](#setting-up-the-entire-app-frontend-and-backend)
+    - [Setting up Frontend with mocked auth and API](#setting-up-frontend-with-mocked-auth-and-api)
+      - [Frontend environment variables](#frontend-environment-variables)
+    - [Managing database migrations](#managing-database-migrations)
+  - [Contacts](#contacts)
+  - [Copyright](#copyright)
+    - [Favicon](#favicon)
+  - [License](#license)
 
 ## Features
 
-- Calorie tracking
+- Nutrition tracking: calories, protein, fats, carbs, sugar, and salt
+- Personal food database with nutrition values for each product
 - Weight tracking
-- Personal food database with products and their nutritional values
 - PWA and multi-device support
 - AI-powered food recognition from photos
 
 <table>
   <tr>
     <td>
-      <img src="docs/images/calorie-tracking.png" alt="Food Diary app mobile screen showing daily calorie tracking interface with meal entries and nutritional summary">
+      <img src="docs/images/nutrition-tracking.png" alt="Food Diary app mobile screen showing daily nutrition tracking interface with meal entries and nutrition summary">
     </td>
     <td>
       <img src="docs/images/weight-tracking.png" alt="Food Diary app mobile screen showing weight tracking interface with chart and weight logs">
@@ -41,7 +43,7 @@ Curious to see how the app works? [View the demo app here](https://pkirilin-food
   </tr>
   <tr>
     <td colspan="2">
-      <img src="docs/images/calorie-tracking-desktop.png" alt="Food Diary app desktop screen showing daily calorie tracking interface with meal entries and nutritional summary">
+      <img src="docs/images/nutrition-tracking-desktop.png" alt="Food Diary app desktop screen showing daily nutrition tracking interface with meal entries and nutrition summary">
     </td>
   </tr>
 </table>
