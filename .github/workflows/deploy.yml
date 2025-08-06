@@ -52,9 +52,9 @@ jobs:
           public: true
           revision-image-url: cr.yandex/${{ env.CR_REGISTRY }}/${{ env.CR_REPOSITORY }}:${{ env.IMAGE_TAG }}
           revision-service-account-id: ${{ secrets.YC_REVISION_SERVICE_ACCOUNT_ID }}
-          revision-cores: 0.5
-          revision-memory: 512Mb
-          revision-core-fraction: 100
+          revision-cores: 1
+          revision-memory: 256Mb
+          revision-core-fraction: 50
           revision-concurrency: 1
           revision-execution-timeout: 15
           revision-provisioned: 1
