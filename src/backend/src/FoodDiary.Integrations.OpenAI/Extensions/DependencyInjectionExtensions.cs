@@ -22,11 +22,13 @@ public static class DependencyInjectionExtensions
             var clientCredential = new ApiKeyCredential(options.ApiKey);
             var clientOptions = new OpenAIClientOptions { Endpoint = new Uri(options.BaseUrl) };
             var client = new OpenAIClient(clientCredential, clientOptions);
+            
             return client;
         });
 
         services.AddChatClient(provider => provider.GetRequiredService<OpenAIClient>()
-            .AsChatClient("gpt-4o")
+            .GetChatClient("gpt-4o")
+            .AsIChatClient()
             .AsBuilder()
             .UseLogging(provider.GetRequiredService<ILoggerFactory>())
             .UseFunctionInvocation()

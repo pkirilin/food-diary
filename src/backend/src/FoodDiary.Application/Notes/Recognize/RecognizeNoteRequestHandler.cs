@@ -61,7 +61,6 @@ internal class RecognizeNoteRequestHandler(
 
         var chatResponse = await chatClient.GetResponseAsync<FoodItemOnTheImage>(
             messages: [systemMessage, userMessage],
-            JsonSerializerOptions.Web,
             options: ChatOptions,
             cancellationToken: cancellationToken);
 
