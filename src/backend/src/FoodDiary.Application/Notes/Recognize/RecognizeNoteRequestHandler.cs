@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using ImageMagick;
@@ -69,6 +68,8 @@ internal class RecognizeNoteRequestHandler(
             logger.LogError("Could not deserialize model response {ModelResponse}", chatResponse.Text);
             return RecognizeNoteResult.InternalServerError("Model response was invalid");
         }
+        
+        logger.LogInformation("Deserialized model response: {ModelResponse}", chatResponse.Text);
 
         return new RecognizeNoteResult.Success(new RecognizeNoteResponse([foodOnImage.ToRecognizeNoteItem()]));
     }
