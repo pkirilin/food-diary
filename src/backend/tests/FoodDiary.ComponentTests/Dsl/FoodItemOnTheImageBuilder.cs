@@ -16,18 +16,17 @@ public class FoodItemOnTheImageBuilder
     
     public FoodItemOnTheImage Please()
     {
-        return new FoodItemOnTheImage
-        {
-            Name = _name,
-            Calories = _calories,
-            Quantity = _quantity,
-            BrandName = _brandName,
-            Protein = _protein,
-            Fats = _fats,
-            Carbs = _carbs,
-            Sugar = _sugar,
-            Salt = _salt
-        };
+        return new FoodItemOnTheImage(
+            Name: _name,
+            Calories: _calories,
+            Quantity: _quantity,
+            BrandName: _brandName,
+            Protein: _protein,
+            Fats: _fats,
+            Carbs: _carbs,
+            Sugar: _sugar,
+            Salt: _salt
+        );
     }
     
     public FoodItemOnTheImageBuilder WithProduct(string name)
