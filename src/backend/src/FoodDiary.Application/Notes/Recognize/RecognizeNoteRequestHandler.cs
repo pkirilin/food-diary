@@ -34,7 +34,6 @@ internal class RecognizeNoteRequestHandler(
 
     private static readonly ChatOptions ChatOptions = new()
     {
-        Temperature = 0.9f,
         Tools = [AIFunctionFactory.Create(ReadRequirementsTool)],
         ToolMode = ChatToolMode.RequireSpecific(nameof(ReadRequirementsTool))
     };
@@ -54,8 +53,8 @@ internal class RecognizeNoteRequestHandler(
         
         var userMessage = new ChatMessage(ChatRole.User,
         [
+            new DataContent(optimizedImageBytes, "image/jpeg"),
             new TextContent(UserPrompt),
-            new DataContent(optimizedImageBytes, "image/jpeg")
         ]);
 
         var chatResponse = await chatClient.GetResponseAsync<FoodItemOnTheImage>(

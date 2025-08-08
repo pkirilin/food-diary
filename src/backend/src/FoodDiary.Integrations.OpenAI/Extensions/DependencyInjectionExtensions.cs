@@ -27,7 +27,7 @@ public static class DependencyInjectionExtensions
         });
 
         services.AddChatClient(provider => provider.GetRequiredService<OpenAIClient>()
-            .GetChatClient("gpt-4o")
+            .GetChatClient("gpt-5-nano")
             .AsIChatClient()
             .AsBuilder()
             .UseLogging(provider.GetRequiredService<ILoggerFactory>())
