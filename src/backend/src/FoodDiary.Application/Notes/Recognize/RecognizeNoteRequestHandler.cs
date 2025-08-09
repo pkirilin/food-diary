@@ -40,22 +40,18 @@ internal class RecognizeNoteRequestHandler(
 
     public async Task<RecognizeNoteResult> Handle(RecognizeNoteRequest request, CancellationToken cancellationToken)
     {
-        var imageFile = FindImage(request.Files);
+        var images = request.Files
+            .Where(file => file.ContentType.StartsWith("image/"))
+            .ToList()
+            .AsReadOnly();
         
-        if (imageFile is null)
+        if (images.Count == 0)
         {
             return RecognizeNoteResult.ValidationError("No images provided");
         }
-
-        var optimizedImageBytes = await OptimizeImage(imageFile, cancellationToken);
         
         var systemMessage = new ChatMessage(ChatRole.System, SystemPrompt);
-        
-        var userMessage = new ChatMessage(ChatRole.User,
-        [
-            new DataContent(optimizedImageBytes, "image/jpeg"),
-            new TextContent(UserPrompt),
-        ]);
+        var userMessage = await CreateUserMessage(images, cancellationToken);
 
         var chatResponse = await chatClient.GetResponseAsync<FoodItemOnTheImage>(
             messages: [systemMessage, userMessage],
@@ -73,9 +69,20 @@ internal class RecognizeNoteRequestHandler(
         return new RecognizeNoteResult.Success(new RecognizeNoteResponse([foodOnImage.ToRecognizeNoteItem()]));
     }
 
-    private static IFormFile? FindImage(IReadOnlyCollection<IFormFile> files)
+    private static async Task<ChatMessage> CreateUserMessage(
+        IReadOnlyCollection<IFormFile> images,
+        CancellationToken cancellationToken)
     {
-        return files.FirstOrDefault(file => file.ContentType.StartsWith("image/"));
+        var optimizedImageTasks = images.Select(image => OptimizeImage(image, cancellationToken));
+        var optimizedImageBytes = await Task.WhenAll(optimizedImageTasks);
+        
+        var imageContents = optimizedImageBytes
+            .Select(imageBytes => new DataContent(imageBytes, "image/jpeg"))
+            .ToList();
+        
+        return new ChatMessage(
+            role: ChatRole.User,
+            contents: [..imageContents, new TextContent(UserPrompt)]);
     }
 
     private static async Task<byte[]> OptimizeImage(IFormFile imageFile, CancellationToken cancellationToken)
