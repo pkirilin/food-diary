@@ -130,11 +130,11 @@ jobs:
           revision-image-url: cr.yandex/${{ env.CR_REGISTRY }}/${{ env.CR_REPOSITORY }}:${{ env.IMAGE_TAG }}
           revision-service-account-id: ${{ secrets.YC_REVISION_SERVICE_ACCOUNT_ID }}
           revision-cores: 1
-          revision-memory: 512Mb
-          revision-core-fraction: 100
-          revision-concurrency: 2
-          revision-execution-timeout: 10
-          revision-provisioned: 0
+          revision-memory: 256Mb
+          revision-core-fraction: 50
+          revision-concurrency: 1
+          revision-execution-timeout: 15
+          revision-provisioned: 1
           revision-env: |
             App__ForwardHttpsSchemeManuallyForAllRequests=true
             App__Logging__WriteLogsInJsonFormat=true
