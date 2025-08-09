@@ -15,30 +15,16 @@ export const UploadImageButton: FC = () => {
   const handleFileChange: ChangeEventHandler<HTMLInputElement> = async event => {
     const file = event.target?.files?.item(0);
 
-    if (file) {
-      const reader = new FileReader();
-
-      reader.onloadend = async () => {
-        if (typeof reader.result !== 'string') {
-          throw new Error(
-            'Image upload failed: expected a string, but received: ' + typeof reader.result,
-          );
-        }
-
-        const resizedFile = await imageLib.resize(reader.result, 512, file.name);
-        const base64 = await imageLib.convertToBase64String(resizedFile);
-
-        const image: Image = {
-          name: file.name,
-          base64,
-        };
-
-        dispatch(actions.imageUploaded(image));
-        await recognizeNotes(image);
-      };
-
-      reader.readAsDataURL(file);
+    if (!file) {
+      return;
     }
+
+    const resizedImage = await imageLib.resize(file);
+    const base64 = await imageLib.convertToBase64String(resizedImage);
+    const image: Image = { name: file.name, base64 };
+
+    dispatch(actions.imageUploaded(image));
+    await recognizeNotes(image);
   };
 
   return (
