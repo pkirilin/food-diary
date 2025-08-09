@@ -31,7 +31,6 @@ public static class DependencyInjectionExtensions
             .AsIChatClient()
             .AsBuilder()
             .UseLogging(provider.GetRequiredService<ILoggerFactory>())
-            .UseFunctionInvocation()
             .Build());
     }
 }
