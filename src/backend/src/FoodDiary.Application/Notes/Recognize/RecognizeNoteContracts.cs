@@ -27,13 +27,13 @@ public static class MappingExtensions
         return new RecognizeNoteItem(
             Product: new RecognizeProductItem(
                 Name: string.IsNullOrWhiteSpace(food.BrandName) ? food.Name : $"{food.Name} ({food.BrandName})",
-                CaloriesCost: food.Calories,
+                CaloriesCost: food.Calories ?? 100,
                 Protein: food.Protein.ToRoundedNutritionQuantity(),
                 Fats: food.Fats.ToRoundedNutritionQuantity(),
                 Carbs: food.Carbs.ToRoundedNutritionQuantity(),
                 Sugar: food.Sugar.ToRoundedNutritionQuantity(),
                 Salt: food.Salt.ToRoundedNutritionQuantity()),
-            Quantity: food.Quantity);
+            Quantity: food.Quantity ?? 100);
     }
 
     private static decimal? ToRoundedNutritionQuantity(this decimal? value) =>

@@ -6,9 +6,9 @@ public record FoodItemOnTheImage(
     [property: Description("Product name, e.g. Bread. Always start with a uppercase letter, avoid CAPS")]
     string Name,
     [property: Description("Product quantity in grams, e.g. 50")]
-    int Quantity = 100,
+    int? Quantity = null,
     [property: Description("Product calories in kilocalories per 100 grams of quantity, e.g. 125")]
-    int Calories = 100,
+    int? Calories = null,
     [property: Description("Product brand name, e.g. Nestle")]
     string? BrandName = null,
     [property: Description("Product protein in grams per 100 grams of quantity, e.g. 1.23")]
