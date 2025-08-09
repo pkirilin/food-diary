@@ -30,15 +30,21 @@ export const resize = (
         canvas.height = height;
 
         const ctx = canvas.getContext('2d');
-        ctx?.drawImage(img, 0, 0, width, height);
+
+        if (!ctx) {
+          reject(new Error('Failed to get canvas context'));
+          return;
+        }
+
+        ctx.drawImage(img, 0, 0, width, height);
 
         canvas.toBlob(
           blob => {
             if (blob) {
-              const compressedFile = new File([blob], replaceFileExtension(file.name, 'jpg'), {
+              const resizedFile = new File([blob], replaceFileExtension(file.name, 'jpg'), {
                 type: 'image/jpeg',
               });
-              resolve(compressedFile);
+              resolve(resizedFile);
             } else {
               reject(new Error('Failed to create File object from blob'));
             }
