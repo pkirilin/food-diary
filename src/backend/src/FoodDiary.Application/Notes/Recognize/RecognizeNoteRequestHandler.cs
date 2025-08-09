@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using ImageMagick;
 using JetBrains.Annotations;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -75,12 +74,6 @@ internal class RecognizeNoteRequestHandler(
     {
         using var memoryStream = new MemoryStream();
         await file.CopyToAsync(memoryStream, cancellationToken);
-        memoryStream.Position = 0;
-    
-        using var image = new MagickImage();
-        await image.ReadAsync(memoryStream, cancellationToken);
-        image.Format = MagickFormat.Jpeg;
-        
-        return image.ToByteArray();
+        return memoryStream.ToArray();
     }
 }
