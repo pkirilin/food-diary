@@ -20,8 +20,6 @@ internal class RecognizeNoteRequestHandler(
     IChatClient chatClient,
     ILogger<RecognizeNoteRequestHandler> logger) : IRequestHandler<RecognizeNoteRequest, RecognizeNoteResult>
 {
-    private static readonly ImageOptimizer ImageOptimizer = new();
-
     private const string SystemPrompt =
         "You are a bot in the calorie tracking app helping users track their energy and nutritional values intake by analyzing food images and food labels.";
 
@@ -61,7 +59,7 @@ internal class RecognizeNoteRequestHandler(
         IReadOnlyCollection<IFormFile> images,
         CancellationToken cancellationToken)
     {
-        var optimizedImageTasks = images.Select(image => OptimizeImage(image, cancellationToken));
+        var optimizedImageTasks = images.Select(image => GetBytes(image, cancellationToken));
         var optimizedImageBytes = await Task.WhenAll(optimizedImageTasks);
         
         var imageContents = optimizedImageBytes
@@ -73,14 +71,12 @@ internal class RecognizeNoteRequestHandler(
             contents: [..imageContents, new TextContent(UserPrompt)]);
     }
 
-    private static async Task<byte[]> OptimizeImage(IFormFile imageFile, CancellationToken cancellationToken)
+    private static async Task<byte[]> GetBytes(IFormFile file, CancellationToken cancellationToken)
     {
-        await using var stream = imageFile.OpenReadStream();
         using var memoryStream = new MemoryStream();
-        await stream.CopyToAsync(memoryStream, cancellationToken);
+        await file.CopyToAsync(memoryStream, cancellationToken);
         memoryStream.Position = 0;
-        ImageOptimizer.LosslessCompress(memoryStream);
-
+    
         using var image = new MagickImage();
         await image.ReadAsync(memoryStream, cancellationToken);
         image.Format = MagickFormat.Jpeg;
