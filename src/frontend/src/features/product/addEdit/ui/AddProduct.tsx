@@ -8,7 +8,7 @@ import { ProductInputDialog } from './ProductInputDialog';
 
 export const AddProduct: FC = () => {
   const [isDialogOpened, setIsDialogOpened] = useState(false);
-  const categorySelect = categoryLib.useCategorySelectData();
+  const { categories, categoriesLoading } = categoryLib.useCategoriesForSelect();
   const products = productLib.useProducts();
   const [createProduct, createProductRequest] = productApi.useCreateProductMutation();
   const { values: product } = productLib.useFormValues();
@@ -53,8 +53,8 @@ export const AddProduct: FC = () => {
         submitText="Add"
         isLoading={createProductRequest.isLoading || products.isFetching}
         productFormValues={product}
-        categories={categorySelect.data}
-        categoriesLoading={categorySelect.isLoading}
+        categories={categories}
+        categoriesLoading={categoriesLoading}
         onSubmit={handleDialogSubmit}
         onClose={handleDialogClose}
       />

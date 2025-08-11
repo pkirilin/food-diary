@@ -14,7 +14,7 @@ export const EditProduct: FC<Props> = ({ product, renderTrigger }) => {
   const [editProduct, editProductRequest] = productApi.useEditProductMutation();
   const products = productLib.useProducts();
   const productFormData = useMemo(() => productLib.mapToProductFormData(product), [product]);
-  const categorySelect = categoryLib.useCategorySelectData();
+  const { categories, categoriesLoading } = categoryLib.useCategoriesForSelect();
 
   useEffect(() => {
     if (editProductRequest.isSuccess && products.isChanged) {
@@ -48,8 +48,8 @@ export const EditProduct: FC<Props> = ({ product, renderTrigger }) => {
         submitText="Save"
         isLoading={editProductRequest.isLoading || products.isFetching}
         productFormValues={productFormData}
-        categories={categorySelect.data}
-        categoriesLoading={categorySelect.isLoading}
+        categories={categories}
+        categoriesLoading={categoriesLoading}
         onSubmit={handleEditDialogSubmit}
         onClose={handleEditDialogClose}
       />

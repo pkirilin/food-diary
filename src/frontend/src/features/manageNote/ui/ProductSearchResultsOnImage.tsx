@@ -12,6 +12,7 @@ import {
 import { Stack } from '@mui/system';
 import { type FC, type MouseEventHandler } from 'react';
 import { useAppDispatch, useAppSelector } from '@/app/store';
+import { categoryLib } from '@/entities/category';
 import { Button } from '@/shared/ui';
 import { useRecognizeNotes } from '../lib/useRecognizeNotes';
 import { actions, type Image } from '../model';
@@ -27,6 +28,7 @@ export const ProductSearchResultsOnImage: FC<Props> = ({ image }) => {
 
   const dispatch = useAppDispatch();
   const recognizeNotes = useRecognizeNotes();
+  const { categories } = categoryLib.useCategoriesForSelect();
 
   if (isLoading) {
     return (
@@ -72,7 +74,7 @@ export const ProductSearchResultsOnImage: FC<Props> = ({ image }) => {
       actions.productDraftCreated({
         name: productName,
         defaultQuantity: quantity,
-        category: null,
+        category: categories.at(0) ?? null,
         calories: product.caloriesCost,
         protein: product.protein,
         fats: product.fats,

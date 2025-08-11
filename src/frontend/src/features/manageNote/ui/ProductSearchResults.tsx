@@ -11,6 +11,7 @@ import {
 } from '@mui/material';
 import { useMemo, type FC, type MouseEventHandler } from 'react';
 import { useAppDispatch } from '@/app/store';
+import { categoryLib } from '@/entities/category';
 import { type ProductSelectOption, productApi, productModel } from '@/entities/product';
 import {
   QUERY_LENGTH_THRESHOLD,
@@ -55,6 +56,8 @@ export const ProductSearchResults: FC<Props> = ({ query }) => {
     }),
   });
 
+  const { categories } = categoryLib.useCategoriesForSelect();
+
   const foundProducts = useMemo<ProductSelectOption[]>(
     () => searchProductsByName(allProducts, query),
     [allProducts, query],
@@ -72,6 +75,7 @@ export const ProductSearchResults: FC<Props> = ({ query }) => {
       actions.productDraftCreated({
         ...productModel.EMPTY_FORM_VALUES,
         name: query,
+        category: categories.at(0) ?? null,
       }),
     );
 

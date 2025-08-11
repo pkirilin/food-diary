@@ -10,14 +10,14 @@ const ANY_CATEGORY_VALUE = ' ';
 
 export const SearchByCategory: FC = () => {
   const category = useAppSelector(state => state.products.filter.category);
-  const categorySelect = categoryLib.useCategorySelectData();
+  const { categories } = categoryLib.useCategoriesForSelect();
   const dispatch = useAppDispatch();
 
   const findSelectedCategory = (selectedValue: string): SelectOption | null => {
     if (selectedValue === ANY_CATEGORY_VALUE) {
       return null;
     }
-    return categorySelect.data.find(c => c.id === Number(selectedValue)) ?? null;
+    return categories.find(c => c.id === Number(selectedValue)) ?? null;
   };
 
   const handleChange: ChangeEventHandler<HTMLInputElement> = event => {
@@ -35,8 +35,8 @@ export const SearchByCategory: FC = () => {
       onChange={handleChange}
     >
       <MenuItem value={ANY_CATEGORY_VALUE}>Any</MenuItem>
-      {categorySelect.data.length > 0 && <Divider />}
-      {categorySelect.data.map(({ id, name }) => (
+      {categories.length > 0 && <Divider />}
+      {categories.map(({ id, name }) => (
         <MenuItem key={id} value={id}>
           <Typography noWrap>{name}</Typography>
         </MenuItem>

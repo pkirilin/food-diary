@@ -40,6 +40,7 @@ test('I can add new note with adding new product "on the fly"', async () => {
   await steps.whenProductSearched(user, 'Ora');
   await steps.whenProductAddedFromInput(user, 'Ora');
   await steps.thenDialogVisible(/product/i);
+  await steps.thenProductCategoryHasValue('Bakery');
   await steps.thenProductCanBeAdded();
 
   await steps.whenProductNameCompleted(user, 'nge');
@@ -86,6 +87,7 @@ test('I can edit product via note form', async () => {
   await steps.whenExistingProductSelected(user, /cheese/i);
   await steps.whenProductEditClicked(user);
   await steps.thenDialogVisible(/product/i);
+  await steps.thenProductCategoryHasValue('Dairy');
   await steps.thenProductCanBeSaved();
 
   await steps.whenProductNameEdited(user, 'Mozarella cheese');
