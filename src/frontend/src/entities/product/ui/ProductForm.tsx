@@ -11,7 +11,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { useEffect, type FC } from 'react';
+import { type FC } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { type SelectOption } from '@/shared/types';
 import { type ProductFormValues, productSchema, nutritionValuesConfig } from '../model';
@@ -35,17 +35,11 @@ export const ProductForm: FC<Props> = ({
   categoriesLoading,
   onSubmit,
 }) => {
-  const { control, handleSubmit, setValue, getValues } = useForm<ProductFormValues>({
+  const { control, handleSubmit, getValues } = useForm<ProductFormValues>({
     mode: 'onSubmit',
     resolver: zodResolver(productSchema),
     defaultValues,
   });
-
-  useEffect(() => {
-    if (categories.length > 0) {
-      setValue('category', categories[0], { shouldValidate: true });
-    }
-  }, [categories, setValue]);
 
   const atLeastOneNutritionFieldHasValue = getValues([
     'protein',

@@ -151,6 +151,10 @@ export const thenProductHasValue = async (expectedValue: string): Promise<void> 
   expect(screen.getByRole('textbox', { name: /product/i })).toHaveValue(expectedValue);
 };
 
+export const thenProductCategoryHasValue = async (expectedValue: string): Promise<void> => {
+  expect(screen.getByRole('combobox', { name: /category/i })).toHaveValue(expectedValue);
+};
+
 export const thenQuantityHasValue = (expectedValue: string): void => {
   expect(screen.getByPlaceholderText(/quantity/i)).toHaveValue(expectedValue);
 };
