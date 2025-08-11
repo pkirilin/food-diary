@@ -14,7 +14,7 @@ export const categoryApi = api.injectEndpoints({
       providesTags: ['category'],
     }),
 
-    getCategorySelectOptions: builder.query<SelectOption[], void>({
+    getCategorySelectOptions: builder.query<SelectOption[], unknown>({
       query: () => '/api/v1/categories/autocomplete',
       providesTags: ['category'],
     }),

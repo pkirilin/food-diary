@@ -43,7 +43,7 @@ export const NoteInputDialog: FC<Props> = ({ date, mealType, note }) => {
     dispatch(actions.productDraftDiscarded());
   };
 
-  const categorySelect = categoryLib.useCategorySelectData();
+  const { categories, categoriesLoading } = categoryLib.useCategoriesForSelect();
 
   const inputScreenActive =
     activeScreen.type === 'note-input' || activeScreen.type === 'product-input';
@@ -72,8 +72,8 @@ export const NoteInputDialog: FC<Props> = ({ date, mealType, note }) => {
           <ProductForm
             formId={activeScreen.formId}
             defaultValues={activeScreen.product}
-            categories={categorySelect.data}
-            categoriesLoading={categorySelect.isLoading}
+            categories={categories}
+            categoriesLoading={categoriesLoading}
             onSubmit={handleSubmitProduct}
           />
         );

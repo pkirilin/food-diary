@@ -56,7 +56,7 @@ export const ProductSearchResults: FC<Props> = ({ query }) => {
     }),
   });
 
-  const { data: categories } = categoryLib.useCategorySelectData();
+  const { categories } = categoryLib.useCategoriesForSelect();
 
   const foundProducts = useMemo<ProductSelectOption[]>(
     () => searchProductsByName(allProducts, query),

@@ -28,7 +28,7 @@ export const ProductSearchResultsOnImage: FC<Props> = ({ image }) => {
 
   const dispatch = useAppDispatch();
   const recognizeNotes = useRecognizeNotes();
-  const { data: categories } = categoryLib.useCategorySelectData();
+  const { categories } = categoryLib.useCategoriesForSelect();
 
   if (isLoading) {
     return (

@@ -1,1 +1,1 @@
-export * from './useCategorySelectData';
+export * from './useCategoriesForSelect';
