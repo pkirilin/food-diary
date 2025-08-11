@@ -133,7 +133,7 @@ jobs:
           revision-memory: 256Mb
           revision-core-fraction: 50
           revision-concurrency: 1
-          revision-execution-timeout: 15
+          revision-execution-timeout: 30
           revision-provisioned: 1
           revision-env: |
             App__ForwardHttpsSchemeManuallyForAllRequests=true
