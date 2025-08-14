@@ -1,4 +1,4 @@
-import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
+import PhotoIcon from '@mui/icons-material/Photo';
 import { Box, IconButton, Tooltip } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 import { useRef, type FC, type ChangeEventHandler } from 'react';
@@ -7,31 +7,35 @@ import { imageLib } from '@/shared/lib';
 import { useRecognizeNotes } from '../lib/useRecognizeNotes';
 import { actions, type Image } from '../model';
 
-export const UploadImageButton: FC = () => {
+const toImage = async (file: File): Promise<Image> => {
+  const resizedImage = await imageLib.resize(file);
+  const base64 = await imageLib.convertToBase64String(resizedImage);
+
+  return {
+    name: file.name,
+    base64,
+  };
+};
+
+export const UploadImagesButton: FC = () => {
   const imageInputRef = useRef<HTMLInputElement | null>(null);
   const dispatch = useAppDispatch();
   const recognizeNotes = useRecognizeNotes();
 
-  const handleFileChange: ChangeEventHandler<HTMLInputElement> = async event => {
-    const file = event.target?.files?.item(0);
+  const handleFilesChange: ChangeEventHandler<HTMLInputElement> = async event => {
+    const files = Array.from(event.target?.files ?? []);
+    const images = await Promise.all(files.map(toImage));
 
-    if (!file) {
-      return;
-    }
+    dispatch(actions.imagesUploaded(images));
 
-    const resizedImage = await imageLib.resize(file);
-    const base64 = await imageLib.convertToBase64String(resizedImage);
-    const image: Image = { name: file.name, base64 };
-
-    dispatch(actions.imageUploaded(image));
-    await recognizeNotes(image);
+    await recognizeNotes(images);
   };
 
   return (
     <>
       <Tooltip title="Upload image" placement="left">
         <IconButton edge="end" onClick={() => imageInputRef.current?.click()}>
-          <PhotoCameraIcon />
+          <PhotoIcon />
         </IconButton>
       </Tooltip>
       <Box
@@ -41,7 +45,8 @@ export const UploadImageButton: FC = () => {
         type="file"
         name="image"
         accept="image/*"
-        onChange={handleFileChange}
+        multiple
+        onChange={handleFilesChange}
       />
     </>
   );

@@ -8,13 +8,14 @@ import { type NoteRecognitionState, type Image, type ManageNoteScreenState } fro
 export interface ManageNoteState {
   note?: NoteFormValues;
   product?: productModel.ProductFormValues;
-  image?: Image;
+  images: Image[];
   noteRecognition: NoteRecognitionState;
   submitDisabled: boolean;
   isSubmitting: boolean;
 }
 
 export const initialState: ManageNoteState = {
+  images: [],
   submitDisabled: false,
   isSubmitting: false,
   noteRecognition: {
@@ -31,9 +32,9 @@ export const manageNoteSlice = createSlice({
       [
         (state: ManageNoteState) => state.note,
         (state: ManageNoteState) => state.product,
-        (state: ManageNoteState) => state.image,
+        (state: ManageNoteState) => state.images,
       ],
-      (note, product, image): ManageNoteScreenState => {
+      (note, product, images): ManageNoteScreenState => {
         if (product) {
           return {
             type: 'product-input',
@@ -42,10 +43,10 @@ export const manageNoteSlice = createSlice({
           };
         }
 
-        if (image) {
+        if (images.length > 0) {
           return {
             type: 'image-upload',
-            image,
+            images,
           };
         }
 
@@ -109,8 +110,8 @@ export const manageNoteSlice = createSlice({
     productDraftDiscarded: state => {
       if (state.note) {
         state.note.product = null;
+        state.images = [];
         delete state.product;
-        delete state.image;
       }
     },
 
@@ -128,9 +129,9 @@ export const manageNoteSlice = createSlice({
         state.note.quantity = payload.defaultQuantity;
         state.note.product = payload;
         state.noteRecognition = initialState.noteRecognition;
+        state.images = [];
 
         delete state.product;
-        delete state.image;
       }
     },
 
@@ -151,12 +152,12 @@ export const manageNoteSlice = createSlice({
       }
     },
 
-    imageUploaded: (state, { payload }: PayloadAction<Image>) => {
-      state.image = payload;
+    imagesUploaded: (state, { payload }: PayloadAction<Image[]>) => {
+      state.images = payload;
     },
 
-    imageRemoved: state => {
-      delete state.image;
+    imagesRemoved: state => {
+      state.images = [];
     },
 
     noteRecognitionSucceded: (state, { payload }: PayloadAction<RecognizeNoteResponse>) => {

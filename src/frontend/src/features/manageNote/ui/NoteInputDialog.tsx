@@ -11,7 +11,7 @@ import { actions, selectors } from '../model';
 import { ImagePreview } from './ImagePreview';
 import { NoteForm } from './NoteForm';
 import { ProductSearch } from './ProductSearch';
-import { ProductSearchResultsOnImage } from './ProductSearchResultsOnImage';
+import { ProductSearchResultsOnImages } from './ProductSearchResultsOnImages';
 
 interface Props {
   date: string;
@@ -81,10 +81,10 @@ export const NoteInputDialog: FC<Props> = ({ date, mealType, note }) => {
         return (
           <>
             <ImagePreview
-              image={activeScreen.image}
-              onRemove={() => dispatch(actions.imageRemoved())}
+              images={activeScreen.images}
+              onRemove={() => dispatch(actions.imagesRemoved())}
             />
-            <ProductSearchResultsOnImage image={activeScreen.image} />
+            <ProductSearchResultsOnImages images={activeScreen.images} />
           </>
         );
     }

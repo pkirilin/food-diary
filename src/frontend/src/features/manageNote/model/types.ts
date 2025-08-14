@@ -32,7 +32,7 @@ interface ProductInputScreenState {
 
 interface ImageUploadScreenState {
   type: 'image-upload';
-  image: Image;
+  images: Image[];
 }
 
 export type ManageNoteScreenState =

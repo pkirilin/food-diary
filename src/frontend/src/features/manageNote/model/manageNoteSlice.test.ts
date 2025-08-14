@@ -28,7 +28,7 @@ const create = {
   }),
   image: (name: string): Image => ({
     name,
-    base64: '...',
+    base64: `base64-${name}`,
   }),
   noteRecognitionWithSuggestions: (...suggestedProducts: string[]): NoteRecognitionState => ({
     suggestions: suggestedProducts.map(name => ({
@@ -64,13 +64,13 @@ describe('actions.productDraftSaved', () => {
 
     const givenState = create.state({
       note: create.note(),
-      image: create.image('test.jpg'),
+      images: [create.image('foo.jpg'), create.image('bar.jpg')],
       noteRecognition: create.noteRecognitionWithSuggestions('test'),
     });
 
     const state = manageNoteSlice.reducer(givenState, action);
 
-    expect(state.image).toBeUndefined();
+    expect(state.images).toEqual<Image[]>([]);
     expect(state.noteRecognition.suggestions).toEqual([]);
     expect(state.noteRecognition.isLoading).toBe(false);
   });

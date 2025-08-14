@@ -18,10 +18,10 @@ import { useRecognizeNotes } from '../lib/useRecognizeNotes';
 import { actions, type Image } from '../model';
 
 interface Props {
-  image: Image;
+  images: Image[];
 }
 
-export const ProductSearchResultsOnImage: FC<Props> = ({ image }) => {
+export const ProductSearchResultsOnImages: FC<Props> = ({ images }) => {
   const { suggestions, isLoading, error } = useAppSelector(
     state => state.manageNote.noteRecognition,
   );
@@ -49,7 +49,7 @@ export const ProductSearchResultsOnImage: FC<Props> = ({ image }) => {
       <Alert
         severity="error"
         action={
-          <Button color="inherit" size="small" onClick={() => recognizeNotes(image)}>
+          <Button color="inherit" size="small" onClick={() => recognizeNotes(images)}>
             Retry
           </Button>
         }
