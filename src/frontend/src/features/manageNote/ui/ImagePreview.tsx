@@ -16,15 +16,15 @@ interface Props {
 }
 
 export const ImagePreview: FC<Props> = ({ images, onRemove }) => (
-  <ImageList cols={2} gap={16}>
-    {images.map(image => (
+  <ImageList cols={3} gap={16}>
+    {images.map((image, index) => (
       <ImageListItem key={image.base64}>
         <Box
           component="img"
           src={image.base64}
-          alt="Uploaded image preview"
+          alt={`Uploaded image preview ${index + 1}`}
           sx={{
-            height: '194px',
+            height: '256px',
             objectFit: 'cover',
           }}
         />
