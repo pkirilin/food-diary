@@ -8,10 +8,9 @@ import { useLoadProductForEdit } from '../lib/useLoadProductForEdit';
 import { useSubmitNote } from '../lib/useSubmitNote';
 import { useSubmitProduct } from '../lib/useSubmitProduct';
 import { actions, selectors } from '../model';
-import { ImagePreview } from './ImagePreview';
+import { ImageUploadStep } from './ImageUploadStep';
 import { NoteForm } from './NoteForm';
 import { ProductSearch } from './ProductSearch';
-import { ProductSearchResultsOnImages } from './ProductSearchResultsOnImages';
 
 interface Props {
   date: string;
@@ -78,15 +77,7 @@ export const NoteInputDialog: FC<Props> = ({ date, mealType, note }) => {
           />
         );
       case 'image-upload':
-        return (
-          <>
-            <ImagePreview
-              images={activeScreen.images}
-              onRemove={() => dispatch(actions.imagesRemoved())}
-            />
-            <ProductSearchResultsOnImages images={activeScreen.images} />
-          </>
-        );
+        return <ImageUploadStep images={activeScreen.images} />;
     }
   };
 
