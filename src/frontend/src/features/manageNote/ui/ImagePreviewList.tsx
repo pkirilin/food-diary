@@ -9,7 +9,7 @@ interface Props {
 export const ImagePreviewList: FC<Props> = ({ images }) => (
   <Box display="flex" gap={2} flexWrap="wrap">
     {images.map((image, index) => (
-      <Box key={image.base64} sx={{ width: 128, height: 128 }}>
+      <Box key={`${image.name ?? 'image'}-${index}`} sx={{ width: 128, height: 128 }}>
         <Box
           borderRadius={2}
           component="img"

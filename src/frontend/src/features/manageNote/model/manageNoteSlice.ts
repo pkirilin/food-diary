@@ -156,10 +156,6 @@ export const manageNoteSlice = createSlice({
       state.images = payload;
     },
 
-    imageRemoved: (state, { payload }: PayloadAction<number>) => {
-      state.images = state.images.filter((_, i) => i !== payload);
-    },
-
     noteRecognitionSucceded: (state, { payload }: PayloadAction<RecognizeNoteResponse>) => {
       state.submitDisabled = false;
       state.noteRecognition.suggestions = payload.notes ?? [];
