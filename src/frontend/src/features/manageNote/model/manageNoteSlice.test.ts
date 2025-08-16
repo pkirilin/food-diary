@@ -27,8 +27,9 @@ const create = {
     salt: null,
   }),
   image: (name: string): Image => ({
+    id: crypto.randomUUID(),
     name,
-    base64: '...',
+    base64: `base64-${name}`,
   }),
   noteRecognitionWithSuggestions: (...suggestedProducts: string[]): NoteRecognitionState => ({
     suggestions: suggestedProducts.map(name => ({
@@ -58,19 +59,19 @@ describe('selectors.activeScreen', () => {
 });
 
 describe('actions.productDraftSaved', () => {
-  test('should reset image and recognizeNote state', () => {
+  test('should reset images and recognition state', () => {
     const product = create.product('test');
     const action = manageNoteSlice.actions.productDraftSaved(product);
 
     const givenState = create.state({
       note: create.note(),
-      image: create.image('test.jpg'),
+      images: [create.image('foo.jpg'), create.image('bar.jpg')],
       noteRecognition: create.noteRecognitionWithSuggestions('test'),
     });
 
     const state = manageNoteSlice.reducer(givenState, action);
 
-    expect(state.image).toBeUndefined();
+    expect(state.images).toEqual<Image[]>([]);
     expect(state.noteRecognition.suggestions).toEqual([]);
     expect(state.noteRecognition.isLoading).toBe(false);
   });
