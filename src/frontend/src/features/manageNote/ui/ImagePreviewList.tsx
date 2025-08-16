@@ -5,7 +5,7 @@ import { type Image } from '../model';
 
 interface Props {
   images: Image[];
-  onRemove: () => void;
+  onRemove: (index: number) => void;
 }
 
 export const ImagePreviewList: FC<Props> = ({ images, onRemove }) => (
@@ -25,7 +25,7 @@ export const ImagePreviewList: FC<Props> = ({ images, onRemove }) => (
           }}
         />
         <IconButton
-          onClick={onRemove}
+          onClick={() => onRemove(index)}
           size="small"
           sx={{
             position: 'absolute',

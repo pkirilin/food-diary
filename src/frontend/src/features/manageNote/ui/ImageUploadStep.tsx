@@ -88,7 +88,7 @@ export const ImageUploadStep: FC<Props> = ({ images }) => {
           Upload Images
         </Typography>
       </Stack>
-      <ImagePreviewList images={images} onRemove={() => {}} />
+      <ImagePreviewList images={images} onRemove={index => dispatch(actions.imageRemoved(index))} />
       <Stack spacing={2} direction="row">
         <Button
           fullWidth
