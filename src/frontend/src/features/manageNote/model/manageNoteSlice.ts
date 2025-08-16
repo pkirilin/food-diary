@@ -173,10 +173,5 @@ export const manageNoteSlice = createSlice({
       state.noteRecognition.error = payload;
       state.noteRecognition.suggestions = [];
     },
-
-    aiSuggestionDiscarded: state => {
-      state.submitDisabled = true;
-      state.noteRecognition = initialState.noteRecognition;
-    },
   },
 });
