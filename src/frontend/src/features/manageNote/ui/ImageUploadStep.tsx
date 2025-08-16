@@ -91,11 +91,12 @@ export const ImageUploadStep: FC<Props> = ({ images }) => {
       <ImagePreviewList images={images} onRemove={index => dispatch(actions.imageRemoved(index))} />
       <Stack spacing={2} direction="row">
         <Button
+          startIcon={<CloseIcon />}
           fullWidth
           variant="outlined"
           onClick={() => dispatch(actions.productDraftDiscarded())}
         >
-          Cancel
+          Discard
         </Button>
         <Button
           startIcon={<AutoAwesomeIcon />}
