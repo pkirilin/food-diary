@@ -23,12 +23,21 @@ export const UploadImagesButton: FC = () => {
   const recognizeNotes = useRecognizeNotes();
 
   const handleFilesChange: ChangeEventHandler<HTMLInputElement> = async event => {
-    const files = Array.from(event.target?.files ?? []);
-    const images = await Promise.all(files.map(toImage));
+    try {
+      const files = Array.from(event.target?.files ?? []);
 
-    dispatch(actions.imagesUploaded(images));
+      if (files.length === 0) {
+        return;
+      }
 
-    await recognizeNotes(images);
+      const images = await Promise.all(files.map(toImage));
+
+      dispatch(actions.imagesUploaded(images));
+
+      await recognizeNotes(images);
+    } finally {
+      event.target.value = '';
+    }
   };
 
   return (
