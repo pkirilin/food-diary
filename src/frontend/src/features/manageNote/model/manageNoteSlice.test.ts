@@ -27,6 +27,7 @@ const create = {
     salt: null,
   }),
   image: (name: string): Image => ({
+    id: crypto.randomUUID(),
     name,
     base64: `base64-${name}`,
   }),

@@ -12,6 +12,7 @@ const toImage = async (file: File): Promise<Image> => {
   const base64 = await imageLib.convertToBase64String(resizedImage);
 
   return {
+    id: crypto.randomUUID(),
     name: file.name,
     base64,
   };

@@ -4,6 +4,7 @@ import { type ClientError } from '@/shared/api';
 import { type NoteFormValues } from './noteSchema';
 
 export interface Image {
+  id: string;
   name: string;
   base64: string;
 }
