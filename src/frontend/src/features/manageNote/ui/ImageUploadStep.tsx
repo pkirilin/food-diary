@@ -25,7 +25,7 @@ export const ImageUploadStep: FC<Props> = ({ images }) => {
 
   if (noteRecognition.isLoading) {
     return (
-      <Stack spacing={2}>
+      <Stack spacing={3}>
         <Typography variant="h6" component="h2">
           Analyzing Images...
         </Typography>
@@ -39,7 +39,7 @@ export const ImageUploadStep: FC<Props> = ({ images }) => {
     const suggestion = noteRecognition.suggestions[0];
 
     return (
-      <Stack spacing={2}>
+      <Stack spacing={3}>
         <Typography variant="h6" component="h2">
           Review AI result
         </Typography>
@@ -82,7 +82,7 @@ export const ImageUploadStep: FC<Props> = ({ images }) => {
   }
 
   return (
-    <Stack spacing={4}>
+    <Stack spacing={3}>
       <Stack spacing={2}>
         <Typography variant="h6" component="h2">
           Upload Images
