@@ -1,21 +1,30 @@
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import CheckIcon from '@mui/icons-material/Check';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { LinearProgress, Stack, Typography } from '@mui/material';
 import { type FC } from 'react';
-import { useAppSelector } from '@/app/store';
+import { useAppDispatch, useAppSelector } from '@/app/store';
+import { categoryLib } from '@/entities/category';
 import { Button } from '@/shared/ui';
 import { useRecognizeNotes } from '../lib/useRecognizeNotes';
-import { type Image } from '../model';
+import { useSubmitProduct } from '../lib/useSubmitProduct';
+import { actions, type Image } from '../model';
 import { ImagePreviewList } from './ImagePreviewList';
 import { SuggestedProductCard } from './SuggestedProductCard';
 import { SuggestedProductCardSkeleton } from './SuggestedProductCardSkeleton';
 
 interface Props {
+  date: string;
   images: Image[];
 }
 
-export const ImageUploadStep: FC<Props> = ({ images }) => {
+export const ImageUploadStep: FC<Props> = ({ date, images }) => {
   const recognizeNotes = useRecognizeNotes();
   const noteRecognition = useAppSelector(state => state.manageNote.noteRecognition);
+  const isSubmitting = useAppSelector(state => state.manageNote.isSubmitting);
+  const dispatch = useAppDispatch();
+  const { categories } = categoryLib.useCategoriesForSelect();
+  const submitProduct = useSubmitProduct(date);
 
   if (noteRecognition.isLoading) {
     return (
@@ -30,12 +39,62 @@ export const ImageUploadStep: FC<Props> = ({ images }) => {
   }
 
   if (noteRecognition.suggestions.length > 0) {
+    const suggestion = noteRecognition.suggestions[0];
+
     return (
       <Stack spacing={2}>
         <Typography variant="h6" component="h2">
           Review AI result
         </Typography>
-        <SuggestedProductCard suggestion={noteRecognition.suggestions[0]} image={images[0]} />
+        <SuggestedProductCard
+          suggestion={suggestion}
+          image={images[0]}
+          onEdit={({ product, quantity }) =>
+            dispatch(
+              actions.productDraftCreated({
+                name: product.name.trim(),
+                defaultQuantity: quantity,
+                category: categories.at(0) ?? null,
+                calories: product.caloriesCost,
+                protein: product.protein,
+                fats: product.fats,
+                carbs: product.carbs,
+                sugar: product.sugar,
+                salt: product.salt,
+              }),
+            )
+          }
+        />
+        <Stack spacing={2} direction="row">
+          <Button
+            fullWidth
+            variant="outlined"
+            onClick={() => dispatch(actions.aiSuggestionDiscarded())}
+          >
+            Cancel
+          </Button>
+          <Button
+            startIcon={<CheckIcon />}
+            fullWidth
+            variant="contained"
+            loading={isSubmitting}
+            onClick={() =>
+              submitProduct({
+                name: suggestion.product.name.trim(),
+                defaultQuantity: suggestion.quantity,
+                category: categories.at(0) ?? null,
+                calories: suggestion.product.caloriesCost,
+                protein: suggestion.product.protein,
+                fats: suggestion.product.fats,
+                carbs: suggestion.product.carbs,
+                sugar: suggestion.product.sugar,
+                salt: suggestion.product.salt,
+              })
+            }
+          >
+            Accept
+          </Button>
+        </Stack>
       </Stack>
     );
   }
@@ -52,11 +111,21 @@ export const ImageUploadStep: FC<Props> = ({ images }) => {
       </Stack>
       <ImagePreviewList images={images} onRemove={() => {}} />
       <Stack spacing={2} direction="row">
-        <Button fullWidth variant="outlined">
+        <Button
+          fullWidth
+          variant="outlined"
+          onClick={() => dispatch(actions.productDraftDiscarded())}
+        >
           Cancel
         </Button>
-        <Button fullWidth variant="contained" onClick={() => recognizeNotes(images)}>
-          Continue
+        <Button
+          startIcon={<AutoAwesomeIcon />}
+          fullWidth
+          variant="contained"
+          loading={isSubmitting}
+          onClick={() => recognizeNotes(images)}
+        >
+          Generate
         </Button>
       </Stack>
     </Stack>

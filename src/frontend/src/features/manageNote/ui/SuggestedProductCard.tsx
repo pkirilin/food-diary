@@ -1,4 +1,3 @@
-import CheckIcon from '@mui/icons-material/Check';
 import EditIcon from '@mui/icons-material/Edit';
 import {
   Card,
@@ -18,10 +17,11 @@ import { type Image } from '../model';
 interface Props {
   suggestion: RecognizeNoteItem;
   image: Image;
+  onEdit: (suggestion: RecognizeNoteItem) => void;
 }
 
 // TODO: move to entity
-export const SuggestedProductCard: FC<Props> = ({ suggestion, image }) => {
+export const SuggestedProductCard: FC<Props> = ({ suggestion, image, onEdit }) => {
   const { product, quantity } = suggestion;
   const { caloriesCost, protein, fats, carbs, sugar, salt } = product;
 
@@ -48,11 +48,8 @@ export const SuggestedProductCard: FC<Props> = ({ suggestion, image }) => {
         </Stack>
       </CardContent>
       <CardActions>
-        <Button startIcon={<EditIcon />} size="small">
+        <Button startIcon={<EditIcon />} size="small" onClick={() => onEdit(suggestion)}>
           Edit
-        </Button>
-        <Button startIcon={<CheckIcon />} size="small" variant="contained">
-          Accept
         </Button>
       </CardActions>
     </Card>
