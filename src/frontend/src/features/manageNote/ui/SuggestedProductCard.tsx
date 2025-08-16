@@ -1,27 +1,16 @@
-import EditIcon from '@mui/icons-material/Edit';
-import {
-  Card,
-  CardContent,
-  Typography,
-  Stack,
-  Divider,
-  CardActions,
-  CardMedia,
-} from '@mui/material';
+import { Card, CardContent, Typography, Stack, Divider, CardMedia } from '@mui/material';
 import type { FC } from 'react';
 import { type RecognizeNoteItem } from '@/entities/note';
 import { NutritionValueDisplay } from '@/entities/product';
-import { Button } from '@/shared/ui';
 import { type Image } from '../model';
 
 interface Props {
   suggestion: RecognizeNoteItem;
   image: Image;
-  onEdit: (suggestion: RecognizeNoteItem) => void;
 }
 
 // TODO: move to entity
-export const SuggestedProductCard: FC<Props> = ({ suggestion, image, onEdit }) => {
+export const SuggestedProductCard: FC<Props> = ({ suggestion, image }) => {
   const { product, quantity } = suggestion;
   const { caloriesCost, protein, fats, carbs, sugar, salt } = product;
 
@@ -47,11 +36,6 @@ export const SuggestedProductCard: FC<Props> = ({ suggestion, image, onEdit }) =
           </Stack>
         </Stack>
       </CardContent>
-      <CardActions>
-        <Button startIcon={<EditIcon />} size="small" onClick={() => onEdit(suggestion)}>
-          Edit
-        </Button>
-      </CardActions>
     </Card>
   );
 };
