@@ -1,4 +1,5 @@
 import CheckIcon from '@mui/icons-material/Check';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import { Alert, AlertTitle, LinearProgress, Stack, Typography } from '@mui/material';
 import { type FC } from 'react';
 import { useAppDispatch, useAppSelector } from '@/app/store';
@@ -76,6 +77,15 @@ export const ImageUploadStep: FC<Props> = ({ images }) => {
       <ImagePreviewList images={images} />
       <SuggestedProductCard suggestion={suggestion} />
       <Stack spacing={2} direction="row">
+        <Button
+          startIcon={<RefreshIcon />}
+          variant="outlined"
+          fullWidth
+          disabled={isSubmitting}
+          onClick={() => recognizeNotes(images)}
+        >
+          Retry
+        </Button>
         <Button
           startIcon={<CheckIcon />}
           fullWidth
