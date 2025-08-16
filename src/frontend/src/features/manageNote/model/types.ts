@@ -4,6 +4,7 @@ import { type ClientError } from '@/shared/api';
 import { type NoteFormValues } from './noteSchema';
 
 export interface Image {
+  id: string;
   name: string;
   base64: string;
 }
@@ -32,7 +33,7 @@ interface ProductInputScreenState {
 
 interface ImageUploadScreenState {
   type: 'image-upload';
-  image: Image;
+  images: Image[];
 }
 
 export type ManageNoteScreenState =

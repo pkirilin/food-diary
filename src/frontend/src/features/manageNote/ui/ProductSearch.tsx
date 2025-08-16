@@ -4,7 +4,7 @@ import { IconButton, InputAdornment, TextField } from '@mui/material';
 import { useState, type FC } from 'react';
 import { useDebounce } from 'use-debounce';
 import { ProductSearchResults } from './ProductSearchResults';
-import { UploadImageButton } from './UploadImageButton';
+import { UploadImagesButton } from './UploadImagesButton';
 
 const DEBOUNCE_QUERY_DELAY = 300;
 
@@ -33,11 +33,11 @@ export const ProductSearch: FC = () => {
             endAdornment: (
               <InputAdornment position="end">
                 {query && (
-                  <IconButton onClick={() => setQuery('')}>
+                  <IconButton aria-label="Clear search" onClick={() => setQuery('')}>
                     <ClearIcon />
                   </IconButton>
                 )}
-                <UploadImageButton />
+                <UploadImagesButton />
               </InputAdornment>
             ),
           },

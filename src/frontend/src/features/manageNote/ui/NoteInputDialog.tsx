@@ -8,10 +8,9 @@ import { useLoadProductForEdit } from '../lib/useLoadProductForEdit';
 import { useSubmitNote } from '../lib/useSubmitNote';
 import { useSubmitProduct } from '../lib/useSubmitProduct';
 import { actions, selectors } from '../model';
-import { ImagePreview } from './ImagePreview';
+import { ImageUploadStep } from './ImageUploadStep';
 import { NoteForm } from './NoteForm';
 import { ProductSearch } from './ProductSearch';
-import { ProductSearchResultsOnImage } from './ProductSearchResultsOnImage';
 
 interface Props {
   date: string;
@@ -78,15 +77,9 @@ export const NoteInputDialog: FC<Props> = ({ date, mealType, note }) => {
           />
         );
       case 'image-upload':
-        return (
-          <>
-            <ImagePreview
-              image={activeScreen.image}
-              onRemove={() => dispatch(actions.imageRemoved())}
-            />
-            <ProductSearchResultsOnImage image={activeScreen.image} />
-          </>
-        );
+        return <ImageUploadStep images={activeScreen.images} />;
+      default:
+        throw new Error(`Unexpected screen: ${JSON.stringify(activeScreen)}`);
     }
   };
 
