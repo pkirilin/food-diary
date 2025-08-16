@@ -41,7 +41,12 @@ export const ImageUploadStep: FC<Props> = ({ images }) => {
       <Alert
         severity="error"
         action={
-          <Button color="inherit" size="small" onClick={() => recognizeNotes(images)}>
+          <Button
+            color="inherit"
+            size="small"
+            disabled={isSubmitting}
+            onClick={() => recognizeNotes(images)}
+          >
             Retry
           </Button>
         }

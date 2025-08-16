@@ -58,7 +58,7 @@ describe('selectors.activeScreen', () => {
 });
 
 describe('actions.productDraftSaved', () => {
-  test('should reset image and recognizeNote state', () => {
+  test('should reset images and recognition state', () => {
     const product = create.product('test');
     const action = manageNoteSlice.actions.productDraftSaved(product);
 

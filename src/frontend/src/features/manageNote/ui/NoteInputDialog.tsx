@@ -78,6 +78,8 @@ export const NoteInputDialog: FC<Props> = ({ date, mealType, note }) => {
         );
       case 'image-upload':
         return <ImageUploadStep images={activeScreen.images} />;
+      default:
+        throw new Error(`Unexpected screen: ${JSON.stringify(activeScreen)}`);
     }
   };
 

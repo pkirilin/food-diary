@@ -42,7 +42,7 @@ export const UploadImagesButton: FC = () => {
 
   return (
     <>
-      <Tooltip title="Upload image" placement="left">
+      <Tooltip title="Upload images" placement="left">
         <IconButton edge="end" onClick={() => imageInputRef.current?.click()}>
           <PhotoIcon />
         </IconButton>
@@ -52,7 +52,7 @@ export const UploadImagesButton: FC = () => {
         ref={imageInputRef}
         sx={visuallyHidden}
         type="file"
-        name="image"
+        name="images"
         accept="image/*"
         multiple
         onChange={handleFilesChange}

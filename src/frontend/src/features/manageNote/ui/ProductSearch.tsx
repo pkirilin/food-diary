@@ -33,7 +33,7 @@ export const ProductSearch: FC = () => {
             endAdornment: (
               <InputAdornment position="end">
                 {query && (
-                  <IconButton onClick={() => setQuery('')}>
+                  <IconButton aria-label="Clear search" onClick={() => setQuery('')}>
                     <ClearIcon />
                   </IconButton>
                 )}
