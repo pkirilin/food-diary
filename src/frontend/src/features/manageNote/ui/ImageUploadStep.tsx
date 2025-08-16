@@ -1,7 +1,5 @@
-import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import CheckIcon from '@mui/icons-material/Check';
-import CloseIcon from '@mui/icons-material/Close';
-import { LinearProgress, Stack, Typography } from '@mui/material';
+import { Alert, AlertTitle, LinearProgress, Stack, Typography } from '@mui/material';
 import { type FC } from 'react';
 import { useAppDispatch, useAppSelector } from '@/app/store';
 import { categoryLib } from '@/entities/category';
@@ -18,12 +16,15 @@ interface Props {
 
 export const ImageUploadStep: FC<Props> = ({ images }) => {
   const recognizeNotes = useRecognizeNotes();
-  const noteRecognition = useAppSelector(state => state.manageNote.noteRecognition);
   const isSubmitting = useAppSelector(state => state.manageNote.isSubmitting);
   const dispatch = useAppDispatch();
   const { categories } = categoryLib.useCategoriesForSelect();
 
-  if (noteRecognition.isLoading) {
+  const { suggestions, isLoading, error } = useAppSelector(
+    state => state.manageNote.noteRecognition,
+  );
+
+  if (isLoading) {
     return (
       <Stack spacing={3}>
         <Typography variant="h6" component="h2">
@@ -35,77 +36,63 @@ export const ImageUploadStep: FC<Props> = ({ images }) => {
     );
   }
 
-  if (noteRecognition.suggestions.length > 0) {
-    const suggestion = noteRecognition.suggestions[0];
+  if (error) {
+    return (
+      <Alert
+        severity="error"
+        action={
+          <Button color="inherit" size="small" onClick={() => recognizeNotes(images)}>
+            Retry
+          </Button>
+        }
+      >
+        <AlertTitle>{error.title}</AlertTitle>
+        {error.message}
+      </Alert>
+    );
+  }
 
+  const suggestion = suggestions.at(0);
+
+  if (!suggestion?.product) {
     return (
       <Stack spacing={3}>
-        <Typography variant="h6" component="h2">
-          Review AI result
-        </Typography>
-        <SuggestedProductCard suggestion={suggestion} image={images[0]} />
-        <Stack spacing={2} direction="row">
-          <Button
-            startIcon={<CloseIcon />}
-            fullWidth
-            variant="outlined"
-            onClick={() => dispatch(actions.aiSuggestionDiscarded())}
-          >
-            Discard
-          </Button>
-          <Button
-            startIcon={<CheckIcon />}
-            fullWidth
-            variant="contained"
-            loading={isSubmitting}
-            onClick={() =>
-              dispatch(
-                actions.productDraftCreated({
-                  name: suggestion.product.name.trim(),
-                  defaultQuantity: suggestion.quantity,
-                  category: categories.at(0) ?? null,
-                  calories: suggestion.product.caloriesCost,
-                  protein: suggestion.product.protein,
-                  fats: suggestion.product.fats,
-                  carbs: suggestion.product.carbs,
-                  sugar: suggestion.product.sugar,
-                  salt: suggestion.product.salt,
-                }),
-              )
-            }
-          >
-            Accept
-          </Button>
-        </Stack>
+        <ImagePreviewList images={images} />
+        <Alert severity="warning">No food found. Please try other images</Alert>
       </Stack>
     );
   }
 
   return (
     <Stack spacing={3}>
-      <Stack spacing={2}>
-        <Typography variant="h6" component="h2">
-          Upload Images
-        </Typography>
-      </Stack>
-      <ImagePreviewList images={images} onRemove={index => dispatch(actions.imageRemoved(index))} />
+      <Typography variant="h6" component="h2">
+        Review AI suggestions
+      </Typography>
+      <ImagePreviewList images={images} />
+      <SuggestedProductCard suggestion={suggestion} />
       <Stack spacing={2} direction="row">
         <Button
-          startIcon={<CloseIcon />}
-          fullWidth
-          variant="outlined"
-          onClick={() => dispatch(actions.productDraftDiscarded())}
-        >
-          Discard
-        </Button>
-        <Button
-          startIcon={<AutoAwesomeIcon />}
+          startIcon={<CheckIcon />}
           fullWidth
           variant="contained"
           loading={isSubmitting}
-          onClick={() => recognizeNotes(images)}
+          onClick={() =>
+            dispatch(
+              actions.productDraftCreated({
+                name: suggestion.product.name.trim(),
+                defaultQuantity: suggestion.quantity,
+                category: categories.at(0) ?? null,
+                calories: suggestion.product.caloriesCost,
+                protein: suggestion.product.protein,
+                fats: suggestion.product.fats,
+                carbs: suggestion.product.carbs,
+                sugar: suggestion.product.sugar,
+                salt: suggestion.product.salt,
+              }),
+            )
+          }
         >
-          Generate
+          Accept
         </Button>
       </Stack>
     </Stack>

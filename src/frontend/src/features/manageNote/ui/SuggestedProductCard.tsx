@@ -1,22 +1,18 @@
-import { Card, CardContent, Typography, Stack, Divider, CardMedia } from '@mui/material';
+import { Card, CardContent, Typography, Stack, Divider } from '@mui/material';
 import type { FC } from 'react';
 import { type RecognizeNoteItem } from '@/entities/note';
 import { NutritionValueDisplay } from '@/entities/product';
-import { type Image } from '../model';
 
 interface Props {
   suggestion: RecognizeNoteItem;
-  image: Image;
 }
 
-// TODO: move to entity
-export const SuggestedProductCard: FC<Props> = ({ suggestion, image }) => {
+export const SuggestedProductCard: FC<Props> = ({ suggestion }) => {
   const { product, quantity } = suggestion;
   const { caloriesCost, protein, fats, carbs, sugar, salt } = product;
 
   return (
     <Card variant="outlined">
-      <CardMedia sx={{ height: 128 }} image={image.base64} />
       <CardContent>
         <Stack spacing={1}>
           <Typography variant="body1" fontWeight="bold" gutterBottom>
