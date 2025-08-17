@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 using FoodDiary.Application.Notes.Create;
 using FoodDiary.Application.Notes.Get;
 using FoodDiary.Application.Notes.GetHistory;
+using FoodDiary.Application.Notes.Recognize;
 using FoodDiary.Application.Notes.Update;
 using FoodDiary.Application.Services.Categories;
 using MediatR;
@@ -32,5 +33,6 @@ public static class ServiceCollectionExtensions
         services.AddScoped<GetNotesHistoryQueryHandler>();
         services.AddScoped<CreateNoteCommandHandler>();
         services.AddScoped<UpdateNoteCommandHandler>();
+        services.AddScoped<RecognizeNoteCommandHandler>();
     }
 }

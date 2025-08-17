@@ -3,21 +3,15 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using JetBrains.Annotations;
-using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
-using RecognizeNoteResult = FoodDiary.Application.Result<FoodDiary.Application.Notes.Recognize.RecognizeNoteResponse>;
 
 namespace FoodDiary.Application.Notes.Recognize;
 
-public record RecognizeNoteRequest(IReadOnlyList<IFormFile> Files) : IRequest<RecognizeNoteResult>;
+public record RecognizeNoteCommand(IReadOnlyList<IFormFile> Files);
 
-[UsedImplicitly]
-internal class RecognizeNoteRequestHandler(
-    IChatClient chatClient,
-    ILogger<RecognizeNoteRequestHandler> logger) : IRequestHandler<RecognizeNoteRequest, RecognizeNoteResult>
+public class RecognizeNoteCommandHandler(IChatClient chatClient, ILogger<RecognizeNoteCommandHandler> logger)
 {
     private const string SystemPrompt =
         "You are a bot in the calorie tracking app helping users track their energy and nutritional values intake by analyzing food images and food labels.";
@@ -25,16 +19,16 @@ internal class RecognizeNoteRequestHandler(
     private const string UserPrompt =
         "Analyze provided images and find all the food, meals, or products on it. If possible, do not translate product names into English, keep original names from images.";
 
-    public async Task<RecognizeNoteResult> Handle(RecognizeNoteRequest request, CancellationToken cancellationToken)
+    public async Task<RecognizeNoteResult> Handle(RecognizeNoteCommand command, CancellationToken cancellationToken)
     {
-        var images = request.Files
+        var images = command.Files
             .Where(file => file.ContentType.StartsWith("image/"))
             .ToList()
             .AsReadOnly();
         
         if (images.Count == 0)
         {
-            return RecognizeNoteResult.ValidationError("No images provided");
+            return RecognizeNoteResult.NoImagesProvided();
         }
         
         var systemMessage = new ChatMessage(ChatRole.System, SystemPrompt);
@@ -44,10 +38,10 @@ internal class RecognizeNoteRequestHandler(
             messages: [systemMessage, userMessage],
             cancellationToken: cancellationToken);
 
-        if (!chatResponse.TryGetResult(out var foodOnImage) && foodOnImage is null)
+        if (!chatResponse.TryGetResult(out var foodOnImage))
         {
             logger.LogError("Could not deserialize model response {ModelResponse}", chatResponse.Text);
-            return RecognizeNoteResult.InternalServerError("Model response was invalid");
+            return RecognizeNoteResult.ModelResponseWasInvalid();
         }
         
         logger.LogInformation("Deserialized model response: {ModelResponse}", chatResponse.Text);
@@ -58,11 +52,11 @@ internal class RecognizeNoteRequestHandler(
         IReadOnlyCollection<IFormFile> images,
         CancellationToken cancellationToken)
     {
-        var optimizedImageTasks = images.Select(image => GetBytes(image, cancellationToken));
-        var optimizedImageBytes = await Task.WhenAll(optimizedImageTasks);
+        var imageTasks = images.Select(image => GetBytes(image, cancellationToken));
+        var imageBytes = await Task.WhenAll(imageTasks);
         
-        var imageContents = optimizedImageBytes
-            .Select(imageBytes => new DataContent(imageBytes, "image/jpeg"))
+        var imageContents = images
+            .Zip(imageBytes, (image, data) => new DataContent(data, image.ContentType))
             .ToList();
         
         return new ChatMessage(
