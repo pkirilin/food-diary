@@ -8,7 +8,6 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
-using RecognizeNoteResult = FoodDiary.Application.Result<FoodDiary.Application.Notes.Recognize.RecognizeNoteResponse>;
 
 namespace FoodDiary.Application.Notes.Recognize;
 
@@ -34,7 +33,7 @@ internal class RecognizeNoteRequestHandler(
         
         if (images.Count == 0)
         {
-            return RecognizeNoteResult.ValidationError("No images provided");
+            return RecognizeNoteResult.NoImagesProvided();
         }
         
         var systemMessage = new ChatMessage(ChatRole.System, SystemPrompt);
@@ -47,7 +46,7 @@ internal class RecognizeNoteRequestHandler(
         if (!chatResponse.TryGetResult(out var foodOnImage) && foodOnImage is null)
         {
             logger.LogError("Could not deserialize model response {ModelResponse}", chatResponse.Text);
-            return RecognizeNoteResult.InternalServerError("Model response was invalid");
+            return RecognizeNoteResult.ModelResponseWasInvalid();
         }
         
         logger.LogInformation("Deserialized model response: {ModelResponse}", chatResponse.Text);

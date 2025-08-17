@@ -36,7 +36,6 @@ public class NotesController : ControllerBase
     public async Task<IActionResult> GetNotes(
         [FromQuery] GetNotesRequest request,
         [FromServices] GetNotesQueryHandler handler,
-        [FromServices] ICaloriesCalculator caloriesCalculator,
         CancellationToken cancellationToken)
     {
         var query = request.ToGetNotesQuery();
@@ -137,6 +136,12 @@ public class NotesController : ControllerBase
     {
         var request = new RecognizeNoteRequest(files);
         var result = await _mediator.Send(request, cancellationToken);
-        return result.ToActionResult();
+        
+        return result switch
+        {
+            RecognizeNoteResult.Success s => Ok(s.Response),
+            RecognizeNoteResult.Failure f => f.Error.ToActionResult(),
+            _ => StatusCode(StatusCodes.Status501NotImplemented)
+        };
     }
 }
