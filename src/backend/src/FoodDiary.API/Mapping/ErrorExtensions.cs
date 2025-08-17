@@ -11,8 +11,7 @@ public static class ErrorExtensions
         var status = error switch
         {
             Error.ValidationError => StatusCodes.Status400BadRequest,
-            Error.InternalServerError => StatusCodes.Status500InternalServerError,
-            _ => StatusCodes.Status501NotImplemented
+            _ => StatusCodes.Status500InternalServerError
         };
 
         return new ObjectResult(new ProblemDetails

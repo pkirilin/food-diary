@@ -2,9 +2,9 @@ namespace FoodDiary.Application.Notes.Recognize;
 
 public abstract record RecognizeNoteResult
 {
-    public record Success(RecognizeNoteResponse Response) : RecognizeNoteResult;
+    public sealed record Success(RecognizeNoteResponse Response) : RecognizeNoteResult;
 
-    public record Failure(Error Error) : RecognizeNoteResult;
+    public sealed record Failure(Error Error) : RecognizeNoteResult;
 
     public static Failure NoImagesProvided() =>
         new(new Error.ValidationError("No images provided"));

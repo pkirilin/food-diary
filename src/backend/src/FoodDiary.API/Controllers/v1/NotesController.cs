@@ -142,7 +142,7 @@ public class NotesController : ControllerBase
         {
             RecognizeNoteResult.Success s => Ok(s.Response),
             RecognizeNoteResult.Failure f => f.Error.ToActionResult(),
-            _ => StatusCode(StatusCodes.Status501NotImplemented)
+            _ => StatusCode(StatusCodes.Status500InternalServerError)
         };
     }
 }

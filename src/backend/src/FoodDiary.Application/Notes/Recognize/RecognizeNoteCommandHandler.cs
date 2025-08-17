@@ -38,7 +38,7 @@ public class RecognizeNoteCommandHandler(IChatClient chatClient, ILogger<Recogni
             messages: [systemMessage, userMessage],
             cancellationToken: cancellationToken);
 
-        if (!chatResponse.TryGetResult(out var foodOnImage) && foodOnImage is null)
+        if (!chatResponse.TryGetResult(out var foodOnImage))
         {
             logger.LogError("Could not deserialize model response {ModelResponse}", chatResponse.Text);
             return RecognizeNoteResult.ModelResponseWasInvalid();
@@ -55,8 +55,8 @@ public class RecognizeNoteCommandHandler(IChatClient chatClient, ILogger<Recogni
         var imageTasks = images.Select(image => GetBytes(image, cancellationToken));
         var imageBytes = await Task.WhenAll(imageTasks);
         
-        var imageContents = imageBytes
-            .Select(data => new DataContent(data, "image/jpeg"))
+        var imageContents = images
+            .Zip(imageBytes, (image, data) => new DataContent(data, image.ContentType))
             .ToList();
         
         return new ChatMessage(
