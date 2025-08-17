@@ -132,10 +132,11 @@ public class NotesController : ControllerBase
     [HttpPost("recognitions")]
     public async Task<IActionResult> RecognizeNote(
         [FromForm] IReadOnlyList<IFormFile> files,
+        [FromServices] RecognizeNoteCommandHandler handler,
         CancellationToken cancellationToken)
     {
-        var request = new RecognizeNoteRequest(files);
-        var result = await _mediator.Send(request, cancellationToken);
+        var command = new RecognizeNoteCommand(files);
+        var result = await handler.Handle(command, cancellationToken);
         
         return result switch
         {
