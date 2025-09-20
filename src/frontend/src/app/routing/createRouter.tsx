@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter } from 'react-router';
 import { AppLoader } from '@/shared/ui';
 import { ErrorPage } from './ErrorPage';
 

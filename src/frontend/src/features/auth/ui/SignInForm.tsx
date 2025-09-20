@@ -1,6 +1,6 @@
 import { Box, Button } from '@mui/material';
 import { type FC } from 'react';
-import { Form } from 'react-router-dom';
+import { Form } from 'react-router';
 import GoogleIcon from './GoogleIcon';
 
 export const SignInForm: FC = () => {

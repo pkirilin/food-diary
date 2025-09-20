@@ -1,6 +1,6 @@
 import 'date-fns';
 import { createRoot } from 'react-dom/client';
-import { RouterProvider } from 'react-router-dom';
+import { RouterProvider } from 'react-router';
 import { GOOGLE_ANALYTICS_ENABLED, MSW_ENABLED } from '@/shared/config';
 import { initGoogleAnalytics } from './googleAnalytics';
 import { RootProvider } from './RootProvider';

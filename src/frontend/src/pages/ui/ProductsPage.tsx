@@ -1,5 +1,5 @@
 import { type FC } from 'react';
-import { type LoaderFunction } from 'react-router-dom';
+import { type LoaderFunction } from 'react-router';
 import { store } from '@/app/store';
 import { productApi, productLib } from '@/entities/product';
 import { Products } from '@/features/products';

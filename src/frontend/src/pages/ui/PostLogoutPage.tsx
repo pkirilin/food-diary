@@ -1,5 +1,5 @@
 import { type FC } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate } from 'react-router';
 import { AuthCallbackProgress, useAuth } from '@/features/auth';
 
 export const Component: FC = () => {

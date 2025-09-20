@@ -1,7 +1,7 @@
 import LogoutIcon from '@mui/icons-material/Logout';
 import { List, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 import { type FC } from 'react';
-import { useSubmit } from 'react-router-dom';
+import { useSubmit } from 'react-router';
 
 export const NavigationDrawerActions: FC = () => {
   const submit = useSubmit();

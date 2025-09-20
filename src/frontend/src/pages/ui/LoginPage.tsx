@@ -1,11 +1,6 @@
 import { Box, Container, Paper, Stack } from '@mui/material';
 import { type FC } from 'react';
-import {
-  type LoaderFunction,
-  redirect,
-  type ActionFunction,
-  redirectDocument,
-} from 'react-router-dom';
+import { type LoaderFunction, redirect, type ActionFunction, redirectDocument } from 'react-router';
 import { store } from '@/app/store';
 import { authApi, DemoModeWarning, SignInForm } from '@/features/auth';
 import { UpdateAppBanner } from '@/features/updateApp';

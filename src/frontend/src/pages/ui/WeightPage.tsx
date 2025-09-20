@@ -1,6 +1,6 @@
 import { Typography } from '@mui/material';
 import { type FC } from 'react';
-import { useLoaderData, type LoaderFunction } from 'react-router-dom';
+import { useLoaderData, type LoaderFunction } from 'react-router';
 import { store } from '@/app/store';
 import { type GetWeightLogsRequest, weightLogsApi } from '@/entities/weightLog';
 import { dateLib } from '@/shared/lib';
@@ -40,7 +40,7 @@ export const loader: LoaderFunction = async () => {
 };
 
 export const Component: FC = () => {
-  const { weightLogsRequest } = useLoaderData() as LoaderData;
+  const { weightLogsRequest } = useLoaderData();
   const from = dateLib.formatToUserFriendlyString(weightLogsRequest.from);
   const to = dateLib.formatToUserFriendlyString(weightLogsRequest.to);
 

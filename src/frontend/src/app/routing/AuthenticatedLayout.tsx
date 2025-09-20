@@ -6,7 +6,7 @@ import {
   ScrollRestoration,
   redirect,
   type ShouldRevalidateFunction,
-} from 'react-router-dom';
+} from 'react-router';
 import { authApi, useAuthStatusCheckEffect } from '@/features/auth';
 import { UpdateAppBanner } from '@/features/updateApp';
 import { ok } from '@/pages/lib';

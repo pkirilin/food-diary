@@ -1,6 +1,6 @@
 import { Alert, Box, Slide, Stack, useScrollTrigger } from '@mui/material';
 import { type FC } from 'react';
-import { type LoaderFunction, useLoaderData } from 'react-router-dom';
+import { type LoaderFunction, useLoaderData } from 'react-router';
 import { store } from '@/app/store';
 import { noteApi, noteLib, noteModel } from '@/entities/note';
 import { productModel } from '@/entities/product';
@@ -43,7 +43,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 export const Component: FC = () => {
-  const { date } = useLoaderData() as LoaderData;
+  const { date } = useLoaderData();
   const { data: notes } = noteLib.useNotes(date);
   const nutritionValues = noteModel.calculateNutritionValues(notes);
 

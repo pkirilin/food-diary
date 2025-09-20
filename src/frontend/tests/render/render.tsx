@@ -1,6 +1,6 @@
 import { type RenderResult, render as rtlRender } from '@testing-library/react';
 import { type ReactElement } from 'react';
-import { RouterProvider, createMemoryRouter } from 'react-router-dom';
+import { RouterProvider, createMemoryRouter } from 'react-router';
 import { RootProvider } from '@/app/RootProvider';
 import { createRouter } from '@/app/routing';
 import { configureStore } from '@/app/store';
