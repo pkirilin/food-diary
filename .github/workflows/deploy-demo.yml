@@ -27,9 +27,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22.15.0'
+          cache: "yarn"
+          cache-dependency-path: src/frontend/yarn.lock
 
       - name: Install dependencies
-        run: yarn install
+        run: yarn install --frozen-lockfile
 
       - name: Build
         run: yarn build
@@ -37,7 +39,7 @@ jobs:
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./dist
+          path: src/frontend/dist
 
   deploy:
     needs: build
