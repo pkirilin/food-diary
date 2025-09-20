@@ -2,7 +2,6 @@ import 'date-fns';
 import { createRoot } from 'react-dom/client';
 import { RouterProvider } from 'react-router-dom';
 import { GOOGLE_ANALYTICS_ENABLED, MSW_ENABLED } from '@/shared/config';
-import { AppLoader } from '@/shared/ui';
 import { initGoogleAnalytics } from './googleAnalytics';
 import { RootProvider } from './RootProvider';
 import { createRouter } from './routing';
@@ -32,7 +31,7 @@ import { store } from './store';
 
   root.render(
     <RootProvider store={store}>
-      <RouterProvider router={router} fallbackElement={<AppLoader />} />
+      <RouterProvider router={router} />
     </RootProvider>,
   );
 })();

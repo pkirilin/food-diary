@@ -4,7 +4,6 @@ import { RouterProvider, createMemoryRouter } from 'react-router-dom';
 import { RootProvider } from '@/app/RootProvider';
 import { createRouter } from '@/app/routing';
 import { configureStore } from '@/app/store';
-import { AppLoader } from '@/shared/ui';
 import TestEnvironment from './TestEnvironment';
 
 interface RenderOptions {
@@ -47,7 +46,7 @@ export const renderWithRouter = (): void => {
 
   rtlRender(
     <RootProvider store={store}>
-      <RouterProvider router={router} fallbackElement={<AppLoader />} />
+      <RouterProvider router={router} />
     </RootProvider>,
   );
 };
