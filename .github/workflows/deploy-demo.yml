@@ -34,6 +34,14 @@ jobs:
         run: yarn install --frozen-lockfile
 
       - name: Build
+        env:
+          VITE_APP_API_URL: "https://localhost:5001"
+          VITE_APP_DEMO_MODE_ENABLED: "true"
+          VITE_APP_GOOGLE_ANALYTICS_ENABLED: "true"
+          VITE_APP_GOOGLE_ANALYTICS_MEASUREMENT_ID: "G-K3KTSBB4DW"
+          VITE_APP_MSW_ENABLED: "true"
+          VITE_APP_FAKE_AUTH_ENABLED: "true"
+          VITE_APP_FAKE_AUTH_LOGIN_ON_INIT: "true"
         run: yarn build
 
       - name: Upload Pages artifact
