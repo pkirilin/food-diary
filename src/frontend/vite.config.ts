@@ -5,7 +5,7 @@ import { VitePWA as pwa } from 'vite-plugin-pwa';
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), 'VITE_');
-  const base = env.VITE_APP_DEMO_MODE_ENABLED === 'true' ? '/food-diary/' : '/';
+  const base = env.VITE_APP_DEMO_MODE_ENABLED === 'true' ? './' : '/';
 
   return {
     plugins: [
