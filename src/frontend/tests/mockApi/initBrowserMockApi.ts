@@ -15,7 +15,7 @@ export const initBrowserMockApi = async (): Promise<void> => {
 
   await worker.start({
     serviceWorker: {
-      url: import.meta.env.PROD ? '/serviceWorker.js' : '/mockServiceWorker.js',
+      url: import.meta.env.PROD ? 'serviceWorker.js' : 'mockServiceWorker.js',
     },
 
     onUnhandledRequest: (request, print) => {
