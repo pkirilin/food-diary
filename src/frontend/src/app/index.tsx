@@ -1,7 +1,7 @@
 import 'date-fns';
 import { createRoot } from 'react-dom/client';
 import { RouterProvider } from 'react-router-dom';
-import { GOOGLE_ANALYTICS_ENABLED, MSW_ENABLED } from '@/shared/config';
+import { GOOGLE_ANALYTICS_ENABLED } from '@/shared/config';
 import { AppLoader } from '@/shared/ui';
 import { initGoogleAnalytics } from './googleAnalytics';
 import { RootProvider } from './RootProvider';
@@ -9,11 +9,6 @@ import { createRouter } from './routing';
 import { store } from './store';
 
 (async () => {
-  if (MSW_ENABLED) {
-    const { initBrowserMockApi } = await import('@tests/mockApi');
-    await initBrowserMockApi();
-  }
-
   if (GOOGLE_ANALYTICS_ENABLED) {
     initGoogleAnalytics();
   }
