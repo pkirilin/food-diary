@@ -3,7 +3,7 @@ import { DEMO_MODE_ENABLED, MSW_ENABLED } from '@/shared/config';
 
 declare let self: ServiceWorkerGlobalScope;
 
-if (import.meta.env.PROD && MSW_ENABLED) {
+if (MSW_ENABLED) {
   const basePath = DEMO_MODE_ENABLED ? '/food-diary' : '';
   importScripts(`${basePath}/mockServiceWorker.js`);
 }

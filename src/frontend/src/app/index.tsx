@@ -9,7 +9,7 @@ import { createRouter } from './routing';
 import { store } from './store';
 
 (async () => {
-  if (!import.meta.env.PROD && MSW_ENABLED) {
+  if (MSW_ENABLED) {
     const { initBrowserMockApi } = await import('@tests/mockApi');
     await initBrowserMockApi();
   }
