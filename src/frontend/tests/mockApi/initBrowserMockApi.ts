@@ -15,10 +15,7 @@ export const initBrowserMockApi = async (): Promise<void> => {
 
   await initMockApiDb();
 
-  const basePath = DEMO_MODE_ENABLED ? '/food-diary' : '';
-
-  // eslint-disable-next-line no-console
-  console.info('Starting MSW...');
+  const basePath = import.meta.env.PROD && DEMO_MODE_ENABLED ? './' : '';
 
   await worker.start({
     serviceWorker: {
