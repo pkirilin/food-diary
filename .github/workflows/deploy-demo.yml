@@ -41,7 +41,7 @@ jobs:
           VITE_APP_GOOGLE_ANALYTICS_MEASUREMENT_ID: "G-K3KTSBB4DW"
           VITE_APP_MSW_ENABLED: "true"
           VITE_APP_FAKE_AUTH_ENABLED: "true"
-          VITE_APP_FAKE_AUTH_LOGIN_ON_INIT: "true"
+          VITE_APP_FAKE_AUTH_LOGIN_ON_INIT: "false"
         run: yarn build
 
       - name: Upload Pages artifact
