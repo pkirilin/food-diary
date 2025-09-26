@@ -63,7 +63,7 @@ public class Startup
 
                 options.Events.OnSigningOut = context =>
                 {
-                    context.Response.Redirect("/post-logout");
+                    context.Response.Redirect("/#post-logout");
                     return Task.CompletedTask;
                 };
             })
