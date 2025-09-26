@@ -2,6 +2,8 @@ name: Deploy Demo
 
 on:
   push:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
