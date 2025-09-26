@@ -1,11 +1,10 @@
 import { cleanupOutdatedCaches, precacheAndRoute } from 'workbox-precaching';
-import { DEMO_MODE_ENABLED, MSW_ENABLED } from '@/shared/config';
+import { MSW_ENABLED } from '@/shared/config';
 
 declare let self: ServiceWorkerGlobalScope;
 
 if (MSW_ENABLED) {
-  const basePath = DEMO_MODE_ENABLED ? '/food-diary' : '';
-  importScripts(`${basePath}/mockServiceWorker.js`);
+  importScripts(`./mockServiceWorker.js`);
 }
 
 self.addEventListener('message', event => {

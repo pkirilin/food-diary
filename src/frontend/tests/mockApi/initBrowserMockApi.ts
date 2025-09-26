@@ -1,5 +1,3 @@
-import { DEMO_MODE_ENABLED } from '@/shared/config';
-
 const IGNORED_URL_PATTERNS: RegExp[] = [
   /fonts.gstatic.com/,
   /fonts.googleapis.com/,
@@ -15,13 +13,11 @@ export const initBrowserMockApi = async (): Promise<void> => {
 
   await initMockApiDb();
 
-  const basePath = import.meta.env.PROD && DEMO_MODE_ENABLED ? './' : '';
-
   await worker.start({
     serviceWorker: {
       url: import.meta.env.PROD ? 'serviceWorker.js' : 'mockServiceWorker.js',
       options: {
-        scope: basePath,
+        scope: './',
       },
     },
 
