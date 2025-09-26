@@ -2,28 +2,18 @@ import { CssBaseline, StyledEngineProvider, ThemeProvider } from '@mui/material'
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
 import { type Store } from '@reduxjs/toolkit';
-import { type PropsWithChildren, type FC, useState, useEffect } from 'react';
+import { type PropsWithChildren, type FC } from 'react';
 import { Provider } from 'react-redux';
-import { MSW_ENABLED } from '@/shared/config';
+import { AppLoader } from '@/shared/ui';
 import { theme } from './theme';
+import { useMockApi } from './useMockApi';
 
 interface Props {
   store: Store;
 }
 
 export const RootProvider: FC<PropsWithChildren<Props>> = ({ children, store }) => {
-  const [mockApiInitialized, setMockApiInitialized] = useState(false);
-
-  useEffect(() => {
-    (async () => {
-      if (MSW_ENABLED) {
-        const { initBrowserMockApi } = await import('@tests/mockApi');
-        await initBrowserMockApi();
-      }
-
-      setMockApiInitialized(true);
-    })();
-  }, []);
+  const mockApiInitialized = useMockApi();
 
   return (
     <StyledEngineProvider injectFirst>
@@ -31,7 +21,7 @@ export const RootProvider: FC<PropsWithChildren<Props>> = ({ children, store }) 
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <Provider store={store}>
             <CssBaseline />
-            {!mockApiInitialized ? <div>Initializing mock api...</div> : children}
+            {!mockApiInitialized ? <AppLoader /> : children}
           </Provider>
         </LocalizationProvider>
       </ThemeProvider>
