@@ -7,6 +7,7 @@ import { initGoogleAnalytics } from './googleAnalytics';
 import { RootProvider } from './RootProvider';
 import { createRouter } from './routing';
 import { store } from './store';
+import { WithMockApi } from './WithMockApi';
 
 (async () => {
   if (GOOGLE_ANALYTICS_ENABLED) {
@@ -27,7 +28,9 @@ import { store } from './store';
 
   root.render(
     <RootProvider store={store}>
-      <RouterProvider router={router} fallbackElement={<AppLoader />} />
+      <WithMockApi>
+        <RouterProvider router={router} fallbackElement={<AppLoader />} />
+      </WithMockApi>
     </RootProvider>,
   );
 })();

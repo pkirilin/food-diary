@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import { type FC, type PropsWithChildren, useState, useEffect } from 'react';
 import { MSW_ENABLED } from '@/shared/config';
+import { AppLoader } from '@/shared/ui';
 
-export const useMockApi = (): boolean => {
+export const WithMockApi: FC<PropsWithChildren> = ({ children }) => {
   const [mockApiInitialized, setMockApiInitialized] = useState(false);
 
   useEffect(() => {
@@ -15,5 +16,9 @@ export const useMockApi = (): boolean => {
     })();
   }, []);
 
-  return mockApiInitialized;
+  if (!mockApiInitialized) {
+    return <AppLoader />;
+  }
+
+  return children;
 };
