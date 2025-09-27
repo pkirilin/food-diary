@@ -37,7 +37,7 @@ public class AuthController : ControllerBase
     [HttpGet("login-callback")]
     public IActionResult LoginCallback(string returnUrl = "/")
     {
-        return Redirect($"/#post-login?returnUrl={Uri.EscapeDataString(returnUrl)}");
+        return Redirect($"/#/post-login?returnUrl={Uri.EscapeDataString(returnUrl)}");
     }
 
     [HttpGet("logout")]
