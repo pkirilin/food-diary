@@ -49,7 +49,7 @@ export const createRouter = (): ReturnType<typeof createHashRouter> =>
           lazy: () => import('@/pages/ui/PostLoginPage'),
         },
         {
-          path: 'post-logout',
+          path: '/post-logout',
           lazy: () => import('@/pages/ui/PostLogoutPage'),
         },
       ],
