@@ -1,8 +1,8 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { createHashRouter } from 'react-router-dom';
 import { ErrorPage } from './ErrorPage';
 
-export const createRouter = (): ReturnType<typeof createBrowserRouter> =>
-  createBrowserRouter([
+export const createRouter = (): ReturnType<typeof createHashRouter> =>
+  createHashRouter([
     {
       lazy: () => import('./AuthenticatedLayout'),
       children: [
@@ -49,7 +49,7 @@ export const createRouter = (): ReturnType<typeof createBrowserRouter> =>
           lazy: () => import('@/pages/ui/PostLoginPage'),
         },
         {
-          path: 'post-logout',
+          path: '/post-logout',
           lazy: () => import('@/pages/ui/PostLogoutPage'),
         },
       ],

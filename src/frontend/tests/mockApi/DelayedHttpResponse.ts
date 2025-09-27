@@ -9,23 +9,23 @@ const delay = (): Promise<void> => {
   return MOCK_API_RESPONSE_DELAY > 0 ? mswDelay(MOCK_API_RESPONSE_DELAY) : mswDelay();
 };
 
-const status = async (code: number): Promise<HttpResponse> => {
+const status = async (code: number): Promise<HttpResponse<null>> => {
   await delay();
   return new HttpResponse(null, { status: code });
 };
 
-const ok = (): Promise<HttpResponse> => status(200);
+const ok = (): Promise<HttpResponse<null>> => status(200);
 
-const badRequest = (): Promise<HttpResponse> => status(400);
+const badRequest = (): Promise<HttpResponse<null>> => status(400);
 
-const notFound = (): Promise<HttpResponse> => status(400);
+const notFound = (): Promise<HttpResponse<null>> => status(404);
 
-const file = async (blob: Blob): Promise<HttpResponse> => {
+const file = async (blob: Blob): Promise<HttpResponse<Blob>> => {
   await delay();
   return new HttpResponse(blob);
 };
 
-const json = async <T extends JsonBodyType>(data: T): Promise<HttpResponse> => {
+const json = async <T extends JsonBodyType>(data: T): Promise<HttpResponse<T>> => {
   await delay();
   return HttpResponse.json(data);
 };

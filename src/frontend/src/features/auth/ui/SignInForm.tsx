@@ -1,9 +1,20 @@
 import { Box, Button } from '@mui/material';
-import { type FC } from 'react';
-import { Form } from 'react-router-dom';
+import { useEffect, type FC, useRef } from 'react';
+import { Form, useSubmit } from 'react-router-dom';
+import { FAKE_AUTH_LOGIN_ON_INIT } from '@/shared/config';
 import GoogleIcon from './GoogleIcon';
 
 export const SignInForm: FC = () => {
+  const submit = useSubmit();
+  const hasAutoSubmittedRef = useRef(false);
+
+  useEffect(() => {
+    if (FAKE_AUTH_LOGIN_ON_INIT && !hasAutoSubmittedRef.current) {
+      hasAutoSubmittedRef.current = true;
+      submit(null, { method: 'POST', action: '/login' });
+    }
+  }, [submit]);
+
   return (
     <Box
       component={Form}
