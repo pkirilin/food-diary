@@ -21,9 +21,6 @@ import { WithMockApi } from './WithMockApi';
   }
 
   const root = createRoot(container);
-
-  // IMPORTANT: router should be created after msw started
-  // Otherwise, loaders will activate and start fetching data before msw started
   const router = createRouter();
 
   root.render(
