@@ -18,7 +18,7 @@ const ok = (): Promise<HttpResponse<null>> => status(200);
 
 const badRequest = (): Promise<HttpResponse<null>> => status(400);
 
-const notFound = (): Promise<HttpResponse<null>> => status(400);
+const notFound = (): Promise<HttpResponse<null>> => status(404);
 
 const file = async (blob: Blob): Promise<HttpResponse<Blob>> => {
   await delay();
