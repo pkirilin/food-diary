@@ -3,7 +3,9 @@ import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 import { VitePWA as pwa } from 'vite-plugin-pwa';
 
-export default defineConfig({
+const BASE_PUBLIC_PATH = './';
+
+export default defineConfig(() => ({
   plugins: [
     react(),
     pwa({
@@ -13,19 +15,21 @@ export default defineConfig({
       manifest: {
         name: 'Food Diary',
         short_name: 'Food Diary',
+        start_url: BASE_PUBLIC_PATH,
+        scope: BASE_PUBLIC_PATH,
         icons: [
           {
-            src: '/android-chrome-192x192.png',
+            src: 'android-chrome-192x192.png',
             sizes: '192x192',
             type: 'image/png',
           },
           {
-            src: '/android-chrome-512x512.png',
+            src: 'android-chrome-512x512.png',
             sizes: '512x512',
             type: 'image/png',
           },
           {
-            src: '/logo-maskable.svg',
+            src: 'logo-maskable.svg',
             sizes: '192x192 512x512',
             purpose: 'maskable',
           },
@@ -39,6 +43,8 @@ export default defineConfig({
       },
     }),
   ],
+
+  base: BASE_PUBLIC_PATH,
 
   resolve: {
     alias: {
@@ -55,4 +61,4 @@ export default defineConfig({
     setupFiles: './tests/setup.ts',
     css: true,
   },
-});
+}));

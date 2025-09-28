@@ -1,9 +1,9 @@
-import { createBrowserRouter } from 'react-router';
+import { createHashRouter } from 'react-router';
 import { AppLoader } from '@/shared/ui';
 import { ErrorPage } from './ErrorPage';
 
-export const createRouter = (): ReturnType<typeof createBrowserRouter> =>
-  createBrowserRouter([
+export const createRouter = (): ReturnType<typeof createHashRouter> =>
+  createHashRouter([
     {
       HydrateFallback: AppLoader,
       children: [
@@ -53,7 +53,7 @@ export const createRouter = (): ReturnType<typeof createBrowserRouter> =>
               lazy: () => import('@/pages/ui/PostLoginPage'),
             },
             {
-              path: 'post-logout',
+              path: '/post-logout',
               lazy: () => import('@/pages/ui/PostLogoutPage'),
             },
           ],

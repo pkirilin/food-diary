@@ -6,23 +6,22 @@ Food Diary is a free, open-source, and lightweight web app for nutrition and wei
 
 While it doesn't fully replace popular commercial nutrition and weight tracking apps, Food Diary offers essential features as a free alternative for people who care about their health and well-being.
 
-Curious to see how the app works? [View the demo app here](https://pkirilin-food-diary-demo.netlify.app/).
+Curious to see how the app works? [View the demo app here](https://pkirilin.github.io/food-diary/).
 
 ## Table of contents
 
-- [Food Diary](#food-diary)
-  - [Table of contents](#table-of-contents)
-  - [Features](#features)
-  - [Installation](#installation)
-  - [Development](#development)
-    - [Setting up the entire app (Frontend and Backend)](#setting-up-the-entire-app-frontend-and-backend)
-    - [Setting up Frontend with mocked auth and API](#setting-up-frontend-with-mocked-auth-and-api)
-      - [Frontend environment variables](#frontend-environment-variables)
-    - [Managing database migrations](#managing-database-migrations)
-  - [Contacts](#contacts)
-  - [Copyright](#copyright)
-    - [Favicon](#favicon)
-  - [License](#license)
+- [Table of contents](#table-of-contents)
+- [Features](#features)
+- [Installation](#installation)
+- [Development](#development)
+  - [Setting up the entire app (Frontend and Backend)](#setting-up-the-entire-app-frontend-and-backend)
+  - [Setting up Frontend with mocked auth and API](#setting-up-frontend-with-mocked-auth-and-api)
+    - [Frontend environment variables](#frontend-environment-variables)
+  - [Managing database migrations](#managing-database-migrations)
+- [Contacts](#contacts)
+- [Copyright](#copyright)
+  - [Favicon](#favicon)
+- [License](#license)
 
 ## Features
 

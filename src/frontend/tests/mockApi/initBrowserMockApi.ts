@@ -5,6 +5,8 @@ const IGNORED_URL_PATTERNS: RegExp[] = [
   /^\/src/,
   /localhost:5173/,
   /chrome-extension:\/\//,
+  /assets/,
+  /google-analytics/,
 ];
 
 export const initBrowserMockApi = async (): Promise<void> => {
@@ -15,11 +17,17 @@ export const initBrowserMockApi = async (): Promise<void> => {
 
   await worker.start({
     serviceWorker: {
-      url: import.meta.env.PROD ? '/serviceWorker.js' : '/mockServiceWorker.js',
+      url: import.meta.env.PROD ? 'serviceWorker.js' : 'mockServiceWorker.js',
+      options: {
+        scope: './',
+      },
     },
 
     onUnhandledRequest: (request, print) => {
-      if (IGNORED_URL_PATTERNS.some(regexp => regexp.test(request.url))) {
+      const url = new URL(request.url);
+      const target = `${url.host}${url.pathname}`;
+
+      if (IGNORED_URL_PATTERNS.some(regexp => regexp.test(target))) {
         return;
       }
 
