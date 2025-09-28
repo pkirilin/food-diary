@@ -43,7 +43,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 export const Component: FC = () => {
-  const { date } = useLoaderData();
+  const { date } = useLoaderData<LoaderData>();
   const { data: notes } = noteLib.useNotes(date);
   const nutritionValues = noteModel.calculateNutritionValues(notes);
 

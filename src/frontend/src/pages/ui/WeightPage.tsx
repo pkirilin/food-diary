@@ -40,7 +40,7 @@ export const loader: LoaderFunction = async () => {
 };
 
 export const Component: FC = () => {
-  const { weightLogsRequest } = useLoaderData();
+  const { weightLogsRequest } = useLoaderData<LoaderData>();
   const from = dateLib.formatToUserFriendlyString(weightLogsRequest.from);
   const to = dateLib.formatToUserFriendlyString(weightLogsRequest.to);
 

@@ -47,7 +47,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 export const Component: FC = () => {
-  const { notes } = useLoaderData();
+  const { notes } = useLoaderData<LoaderData>();
 
   return (
     <PageContainer>
