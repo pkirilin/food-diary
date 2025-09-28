@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useSubmit } from 'react-router-dom';
+import { useSubmit } from 'react-router';
 import { AUTH_CHECK_INTERVAL } from '@/shared/config';
 import { authApi } from '../api';
 

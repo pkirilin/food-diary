@@ -1,6 +1,6 @@
 import { Box, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 import { type FC } from 'react';
-import { Link as RouterLink, useMatch } from 'react-router-dom';
+import { Link as RouterLink, useMatch } from 'react-router';
 import { type NavLink } from '../model';
 
 interface Props {

@@ -1,6 +1,6 @@
 import { Box, Button } from '@mui/material';
 import { useEffect, type FC, useRef } from 'react';
-import { Form, useSubmit } from 'react-router-dom';
+import { Form, useSubmit } from 'react-router';
 import { FAKE_AUTH_LOGIN_ON_INIT } from '@/shared/config';
 import GoogleIcon from './GoogleIcon';
 

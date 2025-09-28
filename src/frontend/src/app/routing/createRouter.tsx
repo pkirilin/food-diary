@@ -1,56 +1,62 @@
-import { createHashRouter } from 'react-router-dom';
+import { createHashRouter } from 'react-router';
+import { AppLoader } from '@/shared/ui';
 import { ErrorPage } from './ErrorPage';
 
 export const createRouter = (): ReturnType<typeof createHashRouter> =>
   createHashRouter([
     {
-      lazy: () => import('./AuthenticatedLayout'),
+      HydrateFallback: AppLoader,
       children: [
         {
-          errorElement: <ErrorPage />,
+          lazy: () => import('./AuthenticatedLayout'),
           children: [
             {
-              path: '/',
-              lazy: () => import('@/pages/ui/IndexPage'),
-            },
-            {
-              path: '/history',
-              lazy: () => import('@/pages/ui/HistoryPage'),
-            },
-            {
-              path: '/weight',
-              lazy: () => import('@/pages/ui/WeightPage'),
-            },
-            {
-              path: '/products',
-              lazy: () => import('@/pages/ui/ProductsPage'),
-            },
-            {
-              path: '/categories',
-              lazy: () => import('@/pages/ui/CategoriesPage'),
+              errorElement: <ErrorPage />,
+              children: [
+                {
+                  path: '/',
+                  lazy: () => import('@/pages/ui/IndexPage'),
+                },
+                {
+                  path: '/history',
+                  lazy: () => import('@/pages/ui/HistoryPage'),
+                },
+                {
+                  path: '/weight',
+                  lazy: () => import('@/pages/ui/WeightPage'),
+                },
+                {
+                  path: '/products',
+                  lazy: () => import('@/pages/ui/ProductsPage'),
+                },
+                {
+                  path: '/categories',
+                  lazy: () => import('@/pages/ui/CategoriesPage'),
+                },
+              ],
             },
           ],
         },
-      ],
-    },
-    {
-      lazy: () => import('./UnauthenticatedLayout'),
-      children: [
         {
-          path: '/login',
-          lazy: () => import('@/pages/ui/LoginPage'),
-        },
-        {
-          path: '/logout',
-          lazy: () => import('@/pages/ui/LogoutPage'),
-        },
-        {
-          path: '/post-login',
-          lazy: () => import('@/pages/ui/PostLoginPage'),
-        },
-        {
-          path: '/post-logout',
-          lazy: () => import('@/pages/ui/PostLogoutPage'),
+          lazy: () => import('./UnauthenticatedLayout'),
+          children: [
+            {
+              path: '/login',
+              lazy: () => import('@/pages/ui/LoginPage'),
+            },
+            {
+              path: '/logout',
+              lazy: () => import('@/pages/ui/LogoutPage'),
+            },
+            {
+              path: '/post-login',
+              lazy: () => import('@/pages/ui/PostLoginPage'),
+            },
+            {
+              path: '/post-logout',
+              lazy: () => import('@/pages/ui/PostLogoutPage'),
+            },
+          ],
         },
       ],
     },

@@ -1,5 +1,5 @@
 import { type FC } from 'react';
-import { type LoaderFunction, useLoaderData } from 'react-router-dom';
+import { type LoaderFunction, useLoaderData } from 'react-router';
 import { store } from '@/app/store';
 import { type NoteHistoryItem, noteApi } from '@/entities/note';
 import { MSW_ENABLED } from '@/shared/config';
@@ -47,7 +47,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 export const Component: FC = () => {
-  const { notes } = useLoaderData() as LoaderData;
+  const { notes } = useLoaderData<LoaderData>();
 
   return (
     <PageContainer>

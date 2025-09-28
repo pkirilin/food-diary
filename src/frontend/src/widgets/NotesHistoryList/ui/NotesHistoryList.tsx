@@ -12,7 +12,7 @@ import {
   Typography,
 } from '@mui/material';
 import { type FC } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { type NoteHistoryItem } from '@/entities/note';
 import { createUrl, dateLib } from '@/shared/lib';
 

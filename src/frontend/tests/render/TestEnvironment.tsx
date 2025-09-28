@@ -1,5 +1,5 @@
 import { type PropsWithChildren, type FC, useEffect } from 'react';
-import { useSubmit } from 'react-router-dom';
+import { useSubmit } from 'react-router';
 import { useAppDispatch } from '@/app/store';
 import { productModel } from '@/entities/product';
 

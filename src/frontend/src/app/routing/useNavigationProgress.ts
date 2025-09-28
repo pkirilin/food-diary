@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useLocation, useNavigation } from 'react-router-dom';
+import { useLocation, useNavigation } from 'react-router';
 
 interface NavigationProgress {
   visible: boolean;

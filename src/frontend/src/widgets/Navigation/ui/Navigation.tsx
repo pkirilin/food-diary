@@ -2,7 +2,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import MenuIcon from '@mui/icons-material/Menu';
 import { Box, IconButton, Typography } from '@mui/material';
 import { type ReactElement, type FC, useEffect, useState } from 'react';
-import { useLocation, useMatches, useNavigation } from 'react-router-dom';
+import { useLocation, useMatches, useNavigation } from 'react-router';
 import { NavigationDrawer } from './NavigationDrawer';
 
 export interface NavigationLoaderData {

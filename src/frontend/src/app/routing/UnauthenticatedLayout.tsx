@@ -1,5 +1,5 @@
 import { type FC } from 'react';
-import { Outlet, ScrollRestoration } from 'react-router-dom';
+import { Outlet, ScrollRestoration } from 'react-router';
 import { UpdateAppBanner } from '@/features/updateApp';
 import { ErrorLayout } from './ErrorLayout';
 import { ErrorPage } from './ErrorPage';

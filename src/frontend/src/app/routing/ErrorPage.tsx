@@ -1,6 +1,6 @@
 import { Link, Typography } from '@mui/material';
 import { type FC } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router';
 
 export const ErrorPage: FC = () => {
   return (

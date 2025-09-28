@@ -1,4 +1,4 @@
-import { redirect, type ActionFunction, redirectDocument } from 'react-router-dom';
+import { redirect, type ActionFunction, redirectDocument } from 'react-router';
 import { API_URL, FAKE_AUTH_ENABLED } from '@/shared/config';
 
 export const action: ActionFunction = async () => {

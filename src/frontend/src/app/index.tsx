@@ -1,8 +1,7 @@
 import 'date-fns';
 import { createRoot } from 'react-dom/client';
-import { RouterProvider } from 'react-router-dom';
+import { RouterProvider } from 'react-router';
 import { GOOGLE_ANALYTICS_ENABLED } from '@/shared/config';
-import { AppLoader } from '@/shared/ui';
 import { initGoogleAnalytics } from './googleAnalytics';
 import { RootProvider } from './RootProvider';
 import { createRouter } from './routing';
@@ -26,7 +25,7 @@ import { WithMockApi } from './WithMockApi';
   root.render(
     <RootProvider store={store}>
       <WithMockApi>
-        <RouterProvider router={router} fallbackElement={<AppLoader />} />
+        <RouterProvider router={router} />
       </WithMockApi>
     </RootProvider>,
   );
