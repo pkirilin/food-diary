@@ -83,3 +83,8 @@ docker-compose up -d   # uses .env (copy from .env.example); app served at https
 ## When adding features
 
 Check `STRATEGY.md` first — the project deliberately stays small. Prefer modifying existing slices over introducing new abstractions, and don't add social or sharing functionality.
+
+## Using CLI tools
+
+- ⚠️ **ALWAYS** Use `rg` instead of `grep`, `fd` instead of `find`, `jaq` instead of `jq` (if available)
+- ⚠️ **ALWAYS** Use JSON output when CLI supports it. Pipe ALL JSON through `| toon` (if available)
