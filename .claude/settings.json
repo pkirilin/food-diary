@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add:*)",
+      "Bash(git branch:*)",
+      "Bash(git commit:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git remote get-url:*)",
+      "Bash(git status:*)",
+      "Bash(gh pr diff:*)",
+      "Bash(gh pr view:*)"
+    ],
+    "deny": [
+      "Bash(git push:*)",
+      "Read(./**/.env)",
+      "Read(./secrets/**)"
+    ],
+    "ask": [
+      "Bash(curl:*)",
+      "Bash(rm:*)",
+      "Read(~/**)",
+      "Github.com/github/github-mcp-server",
+      "mcp__github_com_github_github-mcp-server__get_me",
+      "mcp__github_com_github_github-mcp-server__pull_request_read",
+      "mcp__github_com_github_github-mcp-server__update_pull_request",
+      "mcp__github_com_github_github-mcp-server__add_issue_comment"
+    ]
+  }
+}
