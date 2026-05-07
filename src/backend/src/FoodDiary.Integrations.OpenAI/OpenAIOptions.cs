@@ -7,4 +7,5 @@ public class OpenAIOptions
 {
     public required string BaseUrl { get; init; }
     public required string ApiKey { get; init; }
+    public required string Model { get; init; }
 }
