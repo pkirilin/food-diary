@@ -9,6 +9,9 @@ public abstract record RecognizeNoteResult
     public static Failure NoImagesProvided() =>
         new(new Error.ValidationError("No images provided"));
 
+    public static Failure NotAProductImage() =>
+        new(new Error.ValidationError("Uploaded image(s) do not contain a recognizable product"));
+
     public static Failure ModelResponseWasInvalid() =>
         new(new Error.InternalServerError("Model response was invalid"));
 }

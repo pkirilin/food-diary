@@ -22,18 +22,22 @@ public record RecognizeProductItem(
 
 public static class MappingExtensions
 {
-    public static RecognizeNoteItem ToRecognizeNoteItem(this FoodItemOnTheImage food)
+    public static RecognizeNoteItem ToRecognizeNoteItem(this RecognizedProduct product)
     {
         return new RecognizeNoteItem(
             Product: new RecognizeProductItem(
-                Name: string.IsNullOrWhiteSpace(food.BrandName) ? food.Name : $"{food.Name} ({food.BrandName})",
-                CaloriesCost: food.Calories ?? 100,
-                Protein: food.Protein.ToRoundedNutritionQuantity(),
-                Fats: food.Fats.ToRoundedNutritionQuantity(),
-                Carbs: food.Carbs.ToRoundedNutritionQuantity(),
-                Sugar: food.Sugar.ToRoundedNutritionQuantity(),
-                Salt: food.Salt.ToRoundedNutritionQuantity()),
-            Quantity: food.Quantity ?? 100);
+                Name: string.IsNullOrWhiteSpace(product.BrandName)
+                    ? product.Name
+                    : $"{product.Name} ({product.BrandName})",
+                CaloriesCost: product.Calories.HasValue
+                    ? (int)Math.Round(product.Calories.Value, MidpointRounding.AwayFromZero)
+                    : 100,
+                Protein: product.Protein.ToRoundedNutritionQuantity(),
+                Fats: product.Fats.ToRoundedNutritionQuantity(),
+                Carbs: product.Carbs.ToRoundedNutritionQuantity(),
+                Sugar: product.Sugar.ToRoundedNutritionQuantity(),
+                Salt: product.Salt.ToRoundedNutritionQuantity()),
+            Quantity: product.Quantity ?? 100);
     }
 
     private static decimal? ToRoundedNutritionQuantity(this decimal? value) =>
