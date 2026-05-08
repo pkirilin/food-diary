@@ -55,9 +55,15 @@ public class RecognizeNoteCommandHandler(IChatClient chatClient, ILogger<Recogni
 
         logger.LogInformation("Deserialized model response: {ModelResponse}", chatResponse.Text);
 
-        if (modelResponse.Status == RecognitionStatus.NotAProduct || modelResponse.Product is null)
+        if (modelResponse.Status == RecognitionStatus.NotAProduct)
         {
             return RecognizeNoteResult.NotAProductImage();
+        }
+
+        if (modelResponse.Product is null)
+        {
+            logger.LogError("Model returned Recognized status without a product payload: {ModelResponse}", chatResponse.Text);
+            return RecognizeNoteResult.ModelResponseWasInvalid();
         }
 
         return new RecognizeNoteResult.Success(

@@ -45,7 +45,7 @@ public class RecognizeNoteCommandHandlerTests
     }
 
     [Fact]
-    public async Task Handle_StatusRecognizedButProductNull_ReturnsValidationFailure()
+    public async Task Handle_StatusRecognizedButProductNull_ReturnsModelResponseWasInvalid()
     {
         var handler = CreateHandler(out var chatClient);
         SetupChatJson(chatClient, """{"Status":"Recognized","Product":null}""");
@@ -53,7 +53,7 @@ public class RecognizeNoteCommandHandlerTests
         var result = await handler.Handle(SingleImageCommand(), CancellationToken.None);
 
         result.Should().BeOfType<RecognizeNoteResult.Failure>()
-            .Which.Error.Should().BeOfType<Error.ValidationError>();
+            .Which.Error.Should().BeOfType<Error.InternalServerError>();
     }
 
     [Fact]
