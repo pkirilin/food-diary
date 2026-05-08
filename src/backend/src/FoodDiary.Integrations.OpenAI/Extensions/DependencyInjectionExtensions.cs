@@ -26,11 +26,15 @@ public static class DependencyInjectionExtensions
             return client;
         });
 
-        services.AddChatClient(provider => provider.GetRequiredService<OpenAIClient>()
-            .GetChatClient("gpt-5-nano")
-            .AsIChatClient()
-            .AsBuilder()
-            .UseLogging(provider.GetRequiredService<ILoggerFactory>())
-            .Build());
+        services.AddChatClient(provider =>
+        {
+            var options = provider.GetRequiredService<IOptions<OpenAIOptions>>().Value;
+            return provider.GetRequiredService<OpenAIClient>()
+                .GetChatClient(options.Model)
+                .AsIChatClient()
+                .AsBuilder()
+                .UseLogging(provider.GetRequiredService<ILoggerFactory>())
+                .Build();
+        });
     }
 }

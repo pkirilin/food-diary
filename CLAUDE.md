@@ -50,7 +50,7 @@ dotnet ef migrations add <Name> \
     -o Migrations
 ```
 
-Required user-secrets on `FoodDiary.API`: `Auth:AllowedEmails:0`, `ConnectionStrings:Default`, optional `Integrations:OpenAI:ApiKey`.
+Required user-secrets on `FoodDiary.API`: `Auth:AllowedEmails:0`, `ConnectionStrings:Default`, optional `Integrations:OpenAI:ApiKey` and `Integrations:OpenAI:Model` (overrides default).
 
 ### E2E (`tests/`)
 

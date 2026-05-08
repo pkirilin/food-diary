@@ -46,7 +46,7 @@ public class NotesApiContext(
         return OpenAiApi.Start();
     }
     
-    public Task Given_OpenAI_api_can_recognize_food(FoodItemOnTheImage food)
+    public Task Given_OpenAI_api_can_recognize_food(RecognizeNoteModelResponse food)
     {
         var content = JsonSerializer.Serialize(food, SerializerOptions);
         return OpenAiApi.SetupCompletionSuccess(content);
