@@ -110,7 +110,7 @@ public class NotesApiTests(InfrastructureFixture infrastructure) : BaseTest<Note
     [Scenario]
     public Task I_can_recognize_notes_by_photo()
     {
-        var givenFood = Create.FoodItemOnTheImage()
+        var givenFood = Create.RecognizeNoteModelResponse()
             .WithProduct("Orange")
             .WithCalories(50)
             .WithQuantity(400)

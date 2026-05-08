@@ -2,7 +2,7 @@ using FoodDiary.Application.Notes.Recognize;
 
 namespace FoodDiary.ComponentTests.Dsl;
 
-public class FoodItemOnTheImageBuilder
+public class RecognizeNoteModelResponseBuilder
 {
     private string _name = string.Empty;
     private decimal _calories = 100;
@@ -30,31 +30,31 @@ public class FoodItemOnTheImageBuilder
                 Salt: _salt));
     }
 
-    public FoodItemOnTheImageBuilder WithProduct(string name)
+    public RecognizeNoteModelResponseBuilder WithProduct(string name)
     {
         _name = name;
         return this;
     }
 
-    public FoodItemOnTheImageBuilder WithCalories(int calories)
+    public RecognizeNoteModelResponseBuilder WithCalories(int calories)
     {
         _calories = calories;
         return this;
     }
 
-    public FoodItemOnTheImageBuilder WithQuantity(int quantity)
+    public RecognizeNoteModelResponseBuilder WithQuantity(int quantity)
     {
         _quantity = quantity;
         return this;
     }
 
-    public FoodItemOnTheImageBuilder WithBrandName(string? brandName)
+    public RecognizeNoteModelResponseBuilder WithBrandName(string? brandName)
     {
         _brandName = brandName;
         return this;
     }
 
-    public FoodItemOnTheImageBuilder WithNutritionComponents(
+    public RecognizeNoteModelResponseBuilder WithNutritionComponents(
         decimal? protein,
         decimal? fats,
         decimal? carbs,
