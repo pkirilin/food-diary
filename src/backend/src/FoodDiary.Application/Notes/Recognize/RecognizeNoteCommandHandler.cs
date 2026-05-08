@@ -15,19 +15,21 @@ public record RecognizeNoteCommand(IReadOnlyList<IFormFile> Files);
 public class RecognizeNoteCommandHandler(IChatClient chatClient, ILogger<RecognizeNoteCommandHandler> logger)
 {
     private const string SystemPrompt =
-        "You analyze food images for a calorie tracker. Return strictly the JSON schema you are given. " +
-        "Numbers must be numeric (never strings, never \"null\"). " +
-        "All energy values are kilocalories (kcal), never joules.";
+        """
+        You analyze food images for a calorie tracker. Return strictly the JSON schema you are given. Numbers must be numeric (never strings, never "null"). All energy values are kilocalories (kcal), never joules.
+        """;
 
     private const string UserPrompt =
-        "Identify the food/product in the image(s) and fill the schema using these rules:\n" +
-        "1. If no image contains food or a product, set status=NotAProduct and product=null.\n" +
-        "2. If a nutrition label is visible, fill every field that is printed on the label. Leave unprinted optional fields null. Do not guess label values.\n" +
-        "3. If only a product photo (no label) is shown, fill every field from your own knowledge of that product.\n" +
-        "4. If multiple images show the same product (e.g. front + back of a label), merge information across them as one product.\n" +
-        "5. If multiple images show different products, keep only the largest/most prominent one and ignore the rest.\n\n" +
-        "All energy/nutrient values are per 100 g of product, not per package. Convert if the label only shows per-serving or per-package values. " +
-        "Calories are kilocalories (kcal). Keep product names in their original language; do not translate. Start the name with an uppercase letter.";
+        """
+        Identify the food/product in the image(s) and fill the schema using these rules:
+        1. If no image contains food or a product, set status=NotAProduct and product=null.
+        2. If a nutrition label is visible, fill every field that is printed on the label. Leave unprinted optional fields null. Do not guess label values.
+        3. If only a product photo (no label) is shown, fill every field from your own knowledge of that product.
+        4. If multiple images show the same product (e.g. front + back of a label), merge information across them as one product.
+        5. If multiple images show different products, keep only the largest/most prominent one and ignore the rest.
+
+        All energy/nutrient values are per 100 g of product, not per package. Convert if the label only shows per-serving or per-package values. Calories are kilocalories (kcal). Keep product names in their original language; do not translate. Start the name with an uppercase letter.
+        """;
 
     public async Task<RecognizeNoteResult> Handle(RecognizeNoteCommand command, CancellationToken cancellationToken)
     {
