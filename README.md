@@ -112,8 +112,7 @@ dotnet user-secrets --project src/backend/src/FoodDiary.API set "ConnectionStrin
 # Optional, used in recognize note by photo feature
 dotnet user-secrets --project src/backend/src/FoodDiary.API set "Integrations:OpenAI:ApiKey" "<your_OpenAI_api_key>"
 
-dotnet user-secrets --project src/backend/src/FoodDiary.API set "Integrations:OpenAI:Model" "gpt-4o-mini"
-```
+dotnet user-secrets --project src/backend/src/FoodDiary.API set "Integrations:OpenAI:Model" "gpt-5.4-mini"
 
 Run database migrations:
 
