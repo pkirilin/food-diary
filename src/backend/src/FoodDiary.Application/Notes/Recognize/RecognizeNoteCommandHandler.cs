@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -31,7 +32,7 @@ public class RecognizeNoteCommandHandler(IChatClient chatClient, ILogger<Recogni
     public async Task<RecognizeNoteResult> Handle(RecognizeNoteCommand command, CancellationToken cancellationToken)
     {
         var images = command.Files
-            .Where(file => file.ContentType.StartsWith("image/"))
+            .Where(file => file.ContentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
             .ToList()
             .AsReadOnly();
 
