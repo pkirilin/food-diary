@@ -24,11 +24,11 @@ Curious to see how the app works? [View the demo app here](https://pkirilin.gith
 
 ## Features
 
-- Nutrition tracking: calories, protein, fats, carbs, sugar, and salt
-- Personal food database with nutrition values for each product
-- Weight tracking
-- PWA and multi-device support
-- AI-powered food recognition from photos
+- 🥗 Nutrition tracking: calories, protein, fats, carbs, sugar, and salt
+- 🗂️ Personal food database with nutrition values for each product
+- ⚖️ Weight tracking
+- 📱 PWA and multi-device support
+- 📸 AI-powered food recognition from photos
 
 <table>
   <tr>
