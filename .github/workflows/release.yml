@@ -59,3 +59,24 @@ jobs:
           echo "----"
           cat release-notes.md
           echo "----"
+
+      - name: Check git tag does not already exist
+        run: |
+          if git ls-remote --exit-code --tags origin "refs/tags/v$VERSION" >/dev/null 2>&1; then
+            echo "::error::Git tag v$VERSION already exists on origin"
+            exit 1
+          fi
+          echo "Git tag v$VERSION is available"
+
+      - name: Check Docker Hub tag does not already exist
+        run: |
+          status=$(curl -s -o /dev/null -w "%{http_code}" \
+            "https://hub.docker.com/v2/repositories/${IMAGE}/tags/${VERSION}/")
+          if [[ "$status" == "200" ]]; then
+            echo "::error::Docker Hub tag ${IMAGE}:${VERSION} already exists"
+            exit 1
+          elif [[ "$status" != "404" ]]; then
+            echo "::error::Unexpected HTTP $status from Docker Hub when checking ${IMAGE}:${VERSION}"
+            exit 1
+          fi
+          echo "Docker Hub tag ${IMAGE}:${VERSION} is available"
