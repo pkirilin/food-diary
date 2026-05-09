@@ -116,10 +116,10 @@ Single workflow, single job, sequential steps:
 1. **Checkout** at `main`.
 2. **Validate inputs** (all pre-flight checks above).
 3. **Extract release notes** from `CHANGELOG.md` into a workflow output / file.
-4. **Set up Docker Buildx** (`docker/setup-buildx-action@v3`).
-5. **Log in to Docker Hub** (`docker/login-action@v3`) using
+4. **Set up Docker Buildx** (`docker/setup-buildx-action@v4`).
+5. **Log in to Docker Hub** (`docker/login-action@v4`) using
    `vars.DOCKERHUB_USERNAME` and `secrets.DOCKERHUB_TOKEN`.
-6. **Build and push** (`docker/build-push-action@v6`):
+6. **Build and push** (`docker/build-push-action@v7`):
    - Platforms: `linux/amd64`.
    - Tags: `pkirilin/food-diary:<version>`, `pkirilin/food-diary:latest`.
    - Cache: GitHub Actions cache (`cache-from: type=gha`, `cache-to: type=gha,mode=max`)
