@@ -45,6 +45,7 @@ jobs:
             exit 1
           fi
           notes=$(awk -v ver="$VERSION" '
+            BEGIN { gsub(/\./, "\\.", ver) }
             $0 ~ "^## \\[" ver "\\]([[:space:]]|$)" { found=1; next }
             found && /^## \[/ { exit }
             found { print }
