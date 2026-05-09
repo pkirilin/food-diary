@@ -118,6 +118,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          test -f release-notes.md || { echo "::error::release-notes.md not found"; exit 1; }
           gh release create "v$VERSION" \
             --title "v$VERSION" \
             --notes-file release-notes.md
