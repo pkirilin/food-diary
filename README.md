@@ -212,7 +212,7 @@ Releases are published to [Docker Hub](https://hub.docker.com/r/pkirilin/food-di
 To cut a new release:
 
 1. On `main`, update `CHANGELOG.md`:
-   - Rename the `[Unreleased]` section to `[X.Y.Z] - YYYY-MM-DD`.
+   - Rename the `[Unreleased]` section to `[X.Y.Z] - YYYY-MM-DD` (e.g. `[0.4.0] - 2026-05-09`).
    - Add a fresh empty `[Unreleased]` section above it.
 2. Commit and push.
 3. Go to **Actions → Release → Run workflow**.
