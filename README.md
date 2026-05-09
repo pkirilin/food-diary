@@ -1,6 +1,7 @@
 # Food Diary
 
 [![food-diary](https://github.com/pkirilin/food-diary/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/pkirilin/food-diary/actions/workflows/build.yml)
+[![Docker Hub](https://img.shields.io/docker/v/pkirilin/food-diary?label=docker)](https://hub.docker.com/r/pkirilin/food-diary)
 
 Food Diary is a free, open-source, and lightweight web app for nutrition and weight tracking. It was initially created in 2018 to help [the author](https://github.com/pkirilin) address personal health challenges caused by being overweight.
 
@@ -17,6 +18,7 @@ Curious to see how the app works? [View the demo app here](https://pkirilin.gith
   - [Setting up Frontend with mocked auth and API](#setting-up-frontend-with-mocked-auth-and-api)
     - [Frontend environment variables](#frontend-environment-variables)
   - [Managing database migrations](#managing-database-migrations)
+- [Releasing](#releasing)
 - [Contacts](#contacts)
 - [Copyright](#copyright)
   - [Favicon](#favicon)
@@ -202,6 +204,23 @@ dotnet ef migrations add SampleMigrationName \
     -p src/backend/src/FoodDiary.Infrastructure \
     -o Migrations
 ```
+
+## Releasing
+
+Releases are published to [Docker Hub](https://hub.docker.com/r/pkirilin/food-diary) and as GitHub releases via the [Release workflow](.github/workflows/release.yml).
+
+To cut a new release:
+
+1. On `main`, update `CHANGELOG.md`:
+   - Rename the `[Unreleased]` section to `[X.Y.Z] - YYYY-MM-DD`.
+   - Add a fresh empty `[Unreleased]` section above it.
+2. Commit and push.
+3. Go to **Actions → Release → Run workflow**.
+4. Enter the version (e.g. `0.4.0`, no `v` prefix) and run.
+
+The workflow validates inputs, builds the image, pushes `pkirilin/food-diary:X.Y.Z` and `pkirilin/food-diary:latest` to Docker Hub, creates the `vX.Y.Z` git tag, and publishes the GitHub release with notes extracted from the matching `CHANGELOG.md` section.
+
+If a release fails partway through (e.g. the image is pushed but the git tag step fails), clean up manually: a re-run of the same version is blocked by the Docker Hub tag-existence check. Either delete the published Docker Hub tag (Docker Hub UI → Tags → Delete), or push the git tag and create the release with `gh` from your machine.
 
 ## Contacts
 
