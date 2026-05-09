@@ -10,7 +10,6 @@ Curious to see how the app works? [View the demo app here](https://pkirilin.gith
 
 ## Table of contents
 
-- [Table of contents](#table-of-contents)
 - [Features](#features)
 - [Installation](#installation)
 - [Development](#development)
@@ -37,11 +36,14 @@ Curious to see how the app works? [View the demo app here](https://pkirilin.gith
       <img src="docs/images/nutrition-tracking.png" alt="Food Diary app mobile screen showing daily nutrition tracking interface with meal entries and nutrition summary">
     </td>
     <td>
+      <img src="docs/images/ai-suggestions.png" alt="Food Diary app mobile screen showing weight tracking interface with chart and weight logs">
+    </td>
+    <td>
       <img src="docs/images/weight-tracking.png" alt="Food Diary app mobile screen showing weight tracking interface with chart and weight logs">
     </td>
   </tr>
   <tr>
-    <td colspan="2">
+    <td colspan="3">
       <img src="docs/images/nutrition-tracking-desktop.png" alt="Food Diary app desktop screen showing daily nutrition tracking interface with meal entries and nutrition summary">
     </td>
   </tr>
