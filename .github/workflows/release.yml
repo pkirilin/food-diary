@@ -70,8 +70,12 @@ jobs:
 
       - name: Check Docker Hub tag does not already exist
         run: |
-          status=$(curl -s -o /dev/null -w "%{http_code}" \
+          status=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 5 --max-time 10 \
             "https://hub.docker.com/v2/repositories/${IMAGE}/tags/${VERSION}/")
+          if [[ -z "$status" ]]; then
+            echo "::error::curl failed to reach Docker Hub (network error or timeout)"
+            exit 1
+          fi
           if [[ "$status" == "200" ]]; then
             echo "::error::Docker Hub tag ${IMAGE}:${VERSION} already exists"
             exit 1
