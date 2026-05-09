@@ -1,0 +1,124 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (semver, no v prefix, e.g. 0.4.0)'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-22.04
+    env:
+      VERSION: ${{ inputs.version }}
+      IMAGE: pkirilin/food-diary
+    steps:
+      - name: Validate branch is main
+        run: |
+          if [[ "${{ github.ref }}" != "refs/heads/main" ]]; then
+            echo "::error::Releases can only be cut from main (got ${{ github.ref }})"
+            exit 1
+          fi
+
+      - name: Validate version format
+        run: |
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Version must be strict semver MAJOR.MINOR.PATCH (got '$VERSION')"
+            exit 1
+          fi
+          echo "Version $VERSION is valid"
+
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Validate CHANGELOG section exists and extract release notes
+        run: |
+          if [[ ! -f CHANGELOG.md ]]; then
+            echo "::error::CHANGELOG.md not found at repo root"
+            exit 1
+          fi
+          notes=$(awk -v ver="$VERSION" '
+            BEGIN { gsub(/\./, "\\.", ver) }
+            $0 ~ "^## \\[" ver "\\]([[:space:]]|$)" { found=1; next }
+            found && /^## \[/ { exit }
+            found { print }
+          ' CHANGELOG.md)
+          if [[ -z "$(echo "$notes" | tr -d '[:space:]')" ]]; then
+            echo "::error::CHANGELOG.md has no '## [$VERSION]' section (or it is empty). Add a section with notes before dispatching."
+            exit 1
+          fi
+          printf "%s\n" "$notes" > release-notes.md
+          echo "Extracted release notes for $VERSION:"
+          echo "----"
+          cat release-notes.md
+          echo "----"
+
+      - name: Check git tag does not already exist
+        run: |
+          if git ls-remote --exit-code --tags origin "refs/tags/v$VERSION" >/dev/null 2>&1; then
+            echo "::error::Git tag v$VERSION already exists on origin"
+            exit 1
+          fi
+          echo "Git tag v$VERSION is available"
+
+      - name: Check Docker Hub tag does not already exist
+        run: |
+          status=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 5 --max-time 10 \
+            "https://hub.docker.com/v2/repositories/${IMAGE}/tags/${VERSION}/")
+          if [[ -z "$status" || "$status" == "000" ]]; then
+            echo "::error::curl failed to reach Docker Hub (network error or timeout)"
+            exit 1
+          fi
+          if [[ "$status" == "200" ]]; then
+            echo "::error::Docker Hub tag ${IMAGE}:${VERSION} already exists"
+            exit 1
+          elif [[ "$status" != "404" ]]; then
+            echo "::error::Unexpected HTTP $status from Docker Hub when checking ${IMAGE}:${VERSION}"
+            exit 1
+          fi
+          echo "Docker Hub tag ${IMAGE}:${VERSION} is available"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v4
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push image
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: |
+            ${{ env.IMAGE }}:${{ env.VERSION }}
+            ${{ env.IMAGE }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Create and push git tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag "v$VERSION" "${{ github.sha }}"
+          git push origin "v$VERSION"
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          test -f release-notes.md || { echo "::error::release-notes.md not found"; exit 1; }
+          gh release create "v$VERSION" \
+            --title "v$VERSION" \
+            --notes-file release-notes.md
