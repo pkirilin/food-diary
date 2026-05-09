@@ -37,3 +37,24 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
+
+      - name: Validate CHANGELOG section exists and extract release notes
+        run: |
+          if [[ ! -f CHANGELOG.md ]]; then
+            echo "::error::CHANGELOG.md not found at repo root"
+            exit 1
+          fi
+          notes=$(awk -v ver="$VERSION" '
+            $0 ~ "^## \\[" ver "\\]([[:space:]]|$)" { found=1; next }
+            found && /^## \[/ { exit }
+            found { print }
+          ' CHANGELOG.md)
+          if [[ -z "$(echo "$notes" | tr -d '[:space:]')" ]]; then
+            echo "::error::CHANGELOG.md has no '## [$VERSION]' section (or it is empty). Add a section with notes before dispatching."
+            exit 1
+          fi
+          printf "%s\n" "$notes" > release-notes.md
+          echo "Extracted release notes for $VERSION:"
+          echo "----"
+          cat release-notes.md
+          echo "----"
