@@ -91,6 +91,6 @@
     "workerDirectory": "public"
   },
   "engines": {
-    "node": ">=18.6"
+    "node": ">=22 <23"
   }
 }
