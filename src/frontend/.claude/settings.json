@@ -1,0 +1,14 @@
+{
+    "permissions": {
+        "allow": [
+            "Bash(git commit *)",
+            "Bash(yarn build *)",
+            "Bash(yarn test *)",
+            "Bash(yarn tsc *)",
+            "Bash(rtk read *)",
+            "Bash(rtk grep *)",
+            "Bash(rtk git diff *)",
+            "Bash(rtk git status *)"
+        ]
+    }
+}
