@@ -1,4 +1,4 @@
-import { Paper, Typography } from '@mui/material';
+import { Paper, Typography, type SxProps, type Theme } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 import { useEffect, type FC } from 'react';
 import { useAppDispatch, useAppSelector } from '@/app/store';
@@ -32,7 +32,7 @@ const Products: FC = () => {
 
   return (
     <>
-      <Typography sx={visuallyHidden} variant="h1" gutterBottom>
+      <Typography sx={visuallyHidden as SxProps<Theme>} variant="h1" gutterBottom>
         Products
       </Typography>
       <Paper>

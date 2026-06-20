@@ -21,7 +21,7 @@ export const noteSchema = z.object({
   displayOrder: z.coerce.number().int().min(0),
   product: productSchema
     .nullable()
-    .refine(product => product !== null, { message: 'Product is required' }),
+    .refine((product): boolean => product !== null, { message: 'Product is required' }),
   quantity: quantitySchema,
 });
 

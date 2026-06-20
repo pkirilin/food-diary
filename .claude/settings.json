@@ -9,7 +9,10 @@
       "Bash(git remote get-url:*)",
       "Bash(git status:*)",
       "Bash(gh pr diff:*)",
-      "Bash(gh pr view:*)"
+      "Bash(gh pr view:*)",
+      "Bash(rg:*)",
+      "Bash(fd:*)",
+      "Bash(dotnet test:*)"
     ],
     "deny": [
       "Bash(git push:*)",

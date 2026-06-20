@@ -12,7 +12,7 @@ export const productSchema = z.object({
       name: z.string().min(3).max(50),
     })
     .nullable()
-    .refine(category => category !== null, { message: 'Category is required' }),
+    .refine((category): boolean => category !== null, { message: 'Category is required' }),
   calories: z.coerce.number().int().min(1).max(1000),
   protein: NutritionValueSchema,
   fats: NutritionValueSchema,
