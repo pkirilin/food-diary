@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom';
-import { initMockApiDb } from './mockApi';
+import { initMockApiDb } from './mockApi/initMockApiDb';
 import { server } from './mockApi/server';
 
 beforeAll(() => {
