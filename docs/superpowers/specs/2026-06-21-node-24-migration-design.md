@@ -1,7 +1,7 @@
 # Migrate Food Diary to Node 24 — Design
 
 **Date:** 2026-06-21
-**Status:** Approved
+**Status:** Paused — blocked by a test-environment incompatibility (see "Migration blocker" below)
 
 ## Goal
 
@@ -62,3 +62,39 @@ signatures, which `yarn build` (tsc) will catch.
 - No backend / .NET changes.
 - No Vite, React, or other major framework bumps.
 - No switch to an exact patch pin (loose major pin chosen deliberately).
+
+## Migration blocker (discovered during execution)
+
+Task 1 (the frontend version bump) was implemented and committed on branch
+`chore/migrate-node-24`, but **the migration is paused** because Node 24 turns
+17 frontend unit/component tests red. Tasks 2–4 were not started.
+
+**Verified behaviour:**
+- `src/frontend` test suite: **103/103 passing on Node 22.15.0**, **17 failing
+  on Node 24** (`yarn test --run`).
+- Failure signature: `TypeError: RequestInit: Expected signal ("AbortSignal {}")
+  to be an instance of AbortSignal`. Affected tests receive stale/default data
+  (e.g. `70` instead of the MSW-mocked `73`) because mocked requests fail.
+
+**Root cause:** A known incompatibility between `jsdom` + Node 24 + `vitest 2`.
+jsdom polyfills the global `AbortSignal`/`AbortController`; Node 24's native
+fetch (undici) rejects those polyfilled signals, breaking MSW request
+interception. It is *not* caused by `@types/node` and not specific to MSW.
+Current relevant versions: `vitest ^2.1.9`, `jsdom ^24.1.3`,
+`environment: 'jsdom'`, `msw ^2.14.6`.
+
+> Note: the CI/dev sandbox itself runs Node 24, so a naive "stash the change and
+> re-test" check misleadingly reports the failures as pre-existing. The Node-22
+> baseline must be exercised with an explicit Node 22 binary (e.g. via nvm).
+
+**Candidate fixes (require a scope decision before resuming):**
+- **A — setup-file workaround:** reconcile the `AbortSignal` globals in
+  `src/frontend/tests/setup.ts`. Smallest change; needs a spike to confirm it
+  clears all 17 failures.
+- **B — swap `jsdom` → `happy-dom`:** happy-dom does not polyfill those globals.
+  Adds/removes a dependency and requires re-verifying all 103 tests.
+- **C — upgrade `vitest` to v4:** fixes the root cause upstream; larger
+  breaking-change surface.
+
+References: mswjs/msw discussion #2530, vitest-dev/vitest #8374,
+reduxjs/redux-toolkit #4966.
