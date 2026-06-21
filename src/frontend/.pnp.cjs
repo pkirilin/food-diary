@@ -72,7 +72,7 @@ const RAW_RUNTIME_STATE =
           ["prop-types", "npm:15.8.1"],\
           ["react", "npm:18.3.1"],\
           ["react-dom", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:18.3.1"],\
-          ["react-ga4", "npm:2.1.0"],\
+          ["react-ga4", "npm:3.0.1"],\
           ["react-hook-form", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:7.79.0"],\
           ["react-redux", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:9.3.0"],\
           ["react-router", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:7.17.0"],\
@@ -10118,7 +10118,7 @@ const RAW_RUNTIME_STATE =
           ["prop-types", "npm:15.8.1"],\
           ["react", "npm:18.3.1"],\
           ["react-dom", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:18.3.1"],\
-          ["react-ga4", "npm:2.1.0"],\
+          ["react-ga4", "npm:3.0.1"],\
           ["react-hook-form", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:7.79.0"],\
           ["react-redux", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:9.3.0"],\
           ["react-router", "virtual:a98f04960cc7eaa90b3b4031434bf51078616b854270c891bf505dc7080da50229384e574995251e6688b61b7cd512851213f0347ece1285c879b26dde9cc6b6#npm:7.17.0"],\
@@ -13388,10 +13388,10 @@ const RAW_RUNTIME_STATE =
       }]\
     ]],\
     ["react-ga4", [\
-      ["npm:2.1.0", {\
-        "packageLocation": "./.yarn/cache/react-ga4-npm-2.1.0-2d2287b7a6-e47edd040b.zip/node_modules/react-ga4/",\
+      ["npm:3.0.1", {\
+        "packageLocation": "./.yarn/cache/react-ga4-npm-3.0.1-bfa6cb733e-b93520a259.zip/node_modules/react-ga4/",\
         "packageDependencies": [\
-          ["react-ga4", "npm:2.1.0"]\
+          ["react-ga4", "npm:3.0.1"]\
         ],\
         "linkType": "HARD"\
       }]\

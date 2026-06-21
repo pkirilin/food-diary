@@ -10,7 +10,7 @@ export const WithMockApi: FC<PropsWithChildren> = ({ children }) => {
   const init = async (): Promise<void> => {
     try {
       if (MSW_ENABLED) {
-        const { initBrowserMockApi } = await import('@tests/mockApi');
+        const { initBrowserMockApi } = await import('@tests/mockApi/initBrowserMockApi');
         await initBrowserMockApi();
       }
 
