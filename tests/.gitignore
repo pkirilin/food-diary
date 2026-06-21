@@ -1,6 +1,5 @@
 /node_modules
-/.pnp
-.pnp.js
+.pnp.*
 playwright-report
 .DS_Store
 
@@ -9,7 +8,6 @@ yarn-debug.log*
 yarn-error.log*
 
 .yarn/*
-!.yarn/cache
 !.yarn/patches
 !.yarn/plugins
 !.yarn/releases
