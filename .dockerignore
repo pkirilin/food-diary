@@ -10,6 +10,7 @@
 **/docker-compose*
 **/Dockerfile*
 **/node_modules
+**/.yarn/cache
 **/npm-debug.log
 **/obj
 **/README.md
