@@ -84,18 +84,31 @@ inputs (`yc-sa-json-credentials`, `container-name`, `folder-id`, `public`,
 across majors. These get an explicit static input-compatibility check before
 the bump is trusted.
 
-## Verification strategy
+## `yc-actions` static verification — DONE (2026-06-23)
 
-1. **Static input check (the gate for `yc-actions`).** Compare the inputs each
-   workflow passes against the new versions' `action.yml`:
-   - `yc-actions/yc-cr-login@v3` `action.yml`
-   - `yc-actions/yc-sls-container-deploy@v4` `action.yml`
-   Flag any input that was renamed, removed, or newly required. Adjust the
-   workflow accordingly. (Official `actions/*` inputs used here are unchanged,
-   but a quick scan is included.)
-2. **Lint.** Run `actionlint` on the three changed workflows if available;
+Performed during the design stage against each target tag's `action.yml`.
+
+**`yc-cr-login@v3`** — workflow passes only `yc-sa-json-credentials`, which
+remains a valid (optional) input. No change needed.
+
+**`yc-sls-container-deploy@v4`** — all 14 inputs the workflow passes still
+exist, none renamed or removed:
+`yc-sa-json-credentials`, `container-name` (required, provided),
+`folder-id` (required, provided), `public`,
+`revision-image-url` (required, provided), `revision-service-account-id`,
+`revision-cores`, `revision-memory`, `revision-core-fraction`,
+`revision-concurrency`, `revision-execution-timeout`, `revision-provisioned`,
+`revision-env`, `revision-secrets`. The three inputs that are `required: true`
+in v4 are all already supplied. v4 adds new optional inputs (mounts, logging,
+networking) but none are required.
+
+**Conclusion:** no workflow changes are needed beyond the version-tag bumps for
+either `yc-action`.
+
+## Verification strategy (remaining, at implementation time)
+1. **Lint.** Run `actionlint` on the three changed workflows if available;
    otherwise note it was skipped.
-3. **CI as live test.** `build.yml` runs on every push, so pushing the branch
+2. **CI as live test.** `build.yml` runs on every push, so pushing the branch
    exercises `checkout`, `setup-dotnet`, `setup-node`, `upload-artifact`, and
    (in the main-gated jobs, which are skipped off `main` but whose action
    versions still resolve) `yc-cr-login` / `yc-sls-container-deploy`
