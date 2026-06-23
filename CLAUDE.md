@@ -14,7 +14,7 @@ Food Diary is a self-hosted, lightweight web app for nutrition and weight tracki
 - `tests/` — Playwright E2E suite (separate yarn project).
 - `docker-compose.yml` / `Dockerfile` — full-stack local run.
 
-The frontend and the two test projects are independent yarn (Berry, PnP) workspaces — install/run yarn from inside each directory, not at repo root.
+The frontend and the two test projects are independent yarn (Berry, node-modules linker) workspaces — install/run yarn from inside each directory, not at repo root.
 
 ## Common commands
 

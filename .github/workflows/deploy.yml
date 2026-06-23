@@ -12,9 +12,9 @@ jobs:
   run-migrations:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: 8.0.405
       - name: Run migrator
@@ -25,11 +25,11 @@ jobs:
     needs: run-migrations
     steps:
       - name: Checkout to the branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Login to Yandex Cloud Container Registry
         id: login-cr
-        uses: yc-actions/yc-cr-login@v2
+        uses: yc-actions/yc-cr-login@v3
         with:
           yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
   
@@ -44,7 +44,7 @@ jobs:
     steps:
       - name: Deploy Serverless Container
         id: deploy-sls-container
-        uses: yc-actions/yc-sls-container-deploy@v2
+        uses: yc-actions/yc-sls-container-deploy@v4
         with:
           yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
           container-name: ${{ env.CR_REPOSITORY }}

@@ -1,7 +1,9 @@
 # Migrate Food Diary to Node 24 — Design
 
 **Date:** 2026-06-21
-**Status:** Approved
+**Status:** Completed — implemented on branch `chore/migrate-node-24`; both
+execution blockers resolved (see "Migration blockers" below). Verified green on
+Node 24: frontend lint/build/test (103 passing) and tests lint/tsc.
 
 ## Goal
 
@@ -58,7 +60,48 @@ signatures, which `yarn build` (tsc) will catch.
 
 ## Out of scope
 
-- No dependency upgrades beyond `@types/node`.
 - No backend / .NET changes.
-- No Vite, React, or other major framework bumps.
 - No switch to an exact patch pin (loose major pin chosen deliberately).
+
+> **Scope note:** the original spec scoped out all dependency/tooling changes
+> beyond `@types/node`. Two execution blockers (below) forced two sanctioned
+> scope additions, both approved by the maintainer: (1) vite 8 + vitest 4 to
+> fix the test environment, and (2) switching both yarn workspaces from PnP to
+> the node-modules linker to fix lint under Node 24.
+
+## Migration blockers (encountered and resolved during execution)
+
+Two Node-24-specific blockers surfaced that the original spec did not
+anticipate. Both were confirmed by running each workspace under an explicit
+Node 22 binary (pass) vs Node 24 (fail) — important because the dev/CI sandbox
+itself runs Node 24, so a naive "stash and re-test" misleadingly reports these
+as pre-existing.
+
+### Blocker 1 — frontend tests (jsdom + Node 24)
+
+- **Symptom:** 17 frontend tests failed on Node 24 (`TypeError: RequestInit:
+  Expected signal … to be an instance of AbortSignal`); mocked requests fell
+  through to stale data (e.g. `70` instead of the MSW-mocked `73`). 103/103
+  passed on Node 22.
+- **Root cause:** known `jsdom` + Node 24 + `vitest 2` incompatibility — jsdom
+  polyfills `AbortSignal`/`AbortController`, which Node 24's native fetch
+  (undici) rejects, breaking MSW interception. Not caused by `@types/node`.
+- **Resolution:** maintainer upgraded **vite → 8 and vitest → 4** (fixes it
+  upstream). Frontend suite now 103/103 on Node 24.
+
+### Blocker 2 — lint under Yarn PnP (both workspaces)
+
+- **Symptom:** `yarn lint` failed on Node 24 in both workspaces — frontend with
+  `Cannot read config file … <pkg>.zip` and tests with `EBADF: bad file
+  descriptor, fstat`. Both passed on Node 22. CI runs `yarn lint` in the
+  frontend and e2e jobs, so this gated the migration.
+- **Root cause:** Yarn PnP's experimental ESM loader is incompatible with Node
+  24 when loading CJS modules from the zip cache (surfaced via ESLint's legacy
+  config loader). Bumping Yarn 4.16 → 4.17 did not fix it.
+- **Resolution:** switched both workspaces from PnP to the **node-modules
+  linker** (`nodeLinker: node-modules`), removed the committed `.pnp.*` files
+  and zero-install cache, and gitignored `.yarn/cache`. Lint, build, test, and
+  tsc all pass on Node 24.
+
+References: mswjs/msw discussion #2530, vitest-dev/vitest #8374,
+reduxjs/redux-toolkit #4966.

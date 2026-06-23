@@ -4,7 +4,7 @@
   "main": "index.js",
   "author": "Pavel Kirilin <kirilin.pav@gmail.com>",
   "license": "MIT",
-  "packageManager": "yarn@4.0.2",
+  "packageManager": "yarn@4.16.0",
   "scripts": {
     "test": "playwright test",
     "debug": "playwright test --debug",
@@ -15,9 +15,9 @@
     "lint:fix": "eslint . --fix"
   },
   "devDependencies": {
-    "@playwright/test": "^1.40.1",
+    "@playwright/test": "^1.61.0",
     "@types/eslint": "^8",
-    "@types/node": "^22.15.3",
+    "@types/node": "^24",
     "@typescript-eslint/eslint-plugin": "^6.17.0",
     "@typescript-eslint/parser": "^6.17.0",
     "eslint": "^8.56.0",

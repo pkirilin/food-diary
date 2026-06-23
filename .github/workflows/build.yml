@@ -15,9 +15,9 @@ jobs:
       run:
         working-directory: 'src/backend'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: 8.0.405
       - name: Install dependencies
@@ -35,10 +35,10 @@ jobs:
         working-directory: 'src/frontend'
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+        uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
         with:
-          node-version: '22.15.0'
+          node-version: '24'
       - name: Install
         run: yarn install
       - name: Lint
@@ -58,13 +58,13 @@ jobs:
         working-directory: 'tests'
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v7
     - name: Start containers
       run: docker compose up -d --build
     - name: Setup node
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v6
       with:
-        node-version: '22.15.0'
+        node-version: '24'
     - name: Install dependencies
       run: yarn
     - name: Lint
@@ -73,7 +73,7 @@ jobs:
       run: yarn playwright install --with-deps
     - name: Run Playwright tests
       run: yarn playwright test
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v7
       if: always()
       with:
         name: playwright-report
@@ -87,9 +87,9 @@ jobs:
     needs: e2e-tests
     if: ${{ github.ref == 'refs/heads/main' }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: 8.0.405
       - name: Run migrator
@@ -101,11 +101,11 @@ jobs:
     if: ${{ github.ref == 'refs/heads/main' }}
     steps:
       - name: Checkout to the branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Login to Yandex Cloud Container Registry
         id: login-cr
-        uses: yc-actions/yc-cr-login@v2
+        uses: yc-actions/yc-cr-login@v3
         with:
           yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
   
@@ -121,7 +121,7 @@ jobs:
     steps:
       - name: Deploy Serverless Container
         id: deploy-sls-container
-        uses: yc-actions/yc-sls-container-deploy@v2
+        uses: yc-actions/yc-sls-container-deploy@v4
         with:
           yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
           container-name: ${{ env.CR_REPOSITORY }}
