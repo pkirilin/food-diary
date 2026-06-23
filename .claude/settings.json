@@ -25,7 +25,8 @@
       "Bash(yarn build:*)",
       "Bash(yarn lint:*)",
       "Bash(yarn test:*)",
-      "Bash(dotnet test:*)"
+      "Bash(dotnet test:*)",
+      "Read(./.superpowers/**)"
     ],
     "deny": [
       "Read(./**/.env)",
