@@ -6,6 +6,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] - Node.js 24 & minor packages bump
+
+### Added
+
+- Supply chain attacks protection via `npmMinimalAgeGate`
+
+### Changed
+
+- Updated yarn to 4.16.0
+- Switched back from pnp to node_modules for compatibility with latest Node.js
+- Updated Node.js runtime requirement to 24+
+
+### Fixed
+
+- Existing dependencies are bumped to the latest minor / patch versions
+- Existing GHA workflows no longer show Node.js 20 deprecation warnings
+
 ## [0.4.0] - AI recognition improvements and release automation
 
 ### Added
