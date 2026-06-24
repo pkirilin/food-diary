@@ -4,6 +4,14 @@ on:
   push:
     branches:
       - main
+    paths:
+      - ".github/workflows/**"
+      - "src/**"
+      - "tests/**"
+      - "certs/**"
+      - "docker-compose.*"
+      - "Dockerfile"
+      - ".dockerignore"
   workflow_dispatch:
 
 permissions:
