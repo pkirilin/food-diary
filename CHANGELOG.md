@@ -1,3 +1,5 @@
+<!-- markdownlint-disable MD024 -->
+
 # Changelog
 
 All notable changes to Food Diary are documented here.
