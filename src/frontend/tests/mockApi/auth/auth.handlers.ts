@@ -1,6 +1,6 @@
 import { http, type HttpHandler, HttpResponse } from 'msw';
+import { type GetAuthStatusResponse } from '@/features/auth';
 import { API_URL } from '@/shared/config';
-import { type GetAuthStatusResponse } from 'src/features/auth';
 import { usersService } from '../user';
 
 export const handlers: HttpHandler[] = [
