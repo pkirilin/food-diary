@@ -6,9 +6,11 @@ using FoodDiary.API.Dtos;
 using FoodDiary.API.Features.Products.Contracts;
 using FoodDiary.API.Features.Products.Extensions;
 using FoodDiary.API.Mapping;
+using FoodDiary.Application.Products.SuggestNutrition;
 using FoodDiary.ComponentTests.Dsl;
 using FoodDiary.ComponentTests.Infrastructure;
 using FoodDiary.ComponentTests.Infrastructure.DateAndTime;
+using FoodDiary.ComponentTests.Infrastructure.ExternalServices;
 using FoodDiary.Contracts.Products;
 using FoodDiary.Domain.Entities;
 using JetBrains.Annotations;
@@ -16,8 +18,18 @@ using JetBrains.Annotations;
 namespace FoodDiary.ComponentTests.Scenarios.Products;
 
 [UsedImplicitly]
-public class ProductsApiContext(FoodDiaryWebApplicationFactory factory) : BaseContext(factory)
+public class ProductsApiContext(
+    FoodDiaryWebApplicationFactory factory,
+    ExternalServicesFixture externalServices) : BaseContext(factory)
 {
+    private static readonly JsonSerializerOptions SerializerOptions = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+    };
+
+    private OpenAIApi OpenAiApi => externalServices.OpenAiApi;
+    private HttpResponseMessage _suggestNutritionResponse = null!;
+
     private ProductsSearchResultDto? _productsResponse;
     private SearchProductsResponse.Product[]? _productsForAutocompleteResponse;
     private HttpResponseMessage _getProductByIdResponse = null!;
@@ -25,7 +37,7 @@ public class ProductsApiContext(FoodDiaryWebApplicationFactory factory) : BaseCo
     private HttpResponseMessage _updateProductResponse = null!;
     private HttpResponseMessage _deleteProductResponse = null!;
     private HttpResponseMessage _deleteMultipleProductsResponse = null!;
-    
+
     private readonly ProductsCatalog _products = new();
     
     public Task Given_products(params Product[] products)
@@ -65,7 +77,18 @@ public class ProductsApiContext(FoodDiaryWebApplicationFactory factory) : BaseCo
     {
         return Factory.SeedDataAsync(categories);
     }
-    
+
+    public Task Given_OpenAI_api_is_ready()
+    {
+        return OpenAiApi.Start();
+    }
+
+    public Task Given_OpenAI_api_can_suggest_nutrition(SuggestedNutrition nutrition)
+    {
+        var content = JsonSerializer.Serialize(nutrition, SerializerOptions);
+        return OpenAiApi.SetupCompletionSuccess(content);
+    }
+
     public async Task When_user_retrieves_products_list()
     {
         _productsResponse = await ApiClient.GetFromJsonAsync<ProductsSearchResultDto>("/api/v1/products");
@@ -127,7 +150,14 @@ public class ProductsApiContext(FoodDiaryWebApplicationFactory factory) : BaseCo
     
     public Task When_user_retrieves_created_product_by_id()
         => When_user_retrieves_product_by_id(_createProductResponse?.Id ?? 0);
-    
+
+    public async Task When_user_requests_nutrition_suggestion(string name)
+    {
+        _suggestNutritionResponse = await ApiClient.PostAsJsonAsync(
+            "/api/v1/products/suggestions",
+            new { name });
+    }
+
     public Task Then_products_list_contains_items(params Product[] items)
     {
         var expectedProductsList = items.Select(p => p.ToProductItemDto());
@@ -191,5 +221,27 @@ public class ProductsApiContext(FoodDiaryWebApplicationFactory factory) : BaseCo
             .BeEquivalentTo(product.ToGetProductByIdResponse(), options => options
                 .Excluding(p => p.Id)
                 .Excluding(p => p.Category.Id));
+    }
+
+    public async Task Then_nutrition_suggestion_is(
+        int? calories,
+        decimal? protein,
+        decimal? fats,
+        decimal? carbs,
+        decimal? sugar,
+        decimal? salt)
+    {
+        _suggestNutritionResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var response = await _suggestNutritionResponse.Content
+            .ReadFromJsonAsync<SuggestNutritionResponse>();
+
+        response.Should().NotBeNull();
+        response!.Calories.Should().Be(calories);
+        response.Protein.Should().Be(protein);
+        response.Fats.Should().Be(fats);
+        response.Carbs.Should().Be(carbs);
+        response.Sugar.Should().Be(sugar);
+        response.Salt.Should().Be(salt);
     }
 }

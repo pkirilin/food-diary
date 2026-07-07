@@ -5,6 +5,7 @@ using FoodDiary.Application.Notes.Get;
 using FoodDiary.Application.Notes.GetHistory;
 using FoodDiary.Application.Notes.Recognize;
 using FoodDiary.Application.Notes.Update;
+using FoodDiary.Application.Products.SuggestNutrition;
 using FoodDiary.Application.Services.Categories;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,6 +21,7 @@ public static class ServiceCollectionExtensions
         services.AddMediatR(Assembly.GetExecutingAssembly());
         services.AddApplicationServices();
         services.AddNotes();
+        services.AddProducts();
     }
 
     private static void AddApplicationServices(this IServiceCollection services)
@@ -34,5 +36,10 @@ public static class ServiceCollectionExtensions
         services.AddScoped<CreateNoteCommandHandler>();
         services.AddScoped<UpdateNoteCommandHandler>();
         services.AddScoped<RecognizeNoteCommandHandler>();
+    }
+
+    private static void AddProducts(this IServiceCollection services)
+    {
+        services.AddScoped<SuggestNutritionCommandHandler>();
     }
 }

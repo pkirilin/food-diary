@@ -9,6 +9,7 @@ public static class Create
     public static NoteBuilder Note() => new();
     
     public static RecognizeNoteModelResponseBuilder RecognizeNoteModelResponse() => new();
+    public static SuggestNutritionModelResponseBuilder SuggestNutritionModelResponse() => new();
     
     public static NotesHistoryItem NoteHistoryItem(string date, int caloriesCount) => new(
         DateOnly.Parse(date),
