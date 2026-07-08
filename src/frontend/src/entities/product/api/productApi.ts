@@ -9,6 +9,8 @@ import {
   type ProductSelectOption,
   type GetProductsResponse,
   type GetProductByIdResponse,
+  type SuggestProductNutritionRequest,
+  type SuggestProductNutritionResponse,
 } from './contracts';
 
 export const productApi = api.injectEndpoints({
@@ -53,6 +55,17 @@ export const productApi = api.injectEndpoints({
         body: ids,
       }),
       invalidatesTags: ['product', 'note'],
+    }),
+
+    suggestNutrition: builder.mutation<
+      SuggestProductNutritionResponse,
+      SuggestProductNutritionRequest
+    >({
+      query: body => ({
+        method: 'POST',
+        url: '/api/v1/products/suggestions',
+        body,
+      }),
     }),
   }),
 });

@@ -86,3 +86,16 @@ export interface EditProductRequest {
 export interface DeleteProductsRequest {
   ids: number[];
 }
+
+export interface SuggestProductNutritionRequest {
+  name: string;
+}
+
+export interface SuggestProductNutritionResponse {
+  calories: number | null;
+  protein: number | null;
+  fats: number | null;
+  carbs: number | null;
+  sugar: number | null;
+  salt: number | null;
+}
