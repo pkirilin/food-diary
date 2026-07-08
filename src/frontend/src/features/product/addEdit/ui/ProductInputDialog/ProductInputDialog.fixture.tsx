@@ -14,6 +14,17 @@ import { type SelectOption } from '@/shared/types';
 import { WithTriggerButton } from '@tests/sideEffects';
 import { ProductInputDialog } from './ProductInputDialog';
 
+const NUTRITION_SUGGESTIONS_URL = `${API_URL}/api/v1/products/suggestions`;
+
+const EMPTY_NUTRITION_SUGGESTIONS: SuggestProductNutritionResponse = {
+  calories: null,
+  protein: null,
+  fats: null,
+  carbs: null,
+  sugar: null,
+  salt: null,
+};
+
 class ProductInputDialogBuilder {
   private _onSubmitMock: Mock = vi.fn();
   private _product: productModel.ProductFormValues = productModel.EMPTY_FORM_VALUES;
@@ -84,6 +95,44 @@ export const givenCategories = (...categoryNames: string[]): SelectOption[] =>
 
 export const givenProductInputDialog = (): ProductInputDialogBuilder =>
   new ProductInputDialogBuilder();
+
+export const givenNutritionSuggestion = (
+  response: Partial<SuggestProductNutritionResponse> = EMPTY_NUTRITION_SUGGESTIONS,
+): void => {
+  server.use(
+    http.post(NUTRITION_SUGGESTIONS_URL, () =>
+      HttpResponse.json<SuggestProductNutritionResponse>({
+        ...EMPTY_NUTRITION_SUGGESTIONS,
+        ...response,
+      }),
+    ),
+  );
+};
+
+export const givenPendingNutritionSuggestion = (
+  response: Partial<SuggestProductNutritionResponse>,
+): void => {
+  server.use(
+    http.post(NUTRITION_SUGGESTIONS_URL, async () => {
+      await delay(100);
+      return HttpResponse.json<SuggestProductNutritionResponse>({
+        ...EMPTY_NUTRITION_SUGGESTIONS,
+        ...response,
+      });
+    }),
+  );
+};
+
+export const givenNutritionSuggestionFails = (): void => {
+  server.use(
+    http.post(NUTRITION_SUGGESTIONS_URL, () =>
+      HttpResponse.json(
+        { title: 'Internal Server Error', detail: 'Model response was invalid' },
+        { status: 500 },
+      ),
+    ),
+  );
+};
 
 export const whenDialogOpened = async (user: UserEvent): Promise<void> => {
   await user.click(screen.getByRole('button', { name: 'Open' }));
@@ -216,34 +265,6 @@ export const thenNutritionPanelIsExpanded = async (): Promise<void> => {
     expect(screen.getByRole('button', { name: /nutrition/i })).toHaveAttribute(
       'aria-expanded',
       'true',
-    ),
-  );
-};
-
-const SUGGESTIONS_URL = `${API_URL}/api/v1/products/suggestions`;
-
-export const givenNutritionSuggestion = (response: SuggestProductNutritionResponse): void => {
-  server.use(http.post(SUGGESTIONS_URL, () => HttpResponse.json(response)));
-};
-
-export const givenPendingNutritionSuggestion = (
-  response: SuggestProductNutritionResponse,
-): void => {
-  server.use(
-    http.post(SUGGESTIONS_URL, async () => {
-      await delay(100);
-      return HttpResponse.json(response);
-    }),
-  );
-};
-
-export const givenNutritionSuggestionFails = (): void => {
-  server.use(
-    http.post(SUGGESTIONS_URL, () =>
-      HttpResponse.json(
-        { title: 'Internal Server Error', detail: 'Model response was invalid' },
-        { status: 500 },
-      ),
     ),
   );
 };

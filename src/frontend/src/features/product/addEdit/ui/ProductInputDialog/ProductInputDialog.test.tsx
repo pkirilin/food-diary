@@ -1,6 +1,5 @@
 import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { type SuggestProductNutritionResponse } from '@/entities/product';
 import {
   expectCategory,
   givenCategories,
@@ -202,197 +201,186 @@ test('New product name input is valid by default', async () => {
   await thenProductNameIsValid();
 });
 
-const allNull: SuggestProductNutritionResponse = {
-  calories: null,
-  protein: null,
-  fats: null,
-  carbs: null,
-  sugar: null,
-  salt: null,
-};
+describe('nutrition suggestions', () => {
+  test('empty nutrition fields are filled after clicking a suggest button', async () => {
+    const user = userEvent.setup();
+    const categories = givenCategories('Dairy');
+    givenNutritionSuggestion({
+      calories: 402,
+      protein: 25,
+      fats: 33.1,
+      carbs: 1.3,
+      sugar: null,
+      salt: 1.8,
+    });
 
-test('empty nutrition fields are filled after clicking a suggest button', async () => {
-  const user = userEvent.setup();
-  const categories = givenCategories('Dairy');
-  givenNutritionSuggestion({
-    calories: 402,
-    protein: 25,
-    fats: 33.1,
-    carbs: 1.3,
-    sugar: null,
-    salt: 1.8,
+    render(
+      givenProductInputDialog()
+        .withCategoriesForSelect(categories)
+        .withProduct({ name: 'Cheddar cheese', category: categories[0] })
+        .please(),
+    );
+
+    await whenDialogOpened(user);
+    await whenNutritionPanelExpanded(user);
+    await whenSuggestClicked(user, /suggest protein/i);
+
+    await thenProteinEventuallyHasValue('25');
+    await thenFatsEventuallyHasValue('33.1');
+    await thenCaloriesEventuallyHasValue('100');
   });
 
-  render(
-    givenProductInputDialog()
-      .withCategoriesForSelect(categories)
-      .withProduct({ name: 'Cheddar cheese', category: categories[0] })
-      .please(),
-  );
+  test('clicking the calories button overwrites its default value', async () => {
+    const user = userEvent.setup();
+    const categories = givenCategories('Dairy');
+    givenNutritionSuggestion({ calories: 402 });
 
-  await whenDialogOpened(user);
-  await whenNutritionPanelExpanded(user);
-  await whenSuggestClicked(user, /suggest protein/i);
+    render(
+      givenProductInputDialog()
+        .withCategoriesForSelect(categories)
+        .withProduct({ name: 'Cheddar cheese', category: categories[0] })
+        .please(),
+    );
 
-  await thenProteinEventuallyHasValue('25');
-  await thenFatsEventuallyHasValue('33.1');
-  await thenCaloriesEventuallyHasValue('100');
-});
+    await whenDialogOpened(user);
+    await whenSuggestClicked(user, /suggest calories/i);
 
-test('clicking the calories button overwrites its default value', async () => {
-  const user = userEvent.setup();
-  const categories = givenCategories('Dairy');
-  givenNutritionSuggestion({ ...allNull, calories: 402 });
-
-  render(
-    givenProductInputDialog()
-      .withCategoriesForSelect(categories)
-      .withProduct({ name: 'Cheddar cheese', category: categories[0] })
-      .please(),
-  );
-
-  await whenDialogOpened(user);
-  await whenSuggestClicked(user, /suggest calories/i);
-
-  await thenCaloriesEventuallyHasValue('402');
-});
-
-test('clicking a filled field button overwrites only that field', async () => {
-  const user = userEvent.setup();
-  const categories = givenCategories('Dairy');
-  givenNutritionSuggestion({ ...allNull, protein: 25, carbs: 99 });
-
-  render(
-    givenProductInputDialog()
-      .withCategoriesForSelect(categories)
-      .withProduct({ name: 'Cheddar cheese', category: categories[0], protein: 1.2, carbs: 5 })
-      .please(),
-  );
-
-  // Nutrition panel is already expanded by default here (protein/carbs are pre-filled),
-  // so no expand click is needed — clicking it again would toggle it closed.
-  await whenDialogOpened(user);
-  await whenSuggestClicked(user, /suggest protein/i);
-
-  await thenProteinEventuallyHasValue('25');
-  await thenCarbsEventuallyHasValue('5');
-});
-
-test('suggest buttons are disabled until the name is valid', async () => {
-  const user = userEvent.setup();
-  const categories = givenCategories('Dairy');
-
-  render(givenProductInputDialog().withCategoriesForSelect(categories).please());
-
-  await whenDialogOpened(user);
-  thenSuggestButtonIsDisabled(/suggest calories/i);
-
-  await whenProductNameChanged(user, 'Cheddar cheese');
-  thenSuggestButtonIsEnabled(/suggest calories/i);
-});
-
-test('inputs and submit are disabled while a suggestion is pending', async () => {
-  const user = userEvent.setup();
-  const categories = givenCategories('Dairy');
-  givenPendingNutritionSuggestion({ ...allNull, calories: 402 });
-
-  render(
-    givenProductInputDialog()
-      .withCategoriesForSelect(categories)
-      .withProduct({ name: 'Cheddar cheese', category: categories[0] })
-      .please(),
-  );
-
-  await whenDialogOpened(user);
-  await whenSuggestClicked(user, /suggest calories/i);
-
-  thenNameInputIsDisabled();
-  thenSubmitIsDisabled();
-
-  await thenCaloriesEventuallyHasValue('402');
-  await thenSubmitIsEnabled();
-});
-
-test('API failure shows an error message', async () => {
-  const user = userEvent.setup();
-  const categories = givenCategories('Dairy');
-  givenNutritionSuggestionFails();
-
-  render(
-    givenProductInputDialog()
-      .withCategoriesForSelect(categories)
-      .withProduct({ name: 'Cheddar cheese', category: categories[0] })
-      .please(),
-  );
-
-  await whenDialogOpened(user);
-  await whenSuggestClicked(user, /suggest calories/i);
-
-  await thenAlertShown(/model response was invalid/i);
-});
-
-test('info message shown when nothing can be estimated', async () => {
-  const user = userEvent.setup();
-  const categories = givenCategories('Dairy');
-  givenNutritionSuggestion(allNull);
-
-  render(
-    givenProductInputDialog()
-      .withCategoriesForSelect(categories)
-      .withProduct({ name: 'Cheddar cheese', category: categories[0] })
-      .please(),
-  );
-
-  await whenDialogOpened(user);
-  await whenSuggestClicked(user, /suggest calories/i);
-
-  await thenAlertShown(/couldn't estimate nutrition/i);
-});
-
-test('nutrition panel auto-expands when a calories suggestion also fills macro fields', async () => {
-  const user = userEvent.setup();
-  const categories = givenCategories('Dairy');
-  givenNutritionSuggestion({
-    calories: 402,
-    protein: 25,
-    fats: 33.1,
-    carbs: 1.3,
-    sugar: null,
-    salt: 1.8,
+    await thenCaloriesEventuallyHasValue('402');
   });
 
-  render(
-    givenProductInputDialog()
-      .withCategoriesForSelect(categories)
-      // No macros yet: nutrition panel starts collapsed, matching the "add product" flow.
-      .withProduct({ name: 'Cheddar cheese', category: categories[0] })
-      .please(),
-  );
+  test('clicking a filled field button overwrites only that field', async () => {
+    const user = userEvent.setup();
+    const categories = givenCategories('Dairy');
+    givenNutritionSuggestion({ protein: 25, carbs: 99 });
 
-  await whenDialogOpened(user);
-  // Deliberately not calling whenNutritionPanelExpanded here - the panel must expand itself.
-  await whenSuggestClicked(user, /suggest calories/i);
+    render(
+      givenProductInputDialog()
+        .withCategoriesForSelect(categories)
+        .withProduct({ name: 'Cheddar cheese', category: categories[0], protein: 1.2, carbs: 5 })
+        .please(),
+    );
 
-  await thenNutritionPanelIsExpanded();
-});
+    await whenDialogOpened(user);
+    await whenSuggestClicked(user, /suggest protein/i);
 
-test('closing the dialog while a suggestion is pending is blocked', async () => {
-  const user = userEvent.setup();
-  const categories = givenCategories('Dairy');
-  givenPendingNutritionSuggestion({ ...allNull, calories: 402 });
+    await thenProteinEventuallyHasValue('25');
+    await thenCarbsEventuallyHasValue('5');
+  });
 
-  render(
-    givenProductInputDialog()
-      .withCategoriesForSelect(categories)
-      .withProduct({ name: 'Cheddar cheese', category: categories[0] })
-      .please(),
-  );
+  test('suggest buttons are disabled until the name is valid', async () => {
+    const user = userEvent.setup();
+    const categories = givenCategories('Dairy');
 
-  await whenDialogOpened(user);
-  await whenSuggestClicked(user, /suggest calories/i);
+    render(givenProductInputDialog().withCategoriesForSelect(categories).please());
 
-  await whenCloseIconClicked(user);
-  await thenProductFormIsVisible();
+    await whenDialogOpened(user);
+    thenSuggestButtonIsDisabled(/suggest calories/i);
 
-  await thenCaloriesEventuallyHasValue('402');
+    await whenProductNameChanged(user, 'Cheddar cheese');
+    thenSuggestButtonIsEnabled(/suggest calories/i);
+  });
+
+  test('inputs and submit are disabled while a suggestion is pending', async () => {
+    const user = userEvent.setup();
+    const categories = givenCategories('Dairy');
+    givenPendingNutritionSuggestion({ calories: 402 });
+
+    render(
+      givenProductInputDialog()
+        .withCategoriesForSelect(categories)
+        .withProduct({ name: 'Cheddar cheese', category: categories[0] })
+        .please(),
+    );
+
+    await whenDialogOpened(user);
+    await whenSuggestClicked(user, /suggest calories/i);
+
+    thenNameInputIsDisabled();
+    thenSubmitIsDisabled();
+
+    await thenCaloriesEventuallyHasValue('402');
+    await thenSubmitIsEnabled();
+  });
+
+  test('API failure shows an error message', async () => {
+    const user = userEvent.setup();
+    const categories = givenCategories('Dairy');
+    givenNutritionSuggestionFails();
+
+    render(
+      givenProductInputDialog()
+        .withCategoriesForSelect(categories)
+        .withProduct({ name: 'Cheddar cheese', category: categories[0] })
+        .please(),
+    );
+
+    await whenDialogOpened(user);
+    await whenSuggestClicked(user, /suggest calories/i);
+
+    await thenAlertShown(/model response was invalid/i);
+  });
+
+  test('info message shown when nothing can be estimated', async () => {
+    const user = userEvent.setup();
+    const categories = givenCategories('Dairy');
+    givenNutritionSuggestion();
+
+    render(
+      givenProductInputDialog()
+        .withCategoriesForSelect(categories)
+        .withProduct({ name: 'Cheddar cheese', category: categories[0] })
+        .please(),
+    );
+
+    await whenDialogOpened(user);
+    await whenSuggestClicked(user, /suggest calories/i);
+
+    await thenAlertShown(/couldn't estimate nutrition/i);
+  });
+
+  test('nutrition panel auto-expands when a calories suggestion also fills macro fields', async () => {
+    const user = userEvent.setup();
+    const categories = givenCategories('Dairy');
+    givenNutritionSuggestion({
+      calories: 402,
+      protein: 25,
+      fats: 33.1,
+      carbs: 1.3,
+      sugar: null,
+      salt: 1.8,
+    });
+
+    render(
+      givenProductInputDialog()
+        .withCategoriesForSelect(categories)
+        .withProduct({ name: 'Cheddar cheese', category: categories[0] })
+        .please(),
+    );
+
+    await whenDialogOpened(user);
+    await whenSuggestClicked(user, /suggest calories/i);
+
+    await thenNutritionPanelIsExpanded();
+  });
+
+  test('closing the dialog while a suggestion is pending is blocked', async () => {
+    const user = userEvent.setup();
+    const categories = givenCategories('Dairy');
+    givenPendingNutritionSuggestion({ calories: 402 });
+
+    render(
+      givenProductInputDialog()
+        .withCategoriesForSelect(categories)
+        .withProduct({ name: 'Cheddar cheese', category: categories[0] })
+        .please(),
+    );
+
+    await whenDialogOpened(user);
+    await whenSuggestClicked(user, /suggest calories/i);
+
+    await whenCloseIconClicked(user);
+    await thenProductFormIsVisible();
+
+    await thenCaloriesEventuallyHasValue('402');
+  });
 });
