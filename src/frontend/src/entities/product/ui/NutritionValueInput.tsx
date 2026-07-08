@@ -29,7 +29,7 @@ export const NutritionValueInput = forwardRef<HTMLDivElement | null, Props>(
         ref={ref}
         fullWidth
         disabled={disabled}
-        label={`${label} (optional)`}
+        label={`${label}, ${nutritionValuesConfig[type].unit} (optional)`}
         placeholder={placeholder}
         value={value ?? ''}
         margin="none"
@@ -44,7 +44,6 @@ export const NutritionValueInput = forwardRef<HTMLDivElement | null, Props>(
             ),
             endAdornment: (
               <InputAdornment position="end">
-                {nutritionValuesConfig[type].unit}
                 {onSuggest != null ? (
                   <NutritionSuggestButton
                     label={label}

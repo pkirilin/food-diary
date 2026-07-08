@@ -210,8 +210,8 @@ export const ProductForm: FC<Props> = ({
                 {...field}
                 fullWidth
                 disabled={isGenerating}
-                label="Calories"
-                placeholder="Calories per 100 g, kcal"
+                label={`Calories, ${nutritionValuesConfig.calories.unit}`}
+                placeholder="Calories per 100 g"
                 margin="normal"
                 error={!!fieldState.error}
                 helperText={fieldState.error?.message ?? ' '}
@@ -225,7 +225,6 @@ export const ProductForm: FC<Props> = ({
                     ),
                     endAdornment: (
                       <InputAdornment position="end">
-                        {nutritionValuesConfig.calories.unit}
                         <NutritionSuggestButton
                           label="Calories"
                           generating={generatingField === 'calories'}
@@ -253,16 +252,13 @@ export const ProductForm: FC<Props> = ({
                 {...field}
                 fullWidth
                 disabled={isGenerating}
-                label="Default quantity"
-                placeholder="Default quantity, g"
+                label="Default quantity, g"
+                placeholder="Default quantity"
                 margin="normal"
                 error={!!fieldState.error}
                 helperText={fieldState.error?.message ?? ' '}
                 onFocus={event => event.target.select()}
                 slotProps={{
-                  input: {
-                    endAdornment: <InputAdornment position="end">g</InputAdornment>,
-                  },
                   htmlInput: {
                     type: 'text',
                     inputMode: 'numeric',
@@ -296,7 +292,7 @@ export const ProductForm: FC<Props> = ({
                     {...field}
                     type="protein"
                     label="Protein"
-                    placeholder="Protein, g"
+                    placeholder="Protein"
                     disabled={isGenerating}
                     generating={generatingField === 'protein'}
                     suggestDisabled={suggestDisabled}
@@ -316,7 +312,7 @@ export const ProductForm: FC<Props> = ({
                     {...field}
                     type="fats"
                     label="Fats"
-                    placeholder="Fats, g"
+                    placeholder="Fats"
                     disabled={isGenerating}
                     generating={generatingField === 'fats'}
                     suggestDisabled={suggestDisabled}
@@ -336,7 +332,7 @@ export const ProductForm: FC<Props> = ({
                     {...field}
                     type="carbs"
                     label="Carbs"
-                    placeholder="Carbs, g"
+                    placeholder="Carbs"
                     disabled={isGenerating}
                     generating={generatingField === 'carbs'}
                     suggestDisabled={suggestDisabled}
@@ -356,7 +352,7 @@ export const ProductForm: FC<Props> = ({
                     {...field}
                     type="sugar"
                     label="Sugar"
-                    placeholder="Sugar, g"
+                    placeholder="Sugar"
                     disabled={isGenerating}
                     generating={generatingField === 'sugar'}
                     suggestDisabled={suggestDisabled}
@@ -376,7 +372,7 @@ export const ProductForm: FC<Props> = ({
                     {...field}
                     type="salt"
                     label="Salt"
-                    placeholder="Salt, g"
+                    placeholder="Salt"
                     disabled={isGenerating}
                     generating={generatingField === 'salt'}
                     suggestDisabled={suggestDisabled}
