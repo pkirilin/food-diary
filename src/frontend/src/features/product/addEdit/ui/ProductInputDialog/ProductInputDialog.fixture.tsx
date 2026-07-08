@@ -1,10 +1,15 @@
 import { ThemeProvider } from '@mui/material';
-import { screen, waitForElementToBeRemoved } from '@testing-library/dom';
+import { screen, waitFor, waitForElementToBeRemoved } from '@testing-library/dom';
 import { type UserEvent } from '@testing-library/user-event';
+import { server } from '@tests/mockApi/server';
+import { http, HttpResponse, delay } from 'msw';
 import { type ReactElement } from 'react';
+import { Provider } from 'react-redux';
 import { type Mock } from 'vitest';
+import { configureStore } from '@/app/store';
 import { theme } from '@/app/theme';
-import { productModel } from '@/entities/product';
+import { productModel, type SuggestProductNutritionResponse } from '@/entities/product';
+import { API_URL } from '@/shared/config';
 import { type SelectOption } from '@/shared/types';
 import { WithTriggerButton } from '@tests/sideEffects';
 import { ProductInputDialog } from './ProductInputDialog';
@@ -16,23 +21,25 @@ class ProductInputDialogBuilder {
 
   please(): ReactElement {
     return (
-      <ThemeProvider theme={theme}>
-        <WithTriggerButton label="Open">
-          {({ active, onTriggerClick }) => (
-            <ProductInputDialog
-              opened={active}
-              title="Product"
-              submitText="Submit"
-              isLoading={false}
-              categories={this._categories}
-              categoriesLoading={false}
-              productFormValues={this._product}
-              onSubmit={this._onSubmitMock}
-              onClose={onTriggerClick}
-            />
-          )}
-        </WithTriggerButton>
-      </ThemeProvider>
+      <Provider store={configureStore()}>
+        <ThemeProvider theme={theme}>
+          <WithTriggerButton label="Open">
+            {({ active, onTriggerClick }) => (
+              <ProductInputDialog
+                opened={active}
+                title="Product"
+                submitText="Submit"
+                isLoading={false}
+                categories={this._categories}
+                categoriesLoading={false}
+                productFormValues={this._product}
+                onSubmit={this._onSubmitMock}
+                onClose={onTriggerClick}
+              />
+            )}
+          </WithTriggerButton>
+        </ThemeProvider>
+      </Provider>
     );
   }
 
@@ -198,4 +205,77 @@ export const thenCategoryHasValue = async (value: string): Promise<void> => {
 
 export const thenDialogShouldBeHidden = async (): Promise<void> => {
   await waitForElementToBeRemoved(screen.getByRole('dialog'));
+};
+
+const SUGGESTIONS_URL = `${API_URL}/api/v1/products/suggestions`;
+
+export const givenNutritionSuggestion = (response: SuggestProductNutritionResponse): void => {
+  server.use(http.post(SUGGESTIONS_URL, () => HttpResponse.json(response)));
+};
+
+export const givenPendingNutritionSuggestion = (
+  response: SuggestProductNutritionResponse,
+): void => {
+  server.use(
+    http.post(SUGGESTIONS_URL, async () => {
+      await delay(100);
+      return HttpResponse.json(response);
+    }),
+  );
+};
+
+export const givenNutritionSuggestionFails = (): void => {
+  server.use(
+    http.post(SUGGESTIONS_URL, () =>
+      HttpResponse.json(
+        { title: 'Internal Server Error', detail: 'Model response was invalid' },
+        { status: 500 },
+      ),
+    ),
+  );
+};
+
+export const whenSuggestClicked = async (user: UserEvent, name: RegExp): Promise<void> => {
+  await user.click(screen.getByRole('button', { name }));
+};
+
+const eventuallyHasValue = async (placeholder: RegExp, value: string): Promise<void> => {
+  await waitFor(() => expect(screen.getByPlaceholderText(placeholder)).toHaveValue(value));
+};
+
+export const thenCaloriesEventuallyHasValue = async (value: string): Promise<void> =>
+  await eventuallyHasValue(/calories/i, value);
+
+export const thenProteinEventuallyHasValue = async (value: string): Promise<void> =>
+  await eventuallyHasValue(/protein/i, value);
+
+export const thenFatsEventuallyHasValue = async (value: string): Promise<void> =>
+  await eventuallyHasValue(/fats/i, value);
+
+export const thenCarbsEventuallyHasValue = async (value: string): Promise<void> =>
+  await eventuallyHasValue(/carbs/i, value);
+
+export const thenSuggestButtonIsDisabled = (name: RegExp): void => {
+  expect(screen.getByRole('button', { name })).toBeDisabled();
+};
+
+export const thenSuggestButtonIsEnabled = (name: RegExp): void => {
+  expect(screen.getByRole('button', { name })).toBeEnabled();
+};
+
+export const thenNameInputIsDisabled = (): void => {
+  expect(screen.getByRole('textbox', { name: /name/i })).toBeDisabled();
+};
+
+export const thenSubmitIsDisabled = (): void => {
+  expect(screen.getByRole('button', { name: /submit/i })).toBeDisabled();
+};
+
+export const thenSubmitIsEnabled = async (): Promise<void> => {
+  await waitFor(() => expect(screen.getByRole('button', { name: /submit/i })).toBeEnabled());
+};
+
+export const thenAlertShown = async (message: RegExp): Promise<void> => {
+  const alert = await screen.findByRole('alert');
+  expect(alert).toHaveTextContent(message);
 };

@@ -1,4 +1,4 @@
-import { type FC } from 'react';
+import { type FC, useState } from 'react';
 import { ProductForm, type productModel } from '@/entities/product';
 import { type SelectOption } from '@/shared/types';
 import { Button, Dialog } from '@/shared/ui';
@@ -26,6 +26,8 @@ export const ProductInputDialog: FC<ProductInputDialogProps> = ({
   onSubmit,
   onClose,
 }) => {
+  const [isGenerating, setIsGenerating] = useState(false);
+
   return (
     <Dialog
       pinToTop
@@ -40,15 +42,27 @@ export const ProductInputDialog: FC<ProductInputDialogProps> = ({
           categories={categories}
           categoriesLoading={categoriesLoading}
           onSubmit={onSubmit}
+          onGeneratingChange={setIsGenerating}
         />
       }
       renderSubmit={submitProps => (
-        <Button {...submitProps} type="submit" form="product-input-form" loading={isLoading}>
+        <Button
+          {...submitProps}
+          type="submit"
+          form="product-input-form"
+          disabled={isGenerating}
+          loading={isLoading}
+        >
           {submitText}
         </Button>
       )}
       renderCancel={cancelProps => (
-        <Button {...cancelProps} type="button" disabled={isLoading} onClick={onClose}>
+        <Button
+          {...cancelProps}
+          type="button"
+          disabled={isLoading || isGenerating}
+          onClick={onClose}
+        >
           Cancel
         </Button>
       )}
