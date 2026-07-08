@@ -76,6 +76,8 @@ export const ProductForm: FC<Props> = ({
     'salt',
   ]).some(value => value !== null);
 
+  const [nutritionExpanded, setNutritionExpanded] = useState(atLeastOneNutritionFieldHasValue);
+
   const applyEligible = (
     field: NutritionValueType,
     clicked: NutritionValueType,
@@ -119,6 +121,18 @@ export const ProductForm: FC<Props> = ({
       applyEligible('carbs', clicked, suggestion.carbs);
       applyEligible('sugar', clicked, suggestion.sugar);
       applyEligible('salt', clicked, suggestion.salt);
+
+      const hasMacroSuggestion = [
+        suggestion.protein,
+        suggestion.fats,
+        suggestion.carbs,
+        suggestion.sugar,
+        suggestion.salt,
+      ].some(value => value !== null);
+
+      if (hasMacroSuggestion) {
+        setNutritionExpanded(true);
+      }
     } catch (error) {
       const clientError = parseClientError(error);
       setSnackbar({ severity: 'error', message: clientError.message });
@@ -259,7 +273,11 @@ export const ProductForm: FC<Props> = ({
           />
         </Grid2>
       </Grid2>
-      <Accordion variant="outlined" defaultExpanded={atLeastOneNutritionFieldHasValue}>
+      <Accordion
+        variant="outlined"
+        expanded={nutritionExpanded}
+        onChange={(_, expanded) => setNutritionExpanded(expanded)}
+      >
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="nutrition-components-panel-content"

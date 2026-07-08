@@ -28,13 +28,19 @@ export const ProductInputDialog: FC<ProductInputDialogProps> = ({
 }) => {
   const [isGenerating, setIsGenerating] = useState(false);
 
+  const handleClose = (): void => {
+    if (!isGenerating) {
+      onClose();
+    }
+  };
+
   return (
     <Dialog
       pinToTop
       renderMode="fullScreenOnMobile"
       title={title}
       opened={opened}
-      onClose={onClose}
+      onClose={handleClose}
       content={
         <ProductForm
           formId="product-input-form"
@@ -61,7 +67,7 @@ export const ProductInputDialog: FC<ProductInputDialogProps> = ({
           {...cancelProps}
           type="button"
           disabled={isLoading || isGenerating}
-          onClick={onClose}
+          onClick={handleClose}
         >
           Cancel
         </Button>

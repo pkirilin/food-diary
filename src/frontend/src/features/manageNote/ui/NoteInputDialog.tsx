@@ -37,6 +37,10 @@ export const NoteInputDialog: FC<Props> = ({ date, mealType, note }) => {
   const [handleLoadProductForEdit, productForEditLoading] = useLoadProductForEdit();
 
   const handleDialogClose = (): void => {
+    if (isGenerating) {
+      return;
+    }
+
     dispatch(actions.noteDraftDiscarded());
   };
 

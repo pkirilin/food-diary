@@ -21,6 +21,7 @@ import {
   thenFatsEventuallyHasValue,
   thenFormValueContains,
   thenNameInputIsDisabled,
+  thenNutritionPanelIsExpanded,
   thenProductFormIsVisible,
   thenProductNameHasValue,
   thenProductNameIsInvalid,
@@ -34,6 +35,7 @@ import {
   whenCarbsChanged,
   whenCategoryCleared,
   whenCategorySelected,
+  whenCloseIconClicked,
   whenDefaultQuantityChanged,
   whenDialogClosed,
   whenDialogOpened,
@@ -345,4 +347,52 @@ test('info message shown when nothing can be estimated', async () => {
   await whenSuggestClicked(user, /suggest calories/i);
 
   await thenAlertShown(/couldn't estimate nutrition/i);
+});
+
+test('nutrition panel auto-expands when a calories suggestion also fills macro fields', async () => {
+  const user = userEvent.setup();
+  const categories = givenCategories('Dairy');
+  givenNutritionSuggestion({
+    calories: 402,
+    protein: 25,
+    fats: 33.1,
+    carbs: 1.3,
+    sugar: null,
+    salt: 1.8,
+  });
+
+  render(
+    givenProductInputDialog()
+      .withCategoriesForSelect(categories)
+      // No macros yet: nutrition panel starts collapsed, matching the "add product" flow.
+      .withProduct({ name: 'Cheddar cheese', category: categories[0] })
+      .please(),
+  );
+
+  await whenDialogOpened(user);
+  // Deliberately not calling whenNutritionPanelExpanded here - the panel must expand itself.
+  await whenSuggestClicked(user, /suggest calories/i);
+
+  await thenNutritionPanelIsExpanded();
+});
+
+test('closing the dialog while a suggestion is pending is blocked', async () => {
+  const user = userEvent.setup();
+  const categories = givenCategories('Dairy');
+  givenPendingNutritionSuggestion({ ...allNull, calories: 402 });
+
+  render(
+    givenProductInputDialog()
+      .withCategoriesForSelect(categories)
+      .withProduct({ name: 'Cheddar cheese', category: categories[0] })
+      .please(),
+  );
+
+  await whenDialogOpened(user);
+  await whenSuggestClicked(user, /suggest calories/i);
+
+  await whenCloseIconClicked(user);
+  await thenProductFormIsVisible();
+
+  await thenCaloriesEventuallyHasValue('402');
 });

@@ -93,6 +93,10 @@ export const whenDialogClosed = async (user: UserEvent): Promise<void> => {
   await user.click(screen.getByRole('button', { name: /cancel/i }));
 };
 
+export const whenCloseIconClicked = async (user: UserEvent): Promise<void> => {
+  await user.click(screen.getByRole('button', { name: /close/i }));
+};
+
 export const whenProductNameChanged = async (user: UserEvent, name: string): Promise<void> => {
   await user.clear(screen.getByRole('textbox', { name: /name/i }));
   await user.type(screen.getByRole('textbox', { name: /name/i }), name);
@@ -205,6 +209,15 @@ export const thenCategoryHasValue = async (value: string): Promise<void> => {
 
 export const thenDialogShouldBeHidden = async (): Promise<void> => {
   await waitForElementToBeRemoved(screen.getByRole('dialog'));
+};
+
+export const thenNutritionPanelIsExpanded = async (): Promise<void> => {
+  await waitFor(() =>
+    expect(screen.getByRole('button', { name: /nutrition/i })).toHaveAttribute(
+      'aria-expanded',
+      'true',
+    ),
+  );
 };
 
 const SUGGESTIONS_URL = `${API_URL}/api/v1/products/suggestions`;
