@@ -1,4 +1,4 @@
-import { type FC, type ReactElement } from 'react';
+import { type FC, type ReactElement, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '@/app/store';
 import { categoryLib } from '@/entities/category';
 import { type noteModel, type NoteItem } from '@/entities/note';
@@ -29,6 +29,8 @@ export const NoteInputDialog: FC<Props> = ({ date, mealType, note }) => {
   const submitDisabled = useAppSelector(state => state.manageNote.submitDisabled);
   const isSubmitting = useAppSelector(state => state.manageNote.isSubmitting);
   const dispatch = useAppDispatch();
+
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const handleSubmitNote = useSubmitNote(date);
   const handleSubmitProduct = useSubmitProduct(date);
@@ -74,6 +76,7 @@ export const NoteInputDialog: FC<Props> = ({ date, mealType, note }) => {
             categories={categories}
             categoriesLoading={categoriesLoading}
             onSubmit={handleSubmitProduct}
+            onGeneratingChange={setIsGenerating}
           />
         );
       case 'image-upload':
@@ -92,7 +95,7 @@ export const NoteInputDialog: FC<Props> = ({ date, mealType, note }) => {
       onClose={handleDialogClose}
       content={renderContent()}
       renderCancel={props => (
-        <Button {...props} type="button" onClick={handleDialogClose}>
+        <Button {...props} type="button" disabled={isGenerating} onClick={handleDialogClose}>
           Cancel
         </Button>
       )}
@@ -101,7 +104,7 @@ export const NoteInputDialog: FC<Props> = ({ date, mealType, note }) => {
           {...props}
           type="submit"
           form={activeFormId}
-          disabled={!inputScreenActive || submitDisabled}
+          disabled={!inputScreenActive || submitDisabled || isGenerating}
           loading={isSubmitting}
         >
           {submitText}
