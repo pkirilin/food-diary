@@ -26,10 +26,11 @@ export const ProductInputDialog: FC<ProductInputDialogProps> = ({
   onSubmit,
   onClose,
 }) => {
-  const [isGenerating, setIsGenerating] = useState(false);
+  // TODO: think about moving this to store
+  const [isNutritionSuggesting, setIsNutritionSuggesting] = useState(false);
 
   const handleClose = (): void => {
-    if (!isGenerating) {
+    if (!isNutritionSuggesting) {
       onClose();
     }
   };
@@ -48,7 +49,7 @@ export const ProductInputDialog: FC<ProductInputDialogProps> = ({
           categories={categories}
           categoriesLoading={categoriesLoading}
           onSubmit={onSubmit}
-          onGeneratingChange={setIsGenerating}
+          onNutritionSuggestingChange={setIsNutritionSuggesting}
         />
       }
       renderSubmit={submitProps => (
@@ -56,7 +57,7 @@ export const ProductInputDialog: FC<ProductInputDialogProps> = ({
           {...submitProps}
           type="submit"
           form="product-input-form"
-          disabled={isGenerating}
+          disabled={isNutritionSuggesting}
           loading={isLoading}
         >
           {submitText}
@@ -66,7 +67,7 @@ export const ProductInputDialog: FC<ProductInputDialogProps> = ({
         <Button
           {...cancelProps}
           type="button"
-          disabled={isLoading || isGenerating}
+          disabled={isLoading || isNutritionSuggesting}
           onClick={handleClose}
         >
           Cancel

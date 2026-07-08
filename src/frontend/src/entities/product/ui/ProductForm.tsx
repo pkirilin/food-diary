@@ -34,7 +34,7 @@ interface Props {
   categories: SelectOption[];
   categoriesLoading: boolean;
   onSubmit: OnSubmitProductFn;
-  onGeneratingChange?: (generating: boolean) => void;
+  onNutritionSuggestingChange: (nutritionSuggesting: boolean) => void;
 }
 
 export type OnSubmitProductFn = (product: ProductFormValues) => Promise<void>;
@@ -52,7 +52,7 @@ export const ProductForm: FC<Props> = ({
   categories,
   categoriesLoading,
   onSubmit,
-  onGeneratingChange,
+  onNutritionSuggestingChange,
 }) => {
   const { control, handleSubmit, getValues, setValue } = useForm<ProductFormValues>({
     mode: 'onSubmit',
@@ -60,13 +60,14 @@ export const ProductForm: FC<Props> = ({
     defaultValues,
   });
 
+  // TODO: move ALL suggestions-related behaviour + state to `useNutritionSuggestions` hook
   const suggestNutrition = useSuggestNutrition();
-  const [generatingField, setGeneratingField] = useState<NutritionValueType | null>(null);
+  const [suggestingField, setSuggestingField] = useState<NutritionValueType | null>(null);
   const [snackbar, setSnackbar] = useState<SnackbarState | null>(null);
 
   const name = useWatch({ control, name: 'name' });
-  const isGenerating = generatingField !== null;
-  const suggestDisabled = name.trim().length < MIN_NAME_LENGTH || isGenerating;
+  const isSuggesting = suggestingField !== null;
+  const suggestDisabled = name.trim().length < MIN_NAME_LENGTH || isSuggesting;
 
   const atLeastOneNutritionFieldHasValue = getValues([
     'protein',
@@ -93,8 +94,8 @@ export const ProductForm: FC<Props> = ({
   };
 
   const handleSuggest = async (clicked: NutritionValueType): Promise<void> => {
-    setGeneratingField(clicked);
-    onGeneratingChange?.(true);
+    setSuggestingField(clicked);
+    onNutritionSuggestingChange?.(true);
 
     try {
       const suggestion = await suggestNutrition(getValues('name'));
@@ -137,8 +138,8 @@ export const ProductForm: FC<Props> = ({
       const clientError = parseClientError(error);
       setSnackbar({ severity: 'error', message: clientError.message });
     } finally {
-      setGeneratingField(null);
-      onGeneratingChange?.(false);
+      setSuggestingField(null);
+      onNutritionSuggestingChange?.(false);
     }
   };
 
@@ -156,7 +157,7 @@ export const ProductForm: FC<Props> = ({
             {...field}
             fullWidth
             autoFocus
-            disabled={isGenerating}
+            disabled={isSuggesting}
             label="Name"
             placeholder="Product name"
             margin="normal"
@@ -172,7 +173,7 @@ export const ProductForm: FC<Props> = ({
           <Autocomplete
             {...field}
             onChange={(_, value) => field.onChange(value)}
-            disabled={isGenerating}
+            disabled={isSuggesting}
             blurOnSelect="touch"
             options={categories}
             getOptionLabel={option => option.name}
@@ -209,7 +210,7 @@ export const ProductForm: FC<Props> = ({
               <TextField
                 {...field}
                 fullWidth
-                disabled={isGenerating}
+                disabled={isSuggesting}
                 label={`Calories, ${nutritionValuesConfig.calories.unit}`}
                 placeholder="Calories per 100 g"
                 margin="normal"
@@ -227,7 +228,7 @@ export const ProductForm: FC<Props> = ({
                       <InputAdornment position="end">
                         <NutritionSuggestButton
                           label="Calories"
-                          generating={generatingField === 'calories'}
+                          suggesting={suggestingField === 'calories'}
                           disabled={suggestDisabled}
                           onClick={handleSuggestClick('calories')}
                         />
@@ -251,7 +252,7 @@ export const ProductForm: FC<Props> = ({
               <TextField
                 {...field}
                 fullWidth
-                disabled={isGenerating}
+                disabled={isSuggesting}
                 label="Default quantity, g"
                 placeholder="Default quantity"
                 margin="normal"
@@ -282,6 +283,7 @@ export const ProductForm: FC<Props> = ({
           <Typography component="span">Nutrition</Typography>
         </AccordionSummary>
         <AccordionDetails>
+          {/* TODO: remove boilerplate */}
           <Grid2 container spacing={2}>
             <Grid2 size={6}>
               <Controller
@@ -293,8 +295,8 @@ export const ProductForm: FC<Props> = ({
                     type="protein"
                     label="Protein"
                     placeholder="Protein"
-                    disabled={isGenerating}
-                    generating={generatingField === 'protein'}
+                    disabled={isSuggesting}
+                    suggesting={suggestingField === 'protein'}
                     suggestDisabled={suggestDisabled}
                     onSuggest={handleSuggestClick('protein')}
                     error={!!fieldState.error}
@@ -313,8 +315,8 @@ export const ProductForm: FC<Props> = ({
                     type="fats"
                     label="Fats"
                     placeholder="Fats"
-                    disabled={isGenerating}
-                    generating={generatingField === 'fats'}
+                    disabled={isSuggesting}
+                    suggesting={suggestingField === 'fats'}
                     suggestDisabled={suggestDisabled}
                     onSuggest={handleSuggestClick('fats')}
                     error={!!fieldState.error}
@@ -333,8 +335,8 @@ export const ProductForm: FC<Props> = ({
                     type="carbs"
                     label="Carbs"
                     placeholder="Carbs"
-                    disabled={isGenerating}
-                    generating={generatingField === 'carbs'}
+                    disabled={isSuggesting}
+                    suggesting={suggestingField === 'carbs'}
                     suggestDisabled={suggestDisabled}
                     onSuggest={handleSuggestClick('carbs')}
                     error={!!fieldState.error}
@@ -353,8 +355,8 @@ export const ProductForm: FC<Props> = ({
                     type="sugar"
                     label="Sugar"
                     placeholder="Sugar"
-                    disabled={isGenerating}
-                    generating={generatingField === 'sugar'}
+                    disabled={isSuggesting}
+                    suggesting={suggestingField === 'sugar'}
                     suggestDisabled={suggestDisabled}
                     onSuggest={handleSuggestClick('sugar')}
                     error={!!fieldState.error}
@@ -373,8 +375,8 @@ export const ProductForm: FC<Props> = ({
                     type="salt"
                     label="Salt"
                     placeholder="Salt"
-                    disabled={isGenerating}
-                    generating={generatingField === 'salt'}
+                    disabled={isSuggesting}
+                    suggesting={suggestingField === 'salt'}
                     suggestDisabled={suggestDisabled}
                     onSuggest={handleSuggestClick('salt')}
                     error={!!fieldState.error}

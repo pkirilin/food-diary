@@ -4,13 +4,13 @@ import { type FC } from 'react';
 
 interface Props {
   label: string;
-  generating: boolean;
+  suggesting: boolean;
   disabled: boolean;
   onClick: () => void;
 }
 
-export const NutritionSuggestButton: FC<Props> = ({ label, generating, disabled, onClick }) => {
-  if (generating) {
+export const NutritionSuggestButton: FC<Props> = ({ label, suggesting, disabled, onClick }) => {
+  if (suggesting) {
     return <CircularProgress size={20} aria-label={`Suggesting ${label}`} />;
   }
 

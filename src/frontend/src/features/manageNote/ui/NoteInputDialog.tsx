@@ -30,14 +30,15 @@ export const NoteInputDialog: FC<Props> = ({ date, mealType, note }) => {
   const isSubmitting = useAppSelector(state => state.manageNote.isSubmitting);
   const dispatch = useAppDispatch();
 
-  const [isGenerating, setIsGenerating] = useState(false);
+  // TODO: think about moving this to store
+  const [isProductNutritionSuggesting, setIsProductNutritionSuggesting] = useState(false);
 
   const handleSubmitNote = useSubmitNote(date);
   const handleSubmitProduct = useSubmitProduct(date);
   const [handleLoadProductForEdit, productForEditLoading] = useLoadProductForEdit();
 
   const handleDialogClose = (): void => {
-    if (isGenerating) {
+    if (isProductNutritionSuggesting) {
       return;
     }
 
@@ -80,7 +81,7 @@ export const NoteInputDialog: FC<Props> = ({ date, mealType, note }) => {
             categories={categories}
             categoriesLoading={categoriesLoading}
             onSubmit={handleSubmitProduct}
-            onGeneratingChange={setIsGenerating}
+            onNutritionSuggestingChange={setIsProductNutritionSuggesting}
           />
         );
       case 'image-upload':
@@ -99,7 +100,12 @@ export const NoteInputDialog: FC<Props> = ({ date, mealType, note }) => {
       onClose={handleDialogClose}
       content={renderContent()}
       renderCancel={props => (
-        <Button {...props} type="button" disabled={isGenerating} onClick={handleDialogClose}>
+        <Button
+          {...props}
+          type="button"
+          disabled={isProductNutritionSuggesting}
+          onClick={handleDialogClose}
+        >
           Cancel
         </Button>
       )}
@@ -108,7 +114,7 @@ export const NoteInputDialog: FC<Props> = ({ date, mealType, note }) => {
           {...props}
           type="submit"
           form={activeFormId}
-          disabled={!inputScreenActive || submitDisabled || isGenerating}
+          disabled={!inputScreenActive || submitDisabled || isProductNutritionSuggesting}
           loading={isSubmitting}
         >
           {submitText}

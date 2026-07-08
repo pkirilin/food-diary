@@ -11,16 +11,16 @@ interface Props {
   value: number | null;
   error: boolean;
   helperText: string;
+  disabled: boolean;
+  suggesting: boolean;
+  suggestDisabled: boolean;
   onChange: ChangeEventHandler;
-  disabled?: boolean;
-  generating?: boolean;
-  suggestDisabled?: boolean;
-  onSuggest?: () => void;
+  onSuggest: () => void;
 }
 
 export const NutritionValueInput = forwardRef<HTMLDivElement | null, Props>(
   function NutritionValueInput(
-    { label, placeholder, type, value, disabled, generating, suggestDisabled, onSuggest, ...props },
+    { label, placeholder, type, value, disabled, suggesting, suggestDisabled, onSuggest, ...props },
     ref,
   ) {
     return (
@@ -47,8 +47,8 @@ export const NutritionValueInput = forwardRef<HTMLDivElement | null, Props>(
                 {onSuggest != null ? (
                   <NutritionSuggestButton
                     label={label}
-                    generating={generating ?? false}
-                    disabled={suggestDisabled ?? false}
+                    suggesting={suggesting}
+                    disabled={suggestDisabled}
                     onClick={onSuggest}
                   />
                 ) : null}
