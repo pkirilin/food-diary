@@ -63,7 +63,7 @@ export const productApi = api.injectEndpoints({
     >({
       query: body => ({
         method: 'POST',
-        url: '/api/v1/products/suggestions',
+        url: '/api/v1/products/nutrition/suggestions',
         body,
       }),
     }),

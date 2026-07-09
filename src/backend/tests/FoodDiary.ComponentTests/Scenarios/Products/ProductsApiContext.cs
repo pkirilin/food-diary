@@ -154,7 +154,7 @@ public class ProductsApiContext(
     public async Task When_user_requests_nutrition_suggestion(string name)
     {
         _suggestNutritionResponse = await ApiClient.PostAsJsonAsync(
-            "/api/v1/products/suggestions",
+            "/api/v1/products/nutrition/suggestions",
             new { name });
     }
 

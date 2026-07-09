@@ -190,7 +190,7 @@ public class ProductsController : ControllerBase
         return Ok(result.ToResponse());
     }
 
-    [HttpPost("suggestions")]
+    [HttpPost("nutrition/suggestions")]
     [ProducesResponseType((int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
     public async Task<IActionResult> SuggestNutrition(

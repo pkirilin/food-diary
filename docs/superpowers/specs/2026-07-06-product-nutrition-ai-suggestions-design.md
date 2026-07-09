@@ -11,7 +11,7 @@ The solution: an `AutoAwesomeIcon` "suggest" button on each nutrition input that
 
 ## In scope
 
-- New endpoint `POST /api/v1/products/suggestions` — given a product name, returns estimated per-100 g calories + macros.
+- New endpoint `POST /api/v1/products/nutrition/suggestions` — given a product name, returns estimated per-100 g calories + macros.
 - New backend Application feature `Products/SuggestNutrition`, modelled on `Notes/Recognize`.
 - Frontend: a suggest button on the 6 nutrition inputs (`calories`, `protein`, `fats`, `carbs`, `sugar`, `salt`), fill logic, loading/disabled states, and an error Snackbar.
 - The feature lights up in **both** places `ProductForm` is used: the products page dialog (`ProductInputDialog`) and the inline create-product dialog in the note flow (`NoteInputDialog`).
@@ -48,7 +48,7 @@ Notes:
 
 ## API contract
 
-`POST /api/v1/products/suggestions`
+`POST /api/v1/products/nutrition/suggestions`
 
 Request:
 
@@ -202,7 +202,7 @@ All product-form changes live in `entities/product`, where `ProductForm` and the
   }
   ```
 
-- `entities/product/api/productApi.ts`: add a `suggestNutrition` mutation → `POST /api/v1/products/suggestions`. No cache tags (read-only estimate).
+- `entities/product/api/productApi.ts`: add a `suggestNutrition` mutation → `POST /api/v1/products/nutrition/suggestions`. No cache tags (read-only estimate).
 
 ### Orchestration hook
 
@@ -242,7 +242,7 @@ The submit button lives in each dialog's `renderSubmit`, outside `ProductForm`. 
 
 ### MSW mock
 
-Add a handler in `tests/mockApi/products/products.handlers.ts` for `POST /api/v1/products/suggestions` returning canned nutrition (some fields non-null, at least one null to exercise the skip path). Covers the demo build.
+Add a handler in `tests/mockApi/products/products.handlers.ts` for `POST /api/v1/products/nutrition/suggestions` returning canned nutrition (some fields non-null, at least one null to exercise the skip path). Covers the demo build.
 
 ## Test plan
 
@@ -276,7 +276,7 @@ Happy-path scenario `I_can_get_nutrition_suggestion()`, using the existing Mount
 
 ## Documentation
 
-The feature reuses the existing OpenAI integration and its env vars (`Integrations:OpenAI:*`), so no README/CLAUDE.md env changes are needed. Add the new `POST /api/v1/products/suggestions` endpoint where the recognition endpoint is documented, if such a list exists.
+The feature reuses the existing OpenAI integration and its env vars (`Integrations:OpenAI:*`), so no README/CLAUDE.md env changes are needed. Add the new `POST /api/v1/products/nutrition/suggestions` endpoint where the recognition endpoint is documented, if such a list exists.
 
 ## Risks
 

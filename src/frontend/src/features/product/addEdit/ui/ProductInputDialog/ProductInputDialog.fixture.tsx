@@ -14,7 +14,7 @@ import { type SelectOption } from '@/shared/types';
 import { WithTriggerButton } from '@tests/sideEffects';
 import { ProductInputDialog } from './ProductInputDialog';
 
-const NUTRITION_SUGGESTIONS_URL = `${API_URL}/api/v1/products/suggestions`;
+const NUTRITION_SUGGESTIONS_URL = `${API_URL}/api/v1/products/nutrition/suggestions`;
 
 const EMPTY_NUTRITION_SUGGESTIONS: SuggestProductNutritionResponse = {
   calories: null,

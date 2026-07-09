@@ -141,7 +141,7 @@ export const handlers: HttpHandler[] = [
     return await DelayedHttpResponse.ok();
   }),
 
-  http.post(`${API_URL}/api/v1/products/suggestions`, () =>
+  http.post(`${API_URL}/api/v1/products/nutrition/suggestions`, () =>
     DelayedHttpResponse.json<SuggestProductNutritionResponse>({
       calories: 250,
       protein: 12,
