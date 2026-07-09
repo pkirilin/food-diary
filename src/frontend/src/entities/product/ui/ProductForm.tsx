@@ -40,6 +40,10 @@ interface SnackbarState {
 
 const MIN_NAME_LENGTH = 3;
 
+const OPTIONAL_NUTRITION_FIELDS = ['protein', 'fats', 'carbs', 'sugar', 'salt'] as const;
+
+const capitalize = (value: string): string => value.charAt(0).toUpperCase() + value.slice(1);
+
 export const ProductForm: FC<Props> = ({
   formId,
   defaultValues,
@@ -216,108 +220,29 @@ export const ProductForm: FC<Props> = ({
           <Typography component="span">Nutrition</Typography>
         </AccordionSummary>
         <AccordionDetails>
-          {/* TODO: remove boilerplate */}
           <Grid2 container spacing={2}>
-            <Grid2 size={6}>
-              <Controller
-                name="protein"
-                control={control}
-                render={({ field, fieldState }) => (
-                  <NutritionValueInput
-                    {...field}
-                    type="protein"
-                    label="Protein"
-                    placeholder="Protein"
-                    disabled={isSuggesting}
-                    suggesting={suggestingField === 'protein'}
-                    suggestDisabled={suggestDisabled}
-                    onSuggest={handleSuggestClick('protein')}
-                    error={!!fieldState.error}
-                    helperText={fieldState.error?.message ?? ' '}
-                  />
-                )}
-              />
-            </Grid2>
-            <Grid2 size={6}>
-              <Controller
-                name="fats"
-                control={control}
-                render={({ field, fieldState }) => (
-                  <NutritionValueInput
-                    {...field}
-                    type="fats"
-                    label="Fats"
-                    placeholder="Fats"
-                    disabled={isSuggesting}
-                    suggesting={suggestingField === 'fats'}
-                    suggestDisabled={suggestDisabled}
-                    onSuggest={handleSuggestClick('fats')}
-                    error={!!fieldState.error}
-                    helperText={fieldState.error?.message ?? ' '}
-                  />
-                )}
-              />
-            </Grid2>
-            <Grid2 size={6}>
-              <Controller
-                name="carbs"
-                control={control}
-                render={({ field, fieldState }) => (
-                  <NutritionValueInput
-                    {...field}
-                    type="carbs"
-                    label="Carbs"
-                    placeholder="Carbs"
-                    disabled={isSuggesting}
-                    suggesting={suggestingField === 'carbs'}
-                    suggestDisabled={suggestDisabled}
-                    onSuggest={handleSuggestClick('carbs')}
-                    error={!!fieldState.error}
-                    helperText={fieldState.error?.message ?? ' '}
-                  />
-                )}
-              />
-            </Grid2>
-            <Grid2 size={6}>
-              <Controller
-                name="sugar"
-                control={control}
-                render={({ field, fieldState }) => (
-                  <NutritionValueInput
-                    {...field}
-                    type="sugar"
-                    label="Sugar"
-                    placeholder="Sugar"
-                    disabled={isSuggesting}
-                    suggesting={suggestingField === 'sugar'}
-                    suggestDisabled={suggestDisabled}
-                    onSuggest={handleSuggestClick('sugar')}
-                    error={!!fieldState.error}
-                    helperText={fieldState.error?.message ?? ' '}
-                  />
-                )}
-              />
-            </Grid2>
-            <Grid2 size={6}>
-              <Controller
-                name="salt"
-                control={control}
-                render={({ field, fieldState }) => (
-                  <NutritionValueInput
-                    {...field}
-                    type="salt"
-                    label="Salt"
-                    placeholder="Salt"
-                    disabled={isSuggesting}
-                    suggesting={suggestingField === 'salt'}
-                    suggestDisabled={suggestDisabled}
-                    onSuggest={handleSuggestClick('salt')}
-                    error={!!fieldState.error}
-                    helperText={fieldState.error?.message ?? ' '}
-                  />
-                )}
-              />
-            </Grid2>
+            {OPTIONAL_NUTRITION_FIELDS.map(fieldName => (
+              <Grid2 key={fieldName} size={6}>
+                <Controller
+                  name={fieldName}
+                  control={control}
+                  render={({ field, fieldState }) => (
+                    <NutritionValueInput
+                      {...field}
+                      type={fieldName}
+                      label={capitalize(fieldName)}
+                      placeholder={capitalize(fieldName)}
+                      disabled={isSuggesting}
+                      suggesting={suggestingField === fieldName}
+                      suggestDisabled={suggestDisabled}
+                      onSuggest={handleSuggestClick(fieldName)}
+                      error={!!fieldState.error}
+                      helperText={fieldState.error?.message ?? ' '}
+                    />
+                  )}
+                />
+              </Grid2>
+            ))}
           </Grid2>
         </AccordionDetails>
       </Accordion>
