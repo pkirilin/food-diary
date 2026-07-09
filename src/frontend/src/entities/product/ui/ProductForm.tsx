@@ -15,15 +15,9 @@ import {
 } from '@mui/material';
 import { type FC, useState } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
-import { parseClientError } from '@/shared/api';
 import { type SelectOption } from '@/shared/types';
-import { useSuggestNutrition } from '../lib/useSuggestNutrition';
-import {
-  type NutritionValueType,
-  type ProductFormValues,
-  productSchema,
-  nutritionValuesConfig,
-} from '../model';
+import { useNutritionSuggestions } from '../lib/useNutritionSuggestions';
+import { type ProductFormValues, productSchema, nutritionValuesConfig } from '../model';
 import { NutritionSuggestButton } from './NutritionSuggestButton';
 import { NutritionValueIcon } from './NutritionValueIcon';
 import { NutritionValueInput } from './NutritionValueInput';
@@ -60,14 +54,7 @@ export const ProductForm: FC<Props> = ({
     defaultValues,
   });
 
-  // TODO: move ALL suggestions-related behaviour + state to `useNutritionSuggestions` hook
-  const suggestNutrition = useSuggestNutrition();
-  const [suggestingField, setSuggestingField] = useState<NutritionValueType | null>(null);
   const [snackbar, setSnackbar] = useState<SnackbarState | null>(null);
-
-  const name = useWatch({ control, name: 'name' });
-  const isSuggesting = suggestingField !== null;
-  const suggestDisabled = name.trim().length < MIN_NAME_LENGTH || isSuggesting;
 
   const atLeastOneNutritionFieldHasValue = getValues([
     'protein',
@@ -79,73 +66,19 @@ export const ProductForm: FC<Props> = ({
 
   const [nutritionExpanded, setNutritionExpanded] = useState(atLeastOneNutritionFieldHasValue);
 
-  const applyEligible = (
-    field: NutritionValueType,
-    clicked: NutritionValueType,
-    value: number | null,
-  ): void => {
-    if (value === null) {
-      return;
-    }
+  const { suggestingField, isSuggesting, handleSuggestClick } = useNutritionSuggestions({
+    getName: () => getValues('name'),
+    getFieldValue: field => getValues(field),
+    setFieldValue: (field, value) =>
+      setValue(field, value, { shouldValidate: true, shouldDirty: true }),
+    onNutritionSuggestingChange,
+    onHasMacroSuggestion: () => setNutritionExpanded(true),
+    onError: message => setSnackbar({ severity: 'error', message }),
+    onInfo: message => setSnackbar({ severity: 'info', message }),
+  });
 
-    if (getValues(field) === null || field === clicked) {
-      setValue(field, value, { shouldValidate: true, shouldDirty: true });
-    }
-  };
-
-  const handleSuggest = async (clicked: NutritionValueType): Promise<void> => {
-    setSuggestingField(clicked);
-    onNutritionSuggestingChange?.(true);
-
-    try {
-      const suggestion = await suggestNutrition(getValues('name'));
-      const values = [
-        suggestion.calories,
-        suggestion.protein,
-        suggestion.fats,
-        suggestion.carbs,
-        suggestion.sugar,
-        suggestion.salt,
-      ];
-
-      if (values.every(value => value === null)) {
-        setSnackbar({
-          severity: 'info',
-          message: "Couldn't estimate nutrition for this product",
-        });
-        return;
-      }
-
-      applyEligible('calories', clicked, suggestion.calories);
-      applyEligible('protein', clicked, suggestion.protein);
-      applyEligible('fats', clicked, suggestion.fats);
-      applyEligible('carbs', clicked, suggestion.carbs);
-      applyEligible('sugar', clicked, suggestion.sugar);
-      applyEligible('salt', clicked, suggestion.salt);
-
-      const hasMacroSuggestion = [
-        suggestion.protein,
-        suggestion.fats,
-        suggestion.carbs,
-        suggestion.sugar,
-        suggestion.salt,
-      ].some(value => value !== null);
-
-      if (hasMacroSuggestion) {
-        setNutritionExpanded(true);
-      }
-    } catch (error) {
-      const clientError = parseClientError(error);
-      setSnackbar({ severity: 'error', message: clientError.message });
-    } finally {
-      setSuggestingField(null);
-      onNutritionSuggestingChange?.(false);
-    }
-  };
-
-  const handleSuggestClick = (clicked: NutritionValueType) => (): void => {
-    void handleSuggest(clicked);
-  };
+  const name = useWatch({ control, name: 'name' });
+  const suggestDisabled = name.trim().length < MIN_NAME_LENGTH || isSuggesting;
 
   return (
     <form id={formId} onSubmit={handleSubmit(data => onSubmit(data))}>

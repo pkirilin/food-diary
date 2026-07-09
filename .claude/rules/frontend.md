@@ -15,6 +15,8 @@ paths:
 - Use custom hooks for reusable stateful logic
 - Implement proper component hierarchies with clear data flow
 - Always prioitize arrow function expressions (`const fn = () => {}`) over function definitions (`function fn() {}`)
+- Custom hooks must not own UI-presentation concerns (alerts, snackbars, toasts, dialogs). Keep that state in the component and let the hook report outcomes through callbacks (e.g. `onError(message)`, `onInfo(message)`) that the component wires to its UI.
+- Custom hooks must not depend on form library types or instances (e.g. react-hook-form's `UseFormGetValues`/`UseFormSetValue`, `control`). Pass narrow callbacks instead (e.g. `getName`, `getFieldValue`, `setFieldValue`) so the hook stays decoupled from the form layer.
 
 ### TypeScript Integration
 
