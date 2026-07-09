@@ -11,13 +11,14 @@ using MediatR;
 using FoodDiary.Application.Products.Requests;
 using System.Linq;
 using FoodDiary.API.Features.Products;
-using FoodDiary.API.Features.Products.Contracts;
 using FoodDiary.API.Features.Products.Extensions;
 using FoodDiary.API.Mapping;
 using FoodDiary.Application.Products.Create;
 using FoodDiary.Application.Products.SuggestNutrition;
+using FoodDiary.Contracts.Products;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using CreateProductResponse = FoodDiary.Application.Products.Create.CreateProductResponse;
 
 namespace FoodDiary.API.Controllers.v1;
 

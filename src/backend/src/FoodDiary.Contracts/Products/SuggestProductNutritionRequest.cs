@@ -1,6 +1,6 @@
 using JetBrains.Annotations;
 
-namespace FoodDiary.API.Features.Products.Contracts;
+namespace FoodDiary.Contracts.Products;
 
 [PublicAPI]
 public class SuggestProductNutritionRequest

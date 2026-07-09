@@ -1,3 +1,5 @@
+using FoodDiary.Contracts.Products;
+
 namespace FoodDiary.Application.Products.SuggestNutrition;
 
 public abstract record SuggestNutritionResult

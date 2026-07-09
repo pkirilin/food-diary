@@ -1,18 +1,9 @@
 using System;
-using JetBrains.Annotations;
+using FoodDiary.Contracts.Products;
 
 namespace FoodDiary.Application.Products.SuggestNutrition;
 
-[PublicAPI]
-public record SuggestProductNutritionResponse(
-    int? Calories,
-    decimal? Protein,
-    decimal? Fats,
-    decimal? Carbs,
-    decimal? Sugar,
-    decimal? Salt);
-
-public static class MappingExtensions
+public static class SuggestNutritionMappingExtensions
 {
     private const int MinCalories = 1;
     private const int MaxCalories = 1000;

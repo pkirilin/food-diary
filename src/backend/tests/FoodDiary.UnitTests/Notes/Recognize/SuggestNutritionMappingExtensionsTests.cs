@@ -4,7 +4,7 @@ using Xunit;
 
 namespace FoodDiary.UnitTests.Notes.Recognize;
 
-public class MappingExtensionsTests
+public class SuggestNutritionMappingExtensionsTests
 {
     [Fact]
     public void ToRecognizeNoteItem_AllFieldsPopulated_MapsAndRoundsCalories()
