@@ -34,7 +34,7 @@ public class SuggestNutritionCommandHandler(IChatClient chatClient, ILogger<Sugg
             return SuggestNutritionResult.ModelResponseWasInvalid();
         }
 
-        return new SuggestNutritionResult.Success(modelResponse.ToSuggestNutritionResponse());
+        return new SuggestNutritionResult.Success(modelResponse.ToSuggestProductNutritionResponse());
     }
 
     private static string BuildUserPrompt(string name) =>

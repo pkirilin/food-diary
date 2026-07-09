@@ -194,11 +194,11 @@ public class ProductsController : ControllerBase
     [ProducesResponseType((int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
     public async Task<IActionResult> SuggestNutrition(
-        [FromBody] SuggestNutritionRequestBody body,
+        [FromBody] SuggestProductNutritionRequest request,
         [FromServices] SuggestNutritionCommandHandler handler,
         CancellationToken cancellationToken)
     {
-        var result = await handler.Handle(new SuggestNutritionCommand(body.Name), cancellationToken);
+        var result = await handler.Handle(new SuggestNutritionCommand(request.Name), cancellationToken);
 
         return result switch
         {

@@ -234,7 +234,7 @@ public class ProductsApiContext(
         _suggestNutritionResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var response = await _suggestNutritionResponse.Content
-            .ReadFromJsonAsync<SuggestNutritionResponse>();
+            .ReadFromJsonAsync<SuggestProductNutritionResponse>();
 
         response.Should().NotBeNull();
         response!.Calories.Should().Be(calories);

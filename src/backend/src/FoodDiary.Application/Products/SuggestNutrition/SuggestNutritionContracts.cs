@@ -4,7 +4,7 @@ using JetBrains.Annotations;
 namespace FoodDiary.Application.Products.SuggestNutrition;
 
 [PublicAPI]
-public record SuggestNutritionResponse(
+public record SuggestProductNutritionResponse(
     int? Calories,
     decimal? Protein,
     decimal? Fats,
@@ -19,7 +19,7 @@ public static class MappingExtensions
     private const decimal MinNutrient = 0;
     private const decimal MaxNutrient = 1000;
 
-    public static SuggestNutritionResponse ToSuggestNutritionResponse(this SuggestedNutrition nutrition) =>
+    public static SuggestProductNutritionResponse ToSuggestProductNutritionResponse(this SuggestedNutrition nutrition) =>
         new(
             Calories: ToCalories(nutrition.Calories),
             Protein: ToNutrient(nutrition.Protein),
