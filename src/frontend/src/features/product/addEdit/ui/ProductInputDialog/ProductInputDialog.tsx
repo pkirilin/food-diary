@@ -26,7 +26,6 @@ export const ProductInputDialog: FC<ProductInputDialogProps> = ({
   onSubmit,
   onClose,
 }) => {
-  // TODO: think about moving this to store
   const [isNutritionSuggesting, setIsNutritionSuggesting] = useState(false);
 
   const handleClose = (): void => {
