@@ -1,6 +1,7 @@
 import { type PayloadAction, createSlice, createSelector } from '@reduxjs/toolkit';
 import { type NoteItem, noteLib, noteModel, type RecognizeNoteResponse } from '@/entities/note';
-import { productApi, type productModel } from '@/entities/product';
+import { type productModel } from '@/entities/product';
+import { productApi } from '@/entities/product/api';
 import { type ClientError } from '@/shared/api';
 import { type NoteFormValuesProduct, type NoteFormValues } from './noteSchema';
 import { type NoteRecognitionState, type Image, type ManageNoteScreenState } from './types';
