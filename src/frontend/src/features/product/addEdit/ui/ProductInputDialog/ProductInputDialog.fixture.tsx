@@ -206,6 +206,10 @@ export const whenProductSaved = async (user: UserEvent): Promise<void> => {
   await user.click(screen.getByRole('button', { name: /submit/i }));
 };
 
+export const whenSuggestClicked = async (user: UserEvent, name: RegExp): Promise<void> => {
+  await user.click(screen.getByRole('button', { name }));
+};
+
 export const expectCategory = (name: string): SelectOption =>
   expect.objectContaining<Partial<SelectOption>>({ name });
 
@@ -267,10 +271,6 @@ export const thenNutritionPanelIsExpanded = async (): Promise<void> => {
       'true',
     ),
   );
-};
-
-export const whenSuggestClicked = async (user: UserEvent, name: RegExp): Promise<void> => {
-  await user.click(screen.getByRole('button', { name }));
 };
 
 const eventuallyHasValue = async (placeholder: RegExp, value: string): Promise<void> => {
