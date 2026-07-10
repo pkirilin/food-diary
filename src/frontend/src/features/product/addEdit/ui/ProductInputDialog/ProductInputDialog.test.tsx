@@ -283,7 +283,7 @@ describe('nutrition suggestions', () => {
   test('inputs and submit are disabled while a suggestion is pending', async () => {
     const user = userEvent.setup();
     const categories = givenCategories('Dairy');
-    givenPendingNutritionSuggestion({ calories: 402 });
+    const pendingSuggestion = givenPendingNutritionSuggestion({ calories: 402 });
 
     render(
       givenProductInputDialog()
@@ -298,6 +298,7 @@ describe('nutrition suggestions', () => {
     thenNameInputIsDisabled();
     thenSubmitIsDisabled();
 
+    pendingSuggestion.resolve();
     await thenCaloriesEventuallyHasValue('402');
     await thenSubmitIsEnabled();
   });
@@ -366,7 +367,7 @@ describe('nutrition suggestions', () => {
   test('closing the dialog while a suggestion is pending is blocked', async () => {
     const user = userEvent.setup();
     const categories = givenCategories('Dairy');
-    givenPendingNutritionSuggestion({ calories: 402 });
+    const pendingSuggestion = givenPendingNutritionSuggestion({ calories: 402 });
 
     render(
       givenProductInputDialog()
@@ -381,6 +382,7 @@ describe('nutrition suggestions', () => {
     await whenCloseIconClicked(user);
     await thenProductFormIsVisible();
 
+    pendingSuggestion.resolve();
     await thenCaloriesEventuallyHasValue('402');
   });
 });

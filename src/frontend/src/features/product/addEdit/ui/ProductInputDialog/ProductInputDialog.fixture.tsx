@@ -2,7 +2,7 @@ import { ThemeProvider } from '@mui/material';
 import { screen, waitFor, waitForElementToBeRemoved } from '@testing-library/dom';
 import { type UserEvent } from '@testing-library/user-event';
 import { server } from '@tests/mockApi/server';
-import { http, HttpResponse, delay } from 'msw';
+import { http, HttpResponse } from 'msw';
 import { type ReactElement } from 'react';
 import { Provider } from 'react-redux';
 import { type Mock } from 'vitest';
@@ -109,18 +109,29 @@ export const givenNutritionSuggestion = (
   );
 };
 
+interface PendingNutritionSuggestion {
+  resolve: () => void;
+}
+
 export const givenPendingNutritionSuggestion = (
   response: Partial<SuggestProductNutritionResponse>,
-): void => {
+): PendingNutritionSuggestion => {
+  let resolvePending!: () => void;
+  const pending = new Promise<void>(resolve => {
+    resolvePending = resolve;
+  });
+
   server.use(
     http.post(NUTRITION_SUGGESTIONS_URL, async () => {
-      await delay(100);
+      await pending;
       return HttpResponse.json<SuggestProductNutritionResponse>({
         ...EMPTY_NUTRITION_SUGGESTIONS,
         ...response,
       });
     }),
   );
+
+  return { resolve: resolvePending };
 };
 
 export const givenNutritionSuggestionFails = (): void => {
