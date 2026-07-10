@@ -7,7 +7,7 @@ interface Params {
   getName: () => string;
   getFieldValue: (field: NutritionValueType) => number | null;
   setFieldValue: (field: NutritionValueType, value: number) => void;
-  onNutritionSuggestingChange: (nutritionSuggesting: boolean) => void;
+  onNutritionSuggestingChange?: (nutritionSuggesting: boolean) => void;
   onHasMacroSuggestion: () => void;
   onError: (message: string) => void;
   onInfo: (message: string) => void;
@@ -49,7 +49,7 @@ export const useNutritionSuggestions = ({
 
   const handleSuggest = async (clicked: NutritionValueType): Promise<void> => {
     setSuggestingField(clicked);
-    onNutritionSuggestingChange(true);
+    onNutritionSuggestingChange?.(true);
 
     try {
       const suggestion = await trigger({ name: getName() }).unwrap();
@@ -90,7 +90,7 @@ export const useNutritionSuggestions = ({
       onError(clientError.message);
     } finally {
       setSuggestingField(null);
-      onNutritionSuggestingChange(false);
+      onNutritionSuggestingChange?.(false);
     }
   };
 

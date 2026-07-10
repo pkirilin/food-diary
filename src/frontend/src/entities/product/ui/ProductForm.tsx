@@ -28,7 +28,7 @@ interface Props {
   categories: SelectOption[];
   categoriesLoading: boolean;
   onSubmit: OnSubmitProductFn;
-  onNutritionSuggestingChange: (nutritionSuggesting: boolean) => void;
+  onNutritionSuggestingChange?: (nutritionSuggesting: boolean) => void;
 }
 
 export type OnSubmitProductFn = (product: ProductFormValues) => Promise<void>;

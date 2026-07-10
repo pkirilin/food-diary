@@ -1,4 +1,4 @@
-import { type FC, type ReactElement, useState } from 'react';
+import { type FC, type ReactElement } from 'react';
 import { useAppDispatch, useAppSelector } from '@/app/store';
 import { categoryLib } from '@/entities/category';
 import { type noteModel, type NoteItem } from '@/entities/note';
@@ -28,17 +28,15 @@ export const NoteInputDialog: FC<Props> = ({ date, mealType, note }) => {
   const submitText = useAppSelector(selectors.submitText);
   const submitDisabled = useAppSelector(state => state.manageNote.submitDisabled);
   const isSubmitting = useAppSelector(state => state.manageNote.isSubmitting);
+  const isLoading = useAppSelector(state => state.manageNote.isLoading);
   const dispatch = useAppDispatch();
-
-  // TODO: think about moving this to store
-  const [isProductNutritionSuggesting, setIsProductNutritionSuggesting] = useState(false);
 
   const handleSubmitNote = useSubmitNote(date);
   const handleSubmitProduct = useSubmitProduct(date);
   const [handleLoadProductForEdit, productForEditLoading] = useLoadProductForEdit();
 
   const handleDialogClose = (): void => {
-    if (isProductNutritionSuggesting) {
+    if (isLoading) {
       return;
     }
 
@@ -81,7 +79,6 @@ export const NoteInputDialog: FC<Props> = ({ date, mealType, note }) => {
             categories={categories}
             categoriesLoading={categoriesLoading}
             onSubmit={handleSubmitProduct}
-            onNutritionSuggestingChange={setIsProductNutritionSuggesting}
           />
         );
       case 'image-upload':
@@ -100,12 +97,7 @@ export const NoteInputDialog: FC<Props> = ({ date, mealType, note }) => {
       onClose={handleDialogClose}
       content={renderContent()}
       renderCancel={props => (
-        <Button
-          {...props}
-          type="button"
-          disabled={isProductNutritionSuggesting}
-          onClick={handleDialogClose}
-        >
+        <Button {...props} type="button" disabled={isLoading} onClick={handleDialogClose}>
           Cancel
         </Button>
       )}
@@ -114,7 +106,7 @@ export const NoteInputDialog: FC<Props> = ({ date, mealType, note }) => {
           {...props}
           type="submit"
           form={activeFormId}
-          disabled={!inputScreenActive || submitDisabled || isProductNutritionSuggesting}
+          disabled={!inputScreenActive || submitDisabled}
           loading={isSubmitting}
         >
           {submitText}
