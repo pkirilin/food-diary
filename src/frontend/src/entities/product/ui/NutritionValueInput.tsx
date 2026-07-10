@@ -44,14 +44,12 @@ export const NutritionValueInput = forwardRef<HTMLDivElement | null, Props>(
             ),
             endAdornment: (
               <InputAdornment position="end">
-                {onSuggest != null ? (
-                  <NutritionSuggestButton
-                    label={label}
-                    suggesting={suggesting}
-                    disabled={suggestDisabled}
-                    onClick={onSuggest}
-                  />
-                ) : null}
+                <NutritionSuggestButton
+                  label={label}
+                  suggesting={suggesting}
+                  disabled={suggestDisabled}
+                  onClick={onSuggest}
+                />
               </InputAdornment>
             ),
           },
