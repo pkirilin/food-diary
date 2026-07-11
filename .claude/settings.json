@@ -28,8 +28,7 @@
       "Bash(dotnet test:*)",
       "Bash(unzip -p:*)",
       "Bash(npm view:*)",
-      "Read(./.superpowers/**)",
-      "Read(./src/**)"
+      "Read(./**)"
     ],
     "deny": [
       "Read(./**/.env)",
@@ -39,7 +38,6 @@
     "ask": [
       "Bash(curl:*)",
       "Bash(rm:*)",
-      "Read(~/**)",
       "Bash(git push:*)",
       "mcp__github_com_github_github-mcp-server__get_me",
       "mcp__github_com_github_github-mcp-server__pull_request_read",
