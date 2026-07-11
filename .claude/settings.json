@@ -31,8 +31,10 @@
       "Read(./**)"
     ],
     "deny": [
-      "Read(./**/.env)",
-      "Read(./**/.env.local)",
+      "Read(./.env)",
+      "Read(./src/**/.env)",
+      "Read(./src/frontend/**/.env.local)",
+      "Read(./src/frontend/**/.env.*.local)",
       "Read(./secrets/**)"
     ],
     "ask": [
