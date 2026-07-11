@@ -225,7 +225,11 @@ To cut a new release:
 
 The workflow validates inputs, builds the image, pushes `pkirilin/food-diary:X.Y.Z` and `pkirilin/food-diary:latest` to Docker Hub, creates the `vX.Y.Z` git tag, and publishes the GitHub release with notes extracted from the matching `CHANGELOG.md` section.
 
-If a release fails partway through (e.g. the image is pushed but the git tag step fails), clean up manually: a re-run of the same version is blocked by the Docker Hub tag-existence check. Either delete the published Docker Hub tag (Docker Hub UI → Tags → Delete), or push the git tag and create the release with `gh` from your machine.
+If a release fails partway through (e.g. the image is pushed but the git tag step fails), clean up manually: a re-run of the same version is blocked by the Docker Hub tag-existence check. Either delete the published Docker Hub tag (Docker Hub UI → Tags → Delete), or push the git tag and create the release with `gh` from your machine:
+
+```shell
+gh workflow run release.yml --ref main -f version=x.y.z
+```
 
 ## Contacts
 
