@@ -28,6 +28,7 @@ export const NoteInputDialog: FC<Props> = ({ date, mealType, note }) => {
   const submitText = useAppSelector(selectors.submitText);
   const submitDisabled = useAppSelector(state => state.manageNote.submitDisabled);
   const isSubmitting = useAppSelector(state => state.manageNote.isSubmitting);
+  const isLoading = useAppSelector(state => state.manageNote.isLoading);
   const dispatch = useAppDispatch();
 
   const handleSubmitNote = useSubmitNote(date);
@@ -35,6 +36,10 @@ export const NoteInputDialog: FC<Props> = ({ date, mealType, note }) => {
   const [handleLoadProductForEdit, productForEditLoading] = useLoadProductForEdit();
 
   const handleDialogClose = (): void => {
+    if (isLoading) {
+      return;
+    }
+
     dispatch(actions.noteDraftDiscarded());
   };
 
@@ -92,7 +97,7 @@ export const NoteInputDialog: FC<Props> = ({ date, mealType, note }) => {
       onClose={handleDialogClose}
       content={renderContent()}
       renderCancel={props => (
-        <Button {...props} type="button" onClick={handleDialogClose}>
+        <Button {...props} type="button" disabled={isLoading} onClick={handleDialogClose}>
           Cancel
         </Button>
       )}

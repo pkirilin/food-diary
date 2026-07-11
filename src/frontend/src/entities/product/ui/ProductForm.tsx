@@ -4,17 +4,21 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Alert,
   Autocomplete,
   CircularProgress,
   Grid2,
   InputAdornment,
+  Snackbar,
   TextField,
   Typography,
 } from '@mui/material';
-import { type FC } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { type FC, useState } from 'react';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 import { type SelectOption } from '@/shared/types';
+import { useNutritionSuggestions } from '../lib/useNutritionSuggestions';
 import { type ProductFormValues, productSchema, nutritionValuesConfig } from '../model';
+import { NutritionSuggestButton } from './NutritionSuggestButton';
 import { NutritionValueIcon } from './NutritionValueIcon';
 import { NutritionValueInput } from './NutritionValueInput';
 
@@ -24,9 +28,21 @@ interface Props {
   categories: SelectOption[];
   categoriesLoading: boolean;
   onSubmit: OnSubmitProductFn;
+  onNutritionSuggestingChange?: (nutritionSuggesting: boolean) => void;
 }
 
 export type OnSubmitProductFn = (product: ProductFormValues) => Promise<void>;
+
+interface SnackbarState {
+  severity: 'error' | 'info';
+  message: string;
+}
+
+const MIN_NAME_LENGTH = 3;
+
+const OPTIONAL_NUTRITION_FIELDS = ['protein', 'fats', 'carbs', 'sugar', 'salt'] as const;
+
+const capitalize = (value: string): string => value.charAt(0).toUpperCase() + value.slice(1);
 
 export const ProductForm: FC<Props> = ({
   formId,
@@ -34,12 +50,15 @@ export const ProductForm: FC<Props> = ({
   categories,
   categoriesLoading,
   onSubmit,
+  onNutritionSuggestingChange,
 }) => {
-  const { control, handleSubmit, getValues } = useForm<ProductFormValues>({
+  const { control, handleSubmit, getValues, setValue } = useForm<ProductFormValues>({
     mode: 'onSubmit',
     resolver: zodResolver(productSchema),
     defaultValues,
   });
+
+  const [snackbar, setSnackbar] = useState<SnackbarState | null>(null);
 
   const atLeastOneNutritionFieldHasValue = getValues([
     'protein',
@@ -48,6 +67,22 @@ export const ProductForm: FC<Props> = ({
     'sugar',
     'salt',
   ]).some(value => value !== null);
+
+  const [nutritionExpanded, setNutritionExpanded] = useState(atLeastOneNutritionFieldHasValue);
+
+  const { suggestingField, isSuggesting, handleSuggestClick } = useNutritionSuggestions({
+    getName: () => getValues('name'),
+    getFieldValue: field => getValues(field),
+    setFieldValue: (field, value) =>
+      setValue(field, value, { shouldValidate: true, shouldDirty: true }),
+    onNutritionSuggestingChange,
+    onHasMacroSuggestion: () => setNutritionExpanded(true),
+    onError: message => setSnackbar({ severity: 'error', message }),
+    onInfo: message => setSnackbar({ severity: 'info', message }),
+  });
+
+  const name = useWatch({ control, name: 'name' });
+  const suggestDisabled = name.trim().length < MIN_NAME_LENGTH || isSuggesting;
 
   return (
     <form id={formId} onSubmit={handleSubmit(data => onSubmit(data))}>
@@ -59,6 +94,7 @@ export const ProductForm: FC<Props> = ({
             {...field}
             fullWidth
             autoFocus
+            disabled={isSuggesting}
             label="Name"
             placeholder="Product name"
             margin="normal"
@@ -74,6 +110,7 @@ export const ProductForm: FC<Props> = ({
           <Autocomplete
             {...field}
             onChange={(_, value) => field.onChange(value)}
+            disabled={isSuggesting}
             blurOnSelect="touch"
             options={categories}
             getOptionLabel={option => option.name}
@@ -110,8 +147,9 @@ export const ProductForm: FC<Props> = ({
               <TextField
                 {...field}
                 fullWidth
-                label="Calories"
-                placeholder="Calories per 100 g, kcal"
+                disabled={isSuggesting}
+                label={`Calories, ${nutritionValuesConfig.calories.unit}`}
+                placeholder="Calories per 100 g"
                 margin="normal"
                 error={!!fieldState.error}
                 helperText={fieldState.error?.message ?? ' '}
@@ -125,7 +163,12 @@ export const ProductForm: FC<Props> = ({
                     ),
                     endAdornment: (
                       <InputAdornment position="end">
-                        {nutritionValuesConfig.calories.unit}
+                        <NutritionSuggestButton
+                          label="Calories"
+                          suggesting={suggestingField === 'calories'}
+                          disabled={suggestDisabled}
+                          onClick={handleSuggestClick('calories')}
+                        />
                       </InputAdornment>
                     ),
                   },
@@ -146,16 +189,14 @@ export const ProductForm: FC<Props> = ({
               <TextField
                 {...field}
                 fullWidth
-                label="Default quantity"
-                placeholder="Default quantity, g"
+                disabled={isSuggesting}
+                label="Default quantity, g"
+                placeholder="Default quantity"
                 margin="normal"
                 error={!!fieldState.error}
                 helperText={fieldState.error?.message ?? ' '}
                 onFocus={event => event.target.select()}
                 slotProps={{
-                  input: {
-                    endAdornment: <InputAdornment position="end">g</InputAdornment>,
-                  },
                   htmlInput: {
                     type: 'text',
                     inputMode: 'numeric',
@@ -166,7 +207,11 @@ export const ProductForm: FC<Props> = ({
           />
         </Grid2>
       </Grid2>
-      <Accordion variant="outlined" defaultExpanded={atLeastOneNutritionFieldHasValue}>
+      <Accordion
+        variant="outlined"
+        expanded={nutritionExpanded}
+        onChange={(_, expanded) => setNutritionExpanded(expanded)}
+      >
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="nutrition-components-panel-content"
@@ -176,89 +221,40 @@ export const ProductForm: FC<Props> = ({
         </AccordionSummary>
         <AccordionDetails>
           <Grid2 container spacing={2}>
-            <Grid2 size={6}>
-              <Controller
-                name="protein"
-                control={control}
-                render={({ field, fieldState }) => (
-                  <NutritionValueInput
-                    {...field}
-                    type="protein"
-                    label="Protein"
-                    placeholder="Protein, g"
-                    error={!!fieldState.error}
-                    helperText={fieldState.error?.message ?? ' '}
-                  />
-                )}
-              />
-            </Grid2>
-            <Grid2 size={6}>
-              <Controller
-                name="fats"
-                control={control}
-                render={({ field, fieldState }) => (
-                  <NutritionValueInput
-                    {...field}
-                    type="fats"
-                    label="Fats"
-                    placeholder="Fats, g"
-                    error={!!fieldState.error}
-                    helperText={fieldState.error?.message ?? ' '}
-                  />
-                )}
-              />
-            </Grid2>
-            <Grid2 size={6}>
-              <Controller
-                name="carbs"
-                control={control}
-                render={({ field, fieldState }) => (
-                  <NutritionValueInput
-                    {...field}
-                    type="carbs"
-                    label="Carbs"
-                    placeholder="Carbs, g"
-                    error={!!fieldState.error}
-                    helperText={fieldState.error?.message ?? ' '}
-                  />
-                )}
-              />
-            </Grid2>
-            <Grid2 size={6}>
-              <Controller
-                name="sugar"
-                control={control}
-                render={({ field, fieldState }) => (
-                  <NutritionValueInput
-                    {...field}
-                    type="sugar"
-                    label="Sugar"
-                    placeholder="Sugar, g"
-                    error={!!fieldState.error}
-                    helperText={fieldState.error?.message ?? ' '}
-                  />
-                )}
-              />
-            </Grid2>
-            <Grid2 size={6}>
-              <Controller
-                name="salt"
-                control={control}
-                render={({ field, fieldState }) => (
-                  <NutritionValueInput
-                    {...field}
-                    type="salt"
-                    label="Salt"
-                    placeholder="Salt, g"
-                    error={!!fieldState.error}
-                    helperText={fieldState.error?.message ?? ' '}
-                  />
-                )}
-              />
-            </Grid2>
+            {OPTIONAL_NUTRITION_FIELDS.map(fieldName => (
+              <Grid2 key={fieldName} size={6}>
+                <Controller
+                  name={fieldName}
+                  control={control}
+                  render={({ field, fieldState }) => (
+                    <NutritionValueInput
+                      {...field}
+                      type={fieldName}
+                      label={capitalize(fieldName)}
+                      placeholder={capitalize(fieldName)}
+                      disabled={isSuggesting}
+                      suggesting={suggestingField === fieldName}
+                      suggestDisabled={suggestDisabled}
+                      onSuggest={handleSuggestClick(fieldName)}
+                      error={!!fieldState.error}
+                      helperText={fieldState.error?.message ?? ' '}
+                    />
+                  )}
+                />
+              </Grid2>
+            ))}
           </Grid2>
         </AccordionDetails>
       </Accordion>
+      <Snackbar open={snackbar !== null} autoHideDuration={6000} onClose={() => setSnackbar(null)}>
+        <Alert
+          severity={snackbar?.severity ?? 'info'}
+          onClose={() => setSnackbar(null)}
+          sx={{ width: '100%' }}
+        >
+          {snackbar?.message ?? ''}
+        </Alert>
+      </Snackbar>
     </form>
   );
 };

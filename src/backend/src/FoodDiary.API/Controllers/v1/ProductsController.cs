@@ -14,8 +14,11 @@ using FoodDiary.API.Features.Products;
 using FoodDiary.API.Features.Products.Extensions;
 using FoodDiary.API.Mapping;
 using FoodDiary.Application.Products.Create;
+using FoodDiary.Application.Products.SuggestNutrition;
+using FoodDiary.Contracts.Products;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using CreateProductResponse = FoodDiary.Application.Products.Create.CreateProductResponse;
 
 namespace FoodDiary.API.Controllers.v1;
 
@@ -186,6 +189,24 @@ public class ProductsController : ControllerBase
     {
         var result = await handler.Handle(cancellationToken);
         return Ok(result.ToResponse());
+    }
+
+    [HttpPost("nutrition/suggestions")]
+    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+    public async Task<IActionResult> SuggestNutrition(
+        [FromBody] SuggestProductNutritionRequest request,
+        [FromServices] SuggestNutritionCommandHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var result = await handler.Handle(new SuggestNutritionCommand(request.Name), cancellationToken);
+
+        return result switch
+        {
+            SuggestNutritionResult.Success s => Ok(s.Response),
+            SuggestNutritionResult.Failure f => f.Error.ToActionResult(),
+            _ => StatusCode(StatusCodes.Status500InternalServerError)
+        };
     }
 
     private IActionResult ProductAlreadyExists(ProductCreateEditRequest product)

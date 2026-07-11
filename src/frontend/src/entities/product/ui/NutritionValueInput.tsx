@@ -1,6 +1,7 @@
 import { InputAdornment, TextField } from '@mui/material';
 import { forwardRef, type ChangeEventHandler } from 'react';
 import { nutritionValuesConfig, type NutritionValueType } from '../model';
+import { NutritionSuggestButton } from './NutritionSuggestButton';
 import { NutritionValueIcon } from './NutritionValueIcon';
 
 interface Props {
@@ -10,17 +11,25 @@ interface Props {
   value: number | null;
   error: boolean;
   helperText: string;
+  disabled: boolean;
+  suggesting: boolean;
+  suggestDisabled: boolean;
   onChange: ChangeEventHandler;
+  onSuggest: () => void;
 }
 
 export const NutritionValueInput = forwardRef<HTMLDivElement | null, Props>(
-  function NutritionValueInput({ label, placeholder, type, value, ...props }, ref) {
+  function NutritionValueInput(
+    { label, placeholder, type, value, disabled, suggesting, suggestDisabled, onSuggest, ...props },
+    ref,
+  ) {
     return (
       <TextField
         {...props}
         ref={ref}
         fullWidth
-        label={`${label} (optional)`}
+        disabled={disabled}
+        label={`${label}, ${nutritionValuesConfig[type].unit} (optional)`}
         placeholder={placeholder}
         value={value ?? ''}
         margin="none"
@@ -34,7 +43,14 @@ export const NutritionValueInput = forwardRef<HTMLDivElement | null, Props>(
               </InputAdornment>
             ),
             endAdornment: (
-              <InputAdornment position="end">{nutritionValuesConfig[type].unit}</InputAdornment>
+              <InputAdornment position="end">
+                <NutritionSuggestButton
+                  label={label}
+                  suggesting={suggesting}
+                  disabled={suggestDisabled}
+                  onClick={onSuggest}
+                />
+              </InputAdornment>
             ),
           },
           htmlInput: {

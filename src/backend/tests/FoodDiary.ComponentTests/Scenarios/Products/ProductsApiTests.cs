@@ -118,4 +118,20 @@ public class ProductsApiTests(InfrastructureFixture infrastructure)
             c => c.When_user_retrieves_products_list(),
             c => c.Then_products_list_is_empty());
     }
+
+    [Scenario]
+    public Task I_can_get_nutrition_suggestion()
+    {
+        var givenNutrition = Create.SuggestNutritionModelResponse()
+            .WithCalories(402)
+            .WithNutritionComponents(protein: 25, fats: 33.1m, carbs: 1.3m, sugar: null, salt: 1.8m)
+            .Please();
+
+        return CtxRunner.RunScenarioAsync(
+            c => c.Given_OpenAI_api_is_ready(),
+            c => c.Given_OpenAI_api_can_suggest_nutrition(givenNutrition),
+            c => c.Given_authenticated_user(),
+            c => c.When_user_requests_nutrition_suggestion("Cheddar cheese"),
+            c => c.Then_nutrition_suggestion_is(402, 25, 33.1m, 1.3m, null, 1.8m));
+    }
 }

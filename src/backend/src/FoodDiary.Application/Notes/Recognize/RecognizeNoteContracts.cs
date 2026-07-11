@@ -20,7 +20,7 @@ public record RecognizeProductItem(
     decimal? Sugar,
     decimal? Salt);
 
-public static class MappingExtensions
+public static class SuggestNutritionMappingExtensions
 {
     public static RecognizeNoteItem ToRecognizeNoteItem(this RecognizedProduct product)
     {

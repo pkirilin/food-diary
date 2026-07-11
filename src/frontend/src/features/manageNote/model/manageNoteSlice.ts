@@ -1,6 +1,7 @@
 import { type PayloadAction, createSlice, createSelector } from '@reduxjs/toolkit';
 import { type NoteItem, noteLib, noteModel, type RecognizeNoteResponse } from '@/entities/note';
 import { type productModel } from '@/entities/product';
+import { productApi } from '@/entities/product/api';
 import { type ClientError } from '@/shared/api';
 import { type NoteFormValuesProduct, type NoteFormValues } from './noteSchema';
 import { type NoteRecognitionState, type Image, type ManageNoteScreenState } from './types';
@@ -12,12 +13,14 @@ export interface ManageNoteState {
   noteRecognition: NoteRecognitionState;
   submitDisabled: boolean;
   isSubmitting: boolean;
+  isLoading: boolean;
 }
 
 export const initialState: ManageNoteState = {
   images: [],
   submitDisabled: false,
   isSubmitting: false,
+  isLoading: false,
   noteRecognition: {
     suggestions: [],
     isLoading: false,
@@ -174,4 +177,19 @@ export const manageNoteSlice = createSlice({
       state.noteRecognition.suggestions = [];
     },
   },
+
+  extraReducers: builder =>
+    builder
+      .addMatcher(productApi.endpoints.suggestNutrition.matchPending, state => {
+        state.submitDisabled = true;
+        state.isLoading = true;
+      })
+      .addMatcher(productApi.endpoints.suggestNutrition.matchFulfilled, state => {
+        state.submitDisabled = false;
+        state.isLoading = false;
+      })
+      .addMatcher(productApi.endpoints.suggestNutrition.matchRejected, state => {
+        state.submitDisabled = false;
+        state.isLoading = false;
+      }),
 });

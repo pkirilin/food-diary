@@ -1,4 +1,4 @@
-import { type FC } from 'react';
+import { type FC, useState } from 'react';
 import { ProductForm, type productModel } from '@/entities/product';
 import { type SelectOption } from '@/shared/types';
 import { Button, Dialog } from '@/shared/ui';
@@ -26,13 +26,21 @@ export const ProductInputDialog: FC<ProductInputDialogProps> = ({
   onSubmit,
   onClose,
 }) => {
+  const [isNutritionSuggesting, setIsNutritionSuggesting] = useState(false);
+
+  const handleClose = (): void => {
+    if (!isNutritionSuggesting) {
+      onClose();
+    }
+  };
+
   return (
     <Dialog
       pinToTop
       renderMode="fullScreenOnMobile"
       title={title}
       opened={opened}
-      onClose={onClose}
+      onClose={handleClose}
       content={
         <ProductForm
           formId="product-input-form"
@@ -40,15 +48,27 @@ export const ProductInputDialog: FC<ProductInputDialogProps> = ({
           categories={categories}
           categoriesLoading={categoriesLoading}
           onSubmit={onSubmit}
+          onNutritionSuggestingChange={setIsNutritionSuggesting}
         />
       }
       renderSubmit={submitProps => (
-        <Button {...submitProps} type="submit" form="product-input-form" loading={isLoading}>
+        <Button
+          {...submitProps}
+          type="submit"
+          form="product-input-form"
+          disabled={isNutritionSuggesting}
+          loading={isLoading}
+        >
           {submitText}
         </Button>
       )}
       renderCancel={cancelProps => (
-        <Button {...cancelProps} type="button" disabled={isLoading} onClick={onClose}>
+        <Button
+          {...cancelProps}
+          type="button"
+          disabled={isLoading || isNutritionSuggesting}
+          onClick={handleClose}
+        >
           Cancel
         </Button>
       )}

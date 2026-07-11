@@ -12,6 +12,11 @@
 - Prioritize clear naming of variables, methods, and classes over excessive comments.
 - If a comment is truly needed, write it in **English**.
 
+## API Contracts
+
+- Public API contract types (request/response DTOs) that describe the **same** endpoint payload MUST share the **same name** across the backend and the frontend. E.g. `POST /products/nutrition/suggestions` uses `SuggestProductNutritionRequest` / `SuggestProductNutritionResponse` in both `src/backend` and `src/frontend`.
+- When adding or renaming an endpoint contract, update both sides in the same change so the names never drift.
+
 ## Documentation
 
 - ALWAYS keep @README.md and @CLAUDE.md up to date after: adding or changing env variables, upgrading Node.js, npm, or .NET to major versions
