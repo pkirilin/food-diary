@@ -8,6 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.0] - Product AI nutrition suggestions
+
+### Added
+
+- AI-powered nutrition suggestions on the product form: suggest calories, protein, fat, and carb values from a product name
+
+### Changed
+
+- Nutrition input measurement units moved from input adornments to field labels, freeing up input space
+
 ## [0.5.0] - Node.js 24 & minor packages bump
 
 ### Added
