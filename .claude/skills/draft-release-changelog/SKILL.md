@@ -60,7 +60,9 @@ consistent with existing `CHANGELOG.md` entries.
   flag it in the reasoning but still propose a minor bump; leave the 1.0
   decision to the user.
 
-Compute `X.Y.Z` from the latest tag accordingly.
+Compute `X.Y.Z` from the latest tag accordingly. Strip the `v` prefix from the
+tag (e.g. `v0.5.0` → next `0.6.0`); the CHANGELOG heading and the version you
+report never carry the `v`.
 
 ### 5. Generate a descriptive title
 
@@ -86,7 +88,7 @@ approves.**
 
 ```shell
 git add CHANGELOG.md
-git commit -m "Prepare release X.Y.Z"
+git commit -m "$(printf 'Prepare release X.Y.Z\n\nCo-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>')"
 ```
 
 ### 8. Report remaining manual steps
