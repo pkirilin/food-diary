@@ -88,19 +88,29 @@ Show the user:
 
 Do not modify any files until the user approves.
 
-### 7. On approval: edit files and commit (no push)
+### 7. On approval: edit CHANGELOG and commit (no push)
 
 - **`CHANGELOG.md`**: rename the existing `[Unreleased]` heading to
   `## [X.Y.Z] - <title>`, fill it with the drafted content, and insert a fresh
   empty `## [Unreleased]` section above it. If `[Unreleased]` already contains
   manually-written entries, **merge** them with the generated content — never
   discard them.
-- **`README.md` step 1**: rewrite the "Releasing" step 1 to present two options:
-  - **(a)** manual CHANGELOG editing (the existing instructions, corrected to
-    the `## [X.Y.Z] - <descriptive title>` heading format).
-  - **(b)** using this `draft-release-changelog` skill.
-- **Commit** both files (do **not** push). Commit message summarizes the
+- **Commit** `CHANGELOG.md` (do **not** push). Commit message summarizes the
   release preparation (e.g. `Prepare release 0.6.0`).
+
+> The skill's runtime behavior touches **only** `CHANGELOG.md`. The README
+> documentation change below is a **one-time build task** performed while
+> creating the skill, not something the skill re-does on every release.
+
+## Build-time deliverable: README "Releasing" step 1
+
+As part of shipping this skill, rewrite README "Releasing" step 1 to present
+two options and correct the documented heading format:
+
+- **(a)** Manual CHANGELOG editing — the existing instructions, corrected from
+  `[X.Y.Z] - YYYY-MM-DD` to the actual `## [X.Y.Z] - <descriptive title>`
+  heading format.
+- **(b)** Using the `draft-release-changelog` skill to draft it automatically.
 
 ### 8. Report remaining manual steps
 
