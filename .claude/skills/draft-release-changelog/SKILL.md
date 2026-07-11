@@ -84,11 +84,15 @@ approves.**
   generated content — never discard them.
 - Keep the heading regex-compatible with `.github/workflows/release.yml`
   (`^## \[X.Y.Z\]`).
-- Commit `CHANGELOG.md` only (do **not** push):
+- Commit `CHANGELOG.md` only (do **not** push). End the commit message with a
+  `Co-Authored-By` trailer naming the model you are **currently** running as
+  (read it from your own environment / system context) — do not hardcode a
+  model name:
 
 ```shell
+# Replace <current-model> with the model you are running as, e.g. "Claude Opus 4.8"
 git add CHANGELOG.md
-git commit -m "$(printf 'Prepare release X.Y.Z\n\nCo-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>')"
+git commit -m "$(printf 'Prepare release X.Y.Z\n\nCo-Authored-By: <current-model> <noreply@anthropic.com>')"
 ```
 
 ### 8. Report remaining manual steps

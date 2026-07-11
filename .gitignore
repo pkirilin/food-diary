@@ -3,3 +3,4 @@
 !tests/.env
 *.code-workspace
 .claude/worktrees/
+.superpowers/
