@@ -22,7 +22,7 @@ public static class ProductsMappingExtensions
             Category = new Contracts.Category
             {
                 Id = p.CategoryId,
-                Name = p.Category.Name
+                Name = p.Category!.Name
             }
         };
     }

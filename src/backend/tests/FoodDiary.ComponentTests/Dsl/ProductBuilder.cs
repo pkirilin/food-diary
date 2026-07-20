@@ -5,7 +5,7 @@ namespace FoodDiary.ComponentTests.Dsl;
 public class ProductBuilder(string? name)
 {
     private int _id = Random.Shared.Next();
-    private string? _name = string.IsNullOrWhiteSpace(name) ? $"TestProduct-{Guid.NewGuid()}" : name;
+    private string _name = string.IsNullOrWhiteSpace(name) ? $"TestProduct-{Guid.NewGuid()}" : name;
     private int _defaultQuantity = 100;
     private int _categoryId;
     private Category? _category = Create.Category().Please();

@@ -32,7 +32,7 @@ public class AutoMapperProfile : Profile
         CreateMap<Product, ProductItemDto>()
             .ForMember(
                 dest => dest.CategoryName,
-                o => o.MapFrom(src => src.Category.Name));
+                o => o.MapFrom(src => src.Category!.Name));
 
         CreateMap<ProductCreateEditRequest, Product>();
     }

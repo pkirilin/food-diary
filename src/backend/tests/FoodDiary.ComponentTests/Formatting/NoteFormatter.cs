@@ -20,7 +20,7 @@ internal class NoteFormatter : IValueFormatter
             throw new FormatterNotRegisteredException(value);
         }
 
-        var productName = note.Product.Name;
+        var productName = note.Product!.Name;
         var calories = _caloriesCalculator.Calculate(note);
 
         return $"{note.MealType.ToString()}: {productName}, {note.ProductQuantity} g, {calories} cal";

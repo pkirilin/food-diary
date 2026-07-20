@@ -13,7 +13,7 @@ public static class ProductsMapper
         CaloriesCost = product.CaloriesCost,
         DefaultQuantity = product.DefaultQuantity,
         CategoryId = product.CategoryId,
-        CategoryName = product.Category.Name,
+        CategoryName = product.Category!.Name,
         Protein = product.Protein,
         Fats = product.Fats,
         Carbs = product.Carbs,

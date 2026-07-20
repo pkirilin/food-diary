@@ -12,5 +12,5 @@ public class Note
     public int ProductQuantity { get; set; }
     public int DisplayOrder { get; set; }
     
-    public Product Product { get; set; }
+    public Product? Product { get; set; }
 }

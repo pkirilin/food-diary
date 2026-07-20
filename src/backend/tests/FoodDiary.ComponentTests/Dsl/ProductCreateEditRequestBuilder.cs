@@ -33,7 +33,7 @@ public class ProductCreateEditRequestBuilder
         _name = product.Name;
         _caloriesCost = product.CaloriesCost;
         _defaultQuantity = product.DefaultQuantity;
-        _categoryId = product.Category.Id;
+        _categoryId = product.Category!.Id;
         _protein = product.Protein;
         _fats = product.Fats;
         _carbs = product.Carbs;

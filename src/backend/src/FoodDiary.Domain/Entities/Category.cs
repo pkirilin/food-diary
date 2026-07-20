@@ -12,7 +12,7 @@ public class Category
     /// <summary>
     /// Category name
     /// </summary>
-    public string Name { get; set; }
+    public required string Name { get; set; }
 
-    public virtual ICollection<Product> Products { get; set; }
+    public virtual ICollection<Product> Products { get; set; } = [];
 }
