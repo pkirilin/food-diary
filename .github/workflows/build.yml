@@ -32,6 +32,10 @@ jobs:
         run: dotnet restore
       - name: Build
         run: dotnet build --configuration Release --no-restore
+      - name: Check for unapplied EF model changes
+        run: |
+          dotnet tool install --global dotnet-ef --version "8.*"
+          dotnet ef migrations has-pending-model-changes -s src/FoodDiary.API -p src/FoodDiary.Infrastructure
       - name: Run unit tests
         run: dotnet test tests/FoodDiary.UnitTests --no-restore --verbosity normal
       - name: Run component tests
