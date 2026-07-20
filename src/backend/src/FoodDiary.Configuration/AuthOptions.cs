@@ -2,5 +2,5 @@
 
 public class AuthOptions
 {
-    public IEnumerable<string> AllowedEmails { get; set; }
+    public IEnumerable<string> AllowedEmails { get; set; } = [];
 }
