@@ -35,7 +35,7 @@ public class NotesRepository(FoodDiaryContext context) : INotesRepository
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<Note> FindById(int id, CancellationToken cancellationToken)
+    public async Task<Note?> FindById(int id, CancellationToken cancellationToken)
     {
         return await context.Notes.FindAsync([id], cancellationToken);
     }

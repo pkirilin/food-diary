@@ -8,12 +8,12 @@ namespace FoodDiary.Infrastructure.Repositories.v2;
 
 internal class ProductsRepository(FoodDiaryContext context) : IProductsRepository
 {
-    public async Task<Product> FindById(int id, CancellationToken cancellationToken)
+    public async Task<Product?> FindById(int id, CancellationToken cancellationToken)
     {
         return await context.Products.FindAsync([id], cancellationToken);
     }
 
-    public Task<Product> FindByExactName(string name, CancellationToken cancellationToken)
+    public Task<Product?> FindByExactName(string name, CancellationToken cancellationToken)
     {
         return context.Products.FirstOrDefaultAsync(p => p.Name == name, cancellationToken);
     }

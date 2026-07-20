@@ -37,9 +37,9 @@ public class GoogleOAuthClient(HttpClient httpClient, IOptions<GoogleAuthOptions
             return new RefreshTokenResult.Error();
         }
 
-        var content = await response.Content.ReadFromJsonAsync<RefreshTokenResult.Success>(cancellationToken);
+        RefreshTokenResult? content = await response.Content.ReadFromJsonAsync<RefreshTokenResult.Success>(cancellationToken);
 
-        return content;
+        return content ?? new RefreshTokenResult.Error();
     }
 
     public async Task<GetUserInfoResult> GetUserInfo(string accessToken, CancellationToken cancellationToken)
@@ -59,8 +59,8 @@ public class GoogleOAuthClient(HttpClient httpClient, IOptions<GoogleAuthOptions
             return new GetUserInfoResult.Error();
         }
 
-        var content = await response.Content.ReadFromJsonAsync<GetUserInfoResult.Success>(cancellationToken);
+        GetUserInfoResult? content = await response.Content.ReadFromJsonAsync<GetUserInfoResult.Success>(cancellationToken);
 
-        return content;
+        return content ?? new GetUserInfoResult.Error();
     }
 }
