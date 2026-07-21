@@ -68,7 +68,7 @@ public class ProductsApiTests(InfrastructureFixture infrastructure)
         
         return CtxRunner.RunScenarioAsync(
             c => c.Given_authenticated_user(),
-            c => c.Given_categories(chicken.Category),
+            c => c.Given_categories(chicken.Category!),
             c => c.When_user_creates_product(chicken),
             c => c.Then_product_is_successfully_created(),
             c => c.When_user_retrieves_created_product_by_id(),

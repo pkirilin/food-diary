@@ -36,7 +36,7 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
 
     public virtual Task<TEntity> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
-        return TargetDbSet.FindAsync(new object[] { id }, cancellationToken).AsTask();
+        return TargetDbSet.FindAsync(new object[] { id }, cancellationToken).AsTask()!;
     }
 
     public virtual Task<int> CountByQueryAsync(IQueryable<TEntity> query, CancellationToken cancellationToken)
@@ -71,7 +71,7 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
         {
             if (!(_context is IUnitOfWork))
                 throw new NotImplementedException($"{typeof(IUnitOfWork)} is not implemented in target context. Ensure that your DbContext implements unit of work interface");
-            return _context as IUnitOfWork;
+            return (IUnitOfWork)_context;
         }
     }
 }

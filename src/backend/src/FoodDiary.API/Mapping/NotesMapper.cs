@@ -17,7 +17,7 @@ public static class NotesMapper
         MealType: note.MealType,
         DisplayOrder: note.DisplayOrder,
         ProductQuantity: note.ProductQuantity,
-        Product: note.Product.ToGetNotesResponse());
+        Product: note.Product!.ToGetNotesResponse());
 
     private static GetNotesResponse.Product ToGetNotesResponse(this Product product) => new(
         Id: product.Id,

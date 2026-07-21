@@ -9,7 +9,7 @@ public class GetProductsRequest : IRequest<ProductsSearchResult>
 
     public int PageSize { get; set; } = 10;
 
-    public string ProductName { get; set; }
+    public string? ProductName { get; set; }
 
     public int? CategoryId { get; set; }
 

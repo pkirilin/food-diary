@@ -27,7 +27,7 @@ public class NoteRequestBodyBuilder
         _mealType = note.MealType;
         _productQuantity = note.ProductQuantity;
         _displayOrder = note.DisplayOrder;
-        _productId = note.Product.Id;
+        _productId = note.Product!.Id;
         return this;
     }
     

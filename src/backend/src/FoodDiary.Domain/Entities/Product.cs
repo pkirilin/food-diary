@@ -12,7 +12,7 @@ public class Product
     /// <summary>
     /// Product name
     /// </summary>
-    public string Name { get; set; }
+    public required string Name { get; set; }
 
     /// <summary>
     /// Describes, how much calories the product would cost if its quantity is 100 g 
@@ -29,7 +29,7 @@ public class Product
     public required decimal? Sugar { get; init; }
     public required decimal? Salt { get; init; }
 
-    public Category Category { get; set; }
+    public Category? Category { get; set; }
 
-    public virtual ICollection<Note> Notes { get; set; }
+    public virtual ICollection<Note> Notes { get; set; } = [];
 }

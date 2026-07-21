@@ -6,7 +6,7 @@ namespace FoodDiary.Application.Categories.Requests;
 
 public class GetCategoriesRequest : IRequest<List<Category>>
 {
-    public string CategoryNameFilter { get; set; }
+    public string? CategoryNameFilter { get; set; }
 
     public bool LoadProducts { get; set; } = false;
 

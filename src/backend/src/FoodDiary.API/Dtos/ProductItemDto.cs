@@ -4,7 +4,7 @@ public class ProductItemDto
 {
     public int Id { get; init; }
 
-    public string Name { get; init; }
+    public required string Name { get; init; }
 
     public int CaloriesCost { get; init; }
 
@@ -12,7 +12,7 @@ public class ProductItemDto
 
     public int CategoryId { get; init; }
 
-    public string CategoryName { get; init; }
+    public required string CategoryName { get; init; }
     
     public required decimal? Protein { get; init; }
     public required decimal? Fats { get; init; }
