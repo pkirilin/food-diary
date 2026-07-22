@@ -66,6 +66,10 @@ yarn codegen
 docker-compose up -d   # uses .env (copy from .env.example); app served at https://localhost:8080
 ```
 
+### Tests requiring Docker
+
+Backend component tests (`FoodDiary.ComponentTests`, via Testcontainers) and the E2E suite (`tests/`, via docker-compose) require a running Docker daemon. **Before running either suite, if Docker isn't available, STOP and ask the user how to proceed** — never skip the tests or silently work around them (e.g. substituting a non-Docker path). Offer having them install and start Docker manually as one option.
+
 ## Architecture notes
 
 - **Auth**: Google OAuth 2.0; backend gates access via `Auth:AllowedEmails` allowlist (this is a personal/self-hosted app, not multi-tenant). OAuth redirect URI is `https://localhost:8080/signin-google`.
