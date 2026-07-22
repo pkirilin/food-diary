@@ -1,0 +1,20 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/Tests/">
+    <Project Path="tests/FoodDiary.ComponentTests/FoodDiary.ComponentTests.csproj" />
+    <Project Path="tests/FoodDiary.UnitTests/FoodDiary.UnitTests.csproj" />
+  </Folder>
+  <Project Path="src/FoodDiary.API/FoodDiary.API.csproj" />
+  <Project Path="src/FoodDiary.Application/FoodDiary.Application.csproj" />
+  <Project Path="src/FoodDiary.Configuration/FoodDiary.Configuration.csproj" />
+  <Project Path="src/FoodDiary.Constants/FoodDiary.Constants.csproj" />
+  <Project Path="src/FoodDiary.Contracts/FoodDiary.Contracts.csproj" />
+  <Project Path="src/FoodDiary.Domain/FoodDiary.Domain.csproj" />
+  <Project Path="src/FoodDiary.Infrastructure/FoodDiary.Infrastructure.csproj" />
+  <Project Path="src/FoodDiary.Integrations.OpenAI/FoodDiary.Integrations.OpenAI.csproj" />
+  <Project Path="src/FoodDiary.Migrator/FoodDiary.Migrator.csproj" />
+</Solution>

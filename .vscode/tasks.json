@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/src/backend/FoodDiary.sln",
+                "${workspaceFolder}/src/backend/FoodDiary.slnx",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary;ForceNoAlign"
             ],
@@ -19,7 +19,7 @@
             "type": "process",
             "args": [
                 "publish",
-                "${workspaceFolder}/src/backend/FoodDiary.sln",
+                "${workspaceFolder}/src/backend/FoodDiary.slnx",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary;ForceNoAlign"
             ],
@@ -33,7 +33,7 @@
                 "watch",
                 "run",
                 "--project",
-                "${workspaceFolder}/src/backend/FoodDiary.sln"
+                "${workspaceFolder}/src/backend/FoodDiary.slnx"
             ],
             "problemMatcher": "$msCompile"
         }
