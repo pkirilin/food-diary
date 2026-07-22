@@ -1,10 +1,20 @@
 <Project>
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <LangVersion>12</LangVersion>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>14</LangVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsNotAsErrors>NU1701;$(WarningsNotAsErrors)</WarningsNotAsErrors>
   </PropertyGroup>
+  <ItemGroup>
+    <!-- AutoMapper DoS (GHSA-rvv3-g6hj-g44x): the transitively-referenced AutoMapper
+         10.1.1 has no permissively-licensed patched version (the fix, 15.1.1, is
+         under AutoMapper's commercial license that the held
+         AutoMapper.Extensions.Microsoft.DependencyInjection 8.1.1 deliberately
+         avoids). Not exploitable here: this is a single-user self-hosted app whose
+         only mapping-input source is the authenticated owner. Maintainer-approved
+         narrow exception; the NU19xx-blocking policy stays in force everywhere else. -->
+    <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-rvv3-g6hj-g44x" />
+  </ItemGroup>
 </Project>
