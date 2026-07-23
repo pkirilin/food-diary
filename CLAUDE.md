@@ -9,7 +9,7 @@ Food Diary is a self-hosted, lightweight web app for nutrition and weight tracki
 ## Repo layout
 
 - `src/frontend/` — React 18 + TypeScript SPA (Vite, MUI v6, Redux Toolkit + RTK Query, react-router v7, react-hook-form + Zod). Uses **Feature-Sliced Design**: `app/`, `pages/`, `widgets/`, `features/`, `entities/`, `shared/`. Respect FSD import direction (upper layers may import from lower; never the reverse).
-- `src/backend/` — .NET 8 solution (`FoodDiary.sln`). Clean-architecture-ish projects.
+- `src/backend/` — .NET 10 solution (`FoodDiary.slnx`). Clean-architecture-ish projects.
 - `src/backend/tests/` — `FoodDiary.UnitTests` and `FoodDiary.ComponentTests`.
 - `tests/` — Playwright E2E suite (separate yarn project).
 - `docker-compose.yml` / `Dockerfile` — full-stack local run.
@@ -65,6 +65,10 @@ yarn codegen
 ```shell
 docker-compose up -d   # uses .env (copy from .env.example); app served at https://localhost:8080
 ```
+
+### Tests requiring Docker
+
+Backend component tests (`FoodDiary.ComponentTests`, via Testcontainers) and the E2E suite (`tests/`, via docker-compose) require a running Docker daemon. **Before running either suite, if Docker isn't available, STOP and ask the user how to proceed** — never skip the tests or silently work around them (e.g. substituting a non-Docker path). Offer having them install and start Docker manually as one option.
 
 ## Architecture notes
 
