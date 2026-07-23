@@ -1,7 +1,7 @@
 # Migrate backend to .NET 10 — Design
 
 **Date:** 2026-07-22
-**Status:** Approved — not yet implemented. Target branch: `migrate-to-dotnet-10`.
+**Status:** Approved. Target branch: `migrate-to-dotnet-10`.
 **Source:** Obsidian vault note `Projects/Food Diary/Todos/Migrate to dotnet 10.md`.
 
 ## Goal
