@@ -33,7 +33,7 @@
                 "watch",
                 "run",
                 "--project",
-                "${workspaceFolder}/src/backend/FoodDiary.slnx"
+                "${workspaceFolder}/src/backend/src/FoodDiary.API/FoodDiary.API.csproj"
             ],
             "problemMatcher": "$msCompile"
         }
