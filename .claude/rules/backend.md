@@ -22,7 +22,7 @@ Package versions are centrally managed in `src/backend/Directory.Packages.props`
 
 A `Version` attribute on a `PackageReference` fails the build with `NU1008`.
 
-Compiler warnings are errors (`TreatWarningsAsErrors`). Only `NU1701` (fallback target framework restore warning, unrelated to security) is exempted from errors. NuGet security-advisory warnings (`NU19xx`) are NOT exempted — they fail the build, so a new CVE on a transitive package blocks the build.
+Compiler warnings are errors (`TreatWarningsAsErrors`). Only `NU1701` (fallback target framework restore warning, unrelated to security) is exempted from errors.
 
 `src/backend/NuGet.config` pins the solution to a single package source with `<clear />`. Central package management raises `NU1507` (build-breaking here too) when more than one source is configured without package source mapping; without `<clear />`, the source list merges with a developer's global `~/.nuget/NuGet/NuGet.Config`, so restore broke locally for anyone with an extra feed while CI (a clean runner) stayed green. Do not remove the `<clear />`.
 
