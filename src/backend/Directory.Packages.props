@@ -7,9 +7,6 @@
     <PackageVersion Include="AutoFixture" Version="4.18.1" />
     <PackageVersion Include="AutoFixture.Xunit2" Version="4.18.1" />
     <PackageVersion Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
-    <!-- Transitive CVE pin (GHSA-8xfc-gm6g-vgpv, medium): BouncyCastle.Cryptography
-         2.2.1 comes via the Testcontainers/test chain (held at 3.6.0). Patched at 2.3.1. -->
-    <PackageVersion Include="BouncyCastle.Cryptography" Version="2.3.1" />
     <PackageVersion Include="FluentAssertions" Version="6.12.2" />
     <PackageVersion Include="JetBrains.Annotations" Version="2026.2.0" />
     <PackageVersion Include="LightBDD.XUnit2" Version="3.12.1" />
