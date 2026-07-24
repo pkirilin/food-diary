@@ -1,4 +1,4 @@
-using FluentAssertions;
+using AwesomeAssertions;
 using FoodDiary.Application.Notes.Recognize;
 using Xunit;
 

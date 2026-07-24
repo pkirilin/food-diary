@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using AutoFixture;
-using FluentAssertions;
+using AwesomeAssertions;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Utils;
 using FoodDiary.Infrastructure.Utils;

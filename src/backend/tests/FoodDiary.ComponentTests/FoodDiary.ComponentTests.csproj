@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentAssertions" />
+    <PackageReference Include="AwesomeAssertions" />
     <PackageReference Include="JetBrains.Annotations" />
     <PackageReference Include="LightBDD.XUnit2" />
     <PackageReference Include="MbDotNet" />

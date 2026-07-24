@@ -1,6 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
-using FluentAssertions;
+using AwesomeAssertions;
 using FoodDiary.Application;
 using FoodDiary.Application.Products.SuggestNutrition;
 using FoodDiary.UnitTests.Notes.Recognize;
