@@ -9,7 +9,11 @@ using FoodDiary.Application.Notes.Get;
 using FoodDiary.Application.Notes.GetHistory;
 using FoodDiary.Application.Notes.Recognize;
 using FoodDiary.Application.Notes.Update;
+using FoodDiary.Application.Products.Create;
+using FoodDiary.Application.Products.Delete;
+using FoodDiary.Application.Products.Get;
 using FoodDiary.Application.Products.SuggestNutrition;
+using FoodDiary.Application.Products.Update;
 using FoodDiary.Application.Services.Categories;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -54,5 +58,10 @@ public static class ServiceCollectionExtensions
     private static void AddProducts(this IServiceCollection services)
     {
         services.AddScoped<SuggestNutritionCommandHandler>();
+        services.AddScoped<GetProductsQueryHandler>();
+        services.AddScoped<CreateProductCommandHandler>();
+        services.AddScoped<UpdateProductCommandHandler>();
+        services.AddScoped<DeleteProductCommandHandler>();
+        services.AddScoped<DeleteProductsCommandHandler>();
     }
 }
