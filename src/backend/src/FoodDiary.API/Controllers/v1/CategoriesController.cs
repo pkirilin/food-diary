@@ -1,18 +1,18 @@
-﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoMapper;
 using FoodDiary.API.Dtos;
-using FoodDiary.Domain.Entities;
-using Microsoft.AspNetCore.Mvc;
+using FoodDiary.API.Mapping;
 using FoodDiary.API.Requests;
-using MediatR;
-using FoodDiary.Application.Categories.Requests;
-using System.Linq;
+using FoodDiary.Application.Categories.Create;
+using FoodDiary.Application.Categories.Delete;
+using FoodDiary.Application.Categories.Get;
+using FoodDiary.Application.Categories.Update;
 using FoodDiary.Application.Services.Categories;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace FoodDiary.API.Controllers.v1;
 
@@ -22,115 +22,107 @@ namespace FoodDiary.API.Controllers.v1;
 [ApiExplorerSettings(GroupName = "v1")]
 public class CategoriesController : ControllerBase
 {
-    private readonly IMapper _mapper;
-    private readonly IMediator _mediator;
-    private readonly ICategoriesService _categoriesService;
-
-    public CategoriesController(IMapper mapper, IMediator mediator, ICategoriesService categoriesService)
-    {
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-        _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
-        _categoriesService = categoriesService;
-    }
-
     /// <summary>
     /// Gets all available categories ordered by name
     /// </summary>
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<CategoryItemDto>), (int)HttpStatusCode.OK)]
-    public async Task<IActionResult> GetCategories(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetCategories(
+        [FromServices] GetCategoriesQueryHandler handler,
+        CancellationToken cancellationToken)
     {
-        var categories = await _mediator.Send(new GetCategoriesRequest(loadProducts: true), cancellationToken);
-        var categoriesListResponse = _mapper.Map<IEnumerable<CategoryItemDto>>(categories);
+        var result = await handler.Handle(new GetCategoriesQuery(), cancellationToken);
+        var categoriesListResponse = result.Categories.Select(c => c.ToCategoryItemDto());
         return Ok(categoriesListResponse);
     }
 
     /// <summary>
     /// Creates new category if category with the same name doesn't exist
     /// </summary>
-    /// <param name="categoryData">New category info</param>
-    /// <param name="cancellationToken"></param>
     [HttpPost]
     [ProducesResponseType((int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-    public async Task<IActionResult> CreateCategory([FromBody] CategoryCreateEditRequest categoryData, CancellationToken cancellationToken)
+    public async Task<IActionResult> CreateCategory(
+        [FromBody] CategoryCreateEditRequest categoryData,
+        [FromServices] CreateCategoryCommandHandler handler,
+        CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        var categoriesWithTheSameName = await _mediator.Send(new GetCategoriesByExactNameRequest(categoryData.Name), cancellationToken);
+        var result = await handler.Handle(new CreateCategoryCommand(categoryData.Name), cancellationToken);
 
-        if (categoriesWithTheSameName.Any())
+        switch (result)
         {
-            ModelState.AddModelError(nameof(categoryData.Name), $"Category with the name '{categoryData.Name}' already exists");
-            return BadRequest(ModelState);
+            case CreateCategoryResult.NameAlreadyExists:
+                ModelState.AddModelError(nameof(categoryData.Name), $"Category with the name '{categoryData.Name}' already exists");
+                return BadRequest(ModelState);
+            case CreateCategoryResult.Success success:
+                return Ok(success.Category.Id);
+            default:
+                return Conflict();
         }
-
-        var category = _mapper.Map<Category>(categoryData);
-        var createdCategory = await _mediator.Send(new CreateCategoryRequest(category), cancellationToken);
-        return Ok(createdCategory.Id);
     }
 
     /// <summary>
     /// Updates existing category if category with the same name doesn't exist
     /// </summary>
-    /// <param name="id">Updated category id</param>
-    /// <param name="updatedCategoryData">Updated category info</param>
-    /// <param name="cancellationToken"></param>
     [HttpPut("{id}")]
     [ProducesResponseType((int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
     [ProducesResponseType((int)HttpStatusCode.NotFound)]
-    public async Task<IActionResult> EditCategory([FromRoute] int id, [FromBody] CategoryCreateEditRequest updatedCategoryData, CancellationToken cancellationToken)
+    public async Task<IActionResult> EditCategory(
+        [FromRoute] int id,
+        [FromBody] CategoryCreateEditRequest updatedCategoryData,
+        [FromServices] UpdateCategoryCommandHandler handler,
+        CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        var originalCategory = await _mediator.Send(new GetCategoryByIdRequest(id), cancellationToken);
+        var result = await handler.Handle(new UpdateCategoryCommand(id, updatedCategoryData.Name), cancellationToken);
 
-        if (originalCategory == null)
-            return NotFound();
-
-        var categoriesWithTheSameName = await _mediator.Send(new GetCategoriesByExactNameRequest(updatedCategoryData.Name), cancellationToken);
-        var categoryHasChanges = originalCategory.Name != updatedCategoryData.Name;
-        var categoryCanBeUpdated = !categoryHasChanges || (categoryHasChanges && !categoriesWithTheSameName.Any());
-
-        if (!categoryCanBeUpdated)
+        switch (result)
         {
-            ModelState.AddModelError(nameof(updatedCategoryData.Name), $"Category with the name '{updatedCategoryData.Name}' already exists");
-            return BadRequest(ModelState);
+            case UpdateCategoryResult.NotFound:
+                return NotFound();
+            case UpdateCategoryResult.NameAlreadyExists:
+                ModelState.AddModelError(nameof(updatedCategoryData.Name), $"Category with the name '{updatedCategoryData.Name}' already exists");
+                return BadRequest(ModelState);
+            case UpdateCategoryResult.Success:
+                return Ok();
+            default:
+                return Conflict();
         }
-
-        originalCategory = _mapper.Map(updatedCategoryData, originalCategory);
-        await _mediator.Send(new EditCategoryRequest(originalCategory), cancellationToken);
-        return Ok();
     }
 
     /// <summary>
     /// Deletes category by id
     /// </summary>
-    /// <param name="id">Category for delete id</param>
-    /// <param name="cancellationToken"></param>
     [HttpDelete("{id}")]
     [ProducesResponseType((int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.NotFound)]
-    public async Task<IActionResult> DeleteCategory([FromRoute] int id, CancellationToken cancellationToken)
+    public async Task<IActionResult> DeleteCategory(
+        [FromRoute] int id,
+        [FromServices] DeleteCategoryCommandHandler handler,
+        CancellationToken cancellationToken)
     {
-        var categoryForDelete = await _mediator.Send(new GetCategoryByIdRequest(id), cancellationToken);
-        if (categoryForDelete == null)
-        {
-            return NotFound();
-        }
+        var result = await handler.Handle(new DeleteCategoryCommand(id), cancellationToken);
 
-        await _mediator.Send(new DeleteCategoryRequest(categoryForDelete), cancellationToken);
-        return Ok();
+        return result switch
+        {
+            DeleteCategoryResult.NotFound => NotFound(),
+            DeleteCategoryResult.Success => Ok(),
+            _ => Conflict()
+        };
     }
 
     [HttpGet("autocomplete")]
-    public async Task<IActionResult> GetCategoriesForAutocomplete(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetCategoriesForAutocomplete(
+        [FromServices] ICategoriesService categoriesService,
+        CancellationToken cancellationToken)
     {
-        var categories = await _categoriesService.GetAutocompleteItemsAsync(cancellationToken);
-            
+        var categories = await categoriesService.GetAutocompleteItemsAsync(cancellationToken);
         return Ok(categories);
     }
 }

@@ -1,5 +1,9 @@
 ﻿using System.Reflection;
 using System.Runtime.CompilerServices;
+using FoodDiary.Application.Categories.Create;
+using FoodDiary.Application.Categories.Delete;
+using FoodDiary.Application.Categories.Get;
+using FoodDiary.Application.Categories.Update;
 using FoodDiary.Application.Notes.Create;
 using FoodDiary.Application.Notes.Get;
 using FoodDiary.Application.Notes.GetHistory;
@@ -20,6 +24,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddMediatR(Assembly.GetExecutingAssembly());
         services.AddApplicationServices();
+        services.AddCategories();
         services.AddNotes();
         services.AddProducts();
     }
@@ -28,7 +33,15 @@ public static class ServiceCollectionExtensions
     {
         services.AddScoped<ICategoriesService, CategoriesService>();
     }
-    
+
+    private static void AddCategories(this IServiceCollection services)
+    {
+        services.AddScoped<GetCategoriesQueryHandler>();
+        services.AddScoped<CreateCategoryCommandHandler>();
+        services.AddScoped<UpdateCategoryCommandHandler>();
+        services.AddScoped<DeleteCategoryCommandHandler>();
+    }
+
     private static void AddNotes(this IServiceCollection services)
     {
         services.AddScoped<GetNotesQueryHandler>();
