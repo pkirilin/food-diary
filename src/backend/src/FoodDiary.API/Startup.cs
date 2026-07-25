@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using FoodDiary.API.ErrorHandling;
 using FoodDiary.API.Extensions;
 using FoodDiary.API.Features.Products.Extensions;
@@ -125,8 +124,6 @@ public class Startup
         services.AddApplicationDependencies();
         services.AddProducts();
         services.AddWeightLogs();
-
-        services.AddAutoMapper(Assembly.GetExecutingAssembly());
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

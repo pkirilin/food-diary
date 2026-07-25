@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using FoodDiary.Application.Auth.GetStatus;
 using FoodDiary.Application.Categories.Create;
 using FoodDiary.Application.Categories.Delete;
@@ -17,7 +16,6 @@ using FoodDiary.Application.Products.Get;
 using FoodDiary.Application.Products.SuggestNutrition;
 using FoodDiary.Application.Products.Update;
 using FoodDiary.Application.Services.Categories;
-using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
 [assembly:InternalsVisibleTo("FoodDiary.UnitTests")]
@@ -28,12 +26,11 @@ public static class ServiceCollectionExtensions
 {
     public static void AddApplicationDependencies(this IServiceCollection services)
     {
-        services.AddMediatR(Assembly.GetExecutingAssembly());
         services.AddApplicationServices();
-        services.AddAuth();
-        services.AddCategories();
         services.AddNotes();
         services.AddProducts();
+        services.AddCategories();
+        services.AddAuth();
     }
 
     private static void AddAuth(this IServiceCollection services)
