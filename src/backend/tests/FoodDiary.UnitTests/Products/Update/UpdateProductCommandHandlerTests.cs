@@ -89,8 +89,12 @@ public class UpdateProductCommandHandlerTests
         result.Should().BeOfType<UpdateProductResult.Success>();
         existing.Name.Should().Be("Boiled chicken");
         existing.CaloriesCost.Should().Be(200);
+        existing.DefaultQuantity.Should().Be(150);
         existing.CategoryId.Should().Be(3);
         existing.Protein.Should().Be(1.1m);
+        existing.Fats.Should().Be(2.2m);
+        existing.Carbs.Should().Be(3.3m);
+        existing.Sugar.Should().Be(4.4m);
         existing.Salt.Should().Be(5.5m);
         _repository.Verify(r => r.Update(existing), Times.Once);
         _unitOfWork.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
