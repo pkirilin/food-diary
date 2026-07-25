@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.1] - Backend dependency cleanup & .NET 10 migration
+
+### Changed
+
+- Backend runtime requirement bumped from .NET 8 to .NET 10
+- Backend dependencies centralized via NuGet central package management; compiler warnings are now treated as errors
+- Removed MediatR, AutoMapper, and FluentAssertions in favor of plain C# equivalents
+
 ## [0.6.0] - Product AI nutrition suggestions
 
 ### Added
