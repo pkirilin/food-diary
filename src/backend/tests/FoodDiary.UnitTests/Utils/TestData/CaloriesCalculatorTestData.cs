@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using AutoFixture;
+﻿using AutoFixture;
 using FoodDiary.Domain.Entities;
 
 namespace FoodDiary.UnitTests.Utils.TestData;

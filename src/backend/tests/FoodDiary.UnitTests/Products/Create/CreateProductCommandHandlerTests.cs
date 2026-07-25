@@ -1,11 +1,7 @@
-using System.Threading;
-using System.Threading.Tasks;
-using AwesomeAssertions;
 using FoodDiary.Application.Products.Create;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Repositories.v2;
 using Moq;
-using Xunit;
 
 namespace FoodDiary.UnitTests.Products.Create;
 

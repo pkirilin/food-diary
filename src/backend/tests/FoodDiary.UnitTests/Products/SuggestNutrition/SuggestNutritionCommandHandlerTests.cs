@@ -1,12 +1,8 @@
-using System.Threading;
-using System.Threading.Tasks;
-using AwesomeAssertions;
 using FoodDiary.Application;
 using FoodDiary.Application.Products.SuggestNutrition;
 using FoodDiary.UnitTests.Notes.Recognize;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging.Abstractions;
-using Xunit;
 
 namespace FoodDiary.UnitTests.Products.SuggestNutrition;
 

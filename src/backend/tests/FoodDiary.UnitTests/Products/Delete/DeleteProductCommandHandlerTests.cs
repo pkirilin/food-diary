@@ -1,12 +1,8 @@
-using System.Threading;
-using System.Threading.Tasks;
-using AwesomeAssertions;
 using FoodDiary.Application.Products.Delete;
 using FoodDiary.Domain.Abstractions;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Repositories;
 using Moq;
-using Xunit;
 
 namespace FoodDiary.UnitTests.Products.Delete;
 

@@ -1,16 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using AwesomeAssertions;
 using FoodDiary.Application;
 using FoodDiary.Application.Notes.Recognize;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging.Abstractions;
-using Xunit;
 
 namespace FoodDiary.UnitTests.Notes.Recognize;
 

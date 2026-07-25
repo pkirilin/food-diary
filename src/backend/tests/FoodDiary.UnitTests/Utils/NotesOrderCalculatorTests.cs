@@ -1,11 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using AutoFixture;
-using AwesomeAssertions;
+﻿using AutoFixture;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Utils;
 using FoodDiary.Infrastructure.Utils;
-using Xunit;
 
 namespace FoodDiary.UnitTests.Utils;
 

@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using AwesomeAssertions;
 using FoodDiary.Application.Notes.Delete;
 using FoodDiary.Domain.Abstractions;
 using FoodDiary.Domain.Entities;
@@ -11,7 +5,6 @@ using FoodDiary.Domain.Enums;
 using FoodDiary.Domain.Repositories;
 using FoodDiary.Domain.Utils;
 using Moq;
-using Xunit;
 
 namespace FoodDiary.UnitTests.Notes.Delete;
 
