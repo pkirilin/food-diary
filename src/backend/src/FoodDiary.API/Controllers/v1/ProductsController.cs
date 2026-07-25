@@ -51,7 +51,7 @@ public class ProductsController : ControllerBase
         var searchResultDto = new ProductsSearchResultDto
         {
             TotalProductsCount = result.TotalProductsCount,
-            ProductItems = result.Products.Select(p => p.ToProductItemDto())
+            ProductItems = result.Products.Select(p => p.ToProductItemDto()).ToList()
         };
 
         return Ok(searchResultDto);

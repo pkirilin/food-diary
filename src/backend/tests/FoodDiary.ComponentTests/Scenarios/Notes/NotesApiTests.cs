@@ -108,6 +108,24 @@ public class NotesApiTests(InfrastructureFixture infrastructure) : BaseTest<Note
     }
 
     [Scenario]
+    public Task I_can_delete_multiple_notes()
+    {
+        var chicken = Create.Note().WithDate("2024-01-04").WithProduct("Chicken", 150).WithDisplayOrder(0).Please();
+        var rice = Create.Note().WithDate("2024-01-04").WithProduct("Rice", 100).WithDisplayOrder(1).Please();
+        var broccoli = Create.Note().WithDate("2024-01-04").WithProduct("Broccoli", 50).WithDisplayOrder(2).Please();
+
+        var remainingBroccoli = Create.Note().From(broccoli).WithDisplayOrder(0).Please();
+
+        return CtxRunner.RunScenarioAsync(
+            c => c.Given_authenticated_user(),
+            c => c.Given_notes(chicken, rice, broccoli),
+            c => c.When_user_deletes_notes(chicken, rice),
+            c => c.Then_multiple_notes_are_successfully_deleted(),
+            c => c.When_user_retrieves_notes_list_for_date("2024-01-04"),
+            c => c.Then_notes_list_contains_items(remainingBroccoli));
+    }
+
+    [Scenario]
     public Task I_can_recognize_notes_by_photo()
     {
         var givenFood = Create.RecognizeNoteModelResponse()

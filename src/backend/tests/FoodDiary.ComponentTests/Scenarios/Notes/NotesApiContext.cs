@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
+using System.Text;
 using System.Text.Json;
 using FoodDiary.API.Mapping;
 using FoodDiary.Application.Notes.Recognize;
@@ -29,6 +30,7 @@ public class NotesApiContext(
     private HttpResponseMessage _createNoteResponse = null!;
     private HttpResponseMessage _updateNoteResponse = null!;
     private HttpResponseMessage _deleteNoteResponse = null!;
+    private HttpResponseMessage _deleteMultipleNotesResponse = null!;
     private HttpResponseMessage _recognizeNoteResponse = null!;
 
     public Task Given_notes(params Note[] notes)
@@ -98,6 +100,18 @@ public class NotesApiContext(
         _deleteNoteResponse = await ApiClient.DeleteAsync($"/api/v1/notes/{note.Id}");
     }
 
+    public async Task When_user_deletes_notes(params Note[] notes)
+    {
+        var noteIds = notes.Select(n => n.Id);
+
+        var request = new HttpRequestMessage(HttpMethod.Delete, "api/v1/notes/batch")
+        {
+            Content = new StringContent(JsonSerializer.Serialize(noteIds), Encoding.Unicode, "application/json")
+        };
+
+        _deleteMultipleNotesResponse = await ApiClient.SendAsync(request);
+    }
+
     public async Task When_user_uploads_file_for_note_recognition(string file)
     {
         var filePath = Path.Combine("Scenarios", "Notes", file);
@@ -158,7 +172,13 @@ public class NotesApiContext(
         _deleteNoteResponse.StatusCode.Should().Be(HttpStatusCode.OK);
         return Task.CompletedTask;
     }
-    
+
+    public Task Then_multiple_notes_are_successfully_deleted()
+    {
+        _deleteMultipleNotesResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        return Task.CompletedTask;
+    }
+
     public async Task Then_note_is_successfully_recognized_as(Product product, int quantity)
     {
         var response = await _recognizeNoteResponse.Content.ReadFromJsonAsync<RecognizeNoteResponse>();

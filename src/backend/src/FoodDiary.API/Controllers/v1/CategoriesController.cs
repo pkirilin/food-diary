@@ -32,7 +32,7 @@ public class CategoriesController : ControllerBase
         CancellationToken cancellationToken)
     {
         var result = await handler.Handle(new GetCategoriesQuery(), cancellationToken);
-        var categoriesListResponse = result.Categories.Select(c => c.ToCategoryItemDto());
+        var categoriesListResponse = result.Categories.Select(c => c.ToCategoryItemDto()).ToList();
         return Ok(categoriesListResponse);
     }
 
