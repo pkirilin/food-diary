@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using System.Runtime.CompilerServices;
+using FoodDiary.Application.Auth.GetStatus;
 using FoodDiary.Application.Categories.Create;
 using FoodDiary.Application.Categories.Delete;
 using FoodDiary.Application.Categories.Get;
@@ -29,9 +30,15 @@ public static class ServiceCollectionExtensions
     {
         services.AddMediatR(Assembly.GetExecutingAssembly());
         services.AddApplicationServices();
+        services.AddAuth();
         services.AddCategories();
         services.AddNotes();
         services.AddProducts();
+    }
+
+    private static void AddAuth(this IServiceCollection services)
+    {
+        services.AddScoped<GetAuthStatusQueryHandler>();
     }
 
     private static void AddApplicationServices(this IServiceCollection services)

@@ -3,51 +3,49 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
-using JetBrains.Annotations;
-using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
 namespace FoodDiary.Application.Auth.GetStatus;
 
-public record GetStatusRequest(AuthenticateResult? AuthResult) : IRequest<GetStatusResult>;
+public record GetAuthStatusQuery(AuthenticateResult? AuthResult);
 
-public abstract record GetStatusResult
+public abstract record GetAuthStatusResult
 {
-    public record NotAuthenticated : GetStatusResult;
-    public record Authenticated : GetStatusResult;
+    public record NotAuthenticated : GetAuthStatusResult;
+
+    public record Authenticated : GetAuthStatusResult;
 }
 
-[UsedImplicitly]
-internal class GetStatusRequestHandler(
+public class GetAuthStatusQueryHandler(
     TimeProvider timeProvider,
     IHttpContextAccessor httpContextAccessor,
     IOAuthClient oAuthClient,
-    ILogger<GetStatusRequestHandler> logger) : IRequestHandler<GetStatusRequest, GetStatusResult>
+    ILogger<GetAuthStatusQueryHandler> logger)
 {
-    public async Task<GetStatusResult> Handle(GetStatusRequest request, CancellationToken cancellationToken)
+    public async Task<GetAuthStatusResult> Handle(GetAuthStatusQuery query, CancellationToken cancellationToken)
     {
-        if (request.AuthResult is null ||
-            !request.AuthResult.Succeeded ||
-            !request.AuthResult.Properties.IssuedUtc.HasValue)
+        if (query.AuthResult is null ||
+            !query.AuthResult.Succeeded ||
+            !query.AuthResult.Properties.IssuedUtc.HasValue)
         {
-            return new GetStatusResult.NotAuthenticated();
+            return new GetAuthStatusResult.NotAuthenticated();
         }
-        
-        var userEmail = request.AuthResult.Principal.FindFirst(Constants.ClaimTypes.Email)?.Value;
+
+        var userEmail = query.AuthResult.Principal.FindFirst(Constants.ClaimTypes.Email)?.Value;
         logger.LogInformation("Checking access token for user {UserEmail}...", userEmail);
-        
-        if (!ExistingTokenExpired(request.AuthResult.Properties.IssuedUtc.Value))
+
+        if (!ExistingTokenExpired(query.AuthResult.Properties.IssuedUtc.Value))
         {
             logger.LogInformation("User {UserEmail} has been successfully authenticated", userEmail);
-            return new GetStatusResult.Authenticated();
+            return new GetAuthStatusResult.Authenticated();
         }
-        
+
         logger.LogInformation("Access token for user {UserEmail} expired. Attempting to refresh token...", userEmail);
-        
-        var existingAccessToken = request.AuthResult.Properties.GetTokenValue(Constants.OpenIdConnectParameters.AccessToken);
-        var existingRefreshToken = request.AuthResult.Properties.GetTokenValue(Constants.OpenIdConnectParameters.RefreshToken);
+
+        var existingAccessToken = query.AuthResult.Properties.GetTokenValue(Constants.OpenIdConnectParameters.AccessToken);
+        var existingRefreshToken = query.AuthResult.Properties.GetTokenValue(Constants.OpenIdConnectParameters.RefreshToken);
 
         if (string.IsNullOrWhiteSpace(existingAccessToken) || string.IsNullOrWhiteSpace(existingRefreshToken))
         {
@@ -66,7 +64,7 @@ internal class GetStatusRequestHandler(
         logger.LogInformation(
             "Token for user {UserEmail} has been successfully refreshed. Trying to get user info...",
             userEmail);
-        
+
         var userInfoResult = await oAuthClient.GetUserInfo(refreshTokenResponse.AccessToken, cancellationToken);
 
         if (userInfoResult is GetUserInfoResult.Error)
@@ -74,27 +72,27 @@ internal class GetStatusRequestHandler(
             logger.LogInformation("Could not retrieve user info for {UserEmail}", userEmail);
             return await NotAuthenticated();
         }
-        
+
         var tokens = CreateNewTokens(refreshTokenResponse, existingRefreshToken);
 
-        return await AuthenticatedWithNewTokens(request.AuthResult, tokens, userEmail);
+        return await AuthenticatedWithNewTokens(query.AuthResult, tokens, userEmail);
     }
 
     private bool ExistingTokenExpired(DateTimeOffset existingTokenIssuedOn)
     {
         var accessTokenExpirationDate = existingTokenIssuedOn + Constants.AuthenticationParameters.AccessTokenRefreshInterval;
         var currentDate = timeProvider.GetUtcNow();
-        
+
         return currentDate > accessTokenExpirationDate;
     }
-    
-    private async Task<GetStatusResult> NotAuthenticated()
+
+    private async Task<GetAuthStatusResult> NotAuthenticated()
     {
         await httpContextAccessor.HttpContext.SignOutAsync(Constants.AuthenticationSchemes.Cookie);
-        return new GetStatusResult.NotAuthenticated();
+        return new GetAuthStatusResult.NotAuthenticated();
     }
 
-    private async Task<GetStatusResult> AuthenticatedWithNewTokens(
+    private async Task<GetAuthStatusResult> AuthenticatedWithNewTokens(
         AuthenticateResult authResult,
         IEnumerable<AuthenticationToken> tokens,
         string? userEmail)
@@ -102,15 +100,15 @@ internal class GetStatusRequestHandler(
         authResult.Properties.StoreTokens(tokens);
         authResult.Properties.Items.Remove(".issued");
         authResult.Properties.Items.Remove(".expires");
-        
+
         await httpContextAccessor.HttpContext.SignInAsync(
             Constants.AuthenticationSchemes.Cookie,
             authResult.Principal,
             authResult.Properties);
-        
+
         logger.LogInformation("User {UserEmail} has been successfully authenticated", userEmail);
 
-        return new GetStatusResult.Authenticated();
+        return new GetAuthStatusResult.Authenticated();
     }
 
     private IEnumerable<AuthenticationToken> CreateNewTokens(
@@ -118,7 +116,7 @@ internal class GetStatusRequestHandler(
         string existingRefreshToken)
     {
         var expiresAt = timeProvider.GetUtcNow() + TimeSpan.FromSeconds(refreshTokenResponse.ExpiresIn);
-        
+
         return
         [
             new AuthenticationToken
@@ -144,7 +142,7 @@ internal class GetStatusRequestHandler(
                 Name = Constants.OpenIdConnectParameters.TokenType,
                 Value = refreshTokenResponse.TokenType
             },
-            
+
             new AuthenticationToken
             {
                 Name = Constants.OpenIdConnectParameters.ExpiresAt,

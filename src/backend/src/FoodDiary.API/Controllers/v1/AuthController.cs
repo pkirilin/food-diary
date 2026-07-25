@@ -1,8 +1,8 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using FoodDiary.Application.Auth.GetStatus;
 using FoodDiary.Contracts.Auth;
-using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,13 +13,6 @@ namespace FoodDiary.API.Controllers.v1;
 [Route("api/v1/auth")]
 public class AuthController : ControllerBase
 {
-    private readonly ISender _sender;
-
-    public AuthController(ISender sender)
-    {
-        _sender = sender;
-    }
-
     [HttpGet("login")]
     public IActionResult Login([FromQuery] string? returnUrl)
     {
@@ -49,15 +42,16 @@ public class AuthController : ControllerBase
     }
 
     [HttpGet("status")]
-    public async Task<IActionResult> GetStatus()
+    public async Task<IActionResult> GetStatus(
+        [FromServices] GetAuthStatusQueryHandler handler,
+        CancellationToken cancellationToken)
     {
         var authResult = await HttpContext.AuthenticateAsync(Constants.AuthenticationSchemes.OAuthGoogle);
-        var request = new GetStatusRequest(authResult);
-        var result = await _sender.Send(request);
+        var result = await handler.Handle(new GetAuthStatusQuery(authResult), cancellationToken);
 
         return result switch
         {
-            GetStatusResult.Authenticated => Ok(new GetAuthStatusResponse { IsAuthenticated = true }),
+            GetAuthStatusResult.Authenticated => Ok(new GetAuthStatusResponse { IsAuthenticated = true }),
             _ => Ok(new GetAuthStatusResponse { IsAuthenticated = false })
         };
     }
