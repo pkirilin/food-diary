@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using FoodDiary.API.Mapping;
 using Microsoft.AspNetCore.Mvc;
 using FoodDiary.Application.Notes.Create;
+using FoodDiary.Application.Notes.Delete;
 using FoodDiary.Application.Notes.Get;
 using FoodDiary.Application.Notes.GetHistory;
 using FoodDiary.Application.Notes.Recognize;
-using MediatR;
-using FoodDiary.Application.Notes.Requests;
 using FoodDiary.Application.Notes.Update;
 using FoodDiary.Contracts.Notes;
 using FoodDiary.Domain.Utils;
@@ -25,13 +24,6 @@ namespace FoodDiary.API.Controllers.v1;
 [ApiExplorerSettings(GroupName = "v1")]
 public class NotesController : ControllerBase
 {
-    private readonly IMediator _mediator;
-
-    public NotesController(IMediator mediator)
-    {
-        _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
-    }
-
     [HttpGet]
     public async Task<IActionResult> GetNotes(
         [FromQuery] GetNotesRequest request,
@@ -98,34 +90,36 @@ public class NotesController : ControllerBase
     /// <summary>
     /// Deletes note by id
     /// </summary>
-    /// <param name="id">Note for delete id</param>
-    /// <param name="cancellationToken"></param>
     [HttpDelete("{id}")]
     [ProducesResponseType((int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.NotFound)]
-    public async Task<IActionResult> DeleteNote([FromRoute] int id, CancellationToken cancellationToken)
+    public async Task<IActionResult> DeleteNote(
+        [FromRoute] int id,
+        [FromServices] DeleteNoteCommandHandler handler,
+        CancellationToken cancellationToken)
     {
-        var noteForDelete = await _mediator.Send(new GetNoteByIdRequest(id), cancellationToken);
+        var result = await handler.Handle(new DeleteNoteCommand(id), cancellationToken);
 
-        if (noteForDelete == null)
-            return NotFound();
-
-        await _mediator.Send(new DeleteNoteRequest(noteForDelete), cancellationToken);
-        return Ok();
+        return result switch
+        {
+            DeleteNoteResult.NotFound => NotFound(),
+            DeleteNoteResult.Success => Ok(),
+            _ => Conflict()
+        };
     }
 
     /// <summary>
     /// Deletes many notes by specified ids
     /// </summary>
-    /// <param name="ids">Notes ids</param>
-    /// <param name="cancellationToken"></param>
     [HttpDelete("batch")]
     [ProducesResponseType((int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-    public async Task<IActionResult> DeleteNotes([FromBody] IEnumerable<int> ids, CancellationToken cancellationToken)
+    public async Task<IActionResult> DeleteNotes(
+        [FromBody] IEnumerable<int> ids,
+        [FromServices] DeleteNotesCommandHandler handler,
+        CancellationToken cancellationToken)
     {
-        var notesForDelete = await _mediator.Send(new GetNotesByIdsRequest(ids), cancellationToken);
-        await _mediator.Send(new DeleteNotesRequest(notesForDelete), cancellationToken);
+        await handler.Handle(new DeleteNotesCommand(ids.ToList()), cancellationToken);
         return Ok();
     }
 

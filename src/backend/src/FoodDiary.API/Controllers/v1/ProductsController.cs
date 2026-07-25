@@ -1,24 +1,22 @@
-﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoMapper;
 using FoodDiary.API.Dtos;
-using Microsoft.AspNetCore.Mvc;
-using FoodDiary.API.Requests;
-using MediatR;
-using FoodDiary.Application.Products.Requests;
-using System.Linq;
 using FoodDiary.API.Features.Products;
 using FoodDiary.API.Features.Products.Extensions;
 using FoodDiary.API.Mapping;
+using FoodDiary.API.Requests;
 using FoodDiary.Application.Products.Create;
+using FoodDiary.Application.Products.Delete;
+using FoodDiary.Application.Products.Get;
 using FoodDiary.Application.Products.SuggestNutrition;
+using FoodDiary.Application.Products.Update;
 using FoodDiary.Contracts.Products;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using CreateProductResponse = FoodDiary.Application.Products.Create.CreateProductResponse;
+using Microsoft.AspNetCore.Mvc;
 
 namespace FoodDiary.API.Controllers.v1;
 
@@ -28,49 +26,37 @@ namespace FoodDiary.API.Controllers.v1;
 [ApiExplorerSettings(GroupName = "v1")]
 public class ProductsController : ControllerBase
 {
-    private readonly IMapper _mapper;
-    private readonly IMediator _mediator;
-
-    public ProductsController(IMapper mapper, IMediator mediator)
-    {
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-        _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
-    }
-
     /// <summary>
     /// Gets products list by specified parameters
     /// </summary>
-    /// <param name="productsRequest">Products search parameters</param>
-    /// <param name="cancellationToken"></param>
     [HttpGet]
     [ProducesResponseType(typeof(ProductsSearchResultDto), (int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-    public async Task<IActionResult> GetProducts([FromQuery] ProductsSearchRequest productsRequest, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetProducts(
+        [FromQuery] ProductsSearchRequest productsRequest,
+        [FromServices] GetProductsQueryHandler handler,
+        CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        var getProductsRequest = new GetProductsRequest()
-        {
-            PageNumber = productsRequest.PageNumber,
-            PageSize = productsRequest.PageSize,
-            ProductName = productsRequest.ProductSearchName,
-            CategoryId = productsRequest.CategoryId,
-            LoadCategory = true,
-            CalculateTotalProductsCount = true
-        };
+        var query = new GetProductsQuery(
+            productsRequest.PageNumber,
+            productsRequest.PageSize,
+            productsRequest.ProductSearchName,
+            productsRequest.CategoryId);
 
-        var searchResult = await _mediator.Send(getProductsRequest, cancellationToken);
-        var productItems = _mapper.Map<IEnumerable<ProductItemDto>>(searchResult.FoundProducts);
-        var searchResultDto = new ProductsSearchResultDto()
+        var result = await handler.Handle(query, cancellationToken);
+
+        var searchResultDto = new ProductsSearchResultDto
         {
-            TotalProductsCount = searchResult.TotalProductsCount.GetValueOrDefault(),
-            ProductItems = productItems
+            TotalProductsCount = result.TotalProductsCount,
+            ProductItems = result.Products.Select(p => p.ToProductItemDto()).ToList()
         };
 
         return Ok(searchResultDto);
     }
-    
+
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetProductById(
         [FromRoute] int id,
@@ -78,7 +64,7 @@ public class ProductsController : ControllerBase
         CancellationToken cancellationToken)
     {
         var result = await handler.Handle(id, cancellationToken);
-        
+
         return result switch
         {
             GetProductByIdHandlerResult.Success success => Ok(success.Product),
@@ -90,9 +76,12 @@ public class ProductsController : ControllerBase
     [HttpPost]
     [ProducesResponseType((int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-    public async Task<IActionResult> CreateProduct([FromBody] ProductCreateEditRequest productData, CancellationToken cancellationToken)
+    public async Task<IActionResult> CreateProduct(
+        [FromBody] ProductCreateEditRequest productData,
+        [FromServices] CreateProductCommandHandler handler,
+        CancellationToken cancellationToken)
     {
-        var request = new CreateProductRequest(
+        var command = new CreateProductCommand(
             productData.Name,
             productData.CaloriesCost,
             productData.DefaultQuantity,
@@ -103,85 +92,99 @@ public class ProductsController : ControllerBase
             productData.Sugar,
             productData.Salt);
 
-        var response = await _mediator.Send(request, cancellationToken);
+        var result = await handler.Handle(command, cancellationToken);
 
-        return response switch
+        switch (result)
         {
-            CreateProductResponse.ProductAlreadyExists => ProductAlreadyExists(productData),
-            CreateProductResponse.Success success => Ok(success.Product.ToCreateProductResponse()),
-            _ => Conflict()
-        };
+            case CreateProductResult.ProductAlreadyExists:
+                return ProductAlreadyExists(productData);
+            case CreateProductResult.Success success:
+                return Ok(success.Product.ToCreateProductResponse());
+            default:
+                return Conflict();
+        }
     }
 
     /// <summary>
     /// Updates existing product by specified id
     /// </summary>
-    /// <param name="id">Product for update id</param>
-    /// <param name="updatedProductData">Updated product info</param>
-    /// <param name="cancellationToken"></param>
     [HttpPut("{id}")]
     [ProducesResponseType((int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
     [ProducesResponseType((int)HttpStatusCode.NotFound)]
-    public async Task<IActionResult> EditProduct([FromRoute] int id, [FromBody] ProductCreateEditRequest updatedProductData, CancellationToken cancellationToken)
+    public async Task<IActionResult> EditProduct(
+        [FromRoute] int id,
+        [FromBody] ProductCreateEditRequest updatedProductData,
+        [FromServices] UpdateProductCommandHandler handler,
+        CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        var originalProduct = await _mediator.Send(new GetProductByIdRequest(id), cancellationToken);
+        var command = new UpdateProductCommand(
+            id,
+            updatedProductData.Name,
+            updatedProductData.CaloriesCost,
+            updatedProductData.DefaultQuantity,
+            updatedProductData.CategoryId,
+            updatedProductData.Protein,
+            updatedProductData.Fats,
+            updatedProductData.Carbs,
+            updatedProductData.Sugar,
+            updatedProductData.Salt);
 
-        if (originalProduct == null)
-            return NotFound();
+        var result = await handler.Handle(command, cancellationToken);
 
-        var productsWithTheSameName = await _mediator.Send(new GetProductsByExactNameRequest(updatedProductData.Name), cancellationToken);
-        var productHasChanges = originalProduct.Name != updatedProductData.Name;
-        var productCanBeUpdated = !productHasChanges || (productHasChanges && !productsWithTheSameName.Any());
-
-        if (!productCanBeUpdated)
+        switch (result)
         {
-            ModelState.AddModelError(nameof(updatedProductData.Name), $"Product with the name '{updatedProductData.Name}' already exists");
-            return BadRequest(ModelState);
+            case UpdateProductResult.NotFound:
+                return NotFound();
+            case UpdateProductResult.NameAlreadyExists:
+                ModelState.AddModelError(nameof(updatedProductData.Name), $"Product with the name '{updatedProductData.Name}' already exists");
+                return BadRequest(ModelState);
+            case UpdateProductResult.Success:
+                return Ok();
+            default:
+                return Conflict();
         }
-
-        originalProduct = _mapper.Map(updatedProductData, originalProduct);
-        await _mediator.Send(new EditProductRequest(originalProduct), cancellationToken);
-        return Ok();
     }
 
     /// <summary>
     /// Deletes product by specified id
     /// </summary>
-    /// <param name="id">Product for delete id</param>
-    /// <param name="cancellationToken"></param>
     [HttpDelete("{id}")]
     [ProducesResponseType((int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.NotFound)]
-    public async Task<IActionResult> DeleteProduct([FromRoute] int id, CancellationToken cancellationToken)
+    public async Task<IActionResult> DeleteProduct(
+        [FromRoute] int id,
+        [FromServices] DeleteProductCommandHandler handler,
+        CancellationToken cancellationToken)
     {
-        var productForDelete = await _mediator.Send(new GetProductByIdRequest(id), cancellationToken);
+        var result = await handler.Handle(new DeleteProductCommand(id), cancellationToken);
 
-        if (productForDelete == null)
-            return NotFound();
-
-        await _mediator.Send(new DeleteProductRequest(productForDelete), cancellationToken);
-        return Ok();
+        return result switch
+        {
+            DeleteProductResult.NotFound => NotFound(),
+            DeleteProductResult.Success => Ok(),
+            _ => Conflict()
+        };
     }
 
     /// <summary>
     /// Deletes products by specified ids
     /// </summary>
-    /// <param name="ids">Products for delete ids</param>
-    /// <param name="cancellationToken"></param>
     [HttpDelete("batch")]
     [ProducesResponseType((int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-    public async Task<IActionResult> DeleteProducts([FromBody] IEnumerable<int> ids, CancellationToken cancellationToken)
+    public async Task<IActionResult> DeleteProducts(
+        [FromBody] IEnumerable<int> ids,
+        [FromServices] DeleteProductsCommandHandler handler,
+        CancellationToken cancellationToken)
     {
-        var productsForDelete = await _mediator.Send(new GetProductsByIdsRequest(ids), cancellationToken);
-        await _mediator.Send(new DeleteProductsRequest(productsForDelete), cancellationToken);
+        await handler.Handle(new DeleteProductsCommand(ids.ToList()), cancellationToken);
         return Ok();
     }
-        
+
     [HttpGet("autocomplete")]
     public async Task<IActionResult> GetProductsForAutocomplete(
         [FromServices] SearchProductsHandler handler,

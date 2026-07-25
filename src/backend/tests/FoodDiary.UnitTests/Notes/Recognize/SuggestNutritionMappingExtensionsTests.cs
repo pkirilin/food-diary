@@ -1,6 +1,4 @@
-using FluentAssertions;
 using FoodDiary.Application.Notes.Recognize;
-using Xunit;
 
 namespace FoodDiary.UnitTests.Notes.Recognize;
 

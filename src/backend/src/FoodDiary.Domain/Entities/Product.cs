@@ -23,11 +23,11 @@ public class Product
 
     public int CategoryId { get; set; }
 
-    public required decimal? Protein { get; init; }
-    public required decimal? Fats { get; init; }
-    public required decimal? Carbs { get; init; }
-    public required decimal? Sugar { get; init; }
-    public required decimal? Salt { get; init; }
+    public required decimal? Protein { get; set; }
+    public required decimal? Fats { get; set; }
+    public required decimal? Carbs { get; set; }
+    public required decimal? Sugar { get; set; }
+    public required decimal? Salt { get; set; }
 
     public Category? Category { get; set; }
 
