@@ -169,6 +169,46 @@ from a gitignored `.env.amvera` on the developer machine:
 | `Integrations__OpenAI__ApiKey` | secret |
 | `ASPNETCORE_FORWARDEDHEADERS_ENABLED` | variable, `true` |
 
+### Protecting `.env.amvera`
+
+`.env.amvera` holds the production database connection string, the Google OAuth
+client secret, and the OpenAI API key in plaintext. It lives at the repository
+root, so it must be unreachable to both git and coding agents.
+
+**Git.** `.gitignore` gains an explicit `.env.amvera` entry. The existing `.env`
+line does not cover it — that pattern matches only a file named exactly `.env`.
+`scripts/deploy.sh` preflight asserts `git check-ignore -q .env.amvera` and
+aborts if it fails, so an accidental `.gitignore` edit cannot quietly expose the
+file across future deploys.
+
+**Coding agents.** `.claude/settings.json` gains deny rules for the file. The
+repo's `permissions.allow` list contains `Read(./**)`; `deny` takes precedence
+over `allow`, so a deny entry is sufficient and no allow entry needs changing:
+
+```jsonc
+"deny": [
+  "Read(./.env.amvera)",
+  "Bash(cat .env.amvera:*)",
+  "Bash(cat ./.env.amvera:*)"
+]
+```
+
+The `Read` rule is the real boundary — it blocks the file tool and keeps the
+file out of anything the agent indexes. The `Bash` entries are defence in depth
+against the obvious shortcut only: shell deny rules match command strings, so
+`grep`, `source`, `env -f`, or any other reader still gets through. Treat the
+file as readable by any agent granted broad shell access, and do not paste its
+contents into a conversation.
+
+**The script itself.** `deploy.sh` loads the file into the environment in a
+subshell, never echoes values, and keeps `set -x` off around the `amvera env`
+calls so secrets do not reach the terminal, CI logs, or an agent transcript.
+Preflight reports only whether each expected key is present, never its value.
+
+Anyone wanting the secrets outside the repository entirely can point
+`AMVERA_ENV_FILE` at another path; the repo-root default is what README
+documents, matching the existing `.env` convention.
+
 ### HTTPS scheme behind the Amvera proxy
 
 Amvera terminates TLS at its ingress and forwards plain HTTP to the container.
@@ -330,3 +370,5 @@ resolves this, and it was consciously declined.
    `.github/` (matches in `docs/` and `CHANGELOG.md` are expected).
 6. README's Deployment section is sufficient to repeat the setup from scratch.
 7. `dotnet test` and the frontend suite pass; `build.yml` is green.
+8. `git check-ignore -q .env.amvera` succeeds, `git status` never lists the
+   file, and `.claude/settings.json` denies reading it.
