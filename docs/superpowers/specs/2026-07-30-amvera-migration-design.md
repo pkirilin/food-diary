@@ -167,10 +167,42 @@ from a gitignored `.env.amvera` on the developer machine:
 | `GoogleAuth__ClientSecret` | secret |
 | `Integrations__OpenAI__BaseUrl` | secret |
 | `Integrations__OpenAI__ApiKey` | secret |
-| `App__ForwardHttpsSchemeManuallyForAllRequests` | variable, `true` |
+| `ASPNETCORE_FORWARDEDHEADERS_ENABLED` | variable, `true` |
 
-`App__ForwardHttpsSchemeManuallyForAllRequests` stays because Amvera terminates
-TLS at its proxy; the setting is provider-neutral despite its origin.
+### HTTPS scheme behind the Amvera proxy
+
+Amvera terminates TLS at its ingress and forwards plain HTTP to the container.
+Without correction, Kestrel sees `http`, `UseHttpsRedirection` loops, and Google
+OAuth generates `http://` redirect URIs.
+
+The custom `App__ForwardHttpsSchemeManuallyForAllRequests` option is **removed**
+in favour of the framework's own mechanism: `ASPNETCORE_FORWARDEDHEADERS_ENABLED=true`.
+This is the documented way to forward the scheme behind non-IIS reverse proxies.
+`Program.cs` already uses `Host.CreateDefaultBuilder(...).ConfigureWebHostDefaults(...)`,
+which honours the variable by configuring `ForwardedHeadersOptions` with
+`XForwardedFor | XForwardedProto`, clearing `KnownNetworks`/`KnownProxies`, and
+registering a startup filter that runs `UseForwardedHeaders` ahead of every
+middleware in `Startup.Configure`. No application code is needed.
+
+It is strictly better than the option it replaces: the manual middleware forced
+`Scheme = "https"` on *all* requests including local and health-check traffic,
+and discarded the real client IP. Forwarded headers also populate
+`RemoteIpAddress`, so Serilog request logs show the caller instead of the
+ingress.
+
+The trade-off is a dependency on Amvera's ingress actually sending
+`X-Forwarded-Proto`. Amvera documents an "Ingress Controller" but not its header
+behaviour; Kubernetes ingress-nginx, which that terminology implies, sets
+`X-Forwarded-For/-Proto/-Host/-Port` and `X-Real-IP` unconditionally. This is an
+inference, not a documented guarantee — see Risks.
+
+Microsoft warns that this flag uses cloud defaults and does not restrict which
+proxies are trusted. That is acceptable here: the container is reachable only
+through Amvera's ingress, and no authorization decision depends on client IP.
+
+Local development and `docker-compose` are unaffected — there Kestrel terminates
+TLS itself (`ASPNETCORE_URLS=https://+:443`), so no forwarding is involved and
+the variable is not set.
 
 `App__Logging__WriteLogsInJsonFormat` is left at its `false` default — Amvera's
 log viewer renders plain console output more readably than JSON.
@@ -211,6 +243,13 @@ Yandex Cloud artifacts to delete:
 - The `UseYandexCloudLogsFormat` keys in `appsettings.json` and
   `appsettings.Development.json`.
 
+Also removed, as superseded by `ASPNETCORE_FORWARDEDHEADERS_ENABLED`:
+
+- `AppOptions.ForwardHttpsSchemeManuallyForAllRequests` and the
+  scheme-rewriting middleware it guards in `Startup.Configure`.
+- The `ForwardHttpsSchemeManuallyForAllRequests` keys in `appsettings.json` and
+  `appsettings.Development.json`.
+
 GitHub repository secrets left unused after this change, to be deleted manually:
 `YC_CR_REGISTRY`, `YC_SA_JSON_CREDENTIALS`, `YC_FOLDER_ID`,
 `YC_REVISION_SERVICE_ACCOUNT_ID`, `Migrator_DatabaseConnectionString`, and the
@@ -243,6 +282,14 @@ SSE-buffering guarantees for its nginx ingress, which is not user-configurable.
 Acceptance therefore includes uploading a large photo through the deployed app;
 if that fails, the migration has not achieved its goal and the VPS option is
 reopened.
+
+**Amvera's ingress may not send `X-Forwarded-Proto`.** If it doesn't, the app
+sees `http`, `UseHttpsRedirection` returns a redirect loop, and Google sign-in
+fails on a `redirect_uri` mismatch. This surfaces immediately at acceptance
+criterion 2, before any data is at stake. The fallback is to restore the
+two-line scheme-forcing middleware from `Startup.Configure` — unconditionally,
+not behind a configuration flag, since Amvera would then be the only deployment
+target that needs it and `docker-compose` does not run behind a proxy.
 
 **Начальный may be too small.** 0.5 GB and 0.25 vCPU is workable for ASP.NET
 Core serving a SPA, but not roomy, and a slow first request after a restart is
