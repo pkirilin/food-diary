@@ -309,7 +309,9 @@ release tags, `deploy-demo.yml`, and the e2e suite.
 README gains a **Deployment** section covering: one-time Amvera project setup
 (region, tariff, git remote), `.env.amvera` and the variables above, the custom
 domain records, the Google OAuth client update, and the `scripts/deploy.sh`
-commands including rollback. The existing Installation section, which documents
+commands including rollback. There is no committed `.env.amvera.example` — the
+same secrets are already illustrated by `.env.example`, and README's variable
+table is the authoritative list of the Amvera key names. The existing Installation section, which documents
 running the app locally through docker-compose, is unchanged.
 
 CHANGELOG gains an entry under `[Unreleased]`.
@@ -319,9 +321,9 @@ CHANGELOG gains an entry under `[Unreleased]`.
 **Payload size and SSE remain unverified.** These are two of the three
 motivations for the migration, and Amvera publishes no `client_max_body_size` or
 SSE-buffering guarantees for its nginx ingress, which is not user-configurable.
-Acceptance therefore includes uploading a large photo through the deployed app;
-if that fails, the migration has not achieved its goal and the VPS option is
-reopened.
+Verifying them is out of scope for this change; if large uploads or note
+recognition turn out to fail in normal use, the migration has not achieved its
+goal and the VPS option is reopened.
 
 **Amvera's ingress may not send `X-Forwarded-Proto`.** If it doesn't, the app
 sees `http`, `UseHttpsRedirection` returns a redirect loop, and Google sign-in
@@ -354,6 +356,7 @@ resolves this, and it was consciously declined.
 ## Out of scope
 
 - Migrating the database away from Supabase.
+- Verifying large payload uploads and note recognition on Amvera.
 - The Food Diary MCP server that motivated the region requirement.
 - Any change to the demo deployment on GitHub Pages.
 - Multi-instance scaling or zero-downtime deployment guarantees.
@@ -364,11 +367,10 @@ resolves this, and it was consciously declined.
    checkout and reports success.
 2. The app is reachable over HTTPS at the custom domain, and Google sign-in
    completes.
-3. A large photo uploads successfully and note recognition returns a result.
-4. `./scripts/deploy.sh --tag <previous>` rolls back.
-5. `git grep -i yandex` and `git grep YC_` match nothing under `src/` or
+3. `./scripts/deploy.sh --tag <previous>` rolls back.
+4. `git grep -i yandex` and `git grep YC_` match nothing under `src/` or
    `.github/` (matches in `docs/` and `CHANGELOG.md` are expected).
-6. README's Deployment section is sufficient to repeat the setup from scratch.
-7. `dotnet test` and the frontend suite pass; `build.yml` is green.
-8. `git check-ignore -q .env.amvera` succeeds, `git status` never lists the
+5. README's Deployment section is sufficient to repeat the setup from scratch.
+6. `dotnet test` and the frontend suite pass; `build.yml` is green.
+7. `git check-ignore -q .env.amvera` succeeds, `git status` never lists the
    file, and `.claude/settings.json` denies reading it.

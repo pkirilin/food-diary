@@ -34,7 +34,6 @@
 - `scripts/lib/dockerhub.sh` — sourceable, side-effect-free functions that turn `latest` into a concrete image reference against the Docker Hub tags API. Isolated so it can be unit-tested offline.
 - `scripts/lib/dockerhub.test.sh` — offline test for the above, stubbing the HTTP call.
 - `scripts/deploy.sh` — the deploy entry point: argument parsing, preflight, orchestration.
-- `.env.amvera.example` — documented, committed template mirroring the existing `.env.example` convention.
 
 **Modified:**
 
@@ -359,11 +358,10 @@ git commit -m "refactor: drop Yandex Cloud log format and manual HTTPS scheme op
 
 - Modify: `.gitignore`
 - Modify: `.claude/settings.json`
-- Create: `.env.amvera.example`
 
 **Interfaces:**
 
-- Produces: `git check-ignore -q .env.amvera` succeeds — Task 5's preflight asserts exactly this. `.env.amvera.example` documents the key set that Task 5's preflight validates and Task 7's README describes.
+- Produces: `git check-ignore -q .env.amvera` succeeds — Task 5's preflight asserts exactly this. The key set that Task 5's preflight validates is documented only in Task 7's README table; there is deliberately no committed `.env.amvera.example`, since `.env.example` already illustrates the same secrets.
 
 - [ ] **Step 1: Write the failing check**
 
@@ -390,8 +388,6 @@ Expected: `NOT IGNORED`
 .superpowers/
 ```
 
-Note `.env.amvera.example` is unaffected — the pattern matches that exact filename only.
-
 - [ ] **Step 3: Re-run the check**
 
 ```bash
@@ -401,16 +397,7 @@ git status --porcelain | grep -F ".env.amvera" || echo "not listed by git status
 
 Expected: `IGNORED`, then `not listed by git status`.
 
-- [ ] **Step 4: Confirm the example file is still trackable**
-
-```bash
-touch .env.amvera.example
-git check-ignore -q .env.amvera.example && echo "WRONGLY IGNORED" || echo "trackable"
-```
-
-Expected: `trackable`
-
-- [ ] **Step 5: Deny the file to coding agents**
+- [ ] **Step 4: Deny the file to coding agents**
 
 `.claude/settings.json` already has `"Read(./**)"` in `permissions.allow`; `deny` takes precedence over `allow`, so adding deny entries is sufficient and nothing in `allow` changes. Add three entries to the existing `permissions.deny` array so it reads:
 
@@ -429,7 +416,7 @@ Expected: `trackable`
 
 The `Read` rule is the real boundary. The `Bash` entries are defence in depth against the obvious shortcut only — shell deny rules match command strings, so `grep`, `source`, or any other reader still gets through.
 
-- [ ] **Step 6: Validate the settings file is still valid JSON**
+- [ ] **Step 5: Validate the settings file is still valid JSON**
 
 ```bash
 jq empty .claude/settings.json && echo "valid json"
@@ -437,40 +424,16 @@ jq empty .claude/settings.json && echo "valid json"
 
 Expected: `valid json`
 
-- [ ] **Step 7: Write `.env.amvera.example`**
-
-Create `.env.amvera.example` with placeholder values only — this file **is** committed:
-
-```dotenv
-# Deployment secrets and configuration for Amvera. Copy to .env.amvera and fill in.
-# .env.amvera is gitignored and must never be committed or pasted into a chat.
-
-# Amvera git remote (Project settings -> Repository), e.g.
-# https://git.amvera.ru/<amvera-user>/<amvera-project>
-AMVERA_GIT_REMOTE=https://git.amvera.ru/<amvera-user>/<amvera-project>
-
-# Synced to Amvera as secrets
-Auth__AllowedEmails__0=<your_mail>@gmail.com
-ConnectionStrings__Default=<supabase_postgres_connection_string>
-GoogleAuth__ClientId=<your_google_client_id>
-GoogleAuth__ClientSecret=<your_google_client_secret>
-Integrations__OpenAI__BaseUrl=https://api.openai.com/v1
-Integrations__OpenAI__ApiKey=<your_openai_api_key>
-
-# Synced to Amvera as a plain variable
-ASPNETCORE_FORWARDEDHEADERS_ENABLED=true
-```
-
-- [ ] **Step 8: Remove the scratch file**
+- [ ] **Step 6: Remove the scratch file**
 
 ```bash
 rm -f .env.amvera
 ```
 
-- [ ] **Step 9: Commit**
+- [ ] **Step 7: Commit**
 
 ```bash
-git add .gitignore .claude/settings.json .env.amvera.example
+git add .gitignore .claude/settings.json
 git commit -m "chore: gitignore .env.amvera and deny it to coding agents"
 ```
 
@@ -776,7 +739,7 @@ preflight() {
   [ -z "$(git -C "$repo_root" status --porcelain)" ] \
     || die "working tree is dirty; commit or stash before deploying"
 
-  [ -f "$ENV_FILE" ] || die "$ENV_FILE not found; copy .env.amvera.example and fill it in"
+  [ -f "$ENV_FILE" ] || die "$ENV_FILE not found; see the Deployment section in README.md"
 
   git -C "$repo_root" check-ignore -q .env.amvera \
     || die ".env.amvera is not gitignored — refusing to deploy. Restore the .gitignore entry."
@@ -1148,13 +1111,8 @@ credentials.
    amvera whoami
    ```
 
-3. **Create `.env.amvera`** at the repository root from the template:
-
-   ```shell
-   cp .env.amvera.example .env.amvera
-   ```
-
-   Fill in every value. The file is gitignored and holds production secrets in
+3. **Create `.env.amvera`** at the repository root, as `KEY=value` lines with
+   every name below. The file is gitignored and holds production secrets in
    plaintext — never commit it, never paste its contents anywhere:
 
    | Name | Kind in Amvera |
@@ -1285,7 +1243,7 @@ git commit -m "docs: document Amvera deployment and record the migration"
 
 ### Task 8: Live acceptance
 
-Everything up to here is verifiable offline. This task exercises the real deployment and is the only place the migration's three motivations are actually tested. It requires Amvera credentials, the custom domain, and a Docker daemon — run it interactively with the user.
+Everything up to here is verifiable offline. This task exercises the real deployment. It requires Amvera credentials, the custom domain, and a Docker daemon — run it interactively with the user.
 
 **Files:** none — this is verification.
 
@@ -1344,13 +1302,7 @@ Expected: the page loads over HTTPS with a valid certificate and sign-in complet
 
 Place it as the first statement in `Configure`, before `if (env.IsDevelopment())`.
 
-- [ ] **Step 5: Verify large payloads and note recognition**
-
-In the deployed app, upload a large photo and run note recognition.
-
-Expected: the upload succeeds and recognition returns a result. Amvera publishes no `client_max_body_size` or SSE-buffering guarantee for its ingress, and the ingress is not user-configurable — **if this fails, the migration has not achieved its goal**; report it to the user, as it reopens the self-hosted VPS option.
-
-- [ ] **Step 6: Verify rollback**
+- [ ] **Step 5: Verify rollback**
 
 ```bash
 ./scripts/deploy.sh --tag <previous-version> --skip-migrations
@@ -1358,19 +1310,19 @@ Expected: the upload succeeds and recognition returns a result. Amvera publishes
 
 Expected: the previous version deploys and the app is reachable. Then redeploy the newest release with `./scripts/deploy.sh`.
 
-- [ ] **Step 7: Watch for under-resourcing**
+- [ ] **Step 6: Watch for under-resourcing**
 
 Exercise the app for a few minutes and watch `amvera logs run`.
 
 Expected: no opaque 502/503 responses, no container restarts. A slow first request after a restart is expected on 0.5 GB / 0.25 vCPU. If restarts or 5xx appear, tell the user — *Начальный Плюс* (1 GB, 0.5 vCPU, 490 RUB/month) is still below the 650 RUB Yandex baseline, and tariff changes bill per hour.
 
-- [ ] **Step 8: Confirm CI is green**
+- [ ] **Step 7: Confirm CI is green**
 
 Push the branch and check the Build workflow.
 
 Expected: `backend`, `frontend`, and `e2e-tests` all pass; no other jobs exist.
 
-- [ ] **Step 9: Tell the user which GitHub secrets to delete**
+- [ ] **Step 8: Tell the user which GitHub secrets to delete**
 
 These are now unused and must be removed manually in GitHub repository settings — the script cannot do it:
 
