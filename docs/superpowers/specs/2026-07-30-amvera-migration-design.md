@@ -1,6 +1,6 @@
 # Amvera migration — design
 
-Date: 2026-07-30
+Date: 2026-07-30 (revised 2026-08-03)
 Status: proposed
 
 ## Context
@@ -22,21 +22,25 @@ The database stays on Supabase and is out of scope.
 ## Goals
 
 - Food Diary is hosted and reachable from a region outside Russia.
-- Deploys are automated behind a single command.
+- A deploy is a single git command.
 - YC artifacts are gone from the repository.
-- README documents self-hosting and the deployment procedure.
+- Deployment adds no scripts, no CI credentials, and no local secret files.
 
 ## Decision
 
 Host the app on **Amvera Cloud, Warsaw region**, tariff **Начальный**
 (0.5 GB RAM, 0.25 vCPU, 290 RUB/month).
 
-Amvera **never builds the project**. The deployable artifact is the Docker image
-already published to Docker Hub by `release.yml`. Amvera is configured with
-`build.skip: yes` and `run.image`, so a deploy is a pull of an existing image.
+**Amvera builds the image from source.** Pushing to the Amvera repo's `master`
+triggers a build from the repository's `Dockerfile`, then a container start. A
+deploy is therefore:
 
-All deploys run from the developer machine through `scripts/deploy.sh`. GitHub
-Actions performs verification only and holds no deployment credentials.
+```shell
+git push amvera <current-branch>:master --force
+```
+
+GitHub Actions verifies only. It never builds an image, never migrates the
+database, and holds no deployment credentials.
 
 ### Why this shape
 
@@ -44,120 +48,129 @@ Actions performs verification only and holds no deployment credentials.
 be cheaper (zero marginal cost, the server already exists), fully outside Russian
 jurisdiction, and would put payload-size and SSE limits under our own control.
 Amvera was chosen anyway for familiarity, developer-friendly deploys, and low
-maintenance. The design keeps the escape hatch cheap: the deployable artifact is
-a plain Docker image, so moving to the VPS later is a compose file plus a DNS
-change, not a redesign.
+maintenance. The escape hatch stays cheap: the deployable artifact is a plain
+Docker image built from a `Dockerfile` that already works under `docker-compose`,
+so moving to the VPS later is a compose file plus a DNS change.
 
-**Prebuilt image over building on Amvera.** Amvera bills the build container at
-the app's tariff and clones only what git tracks. Building this repo there means
-running `dotnet publish` and `yarn build` on 0.25 vCPU on every deploy, paying
-for a second instance while it runs. Skipping the build removes that cost
-entirely and makes a deploy take seconds.
+**Building on Amvera over deploying a prebuilt image.** Amvera bills the build
+container at the app's tariff, so building here costs a second instance-hour per
+deploy and takes 5–20 minutes rather than seconds. That is accepted deliberately:
+deploys are rare, the cost is small, and the alternative — resolving Docker Hub
+tags, rendering config, and force-pushing an orphan commit from a local script —
+is a script to maintain, a registry to depend on, and a deploy path that only
+exists on one machine. Simplicity and maintainability win over cost and speed
+for this project.
 
-**Local `deploy.sh` over GitHub Actions.** Amvera's git remote authenticates with
+**Local git push over GitHub Actions.** Amvera's git remote authenticates with
 the Amvera **account** username and password — there is no scoped deploy token.
 Automating deploys from CI would mean storing full-account credentials in GitHub
-secrets. Running deploys locally keeps those credentials in the developer's git
-credential helper. The Amvera CLI is unusable from CI regardless: it forces an
-interactive re-login after 24 hours of inactivity.
+secrets. Pushing from the developer machine keeps those credentials in the local
+git credential helper.
 
-**Immutable image tags.** `amvera.yml` never references a moving tag. A moving
-tag risks Amvera reusing a cached image and silently not updating, and it makes
-the deployed version unknowable. `deploy.sh` resolves `latest` to a concrete
-release tag before writing the config.
+**Configuration lives in the repository.** See the next section: this follows
+from force-pushing, and it is the single most important constraint in this
+design.
 
 ## Architecture
 
-### Amvera project
+### Force push determines where configuration can live
 
-A single Amvera application ("Приложение") in the Warsaw region. It is connected
-to no external repository and has no webhook; its git repo is purely a push
-target.
+Amvera's web UI has a configuration section. It does not store settings on the
+platform — it *commits `amvera.yml` into the application's git repository*
+("автоматически добавится в корень проекта, создав при этом новый коммит в гит
+репозиторий"). Every deploy force-pushes our history over that repo, so any
+UI-created configuration is deleted on the next deploy, silently reverting the
+run command and the port.
 
-That repo contains exactly one file, which is all `build.skip` requires:
+Configuration therefore splits by durability:
+
+| Setting | Where it lives | Survives force push |
+|---|---|---|
+| Run command, container port | `amvera.yml`, committed to this repo | yes |
+| Environment variables, secrets | Amvera's own database / secret store | yes |
+| Anything set in the UI's config section | Amvera's git repo | **no** |
+
+**Standing operational rule: never use the Amvera UI's configuration section.**
+Variables and secrets are entered in the UI, and that is fine — they are stored
+outside git. Everything else goes through `amvera.yml`.
+
+### `amvera.yml`
+
+Committed at the repository root:
 
 ```yaml
-build:
-  skip: yes
 run:
-  image: pkirilin/food-diary:0.6.1
+  command: /bin/sh
+  args: -c "dotnet migrator/FoodDiary.Migrator.dll && exec dotnet FoodDiary.API.dll"
   containerPort: 8080
 ```
 
-No `meta` section is needed — Amvera defaults to the docker environment.
+No `meta` section — Amvera defaults to the docker environment. No `build`
+section — with `build.dockerfile` unset, Amvera searches `amvera/Dockerfile`,
+`Dockerfile`, `docker/Dockerfile`, `deploy/Dockerfile`, and
+`deployment/Dockerfile`, and finds ours at the root.
 
-The image is started with no `ASPNETCORE_URLS` override, so Kestrel listens on
-plain HTTP on port 8080. Amvera's nginx ingress terminates TLS and forwards to
-the access service on the default `servicePort` 80.
+`containerPort` is mandatory rather than cosmetic: it defaults to **80**, the
+`mcr.microsoft.com/dotnet/aspnet:10.0` image listens on **8080**, and `EXPOSE` is
+not documented as honoured. Without this line the app builds, starts, and is
+unreachable.
 
-`scripts/deploy.sh` renders this file from `deploy/amvera.yml.template` and
-pushes it as a **single-file orphan commit** to the Amvera remote's `master`
-branch, force-pushing. Consequences:
+The image is started with no `ASPNETCORE_URLS` override, so Kestrel serves plain
+HTTP on 8080. Amvera's nginx ingress terminates TLS and forwards to it.
 
-- No source code is ever sent to Amvera, so the push is instant.
-- The GitHub repository's history never churns with deploy tags.
-- Force-pushing keeps the Amvera repo deterministic and avoids divergence from
-  config commits that Amvera's web UI creates.
+### Dockerfile
 
-Pushing to the Amvera repo's `master` is what triggers their pipeline. With the
-build skipped, it proceeds straight to deployment.
+One change: `ENTRYPOINT ["dotnet", "FoodDiary.API.dll"]` becomes
+`CMD ["dotnet", "FoodDiary.API.dll"]`, so `run.command` in `amvera.yml`
+overrides it. `run.command` corresponds to `ENTRYPOINT` and `run.args` to `CMD`.
+
+Nothing else changes. `docker-compose.base.yml` already overrides `entrypoint:`
+with its own cert-setup → migrator → API chain, so local runs and the e2e suite
+are untouched, and `docker run` on the published Docker Hub image behaves exactly
+as it does today.
+
+No cross-compilation work is needed. Amvera builds on its own amd64
+infrastructure, so the `$BUILDPLATFORM` / `-a $TARGETARCH` restructuring
+considered earlier is dropped.
+
+### Migrations
+
+`run.args` runs the migrator before the API on every container start. The
+migrator is already in the image at `migrator/FoodDiary.Migrator.dll`, and
+`MigratorConfiguration` reads `ConnectionStrings:Default` from environment
+variables — the same `ConnectionStrings__Default` secret the API uses. No
+argument passing, no extra secret.
+
+`MigrateAsync` is idempotent, so restarts are no-ops beyond a round trip to
+Supabase. A failed migration returns a non-zero exit code and `&&` prevents the
+API from starting, which is the correct outcome: the old code is not left
+running against a half-migrated schema, and the failure is visible in the run
+log.
+
+This is why `run-migrations` is removed from CI rather than moved: with deploys
+manual, a CI job migrating Supabase on every merge to `main` would change the
+production schema at a moment unrelated to any deploy.
 
 ### Deploy flow
 
-```
-./scripts/deploy.sh                   # deploy newest published release
-./scripts/deploy.sh --tag 0.6.0       # deploy a specific published tag (rollback)
-./scripts/deploy.sh --build           # build HEAD, push <short-sha>, deploy it
-./scripts/deploy.sh --registry ghcr   # with --build, push to ghcr.io instead
-```
+1. Merge to `main` as usual; `build.yml` verifies backend, frontend, and e2e.
+2. `git push amvera main:master --force`.
+3. Amvera builds from the `Dockerfile` (5–20 minutes), then starts the container:
+   migrator first, API second.
+4. Watch the build and run logs in the Amvera UI.
 
-Default (no arguments) deploys the newest image already on Docker Hub and builds
-nothing. Because `latest` is a moving tag, the script resolves it to a concrete
-tag: it reads the digest behind `pkirilin/food-diary:latest` from Docker Hub's
-public tags API and selects the named tag sharing that digest. If no named tag
-matches, it falls back to a digest reference (`pkirilin/food-diary@sha256:...`).
+Rollback is the same command against an older commit:
+`git push amvera <older-sha>:master --force`. It rebuilds rather than swapping a
+prebuilt image, so it is slower than a tag change, but it needs no registry and
+no tooling.
 
-Steps, in order:
-
-1. **Preflight.** Docker daemon reachable; `amvera whoami` succeeds (otherwise
-   instruct the user to run `amvera login`); working tree clean; `.env.amvera`
-   present. Abort on any failure before touching remote state.
-2. **Resolve the image reference** per the rules above, or build it when
-   `--build` is passed: `docker buildx build --platform linux/amd64 --push`
-   tagged with the short SHA of HEAD.
-3. **Run database migrations** against Supabase using
-   `FoodDiary.Migrator` with the connection string from `.env.amvera`.
-4. **Sync environment variables** to Amvera via `amvera env` from `.env.amvera`.
-5. **Render and push `amvera.yml`** as an orphan commit to the Amvera remote.
-6. **Tail `amvera logs run`** so the outcome is visible without opening the UI.
-
-Migrations run before the image reference is pushed, so the schema always leads
-the code.
-
-### Dockerfile cross-compilation
-
-The development machine is arm64; Amvera runs amd64. Building with
-`--platform linux/amd64` as the Dockerfile stands today would run `dotnet
-publish` and `yarn install` under QEMU emulation, costing tens of minutes per
-build.
-
-The build stages become build-platform native, and only the runtime layer is
-target-platform:
-
-- `FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:10.0 AS backend`,
-  with `ARG TARGETARCH` and `dotnet publish -a $TARGETARCH`.
-- `FROM --platform=$BUILDPLATFORM node:24-alpine AS frontend` — the output is
-  JavaScript, so it is architecture-neutral.
-- The final `mcr.microsoft.com/dotnet/aspnet:10.0` stage stays on the target
-  platform.
-
-On amd64 runners this is a no-op, so `docker-compose`, the e2e suite, and
-`release.yml` are unaffected.
+Initial deployment is manual: create the application in the UI, add the variables
+and secrets, add the git remote, push. No Amvera CLI is required at any point.
 
 ### Configuration and secrets
 
-Runtime configuration lives in Amvera environment variables and secrets, seeded
-from a gitignored `.env.amvera` on the developer machine:
+Entered by hand in the Amvera UI. There is no `.env.amvera` and no committed
+example file.
 
 | Name | Kind |
 |---|---|
@@ -169,45 +182,13 @@ from a gitignored `.env.amvera` on the developer machine:
 | `Integrations__OpenAI__ApiKey` | secret |
 | `ASPNETCORE_FORWARDEDHEADERS_ENABLED` | variable, `true` |
 
-### Protecting `.env.amvera`
+Amvera applies variable changes only on container restart, and does not expose
+them during build. Neither constrains this design: nothing in the frontend or
+backend build reads an environment variable, as CI demonstrates by building the
+same image on every push.
 
-`.env.amvera` holds the production database connection string, the Google OAuth
-client secret, and the OpenAI API key in plaintext. It lives at the repository
-root, so it must be unreachable to both git and coding agents.
-
-**Git.** `.gitignore` gains an explicit `.env.amvera` entry. The existing `.env`
-line does not cover it — that pattern matches only a file named exactly `.env`.
-`scripts/deploy.sh` preflight asserts `git check-ignore -q .env.amvera` and
-aborts if it fails, so an accidental `.gitignore` edit cannot quietly expose the
-file across future deploys.
-
-**Coding agents.** `.claude/settings.json` gains deny rules for the file. The
-repo's `permissions.allow` list contains `Read(./**)`; `deny` takes precedence
-over `allow`, so a deny entry is sufficient and no allow entry needs changing:
-
-```jsonc
-"deny": [
-  "Read(./.env.amvera)",
-  "Bash(cat .env.amvera:*)",
-  "Bash(cat ./.env.amvera:*)"
-]
-```
-
-The `Read` rule is the real boundary — it blocks the file tool and keeps the
-file out of anything the agent indexes. The `Bash` entries are defence in depth
-against the obvious shortcut only: shell deny rules match command strings, so
-`grep`, `source`, `env -f`, or any other reader still gets through. Treat the
-file as readable by any agent granted broad shell access, and do not paste its
-contents into a conversation.
-
-**The script itself.** `deploy.sh` loads the file into the environment in a
-subshell, never echoes values, and keeps `set -x` off around the `amvera env`
-calls so secrets do not reach the terminal, CI logs, or an agent transcript.
-Preflight reports only whether each expected key is present, never its value.
-
-Anyone wanting the secrets outside the repository entirely can point
-`AMVERA_ENV_FILE` at another path; the repo-root default is what README
-documents, matching the existing `.env` convention.
+`App__Logging__WriteLogsInJsonFormat` is left at its `false` default — Amvera's
+log viewer renders plain console output more readably than JSON.
 
 ### HTTPS scheme behind the Amvera proxy
 
@@ -244,13 +225,6 @@ Local development and `docker-compose` are unaffected — there Kestrel terminat
 TLS itself (`ASPNETCORE_URLS=https://+:443`), so no forwarding is involved and
 the variable is not set.
 
-`App__Logging__WriteLogsInJsonFormat` is left at its `false` default — Amvera's
-log viewer renders plain console output more readably than JSON.
-
-Amvera applies variable changes only after a container restart, and does not
-expose them during build. Neither constrains this design, since nothing is built
-on Amvera.
-
 ### Domain and authentication
 
 The app uses a subdomain of a domain the author already owns, rather than the
@@ -258,7 +232,7 @@ free `<project>.<user>.amvera.io`. The URL then belongs to the project, so a
 later move to the VPS is a DNS change that does not invalidate Google OAuth
 configuration, saved sessions, or installed PWAs.
 
-Setup is a one-time manual step — Amvera exposes no CLI for domains:
+Setup is a one-time manual step:
 
 1. Point an A record at the IP shown in the Amvera project settings.
 2. Add the TXT record shown alongside it.
@@ -276,7 +250,8 @@ Yandex Cloud artifacts to delete:
 - `.github/workflows/deploy.yml` — the entire workflow.
 - The `run-migrations`, `build-and-push-image`, and `deploy` jobs in
   `.github/workflows/build.yml`, leaving verification only (backend, frontend,
-  e2e).
+  e2e), along with the now-unused `CR_REGISTRY`/`CR_REPOSITORY`/`IMAGE_TAG`
+  workflow env block.
 - `src/backend/src/FoodDiary.API/Logging/YandexCloudJsonFormatter.cs`.
 - `AppOptions.LoggingOptions.UseYandexCloudLogsFormat` and its branch in
   `LoggerConfigurationExtensions.WriteToConsole`.
@@ -295,28 +270,60 @@ GitHub repository secrets left unused after this change, to be deleted manually:
 `YC_REVISION_SERVICE_ACCOUNT_ID`, `Migrator_DatabaseConnectionString`, and the
 `YC_REVISION_SECRETS_ID` / `YC_REVISION_SECRETS_VERSION` variables.
 
-Removing `run-migrations` from CI is deliberate. With deploys now manual, a CI
-job migrating Supabase on every merge to `main` would change the production
-schema at a moment unrelated to any deploy, leaving the running old code to meet
-a new schema.
+Deliberately not built, having been part of an earlier draft of this design:
+`scripts/deploy.sh`, `deploy/amvera.yml.template`, a Docker Hub tag-resolution
+library, a ghcr fallback registry, an Amvera CLI dependency, and `.env.amvera`
+with its `.gitignore` and `.claude/settings.json` protections. Amvera building
+from source removes the need for all of them.
 
-Deliberately kept: `Dockerfile` (modified for cross-compilation only),
+Deliberately kept and unchanged: `Dockerfile` (except `ENTRYPOINT` → `CMD`),
 `docker-compose.yml`, `docker-compose.base.yml`, `release.yml`, the Docker Hub
 release tags, `deploy-demo.yml`, and the e2e suite.
 
 ## Documentation
 
-README gains a **Deployment** section covering: one-time Amvera project setup
-(region, tariff, git remote), `.env.amvera` and the variables above, the custom
-domain records, the Google OAuth client update, and the `scripts/deploy.sh`
-commands including rollback. There is no committed `.env.amvera.example` — the
-same secrets are already illustrated by `.env.example`, and README's variable
-table is the authoritative list of the Amvera key names. The existing Installation section, which documents
-running the app locally through docker-compose, is unchanged.
+README is not updated: it documents local installation and development, says
+nothing about deployment or Yandex Cloud today, and this change gives it nothing
+it must correct.
 
-CHANGELOG gains an entry under `[Unreleased]`.
+CHANGELOG gains one `### Removed` entry under `[Unreleased]` naming the two
+deleted configuration options — `App__ForwardHttpsSchemeManuallyForAllRequests`
+and `App__Logging__UseYandexCloudLogsFormat`. Amvera, Yandex Cloud, and
+deployment are not mentioned.
 
 ## Risks and fallbacks
+
+**`run.args` is a string, not an array.** Amvera documents args as passed
+"обычной строкой, а не массивом" and does not specify how the string is split
+into argv, so `-c "a && b"` is an assumption. If it is split naively on
+whitespace, the container fails at start with a visible error in the run log. The
+fallback is to commit a `docker-entrypoint.sh` containing the two commands and
+set `run.command` to it with no args.
+
+**The build may not fit in Начальный.** The build runs in an extra container
+sized and billed at the app's tariff — 0.5 GB and 0.25 vCPU for `yarn install`,
+`vite build`, and two `dotnet publish` runs. Amvera's own FAQ recommends building
+on a higher tariff and downgrading afterwards. We start on Начальный anyway; if
+the build OOMs, or sits in "build" status past an hour with no logs, move to
+Начальный Плюс (1 GB, 0.5 vCPU, 490 RUB/month — still below the 650 RUB YC
+baseline). Tariff changes are billed per hour, so the experiment is cheap.
+Expect 5–20 minutes per build regardless.
+
+**Configuring through the Amvera UI breaks the next deploy.** Covered above; it
+is repeated here because the failure is silent and delayed — the deploy that
+breaks it is not the one that shows the symptom.
+
+**Начальный may be too small at runtime as well.** A slow first request after a
+restart is expected, and Amvera surfaces under-resourcing as opaque 502/503
+responses. Same fallback tariff.
+
+**Amvera's ingress may not send `X-Forwarded-Proto`.** If it doesn't, the app
+sees `http`, `UseHttpsRedirection` returns a redirect loop, and Google sign-in
+fails on a `redirect_uri` mismatch. This surfaces immediately at acceptance
+criterion 3, before any data is at stake. The fallback is to restore the two-line
+scheme-forcing middleware in `Startup.Configure` — unconditionally, not behind a
+configuration flag, since Amvera would then be the only deployment target that
+needs it and `docker-compose` does not run behind a proxy.
 
 **Payload size and SSE remain unverified.** These are two of the three
 motivations for the migration, and Amvera publishes no `client_max_body_size` or
@@ -325,29 +332,9 @@ Verifying them is out of scope for this change; if large uploads or note
 recognition turn out to fail in normal use, the migration has not achieved its
 goal and the VPS option is reopened.
 
-**Amvera's ingress may not send `X-Forwarded-Proto`.** If it doesn't, the app
-sees `http`, `UseHttpsRedirection` returns a redirect loop, and Google sign-in
-fails on a `redirect_uri` mismatch. This surfaces immediately at acceptance
-criterion 2, before any data is at stake. The fallback is to restore the
-two-line scheme-forcing middleware from `Startup.Configure` — unconditionally,
-not behind a configuration flag, since Amvera would then be the only deployment
-target that needs it and `docker-compose` does not run behind a proxy.
-
-**Начальный may be too small.** 0.5 GB and 0.25 vCPU is workable for ASP.NET
-Core serving a SPA, but not roomy, and a slow first request after a restart is
-expected. Amvera surfaces under-resourcing as opaque 502/503 responses. If those
-appear, or if the container restarts under memory pressure, Начальный Плюс
-(1 GB, 0.5 vCPU, 490 RUB/month) is still below the 650 RUB YC baseline. Tariff
-changes are per-hour, so the experiment is cheap.
-
-**Digest references may be unsupported.** The fallback path writes
-`image@sha256:...` if no named tag matches `latest`'s digest. Amvera's docs only
-show tag references. If a digest is rejected, the deploy fails visibly at the
-Amvera build stage, and the fix is to pass `--tag` explicitly.
-
-**Non-release tags on a public repository.** `--build` pushes `<short-sha>` tags
-to the public `pkirilin/food-diary` Docker Hub repo, next to release tags.
-`--registry ghcr` exists for when that becomes undesirable.
+**Source code now goes to Amvera.** Deploys push the whole repository rather than
+a single config file. The repository is public, so this changes what Amvera
+stores, not what is exposed.
 
 **Amvera remains a Russian company.** Servers are in Warsaw, but ООО "Амвера" is
 Moscow-registered, so jurisdiction and billing stay Russian. Only the VPS option
@@ -360,17 +347,19 @@ resolves this, and it was consciously declined.
 - The Food Diary MCP server that motivated the region requirement.
 - Any change to the demo deployment on GitHub Pages.
 - Multi-instance scaling or zero-downtime deployment guarantees.
+- Automating the initial Amvera project setup.
 
 ## Acceptance
 
-1. `./scripts/deploy.sh` deploys the newest release to Amvera from a clean
-   checkout and reports success.
-2. The app is reachable over HTTPS at the custom domain, and Google sign-in
+1. `git push amvera <branch>:master --force` produces a green Amvera build and a
+   running container.
+2. The run log shows migrator output preceding API startup, and the Supabase
+   schema is current.
+3. The app is reachable over HTTPS at the custom domain, and Google sign-in
    completes.
-3. `./scripts/deploy.sh --tag <previous>` rolls back.
-4. `git grep -i yandex` and `git grep YC_` match nothing under `src/` or
-   `.github/` (matches in `docs/` and `CHANGELOG.md` are expected).
-5. README's Deployment section is sufficient to repeat the setup from scratch.
-6. `dotnet test` and the frontend suite pass; `build.yml` is green.
-7. `git check-ignore -q .env.amvera` succeeds, `git status` never lists the
-   file, and `.claude/settings.json` denies reading it.
+4. Pushing an older commit to the Amvera remote rolls back.
+5. `git grep -i yandex` and `git grep YC_` match nothing under `src/` or
+   `.github/` (matches in `docs/` and in the CHANGELOG entry naming the removed
+   option are expected).
+6. `dotnet test` and the frontend suite pass; `build.yml` is green and contains
+   verification jobs only.
