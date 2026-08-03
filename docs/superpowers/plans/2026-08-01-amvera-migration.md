@@ -535,7 +535,7 @@ In the Amvera UI's variables/secrets section (this one is safe — it is stored 
 | `Integrations__OpenAI__ApiKey` | secret | the OpenAI API key |
 | `ASPNETCORE_FORWARDEDHEADERS_ENABLED` | variable | `true` |
 
-`ASPNETCORE_FORWARDEDHEADERS_ENABLED=true` is required: Amvera terminates TLS at its ingress and forwards plain HTTP, so without it Kestrel sees `http`, `UseHttpsRedirection` loops, and Google OAuth generates `http://` redirect URIs. Amvera applies variable changes only on container restart.
+`ASPNETCORE_FORWARDEDHEADERS_ENABLED=true` is required: Amvera terminates TLS at its ingress and forwards plain HTTP, so without it Kestrel sees `http`. `UseHttpsRedirection` has no HTTPS port to redirect to on Amvera, so it logs `Failed to determine the https port for redirect` once and passes every request through rather than looping — but Google OAuth still generates `http://` redirect URIs, which Google rejects as a `redirect_uri` mismatch. Amvera applies variable changes only on container restart.
 
 Do not ask the user to paste any of these values into the conversation.
 
@@ -548,7 +548,21 @@ git remote -v
 
 Expected: an `amvera` remote listed for fetch and push. Authentication is the Amvera **account** username and password — let the credential helper store it on the first push.
 
-- [ ] **Step 5: Deploy**
+- [ ] **Step 5: Reconcile the migrator's connection string with the API's before deploying**
+
+`amvera.yml` runs the migrator with the same `ConnectionStrings__Default` secret entered for the API in Step 3 — there is no separate migrator connection value on Amvera. The deleted CI `run-migrations` job, by contrast, used a distinct GitHub secret, `Migrator_DatabaseConnectionString`. Two separate secrets existing is evidence the strings were not the same value.
+
+This matters because Amvera needs IPv4, and a direct Supabase connection is IPv6-only without the paid IPv4 add-on — so the API's connection string is very likely a *pooler* URI. Against Supabase's transaction-mode pooler (port 6543), EF Core's `MigrateAsync` is unreliable: advisory locks and prepared statements do not survive transaction pooling.
+
+Before pushing:
+
+1. Read the current value of the `Migrator_DatabaseConnectionString` GitHub repository secret (via the GitHub UI, or ask the user to paste it out-of-band — do not have it echoed into this conversation) and compare it against the value you intend to enter for `ConnectionStrings__Default`.
+2. If they point at the same host and port, or both already use the **session-mode pooler** (port 5432 on the pooler host, which is DDL-safe), proceed to Step 6.
+3. If they differ, resolve it before deploying: either point `ConnectionStrings__Default` at the session-mode pooler (port 5432), or arrange a separate migrator connection value. Do not deploy with an unresolved mismatch.
+
+**If a transaction-mode pooler (port 6543) is used by mistake**, expect one of: the migrator failing with `prepared statement "_p1" already exists`, or a hang on the migration's advisory lock. Either way the run log shows only `Error while applying migrations` — the real cause (pooler mode, not credentials) is not visible there, so this reconciliation is the only place that catches it.
+
+- [ ] **Step 6: Deploy**
 
 ```bash
 git push amvera "$(git branch --show-current)":master --force
@@ -558,7 +572,7 @@ Expected: the push succeeds and Amvera starts a build. Watch it in the UI's buil
 
 Expect **5–20 minutes**. If the build sits with no logs for over an hour, or dies partway through `yarn install` / `vite build` / `dotnet publish`, it has run out of resources: tell the user to switch the tariff to **Начальный Плюс** (1 GB, 0.5 vCPU, 490 RUB/month — still below the 650 RUB Yandex baseline) and rebuild. Tariff changes bill per hour, so this is cheap to try.
 
-- [ ] **Step 6: Verify the start sequence in the run log**
+- [ ] **Step 7: Verify the start sequence in the run log**
 
 Open the run log in the Amvera UI.
 
@@ -594,7 +608,7 @@ Then commit and re-push. Note that `.dockerignore` does not exclude root-level s
 
 **If the app builds and starts but is unreachable**, check that `containerPort: 8080` actually made it into the deployed `amvera.yml` — a UI configuration commit overwriting it is the likely cause.
 
-- [ ] **Step 7: Have the user attach the custom domain**
+- [ ] **Step 8: Have the user attach the custom domain**
 
 Amvera exposes no CLI for domains, so this is manual and one-time. Using a subdomain of a domain the author already owns — rather than the free `<project>.<user>.amvera.io` — means the URL belongs to the project, so a later move to different hosting is a DNS change that does not invalidate Google OAuth configuration, saved sessions, or installed PWAs.
 
@@ -602,20 +616,20 @@ Amvera exposes no CLI for domains, so this is manual and one-time. Using a subdo
 2. Add the `TXT` record shown alongside it.
 3. Confirm and attach the domain in the Amvera UI, then wait for the Let's Encrypt certificate to be issued.
 
-- [ ] **Step 8: Have the user update the Google OAuth client**
+- [ ] **Step 9: Have the user update the Google OAuth client**
 
 In the Google Cloud console, for the existing OAuth client:
 
 - Authorized JavaScript origin: `https://<app-domain>`
 - Authorized redirect URI: `https://<app-domain>/signin-google`
 
-- [ ] **Step 9: Verify HTTPS and Google sign-in**
+- [ ] **Step 10: Verify HTTPS and Google sign-in**
 
 Open `https://<app-domain>` in a browser and sign in with Google.
 
 Expected: the page loads over HTTPS with a valid certificate and sign-in completes.
 
-**If sign-in fails with a `redirect_uri` mismatch, or the app returns a redirect loop**, Amvera's ingress is not sending `X-Forwarded-Proto`. The fallback is to restore the scheme-forcing middleware in `Startup.Configure` — unconditionally, not behind a configuration flag, since Amvera would then be the only deployment target needing it and `docker-compose` does not run behind a proxy:
+**If sign-in fails with a `redirect_uri` mismatch** — with, at most, a one-off `Failed to determine the https port for redirect` line in the run log rather than any redirect loop, since `UseHttpsRedirection` has no HTTPS port to redirect to on Amvera and simply passes every request through — Amvera's ingress is not sending `X-Forwarded-Proto`. The fallback is to restore the scheme-forcing middleware in `Startup.Configure` — unconditionally, not behind a configuration flag, since Amvera would then be the only deployment target needing it and `docker-compose` does not run behind a proxy:
 
 ```csharp
         // Amvera's ingress terminates TLS but does not send X-Forwarded-Proto,
@@ -629,13 +643,13 @@ Expected: the page loads over HTTPS with a valid certificate and sign-in complet
 
 Place it as the first statement in `Configure`, before `if (env.IsDevelopment())`, then commit and re-deploy.
 
-- [ ] **Step 10: Verify data and migrations**
+- [ ] **Step 11: Verify data and migrations**
 
 Sign in and confirm existing notes, products, and weight logs are present — this is the same Supabase database the Yandex deployment used, so nothing should have changed.
 
 Expected: the app shows the user's real data, and the run log's migrator output reported success rather than a skipped or failed run.
 
-- [ ] **Step 11: Verify rollback**
+- [ ] **Step 12: Verify rollback**
 
 ```bash
 git push amvera <previous-commit-sha>:master --force
@@ -649,23 +663,24 @@ git push amvera "$(git branch --show-current)":master --force
 
 Note that rollback rebuilds rather than swapping a prebuilt image, so it costs another 5–20 minutes. Migrations are never reverted automatically.
 
-- [ ] **Step 12: Watch for under-resourcing**
+- [ ] **Step 13: Watch for under-resourcing**
 
 Exercise the app for a few minutes — open several days, add a note, view charts — while watching the run log.
 
 Expected: no opaque 502/503 responses, no container restarts. A slow first request after a restart is expected on 0.5 GB / 0.25 vCPU. If restarts or 5xx appear, recommend Начальный Плюс.
 
-- [ ] **Step 13: Confirm CI is green**
+- [ ] **Step 14: Confirm CI is green**
 
 Push the branch to GitHub and check the Build workflow.
 
 Expected: `backend`, `frontend`, and `e2e-tests` all pass; no other jobs exist.
 
-- [ ] **Step 14: Tell the user what to decommission manually**
+- [ ] **Step 15: Tell the user what to decommission manually**
 
 None of this can be scripted from here:
 
-- GitHub repository **secrets** to delete: `YC_CR_REGISTRY`, `YC_SA_JSON_CREDENTIALS`, `YC_FOLDER_ID`, `YC_REVISION_SERVICE_ACCOUNT_ID`, `Migrator_DatabaseConnectionString`.
+- GitHub repository **secrets** to delete now: `YC_CR_REGISTRY`, `YC_SA_JSON_CREDENTIALS`, `YC_FOLDER_ID`, `YC_REVISION_SERVICE_ACCOUNT_ID`.
+- **Do not delete `Migrator_DatabaseConnectionString` yet.** It may be the only record of a connection string known to work for migrations (see Step 5). Delete it only after the run log from the first Amvera deploy has shown the migrator succeeding — i.e. only after Step 7 has been confirmed on the real deployment, not merely planned.
 - GitHub repository **variables** to delete: `YC_REVISION_SECRETS_ID`, `YC_REVISION_SECRETS_VERSION`.
 - The Yandex Cloud serverless container itself, plus its container registry images and Lockbox secrets, so they stop billing.
 - The old DNS record pointing at Yandex, once the Amvera deployment is confirmed good.

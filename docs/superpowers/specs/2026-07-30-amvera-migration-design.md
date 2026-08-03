@@ -1,7 +1,8 @@
 # Amvera migration — design
 
 Date: 2026-07-30 (revised 2026-08-03)
-Status: proposed
+Status: Completed — implemented on branch `amvera-deploy`; Tasks 1-3 done and
+reviewed, Task 4 (live deployment) is manual follow-up work.
 
 ## Context
 
@@ -193,8 +194,10 @@ log viewer renders plain console output more readably than JSON.
 ### HTTPS scheme behind the Amvera proxy
 
 Amvera terminates TLS at its ingress and forwards plain HTTP to the container.
-Without correction, Kestrel sees `http`, `UseHttpsRedirection` loops, and Google
-OAuth generates `http://` redirect URIs.
+Without correction, Kestrel sees `http`; `UseHttpsRedirection` has no HTTPS port
+to redirect to (no `HttpsPort`, `HTTPS_PORT`, or `ANCM_HTTPS_PORT` is set), so it
+logs `Failed to determine the https port for redirect` once and passes every
+request through unchanged, while Google OAuth generates `http://` redirect URIs.
 
 The custom `App__ForwardHttpsSchemeManuallyForAllRequests` option is **removed**
 in favour of the framework's own mechanism: `ASPNETCORE_FORWARDEDHEADERS_ENABLED=true`.
@@ -318,9 +321,11 @@ restart is expected, and Amvera surfaces under-resourcing as opaque 502/503
 responses. Same fallback tariff.
 
 **Amvera's ingress may not send `X-Forwarded-Proto`.** If it doesn't, the app
-sees `http`, `UseHttpsRedirection` returns a redirect loop, and Google sign-in
-fails on a `redirect_uri` mismatch. This surfaces immediately at acceptance
-criterion 3, before any data is at stake. The fallback is to restore the two-line
+sees `http`; `UseHttpsRedirection` cannot find an HTTPS port on Amvera, so it
+logs `Failed to determine the https port for redirect` once and passes the
+request through rather than looping, and Google sign-in fails on a
+`redirect_uri` mismatch. This surfaces immediately at acceptance criterion 3,
+before any data is at stake. The fallback is to restore the two-line
 scheme-forcing middleware in `Startup.Configure` — unconditionally, not behind a
 configuration flag, since Amvera would then be the only deployment target that
 needs it and `docker-compose` does not run behind a proxy.
