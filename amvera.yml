@@ -1,0 +1,4 @@
+run:
+  command: /bin/sh
+  args: -c "dotnet migrator/FoodDiary.Migrator.dll && exec dotnet FoodDiary.API.dll"
+  containerPort: 8080
