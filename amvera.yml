@@ -2,3 +2,7 @@ run:
   command: /bin/sh
   args: -c "dotnet migrator/FoodDiary.Migrator.dll && exec dotnet FoodDiary.API.dll"
   containerPort: 8080
+meta:
+  environment: docker
+  toolchain:
+    name: docker
