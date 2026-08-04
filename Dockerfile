@@ -15,5 +15,5 @@ WORKDIR /app
 COPY --from=backend app/publish .
 COPY --from=frontend app/dist frontend/dist
 EXPOSE 8080
-# Must stay CMD, not ENTRYPOINT: amvera.yml's run.command replaces CMD but would fight (not override) an ENTRYPOINT, silently skipping the migrator on every Amvera deploy.
+
 CMD ["dotnet", "FoodDiary.API.dll"]
