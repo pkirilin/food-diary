@@ -24,18 +24,12 @@ public static class LoggerConfigurationExtensions
 
     private static void WriteToConsole(this LoggerConfiguration loggerConfiguration, AppOptions appOptions)
     {
-        if (!appOptions.Logging.WriteLogsInJsonFormat)
+        if (appOptions.Logging.WriteLogsInJsonFormat)
         {
-            loggerConfiguration.WriteTo.Console();
+            loggerConfiguration.WriteTo.Console(new JsonFormatter());
             return;
         }
 
-        if (appOptions.Logging.UseYandexCloudLogsFormat)
-        {
-            loggerConfiguration.WriteTo.Console(new YandexCloudJsonFormatter());
-            return;
-        }
-        
-        loggerConfiguration.WriteTo.Console(new JsonFormatter());
+        loggerConfiguration.WriteTo.Console();
     }
 }

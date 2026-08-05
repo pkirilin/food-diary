@@ -20,7 +20,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 using Serilog;
 
 namespace FoodDiary.API;
@@ -128,19 +127,6 @@ public class Startup
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
-        var appOptions = app.ApplicationServices.GetRequiredService<IOptions<AppOptions>>().Value;
-        
-        if (appOptions.ForwardHttpsSchemeManuallyForAllRequests)
-        {
-            // Used to keep HTTPS scheme in OAuth redirects when load balancer does not set X-Forwarded-Proto
-            // https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/proxy-load-balancer?view=aspnetcore-8.0#when-it-isnt-possible-to-add-forwarded-headers-and-all-requests-are-secure
-            app.Use((context, next) =>
-            {
-                context.Request.Scheme = "https";
-                return next(context);
-            });
-        }
-        
         if (env.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();

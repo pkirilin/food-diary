@@ -8,6 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- `Dockerfile` now uses `CMD` instead of `ENTRYPOINT` for launching the application
+
+### Removed
+
+- `App__ForwardHttpsSchemeManuallyForAllRequests` configuration option — the HTTPS
+  scheme behind a reverse proxy is now handled by ASP.NET Core's
+  `ASPNETCORE_FORWARDEDHEADERS_ENABLED`
+- `App__Logging__UseYandexCloudLogsFormat` configuration option and its log formatter
+
 ## [0.6.1] - Backend dependency cleanup & .NET 10 migration
 
 ### Changed
