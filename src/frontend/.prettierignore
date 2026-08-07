@@ -9,3 +9,5 @@ public
 node_modules
 index.html
 tsconfig.json
+
+.claude/settings.json
