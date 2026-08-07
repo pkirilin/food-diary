@@ -25,6 +25,27 @@ beforeAll(() => {
     value: () => {},
   });
 
+  // jsdom implements neither of these; the note dialog creates object URLs for uploaded photos
+  Object.defineProperty(URL, 'createObjectURL', {
+    writable: true,
+    value: (): string => `blob:${crypto.randomUUID()}`,
+  });
+
+  Object.defineProperty(URL, 'revokeObjectURL', {
+    writable: true,
+    value: (): void => {},
+  });
+
+  // react-zoom-pan-pinch observes its wrapper element
+  Object.defineProperty(window, 'ResizeObserver', {
+    writable: true,
+    value: class ResizeObserverStub {
+      observe(): void {}
+      unobserve(): void {}
+      disconnect(): void {}
+    },
+  });
+
   server.listen();
 });
 

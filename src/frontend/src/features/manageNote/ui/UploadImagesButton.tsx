@@ -15,6 +15,7 @@ const toImage = async (file: File): Promise<Image> => {
     id: crypto.randomUUID(),
     name: file.name,
     base64,
+    originalUrl: URL.createObjectURL(file),
   };
 };
 

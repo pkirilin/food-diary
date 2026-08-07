@@ -30,6 +30,7 @@ const create = {
     id: crypto.randomUUID(),
     name,
     base64: `base64-${name}`,
+    originalUrl: `blob:${name}`,
   }),
   noteRecognitionWithSuggestions: (...suggestedProducts: string[]): NoteRecognitionState => ({
     suggestions: suggestedProducts.map(name => ({
