@@ -9,7 +9,7 @@ import { useRecognizeNotes } from '../lib/useRecognizeNotes';
 import { actions, type Image } from '../model';
 import { ImagePreviewList } from './ImagePreviewList';
 import { SuggestedProductCard } from './SuggestedProductCard';
-import { SuggestedProductCardSkeleton } from './SuggestedProductCardSkeleton';
+import { SuggestionSkeleton } from './SuggestionSkeleton';
 
 interface Props {
   images: Image[];
@@ -32,7 +32,7 @@ export const ImageUploadStep: FC<Props> = ({ images }) => {
           Analyzing Images...
         </Typography>
         <LinearProgress />
-        <SuggestedProductCardSkeleton />
+        <SuggestionSkeleton />
       </Stack>
     );
   }
