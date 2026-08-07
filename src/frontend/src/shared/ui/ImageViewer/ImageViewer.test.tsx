@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ImageViewer } from './ImageViewer';
 
@@ -12,7 +12,6 @@ test('should show nothing when closed', () => {
       src={ORIGINAL_SRC}
       fallbackSrc={FALLBACK_SRC}
       alt="Photo"
-      footer={null}
       onClose={vi.fn()}
     />,
   );
@@ -27,7 +26,6 @@ test('should expose the dialog with an accessible name', () => {
       src={ORIGINAL_SRC}
       fallbackSrc={FALLBACK_SRC}
       alt="Photo"
-      footer={null}
       onClose={vi.fn()}
     />,
   );
@@ -42,7 +40,6 @@ test('should show the image when opened', () => {
       src={ORIGINAL_SRC}
       fallbackSrc={FALLBACK_SRC}
       alt="Photo"
-      footer={null}
       onClose={vi.fn()}
     />,
   );
@@ -57,7 +54,6 @@ test('should fall back to the resized copy when the original fails to load', () 
       src={ORIGINAL_SRC}
       fallbackSrc={FALLBACK_SRC}
       alt="Photo"
-      footer={null}
       onClose={vi.fn()}
     />,
   );
@@ -78,7 +74,6 @@ test('should close on close button click', async () => {
       src={ORIGINAL_SRC}
       fallbackSrc={FALLBACK_SRC}
       alt="Photo"
-      footer={null}
       onClose={onClose}
     />,
   );
@@ -86,44 +81,4 @@ test('should close on close button click', async () => {
   await user.click(screen.getByRole('button', { name: 'Close image viewer' }));
 
   expect(onClose).toHaveBeenCalled();
-});
-
-test('should show the footer expanded and allow collapsing it', async () => {
-  const user = userEvent.setup();
-
-  render(
-    <ImageViewer
-      opened
-      src={ORIGINAL_SRC}
-      fallbackSrc={FALLBACK_SRC}
-      alt="Photo"
-      footer={<p>Suggested product</p>}
-      onClose={vi.fn()}
-    />,
-  );
-
-  expect(within(screen.getByRole('dialog')).getByText('Suggested product')).toBeVisible();
-
-  await user.click(screen.getByRole('button', { name: 'Collapse image details' }));
-
-  await waitFor(() => {
-    expect(screen.queryByText('Suggested product')).not.toBeInTheDocument();
-  });
-  expect(screen.getByRole('button', { name: 'Expand image details' })).toBeVisible();
-});
-
-test('should show no footer bar when there is no footer', () => {
-  render(
-    <ImageViewer
-      opened
-      src={ORIGINAL_SRC}
-      fallbackSrc={FALLBACK_SRC}
-      alt="Photo"
-      footer={null}
-      onClose={vi.fn()}
-    />,
-  );
-
-  expect(screen.getByRole('dialog')).toBeVisible();
-  expect(screen.queryByRole('button', { name: 'Collapse image details' })).not.toBeInTheDocument();
 });

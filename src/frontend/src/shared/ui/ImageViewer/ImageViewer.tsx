@@ -1,8 +1,6 @@
 import CloseIcon from '@mui/icons-material/Close';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { Box, Collapse, Dialog, IconButton } from '@mui/material';
-import { useState, type FC, type ReactNode } from 'react';
+import { Box, Dialog, IconButton } from '@mui/material';
+import { useState, type FC } from 'react';
 import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch';
 
 interface Props {
@@ -10,13 +8,11 @@ interface Props {
   fallbackSrc: string;
   alt: string;
   opened: boolean;
-  footer: ReactNode;
   onClose: () => void;
 }
 
-export const ImageViewer: FC<Props> = ({ src, fallbackSrc, alt, opened, footer, onClose }) => {
+export const ImageViewer: FC<Props> = ({ src, fallbackSrc, alt, opened, onClose }) => {
   const [failedSrc, setFailedSrc] = useState<string | null>(null);
-  const [footerExpanded, setFooterExpanded] = useState(true);
 
   // Comparing against src rather than holding a boolean resets the fallback when src changes
   const displayedSrc = failedSrc === src ? fallbackSrc : src;
@@ -63,34 +59,6 @@ export const ImageViewer: FC<Props> = ({ src, fallbackSrc, alt, opened, footer, 
         >
           <CloseIcon />
         </IconButton>
-        {footer != null && (
-          <Box
-            sx={{
-              position: 'absolute',
-              left: 0,
-              right: 0,
-              bottom: 0,
-              zIndex: 1,
-              px: 2,
-              pb: 'env(safe-area-inset-bottom)',
-              backgroundColor: 'rgba(0, 0, 0, 0.6)',
-            }}
-          >
-            <Box display="flex" justifyContent="flex-end">
-              <IconButton
-                aria-label={footerExpanded ? 'Collapse image details' : 'Expand image details'}
-                aria-expanded={footerExpanded}
-                onClick={() => setFooterExpanded(expanded => !expanded)}
-                sx={{ color: 'common.white' }}
-              >
-                {footerExpanded ? <ExpandMoreIcon /> : <ExpandLessIcon />}
-              </IconButton>
-            </Box>
-            <Collapse in={footerExpanded} unmountOnExit>
-              <Box pb={2}>{footer}</Box>
-            </Collapse>
-          </Box>
-        )}
       </Box>
     </Dialog>
   );
