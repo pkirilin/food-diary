@@ -1,14 +1,13 @@
 import { Box, ButtonBase } from '@mui/material';
-import { useState, type FC, type ReactNode } from 'react';
+import { useState, type FC } from 'react';
 import { ImageViewer } from '@/shared/ui';
 import { type Image } from '../model';
 
 interface Props {
   images: Image[];
-  footer: ReactNode;
 }
 
-export const ImagePreviewList: FC<Props> = ({ images, footer }) => {
+export const ImagePreviewList: FC<Props> = ({ images }) => {
   const [openedImage, setOpenedImage] = useState<Image | null>(null);
 
   return (
@@ -41,7 +40,6 @@ export const ImagePreviewList: FC<Props> = ({ images, footer }) => {
           src={openedImage.originalUrl}
           fallbackSrc={openedImage.base64}
           alt={`Uploaded image preview ${images.indexOf(openedImage) + 1}`}
-          footer={footer}
           onClose={() => setOpenedImage(null)}
         />
       )}
