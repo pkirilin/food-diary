@@ -44,6 +44,7 @@ export const ProductInputDialog: FC<ProductInputDialogProps> = ({
       content={
         <ProductForm
           formId="product-input-form"
+          autoFocus
           defaultValues={productFormValues}
           categories={categories}
           categoriesLoading={categoriesLoading}

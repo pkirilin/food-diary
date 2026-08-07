@@ -5,5 +5,6 @@ export * from './Button';
 export * from './Center';
 export * from './Dialog';
 export * from './AppDialog';
+export * from './ImageViewer';
 export * from './LoadingContainer';
 export * from './PageContainer';

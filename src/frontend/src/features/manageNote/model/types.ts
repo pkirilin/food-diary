@@ -7,6 +7,7 @@ export interface Image {
   id: string;
   name: string;
   base64: string;
+  originalUrl: string;
 }
 
 export interface NoteRecognitionState {
@@ -33,6 +34,7 @@ interface ProductInputScreenState {
 
 interface ImageUploadScreenState {
   type: 'image-upload';
+  formId: 'product-form' | null;
   images: Image[];
 }
 

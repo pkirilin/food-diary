@@ -49,10 +49,7 @@ export const NoteInputDialog: FC<Props> = ({ date, mealType, note }) => {
 
   const { categories, categoriesLoading } = categoryLib.useCategoriesForSelect();
 
-  const inputScreenActive =
-    activeScreen.type === 'note-input' || activeScreen.type === 'product-input';
-
-  const activeFormId = inputScreenActive ? activeScreen.formId : undefined;
+  const activeFormId = 'formId' in activeScreen ? activeScreen.formId : null;
 
   const renderContent = (): ReactElement => {
     switch (activeScreen.type) {
@@ -75,6 +72,7 @@ export const NoteInputDialog: FC<Props> = ({ date, mealType, note }) => {
         return (
           <ProductForm
             formId={activeScreen.formId}
+            autoFocus
             defaultValues={activeScreen.product}
             categories={categories}
             categoriesLoading={categoriesLoading}
@@ -82,7 +80,9 @@ export const NoteInputDialog: FC<Props> = ({ date, mealType, note }) => {
           />
         );
       case 'image-upload':
-        return <ImageUploadStep images={activeScreen.images} />;
+        return (
+          <ImageUploadStep images={activeScreen.images} onSubmitProduct={handleSubmitProduct} />
+        );
       default:
         throw new Error(`Unexpected screen: ${JSON.stringify(activeScreen)}`);
     }
@@ -105,8 +105,8 @@ export const NoteInputDialog: FC<Props> = ({ date, mealType, note }) => {
         <Button
           {...props}
           type="submit"
-          form={activeFormId}
-          disabled={!inputScreenActive || submitDisabled}
+          form={activeFormId ?? undefined}
+          disabled={activeFormId === null || submitDisabled}
           loading={isSubmitting}
         >
           {submitText}
