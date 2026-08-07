@@ -75,6 +75,7 @@ export const NoteInputDialog: FC<Props> = ({ date, mealType, note }) => {
         return (
           <ProductForm
             formId={activeScreen.formId}
+            autoFocus
             defaultValues={activeScreen.product}
             categories={categories}
             categoriesLoading={categoriesLoading}
