@@ -63,7 +63,7 @@ export const ImageUploadStep: FC<Props> = ({ images }) => {
   if (!suggestion?.product) {
     return (
       <Stack spacing={3}>
-        <ImagePreviewList images={images} />
+        <ImagePreviewList images={images} footer={null} />
         <Alert severity="warning">No food found. Please try other images</Alert>
       </Stack>
     );
@@ -74,7 +74,7 @@ export const ImageUploadStep: FC<Props> = ({ images }) => {
       <Typography variant="h6" component="h2">
         Review AI suggestions
       </Typography>
-      <ImagePreviewList images={images} />
+      <ImagePreviewList images={images} footer={<SuggestedProductCard suggestion={suggestion} />} />
       <SuggestedProductCard suggestion={suggestion} />
       <Stack spacing={2} direction="row">
         <Button

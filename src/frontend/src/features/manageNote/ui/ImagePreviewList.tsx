@@ -1,28 +1,50 @@
-import { Box } from '@mui/material';
-import { type FC } from 'react';
+import { Box, ButtonBase } from '@mui/material';
+import { useState, type FC, type ReactNode } from 'react';
+import { ImageViewer } from '@/shared/ui';
 import { type Image } from '../model';
 
 interface Props {
   images: Image[];
+  footer: ReactNode;
 }
 
-export const ImagePreviewList: FC<Props> = ({ images }) => (
-  <Box display="flex" gap={2} flexWrap="wrap">
-    {images.map((image, index) => (
-      <Box key={image.id} sx={{ width: 128, height: 128 }}>
-        <Box
-          borderRadius={2}
-          component="img"
-          src={image.base64}
-          alt={`Uploaded image preview ${index + 1}`}
-          sx={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            borderRadius: 2,
-          }}
-        />
+export const ImagePreviewList: FC<Props> = ({ images, footer }) => {
+  const [openedImage, setOpenedImage] = useState<Image | null>(null);
+
+  return (
+    <>
+      <Box display="flex" gap={2} flexWrap="wrap">
+        {images.map((image, index) => (
+          <ButtonBase
+            key={image.id}
+            aria-label={`Open uploaded image preview ${index + 1}`}
+            onClick={() => setOpenedImage(image)}
+            sx={{ width: 128, height: 128, borderRadius: 2 }}
+          >
+            <Box
+              component="img"
+              src={image.base64}
+              alt=""
+              sx={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                borderRadius: 2,
+              }}
+            />
+          </ButtonBase>
+        ))}
       </Box>
-    ))}
-  </Box>
-);
+      {openedImage !== null && (
+        <ImageViewer
+          opened
+          src={openedImage.originalUrl}
+          fallbackSrc={openedImage.base64}
+          alt={`Uploaded image preview ${images.indexOf(openedImage) + 1}`}
+          footer={footer}
+          onClose={() => setOpenedImage(null)}
+        />
+      )}
+    </>
+  );
+};
