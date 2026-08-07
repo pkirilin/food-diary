@@ -36,8 +36,9 @@ export const manageNoteSlice = createSlice({
         (state: ManageNoteState) => state.note,
         (state: ManageNoteState) => state.product,
         (state: ManageNoteState) => state.images,
+        (state: ManageNoteState) => state.noteRecognition.suggestions,
       ],
-      (note, product, images): ManageNoteScreenState => {
+      (note, product, images, suggestions): ManageNoteScreenState => {
         if (product) {
           return {
             type: 'product-input',
@@ -49,6 +50,7 @@ export const manageNoteSlice = createSlice({
         if (images.length > 0) {
           return {
             type: 'image-upload',
+            formId: suggestions.at(0)?.product ? 'product-form' : null,
             images,
           };
         }

@@ -4,9 +4,9 @@ import { type NoteFormValuesProduct, type NoteFormValues } from './noteSchema';
 import { type NoteRecognitionState, type Image } from './types';
 
 const create = {
-  state: ({ note }: Partial<ManageNoteState>): ManageNoteState => ({
+  state: (overrides: Partial<ManageNoteState>): ManageNoteState => ({
     ...initialState,
-    note,
+    ...overrides,
   }),
   note: (): NoteFormValues => ({
     date: '2025-01-01',
@@ -56,6 +56,29 @@ describe('selectors.activeScreen', () => {
     const activeScreen = manageNoteSlice.selectors.activeScreen({ manageNote });
 
     expect(activeScreen.type).toBe('product-search');
+  });
+
+  test('should show image-upload screen without a form when nothing was recognized', () => {
+    const manageNote = create.state({
+      note: create.note(),
+      images: [create.image('foo.jpg')],
+    });
+
+    const activeScreen = manageNoteSlice.selectors.activeScreen({ manageNote });
+
+    expect(activeScreen).toMatchObject({ type: 'image-upload', formId: null });
+  });
+
+  test('should show image-upload screen with the product form when a product was recognized', () => {
+    const manageNote = create.state({
+      note: create.note(),
+      images: [create.image('foo.jpg')],
+      noteRecognition: create.noteRecognitionWithSuggestions('Oat granola'),
+    });
+
+    const activeScreen = manageNoteSlice.selectors.activeScreen({ manageNote });
+
+    expect(activeScreen).toMatchObject({ type: 'image-upload', formId: 'product-form' });
   });
 });
 

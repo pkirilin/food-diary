@@ -34,6 +34,7 @@ interface ProductInputScreenState {
 
 interface ImageUploadScreenState {
   type: 'image-upload';
+  formId: 'product-form' | null;
   images: Image[];
 }
 
