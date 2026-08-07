@@ -20,6 +20,21 @@ test('should show nothing when closed', () => {
   expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
 });
 
+test('should expose the dialog with an accessible name', () => {
+  render(
+    <ImageViewer
+      opened
+      src={ORIGINAL_SRC}
+      fallbackSrc={FALLBACK_SRC}
+      alt="Photo"
+      footer={null}
+      onClose={vi.fn()}
+    />,
+  );
+
+  expect(screen.getByRole('dialog', { name: 'Photo' })).toBeVisible();
+});
+
 test('should show the image when opened', () => {
   render(
     <ImageViewer

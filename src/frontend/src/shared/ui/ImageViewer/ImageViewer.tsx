@@ -26,7 +26,7 @@ export const ImageViewer: FC<Props> = ({ src, fallbackSrc, alt, opened, footer, 
       open={opened}
       onClose={onClose}
       fullScreen
-      slotProps={{ paper: { sx: { backgroundColor: 'common.black' } } }}
+      slotProps={{ paper: { 'aria-label': alt, sx: { backgroundColor: 'common.black' } } }}
     >
       <Box sx={{ position: 'relative', flex: 1, overflow: 'hidden' }}>
         <TransformWrapper
