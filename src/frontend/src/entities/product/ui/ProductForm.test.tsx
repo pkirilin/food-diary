@@ -1,13 +1,16 @@
 import { render, screen } from '@testing-library/react';
 import { RootProvider } from '@/app/RootProvider';
 import { configureStore } from '@/app/store';
+import { type SelectOption } from '@/shared/types';
 import { type ProductFormValues } from '../model';
 import { ProductForm } from './ProductForm';
+
+const category: SelectOption = { id: 1, name: 'Cereals' };
 
 const defaultValues: ProductFormValues = {
   name: 'Oat granola',
   defaultQuantity: 100,
-  category: { id: 1, name: 'Cereals' },
+  category,
   calories: 412,
   protein: null,
   fats: null,
@@ -23,7 +26,7 @@ const renderForm = (autoFocus: boolean): void => {
         formId="product-form"
         autoFocus={autoFocus}
         defaultValues={defaultValues}
-        categories={[]}
+        categories={[category]}
         categoriesLoading={false}
         onSubmit={vi.fn()}
       />

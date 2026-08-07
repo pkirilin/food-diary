@@ -76,14 +76,16 @@ form={activeFormId ?? undefined}
 disabled={activeFormId === null || submitDisabled}
 ```
 
-Behaviour that falls out of this, with no reducer changes:
+Behaviour that falls out of this, with no reducer changes. `formId` reflects that a form is warranted, not that one is mounted, so two rows below carry a caveat:
 
 | State | `formId` | Submit button |
 |---|---|---|
-| Analyzing images | `null` | disabled (also `submitDisabled` from `noteRecognitionStarted`) |
+| Analyzing images (first run — no prior suggestion) | `null` | disabled (also `submitDisabled` from `noteRecognitionStarted`) |
+| Analyzing images (retry — prior suggestion had a product) | `'product-form'` (stale — form unmounted) | disabled by `submitDisabled` from `noteRecognitionStarted`, not by `formId` |
 | Recognition failed | `null` | disabled |
 | No food found | `null` | disabled |
-| Suggestion with a product | `'product-form'` | enabled, label "Add" from the existing `submitText` selector |
+| Categories still loading (suggestion has a product) | `'product-form'` (form not yet mounted — skeleton shown) | enabled; targets a `form` id that isn't in the DOM, so a tap does nothing. Accepted rather than fixed |
+| Suggestion with a product, categories loaded | `'product-form'` | enabled, label "Add" from the existing `submitText` selector |
 
 `state.product` is never set in the photo flow. Nothing depends on it: `useSubmitProduct` reads only its argument, and `productDraftSaved` needs only `state.note`. On a successful save it clears `images` and `noteRecognition`, the object-URL listener revokes the originals, and the note form takes over — exactly as it does today after the Accept-then-Add path.
 

@@ -50,6 +50,10 @@ export const manageNoteSlice = createSlice({
         if (images.length > 0) {
           return {
             type: 'image-upload',
+            // Tracks whether a form is warranted, not whether one is actually mounted:
+            // ImageUploadStep still shows a skeleton while categories load, and a retry
+            // leaves the previous suggestion (and this value) in place until it resolves.
+            // `submitDisabled` closes the retry gap; the categories-loading gap is accepted.
             formId: suggestions.at(0)?.product ? 'product-form' : null,
             images,
           };

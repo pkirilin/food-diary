@@ -60,6 +60,7 @@ test('should show the suggested values in an editable form', async () => {
   expect(await screen.findByRole('textbox', { name: /name/i })).toHaveValue('Oat granola');
   expect(screen.getByPlaceholderText(/calories/i)).toHaveValue('412');
   expect(screen.getByPlaceholderText(/default quantity/i)).toHaveValue('100');
+  expect(screen.getByRole('button', { name: 'Retry' })).toBeVisible();
 });
 
 test('should submit the corrected values', async () => {

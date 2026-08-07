@@ -99,7 +99,7 @@ export const ImageUploadStep: FC<Props> = ({ images, onSubmitProduct }) => {
           autoFocus={false}
           defaultValues={toProductFormValues(suggestion, categories.at(0) ?? null)}
           categories={categories}
-          categoriesLoading={categoriesLoading}
+          categoriesLoading={false}
           onSubmit={onSubmitProduct}
         />
       )}

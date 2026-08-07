@@ -1,9 +1,13 @@
-import { render } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { RootProvider } from '@/app/RootProvider';
 import { configureStore } from '@/app/store';
 import { imageLib } from '@/shared/lib';
 import { UploadImagesButton } from './UploadImagesButton';
+
+vi.mock('../lib/useRecognizeNotes', () => ({
+  useRecognizeNotes: () => vi.fn(),
+}));
 
 afterEach(() => {
   vi.restoreAllMocks();
@@ -31,6 +35,8 @@ test('should create the viewer url from the original file, not the resized copy'
 
   await user.upload(input, file);
 
-  expect(createObjectURL).toHaveBeenCalledWith(file);
+  await waitFor(() => {
+    expect(createObjectURL).toHaveBeenCalledWith(file);
+  });
   expect(createObjectURL).not.toHaveBeenCalledWith(resizedImage);
 });
