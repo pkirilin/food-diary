@@ -7,7 +7,7 @@ import { imageLib } from '@/shared/lib';
 import { useRecognizeNotes } from '../lib/useRecognizeNotes';
 import { actions, type Image } from '../model';
 
-const toImage = async (file: File): Promise<Image> => {
+const toResizedImage = async (file: File): Promise<Omit<Image, 'originalUrl'>> => {
   const resizedImage = await imageLib.resize(file);
   const base64 = await imageLib.convertToBase64String(resizedImage);
 
@@ -15,7 +15,6 @@ const toImage = async (file: File): Promise<Image> => {
     id: crypto.randomUUID(),
     name: file.name,
     base64,
-    originalUrl: URL.createObjectURL(file),
   };
 };
 
@@ -32,11 +31,19 @@ export const UploadImagesButton: FC = () => {
         return;
       }
 
-      const images = await Promise.all(files.map(toImage));
+      const resizedImages = await Promise.all(files.map(toResizedImage));
+
+      const images = files.map((file, index) => ({
+        ...resizedImages[index],
+        originalUrl: URL.createObjectURL(file),
+      }));
 
       dispatch(actions.imagesUploaded(images));
 
       await recognizeNotes(images);
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Failed to upload images: ', error);
     } finally {
       event.target.value = '';
     }

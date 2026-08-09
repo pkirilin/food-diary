@@ -40,3 +40,38 @@ test('should create the viewer url from the original file, not the resized copy'
   });
   expect(createObjectURL).not.toHaveBeenCalledWith(resizedImage);
 });
+
+test('should not create viewer urls when one of the uploaded files fails to resize', async () => {
+  const user = userEvent.setup();
+  const store = configureStore();
+  const goodFile = new File(['good'], 'good.jpg', { type: 'image/jpeg' });
+  const badFile = new File(['bad'], 'bad.jpg', { type: 'image/jpeg' });
+
+  vi.spyOn(imageLib, 'resize').mockImplementation(async file =>
+    file === badFile
+      ? await Promise.reject(new Error('unsupported image'))
+      : new Blob(['resized'], { type: 'image/jpeg' }),
+  );
+
+  const createObjectURL = vi.spyOn(URL, 'createObjectURL');
+
+  const { container } = render(
+    <RootProvider store={store}>
+      <UploadImagesButton />
+    </RootProvider>,
+  );
+
+  const input = container.querySelector<HTMLInputElement>('input[type="file"]');
+
+  if (input == null) {
+    throw new Error('file input not found');
+  }
+
+  await user.upload(input, [goodFile, badFile]);
+
+  await waitFor(() => {
+    expect(input.value).toBe('');
+  });
+  expect(createObjectURL).not.toHaveBeenCalled();
+  expect(store.getState().manageNote.images).toHaveLength(0);
+});
