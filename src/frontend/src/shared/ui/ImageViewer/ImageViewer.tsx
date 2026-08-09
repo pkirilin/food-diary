@@ -14,7 +14,6 @@ interface Props {
 export const ImageViewer: FC<Props> = ({ src, fallbackSrc, alt, opened, onClose }) => {
   const [failedSrc, setFailedSrc] = useState<string | null>(null);
 
-  // Comparing against src rather than holding a boolean resets the fallback when src changes
   const displayedSrc = failedSrc === src ? fallbackSrc : src;
 
   return (

@@ -1,8 +1,7 @@
 import { createListenerMiddleware } from '@reduxjs/toolkit';
 import { type ManageNoteState } from './manageNoteSlice';
 
-// Typed structurally instead of against RootState: RootState lives in the app layer,
-// and a feature importing from it would invert the FSD direction and create a cycle
+// Typed structurally because importing RootState from the app layer would invert FSD direction
 interface ImagesListenerState {
   manageNote: ManageNoteState;
 }
