@@ -4,6 +4,8 @@ import { type Mock } from 'vitest';
 import { RootProvider } from '@/app/RootProvider';
 import { configureStore } from '@/app/store';
 import { type RecognizeNoteItem } from '@/entities/note';
+import { type OnSubmitProductFn, type productModel } from '@/entities/product';
+import { type SelectOption } from '@/shared/types';
 import { actions, type Image } from '../model';
 import { ImageUploadStep } from './ImageUploadStep';
 
@@ -27,10 +29,10 @@ const createSuggestion = (): RecognizeNoteItem => ({
   quantity: 100,
 });
 
-const renderStep = (suggestions: RecognizeNoteItem[]): Mock => {
+const renderStep = (suggestions: RecognizeNoteItem[]): Mock<OnSubmitProductFn> => {
   const store = configureStore();
   const images = [createImage('a')];
-  const onSubmitProduct = vi.fn();
+  const onSubmitProduct = vi.fn<OnSubmitProductFn>();
 
   store.dispatch(actions.imagesUploaded(images));
   store.dispatch(actions.noteRecognitionSucceded({ notes: suggestions }));
@@ -74,11 +76,11 @@ test('should submit the corrected values', async () => {
 
   await waitFor(() => {
     expect(onSubmitProduct).toHaveBeenCalledWith(
-      expect.objectContaining({
+      expect.objectContaining<Partial<productModel.ProductFormValues>>({
         name: 'Oat granola',
         calories: 380,
         defaultQuantity: 100,
-        category: expect.objectContaining({ name: 'Bakery' }),
+        category: expect.objectContaining<Partial<SelectOption>>({ name: 'Bakery' }),
       }),
     );
   });

@@ -71,3 +71,31 @@ interface Props {
   onBazAction?: () => void;
 }
 ```
+
+### Testing
+
+- Always give vitest mocks and assertion matchers explicit type arguments, so that a typo in a property name fails the build instead of silently failing at runtime
+- Mocks: `vi.fn<SomeCallbackFn>()`, and helpers returning them typed as `Mock<SomeCallbackFn>` — never bare `vi.fn()` / `Mock`
+- Matchers: `expect.objectContaining<Partial<T>>({ ... })`, `toStrictEqual<T>({ ... })`, including nested matchers
+
+```ts
+// BAD - the `defaultQuantitiy` typo compiles fine, the test just fails
+const onSubmitProduct = vi.fn();
+
+expect(onSubmitProduct).toHaveBeenCalledWith(
+  expect.objectContaining({
+    defaultQuantitiy: 100,
+    category: expect.objectContaining({ name: 'Bakery' }),
+  }),
+);
+
+// GOOD - the typo is a compile error
+const onSubmitProduct = vi.fn<OnSubmitProductFn>();
+
+expect(onSubmitProduct).toHaveBeenCalledWith(
+  expect.objectContaining<Partial<ProductFormValues>>({
+    defaultQuantity: 100,
+    category: expect.objectContaining<Partial<SelectOption>>({ name: 'Bakery' }),
+  }),
+);
+```
