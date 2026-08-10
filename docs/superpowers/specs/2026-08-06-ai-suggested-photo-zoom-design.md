@@ -290,19 +290,19 @@ The resized `base64` keeps doing exactly what it does today: it backs the thumbn
 
 ```ts
 // features/manageNote/model/imageUrlsListener.ts
-interface ImagesListenerState {
-  manageNote: ManageNoteState;
-}
-
-export const imageUrlsListener = createListenerMiddleware<ImagesListenerState>();
+export const imageUrlsListener = createListenerMiddleware<WithSlice<typeof manageNoteSlice>>();
 
 imageUrlsListener.startListening({
   predicate: (_, currentState, previousState) =>
-    currentState.manageNote.images !== previousState.manageNote.images,
+    manageNoteSlice.selectSlice(currentState).images !==
+    manageNoteSlice.selectSlice(previousState).images,
   effect: (_, { getState, getOriginalState }) => {
-    const liveUrls = new Set(getState().manageNote.images.map(i => i.originalUrl));
-    getOriginalState()
-      .manageNote.images.filter(i => !liveUrls.has(i.originalUrl))
+    const liveUrls = new Set(
+      manageNoteSlice.selectSlice(getState()).images.map(i => i.originalUrl),
+    );
+    manageNoteSlice
+      .selectSlice(getOriginalState())
+      .images.filter(i => !liveUrls.has(i.originalUrl))
       .forEach(i => URL.revokeObjectURL(i.originalUrl));
   },
 });
@@ -310,7 +310,19 @@ imageUrlsListener.startListening({
 
 `createListenerMiddleware` is first-party RTK, so this adds no dependency. Reducers stay pure, every current clearing path is covered, and any path added later is covered automatically without further edits.
 
-The middleware is typed against a **local** `ImagesListenerState` rather than the app's `RootState`. `RootState` lives in `app/store.ts`, and FSD forbids a feature importing from the app layer — even as a type. Typing it structurally keeps the import direction correct and avoids an `app → feature → app` cycle.
+### Typing the listener state
+
+The middleware cannot be typed against the app's `RootState`: it lives in `app/store.ts`, and FSD forbids a feature importing from the app layer — even as a type. That would also create an `app → feature → app` cycle.
+
+The first implementation satisfied this with a hand-written `interface ImagesListenerState { manageNote: ManageNoteState }`. It worked, but it duplicated the store key `'manageNote'` by hand — and the effect body repeated the same key again as a raw path — so a store reshape meant editing several places, with nothing checking them.
+
+RTK 2 exports `WithSlice<A>`, defined as `{ [Path in SliceLikeReducerPath<A>]: SliceLikeState<A> }`: the state shape a slice contributes to the store, derived from the slice's own `reducerPath` (defaulting to `name`). For `manageNoteSlice` it resolves to `{ manageNote: ManageNoteState }` — structurally identical to the hand-written interface, but computed. `manageNoteSlice.selectSlice` is typed against exactly that shape, so using it in the predicate and effect removes the last literal path.
+
+Both the state type and the store key now derive from the slice: renaming `name: 'manageNote'` or reshaping `ManageNoteState` propagates automatically. This is also the typing the slice's existing `selectors` already use — `NoteInputDialog` calls `useAppSelector(selectors.activeScreen)` with `RootState` today — so the listener uses the feature's existing mechanism rather than a second one.
+
+`selectSlice` is preferred over adding an `images` entry to the slice's `selectors` map: a single caller does not justify new public API on the slice.
+
+**Deliberately not added:** a compile-time guard that `app/store.ts` mounts the reducer under the slice's own name. That coupling is unchanged and identical to what `manageNoteSlice.selectors` already assume at every call site.
 
 `app/store.ts` registers it ahead of the API middleware, as RTK requires:
 
@@ -390,7 +402,7 @@ No env vars, Node/npm, or .NET versions change, so README.md and CLAUDE.md need 
 - **Memory.** Full-resolution files stay in memory while the note dialog is open. Bounded by the number of photos in one upload (typically 1–2) and released by the listener as soon as the dialog closes or the images are replaced.
 - **Object-URL lifecycle is the one genuinely error-prone part.** Mitigated by centralising it in a single tested listener and by the `onError` fallback to `base64`.
 - **New runtime dependency.** Confined to `shared/ui/ImageViewer`, so replacing or removing it later touches one file.
-- **Structural middleware typing.** Typing the listener against `ImagesListenerState` instead of `RootState` is the FSD-correct choice but leans on TypeScript accepting the narrower state type at the `configureStore` call. If it does not, the fallback is for `imageUrlsListener.ts` to export a `setupImageUrlsListener(startListening)` registration function and let `app/store.ts` own the typed middleware instance — same behaviour, same import direction.
+- **Structural middleware typing.** Typing the listener against `WithSlice<typeof manageNoteSlice>` instead of `RootState` is the FSD-correct choice but leans on TypeScript accepting the narrower state type at the `configureStore` call. It does — verified by `yarn build`. If a future store change breaks that, the fallback is for `imageUrlsListener.ts` to export a `setupImageUrlsListener(startListening)` registration function and let `app/store.ts` own the typed middleware instance — same behaviour, same import direction.
 - **Mount-time form defaults.** The one genuinely fragile point of the inline-edit half; handled by the `categoriesLoading` gate and covered by a test.
 - **Longer review screen.** The form is taller than the old card, so the thumbnails may scroll out of view on small phones while editing. Accepted: the photo is one tap away and the alternative — a sticky photo strip — spends scarce vertical space on every screen to save a scroll on some.
 - **`autoFocus` prop churn.** Three call sites, mechanical, caught by the compiler.
