@@ -35,6 +35,25 @@ export const NoteInputDialog: FC<Props> = ({ date, mealType, note }) => {
   const handleSubmitProduct = useSubmitProduct(date);
   const [handleLoadProductForEdit, productForEditLoading] = useLoadProductForEdit();
 
+  const getActiveFormId = (): string | null => {
+    const activeScreenType = activeScreen.type;
+
+    switch (activeScreenType) {
+      case 'note-input':
+        return activeScreen.formId;
+      case 'product-input':
+        return activeScreen.formId;
+      case 'image-upload':
+        return activeScreen.formId;
+      case 'product-search':
+        return null;
+      default: {
+        activeScreenType satisfies never;
+        return null;
+      }
+    }
+  };
+
   const handleDialogClose = (): void => {
     if (isLoading) {
       return;
@@ -49,7 +68,7 @@ export const NoteInputDialog: FC<Props> = ({ date, mealType, note }) => {
 
   const { categories, categoriesLoading } = categoryLib.useCategoriesForSelect();
 
-  const activeFormId = 'formId' in activeScreen ? activeScreen.formId : null;
+  const activeFormId = getActiveFormId();
 
   const renderContent = (): ReactElement => {
     switch (activeScreen.type) {
