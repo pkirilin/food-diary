@@ -113,7 +113,7 @@ UploadImagesButton.toImage(file)
 | `features/product/addEdit/ui/ProductInputDialog/ProductInputDialog.tsx` | Passes `autoFocus` |
 | `app/store.ts` | Prepend `imageUrlsListener.middleware` |
 | `package.json` | Add `react-zoom-pan-pinch` |
-| `tests/setup.ts` | Stub `URL.createObjectURL` / `revokeObjectURL` / `ResizeObserver` |
+| `tests/setup.ts` | Stub `URL.createObjectURL` / `revokeObjectURL` / `HTMLImageElement.decode` / `ResizeObserver` |
 
 FSD direction is respected throughout: `features/manageNote` imports from `shared/ui`, never the reverse. `ImageViewer` carries no nutrition knowledge.
 
@@ -194,7 +194,7 @@ Layout:
 ```
 
 - `TransformWrapper` config: `minScale={1}`, `maxScale={8}`, `centerOnInit`, `doubleClick={{ mode: 'toggle', step: 3 }}`, `wheel={{ step: 0.2 }}`, and `limitToBounds` left at its default `true` so the photo cannot be flung off-screen.
-- The `<img>` has an `onError` handler that swaps `src` to `fallbackSrc` (the resized `base64`) — see Error handling.
+- The `<img>` shows `fallbackSrc` (the resized `base64`, already decoded for the thumbnail) from the first frame. The original is decoded out of band — `new Image()` + `await decode()` in an effect keyed on `opened` / `src` — and swapped in only once it succeeds. See Error handling.
 - No `footer` prop: nutrition values now live in the `ProductForm` below the thumbnails rather than pinned over the photo, so there is nothing left for the viewer to render on top of the image. (An earlier iteration of this design pinned a read-only `SuggestedProductCard` in a collapsible bottom bar; it was removed once the numbers became editable on-screen and would otherwise have duplicated them while covering part of the label.)
 
 ### `features/manageNote/ui/ImagePreviewList`
@@ -323,7 +323,8 @@ The effect body must stay synchronous: `getOriginalState()` throws if called aft
 
 ## Error handling & edge cases
 
-- **Dead object URL.** The viewer's `<img>` has an `onError` handler that swaps `src` to the image's `base64` (`fallbackSrc`). If an original URL is ever revoked early, the user sees the 1024 px copy — degraded, not a broken-image icon.
+- **Dead object URL.** The viewer only swaps in the original after `decode()` resolves, so a revoked URL leaves the 1024 px copy on screen — degraded, not a broken-image icon.
+- **Open latency.** A 12 MP camera file is ~10 MB and is not read from disk until an `<img>` requests it; measured at ~60 ms to decode on a desktop and multiples of that on a phone, which is long enough to make the viewer feel unresponsive on open. Showing the resized copy first removes that from the open path — it decodes in ~0–6 ms and is already in memory behind the thumbnail.
 - **Validation.** `productSchema` already governs the fields, so a bad AI value (e.g. calories out of range) now surfaces as a field error on the review screen instead of being accepted silently and rejected a step later.
 - **No categories exist.** `categories.at(0) ?? null` leaves the category empty and `productSchema`'s "Category is required" refinement blocks submission — visible on the review screen rather than after Accept.
 - **Retry while editing.** Retry re-runs recognition, which unmounts the form; edits are discarded. This matches the pre-existing behaviour, where Retry discarded the card being reviewed.
@@ -337,16 +338,16 @@ Vitest + React Testing Library, jsdom.
 
 ### `tests/setup.ts`
 
-Add stubs for `URL.createObjectURL` / `URL.revokeObjectURL` (absent in jsdom) and `ResizeObserver` (observed by the zoom library).
+Add stubs for `URL.createObjectURL` / `URL.revokeObjectURL` and `HTMLImageElement.prototype.decode` (absent in jsdom) and `ResizeObserver` (observed by the zoom library).
 
 ### `shared/ui/ImageViewer/ImageViewer.test.tsx` (new)
 
-- Open/close behaviour, `alt` text, and the `onError` → `fallbackSrc` fallback.
+- Open/close behaviour, `alt` text, that `fallbackSrc` shows on the opening frame, that the original replaces it once decoded, and that a failed decode leaves `fallbackSrc` in place.
 
 ### `features/manageNote/ui/ImagePreviewList.test.tsx` (new)
 
 - Renders one button per image, each with an accessible name.
-- Tapping a thumbnail opens the viewer with an `img` whose `src` is that image's `originalUrl` — explicitly asserting it is **not** the resized `base64`.
+- Tapping a thumbnail opens the viewer and, once the original has decoded, its `img` `src` is that image's `originalUrl` — explicitly asserting it is **not** the resized `base64`.
 - The close button dismisses the viewer.
 
 ### `features/manageNote/ui/ImageUploadStep.test.tsx` (new)

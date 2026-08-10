@@ -36,6 +36,13 @@ beforeAll(() => {
     value: (): void => {},
   });
 
+  // jsdom loads no images, so it implements no decode(); the image viewer awaits it before
+  // swapping the resized copy for the original
+  Object.defineProperty(HTMLImageElement.prototype, 'decode', {
+    writable: true,
+    value: async (): Promise<void> => {},
+  });
+
   // react-zoom-pan-pinch observes its wrapper element
   Object.defineProperty(window, 'ResizeObserver', {
     writable: true,

@@ -1,6 +1,6 @@
 import CloseIcon from '@mui/icons-material/Close';
 import { Box, Dialog, IconButton } from '@mui/material';
-import { useState, type FC } from 'react';
+import { useEffect, useState, type FC } from 'react';
 import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch';
 
 interface Props {
@@ -12,9 +12,35 @@ interface Props {
 }
 
 export const ImageViewer: FC<Props> = ({ src, fallbackSrc, alt, opened, onClose }) => {
-  const [failedSrc, setFailedSrc] = useState<string | null>(null);
+  const [decodedSrc, setDecodedSrc] = useState<string | null>(null);
 
-  const displayedSrc = failedSrc === src ? fallbackSrc : src;
+  // An object URL is not read from disk until an <img> asks for it, and decoding a full-resolution
+  // camera file costs hundreds of milliseconds on a phone. Decoding out of band keeps that cost off
+  // the frame that opens the viewer.
+  useEffect(() => {
+    if (!opened) {
+      return;
+    }
+
+    let cancelled = false;
+    const image = new window.Image();
+    image.src = src;
+
+    image
+      .decode()
+      .then(() => {
+        if (!cancelled) {
+          setDecodedSrc(src);
+        }
+      })
+      .catch(() => {});
+
+    return () => {
+      cancelled = true;
+    };
+  }, [opened, src]);
+
+  const displayedSrc = decodedSrc === src ? src : fallbackSrc;
 
   return (
     <Dialog
@@ -39,7 +65,6 @@ export const ImageViewer: FC<Props> = ({ src, fallbackSrc, alt, opened, onClose 
               component="img"
               src={displayedSrc}
               alt={alt}
-              onError={() => setFailedSrc(src)}
               sx={{ width: '100%', height: '100%', objectFit: 'contain' }}
             />
           </TransformComponent>
