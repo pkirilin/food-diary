@@ -1,25 +1,41 @@
-import CheckIcon from '@mui/icons-material/Check';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import { Alert, AlertTitle, LinearProgress, Stack, Typography } from '@mui/material';
 import { type FC } from 'react';
-import { useAppDispatch, useAppSelector } from '@/app/store';
+import { useAppSelector } from '@/app/store';
 import { categoryLib } from '@/entities/category';
+import { type RecognizeNoteItem } from '@/entities/note';
+import { ProductForm, type OnSubmitProductFn, type productModel } from '@/entities/product';
+import { type SelectOption } from '@/shared/types';
 import { Button } from '@/shared/ui';
 import { useRecognizeNotes } from '../lib/useRecognizeNotes';
-import { actions, type Image } from '../model';
+import { type Image } from '../model';
 import { ImagePreviewList } from './ImagePreviewList';
-import { SuggestedProductCard } from './SuggestedProductCard';
-import { SuggestedProductCardSkeleton } from './SuggestedProductCardSkeleton';
+import { SuggestionSkeleton } from './SuggestionSkeleton';
 
 interface Props {
   images: Image[];
+  onSubmitProduct: OnSubmitProductFn;
 }
 
-export const ImageUploadStep: FC<Props> = ({ images }) => {
+const toProductFormValues = (
+  { product, quantity }: RecognizeNoteItem,
+  category: SelectOption | null,
+): productModel.ProductFormValues => ({
+  name: product.name.trim(),
+  defaultQuantity: quantity,
+  category,
+  calories: product.caloriesCost,
+  protein: product.protein,
+  fats: product.fats,
+  carbs: product.carbs,
+  sugar: product.sugar,
+  salt: product.salt,
+});
+
+export const ImageUploadStep: FC<Props> = ({ images, onSubmitProduct }) => {
   const recognizeNotes = useRecognizeNotes();
   const isSubmitting = useAppSelector(state => state.manageNote.isSubmitting);
-  const dispatch = useAppDispatch();
-  const { categories } = categoryLib.useCategoriesForSelect();
+  const { categories, categoriesLoading } = categoryLib.useCategoriesForSelect();
 
   const { suggestions, isLoading, error } = useAppSelector(
     state => state.manageNote.noteRecognition,
@@ -32,7 +48,7 @@ export const ImageUploadStep: FC<Props> = ({ images }) => {
           Analyzing Images...
         </Typography>
         <LinearProgress />
-        <SuggestedProductCardSkeleton />
+        <SuggestionSkeleton />
       </Stack>
     );
   }
@@ -75,41 +91,27 @@ export const ImageUploadStep: FC<Props> = ({ images }) => {
         Review AI suggestions
       </Typography>
       <ImagePreviewList images={images} />
-      <SuggestedProductCard suggestion={suggestion} />
-      <Stack spacing={2} direction="row">
-        <Button
-          startIcon={<RefreshIcon />}
-          variant="outlined"
-          fullWidth
-          disabled={isSubmitting}
-          onClick={() => recognizeNotes(images)}
-        >
-          Retry
-        </Button>
-        <Button
-          startIcon={<CheckIcon />}
-          fullWidth
-          variant="contained"
-          loading={isSubmitting}
-          onClick={() =>
-            dispatch(
-              actions.productDraftCreated({
-                name: suggestion.product.name.trim(),
-                defaultQuantity: suggestion.quantity,
-                category: categories.at(0) ?? null,
-                calories: suggestion.product.caloriesCost,
-                protein: suggestion.product.protein,
-                fats: suggestion.product.fats,
-                carbs: suggestion.product.carbs,
-                sugar: suggestion.product.sugar,
-                salt: suggestion.product.salt,
-              }),
-            )
-          }
-        >
-          Accept
-        </Button>
-      </Stack>
+      {categoriesLoading ? (
+        <SuggestionSkeleton />
+      ) : (
+        <ProductForm
+          formId="product-form"
+          autoFocus={false}
+          defaultValues={toProductFormValues(suggestion, categories.at(0) ?? null)}
+          categories={categories}
+          categoriesLoading={false}
+          onSubmit={onSubmitProduct}
+        />
+      )}
+      <Button
+        startIcon={<RefreshIcon />}
+        variant="outlined"
+        fullWidth
+        disabled={isSubmitting}
+        onClick={() => recognizeNotes(images)}
+      >
+        Retry
+      </Button>
     </Stack>
   );
 };

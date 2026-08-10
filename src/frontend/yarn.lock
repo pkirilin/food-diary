@@ -7460,6 +7460,7 @@ __metadata:
     react-hook-form: "npm:^7.79.0"
     react-redux: "npm:^9.3.0"
     react-router: "npm:^7.17.0"
+    react-zoom-pan-pinch: "npm:^4.0.3"
     typescript: "npm:5.9.3"
     use-debounce: "npm:^10.1.1"
     vite: "npm:^8.0.16"
@@ -10450,6 +10451,16 @@ __metadata:
     react: ">=16.6.0"
     react-dom: ">=16.6.0"
   checksum: 10/ca32d3fd2168c976c5d90a317f25d5f5cd723608b415fb3b9006f9d793c8965c619562d0884503a3e44e4b06efbca4fdd1520f30e58ca3e00a0890e637d55419
+  languageName: node
+  linkType: hard
+
+"react-zoom-pan-pinch@npm:^4.0.3":
+  version: 4.0.3
+  resolution: "react-zoom-pan-pinch@npm:4.0.3"
+  peerDependencies:
+    react: "*"
+    react-dom: "*"
+  checksum: 10/5395bc605b4aa1392e72ded1443f11a9070e287414890ac4bda2d19c5ba2539241be1035c1dd39e4e084e86ebd800a0f6bf5dbd575da162c84a5f45ea8fdce03
   languageName: node
   linkType: hard
 

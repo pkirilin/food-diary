@@ -27,6 +27,7 @@ interface Props {
   defaultValues: ProductFormValues;
   categories: SelectOption[];
   categoriesLoading: boolean;
+  autoFocus: boolean;
   onSubmit: OnSubmitProductFn;
   onNutritionSuggestingChange?: (nutritionSuggesting: boolean) => void;
 }
@@ -49,6 +50,7 @@ export const ProductForm: FC<Props> = ({
   defaultValues,
   categories,
   categoriesLoading,
+  autoFocus,
   onSubmit,
   onNutritionSuggestingChange,
 }) => {
@@ -93,7 +95,7 @@ export const ProductForm: FC<Props> = ({
           <TextField
             {...field}
             fullWidth
-            autoFocus
+            autoFocus={autoFocus}
             disabled={isSuggesting}
             label="Name"
             placeholder="Product name"

@@ -13,7 +13,10 @@ export const configureStore = () =>
       manageNote: manageNoteModel.reducer,
     },
 
-    middleware: getDefaultMiddleware => getDefaultMiddleware().concat(api.middleware),
+    middleware: getDefaultMiddleware =>
+      getDefaultMiddleware()
+        .prepend(manageNoteModel.imageUrlsListener.middleware)
+        .concat(api.middleware),
   });
 
 export const store: ReturnType<typeof configureStore> = configureStore();

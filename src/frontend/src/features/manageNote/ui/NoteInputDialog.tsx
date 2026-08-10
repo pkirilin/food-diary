@@ -35,6 +35,25 @@ export const NoteInputDialog: FC<Props> = ({ date, mealType, note }) => {
   const handleSubmitProduct = useSubmitProduct(date);
   const [handleLoadProductForEdit, productForEditLoading] = useLoadProductForEdit();
 
+  const getActiveFormId = (): string | null => {
+    const activeScreenType = activeScreen.type;
+
+    switch (activeScreenType) {
+      case 'note-input':
+        return activeScreen.formId;
+      case 'product-input':
+        return activeScreen.formId;
+      case 'image-upload':
+        return activeScreen.formId;
+      case 'product-search':
+        return null;
+      default: {
+        activeScreenType satisfies never;
+        return null;
+      }
+    }
+  };
+
   const handleDialogClose = (): void => {
     if (isLoading) {
       return;
@@ -49,10 +68,7 @@ export const NoteInputDialog: FC<Props> = ({ date, mealType, note }) => {
 
   const { categories, categoriesLoading } = categoryLib.useCategoriesForSelect();
 
-  const inputScreenActive =
-    activeScreen.type === 'note-input' || activeScreen.type === 'product-input';
-
-  const activeFormId = inputScreenActive ? activeScreen.formId : undefined;
+  const activeFormId = getActiveFormId();
 
   const renderContent = (): ReactElement => {
     switch (activeScreen.type) {
@@ -75,6 +91,7 @@ export const NoteInputDialog: FC<Props> = ({ date, mealType, note }) => {
         return (
           <ProductForm
             formId={activeScreen.formId}
+            autoFocus
             defaultValues={activeScreen.product}
             categories={categories}
             categoriesLoading={categoriesLoading}
@@ -82,7 +99,9 @@ export const NoteInputDialog: FC<Props> = ({ date, mealType, note }) => {
           />
         );
       case 'image-upload':
-        return <ImageUploadStep images={activeScreen.images} />;
+        return (
+          <ImageUploadStep images={activeScreen.images} onSubmitProduct={handleSubmitProduct} />
+        );
       default:
         throw new Error(`Unexpected screen: ${JSON.stringify(activeScreen)}`);
     }
@@ -105,8 +124,8 @@ export const NoteInputDialog: FC<Props> = ({ date, mealType, note }) => {
         <Button
           {...props}
           type="submit"
-          form={activeFormId}
-          disabled={!inputScreenActive || submitDisabled}
+          form={activeFormId ?? undefined}
+          disabled={activeFormId === null || submitDisabled}
           loading={isSubmitting}
         >
           {submitText}

@@ -25,6 +25,34 @@ beforeAll(() => {
     value: () => {},
   });
 
+  // jsdom implements neither of these; the note dialog creates object URLs for uploaded photos
+  Object.defineProperty(URL, 'createObjectURL', {
+    writable: true,
+    value: (): string => `blob:${crypto.randomUUID()}`,
+  });
+
+  Object.defineProperty(URL, 'revokeObjectURL', {
+    writable: true,
+    value: (): void => {},
+  });
+
+  // jsdom loads no images, so it implements no decode(); the image viewer awaits it before
+  // swapping the resized copy for the original
+  Object.defineProperty(HTMLImageElement.prototype, 'decode', {
+    writable: true,
+    value: async (): Promise<void> => {},
+  });
+
+  // react-zoom-pan-pinch observes its wrapper element
+  Object.defineProperty(window, 'ResizeObserver', {
+    writable: true,
+    value: class ResizeObserverStub {
+      observe(): void {}
+      unobserve(): void {}
+      disconnect(): void {}
+    },
+  });
+
   server.listen();
 });
 
