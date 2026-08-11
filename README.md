@@ -38,7 +38,7 @@ Curious to see how the app works? [View the demo app here](https://pkirilin.gith
       <img src="docs/images/nutrition-tracking.png" alt="Food Diary app mobile screen showing daily nutrition tracking interface with meal entries and nutrition summary">
     </td>
     <td>
-      <img src="docs/images/ai-suggestions.png" alt="Food Diary app mobile screen showing weight tracking interface with chart and weight logs">
+      <img src="docs/images/ai-suggestions.png" alt="Food Diary app mobile screen showing product form with AI suggestions from uploaded image">
     </td>
     <td>
       <img src="docs/images/weight-tracking.png" alt="Food Diary app mobile screen showing weight tracking interface with chart and weight logs">
