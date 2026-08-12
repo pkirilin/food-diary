@@ -54,6 +54,7 @@ test('should not create viewer urls when one of the uploaded files fails to resi
   );
 
   const createObjectURL = vi.spyOn(URL, 'createObjectURL');
+  const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
 
   const { container } = render(
     <RootProvider store={store}>
@@ -74,4 +75,5 @@ test('should not create viewer urls when one of the uploaded files fails to resi
   });
   expect(createObjectURL).not.toHaveBeenCalled();
   expect(store.getState().manageNote.images).toHaveLength(0);
+  expect(consoleError).toHaveBeenCalledWith('Failed to upload images: ', expect.any(Error));
 });
