@@ -147,6 +147,10 @@ The full Playwright E2E suite runs in CI via the `e2e-tests` job in
 `.github/workflows/build.yml` on push. Docker is available locally, but running
 E2E locally was explicitly deferred to CI to keep the loop fast.
 
+Note the limit of that delegation: E2E runs desktop viewports only, so it does
+not cover `FullScreenDialog` either (see "Coverage gap found during planning").
+The new unit test is the only automated check on that component.
+
 ## Risks & watch items
 
 Ranked by likelihood:
@@ -170,14 +174,38 @@ Ranked by likelihood:
 
 ## Delivery
 
-Branch `migrate-to-react-19` off `main`, with the work split into **two commits**:
+Branch `migrate-to-react-19` off `main`, with the work split into **four
+commits**:
 
 1. Dependency bumps and removals (`package.json`, `yarn.lock`).
-2. The two `forwardRef` → ref-as-prop conversions.
+2. New regression coverage for `FullScreenDialog` (see the coverage gap below).
+3. `NutritionValueInput` → ref-as-prop.
+4. `FullScreenDialog` transition → ref-as-prop.
 
 Splitting this way means a red CI E2E job can be bisected into "React 19 broke
 it" versus "the refactor broke it" without unpicking a single commit. Then a PR,
 matching the repo's recent #170–#177 pattern.
+
+### Coverage gap found during planning
+
+This spec originally planned two commits and no new tests. Planning then found
+that **`FullScreenDialog` is exercised by neither test suite**:
+
+- It renders only when `Dialog.tsx:21` sees `isMobile && renderMode === 'fullScreenOnMobile'`.
+- `isMobile` comes from `useMediaQuery(theme => theme.breakpoints.down('md'))`,
+  and the jsdom `matchMedia` stub in `tests/setup.ts` returns
+  `matches: query === '(pointer: fine)'` — so breakpoint queries resolve `false`
+  and the unit suite always takes the `ModalDialog` branch.
+- Every Playwright mobile project is commented out in
+  `tests/playwright.config.ts:56-63`; only Desktop Chrome/Firefox/Safari run.
+
+Since the transition wrapper is the riskier of the two conversions, commit 2 adds
+a `FullScreenDialog` unit test before commit 4 touches it. The test asserts that
+MUI's `FocusTrap` — which reaches the transition's DOM node through a cloned ref
+— succeeds in moving focus off `<body>`. That assertion was empirically confirmed
+to fail when the transition swallows the ref. **A `console.error`-based check is
+not viable**: React 19 removed the "Function components cannot be given refs"
+warning, so a broken transition produces no warning at all.
 
 ## Out of scope
 
