@@ -243,11 +243,13 @@ Expected: 2 passed. This is a characterization test against working code, so pas
 Temporarily break the ref forwarding. In `src/frontend/src/shared/ui/Dialog/FullScreenDialog.tsx`, replace the whole `Transition` definition (lines 17–24) with a version that swallows the ref:
 
 ```tsx
-const Transition = (
-  props: TransitionProps & {
-    children: React.ReactElement;
-  },
-) => {
+const Transition = ({
+  ref: _droppedRef,
+  ...props
+}: TransitionProps & {
+  children: React.ReactElement;
+  ref?: React.Ref<unknown>;
+}) => {
   return <Slide direction="up" {...props} />;
 };
 ```
@@ -258,7 +260,7 @@ Run:
 yarn test --run src/shared/ui/Dialog/FullScreenDialog.test.tsx
 ```
 
-Expected: **1 failed | 1 passed** — `should forward the transition ref so the dialog traps focus` fails with `expected <body> not to be <body>`, while the render test still passes. This exact pairing was confirmed during planning.
+Expected: **1 failed | 1 passed** — `should forward the transition ref so the dialog traps focus` fails with `expected <body> not to be <body>`, while the render test still passes. Under React 19, `ref` is an ordinary entry in `props`, so merely removing the `forwardRef` wrapper while still spreading the whole props object does **not** drop the ref — JSX re-extracts `ref` from the spread. The break must discard `ref` explicitly, as above, to actually reproduce this failure.
 
 **If both tests still pass, the regression net is worthless — stop and report it** rather than proceeding to Task 4 with a test that cannot detect the very regression it exists to catch.
 
