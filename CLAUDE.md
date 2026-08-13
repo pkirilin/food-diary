@@ -92,3 +92,13 @@ Check `STRATEGY.md` first — the project deliberately stays small. Prefer modif
 
 - ⚠️ **ALWAYS** Use `rg` instead of `grep`, `fd` instead of `find`, `jaq` instead of `jq` (if available)
 - ⚠️ **ALWAYS** Use JSON output when CLI supports it. Pipe ALL JSON through `| toon` (if available)
+
+## Agent skills
+
+### Issue tracker
+
+Issues and specs live as local markdown files under `.scratch/<feature-slug>/`. See `docs/agents/issue-tracker.md`.
+
+### Domain docs
+
+Single-context — one `CONTEXT.md` + `docs/adr/` at the repo root. See `docs/agents/domain.md`.
