@@ -4,3 +4,4 @@
 *.code-workspace
 .claude/worktrees/
 .superpowers/
+.playwright-cli/

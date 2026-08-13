@@ -5,6 +5,14 @@ import { ImageViewer } from './ImageViewer';
 const ORIGINAL_SRC = 'blob:original';
 const FALLBACK_SRC = 'data:image/jpeg;base64,resized';
 
+// The viewer decodes the original out of band, so every test that opens it must await the swap -
+// otherwise the state update lands after the test body and React warns about updates outside act()
+const waitForOriginalToDecode = async (): Promise<void> => {
+  await waitFor(() => {
+    expect(screen.getByAltText('Photo')).toHaveAttribute('src', ORIGINAL_SRC);
+  });
+};
+
 test('should show nothing when closed', () => {
   render(
     <ImageViewer
@@ -19,7 +27,7 @@ test('should show nothing when closed', () => {
   expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
 });
 
-test('should expose the dialog with an accessible name', () => {
+test('should expose the dialog with an accessible name', async () => {
   render(
     <ImageViewer
       opened
@@ -31,9 +39,11 @@ test('should expose the dialog with an accessible name', () => {
   );
 
   expect(screen.getByRole('dialog', { name: 'Photo' })).toBeVisible();
+
+  await waitForOriginalToDecode();
 });
 
-test('should show the resized copy as soon as it is opened', () => {
+test('should show the resized copy as soon as it is opened', async () => {
   render(
     <ImageViewer
       opened
@@ -45,6 +55,8 @@ test('should show the resized copy as soon as it is opened', () => {
   );
 
   expect(screen.getByAltText('Photo')).toHaveAttribute('src', FALLBACK_SRC);
+
+  await waitForOriginalToDecode();
 });
 
 test('should show the original once it has decoded', async () => {
@@ -58,9 +70,7 @@ test('should show the original once it has decoded', async () => {
     />,
   );
 
-  await waitFor(() => {
-    expect(screen.getByAltText('Photo')).toHaveAttribute('src', ORIGINAL_SRC);
-  });
+  await waitForOriginalToDecode();
 });
 
 test('should keep the resized copy when the original cannot be decoded', async () => {
