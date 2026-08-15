@@ -103,7 +103,11 @@ export const NoteForm: FC<Props> = ({
             endAdornment: (
               <InputAdornment position="end">
                 {productForEditLoading ? (
-                  <Box p={1}>
+                  <Box
+                    sx={{
+                      p: 1,
+                    }}
+                  >
                     <CircularProgress size={20} />
                   </Box>
                 ) : (

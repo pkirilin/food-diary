@@ -126,12 +126,13 @@ export const ProductForm: FC<Props> = ({
                 helperText={fieldState.error?.message ?? ' '}
                 margin="normal"
                 slotProps={{
+                  ...params.slotProps,
                   input: {
-                    ...params.InputProps,
+                    ...params.slotProps.input,
                     endAdornment: categoriesLoading ? (
                       <CircularProgress color="inherit" size={20} />
                     ) : (
-                      params.InputProps.endAdornment
+                      params.slotProps.input.endAdornment
                     ),
                   },
                 }}

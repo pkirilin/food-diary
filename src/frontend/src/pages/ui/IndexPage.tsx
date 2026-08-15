@@ -60,19 +60,26 @@ export const Component: FC = () => {
     <Box>
       <Slide in={scrolled} direction="down">
         <Box
-          position="fixed"
-          top={{ xs: APP_BAR_HEIGHT_XS, sm: APP_BAR_HEIGHT_SM }}
-          bgcolor={theme => theme.palette.background.paper}
-          boxShadow={theme => theme.shadows[2]}
-          zIndex={theme => theme.zIndex.appBar - 1}
-          overflow={['auto', 'hidden']}
-          width="100%"
+          sx={{
+            position: 'fixed',
+            top: { xs: APP_BAR_HEIGHT_XS, sm: APP_BAR_HEIGHT_SM },
+            bgcolor: theme => theme.palette.background.paper,
+            boxShadow: theme => theme.shadows[2],
+            zIndex: theme => theme.zIndex.appBar - 1,
+            overflow: ['auto', 'hidden'],
+            width: '100%',
+          }}
         >
           <NutritionSummaryWidgetBar nutritionValues={nutritionValues} />
         </Box>
       </Slide>
       <PageContainer>
-        <Stack spacing={3} pb={4}>
+        <Stack
+          spacing={3}
+          sx={{
+            pb: 4,
+          }}
+        >
           <Stack spacing={{ xs: 2, sm: 3 }}>
             {hasMissingNutritionValues && (
               <Alert severity="warning">Some nutrition values are missing</Alert>

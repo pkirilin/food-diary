@@ -43,7 +43,13 @@ export const NotesListItem: FC<Props> = ({ note }) => {
     <>
       <ListItemButton onClick={handleExpandToggle} selected={expanded}>
         <ListItemText primary={note.product.name} secondary={`${note.productQuantity} g`} />
-        <Stack direction="row" spacing={1} alignItems="center">
+        <Stack
+          direction="row"
+          spacing={1}
+          sx={{
+            alignItems: 'center',
+          }}
+        >
           {hasMissingNutritionValues && <Badge color="warning" variant="dot" />}
           <NutritionValueDisplay type="calories" value={calories} size="small" />
           {expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
@@ -52,12 +58,22 @@ export const NotesListItem: FC<Props> = ({ note }) => {
       <Collapse in={expanded}>
         <Stack
           direction="column"
-          px={2}
-          pb={2}
           spacing={2}
-          bgcolor={theme => alpha(theme.palette.primary.main, theme.palette.action.selectedOpacity)}
+          sx={{
+            px: 2,
+            pb: 2,
+            bgcolor: theme =>
+              alpha(theme.palette.primary.main, theme.palette.action.selectedOpacity),
+          }}
         >
-          <Stack direction="row" py={1} spacing={2} overflow={['auto', 'hidden']}>
+          <Stack
+            direction="row"
+            spacing={2}
+            sx={{
+              py: 1,
+              overflow: ['auto', 'hidden'],
+            }}
+          >
             <NutritionValueDisplay type="protein" size="small" value={protein} />
             <NutritionValueDisplay type="fats" size="small" value={fats} />
             <NutritionValueDisplay type="carbs" size="small" value={carbs} />
@@ -69,7 +85,13 @@ export const NotesListItem: FC<Props> = ({ note }) => {
               Nutrition values are missing
             </Alert>
           )}
-          <Stack direction="row" justifyContent="right" spacing={2}>
+          <Stack
+            direction="row"
+            spacing={2}
+            sx={{
+              justifyContent: 'right',
+            }}
+          >
             <EditNote
               note={note}
               renderTrigger={openDialog => (

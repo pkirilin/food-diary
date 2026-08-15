@@ -28,7 +28,9 @@ export const WeightLogsList: FC<Props> = ({ weightLogsRequest }) => {
         <ListItem disableGutters disablePadding>
           <ListItemText
             primary="You have not logged any weights yet"
-            primaryTypographyProps={{ color: 'textSecondary' }}
+            slotProps={{
+              primary: { color: 'textSecondary' },
+            }}
           />
         </ListItem>
       )}

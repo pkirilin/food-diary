@@ -28,7 +28,15 @@ const FullScreenDialog: FC<DialogBaseProps> = ({
   onClose,
   renderSubmit,
 }) => (
-  <MuiDialog open={opened} onClose={onClose} fullWidth fullScreen TransitionComponent={Transition}>
+  <MuiDialog
+    open={opened}
+    onClose={onClose}
+    fullWidth
+    fullScreen
+    slots={{
+      transition: Transition,
+    }}
+  >
     <AppBar position="relative">
       <Toolbar>
         <IconButton edge="start" color="inherit" onClick={onClose} aria-label="close">

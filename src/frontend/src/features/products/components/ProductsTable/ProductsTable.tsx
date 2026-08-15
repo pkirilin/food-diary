@@ -63,8 +63,10 @@ const ProductsTable: FC<ProductsTableProps> = ({ products, checkedIds, onChecked
                 checked={allProductsChecked}
                 onChange={handleCheckedIdsChange}
                 disabled={products.length === 0}
-                inputProps={{
-                  'aria-label': 'Select all',
+                slotProps={{
+                  input: {
+                    'aria-label': 'Select all',
+                  },
                 }}
               />
             </TableCell>

@@ -22,17 +22,53 @@ export const MealsListItem: FC<Props> = ({ date, mealType }) => {
 
   return (
     <ListItem disableGutters disablePadding aria-label={`${mealName}, ${calories} kilocalories`}>
-      <Stack width="100%">
+      <Stack
+        sx={{
+          width: '100%',
+        }}
+      >
         <Card sx={{ minWidth: '100%' }}>
-          <Stack direction="column" p={2} spacing={2} bgcolor={theme => theme.palette.grey[100]}>
-            <Stack direction="row" justifyContent="space-between" alignItems="center">
-              <Typography fontWeight="bold">{mealName}</Typography>
-              <Stack direction="row" spacing={1} alignItems="center">
+          <Stack
+            direction="column"
+            spacing={2}
+            sx={{
+              p: 2,
+              bgcolor: theme => theme.palette.grey[100],
+            }}
+          >
+            <Stack
+              direction="row"
+              sx={{
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}
+            >
+              <Typography
+                sx={{
+                  fontWeight: 'bold',
+                }}
+              >
+                {mealName}
+              </Typography>
+              <Stack
+                direction="row"
+                spacing={1}
+                sx={{
+                  alignItems: 'center',
+                }}
+              >
                 {hasMissingNutritionValues && <Badge color="warning" variant="dot" />}
                 <NutritionValueDisplay type="calories" size="medium" value={calories} bold />
               </Stack>
             </Stack>
-            <Stack direction="row" spacing={2} py={1} overflow={['auto', 'hidden']}>
+            <Stack
+              direction="row"
+              spacing={2}
+              sx={{
+                py: 1,
+                overflow: ['auto', 'hidden'],
+              }}
+            >
               <NutritionValueDisplay type="protein" size="small" value={protein} bold />
               <NutritionValueDisplay type="fats" size="small" value={fats} bold />
               <NutritionValueDisplay type="carbs" size="small" value={carbs} bold />

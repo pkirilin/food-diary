@@ -12,7 +12,13 @@ export const ImagePreviewList: FC<Props> = ({ images }) => {
 
   return (
     <>
-      <Box display="flex" gap={2} flexWrap="wrap">
+      <Box
+        sx={{
+          display: 'flex',
+          gap: 2,
+          flexWrap: 'wrap',
+        }}
+      >
         {images.map((image, index) => (
           <ButtonBase
             key={image.id}

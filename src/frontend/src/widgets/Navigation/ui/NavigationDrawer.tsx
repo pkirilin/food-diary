@@ -14,11 +14,13 @@ export const NavigationDrawer: FC<Props> = ({ visible, toggle }) => (
     open={visible}
     onClose={toggle}
     ModalProps={{ keepMounted: true }}
-    PaperProps={{
-      sx: {
-        width: `${SIDEBAR_DRAWER_WIDTH}px`,
+    slotProps={{
+      paper: {
+        sx: {
+          width: `${SIDEBAR_DRAWER_WIDTH}px`,
+        },
+        component: 'nav',
       },
-      component: 'nav',
     }}
   >
     <NavigationDrawerMenuList />
