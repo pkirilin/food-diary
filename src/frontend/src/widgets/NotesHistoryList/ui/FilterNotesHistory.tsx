@@ -71,6 +71,9 @@ export const FilterNotesHistory: FC<Props> = ({ date }) => {
                 setFilterDate(newDate);
               }
             }}
+            // The picker's own Cancel resets the value without closing anything, which
+            // would leave the dialog's Apply submitting the old month.
+            slotProps={{ actionBar: { actions: [] } }}
           />
         }
       />

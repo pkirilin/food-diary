@@ -79,16 +79,22 @@ Click-through (dev server, MSW): drawer, sticky nutrition bar, nutrition summary
 table with its `slotProps` checkbox labels, pagination, category filter, delete-note dialog spacing,
 full-screen dialog transition, and the weight page's empty-state secondary text.
 
-### Out of scope, found while verifying — needs its own ticket
+### Found while verifying — a defect in 03, fixed here on request
 
 **The history filter's picker gained a second, actively harmful confirmation.** Ticket 03 recorded
 the extra Cancel/OK bar on `FilterNotesHistory.tsx` as cosmetic and accepted. It is not: the dialog
 renders `["", "", "Cancel", "OK", "Cancel", "Apply"]`, and clicking the *picker's* Cancel fires
 `onChange` with the old value — reverting `filterDate` — while leaving the dialog open. A user who
 picks December, presses that Cancel, then presses Apply submits October with no indication. The
-picker's OK does nothing at all, since neither `onAccept` nor `onClose` is wired. Verified against
-the installed `@mui/x-date-pickers@9.11.0`. Minimum fix is
-`slotProps={{ actionBar: { actions: [] } }}` on that picker; ADR 0002 needs a correction either way.
+picker's OK does nothing at all, since neither `onAccept` nor `onClose` is wired.
+
+Fixed in a follow-up commit on this branch: the picker's action bar is suppressed with
+`slotProps={{ actionBar: { actions: [] } }}`, so the enclosing dialog is the only place the filter
+is confirmed or dismissed. Two tests cover it, and removing the fix fails the first. ADR 0002 and
+03's answer were both corrected — the switcher was re-checked at the same time and is genuinely
+unaffected: its Cancel closes the popover, submits nothing, and leaves no stale selection.
+
+### Still open — needs its own ticket
 
 **`SelectDateView.tsx:62` leans on a deprecated prop.** `StaticOnlyPickerProps.onClose` is annotated
 "will be removed in next major version". It works today and the switcher's test covers it, but on

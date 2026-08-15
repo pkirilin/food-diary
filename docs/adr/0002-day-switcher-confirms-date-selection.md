@@ -40,10 +40,23 @@ confirmation, a selection has to live somewhere until OK. The component keeps th
 pending date in state and resets it to `currentDate` each time the popover opens, so
 dismissing without confirming does not leave a stale selection behind.
 
-The history filter renders the same static picker and gains the same Cancel/OK bar
-inside its own Cancel/Apply dialog. It drives its state from the change callback, so
-nothing about it breaks, and it is deliberately left alone — widening the migration
-for visual consistency is not worth it.
+The history filter renders the same static picker inside its own Cancel/Apply dialog,
+and it suppresses the picker's action bar with an empty `actions` array.
+
+Leaving that bar in place was tried first, on the reasoning that the filter drives its
+state from the change callback and so nothing about it could break. That was wrong.
+The picker's Cancel fires the change callback with the *previous* value, so it reset
+the filter's pending month without closing anything — and the dialog's Apply then
+submitted the old month with nothing on screen to say the choice had been discarded.
+Its OK did nothing at all, because the filter wires neither the accept nor the close
+callback. Two confirmation pairs in one dialog, one of them silently destructive, is a
+defect rather than a cosmetic wrinkle, so the inner pair is removed and the dialog
+stays the only place the filter is confirmed or dismissed.
+
+The switcher keeps its action bar. There the same Cancel is unambiguous: it closes the
+popover, nothing is submitted, and reopening shows the current date rather than the
+abandoned selection. The difference is that the switcher wires the close callback and
+resets its pending date on every open, so a discarded selection has nowhere to linger.
 
 This decision is scoped to the day switcher's interaction. It is **not** a blanket
 "we accept upstream defaults": the same migration turns the weight chart's per-entry

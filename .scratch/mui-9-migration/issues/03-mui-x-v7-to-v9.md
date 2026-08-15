@@ -19,7 +19,7 @@ Expect this to be the ticket that needs judgement rather than codemods. Its fail
 - [x] Choosing a day in the switcher, then confirming, navigates to that day in the running app
 - [x] The switcher's test is updated from the single-tap flow to select-then-confirm; the diff on that assertion is the record of the behaviour change
 - [x] The weight log list's picker assertions are rewritten against the new accessible structure — the field is no longer a textbox with a value, but a group of editable spinbutton sections
-- [x] The history date filter still works. It uses the change callback so it is unaffected, but it gains the same Cancel/OK action bar; this is accepted and it is otherwise left alone
+- [x] The history date filter still works. ~~It uses the change callback so it is unaffected, but it gains the same Cancel/OK action bar; this is accepted and it is otherwise left alone~~ — **corrected in 04:** the added action bar was not harmless, see the correction below
 - [x] An ADR records the confirmation decision, narrowly scoped to the switcher's interaction, written once the behaviour is verified rather than predicted
 - [x] The running app is clicked through: both pickers and the weight chart, including whether the chart's line now touching the plot edges is an improvement
 - [x] `yarn build`, `yarn test` (verbose reporter, no `stderr` blocks) and `yarn lint` all exit zero
@@ -69,3 +69,22 @@ margin either side — so nothing is clipped, and the chart uses its full width.
 default and reversing it would mean adding a `domainLimit` the migration does not otherwise need.
 
 Decision recorded in `docs/adr/0002-day-switcher-confirms-date-selection.md`.
+
+### Correction (from 04)
+
+The claim above that the history filter "is unaffected" and that its extra action bar is
+cosmetic was **wrong**, and the click-through did not catch it because the failing path needs
+the picker's Cancel to be pressed.
+
+The dialog renders `["", "", "Cancel", "OK", "Cancel", "Apply"]`. The picker's Cancel fires the
+change callback with the previous value, resetting the pending month **without closing
+anything** — so picking December, pressing that Cancel, then pressing Apply submits October with
+nothing on screen to say the choice was discarded. The picker's OK does nothing at all, because
+the filter wires neither the accept nor the close callback.
+
+Fixed in 04 by suppressing the picker's action bar
+(`slotProps={{ actionBar: { actions: [] } }}`), with two tests covering it. ADR 0002 was
+corrected to match.
+
+The switcher was re-checked and is genuinely fine: its Cancel closes the popover, submits
+nothing, and leaves no stale selection on reopen.
