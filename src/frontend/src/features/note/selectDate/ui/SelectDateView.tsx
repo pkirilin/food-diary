@@ -14,12 +14,18 @@ interface Props {
 
 export const SelectDateView: FC<Props> = ({ currentDate, onSubmitDate }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const [selectedDate, setSelectedDate] = useState(currentDate);
   const id = anchorEl ? 'select-date-popover' : undefined;
+
+  const closePopover = (): void => {
+    setAnchorEl(null);
+  };
 
   return (
     <>
       <ButtonBase
         onClick={event => {
+          setSelectedDate(currentDate);
           setAnchorEl(event.currentTarget);
         }}
       >
@@ -32,9 +38,7 @@ export const SelectDateView: FC<Props> = ({ currentDate, onSubmitDate }) => {
         id={id}
         open={!!anchorEl}
         anchorEl={anchorEl}
-        onClose={() => {
-          setAnchorEl(null);
-        }}
+        onClose={closePopover}
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'left',
@@ -42,14 +46,20 @@ export const SelectDateView: FC<Props> = ({ currentDate, onSubmitDate }) => {
       >
         <StaticDatePicker
           displayStaticWrapperAs="desktop"
-          value={currentDate}
+          value={selectedDate}
           views={['year', 'month', 'day']}
+          onChange={newDate => {
+            if (newDate) {
+              setSelectedDate(newDate);
+            }
+          }}
           onAccept={newDate => {
             if (newDate) {
               onSubmitDate(newDate);
-              setAnchorEl(null);
+              closePopover();
             }
           }}
+          onClose={closePopover}
         />
       </Popover>
     </>
