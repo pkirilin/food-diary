@@ -1,6 +1,8 @@
-# `@eslint-react` is the sole source of React lint rules
+# `@eslint-react` is the source of React lint rules
 
-Status: accepted (2026-08-13)
+Status: accepted (2026-08-13), amended (2026-08-15)
+
+Amendment: `@stylistic` supplies one JSX rule alongside it. See Consequences.
 
 When migrating the frontend to ESLint 10, `eslint-plugin-react` turned out to have no
 released version that runs on it — every rule throws on a context API that ESLint 10
@@ -32,11 +34,19 @@ detects missing `key` props.
 
 ## Consequences
 
-Two rules have no equivalent in `@eslint-react` and are simply gone:
-`react/self-closing-comp` and `react/function-component-definition`. Both were
-warnings, CI does not fail on warnings, and the codebase was fully compliant with both.
-The arrow-function component convention survives as prose in CLAUDE.md rather than as
-an enforced rule.
+Two rules have no equivalent in `@eslint-react`: `react/self-closing-comp` and
+`react/function-component-definition`.
+
+The first is recovered from a third vendor. `@stylistic/eslint-plugin` ships
+`jsx-self-closing-comp`, the same rule under a new owner, and the project's options
+(`component: true`, `html: false`) carry over unchanged. We register `@stylistic` for
+that one rule only — none of its other 96 rules are enabled, because formatting stays
+Prettier's job. `eslint-config-prettier` disables 180 `@stylistic/*` rules but not this
+one, so the config's Prettier-last ordering does not defeat it.
+
+The second is genuinely gone. It was a warning, CI does not fail on warnings, and the
+codebase was compliant; the arrow-function component convention survives as prose in
+CLAUDE.md rather than as an enforced rule.
 
 Four React Compiler rules — covering compiler configuration, gating, manual
 memoization, and library compatibility — are also lost. They matter only if this
@@ -51,6 +61,6 @@ not shipped in over a year.
 `no-class-component` is active. A React error boundary is the one legitimate reason to
 write a class component and would need a targeted suppression.
 
-**If `eslint-plugin-react` resumes releasing**, this decision is worth revisiting — the
-two dropped style rules become recoverable. That is the most likely trigger for
-superseding this ADR.
+**If `eslint-plugin-react` resumes releasing**, this decision is worth revisiting —
+`function-component-definition`, the one still-dropped style rule, becomes recoverable.
+That is the most likely trigger for superseding this ADR.

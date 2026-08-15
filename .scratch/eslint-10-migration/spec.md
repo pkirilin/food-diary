@@ -34,29 +34,30 @@ The one visible difference is a set of 12 new warnings flagging `setState` calls
 5. As a developer, I want `import/order` to keep alphabetizing groups and placing the `@/**` path group after internal imports, so that import blocks stay in the order the project has always used.
 6. As a developer, I want the linter to catch missing `key` props on list items, so that a whole class of React reconciliation bug is caught before review.
 7. As a developer, I want React rules that understand TypeScript natively, so that I stop paying for prop-types machinery that a TypeScript codebase cannot use.
-8. As a developer, I want the React hooks rules to keep flagging conditional hook calls and incomplete dependency arrays, so that the guarantees I currently rely on are not lost in the vendor swap.
-9. As a developer, I want to be told when I call `setState` inside an effect, so that I can find render loops and redundant renders.
-10. As a developer, I want those `setState`-in-effect findings to arrive as warnings rather than errors, so that the migration can land without me first reasoning about twelve unrelated effects.
-11. As a developer, I want Prettier violations to keep surfacing inline in my editor as I type, so that I do not discover formatting problems only when CI runs.
-12. As a developer, I want formatting to keep being enforced somewhere in CI, so that unformatted code cannot reach the default branch.
-13. As a developer, I want the lint step to stop applying testing-library and jest-dom rules to production source files, so that lint runs faster and rule matches are meaningful.
-14. As a developer, I want type-aware linting to resolve the TypeScript project automatically, so that I do not have to maintain a hand-listed set of tsconfig paths.
-15. As a developer, I want dead `eslint-disable` comments removed, so that the codebase does not carry suppressions for rules that no longer exist.
-16. As a developer, I want the MUI theme module augmentations to keep passing lint, so that theme customization continues to work after the empty-interface rule was renamed upstream.
-17. As a developer, I want unreferenced lint plugins removed from `package.json`, so that install time and the dependency audit surface both shrink.
-18. As a developer, I want the number of lint dependencies to go down rather than up, so that the next migration is smaller than this one.
-19. As a developer running the E2E suite, I want the Playwright workspace on the same ESLint major as the frontend, so that I am not maintaining two different lint paradigms in one repo.
-20. As a developer, I want the Playwright plugin upgraded to a version that supports current Playwright idioms, so that its rules reflect the API I actually write against.
-21. As an agent working in this repo, I want CLAUDE.md's frontend conventions section to describe the linter that actually runs, so that I do not generate code against rules that were removed.
-22. As an agent, I want the arrow-function-component convention documented in prose even though no rule enforces it, so that I keep writing components in the project's established style.
-23. As a future reader of this repo, I want the decision to drop `eslint-plugin-react` recorded with its reasoning, so that I do not "helpfully" reinstate it.
-24. As a developer, I want the migration split into two commits by workspace, so that a problem in one can be reverted without disturbing the other.
-25. As a developer, I want `yarn build` to still pass after the rule fixes, so that I know the `require-await` cleanups did not change any function's return type in a way that breaks callers.
-26. As a developer, I want `yarn test` to still pass, so that I know the migration changed tooling and not behavior.
-27. As a developer, I want confirmation that the new config actually lints the whole codebase, so that I do not ship a configuration that silently checks nothing.
-28. As a maintainer, I want `strictTypeChecked` left out of this change, so that 93 unrelated findings do not block the upgrade.
-29. As a maintainer, I want the option to tighten CI to fail on warnings later, so that today's deliberate warning backlog does not become permanent by accident.
-30. As a maintainer, I want the removed React Compiler rules noted explicitly, so that adopting the compiler later is a known decision rather than a surprise.
+8. As a developer, I want empty components to keep being flagged when they are not written self-closing, so that JSX stays in the single form the codebase already uses.
+9. As a developer, I want the React hooks rules to keep flagging conditional hook calls and incomplete dependency arrays, so that the guarantees I currently rely on are not lost in the vendor swap.
+10. As a developer, I want to be told when I call `setState` inside an effect, so that I can find render loops and redundant renders.
+11. As a developer, I want those `setState`-in-effect findings to arrive as warnings rather than errors, so that the migration can land without me first reasoning about twelve unrelated effects.
+12. As a developer, I want Prettier violations to keep surfacing inline in my editor as I type, so that I do not discover formatting problems only when CI runs.
+13. As a developer, I want formatting to keep being enforced somewhere in CI, so that unformatted code cannot reach the default branch.
+14. As a developer, I want the lint step to stop applying testing-library and jest-dom rules to production source files, so that lint runs faster and rule matches are meaningful.
+15. As a developer, I want type-aware linting to resolve the TypeScript project automatically, so that I do not have to maintain a hand-listed set of tsconfig paths.
+16. As a developer, I want dead `eslint-disable` comments removed, so that the codebase does not carry suppressions for rules that no longer exist.
+17. As a developer, I want the MUI theme module augmentations to keep passing lint, so that theme customization continues to work after the empty-interface rule was renamed upstream.
+18. As a developer, I want unreferenced lint plugins removed from `package.json`, so that install time and the dependency audit surface both shrink.
+19. As a developer, I want the number of lint dependencies to go down rather than up, so that the next migration is smaller than this one.
+20. As a developer running the E2E suite, I want the Playwright workspace on the same ESLint major as the frontend, so that I am not maintaining two different lint paradigms in one repo.
+21. As a developer, I want the Playwright plugin upgraded to a version that supports current Playwright idioms, so that its rules reflect the API I actually write against.
+22. As an agent working in this repo, I want CLAUDE.md's frontend conventions section to describe the linter that actually runs, so that I do not generate code against rules that were removed.
+23. As an agent, I want the arrow-function-component convention documented in prose even though no rule enforces it, so that I keep writing components in the project's established style.
+24. As a future reader of this repo, I want the decision to drop `eslint-plugin-react` recorded with its reasoning, so that I do not "helpfully" reinstate it.
+25. As a developer, I want the migration split into two commits by workspace, so that a problem in one can be reverted without disturbing the other.
+26. As a developer, I want `yarn build` to still pass after the rule fixes, so that I know the `require-await` cleanups did not change any function's return type in a way that breaks callers.
+27. As a developer, I want `yarn test` to still pass, so that I know the migration changed tooling and not behavior.
+28. As a developer, I want confirmation that the new config actually lints the whole codebase, so that I do not ship a configuration that silently checks nothing.
+29. As a maintainer, I want `strictTypeChecked` left out of this change, so that 93 unrelated findings do not block the upgrade.
+30. As a maintainer, I want the option to tighten CI to fail on warnings later, so that today's deliberate warning backlog does not become permanent by accident.
+31. As a maintainer, I want the removed React Compiler rules noted explicitly, so that adopting the compiler later is a known decision rather than a surprise.
 
 ## Implementation Decisions
 
@@ -73,7 +74,7 @@ Replace `.eslintrc.json` and `.eslintignore` with a single flat config module pe
 The single `overrides` block becomes several `files`-scoped configuration objects:
 
 1. Global ignores, absorbing the contents of `.eslintignore`.
-2. A TypeScript/TSX block carrying the parser, type information, and the core, TypeScript, React, and import rules.
+2. A TypeScript/TSX block carrying the parser, type information, and the core, TypeScript, React, import, and stylistic rules. `@stylistic` is registered here as a plugin contributing exactly one rule — `jsx-self-closing-comp` — not as a preset. None of its other 96 rules are enabled; the project delegates formatting to Prettier.
 3. A test-file block adding the testing-library and jest-dom rules. These currently apply to every file in the workspace; scoping them to test files is a deliberate correction.
 4. Prettier last, so it can override earlier formatting opinions.
 
@@ -99,9 +100,13 @@ The reasoning, in order:
 - `@eslint-react` reimplements the hooks rules, and ships a conflict-resolution preset that disables twelve of the fourteen rules in the current hooks plugin. The two are alternatives, not complements. Running both means paying for duplicate detection of the same violations.
 - `strict-typescript` measured identically to the weaker presets against this codebase — the same fourteen warnings, zero errors — so the stricter tier is free. It is also the only tier that includes a useless-fragment rule, preserving one the project runs today.
 
-Accepted losses, all verified as having no equivalent in the chosen plugin:
+Self-closing-component enforcement is **recovered from a different vendor**. `@eslint-react` has no equivalent, but `@stylistic/eslint-plugin` ships `jsx-self-closing-comp` — the same rule, descended from the same source, and the project's two options (`component: true`, `html: false`) transfer verbatim. Verified on 2026-08-15 by installing `@stylistic/eslint-plugin` 5.10.0 against ESLint 10.8.1 and linting the 108 `.tsx` files in `src/`: peer resolution is clean (`eslint: ^9.0.0 || ^10.0.0`), zero parse errors, zero violations, and the rule remains auto-fixable. `eslint-config-prettier` disables 180 `@stylistic/*` rules but **not** this one, so placing Prettier last does not silently switch it back off.
 
-- Self-closing-component and arrow-function-component enforcement. Both are warnings today, CI does not fail on warnings, and the codebase is fully compliant. The arrow-function convention is retained as documented prose.
+This costs one dependency. The migration still removes more lint packages than it adds, so the direction in story 19 holds.
+
+Accepted losses, verified as having no equivalent in either plugin:
+
+- Arrow-function-component enforcement. `@stylistic` has no rule for it (its 97 rules include nothing component-shaped). It is a warning today, CI does not fail on warnings, and the codebase is compliant. The convention is retained as documented prose.
 - Four React Compiler rules covering compiler configuration, gating, manual memoization, and library compatibility. These matter only if the project adopts React Compiler, which it has not.
 
 `no-class-component` is active under `strict-typescript` and the codebase currently has no class components. A React error boundary is the one legitimate class-component use and would need a targeted suppression if introduced later.
@@ -181,7 +186,7 @@ The E2E suite itself is not a gate for this change. Its lint step runs inside a 
 
 **Two premises that shaped early framing turned out to be wrong**, both corrected by reading released source. ESLint 10 did *not* remove the deprecated core formatting rules — they remain registered and deprecated — which is why the Prettier compatibility config is still required. And while the eslintrc *configuration system* is entirely gone, the compatibility translation utility survives and is explicitly supported. It cannot help here, though: the plugin failures are runtime API crashes, not configuration-shape problems.
 
-**Two upstream releases would change this plan** and are worth re-checking immediately before implementation. If `eslint-plugin-react` ships its pending ESLint 10 release, retaining it becomes viable and the two dropped style rules could be kept. If `eslint-plugin-import` ships its unreleased fix, the fork becomes optional. Neither has a published timeline; both were open as of 2026-08-13.
+**Two upstream releases would change this plan** and are worth re-checking immediately before implementation. If `eslint-plugin-react` ships its pending ESLint 10 release, retaining it becomes viable and the one remaining dropped style rule could be kept. If `eslint-plugin-import` ships its unreleased fix, the fork becomes optional. Neither has a published timeline; both were open as of 2026-08-13.
 
 **The ADR is already written** — `docs/adr/0001-eslint-react-as-sole-react-linter.md`, created ahead of implementation. It carries the rejected alternatives and the accepted costs, so the implementation does not need to restate them.
 
