@@ -4,7 +4,6 @@ import { productModel } from '@/entities/product';
 import { manageNoteModel } from '@/features/manageNote';
 import { api } from '../shared/api';
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const configureStore = () =>
   configureStoreRtk({
     reducer: {

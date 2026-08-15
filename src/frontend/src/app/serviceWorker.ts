@@ -7,8 +7,11 @@ if (MSW_ENABLED) {
   importScripts(`./mockServiceWorker.js`);
 }
 
+const isSkipWaitingMessage = (data: unknown): boolean =>
+  typeof data === 'object' && data !== null && 'type' in data && data.type === 'SKIP_WAITING';
+
 self.addEventListener('message', event => {
-  if (event.data?.type === 'SKIP_WAITING') {
+  if (isSkipWaitingMessage(event.data)) {
     self.skipWaiting();
   }
 });

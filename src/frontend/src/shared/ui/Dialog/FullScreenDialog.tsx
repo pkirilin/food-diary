@@ -12,8 +12,6 @@ import { type TransitionProps } from '@mui/material/transitions';
 import { type FC, type ReactElement, type Ref } from 'react';
 import { type DialogBaseProps } from './types';
 
-interface Props extends DialogBaseProps {}
-
 interface TransitionComponentProps extends TransitionProps {
   children: ReactElement;
   ref?: Ref<unknown>;
@@ -21,7 +19,7 @@ interface TransitionComponentProps extends TransitionProps {
 
 const Transition: FC<TransitionComponentProps> = props => <Slide direction="up" {...props} />;
 
-const FullScreenDialog: FC<Props> = ({
+const FullScreenDialog: FC<DialogBaseProps> = ({
   title,
   opened,
   content,

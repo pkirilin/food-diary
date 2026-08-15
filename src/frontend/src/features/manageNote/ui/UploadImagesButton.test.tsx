@@ -13,6 +13,17 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
+const getFileInput = (container: HTMLElement): HTMLInputElement => {
+  // eslint-disable-next-line testing-library/no-node-access
+  const input = container.querySelector<HTMLInputElement>('input[type="file"]');
+
+  if (input == null) {
+    throw new Error('file input not found');
+  }
+
+  return input;
+};
+
 test('should create the viewer url from the original file, not the resized copy', async () => {
   const user = userEvent.setup();
   const store = configureStore();
@@ -27,11 +38,7 @@ test('should create the viewer url from the original file, not the resized copy'
   );
 
   const file = new File(['original'], 'photo.jpg', { type: 'image/jpeg' });
-  const input = container.querySelector<HTMLInputElement>('input[type="file"]');
-
-  if (input == null) {
-    throw new Error('file input not found');
-  }
+  const input = getFileInput(container);
 
   await user.upload(input, file);
 
@@ -62,11 +69,7 @@ test('should not create viewer urls when one of the uploaded files fails to resi
     </RootProvider>,
   );
 
-  const input = container.querySelector<HTMLInputElement>('input[type="file"]');
-
-  if (input == null) {
-    throw new Error('file input not found');
-  }
+  const input = getFileInput(container);
 
   await user.upload(input, [goodFile, badFile]);
 

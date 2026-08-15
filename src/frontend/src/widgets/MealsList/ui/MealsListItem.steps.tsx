@@ -9,7 +9,7 @@ interface GivenMealsListItemArgs {
   mealType: noteModel.MealType;
 }
 
-export const givenMealsListItem = async ({ mealType }: GivenMealsListItemArgs): Promise<void> => {
+export const givenMealsListItem = ({ mealType }: GivenMealsListItemArgs): void => {
   const store = configureStore();
   const date = '2023-10-19';
 
@@ -25,7 +25,7 @@ export const whenAddNoteButtonClicked = async (
   mealName: string,
 ): Promise<void> => {
   const addNoteButton = screen.getByRole('button', { name: new RegExp(`add ${mealName}`, 'i') });
-  await waitFor(() => expect(addNoteButton).not.toBeDisabled());
+  await waitFor(() => expect(addNoteButton).toBeEnabled());
   await user.click(addNoteButton);
 };
 
@@ -119,7 +119,7 @@ export const thenMealHeaderIsVisible = async (): Promise<void> => {
   expect(header).toBeVisible();
 };
 
-export const thenMealsAreVisible = async (): Promise<void> => {
+export const thenMealsAreVisible = (): void => {
   expect(screen.getAllByRole('button').length).toBeGreaterThan(1);
 };
 
@@ -127,31 +127,31 @@ export const thenDialogVisible = async (dialogTitle: RegExp): Promise<void> => {
   expect(await screen.findByRole('dialog', { name: dialogTitle })).toBeVisible();
 };
 
-export const thenNoteCannotBeAdded = async (): Promise<void> => {
+export const thenNoteCannotBeAdded = (): void => {
   expect(screen.getByRole('button', { name: /add/i })).toBeDisabled();
 };
 
-export const thenNoteCanBeAdded = async (): Promise<void> => {
-  expect(screen.getByRole('button', { name: /add/i })).not.toBeDisabled();
+export const thenNoteCanBeAdded = (): void => {
+  expect(screen.getByRole('button', { name: /add/i })).toBeEnabled();
 };
 
-export const thenProductCanBeAdded = async (): Promise<void> => {
-  expect(screen.getByRole('button', { name: /add/i })).not.toBeDisabled();
+export const thenProductCanBeAdded = (): void => {
+  expect(screen.getByRole('button', { name: /add/i })).toBeEnabled();
 };
 
-export const thenProductCanBeSaved = async (): Promise<void> => {
-  expect(screen.getByRole('button', { name: /save/i })).not.toBeDisabled();
+export const thenProductCanBeSaved = (): void => {
+  expect(screen.getByRole('button', { name: /save/i })).toBeEnabled();
 };
 
 export const thenDialogNotVisible = async (): Promise<void> => {
-  await waitForElementToBeRemoved(screen.getByRole('dialog'));
+  await waitForElementToBeRemoved(screen.queryByRole('dialog'));
 };
 
-export const thenProductHasValue = async (expectedValue: string): Promise<void> => {
+export const thenProductHasValue = (expectedValue: string): void => {
   expect(screen.getByRole('textbox', { name: /product/i })).toHaveValue(expectedValue);
 };
 
-export const thenProductCategoryHasValue = async (expectedValue: string): Promise<void> => {
+export const thenProductCategoryHasValue = (expectedValue: string): void => {
   expect(screen.getByRole('combobox', { name: /category/i })).toHaveValue(expectedValue);
 };
 
@@ -159,6 +159,6 @@ export const thenQuantityHasValue = (expectedValue: string): void => {
   expect(screen.getByPlaceholderText(/quantity/i)).toHaveValue(expectedValue);
 };
 
-export const thenSingleNoteVisible = async (noteName: RegExp): Promise<void> => {
+export const thenSingleNoteVisible = (noteName: RegExp): void => {
   expect(screen.getByRole('button', { name: noteName })).toBeVisible();
 };

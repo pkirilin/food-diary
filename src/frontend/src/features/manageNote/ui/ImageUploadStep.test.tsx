@@ -29,7 +29,9 @@ const createSuggestion = (): RecognizeNoteItem => ({
   quantity: 100,
 });
 
-const renderStep = (suggestions: RecognizeNoteItem[]): Mock<OnSubmitProductFn> => {
+const renderStep = (
+  suggestions: RecognizeNoteItem[],
+): { onSubmitProduct: Mock<OnSubmitProductFn> } => {
   const store = configureStore();
   const images = [createImage('a')];
   const onSubmitProduct = vi.fn<OnSubmitProductFn>();
@@ -46,7 +48,7 @@ const renderStep = (suggestions: RecognizeNoteItem[]): Mock<OnSubmitProductFn> =
     </RootProvider>,
   );
 
-  return onSubmitProduct;
+  return { onSubmitProduct };
 };
 
 test('should show a skeleton instead of the form while categories are loading', () => {
@@ -67,7 +69,7 @@ test('should show the suggested values in an editable form', async () => {
 
 test('should submit the corrected values', async () => {
   const user = userEvent.setup();
-  const onSubmitProduct = renderStep([createSuggestion()]);
+  const { onSubmitProduct } = renderStep([createSuggestion()]);
 
   await screen.findByRole('textbox', { name: /name/i });
   await user.clear(screen.getByPlaceholderText(/calories/i));
@@ -80,7 +82,9 @@ test('should submit the corrected values', async () => {
         name: 'Oat granola',
         calories: 380,
         defaultQuantity: 100,
-        category: expect.objectContaining<Partial<SelectOption>>({ name: 'Bakery' }),
+        category: expect.objectContaining<Partial<SelectOption>>({
+          name: 'Bakery',
+        }) as SelectOption,
       }),
     );
   });

@@ -28,6 +28,9 @@ test('should render title, content and submit action', () => {
 test('should forward the transition ref so the dialog traps focus', () => {
   renderFullScreenDialog();
 
-  expect(document.activeElement).not.toBe(document.body);
-  expect(document.activeElement).toHaveAttribute('role', 'presentation');
+  // eslint-disable-next-line testing-library/no-node-access
+  const focused = document.activeElement;
+
+  expect(focused).not.toBe(document.body);
+  expect(focused).toHaveAttribute('role', 'presentation');
 });

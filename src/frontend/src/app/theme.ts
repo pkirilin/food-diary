@@ -2,10 +2,10 @@ import { createTheme } from '@mui/material';
 import { green } from '@mui/material/colors';
 
 declare module '@mui/material/styles' {
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface Theme {}
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface ThemeOptions {}
 }
 
