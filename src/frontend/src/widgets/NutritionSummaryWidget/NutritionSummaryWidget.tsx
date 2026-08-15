@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, Grid2 as Grid } from '@mui/material';
+import { Card, CardContent, CardHeader, Grid } from '@mui/material';
 import { type FC } from 'react';
 import { type productModel } from '@/entities/product';
 import { NutritionSummaryItem } from '@/widgets/NutritionSummaryWidget/NutritionSummaryItem';

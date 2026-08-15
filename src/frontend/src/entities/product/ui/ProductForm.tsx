@@ -7,7 +7,7 @@ import {
   Alert,
   Autocomplete,
   CircularProgress,
-  Grid2,
+  Grid,
   InputAdornment,
   Snackbar,
   TextField,
@@ -140,8 +140,8 @@ export const ProductForm: FC<Props> = ({
           />
         )}
       />
-      <Grid2 container spacing={2}>
-        <Grid2 size={6}>
+      <Grid container spacing={2}>
+        <Grid size={6}>
           <Controller
             name="calories"
             control={control}
@@ -182,8 +182,8 @@ export const ProductForm: FC<Props> = ({
               />
             )}
           />
-        </Grid2>
-        <Grid2 size={6}>
+        </Grid>
+        <Grid size={6}>
           <Controller
             name="defaultQuantity"
             control={control}
@@ -207,8 +207,8 @@ export const ProductForm: FC<Props> = ({
               />
             )}
           />
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
       <Accordion
         variant="outlined"
         expanded={nutritionExpanded}
@@ -222,9 +222,9 @@ export const ProductForm: FC<Props> = ({
           <Typography component="span">Nutrition</Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <Grid2 container spacing={2}>
+          <Grid container spacing={2}>
             {OPTIONAL_NUTRITION_FIELDS.map(fieldName => (
-              <Grid2 key={fieldName} size={6}>
+              <Grid key={fieldName} size={6}>
                 <Controller
                   name={fieldName}
                   control={control}
@@ -243,9 +243,9 @@ export const ProductForm: FC<Props> = ({
                     />
                   )}
                 />
-              </Grid2>
+              </Grid>
             ))}
-          </Grid2>
+          </Grid>
         </AccordionDetails>
       </Accordion>
       <Snackbar open={snackbar !== null} autoHideDuration={6000} onClose={() => setSnackbar(null)}>
