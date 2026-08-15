@@ -8,25 +8,23 @@ import { createRouter } from './routing';
 import { store } from './store';
 import { WithMockApi } from './WithMockApi';
 
-(async () => {
-  if (GOOGLE_ANALYTICS_ENABLED) {
-    initGoogleAnalytics();
-  }
+if (GOOGLE_ANALYTICS_ENABLED) {
+  initGoogleAnalytics();
+}
 
-  const container = document.getElementById('root');
+const container = document.getElementById('root');
 
-  if (!container) {
-    throw new Error('Failed to find the root element');
-  }
+if (!container) {
+  throw new Error('Failed to find the root element');
+}
 
-  const root = createRoot(container);
-  const router = createRouter();
+const root = createRoot(container);
+const router = createRouter();
 
-  root.render(
-    <RootProvider store={store}>
-      <WithMockApi>
-        <RouterProvider router={router} />
-      </WithMockApi>
-    </RootProvider>,
-  );
-})();
+root.render(
+  <RootProvider store={store}>
+    <WithMockApi>
+      <RouterProvider router={router} />
+    </WithMockApi>
+  </RootProvider>,
+);

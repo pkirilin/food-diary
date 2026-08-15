@@ -40,7 +40,7 @@ test('products can be deleted', async () => {
   await userEvent.click(screen.getByLabelText(/delete selected products/i));
   const dialog = within(screen.getByRole('dialog'));
   await userEvent.click(dialog.getByText(/yes/i));
-  await waitForElementToBeRemoved(screen.getByRole('dialog'));
+  await waitForElementToBeRemoved(screen.queryByRole('dialog'));
 
   await waitFor(() => expect(screen.queryByText(/bread/i)).not.toBeInTheDocument());
   expect(screen.queryByText(/(\d)+ selected/i)).not.toBeInTheDocument();

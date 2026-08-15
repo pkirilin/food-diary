@@ -68,7 +68,7 @@ test('I can add new product', async () => {
   await whenDefaultQuantityChanged(user, '120');
   await whenCategorySelected(user, /vegetables/i);
   await whenProductSaved(user);
-  await thenFormValueContains(onSubmitMock, {
+  thenFormValueContains(onSubmitMock, {
     name: 'Potato',
     calories: 150,
     defaultQuantity: 120,
@@ -113,7 +113,7 @@ test('I can edit product', async () => {
   await whenSugarChanged(user, '0.7');
   await whenSaltChanged(user, '0.05');
   await whenProductSaved(user);
-  await thenFormValueContains(onSubmitMock, {
+  thenFormValueContains(onSubmitMock, {
     name: 'Potato edited',
     calories: 140,
     defaultQuantity: 110,
@@ -137,9 +137,9 @@ test('I cannot add product with invalid name, calories cost or default quantity'
   await whenCaloriesChanged(user, '0');
   await whenDefaultQuantityChanged(user, '0');
   await whenProductSaved(user);
-  await thenProductNameIsInvalid();
-  await thenCaloriesIsInvalid();
-  await thenDefaultQuantityIsInvalid();
+  thenProductNameIsInvalid();
+  thenCaloriesIsInvalid();
+  thenDefaultQuantityIsInvalid();
 });
 
 test('I cannot save product when category is empty', async () => {
@@ -157,7 +157,7 @@ test('I cannot save product when category is empty', async () => {
   await whenProductNameChanged(user, 'Green apple');
   await whenCategoryCleared(user);
   await whenProductSaved(user);
-  await thenCategoryIsInvalid();
+  thenCategoryIsInvalid();
 });
 
 test('Dialog input is cleared on close', async () => {
@@ -185,10 +185,10 @@ test('Dialog input is cleared on close', async () => {
   await thenDialogShouldBeHidden();
 
   await whenDialogOpened(user);
-  await thenProductNameHasValue('Red apple');
-  await thenCaloriesHasValue(60);
-  await thenDefaultQuantityHasValue(120);
-  await thenCategoryHasValue('Fruits');
+  thenProductNameHasValue('Red apple');
+  thenCaloriesHasValue(60);
+  thenDefaultQuantityHasValue(120);
+  thenCategoryHasValue('Fruits');
 });
 
 test('New product name input is valid by default', async () => {
@@ -198,7 +198,7 @@ test('New product name input is valid by default', async () => {
   render(givenProductInputDialog().withCategoriesForSelect(categories).please());
 
   await whenDialogOpened(user);
-  await thenProductNameIsValid();
+  thenProductNameIsValid();
 });
 
 describe('nutrition suggestions', () => {

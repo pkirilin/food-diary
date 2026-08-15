@@ -32,7 +32,6 @@ const create = {
   }),
 } as const;
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const createTestStore = () =>
   configureStore({
     reducer: {

@@ -31,13 +31,11 @@ export function render(
     },
   ]);
 
-  const result = rtlRender(
+  return rtlRender(
     <RootProvider store={store}>
       <RouterProvider router={router} />
     </RootProvider>,
   );
-
-  return result;
 }
 
 export const renderWithRouter = (): void => {

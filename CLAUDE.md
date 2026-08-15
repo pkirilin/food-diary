@@ -80,7 +80,8 @@ Backend component tests (`FoodDiary.ComponentTests`, via Testcontainers) and the
 
 ## Frontend conventions
 
-- ESLint extends `standard-with-typescript`; notable enabled rules: `@typescript-eslint/strict-boolean-expressions` (error — be explicit on null/undefined checks), `import/order` with alphabetized groups and `@/**` placed after `internal`. Function components must be arrow functions (`react/function-component-definition`).
+- ESLint 10 with flat config (`src/frontend/eslint.config.js`), composed from `@eslint/js` recommended, `typescript-eslint` at `recommendedTypeChecked`, and `@eslint-react` at `strict-typescript` (the sole source of React and hooks rules — see `docs/adr/0001-eslint-react-as-sole-react-linter.md`). Notable enabled rules: `@typescript-eslint/strict-boolean-expressions` (error — be explicit on null/undefined checks), `import-x/order` with alphabetized groups and `@/**` placed after `internal`, and `@stylistic/jsx-self-closing-comp`. testing-library and jest-dom rules apply to test files only. Prettier runs last, as a lint rule.
+- Function components must be arrow functions. No rule enforces this since `eslint-plugin-react` was dropped, so follow it by convention.
 - Forms: react-hook-form + Zod resolver. UI: MUI v6 (`@mui/material`, `@mui/lab`, `@mui/x-charts`, `@mui/x-date-pickers`). Dates: `date-fns` v3.
 - TypeScript, target ES module, `@/*` path alias for `src/*`.
 
@@ -92,3 +93,13 @@ Check `STRATEGY.md` first — the project deliberately stays small. Prefer modif
 
 - ⚠️ **ALWAYS** Use `rg` instead of `grep`, `fd` instead of `find`, `jaq` instead of `jq` (if available)
 - ⚠️ **ALWAYS** Use JSON output when CLI supports it. Pipe ALL JSON through `| toon` (if available)
+
+## Agent skills
+
+### Issue tracker
+
+Issues and specs live as local markdown files under `.scratch/<feature-slug>/`. See `docs/agents/issue-tracker.md`.
+
+### Domain docs
+
+Single-context — one `CONTEXT.md` + `docs/adr/` at the repo root. See `docs/agents/domain.md`.

@@ -1,7 +1,6 @@
 import { ThemeProvider } from '@mui/material';
-import { screen, waitFor, waitForElementToBeRemoved } from '@testing-library/dom';
+import { screen, waitFor, waitForElementToBeRemoved } from '@testing-library/react';
 import { type UserEvent } from '@testing-library/user-event';
-import { server } from '@tests/mockApi/server';
 import { http, HttpResponse } from 'msw';
 import { type ReactElement } from 'react';
 import { Provider } from 'react-redux';
@@ -11,6 +10,7 @@ import { theme } from '@/app/theme';
 import { productModel, type SuggestProductNutritionResponse } from '@/entities/product';
 import { API_URL } from '@/shared/config';
 import { type SelectOption } from '@/shared/types';
+import { server } from '@tests/mockApi/server';
 import { WithTriggerButton } from '@tests/sideEffects';
 import { ProductInputDialog } from './ProductInputDialog';
 
@@ -222,57 +222,57 @@ export const whenSuggestClicked = async (user: UserEvent, name: RegExp): Promise
 };
 
 export const expectCategory = (name: string): SelectOption =>
-  expect.objectContaining<Partial<SelectOption>>({ name });
+  expect.objectContaining<Partial<SelectOption>>({ name }) as SelectOption;
 
 export const thenProductFormIsVisible = async (): Promise<void> => {
   expect(await screen.findByRole('dialog', { name: /product/i })).toBeVisible();
 };
 
-export const thenFormValueContains = async (
+export const thenFormValueContains = (
   onSubmitMock: Mock,
   product: productModel.ProductFormValues,
-): Promise<void> => {
+): void => {
   expect(onSubmitMock).toHaveBeenCalledWith<[productModel.ProductFormValues]>(product);
 };
 
-export const thenProductNameIsInvalid = async (): Promise<void> => {
+export const thenProductNameIsInvalid = (): void => {
   expect(screen.getByPlaceholderText(/product name/i)).toBeInvalid();
 };
 
-export const thenProductNameIsValid = async (): Promise<void> => {
+export const thenProductNameIsValid = (): void => {
   expect(screen.getByPlaceholderText(/product name/i)).toBeValid();
 };
 
-export const thenProductNameHasValue = async (value: string): Promise<void> => {
+export const thenProductNameHasValue = (value: string): void => {
   expect(screen.getByPlaceholderText(/product name/i)).toHaveValue(value);
 };
 
-export const thenCaloriesIsInvalid = async (): Promise<void> => {
+export const thenCaloriesIsInvalid = (): void => {
   expect(screen.getByPlaceholderText(/calories/i)).toBeInvalid();
 };
 
-export const thenCaloriesHasValue = async (value: number): Promise<void> => {
+export const thenCaloriesHasValue = (value: number): void => {
   expect(screen.getByPlaceholderText(/calories/i)).toHaveValue(value.toString());
 };
 
-export const thenDefaultQuantityIsInvalid = async (): Promise<void> => {
+export const thenDefaultQuantityIsInvalid = (): void => {
   expect(screen.getByPlaceholderText(/default quantity/i)).toBeInvalid();
 };
 
-export const thenDefaultQuantityHasValue = async (value: number): Promise<void> => {
+export const thenDefaultQuantityHasValue = (value: number): void => {
   expect(screen.getByPlaceholderText(/default quantity/i)).toHaveValue(value.toString());
 };
 
-export const thenCategoryIsInvalid = async (): Promise<void> => {
+export const thenCategoryIsInvalid = (): void => {
   expect(screen.getByRole('combobox', { name: /category/i })).toBeInvalid();
 };
 
-export const thenCategoryHasValue = async (value: string): Promise<void> => {
+export const thenCategoryHasValue = (value: string): void => {
   expect(screen.getByRole('combobox', { name: /category/i })).toHaveValue(value);
 };
 
 export const thenDialogShouldBeHidden = async (): Promise<void> => {
-  await waitForElementToBeRemoved(screen.getByRole('dialog'));
+  await waitForElementToBeRemoved(screen.queryByRole('dialog'));
 };
 
 export const thenNutritionPanelIsExpanded = async (): Promise<void> => {

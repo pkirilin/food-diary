@@ -60,7 +60,7 @@ export const NoteForm: FC<Props> = ({
     defaultValues,
   });
 
-  const handleEditProduct: MouseEventHandler = async () => {
+  const handleEditProduct: MouseEventHandler = () => {
     const { product } = getValues();
 
     if (product) {
