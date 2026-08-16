@@ -53,10 +53,13 @@ callback. Two confirmation pairs in one dialog, one of them silently destructive
 defect rather than a cosmetic wrinkle, so the inner pair is removed and the dialog
 stays the only place the filter is confirmed or dismissed.
 
-The switcher keeps its action bar. There the same Cancel is unambiguous: it closes the
+The switcher suppresses the picker's action bar the same way, and renders its own
+Cancel/OK pair in the popover. There the pair is unambiguous: Cancel closes the
 popover, nothing is submitted, and reopening shows the current date rather than the
-abandoned selection. The difference is that the switcher wires the close callback and
-resets its pending date on every open, so a discarded selection has nowhere to linger.
+abandoned selection, because the pending date resets on every open. Keeping the
+picker's own bar would have worked too, but only by wiring its close callback, which
+X marks as removed in the next major — so the switcher owns the bar rather than
+depending on a callback that will disappear.
 
 This decision is scoped to the day switcher's interaction. It is **not** a blanket
 "we accept upstream defaults": the same migration turns the weight chart's per-entry

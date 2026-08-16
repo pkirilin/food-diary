@@ -94,8 +94,10 @@ is confirmed or dismissed. Two tests cover it, and removing the fix fails the fi
 03's answer were both corrected — the switcher was re-checked at the same time and is genuinely
 unaffected: its Cancel closes the popover, submits nothing, and leaves no stale selection.
 
-### Still open — needs its own ticket
+### Spun out — now ticket 06
 
 **`SelectDateView.tsx:62` leans on a deprecated prop.** `StaticOnlyPickerProps.onClose` is annotated
 "will be removed in next major version". It works today and the switcher's test covers it, but on
 the next X major Cancel would compile fine and silently stop closing the popover.
+
+Tracked and resolved in `06-select-date-deprecated-onclose.md`.

@@ -40,6 +40,16 @@ test('should close without submitting when the picked date is cancelled', async 
   expect(onSubmitDate).not.toHaveBeenCalled();
 });
 
+test('should confirm the picked date in a single place', async () => {
+  const { user } = renderSelectDate();
+
+  await user.click(screen.getByRole('button', { name: /19 oct 2023/i }));
+  await user.click(screen.getByRole('gridcell', { name: '20' }));
+
+  expect(screen.getAllByRole('button', { name: /cancel/i })).toHaveLength(1);
+  expect(screen.getAllByRole('button', { name: /ok/i })).toHaveLength(1);
+});
+
 test('should reopen on the current date after being dismissed', async () => {
   const { user } = renderSelectDate();
 

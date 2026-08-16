@@ -1,9 +1,10 @@
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
-import { ButtonBase, Popover, Typography } from '@mui/material';
+import { ButtonBase, DialogActions, Popover, Typography } from '@mui/material';
 import { StaticDatePicker } from '@mui/x-date-pickers';
 import { useState, type FC } from 'react';
 import { dateLib } from '@/shared/lib';
+import { Button } from '@/shared/ui';
 
 export type OnSubmitDateFn = (date: Date) => void;
 
@@ -53,14 +54,19 @@ export const SelectDateView: FC<Props> = ({ currentDate, onSubmitDate }) => {
               setSelectedDate(newDate);
             }
           }}
-          onAccept={newDate => {
-            if (newDate) {
-              onSubmitDate(newDate);
-              closePopover();
-            }
-          }}
-          onClose={closePopover}
+          slotProps={{ actionBar: { actions: [] } }}
         />
+        <DialogActions>
+          <Button onClick={closePopover}>Cancel</Button>
+          <Button
+            onClick={() => {
+              onSubmitDate(selectedDate);
+              closePopover();
+            }}
+          >
+            OK
+          </Button>
+        </DialogActions>
       </Popover>
     </>
   );
