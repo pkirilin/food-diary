@@ -64,9 +64,7 @@ Firefox                | 121
 Safari (macOS)         | 17.0
 Safari (iOS) / iPadOS  | 17.0
 
-These are the floors of [MUI v9](https://mui.com/material-ui/getting-started/supported-platforms/), the component library the frontend is built on. MUI ships as pre-built code that the bundler does not down-level, so its floors are the app's floors.
-
-The list lives in the `browserslist.production` field of `src/frontend/package.json` and is the single source of truth: `vite.config.ts` derives the bundler's `build.target` from it, so editing the field changes both the declared support and the compiled output.
+These are the floors of [MUI v9](https://mui.com/material-ui/getting-started/supported-platforms/), the component library the frontend is built on.
 
 ## Installation
 
