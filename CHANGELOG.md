@@ -8,6 +8,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.0] - React 19, MUI v9 & AI photo zoom
+
+### Added
+
+- Pan and zoom the suggested photo when adding a note via AI-based product recognition
+
+### Changed
+
+- Upgraded MUI from v6 to v9
+- Selecting a day in the date switcher now requires confirming with OK, due to the MUI v9 upgrade
+- Upgraded frontend to React 19
+- Migrated frontend lint tooling to ESLint 10's flat config format
+
 ## [0.7.0] - Deployment configuration changes
 
 ### Changed
