@@ -8,7 +8,7 @@ Food Diary is a self-hosted, lightweight web app for nutrition and weight tracki
 
 ## Repo layout
 
-- `src/frontend/` — React 19 + TypeScript 5 SPA (Vite, MUI v6, Redux Toolkit + RTK Query, react-router v7, react-hook-form + Zod). Uses **Feature-Sliced Design**: `app/`, `pages/`, `widgets/`, `features/`, `entities/`, `shared/`. Respect FSD import direction (upper layers may import from lower; never the reverse).
+- `src/frontend/` — React 19 + TypeScript 5 SPA (Vite, MUI v9, Redux Toolkit + RTK Query, react-router v7, react-hook-form + Zod). Uses **Feature-Sliced Design**: `app/`, `pages/`, `widgets/`, `features/`, `entities/`, `shared/`. Respect FSD import direction (upper layers may import from lower; never the reverse).
 - `src/backend/` — .NET 10 solution (`FoodDiary.slnx`). Clean-architecture-ish projects.
 - `src/backend/tests/` — `FoodDiary.UnitTests` and `FoodDiary.ComponentTests`.
 - `tests/` — Playwright E2E suite (separate yarn project).
@@ -82,8 +82,9 @@ Backend component tests (`FoodDiary.ComponentTests`, via Testcontainers) and the
 
 - ESLint 10 with flat config (`src/frontend/eslint.config.js`), composed from `@eslint/js` recommended, `typescript-eslint` at `recommendedTypeChecked`, and `@eslint-react` at `strict-typescript` (the sole source of React and hooks rules — see `docs/adr/0001-eslint-react-as-sole-react-linter.md`). Notable enabled rules: `@typescript-eslint/strict-boolean-expressions` (error — be explicit on null/undefined checks), `import-x/order` with alphabetized groups and `@/**` placed after `internal`, and `@stylistic/jsx-self-closing-comp`. testing-library and jest-dom rules apply to test files only. Prettier runs last, as a lint rule.
 - Function components must be arrow functions. No rule enforces this since `eslint-plugin-react` was dropped, so follow it by convention.
-- Forms: react-hook-form + Zod resolver. UI: MUI v6 (`@mui/material`, `@mui/lab`, `@mui/x-charts`, `@mui/x-date-pickers`). Dates: `date-fns` v3.
+- Forms: react-hook-form + Zod resolver. UI: MUI v9 (`@mui/material`, `@mui/x-charts`, `@mui/x-date-pickers`). Dates: `date-fns` v3.
 - TypeScript, target ES module, `@/*` path alias for `src/*`.
+- Browser support: the `browserslist.production` field in `package.json` is the single source of truth — `vite.config.ts` derives `build.target` from it via `buildTargets.ts`. It is pinned to MUI v9's floors; see the README's Browser support section.
 
 ## When adding features
 

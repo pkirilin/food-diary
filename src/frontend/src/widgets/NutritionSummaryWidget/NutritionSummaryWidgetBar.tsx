@@ -12,11 +12,11 @@ export const NutritionSummaryWidgetBar: FC<Props> = ({ nutritionValues }) => {
   return (
     <Container>
       <Stack
-        py={2}
         direction="row"
         spacing={2}
-        // Adds extra space after the last item. Padding doesn't work with overflow
         sx={{
+          py: 2,
+          // Adds extra space after the last item. Padding doesn't work with overflow
           '&::after': {
             content: '""',
             minWidth: theme => theme.spacing(2),

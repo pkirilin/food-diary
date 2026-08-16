@@ -15,7 +15,9 @@ export const NutritionValueDisplay: FC<Props> = ({ value, type, size, bold }) =>
     <NutritionValueIcon size={size} type={type} />
     <Typography
       variant={size === 'small' ? 'body2' : 'body1'}
-      fontWeight={bold ? 'bold' : 'normal'}
+      sx={{
+        fontWeight: bold ? 'bold' : 'normal',
+      }}
     >
       {value ?? <>&mdash;</>}
     </Typography>

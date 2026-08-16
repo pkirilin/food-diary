@@ -38,11 +38,10 @@ export const WeightChart: FC<Props> = ({ weightLogsRequest }) => {
         {
           dataKey: 'value',
           label: 'Weight, kg',
+          showMark: true,
         },
       ]}
-      slotProps={{
-        legend: { hidden: true },
-      }}
+      hideLegend
       dataset={dataset}
       height={300}
     />

@@ -23,7 +23,7 @@ const CategoriesList: FC<CategoriesListProps> = ({ categories }) => {
   return (
     <Grid container spacing={2}>
       {categories.map(category => (
-        <Grid item xs={12} sm={6} lg={4} key={category.id}>
+        <Grid key={category.id} size={{ xs: 12, sm: 6, lg: 4 }}>
           <CategoriesListItem category={category} />
         </Grid>
       ))}

@@ -3,9 +3,19 @@
     "default": true,
     "MD013": false,
     "MD033": {
-      "allowed_elements": ["table", "tr", "td", "img"]
+      "allowed_elements": [
+        "table",
+        "tr",
+        "td",
+        "img"
+      ]
     }
   },
   // Agent-generated plans/specs; not authored to lint standards
-  "ignores": ["docs/superpowers/**"]
+  "ignores": [
+    "docs/adr/**",
+    "docs/agents/**",
+    "docs/superpowers/**",
+    ".scratch/**"
+  ]
 }

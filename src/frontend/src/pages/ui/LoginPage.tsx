@@ -63,11 +63,13 @@ export const Component: FC = () => (
         )}
         <Paper
           component={Stack}
-          p={{ xs: 3, sm: 4 }}
-          margin="auto"
           spacing={3}
-          width="100%"
-          alignItems="center"
+          sx={{
+            p: { xs: 3, sm: 4 },
+            margin: 'auto',
+            width: '100%',
+            alignItems: 'center',
+          }}
         >
           <AppName />
           <SignInForm />

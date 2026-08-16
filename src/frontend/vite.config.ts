@@ -3,6 +3,8 @@ import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 import { VitePWA as pwa } from 'vite-plugin-pwa';
 
+import { resolveBuildTargets } from './buildTargets.ts';
+
 const BASE_PUBLIC_PATH = './';
 
 export default defineConfig(() => ({
@@ -45,6 +47,10 @@ export default defineConfig(() => ({
   ],
 
   base: BASE_PUBLIC_PATH,
+
+  build: {
+    target: resolveBuildTargets('production'),
+  },
 
   resolve: {
     alias: {

@@ -29,8 +29,10 @@ const ProductsTableRow: FC<ProductsTableRowProps> = ({ product }: ProductsTableR
           color="primary"
           checked={isChecked}
           onChange={handleCheckedChange}
-          inputProps={{
-            'aria-label': `Select ${product.name}`,
+          slotProps={{
+            input: {
+              'aria-label': `Select ${product.name}`,
+            },
           }}
         />
       </TableCell>

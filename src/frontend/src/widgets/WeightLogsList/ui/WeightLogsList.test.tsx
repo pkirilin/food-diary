@@ -23,9 +23,11 @@ test('I can log my current weight', async () => {
   await user.click(screen.getByRole('button', { name: /log weight/i }));
   expect(await screen.findByRole('dialog')).toBeVisible();
 
-  const dateField = await screen.findByRole('textbox', { name: /date/i });
+  const dateField = await screen.findByRole('group', { name: /date/i });
   const weightField = await screen.findByPlaceholderText(/weight/i);
-  expect(dateField).toHaveValue('30 Jan 2022');
+  expect(within(dateField).getByRole('spinbutton', { name: /day/i })).toHaveTextContent('30');
+  expect(within(dateField).getByRole('spinbutton', { name: /month/i })).toHaveTextContent('Jan');
+  expect(within(dateField).getByRole('spinbutton', { name: /year/i })).toHaveTextContent('2022');
   expect(weightField).toHaveValue('73');
 
   await user.click(screen.getByRole('button', { name: /choose date/i }));

@@ -1,5 +1,5 @@
 import PhotoIcon from '@mui/icons-material/Photo';
-import { Box, IconButton, Tooltip, type SxProps, type Theme } from '@mui/material';
+import { Box, IconButton, Tooltip } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 import { useRef, type FC, type ChangeEventHandler } from 'react';
 import { useAppDispatch } from '@/app/store';
@@ -59,7 +59,7 @@ export const UploadImagesButton: FC = () => {
       <Box
         component="input"
         ref={imageInputRef}
-        sx={visuallyHidden as SxProps<Theme>}
+        sx={visuallyHidden}
         type="file"
         name="images"
         accept="image/*"

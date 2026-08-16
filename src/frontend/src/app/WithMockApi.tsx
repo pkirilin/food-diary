@@ -28,7 +28,11 @@ export const WithMockApi: FC<PropsWithChildren> = ({ children }) => {
 
   if (error) {
     return (
-      <Box p={2}>
+      <Box
+        sx={{
+          p: 2,
+        }}
+      >
         <Typography>Failed to initialize Mock API</Typography>
       </Box>
     );

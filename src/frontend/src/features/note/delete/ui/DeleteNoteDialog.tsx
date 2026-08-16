@@ -31,7 +31,7 @@ export const DeleteNoteDialog: FC<DeleteNoteDialogProps> = ({
       isOpened={isOpened}
       content={
         <form id="delete-note" onSubmit={handleSubmit}>
-          <DialogContentText paragraph>
+          <DialogContentText sx={{ marginBottom: 2 }}>
             You are going to delete this note from <b>{noteLib.getMealName(note.mealType)}</b>:
           </DialogContentText>
           <Typography>

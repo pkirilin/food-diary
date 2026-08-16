@@ -22,8 +22,7 @@ test('should render title, content and submit action', () => {
   expect(screen.getByRole('button', { name: /save/i })).toBeVisible();
 });
 
-// MUI's FocusTrap reaches the transition's DOM node through a cloned ref and focuses it on open.
-// If the transition stops forwarding that ref, focus silently stays on <body> and the dialog
+// If the transition stops forwarding its ref, focus silently stays on <body> and the dialog
 // becomes unreachable by keyboard.
 test('should forward the transition ref so the dialog traps focus', () => {
   renderFullScreenDialog();
@@ -32,5 +31,5 @@ test('should forward the transition ref so the dialog traps focus', () => {
   const focused = document.activeElement;
 
   expect(focused).not.toBe(document.body);
-  expect(focused).toHaveAttribute('role', 'presentation');
+  expect(focused).toHaveAttribute('role', 'dialog');
 });
