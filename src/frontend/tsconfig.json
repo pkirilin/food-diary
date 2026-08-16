@@ -36,6 +36,8 @@
   "include": [
     "src",
     "tests",
-    "types"
+    "types",
+    "buildTargets.ts",
+    "buildTargets.test.ts"
   ],
 }

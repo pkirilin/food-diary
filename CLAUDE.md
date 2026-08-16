@@ -84,6 +84,7 @@ Backend component tests (`FoodDiary.ComponentTests`, via Testcontainers) and the
 - Function components must be arrow functions. No rule enforces this since `eslint-plugin-react` was dropped, so follow it by convention.
 - Forms: react-hook-form + Zod resolver. UI: MUI v9 (`@mui/material`, `@mui/x-charts`, `@mui/x-date-pickers`). Dates: `date-fns` v3.
 - TypeScript, target ES module, `@/*` path alias for `src/*`.
+- Browser support: the `browserslist.production` field in `package.json` is the single source of truth — `vite.config.ts` derives `build.target` from it via `buildTargets.ts`. It is pinned to MUI v9's floors; see the README's Browser support section.
 
 ## When adding features
 
