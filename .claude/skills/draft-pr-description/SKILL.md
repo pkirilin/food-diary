@@ -40,14 +40,30 @@ name the user-visible effect of each one, or classify it as noise.
 
 ### 2. Propose the scope
 
-Present a numbered list of every **candidate** key change, one line each, each
-tagged with your recommendation:
+Sort every candidate key change into two buckets:
 
 - **include** — a reader of the PR needs to know this.
 - **omit** — mechanical noise (formatting, lockfile churn, generated files,
   no-op refactors, incidental renames).
 
-Ask the user to confirm, drop, or add entries. **Stop and wait for the answer.**
+Put the **include** candidates to the user through the **`AskUserQuestion`
+tool** — always that tool, so the answer is a click rather than typed-out
+numbers:
+
+- `multiSelect: true`, one option per candidate change.
+- Option `label` — the change in 1–5 words. Option `description` — its
+  user-facing effect, the same sentence that would open its bullet.
+- Pre-select nothing; the user's picks *are* the scope.
+
+The tool caps a question at **4 options**, so split more than four candidates
+across consecutive questions ("Which changes belong in the description? (1 of
+2)"). Past 16 candidates, you are listing noise — re-sort into the **omit**
+bucket first.
+
+List the **omit** bucket as plain chat text beneath, so the user can see what
+you dropped and pull anything back via the tool's "Other" free-text field.
+
+**Stop and wait for the answer.**
 
 ### 3. Turn the selected changes into bullets
 
