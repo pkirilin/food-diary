@@ -1,0 +1,212 @@
+# Spec: Migrate hosting from Amvera to Dokploy
+
+Status: ready-for-agent
+
+Supersedes the hosting decision in [`docs/superpowers/specs/2026-07-30-amvera-migration-design.md`](../../docs/superpowers/specs/2026-07-30-amvera-migration-design.md). That document stays in the repo as the historical record of why Amvera was chosen; it gains a status line pointing here.
+
+## Problem Statement
+
+Food Diary is hosted on Amvera Cloud (Warsaw), tariff Начальный, at 290 RUB/month. The owner already pays for a VPS that runs Dokploy, Traefik, and another application, with a domain configured. Paying a second hosting bill for a personal app buys nothing that the existing box cannot provide.
+
+Two smaller irritations come with the current arrangement:
+
+- A deploy is `git push amvera <branch>:master --force`, which force-pushes over the platform's own git repository. Any configuration the Amvera UI writes into that repository is silently destroyed on the next deploy, which is why the run command and container port had to live in a committed `amvera.yml` under a standing rule never to touch the UI's configuration section.
+- Amvera rebuilds the image from source on every deploy, billed at the app's tariff, taking 5–20 minutes.
+
+The Amvera design document anticipated this move. It named a self-hosted VPS as the cheaper option and recorded that it was passed over for familiarity and low maintenance, keeping the escape hatch deliberately cheap: the deployable artifact is a plain Docker image built from a `Dockerfile` that already works under `docker-compose`.
+
+## Solution
+
+Run Food Diary as a single Dokploy application on the existing VPS, served at a domain the owner controls (`food.example.com` in the documentation).
+
+Dokploy builds the image on the VPS from this repository's root `Dockerfile`, branch `main`. Traefik terminates TLS and forwards plain HTTP to the container on port 8080. Deploys are manual — a button in the Dokploy UI. The database is untouched: the connection string continues to point at Supabase.
+
+Dokploy stores application configuration in its own database rather than in the repository, so the force-push constraint that shaped the Amvera design disappears entirely. There is no `dokploy.yml` and no committed platform configuration file.
+
+The one piece of configuration that must survive the platform change is the startup sequence — run database migrations, then start the API. That currently lives in `amvera.yml`. It moves into the `Dockerfile` as the image's default command, where it is version-controlled, reviewable, and platform-independent. This also corrects a latent defect in the published Docker Hub image: today `docker run pkirilin/food-diary` starts the API against a database that has never been migrated.
+
+Because Dokploy's configuration is not in the repository, the deployment knowledge lives only in the Dokploy UI. A README runbook was written to mirror it and then **reverted at the owner's request**; see Documentation below for what that costs and what is left undecided.
+
+## User Stories
+
+1. As the app owner, I want Food Diary hosted on a VPS I already pay for, so that I stop paying a second hosting bill for a personal project.
+2. As the app owner, I want the app reachable at my own domain over HTTPS, so that the move is invisible to me as a user.
+3. As the app owner, I want TLS handled by the Traefik instance already running on the box, so that I do not manage certificates for this app separately from my other one.
+4. As the app owner, I want to deploy by pressing a button in the Dokploy UI, so that shipping does not require a force-push from a specific machine.
+5. As the app owner, I want deploys to happen only when I choose, so that merging to `main` never changes the production database schema at a moment unrelated to a deploy.
+6. As the app owner, I want database migrations to run automatically before the API starts, so that I never have to remember a separate migration step.
+7. As the app owner, I want a failed migration to prevent the API from starting, so that the old code is never left running against a half-migrated schema.
+8. As the app owner, I want the migration failure to be visible in the Dokploy run log, so that I can diagnose a failed deploy without shell access to the container.
+9. As the app owner, I want the startup sequence stored in the repository rather than in a hosting platform's settings, so that changing hosting provider again does not mean rediscovering how the app starts.
+10. As the app owner, I want the database to stay on Supabase during this change, so that a failed cutover has one suspect rather than two.
+11. As the app owner, I want to move the database onto the VPS as a separate decision later, so that I can weigh backups and disk sizing on their own merits.
+12. As the app owner, I want Google sign-in to work on the new host, so that I can actually use the app after the move.
+13. As the app owner, I want the OAuth redirect URI generated by the backend to use `https`, so that Google does not reject the sign-in round trip.
+14. As the app owner, I want the old Amvera URLs to keep working during cutover, so that I have a fallback while I verify the new host.
+15. As the app owner, I want to verify the live app end to end before deleting anything, so that removal is a consequence of success rather than an act of faith.
+16. As the app owner, I want `amvera.yml` deleted once the new host is confirmed working, so that the repository does not carry configuration for a platform I no longer use.
+17. As the app owner, I want the Amvera design document kept, so that the reasoning behind the previous choice is not erased.
+18. As the app owner, I want that document marked as superseded, so that a future reader does not follow a dead runbook.
+19. As the app owner, I want the repository to stay free of deployment details I would rather not publish, so that a public repo does not describe my personal infrastructure. (Supersedes the runbook stories below, which were dropped when the README section was reverted.)
+20. ~~As the app owner, I want the README to record how the Dokploy application is created and configured, so that I can rebuild the deployment from scratch if the VPS dies.~~ Dropped.
+21. ~~As the app owner, I want the README to list every environment variable the deployment needs, and to say which are optional.~~ Dropped.
+22. ~~As the app owner, I want the README to record the rollback procedure, so that I am not improvising during an outage.~~ Dropped.
+23. As the app owner, I want `CLAUDE.md` to name the production OAuth redirect URI alongside the local one, so that an agent working on auth does not assume localhost is the only one.
+24. As a self-hoster running `docker run pkirilin/food-diary`, I want the image to migrate its own database before serving requests, so that a fresh install works without a separate migration step.
+25. As a self-hoster, I want the published Docker Hub images to keep being produced by the release workflow, so that I have a versioned artifact to deploy.
+26. As the app owner, I want the release workflow left untouched, so that switching Dokploy from building-from-source to pulling a published tag stays a settings change rather than a project.
+27. As a developer, I want `docker-compose up` to behave exactly as it does today, so that local full-stack runs are unaffected by a hosting change.
+28. As a developer, I want the e2e suite to keep passing unchanged, so that the compose entrypoint override is proven still to work after the command change.
+29. As the app owner, I want scheduled Docker cleanup enabled in Dokploy, so that accumulated build cache does not quietly fill a disk shared with another application.
+30. As the app owner, I want the container's health reported to Dokploy, so that Traefik stops routing traffic to a dead process.
+31. As the app owner, I want to know why no health check is configured and what the health endpoints do not detect, so that I neither reinstate a check that breaks routing nor mistake a green check for a working database connection.
+
+## Implementation Decisions
+
+### Hosting shape
+
+A single Dokploy **Application** — not a Dokploy Compose stack, and not an Application plus a Dokploy Postgres service. The connection string points at the existing Supabase project.
+
+Build source is this repository, branch `main`, built **on the VPS** from the root `Dockerfile`. The repository is public, so Dokploy needs no deploy key or GitHub App installation.
+
+Deploys are **manual**, triggered from the Dokploy UI. No GitHub webhook, no auto-deploy on push. This preserves the property the Amvera design established when it removed `run-migrations` from CI: the production schema changes when a deploy is chosen, never as a side effect of merging.
+
+Rollback is repointing Dokploy at an older commit and waiting out a full rebuild. There is no image tag to swap back to. This is accepted: deploys are rare and downtime on a personal app is cheap.
+
+### Startup sequence
+
+The `Dockerfile`'s default command becomes a shell chain that runs the migrator and then execs the API, replacing the current `CMD ["dotnet", "FoodDiary.API.dll"]`. This is the same sequence that `amvera.yml` currently supplies through `run.command`/`run.args`; it moves into the image so that no platform configuration is required to start the app correctly.
+
+`exec` on the API is deliberate — the API must become PID 1 so that it receives the container's stop signal directly rather than through a shell that would not forward it.
+
+`docker-compose.base.yml` overrides `entrypoint:` with its own certificate-installation → migrator → API chain, so local development and the e2e suite do not use the image's default command. That override stays exactly as it is. Compose discards the image's `CMD` entirely whenever `entrypoint` is overridden, so the new default command is not merely unused there — it is absent from the container's configuration. This is expected to be harmless, but it must be **verified rather than assumed** — see Testing Decisions.
+
+### Networking and the reverse proxy
+
+`ASPNETCORE_URLS` is left unset. The `mcr.microsoft.com/dotnet/aspnet:10.0` base image already listens on port 8080, which is what Dokploy's Traefik route targets.
+
+`ASPNETCORE_FORWARDEDHEADERS_ENABLED` remains `true`. Traefik terminates TLS and forwards plain HTTP, exactly as Amvera's ingress did, so without this the backend sees scheme `http` and Google OAuth generates `http://` redirect URIs. This is firmer ground than the Amvera arrangement: the Amvera design inferred header behaviour from the platform's "Ingress Controller" terminology, whereas Traefik sets `X-Forwarded-Proto` unconditionally.
+
+No application code changes. The framework honours the variable through the existing default host builder.
+
+### Health reporting
+
+**No Swarm health check is configured.** This reverses the original intention of pointing Dokploy at the existing readiness endpoint, and the reason is recorded so the step is not reinstated as an outage.
+
+Dokploy's health check is a Docker command executed inside the container, not a URL that Dokploy fetches. The runtime image ships no HTTP client, so a `curl`-based check fails on every probe, Docker marks a healthy container unhealthy, and Traefik stops routing to it. Configuring one would first require adding an HTTP client to the runtime stage.
+
+The endpoints themselves are unchanged and remain useful manually. Their limitation stands: both registered checks return healthy unconditionally and neither touches the database, so they report a live process and nothing more. Making readiness meaningful — adding a database probe — remains out of scope, as does adding an HTTP client to the image.
+
+### Configuration and secrets
+
+Entered by hand in the Dokploy UI. Nothing is committed.
+
+| Name | Kind | Notes |
+|---|---|---|
+| `Auth__AllowedEmails__0` | secret | required |
+| `ConnectionStrings__Default` | secret | required; Supabase |
+| `GoogleAuth__ClientId` | secret | required |
+| `GoogleAuth__ClientSecret` | secret | required |
+| `Integrations__OpenAI__BaseUrl` | secret | optional; photo recognition |
+| `Integrations__OpenAI__ApiKey` | secret | optional; photo recognition |
+| `ASPNETCORE_FORWARDEDHEADERS_ENABLED` | variable | `true` |
+
+`Integrations__OpenAI__Model` is deliberately absent. It has a default in `appsettings.json` and only needs setting to override that default.
+
+### Documentation
+
+**The README is unchanged.** A Deployment section was written — first-time Dokploy setup, the environment-variable table above, deploy, rollback, and the healthcheck constraint — and then reverted at the owner's request. The README therefore carries no record of how this deployment is configured.
+
+The consequence is deliberate and should be stated rather than assumed: nothing in the repository describes the deployment. If the VPS is lost, it is rebuilt from the Dokploy UI's own state, or from memory. The facts the reverted section captured — that Dokploy's health check needs an HTTP client the runtime image lacks, and that a rollback reverts code but not schema — are recorded here in this spec and nowhere else in the repository.
+
+Where that knowledge should live instead is **open**. It could return to the README in a redacted form, move to a private note outside the repository, or be accepted as living only in the Dokploy UI.
+
+`CLAUDE.md`'s auth line currently names only the localhost OAuth redirect URI; it gains the production one.
+
+The Amvera design document gains a status line marking it superseded by this migration and dated, so that its runbook is not followed by mistake. Its body is otherwise untouched.
+
+### Release pipeline
+
+The release workflow is **not modified**. It continues to build and push versioned and `latest` Docker Hub images, create the git tag, and publish the GitHub release. Dokploy no longer consumes those images, but they remain the public artifact for other self-hosters, and they keep the escape hatch cheap: if building on the VPS proves too costly, switching Dokploy to pull a published tag is a settings change.
+
+### Sequencing
+
+Repository changes and live cutover land first. Deletion of `amvera.yml` is a **separate follow-up commit**, made only after the live application has been verified end to end on the new host — sign-in through Google, a note written and read back, and photo recognition if the OpenAI key is configured. Until then the Amvera deployment remains a working fallback, which is safe precisely because the database has not moved.
+
+### Work split
+
+The repository changes are agent work. Creating the Dokploy application, entering environment variables, binding the domain, and enabling scheduled Docker cleanup are UI operations that only the owner can perform. The Google OAuth authorized origin and redirect URI for the new hostname have already been added by the owner, alongside the existing Amvera ones rather than replacing them.
+
+## Testing Decisions
+
+A good test here asserts externally observable behaviour: that a container built from this repository starts, applies migrations, and serves the application. It does not assert the text of a command line or the contents of a configuration file — those are implementation details that would make the tests restate the change rather than verify it.
+
+This change adds **no new test seams**. One existing seam covers the regression risk, and one behaviour is verified manually by explicit decision.
+
+### Seam 1 — the existing e2e suite (automated, existing)
+
+`tests/docker-compose.yml` extends the `web` service from `docker-compose.base.yml`, builds the image from the root `Dockerfile`, and runs the Playwright suite against the running stack. CI runs it on every push touching `Dockerfile` or `docker-compose.*`.
+
+This is the highest available seam and it covers the one real regression risk in this change: that altering the image's default command disturbs the stack the base compose file builds on top of it. If it does, the container does not boot and the suite fails.
+
+Its coverage should not be overstated. The suite is a single sign-in scenario. It proves the stack builds, starts, and serves the app; it is not a broad functional gate, and it must not be read as one when judging this change.
+
+Prior art: this is the same suite and the same compose entry point used to validate the Amvera-era `ENTRYPOINT` → `CMD` change, which altered the same line of the `Dockerfile` for the same class of reason.
+
+### Seam 2 — the image's own default command (manual, by decision)
+
+Because compose overrides the entrypoint, **nothing in CI ever executes the image's default command**. The path this change introduces would otherwise run for the first time in production.
+
+Closing that gap automatically would require a second compose file with no entrypoint override, or removing the override from the base file. The override exists to install the local CA certificate before startup and cannot simply be dropped. Building a parallel compose stack to cover one command line is more machinery than the change warrants.
+
+It is therefore verified by hand, once, before the first deploy, and this is an explicit acceptance step rather than an implicit one:
+
+1. Build the image from the root `Dockerfile`.
+2. Run it against a Postgres instance with the connection string supplied as an environment variable and no entrypoint override, and confirm the migrator applies migrations and the API then starts and serves requests.
+3. Confirm that a migration failure exits non-zero and the API does not start.
+
+After cutover the same path is exercised on every Dokploy container start, and the run log is the evidence.
+
+### Seam 3 — documentation
+
+None. `CLAUDE.md` and the superseded-status line carry no behaviour to test. They are reviewed by reading.
+
+### Docker requirement
+
+Both seam 1 and the seam 2 verification need a running Docker daemon. Per this repository's standing rule, if Docker is unavailable the implementer must stop and ask how to proceed rather than skip the suite or substitute a non-Docker path.
+
+## Out of Scope
+
+- **Moving the database off Supabase.** Explicitly deferred to its own future spec. Supabase's free tier costs nothing, so moving it saves no money, and it would introduce backups, disk sizing, and Postgres upgrades as new responsibilities. Doing it in the same change would give a failed cutover two suspects instead of one.
+- **Making the readiness check meaningful.** Adding a database probe so the healthcheck detects a Supabase outage is a real improvement and a separate change.
+- **Automated deploys.** No GitHub webhook, no auto-deploy on merge to `main`, no CI credentials for the VPS.
+- **Modifying the release workflow.** Untouched, including the Docker Hub push that Dokploy no longer consumes.
+- **Build resource mitigation on the VPS.** Building on 2 vCPU / 4 GB alongside another application was considered with two mitigations available — a swap file and a build memory cap — and the owner chose to proceed without either. See Further Notes.
+- **Deleting the Amvera design document.** It stays as history.
+- **Any application or frontend code change.** This change touches the `Dockerfile` and `CLAUDE.md`, and later deletes one file.
+- **Documenting the deployment in the repository.** The README runbook was written and reverted; where that knowledge lives is an open question, not a delivered part of this change.
+
+## Further Notes
+
+### Accepted risk: building on the VPS
+
+The VPS is 2 vCPU / 4 GB RAM / 40 GB disk, shared with Dokploy, Traefik, and another application. The `Dockerfile` has two independent stages — a .NET SDK publish and a Node install plus Vite build — which BuildKit runs **concurrently**. A build can therefore exhaust memory, and an out-of-memory kill selects a victim process that may belong to the other application rather than to this build.
+
+Two mitigations were offered and declined: a swap file, and a memory cap on the build. The owner chose to build as-is, on the reasoning that deploys are rare and observed. This is recorded so that the failure mode is recognised rather than rediscovered.
+
+The mitigation that *is* in scope is scheduled Docker cleanup in Dokploy. Disk exhaustion from accumulated build cache is the quieter version of the same risk — it degrades a shared 40 GB disk gradually and would affect the neighbouring application without an obvious cause.
+
+If either risk materialises, the prepared remedy is to switch Dokploy from building-from-source to pulling a published Docker Hub tag. The release workflow already produces those images, which is why it is deliberately left untouched.
+
+### Why the fallback is genuinely a fallback
+
+Keeping Amvera warm during cutover only works because the database is not moving. Both deployments read and write the same Supabase project, so falling back to Amvera loses nothing. Had the database moved in this change, the fallback would have gone stale the moment the first note was written on the new host. This is the main reason the database move was separated out.
+
+### Relationship to the Amvera design
+
+That document's core judgement was that the deployable artifact should stay a plain Docker image so a move to a VPS would be "a compose file plus a DNS change". This spec is that move, and it is smaller still — no compose file, because Dokploy's Application type builds the `Dockerfile` directly.
+
+Two constraints that shaped the Amvera design do not apply here and should not be carried forward by habit:
+
+- **Configuration must live in the repository.** That followed from force-pushing over the platform's git repository. Dokploy stores configuration in its own database, so this constraint is gone, and the correct home for deployment configuration is now the Dokploy UI. It has no record in the repository.
+- **Never use the platform UI's configuration section.** A standing rule specific to Amvera's force-push behaviour. It does not apply to Dokploy and should not be transplanted.

@@ -72,7 +72,7 @@ Backend component tests (`FoodDiary.ComponentTests`, via Testcontainers) and the
 
 ## Architecture notes
 
-- **Auth**: Google OAuth 2.0; backend gates access via `Auth:AllowedEmails` allowlist (this is a personal/self-hosted app, not multi-tenant). OAuth redirect URI is `https://localhost:8080/signin-google`.
+- **Auth**: Google OAuth 2.0; backend gates access via `Auth:AllowedEmails` allowlist (this is a personal/self-hosted app, not multi-tenant). OAuth redirect URIs are `https://localhost:8080/signin-google` locally and `https://<your-domain>/signin-google` in production.
 - **API client**: frontend calls backend through RTK Query slices under `entities/*/api` and `features/*/api`. Mocked via MSW when `VITE_APP_MSW_ENABLED=true`.
 - **Database**: PostgreSQL via EF Core. The `FoodDiary.Migrator` console app — not the API — is responsible for applying migrations.
 - **AI integrations**: `FoodDiary.Integrations.OpenAI` power the photo-based note recognition feature. Demo mode (`VITE_APP_DEMO_MODE_ENABLED`) disables features that touch external integrations or the file system.

@@ -16,4 +16,4 @@ COPY --from=backend app/publish .
 COPY --from=frontend app/dist frontend/dist
 EXPOSE 8080
 
-CMD ["dotnet", "FoodDiary.API.dll"]
+CMD ["/bin/sh", "-c", "dotnet migrator/FoodDiary.Migrator.dll && exec dotnet FoodDiary.API.dll"]

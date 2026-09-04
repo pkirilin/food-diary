@@ -1,8 +1,11 @@
 # Amvera migration — design
 
 Date: 2026-07-30 (revised 2026-08-03)
-Status: Completed — implemented on branch `amvera-deploy`; Tasks 1-3 done and
-reviewed, Task 4 (live deployment) is manual follow-up work.
+Status: Superseded on 2026-09-04 by the Dokploy migration
+(`.scratch/dokploy-migration/spec.md`), which moves hosting to a self-hosted VPS.
+The runbook below is no longer current — kept as the record of why Amvera was
+chosen. Previously: Completed — implemented on branch `amvera-deploy`; Tasks 1-3
+done and reviewed, Task 4 (live deployment) is manual follow-up work.
 
 ## Context
 

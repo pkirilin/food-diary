@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Hosting moved from Amvera Cloud to a self-hosted VPS running Dokploy
+- The Docker image now applies database migrations on start, before the API. A container whose `ConnectionStrings__Default` is unset or unreachable now exits non-zero instead of starting and serving
+
 ## [0.8.0] - React 19, MUI v9 & AI photo zoom
 
 ### Added
