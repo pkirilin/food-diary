@@ -120,7 +120,7 @@ Only this prompt ships. "Optimal ration" and "plan my week" take different crite
 
 ## Authorization
 
-`FoodDiary.API` is both the authorization server and the resource server. Google **cannot** be the authorization server: its discovery document omits `offline_access` from `scopes_supported`, so Claude never requests a refresh token and the user re-consents every hour.
+`FoodDiary.API` is both the authorization server and the resource server. Google **cannot** be the authorization server: a Google access token's `aud` is the OAuth client ID rather than a resource URI, so the RFC 8707 audience binding that MCP requires is unsatisfiable, and Google issues refresh tokens only for the non-standard `access_type=offline` parameter that no MCP client sends — so the connection would also die hourly. See [ADR 0003](../../docs/adr/0003-oauth-authorization-server-in-api.md).
 
 ### Endpoints
 

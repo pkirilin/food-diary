@@ -26,11 +26,35 @@ organisation admin, which is not a shape that fits a personal account, and it wa
 verified to work for one.
 
 **Google as the authorization server.** This was the option we most wanted, since the app
-already signs in with Google and the allowlist already lives there. It does not work:
-Google's discovery document omits `offline_access` from `scopes_supported`, so Claude
-never requests a refresh token, and the connection dies roughly hourly with a fresh
-consent screen. The failure is in Google's metadata, not in our configuration, so there is
-nothing to fix on our side.
+already signs in with Google and the allowlist already lives there. Two independent facts
+rule it out, and neither is fixable from either side.
+
+The fatal one is audience binding. MCP requires a resource server to accept only tokens
+issued for itself, per RFC 8707. A Google access token's `aud` is the OAuth **client ID**,
+never a resource URI, and Google's authorization endpoint does not accept the `resource`
+parameter — so the strongest check we could perform is "issued to our Google client", which
+the SPA's own login already satisfies. The access token sitting in every signed-in user's
+auth cookie would pass. That is the token-passthrough anti-pattern the MCP security document
+forbids outright. Microsoft Entra can act as an MCP authorization server because an
+Application ID URI gives the token a resource-specific audience; Google has no equivalent.
+
+The second is refresh tokens. Google issues one only when the authorization request carries
+`access_type=offline` — a Google-specific parameter that is in no OAuth or OIDC
+specification and that no MCP client emits. Google does not implement the OIDC
+`offline_access` scope at all; it advertises only `openid`, `email` and `profile` in the
+OIDC document and omits `scopes_supported` entirely from the RFC 8414 document that clients
+read first. The parameter originates in the client's request, so no server-side
+configuration of ours can supply it. Google access tokens expire after one hour, so the
+connection would die hourly with a fresh consent screen.
+
+Two lesser problems follow from the same root: Google's scope namespace is its own API
+surface, so a `food:read` scope cannot exist, and with no `/authorize` of our own the
+`Auth:AllowedEmails` check would have to move to a `tokeninfo` call on every MCP request.
+
+None of this is a gap in Google's OAuth implementation — Google supports S256 PKCE, client
+secrets, `authorization_response_iss_parameter_supported`, and serves RFC 8414 metadata at
+the well-known path. It is an identity provider for Google's own APIs, and MCP needs an
+authorization server for ours.
 
 **A separate identity provider — Keycloak, Authentik, Zitadel.** Correct in the abstract
 and the standard answer to "don't write an authorization server". Rejected because it adds
@@ -41,10 +65,16 @@ commercial and operational dependencies from this deployment.
 **Dynamic Client Registration (RFC 7591).** The default path for public connectors, and it
 is what Claude uses when nothing else is offered. It needs an open `POST /register`
 endpoint and somewhere to store the clients it creates, and it registers a fresh client on
-every reconnection — unbounded rows for what is permanently one client.
+every reconnection — unbounded rows for what is permanently one client. As of MCP
+specification revision 2026-07-28 it is additionally **deprecated** in favour of Client ID
+Metadata Documents, and pre-registration is priority 1 in the specification's own
+client-registration selection order — ahead of CIMD and DCR. The chosen path is the spec's
+preferred one, not a deviation from it.
 
 **Client ID Metadata Documents.** Needs no registration endpoint, but forces a public
-client — PKCE only, no client secret — and requires the authorization server to fetch a
+client in practice — the specification permits `private_key_jwt`, but Claude selects CIMD
+only when the authorization server advertises `"none"` in
+`token_endpoint_auth_methods_supported` — and requires the authorization server to fetch a
 URL supplied by the caller, which is SSRF surface pointed at our own network.
 
 ## Consequences

@@ -14,11 +14,11 @@ See [spec.md](../spec.md) § Authorization and [ADR 0003](../../../docs/adr/0003
 - [ ] `GET /authorize` challenges the existing Google cookie scheme, then rejects any email absent from `Auth:AllowedEmails`
 - [ ] `/authorize` validates `client_id` against `Mcp:ClientId` and `redirect_uri` against the one pre-registered Claude callback, `https://claude.ai/api/mcp/auth_callback`
 - [ ] Once both checks pass it auto-approves — no consent page. The `redirect_uri` allowlist plus PKCE is what makes this safe; see ADR 0003
-- [ ] The authorization response carries `iss` (RFC 9207), matching the metadata flag above
+- [ ] The authorization response carries `iss` (RFC 9207) **on success and on error responses**, matching the metadata flag above
 - [ ] The authorization code is an `IDataProtector` blob with a 60-second lifetime carrying `client_id`, `redirect_uri`, the PKCE `code_challenge`, `resource`, `scope` and the authenticated email
 - [ ] The code id is recorded in `IMemoryCache` and removed on first exchange, so a code cannot be replayed within its lifetime
 - [ ] `POST /token` accepts `application/x-www-form-urlencoded`, verifies PKCE S256 against the challenge in the code, verifies the client secret, and issues an opaque access token plus a refresh token — both `IDataProtector` blobs under distinct purpose strings
-- [ ] The `refresh_token` grant works and returns a new access token; without it the connection dies hourly, which is the exact reason Google was rejected as the authorization server
+- [ ] The `refresh_token` grant works and returns a new access token; without it the connection dies hourly, since Claude only refreshes reactively on a 401 and access tokens live one hour
 - [ ] All routes are mapped ahead of `UseSpa`
 - [ ] The top-level `GET` redirect to `/authorize` carries the `SameSite=Lax` cookie — confirm against a real browser round trip, not only a test
 - [ ] `dotnet build` and `dotnet test` pass
