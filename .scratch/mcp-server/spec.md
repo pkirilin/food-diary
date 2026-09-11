@@ -126,13 +126,45 @@ Only this prompt ships. "Optimal ration" and "plan my week" take different crite
 
 | Path | Purpose |
 |---|---|
-| `GET /.well-known/oauth-protected-resource` | RFC 9728. Served by the SDK from `McpAuthenticationOptions.ResourceMetadata` |
+| `GET /.well-known/oauth-protected-resource/mcp` | RFC 9728. Served by the SDK from `McpAuthenticationOptions.ResourceMetadata` |
 | `GET /.well-known/oauth-authorization-server` | RFC 8414. Hand-written |
 | `GET /authorize` | Challenges the existing Google cookie scheme, then checks `Auth:AllowedEmails` |
 | `POST /token` | `application/x-www-form-urlencoded`. `authorization_code` and `refresh_token` grants |
 | `/mcp` | `app.MapMcp()` |
 
 All of these **must be mapped ahead of `UseSpa`**. The SPA catch-all otherwise answers discovery probes with `index.html`, and the client hangs rather than failing — the failure already recorded in the original feature note.
+
+### Resource identity
+
+`Mcp:BaseUrl` is the single source of every identifier the two roles compare against:
+
+| Value | Built from `Mcp:BaseUrl = https://diary.example.com` |
+|---|---|
+| RFC 8414 `issuer` | `https://diary.example.com` |
+| `authorization_endpoint` / `token_endpoint` | `…/authorize`, `…/token` |
+| RFC 9728 `resource` | `https://diary.example.com/mcp` — **with the path** |
+| RFC 9728 `authorization_servers[0]` | `https://diary.example.com`, equal to `issuer` |
+| Token audience (RFC 8707) | `https://diary.example.com/mcp`, equal to `resource` |
+| Protected-resource metadata location | `/.well-known/oauth-protected-resource/mcp` |
+
+`resource` carries the `/mcp` path because Claude requires the field to match the MCP URL exactly as typed into the connector, path included. RFC 9728 §3.1 then puts the document at the path-suffixed well-known location, which is why the endpoint table above is not the bare `/.well-known/oauth-protected-resource`.
+
+`McpAuthenticationOptions.ResourceMetadataUri` is therefore set to that absolute URL, not left to default:
+
+```csharp
+.AddMcp(options =>
+{
+    options.ResourceMetadataUri = new Uri($"{baseUrl}/.well-known/oauth-protected-resource/mcp");
+    options.ResourceMetadata = new()
+    {
+        Resource = $"{baseUrl}/mcp",
+        AuthorizationServers = { baseUrl },
+        ScopesSupported = ["food:read"],
+    };
+});
+```
+
+Unless `ResourceMetadataUri` is absolute, the SDK builds the `WWW-Authenticate: Bearer resource_metadata="…"` pointer from `Request.Scheme` and `Request.Host` — so setting `ResourceMetadata.Resource` alone would leave the pointer that starts the whole flow request-derived. Absolute, it also makes the SDK reject metadata requests arriving under any other host or scheme.
 
 ### Authorization server metadata
 
@@ -201,13 +233,23 @@ Top-level `Mcp` section, matching how `Auth`, `GoogleAuth` and `Integrations` al
 
 The route is fixed at `/mcp` and is not configurable.
 
-**`Mcp:BaseUrl` is explicit rather than derived from the request.** Dokploy sets `ASPNETCORE_FORWARDEDHEADERS_ENABLED=true`, which enables `XForwardedFor | XForwardedProto` — but **not** `XForwardedHost`. `Request.Host` therefore still comes from the raw `Host` header, and `appsettings.json` sets `"AllowedHosts": "*"`, so the app accepts any host. Deriving the RFC 9728 `resource` value from the request would let a forged `Host` header poison the metadata document.
+**`Mcp:BaseUrl` is explicit rather than derived from the request.** The resource server has to answer "was this token issued for *me*?" — MCP requires it, per RFC 8707 §2 — and the authorization server has to answer "is this `resource` one I serve?". Both are equality checks against an identifier the process holds, and no standard ASP.NET Core mechanism supplies one: `AllowedHosts` and `ForwardedHeadersOptions.AllowedHosts` are host allowlists with no scheme, no port and `*` as a legal value, so neither can produce the absolute `https` URL that RFC 8414 §2 and RFC 9728 §1.2 require.
+
+Deriving it from `Request.Host` would additionally be unsafe as deployed. Dokploy sets `ASPNETCORE_FORWARDEDHEADERS_ENABLED=true`, which enables `XForwardedFor | XForwardedProto` — but **not** `XForwardedHost`, and it clears `KnownProxies`/`KnownNetworks` rather than populating them. `Request.Host` therefore still comes from the raw `Host` header, and `appsettings.json` sets `"AllowedHosts": "*"`, so the app accepts any host.
+
+Enabling `XForwardedHost` does not fix that: Traefik populates `X-Forwarded-Host` from the inbound `Host`, so it only relocates the same client-controlled string. Host filtering also runs *ahead* of the forwarded-headers middleware and reads the raw `Host` header, so `AllowedHosts` can never validate `X-Forwarded-Host`.
+
+See [research: `Mcp:BaseUrl` configuration](research/mcp-base-url-configuration.md).
 
 **Enabled with any of `BaseUrl`, `ClientId` or `ClientSecret` missing fails at startup**, naming the missing keys. The alternative surfaces as an opaque OAuth failure inside Claude's UI, which is the worst place to debug it.
+
+`Mcp:BaseUrl` is validated for shape as well as presence, failing startup on a relative URI, a scheme other than `https` (`http` allowed only for `localhost`), a query or fragment component, or a trailing slash — RFC 8414 §2, RFC 9728 §1.2, RFC 8707 §2 and the MCP canonical-URI guidance respectively. A malformed value otherwise surfaces as the same silent discovery mismatch.
 
 **Disabled** means the MCP and OAuth endpoints are not mapped, *plus* a terminal branch ahead of `UseSpa` returning **404** for those paths. Not mapping alone is not enough — the SPA catch-all would answer them with `index.html`.
 
 Docker env vars follow the existing `Section__Key` convention: `Mcp__Enabled`, `Mcp__BaseUrl`, and so on.
+
+Separately, `AllowedHosts` should be narrowed from `*` to the public host in the Dokploy environment. It is worth one variable independently of MCP — it also protects the existing Google OAuth redirect generation — and it makes a forged `Host` a 400 before it reaches any handler. It is defence in depth, not a substitute for `Mcp:BaseUrl`, and it must **not** be paired with enabling `XForwardedHost`.
 
 ## Layering
 
