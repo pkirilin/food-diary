@@ -16,7 +16,7 @@ So: expose the diary to Claude as an MCP server, and let Claude be the nutrition
 
 ## Solution
 
-A **read-only** MCP server mounted inside the existing `FoodDiary.API` process at `/mcp` — not a separate deployment unit, not a separate `.csproj`. It is reached remotely over Streamable HTTP from Claude web and desktop, as a custom connector on the public Dokploy domain, and is off unless `Mcp:Enabled` is set.
+A **read-only** MCP server mounted inside the existing `FoodDiary.API` process at `/mcp` — not a separate deployment unit, not a separate `.csproj`. It is reached remotely over Streamable HTTP from Claude web and desktop, as a custom connector on the app's public domain, and is off unless `Mcp:Enabled` is set.
 
 Two tools return data; one prompt packages the report the user asks for most. Every tool call goes through an existing `FoodDiary.Application` handler — the MCP layer never touches `FoodDiaryContext`, and the handlers do not know who is calling them.
 
@@ -235,9 +235,9 @@ The route is fixed at `/mcp` and is not configurable.
 
 **`Mcp:BaseUrl` is explicit rather than derived from the request.** The resource server has to answer "was this token issued for *me*?" — MCP requires it, per RFC 8707 §2 — and the authorization server has to answer "is this `resource` one I serve?". Both are equality checks against an identifier the process holds, and no standard ASP.NET Core mechanism supplies one: `AllowedHosts` and `ForwardedHeadersOptions.AllowedHosts` are host allowlists with no scheme, no port and `*` as a legal value, so neither can produce the absolute `https` URL that RFC 8414 §2 and RFC 9728 §1.2 require.
 
-Deriving it from `Request.Host` would additionally be unsafe as deployed. Dokploy sets `ASPNETCORE_FORWARDEDHEADERS_ENABLED=true`, which enables `XForwardedFor | XForwardedProto` — but **not** `XForwardedHost`, and it clears `KnownProxies`/`KnownNetworks` rather than populating them. `Request.Host` therefore still comes from the raw `Host` header, and `appsettings.json` sets `"AllowedHosts": "*"`, so the app accepts any host.
+Deriving it from `Request.Host` would additionally be unsafe. `Request.Host` is client-controlled behind any reverse proxy that does not itself validate it, which is the default arrangement — and `appsettings.json` sets `"AllowedHosts": "*"`, so the app accepts any host. The app runs in whatever container-friendly environment the operator chose, so it cannot assume its proxy is stricter than that.
 
-Enabling `XForwardedHost` does not fix that: Traefik populates `X-Forwarded-Host` from the inbound `Host`, so it only relocates the same client-controlled string. Host filtering also runs *ahead* of the forwarded-headers middleware and reads the raw `Host` header, so `AllowedHosts` can never validate `X-Forwarded-Host`.
+Enabling `XForwardedHost` does not fix it. A proxy typically populates `X-Forwarded-Host` from the inbound `Host`, so the setting only relocates the same client-controlled string. Host filtering also runs *ahead* of the forwarded-headers middleware and reads the raw `Host` header, so `AllowedHosts` can never validate `X-Forwarded-Host`.
 
 See [research: `Mcp:BaseUrl` configuration](research/mcp-base-url-configuration.md).
 
@@ -249,7 +249,7 @@ See [research: `Mcp:BaseUrl` configuration](research/mcp-base-url-configuration.
 
 Docker env vars follow the existing `Section__Key` convention: `Mcp__Enabled`, `Mcp__BaseUrl`, and so on.
 
-Separately, `AllowedHosts` should be narrowed from `*` to the public host in the Dokploy environment. It is worth one variable independently of MCP — it also protects the existing Google OAuth redirect generation — and it makes a forged `Host` a 400 before it reaches any handler. It is defence in depth, not a substitute for `Mcp:BaseUrl`, and it must **not** be paired with enabling `XForwardedHost`.
+Separately, `AllowedHosts` should be narrowed from `*` to the app's public host in the deployment environment. It is worth one variable independently of MCP — it also protects the existing Google OAuth redirect generation — and it makes a forged `Host` a 400 before it reaches any handler. It is defence in depth, not a substitute for `Mcp:BaseUrl`, and it must **not** be paired with enabling `XForwardedHost`.
 
 ## Layering
 

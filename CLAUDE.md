@@ -104,3 +104,7 @@ Issues and specs live as local markdown files under `.scratch/<feature-slug>/`. 
 ### Domain docs
 
 Single-context — one `CONTEXT.md` + `docs/adr/` at the repo root. See `docs/agents/domain.md`.
+
+## Reference
+
+- **Writing docs** — no deployment-platform assumptions in prose; the app targets any container-friendly environment. See `docs/agents/writing-docs.md`.

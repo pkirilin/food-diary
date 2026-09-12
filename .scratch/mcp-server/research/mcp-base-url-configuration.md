@@ -51,7 +51,10 @@ Paste-ready amendment prose is in [§7.5](#75-suggested-spec-amendment).
 
 ## 2. The spec's justification, clause by clause
 
-The paragraph under test (`spec.md`, "Configuration"):
+The paragraph under test, as `spec.md` carried it when this research was done. The spec has since been
+amended to state the general requirement instead of one deployment's behaviour (see `docs/agents/writing-docs.md`);
+the platform-specific evidence below is retained here, as a cited example of a real deployment rather than an
+assumption the app is allowed to make:
 
 > **`Mcp:BaseUrl` is explicit rather than derived from the request.** Dokploy sets
 > `ASPNETCORE_FORWARDEDHEADERS_ENABLED=true`, which enables `XForwardedFor | XForwardedProto` — but **not**
@@ -59,7 +62,10 @@ The paragraph under test (`spec.md`, "Configuration"):
 > sets `"AllowedHosts": "*"`, so the app accepts any host. Deriving the RFC 9728 `resource` value from the
 > request would let a forged `Host` header poison the metadata document.
 
-### 2.1 "Dokploy sets `ASPNETCORE_FORWARDEDHEADERS_ENABLED=true`" — true operationally, absent from the repo
+### 2.1 "The platform sets `ASPNETCORE_FORWARDEDHEADERS_ENABLED=true`" — true operationally, absent from the repo
+
+The specific platform is named below only because this section's whole point is what can and cannot be
+verified from the repository. The app must not assume any of it.
 
 The variable appears in the Dokploy environment table in
 [`.scratch/dokploy-migration/spec.md`](../../dokploy-migration/spec.md) ("Configuration and secrets"), marked
