@@ -28,9 +28,21 @@ The MCP surface says **food log**, never "note". `Note` reads as a text memo to 
 
 One food log is **one product eaten in one meal on one date** — the same grain as one `Note` row. A meal is a grouping by `MealType`, derived in the response; there is no `Meal` entity and the nesting invents nothing.
 
+### Units live in the tool descriptions
+
+The client's model cannot read this codebase, so every unit it needs is stated in the tool's `[Description]` — kilocalories, grams, salt as sodium chloride, grams for drinks. Field names stay unit-free (`quantity`, `calories`, `protein`); the description is the one place the model reliably reads them. Units are defined once as **Nutrition Values** in [CONTEXT.md](../../CONTEXT.md), and the descriptions below restate it.
+
+Parameter descriptions carry the input format, because that is where the model decides what to send: `from` and `to` are "Inclusive calendar date, `yyyy-MM-dd`."
+
+No test pins the description prose. `CONTEXT.md` and this spec are the source of truth.
+
 ### `get_food_logs(from, to)`
 
 Backed by `GetNotesHistoryQueryHandler(From, To)` in `FoodDiary.Application`, which already returns notes over a date range with `Product` eager-loaded. **No new handler is required.**
+
+Tool description, in addition to what it says about `null` and coverage counts:
+
+> One item per product eaten per meal per date. `quantity` is grams, drinks included. `calories` is kilocalories; `protein`, `fats`, `carbs`, `sugar` and `salt` are grams (salt is sodium chloride, not sodium), already scaled to the quantity eaten. `from` and `to` are inclusive calendar dates with no time or timezone. Meals within a day run in order: Breakfast, SecondBreakfast, Lunch, AfternoonSnack, Dinner.
 
 ```json
 {
@@ -86,6 +98,10 @@ Rules that the shape exists to enforce:
 
 Backed by `GetProductsQueryHandler` in `FoodDiary.Application`, unchanged: it already pages, filters by name, eager-loads `Category` and returns `TotalProductsCount`.
 
+Tool description:
+
+> Nutrition under `per100g` is per 100 g of product: `calories` in kilocalories, the rest in grams (salt is sodium chloride). `defaultQuantity` is the usual portion in grams, not a number of servings.
+
 ```json
 {
   "products": [
@@ -116,7 +132,7 @@ Nutrition here is nested under `per100g` deliberately. `get_food_logs` returns m
 
 ### Prompt: `nutrition_report`
 
-One optional string argument, `period`, free text: "last week", "last 14 days", "2026-09-01 to 2026-09-07". MCP prompt arguments are strings only, so the template instructs Claude to resolve the phrase to concrete dates, default to the last 7 days when empty, and respect the 31-day cap.
+One optional string argument, `period`, free text: "last week", "last 14 days", "2026-09-01 to 2026-09-07". MCP prompt arguments are strings only, so the template instructs Claude to resolve the phrase to concrete dates, default to the last 7 days when empty, and respect the 31-day cap. It also requires a unit on every number in the report — `kcal` for calories, `g` for quantities and macros — so the reader never sees a bare figure.
 
 Only this prompt ships. "Optimal ration" and "plan my week" take different criteria every time — a calorie range, a protein target, vitamins — so a fixed prompt is worse than typing the question.
 

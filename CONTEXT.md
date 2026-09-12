@@ -27,6 +27,13 @@ An eatable product or dish in the personal database, holding nutrition values pe
 A Product is the catalogue item; a Note is one occasion of eating some of it.
 _Avoid_: ingredient
 
+**Nutrition Values**:
+Calories in kilocalories, and protein, fats, carbs, sugar and salt in grams. Salt means
+sodium chloride, never sodium. On a Product they are per 100 g; on a Note they are scaled
+to the quantity eaten. Quantities are always grams, drinks included — there is no
+millilitre.
+_Avoid_: joules, kJ, sodium, ml, servings
+
 **Category**:
 A grouping of Products in the personal database.
 

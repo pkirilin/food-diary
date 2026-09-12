@@ -20,5 +20,7 @@ Response shape and the reasoning behind each rule are in [spec.md](../spec.md) �
 - [ ] Days with nothing logged appear with an empty `meals[]` and zero totals, and count toward `dailyAverage`
 - [ ] A range wider than 31 days returns an MCP **tool error** (`isError`) naming the limit and the span requested, so the model splits the range itself. Not a JSON-RPC protocol error, and never silent truncation
 - [ ] The tool description tells the model what `null` and the coverage counts mean — the counts are useless if it does not know to read them
+- [ ] The tool description states units and date semantics as drafted in [spec.md](../spec.md) § `get_food_logs`: `quantity` in grams (drinks included), `calories` in kilocalories, macros in grams with salt as sodium chloride, values already scaled, `from`/`to` inclusive calendar dates with no time or timezone, and the meal order within a day. Field names stay unit-free
+- [ ] The `from` and `to` parameter descriptions read "Inclusive calendar date, `yyyy-MM-dd`."
 - [ ] Unit tests in `FoodDiary.UnitTests` cover: grouping, macro scaling, null macros excluded from totals but counted in `totalItems`, empty days present, empty days in the average denominator, and the 31-day boundary at 31 and 32 days
 - [ ] `dotnet build` and `dotnet test` pass
