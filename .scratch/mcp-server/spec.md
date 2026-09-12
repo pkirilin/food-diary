@@ -273,9 +273,34 @@ All new code lives in `FoodDiary.API/Mcp/`, so everything the flag switches off 
 
 ## Testing
 
-The real logic is the mapping — grouping notes into `days[].meals[].items[]`, scaling macros to the quantity eaten, coverage counts, empty days, the two caps. It is pure and belongs in **`FoodDiary.UnitTests`**.
+**`FoodDiary.UnitTests`** owns everything pure: the mapping — grouping notes into `days[].meals[].items[]`, scaling macros to the quantity eaten, coverage counts, empty days, the two caps — plus the options validation and the `redirect_uri` / `client_id` refusals.
 
-One **`FoodDiary.ComponentTests`** case covers the handshake: an unauthenticated call to `/mcp` returns 401 with `WWW-Authenticate: Bearer resource_metadata="…"`, and that document resolves.
+**`FoodDiary.ComponentTests`** owns the wiring, in `Scenarios/Mcp/McpApiTests.cs` + `McpApiContext.cs`, following the existing Given/When/Then DSL:
+
+1. `/authorize` → `/token` returns an access token and a refresh token.
+2. `tools/list` contains both tools; `tools/call get_food_logs` over a seeded note returns that product and date.
+3. `tools/call list_products` over seeded products.
+4. `prompts/list` + `prompts/get nutrition_report`.
+5. An unauthenticated call to `/mcp` returns 401 with `WWW-Authenticate: Bearer resource_metadata="…"`, and that document resolves.
+6. With `Mcp:Enabled=false`, `/mcp` and `/.well-known/oauth-protected-resource/mcp` return 404 rather than `index.html`.
+7. Exchanging one authorization code twice fails the second time.
+
+2–4 drive a real `McpClient` from the C# SDK over `HttpClientTransport(options, Factory.CreateClient())` with `Endpoint = {Mcp:BaseUrl}/mcp` — real `initialize`, `tools/list`, `tools/call`. A hand-written JSON-RPC POST would not prove discovery works and would skip past tool-schema errors.
+
+These cases assert the wiring only: the tool is discoverable, the call succeeds, and the result carries the seeded row's identifying values. Exhaustive shape assertions stay in the unit tests; duplicating them here would mean owning the expectations twice.
+
+Case 7 exists because the single-use rule is the one thing no other test observes. The code is a stateless `IDataProtector` blob that replays fine on its own; only the `IMemoryCache` removal stops it, and a broken removal leaves every happy path green.
+
+### How the tests authenticate
+
+`Given_authenticated_user()` installs `FakeAuthenticationSchemeProvider` and `FakeAuthenticationService`, which resolve **every** scheme to the fake Google handler and make `ChallengeAsync` a no-op. Under them a `Bearer`-protected `/mcp` would authenticate with no token at all, and no 401 would ever be produced. So:
+
+- Case 1 runs **with** fake auth, which is what lets `/authorize` past the Google challenge.
+- Cases 2–7 run **without** it. 2–4 mint an access token by resolving the real token service from `Factory.Services` and calling the same method `/token` calls, so token validation is exercised for real. That service is `public` rather than `internal` — `FoodDiary.API` carries no `InternalsVisibleTo` today, and adding one to the web assembly is a heavier precedent than one public type inside the directory the feature flag already isolates.
+
+**The gap this leaves, stated rather than discovered later:** no single case carries a `/token`-issued token into `/mcp`. Issuance is proven by case 1, validation by 2–4, and the join between them is not covered. Closing it would mean narrowing the fake-auth infrastructure that all six existing scenario suites depend on.
+
+The suite registers its client by overriding `Mcp:Clients:0` in `appsettings.ComponentTests.json` — configuration arrays merge by index, so the suite ends up with exactly one client, as production does. Appending a second entry instead would leave the real Claude callback registered in every run, and would hide a lookup bug that picked "the first client" rather than matching `client_id`. `Mcp:BaseUrl` is `http://localhost`, which puts the suite on the `localhost` exemption in the `https` validation.
 
 Component tests need Docker via Testcontainers. Per `CLAUDE.md`, if Docker is unavailable, **stop and ask** — never skip the suite or substitute a non-Docker path.
 
@@ -310,4 +335,6 @@ C# SDK (`/modelcontextprotocol/csharp-sdk`, official and actively maintained):
 
 ## Documentation
 
-`README.md` and `CLAUDE.md` both list environment variables and must gain the `Mcp:*` keys — required by `.claude/rules/coding.md` whenever env vars change.
+`README.md` and `CLAUDE.md` both list environment variables and must gain the `Mcp:*` keys, including the indexed client spellings `Mcp__Clients__0__ClientId` and `Mcp__Clients__0__ClientSecret` — required by `.claude/rules/coding.md` whenever env vars change.
+
+`.claude/rules/backend.md` requires a happy-path component test per API endpoint. MCP tools and prompts are not endpoints in that rule's sense, so the rule gains them explicitly rather than leaving the obligation to be inferred.
