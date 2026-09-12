@@ -1,12 +1,13 @@
 # FoodDiary.API is its own OAuth authorization server
 
 Status: accepted (2026-09-10)
+Amended: 2026-09-12 — client registration is an owner-configured set of clients (`Mcp:Clients`), not a single client. The decision itself is unchanged.
 
 Exposing the diary to Claude as a remote MCP connector puts a personal food log on the
 public internet, so the `/mcp` endpoint needs authorization. `FoodDiary.API` implements a
 minimal OAuth authorization server itself — `/authorize`, `/token`, and RFC 8414
-discovery — alongside the resource server it already is, with a single pre-registered
-client whose ID and secret are pasted into Claude's connector settings. Access and
+discovery — alongside the resource server it already is, with an owner-configured set of
+pre-registered clients whose IDs and secrets are pasted into connector settings. Access and
 refresh tokens are **opaque blobs produced by `IDataProtector`**, not JWTs.
 
 Writing an authorization server is normally the wrong instinct. It is the right one here
@@ -65,7 +66,7 @@ commercial and operational dependencies from this deployment.
 **Dynamic Client Registration (RFC 7591).** The default path for public connectors, and it
 is what Claude uses when nothing else is offered. It needs an open `POST /register`
 endpoint and somewhere to store the clients it creates, and it registers a fresh client on
-every reconnection — unbounded rows for what is permanently one client. As of MCP
+every reconnection — unbounded rows for what is a small, fixed set of clients. As of MCP
 specification revision 2026-07-28 it is additionally **deprecated** in favour of Client ID
 Metadata Documents, and pre-registration is priority 1 in the specification's own
 client-registration selection order — ahead of CIMD and DCR. The chosen path is the spec's
@@ -80,15 +81,19 @@ URL supplied by the caller, which is SSRF surface pointed at our own network.
 ## Consequences
 
 Claude's custom connectors accept a user-supplied Client ID and Secret, which is what
-makes the chosen path viable: pre-registration is one config value with no endpoint and
-no store, and it is the only option of the three that permits a client secret. This works
-because there is exactly one client and exactly one user. **If this ever serves more than
-one person, that assumption breaks first** and DCR becomes the right answer.
+makes the chosen path viable: pre-registration is configuration with no endpoint and no
+store, and it is the only option of the three that permits a client secret. Clients live
+in an `Mcp:Clients` array — one by default — each with its own ID, secret and redirect
+URI. This works because the set is small and only the owner can extend it. **If this ever
+serves more than one person, that assumption breaks first** and DCR becomes the right
+answer.
 
 Consent auto-approves once the Google cookie challenge and `Auth:AllowedEmails` both pass.
-There is no consent page. The safety comes from validating `redirect_uri` against the one
-pre-registered Claude callback and requiring PKCE S256, not from a button that the single
-user would reflexively click.
+There is no consent page. A client exists only because the owner configured it, so
+registration is the consent step and it happened before the request arrived. The remaining
+safety comes from validating `redirect_uri` for equality against the redirect URI
+registered for that `client_id`, and requiring PKCE S256 — not from a button that the
+single user would reflexively click.
 
 Tokens are opaque because the authorization server and the resource server are the same
 process. JWT exists so a *different* service can verify a token without calling the issuer;

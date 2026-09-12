@@ -20,7 +20,7 @@ A **read-only** MCP server mounted inside the existing `FoodDiary.API` process a
 
 Two tools return data; one prompt packages the report the user asks for most. Every tool call goes through an existing `FoodDiary.Application` handler — the MCP layer never touches `FoodDiaryContext`, and the handlers do not know who is calling them.
 
-Because the server is on the public internet and the diary is personal, it is protected by OAuth. `FoodDiary.API` acts as **both** the OAuth authorization server and the resource server, with a single pre-registered client whose ID and secret are pasted into Claude's custom-connector settings. The consent step reuses the Google sign-in the app already has.
+Because the server is on the public internet and the diary is personal, it is protected by OAuth. `FoodDiary.API` acts as **both** the OAuth authorization server and the resource server, with an owner-configured set of pre-registered clients — one by default, whose ID and secret are pasted into Claude's custom-connector settings. The consent step reuses the Google sign-in the app already has.
 
 ## Domain contract
 
@@ -188,15 +188,19 @@ The scope is `food:read` rather than a blanket `read`, so a future weight-only s
 
 ### Client registration
 
-Pre-registered, single client. `Mcp:ClientId` and `Mcp:ClientSecret` are config values, pasted into Claude's custom-connector advanced settings. There is no `POST /register` and no client store.
+Pre-registered clients only. `Mcp:Clients` is an array; each entry carries `ClientId`, `ClientSecret` and `RedirectUri`. There is no `POST /register` and no client store — the array *is* the store, and only the owner can write to it.
 
-Dynamic Client Registration would mean an open registration endpoint plus storage, and registers a fresh client on every reconnection. Client ID Metadata Documents need no endpoint but force a public client — PKCE only, no secret — and make the authorization server fetch a caller-supplied URL, which is SSRF surface. With exactly one client, pre-registration is one config value and strictly less machinery.
+`appsettings.json` ships entry `0` carrying the Claude connector's callback, `https://claude.ai/api/mcp/auth_callback`, and nothing else. That URL is a published constant of Anthropic's connector rather than a per-deployment choice or a secret, so shipping it means a self-hoster supplies two values instead of three and cannot mistype the one value that must match byte for byte. `ClientId` and `ClientSecret` come from the deployment, by index: `Mcp__Clients__0__ClientId`.
+
+An array rather than three scalars because `RedirectUri` belongs to a client, not to the app — that is what OAuth client registration is — and once it is per-client, a second client is a config entry rather than a code change. The default remains exactly one.
+
+Dynamic Client Registration would mean an open registration endpoint plus storage, and registers a fresh client on every reconnection. Client ID Metadata Documents need no endpoint but force a public client — PKCE only, no secret — and make the authorization server fetch a caller-supplied URL, which is SSRF surface. Both let a *caller* register itself; neither is what this array does.
 
 ### Consent
 
 `/authorize` challenges the existing Google cookie scheme and checks `Auth:AllowedEmails`. Once that passes it **auto-approves** — mints the code and redirects. There is no consent page.
 
-This is a deliberate deviation from the usual OAuth shape, and it is safe here for a specific reason: the `redirect_uri` is validated against the one pre-registered Claude callback (`https://claude.ai/api/mcp/auth_callback`) and PKCE S256 is mandatory, so an intercepted code is useless without the verifier that never leaves Claude. A consent button on a single-user app is a button the one user reflexively clicks.
+This is a deliberate deviation from the usual OAuth shape, and it is safe here for a specific reason: a client exists only because the owner put it in this app's own configuration, so **registration is the consent step**, and it happened before any request arrived. The `redirect_uri` is then validated for equality against the `RedirectUri` registered for the `client_id` in the request, and PKCE S256 is mandatory per client, so an intercepted code is useless without the verifier that never leaves the client. A consent button on a single-user app is a button the one user reflexively clicks.
 
 A top-level `GET` redirect to `/authorize` carries the `SameSite=Lax` cookie correctly — verified against `FoodDiary.API/Startup.cs`.
 
@@ -228,8 +232,9 @@ Top-level `Mcp` section, matching how `Auth`, `GoogleAuth` and `Integrations` al
 |---|---|---|
 | `Mcp:Enabled` | `false` | |
 | `Mcp:BaseUrl` | — | Public origin, e.g. `https://diary.example.com` |
-| `Mcp:ClientId` | — | |
-| `Mcp:ClientSecret` | — | User secret / env var, never `appsettings.json` |
+| `Mcp:Clients:N:ClientId` | — | At least one client required |
+| `Mcp:Clients:N:ClientSecret` | — | User secret / env var, never `appsettings.json` |
+| `Mcp:Clients:N:RedirectUri` | Claude callback at `N=0` | Shipped in `appsettings.json` for entry `0` |
 | `Mcp:AccessTokenLifetime` | `01:00:00` | |
 | `Mcp:RefreshTokenLifetime` | `30.00:00:00` | |
 
@@ -243,13 +248,15 @@ Enabling `XForwardedHost` does not fix it. A proxy typically populates `X-Forwar
 
 See [research: `Mcp:BaseUrl` configuration](research/mcp-base-url-configuration.md).
 
-**Enabled with any of `BaseUrl`, `ClientId` or `ClientSecret` missing fails at startup**, naming the missing keys. The alternative surfaces as an opaque OAuth failure inside Claude's UI, which is the worst place to debug it.
+**Enabled with `BaseUrl` missing, or with no usable client, fails at startup**, naming what is missing. The alternative surfaces as an opaque OAuth failure inside Claude's UI, which is the worst place to debug it.
+
+The client array is validated for: at least one entry; non-empty `ClientId`, `ClientSecret` and `RedirectUri` on every entry; `ClientId` unique across entries; and `RedirectUri` shape-validated the way `BaseUrl` is. Errors name the offending index — `Mcp:Clients:0:ClientSecret is required`. The uniqueness check earns its place: lookup is by `ClientId`, so a duplicate makes which client authenticates depend on configuration ordering.
 
 `Mcp:BaseUrl` is validated for shape as well as presence, failing startup on a relative URI, a scheme other than `https` (`http` allowed only for `localhost`), a query or fragment component, or a trailing slash — RFC 8414 §2, RFC 9728 §1.2, RFC 8707 §2 and the MCP canonical-URI guidance respectively. A malformed value otherwise surfaces as the same silent discovery mismatch.
 
 **Disabled** means the MCP and OAuth endpoints are not mapped, *plus* a terminal branch ahead of `UseSpa` returning **404** for those paths. Not mapping alone is not enough — the SPA catch-all would answer them with `index.html`.
 
-Docker env vars follow the existing `Section__Key` convention: `Mcp__Enabled`, `Mcp__BaseUrl`, and so on.
+Docker env vars follow the existing `Section__Key` convention, with array entries by index as `Auth__AllowedEmails__0` already does: `Mcp__Enabled`, `Mcp__BaseUrl`, `Mcp__Clients__0__ClientId`, `Mcp__Clients__0__ClientSecret`.
 
 Separately, `AllowedHosts` should be narrowed from `*` to the app's public host in the deployment environment. It is worth one variable independently of MCP — it also protects the existing Google OAuth redirect generation — and it makes a forged `Host` a 400 before it reaches any handler. It is defence in depth, not a substitute for `Mcp:BaseUrl`, and it must **not** be paired with enabling `XForwardedHost`.
 
