@@ -11,8 +11,9 @@ Response shape and the reasoning behind each rule are in [spec.md](../spec.md) �
 **Status:** open
 
 - [ ] The tool calls `GetNotesHistoryQueryHandler(From, To)` from `FoodDiary.Application`. It already returns notes over a date range with `Product` eager-loaded — **do not write a new handler**, and do not touch `FoodDiaryContext` from the MCP layer
-- [ ] Notes are grouped into `days[].meals[].items[]`; `mealType` is the camelCase enum name (`breakfast`, `secondBreakfast`, `lunch`, `afternoonSnack`, `dinner`)
-- [ ] Each item carries `productId`, `productName`, `quantity`, and macros **computed for that quantity** from the product's per-100 g values
+- [ ] Notes are grouped into `days[].meals[].items[]`; `mealType` is the C# enum member name verbatim, i.e. `MealType.ToString()` (`Breakfast`, `SecondBreakfast`, `Lunch`, `AfternoonSnack`, `Dinner`)
+- [ ] Each item carries `product` as an object with `id` and `name`, plus `quantity`, and macros **computed for that quantity** from the product's per-100 g values
+- [ ] `product` carries **no** category — `FindByDateRange` eager-loads `Product` only, and widening it would change the query behind the existing REST history endpoint
 - [ ] A missing macro is an explicit `null` — never omitted, never zero
 - [ ] Each day carries per-macro totals, and each total carries `coveredItems` / `totalItems` so the model can qualify it. `calories` is always fully covered because `CaloriesCost` is non-nullable, and carries the counts anyway for a uniform shape
 - [ ] The response carries range-level totals with the same coverage counts plus `dailyAverage`

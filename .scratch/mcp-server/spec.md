@@ -41,11 +41,10 @@ Backed by `GetNotesHistoryQueryHandler(From, To)` in `FoodDiary.Application`, wh
       "date": "2026-09-01",
       "meals": [
         {
-          "mealType": "breakfast",
+          "mealType": "Breakfast",
           "items": [
             {
-              "productId": 42,
-              "productName": "Oatmeal",
+              "product": { "id": 42, "name": "Oatmeal" },
               "quantity": 60,
               "calories": 220,
               "protein": 7.8,
@@ -77,8 +76,9 @@ Rules that the shape exists to enforce:
 - **Every total carries a coverage count**, so the model can say "based on 9 of 12 items" instead of reporting a total that silently dropped three products. `calories` is always fully covered because `CaloriesCost` is a non-nullable `int`; it carries the counts anyway so the model applies one uniform trust check rather than a special case.
 - **Days with nothing logged appear**, with an empty `meals[]` and zero totals. Otherwise a skipped day is indistinguishable from a day outside the query, and "you skipped dinner three times" is a real signal.
 - **Skipped days count toward `dailyAverage`.** Excluding them would make "average daily calories" quietly mean "average on days I remembered to log".
-- **`mealType`** is the camelCase enum name — `breakfast`, `secondBreakfast`, `lunch`, `afternoonSnack`, `dinner`.
-- **`productId`** is present so the model can cross-reference `list_products`.
+- **`mealType`** is the C# enum member name, verbatim — `Breakfast`, `SecondBreakfast`, `Lunch`, `AfternoonSnack`, `Dinner`. It is `MealType.ToString()`, so no converter and no mapping table stands between the enum and the wire. The same tokens appear in the `nutrition_report` template, so the model never sees two spellings for one meal.
+- **`product`** is an object carrying `id` and `name`. `id` is present so the model can cross-reference `list_products`; the nesting matches `list_products`, where a product is also an object.
+- **`product` carries no category.** `FindByDateRange` eager-loads `Product` and not `Product.Category`, so adding it would widen the query behind the existing REST history endpoint for something `product.id` plus `list_products` already answers.
 
 **Range cap: 31 days.** A wider range returns an MCP **tool error** naming the limit and the span requested — "Requested 90 days; the maximum is 31. Split the range." — so the model chunks the request itself. Never a JSON-RPC protocol error, which would break the conversation instead of informing it, and never silent truncation.
 
@@ -92,7 +92,7 @@ Backed by `GetProductsQueryHandler` in `FoodDiary.Application`, unchanged: it al
     {
       "id": 42,
       "name": "Oatmeal",
-      "category": "Cereals",
+      "category": { "name": "Cereals" },
       "defaultQuantity": 100,
       "per100g": {
         "calories": 366, "protein": 13.0, "fats": 7.0,
@@ -106,7 +106,9 @@ Backed by `GetProductsQueryHandler` in `FoodDiary.Application`, unchanged: it al
 }
 ```
 
-The handler's `CategoryId` filter is **not** exposed: it is an integer the model cannot guess, and exposing it would force a third `list_categories` tool into existence purely to make it usable. The category **name** rides along on each product instead, so grouping happens client-side.
+The handler's `CategoryId` filter is **not** exposed: it is an integer the model cannot guess, and exposing it would force a third `list_categories` tool into existence purely to make it usable. The category rides along on each product instead, so grouping happens client-side.
+
+`category` is an object rather than a bare string so that a later field — a colour, a display order — is an addition rather than a breaking change to the shape. It carries `name` only today; `id` stays out for the same reason the filter does. It is never `null`: `Product.CategoryId` is a non-nullable `int`, so every product has exactly one category.
 
 Nutrition here is nested under `per100g` deliberately. `get_food_logs` returns macros already scaled to the quantity eaten and this tool returns catalogue values; the nesting names the difference so the two can never be confused.
 
