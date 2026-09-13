@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using FoodDiary.API.Mcp;
 using FoodDiary.API.Mcp.Authorization;
 using FoodDiary.ComponentTests.Infrastructure;
+using FoodDiary.Domain.Entities;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.WebUtilities;
@@ -39,6 +40,8 @@ public class McpApiContext(FoodDiaryWebApplicationFactory factory) : BaseContext
     private HttpResponseMessage _resourceMetadataResponse = null!;
     private string? _accessToken;
     private Implementation _connectedServer = null!;
+    private List<string> _listedToolNames = [];
+    private CallToolResult _toolResult = null!;
 
     private McpClientRegistration Client => _mcpOptions.Clients[0];
     private string McpResource => _mcpOptions.McpResource;
@@ -68,22 +71,30 @@ public class McpApiContext(FoodDiaryWebApplicationFactory factory) : BaseContext
         return Task.CompletedTask;
     }
 
+    public Task Given_notes(params Note[] notes)
+    {
+        return Factory.SeedDataAsync(notes);
+    }
+
     public async Task When_mcp_client_connects()
     {
-        var transport = new HttpClientTransport(
-            new HttpClientTransportOptions
-            {
-                Endpoint = new Uri(McpResource),
-                TransportMode = HttpTransportMode.StreamableHttp,
-                AdditionalHeaders = new Dictionary<string, string>
-                {
-                    ["Authorization"] = $"Bearer {_accessToken}"
-                }
-            },
-            Factory.CreateClient());
-
-        await using var mcpClient = await McpClient.CreateAsync(transport);
+        await using var mcpClient = await ConnectMcpClient();
         _connectedServer = mcpClient.ServerInfo;
+    }
+
+    public async Task When_mcp_client_calls_get_food_logs(string from, string to)
+    {
+        await using var mcpClient = await ConnectMcpClient();
+
+        var tools = await mcpClient.ListToolsAsync();
+        _listedToolNames = tools.Select(tool => tool.Name).ToList();
+
+        _toolResult = await tools.Single(tool => tool.Name == "get_food_logs").CallAsync(
+            new Dictionary<string, object?>
+            {
+                ["from"] = from,
+                ["to"] = to
+            });
     }
 
     public async Task When_client_requests_authorization_server_metadata()
@@ -304,6 +315,48 @@ public class McpApiContext(FoodDiaryWebApplicationFactory factory) : BaseContext
         using var error = await ReadJson(_codeExchangeResponses[1]);
         error.RootElement.GetProperty("error").GetString().Should().Be("invalid_grant");
     }
+
+    public Task Then_food_logs_contain(Note note)
+    {
+        _listedToolNames.Should().Contain("get_food_logs");
+        _toolResult.IsError.Should().NotBe(true);
+
+        using var foodLogs = JsonDocument.Parse(ToolResultText());
+        var day = foodLogs.RootElement.GetProperty("days").EnumerateArray().Single();
+        day.GetProperty("date").GetString().Should().Be(note.Date.ToString("yyyy-MM-dd"));
+
+        var item = day.GetProperty("meals").EnumerateArray().Single().GetProperty("items").EnumerateArray().Single();
+        item.GetProperty("product").GetProperty("name").GetString().Should().Be(note.Product!.Name);
+        item.GetProperty("quantity").GetInt32().Should().Be(note.ProductQuantity);
+
+        return Task.CompletedTask;
+    }
+
+    public Task Then_tool_call_is_error(string message)
+    {
+        _toolResult.IsError.Should().BeTrue();
+        ToolResultText().Should().Contain(message);
+        return Task.CompletedTask;
+    }
+
+    private async Task<McpClient> ConnectMcpClient()
+    {
+        var transport = new HttpClientTransport(
+            new HttpClientTransportOptions
+            {
+                Endpoint = new Uri(McpResource),
+                TransportMode = HttpTransportMode.StreamableHttp,
+                AdditionalHeaders = new Dictionary<string, string>
+                {
+                    ["Authorization"] = $"Bearer {_accessToken}"
+                }
+            },
+            Factory.CreateClient());
+
+        return await McpClient.CreateAsync(transport);
+    }
+
+    private string ToolResultText() => _toolResult.Content.OfType<TextContentBlock>().Single().Text;
 
     private AccessGrant AccessGrantFor(string email) => new(Client.ClientId!, email, "food:read", McpResource);
 

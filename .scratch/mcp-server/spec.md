@@ -58,10 +58,10 @@ Tool description, in addition to what it says about `null` and coverage counts:
             {
               "product": { "id": 42, "name": "Oatmeal" },
               "quantity": 60,
-              "calories": 220,
+              "calories": 219,
               "protein": 7.8,
               "fats": 4.2,
-              "carbs": 36.0,
+              "carbs": 37.2,
               "sugar": null,
               "salt": null
             }
@@ -84,6 +84,7 @@ Tool description, in addition to what it says about `null` and coverage counts:
 Rules that the shape exists to enforce:
 
 - **Macros are computed for the quantity eaten**, not passed through as per-100 g values. The model should never do this arithmetic; it is the arithmetic it is worst at.
+- **Scaled values follow the diary's rounding rules**, so Claude quotes the numbers the app shows: calories floored per item, the rest rounded half away from zero to 2 decimals per item, and totals summed from those per-item values. Every `dailyAverage`, calories included, is rounded half away from zero to 2 decimals.
 - **A missing macro is an explicit `null`.** Never omitted, never zero. `Protein`, `Fats`, `Carbs`, `Sugar` and `Salt` are `decimal?` on `Product` and are genuinely absent for some products.
 - **Every total carries a coverage count**, so the model can say "based on 9 of 12 items" instead of reporting a total that silently dropped three products. `calories` is always fully covered because `CaloriesCost` is a non-nullable `int`; it carries the counts anyway so the model applies one uniform trust check rather than a special case.
 - **Days with nothing logged appear**, with an empty `meals[]` and zero totals. Otherwise a skipped day is indistinguishable from a day outside the query, and "you skipped dinner three times" is a real signal.
@@ -92,7 +93,7 @@ Rules that the shape exists to enforce:
 - **`product`** is an object carrying `id` and `name`. `id` is present so the model can cross-reference `list_products`; the nesting matches `list_products`, where a product is also an object.
 - **`product` carries no category.** `FindByDateRange` eager-loads `Product` and not `Product.Category`, so adding it would widen the query behind the existing REST history endpoint for something `product.id` plus `list_products` already answers.
 
-**Range cap: 31 days.** A wider range returns an MCP **tool error** naming the limit and the span requested — "Requested 90 days; the maximum is 31. Split the range." — so the model chunks the request itself. Never a JSON-RPC protocol error, which would break the conversation instead of informing it, and never silent truncation.
+**Range cap: 31 days.** A wider range returns an MCP **tool error** naming the limit and the span requested — "Requested 90 days; the maximum is 31. Split the range." — so the model chunks the request itself. Never a JSON-RPC protocol error, which would break the conversation instead of informing it, and never silent truncation. `from` after `to` is a tool error in the same way.
 
 ### `list_products(pageNumber, pageSize, productName?)`
 

@@ -1,3 +1,4 @@
+using FoodDiary.ComponentTests.Dsl;
 using FoodDiary.ComponentTests.Infrastructure;
 
 namespace FoodDiary.ComponentTests.Scenarios.Mcp;
@@ -29,6 +30,27 @@ public class McpApiTests(InfrastructureFixture infrastructure) : BaseTest<McpApi
             c => c.Given_access_token_was_issued(),
             c => c.When_mcp_client_connects(),
             c => c.Then_mcp_client_is_connected());
+    }
+
+    [Scenario]
+    public Task The_client_can_get_food_logs()
+    {
+        var note = Create.Note().WithDate("2026-09-01").WithProduct("Oatmeal", quantity: 60).Please();
+
+        return CtxRunner.RunScenarioAsync(
+            c => c.Given_notes(note),
+            c => c.Given_access_token_was_issued(),
+            c => c.When_mcp_client_calls_get_food_logs("2026-09-01", "2026-09-01"),
+            c => c.Then_food_logs_contain(note));
+    }
+
+    [Scenario]
+    public Task The_client_is_told_to_split_food_logs_range_wider_than_31_days()
+    {
+        return CtxRunner.RunScenarioAsync(
+            c => c.Given_access_token_was_issued(),
+            c => c.When_mcp_client_calls_get_food_logs("2026-09-01", "2026-10-02"),
+            c => c.Then_tool_call_is_error("Requested 32 days; the maximum is 31. Split the range."));
     }
 
     [Scenario]
