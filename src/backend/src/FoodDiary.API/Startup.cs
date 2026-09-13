@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using FoodDiary.API.ErrorHandling;
+﻿using FoodDiary.API.ErrorHandling;
 using FoodDiary.API.Extensions;
 using FoodDiary.API.Features.Products.Extensions;
 using FoodDiary.API.Features.WeightTracking;
@@ -12,15 +11,9 @@ using FoodDiary.Configuration.Extensions;
 using FoodDiary.Infrastructure.Extensions;
 using FoodDiary.Integrations.OpenAI.Extensions;
 using Microsoft.AspNetCore.Authentication.Google;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Microsoft.Extensions.Hosting;
 using Serilog;
 
 namespace FoodDiary.API;
