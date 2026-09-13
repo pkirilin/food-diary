@@ -63,7 +63,7 @@ public sealed class AuthorizeRequestValidator(IOptions<McpOptions> options)
             return Error("invalid_scope", $"The only supported scope is {McpScopes.FoodRead}");
         }
 
-        var mcpResource = $"{options.Value.BaseUrl}/mcp";
+        var mcpResource = options.Value.McpResource;
 
         if (request.Resource is not null && request.Resource != mcpResource)
         {

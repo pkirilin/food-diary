@@ -13,6 +13,34 @@ public class McpApiTests(InfrastructureFixture infrastructure) : BaseTest<McpApi
     }
 
     [Scenario]
+    public Task The_client_without_access_token_is_challenged_to_discover_protected_resource_metadata()
+    {
+        return CtxRunner.RunScenarioAsync(
+            c => c.When_client_calls_mcp_without_access_token(),
+            c => c.When_client_requests_resource_metadata_from_challenge(),
+            c => c.Then_client_is_challenged_with_resource_metadata_and_scope(),
+            c => c.Then_resource_metadata_is_built_from_base_url());
+    }
+
+    [Scenario]
+    public Task The_client_with_access_token_can_connect()
+    {
+        return CtxRunner.RunScenarioAsync(
+            c => c.Given_access_token_was_issued(),
+            c => c.When_mcp_client_connects(),
+            c => c.Then_mcp_client_is_connected());
+    }
+
+    [Scenario]
+    public Task The_client_with_access_token_of_user_no_longer_allowed_is_forbidden()
+    {
+        return CtxRunner.RunScenarioAsync(
+            c => c.Given_access_token_was_issued_to("removed.user@gmail.com"),
+            c => c.When_client_calls_mcp_with_access_token(),
+            c => c.Then_access_is_forbidden());
+    }
+
+    [Scenario]
     public Task The_client_can_exchange_authorization_code_for_access_and_refresh_tokens()
     {
         return CtxRunner.RunScenarioAsync(

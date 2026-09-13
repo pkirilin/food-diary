@@ -161,6 +161,7 @@ public class Startup
             if (_mcpOptions.Enabled)
             {
                 endpoints.MapMcpAuthorizationServer();
+                endpoints.MapMcpResourceServer();
             }
         });
 

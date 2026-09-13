@@ -182,7 +182,7 @@ All of these **must be mapped ahead of `UseSpa`**. The SPA catch-all otherwise a
 });
 ```
 
-Unless `ResourceMetadataUri` is absolute, the SDK builds the `WWW-Authenticate: Bearer resource_metadata="…"` pointer from `Request.Scheme` and `Request.Host` — so setting `ResourceMetadata.Resource` alone would leave the pointer that starts the whole flow request-derived. Absolute, it also makes the SDK reject metadata requests arriving under any other host or scheme.
+Unless `ResourceMetadataUri` is absolute, the SDK serves the document under whatever host and scheme the request arrived with. Absolute, it makes the SDK reject metadata requests arriving under any other host or scheme. The `WWW-Authenticate` pointer that starts the whole flow is built from `Mcp:BaseUrl` too — see § Token validation.
 
 ### Authorization server metadata
 
@@ -236,9 +236,17 @@ JWT's value is letting a *different* service verify a token without calling the 
 
 Lifetimes: **access 1 hour, refresh 30 days**. There is no revocation store in v1 — the kill switch is `Mcp:Enabled=false` plus deleting the connector in Claude. A denylist is worth adding only if this ever serves more than one person.
 
+The `/mcp` authorization policy re-checks the token's email against `Auth:AllowedEmails` on every request, so an email removed from the allowlist gets `403` at `/mcp` as soon as the app restarts with the new configuration, rather than at refresh-token expiry. The refresh grant itself does not re-check; the tokens it issues are refused at `/mcp` the same way.
+
 ### Token validation
 
-`McpAuthenticationOptions` defaults to `ForwardAuthenticate = "Bearer"`, so `AddMcp` delegates authentication to whatever scheme is registered under that name. The SDK samples use `AddJwtBearer`, but nothing requires it: a custom `AuthenticationHandler<AuthenticationSchemeOptions>` registered as `"Bearer"` calls `Unprotect`, checks expiry and audience, and builds the `ClaimsPrincipal`. `AddMcp` still serves the resource metadata document and the 401 challenge.
+`McpAuthenticationOptions` defaults to `ForwardAuthenticate = "Bearer"`, so `AddMcp` delegates authentication to whatever scheme is registered under that name. The SDK samples use `AddJwtBearer`, but nothing requires it: a custom `AuthenticationHandler<AuthenticationSchemeOptions>` registered as `"Bearer"` calls `Unprotect`, checks expiry and audience, and builds the `ClaimsPrincipal`. `AddMcp` still serves the resource metadata document.
+
+The 401 challenge is the `"Bearer"` handler's too — `AddMcp` sets `ForwardChallenge = "Bearer"`. The SDK's own challenge writes only `Bearer resource_metadata="…"` and has no hook for `scope`, which the MCP authorization spec says the challenge should carry. The `"Bearer"` handler writes both, built from `Mcp:BaseUrl`:
+
+```
+WWW-Authenticate: Bearer resource_metadata="https://diary.example.com/.well-known/oauth-protected-resource/mcp", scope="food:read"
+```
 
 ## Configuration
 

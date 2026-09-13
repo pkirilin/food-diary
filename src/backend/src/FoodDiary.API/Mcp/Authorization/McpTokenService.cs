@@ -77,6 +77,18 @@ public sealed class McpTokenService
     public string IssueAccessToken(AccessGrant grant) =>
         Protect(_accessTokenProtector, new TokenPayload(grant, _timeProvider.GetUtcNow() + _options.AccessTokenLifetime));
 
+    public AccessGrant? ValidateAccessToken(string accessToken)
+    {
+        var payload = Unprotect<TokenPayload>(_accessTokenProtector, accessToken);
+
+        if (payload is null || IsExpired(payload.ExpiresAt) || payload.Grant.Resource != _options.McpResource)
+        {
+            return null;
+        }
+
+        return payload.Grant;
+    }
+
     public AccessGrant? ValidateRefreshToken(string refreshToken)
     {
         var payload = Unprotect<TokenPayload>(_refreshTokenProtector, refreshToken);

@@ -14,6 +14,10 @@ public class McpOptions
 
     public TimeSpan RefreshTokenLifetime { get; set; } = TimeSpan.FromDays(30);
 
+    public string McpResource => $"{BaseUrl}/mcp";
+
+    public string ResourceMetadataUrl => $"{BaseUrl}/.well-known/oauth-protected-resource/mcp";
+
     public McpClientRegistration? FindClient(string? clientId) =>
         Clients.FirstOrDefault(client => client.ClientId == clientId);
 }

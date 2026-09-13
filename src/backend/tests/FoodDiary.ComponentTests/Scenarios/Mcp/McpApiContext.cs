@@ -1,6 +1,9 @@
 using System.Net;
+using System.Net.Http.Headers;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.RegularExpressions;
 using FoodDiary.API.Mcp;
 using FoodDiary.API.Mcp.Authorization;
 using FoodDiary.ComponentTests.Infrastructure;
@@ -9,6 +12,8 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using ModelContextProtocol.Client;
+using ModelContextProtocol.Protocol;
 
 namespace FoodDiary.ComponentTests.Scenarios.Mcp;
 
@@ -21,6 +26,8 @@ public class McpApiContext(FoodDiaryWebApplicationFactory factory) : BaseContext
 
     private const string State = "af0ifjsldkj";
 
+    private const string AllowedUserEmail = "fake.user@gmail.com";
+
     private readonly McpOptions _mcpOptions = factory.Services.GetRequiredService<IOptions<McpOptions>>().Value;
     private HttpClient? _oAuthClient;
     private HttpResponseMessage _metadataResponse = null!;
@@ -28,9 +35,14 @@ public class McpApiContext(FoodDiaryWebApplicationFactory factory) : BaseContext
     private string? _authorizationCode;
     private readonly List<HttpResponseMessage> _codeExchangeResponses = [];
     private HttpResponseMessage _refreshResponse = null!;
+    private HttpResponseMessage _mcpResponse = null!;
+    private HttpResponseMessage _resourceMetadataResponse = null!;
+    private string? _accessToken;
+    private Implementation _connectedServer = null!;
 
     private McpClientRegistration Client => _mcpOptions.Clients[0];
-    private string McpResource => $"{_mcpOptions.BaseUrl}/mcp";
+    private string McpResource => _mcpOptions.McpResource;
+    private McpTokenService TokenService => Factory.Services.GetRequiredService<McpTokenService>();
 
     private HttpClient OAuthClient => _oAuthClient ??= Factory.CreateClient(new WebApplicationFactoryClientOptions
     {
@@ -39,18 +51,94 @@ public class McpApiContext(FoodDiaryWebApplicationFactory factory) : BaseContext
 
     public Task Given_authorization_code_was_issued()
     {
-        var tokenService = Factory.Services.GetRequiredService<McpTokenService>();
-        var access = new AccessGrant(Client.ClientId!, "fake.user@gmail.com", "food:read", McpResource);
-
-        _authorizationCode = tokenService.IssueAuthorizationCode(
-            new AuthorizationCodeGrant(access, Client.RedirectUri!, CodeChallenge));
+        _authorizationCode = TokenService.IssueAuthorizationCode(
+            new AuthorizationCodeGrant(AccessGrantFor(AllowedUserEmail), Client.RedirectUri!, CodeChallenge));
 
         return Task.CompletedTask;
+    }
+
+    public Task Given_access_token_was_issued()
+    {
+        return Given_access_token_was_issued_to(AllowedUserEmail);
+    }
+
+    public Task Given_access_token_was_issued_to(string email)
+    {
+        _accessToken = TokenService.IssueAccessToken(AccessGrantFor(email));
+        return Task.CompletedTask;
+    }
+
+    public async Task When_mcp_client_connects()
+    {
+        var transport = new HttpClientTransport(
+            new HttpClientTransportOptions
+            {
+                Endpoint = new Uri(McpResource),
+                TransportMode = HttpTransportMode.StreamableHttp,
+                AdditionalHeaders = new Dictionary<string, string>
+                {
+                    ["Authorization"] = $"Bearer {_accessToken}"
+                }
+            },
+            Factory.CreateClient());
+
+        await using var mcpClient = await McpClient.CreateAsync(transport);
+        _connectedServer = mcpClient.ServerInfo;
     }
 
     public async Task When_client_requests_authorization_server_metadata()
     {
         _metadataResponse = await OAuthClient.GetAsync("/.well-known/oauth-authorization-server");
+    }
+
+    public Task When_client_calls_mcp_without_access_token()
+    {
+        return CallMcp(accessToken: null);
+    }
+
+    public Task When_client_calls_mcp_with_access_token()
+    {
+        return CallMcp(_accessToken);
+    }
+
+    private async Task CallMcp(string? accessToken)
+    {
+        var initializeRequest = new HttpRequestMessage(HttpMethod.Post, "/mcp")
+        {
+            Content = new StringContent(
+                """
+                {
+                  "jsonrpc": "2.0",
+                  "id": 1,
+                  "method": "initialize",
+                  "params": {
+                    "protocolVersion": "2025-11-25",
+                    "capabilities": {},
+                    "clientInfo": { "name": "component-tests", "version": "1.0.0" }
+                  }
+                }
+                """,
+                Encoding.UTF8,
+                "application/json")
+        };
+
+        initializeRequest.Headers.Accept.ParseAdd("application/json");
+        initializeRequest.Headers.Accept.ParseAdd("text/event-stream");
+
+        if (accessToken is not null)
+        {
+            initializeRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+        }
+
+        _mcpResponse = await OAuthClient.SendAsync(initializeRequest);
+    }
+
+    public async Task When_client_requests_resource_metadata_from_challenge()
+    {
+        var challengeParameters = _mcpResponse.Headers.WwwAuthenticate.FirstOrDefault()?.Parameter ?? string.Empty;
+        var resourceMetadataUrl = Regex.Match(challengeParameters, "resource_metadata=\"([^\"]+)\"").Groups[1].Value;
+
+        _resourceMetadataResponse = await OAuthClient.GetAsync(resourceMetadataUrl);
     }
 
     public Task When_client_requests_authorization()
@@ -162,6 +250,42 @@ public class McpApiContext(FoodDiaryWebApplicationFactory factory) : BaseContext
             .Should().BeTrue("metadata must match RFC 8414 document in the spec, but was {0}", metadata?.ToJsonString());
     }
 
+    public Task Then_client_is_challenged_with_resource_metadata_and_scope()
+    {
+        _mcpResponse.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+        _mcpResponse.Headers.WwwAuthenticate.Select(challenge => challenge.ToString()).Should().Equal(
+            """
+            Bearer resource_metadata="http://localhost/.well-known/oauth-protected-resource/mcp", scope="food:read"
+            """);
+
+        return Task.CompletedTask;
+    }
+
+    public Task Then_access_is_forbidden()
+    {
+        _mcpResponse.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+        return Task.CompletedTask;
+    }
+
+    public Task Then_mcp_client_is_connected()
+    {
+        _connectedServer.Name.Should().NotBeNullOrWhiteSpace();
+        return Task.CompletedTask;
+    }
+
+    public async Task Then_resource_metadata_is_built_from_base_url()
+    {
+        _resourceMetadataResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        _resourceMetadataResponse.Content.Headers.ContentType?.MediaType.Should().Be("application/json");
+
+        using var metadata = await ReadJson(_resourceMetadataResponse);
+        metadata.RootElement.GetProperty("resource").GetString().Should().Be("http://localhost/mcp");
+        metadata.RootElement.GetProperty("authorization_servers").EnumerateArray()
+            .Select(server => server.GetString()).Should().Equal("http://localhost");
+        metadata.RootElement.GetProperty("scopes_supported").EnumerateArray()
+            .Select(scope => scope.GetString()).Should().Equal("food:read");
+    }
+
     public async Task Then_client_receives_new_access_token()
     {
         _refreshResponse.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -180,6 +304,8 @@ public class McpApiContext(FoodDiaryWebApplicationFactory factory) : BaseContext
         using var error = await ReadJson(_codeExchangeResponses[1]);
         error.RootElement.GetProperty("error").GetString().Should().Be("invalid_grant");
     }
+
+    private AccessGrant AccessGrantFor(string email) => new(Client.ClientId!, email, "food:read", McpResource);
 
     private static async Task<JsonDocument> ReadJson(HttpResponseMessage response) =>
         JsonDocument.Parse(await response.Content.ReadAsStringAsync());
