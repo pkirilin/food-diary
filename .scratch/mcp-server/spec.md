@@ -99,9 +99,13 @@ Rules that the shape exists to enforce:
 
 Backed by `GetProductsQueryHandler` in `FoodDiary.Application`, unchanged: it already pages, filters by name, eager-loads `Category` and returns `TotalProductsCount`.
 
-Tool description:
+Tool description, in addition to the `null` rule it shares with `get_food_logs`:
 
 > Nutrition under `per100g` is per 100 g of product: `calories` in kilocalories, the rest in grams (salt is sodium chloride). `defaultQuantity` is the usual portion in grams, not a number of servings.
+>
+> `totalCount` is the number of products matching `productName` across all pages; request the next page while `pageNumber` × `pageSize` is below it. A page holds at most 100 products.
+
+Parameter descriptions: `pageNumber` "Page to return, starting at 1."; `pageSize` "Products per page, from 1 to 100."; `productName` "Case-insensitive part of the product name. Omit to list every product."
 
 ```json
 {
@@ -129,7 +133,7 @@ The handler's `CategoryId` filter is **not** exposed: it is an integer the model
 
 Nutrition here is nested under `per100g` deliberately. `get_food_logs` returns macros already scaled to the quantity eaten and this tool returns catalogue values; the nesting names the difference so the two can never be confused.
 
-**`pageSize` cap: 100**, with an explicit error past it — the same rule as the range cap, for the same reason.
+**`pageSize` cap: 100**, with an explicit error past it — the same rule as the range cap, for the same reason. A `pageNumber` or `pageSize` below 1 is a tool error too.
 
 ### Prompt: `nutrition_report`
 

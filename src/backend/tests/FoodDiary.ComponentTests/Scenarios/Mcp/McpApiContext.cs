@@ -76,25 +76,44 @@ public class McpApiContext(FoodDiaryWebApplicationFactory factory) : BaseContext
         return Factory.SeedDataAsync(notes);
     }
 
+    public Task Given_products(params Product[] products)
+    {
+        return Factory.SeedDataAsync(products);
+    }
+
     public async Task When_mcp_client_connects()
     {
         await using var mcpClient = await ConnectMcpClient();
         _connectedServer = mcpClient.ServerInfo;
     }
 
-    public async Task When_mcp_client_calls_get_food_logs(string from, string to)
+    public Task When_mcp_client_calls_get_food_logs(string from, string to)
+    {
+        return When_mcp_client_calls_listed_tool("get_food_logs", new Dictionary<string, object?>
+        {
+            ["from"] = from,
+            ["to"] = to
+        });
+    }
+
+    public Task When_mcp_client_calls_list_products(string productName)
+    {
+        return When_mcp_client_calls_listed_tool("list_products", new Dictionary<string, object?>
+        {
+            ["pageNumber"] = 1,
+            ["pageSize"] = 100,
+            ["productName"] = productName
+        });
+    }
+
+    private async Task When_mcp_client_calls_listed_tool(string toolName, Dictionary<string, object?> arguments)
     {
         await using var mcpClient = await ConnectMcpClient();
 
         var tools = await mcpClient.ListToolsAsync();
         _listedToolNames = tools.Select(tool => tool.Name).ToList();
 
-        _toolResult = await tools.Single(tool => tool.Name == "get_food_logs").CallAsync(
-            new Dictionary<string, object?>
-            {
-                ["from"] = from,
-                ["to"] = to
-            });
+        _toolResult = await tools.Single(tool => tool.Name == toolName).CallAsync(arguments);
     }
 
     public async Task When_client_requests_authorization_server_metadata()
@@ -316,9 +335,14 @@ public class McpApiContext(FoodDiaryWebApplicationFactory factory) : BaseContext
         error.RootElement.GetProperty("error").GetString().Should().Be("invalid_grant");
     }
 
+    public Task Then_mcp_client_lists_tools(params string[] toolNames)
+    {
+        _listedToolNames.Should().BeEquivalentTo(toolNames);
+        return Task.CompletedTask;
+    }
+
     public Task Then_food_logs_contain(Note note)
     {
-        _listedToolNames.Should().Contain("get_food_logs");
         _toolResult.IsError.Should().NotBe(true);
 
         using var foodLogs = JsonDocument.Parse(ToolResultText());
@@ -328,6 +352,20 @@ public class McpApiContext(FoodDiaryWebApplicationFactory factory) : BaseContext
         var item = day.GetProperty("meals").EnumerateArray().Single().GetProperty("items").EnumerateArray().Single();
         item.GetProperty("product").GetProperty("name").GetString().Should().Be(note.Product!.Name);
         item.GetProperty("quantity").GetInt32().Should().Be(note.ProductQuantity);
+
+        return Task.CompletedTask;
+    }
+
+    public Task Then_products_contain(Product product)
+    {
+        _toolResult.IsError.Should().NotBe(true);
+
+        using var products = JsonDocument.Parse(ToolResultText());
+        products.RootElement.GetProperty("totalCount").GetInt32().Should().Be(1);
+
+        var listedProduct = products.RootElement.GetProperty("products").EnumerateArray().Single();
+        listedProduct.GetProperty("name").GetString().Should().Be(product.Name);
+        listedProduct.GetProperty("category").GetProperty("name").GetString().Should().Be(product.Category!.Name);
 
         return Task.CompletedTask;
     }

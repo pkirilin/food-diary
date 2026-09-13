@@ -59,7 +59,8 @@ public static class McpExtensions
         services.AddMcpServer()
             .WithHttpTransport(options => options.SessionMode = HttpServerSessionMode.Stateless)
             .AddAuthorizationFilters()
-            .WithTools<FoodLogsTool>();
+            .WithTools<FoodLogsTool>()
+            .WithTools<ProductsTool>();
 
         services.AddAuthentication()
             .AddScheme<AuthenticationSchemeOptions, McpAccessTokenHandler>(McpAccessTokenHandler.SchemeName, configureOptions: null)
