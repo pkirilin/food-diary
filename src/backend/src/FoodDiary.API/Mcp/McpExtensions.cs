@@ -1,3 +1,4 @@
+using FoodDiary.API.Mcp.Authorization;
 using Microsoft.Extensions.Options;
 
 namespace FoodDiary.API.Mcp;
@@ -13,6 +14,12 @@ public static class McpExtensions
             .ValidateOnStart();
 
         services.AddSingleton<IValidateOptions<McpOptions>, McpOptionsValidator>();
+
+        services.AddMemoryCache();
+        services.AddSingleton<AuthorizeRequestValidator>();
+        services.AddSingleton<McpTokenService>();
+        services.AddScoped<AuthorizeRequestHandler>();
+        services.AddScoped<TokenRequestHandler>();
     }
 
     public static void UseNotFoundForMcpAndOAuthPaths(this IApplicationBuilder app)

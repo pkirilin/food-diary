@@ -17,6 +17,10 @@ internal sealed class McpOptionsValidator : IValidateOptions<McpOptions>
         {
             failures.Add(baseUrlFailure);
         }
+        else if (new Uri(options.BaseUrl!).AbsolutePath != "/")
+        {
+            failures.Add("Mcp:BaseUrl must be an origin without a path");
+        }
 
         if (options.Clients.Count == 0)
         {

@@ -4,6 +4,7 @@ using FoodDiary.API.Features.Products.Extensions;
 using FoodDiary.API.Features.WeightTracking;
 using FoodDiary.API.Logging;
 using FoodDiary.API.Mcp;
+using FoodDiary.API.Mcp.Authorization;
 using FoodDiary.API.Options;
 using FoodDiary.Application.Extensions;
 using FoodDiary.Configuration;
@@ -156,13 +157,15 @@ public class Startup
             {
                 Predicate = healthCheck => healthCheck.Tags.Contains("ready")
             });
+
+            if (_mcpOptions.Enabled)
+            {
+                endpoints.MapMcpAuthorizationServer();
+            }
         });
 
-        if (!_mcpOptions.Enabled)
-        {
-            // Unmapped paths fall through to the SPA catch-all below, which answers them with index.html
-            app.UseNotFoundForMcpAndOAuthPaths();
-        }
+        // Unmapped paths fall through to the SPA catch-all below, which answers them with index.html
+        app.UseNotFoundForMcpAndOAuthPaths();
             
         app.UseSpa(spa =>
         {

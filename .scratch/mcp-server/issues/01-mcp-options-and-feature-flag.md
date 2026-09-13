@@ -20,5 +20,5 @@ Nothing MCP-specific works yet — this is the foundation the rest mounts onto.
 ## Comments
 
 - Shape validation, applied to both `BaseUrl` and each `RedirectUri`, goes slightly past the list above. It also rejects leading or trailing whitespace, because `Uri` trims it and `"https://host/ "` would otherwise pass the trailing-slash check. `http` is accepted only when the host is literally `localhost`, not `127.0.0.1`.
-- Open: `Mcp:BaseUrl` with a path (`https://host/food`) passes validation. The spec calls it a "public origin", and tickets 02–03 build `{BaseUrl}/mcp` against routes mapped at the root. Decide whether to reject paths before 02 builds identifiers from it.
+- Resolved in 02: `Mcp:BaseUrl` with a path (`https://host/food`) now fails startup with `Mcp:BaseUrl must be an origin without a path`. The spec calls it a "public origin", and `/authorize`, `/token` and `/mcp` are mapped at the root.
 - Open: `docker-compose.base.yml` lists env vars one by one and has no `Mcp__*` entries, and `.env.example` has no MCP variables, so the compose stack cannot enable MCP without edits. No ticket covers this.

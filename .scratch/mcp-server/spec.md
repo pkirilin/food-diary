@@ -270,7 +270,7 @@ The client array is validated for: at least one entry; non-empty `ClientId`, `Cl
 
 `Mcp:BaseUrl` is validated for shape as well as presence, failing startup on a relative URI, a scheme other than `https` (`http` allowed only for `localhost`), a query or fragment component, or a trailing slash — RFC 8414 §2, RFC 9728 §1.2, RFC 8707 §2 and the MCP canonical-URI guidance respectively. A malformed value otherwise surfaces as the same silent discovery mismatch.
 
-**Disabled** means the MCP and OAuth endpoints are not mapped, *plus* a terminal branch ahead of `UseSpa` returning **404** for those paths. Not mapping alone is not enough — the SPA catch-all would answer them with `index.html`.
+**Disabled** means the MCP and OAuth endpoints are not mapped, *plus* a terminal branch ahead of `UseSpa` returning **404** for those paths. Not mapping alone is not enough — the SPA catch-all would answer them with `index.html`. The branch is registered whether or not the flag is set, so when enabled, anything under those prefixes that no endpoint maps — a `/.well-known/openid-configuration` probe, say — is a 404 as well.
 
 Docker env vars follow the existing `Section__Key` convention, with array entries by index as `Auth__AllowedEmails__0` already does: `Mcp__Enabled`, `Mcp__BaseUrl`, `Mcp__Clients__0__ClientId`, `Mcp__Clients__0__ClientSecret`.
 

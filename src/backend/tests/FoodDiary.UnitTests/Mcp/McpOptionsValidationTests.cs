@@ -151,6 +151,20 @@ public class McpOptionsValidationTests
     }
 
     [Theory]
+    [InlineData("https://diary.example.com/food")]
+    [InlineData("https://diary.example.com/mcp")]
+    public void Enabled_WithBaseUrlPath_FailsNamingBaseUrl(string baseUrl)
+    {
+        var settings = EnabledWithOneClient();
+        settings["Mcp:BaseUrl"] = baseUrl;
+
+        var validate = ValidateOnStartup(settings);
+
+        validate.Should().Throw<OptionsValidationException>()
+            .Which.Failures.Should().Contain("Mcp:BaseUrl must be an origin without a path");
+    }
+
+    [Theory]
     [MemberData(nameof(MalformedUrls))]
     public void Enabled_WithMalformedRedirectUri_FailsNamingClientIndex(string redirectUri, string expectedReason)
     {

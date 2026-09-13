@@ -13,4 +13,7 @@ public class McpOptions
     public TimeSpan AccessTokenLifetime { get; set; } = TimeSpan.FromHours(1);
 
     public TimeSpan RefreshTokenLifetime { get; set; } = TimeSpan.FromDays(30);
+
+    public McpClientRegistration? FindClient(string? clientId) =>
+        Clients.FirstOrDefault(client => client.ClientId == clientId);
 }

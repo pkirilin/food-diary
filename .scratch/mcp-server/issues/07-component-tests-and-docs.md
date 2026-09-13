@@ -11,12 +11,12 @@ Scenario list, the authentication constraint and the gap it leaves are in [spec.
 **Status:** open
 
 - [ ] `Scenarios/Mcp/McpApiTests.cs` + `McpApiContext.cs` follow the existing Given/When/Then DSL and seed through `Create.Product` / `Create.Note` with `Given_products` / `Given_notes`
-- [ ] `appsettings.ComponentTests.json` sets `Mcp:Enabled`, `Mcp:BaseUrl` (`http://localhost`) and **overrides** `Mcp:Clients:0` — arrays merge by index, so the suite ends up with exactly one client, as production does
-- [ ] Case 1: `/authorize` → `/token` returns an access token and a refresh token. `AllowAutoRedirect = false`; read the code from the `Location` header
+- [x] `appsettings.ComponentTests.json` sets `Mcp:Enabled`, `Mcp:BaseUrl` (`http://localhost`) and **overrides** `Mcp:Clients:0` — arrays merge by index, so the suite ends up with exactly one client, as production does
+- [x] Case 1: `/authorize` → `/token` returns an access token and a refresh token. `AllowAutoRedirect = false`; read the code from the `Location` header
 - [ ] Cases 2–4: a real `McpClient` over `HttpClientTransport(options, Factory.CreateClient())` asserts `tools/list` contains both tools, `tools/call get_food_logs` and `tools/call list_products` return the seeded rows, and `prompts/list` + `prompts/get nutrition_report` resolve. Assert the wiring only — exhaustive shape assertions belong in `FoodDiary.UnitTests`
 - [ ] Case 5: an unauthenticated call to `/mcp` returns `401` with `WWW-Authenticate: Bearer resource_metadata="…"`, the URL resolves to a document rather than `index.html`, and its `resource` matches `{Mcp:BaseUrl}/mcp`
 - [ ] Case 6: with `Mcp:Enabled=false` those paths return `404`, not the SPA page
-- [ ] Case 7: exchanging one authorization code twice fails the second time
+- [x] Case 7: exchanging one authorization code twice fails the second time
 - [ ] Cases 2–7 do **not** call `Given_authenticated_user()`. The fake auth resolves every scheme to the Google handler and makes `ChallengeAsync` a no-op, so calling it would make these cases pass against a broken token pipeline and a missing 401
 - [ ] The token service that cases 2–4 resolve from `Factory.Services` is `public`. Do not add `InternalsVisibleTo` to `FoodDiary.API`
 - [ ] `.claude/rules/backend.md`'s happy-path rule is extended to cover MCP tools and prompts
@@ -26,3 +26,7 @@ Scenario list, the authentication constraint and the gap it leaves are in [spec.
 - [ ] Documentation is checked against actual behaviour — `.claude/rules/coding.md` forbids leaving docs contradicting the code
 - [ ] Connect the real connector from Claude once against the deployed instance and run one question end to end
 - [ ] `dotnet build` and `dotnet test` pass
+
+## Comments
+
+- Done in 02: the `appsettings.ComponentTests.json` override, case 1 and case 7 already live in `Scenarios/Mcp/McpApiTests.cs`, alongside the refresh grant, RFC 8414 metadata and error-redirect `iss` scenarios. Extend that file rather than re-adding them.
