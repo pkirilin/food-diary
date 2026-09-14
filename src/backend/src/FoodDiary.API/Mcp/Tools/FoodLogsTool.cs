@@ -10,7 +10,7 @@ namespace FoodDiary.API.Mcp.Tools;
 [McpServerToolType]
 public class FoodLogsTool(GetNotesHistoryQueryHandler getNotesHistoryQueryHandler, ICaloriesCalculator caloriesCalculator)
 {
-    private const int MaxRangeDays = 31;
+    internal const int MaxRangeDays = 31;
 
     private const string ToolDescription =
         """

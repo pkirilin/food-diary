@@ -69,6 +69,16 @@ public class McpApiTests(InfrastructureFixture infrastructure) : BaseTest<McpApi
     }
 
     [Scenario]
+    public Task The_client_can_get_nutrition_report_prompt()
+    {
+        return CtxRunner.RunScenarioAsync(
+            c => c.Given_access_token_was_issued(),
+            c => c.When_mcp_client_gets_nutrition_report_prompt("last 14 days"),
+            c => c.Then_mcp_client_lists_prompts("nutrition_report"),
+            c => c.Then_prompt_mentions("last 14 days"));
+    }
+
+    [Scenario]
     public Task The_client_with_access_token_of_user_no_longer_allowed_is_forbidden()
     {
         return CtxRunner.RunScenarioAsync(

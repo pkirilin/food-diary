@@ -42,6 +42,8 @@ public class McpApiContext(FoodDiaryWebApplicationFactory factory) : BaseContext
     private Implementation _connectedServer = null!;
     private List<string> _listedToolNames = [];
     private CallToolResult _toolResult = null!;
+    private List<string> _listedPromptNames = [];
+    private GetPromptResult _promptResult = null!;
 
     private McpClientRegistration Client => _mcpOptions.Clients[0];
     private string McpResource => _mcpOptions.McpResource;
@@ -114,6 +116,17 @@ public class McpApiContext(FoodDiaryWebApplicationFactory factory) : BaseContext
         _listedToolNames = tools.Select(tool => tool.Name).ToList();
 
         _toolResult = await tools.Single(tool => tool.Name == toolName).CallAsync(arguments);
+    }
+
+    public async Task When_mcp_client_gets_nutrition_report_prompt(string period)
+    {
+        await using var mcpClient = await ConnectMcpClient();
+
+        var prompts = await mcpClient.ListPromptsAsync();
+        _listedPromptNames = prompts.Select(prompt => prompt.Name).ToList();
+
+        _promptResult = await prompts.Single(prompt => prompt.Name == "nutrition_report")
+            .GetAsync(new Dictionary<string, object?> { ["period"] = period });
     }
 
     public async Task When_client_requests_authorization_server_metadata()
@@ -338,6 +351,19 @@ public class McpApiContext(FoodDiaryWebApplicationFactory factory) : BaseContext
     public Task Then_mcp_client_lists_tools(params string[] toolNames)
     {
         _listedToolNames.Should().BeEquivalentTo(toolNames);
+        return Task.CompletedTask;
+    }
+
+    public Task Then_mcp_client_lists_prompts(params string[] promptNames)
+    {
+        _listedPromptNames.Should().BeEquivalentTo(promptNames);
+        return Task.CompletedTask;
+    }
+
+    public Task Then_prompt_mentions(string text)
+    {
+        _promptResult.Messages.Select(message => message.Content).OfType<TextContentBlock>().Single().Text
+            .Should().Contain(text);
         return Task.CompletedTask;
     }
 

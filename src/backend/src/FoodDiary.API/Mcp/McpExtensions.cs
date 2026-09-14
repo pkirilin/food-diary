@@ -1,4 +1,5 @@
 using FoodDiary.API.Mcp.Authorization;
+using FoodDiary.API.Mcp.Prompts;
 using FoodDiary.API.Mcp.Tools;
 using FoodDiary.Configuration;
 using Microsoft.AspNetCore.Authentication;
@@ -60,7 +61,8 @@ public static class McpExtensions
             .WithHttpTransport(options => options.SessionMode = HttpServerSessionMode.Stateless)
             .AddAuthorizationFilters()
             .WithTools<FoodLogsTool>()
-            .WithTools<ProductsTool>();
+            .WithTools<ProductsTool>()
+            .WithPrompts<NutritionReportPrompt>();
 
         services.AddAuthentication()
             .AddScheme<AuthenticationSchemeOptions, McpAccessTokenHandler>(McpAccessTokenHandler.SchemeName, configureOptions: null)
