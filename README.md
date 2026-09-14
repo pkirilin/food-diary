@@ -14,6 +14,8 @@ Curious to see how the app works? [View the demo app here](https://pkirilin.gith
 - [Features](#features)
 - [Browser support](#browser-support)
 - [Installation](#installation)
+- [Connecting Claude](#connecting-claude)
+  - [MCP configuration](#mcp-configuration)
 - [Development](#development)
   - [Setting up the entire app (Frontend and Backend)](#setting-up-the-entire-app-frontend-and-backend)
   - [Setting up Frontend with mocked auth and API](#setting-up-frontend-with-mocked-auth-and-api)
@@ -32,6 +34,7 @@ Curious to see how the app works? [View the demo app here](https://pkirilin.gith
 - ⚖️ Weight tracking
 - 📱 PWA and multi-device support
 - 📸 AI-powered food recognition from photos
+- 🤖 Read-only access for Claude through an MCP connector
 
 <table>
   <tr>
@@ -94,6 +97,32 @@ docker-compose up -d
 
 Navigate to <https://localhost:8080>
 
+## Connecting Claude
+
+Food Diary can serve your diary to Claude as a read-only [MCP](https://modelcontextprotocol.io) server at `/mcp`, so Claude can answer questions about what you ate. Claude gets two tools, `get_food_logs` and `list_products`, and a `nutrition_report` prompt. None of them can change your data.
+
+The server is off by default. To connect Claude:
+
+1. Run the app on a public HTTPS domain. Claude connects from Anthropic's servers rather than from your browser, so it cannot reach `localhost`.
+2. Choose a client ID and a client secret, e.g. `openssl rand -hex 32` for the secret.
+3. Set the [MCP configuration](#mcp-configuration) and restart the app. With `Mcp:Enabled` set, the app refuses to start while a required value is missing or malformed, and names the key.
+4. In Claude, add a custom connector with the URL `<Mcp:BaseUrl>/mcp`, and enter the client ID and secret in its advanced settings.
+5. Connect, and sign in with a Google account whose email is in `Auth:AllowedEmails`.
+
+### MCP configuration
+
+Configuration key            | Environment variable            | Default                                   | Description
+-----------------------------|---------------------------------|-------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+`Mcp:Enabled`                | `Mcp__Enabled`                  | `false`                                   | Enables the MCP server and its OAuth endpoints. When `false`, `/mcp`, `/authorize`, `/token` and `/.well-known/*` return `404`
+`Mcp:BaseUrl`                | `Mcp__BaseUrl`                  | —                                         | Public origin of the app, e.g. `https://diary.example.com`: the connector URL without `/mcp`. Must use `https` (`http` is allowed only for `localhost`), with no path, query or trailing slash
+`Mcp:Clients:0:ClientId`     | `Mcp__Clients__0__ClientId`     | —                                         | Client ID entered in the Claude connector
+`Mcp:Clients:0:ClientSecret` | `Mcp__Clients__0__ClientSecret` | —                                         | Client secret entered in the Claude connector. Keep it in user-secrets or the environment, never in `appsettings.json`
+`Mcp:Clients:0:RedirectUri`  | `Mcp__Clients__0__RedirectUri`  | `https://claude.ai/api/mcp/auth_callback` | Claude's OAuth callback
+`Mcp:AccessTokenLifetime`    | `Mcp__AccessTokenLifetime`      | `01:00:00`                                | How long an access token is valid before Claude has to refresh it
+`Mcp:RefreshTokenLifetime`   | `Mcp__RefreshTokenLifetime`     | `30.00:00:00`                             | How long a connection lasts, counted from when you connected. Refreshing does not extend it, so reconnect Claude once it expires
+
+Another OAuth client goes at the next index, e.g. `Mcp:Clients:1`, with its own `ClientId`, `ClientSecret` and `RedirectUri`.
+
 ## Development
 
 ### Setting up the entire app (Frontend and Backend)
@@ -132,6 +161,16 @@ dotnet user-secrets --project src/backend/src/FoodDiary.API set "ConnectionStrin
 dotnet user-secrets --project src/backend/src/FoodDiary.API set "Integrations:OpenAI:ApiKey" "<your_OpenAI_api_key>"
 
 dotnet user-secrets --project src/backend/src/FoodDiary.API set "Integrations:OpenAI:Model" "gpt-5.4-mini"
+
+# Optional, runs the MCP server locally. Claude itself cannot reach localhost, see Connecting Claude
+dotnet user-secrets --project src/backend/src/FoodDiary.API set "Mcp:Enabled" "true"
+
+dotnet user-secrets --project src/backend/src/FoodDiary.API set "Mcp:BaseUrl" "https://localhost:8080"
+
+dotnet user-secrets --project src/backend/src/FoodDiary.API set "Mcp:Clients:0:ClientId" "<your_client_id>"
+
+dotnet user-secrets --project src/backend/src/FoodDiary.API set "Mcp:Clients:0:ClientSecret" "<your_client_secret>"
+```
 
 Run database migrations:
 

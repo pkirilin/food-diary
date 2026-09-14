@@ -24,6 +24,20 @@ public class McpApiTests(InfrastructureFixture infrastructure) : BaseTest<McpApi
     }
 
     [Scenario]
+    [InlineData("POST", "/mcp")]
+    [InlineData("GET", "/.well-known/oauth-protected-resource/mcp")]
+    [InlineData("GET", "/.well-known/oauth-authorization-server")]
+    [InlineData("GET", "/authorize")]
+    [InlineData("POST", "/token")]
+    public Task The_client_cannot_find_mcp_server_when_it_is_disabled(string method, string path)
+    {
+        return CtxRunner.RunScenarioAsync(
+            c => c.Given_mcp_is_disabled(),
+            c => c.When_client_requests(method, path),
+            c => c.Then_response_is_not_found());
+    }
+
+    [Scenario]
     public Task The_client_with_access_token_can_connect()
     {
         return CtxRunner.RunScenarioAsync(

@@ -11,6 +11,7 @@ using FoodDiary.Domain.Entities;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using ModelContextProtocol.Client;
@@ -38,6 +39,7 @@ public class McpApiContext(FoodDiaryWebApplicationFactory factory) : BaseContext
     private HttpResponseMessage _refreshResponse = null!;
     private HttpResponseMessage _mcpResponse = null!;
     private HttpResponseMessage _resourceMetadataResponse = null!;
+    private HttpResponseMessage _response = null!;
     private string? _accessToken;
     private Implementation _connectedServer = null!;
     private List<string> _listedToolNames = [];
@@ -70,6 +72,17 @@ public class McpApiContext(FoodDiaryWebApplicationFactory factory) : BaseContext
     public Task Given_access_token_was_issued_to(string email)
     {
         _accessToken = TokenService.IssueAccessToken(AccessGrantFor(email));
+        return Task.CompletedTask;
+    }
+
+    public Task Given_mcp_is_disabled()
+    {
+        Factory = Factory.WithWebHostBuilder(builder => builder.ConfigureAppConfiguration((_, configuration) =>
+            configuration.AddInMemoryCollection(new Dictionary<string, string?>
+            {
+                ["Mcp:Enabled"] = "false"
+            })));
+
         return Task.CompletedTask;
     }
 
@@ -132,6 +145,11 @@ public class McpApiContext(FoodDiaryWebApplicationFactory factory) : BaseContext
     public async Task When_client_requests_authorization_server_metadata()
     {
         _metadataResponse = await OAuthClient.GetAsync("/.well-known/oauth-authorization-server");
+    }
+
+    public async Task When_client_requests(string method, string path)
+    {
+        _response = await OAuthClient.SendAsync(new HttpRequestMessage(new HttpMethod(method), path));
     }
 
     public Task When_client_calls_mcp_without_access_token()
@@ -301,6 +319,12 @@ public class McpApiContext(FoodDiaryWebApplicationFactory factory) : BaseContext
             Bearer resource_metadata="http://localhost/.well-known/oauth-protected-resource/mcp", scope="food:read"
             """);
 
+        return Task.CompletedTask;
+    }
+
+    public Task Then_response_is_not_found()
+    {
+        _response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         return Task.CompletedTask;
     }
 

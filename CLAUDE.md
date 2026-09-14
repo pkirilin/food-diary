@@ -50,7 +50,7 @@ dotnet ef migrations add <Name> \
     -o Migrations
 ```
 
-Required user-secrets on `FoodDiary.API`: `Auth:AllowedEmails:0`, `ConnectionStrings:Default`, optional `Integrations:OpenAI:ApiKey` and `Integrations:OpenAI:Model` (overrides default).
+Required user-secrets on `FoodDiary.API`: `Auth:AllowedEmails:0`, `ConnectionStrings:Default`, optional `Integrations:OpenAI:ApiKey` and `Integrations:OpenAI:Model` (overrides default). Enabling the MCP server locally (`Mcp:Enabled` = `true`) also requires `Mcp:BaseUrl` (`https://localhost:8080`), `Mcp:Clients:0:ClientId` and `Mcp:Clients:0:ClientSecret`; startup fails naming whichever is missing or malformed.
 
 ### E2E (`tests/`)
 
