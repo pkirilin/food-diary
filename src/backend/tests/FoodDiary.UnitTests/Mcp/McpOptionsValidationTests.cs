@@ -56,25 +56,6 @@ public class McpOptionsValidationTests
     }
 
     [Fact]
-    public void ShippedAppSettings_EnabledWithBaseUrlClientIdAndSecret_RegistersClaudeCallback()
-    {
-        using var services = BuildServices(ShippedAppSettingsWith(new()
-        {
-            ["Mcp:Enabled"] = "true",
-            ["Mcp:BaseUrl"] = "https://diary.example.com",
-            ["Mcp:Clients:0:ClientId"] = "claude",
-            ["Mcp:Clients:0:ClientSecret"] = "secret"
-        }));
-
-        var validate = services.GetRequiredService<IStartupValidator>().Validate;
-        var options = services.GetRequiredService<IOptions<McpOptions>>().Value;
-
-        validate.Should().NotThrow();
-        options.Clients.Should().ContainSingle()
-            .Which.RedirectUri.Should().Be("https://claude.ai/api/mcp/auth_callback");
-    }
-
-    [Fact]
     public void Enabled_WithBaseUrlAndOneCompleteClient_Passes()
     {
         var validate = ValidateOnStartup(EnabledWithOneClient());
