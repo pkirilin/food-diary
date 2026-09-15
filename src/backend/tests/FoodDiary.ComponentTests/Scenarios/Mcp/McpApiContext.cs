@@ -31,7 +31,6 @@ public class McpApiContext(FoodDiaryWebApplicationFactory factory) : BaseContext
     private const string AllowedUserEmail = "fake.user@gmail.com";
 
     private readonly McpOptions _mcpOptions = factory.Services.GetRequiredService<IOptions<McpOptions>>().Value;
-    private HttpClient? _oAuthClient;
     private HttpResponseMessage _metadataResponse = null!;
     private HttpResponseMessage _authorizeResponse = null!;
     private string? _authorizationCode;
@@ -51,7 +50,7 @@ public class McpApiContext(FoodDiaryWebApplicationFactory factory) : BaseContext
     private string McpResource => _mcpOptions.McpResource;
     private McpTokenService TokenService => Factory.Services.GetRequiredService<McpTokenService>();
 
-    private HttpClient OAuthClient => _oAuthClient ??= Factory.CreateClient(new WebApplicationFactoryClientOptions
+    private HttpClient OAuthClient => field ??= Factory.CreateClient(new WebApplicationFactoryClientOptions
     {
         AllowAutoRedirect = false
     });
