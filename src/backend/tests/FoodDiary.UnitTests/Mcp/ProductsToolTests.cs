@@ -1,6 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using FoodDiary.API.Mcp.Tools;
+using FoodDiary.API.Mcp.Tools.Products;
 using FoodDiary.Application.Products.Get;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Repositories;

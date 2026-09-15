@@ -1,8 +1,10 @@
 using System.Text.Json.Serialization;
+using JetBrains.Annotations;
 
-namespace FoodDiary.API.Mcp.Tools;
+namespace FoodDiary.API.Mcp.Tools.Products;
 
-public record ProductsResponse(IReadOnlyList<ProductsResponse.Product> Products, int PageNumber, int PageSize, int TotalCount)
+[PublicAPI]
+public record ListProductsToolResponse(IReadOnlyList<ListProductsToolResponse.Product> Products, int PageNumber, int PageSize, int TotalCount)
 {
     public record Product(
         int Id,

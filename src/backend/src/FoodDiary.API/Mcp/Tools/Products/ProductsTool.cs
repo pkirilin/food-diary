@@ -1,17 +1,16 @@
 using System.ComponentModel;
 using FoodDiary.Application.Products.Get;
-using FoodDiary.Domain.Entities;
 using ModelContextProtocol;
 using ModelContextProtocol.Server;
 
-namespace FoodDiary.API.Mcp.Tools;
+namespace FoodDiary.API.Mcp.Tools.Products;
 
 [McpServerToolType]
 public class ProductsTool(GetProductsQueryHandler getProductsQueryHandler)
 {
     private const int MaxPageSize = 100;
 
-    private const string ToolDescription =
+    private const string ListProductsToolDescription =
         """
         Products in the personal catalogue, ordered by name, one page at a time.
 
@@ -22,8 +21,9 @@ public class ProductsTool(GetProductsQueryHandler getProductsQueryHandler)
         `totalCount` is the number of products matching `productName` across all pages; request the next page while `pageNumber` × `pageSize` is below it. A page holds at most 100 products.
         """;
 
-    [McpServerTool(Name = "list_products", ReadOnly = true, OpenWorld = false), Description(ToolDescription)]
-    public async Task<ProductsResponse> ListProducts(
+    [McpServerTool(Name = "list_products", ReadOnly = true, OpenWorld = false)]
+    [Description(ListProductsToolDescription)]
+    public async Task<ListProductsToolResponse> ListProducts(
         [Description("Page to return, starting at 1.")] int pageNumber,
         [Description("Products per page, from 1 to 100.")] int pageSize,
         [Description("Case-insensitive part of the product name. Omit to list every product.")] string? productName = null,
@@ -48,23 +48,6 @@ public class ProductsTool(GetProductsQueryHandler getProductsQueryHandler)
             new GetProductsQuery(pageNumber, pageSize, productName, CategoryId: null),
             cancellationToken);
 
-        return new ProductsResponse(
-            result.Products.Select(ToResponseProduct).ToList(),
-            pageNumber,
-            pageSize,
-            result.TotalProductsCount);
+        return result.ToListProductsToolResponse(pageNumber, pageSize);
     }
-
-    private static ProductsResponse.Product ToResponseProduct(Product product) => new(
-        product.Id,
-        product.Name,
-        new ProductsResponse.ProductCategory(product.Category!.Name),
-        product.DefaultQuantity,
-        new ProductsResponse.ProductNutrition(
-            product.CaloriesCost,
-            product.Protein,
-            product.Fats,
-            product.Carbs,
-            product.Sugar,
-            product.Salt));
 }
