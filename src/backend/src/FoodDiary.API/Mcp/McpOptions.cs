@@ -4,15 +4,15 @@ public class McpOptions
 {
     public const string SectionName = "Mcp";
 
-    public bool Enabled { get; set; }
+    public required bool Enabled { get; init; }
 
-    public string? BaseUrl { get; set; }
+    public string? BaseUrl { get; init; }
 
-    public IReadOnlyList<McpClientRegistration> Clients { get; set; } = [];
+    public IReadOnlyList<McpClientRegistration> Clients { get; init; } = [];
 
-    public TimeSpan AccessTokenLifetime { get; set; } = TimeSpan.FromHours(1);
+    public TimeSpan AccessTokenLifetime { get; init; } = TimeSpan.FromHours(1);
 
-    public TimeSpan RefreshTokenLifetime { get; set; } = TimeSpan.FromDays(30);
+    public TimeSpan RefreshTokenLifetime { get; init; } = TimeSpan.FromDays(30);
 
     public string McpResource => $"{BaseUrl}/mcp";
 
