@@ -1,6 +1,4 @@
 using FoodDiary.API.Mcp.Authorization;
-using FoodDiary.API.Mcp.Prompts;
-using FoodDiary.API.Mcp.Tools;
 using FoodDiary.Configuration;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
