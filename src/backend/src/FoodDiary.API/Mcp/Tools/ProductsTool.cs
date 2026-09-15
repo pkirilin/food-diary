@@ -49,18 +49,18 @@ public class ProductsTool(GetProductsQueryHandler getProductsQueryHandler)
             cancellationToken);
 
         return new ProductsResponse(
-            result.Products.Select(ToCatalogueProduct).ToList(),
+            result.Products.Select(ToResponseProduct).ToList(),
             pageNumber,
             pageSize,
             result.TotalProductsCount);
     }
 
-    private static CatalogueProduct ToCatalogueProduct(Product product) => new(
+    private static ProductsResponse.Product ToResponseProduct(Product product) => new(
         product.Id,
         product.Name,
-        new CatalogueProductCategory(product.Category!.Name),
+        new ProductsResponse.ProductCategory(product.Category!.Name),
         product.DefaultQuantity,
-        new CatalogueProductNutrition(
+        new ProductsResponse.ProductNutrition(
             product.CaloriesCost,
             product.Protein,
             product.Fats,
