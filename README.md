@@ -14,7 +14,7 @@ Curious to see how the app works? [View the demo app here](https://pkirilin.gith
 - [Features](#features)
 - [Browser support](#browser-support)
 - [Installation](#installation)
-- [Connecting Claude](#connecting-claude)
+- [Connecting LLMs via MCP](#connecting-llms-via-mcp)
   - [MCP configuration](#mcp-configuration)
 - [Development](#development)
   - [Setting up the entire app (Frontend and Backend)](#setting-up-the-entire-app-frontend-and-backend)
@@ -34,7 +34,7 @@ Curious to see how the app works? [View the demo app here](https://pkirilin.gith
 - ⚖️ Weight tracking
 - 📱 PWA and multi-device support
 - 📸 AI-powered food recognition from photos
-- 🤖 Read-only access for Claude through an MCP connector
+- 🤖 Read-only access for LLMs through an MCP connector
 
 <table>
   <tr>
@@ -97,9 +97,9 @@ docker-compose up -d
 
 Navigate to <https://localhost:8080>
 
-## Connecting Claude
+## Connecting LLMs via MCP
 
-Food Diary can serve your diary to Claude as a read-only [MCP](https://modelcontextprotocol.io) server at `/mcp`, so Claude can answer questions about what you ate. Claude gets two tools, `get_food_logs` and `list_products`, and a `nutrition_report` prompt. None of them can change your data.
+Food Diary can serve your data to any compatible MCP client as a read-only [MCP](https://modelcontextprotocol.io) server at `/mcp`, so Claude (or any other LLM) can answer questions about what you ate, plan your next week, and many other things.
 
 The server is off by default. To connect Claude:
 
