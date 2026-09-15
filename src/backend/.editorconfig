@@ -1,5 +1,9 @@
 root = true
 
 [*.cs]
-# IDE0005: Using directive is unnecessary
+csharp_style_prefer_primary_constructors = true
+
+# Using directive is unnecessary
 dotnet_diagnostic.IDE0005.severity = warning
+# Use primary constructor
+dotnet_diagnostic.IDE0290.severity = warning

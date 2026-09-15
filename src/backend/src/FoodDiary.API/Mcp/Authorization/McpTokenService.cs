@@ -12,38 +12,29 @@ public sealed record AuthorizationCodeGrant(AccessGrant Access, string RedirectU
 
 public sealed record McpTokens(string AccessToken, string RefreshToken);
 
-public sealed class McpTokenService
+public sealed class McpTokenService(
+    IDataProtectionProvider dataProtectionProvider,
+    IMemoryCache memoryCache,
+    TimeProvider timeProvider,
+    IOptions<McpOptions> options)
 {
     private static readonly TimeSpan AuthorizationCodeLifetime = TimeSpan.FromSeconds(60);
 
-    private readonly IDataProtector _authorizationCodeProtector;
-    private readonly IDataProtector _accessTokenProtector;
-    private readonly IDataProtector _refreshTokenProtector;
-    private readonly IMemoryCache _memoryCache;
-    private readonly TimeProvider _timeProvider;
-    private readonly McpOptions _options;
+    private readonly IDataProtector _authorizationCodeProtector = dataProtectionProvider.CreateProtector("FoodDiary.Mcp.AuthorizationCode");
+    private readonly IDataProtector _accessTokenProtector = dataProtectionProvider.CreateProtector("FoodDiary.Mcp.AccessToken");
+    private readonly IDataProtector _refreshTokenProtector = dataProtectionProvider.CreateProtector("FoodDiary.Mcp.RefreshToken");
+    private readonly McpOptions _options = options.Value;
     private readonly Lock _authorizationCodeRedemptionLock = new();
-
-    public McpTokenService(
-        IDataProtectionProvider dataProtectionProvider,
-        IMemoryCache memoryCache,
-        TimeProvider timeProvider,
-        IOptions<McpOptions> options)
-    {
-        _authorizationCodeProtector = dataProtectionProvider.CreateProtector("FoodDiary.Mcp.AuthorizationCode");
-        _accessTokenProtector = dataProtectionProvider.CreateProtector("FoodDiary.Mcp.AccessToken");
-        _refreshTokenProtector = dataProtectionProvider.CreateProtector("FoodDiary.Mcp.RefreshToken");
-        _memoryCache = memoryCache;
-        _timeProvider = timeProvider;
-        _options = options.Value;
-    }
 
     public string IssueAuthorizationCode(AuthorizationCodeGrant grant)
     {
         var codeId = Guid.NewGuid().ToString("N");
-        var payload = new AuthorizationCodePayload(codeId, grant, _timeProvider.GetUtcNow() + AuthorizationCodeLifetime);
+        var payload = new AuthorizationCodePayload(codeId, grant, timeProvider.GetUtcNow() + AuthorizationCodeLifetime);
 
-        _memoryCache.Set(UnredeemedCodeKey(codeId), true, AuthorizationCodeLifetime);
+        lock (_authorizationCodeRedemptionLock)
+        {
+            memoryCache.Set(UnredeemedCodeKey(codeId), true, AuthorizationCodeLifetime);
+        }
 
         return Protect(_authorizationCodeProtector, payload);
     }
@@ -59,12 +50,12 @@ public sealed class McpTokenService
 
         lock (_authorizationCodeRedemptionLock)
         {
-            if (!_memoryCache.TryGetValue(UnredeemedCodeKey(payload.CodeId), out _))
+            if (!memoryCache.TryGetValue(UnredeemedCodeKey(payload.CodeId), out _))
             {
                 return null;
             }
 
-            _memoryCache.Remove(UnredeemedCodeKey(payload.CodeId));
+            memoryCache.Remove(UnredeemedCodeKey(payload.CodeId));
         }
 
         return payload.Grant;
@@ -72,10 +63,10 @@ public sealed class McpTokenService
 
     public McpTokens IssueTokens(AccessGrant grant) => new(
         IssueAccessToken(grant),
-        Protect(_refreshTokenProtector, new TokenPayload(grant, _timeProvider.GetUtcNow() + _options.RefreshTokenLifetime)));
+        Protect(_refreshTokenProtector, new TokenPayload(grant, timeProvider.GetUtcNow() + _options.RefreshTokenLifetime)));
 
     public string IssueAccessToken(AccessGrant grant) =>
-        Protect(_accessTokenProtector, new TokenPayload(grant, _timeProvider.GetUtcNow() + _options.AccessTokenLifetime));
+        Protect(_accessTokenProtector, new TokenPayload(grant, timeProvider.GetUtcNow() + _options.AccessTokenLifetime));
 
     public AccessGrant? ValidateAccessToken(string accessToken)
     {
@@ -95,7 +86,7 @@ public sealed class McpTokenService
         return payload is null || IsExpired(payload.ExpiresAt) ? null : payload.Grant;
     }
 
-    private bool IsExpired(DateTimeOffset expiresAt) => _timeProvider.GetUtcNow() >= expiresAt;
+    private bool IsExpired(DateTimeOffset expiresAt) => timeProvider.GetUtcNow() >= expiresAt;
 
     private static string UnredeemedCodeKey(string codeId) => $"mcp:unredeemed-authorization-code:{codeId}";
 
