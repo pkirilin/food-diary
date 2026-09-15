@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using JetBrains.Annotations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
@@ -13,6 +14,7 @@ public static class AuthorizationServerEndpoints
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
     };
 
+    [PublicAPI]
     private sealed record AuthorizationServerMetadata(
         string Issuer,
         string AuthorizationEndpoint,

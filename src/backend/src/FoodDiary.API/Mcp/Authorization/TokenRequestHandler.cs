@@ -1,5 +1,6 @@
 using System.Security.Cryptography;
 using System.Text;
+using JetBrains.Annotations;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
 
@@ -7,6 +8,7 @@ namespace FoodDiary.API.Mcp.Authorization;
 
 internal sealed class TokenRequestHandler(McpTokenService tokenService, IOptions<McpOptions> options)
 {
+    [PublicAPI]
     private sealed record TokenResponse(
         string AccessToken,
         string TokenType,
@@ -14,6 +16,8 @@ internal sealed class TokenRequestHandler(McpTokenService tokenService, IOptions
         string? RefreshToken,
         string Scope);
 
+    [PublicAPI]
+    // ReSharper disable once MemberHidesStaticFromOuterClass
     private sealed record ErrorResponse(string Error, string ErrorDescription);
 
     public async Task<IResult> Handle(HttpContext context)
