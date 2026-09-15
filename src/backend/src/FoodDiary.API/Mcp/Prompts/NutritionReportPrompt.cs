@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using FoodDiary.API.Mcp.Tools;
+using FoodDiary.API.Mcp.Tools.FoodLogs;
 using FoodDiary.Domain.Enums;
 using ModelContextProtocol.Server;
 
