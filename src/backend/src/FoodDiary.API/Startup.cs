@@ -1,9 +1,10 @@
-﻿using System.Threading.Tasks;
-using FoodDiary.API.ErrorHandling;
+﻿using FoodDiary.API.ErrorHandling;
 using FoodDiary.API.Extensions;
 using FoodDiary.API.Features.Products.Extensions;
 using FoodDiary.API.Features.WeightTracking;
 using FoodDiary.API.Logging;
+using FoodDiary.API.Mcp;
+using FoodDiary.API.Mcp.Authorization;
 using FoodDiary.API.Options;
 using FoodDiary.Application.Extensions;
 using FoodDiary.Configuration;
@@ -11,15 +12,9 @@ using FoodDiary.Configuration.Extensions;
 using FoodDiary.Infrastructure.Extensions;
 using FoodDiary.Integrations.OpenAI.Extensions;
 using Microsoft.AspNetCore.Authentication.Google;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Microsoft.Extensions.Hosting;
 using Serilog;
 
 namespace FoodDiary.API;
@@ -28,6 +23,7 @@ public class Startup
 {
     private readonly AuthOptions _authOptions;
     private readonly GoogleAuthOptions _googleAuthOptions;
+    private readonly McpOptions _mcpOptions;
     private readonly IConfiguration _configuration;
 
     public Startup(IConfiguration configuration)
@@ -35,6 +31,7 @@ public class Startup
         _configuration = configuration;
         _authOptions = _configuration.GetSection("Auth").Get<AuthOptions>()!;
         _googleAuthOptions = _configuration.GetSection("GoogleAuth").Get<GoogleAuthOptions>()!;
+        _mcpOptions = _configuration.GetSection(McpOptions.SectionName).Get<McpOptions>()!;
     }
 
     public void ConfigureServices(IServiceCollection services)
@@ -114,6 +111,7 @@ public class Startup
 
         services.ConfigureCustomOptions(_configuration);
         services.Configure<ImportOptions>(_configuration.GetSection("Import"));
+        services.AddFoodDiaryMcp(_configuration);
         
         services.AddInfrastructure();
         services.AddOpenAIIntegration(_configuration);
@@ -159,7 +157,16 @@ public class Startup
             {
                 Predicate = healthCheck => healthCheck.Tags.Contains("ready")
             });
+
+            if (_mcpOptions.Enabled)
+            {
+                endpoints.MapMcpAuthorizationServer();
+                endpoints.MapMcpResourceServer();
+            }
         });
+
+        // Unmapped paths fall through to the SPA catch-all below, which answers them with index.html
+        app.UseNotFoundForMcpAndOAuthPaths();
             
         app.UseSpa(spa =>
         {
