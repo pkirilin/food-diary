@@ -14,7 +14,8 @@ Curious to see how the app works? [View the demo app here](https://pkirilin.gith
 - [Features](#features)
 - [Browser support](#browser-support)
 - [Installation](#installation)
-- [Connecting LLMs via MCP](#connecting-llms-via-mcp)
+- [MCP server](#mcp-server)
+  - [Connecting Claude](#connecting-claude)
   - [MCP configuration](#mcp-configuration)
 - [Development](#development)
   - [Setting up the entire app (Frontend and Backend)](#setting-up-the-entire-app-frontend-and-backend)
@@ -97,16 +98,20 @@ docker-compose up -d
 
 Navigate to <https://localhost:8080>
 
-## Connecting LLMs via MCP
+## MCP server
 
 Food Diary can serve your data to any compatible MCP client as a read-only [MCP](https://modelcontextprotocol.io) server at `/mcp`, so Claude (or any other LLM) can answer questions about what you ate, plan your next week, and many other things.
 
-The server is off by default. To connect Claude:
+The server is off by default. You can manage it via [MCP configuration](#mcp-configuration) environment variables.
 
-1. Run the app on a public HTTPS domain. Claude connects from Anthropic's servers rather than from your browser, so it cannot reach `localhost`.
+### Connecting Claude
+
+To connect Claude:
+
+1. Run the app on a public HTTPS domain. Claude connects from Anthropic's servers rather than from your browser, so it cannot reach `localhost`. **Your server should be located in a [supported country and region](https://www.anthropic.com/supported-countries)**.
 2. Choose a client ID and a client secret, e.g. `openssl rand -hex 32` for the secret.
 3. Set the [MCP configuration](#mcp-configuration) and restart the app. With `Mcp:Enabled` set, the app refuses to start while a required value is missing or malformed, and names the key.
-4. In Claude, add a custom connector with the URL `<Mcp:BaseUrl>/mcp`, and enter the client ID and secret in its advanced settings.
+4. In Claude, [add a custom connector](https://support.claude.com/en/articles/11175166-get-started-with-custom-connectors-using-remote-mcp) with the URL `<Mcp:BaseUrl>/mcp`, and enter the client ID and secret in its advanced settings.
 5. Connect, and sign in with a Google account whose email is in `Auth:AllowedEmails`.
 
 ### MCP configuration
