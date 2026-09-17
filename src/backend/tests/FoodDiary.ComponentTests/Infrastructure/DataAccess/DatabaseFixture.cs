@@ -8,8 +8,7 @@ namespace FoodDiary.ComponentTests.Infrastructure.DataAccess;
 [UsedImplicitly]
 public class DatabaseFixture
 {
-    private readonly PostgreSqlContainer _dbContainer = new PostgreSqlBuilder()
-        .WithImage("postgres:15.1-alpine")
+    private readonly PostgreSqlContainer _dbContainer = new PostgreSqlBuilder("postgres:15.1-alpine")
         .WithUsername("postgres")
         .WithPassword("postgres")
         .WithDatabase("food-diary")

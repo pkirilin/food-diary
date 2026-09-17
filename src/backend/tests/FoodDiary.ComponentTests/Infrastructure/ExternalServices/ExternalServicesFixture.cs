@@ -8,8 +8,7 @@ namespace FoodDiary.ComponentTests.Infrastructure.ExternalServices;
 [UsedImplicitly]
 public class ExternalServicesFixture
 {
-    private static readonly IContainer MountebankContainer = new ContainerBuilder()
-        .WithImage("bbyars/mountebank:2.9.1")
+    private static readonly IContainer MountebankContainer = new ContainerBuilder("bbyars/mountebank:2.9.1")
         .WithPortBinding(2525, 2525)
         .WithPortBinding(GoogleIdentityProvider.Port, GoogleIdentityProvider.Port)
         .WithPortBinding(OpenAIApi.Port, OpenAIApi.Port)
