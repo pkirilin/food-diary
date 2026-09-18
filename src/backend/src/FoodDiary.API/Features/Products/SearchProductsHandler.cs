@@ -1,7 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using FoodDiary.Domain.Entities;
 using FoodDiary.Infrastructure;
 using Microsoft.EntityFrameworkCore;

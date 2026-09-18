@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace FoodDiary.API.Dtos;
+﻿namespace FoodDiary.API.Dtos;
 
 public class ProductsSearchResultDto
 {

@@ -1,5 +1,3 @@
-using System.Threading;
-using System.Threading.Tasks;
 using FoodDiary.Domain.Entities;
 
 namespace FoodDiary.Domain.Repositories.v2;

@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace FoodDiary.Domain.Entities;
+﻿namespace FoodDiary.Domain.Entities;
 
 /// <summary>
 /// Category of product (or dish) stored in diary

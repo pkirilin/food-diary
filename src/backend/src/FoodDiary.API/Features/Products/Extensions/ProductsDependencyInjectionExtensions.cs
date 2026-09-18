@@ -1,5 +1,3 @@
-using Microsoft.Extensions.DependencyInjection;
-
 namespace FoodDiary.API.Features.Products.Extensions;
 
 public static class ProductsDependencyInjectionExtensions

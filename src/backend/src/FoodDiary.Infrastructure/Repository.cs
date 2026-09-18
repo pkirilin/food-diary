@@ -1,23 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using FoodDiary.Domain.Abstractions;
+﻿using FoodDiary.Domain.Abstractions;
 using Microsoft.EntityFrameworkCore;
 
 namespace FoodDiary.Infrastructure;
 
-public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
+public class Repository<TEntity>(DbContext context) : IRepository<TEntity>
+    where TEntity : class
 {
-    protected readonly DbContext _context;
+    protected readonly DbContext _context = context ?? throw new ArgumentNullException(nameof(context));
 
     protected DbSet<TEntity> TargetDbSet => _context.Set<TEntity>();
-
-    public Repository(DbContext context)
-    {
-        _context = context ?? throw new ArgumentNullException(nameof(context));
-    }
 
     public virtual IQueryable<TEntity> GetQuery()
     {

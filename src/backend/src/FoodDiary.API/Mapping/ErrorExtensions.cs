@@ -1,5 +1,4 @@
 using FoodDiary.Application;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FoodDiary.API.Mapping;

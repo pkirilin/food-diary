@@ -1,5 +1,4 @@
-﻿using System;
-using FoodDiary.Domain.Enums;
+﻿using FoodDiary.Domain.Enums;
 
 namespace FoodDiary.Domain.Entities;
 

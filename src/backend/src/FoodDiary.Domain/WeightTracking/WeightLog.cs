@@ -1,5 +1,3 @@
-using System;
-
 namespace FoodDiary.Domain.WeightTracking;
 
 public class WeightLog

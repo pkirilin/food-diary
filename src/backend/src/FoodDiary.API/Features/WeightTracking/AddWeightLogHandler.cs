@@ -1,9 +1,6 @@
-using System.Threading;
-using System.Threading.Tasks;
 using FoodDiary.API.Features.WeightTracking.Contracts;
 using FoodDiary.Domain.WeightTracking;
 using FoodDiary.Infrastructure;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace FoodDiary.API.Features.WeightTracking;

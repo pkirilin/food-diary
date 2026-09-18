@@ -1,4 +1,3 @@
-using System.Linq;
 using FoodDiary.API.Features.Products.Contracts;
 using FoodDiary.Domain.Entities;
 

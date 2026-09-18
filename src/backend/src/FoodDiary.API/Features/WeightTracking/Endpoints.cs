@@ -1,11 +1,6 @@
-using System;
 using System.ComponentModel.DataAnnotations;
-using System.Threading;
 using FoodDiary.API.Features.WeightTracking.Contracts;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace FoodDiary.API.Features.WeightTracking;
 

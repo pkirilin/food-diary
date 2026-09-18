@@ -1,6 +1,3 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using FoodDiary.Application.Auth.GetStatus;
 using FoodDiary.Contracts.Auth;
 using Microsoft.AspNetCore.Authentication;
