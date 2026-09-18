@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace FoodDiary.Domain.Exceptions;
+﻿namespace FoodDiary.Domain.Exceptions;
 
 /// <summary>
 /// Represents errors that occur during diary import operations

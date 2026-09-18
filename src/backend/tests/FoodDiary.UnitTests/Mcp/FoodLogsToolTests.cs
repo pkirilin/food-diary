@@ -1,6 +1,5 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using FoodDiary.API.Mcp.Tools;
 using FoodDiary.API.Mcp.Tools.FoodLogs;
 using FoodDiary.Application.Notes.GetHistory;
 using FoodDiary.Domain.Entities;

@@ -1,8 +1,4 @@
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 using FoodDiary.API.Dtos;
 using FoodDiary.API.Features.Products;
 using FoodDiary.API.Features.Products.Extensions;
@@ -15,7 +11,6 @@ using FoodDiary.Application.Products.SuggestNutrition;
 using FoodDiary.Application.Products.Update;
 using FoodDiary.Contracts.Products;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FoodDiary.API.Controllers.v1;

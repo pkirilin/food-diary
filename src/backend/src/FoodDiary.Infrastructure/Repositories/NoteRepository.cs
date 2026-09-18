@@ -3,9 +3,4 @@ using FoodDiary.Domain.Repositories;
 
 namespace FoodDiary.Infrastructure.Repositories;
 
-public class NoteRepository : Repository<Note>, INoteRepository
-{
-    public NoteRepository(FoodDiaryContext context) : base(context)
-    {
-    }
-}
+public class NoteRepository(FoodDiaryContext context) : Repository<Note>(context), INoteRepository;

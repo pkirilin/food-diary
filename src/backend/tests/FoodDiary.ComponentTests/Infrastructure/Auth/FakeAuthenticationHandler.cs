@@ -6,15 +6,12 @@ using Microsoft.Extensions.Options;
 
 namespace FoodDiary.ComponentTests.Infrastructure.Auth;
 
-public class FakeAuthenticationHandler : AuthenticationHandler<FakeAuthenticationHandlerOptions>
+public class FakeAuthenticationHandler(
+    IOptionsMonitor<FakeAuthenticationHandlerOptions> options,
+    ILoggerFactory logger,
+    UrlEncoder encoder)
+    : AuthenticationHandler<FakeAuthenticationHandlerOptions>(options, logger, encoder)
 {
-    public FakeAuthenticationHandler(
-        IOptionsMonitor<FakeAuthenticationHandlerOptions> options,
-        ILoggerFactory logger,
-        UrlEncoder encoder) : base(options, logger, encoder)
-    {
-    }
-
     protected override Task<AuthenticateResult> HandleAuthenticateAsync()
     {
         if (!Options.ShouldAuthenticate)

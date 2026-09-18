@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using FoodDiary.Domain.Abstractions;
+﻿using FoodDiary.Domain.Abstractions;
 using FoodDiary.Domain.Entities;
 
 namespace FoodDiary.Domain.Repositories;

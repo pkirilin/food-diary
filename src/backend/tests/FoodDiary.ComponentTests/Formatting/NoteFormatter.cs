@@ -4,15 +4,8 @@ using LightBDD.Core.Formatting.Values;
 
 namespace FoodDiary.ComponentTests.Formatting;
 
-internal class NoteFormatter : IValueFormatter
+internal class NoteFormatter(ICaloriesCalculator caloriesCalculator) : IValueFormatter
 {
-    private readonly ICaloriesCalculator _caloriesCalculator;
-
-    public NoteFormatter(ICaloriesCalculator caloriesCalculator)
-    {
-        _caloriesCalculator = caloriesCalculator;
-    }
-    
     public string FormatValue(object value, IValueFormattingService formattingService)
     {
         if (value is not Note note)
@@ -21,7 +14,7 @@ internal class NoteFormatter : IValueFormatter
         }
 
         var productName = note.Product!.Name;
-        var calories = _caloriesCalculator.Calculate(note);
+        var calories = caloriesCalculator.Calculate(note);
 
         return $"{note.MealType.ToString()}: {productName}, {note.ProductQuantity} g, {calories} cal";
     }

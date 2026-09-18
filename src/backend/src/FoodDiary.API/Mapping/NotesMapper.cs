@@ -1,4 +1,3 @@
-using System.Linq;
 using FoodDiary.Application.Notes.Create;
 using FoodDiary.Application.Notes.Get;
 using FoodDiary.Application.Notes.GetHistory;

@@ -1,11 +1,6 @@
-using System;
 using System.ClientModel;
-using System.Threading;
-using System.Threading.Tasks;
 using FoodDiary.Domain.Exceptions;
 using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 
 namespace FoodDiary.API.ErrorHandling;
 

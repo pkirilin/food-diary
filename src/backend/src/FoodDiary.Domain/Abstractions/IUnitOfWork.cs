@@ -1,7 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-
-namespace FoodDiary.Domain.Abstractions;
+﻿namespace FoodDiary.Domain.Abstractions;
 
 public interface IUnitOfWork
 {

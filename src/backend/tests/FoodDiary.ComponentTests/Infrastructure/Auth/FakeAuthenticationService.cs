@@ -4,24 +4,16 @@ using Microsoft.AspNetCore.Http;
 
 namespace FoodDiary.ComponentTests.Infrastructure.Auth;
 
-public class FakeAuthenticationService : IAuthenticationService
+public class FakeAuthenticationService(
+    FakeAuthenticationHandler handler,
+    IAuthenticationSchemeProvider authenticationSchemeProvider)
+    : IAuthenticationService
 {
-    private readonly FakeAuthenticationHandler _handler;
-    private readonly IAuthenticationSchemeProvider _authenticationSchemeProvider;
-
-    public FakeAuthenticationService(
-        FakeAuthenticationHandler handler,
-        IAuthenticationSchemeProvider authenticationSchemeProvider)
-    {
-        _handler = handler;
-        _authenticationSchemeProvider = authenticationSchemeProvider;
-    }
-    
     public async Task<AuthenticateResult> AuthenticateAsync(HttpContext context, string? schemeName)
     {
-        var scheme = await _authenticationSchemeProvider.GetSchemeAsync(schemeName!);
-        await _handler.InitializeAsync(scheme!, context);
-        var authResult = await _handler.AuthenticateAsync();
+        var scheme = await authenticationSchemeProvider.GetSchemeAsync(schemeName!);
+        await handler.InitializeAsync(scheme!, context);
+        var authResult = await handler.AuthenticateAsync();
         return authResult;
     }
 
@@ -32,7 +24,7 @@ public class FakeAuthenticationService : IAuthenticationService
 
     public Task ForbidAsync(HttpContext context, string? schemeName, AuthenticationProperties? properties)
     {
-        return _handler.ForbidAsync(properties);
+        return handler.ForbidAsync(properties);
     }
 
     public Task SignInAsync(

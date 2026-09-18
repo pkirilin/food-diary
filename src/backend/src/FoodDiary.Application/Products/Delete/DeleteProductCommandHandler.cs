@@ -1,5 +1,3 @@
-using System.Threading;
-using System.Threading.Tasks;
 using FoodDiary.Domain.Repositories;
 
 namespace FoodDiary.Application.Products.Delete;

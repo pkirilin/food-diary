@@ -1,4 +1,3 @@
-using System;
 using FoodDiary.Contracts.Products;
 
 namespace FoodDiary.Application.Products.SuggestNutrition;

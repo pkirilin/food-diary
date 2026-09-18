@@ -1,6 +1,4 @@
 using System.Text.Json.Serialization;
-using System.Threading;
-using System.Threading.Tasks;
 using JetBrains.Annotations;
 
 namespace FoodDiary.Application.Auth.GetStatus;

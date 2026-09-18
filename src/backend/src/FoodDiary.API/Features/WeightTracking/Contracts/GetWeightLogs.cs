@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace FoodDiary.API.Features.WeightTracking.Contracts;
 
 public record GetWeightLogsRequest(DateOnly From, DateOnly To);

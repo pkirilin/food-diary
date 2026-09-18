@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace FoodDiary.Domain.Entities;
+﻿namespace FoodDiary.Domain.Entities;
 
 /// <summary>
 /// Eatable product (or dish) to store in diary  

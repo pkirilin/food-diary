@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using FoodDiary.Domain.Entities;
+﻿using FoodDiary.Domain.Entities;
 using FoodDiary.Domain.Utils;
 
 namespace FoodDiary.Infrastructure.Utils;

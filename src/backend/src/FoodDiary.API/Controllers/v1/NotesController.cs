@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Net;
 using FoodDiary.API.Mapping;
 using Microsoft.AspNetCore.Mvc;
 using FoodDiary.Application.Notes.Create;
@@ -14,7 +10,6 @@ using FoodDiary.Application.Notes.Update;
 using FoodDiary.Contracts.Notes;
 using FoodDiary.Domain.Utils;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 
 namespace FoodDiary.API.Controllers.v1;
 
