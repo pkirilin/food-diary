@@ -27,10 +27,7 @@ docker run -p 5432:5432 --name postgres \
 docker run -p 5050:80 --name pgadmin -e "PGADMIN_DEFAULT_EMAIL=name@example.com" -e "PGADMIN_DEFAULT_PASSWORD=postgres" -d dpage/pgadmin4
 ```
 
-Create a Google OAuth client for local sign-in, following the [deployment guide](guide/deployment.md#set-up-google-sign-in) with these values:
-
-- Authorized JavaScript origin: `https://localhost:8080`
-- Authorized redirect URI: `https://localhost:8080/signin-google`
+Create a Google OAuth client for local sign-in, following the [deployment guide](guide/deployment.md#set-up-google-sign-in) with authorized redirect URI: `https://localhost:8080/signin-google`
 
 Fill necessary secrets:
 
