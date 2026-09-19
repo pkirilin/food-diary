@@ -18,9 +18,7 @@ Food Diary uses Google to sign you in, so you need your own OAuth client:
 
 1. Open the [Google Cloud Console](https://console.cloud.google.com/) and create a project, or pick an existing one.
 2. Configure the OAuth consent screen. While the app is in testing, add your own Google account as a test user.
-3. Create an OAuth client ID of type **Web application** with:
-   - Authorized JavaScript origin: `https://<your-domain>`
-   - Authorized redirect URI: `https://<your-domain>/signin-google`
+3. Create an OAuth client ID of type **Web application** with authorized redirect URI: `https://<your-domain>/signin-google`.
 4. Copy the client ID and client secret. They go into `GoogleAuth__ClientId` and `GoogleAuth__ClientSecret`.
 
 Google's own guide has the details: [Manage OAuth clients](https://support.google.com/cloud/answer/6158849).
