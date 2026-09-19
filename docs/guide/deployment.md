@@ -115,11 +115,11 @@ Configuration key            | Environment variable            | Default        
 -----------------------------|---------------------------------|-------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 `Mcp:Enabled`                | `Mcp__Enabled`                  | `false`                                   | Enables the MCP server and its OAuth endpoints. When `false`, `/mcp`, `/authorize`, `/token` and `/.well-known/*` return `404`
 `Mcp:BaseUrl`                | `Mcp__BaseUrl`                  | —                                         | Public origin of the app, e.g. `https://food.example.com`: the connector URL without `/mcp`. Must use `https` (`http` is allowed only for `localhost`), with no path, query or trailing slash
-`Mcp:Clients:0:ClientId`     | `Mcp__Clients__0__ClientId`     | —                                         | Client ID entered in the Claude connector
-`Mcp:Clients:0:ClientSecret` | `Mcp__Clients__0__ClientSecret` | —                                         | Client secret entered in the Claude connector. Keep it out of source control
+`Mcp:Clients:0:ClientId`     | `Mcp__Clients__0__ClientId`     | —                                         | OAuth client ID entered in the MCP client settings
+`Mcp:Clients:0:ClientSecret` | `Mcp__Clients__0__ClientSecret` | —                                         | OAuth client secret entered in entered in the MCP client settings. Keep it out of source control
 `Mcp:Clients:0:RedirectUri`  | `Mcp__Clients__0__RedirectUri`  | —                                         | OAuth callback of the client. For Claude, it is `https://claude.ai/api/mcp/auth_callback`
 `Mcp:AccessTokenLifetime`    | `Mcp__AccessTokenLifetime`      | `01:00:00`                                | How long an access token is valid before Claude has to refresh it
-`Mcp:RefreshTokenLifetime`   | `Mcp__RefreshTokenLifetime`     | `30.00:00:00`                             | How long a connection lasts, counted from when you connected. Refreshing does not extend it, so reconnect Claude once it expires
+`Mcp:RefreshTokenLifetime`   | `Mcp__RefreshTokenLifetime`     | `30.00:00:00`                             | How long a connection lasts, counted from when you connected. Refreshing does not extend it, so reconnect MCP client once it expires
 
 Another OAuth client goes at the next index, e.g. `Mcp:Clients:1`, with its own `ClientId`, `ClientSecret` and `RedirectUri`.
 
