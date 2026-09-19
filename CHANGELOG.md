@@ -8,10 +8,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `deploy/compose.yml`, a ready-made self-hosting setup that runs the released image with PostgreSQL and a Caddy reverse proxy that gets HTTPS certificates automatically
+
 ### Changed
 
 - Hosting moved from Amvera Cloud to a self-hosted VPS running Dokploy
 - The Docker image now applies database migrations on start, before the API. A container whose `ConnectionStrings__Default` is unset or unreachable now exits non-zero instead of starting and serving
+- Reorganized the documentation: the README now focuses on what the app is and how to get started, with deployment, configuration, MCP, development and release guides moved to `docs/` and `CONTRIBUTING.md`
+
+### Removed
+
+- The root `docker-compose.yml`, which built the image from source for `localhost` only. Self-host with `deploy/compose.yml` instead
 
 ## [0.8.0] - React 19, MUI v9 & AI photo zoom
 

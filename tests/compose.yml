@@ -14,7 +14,7 @@ services:
       retries: 5
   web:
     build:
-      context: ./
+      context: ../
       dockerfile: Dockerfile
     ports:
       - "8080:443"
@@ -30,6 +30,9 @@ services:
       - Integrations__OpenAI__ApiKey=${OPENAI_API_KEY}
     volumes:
       - ./certs:/https:ro
+    depends_on:
+      db:
+        condition: service_healthy
     entrypoint: >
       /bin/bash -c "cp /https/ca.cert.crt /usr/local/share/ca-certificates/ca.cert.crt &&
         chmod 644 /usr/local/share/ca-certificates/ca.cert.crt &&

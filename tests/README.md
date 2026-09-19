@@ -3,7 +3,7 @@
 Run containers:
 
 ```console
-docker-compose up -d --build
+docker compose up -d --build
 ```
 
 Run tests:
@@ -15,5 +15,5 @@ yarn test
 Stop containers:
 
 ```console
-docker-compose down
+docker compose down
 ```

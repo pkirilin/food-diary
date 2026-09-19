@@ -17,7 +17,9 @@ Do not name, or reason from the behaviour of:
 
 A sentence of the form "the platform sets X" is a property of one person's deployment, not of this app.
 
-Names that **may** appear, because the repository contains them or hard-depends on them: Docker, `docker compose`, PostgreSQL, EF Core, Google OAuth, GitHub Actions, Docker Hub.
+Names that **may** appear, because the repository contains them or hard-depends on them: Docker, `docker compose`, PostgreSQL, EF Core, Google OAuth, GitHub Actions, Docker Hub, Caddy (bundled in `deploy/compose.yml`).
+
+A single sentence of **non-exhaustive examples** of platforms the image runs on ("e.g. Dokploy, Coolify, Render or Heroku") is allowed, so a reader recognises their own platform. The guidance around it must still hold on any platform — no steps, settings, or behaviour specific to one of them.
 
 ```markdown
 <!-- BAD - a claim about one deployment, written as a property of the app -->
