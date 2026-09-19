@@ -59,7 +59,7 @@ Already running a reverse proxy on the server? Delete the `caddy` service from `
 
 ## Option B: container platform
 
-Food Diary runs on any platform that can run a Docker image, e.g. Coolify, Dokploy or Amvera. The steps depend on your platform, but this is what the app needs from it:
+Food Diary runs on any platform that can run a Docker image, e.g. [Dokploy](https://dokploy.com/), [Coolify](https://coolify.io/), or [Amvera](https://amvera.ru/). The steps depend on your platform, but this is what the app needs from it:
 
 - Run the `pkirilin/food-diary` image.
 - The container listens on port 8080. If your platform assigns its own port, set `ASPNETCORE_HTTP_PORTS` to it.
