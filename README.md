@@ -21,7 +21,7 @@ What it doesn't do:
 - No exercise or activity tracking
 - No syncing with fitness trackers
 - One person per install; no social or sharing features
-- No app-store app — install it from the browser as a PWA
+- No app-store app — install it from the browser as a [PWA](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps)
 
 ## Quick start
 
