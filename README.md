@@ -3,30 +3,36 @@
 [![food-diary](https://github.com/pkirilin/food-diary/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/pkirilin/food-diary/actions/workflows/build.yml)
 [![Docker Hub](https://img.shields.io/docker/v/pkirilin/food-diary?label=docker)](https://hub.docker.com/r/pkirilin/food-diary)
 
-Food Diary is a free, open-source, and lightweight web app for nutrition and weight tracking. It was initially created in 2018 to help [the author](https://github.com/pkirilin) address personal health challenges caused by being overweight.
+Food Diary is a free, open-source web app for tracking what you eat and what you weigh. It was created in 2018 to help [its author](https://github.com/pkirilin) deal with health problems caused by being overweight.
 
-While it doesn't fully replace popular commercial nutrition and weight tracking apps, Food Diary offers essential features as a free alternative for people who care about their health and well-being.
+Why use it:
 
-Curious to see how the app works? [View the demo app here](https://pkirilin.github.io/food-diary/).
+- **Instant daily totals.** Log what you eat and immediately see your calories, protein, fats, carbs, sugar and salt for the day. Paper can't do that.
+- **Your data stays yours.** It runs on your own server. No subscription, no ads, no account with anyone else.
+- **Only the essentials.** Food logs, your own product list and weight tracking, plus AI that fills in nutrition values from a photo and read-only access for Claude or any other MCP client.
 
-## Table of contents
+**You run your own copy.** There is no hosted version to sign up for. You need a server or container platform that runs Docker, a Google account to sign in with, and a domain with HTTPS to use it anywhere other than the machine it runs on.
 
-- [Features](#features)
-- [Browser support](#browser-support)
-- [Installation](#installation)
-- [MCP server](#mcp-server)
-  - [Connecting Claude](#connecting-claude)
-  - [MCP configuration](#mcp-configuration)
-- [Development](#development)
-  - [Setting up the entire app (Frontend and Backend)](#setting-up-the-entire-app-frontend-and-backend)
-  - [Setting up Frontend with mocked auth and API](#setting-up-frontend-with-mocked-auth-and-api)
-    - [Frontend environment variables](#frontend-environment-variables)
-  - [Managing database migrations](#managing-database-migrations)
-- [Releasing](#releasing)
-- [Contacts](#contacts)
-- [Copyright](#copyright)
-  - [Favicon](#favicon)
-- [License](#license)
+What it doesn't do:
+
+- No barcode scanning
+- No shared database of foods — you add the products you eat yourself
+- No calorie or macro goals
+- No exercise or activity tracking
+- No syncing with fitness trackers
+- One person per install; no social or sharing features
+- No app-store app — install it from the browser as a [PWA](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps)
+
+## Quick start
+
+**[Try the demo](https://pkirilin.github.io/food-diary/)** — it runs in your browser against sample data, with no server behind it. Features that need a server, like AI photo recognition, are turned off.
+
+To run your own copy:
+
+1. [Get a server and a domain](docs/guide/deployment.md#what-you-need).
+2. [Set up Google sign-in](docs/guide/deployment.md#set-up-google-sign-in).
+3. [Download `compose.yml` and `.env.example`](docs/guide/deployment.md#option-a-vps-with-docker-compose), copy `.env.example` to `.env` and fill it in.
+4. Run `docker compose up -d` and open `https://<your-domain>`.
 
 ## Features
 
@@ -56,6 +62,14 @@ Curious to see how the app works? [View the demo app here](https://pkirilin.gith
   </tr>
 </table>
 
+## MCP server
+
+Connect Claude, or any other compatible MCP client, to your Food Diary and ask it what you ate last week or how your protein intake is trending. Access is read-only and off by default; see the [MCP server guide](docs/guide/mcp-server.md).
+
+## Self-hosting
+
+The [deployment guide](docs/guide/deployment.md) covers running Food Diary on a VPS with Docker Compose or on a container platform, the full configuration reference, updating, and backups.
+
 ## Browser support
 
 The app runs in these browsers and later:
@@ -70,241 +84,12 @@ Safari (iOS) / iPadOS  | 17.0
 
 These are the floors of [MUI v9](https://mui.com/material-ui/getting-started/supported-platforms/), the component library the frontend is built on.
 
-## Installation
+## Contributing
 
-Clone the repository:
-
-```shell
-git clone https://github.com/pkirilin/food-diary.git
-cd food-diary
-```
-
-Setup [Google OAuth 2.0 client](https://support.google.com/cloud/answer/6158849) you will use for sign in:
-
-- Add Authorized JavaScript origins: <https://localhost:8080>
-- Add Authorized redirect URIs: <https://localhost:8080/signin-google>
-
-Create a copy of `.env.example` file and save it as `.env`:
-
-```shell
-cat .env.example >> .env
-```
-
-Fill your credentials, then run:
-
-```shell
-docker-compose up -d
-```
-
-Navigate to <https://localhost:8080>
-
-## MCP server
-
-Food Diary can serve your data to any compatible MCP client as a read-only [MCP](https://modelcontextprotocol.io) server at `/mcp`, so Claude (or any other LLM) can answer questions about what you ate, plan your next week, and many other things.
-
-The server is off by default. You can manage it via [MCP configuration](#mcp-configuration) environment variables.
-
-### Connecting Claude
-
-To connect Claude:
-
-1. Run the app on a public HTTPS domain. Claude connects from Anthropic's servers rather than from your browser, so it cannot reach `localhost`. **Your server should be located in a [supported country and region](https://www.anthropic.com/supported-countries)**.
-2. Choose a client ID and a client secret, e.g. `openssl rand -hex 32` for the secret.
-3. Set the [MCP configuration](#mcp-configuration) and restart the app. With `Mcp:Enabled` set, the app refuses to start while a required value is missing or malformed, and names the key.
-4. In Claude, [add a custom connector](https://support.claude.com/en/articles/11175166-get-started-with-custom-connectors-using-remote-mcp) with the URL `<Mcp:BaseUrl>/mcp`, and enter the client ID and secret in its advanced settings.
-5. Connect, and sign in with a Google account whose email is in `Auth:AllowedEmails`.
-
-### MCP configuration
-
-Configuration key            | Environment variable            | Default                                   | Description
------------------------------|---------------------------------|-------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-`Mcp:Enabled`                | `Mcp__Enabled`                  | `false`                                   | Enables the MCP server and its OAuth endpoints. When `false`, `/mcp`, `/authorize`, `/token` and `/.well-known/*` return `404`
-`Mcp:BaseUrl`                | `Mcp__BaseUrl`                  | —                                         | Public origin of the app, e.g. `https://diary.example.com`: the connector URL without `/mcp`. Must use `https` (`http` is allowed only for `localhost`), with no path, query or trailing slash
-`Mcp:Clients:0:ClientId`     | `Mcp__Clients__0__ClientId`     | —                                         | Client ID entered in the Claude connector
-`Mcp:Clients:0:ClientSecret` | `Mcp__Clients__0__ClientSecret` | —                                         | Client secret entered in the Claude connector. Keep it in user-secrets or the environment, never in `appsettings.json`
-`Mcp:Clients:0:RedirectUri`  | `Mcp__Clients__0__RedirectUri`  | `https://claude.ai/api/mcp/auth_callback` | Claude's OAuth callback
-`Mcp:AccessTokenLifetime`    | `Mcp__AccessTokenLifetime`      | `01:00:00`                                | How long an access token is valid before Claude has to refresh it
-`Mcp:RefreshTokenLifetime`   | `Mcp__RefreshTokenLifetime`     | `30.00:00:00`                             | How long a connection lasts, counted from when you connected. Refreshing does not extend it, so reconnect Claude once it expires
-
-Another OAuth client goes at the next index, e.g. `Mcp:Clients:1`, with its own `ClientId`, `ClientSecret` and `RedirectUri`.
-
-## Development
-
-### Setting up the entire app (Frontend and Backend)
-
-Before starting, ensure you have the following installed on your machine:
-
-- [Docker](https://www.docker.com/)
-- [.NET SDK](https://dotnet.microsoft.com/en-us/download) (10.0.302 or higher)
-- [Node.js](https://nodejs.org/en) (24 or higher)
-- [yarn](https://yarnpkg.com/getting-started/install)
-
-Start PostgreSQL database container:
-
-```shell
-docker run -p 5432:5432 --name postgres \
-    -e POSTGRES_USER=postgres \
-    -e POSTGRES_PASSWORD=postgres \
-    -e POSTGRES_DB=FoodDiary \
-    -d postgres:15.1-alpine
-```
-
-*Start PgAdmin if you need it (optional):*
-
-```shell
-docker run -p 5050:80 --name pgadmin -e "PGADMIN_DEFAULT_EMAIL=name@example.com" -e "PGADMIN_DEFAULT_PASSWORD=postgres" -d dpage/pgadmin4
-```
-
-Fill necessary secrets:
-
-```shell
-dotnet user-secrets --project src/backend/src/FoodDiary.API set "Auth:AllowedEmails:0" "<your_email>@gmail.com"
-
-dotnet user-secrets --project src/backend/src/FoodDiary.API set "ConnectionStrings:Default" "<your_db_connection_string>"
-
-# Optional, used in recognize note by photo feature
-dotnet user-secrets --project src/backend/src/FoodDiary.API set "Integrations:OpenAI:ApiKey" "<your_OpenAI_api_key>"
-
-dotnet user-secrets --project src/backend/src/FoodDiary.API set "Integrations:OpenAI:Model" "gpt-5.4-mini"
-
-# Optional, runs the MCP server locally. Claude itself cannot reach localhost, see Connecting Claude
-dotnet user-secrets --project src/backend/src/FoodDiary.API set "Mcp:Enabled" "true"
-
-dotnet user-secrets --project src/backend/src/FoodDiary.API set "Mcp:BaseUrl" "https://localhost:8080"
-
-dotnet user-secrets --project src/backend/src/FoodDiary.API set "Mcp:Clients:0:ClientId" "<your_client_id>"
-
-dotnet user-secrets --project src/backend/src/FoodDiary.API set "Mcp:Clients:0:ClientSecret" "<your_client_secret>"
-```
-
-Run database migrations:
-
-```shell
-dotnet run --project src/backend/src/FoodDiary.Migrator
-```
-
-Start Web API:
-
-```shell
-dotnet run --project src/backend/src/FoodDiary.API
-```
-
-Start frontend application (in separate terminal window):
-
-```shell
-cd src/frontend
-yarn start
-```
-
-Navigate to <https://localhost:8080>
-
-### Setting up Frontend with mocked auth and API
-
-If you'd like to work on the frontend without running the backend, you can use mocked authentication and API responses.
-
-Before starting, ensure you have the following installed on your machine:
-
-- [Node.js](https://nodejs.org/en) (24 or higher)
-- [yarn](https://yarnpkg.com/getting-started/install)
-
-Navigate to the frontend directory:
-
-```shell
-cd src/frontend
-```
-
-Create local env config:
-
-```shell
-touch .env.local
-```
-
-Fill `.env.local` with these values:
-
-```text
-VITE_APP_MSW_ENABLED=true
-VITE_APP_FAKE_AUTH_ENABLED=true
-VITE_APP_FAKE_AUTH_LOGIN_ON_INIT=true
-```
-
-For the full list of environment variables, see the [Frontend environment variables](#frontend-environment-variables) section.
-
-Launch the frontend application:
-
-```shell
-yarn start
-```
-
-Navigate to <http://localhost:5173>. The app will now use mocked responses for authentication and API calls.
-
-#### Frontend environment variables
-
-The following environment variables are available for configuring the frontend:
-
-Name                                       | Type      | Description
--------------------------------------------|-----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-`VITE_APP_API_URL`                         | `string`  | Specifies a backend API base URL without a trim slash, e.g. `https://localhost:8080`
-`VITE_APP_AUTH_CHECK_INTERVAL`             | `number`  | Specifies the auth status check interval in milliseconds to ensure that users with expired cookies will not be able to use the application without refreshing the page in the browser. Not used if `VITE_APP_FAKE_AUTH_ENABLED` is `true`
-`VITE_APP_DEMO_MODE_ENABLED`               | `boolean` | Enables demo mode. In demo mode, some features related to file system or external integrations are disabled
-`VITE_APP_FAKE_AUTH_ENABLED`               | `boolean` | Setups fake authentication flow without using a backend server and OAuth Identity provider. Used for local development
-`VITE_APP_FAKE_AUTH_LOGIN_ON_INIT`         | `boolean` | Defines whether the user is authenticated by default when using a fake authentication flow. Used for local development
-`VITE_APP_MSW_ENABLED`                     | `boolean` | Enables mockServiceWorker to intercept and mock all API requests. Used for testing or local development purposes
-`VITE_APP_GOOGLE_ANALYTICS_ENABLED`        | `boolean` | Enables Google Analytics
-`VITE_APP_GOOGLE_ANALYTICS_MEASUREMENT_ID` | `string`  | Measurement (data stream) ID for Google Analytics
-`VITE_APP_MOCK_API_RESPONSE_DELAY`         | `number`  | Sets delay (in milliseconds) before all mock API responses. Not used if `VITE_APP_MSW_ENABLED` is `false`
-
-### Managing database migrations
-
-To create a new migration, run the following command:
-
-```shell
-dotnet ef migrations add SampleMigrationName \
-    -s src/backend/src/FoodDiary.API \
-    -p src/backend/src/FoodDiary.Infrastructure \
-    -o Migrations
-```
-
-## Releasing
-
-Releases are published to [Docker Hub](https://hub.docker.com/r/pkirilin/food-diary) and as GitHub releases via the [Release workflow](.github/workflows/release.yml).
-
-To cut a new release:
-
-1. On `main`, update `CHANGELOG.md`. Either:
-   - **(a) Manually:** rename the `[Unreleased]` section to
-     `[X.Y.Z] - <short descriptive title>`
-     (e.g. `[0.5.0] - Node.js 24 & minor packages bump`), and add a fresh empty
-     `[Unreleased]` section above it.
-   - **(b) With Claude Code:** run the `draft-release-changelog` skill, which
-     drafts the entry from commits since the latest tag, auto-determines the
-     version bump, and commits the change for you.
-2. Commit and push.
-3. Go to **Actions → Release → Run workflow**.
-4. Enter the version (e.g. `0.4.0`, no `v` prefix) and run.
-
-The workflow validates inputs, builds the image, pushes `pkirilin/food-diary:X.Y.Z` and `pkirilin/food-diary:latest` to Docker Hub, creates the `vX.Y.Z` git tag, and publishes the GitHub release with notes extracted from the matching `CHANGELOG.md` section.
-
-If a release fails partway through (e.g. the image is pushed but the git tag step fails), clean up manually: a re-run of the same version is blocked by the Docker Hub tag-existence check. Either delete the published Docker Hub tag (Docker Hub UI → Tags → Delete), or push the git tag and create the release with `gh` from your machine:
-
-```shell
-gh workflow run release.yml --ref main -f version=x.y.z
-```
-
-## Contacts
-
-For any issues, suggestions, questions, or contribution guidance, please open a GitHub issue or reach out to [kirilin.pav@gmail.com](mailto:kirilin.pav@gmail.com).
-
-## Copyright
-
-### Favicon
-
-This favicon was generated using the following graphics from Twitter Twemoji:
-
-- Graphics Title: 1f96c.svg
-- Graphics Author: Copyright 2020 Twitter, Inc and other contributors (<https://github.com/twitter/twemoji>)
-- Graphics Source: <https://github.com/twitter/twemoji/blob/master/assets/svg/1f96c.svg>
-- Graphics License: CC-BY 4.0 (<https://creativecommons.org/licenses/by/4.0/>)
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, the release process, and where to ask questions.
 
 ## License
 
 The project is licensed under the AGPLv3. See the [LICENSE](LICENSE) file for more information.
+
+Credits: the favicon is [Twemoji `1f96c`](https://github.com/twitter/twemoji/blob/master/assets/svg/1f96c.svg), © 2020 Twitter, Inc and other contributors, licensed under [CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/).

@@ -1,0 +1,45 @@
+services:
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    command: caddy reverse-proxy --from ${DOMAIN:?Set DOMAIN in .env} --to web:8080
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - web
+
+  web:
+    image: pkirilin/food-diary:latest
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
+      Mcp__BaseUrl: https://${DOMAIN}
+      ConnectionStrings__Default: User ID=postgres;Password=${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env};Host=db;Port=5432;Database=FoodDiary
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: FoodDiary
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d FoodDiary"]
+      interval: 10s
+      retries: 5
+
+volumes:
+  caddy_data:
+  caddy_config:
+  db_data:

@@ -7,7 +7,7 @@
 **/.vscode
 **/*.*proj.user
 **/bin
-**/docker-compose*
+**/compose.yml
 **/Dockerfile*
 **/node_modules
 **/.yarn/cache
