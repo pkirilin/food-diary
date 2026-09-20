@@ -8,8 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.0] - MCP server & self-hosting setup
+
 ### Added
 
+- Read-only MCP server at `/mcp` that lets Claude or any other MCP client read your food logs and products, with a built-in OAuth layer. It is off by default and enabled through the `Mcp__*` settings; see `docs/guide/mcp-server.md`
 - `deploy/compose.yml`, a ready-made self-hosting setup that runs the released image with PostgreSQL and a Caddy reverse proxy that gets HTTPS certificates automatically
 
 ### Changed
@@ -17,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Hosting moved from Amvera Cloud to a self-hosted VPS running Dokploy
 - The Docker image now applies database migrations on start, before the API. A container whose `ConnectionStrings__Default` is unset or unreachable now exits non-zero instead of starting and serving
 - Reorganized the documentation: the README now focuses on what the app is and how to get started, with deployment, configuration, MCP, development and release guides moved to `docs/` and `CONTRIBUTING.md`
+- Backend component tests now use Testcontainers v4
 
 ### Removed
 
