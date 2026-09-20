@@ -12,7 +12,8 @@ Food Diary is a self-hosted, lightweight web app for nutrition and weight tracki
 - `src/backend/` — .NET 10 solution (`FoodDiary.slnx`). Clean-architecture-ish projects.
 - `src/backend/tests/` — `FoodDiary.UnitTests` and `FoodDiary.ComponentTests`.
 - `tests/` — Playwright E2E suite (separate yarn project).
-- `docker-compose.yml` / `Dockerfile` — full-stack local run.
+- `Dockerfile` — the published image. `deploy/compose.yml` — self-hosting setup (released image + PostgreSQL + Caddy). `tests/compose.yml` — full stack built from source, used by the E2E suite.
+- `docs/guide/` — user docs (deployment, configuration reference, MCP). `docs/development.md` / `docs/releasing.md` — maintainer docs, linked from `CONTRIBUTING.md`.
 
 The frontend and the two test projects are independent yarn (Berry, node-modules linker) workspaces — install/run yarn from inside each directory, not at repo root.
 
@@ -29,7 +30,7 @@ yarn lint:fix
 yarn format / format:check
 ```
 
-For backend-less development, set `.env.local` with `VITE_APP_MSW_ENABLED=true`, `VITE_APP_FAKE_AUTH_ENABLED=true`, `VITE_APP_FAKE_AUTH_LOGIN_ON_INIT=true` (full env-var list in README).
+For backend-less development, set `.env.local` with `VITE_APP_MSW_ENABLED=true`, `VITE_APP_FAKE_AUTH_ENABLED=true`, `VITE_APP_FAKE_AUTH_LOGIN_ON_INIT=true` (full env-var list in `docs/development.md`).
 
 ### Backend (`src/backend/`)
 
@@ -50,7 +51,7 @@ dotnet ef migrations add <Name> \
     -o Migrations
 ```
 
-Required user-secrets on `FoodDiary.API`: `Auth:AllowedEmails:0`, `ConnectionStrings:Default`, optional `Integrations:OpenAI:ApiKey` and `Integrations:OpenAI:Model` (overrides default). Enabling the MCP server locally (`Mcp:Enabled` = `true`) also requires `Mcp:BaseUrl` (`https://localhost:8080`), `Mcp:Clients:0:ClientId` and `Mcp:Clients:0:ClientSecret`; startup fails naming whichever is missing or malformed.
+Required user-secrets on `FoodDiary.API`: `Auth:AllowedEmails:0`, `ConnectionStrings:Default`, `GoogleAuth:ClientId`, `GoogleAuth:ClientSecret`, optional `Integrations:OpenAI:ApiKey` and `Integrations:OpenAI:Model` (overrides default). Enabling the MCP server locally (`Mcp:Enabled` = `true`) also requires `Mcp:BaseUrl` (`https://localhost:8080`), `Mcp:Clients:0:ClientId`, `Mcp:Clients:0:ClientSecret` and `Mcp:Clients:0:RedirectUri`; startup fails naming whichever is missing or malformed.
 
 ### E2E (`tests/`)
 
@@ -63,12 +64,12 @@ yarn codegen
 ### Full stack
 
 ```shell
-docker-compose up -d   # uses .env (copy from .env.example); app served at https://localhost:8080
+cd tests && docker compose up -d --build   # builds from source, uses tests/.env; app served at https://localhost:8080
 ```
 
 ### Tests requiring Docker
 
-Backend component tests (`FoodDiary.ComponentTests`, via Testcontainers) and the E2E suite (`tests/`, via docker-compose) require a running Docker daemon. **Before running either suite, if Docker isn't available, STOP and ask the user how to proceed** — never skip the tests or silently work around them (e.g. substituting a non-Docker path). Offer having them install and start Docker manually as one option.
+Backend component tests (`FoodDiary.ComponentTests`, via Testcontainers) and the E2E suite (`tests/`, via `tests/compose.yml`) require a running Docker daemon. **Before running either suite, if Docker isn't available, STOP and ask the user how to proceed** — never skip the tests or silently work around them (e.g. substituting a non-Docker path). Offer having them install and start Docker manually as one option.
 
 ## Architecture notes
 
