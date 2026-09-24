@@ -12,7 +12,8 @@
     "format:check": "prettier --check .",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "update-sdks": "yarn dlx @yarnpkg/sdks"
+    "update-sdks": "yarn dlx @yarnpkg/sdks",
+    "refresh-lockfiles": "yarn dedupe && yarn up -R node-gyp"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
