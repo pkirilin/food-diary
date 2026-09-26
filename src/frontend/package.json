@@ -87,7 +87,9 @@
   },
   "packageManager": "yarn@4.16.0",
   "msw": {
-    "workerDirectory": "public"
+    "workerDirectory": [
+      "public"
+    ]
   },
   "engines": {
     "node": ">=24 <25"
