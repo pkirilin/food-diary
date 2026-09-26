@@ -9,6 +9,9 @@ on:
       - "Dockerfile"
       - ".dockerignore"
 
+permissions:
+  contents: read
+
 jobs:
   backend:
     runs-on: ubuntu-22.04
