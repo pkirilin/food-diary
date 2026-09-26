@@ -7,7 +7,7 @@ How to run Food Diary from source. To run a released version instead, see the [d
 Before starting, ensure you have the following installed on your machine:
 
 - [Docker](https://www.docker.com/)
-- [.NET SDK](https://dotnet.microsoft.com/en-us/download) (10.0.302 or higher)
+- [.NET SDK](https://dotnet.microsoft.com/en-us/download) (the version in [`src/backend/global.json`](../src/backend/global.json), or a newer 10.0 SDK)
 - [Node.js](https://nodejs.org/en) (24 or higher)
 - [yarn](https://yarnpkg.com/getting-started/install)
 
