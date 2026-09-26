@@ -4,7 +4,7 @@ Releases are published to [Docker Hub](https://hub.docker.com/r/pkirilin/food-di
 
 To cut a new release:
 
-1. On `main`, update `CHANGELOG.md`. Either:
+1. Update `CHANGELOG.md`. Either:
    - **(a) Manually:** rename the `[Unreleased]` section to
      `[X.Y.Z] - <short descriptive title>`
      (e.g. `[0.5.0] - Node.js 24 & minor packages bump`), and add a fresh empty
@@ -12,7 +12,7 @@ To cut a new release:
    - **(b) With Claude Code:** run the `draft-release-changelog` skill, which
      drafts the entry from commits since the latest tag, auto-determines the
      version bump, and commits the change for you.
-2. Commit and push.
+2. Commit, push, and merge to `main`.
 3. Go to **Actions → Release → Run workflow**.
 4. Enter the version (e.g. `0.4.0`, no `v` prefix) and run.
 
