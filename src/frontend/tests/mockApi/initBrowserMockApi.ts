@@ -1,7 +1,7 @@
 const IGNORED_URL_PATTERNS: RegExp[] = [
-  /fonts.gstatic.com/,
-  /fonts.googleapis.com/,
-  /\/site.webmanifest/,
+  /fonts\.gstatic\.com/,
+  /fonts\.googleapis\.com/,
+  /\/site\.webmanifest/,
   /^\/src/,
   /localhost:5173/,
   /chrome-extension:\/\//,
