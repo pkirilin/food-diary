@@ -12,7 +12,7 @@ paths:
 
 ### Build configuration
 
-Shared MSBuild settings live in `src/backend/Directory.Build.props` — target framework, language version, nullable, and warning policy. Do not set these in individual csproj files. Bumping the target framework is a one-line edit there (plus `global.json`, the `Dockerfile`, and the `dotnet-version` entries in `.github/workflows/`, which MSBuild cannot reach).
+Shared MSBuild settings live in `src/backend/Directory.Build.props` — target framework, language version, nullable, and warning policy. Do not set these in individual csproj files. Bumping the target framework is a one-line edit there (plus `global.json`, the `Dockerfile` image tags, and the ".NET SDK" line in `docs/development.md`, which MSBuild cannot reach; CI reads the SDK version from `global.json`).
 
 Package versions are centrally managed in `src/backend/Directory.Packages.props`. To add a package: add a `<PackageVersion Include="..." Version="..." />` there, then reference it **without a version** in the consuming csproj:
 
