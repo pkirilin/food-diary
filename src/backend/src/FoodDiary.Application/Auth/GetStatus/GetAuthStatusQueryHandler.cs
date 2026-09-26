@@ -29,23 +29,22 @@ public class GetAuthStatusQueryHandler(
             return new GetAuthStatusResult.NotAuthenticated();
         }
 
-        var userEmail = query.AuthResult.Principal.FindFirst(Constants.ClaimTypes.Email)?.Value;
-        logger.LogInformation("Checking access token for user {UserEmail}...", userEmail);
+        logger.LogInformation("Checking access token...");
 
         if (!ExistingTokenExpired(query.AuthResult.Properties.IssuedUtc.Value))
         {
-            logger.LogInformation("User {UserEmail} has been successfully authenticated", userEmail);
+            logger.LogInformation("User has been successfully authenticated");
             return new GetAuthStatusResult.Authenticated();
         }
 
-        logger.LogInformation("Access token for user {UserEmail} expired. Attempting to refresh token...", userEmail);
+        logger.LogInformation("Access token expired. Attempting to refresh token...");
 
         var existingAccessToken = query.AuthResult.Properties.GetTokenValue(Constants.OpenIdConnectParameters.AccessToken);
         var existingRefreshToken = query.AuthResult.Properties.GetTokenValue(Constants.OpenIdConnectParameters.RefreshToken);
 
         if (string.IsNullOrWhiteSpace(existingAccessToken) || string.IsNullOrWhiteSpace(existingRefreshToken))
         {
-            logger.LogInformation("Access and/or refresh tokens for user {UserEmail} were not found", userEmail);
+            logger.LogInformation("Access and/or refresh tokens were not found");
             return await NotAuthenticated();
         }
 
@@ -53,25 +52,23 @@ public class GetAuthStatusQueryHandler(
 
         if (refreshTokenResult is not RefreshTokenResult.Success refreshTokenResponse)
         {
-            logger.LogInformation("Could not refresh token for user {UserEmail}", userEmail);
+            logger.LogInformation("Could not refresh token");
             return await NotAuthenticated();
         }
 
-        logger.LogInformation(
-            "Token for user {UserEmail} has been successfully refreshed. Trying to get user info...",
-            userEmail);
+        logger.LogInformation("Token has been successfully refreshed. Trying to get user info...");
 
         var userInfoResult = await oAuthClient.GetUserInfo(refreshTokenResponse.AccessToken, cancellationToken);
 
         if (userInfoResult is GetUserInfoResult.Error)
         {
-            logger.LogInformation("Could not retrieve user info for {UserEmail}", userEmail);
+            logger.LogInformation("Could not retrieve user info");
             return await NotAuthenticated();
         }
 
         var tokens = CreateNewTokens(refreshTokenResponse, existingRefreshToken);
 
-        return await AuthenticatedWithNewTokens(query.AuthResult, tokens, userEmail);
+        return await AuthenticatedWithNewTokens(query.AuthResult, tokens);
     }
 
     private bool ExistingTokenExpired(DateTimeOffset existingTokenIssuedOn)
@@ -90,8 +87,7 @@ public class GetAuthStatusQueryHandler(
 
     private async Task<GetAuthStatusResult> AuthenticatedWithNewTokens(
         AuthenticateResult authResult,
-        IEnumerable<AuthenticationToken> tokens,
-        string? userEmail)
+        IEnumerable<AuthenticationToken> tokens)
     {
         authResult.Properties.StoreTokens(tokens);
         authResult.Properties.Items.Remove(".issued");
@@ -102,7 +98,7 @@ public class GetAuthStatusQueryHandler(
             authResult.Principal,
             authResult.Properties);
 
-        logger.LogInformation("User {UserEmail} has been successfully authenticated", userEmail);
+        logger.LogInformation("User has been successfully authenticated");
 
         return new GetAuthStatusResult.Authenticated();
     }
