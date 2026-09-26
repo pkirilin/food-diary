@@ -8,6 +8,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.1] - Security fixes & CI hardening
+
+### Security
+
+- Restricted the build workflow's `GITHUB_TOKEN` permissions to `contents: read`
+- Stopped logging user email addresses during auth status checks
+- Resolved frontend Dependabot alerts by refreshing stale dependencies and bumping vulnerable transitive packages
+
+### Fixed
+
+- CI and docs now read the .NET SDK version from `global.json` instead of a separately pinned value, so it no longer drifts on SDK bumps
+
 ## [0.9.0] - MCP server & self-hosting setup
 
 ### Added
