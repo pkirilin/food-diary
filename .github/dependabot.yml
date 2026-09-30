@@ -1,42 +1,35 @@
 version: 2
 
+# open-pull-requests-limit: 0 disables scheduled version updates; security updates are exempt from the limit.
 updates:
   - package-ecosystem: "npm"
     directories: ["/src/frontend", "/tests"]
     schedule: { interval: "weekly", day: "monday" }
-    cooldown:
-      default-days: 7
-      semver-major-days: 14
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 0
     groups:
       npm-security:
         applies-to: security-updates
-        patterns: ["*"]
-      npm-minor-patch:
-        applies-to: version-updates
-        update-types: ["minor", "patch"]
         patterns: ["*"]
 
   - package-ecosystem: "nuget"
     directory: "/src/backend"
     schedule: { interval: "weekly", day: "monday" }
-    cooldown: { default-days: 7 }
+    open-pull-requests-limit: 0
     groups:
       nuget-security:
         applies-to: security-updates
-        patterns: ["*"]
-      nuget-minor-patch:
-        applies-to: version-updates
-        update-types: ["minor", "patch"]
         patterns: ["*"]
 
   - package-ecosystem: "dotnet-sdk"
     directory: "/src/backend"
     schedule: { interval: "monthly" }
+    open-pull-requests-limit: 0
 
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule: { interval: "monthly" }
+    open-pull-requests-limit: 0
     groups:
-      actions:
+      actions-security:
+        applies-to: security-updates
         patterns: ["*"]
