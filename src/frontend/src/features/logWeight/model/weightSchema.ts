@@ -8,5 +8,4 @@ export const weightSchema = z
     error: "Must be a valid number with either '.' or ',' as decimal separator",
   })
   .transform(value => Number(value.replace(',', '.')))
-  .pipe(z.number().gte(1).lte(500))
-  .refine(value => !isNaN(value), { error: 'Must be a valid number' });
+  .pipe(z.number().gte(1).lte(500));
