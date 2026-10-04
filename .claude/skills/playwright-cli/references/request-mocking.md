@@ -6,23 +6,23 @@ Intercept, mock, modify, and block network requests.
 
 ```bash
 # Mock with custom status
-playwright-cli route "**/*.jpg" --status=404
+yarn playwright-cli route "**/*.jpg" --status=404
 
 # Mock with JSON body
-playwright-cli route "**/api/users" --body='[{"id":1,"name":"Alice"}]' --content-type=application/json
+yarn playwright-cli route "**/api/users" --body='[{"id":1,"name":"Alice"}]' --content-type=application/json
 
 # Mock with custom headers
-playwright-cli route "**/api/data" --body='{"ok":true}' --header="X-Custom: value"
+yarn playwright-cli route "**/api/data" --body='{"ok":true}' --header="X-Custom: value"
 
 # Remove headers from requests
-playwright-cli route "**/*" --remove-header=cookie,authorization
+yarn playwright-cli route "**/*" --remove-header=cookie,authorization
 
 # List active routes
-playwright-cli route-list
+yarn playwright-cli route-list
 
 # Remove a route or all routes
-playwright-cli unroute "**/*.jpg"
-playwright-cli unroute
+yarn playwright-cli unroute "**/*.jpg"
+yarn playwright-cli unroute
 ```
 
 ## URL Patterns
@@ -41,7 +41,7 @@ For conditional responses, request body inspection, response modification, or de
 ### Conditional Response Based on Request
 
 ```bash
-playwright-cli run-code "async page => {
+yarn playwright-cli run-code "async page => {
   await page.route('**/api/login', route => {
     const body = route.request().postDataJSON();
     if (body.username === 'admin') {
@@ -56,7 +56,7 @@ playwright-cli run-code "async page => {
 ### Modify Real Response
 
 ```bash
-playwright-cli run-code "async page => {
+yarn playwright-cli run-code "async page => {
   await page.route('**/api/user', async route => {
     const response = await route.fetch();
     const json = await response.json();
@@ -69,7 +69,7 @@ playwright-cli run-code "async page => {
 ### Simulate Network Failures
 
 ```bash
-playwright-cli run-code "async page => {
+yarn playwright-cli run-code "async page => {
   await page.route('**/api/offline', route => route.abort('internetdisconnected'));
 }"
 # Options: connectionrefused, timedout, connectionreset, internetdisconnected
@@ -78,7 +78,7 @@ playwright-cli run-code "async page => {
 ### Delayed Response
 
 ```bash
-playwright-cli run-code "async page => {
+yarn playwright-cli run-code "async page => {
   await page.route('**/api/slow', async route => {
     await new Promise(r => setTimeout(r, 3000));
     route.fulfill({ body: JSON.stringify({ data: 'loaded' }) });

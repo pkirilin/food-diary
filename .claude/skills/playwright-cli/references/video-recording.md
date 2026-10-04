@@ -6,26 +6,26 @@ Capture browser automation sessions as video for debugging, documentation, or ve
 
 ```bash
 # Open browser first
-playwright-cli open
+yarn playwright-cli open
 
 # Start recording, --cursor renders an animated mouse cursor that travels to each action point
 # and paces actions by 800ms so that it has time to travel
-playwright-cli video-start demo.webm --cursor --fps=60
+yarn playwright-cli video-start demo.webm --cursor --fps=60
 
 # Add a chapter marker for section transitions
-playwright-cli video-chapter "Getting Started" --description="Opening the homepage" --duration=2000
+yarn playwright-cli video-chapter "Getting Started" --description="Opening the homepage" --duration=2000
 
 # Navigate and perform actions
-playwright-cli goto https://example.com
-playwright-cli snapshot
-playwright-cli click e1
+yarn playwright-cli goto https://example.com
+yarn playwright-cli snapshot
+yarn playwright-cli click e1
 
 # Add another chapter
-playwright-cli video-chapter "Filling Form" --description="Entering test data" --duration=2000
-playwright-cli fill e2 "test input"
+yarn playwright-cli video-chapter "Filling Form" --description="Entering test data" --duration=2000
+yarn playwright-cli fill e2 "test input"
 
 # Stop and save
-playwright-cli video-stop
+yarn playwright-cli video-stop
 ```
 
 ## Cursor, Target Highlight and Click Point
@@ -37,16 +37,16 @@ opt-in and styled with plain CSS declarations, so they look exactly the way you 
 
 ```bash
 # Cursor only, nothing else on screen
-playwright-cli video-start demo.webm --cursor
+yarn playwright-cli video-start demo.webm --cursor
 
 # Action callout, plus a red click point and a dark frame around the target
-playwright-cli video-show-actions --duration=800 --position=top-right \
+yarn playwright-cli video-show-actions --duration=800 --position=top-right \
   --point-style="width: 20px; height: 20px; border-radius: 50%; background: rgba(255,0,0,.7)" \
   --highlight-style="outline: 2px solid #333; background: rgba(0,128,255,.15)" \
   --title-style="font-size: 16px"
 
 # Stop annotating actions
-playwright-cli video-hide-actions
+yarn playwright-cli video-hide-actions
 ```
 
 The same options are available programmatically, which is the better choice for hero scripts:
@@ -84,8 +84,8 @@ Notes:
 
 ```bash
 # Include context in filename
-playwright-cli video-start recordings/login-flow-2024-01-15.webm
-playwright-cli video-start recordings/checkout-test-run-42.webm
+yarn playwright-cli video-start recordings/login-flow-2024-01-15.webm
+yarn playwright-cli video-start recordings/checkout-test-run-42.webm
 ```
 
 ### 2. Record entire hero scripts.
@@ -95,7 +95,7 @@ It allows inserting appropriate pauses between the actions and annotating the vi
 
 1) Perform scenario using CLI and take note of all locators and actions. You'll need those locators to request their bounding boxes for highlight.
 2) Create a file with the intended script for video (below). Use pressSequentially w/ delay for nice typing, make reasonable pauses.
-3) Use playwright-cli run-code --filename your-script.js
+3) Use yarn playwright-cli run-code --filename your-script.js
 
 **Important**: Overlays are `pointer-events: none` — they do not interfere with page interactions. You can safely keep sticky overlays visible while clicking, filling, or performing any actions on the page.
 

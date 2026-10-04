@@ -1,6 +1,6 @@
 # Attaching Screenshots and Videos to Pull Requests
 
-`gh` 2.99+ uploads local images and videos with the repeatable `--attach` flag on `gh pr create`, `gh pr comment`, `gh pr edit`, `gh issue create`, `gh issue comment` and `gh issue edit`. PNG, JPEG, GIF, WebP, SVG, MP4, MOV and WebM are accepted, so `playwright-cli screenshot` and `video-start` output can be attached as is.
+`gh` 2.99+ uploads local images and videos with the repeatable `--attach` flag on `gh pr create`, `gh pr comment`, `gh pr edit`, `gh issue create`, `gh issue comment` and `gh issue edit`. PNG, JPEG, GIF, WebP, SVG, MP4, MOV and WebM are accepted, so `yarn playwright-cli screenshot` and `video-start` output can be attached as is.
 
 ## When to attach
 
@@ -10,12 +10,12 @@ Attach visual evidence when it saves the reviewer a checkout: a screenshot of a 
 
 ```bash
 # capture the evidence
-playwright-cli open http://localhost:3000/settings
-playwright-cli screenshot --filename=settings-after.png
-playwright-cli video-start settings-flow.webm
-playwright-cli click e5
-playwright-cli fill e7 "New name" --submit
-playwright-cli video-stop
+yarn playwright-cli open http://localhost:3000/settings
+yarn playwright-cli screenshot --filename=settings-after.png
+yarn playwright-cli video-start settings-flow.webm
+yarn playwright-cli click e5
+yarn playwright-cli fill e7 "New name" --submit
+yarn playwright-cli video-stop
 
 # attach when creating the PR; alt text goes after "#" (images only)
 gh pr create --title "fix(settings): keep name after save" --body-file body.md \

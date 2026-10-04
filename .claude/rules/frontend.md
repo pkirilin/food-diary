@@ -79,13 +79,13 @@ Mandatory for any change that affects rendered UI or behavior (components, pages
 - Automated tests are still required whenever feasible. The browser check comes in addition to them.
 - When a behavior cannot reasonably be covered by Vitest (layout, real-browser APIs, PWA/service worker, image decode, camera or file input), the browser check is the sole verification. Say so in the final report.
 - Use the `playwright-cli` skill. Run every command as `yarn playwright-cli <command>` from `src/frontend` — never a global install. If the browser is missing, run `make setup-frontend` from the repo root.
-- Start the app in MSW mode with inline env vars. Do not edit `.env.local`:
+- Start the app from `src/frontend` in MSW mode with inline env vars. `.env.local` belongs to the developer; do not edit it:
 
 ```shell
 VITE_APP_MSW_ENABLED=true VITE_APP_FAKE_AUTH_ENABLED=true VITE_APP_FAKE_AUTH_LOGIN_ON_INIT=true yarn start
 ```
 
-- Open <http://localhost:5173>, exercise the changed flow, and check `yarn playwright-cli console`. The 3 `ERR_CONNECTION_REFUSED` errors for `https://localhost:8080/api/v1/auth/status` and `/notes` on page load are the baseline; any other console error is a defect.
+- Open <http://localhost:5173>, exercise the changed flow, and check `yarn playwright-cli console`. `ERR_CONNECTION_REFUSED` errors for `https://localhost:8080/api/v1/*` are the MSW-mode baseline; any other console error is a defect.
 - Report in text only what you did and saw. Do not commit screenshots.
 - Stop the dev server and close the browser (`yarn playwright-cli close`) when done.
 - MSW does not exercise the real backend. If the change touches an API contract, say that real-backend behavior is unverified.
