@@ -78,7 +78,7 @@ Mandatory for any change that affects rendered UI or behavior (components, pages
 
 - Automated tests are still required whenever feasible. The browser check comes in addition to them.
 - When a behavior cannot reasonably be covered by Vitest (layout, real-browser APIs, PWA/service worker, image decode, camera or file input), the browser check is the sole verification. Say so in the final report.
-- Use the `playwright-cli` skill. Run every command as `yarn playwright-cli <command>` from `src/frontend` — never a global install. If the browser is missing, run `make setup-frontend` from the repo root.
+- Use the `playwright-cli`. Check playwright-cli --help for available commands. Run every command as `yarn playwright-cli <command>` from `src/frontend` — never a global install. If the browser is missing, run `make setup-frontend` from the repo root.
 - Start the app from `src/frontend` in MSW mode with inline env vars. `.env.local` belongs to the developer; do not edit it:
 
 ```shell
