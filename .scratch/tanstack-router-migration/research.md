@@ -8,7 +8,7 @@ Research date: **2026-10-03**. Versions verified against the npm registry that d
 | `@tanstack/router-plugin` | **1.168.42** (peers `vite >=5…>=8`, `@tanstack/react-router ^1.170.41`) | 2026-09-30 |
 | `@tanstack/router-core` | 1.171.34 | 2026-09-30 |
 | `@tanstack/react-router-devtools` | 1.167.2 | 2026-09-13 |
-| `@tanstack/zod-adapter` | 1.167.0 (peers `zod ^3.23.8`) | 2026-07-24 |
+| `@tanstack/zod-adapter` | 1.167.0 (peers `zod ^3.23.8`; not needed since the repo moved to zod 4) | 2026-07-24 |
 | `@tanstack/virtual-file-routes` | 1.162.0 | 2026-06-30 |
 | `@tanstack/router-cli` / `router-generator` | 1.167.40 | 2026-09-30 |
 
@@ -17,7 +17,9 @@ in the session scratchpad). They were also checked with a **probe project** that
 `react@19.3`, `@mui/material@9.4.0`, `zod@3.25.76`, `typescript@5.9.3`, `vitest@4.1.11`, `eslint@10` and
 `typescript-eslint@8`. The probe's route tree mirrors this app's shape: root → pathless `_app` layout with an auth
 `beforeLoad` → `/`, `/history`, `/products`, `/products/new`, `/weight`, plus `/login` and `/post-login`. It ran
-`tsc`, nine vitest/jsdom tests and type-checked ESLint (see the [Appendix](#appendix-probes)). TanStack docs were read
+`tsc`, nine vitest/jsdom tests and type-checked ESLint (see the [Appendix](#appendix-probes)). The repo has since moved
+to `zod@^4.6.5` and `@hookform/resolvers@^5.9.1` ([#216](https://github.com/pkirilin/food-diary/pull/216)); the
+search-param claims (§6.3) were re-checked in a separate `zod@4.6.5` probe. TanStack docs were read
 from a sparse clone of `TanStack/router` at `1f0f20a3` (2026-10-01). Doc URLs follow
 `https://tanstack.com/router/latest/docs/<path>`, and the raw files are in `docs/router/<path>.md`. Nothing in the
 repo was modified apart from this file. Paths like `src/…` and `tests/…` are relative to `src/frontend/`.
@@ -67,11 +69,10 @@ research"), which chose TanStack Router. This document does not repeat that comp
 5. **RTK Query stays the cache. TanStack only coordinates.** Inject the store with
    `createRootRouteWithContext<{ store }>()`, keep `initiate()` / `unsubscribe()` in loaders (probe), and set
    `defaultPreloadStaleTime: 0`, the one change the docs prescribe for an external cache
-   (`guide/data-loading.md:327-342`). Leave `defaultStaleTime` at its default. The repo's `zod@3.25.76` already
-   implements Standard Schema (`zod/v3/types.d.ts:54`), so `validateSearch: schema` works without an adapter. But on
-   zod 3 `.catch()` makes the *navigation* input `unknown` (probe), so graceful fallback for malformed URLs needs
-   `@tanstack/zod-adapter`'s `fallback()`, whose peer range is `zod ^3.23.8` only. On zod 4.6.5 plain schemas with
-   `.default(x).catch(x)` / `.optional().catch(undefined)` stay typed and optional without the adapter (§6.3).
+   (`guide/data-loading.md:327-342`). Leave `defaultStaleTime` at its default. The repo is on zod 4
+   (#216), so search schemas go straight into `validateSearch` with no adapter. `.default(x).catch(x)` and
+   `.optional().catch(undefined)` keep navigation input typed and optional while malformed URLs fall back silently;
+   a bare `.catch(x)` makes the key required on every `<Link>` (probe, §6.3).
 
 6. **Hash URLs, the backend redirects, PWA and the GitHub Pages demo carry over unchanged (verified).**
    `createHashHistory` produces `#/history?month=10&year=2023` and `#/?date=2023-10-19`, the same as today. It parses
@@ -365,26 +366,28 @@ passes a fresh `configureStore()`, matching `tests/render/render.tsx:18`.
 - `loaderDeps` must pick only the search keys the loader uses: "❌ Don't do this … `loaderDeps: ({ search }) => search`"
   (`guide/data-loading.md:204-221`). Index: `({ search }) => ({ date: search.date })`. History: `({ month, year })`.
 
-### 6.3 `validateSearch` with zod (repo: `zod@3.25.76`, which exports `zod/v4` too)
+### 6.3 `validateSearch` with zod (repo: `zod@^4.6.5` since #216)
 
-| Approach | Navigation input type | Output type | Probe result |
+TanStack accepts Standard Schema validators directly (`router-core dist/esm/validators.d.ts:2-9`), and the docs say
+"With Zod v4, you should directly use the schema in `validateSearch`" (`guide/search-params.md:218-236`). Probe
+results on `zod@4.6.5`:
+
+| Schema field | Navigation input type | Output type | Probe result |
 |---|---|---|---|
-| zod 3 schema directly (Standard Schema: `"~standard"` at `zod/v3/types.d.ts:54`; TanStack accepts Standard Schema, `router-core dist/esm/validators.d.ts:2-9`) with `.optional()` / `.default()` | Typed, keys optional | Typed | ✓ `<Link to="/weight" />` compiles; `page: number` |
-| zod 3 directly with `.catch(x)` | **`unknown`**: `search={{ month: 'x' }}` compiles | Typed | Input type lost |
-| `zod/v4` subpath of `zod@3.25.76` with `.catch(x)` | **`unknown` and required**: `<Link to="/post-login" />` errors "search is missing", and `returnUrl: 5` compiles | Typed | Outdated v4 preview; superseded by the next three rows |
-| `zod@4.6.5` with bare `.catch(x)` | Typed, but the key is **required**: `<Link to="/catch" />` errors "search is missing"; `month: 'x'` rejected | Typed | Input type kept, optionality lost |
-| `zod@4.6.5` with `.default(x).catch(x)` | Typed, optional | Typed | ✓ `<Link to="/catchdefault" />` compiles; `month: 'x'` rejected; runtime `{ month: 'x' }` → `10` |
-| `zod@4.6.5` with `.optional().catch(undefined)` | Typed, optional | Typed | ✓ `returnUrl: 5` rejected. Matches the docs: "In Zod v4, schemas may use `catch` instead of the fallback" (`guide/search-params.md:262`) |
-| `@tanstack/zod-adapter` `zodValidator(schema)` + `fallback(z.number(), 10).default(10)` (`guide/search-params.md:198-258`) | Typed, optional | Typed | ✓ `<Link to="/history" />` compiles; `month: '10'` rejected. zod 3 only: `npm i @tanstack/zod-adapter@1.167.0 zod@4.6.5` fails with `ERESOLVE … peer zod@"^3.23.8"` |
+| `.default(x)` | Typed, optional | Typed | ✓ `<Link to="/default" />` compiles; `month: 'x'` rejected. A malformed URL **throws** → `errorComponent` (`guide/search-params.md:166-168`) |
+| bare `.catch(x)` | Typed, but the key is **required** | Typed | `<Link to="/catch" />` errors "search is missing"; `month: 'x'` rejected |
+| `.default(x).catch(x)` | Typed, optional | Typed | ✓ `<Link to="/catchdefault" />` compiles; `month: 'x'` rejected; runtime `{ month: 'x' }` → `10` |
+| `.optional().catch(undefined)` | Typed, optional | Typed | ✓ `returnUrl: 5` rejected. Matches "In Zod v4, schemas may use `catch` instead of the fallback" (`guide/search-params.md:262`) |
 
-The docs still say zod v3 needs the adapter (`guide/search-params.md:189-216`). That is outdated for zod ≥3.24's
-Standard Schema in the `.default()` case, but still true for `.catch()`.
+`@tanstack/zod-adapter` (`zodValidator` + `fallback`, `guide/search-params.md:198-258`) exists for zod 3's `.catch()`
+type loss. It is not needed here, and it can't be installed: its peer range is `zod ^3.23.8`
+(`npm i @tanstack/zod-adapter@1.167.0 zod@4.6.5` → `ERESOLVE`).
 
-**Recommendation:** `zodValidator` + `fallback` for `month`/`year`/`date`, so malformed URLs fall back silently
-instead of rendering the error component (a thrown `validateSearch` → `errorComponent`, `guide/search-params.md:166-168`).
-This keeps one zod major in the codebase. `@hookform/resolvers@3.10` is on zod 3, and migrating zod is a separate
-decision. Fallback values that depend on `MSW_ENABLED` (`IndexPage.tsx:23-24`, `HistoryPage.tsx:15-16`) move into
-the schema defaults.
+**Recommendation:** plain zod 4 schemas. `.default(x).catch(x)` for `month`/`year`/`date`, and
+`.optional().catch(undefined)` for `returnUrl`, so malformed URLs fall back silently instead of rendering the error
+component. The default parser JSON-parses values (`month=10` → `10`, §2.1), so `month`/`year` are `z.number()`
+without coercion. Fallback values that depend on `MSW_ENABLED` (`IndexPage.tsx:23-24`, `HistoryPage.tsx:15-16`)
+move into the schema defaults.
 
 ### 6.4 Pending UI
 
@@ -568,7 +571,7 @@ verified by the existing suite.
 |---|---|---|---|
 | **P1** | Auth actions → functions *(on React Router)* | `features/auth`: `signIn(returnUrl)`, `signOut()` (fake + real). `SignInForm`, `NavigationDrawerActions`, `useAuthStatusCheckEffect` call them, using RR `useNavigate` only for in-app redirects. Delete `LoginPage.action`, `LogoutPage` + `/logout` route, `TestEnvironment.signOutAfterMilliseconds`. Fix `PostLoginPage` to read search *(decision D9)* | `yarn build`, `yarn lint`, `yarn format:check`, `yarn test`. Manual in MSW + fake-auth mode: login, logout, auto-login-on-init, session-expiry logout |
 | **P2** | Router-agnostic pages and features *(on React Router)* | Pages take props from the route layer (`date`, `weightLogsRequest`, …). `SelectDate` → callback (drop the `useSubmit` wrapper, keep `SelectDateView`). `FilterNotesHistory` → `onApply(month, year)`. History reads notes via RTK hook. Delete `RootPage.tsx` | Same + manual: date switch, history filter, links from history to day |
-| **C1** | Cut-over, commit 1: infra (builds, nothing mounted) | Add `@tanstack/react-router`, `@tanstack/router-plugin`, `@tanstack/react-router-devtools`, `@tanstack/zod-adapter`. Plugin before `react()` with `routesDirectory: 'src/app/routes'`, `generatedRouteTree: 'src/app/routeTree.gen.ts'`, `autoCodeSplitting: true`. ESLint `globalIgnores` + `.prettierignore` for the gen file, `.tanstack/` in `.gitignore`, VS Code readonly settings | `yarn build`, `yarn lint`, `yarn format:check` |
+| **C1** | Cut-over, commit 1: infra (builds, nothing mounted) | Add `@tanstack/react-router`, `@tanstack/router-plugin`, `@tanstack/react-router-devtools`. Plugin before `react()` with `routesDirectory: 'src/app/routes'`, `generatedRouteTree: 'src/app/routeTree.gen.ts'`, `autoCodeSplitting: true`. ESLint `globalIgnores` + `.prettierignore` for the gen file, `.tanstack/` in `.gitignore`, VS Code readonly settings | `yarn build`, `yarn lint`, `yarn format:check` |
 | | Commit 2: router + routes | `app/router.ts` (`createAppRouter(store, history = createHashHistory())`, `defaultPreloadStaleTime: 0`, `scrollRestoration: true`), `Register` + `StaticDataRouteOption`. Route files: `__root`, `_app` (beforeLoad auth, AppBar, pending/error), `_app/index`, `history`, `weight`, `products`, `categories`, `login`, `post-login`, `post-logout`. Search schemas. `createLink` wrappers in `shared/ui`. AppBar with `menu` variant only (parity: title + lazy `Title`/`Actions` slots) | `tsc` |
 | | Commit 3: switch + remove React Router | `app/index.tsx` mounts the TanStack `RouterProvider` (keep `<WithMockApi>` outside). Delete `app/routing/*`, `pages/lib/reactRouterExtensions.ts`, `Navigation.tsx` guard. Port the test helpers (async `render`). `yarn remove react-router`. `rg "react-router" src tests` → only historical comments, then fix those | `yarn build`, `yarn lint`, `yarn format:check`, `yarn test`. Bundle before/after (`dist/` gzip). Manual: every drawer link + active state; deep links `/#/history?month=10&year=2023`, `/#/?date=2023-10-19`, `/#/post-login?returnUrl=%2Fhistory`; refresh on each page; browser back/forward; unknown path → not-found; auth redirect from a deep link; `vite preview` with the PWA (SW update banner); a demo-style build (`VITE_APP_MSW_ENABLED`, `VITE_APP_FAKE_AUTH_ENABLED`) served from a subpath; E2E sign-in test (Docker, ask first) |
 | **F1** | AppBar variants | `back` (with `useCanGoBack` + parent fallback) and `search` on the typed union. Optional legacy-state shim (§8.2) | Unit test on the AppBar via `renderWithRouter`. Manual: deep link into a `back` route shows the arrow and goes to the parent with `replace` |
@@ -585,7 +588,7 @@ use the §4.1 nesting rule and draft-missing `beforeLoad` redirects (prior resea
 | D3 | How pages get route data | Props from route adapters (router-agnostic pages). Navigation widgets may use `Link`/`linkOptions` directly |
 | D4 | Dynamic AppBar title/actions | Lazy slot components in `staticData` (`React.lazy`), reading their route via `getRouteApi` |
 | D5 | `staticData` shape | Required `appBar: AppBarConfig \| null` discriminated union (`menu`/`back`/`search`), explicit `null` on root, layouts and auth pages |
-| D6 | Search-param validation | `@tanstack/zod-adapter` + `fallback()` on zod 3. Revisit (direct schemas, no adapter) if/when the repo moves to zod 4 |
+| D6 | Search-param validation | Plain zod 4 schemas in `validateSearch`, `.default(x).catch(x)` / `.optional().catch(undefined)`. No adapter |
 | D7 | Redirect vs `only-throw-error` | `redirect({ …, throw: true })`. No lint-config exception |
 | D8 | Router cache and preload | `defaultPreloadStaleTime: 0`, default `staleTime`/`gcTime`, `defaultPreload` off at cut-over (behaviour parity). If `'intent'` is enabled later, skip `forceRefetch` when `preload` |
 | D9 | Fix the `returnUrl` round-trip (§7) | Fix it in P1. It is a behaviour change, so call it out in the PR |
@@ -645,7 +648,7 @@ use the §4.1 nesting rule and draft-missing `beforeLoad` redirects (prior resea
 - `@tanstack/react-router@1.170.41 dist/esm/Matches.d.ts:48-50`; `dist/esm/link.d.ts:63`; `dist/esm/index.d.ts:3`; `src/RouterProvider.tsx:17-70`; `src/Transitioner.tsx:75-90`; `src/useCanGoBack.ts:5-20`
 - `@tanstack/router-plugin@1.168.42 src/core/router-generator-plugin.ts:79-83`; `src/core/code-splitter/compilers.ts:400-411,565-590,612,662,763-779`
 - `@tanstack/react-router-devtools@1.167.2 dist/esm/index.js:5-8`
-- `zod@3.25.76 v3/types.d.ts:54`; `@mui/material@9.4.0 ButtonBase/ButtonBase.js:153-157`, `ListItemButton/ListItemButton.js:194-197`
+- `@mui/material@9.4.0 ButtonBase/ButtonBase.js:153-157`, `ListItemButton/ListItemButton.js:194-197`
 
 ### GitHub (TanStack/router)
 - [#8487](https://github.com/TanStack/router/issues/8487), [#8198](https://github.com/TanStack/router/issues/8198), [#8211](https://github.com/TanStack/router/issues/8211), [#4370](https://github.com/TanStack/router/issues/4370), [#8511](https://github.com/TanStack/router/issues/8511); releases list (`gh release list`, latest `release-2026-09-30-1747`)
