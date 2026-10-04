@@ -54,7 +54,7 @@ export const NoteForm: FC<Props> = ({
   onLoadProductForEdit,
   onDiscardProduct,
 }) => {
-  const { control, handleSubmit, getValues } = useForm<NoteFormValues>({
+  const { control, handleSubmit, getValues } = useForm({
     mode: 'onSubmit',
     resolver: zodResolver(noteSchema),
     defaultValues,

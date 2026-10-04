@@ -30,7 +30,7 @@ export const LogWeightButton: FC<Props> = ({ weightLogsRequest }) => {
 
   const nextWeightLogDate = useMemo(() => getNextWeightLogDate(weightLogs), [weightLogs]);
 
-  const { control, handleSubmit, formState, reset, setValue } = useForm<FormValues>({
+  const { control, handleSubmit, formState, reset, setValue } = useForm({
     mode: 'onChange',
     resolver: zodResolver(schema),
     defaultValues: {

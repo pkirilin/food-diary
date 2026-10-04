@@ -4,7 +4,7 @@ export const NutritionValueSchema = z
   .union([z.string(), z.number(), z.null()])
   .transform(value => (value === null ? '' : String(value).trim()))
   .refine(value => value === '' || /^\d+([.,]\d{1,2})?$/.test(value), {
-    message: 'Must be a valid number with up to 2 decimal places',
+    error: 'Must be a valid number with up to 2 decimal places',
   })
   .transform(value => {
     if (value === '') {

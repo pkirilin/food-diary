@@ -1,6 +1,6 @@
 # Spec: Migrate the frontend to Zod 4
 
-Status: ready-for-agent
+Status: resolved
 
 Research: [research.md](./research.md) — version facts, the call-site inventory and every tsc/test count below were measured on 2026-10-04 by installing `zod@4.6.5` + `@hookform/resolvers@5.9.1` into a copy of `src/frontend`.
 

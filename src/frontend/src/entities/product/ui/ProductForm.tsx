@@ -54,7 +54,7 @@ export const ProductForm: FC<Props> = ({
   onSubmit,
   onNutritionSuggestingChange,
 }) => {
-  const { control, handleSubmit, getValues, setValue } = useForm<ProductFormValues>({
+  const { control, handleSubmit, getValues, setValue } = useForm({
     mode: 'onSubmit',
     resolver: zodResolver(productSchema),
     defaultValues,
