@@ -72,6 +72,24 @@ interface Props {
 }
 ```
 
+### Browser verification
+
+Mandatory for any change that affects rendered UI or behavior (components, pages, hooks, routing, styles, MSW handlers). Behavior-neutral refactors, type-only changes, tests, config and docs are exempt; for an exempt refactor, state in the final report why it is behavior-neutral.
+
+- Automated tests are still required whenever feasible. The browser check comes in addition to them.
+- When a behavior cannot reasonably be covered by Vitest (layout, real-browser APIs, PWA/service worker, image decode, camera or file input), the browser check is the sole verification. Say so in the final report.
+- Use the `playwright-cli`. Check playwright-cli --help for available commands. Run every command as `yarn playwright-cli <command>` from `src/frontend` — never a global install. The shell's working directory persists between calls, so check it first (`pwd`) and `cd` only if it isn't already `src/frontend`. If the browser is missing, run `make setup-frontend` from the repo root.
+- Start the app from `src/frontend` in MSW mode with inline env vars. `.env.local` belongs to the developer; do not edit it:
+
+```shell
+VITE_APP_MSW_ENABLED=true VITE_APP_FAKE_AUTH_ENABLED=true VITE_APP_FAKE_AUTH_LOGIN_ON_INIT=true yarn start
+```
+
+- Open <http://localhost:5173>, exercise the changed flow, and check `yarn playwright-cli console`. `ERR_CONNECTION_REFUSED` errors for `https://localhost:8080/api/v1/*` are the MSW-mode baseline; any other console error is a defect.
+- Report in text only what you did and saw. Do not commit screenshots.
+- Stop the dev server and close the browser (`yarn playwright-cli close`) when done.
+- MSW does not exercise the real backend. If the change touches an API contract, say that real-backend behavior is unverified.
+
 ### Testing
 
 - **A green suite is not a clean suite.** Vitest's default reporter prints a test's `console.*` output and React warnings **only when that test fails** — a passing test's warnings are invisible, in both watch and `--run` mode. So warnings visible while a test is red silently vanish the moment it goes green, even though the defect causing them is still there. Verify with `yarn test --run --reporter=verbose` and treat any `stderr |` block as a defect to fix before finishing.

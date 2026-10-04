@@ -25,6 +25,7 @@
       "Bash(yarn build:*)",
       "Bash(yarn lint:*)",
       "Bash(yarn test:*)",
+      "Bash(yarn playwright-cli:*)",
       "Bash(dotnet test:*)",
       "Bash(unzip -p:*)",
       "Bash(npm view:*)",
