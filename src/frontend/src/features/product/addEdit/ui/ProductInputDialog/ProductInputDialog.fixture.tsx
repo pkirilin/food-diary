@@ -7,7 +7,11 @@ import { Provider } from 'react-redux';
 import { type Mock } from 'vitest';
 import { configureStore } from '@/app/store';
 import { theme } from '@/app/theme';
-import { productModel, type SuggestProductNutritionResponse } from '@/entities/product';
+import {
+  productModel,
+  type SuggestProductNutritionRequest,
+  type SuggestProductNutritionResponse,
+} from '@/entities/product';
 import { API_URL } from '@/shared/config';
 import { type SelectOption } from '@/shared/types';
 import { server } from '@tests/mockApi/server';
@@ -96,17 +100,27 @@ export const givenCategories = (...categoryNames: string[]): SelectOption[] =>
 export const givenProductInputDialog = (): ProductInputDialogBuilder =>
   new ProductInputDialogBuilder();
 
+interface NutritionSuggestionRequests {
+  names: string[];
+}
+
 export const givenNutritionSuggestion = (
   response: Partial<SuggestProductNutritionResponse> = EMPTY_NUTRITION_SUGGESTIONS,
-): void => {
+): NutritionSuggestionRequests => {
+  const requests: NutritionSuggestionRequests = { names: [] };
+
   server.use(
-    http.post(NUTRITION_SUGGESTIONS_URL, () =>
-      HttpResponse.json<SuggestProductNutritionResponse>({
+    http.post(NUTRITION_SUGGESTIONS_URL, async ({ request }) => {
+      const body = (await request.json()) as SuggestProductNutritionRequest;
+      requests.names.push(body.name);
+      return HttpResponse.json<SuggestProductNutritionResponse>({
         ...EMPTY_NUTRITION_SUGGESTIONS,
         ...response,
-      }),
-    ),
+      });
+    }),
   );
+
+  return requests;
 };
 
 interface PendingNutritionSuggestion {

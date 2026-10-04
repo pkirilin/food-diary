@@ -2,16 +2,21 @@ import { z } from 'zod';
 import { quantitySchema } from '@/shared/lib';
 import { NutritionValueSchema } from './NutritionValueSchema';
 
+export const productNameSchema = z
+  .string()
+  .trim()
+  .refine(name => name.length >= 3 && name.length <= 100, {
+    error: 'Product name must be between 3 and 100 characters',
+  });
+
 export const productSchema = z.object({
   id: z.number().optional(),
-  name: z.string().refine(name => name.length >= 3 && name.length <= 100, {
-    error: 'Product name must be between 3 and 100 characters',
-  }),
+  name: productNameSchema,
   defaultQuantity: quantitySchema,
   category: z
     .object({
       id: z.number(),
-      name: z.string().min(3).max(50),
+      name: z.string(),
     })
     .nullable()
     .refine((category): boolean => category !== null, { error: 'Category is required' }),

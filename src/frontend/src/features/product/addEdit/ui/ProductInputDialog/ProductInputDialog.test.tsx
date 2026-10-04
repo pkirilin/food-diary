@@ -1,5 +1,6 @@
 import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { type OnSubmitProductFn, type productModel } from '@/entities/product';
 import {
   expectCategory,
   givenCategories,
@@ -47,6 +48,28 @@ import {
   whenSugarChanged,
   whenSuggestClicked,
 } from './ProductInputDialog.fixture';
+
+test('the product name is submitted trimmed', async () => {
+  const user = userEvent.setup();
+  const onSubmitMock = vi.fn<OnSubmitProductFn>();
+  const categories = givenCategories('Vegetables');
+
+  render(
+    givenProductInputDialog()
+      .withOnSubmitMock(onSubmitMock)
+      .withCategoriesForSelect(categories)
+      .withProduct({ name: '  Potato  ', category: categories[0], calories: 150 })
+      .please(),
+  );
+
+  await whenDialogOpened(user);
+  await thenProductFormIsVisible();
+  await whenProductSaved(user);
+
+  expect(onSubmitMock).toHaveBeenCalledWith(
+    expect.objectContaining<Partial<productModel.ProductFormValues>>({ name: 'Potato' }),
+  );
+});
 
 test('I can add new product', async () => {
   const user = userEvent.setup();
@@ -278,6 +301,40 @@ describe('nutrition suggestions', () => {
 
     await whenProductNameChanged(user, 'Cheddar cheese');
     thenSuggestButtonIsEnabled(/suggest calories/i);
+  });
+
+  test.each([
+    ['shorter than 3 characters once trimmed', '  ab  '],
+    ['longer than 100 characters', 'a'.repeat(101)],
+  ])('suggest buttons are disabled when the name is %s', async (_, name) => {
+    const user = userEvent.setup();
+    const categories = givenCategories('Dairy');
+
+    render(givenProductInputDialog().withCategoriesForSelect(categories).please());
+
+    await whenDialogOpened(user);
+    await whenProductNameChanged(user, name);
+
+    thenSuggestButtonIsDisabled(/suggest calories/i);
+  });
+
+  test('the trimmed name is sent for suggestion', async () => {
+    const user = userEvent.setup();
+    const categories = givenCategories('Dairy');
+    const requests = givenNutritionSuggestion({ calories: 402 });
+
+    render(
+      givenProductInputDialog()
+        .withCategoriesForSelect(categories)
+        .withProduct({ name: '  Cheddar cheese  ', category: categories[0] })
+        .please(),
+    );
+
+    await whenDialogOpened(user);
+    await whenSuggestClicked(user, /suggest calories/i);
+    await thenCaloriesEventuallyHasValue('402');
+
+    expect(requests.names).toStrictEqual<string[]>(['Cheddar cheese']);
   });
 
   test('inputs and submit are disabled while a suggestion is pending', async () => {
