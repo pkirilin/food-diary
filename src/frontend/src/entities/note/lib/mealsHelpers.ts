@@ -20,7 +20,7 @@ const MEAL_NAMES: Record<MealType, string> = {
   [MealType.Dinner]: 'Dinner',
 };
 
-const mealTypeSchema = z.nativeEnum(MealType);
+const mealTypeSchema = z.enum(MealType);
 
 export const getMealTypes = (): MealType[] =>
   Object.keys(MEAL_NAMES).map(key => mealTypeSchema.parse(Number(key)));

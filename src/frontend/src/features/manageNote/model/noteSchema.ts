@@ -17,11 +17,11 @@ const productSchema = z.object({
 export const noteSchema = z.object({
   id: z.number().optional(),
   date: z.string(),
-  mealType: z.nativeEnum(noteModel.MealType),
-  displayOrder: z.coerce.number().int().min(0),
+  mealType: z.enum(noteModel.MealType),
+  displayOrder: z.coerce.number<number>().int().min(0),
   product: productSchema
     .nullable()
-    .refine((product): boolean => product !== null, { message: 'Product is required' }),
+    .refine((product): boolean => product !== null, { error: 'Product is required' }),
   quantity: quantitySchema,
 });
 

@@ -17,7 +17,12 @@ import { type FC, useState } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { type SelectOption } from '@/shared/types';
 import { useNutritionSuggestions } from '../lib/useNutritionSuggestions';
-import { type ProductFormValues, productSchema, nutritionValuesConfig } from '../model';
+import {
+  type ProductFormValues,
+  productNameSchema,
+  productSchema,
+  nutritionValuesConfig,
+} from '../model';
 import { NutritionSuggestButton } from './NutritionSuggestButton';
 import { NutritionValueIcon } from './NutritionValueIcon';
 import { NutritionValueInput } from './NutritionValueInput';
@@ -39,8 +44,6 @@ interface SnackbarState {
   message: string;
 }
 
-const MIN_NAME_LENGTH = 3;
-
 const OPTIONAL_NUTRITION_FIELDS = ['protein', 'fats', 'carbs', 'sugar', 'salt'] as const;
 
 const capitalize = (value: string): string => value.charAt(0).toUpperCase() + value.slice(1);
@@ -54,7 +57,7 @@ export const ProductForm: FC<Props> = ({
   onSubmit,
   onNutritionSuggestingChange,
 }) => {
-  const { control, handleSubmit, getValues, setValue } = useForm<ProductFormValues>({
+  const { control, handleSubmit, getValues, setValue } = useForm({
     mode: 'onSubmit',
     resolver: zodResolver(productSchema),
     defaultValues,
@@ -73,7 +76,7 @@ export const ProductForm: FC<Props> = ({
   const [nutritionExpanded, setNutritionExpanded] = useState(atLeastOneNutritionFieldHasValue);
 
   const { suggestingField, isSuggesting, handleSuggestClick } = useNutritionSuggestions({
-    getName: () => getValues('name'),
+    getName: () => getValues('name').trim(),
     getFieldValue: field => getValues(field),
     setFieldValue: (field, value) =>
       setValue(field, value, { shouldValidate: true, shouldDirty: true }),
@@ -84,7 +87,7 @@ export const ProductForm: FC<Props> = ({
   });
 
   const name = useWatch({ control, name: 'name' });
-  const suggestDisabled = name.trim().length < MIN_NAME_LENGTH || isSuggesting;
+  const suggestDisabled = !productNameSchema.safeParse(name).success || isSuggesting;
 
   return (
     <form id={formId} onSubmit={handleSubmit(data => onSubmit(data))}>
