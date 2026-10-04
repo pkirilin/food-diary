@@ -5,7 +5,7 @@ import { type NutritionValueType } from '../model';
 
 interface Params {
   getName: () => string;
-  getFieldValue: (field: NutritionValueType) => number | null;
+  getFieldValue: (field: NutritionValueType) => string | number | null;
   setFieldValue: (field: NutritionValueType, value: number) => void;
   onNutritionSuggestingChange?: (nutritionSuggesting: boolean) => void;
   onHasMacroSuggestion: () => void;

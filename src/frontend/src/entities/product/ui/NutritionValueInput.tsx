@@ -8,7 +8,7 @@ interface Props {
   label: string;
   placeholder: string;
   type: NutritionValueType;
-  value: number | null;
+  value: string | number | null;
   error: boolean;
   helperText: string;
   disabled: boolean;
