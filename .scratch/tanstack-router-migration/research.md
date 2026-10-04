@@ -44,7 +44,7 @@ research"), which chose TanStack Router. This document does not repeat that comp
    mechanism is documented. What *can* land first on React Router are the changes that remove router coupling:
    actions → functions, pages → props, and the `returnUrl` fixes (§11).
 
-3. **Use file-based routing with `routesDirectory: 'src/app/routes'`, not the POC's `src/routes`.** Route files in
+3. **Use file-based routing with `routesDirectory: 'src/app/routes'`, not a top-level `src/routes`.** Route files in
    `app/` that import `pages/*` respect FSD's import direction. The plugin runs under vitest because it generates in
    Vite's `configResolved` (`router-plugin@1.168.42 src/core/router-generator-plugin.ts:79-83`; probe: deleting
    `routeTree.gen.ts` and running vitest regenerated it byte-identical). The generated file **must be committed**
@@ -67,10 +67,11 @@ research"), which chose TanStack Router. This document does not repeat that comp
 5. **RTK Query stays the cache. TanStack only coordinates.** Inject the store with
    `createRootRouteWithContext<{ store }>()`, keep `initiate()` / `unsubscribe()` in loaders (probe), and set
    `defaultPreloadStaleTime: 0`, the one change the docs prescribe for an external cache
-   (`guide/data-loading.md:327-342`). Drop the POC's `defaultStaleTime: 5000`. The repo's `zod@3.25.76` already
-   implements Standard Schema (`zod/v3/types.d.ts:54`), so `validateSearch: schema` works without an adapter. But
-   `.catch()` makes the *navigation* input `unknown` in both zod v3 and v4 (probe). Use `@tanstack/zod-adapter`'s
-   `fallback()` where malformed URLs must degrade gracefully (§6).
+   (`guide/data-loading.md:327-342`). Leave `defaultStaleTime` at its default. The repo's `zod@3.25.76` already
+   implements Standard Schema (`zod/v3/types.d.ts:54`), so `validateSearch: schema` works without an adapter. But on
+   zod 3 `.catch()` makes the *navigation* input `unknown` (probe), so graceful fallback for malformed URLs needs
+   `@tanstack/zod-adapter`'s `fallback()`, whose peer range is `zod ^3.23.8` only. On zod 4.6.5 plain schemas with
+   `.default(x).catch(x)` / `.optional().catch(undefined)` stay typed and optional without the adapter (§6.3).
 
 6. **Hash URLs, the backend redirects, PWA and the GitHub Pages demo carry over unchanged (verified).**
    `createHashHistory` produces `#/history?month=10&year=2023` and `#/?date=2023-10-19`, the same as today. It parses
@@ -104,8 +105,7 @@ research"), which chose TanStack Router. This document does not repeat that comp
 10. **Bundle: TanStack is slightly smaller for the API set this app uses.** esbuild, minified, React external:
     `react-router@7.18.4` 97.2 KB raw / **32.9 KB gzip**; `@tanstack/react-router@1.170.41` 81.2 KB raw /
     **29.0 KB gzip**. Devtools compile to `() => null` outside development
-    (`react-router-devtools@1.167.2 dist/esm/index.js:5-7`). A full-app build comparison was skipped because the POC
-    branch does not port the app's routes, so the builds would compare different apps (§8.4).
+    (`react-router-devtools@1.167.2 dist/esm/index.js:5-7`). A full-app build comparison needs the ported app, so it belongs in the cut-over PR (§8.4).
 
 ---
 
@@ -176,8 +176,8 @@ checklist.
 
 | Step | Prescription | Mapping onto this repo |
 |---|---|---|
-| 1 | Branch, install `@tanstack/react-router`, `-D @tanstack/router-plugin @tanstack/react-router-devtools`, put the plugin **before** `react()` (`:38-63`) | Same as the POC (`git show new-routes-poc:src/frontend/vite.config.ts`) |
-| 2 | `tsr.config.json` with `routesDirectory`/`generatedRouteTree`/`quoteStyle` (`:69-79`) | Not needed. The plugin takes the same options inline (POC). `tsr.config.json` only matters for `@tanstack/router-cli`. |
+| 1 | Branch, install `@tanstack/react-router`, `-D @tanstack/router-plugin @tanstack/react-router-devtools`, put the plugin **before** `react()` (`:38-63`) | As prescribed |
+| 2 | `tsr.config.json` with `routesDirectory`/`generatedRouteTree`/`quoteStyle` (`:69-79`) | Not needed. The plugin takes the same options inline. `tsr.config.json` only matters for `@tanstack/router-cli`. |
 | 3 | Root route, index route, loaders → `Route.useLoaderData()`, dynamic routes, **actions → "mutations or form libraries"** (`:100-256`) | Actions → `signIn`/`signOut` functions (§2.1) |
 | 4 | SSR (n/a); code splitting via `createLazyFileRoute` (`:258-342`) | Use `autoCodeSplitting` instead (`api/file-based-routing.md:189-198`) |
 | 5 | `Link`/`useNavigate` with typed `to`/`params` (`:344-394`) | §2.1 |
@@ -214,8 +214,8 @@ independent measurement is in §8.4.
 **Recommendation: file-based, `routesDirectory: 'src/app/routes'`, `generatedRouteTree: 'src/app/routeTree.gen.ts'`.**
 
 - FSD: route files are app-layer adapters. They import `pages/*` (and, for slots, `features/*`), which is the
-  allowed direction. The POC's `src/routes/` (`git show new-routes-poc --stat`) would create a seventh top-level
-  folder outside the FSD layers.
+  allowed direction. A top-level `src/routes/` (the plugin default) would create a seventh top-level folder outside
+  the FSD layers.
 - Virtual routes would only matter if route files had to sit inside `pages/`. That would invert FSD, because route
   files import `app` context types. Code-based routing costs a hand-written `getParentRoute` and two files per lazy
   route, which works against the "new routes by analogy, minimal boilerplate" criterion.
@@ -264,46 +264,9 @@ their job.
 | ESLint (`eslint .`, `projectService`) | The gen file contains `as any` and no semicolons | Add `'src/app/routeTree.gen.ts'` to `globalIgnores` (`eslint.config.js:13`), as `installation/with-vite.md:67-74` advises |
 | Prettier (`format:check`) | Generator output uses `quoteStyle: 'single'`, `semicolons: false` by default (`api/file-based-routing.md:171-187`); repo `.prettierrc.json` has `"semi": true` | Add it to `.prettierignore`. Optionally set `semicolons: true` so newly scaffolded route files match Prettier. |
 | vitest | Uses `vite.config.ts` (`test:` block), so the plugin's `configResolved` generation runs (`router-generator-plugin.ts:79-83`); probe regenerated the tree under vitest | Nothing |
-| Temp dir | Atomic writes go to `.tanstack/tmp` by default (`api/file-based-routing.md:264-271`). An empty `src/frontend/.tanstack/tmp/` already exists in the main checkout from the POC and is **not** in `.gitignore` | Add `.tanstack/` to `src/frontend/.gitignore` |
+| Temp dir | Atomic writes go to `.tanstack/tmp` by default (`api/file-based-routing.md:264-271`). `.tanstack/` is **not** in `src/frontend/.gitignore` | Add `.tanstack/` to `src/frontend/.gitignore` |
 | VS Code | The gen file can open unexpectedly after renames (`installation/with-vite.md:76-96`) | Add the suggested `files.readonlyInclude` / `watcherExclude` / `search.exclude` entries to the tracked `src/frontend/.vscode/settings.json` |
 | CI drift | *(suggestion)* | After `yarn build`, run `git diff --exit-code src/app/routeTree.gen.ts`. `@tanstack/router-cli`'s `tsr generate` is the standalone generator (used by the probe) |
-
-### 4.5 What the POC (`new-routes-poc`) established and left open
-
-Commits `8ebecc53…74d1a95d` (2026-10-01 → 2026-10-03). Resolved versions: `react-router@1.170.39`,
-`router-plugin@1.168.40`, `react-router-devtools@1.167.2` (`git show new-routes-poc:src/frontend/yarn.lock`).
-
-**Established (keep):**
-- File-based routing with `tanstackRouter({ target: 'react', autoCodeSplitting: true, routesDirectory, generatedRouteTree })`
-  placed before `react()`, and the gen file committed.
-- `Register` augmentation, plus a **required** `StaticDataRouteOption` field (`title: string`, `searchable?: boolean`)
-  enforced on every route (`64b76ac3`). The root route had to declare `title: 'Root'`, which confirms "required
-  everywhere".
-- `createRootRouteWithContext<…>()` + `beforeLoad` context (`79581e20`), typed `Route.useLoaderData()` +
-  `pendingComponent` (`abe42364`).
-- An AppBar in the root reading the leaf match's `staticData`. A back arrow via `useCanGoBack()` +
-  `router.history.back()` (`7be002d9`). A search field toggled by staticData (`74d1a95d`).
-
-**Left open / to change:**
-- **No hash history.** `createRouter({ routeTree, … })` uses the default browser history (`src/app/index.tsx` on the
-  branch). Add `history: createHashHistory()`.
-- The app's routes are not ported. React Router routes remain as dead code, and `react-router` was bumped to v8
-  (`8ebecc53`) only to keep it compiling. **Drop that commit:** a single cut-over removes `react-router` entirely,
-  so the v8 bump is wasted churn (prior research §5 keeps v8 only as the *fallback*).
-- `context: { foo }` demo, with `// TODO: add typing` on `beforeLoad` in `routes/about.tsx`. There is no store
-  injection and no auth.
-- `defaultStaleTime: 5000` and `defaultPreload: 'intent'` conflict with "RTK owns the cache" and with the auth
-  `beforeLoad` (§6, §7).
-- Back arrow vs burger is decided by **history** (`canGoBack ? back : menu`), not by route. The user's model is a
-  per-route variant, so a deep link into a nested screen should still show back (falling back to the parent).
-  `searchable?: boolean` is a flag rather than a discriminated union, so "search without title" is not
-  type-enforced.
-- `useRouterState({ select: s => s.matches.at(-1) })` returns the whole match object. Select the leaf's
-  `staticData.appBar` instead (`useMatches` docs recommend it over raw router state, `api/router/useRouterStateHook.md:9`).
-- No ESLint/Prettier ignores, no `.tanstack/` ignore, no test changes. Lint status was **not** checked: the branch
-  uses `function` components, against the repo convention.
-- Devtools are in `dependencies` (fine: Docker runs a full `yarn install`, and the component is `() => null` in
-  production).
 
 ---
 
@@ -396,7 +359,7 @@ passes a fresh `configureStore()`, matching `tests/render/render.tsx:18`.
   its loader → `initiate()`, and RTK answers from its own cache (`keepUnusedDataFor`). That is the current behaviour
   under React Router.
 - **Recommended:** `defaultPreloadStaleTime: 0`, leave `defaultStaleTime` / `defaultGcTime` at their defaults
-  (remove the POC's `5000`), and don't use `shouldReload`/`gcTime: 0` (that is for opting *out* of router caching,
+  (no `defaultStaleTime: 5000`-style overrides), and don't use `shouldReload`/`gcTime: 0` (that is for opting *out* of router caching,
   `guide/data-loading.md:298-312`, irrelevant once loaders return no data). Loaders return `void` or request params.
   Components read RTK hooks.
 - `loaderDeps` must pick only the search keys the loader uses: "❌ Don't do this … `loaderDeps: ({ search }) => search`"
@@ -408,8 +371,11 @@ passes a fresh `configureStore()`, matching `tests/render/render.tsx:18`.
 |---|---|---|---|
 | zod 3 schema directly (Standard Schema: `"~standard"` at `zod/v3/types.d.ts:54`; TanStack accepts Standard Schema, `router-core dist/esm/validators.d.ts:2-9`) with `.optional()` / `.default()` | Typed, keys optional | Typed | ✓ `<Link to="/weight" />` compiles; `page: number` |
 | zod 3 directly with `.catch(x)` | **`unknown`**: `search={{ month: 'x' }}` compiles | Typed | Input type lost |
-| `zod/v4` with `.catch(x)` | **`unknown` and required**: `<Link to="/post-login" />` errors "search is missing", and `returnUrl: 5` compiles | Typed | The docs' "will retain type inference throughout" (`guide/search-params.md:262`) holds for output only |
-| `@tanstack/zod-adapter` `zodValidator(schema)` + `fallback(z.number(), 10).default(10)` (`guide/search-params.md:198-258`) | Typed, optional | Typed | ✓ `<Link to="/history" />` compiles; `month: '10'` rejected |
+| `zod/v4` subpath of `zod@3.25.76` with `.catch(x)` | **`unknown` and required**: `<Link to="/post-login" />` errors "search is missing", and `returnUrl: 5` compiles | Typed | Outdated v4 preview; superseded by the next three rows |
+| `zod@4.6.5` with bare `.catch(x)` | Typed, but the key is **required**: `<Link to="/catch" />` errors "search is missing"; `month: 'x'` rejected | Typed | Input type kept, optionality lost |
+| `zod@4.6.5` with `.default(x).catch(x)` | Typed, optional | Typed | ✓ `<Link to="/catchdefault" />` compiles; `month: 'x'` rejected; runtime `{ month: 'x' }` → `10` |
+| `zod@4.6.5` with `.optional().catch(undefined)` | Typed, optional | Typed | ✓ `returnUrl: 5` rejected. Matches the docs: "In Zod v4, schemas may use `catch` instead of the fallback" (`guide/search-params.md:262`) |
+| `@tanstack/zod-adapter` `zodValidator(schema)` + `fallback(z.number(), 10).default(10)` (`guide/search-params.md:198-258`) | Typed, optional | Typed | ✓ `<Link to="/history" />` compiles; `month: '10'` rejected. zod 3 only: `npm i @tanstack/zod-adapter@1.167.0 zod@4.6.5` fails with `ERESOLVE … peer zod@"^3.23.8"` |
 
 The docs still say zod v3 needs the adapter (`guide/search-params.md:189-216`). That is outdated for zod ≥3.24's
 Standard Schema in the `.default()` case, but still true for `.catch()`.
@@ -516,8 +482,7 @@ removable after a release.
 | `@tanstack/react-router@1.170.41`: `createRouter, createHashHistory, RouterProvider, Link, Outlet, redirect, useNavigate, useMatches, useRouterState, useCanGoBack, useRouter, createLink, createRootRouteWithContext, createFileRoute, Navigate, useSearch, getRouteApi, lazyRouteComponent, useMatchRoute` | 81,203 | **28,956** | 26,253 |
 
 `isbot` (a TanStack dependency) is not in the client output. Per-route split wrappers add a few hundred bytes each.
-A full `vite build` comparison wasn't run: the POC branch mounts a demo tree instead of the app, so main vs POC would
-compare different applications. Run it in the cut-over PR (`dist/` gzip totals before and after).
+A full `vite build` comparison wasn't run: it needs the app's routes ported. Run it in the cut-over PR (`dist/` gzip totals before and after).
 
 ---
 
@@ -601,12 +566,12 @@ verified by the existing suite.
 
 | # | PR | Contents | Verify |
 |---|---|---|---|
-| **P1** | Auth actions → functions *(on React Router)* | `features/auth`: `signIn(returnUrl)`, `signOut()` (fake + real). `SignInForm`, `NavigationDrawerActions`, `useAuthStatusCheckEffect` call them, using RR `useNavigate` only for in-app redirects. Delete `LoginPage.action`, `LogoutPage` + `/logout` route, `TestEnvironment.signOutAfterMilliseconds`. Fix `PostLoginPage` to read search *(decision D10)* | `yarn build`, `yarn lint`, `yarn format:check`, `yarn test`. Manual in MSW + fake-auth mode: login, logout, auto-login-on-init, session-expiry logout |
+| **P1** | Auth actions → functions *(on React Router)* | `features/auth`: `signIn(returnUrl)`, `signOut()` (fake + real). `SignInForm`, `NavigationDrawerActions`, `useAuthStatusCheckEffect` call them, using RR `useNavigate` only for in-app redirects. Delete `LoginPage.action`, `LogoutPage` + `/logout` route, `TestEnvironment.signOutAfterMilliseconds`. Fix `PostLoginPage` to read search *(decision D9)* | `yarn build`, `yarn lint`, `yarn format:check`, `yarn test`. Manual in MSW + fake-auth mode: login, logout, auto-login-on-init, session-expiry logout |
 | **P2** | Router-agnostic pages and features *(on React Router)* | Pages take props from the route layer (`date`, `weightLogsRequest`, …). `SelectDate` → callback (drop the `useSubmit` wrapper, keep `SelectDateView`). `FilterNotesHistory` → `onApply(month, year)`. History reads notes via RTK hook. Delete `RootPage.tsx` | Same + manual: date switch, history filter, links from history to day |
 | **C1** | Cut-over, commit 1: infra (builds, nothing mounted) | Add `@tanstack/react-router`, `@tanstack/router-plugin`, `@tanstack/react-router-devtools`, `@tanstack/zod-adapter`. Plugin before `react()` with `routesDirectory: 'src/app/routes'`, `generatedRouteTree: 'src/app/routeTree.gen.ts'`, `autoCodeSplitting: true`. ESLint `globalIgnores` + `.prettierignore` for the gen file, `.tanstack/` in `.gitignore`, VS Code readonly settings | `yarn build`, `yarn lint`, `yarn format:check` |
 | | Commit 2: router + routes | `app/router.ts` (`createAppRouter(store, history = createHashHistory())`, `defaultPreloadStaleTime: 0`, `scrollRestoration: true`), `Register` + `StaticDataRouteOption`. Route files: `__root`, `_app` (beforeLoad auth, AppBar, pending/error), `_app/index`, `history`, `weight`, `products`, `categories`, `login`, `post-login`, `post-logout`. Search schemas. `createLink` wrappers in `shared/ui`. AppBar with `menu` variant only (parity: title + lazy `Title`/`Actions` slots) | `tsc` |
 | | Commit 3: switch + remove React Router | `app/index.tsx` mounts the TanStack `RouterProvider` (keep `<WithMockApi>` outside). Delete `app/routing/*`, `pages/lib/reactRouterExtensions.ts`, `Navigation.tsx` guard. Port the test helpers (async `render`). `yarn remove react-router`. `rg "react-router" src tests` → only historical comments, then fix those | `yarn build`, `yarn lint`, `yarn format:check`, `yarn test`. Bundle before/after (`dist/` gzip). Manual: every drawer link + active state; deep links `/#/history?month=10&year=2023`, `/#/?date=2023-10-19`, `/#/post-login?returnUrl=%2Fhistory`; refresh on each page; browser back/forward; unknown path → not-found; auth redirect from a deep link; `vite preview` with the PWA (SW update banner); a demo-style build (`VITE_APP_MSW_ENABLED`, `VITE_APP_FAKE_AUTH_ENABLED`) served from a subpath; E2E sign-in test (Docker, ask first) |
-| **F1** | AppBar variants | `back` (with `useCanGoBack` + parent fallback) and `search`, ported from the POC onto the typed union. Optional legacy-state shim (§8.2) | Unit test on the AppBar via `renderWithRouter`. Manual: deep link into a `back` route shows the arrow and goes to the parent with `replace` |
+| **F1** | AppBar variants | `back` (with `useCanGoBack` + parent fallback) and `search` on the typed union. Optional legacy-state shim (§8.2) | Unit test on the AppBar via `renderWithRouter`. Manual: deep link into a `back` route shows the arrow and goes to the parent with `replace` |
 
 After F1 comes the next issue step ("add flow from modals to typed routes"), which is out of scope. That step should
 use the §4.1 nesting rule and draft-missing `beforeLoad` redirects (prior research finding 7).
@@ -615,7 +580,7 @@ use the §4.1 nesting rule and draft-missing `beforeLoad` redirects (prior resea
 
 | # | Decision | Recommendation |
 |---|---|---|
-| D1 | Route location | `src/app/routes` + `src/app/routeTree.gen.ts` (not the POC's `src/routes`) |
+| D1 | Route location | `src/app/routes` + `src/app/routeTree.gen.ts` (not a top-level `src/routes`) |
 | D2 | File-based vs code-based vs virtual | File-based + `autoCodeSplitting: true` |
 | D3 | How pages get route data | Props from route adapters (router-agnostic pages). Navigation widgets may use `Link`/`linkOptions` directly |
 | D4 | Dynamic AppBar title/actions | Lazy slot components in `staticData` (`React.lazy`), reading their route via `getRouteApi` |
@@ -623,13 +588,12 @@ use the §4.1 nesting rule and draft-missing `beforeLoad` redirects (prior resea
 | D6 | Search-param validation | `@tanstack/zod-adapter` + `fallback()` on zod 3. Revisit (direct schemas, no adapter) if/when the repo moves to zod 4 |
 | D7 | Redirect vs `only-throw-error` | `redirect({ …, throw: true })`. No lint-config exception |
 | D8 | Router cache and preload | `defaultPreloadStaleTime: 0`, default `staleTime`/`gcTime`, `defaultPreload` off at cut-over (behaviour parity). If `'intent'` is enabled later, skip `forceRefetch` when `preload` |
-| D9 | POC commit `8ebecc53` (react-router v8) | Drop it. Not needed when React Router is removed in the same cut-over |
-| D10 | Fix the `returnUrl` round-trip (§7) | Fix it in P1. It is a behaviour change, so call it out in the PR |
-| D11 | Legacy history-state shim (§8.2) | Accept the one-time glitch. Add the shim only if it bothers you in testing |
-| D12 | Back fallback target | `navigate({ to: '..', replace: true })`. Switch to an explicit typed `backTo` in `staticData` if `..` misbehaves under pathless layouts (unverified) |
-| D13 | Route-component declaration style | Arrow consts **above** `export const Route`, or imported from `pages/` (TDZ, §4.2) |
-| D14 | Devtools | Include `TanStackRouterDevtools` in the root route. It's null outside development |
-| D15 | CI check for a stale `routeTree.gen.ts` | Add `git diff --exit-code` after build (cheap insurance) |
+| D9 | Fix the `returnUrl` round-trip (§7) | Fix it in P1. It is a behaviour change, so call it out in the PR |
+| D10 | Legacy history-state shim (§8.2) | Accept the one-time glitch. Add the shim only if it bothers you in testing |
+| D11 | Back fallback target | `navigate({ to: '..', replace: true })`. Switch to an explicit typed `backTo` in `staticData` if `..` misbehaves under pathless layouts (unverified) |
+| D12 | Route-component declaration style | Arrow consts **above** `export const Route`, or imported from `pages/` (TDZ, §4.2) |
+| D13 | Devtools | Include `TanStackRouterDevtools` in the root route. It's null outside development |
+| D14 | CI check for a stale `routeTree.gen.ts` | Add `git diff --exit-code` after build (cheap insurance) |
 
 ---
 
@@ -644,7 +608,6 @@ use the §4.1 nesting rule and draft-missing `beforeLoad` redirects (prior resea
 - `src/features/auth/ui/SignInForm.tsx`; `src/features/auth/hooks/useAuthStatusCheckEffect.ts`; `src/features/note/selectDate/ui/SelectDate.tsx`; `src/entities/note/lib/useFormValues.ts:13`; `src/shared/lib/urlHelper.ts`
 - `tests/render/render.tsx:14-50`; `tests/render/TestEnvironment.tsx`; `tests/setup.ts:22-26`; `tests/app.test.tsx`; `src/widgets/NotesHistoryList/ui/FilterNotesHistory.test.tsx:7-8`
 - `src/backend/src/FoodDiary.API/Controllers/v1/AuthController.cs:14-30`; `src/backend/src/FoodDiary.API/Startup.cs:53-74`; `Dockerfile:7-11`; `.github/workflows/deploy-demo.yml`
-- Branch `new-routes-poc` (`8ebecc53`…`74d1a95d`), `git diff main...new-routes-poc`
 
 ### TanStack Router docs (`TanStack/router@1f0f20a3`, `docs/router/…`; web: `https://tanstack.com/router/latest/docs/<path>`)
 - Migration checklist — [installation/migrate-from-react-router](https://tanstack.com/router/latest/docs/installation/migrate-from-react-router)
@@ -714,8 +677,6 @@ git clone --depth 1 --filter=blob:none --sparse https://github.com/TanStack/rout
 
 # repo inventory (read-only)
 rg -n "react-router" src tests;  rg -l "from '@tests/render'" src tests;  rg -l "from '@/app" src --glob '!src/app/**'
-git log main..new-routes-poc;  git diff main...new-routes-poc -- src/frontend ':!src/frontend/yarn.lock'
-git show new-routes-poc:src/frontend/yarn.lock | rg '@tanstack/'
 
 # probe project (react 19.3, @mui/material 9.4.0, zod 3.25.76, ts 5.9.3, vite 8.3, vitest 4.1.11, eslint 10, typescript-eslint 8)
 npm install @tanstack/react-router@1.170.41 @tanstack/router-plugin@1.168.42 @tanstack/router-cli@1.167.40 \
@@ -741,4 +702,10 @@ gh api repos/TanStack/router
 gh search issues --repo TanStack/router --state open "<createHashHistory|useCanGoBack|hash router|staticData|Vite 8|rolldown|React 19>"
 gh issue view {4370,8487,8198,8211,8511} -R TanStack/router
 gh search issues --repo TanStack/router "v2 in:title";  gh release list -R TanStack/router --limit 8
+
+# zod 4 probe (2026-10-04): code-based routes, tsc --strict
+npm i @tanstack/react-router@1.170.41 @tanstack/zod-adapter@1.167.0 zod@4.6.5   # ERESOLVE: peer zod@"^3.23.8"
+npm i @tanstack/react-router@1.170.41 zod@4.6.5 react@19 react-dom@19 typescript@5.9.3 @types/react@19
+# schemas: z.number().catch(10) | z.number().default(10).catch(10) | z.number().default(10) | z.string().optional().catch(undefined)
+# checked: <Link to> without search compiles?  wrong-typed search rejected (@ts-expect-error)?  runtime parse of malformed input
 ```
