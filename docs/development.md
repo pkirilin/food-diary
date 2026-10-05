@@ -43,7 +43,7 @@ dotnet user-secrets --project src/backend/src/FoodDiary.API set "GoogleAuth:Clie
 # Optional, used by AI food recognition from photos
 dotnet user-secrets --project src/backend/src/FoodDiary.API set "Integrations:OpenAI:ApiKey" "<your_OpenAI_api_key>"
 
-dotnet user-secrets --project src/backend/src/FoodDiary.API set "Integrations:OpenAI:Model" "gpt-5.4-mini"
+dotnet user-secrets --project src/backend/src/FoodDiary.API set "Integrations:OpenAI:Model" "gpt-6-luna"
 
 # Optional, runs the MCP server locally. Claude itself cannot reach localhost, see docs/guide/mcp-server.md
 dotnet user-secrets --project src/backend/src/FoodDiary.API set "Mcp:Enabled" "true"
