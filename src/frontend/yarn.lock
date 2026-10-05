@@ -2817,6 +2817,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@playwright/cli@npm:^0.1.21":
+  version: 0.1.21
+  resolution: "@playwright/cli@npm:0.1.21"
+  dependencies:
+    playwright: "npm:1.64.0-alpha-1789764292000"
+    playwright-core: "npm:1.64.0-alpha-1789764292000"
+  bin:
+    playwright-cli: playwright-cli.js
+  checksum: 10/9983d6c8c287f63fe0d73ee8ec3448d5b49679ecf2906adebcb96ae6a3c0ec32fed92c164bb0d79588e94c9a4418a90a18552df839e2d5f23c3da0799258a5ba
+  languageName: node
+  linkType: hard
+
 "@popperjs/core@npm:^2.11.8":
   version: 2.11.8
   resolution: "@popperjs/core@npm:2.11.8"
@@ -3263,23 +3275,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/jest-dom@npm:*":
-  version: 6.10.0
-  resolution: "@testing-library/jest-dom@npm:6.10.0"
-  dependencies:
-    "@adobe/css-tools": "npm:^4.4.0"
-    aria-query: "npm:^5.0.0"
-    css.escape: "npm:^1.5.1"
-    dom-accessibility-api: "npm:^0.6.3"
-    picocolors: "npm:^1.1.1"
-    redent: "npm:^3.0.0"
-  peerDependencies:
-    "@testing-library/dom": ">=10 <11"
-  checksum: 10/778d453d2a99e5bbc057a03ec76764d15dc9839a162a686acfb41f2ed44cecd3876b73be42115863222440217007090c2fe9af6a84457a35c6abd13bdf57b490
-  languageName: node
-  linkType: hard
-
-"@testing-library/jest-dom@npm:^7.0.1":
+"@testing-library/jest-dom@npm:*, @testing-library/jest-dom@npm:^7.0.1":
   version: 7.0.1
   resolution: "@testing-library/jest-dom@npm:7.0.1"
   dependencies:
@@ -6001,6 +5997,7 @@ __metadata:
     "@mui/utils": "npm:^9.4.0"
     "@mui/x-charts": "npm:^9.14.0"
     "@mui/x-date-pickers": "npm:^9.14.0"
+    "@playwright/cli": "npm:^0.1.21"
     "@reduxjs/toolkit": "npm:^2.12.0"
     "@stylistic/eslint-plugin": "npm:^5.10.0"
     "@testing-library/dom": "npm:^10.4.2"
@@ -7772,6 +7769,26 @@ __metadata:
   version: 4.0.7
   resolution: "picomatch@npm:4.0.7"
   checksum: 10/66e1df34bc39c72fa3756be4069f7887ea3e35e94bba1c3f6167763007698cb04b8a0a365161d186fda6e9571a2d3efb606b2966eb6a7dea6252911224dc2f48
+  languageName: node
+  linkType: hard
+
+"playwright-core@npm:1.64.0-alpha-1789764292000":
+  version: 1.64.0-alpha-1789764292000
+  resolution: "playwright-core@npm:1.64.0-alpha-1789764292000"
+  bin:
+    playwright-core: cli.js
+  checksum: 10/6700d2274c37c41337e50305d48fdc651cdfe1597c8d159efe9833b32fbb23d764c66247f8eea6f6d251f6a86a4d081126635b5c93a854fdf9ba54ed08987f6b
+  languageName: node
+  linkType: hard
+
+"playwright@npm:1.64.0-alpha-1789764292000":
+  version: 1.64.0-alpha-1789764292000
+  resolution: "playwright@npm:1.64.0-alpha-1789764292000"
+  dependencies:
+    playwright-core: "npm:1.64.0-alpha-1789764292000"
+  bin:
+    playwright: cli.js
+  checksum: 10/9abde1989a2bf31913b0bd20e4c2faecfbab8deabb848d8f1635b91f0e7b3eca68561e7d2e33ffcb95a06e35de1e713be0e746300b1e018095bc49eb2c77e9bd
   languageName: node
   linkType: hard
 

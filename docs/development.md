@@ -117,6 +117,16 @@ yarn start
 
 Navigate to <http://localhost:5173>. The app will now use mocked responses for authentication and API calls.
 
+### Browser verification setup
+
+Frontend changes are verified in a real browser with [`@playwright/cli`](https://github.com/microsoft/playwright-cli), which is a devDependency of `src/frontend`. After `yarn install`, download the browser once per machine from the repo root:
+
+```shell
+make setup-frontend
+```
+
+Run the CLI as `yarn playwright-cli <command>` from `src/frontend`; no global install is needed. The coding-agent rules for when and how to verify are in `.claude/rules/frontend.md`.
+
 ### Frontend environment variables
 
 The following environment variables are available for configuring the frontend:
