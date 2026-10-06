@@ -22,7 +22,10 @@ services:
       - ASPNETCORE_URLS=https://+:443
       - ASPNETCORE_Kestrel__Certificates__Default__Password=test
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/app.pfx
-      - ConnectionStrings__Default=User ID=postgres;Password=postgres;Host=db;Port=8090;Database=FoodDiary
+      # GSS Encryption Mode=Disable: Npgsql 10 tries GSSAPI encryption by default, and the .NET 10 runtime logs a harmless
+      # "Cannot load library libgssapi_krb5.so.2" error because the image ships no Kerberos libraries.
+      # Remove this option everywhere when upgrading to .NET 11, whose runtime no longer logs it.
+      - ConnectionStrings__Default=User ID=postgres;Password=postgres;Host=db;Port=8090;Database=FoodDiary;GSS Encryption Mode=Disable
       - Auth__AllowedEmails__0=${USER_EMAIL}
       - GoogleAuth__ClientId=${GOOGLE_CLIENT_ID}
       - GoogleAuth__ClientSecret=${GOOGLE_CLIENT_SECRET}
