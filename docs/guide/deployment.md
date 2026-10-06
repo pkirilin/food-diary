@@ -105,7 +105,7 @@ Configuration key               | Environment variable            | Default     
 --------------------------------|---------------------------------|-----------------------------|-----------------------------------------------------------------------
 `Integrations:OpenAI:ApiKey`    | `Integrations__OpenAI__ApiKey`  | —                           | API key for OpenAI or an OpenAI-compatible API
 `Integrations:OpenAI:BaseUrl`   | `Integrations__OpenAI__BaseUrl` | `https://api.openai.com/v1` | Override to use another OpenAI-compatible API
-`Integrations:OpenAI:Model`     | `Integrations__OpenAI__Model`   | `gpt-5.4-mini`              | Model used to recognize food in photos. It must accept image input
+`Integrations:OpenAI:Model`     | `Integrations__OpenAI__Model`   | `gpt-6-luna`                 | Model used to recognize food in photos. It must accept image input
 
 ### MCP server
 
