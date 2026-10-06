@@ -20,7 +20,10 @@ services:
     environment:
       ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
       Mcp__BaseUrl: https://${DOMAIN}
-      ConnectionStrings__Default: User ID=postgres;Password=${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env};Host=db;Port=5432;Database=FoodDiary
+      # GSS Encryption Mode=Disable: Npgsql 10 tries GSSAPI encryption by default, and the .NET 10 runtime logs a harmless
+      # "Cannot load library libgssapi_krb5.so.2" error because the image ships no Kerberos libraries.
+      # Remove this option everywhere when upgrading to .NET 11, whose runtime no longer logs it.
+      ConnectionStrings__Default: User ID=postgres;Password=${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env};Host=db;Port=5432;Database=FoodDiary;GSS Encryption Mode=Disable
     depends_on:
       db:
         condition: service_healthy
