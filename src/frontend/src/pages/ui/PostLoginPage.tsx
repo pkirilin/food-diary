@@ -1,14 +1,13 @@
 import { type FC } from 'react';
-import { Navigate, useParams } from 'react-router';
-import { AuthCallbackProgress, useAuth } from '@/features/auth';
+import { Navigate, useSearchParams } from 'react-router';
+import { AuthCallbackProgress, getInAppReturnUrl, useAuth } from '@/features/auth';
 
 export const Component: FC = () => {
   const auth = useAuth();
-  const params = useParams();
+  const [searchParams] = useSearchParams();
 
   if (auth.status.isAuthenticated) {
-    const redirectUrl = params.returnUrl ?? '/';
-    return <Navigate to={redirectUrl} />;
+    return <Navigate to={getInAppReturnUrl(searchParams)} />;
   }
 
   return <AuthCallbackProgress label="Logging in..." />;

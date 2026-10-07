@@ -196,9 +196,10 @@ interface StaticDataRouteOption {
 ### Auth
 
 - **Two functions in the auth feature:**
-  - `signIn(returnUrl)`. With fake auth, it signs in the fake user and navigates to `returnUrl`. Otherwise it sends the browser to the API login endpoint with `returnUrl`.
-  - `signOut()`. With fake auth, it signs out the fake user and opens login. Otherwise it sends the browser to the API logout endpoint, which redirects to post-logout.
-- **Callers.** The drawer's Logout item and the periodic auth check call `signOut()` directly. The sign-in form calls `signIn`.
+  - `signIn(returnUrl, navigate)`. With fake auth, it signs in the fake user and navigates to `returnUrl`. Otherwise it sends the browser to the API login endpoint with `returnUrl`.
+  - `signOut(navigate)`. With fake auth, it signs out the fake user and opens login. Otherwise it sends the browser to the API logout endpoint, which redirects to post-logout.
+  - `navigate` takes an in-app href. The caller supplies it from the router, so the auth feature never imports the router (ADR-0005).
+- **Callers.** The drawer's Logout item and the periodic auth check call `signOut` directly. The sign-in form calls `signIn`.
 - **Auth gate.**
   - It queries auth status, forcing a refetch except when the router is preloading.
   - When the owner is not signed in, it throws a redirect to login, carrying the current in-app href as `returnUrl`.

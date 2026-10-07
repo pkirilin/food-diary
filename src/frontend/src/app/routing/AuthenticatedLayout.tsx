@@ -6,12 +6,12 @@ import {
   ScrollRestoration,
   redirect,
   type ShouldRevalidateFunction,
+  useNavigate,
 } from 'react-router';
 import { authApi, useAuthStatusCheckEffect } from '@/features/auth';
 import { UpdateAppBanner } from '@/features/updateApp';
 import { ok } from '@/pages/lib';
 import { APP_BAR_HEIGHT_SM, APP_BAR_HEIGHT_XS } from '@/shared/constants';
-import { createUrl } from '@/shared/lib';
 import { Navigation } from '@/widgets/Navigation';
 import { store } from '../store';
 import { ErrorLayout } from './ErrorLayout';
@@ -27,9 +27,8 @@ export const loader: LoaderFunction = async ({ request }) => {
     const authStatusQuery = await authStatusQueryPromise;
 
     if (!authStatusQuery.data?.isAuthenticated) {
-      const returnUrl = new URL(request.url).searchParams.get('returnUrl') ?? '/';
-      const loginUrl = createUrl('/login', { returnUrl });
-      return redirect(loginUrl);
+      const { pathname, search } = new URL(request.url);
+      return redirect(`/login?${new URLSearchParams({ returnUrl: pathname + search })}`);
     }
 
     return ok();
@@ -48,8 +47,9 @@ export const ErrorBoundary: FC = () => (
 
 export const Component: FC = () => {
   const navigationProgress = useNavigationProgress();
+  const navigate = useNavigate();
 
-  useAuthStatusCheckEffect();
+  useAuthStatusCheckEffect(navigate);
 
   return (
     <>

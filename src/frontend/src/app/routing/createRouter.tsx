@@ -44,10 +44,6 @@ export const routes: RouteObject[] = [
             lazy: () => import('@/pages/ui/LoginPage'),
           },
           {
-            path: '/logout',
-            lazy: () => import('@/pages/ui/LogoutPage'),
-          },
-          {
             path: '/post-login',
             lazy: () => import('@/pages/ui/PostLoginPage'),
           },

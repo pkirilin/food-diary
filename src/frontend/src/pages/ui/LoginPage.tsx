@@ -1,11 +1,10 @@
 import { Box, Container, Paper, Stack } from '@mui/material';
 import { type FC } from 'react';
-import { type LoaderFunction, redirect, type ActionFunction, redirectDocument } from 'react-router';
+import { type LoaderFunction, redirect, useNavigate, useSearchParams } from 'react-router';
 import { store } from '@/app/store';
-import { authApi, DemoModeWarning, SignInForm } from '@/features/auth';
+import { authApi, DemoModeWarning, getInAppReturnUrl, SignInForm } from '@/features/auth';
 import { UpdateAppBanner } from '@/features/updateApp';
-import { API_URL, DEMO_MODE_ENABLED, FAKE_AUTH_ENABLED } from '@/shared/config';
-import { createUrl } from '@/shared/lib';
+import { DEMO_MODE_ENABLED } from '@/shared/config';
 import { AppName, Center } from '@/shared/ui';
 import { ok } from '../lib';
 
@@ -27,54 +26,46 @@ export const loader: LoaderFunction = async () => {
   }
 };
 
-export const action: ActionFunction = async ({ request }) => {
-  const returnUrl = new URL(request.url).searchParams.get('returnUrl') ?? '/';
+export const Component: FC = () => {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
 
-  if (FAKE_AUTH_ENABLED) {
-    const { usersService } = await import('@tests/mockApi/user');
-    usersService.signInById(1);
-    return redirect(returnUrl);
-  }
-
-  const loginUrl = createUrl(`${API_URL}/api/v1/auth/login`, { returnUrl });
-  return redirectDocument(loginUrl);
+  return (
+    <>
+      <Box
+        component={Paper}
+        elevation={0}
+        sx={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+        }}
+      >
+        <UpdateAppBanner />
+      </Box>
+      <Center>
+        <Container maxWidth="md" disableGutters>
+          {DEMO_MODE_ENABLED && (
+            <Box sx={{ mb: 3 }}>
+              <DemoModeWarning />
+            </Box>
+          )}
+          <Paper
+            component={Stack}
+            spacing={3}
+            sx={{
+              p: { xs: 3, sm: 4 },
+              margin: 'auto',
+              width: '100%',
+              alignItems: 'center',
+            }}
+          >
+            <AppName />
+            <SignInForm returnUrl={getInAppReturnUrl(searchParams)} navigate={navigate} />
+          </Paper>
+        </Container>
+      </Center>
+    </>
+  );
 };
-
-export const Component: FC = () => (
-  <>
-    <Box
-      component={Paper}
-      elevation={0}
-      sx={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-      }}
-    >
-      <UpdateAppBanner />
-    </Box>
-    <Center>
-      <Container maxWidth="md" disableGutters>
-        {DEMO_MODE_ENABLED && (
-          <Box sx={{ mb: 3 }}>
-            <DemoModeWarning />
-          </Box>
-        )}
-        <Paper
-          component={Stack}
-          spacing={3}
-          sx={{
-            p: { xs: 3, sm: 4 },
-            margin: 'auto',
-            width: '100%',
-            alignItems: 'center',
-          }}
-        >
-          <AppName />
-          <SignInForm />
-        </Paper>
-      </Container>
-    </Center>
-  </>
-);

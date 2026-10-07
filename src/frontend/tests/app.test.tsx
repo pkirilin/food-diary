@@ -11,6 +11,16 @@ import { server } from './mockApi/server';
 // Whole-app navigations outlast the 1 s default while the rest of the suite runs in parallel
 configure({ asyncUtilTimeout: 3000 });
 
+const seedSeptemberFoodLog = (): void => {
+  notesService.create({
+    date: '2023-09-15',
+    mealType: noteModel.MealType.Breakfast,
+    productId: 1,
+    productQuantity: 100,
+    displayOrder: 0,
+  });
+};
+
 test('signing in from the sign-in screen lands on the diary', async () => {
   const user = userEvent.setup();
   await renderApp('/login');
@@ -18,6 +28,38 @@ test('signing in from the sign-in screen lands on the diary', async () => {
   await user.click(await screen.findByRole('button', { name: /sign in/i }));
 
   expect(await screen.findByRole('button', { name: /19 oct 2023/i })).toBeVisible();
+});
+
+test('signing in from a signed-out deep link lands on the opened screen', async () => {
+  seedSeptemberFoodLog();
+  const user = userEvent.setup();
+  await renderApp('/history?month=9&year=2023');
+
+  await user.click(await screen.findByRole('button', { name: /sign in/i }));
+
+  expect(await screen.findByRole('link', { name: /15 sep 2023/i })).toBeVisible();
+  expect(screen.queryByRole('link', { name: /19 oct 2023/i })).not.toBeInTheDocument();
+});
+
+test.each(['https://example.com/', '//example.com/'])(
+  'signing in ignores the return address %s and lands on the diary',
+  async returnUrl => {
+    const user = userEvent.setup();
+    await renderApp(`/login?${new URLSearchParams({ returnUrl })}`);
+
+    await user.click(await screen.findByRole('button', { name: /sign in/i }));
+
+    expect(await screen.findByRole('button', { name: /19 oct 2023/i })).toBeVisible();
+  },
+);
+
+test('the post-login screen lands on the return address', async () => {
+  seedSeptemberFoodLog();
+  const returnUrl = '/history?month=9&year=2023';
+
+  await renderApp(`/post-login?${new URLSearchParams({ returnUrl })}`, { signedIn: true });
+
+  expect(await screen.findByRole('link', { name: /15 sep 2023/i })).toBeVisible();
 });
 
 test('logging out from the drawer shows the sign-in screen', async () => {
@@ -72,13 +114,7 @@ test('opening a diary date by URL shows the Food Logs of that date', async () =>
 });
 
 test('opening a History month by URL shows that month', async () => {
-  notesService.create({
-    date: '2023-09-15',
-    mealType: noteModel.MealType.Breakfast,
-    productId: 1,
-    productQuantity: 100,
-    displayOrder: 0,
-  });
+  seedSeptemberFoodLog();
 
   await renderApp('/history?month=9&year=2023', { signedIn: true });
 

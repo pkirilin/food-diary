@@ -9,27 +9,16 @@ import { usersService } from '../mockApi/user';
 import TestEnvironment from './TestEnvironment';
 
 interface RenderOptions {
-  signOutAfterMilliseconds?: number;
   pageSizeOverride?: number;
 }
 
-export function render(
-  ui: ReactElement,
-  { signOutAfterMilliseconds, pageSizeOverride }: RenderOptions = {},
-): RenderResult {
+export function render(ui: ReactElement, { pageSizeOverride }: RenderOptions = {}): RenderResult {
   const store = configureStore();
 
   const router = createMemoryRouter([
     {
       path: '/',
-      element: (
-        <TestEnvironment
-          signOutAfterMilliseconds={signOutAfterMilliseconds}
-          pageSizeOverride={pageSizeOverride}
-        >
-          {ui}
-        </TestEnvironment>
-      ),
+      element: <TestEnvironment pageSizeOverride={pageSizeOverride}>{ui}</TestEnvironment>,
     },
   ]);
 

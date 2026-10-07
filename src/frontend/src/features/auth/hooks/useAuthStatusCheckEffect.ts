@@ -1,11 +1,10 @@
 import { useEffect } from 'react';
-import { useSubmit } from 'react-router';
 import { AUTH_CHECK_INTERVAL } from '@/shared/config';
 import { authApi } from '../api';
+import { type NavigateToHref, signOut } from '../lib';
 
-export const useAuthStatusCheckEffect = (): void => {
+export const useAuthStatusCheckEffect = (navigate: NavigateToHref): void => {
   const [getAuthStatus] = authApi.useLazyGetStatusQuery();
-  const submit = useSubmit();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -13,7 +12,7 @@ export const useAuthStatusCheckEffect = (): void => {
         const authStatus = await getAuthStatus({});
 
         if (!authStatus.data?.isAuthenticated) {
-          submit(null, { method: 'post', action: '/logout' });
+          await signOut(navigate);
         }
       })();
     }, AUTH_CHECK_INTERVAL);
@@ -21,5 +20,5 @@ export const useAuthStatusCheckEffect = (): void => {
     return () => {
       clearInterval(interval);
     };
-  }, [getAuthStatus, submit]);
+  }, [getAuthStatus, navigate]);
 };

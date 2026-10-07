@@ -1,10 +1,11 @@
 import LogoutIcon from '@mui/icons-material/Logout';
 import { List, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 import { type FC } from 'react';
-import { useSubmit } from 'react-router';
+import { useNavigate } from 'react-router';
+import { signOut } from '@/features/auth';
 
 export const NavigationDrawerActions: FC = () => {
-  const submit = useSubmit();
+  const navigate = useNavigate();
 
   return (
     <List>
@@ -12,7 +13,7 @@ export const NavigationDrawerActions: FC = () => {
         <ListItemButton
           aria-label="Logout"
           onClick={() => {
-            submit(null, { method: 'post', action: '/logout' });
+            void signOut(navigate);
           }}
         >
           <ListItemIcon>
