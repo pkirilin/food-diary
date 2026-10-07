@@ -149,12 +149,12 @@ The logout route is deleted. The auth screens sit outside the authenticated layo
 
 ### AppBar contract
 
-The type shape comes from the research probe. The grilling session changed `title` to a single field.
+The type shape comes from the research probe. The grilling session changed `title` to a single field, and a later review wrapped its component form in an object.
 
 ```ts
 type AppBarConfig = {
   variant: 'menu';
-  title: string | ComponentType;
+  title: string | { Component: ComponentType };
   Actions?: ComponentType;
 };
 
@@ -166,6 +166,7 @@ interface StaticDataRouteOption {
 
 - **Required everywhere.** Every route must supply `appBar`, and the compiler enforces it. Root, layouts and the auth screens use an explicit `null`. An optional field would let a new screen silently get no AppBar.
 - **How the AppBar reads it.** The AppBar reads the deepest match's static data through a selector over the matches. It narrows with a `switch` on `variant`, and narrows the title with `typeof title === 'string'`. There is no guard and no cast, and the old loader-data guard and its fallback are deleted.
+- **Every component field is PascalCase.** A component title sits under `Component`, not directly in `title`. React treats a lowercase JSX tag as an HTML element. So with `title: string | ComponentType`, destructuring `title` and writing `<title />` would render an HTML `<title>`, and both `tsc` and ESLint accept it. With the wrapper, every component in the config is reached through a PascalCase name, `title.Component` or `Actions`, so the bug cannot be written. Routes write `title: { Component: DateSwitcherSlot }` for the diary.
 - **Heading.** The title renders as the page's top-level heading with today's visual style. A slot title is wrapped in that heading too, so on the diary the heading's accessible name is the selected date.
 - **Slots.** Slots are `React.lazy` components. The router's own lazy wrapper is not used, because of the React 19 warning in upstream issue #8487.
   - Slots live in ignored-prefix files next to their route file.

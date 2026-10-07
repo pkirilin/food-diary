@@ -28,7 +28,7 @@ Context worth knowing before starting:
 - [ ] A router factory takes the store and an optional history, with hash history as the default. The router type is registered globally. Loaders and `beforeLoad` get the store from router context
 - [ ] Every route in the spec's route tree exists at its current hash URL. The logout route does not
 - [ ] Every route declares `appBar`, and a route without it fails `tsc`. The AppBar reads the deepest match with no guard or cast, and the old loader-data guard is deleted
-- [ ] The date switcher and the History filter render as lazy AppBar slots. The build output shows the date pickers outside the entry chunk
+- [ ] The date switcher and the History filter render as lazy AppBar slots. The diary declares its slot as `title: { Component: ... }`, never as a bare component in `title`. The build output shows the date pickers outside the entry chunk
 - [ ] Products and Categories show their titles in the AppBar
 - [ ] Search schemas:
   - [ ] `date`, `month` and `year` use a default and a catch, both written as functions;
