@@ -14,23 +14,23 @@ export const routes: RouteObject[] = [
             children: [
               {
                 path: '/',
-                lazy: () => import('@/pages/ui/IndexPage'),
+                lazy: () => import('./IndexRoute'),
               },
               {
                 path: '/history',
-                lazy: () => import('@/pages/ui/HistoryPage'),
+                lazy: () => import('./HistoryRoute'),
               },
               {
                 path: '/weight',
-                lazy: () => import('@/pages/ui/WeightPage'),
+                lazy: () => import('./WeightRoute'),
               },
               {
                 path: '/products',
-                lazy: () => import('@/pages/ui/ProductsPage'),
+                lazy: () => import('./ProductsRoute'),
               },
               {
                 path: '/categories',
-                lazy: () => import('@/pages/ui/CategoriesPage'),
+                lazy: () => import('./CategoriesRoute'),
               },
             ],
           },
@@ -41,15 +41,15 @@ export const routes: RouteObject[] = [
         children: [
           {
             path: '/login',
-            lazy: () => import('@/pages/ui/LoginPage'),
+            lazy: () => import('./LoginRoute'),
           },
           {
             path: '/post-login',
-            lazy: () => import('@/pages/ui/PostLoginPage'),
+            lazy: () => import('./PostLoginRoute'),
           },
           {
             path: '/post-logout',
-            lazy: () => import('@/pages/ui/PostLogoutPage'),
+            lazy: () => import('./PostLogoutRoute'),
           },
         ],
       },

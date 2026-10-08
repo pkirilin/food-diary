@@ -1,13 +1,22 @@
-import { type FC } from 'react';
-import { Navigate, useSearchParams } from 'react-router';
-import { AuthCallbackProgress, getInAppReturnUrl, useAuth } from '@/features/auth';
+import { type FC, useEffect } from 'react';
+import { AuthCallbackProgress, type NavigateToHref, useAuth } from '@/features/auth';
 
-export const Component: FC = () => {
-  const auth = useAuth();
-  const [searchParams] = useSearchParams();
+interface Props {
+  returnUrl: string;
+  navigate: NavigateToHref;
+}
 
-  if (auth.status.isAuthenticated) {
-    return <Navigate to={getInAppReturnUrl(searchParams)} />;
+export const PostLoginPage: FC<Props> = ({ returnUrl, navigate }) => {
+  const { isAuthenticated } = useAuth().status;
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate(returnUrl);
+    }
+  }, [isAuthenticated, navigate, returnUrl]);
+
+  if (isAuthenticated) {
+    return null;
   }
 
   return <AuthCallbackProgress label="Logging in..." />;

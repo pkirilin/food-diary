@@ -3,18 +3,20 @@ import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import { Tooltip, IconButton, Box } from '@mui/material';
 import { StaticDatePicker } from '@mui/x-date-pickers';
 import { useState, type FC } from 'react';
-import { Link, useSubmit } from 'react-router';
+import { Link } from 'react-router';
 import { useToggle } from '@/shared/hooks';
 import { Button, Dialog } from '@/shared/ui';
 
+export type OnApplyFilterFn = (month: number, year: number) => void;
+
 interface Props {
   date: Date;
+  onApply: OnApplyFilterFn;
 }
 
-export const FilterNotesHistory: FC<Props> = ({ date }) => {
+export const FilterNotesHistory: FC<Props> = ({ date, onApply }) => {
   const [filterVisible, toggleFilter] = useToggle();
   const [filterDate, setFilterDate] = useState(date);
-  const submit = useSubmit();
 
   return (
     <Box
@@ -47,13 +49,7 @@ export const FilterNotesHistory: FC<Props> = ({ date }) => {
           <Button
             {...props}
             onClick={() => {
-              submit(
-                new URLSearchParams({
-                  month: (filterDate.getMonth() + 1).toString(),
-                  year: filterDate.getFullYear().toString(),
-                }),
-                { action: '/history' },
-              );
+              onApply(filterDate.getMonth() + 1, filterDate.getFullYear());
               toggleFilter();
             }}
           >

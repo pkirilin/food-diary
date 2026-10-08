@@ -1,12 +1,21 @@
-import { type FC } from 'react';
-import { Navigate } from 'react-router';
-import { AuthCallbackProgress, useAuth } from '@/features/auth';
+import { type FC, useEffect } from 'react';
+import { AuthCallbackProgress, type NavigateToHref, useAuth } from '@/features/auth';
 
-export const Component: FC = () => {
-  const auth = useAuth();
+interface Props {
+  navigate: NavigateToHref;
+}
 
-  if (!auth.status.isAuthenticated) {
-    return <Navigate to="/" />;
+export const PostLogoutPage: FC<Props> = ({ navigate }) => {
+  const { isAuthenticated } = useAuth().status;
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/');
+    }
+  }, [isAuthenticated, navigate]);
+
+  if (!isAuthenticated) {
+    return null;
   }
 
   return <AuthCallbackProgress label="Logging out..." />;

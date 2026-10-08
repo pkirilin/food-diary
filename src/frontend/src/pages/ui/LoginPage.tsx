@@ -1,35 +1,16 @@
 import { Box, Container, Paper, Stack } from '@mui/material';
 import { type FC } from 'react';
-import { type LoaderFunction, redirect, useNavigate, useSearchParams } from 'react-router';
-import { store } from '@/app/store';
-import { authApi, DemoModeWarning, getInAppReturnUrl, SignInForm } from '@/features/auth';
+import { DemoModeWarning, type NavigateToHref, SignInForm } from '@/features/auth';
 import { UpdateAppBanner } from '@/features/updateApp';
 import { DEMO_MODE_ENABLED } from '@/shared/config';
 import { AppName, Center } from '@/shared/ui';
-import { ok } from '../lib';
 
-export const loader: LoaderFunction = async () => {
-  const authStatusQueryPromise = store.dispatch(
-    authApi.endpoints.getStatus.initiate({}, { forceRefetch: true }),
-  );
+interface Props {
+  returnUrl: string;
+  navigate: NavigateToHref;
+}
 
-  try {
-    const authStatusQuery = await authStatusQueryPromise;
-
-    if (authStatusQuery.data?.isAuthenticated) {
-      return redirect('/');
-    }
-
-    return ok();
-  } finally {
-    authStatusQueryPromise.unsubscribe();
-  }
-};
-
-export const Component: FC = () => {
-  const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
-
+export const LoginPage: FC<Props> = ({ returnUrl, navigate }) => {
   return (
     <>
       <Box
@@ -62,7 +43,7 @@ export const Component: FC = () => {
             }}
           >
             <AppName />
-            <SignInForm returnUrl={getInAppReturnUrl(searchParams)} navigate={navigate} />
+            <SignInForm returnUrl={returnUrl} navigate={navigate} />
           </Paper>
         </Container>
       </Center>

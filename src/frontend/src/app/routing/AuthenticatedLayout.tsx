@@ -10,12 +10,12 @@ import {
 } from 'react-router';
 import { authApi, useAuthStatusCheckEffect } from '@/features/auth';
 import { UpdateAppBanner } from '@/features/updateApp';
-import { ok } from '@/pages/lib';
 import { APP_BAR_HEIGHT_SM, APP_BAR_HEIGHT_XS } from '@/shared/constants';
 import { Navigation } from '@/widgets/Navigation';
 import { store } from '../store';
 import { ErrorLayout } from './ErrorLayout';
 import { ErrorPage } from './ErrorPage';
+import { ok } from './reactRouterExtensions';
 import { useNavigationProgress } from './useNavigationProgress';
 
 export const loader: LoaderFunction = async ({ request }) => {
