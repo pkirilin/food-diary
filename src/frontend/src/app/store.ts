@@ -18,7 +18,9 @@ export const configureStore = () =>
         .concat(api.middleware),
   });
 
-export const store: ReturnType<typeof configureStore> = configureStore();
+export type AppStore = ReturnType<typeof configureStore>;
+
+export const store: AppStore = configureStore();
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

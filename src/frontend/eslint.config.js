@@ -101,6 +101,18 @@ export default defineConfig([
   },
 
   {
+    files: ['src/app/routes/**'],
+    rules: {
+      '@typescript-eslint/only-throw-error': [
+        'error',
+        {
+          allow: [{ from: 'package', package: '@tanstack/router-core', name: 'Redirect' }],
+        },
+      ],
+    },
+  },
+
+  {
     files: ['**/*.test.ts', '**/*.test.tsx', '**/*.fixture.tsx', '**/*.steps.tsx', 'tests/**'],
     // @mswjs/data query names (findFirst, findById) collide with testing-library's
     // findBy* async-query detection.
