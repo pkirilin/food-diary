@@ -14,7 +14,7 @@ paths:
 - Separate presentational and container components clearly
 - Use custom hooks for reusable stateful logic
 - Implement proper component hierarchies with clear data flow
-- Always prioitize arrow function expressions (`const fn = () => {}`) over function definitions (`function fn() {}`)
+- Always prioritize arrow function expressions (`const fn = () => {}`) over function definitions (`function fn() {}`). Exception: route components in `src/app/routes/` are function declarations placed below the route definition (`export const Route = createFileRoute(...)({ component: HistoryRoute })`, then `function HistoryRoute() {}`), following TanStack Router's idiom
 - Custom hooks must not own UI-presentation concerns (alerts, snackbars, toasts, dialogs). Keep that state in the component and let the hook report outcomes through callbacks (e.g. `onError(message)`, `onInfo(message)`) that the component wires to its UI.
 - Custom hooks must not depend on form library types or instances (e.g. react-hook-form's `UseFormGetValues`/`UseFormSetValue`, `control`). Pass narrow callbacks instead (e.g. `getName`, `getFieldValue`, `setFieldValue`) so the hook stays decoupled from the form layer.
 

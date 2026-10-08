@@ -1,4 +1,5 @@
 import 'vitest/config';
+import { tanstackRouter } from '@tanstack/router-plugin/vite';
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 import { VitePWA as pwa } from 'vite-plugin-pwa';
@@ -9,6 +10,12 @@ const BASE_PUBLIC_PATH = './';
 
 export default defineConfig(() => ({
   plugins: [
+    tanstackRouter({
+      target: 'react',
+      routesDirectory: 'src/app/routes',
+      generatedRouteTree: 'src/app/routeTree.gen.ts',
+      autoCodeSplitting: true,
+    }),
     react(),
     pwa({
       strategies: 'injectManifest',

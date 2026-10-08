@@ -12,20 +12,20 @@ See the [spec](../spec.md), *Router setup* and *Lint, format, CI and conventions
 
 **Blocked by:** None — can start immediately
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] The router, the Vite plugin and the router devtools are installed with caret ranges
-- [ ] The plugin is configured:
-  - [ ] it runs before the React plugin;
-  - [ ] file-based routing reads a routes directory inside the app layer;
-  - [ ] the generated tree is written beside that directory;
-  - [ ] automatic code splitting is on
-- [ ] A minimal root route exists so the generator has something to generate. Nothing mounts it yet
-- [ ] The generated route tree is committed, and is in ESLint's global ignores and Prettier's ignore list
-- [ ] The plugin's temporary directory is ignored by git
-- [ ] The tracked editor settings mark the generated file read-only and exclude it from search and file watching
-- [ ] Deleting the generated file and running the build or the tests regenerates it identically
-- [ ] CI fails after the frontend build when the generated route tree differs from the committed one. This is verified locally by running the CI step against a deliberately stale tree
-- [ ] `CLAUDE.md`'s frontend conventions and the frontend rules state the exception: route components in the routes directory are function declarations below the route definition, and everything else stays an arrow function
-- [ ] The app still runs on React Router, and ticket 01's tests pass unchanged
-- [ ] `yarn build`, `yarn lint`, `yarn format:check` and `yarn test --run --reporter=verbose` (no `stderr` blocks) all exit zero
+- [x] The router, the Vite plugin and the router devtools are installed with caret ranges
+- [x] The plugin is configured:
+  - [x] it runs before the React plugin;
+  - [x] file-based routing reads a routes directory inside the app layer;
+  - [x] the generated tree is written beside that directory;
+  - [x] automatic code splitting is on
+- [x] A minimal root route exists so the generator has something to generate. Nothing mounts it yet
+- [x] The generated route tree is committed, and is in ESLint's global ignores and Prettier's ignore list
+- [x] The plugin's temporary directory is ignored by git
+- [x] The tracked editor settings mark the generated file read-only and exclude it from search and file watching
+- [x] Deleting the generated file and running the build or the tests regenerates it identically
+- [x] CI fails after the frontend build when the generated route tree differs from the committed one. This is verified locally by running the CI step against a deliberately stale tree
+- [x] `CLAUDE.md`'s frontend conventions and the frontend rules state the exception: route components in the routes directory are function declarations below the route definition, and everything else stays an arrow function
+- [x] The app still runs on React Router, and ticket 01's tests pass unchanged
+- [x] `yarn build`, `yarn lint`, `yarn format:check` and `yarn test --run --reporter=verbose` (no `stderr` blocks) all exit zero

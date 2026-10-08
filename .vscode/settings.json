@@ -2,5 +2,14 @@
     "markdown.extension.toc.levels": "2..6",
     "markdown.extension.toc.omittedFromToc": {
         "README.md": ["## Table of contents"]
+    },
+    "search.exclude": {
+        "**/routeTree.gen.ts": true
+    },
+    "files.watcherExclude": {
+        "**/routeTree.gen.ts": true
+    },
+    "files.readonlyInclude": {
+        "**/routeTree.gen.ts": true
     }
 }

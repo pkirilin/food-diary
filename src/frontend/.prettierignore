@@ -9,5 +9,6 @@ public
 node_modules
 index.html
 tsconfig.json
+src/app/routeTree.gen.ts
 
 .claude/settings.json

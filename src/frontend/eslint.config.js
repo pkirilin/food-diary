@@ -10,7 +10,14 @@ import testingLibrary from 'eslint-plugin-testing-library';
 import tseslint from 'typescript-eslint';
 
 export default defineConfig([
-  globalIgnores(['.yarn', 'dist', 'public', 'vite.config.ts', 'vite-env.d.ts']),
+  globalIgnores([
+    '.yarn',
+    'dist',
+    'public',
+    'vite.config.ts',
+    'vite-env.d.ts',
+    'src/app/routeTree.gen.ts',
+  ]),
 
   {
     files: ['**/*.ts', '**/*.tsx'],
