@@ -177,3 +177,27 @@ test.each<DrawerLinkCase>([
 
   expect(await findSectionContent()).toBeVisible();
 });
+
+test('opening sign-in while signed in lands on the diary', async () => {
+  await renderApp('/login', { signedIn: true });
+
+  expect(await screen.findByRole('button', { name: /19 oct 2023/i })).toBeVisible();
+  expect(screen.queryByRole('button', { name: /sign in/i })).not.toBeInTheDocument();
+});
+
+test('an unknown address shows "Page not found" with a link to the diary', async () => {
+  const user = userEvent.setup();
+  await renderApp('/no-such-screen', { signedIn: true });
+
+  expect(await screen.findByRole('heading', { name: 'Page not found' })).toBeVisible();
+
+  await user.click(screen.getByRole('link', { name: /diary/i }));
+
+  expect(await screen.findByRole('button', { name: /19 oct 2023/i })).toBeVisible();
+});
+
+test('a malformed History month falls back to the default month', async () => {
+  await renderApp('/history?month=abc&year=2023', { signedIn: true });
+
+  expect(await screen.findByRole('link', { name: /19 oct 2023/i })).toBeVisible();
+});

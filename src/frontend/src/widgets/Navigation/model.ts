@@ -1,10 +1,4 @@
-import { type ComponentType, type ReactElement } from 'react';
-
-export interface NavLink {
-  icon: ReactElement;
-  title: string;
-  path: string;
-}
+import { type ComponentType } from 'react';
 
 export type AppBarConfig = {
   variant: 'menu';

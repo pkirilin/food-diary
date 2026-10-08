@@ -179,9 +179,10 @@ interface StaticDataRouteOption {
 
 - **Schemas:** zod 4 schemas go straight into search validation, with no adapter package. The adapter only supports zod 3.
 - **`date`, `month` and `year`:**
-  - They use a default followed by a catch, both written as **functions**, so that "today" is computed on each read rather than at module load.
+  - They are optional, with `.catch(undefined)`, so a malformed value is dropped silently instead of reaching the error component.
+  - The schemas have no default. A schema default is written into the URL on the first load (`#/` becomes `#/?date=<today>`), and a reload after midnight would then bring back yesterday. Each route's `loaderDeps` fills a missing key with a default computed on each read, and the route and its slot read the value through `useLoaderDeps`.
   - The fixed dates used when MSW is enabled move into these defaults.
-  - Each key stays optional at every link, and a malformed value falls back silently instead of reaching the error component.
+  - Each key stays optional at every link.
 - **`month` and `year` are numbers.** The router's default parser JSON-parses values, so no coercion is needed.
 - **`returnUrl`** accepts only an in-app path, meaning a string starting with `/`. It is optional, and any other value is dropped.
 - **`loaderDeps`:** each route's loader dependencies pick only the keys its loader uses. Passing the whole search object is explicitly discouraged by the docs.

@@ -6,7 +6,7 @@ import { FilterNotesHistory, type OnApplyFilterFn } from './FilterNotesHistory';
 
 const openFilter = async (): Promise<{ onApply: Mock<OnApplyFilterFn> }> => {
   const onApply = vi.fn<OnApplyFilterFn>();
-  render(<FilterNotesHistory date={new Date(2023, 9, 19)} onApply={onApply} />);
+  await render(<FilterNotesHistory date={new Date(2023, 9, 19)} onApply={onApply} />);
   await userEvent.click(screen.getByRole('button', { name: /show filter/i }));
   return { onApply };
 };

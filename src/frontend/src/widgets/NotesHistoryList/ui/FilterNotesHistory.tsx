@@ -3,9 +3,8 @@ import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import { Tooltip, IconButton, Box } from '@mui/material';
 import { StaticDatePicker } from '@mui/x-date-pickers';
 import { useState, type FC } from 'react';
-import { Link } from 'react-router';
 import { useToggle } from '@/shared/hooks';
-import { Button, Dialog } from '@/shared/ui';
+import { Button, Dialog, RouterIconButton } from '@/shared/ui';
 
 export type OnApplyFilterFn = (month: number, year: number) => void;
 
@@ -26,9 +25,9 @@ export const FilterNotesHistory: FC<Props> = ({ date, onApply }) => {
       }}
     >
       <Tooltip title="Add notes">
-        <IconButton color="inherit" component={Link} to="/">
+        <RouterIconButton color="inherit" to="/">
           <AddIcon />
-        </IconButton>
+        </RouterIconButton>
       </Tooltip>
       <Tooltip title={filterVisible ? 'Hide filter' : 'Show filter'}>
         <IconButton color="inherit" edge="end" onClick={toggleFilter}>

@@ -1,11 +1,11 @@
 import LogoutIcon from '@mui/icons-material/Logout';
 import { List, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
+import { useRouter } from '@tanstack/react-router';
 import { type FC } from 'react';
-import { useNavigate } from 'react-router';
 import { signOut } from '@/features/auth';
 
 export const NavigationDrawerActions: FC = () => {
-  const navigate = useNavigate();
+  const router = useRouter();
 
   return (
     <List>
@@ -13,7 +13,7 @@ export const NavigationDrawerActions: FC = () => {
         <ListItemButton
           aria-label="Logout"
           onClick={() => {
-            void signOut(navigate);
+            void signOut(router.history.push);
           }}
         >
           <ListItemIcon>

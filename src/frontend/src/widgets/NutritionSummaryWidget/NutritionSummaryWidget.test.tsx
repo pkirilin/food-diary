@@ -21,8 +21,8 @@ const types: productModel.NutritionValueType[] = [
   'salt',
 ];
 
-test.each(types)('the %s value is shown in the colour that identifies it', type => {
-  render(<NutritionSummaryWidget nutritionValues={nutritionValues} />);
+test.each(types)('the %s value is shown in the colour that identifies it', async type => {
+  await render(<NutritionSummaryWidget nutritionValues={nutritionValues} />);
 
   const { color } = productModel.nutritionValuesConfig[type];
 

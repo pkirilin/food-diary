@@ -10,7 +10,7 @@ interface Result {
 export const useFormValues = (initialValues: FormValues): Result => {
   const [values, setValues] = useState<FormValues>(initialValues);
 
-  // Used to catch latest date updates from react-router-dom loader data
+  // Picks up a new date while the form stays mounted
   useEffect(() => {
     setValues(prev => ({
       ...prev,

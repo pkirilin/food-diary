@@ -1,10 +1,14 @@
-import { type RenderResult, render as rtlRender } from '@testing-library/react';
+import {
+  createMemoryHistory,
+  createRootRoute,
+  createRouter,
+  RouterProvider,
+} from '@tanstack/react-router';
+import { act, type RenderResult, render as rtlRender } from '@testing-library/react';
 import { type ReactElement } from 'react';
-import { RouterProvider, createMemoryRouter } from 'react-router';
 import { RootProvider } from '@/app/RootProvider';
-import { routes } from '@/app/routing';
-import { configureStore, store as appStore } from '@/app/store';
-import { api } from '@/shared/api';
+import { createAppRouter } from '@/app/router';
+import { configureStore } from '@/app/store';
 import { usersService } from '../mockApi/user';
 import TestEnvironment from './TestEnvironment';
 
@@ -12,40 +16,29 @@ interface RenderOptions {
   pageSizeOverride?: number;
 }
 
-export function render(ui: ReactElement, { pageSizeOverride }: RenderOptions = {}): RenderResult {
+export const render = async (
+  ui: ReactElement,
+  { pageSizeOverride }: RenderOptions = {},
+): Promise<RenderResult> => {
   const store = configureStore();
 
-  const router = createMemoryRouter([
-    {
-      path: '/',
-      element: <TestEnvironment pageSizeOverride={pageSizeOverride}>{ui}</TestEnvironment>,
-    },
-  ]);
+  const rootRoute = createRootRoute({
+    staticData: { appBar: null },
+    component: () => <TestEnvironment pageSizeOverride={pageSizeOverride}>{ui}</TestEnvironment>,
+  });
+
+  const router = createRouter({
+    routeTree: rootRoute,
+    history: createMemoryHistory({ initialEntries: ['/'] }),
+  });
+
+  await router.load();
 
   return rtlRender(
     <RootProvider store={store}>
       <RouterProvider router={router} />
     </RootProvider>,
   );
-}
-
-const waitForFirstLoad = (router: ReturnType<typeof createMemoryRouter>): Promise<void> =>
-  new Promise(resolve => {
-    if (router.state.initialized) {
-      resolve();
-      return;
-    }
-
-    const unsubscribe = router.subscribe(state => {
-      if (state.initialized) {
-        unsubscribe();
-        resolve();
-      }
-    });
-  });
-
-const resetRouteLoaderCache = (): void => {
-  appStore.dispatch(api.util.resetApiState());
 };
 
 interface RenderAppOptions {
@@ -60,16 +53,14 @@ export const renderApp = async (
     usersService.signInById(1);
   }
 
-  resetRouteLoaderCache();
-
   const store = configureStore();
-  const router = createMemoryRouter(routes, { initialEntries: [url] });
-
-  await waitForFirstLoad(router);
+  const router = createAppRouter(store, createMemoryHistory({ initialEntries: [url] }));
 
   rtlRender(
     <RootProvider store={store}>
       <RouterProvider router={router} />
     </RootProvider>,
   );
+
+  await act(() => router.load());
 };

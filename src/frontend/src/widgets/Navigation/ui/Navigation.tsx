@@ -1,75 +1,88 @@
 import CloseIcon from '@mui/icons-material/Close';
 import MenuIcon from '@mui/icons-material/Menu';
-import { Box, IconButton, Typography } from '@mui/material';
-import { type ReactElement, type FC, useEffect, useState } from 'react';
-import { useLocation, useMatches, useNavigation } from 'react-router';
+import { Box, IconButton, Skeleton, Typography } from '@mui/material';
+import { useLocation, useMatches } from '@tanstack/react-router';
+import { type FC, Suspense, useState } from 'react';
+import { type AppBarConfig } from '../model';
 import { NavigationDrawer } from './NavigationDrawer';
 
-export interface NavigationLoaderData {
-  navigation: {
-    title: string | ReactElement;
-    action?: ReactElement;
-  };
+interface AppBarTitleProps {
+  title: AppBarConfig['title'];
 }
 
-const fallbackNavigation: NavigationLoaderData = {
-  navigation: {
-    title: '',
-  },
-};
+const SlotSkeleton: FC = () => (
+  <Typography variant="h6" component="span">
+    <Skeleton variant="text" width={120} />
+  </Typography>
+);
 
-const isNavigationLoaderData = (data: unknown): data is NavigationLoaderData =>
-  typeof data === 'object' && data !== null && 'navigation' in data;
-
-export const Navigation: FC = () => {
-  const [drawerVisible, setDrawerVisible] = useState(false);
-  const matches = useMatches();
-  const route = matches[matches.length - 1];
-  const loaderData = isNavigationLoaderData(route.data) ? route.data : fallbackNavigation;
-  const location = useLocation();
-  const navigation = useNavigation();
-
-  useEffect(() => {
-    if (navigation.location?.pathname !== location.pathname) {
-      setDrawerVisible(false);
-    }
-  }, [location.pathname, navigation.location?.pathname]);
+const AppBarTitle: FC<AppBarTitleProps> = ({ title }) => {
+  if (typeof title === 'string') {
+    return (
+      <Typography variant="h6" component="span">
+        {title}
+      </Typography>
+    );
+  }
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        gap: 1,
-      }}
-    >
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
-        <IconButton
-          color="inherit"
-          edge="start"
-          aria-label="Open menu"
-          onClick={() => {
-            setDrawerVisible(visible => !visible);
+    <Suspense fallback={<SlotSkeleton />}>
+      <title.Component />
+    </Suspense>
+  );
+};
+
+export const Navigation: FC = () => {
+  const appBar = useMatches({ select: matches => matches.at(-1)?.staticData.appBar });
+  const pathname = useLocation({ select: location => location.pathname });
+  const [drawerVisible, setDrawerVisible] = useState(false);
+  const [drawerPathname, setDrawerPathname] = useState(pathname);
+
+  if (pathname !== drawerPathname) {
+    setDrawerPathname(pathname);
+    setDrawerVisible(false);
+  }
+
+  if (!appBar) {
+    return null;
+  }
+
+  switch (appBar.variant) {
+    case 'menu':
+      return (
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            gap: 1,
           }}
         >
-          {drawerVisible ? <CloseIcon /> : <MenuIcon />}
-        </IconButton>
-        <NavigationDrawer
-          visible={drawerVisible}
-          toggle={() => {
-            setDrawerVisible(false);
-          }}
-        />
-        {typeof loaderData.navigation.title === 'string' ? (
-          <Typography variant="h6" component="span">
-            {loaderData.navigation.title}
-          </Typography>
-        ) : (
-          loaderData.navigation.title
-        )}
-      </Box>
-      {loaderData.navigation.action}
-    </Box>
-  );
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+            <IconButton
+              color="inherit"
+              edge="start"
+              aria-label="Open menu"
+              onClick={() => {
+                setDrawerVisible(visible => !visible);
+              }}
+            >
+              {drawerVisible ? <CloseIcon /> : <MenuIcon />}
+            </IconButton>
+            <NavigationDrawer
+              visible={drawerVisible}
+              toggle={() => {
+                setDrawerVisible(false);
+              }}
+            />
+            <AppBarTitle title={appBar.title} />
+          </Box>
+          {appBar.Actions && (
+            <Suspense fallback={<SlotSkeleton />}>
+              <appBar.Actions />
+            </Suspense>
+          )}
+        </Box>
+      );
+  }
 };
