@@ -58,28 +58,9 @@ const ProductsTableToolbar: FC = () => {
             justifyContent: 'space-between',
           }}
         >
-          <Typography
-            variant="h2"
-            sx={{
-              flexGrow: 1,
-            }}
-          >
-            Products
-          </Typography>
-          <Stack
-            spacing={{ xs: 3, sm: 2 }}
-            direction={{ xs: 'column', sm: 'row' }}
-            sx={{
-              width: '100%',
-              flex: 1,
-              justifyContent: 'space-between',
-              alignItems: { xs: 'flex-start', sm: 'center' },
-            }}
-          >
-            <SearchByName />
-            <SearchByCategory />
-            <AddProduct />
-          </Stack>
+          <SearchByName />
+          <SearchByCategory />
+          <AddProduct />
         </Stack>
       )}
       <DeleteProductsDialog isOpened={isDeleteDialogOpened} setIsOpened={setIsDeleteDialogOpened} />

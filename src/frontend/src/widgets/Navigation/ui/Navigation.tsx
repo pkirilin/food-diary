@@ -16,21 +16,17 @@ const SlotSkeleton: FC = () => (
   </Typography>
 );
 
-const AppBarTitle: FC<AppBarTitleProps> = ({ title }) => {
-  if (typeof title === 'string') {
-    return (
-      <Typography variant="h6" component="span">
-        {title}
-      </Typography>
-    );
-  }
-
-  return (
-    <Suspense fallback={<SlotSkeleton />}>
-      <title.Component />
-    </Suspense>
-  );
-};
+const AppBarTitle: FC<AppBarTitleProps> = ({ title }) => (
+  <Typography variant="h6" component="h1">
+    {typeof title === 'string' ? (
+      title
+    ) : (
+      <Suspense fallback={<SlotSkeleton />}>
+        <title.Component />
+      </Suspense>
+    )}
+  </Typography>
+);
 
 export const Navigation: FC = () => {
   const appBar = useMatches({ select: matches => matches.at(-1)?.staticData.appBar });

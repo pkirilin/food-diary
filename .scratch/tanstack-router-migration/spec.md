@@ -231,7 +231,7 @@ interface StaticDataRouteOption {
 ### Headings
 
 - The AppBar title is the only top-level heading on each authenticated screen.
-- Categories' visible heading and Products' visually hidden heading are removed.
+- Categories' visible heading, Products' visually hidden heading and the Products table toolbar's visible title are removed.
 - Weight's date-range heading becomes a second-level heading.
 
 ### Lint, format, CI and conventions

@@ -30,7 +30,7 @@ export const SelectDateView: FC<Props> = ({ currentDate, onSubmitDate }) => {
           setAnchorEl(event.currentTarget);
         }}
       >
-        <Typography variant="h6" component="div">
+        <Typography variant="h6" component="span">
           {dateLib.formatToUserFriendlyString(currentDate)}
         </Typography>
         {anchorEl ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}

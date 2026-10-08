@@ -1,5 +1,4 @@
-import { Paper, Typography } from '@mui/material';
-import { visuallyHidden } from '@mui/utils';
+import { Paper } from '@mui/material';
 import { useEffect, type FC } from 'react';
 import { useAppDispatch, useAppSelector } from '@/app/store';
 import { type Product, productLib, productModel } from '@/entities/product';
@@ -31,22 +30,17 @@ const Products: FC = () => {
   };
 
   return (
-    <>
-      <Typography sx={visuallyHidden} variant="h1" gutterBottom>
-        Products
-      </Typography>
-      <Paper>
-        <ProductsTableToolbar />
-        <LoadingContainer loading={products.isFetching}>
-          <ProductsTable
-            products={products.data}
-            checkedIds={checkedProductIds}
-            onCheckedChange={handleCheckedProductsChange}
-          />
-        </LoadingContainer>
-        <ProductsTablePagination />
-      </Paper>
-    </>
+    <Paper>
+      <ProductsTableToolbar />
+      <LoadingContainer loading={products.isFetching}>
+        <ProductsTable
+          products={products.data}
+          checkedIds={checkedProductIds}
+          onCheckedChange={handleCheckedProductsChange}
+        />
+      </LoadingContainer>
+      <ProductsTablePagination />
+    </Paper>
   );
 };
 

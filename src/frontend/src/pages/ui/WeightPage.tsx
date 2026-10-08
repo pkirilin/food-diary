@@ -16,7 +16,7 @@ export const WeightPage: FC<Props> = ({ weightLogsRequest }) => {
 
   return (
     <PageContainer>
-      <Typography variant="h6" component="h1">
+      <Typography variant="h6" component="h2">
         {from} — {to}
       </Typography>
       <WeightChart weightLogsRequest={weightLogsRequest} />

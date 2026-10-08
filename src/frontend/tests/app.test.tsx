@@ -201,3 +201,50 @@ test('a malformed History month falls back to the default month', async () => {
 
   expect(await screen.findByRole('link', { name: /19 oct 2023/i })).toBeVisible();
 });
+
+interface SectionHeadingCase {
+  title: string;
+  url: string;
+  findSectionContent: () => Promise<HTMLElement>;
+}
+
+test.each<SectionHeadingCase>([
+  {
+    title: 'History',
+    url: '/history',
+    findSectionContent: () => screen.findByRole('link', { name: /19 oct 2023/i }),
+  },
+  {
+    title: 'Weight',
+    url: '/weight',
+    findSectionContent: () => screen.findByRole('button', { name: 'Log weight' }),
+  },
+  {
+    title: 'Products',
+    url: '/products',
+    findSectionContent: () => screen.findByRole('cell', { name: 'Chocolate cake' }),
+  },
+  {
+    title: 'Categories',
+    url: '/categories',
+    findSectionContent: () => screen.findByText('Frozen foods'),
+  },
+])(
+  '$title shows its title once, as the only top-level heading',
+  async ({ title, url, findSectionContent }) => {
+    await renderApp(url, { signedIn: true });
+
+    expect(await findSectionContent()).toBeVisible();
+    const topLevelHeadings = screen.getAllByRole('heading', { level: 1 });
+    expect(topLevelHeadings).toHaveLength(1);
+    expect(topLevelHeadings[0]).toHaveAccessibleName(title);
+    expect(screen.getAllByRole('heading', { name: title })).toHaveLength(1);
+  },
+);
+
+test("the diary's top-level heading names the selected date", async () => {
+  await renderApp('/?date=2023-10-20', { signedIn: true });
+
+  expect(await screen.findByRole('heading', { level: 1, name: /20 oct 2023/i })).toBeVisible();
+  expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
+});
