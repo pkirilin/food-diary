@@ -36,7 +36,7 @@ export const IndexPage: FC<Props> = ({ date }) => {
             top: { xs: APP_BAR_HEIGHT_XS, sm: APP_BAR_HEIGHT_SM },
             bgcolor: theme => theme.palette.background.paper,
             boxShadow: theme => theme.shadows[2],
-            zIndex: theme => theme.zIndex.appBar - 1,
+            zIndex: theme => theme.zIndex.appBar - 2,
             overflow: ['auto', 'hidden'],
             width: '100%',
           }}
