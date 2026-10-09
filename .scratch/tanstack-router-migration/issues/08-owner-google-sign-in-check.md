@@ -10,8 +10,8 @@ Run it on the local full stack built from source. It is served at `https://local
 
 **Blocked by:** 05 — Cut over to TanStack Router
 
-**Status:** ready-for-human
+**Status:** resolved
 
-- [ ] Signed out, open a deep link to a History month, sign in with Google, and land on that month
-- [ ] Log out from the drawer. The browser goes through the API logout and ends on the sign-in screen
-- [ ] The result goes under `## Comments` in this ticket, and the owner item in the spec's acceptance checklist is ticked
+- [x] Signed out, open a deep link to a History month, sign in with Google, and land on that month
+- [x] Log out from the drawer. The browser goes through the API logout and ends on the sign-in screen
+- [x] The result goes under `## Comments` in this ticket, and the owner item in the spec's acceptance checklist is ticked
