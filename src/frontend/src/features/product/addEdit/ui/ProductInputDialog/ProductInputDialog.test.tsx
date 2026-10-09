@@ -44,6 +44,7 @@ import {
   whenProductNameChanged,
   whenProductSaved,
   whenProteinChanged,
+  whenProteinCleared,
   whenSaltChanged,
   whenSugarChanged,
   whenSuggestClicked,
@@ -288,6 +289,49 @@ describe('nutrition suggestions', () => {
 
     await thenProteinEventuallyHasValue('25');
     await thenCarbsEventuallyHasValue('5');
+  });
+
+  test('a cleared field is filled after clicking another field suggest button', async () => {
+    const user = userEvent.setup();
+    const categories = givenCategories('Dairy');
+    givenNutritionSuggestion({ calories: 402, protein: 25, fats: 33.1 });
+
+    render(
+      givenProductInputDialog()
+        .withCategoriesForSelect(categories)
+        .withProduct({ name: 'Cheddar cheese', category: categories[0] })
+        .please(),
+    );
+
+    await whenDialogOpened(user);
+    await whenNutritionPanelExpanded(user);
+    await whenProteinChanged(user, '5');
+    await whenProteinCleared(user);
+    await whenSuggestClicked(user, /suggest calories/i);
+
+    await thenCaloriesEventuallyHasValue('402');
+    await thenProteinEventuallyHasValue('25');
+  });
+
+  test('a whitespace-only field is filled after clicking another field suggest button', async () => {
+    const user = userEvent.setup();
+    const categories = givenCategories('Dairy');
+    givenNutritionSuggestion({ calories: 402, protein: 25 });
+
+    render(
+      givenProductInputDialog()
+        .withCategoriesForSelect(categories)
+        .withProduct({ name: 'Cheddar cheese', category: categories[0] })
+        .please(),
+    );
+
+    await whenDialogOpened(user);
+    await whenNutritionPanelExpanded(user);
+    await whenProteinChanged(user, '   ');
+    await whenSuggestClicked(user, /suggest calories/i);
+
+    await thenCaloriesEventuallyHasValue('402');
+    await thenProteinEventuallyHasValue('25');
   });
 
   test('suggest buttons are disabled until the name is valid', async () => {

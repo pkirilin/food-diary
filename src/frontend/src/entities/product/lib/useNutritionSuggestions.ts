@@ -19,6 +19,9 @@ interface Result {
   handleSuggestClick: (clicked: NutritionValueType) => () => void;
 }
 
+const isEmpty = (value: string | number | null): boolean =>
+  value === null || (typeof value === 'string' && value.trim() === '');
+
 export const useNutritionSuggestions = ({
   getName,
   getFieldValue,
@@ -42,7 +45,7 @@ export const useNutritionSuggestions = ({
       return;
     }
 
-    if (getFieldValue(field) === null || field === clicked) {
+    if (isEmpty(getFieldValue(field)) || field === clicked) {
       setFieldValue(field, value);
     }
   };

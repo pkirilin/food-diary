@@ -32,7 +32,7 @@ The suggest button appears as an adornment on the 6 nutrition inputs only — no
 
 **Fill rule (unified):** one click calls the endpoint once and receives suggestions for all six fields. For each field `X`, apply its suggested value **iff** the suggestion for `X` is non-null **and** (`X` is empty **or** `X` is the field whose button was clicked).
 
-Because `calories` is never empty (it defaults to `100` via `EMPTY_FORM_VALUES`), it only changes when you click **its own** button — the "literal rule" the user chose.
+Because `calories` starts filled (it defaults to `100` via `EMPTY_FORM_VALUES`), it normally only changes when you click **its own** button — the "literal rule" the user chose.
 
 | You click… | calories (=100 default) | an empty macro | an already-filled macro |
 |---|---|---|---|
@@ -42,7 +42,7 @@ Because `calories` is never empty (it defaults to `100` via `EMPTY_FORM_VALUES`)
 
 Notes:
 
-- "empty" for a macro means the current value is `null`. For `calories` it is never true.
+- "empty" for a field means the current value is `null` or text that is blank after trimming (the same values `NutritionValueSchema` treats as no value), so a field the user typed into and then cleared counts as empty. This applies to `calories` too: once the user clears it, any button fills it.
 - If the model returns `null` for a field, that field is skipped regardless of the rule.
 - If **all six** suggestions are `null`, no field changes and an info Snackbar is shown ("Couldn't estimate nutrition for this product").
 

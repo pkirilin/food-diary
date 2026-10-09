@@ -203,6 +203,10 @@ export const whenProteinChanged = async (user: UserEvent, protein: string): Prom
   await user.type(screen.getByPlaceholderText(/protein/i), protein);
 };
 
+export const whenProteinCleared = async (user: UserEvent): Promise<void> => {
+  await user.clear(screen.getByPlaceholderText(/protein/i));
+};
+
 export const whenFatsChanged = async (user: UserEvent, fats: string): Promise<void> => {
   await user.clear(screen.getByPlaceholderText(/fats/i));
   await user.type(screen.getByPlaceholderText(/fats/i), fats);
