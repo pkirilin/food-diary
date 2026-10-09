@@ -3322,7 +3322,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/router-core@npm:1.171.34":
+"@tanstack/router-core@npm:1.171.34, @tanstack/router-core@npm:^1.171.34":
   version: 1.171.34
   resolution: "@tanstack/router-core@npm:1.171.34"
   dependencies:
@@ -6215,6 +6215,7 @@ __metadata:
     "@stylistic/eslint-plugin": "npm:^5.10.0"
     "@tanstack/react-router": "npm:^1.170.41"
     "@tanstack/react-router-devtools": "npm:^1.167.2"
+    "@tanstack/router-core": "npm:^1.171.34"
     "@tanstack/router-plugin": "npm:^1.168.42"
     "@testing-library/dom": "npm:^10.4.2"
     "@testing-library/jest-dom": "npm:^7.0.1"
