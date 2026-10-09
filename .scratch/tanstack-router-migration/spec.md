@@ -283,26 +283,26 @@ interface StaticDataRouteOption {
 ## Acceptance Checklist
 
 - [ ] Each of the six commits passes build, lint, format check and tests on its own.
-- [ ] No React Router import, dependency or comment remains.
-- [ ] Seam-1 behaviours 1–9 pass, and the verbose test run shows no stderr blocks.
-- [ ] Browser check in MSW and fake-auth mode:
-  - [ ] Every drawer link opens its screen, the active item is correct (the diary item only on the diary), and the drawer closes.
-  - [ ] These deep links open the right screen: a History month, a diary date, and post-login with a `returnUrl`.
-  - [ ] Refreshing each screen keeps it.
-  - [ ] Browser back and forward work.
-  - [ ] An unknown address shows "Page not found".
-  - [ ] A signed-out deep link redirects to sign-in and returns to the deep link.
-  - [ ] The date switcher and the History filter work.
-  - [ ] The progress bar shows on navigation, and the full-screen loader shows on first load only.
-  - [ ] The console has no errors beyond the MSW-mode baseline.
-- [ ] A production preview with the service worker still shows the update banner.
-- [ ] A demo-style build served from a subpath works.
-- [ ] The E2E suite passes.
-- [ ] Gzip totals of the build output before and after are recorded in the PR.
+- [x] No React Router import, dependency or comment remains.
+- [x] Seam-1 behaviours 1–9 pass, and the verbose test run shows no stderr blocks.
+- [x] Browser check in MSW and fake-auth mode:
+  - [x] Every drawer link opens its screen, the active item is correct (the diary item only on the diary), and the drawer closes.
+  - [x] These deep links open the right screen: a History month, a diary date, and post-login with a `returnUrl`.
+  - [x] Refreshing each screen keeps it.
+  - [x] Browser back and forward work.
+  - [x] An unknown address shows "Page not found".
+  - [x] A signed-out deep link redirects to sign-in and returns to the deep link.
+  - [x] The date switcher and the History filter work.
+  - [x] The progress bar shows on navigation, and the full-screen loader shows on first load only.
+  - [x] The console has no errors beyond the MSW-mode baseline.
+- [x] A production preview with the service worker still shows the update banner.
+- [x] A demo-style build served from a subpath works.
+- [x] The E2E suite passes.
+- [x] Gzip totals of the build output before and after are recorded in the PR.
 - [ ] Owner: on the local full stack, a real Google sign-in from a signed-out deep link lands on that deep link.
-- [ ] CLAUDE.md and the frontend rules reflect the router and the route-component exception.
-- [ ] CI fails when the generated route tree is stale.
-- [ ] The PR description lists the behaviour changes above.
+- [x] CLAUDE.md and the frontend rules reflect the router and the route-component exception.
+- [x] CI fails when the generated route tree is stale.
+- [x] The PR description lists the behaviour changes above.
 
 ## Out of Scope
 

@@ -5,27 +5,18 @@
 Context worth knowing before starting:
 - **What fake auth cannot cover.** MSW and fake-auth mode skip the real backend redirects. The real Google sign-in round trip is ticket 08, done by the owner.
 - **The E2E suite needs a running Docker daemon.** If Docker is not available, stop and ask the owner how to proceed. Never skip the suite or work around it.
-- **The baseline build size** is recorded under `## Comments` in ticket 01.
+- **The baseline build size** is recorded under `## Comments
 
-See the [spec](../spec.md), *Acceptance Checklist* and *Behaviour changes to call out in the PR description*.
+The PR description is drafted in [`../pr-description.md`](../pr-description.md). It holds the verification report, the build-size table and what was not verified. Once the PR is open, its GitHub body becomes the copy to keep up to date.
 
-**Blocked by:** 06 — One heading per screen
+### For the owner
 
-**Status:** ready-for-agent
+- **The first load is 2.36 kB gzip heavier, which misses user story 26.** The PR description says this plainly. Merging means accepting the extra size.
+- **The spec's first acceptance item is still unticked.** It says each commit passes build, lint, format check and tests on its own, and it still counts six commits where the branch now has ten. This ticket checked only the branch head.
 
-- [ ] Browser check with playwright-cli in MSW and fake-auth mode:
-  - [ ] Every drawer link opens its screen, the active item is correct (the diary item only on the diary), and the drawer closes.
-  - [ ] Deep links to a History month, to a diary date, and to post-login with a return address each open the right screen.
-  - [ ] Refreshing each screen keeps it.
-  - [ ] Browser back and forward work.
-  - [ ] An unknown address shows "Page not found".
-  - [ ] A signed-out deep link redirects to sign-in, then returns to the deep link.
-  - [ ] The date switcher and the History filter work.
-  - [ ] The progress bar shows on navigation, and the full-screen loader shows on first load only.
-  - [ ] The console shows nothing beyond the MSW-mode baseline.
-- [ ] In a production preview with the service worker, the update banner still appears
-- [ ] A demo-style build (MSW and fake auth) served from a subpath works
-- [ ] The E2E suite passes
-- [ ] The gzip totals of the production build output are compared with ticket 01's baseline, and both are recorded in the PR description
-- [ ] The PR description lists every behaviour change from the spec, and links ADR-0004 and ADR-0005
-- [ ] The spec's acceptance checklist is ticked for every item verified here
+### Notes from the checks
+
+- **How the update banner was checked.** MSW mode cannot show the banner, so it was checked on a plain production build, served statically with the auth status mocked in the browser.
+- **A reload in the demo signs the owner out.** `VITE_APP_FAKE_AUTH_LOGIN_ON_INIT` is `false` there, and the mock session lives in memory. This is expected.
+- **The active drawer item ignores clicks** (`pointer-events: none`), as on `main`. A script that clicks it times out.
+- **Spec items ticked beyond this ticket's list.** No React Router remains, which a search of `src/frontend` confirmed. The seam-1 tests pass in the verbose run. `CLAUDE.md` and the frontend rules describe the router and the route-component exception. The CI staleness check failed both times it was run against a stale route tree.
