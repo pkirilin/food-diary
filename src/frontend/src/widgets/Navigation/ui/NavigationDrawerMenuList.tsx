@@ -3,44 +3,58 @@ import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import CategoryIcon from '@mui/icons-material/Category';
 import MonitorWeightIcon from '@mui/icons-material/MonitorWeight';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
-import { List } from '@mui/material';
-import { Box } from '@mui/system';
+import { Box, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
+import { linkOptions } from '@tanstack/react-router';
 import { type FC } from 'react';
-import { type NavLink } from '../model';
-import { NavigationDrawerMenuListItem } from './NavigationDrawerMenuListItem';
+import { RouterListItemButton } from '@/shared/ui';
 
-const NAV_LINKS: NavLink[] = [
+const NAV_LINKS = linkOptions([
   {
     icon: <CalendarTodayIcon />,
     title: 'Today',
-    path: '/',
+    to: '/',
+    activeOptions: { exact: true, includeSearch: false },
   },
   {
     icon: <CalendarMonthIcon />,
     title: 'History',
-    path: '/history',
+    to: '/history',
   },
   {
     icon: <MonitorWeightIcon />,
     title: 'Weight',
-    path: '/weight',
+    to: '/weight',
   },
   {
     icon: <RestaurantIcon />,
     title: 'Products',
-    path: '/products',
+    to: '/products',
   },
   {
     icon: <CategoryIcon />,
     title: 'Categories',
-    path: '/categories',
+    to: '/categories',
   },
-];
+]);
 
 export const NavigationDrawerMenuList: FC = () => (
-  <Box component={List}>
-    {NAV_LINKS.map((navLink, index) => (
-      <NavigationDrawerMenuListItem key={`${index}-${navLink.title}`} navLink={navLink} />
+  <List>
+    {NAV_LINKS.map(({ icon, title, ...link }) => (
+      <ListItem key={title} disablePadding>
+        <RouterListItemButton
+          {...link}
+          activeProps={{ selected: true, disableTouchRipple: true }}
+          sx={theme => ({
+            '&.Mui-selected': {
+              backgroundColor: theme.palette.action.selected,
+              pointerEvents: 'none',
+            },
+          })}
+        >
+          <Box component={ListItemIcon}>{icon}</Box>
+          <ListItemText primary={title} />
+        </RouterListItemButton>
+      </ListItem>
     ))}
-  </Box>
+  </List>
 );

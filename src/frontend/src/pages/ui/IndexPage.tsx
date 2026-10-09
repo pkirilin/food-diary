@@ -1,49 +1,20 @@
 import { Alert, Box, Slide, Stack, useScrollTrigger } from '@mui/material';
 import { type FC } from 'react';
-import { type LoaderFunction, useLoaderData } from 'react-router';
-import { store } from '@/app/store';
-import { noteApi, noteLib, noteModel } from '@/entities/note';
+import { noteLib, noteModel } from '@/entities/note';
 import { productModel } from '@/entities/product';
-import { SelectDate } from '@/features/note/selectDate';
-import { MSW_ENABLED } from '@/shared/config';
 import { APP_BAR_HEIGHT_SM, APP_BAR_HEIGHT_XS } from '@/shared/constants';
-import { dateLib } from '@/shared/lib';
 import { PageContainer } from '@/shared/ui';
 import { MealsList, toOptionalNutritionValues } from '@/widgets/MealsList';
-import { type NavigationLoaderData } from '@/widgets/Navigation';
 import {
   NutritionSummaryWidget,
   NutritionSummaryWidgetBar,
 } from '@/widgets/NutritionSummaryWidget';
 
-interface LoaderData extends NavigationLoaderData {
+interface Props {
   date: string;
 }
 
-const getFallbackDate = (): string =>
-  MSW_ENABLED ? '2023-10-19' : dateLib.formatToISOStringWithoutTime(new Date());
-
-export const loader: LoaderFunction = async ({ request }) => {
-  const url = new URL(request.url);
-  const date = url.searchParams.get('date') ?? getFallbackDate();
-  const notesQueryPromise = store.dispatch(noteApi.endpoints.notes.initiate({ date }));
-
-  try {
-    await notesQueryPromise;
-
-    return {
-      date,
-      navigation: {
-        title: <SelectDate currentDate={new Date(date)} />,
-      },
-    } satisfies LoaderData;
-  } finally {
-    notesQueryPromise.unsubscribe();
-  }
-};
-
-export const Component: FC = () => {
-  const { date } = useLoaderData<LoaderData>();
+export const IndexPage: FC<Props> = ({ date }) => {
   const { data: notes } = noteLib.useNotes(date);
   const nutritionValues = noteModel.calculateNutritionValues(notes);
 

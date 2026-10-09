@@ -16,6 +16,7 @@ yarn-error.log*
 
 .eslintcache
 .vitest-preview
+.tanstack
 
 .yarn/*
 !.yarn/patches

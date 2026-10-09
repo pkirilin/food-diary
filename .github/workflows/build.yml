@@ -53,6 +53,8 @@ jobs:
         run: yarn lint
       - name: Build
         run: yarn build
+      - name: Check generated route tree is committed
+        run: git diff --exit-code -- src/app/routeTree.gen.ts
       - name: Test
         run: yarn test
   e2e-tests:

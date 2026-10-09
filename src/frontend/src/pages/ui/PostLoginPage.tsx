@@ -1,14 +1,22 @@
-import { type FC } from 'react';
-import { Navigate, useParams } from 'react-router';
-import { AuthCallbackProgress, useAuth } from '@/features/auth';
+import { type FC, useEffect } from 'react';
+import { AuthCallbackProgress, type NavigateToHref, useAuth } from '@/features/auth';
 
-export const Component: FC = () => {
-  const auth = useAuth();
-  const params = useParams();
+interface Props {
+  returnUrl: string;
+  navigate: NavigateToHref;
+}
 
-  if (auth.status.isAuthenticated) {
-    const redirectUrl = params.returnUrl ?? '/';
-    return <Navigate to={redirectUrl} />;
+export const PostLoginPage: FC<Props> = ({ returnUrl, navigate }) => {
+  const { isAuthenticated } = useAuth().status;
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate(returnUrl);
+    }
+  }, [isAuthenticated, navigate, returnUrl]);
+
+  if (isAuthenticated) {
+    return null;
   }
 
   return <AuthCallbackProgress label="Logging in..." />;

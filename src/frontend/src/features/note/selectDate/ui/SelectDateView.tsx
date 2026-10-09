@@ -1,6 +1,6 @@
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
-import { ButtonBase, DialogActions, Popover, Typography } from '@mui/material';
+import { Box, ButtonBase, DialogActions, Popover, Typography } from '@mui/material';
 import { StaticDatePicker } from '@mui/x-date-pickers';
 import { useState, type FC } from 'react';
 import { dateLib } from '@/shared/lib';
@@ -23,14 +23,14 @@ export const SelectDateView: FC<Props> = ({ currentDate, onSubmitDate }) => {
   };
 
   return (
-    <>
+    <Box sx={{ display: 'flex' }}>
       <ButtonBase
         onClick={event => {
           setSelectedDate(currentDate);
           setAnchorEl(event.currentTarget);
         }}
       >
-        <Typography variant="h6" component="div">
+        <Typography variant="h6" component="span">
           {dateLib.formatToUserFriendlyString(currentDate)}
         </Typography>
         {anchorEl ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}
@@ -68,6 +68,6 @@ export const SelectDateView: FC<Props> = ({ currentDate, onSubmitDate }) => {
           </Button>
         </DialogActions>
       </Popover>
-    </>
+    </Box>
   );
 };

@@ -4,7 +4,6 @@ import {
   Box,
   List,
   ListItem,
-  ListItemButton,
   ListItemIcon,
   ListItemSecondaryAction,
   ListItemText,
@@ -12,9 +11,9 @@ import {
   Typography,
 } from '@mui/material';
 import { type FC } from 'react';
-import { Link } from 'react-router';
 import { type NoteHistoryItem } from '@/entities/note';
-import { createUrl, dateLib } from '@/shared/lib';
+import { dateLib } from '@/shared/lib';
+import { RouterListItemButton } from '@/shared/ui';
 
 interface Props {
   notes: NoteHistoryItem[];
@@ -30,7 +29,7 @@ export const NotesHistoryList: FC<Props> = ({ notes }) => {
       <List disablePadding>
         {notes.map(({ date, caloriesCount }) => (
           <ListItem key={date} disableGutters>
-            <ListItemButton component={Link} to={createUrl('/', { date })}>
+            <RouterListItemButton to="/" search={{ date }}>
               <ListItemIcon>
                 <CalendarTodayIcon />
               </ListItemIcon>
@@ -46,7 +45,7 @@ export const NotesHistoryList: FC<Props> = ({ notes }) => {
                 <ListItemText secondary={`${caloriesCount} kcal`} />
                 <ChevronRightIcon />
               </Box>
-            </ListItemButton>
+            </RouterListItemButton>
           </ListItem>
         ))}
       </List>

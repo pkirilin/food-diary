@@ -1,3 +1,5 @@
+import { FAKE_AUTH_LOGIN_ON_INIT } from '@/shared/config';
+
 const IGNORED_URL_PATTERNS: RegExp[] = [
   /fonts\.gstatic\.com/,
   /fonts\.googleapis\.com/,
@@ -14,6 +16,11 @@ export const initBrowserMockApi = async (): Promise<void> => {
   const { initMockApiDb } = await import('./initMockApiDb');
 
   await initMockApiDb();
+
+  if (FAKE_AUTH_LOGIN_ON_INIT) {
+    const { usersService } = await import('./user');
+    usersService.signInById(1);
+  }
 
   await worker.start({
     serviceWorker: {

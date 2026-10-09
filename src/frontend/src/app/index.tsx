@@ -1,10 +1,10 @@
 import 'date-fns';
+import { RouterProvider } from '@tanstack/react-router';
 import { createRoot } from 'react-dom/client';
-import { RouterProvider } from 'react-router';
 import { GOOGLE_ANALYTICS_ENABLED } from '@/shared/config';
 import { initGoogleAnalytics } from './googleAnalytics';
 import { RootProvider } from './RootProvider';
-import { createRouter } from './routing';
+import { createAppRouter } from './router';
 import { store } from './store';
 import { WithMockApi } from './WithMockApi';
 
@@ -19,7 +19,7 @@ if (!container) {
 }
 
 const root = createRoot(container);
-const router = createRouter();
+const router = createAppRouter(store);
 
 root.render(
   <RootProvider store={store}>

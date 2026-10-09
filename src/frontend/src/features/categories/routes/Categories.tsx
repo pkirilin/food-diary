@@ -1,4 +1,3 @@
-import { Typography } from '@mui/material';
 import { type FC } from 'react';
 import CategoriesList from '../components/CategoriesList';
 import CreateCategory from '../components/CreateCategory';
@@ -9,9 +8,6 @@ const Categories: FC = () => {
 
   return (
     <>
-      <Typography variant="h1" gutterBottom>
-        Categories
-      </Typography>
       <CategoriesList categories={categories.data} />
       <CreateCategory />
     </>

@@ -1,13 +1,13 @@
 import { Container, LinearProgress } from '@mui/material';
+import { useRouterState } from '@tanstack/react-router';
 import { type PropsWithChildren, type FC } from 'react';
-import { useNavigationProgress } from './useNavigationProgress';
 
 export const ErrorLayout: FC<PropsWithChildren> = ({ children }) => {
-  const navigationProgress = useNavigationProgress();
+  const loading = useRouterState({ select: state => state.isLoading });
 
   return (
     <>
-      {navigationProgress.visible && <LinearProgress />}
+      {loading && <LinearProgress />}
       <Container sx={{ py: { xs: 2, md: 3 } }}>{children}</Container>
     </>
   );

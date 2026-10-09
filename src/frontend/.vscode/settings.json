@@ -17,7 +17,14 @@
     "typescriptreact"
   ],
   "search.exclude": {
-    "**/.yarn": true
+    "**/.yarn": true,
+    "**/routeTree.gen.ts": true
+  },
+  "files.watcherExclude": {
+    "**/routeTree.gen.ts": true
+  },
+  "files.readonlyInclude": {
+    "**/routeTree.gen.ts": true
   },
   "eslint.format.enable": true,
 }

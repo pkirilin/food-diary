@@ -4,7 +4,7 @@ import { render } from '@tests/render';
 import Products from './Products';
 
 test('products are loaded into table', async () => {
-  render(<Products />);
+  await render(<Products />);
 
   const bread = await screen.findByText(/bread/i);
 
@@ -14,7 +14,7 @@ test('products are loaded into table', async () => {
 });
 
 test('product can be selected', async () => {
-  render(<Products />);
+  await render(<Products />);
 
   const breadCheckbox = await screen.findByLabelText(/select bread/i);
   await userEvent.click(breadCheckbox);
@@ -23,7 +23,7 @@ test('product can be selected', async () => {
 });
 
 test('all products can be selected', async () => {
-  render(<Products />);
+  await render(<Products />);
 
   const selectAll = await screen.findByLabelText(/select all/i);
   await waitFor(() => expect(selectAll).toBeEnabled());
@@ -33,7 +33,7 @@ test('all products can be selected', async () => {
 });
 
 test('products can be deleted', async () => {
-  render(<Products />);
+  await render(<Products />);
 
   const breadCheckbox = await screen.findByLabelText(/select bread/i);
   await userEvent.click(breadCheckbox);
@@ -48,7 +48,7 @@ test('products can be deleted', async () => {
 
 test('products can be filtered by category', async () => {
   const user = userEvent.setup();
-  render(<Products />);
+  await render(<Products />);
 
   const categoryField = await screen.findByLabelText(/category/i);
   await user.click(categoryField);
@@ -63,7 +63,7 @@ test('products can be filtered by category', async () => {
 test('products can be filtered by name', async () => {
   const user = userEvent.setup();
 
-  render(<Products />);
+  await render(<Products />);
   const searchField = await screen.findByPlaceholderText(/search by name/i);
   await user.type(searchField, 'bre');
 
@@ -72,7 +72,7 @@ test('products can be filtered by name', async () => {
 });
 
 test('products in table are split by pages', async () => {
-  render(<Products />, { pageSizeOverride: 2 });
+  await render(<Products />, { pageSizeOverride: 2 });
 
   const paginationForTheFirstPage = await screen.findByText(/1–.* of .*/i);
   expect(paginationForTheFirstPage).toBeVisible();
