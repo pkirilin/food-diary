@@ -46,11 +46,11 @@ public class RecognizeNoteCommandHandler(IChatClient chatClient, ILogger<Recogni
 
         if (!chatResponse.TryGetResult(out var modelResponse))
         {
-            logger.LogError("Could not deserialize model response {ModelResponse}", chatResponse.Text);
+            logger.LogError("Could not deserialize response from model {Model}: {ModelResponse}", chatResponse.ModelId, chatResponse.Text);
             return RecognizeNoteResult.ModelResponseWasInvalid();
         }
 
-        logger.LogInformation("Deserialized model response: {ModelResponse}", chatResponse.Text);
+        logger.LogInformation("Deserialized response from model {Model}: {ModelResponse}", chatResponse.ModelId, chatResponse.Text);
 
         if (modelResponse.Status == RecognitionStatus.NotAProduct)
         {
@@ -59,7 +59,7 @@ public class RecognizeNoteCommandHandler(IChatClient chatClient, ILogger<Recogni
 
         if (modelResponse.Product is null)
         {
-            logger.LogError("Model returned Recognized status without a product payload: {ModelResponse}", chatResponse.Text);
+            logger.LogError("Model {Model} returned Recognized status without a product payload: {ModelResponse}", chatResponse.ModelId, chatResponse.Text);
             return RecognizeNoteResult.ModelResponseWasInvalid();
         }
 

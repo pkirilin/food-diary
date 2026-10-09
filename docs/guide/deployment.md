@@ -77,7 +77,7 @@ The app reads its settings from environment variables. Each variable's name is i
 
 Configuration key           | Environment variable         | Description
 ----------------------------|------------------------------|---------------------------------------------------------------------------------------------------------------
-`ConnectionStrings:Default` | `ConnectionStrings__Default` | PostgreSQL connection string, e.g. `User ID=postgres;Password=<password>;Host=<host>;Port=5432;Database=FoodDiary`
+`ConnectionStrings:Default` | `ConnectionStrings__Default` | PostgreSQL connection string, e.g. `User ID=postgres;Password=<password>;Host=<host>;Port=5432;Database=FoodDiary;GSS Encryption Mode=Disable`. Without `GSS Encryption Mode=Disable`, the container logs a harmless `Cannot load library libgssapi_krb5.so.2` error at startup
 `Auth:AllowedEmails:0`      | `Auth__AllowedEmails__0`     | Google account email allowed to sign in. Add more at the next index: `Auth__AllowedEmails__1`, and so on
 `GoogleAuth:ClientId`       | `GoogleAuth__ClientId`       | Client ID of your [Google OAuth client](#set-up-google-sign-in)
 `GoogleAuth:ClientSecret`   | `GoogleAuth__ClientSecret`   | Client secret of your Google OAuth client
@@ -105,7 +105,7 @@ Configuration key               | Environment variable            | Default     
 --------------------------------|---------------------------------|-----------------------------|-----------------------------------------------------------------------
 `Integrations:OpenAI:ApiKey`    | `Integrations__OpenAI__ApiKey`  | —                           | API key for OpenAI or an OpenAI-compatible API
 `Integrations:OpenAI:BaseUrl`   | `Integrations__OpenAI__BaseUrl` | `https://api.openai.com/v1` | Override to use another OpenAI-compatible API
-`Integrations:OpenAI:Model`     | `Integrations__OpenAI__Model`   | `gpt-5.4-mini`              | Model used to recognize food in photos. It must accept image input
+`Integrations:OpenAI:Model`     | `Integrations__OpenAI__Model`   | `gpt-6-luna`                 | Model used to recognize food in photos. It must accept image input
 
 ### MCP server
 
