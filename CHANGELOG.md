@@ -8,6 +8,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.2] - Router & Zod upgrades, AI suggestion fixes
+
+### Changed
+
+- Default photo recognition model is now `gpt-6-luna`, and recognition logs now include the model used
+- Migrated frontend routing to TanStack Router
+- Upgraded frontend form validation to Zod v4
+
+### Fixed
+
+- AI nutrition suggestions now fill nutrition fields that were cleared on the product form, instead of treating them as already filled
+- The nutrition summary bar no longer covers the update app banner
+- Disabled Npgsql GSS encryption in the compose connection strings, which removes a harmless `libgssapi_krb5` error logged at container startup
+
 ## [0.9.1] - Security fixes & CI hardening
 
 ### Security
