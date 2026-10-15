@@ -137,6 +137,30 @@ public class McpApiTests(InfrastructureFixture infrastructure) : BaseTest<McpApi
             c => c.Given_authorization_code_was_issued(),
             c => c.When_client_exchanges_authorization_code(),
             c => c.When_client_refreshes_access_token(),
-            c => c.Then_client_receives_new_access_token());
+            c => c.Then_client_receives_new_access_and_refresh_tokens());
+    }
+
+    [Scenario]
+    public Task The_client_can_keep_refreshing_with_each_new_refresh_token()
+    {
+        return CtxRunner.RunScenarioAsync(
+            c => c.Given_authorization_code_was_issued(),
+            c => c.When_client_exchanges_authorization_code(),
+            c => c.When_client_refreshes_access_token(),
+            c => c.When_client_refreshes_access_token(),
+            c => c.When_client_refreshes_access_token(),
+            c => c.Then_every_refresh_returns_new_refresh_token());
+    }
+
+    [Scenario]
+    public Task The_client_reusing_refresh_token_loses_all_refresh_tokens_issued_after_it()
+    {
+        return CtxRunner.RunScenarioAsync(
+            c => c.Given_authorization_code_was_issued(),
+            c => c.When_client_exchanges_authorization_code(),
+            c => c.When_client_refreshes_access_token(),
+            c => c.When_client_refreshes_access_token_with_first_refresh_token(),
+            c => c.When_client_refreshes_access_token(),
+            c => c.Then_only_the_first_refresh_succeeds());
     }
 }

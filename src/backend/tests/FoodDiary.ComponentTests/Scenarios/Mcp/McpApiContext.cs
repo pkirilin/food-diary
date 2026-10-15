@@ -35,7 +35,8 @@ public class McpApiContext(FoodDiaryWebApplicationFactory factory) : BaseContext
     private HttpResponseMessage _authorizeResponse = null!;
     private string? _authorizationCode;
     private readonly List<HttpResponseMessage> _codeExchangeResponses = [];
-    private HttpResponseMessage _refreshResponse = null!;
+    private readonly List<HttpResponseMessage> _refreshResponses = [];
+    private readonly List<string> _issuedRefreshTokens = [];
     private HttpResponseMessage _mcpResponse = null!;
     private HttpResponseMessage _resourceMetadataResponse = null!;
     private HttpResponseMessage _response = null!;
@@ -227,33 +228,54 @@ public class McpApiContext(FoodDiaryWebApplicationFactory factory) : BaseContext
     {
         _authorizationCode ??= AuthorizationResponseParameter("code");
 
-        var response = await OAuthClient.PostAsync("/token", new FormUrlEncodedContent(
-            new Dictionary<string, string>
-            {
-                ["grant_type"] = "authorization_code",
-                ["code"] = _authorizationCode,
-                ["redirect_uri"] = Client.RedirectUri!,
-                ["code_verifier"] = CodeVerifier,
-                ["client_id"] = Client.ClientId!,
-                ["client_secret"] = Client.ClientSecret!,
-                ["resource"] = McpResource
-            }));
-
-        _codeExchangeResponses.Add(response);
+        _codeExchangeResponses.Add(await RequestTokens(new Dictionary<string, string>
+        {
+            ["grant_type"] = "authorization_code",
+            ["code"] = _authorizationCode,
+            ["redirect_uri"] = Client.RedirectUri!,
+            ["code_verifier"] = CodeVerifier,
+            ["client_id"] = Client.ClientId!,
+            ["client_secret"] = Client.ClientSecret!,
+            ["resource"] = McpResource
+        }));
     }
 
-    public async Task When_client_refreshes_access_token()
+    public Task When_client_refreshes_access_token()
     {
-        using var tokens = await ReadJson(_codeExchangeResponses.Single());
+        return RefreshAccessToken(_issuedRefreshTokens[^1]);
+    }
 
-        _refreshResponse = await OAuthClient.PostAsync("/token", new FormUrlEncodedContent(
-            new Dictionary<string, string>
+    public Task When_client_refreshes_access_token_with_first_refresh_token()
+    {
+        return RefreshAccessToken(_issuedRefreshTokens[0]);
+    }
+
+    private async Task RefreshAccessToken(string refreshToken)
+    {
+        _refreshResponses.Add(await RequestTokens(new Dictionary<string, string>
+        {
+            ["grant_type"] = "refresh_token",
+            ["refresh_token"] = refreshToken,
+            ["client_id"] = Client.ClientId!,
+            ["client_secret"] = Client.ClientSecret!
+        }));
+    }
+
+    private async Task<HttpResponseMessage> RequestTokens(Dictionary<string, string> form)
+    {
+        var response = await OAuthClient.PostAsync("/token", new FormUrlEncodedContent(form));
+
+        if (response.IsSuccessStatusCode)
+        {
+            using var tokens = await ReadJson(response);
+
+            if (tokens.RootElement.TryGetProperty("refresh_token", out var refreshToken))
             {
-                ["grant_type"] = "refresh_token",
-                ["refresh_token"] = tokens.RootElement.GetProperty("refresh_token").GetString()!,
-                ["client_id"] = Client.ClientId!,
-                ["client_secret"] = Client.ClientSecret!
-            }));
+                _issuedRefreshTokens.Add(refreshToken.GetString()!);
+            }
+        }
+
+        return response;
     }
 
     public Task Then_authorization_response_carries_state_and_issuer()
@@ -352,14 +374,42 @@ public class McpApiContext(FoodDiaryWebApplicationFactory factory) : BaseContext
             .Select(scope => scope.GetString()).Should().Equal("food:read");
     }
 
-    public async Task Then_client_receives_new_access_token()
+    public async Task Then_client_receives_new_access_and_refresh_tokens()
     {
-        _refreshResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        var response = _refreshResponses.Single();
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        response.Headers.CacheControl?.NoStore.Should().BeTrue();
 
-        using var tokens = await ReadJson(_refreshResponse);
+        using var tokens = await ReadJson(response);
         tokens.RootElement.GetProperty("access_token").GetString().Should().NotBeNullOrWhiteSpace();
         tokens.RootElement.GetProperty("token_type").GetString().Should().Be("Bearer");
         tokens.RootElement.GetProperty("expires_in").GetInt32().Should().Be(3600);
+        _issuedRefreshTokens.Should().HaveCount(2).And.OnlyHaveUniqueItems();
+    }
+
+    public async Task Then_only_the_first_refresh_succeeds()
+    {
+        _refreshResponses[0].StatusCode.Should().Be(HttpStatusCode.OK);
+
+        foreach (var response in _refreshResponses.Skip(1))
+        {
+            await ShouldBeInvalidGrant(response);
+        }
+    }
+
+    private static async Task ShouldBeInvalidGrant(HttpResponseMessage response)
+    {
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+
+        using var error = await ReadJson(response);
+        error.RootElement.GetProperty("error").GetString().Should().Be("invalid_grant");
+    }
+
+    public Task Then_every_refresh_returns_new_refresh_token()
+    {
+        _refreshResponses.Select(response => response.StatusCode).Should().AllBeEquivalentTo(HttpStatusCode.OK);
+        _issuedRefreshTokens.Should().HaveCount(_refreshResponses.Count + 1).And.OnlyHaveUniqueItems();
+        return Task.CompletedTask;
     }
 
     public async Task Then_only_the_first_code_exchange_succeeds()

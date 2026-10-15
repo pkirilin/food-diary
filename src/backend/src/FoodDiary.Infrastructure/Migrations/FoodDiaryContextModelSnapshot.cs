@@ -17,7 +17,7 @@ namespace FoodDiary.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.11")
+                .HasAnnotation("ProductVersion", "10.0.12")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -122,6 +122,34 @@ namespace FoodDiary.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("Products", (string)null);
+                });
+
+            modelBuilder.Entity("FoodDiary.Domain.Mcp.CancelledRefreshTokenChain", b =>
+                {
+                    b.Property<Guid>("ChainId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("ChainId");
+
+                    b.ToTable("McpCancelledRefreshTokenChains", (string)null);
+                });
+
+            modelBuilder.Entity("FoodDiary.Domain.Mcp.RedeemedRefreshToken", b =>
+                {
+                    b.Property<Guid>("TokenId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("TokenId");
+
+                    b.ToTable("McpRedeemedRefreshTokens", (string)null);
                 });
 
             modelBuilder.Entity("FoodDiary.Domain.WeightTracking.WeightLog", b =>

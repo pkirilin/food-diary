@@ -2,6 +2,7 @@
 using System.Reflection;
 using FoodDiary.Domain.Abstractions;
 using FoodDiary.Domain.Entities;
+using FoodDiary.Domain.Mcp;
 using FoodDiary.Domain.WeightTracking;
 using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +17,8 @@ public class FoodDiaryContext(DbContextOptions options) : DbContext(options), IU
     public DbSet<Product> Products { get; init; }
     public DbSet<Category> Categories { get; init; }
     public DbSet<WeightLog> WeightLogs { get; init; }
+    public DbSet<RedeemedRefreshToken> McpRedeemedRefreshTokens { get; init; }
+    public DbSet<CancelledRefreshTokenChain> McpCancelledRefreshTokenChains { get; init; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
