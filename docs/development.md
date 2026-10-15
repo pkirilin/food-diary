@@ -50,6 +50,7 @@ dotnet user-secrets --project src/backend/src/FoodDiary.API set "Mcp:Enabled" "t
 
 dotnet user-secrets --project src/backend/src/FoodDiary.API set "Mcp:BaseUrl" "https://localhost:8080"
 
+# Optional, only to connect a client-secret MCP Client. MCP Clients that use a Client ID Metadata Document need none
 dotnet user-secrets --project src/backend/src/FoodDiary.API set "Mcp:Clients:0:ClientId" "<your_client_id>"
 
 dotnet user-secrets --project src/backend/src/FoodDiary.API set "Mcp:Clients:0:ClientSecret" "<your_client_secret>"

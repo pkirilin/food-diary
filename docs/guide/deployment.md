@@ -115,13 +115,13 @@ Configuration key            | Environment variable            | Default        
 -----------------------------|---------------------------------|-------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 `Mcp:Enabled`                | `Mcp__Enabled`                  | `false`                                   | Enables the MCP server and its OAuth endpoints. When `false`, `/mcp`, `/authorize`, `/token` and `/.well-known/*` return `404`
 `Mcp:BaseUrl`                | `Mcp__BaseUrl`                  | —                                         | Public origin of the app, e.g. `https://food.example.com`: the connector URL without `/mcp`. Must use `https` (`http` is allowed only for `localhost`), with no path, query or trailing slash
-`Mcp:Clients:0:ClientId`     | `Mcp__Clients__0__ClientId`     | —                                         | OAuth client ID entered in the MCP client settings
-`Mcp:Clients:0:ClientSecret` | `Mcp__Clients__0__ClientSecret` | —                                         | OAuth client secret entered in entered in the MCP client settings. Keep it out of source control
-`Mcp:Clients:0:RedirectUri`  | `Mcp__Clients__0__RedirectUri`  | —                                         | OAuth callback of the client. For Claude, it is `https://claude.ai/api/mcp/auth_callback`
+`Mcp:Clients:0:ClientId`     | `Mcp__Clients__0__ClientId`     | —                                         | Optional. OAuth client ID of a client-secret MCP Client, entered in its settings
+`Mcp:Clients:0:ClientSecret` | `Mcp__Clients__0__ClientSecret` | —                                         | OAuth client secret of that MCP Client, entered in its settings. Keep it out of source control
+`Mcp:Clients:0:RedirectUri`  | `Mcp__Clients__0__RedirectUri`  | —                                         | OAuth callback of that MCP Client. For Claude, it is `https://claude.ai/api/mcp/auth_callback`
 `Mcp:AccessTokenLifetime`    | `Mcp__AccessTokenLifetime`      | `01:00:00`                                | How long an access token is valid before Claude has to refresh it
 `Mcp:RefreshTokenLifetime`   | `Mcp__RefreshTokenLifetime`     | `30.00:00:00`                             | How long a connected MCP client can go without refreshing. Every refresh issues a new refresh token valid for this long, so a client that keeps refreshing stays connected
 
-Another OAuth client goes at the next index, e.g. `Mcp:Clients:1`, with its own `ClientId`, `ClientSecret` and `RedirectUri`.
+`Mcp:Clients` is needed only for MCP Clients that you set up with a client ID and secret, such as Claude. MCP Clients that identify themselves with a Client ID Metadata Document, such as ChatBox, need no configuration, so MCP can be enabled with no `Mcp:Clients` entries. Another client-secret MCP Client goes at the next index, e.g. `Mcp:Clients:1`, with its own `ClientId`, `ClientSecret` and `RedirectUri`.
 
 With `Mcp:Enabled` set, the app refuses to start while a required value is missing or malformed, and names the key.
 
