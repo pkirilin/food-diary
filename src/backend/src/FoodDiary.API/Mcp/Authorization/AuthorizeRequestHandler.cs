@@ -18,6 +18,8 @@ internal sealed class AuthorizeRequestHandler(
     McpConsentRequestService consentRequestService,
     IOptions<McpOptions> options)
 {
+    private const string AccountNotAllowed = "This account is not allowed to use Food Diary";
+
     public async Task<IResult> Handle(AuthorizeRequest request, HttpContext context) =>
         validator.Validate(request) switch
         {
@@ -54,7 +56,7 @@ internal sealed class AuthorizeRequestHandler(
         {
             return RedirectToClient(request.RedirectUri, request.State,
                 ("error", "access_denied"),
-                ("error_description", "This account is not allowed to use Food Diary"));
+                ("error_description", AccountNotAllowed));
         }
 
         var access = new AccessGrant(
@@ -76,6 +78,15 @@ internal sealed class AuthorizeRequestHandler(
         if (!authentication.Succeeded)
         {
             return ChallengeToReturnToThisRequest(context);
+        }
+
+        var emailAllowlistCheck = await authorizationService.AuthorizeAsync(
+            authentication.Principal,
+            Constants.AuthorizationPolicies.GoogleAllowedEmails);
+
+        if (!emailAllowlistCheck.Succeeded)
+        {
+            return Refuse(AccountNotAllowed);
         }
 
         var validation = await cimdClientValidator.Validate(request, context.RequestAborted);

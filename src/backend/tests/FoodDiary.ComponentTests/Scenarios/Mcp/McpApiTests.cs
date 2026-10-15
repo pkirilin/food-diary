@@ -123,6 +123,23 @@ public class McpApiTests(InfrastructureFixture infrastructure) : BaseTest<McpApi
     }
 
     [Scenario]
+    public Task The_owner_signs_in_before_cimd_client_metadata_document_is_fetched()
+    {
+        return CtxRunner.RunScenarioAsync(
+            c => c.When_cimd_client_requests_authorization(),
+            c => c.Then_owner_is_asked_to_sign_in_with_google());
+    }
+
+    [Scenario]
+    public Task The_owner_with_account_not_allowed_is_refused_before_cimd_client_metadata_document_is_fetched()
+    {
+        return CtxRunner.RunScenarioAsync(
+            c => c.Given_authenticated_user("someone.else@gmail.com"),
+            c => c.When_cimd_client_requests_authorization(),
+            c => c.Then_authorization_is_refused_with("This account is not allowed to use Food Diary"));
+    }
+
+    [Scenario]
     public Task The_client_is_redirected_back_with_error_and_issuer_when_PKCE_is_not_S256()
     {
         return CtxRunner.RunScenarioAsync(

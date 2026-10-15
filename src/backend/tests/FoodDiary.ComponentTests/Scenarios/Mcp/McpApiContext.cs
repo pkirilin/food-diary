@@ -326,6 +326,20 @@ public class McpApiContext(
         return Task.CompletedTask;
     }
 
+    public async Task Then_authorization_is_refused_with(string reason)
+    {
+        _authorizeResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        _authorizeResponse.Content.Headers.ContentType?.MediaType.Should().Be("text/plain");
+        (await _authorizeResponse.Content.ReadAsStringAsync()).Should().Be(reason);
+    }
+
+    public Task Then_owner_is_asked_to_sign_in_with_google()
+    {
+        _authorizeResponse.StatusCode.Should().Be(HttpStatusCode.Redirect);
+        _authorizeResponse.Headers.Location!.Host.Should().Be("accounts.google.com");
+        return Task.CompletedTask;
+    }
+
     public async Task Then_client_receives_access_and_refresh_tokens()
     {
         var response = _codeExchangeResponses.Single();
