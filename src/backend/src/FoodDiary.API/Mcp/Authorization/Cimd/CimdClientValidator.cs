@@ -1,6 +1,6 @@
+using System.Diagnostics;
 using System.Text.Json;
 using FoodDiary.API.Mcp.Authorization.Consent;
-using Microsoft.Extensions.Options;
 
 namespace FoodDiary.API.Mcp.Authorization.Cimd;
 
@@ -12,7 +12,7 @@ public abstract record CimdClientValidation
     public sealed record Refused(string Reason) : CimdClientValidation;
 }
 
-internal sealed class CimdClientValidator(CimdMetadataDocumentFetcher fetcher, IOptions<McpOptions> options)
+internal sealed class CimdClientValidator(CimdMetadataDocumentFetcher fetcher, AuthorizeRequestValidator requestValidator)
 {
     public async Task<CimdClientValidation> Validate(AuthorizeRequest request, CancellationToken cancellationToken)
     {
@@ -68,15 +68,15 @@ internal sealed class CimdClientValidator(CimdMetadataDocumentFetcher fetcher, I
             RedirectUriHost: new Uri(redirectUri).IdnHost,
             IsLocalhostOnly: redirectUris.All(IsLoopbackUri));
 
-        var accepted = new AuthorizeRequestValidation.Accepted(
-            clientId,
-            redirectUri,
-            request.CodeChallenge!,
-            McpScopes.FoodRead,
-            options.Value.McpResource,
-            request.State);
+        return requestValidator.ValidateForTrustedRedirectUri(request, clientId, redirectUri) switch
+        {
+            AuthorizeRequestValidation.Accepted accepted => new CimdClientValidation.Accepted(accepted, client),
 
-        return new CimdClientValidation.Accepted(accepted, client);
+            // A CIMD document is self-asserted, so its redirect URIs are untrusted until the owner approves
+            AuthorizeRequestValidation.ErrorRedirect error => new CimdClientValidation.Refused(error.Description),
+
+            _ => throw new UnreachableException()
+        };
     }
 
     private static bool IsAcceptedRedirectUri(string redirectUri) =>

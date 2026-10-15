@@ -296,6 +296,24 @@ public class McpApiTests(InfrastructureFixture infrastructure) : BaseTest<McpApi
     }
 
     [Scenario]
+    [InlineData("response_type", "token", "response_type must be code")]
+    [InlineData("code_challenge_method", "plain", "PKCE is required with code_challenge_method S256")]
+    [InlineData("code_challenge", null, "PKCE is required with code_challenge_method S256")]
+    [InlineData("scope", "food:write", "The only supported scope is food:read")]
+    [InlineData("resource", "https://other.example.com/mcp", "The only supported resource is http://localhost/mcp")]
+    public Task The_cimd_client_is_refused_without_redirect_when_request_is_invalid(
+        string parameter,
+        string? value,
+        string reason)
+    {
+        return CtxRunner.RunScenarioAsync(
+            c => c.Given_cimd_client_metadata_document(),
+            c => c.Given_authenticated_user(),
+            c => c.When_cimd_client_requests_authorization_with(parameter, value),
+            c => c.Then_authorization_is_refused_with(reason));
+    }
+
+    [Scenario]
     public Task The_client_is_redirected_back_with_error_and_issuer_when_PKCE_is_not_S256()
     {
         return CtxRunner.RunScenarioAsync(

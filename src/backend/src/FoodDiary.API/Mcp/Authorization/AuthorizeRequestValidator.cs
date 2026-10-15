@@ -46,8 +46,14 @@ public sealed class AuthorizeRequestValidator(IOptions<McpOptions> options)
             return new AuthorizeRequestValidation.Refused("redirect_uri is not the one registered for this client_id");
         }
 
-        var redirectUri = client.RedirectUri!;
+        return ValidateForTrustedRedirectUri(request, client.ClientId!, client.RedirectUri!);
+    }
 
+    internal AuthorizeRequestValidation ValidateForTrustedRedirectUri(
+        AuthorizeRequest request,
+        string clientId,
+        string redirectUri)
+    {
         AuthorizeRequestValidation.ErrorRedirect Error(string error, string description) =>
             new(redirectUri, error, description, request.State);
 
@@ -76,7 +82,7 @@ public sealed class AuthorizeRequestValidator(IOptions<McpOptions> options)
         }
 
         return new AuthorizeRequestValidation.Accepted(
-            client.ClientId!,
+            clientId,
             redirectUri,
             request.CodeChallenge,
             McpScopes.FoodRead,
