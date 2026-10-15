@@ -151,6 +151,27 @@ public class McpApiTests(InfrastructureFixture infrastructure) : BaseTest<McpApi
     }
 
     [Scenario]
+    public Task The_cimd_client_is_refused_when_its_metadata_document_is_not_found()
+    {
+        return CtxRunner.RunScenarioAsync(
+            c => c.Given_cimd_client_metadata_document_is_not_found(),
+            c => c.Given_authenticated_user(),
+            c => c.When_cimd_client_requests_authorization(),
+            c => c.Then_authorization_is_refused_with("client ID metadata document did not respond with 200 OK"));
+    }
+
+    [Scenario]
+    public Task The_cimd_client_is_refused_when_its_metadata_document_redirects()
+    {
+        return CtxRunner.RunScenarioAsync(
+            c => c.Given_cimd_client_metadata_document_redirects_to_another_url(),
+            c => c.Given_authenticated_user(),
+            c => c.When_cimd_client_requests_authorization(),
+            c => c.Then_authorization_is_refused_with(
+                "client ID metadata document responded with a redirect, which is not followed"));
+    }
+
+    [Scenario]
     public Task The_client_is_redirected_back_with_error_and_issuer_when_PKCE_is_not_S256()
     {
         return CtxRunner.RunScenarioAsync(

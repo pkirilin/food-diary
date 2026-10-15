@@ -24,6 +24,7 @@ public sealed class CimdMetadataDocumentFetcher(IHttpClientFactory httpClientFac
 
                 // A proxy would make ConnectCallback dial the proxy, leaving the target address unchecked
                 handler.UseProxy = false;
+                handler.AllowAutoRedirect = false;
                 handler.ConnectCallback = (context, cancellationToken) =>
                     ConnectToAllowedAddress(context.DnsEndPoint, addressFilter, cancellationToken);
             });
@@ -34,6 +35,18 @@ public sealed class CimdMetadataDocumentFetcher(IHttpClientFactory httpClientFac
         try
         {
             using var response = await httpClientFactory.CreateClient(HttpClientName).GetAsync(clientId, cancellationToken);
+
+            if ((int)response.StatusCode is >= 300 and < 400)
+            {
+                return new CimdMetadataDocumentFetch.Failed(
+                    "client ID metadata document responded with a redirect, which is not followed");
+            }
+
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                return new CimdMetadataDocumentFetch.Failed("client ID metadata document did not respond with 200 OK");
+            }
+
             var body = await response.Content.ReadAsStringAsync(cancellationToken);
 
             return new CimdMetadataDocumentFetch.Fetched(JsonSerializer.Deserialize<JsonElement>(body));

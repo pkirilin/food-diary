@@ -104,6 +104,24 @@ public class McpApiContext(
         await MetadataHost.SetupDocument(CimdDocumentPath, CimdDocument());
     }
 
+    public async Task Given_cimd_client_metadata_document_is_not_found()
+    {
+        await StartMetadataHostReachableOverLoopback();
+        await MetadataHost.SetupStatus(CimdDocumentPath, HttpStatusCode.NotFound);
+    }
+
+    public async Task Given_cimd_client_metadata_document_redirects_to_another_url()
+    {
+        const string redirectTargetPath = "/moved-oauth-client.json";
+
+        await StartMetadataHostReachableOverLoopback();
+        await MetadataHost.SetupStatus(CimdDocumentPath, HttpStatusCode.Found, new Dictionary<string, object>
+        {
+            ["Location"] = McpClientMetadataHost.UrlOf(redirectTargetPath)
+        });
+        await MetadataHost.SetupDocument(redirectTargetPath, CimdDocument());
+    }
+
     public async Task Given_cimd_client_metadata_document_behind_real_address_filter()
     {
         await MetadataHost.Start();
