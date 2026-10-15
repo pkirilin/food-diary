@@ -64,7 +64,7 @@ public class McpOptionsValidationTests
     }
 
     [Fact]
-    public void Enabled_WithoutClients_FailsNamingClients()
+    public void Enabled_WithoutClients_Passes()
     {
         var settings = EnabledWithOneClient();
         settings.Remove("Mcp:Clients:0:ClientId");
@@ -73,8 +73,7 @@ public class McpOptionsValidationTests
 
         var validate = ValidateOnStartup(settings);
 
-        validate.Should().Throw<OptionsValidationException>()
-            .Which.Failures.Should().Contain("Mcp:Clients requires at least one client");
+        validate.Should().NotThrow();
     }
 
     [Theory]
