@@ -48,14 +48,25 @@ internal sealed class CimdClientValidator(CimdMetadataDocumentFetcher fetcher, I
                 "client ID metadata document's token_endpoint_auth_method must be none");
         }
 
-        var redirectUri = request.RedirectUri!;
+        var redirectUri = request.RedirectUri;
+
+        if (redirectUri is null || !redirectUris.Contains(redirectUri, StringComparer.Ordinal))
+        {
+            return new CimdClientValidation.Refused("redirect_uri is not listed in the client ID metadata document");
+        }
+
+        if (!IsAcceptedRedirectUri(redirectUri))
+        {
+            return new CimdClientValidation.Refused(
+                "redirect_uri must use https, or http on localhost, 127.0.0.1 or [::1]");
+        }
 
         var client = new McpClientDisplay(
             Name: clientName,
-            LogoUri: StringProperty(document, "logo_uri"),
+            LogoUri: HttpsUriOrNull(StringProperty(document, "logo_uri")),
             ClientIdHost: new Uri(clientId).IdnHost,
             RedirectUriHost: new Uri(redirectUri).IdnHost,
-            IsLocalhostOnly: redirectUris.All(uri => new Uri(uri).IsLoopback));
+            IsLocalhostOnly: redirectUris.All(IsLoopbackUri));
 
         var accepted = new AuthorizeRequestValidation.Accepted(
             clientId,
@@ -67,6 +78,17 @@ internal sealed class CimdClientValidator(CimdMetadataDocumentFetcher fetcher, I
 
         return new CimdClientValidation.Accepted(accepted, client);
     }
+
+    private static bool IsAcceptedRedirectUri(string redirectUri) =>
+        Uri.TryCreate(redirectUri, UriKind.Absolute, out var uri)
+        && (uri.Scheme == Uri.UriSchemeHttps
+            || (uri.Scheme == Uri.UriSchemeHttp && uri.Host is "localhost" or "127.0.0.1" or "[::1]"));
+
+    private static bool IsLoopbackUri(string uri) =>
+        Uri.TryCreate(uri, UriKind.Absolute, out var parsed) && parsed.IsLoopback;
+
+    private static string? HttpsUriOrNull(string? uri) =>
+        Uri.TryCreate(uri, UriKind.Absolute, out var parsed) && parsed.Scheme == Uri.UriSchemeHttps ? uri : null;
 
     private static string? StringProperty(JsonElement document, string name) =>
         document.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.String

@@ -123,6 +123,20 @@ public class McpApiTests(InfrastructureFixture infrastructure) : BaseTest<McpApi
     }
 
     [Scenario]
+    public Task The_owner_is_not_warned_about_localhost_when_cimd_client_also_lists_other_redirect_uris()
+    {
+        return CtxRunner.RunScenarioAsync(
+            c => c.Given_cimd_client_metadata_document_with_logo_and_redirect_uris(
+                "http://client.example.com/logo.png",
+                "not a URL",
+                "http://127.0.0.1:1456/callback",
+                "https://client.example.com/callback"),
+            c => c.Given_authenticated_user(),
+            c => c.When_cimd_client_requests_authorization_with("redirect_uri", "https://client.example.com/callback"),
+            c => c.Then_consent_page_shows_client(null, "client.example.com", false));
+    }
+
+    [Scenario]
     public Task The_owner_signs_in_before_cimd_client_metadata_document_is_fetched()
     {
         return CtxRunner.RunScenarioAsync(
@@ -249,6 +263,36 @@ public class McpApiTests(InfrastructureFixture infrastructure) : BaseTest<McpApi
             c => c.When_cimd_client_requests_authorization(),
             c => c.Then_authorization_is_refused_with(
                 "client ID metadata document's token_endpoint_auth_method must be none"));
+    }
+
+    [Scenario]
+    [InlineData("http://127.0.0.1:1456/other-callback")]
+    [InlineData("http://127.0.0.1:1456/callback/")]
+    [InlineData("")]
+    [InlineData(null)]
+    public Task The_cimd_client_is_refused_when_redirect_uri_is_not_listed_in_its_metadata_document(string? redirectUri)
+    {
+        return CtxRunner.RunScenarioAsync(
+            c => c.Given_cimd_client_metadata_document(),
+            c => c.Given_authenticated_user(),
+            c => c.When_cimd_client_requests_authorization_with("redirect_uri", redirectUri),
+            c => c.Then_authorization_is_refused_with(
+                "redirect_uri is not listed in the client ID metadata document"));
+    }
+
+    [Scenario]
+    [InlineData("myapp://callback")]
+    [InlineData("http://client.example.com/callback")]
+    [InlineData("http://localhost.client.example.com/callback")]
+    [InlineData("http://127.0.0.2:1456/callback")]
+    public Task The_cimd_client_is_refused_when_redirect_uri_is_neither_https_nor_loopback_http(string redirectUri)
+    {
+        return CtxRunner.RunScenarioAsync(
+            c => c.Given_cimd_client_metadata_document_with_redirect_uri(redirectUri),
+            c => c.Given_authenticated_user(),
+            c => c.When_cimd_client_requests_authorization_with("redirect_uri", redirectUri),
+            c => c.Then_authorization_is_refused_with(
+                "redirect_uri must use https, or http on localhost, 127.0.0.1 or [::1]"));
     }
 
     [Scenario]

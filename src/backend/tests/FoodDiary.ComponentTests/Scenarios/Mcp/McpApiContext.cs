@@ -194,6 +194,20 @@ public class McpApiContext : BaseContext
         return ServeCimdDocument(document);
     }
 
+    public Task Given_cimd_client_metadata_document_with_redirect_uri(string redirectUri)
+    {
+        return Given_cimd_client_metadata_document_with("redirect_uris", new[] { redirectUri });
+    }
+
+    public Task Given_cimd_client_metadata_document_with_logo_and_redirect_uris(string logoUri, params string[] redirectUris)
+    {
+        var document = CimdDocument();
+        document["logo_uri"] = logoUri;
+        document["redirect_uris"] = redirectUris;
+
+        return ServeCimdDocument(document);
+    }
+
     public async Task Given_cimd_client_metadata_document_behind_real_address_filter()
     {
         await MetadataHost.Start();
@@ -330,29 +344,40 @@ public class McpApiContext : BaseContext
 
     public Task When_client_requests_authorization_with_code_challenge_method(string codeChallengeMethod)
     {
-        return RequestAuthorization(Client.ClientId!, Client.RedirectUri!, codeChallengeMethod);
+        var parameters = AuthorizationParameters(Client.ClientId!, Client.RedirectUri!);
+        parameters["code_challenge_method"] = codeChallengeMethod;
+
+        return RequestAuthorization(parameters);
     }
 
     public Task When_cimd_client_requests_authorization()
     {
-        return RequestAuthorization(CimdClientId, CimdRedirectUri, codeChallengeMethod: "S256");
+        return RequestAuthorization(AuthorizationParameters(CimdClientId, CimdRedirectUri));
     }
 
-    private async Task RequestAuthorization(string clientId, string redirectUri, string codeChallengeMethod)
+    public Task When_cimd_client_requests_authorization_with(string parameter, string? value)
     {
-        var authorizeUrl = QueryHelpers.AddQueryString("/authorize", new Dictionary<string, string?>
-        {
-            ["response_type"] = "code",
-            ["client_id"] = clientId,
-            ["redirect_uri"] = redirectUri,
-            ["code_challenge"] = CodeChallenge,
-            ["code_challenge_method"] = codeChallengeMethod,
-            ["scope"] = "food:read",
-            ["resource"] = McpResource,
-            ["state"] = State
-        });
+        var parameters = AuthorizationParameters(CimdClientId, CimdRedirectUri);
+        parameters[parameter] = value;
 
-        _authorizeResponse = await OAuthClient.GetAsync(authorizeUrl);
+        return RequestAuthorization(parameters);
+    }
+
+    private Dictionary<string, string?> AuthorizationParameters(string clientId, string redirectUri) => new()
+    {
+        ["response_type"] = "code",
+        ["client_id"] = clientId,
+        ["redirect_uri"] = redirectUri,
+        ["code_challenge"] = CodeChallenge,
+        ["code_challenge_method"] = "S256",
+        ["scope"] = "food:read",
+        ["resource"] = McpResource,
+        ["state"] = State
+    };
+
+    private async Task RequestAuthorization(Dictionary<string, string?> parameters)
+    {
+        _authorizeResponse = await OAuthClient.GetAsync(QueryHelpers.AddQueryString("/authorize", parameters));
     }
 
     public async Task When_client_exchanges_authorization_code()
@@ -464,6 +489,22 @@ public class McpApiContext : BaseContext
                 RedirectUriHost: "127.0.0.1",
                 IsLocalhostOnly: true),
             AllowedUserEmail));
+
+        return Task.CompletedTask;
+    }
+
+    public Task Then_consent_page_shows_client(string? logoUri, string redirectUriHost, bool isLocalhostOnly)
+    {
+        var consentRequest = ConsentRequestFromRedirect();
+
+        var issued = Factory.Services.GetRequiredService<McpConsentRequestService>().Read(consentRequest, AllowedUserEmail);
+
+        issued!.Client.Should().Be(new McpClientDisplay(
+            Name: CimdClientName,
+            LogoUri: logoUri,
+            ClientIdHost: "localhost",
+            RedirectUriHost: redirectUriHost,
+            IsLocalhostOnly: isLocalhostOnly));
 
         return Task.CompletedTask;
     }
