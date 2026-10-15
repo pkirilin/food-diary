@@ -15,9 +15,18 @@ public sealed class CimdMetadataDocumentFetcher(IHttpClientFactory httpClientFac
 {
     public const string HttpClientName = "FoodDiary.Mcp.CimdMetadataDocument";
 
+    private const int MaxDocumentBytes = 5 * 1024;
+
+    private static readonly CimdMetadataDocumentFetch.Failed NotJsonObject =
+        new("client ID metadata document is not a JSON object");
+
     public static void AddHttpClient(IServiceCollection services)
     {
-        services.AddHttpClient(HttpClientName)
+        services.AddHttpClient(HttpClientName, client =>
+            {
+                client.Timeout = TimeSpan.FromSeconds(5);
+                client.MaxResponseContentBufferSize = MaxDocumentBytes;
+            })
             .UseSocketsHttpHandler((handler, serviceProvider) =>
             {
                 var addressFilter = serviceProvider.GetRequiredService<ICimdAddressFilter>();
@@ -25,6 +34,7 @@ public sealed class CimdMetadataDocumentFetcher(IHttpClientFactory httpClientFac
                 // A proxy would make ConnectCallback dial the proxy, leaving the target address unchecked
                 handler.UseProxy = false;
                 handler.AllowAutoRedirect = false;
+                handler.UseCookies = false;
                 handler.ConnectCallback = (context, cancellationToken) =>
                     ConnectToAllowedAddress(context.DnsEndPoint, addressFilter, cancellationToken);
             });
@@ -47,14 +57,33 @@ public sealed class CimdMetadataDocumentFetcher(IHttpClientFactory httpClientFac
                 return new CimdMetadataDocumentFetch.Failed("client ID metadata document did not respond with 200 OK");
             }
 
-            var body = await response.Content.ReadAsStringAsync(cancellationToken);
+            var document = JsonSerializer.Deserialize<JsonElement>(await response.Content.ReadAsStringAsync(cancellationToken));
 
-            return new CimdMetadataDocumentFetch.Fetched(JsonSerializer.Deserialize<JsonElement>(body));
+            return document.ValueKind == JsonValueKind.Object
+                ? new CimdMetadataDocumentFetch.Fetched(document)
+                : NotJsonObject;
+        }
+        catch (JsonException)
+        {
+            return NotJsonObject;
         }
         catch (HttpRequestException exception) when (exception.InnerException is NoAllowedAddressException)
         {
             return new CimdMetadataDocumentFetch.Failed(
                 "client ID metadata document URL does not resolve to a public address");
+        }
+        catch (HttpRequestException exception)
+            when (exception.HttpRequestError == HttpRequestError.ConfigurationLimitExceeded)
+        {
+            return new CimdMetadataDocumentFetch.Failed("client ID metadata document is larger than 5 KB");
+        }
+        catch (HttpRequestException)
+        {
+            return new CimdMetadataDocumentFetch.Failed("client ID metadata document could not be fetched");
+        }
+        catch (TaskCanceledException exception) when (exception.InnerException is TimeoutException)
+        {
+            return new CimdMetadataDocumentFetch.Failed("client ID metadata document did not respond within 5 seconds");
         }
     }
 

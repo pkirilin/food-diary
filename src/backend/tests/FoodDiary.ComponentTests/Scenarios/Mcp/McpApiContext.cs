@@ -149,6 +149,35 @@ public class McpApiContext : BaseContext
         await MetadataHost.SetupDocument(redirectTargetPath, CimdDocument());
     }
 
+    public async Task Given_cimd_client_metadata_document_responds_after(int seconds)
+    {
+        await StartMetadataHostReachableOverLoopback();
+        await MetadataHost.SetupDocument(CimdDocumentPath, CimdDocument(), latencyInMilliseconds: seconds * 1000);
+    }
+
+    public async Task Given_cimd_client_metadata_document_larger_than_5_kb()
+    {
+        var document = CimdDocument();
+        document["client_name"] = new string('a', 5 * 1024);
+
+        await StartMetadataHostReachableOverLoopback();
+        await MetadataHost.SetupDocument(CimdDocumentPath, document);
+    }
+
+    public async Task Given_cimd_client_metadata_document_is_not_json()
+    {
+        await StartMetadataHostReachableOverLoopback();
+        await MetadataHost.SetupBody(CimdDocumentPath, "client_name=Test MCP Client");
+    }
+
+    public async Task Given_cimd_client_metadata_document_served_with_untrusted_certificate()
+    {
+        await MetadataHost.Start();
+        Factory = Factory.WithWebHostBuilder(builder => builder.ConfigureTestServices(services =>
+            services.AddSingleton<ICimdAddressFilter, LoopbackAllowedAddressFilter>()));
+        await MetadataHost.SetupDocument(CimdDocumentPath, CimdDocument());
+    }
+
     public async Task Given_cimd_client_metadata_document_behind_real_address_filter()
     {
         await MetadataHost.Start();

@@ -172,6 +172,46 @@ public class McpApiTests(InfrastructureFixture infrastructure) : BaseTest<McpApi
     }
 
     [Scenario]
+    public Task The_cimd_client_is_refused_when_its_metadata_document_responds_after_5_seconds()
+    {
+        return CtxRunner.RunScenarioAsync(
+            c => c.Given_cimd_client_metadata_document_responds_after(6),
+            c => c.Given_authenticated_user(),
+            c => c.When_cimd_client_requests_authorization(),
+            c => c.Then_authorization_is_refused_with("client ID metadata document did not respond within 5 seconds"));
+    }
+
+    [Scenario]
+    public Task The_cimd_client_is_refused_when_its_metadata_document_is_larger_than_5_kb()
+    {
+        return CtxRunner.RunScenarioAsync(
+            c => c.Given_cimd_client_metadata_document_larger_than_5_kb(),
+            c => c.Given_authenticated_user(),
+            c => c.When_cimd_client_requests_authorization(),
+            c => c.Then_authorization_is_refused_with("client ID metadata document is larger than 5 KB"));
+    }
+
+    [Scenario]
+    public Task The_cimd_client_is_refused_when_its_metadata_document_is_not_json()
+    {
+        return CtxRunner.RunScenarioAsync(
+            c => c.Given_cimd_client_metadata_document_is_not_json(),
+            c => c.Given_authenticated_user(),
+            c => c.When_cimd_client_requests_authorization(),
+            c => c.Then_authorization_is_refused_with("client ID metadata document is not a JSON object"));
+    }
+
+    [Scenario]
+    public Task The_cimd_client_is_refused_when_its_metadata_document_cannot_be_fetched()
+    {
+        return CtxRunner.RunScenarioAsync(
+            c => c.Given_cimd_client_metadata_document_served_with_untrusted_certificate(),
+            c => c.Given_authenticated_user(),
+            c => c.When_cimd_client_requests_authorization(),
+            c => c.Then_authorization_is_refused_with("client ID metadata document could not be fetched"));
+    }
+
+    [Scenario]
     public Task The_client_is_redirected_back_with_error_and_issuer_when_PKCE_is_not_S256()
     {
         return CtxRunner.RunScenarioAsync(
