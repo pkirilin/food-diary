@@ -42,10 +42,53 @@ public sealed class McpConsentRequestService(
 
     public McpConsentRequest? Read(string consentRequest, string email)
     {
-        return Unprotect(consentRequest)?.ConsentRequest;
+        var payload = OwnersUnexpiredPayload(consentRequest, email);
+
+        if (payload is null)
+        {
+            return null;
+        }
+
+        lock (_decisionLock)
+        {
+            return memoryCache.TryGetValue(UndecidedKey(payload.Id), out _) ? payload.ConsentRequest : null;
+        }
+    }
+
+    public McpConsentRequest? Redeem(string consentRequest, string email)
+    {
+        var payload = OwnersUnexpiredPayload(consentRequest, email);
+
+        if (payload is null)
+        {
+            return null;
+        }
+
+        lock (_decisionLock)
+        {
+            if (!memoryCache.TryGetValue(UndecidedKey(payload.Id), out _))
+            {
+                return null;
+            }
+
+            memoryCache.Remove(UndecidedKey(payload.Id));
+        }
+
+        return payload.ConsentRequest;
     }
 
     private static string UndecidedKey(string id) => $"mcp:undecided-consent-request:{id}";
+
+    private ConsentRequestPayload? OwnersUnexpiredPayload(string consentRequest, string email)
+    {
+        var payload = Unprotect(consentRequest);
+
+        return payload is not null
+               && payload.ConsentRequest.Email == email
+               && timeProvider.GetUtcNow() < payload.ExpiresAt
+            ? payload
+            : null;
+    }
 
     private ConsentRequestPayload? Unprotect(string consentRequest)
     {
