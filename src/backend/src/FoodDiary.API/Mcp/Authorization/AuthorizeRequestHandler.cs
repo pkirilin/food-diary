@@ -48,22 +48,14 @@ internal sealed class AuthorizeRequestHandler(
             return ChallengeToReturnToThisRequest(context);
         }
 
-        var emailAllowlistCheck = await authorizationService.AuthorizeAsync(
-            authentication.Principal,
-            Constants.AuthorizationPolicies.GoogleAllowedEmails);
-
-        if (!emailAllowlistCheck.Succeeded)
+        if (await AllowedEmailOf(authentication.Principal) is not { } email)
         {
             return RedirectToClient(request.RedirectUri, request.State,
                 ("error", "access_denied"),
                 ("error_description", AccountNotAllowed));
         }
 
-        var access = new AccessGrant(
-            request.ClientId,
-            authentication.Principal.FindFirstValue(Constants.ClaimTypes.Email)!,
-            request.Scope,
-            request.Resource);
+        var access = new AccessGrant(request.ClientId, email, request.Scope, request.Resource);
 
         var code = tokenService.IssueAuthorizationCode(
             new AuthorizationCodeGrant(access, request.RedirectUri, request.CodeChallenge));
@@ -80,28 +72,35 @@ internal sealed class AuthorizeRequestHandler(
             return ChallengeToReturnToThisRequest(context);
         }
 
-        var emailAllowlistCheck = await authorizationService.AuthorizeAsync(
-            authentication.Principal,
-            Constants.AuthorizationPolicies.GoogleAllowedEmails);
-
-        if (!emailAllowlistCheck.Succeeded)
+        if (await AllowedEmailOf(authentication.Principal) is not { } email)
         {
             return Refuse(AccountNotAllowed);
         }
 
-        var validation = await cimdClientValidator.Validate(request, context.RequestAborted);
-
-        if (validation is not CimdClientValidation.Accepted accepted)
+        return await cimdClientValidator.Validate(request, context.RequestAborted) switch
         {
-            return Refuse(((CimdClientValidation.Refused)validation).Reason);
-        }
+            CimdClientValidation.Refused refused => Refuse(refused.Reason),
 
-        var consentRequest = consentRequestService.Issue(new McpConsentRequest(
-            accepted.Request,
-            accepted.Client,
-            authentication.Principal.FindFirstValue(Constants.ClaimTypes.Email)!));
+            CimdClientValidation.Accepted accepted =>
+                RedirectToConsentPage(new McpConsentRequest(accepted.Request, accepted.Client, email)),
 
-        return Results.Redirect($"/#/mcp-consent?consentRequest={Uri.EscapeDataString(consentRequest)}");
+            _ => throw new UnreachableException()
+        };
+    }
+
+    private async Task<string?> AllowedEmailOf(ClaimsPrincipal user)
+    {
+        var emailAllowlistCheck = await authorizationService.AuthorizeAsync(
+            user,
+            Constants.AuthorizationPolicies.GoogleAllowedEmails);
+
+        return emailAllowlistCheck.Succeeded ? user.FindFirstValue(Constants.ClaimTypes.Email) : null;
+    }
+
+    private IResult RedirectToConsentPage(McpConsentRequest consentRequest)
+    {
+        var protectedConsentRequest = consentRequestService.Issue(consentRequest);
+        return Results.Redirect($"/#/mcp-consent?consentRequest={Uri.EscapeDataString(protectedConsentRequest)}");
     }
 
     private static IResult ChallengeToReturnToThisRequest(HttpContext context)

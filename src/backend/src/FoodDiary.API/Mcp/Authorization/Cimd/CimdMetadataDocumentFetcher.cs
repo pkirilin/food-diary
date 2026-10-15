@@ -20,8 +20,11 @@ public sealed class CimdMetadataDocumentFetcher(IHttpClientFactory httpClientFac
     private static readonly CimdMetadataDocumentFetch.Failed NotJsonObject =
         new("client ID metadata document is not a JSON object");
 
-    public static void AddHttpClient(IServiceCollection services)
+    public static void Register(IServiceCollection services)
     {
+        services.AddSingleton<ICimdAddressFilter, SpecialUseAddressFilter>();
+        services.AddSingleton<CimdMetadataDocumentFetcher>();
+
         services.AddHttpClient(HttpClientName, client =>
             {
                 client.Timeout = TimeSpan.FromSeconds(5);
@@ -87,7 +90,7 @@ public sealed class CimdMetadataDocumentFetcher(IHttpClientFactory httpClientFac
         }
     }
 
-    // Checking the addresses the socket connects to, rather than a separate DNS lookup, defeats DNS rebinding
+    // The filter must see the addresses this socket connects to; a separate lookup is open to DNS rebinding
     private static async ValueTask<Stream> ConnectToAllowedAddress(
         DnsEndPoint endPoint,
         ICimdAddressFilter addressFilter,

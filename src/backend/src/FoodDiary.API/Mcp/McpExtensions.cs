@@ -31,10 +31,8 @@ public static class McpExtensions
         services.AddSingleton<AuthorizeRequestValidator>();
         services.AddSingleton<McpTokenService>();
         services.AddSingleton<McpConsentRequestService>();
-        services.AddSingleton<ICimdAddressFilter, SpecialUseAddressFilter>();
-        services.AddSingleton<CimdMetadataDocumentFetcher>();
         services.AddSingleton<CimdClientValidator>();
-        CimdMetadataDocumentFetcher.AddHttpClient(services);
+        CimdMetadataDocumentFetcher.Register(services);
         services.AddScoped<AuthorizeRequestHandler>();
         services.AddScoped<TokenRequestHandler>();
 

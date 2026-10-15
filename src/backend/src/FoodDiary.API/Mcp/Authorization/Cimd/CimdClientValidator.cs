@@ -68,7 +68,7 @@ internal sealed class CimdClientValidator(CimdMetadataDocumentFetcher fetcher, A
             RedirectUriHost: new Uri(redirectUri).IdnHost,
             IsLocalhostOnly: redirectUris.All(IsLoopbackUri));
 
-        return requestValidator.ValidateForTrustedRedirectUri(request, clientId, redirectUri) switch
+        return requestValidator.ValidateProtocolParameters(request, clientId, redirectUri) switch
         {
             AuthorizeRequestValidation.Accepted accepted => new CimdClientValidation.Accepted(accepted, client),
 
