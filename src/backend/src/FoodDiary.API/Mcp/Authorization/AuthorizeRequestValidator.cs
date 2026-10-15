@@ -23,6 +23,8 @@ public abstract record AuthorizeRequestValidation
         string Error,
         string Description,
         string? State) : AuthorizeRequestValidation;
+
+    public sealed record CimdClient : AuthorizeRequestValidation;
 }
 
 public sealed class AuthorizeRequestValidator(IOptions<McpOptions> options)
@@ -33,7 +35,10 @@ public sealed class AuthorizeRequestValidator(IOptions<McpOptions> options)
 
         if (client is null)
         {
-            return new AuthorizeRequestValidation.Refused("client_id is not registered");
+            return IsMetadataDocumentUrl(request.ClientId)
+                ? new AuthorizeRequestValidation.CimdClient()
+                : new AuthorizeRequestValidation.Refused(
+                    "client_id is neither registered nor a valid https client ID metadata document URL");
         }
 
         if (request.RedirectUri != client.RedirectUri)
@@ -77,5 +82,32 @@ public sealed class AuthorizeRequestValidator(IOptions<McpOptions> options)
             McpScopes.FoodRead,
             mcpResource,
             request.State);
+    }
+
+    // Checked on the raw string because System.Uri normalises dot segments, backslashes and empty paths away
+    private static bool IsMetadataDocumentUrl(string? clientId)
+    {
+        const string httpsPrefix = "https://";
+
+        if (clientId is null
+            || !clientId.StartsWith(httpsPrefix, StringComparison.OrdinalIgnoreCase)
+            || clientId.Contains('#')
+            || clientId.Contains('\\')
+            || !Uri.TryCreate(clientId, UriKind.Absolute, out _))
+        {
+            return false;
+        }
+
+        var afterScheme = clientId[httpsPrefix.Length..];
+        var authorityEnd = afterScheme.IndexOfAny(['/', '?']);
+
+        if (authorityEnd < 0 || afterScheme[authorityEnd] != '/' || afterScheme[..authorityEnd].Contains('@'))
+        {
+            return false;
+        }
+
+        var path = afterScheme[authorityEnd..].Split('?')[0];
+
+        return path.Split('/').Select(Uri.UnescapeDataString).All(segment => segment is not ("." or ".."));
     }
 }
