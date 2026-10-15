@@ -104,6 +104,13 @@ public class McpApiContext(
         await MetadataHost.SetupDocument(CimdDocumentPath, CimdDocument());
     }
 
+    public async Task Given_cimd_client_metadata_document_behind_real_address_filter()
+    {
+        await MetadataHost.Start();
+        Factory = Factory.WithWebHostBuilder(builder => builder.ConfigureTestServices(TrustMetadataHostCertificate));
+        await MetadataHost.SetupDocument(CimdDocumentPath, CimdDocument());
+    }
+
     public Task Given_notes(params Note[] notes)
     {
         return Factory.SeedDataAsync(notes);

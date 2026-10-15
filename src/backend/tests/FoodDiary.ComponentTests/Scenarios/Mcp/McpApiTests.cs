@@ -140,6 +140,17 @@ public class McpApiTests(InfrastructureFixture infrastructure) : BaseTest<McpApi
     }
 
     [Scenario]
+    public Task The_server_does_not_fetch_cimd_client_metadata_document_from_special_use_address()
+    {
+        return CtxRunner.RunScenarioAsync(
+            c => c.Given_cimd_client_metadata_document_behind_real_address_filter(),
+            c => c.Given_authenticated_user(),
+            c => c.When_cimd_client_requests_authorization(),
+            c => c.Then_authorization_is_refused_with(
+                "client ID metadata document URL does not resolve to a public address"));
+    }
+
+    [Scenario]
     public Task The_client_is_redirected_back_with_error_and_issuer_when_PKCE_is_not_S256()
     {
         return CtxRunner.RunScenarioAsync(
