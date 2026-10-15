@@ -2,7 +2,7 @@
 
 Status: ready-for-agent
 
-Vocabulary: [CONTEXT.md](../../CONTEXT.md) — **food log**, **meal**, **product**, **category** are defined there and used with those exact meanings below.
+Vocabulary: [GLOSSARY.md](../../GLOSSARY.md) — **food log**, **meal**, **product**, **category** are defined there and used with those exact meanings below.
 
 Decision record: [docs/adr/0003-oauth-authorization-server-in-api.md](../../docs/adr/0003-oauth-authorization-server-in-api.md)
 
@@ -30,11 +30,11 @@ One food log is **one product eaten in one meal on one date** — the same grain
 
 ### Units live in the tool descriptions
 
-The client's model cannot read this codebase, so every unit it needs is stated in the tool's `[Description]` — kilocalories, grams, salt as sodium chloride, grams for drinks. Field names stay unit-free (`quantity`, `calories`, `protein`); the description is the one place the model reliably reads them. Units are defined once as **Nutrition Values** in [CONTEXT.md](../../CONTEXT.md), and the descriptions below restate it.
+The client's model cannot read this codebase, so every unit it needs is stated in the tool's `[Description]` — kilocalories, grams, salt as sodium chloride, grams for drinks. Field names stay unit-free (`quantity`, `calories`, `protein`); the description is the one place the model reliably reads them. Units are defined once as **Nutrition Values** in [GLOSSARY.md](../../GLOSSARY.md), and the descriptions below restate it.
 
 Parameter descriptions carry the input format, because that is where the model decides what to send: `from` and `to` are "Inclusive calendar date, `yyyy-MM-dd`."
 
-No test pins the description prose. `CONTEXT.md` and this spec are the source of truth.
+No test pins the description prose. `GLOSSARY.md` and this spec are the source of truth.
 
 ### `get_food_logs(from, to)`
 

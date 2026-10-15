@@ -38,7 +38,7 @@ A new `deploy/compose.yml` gives self-hosters a copy-paste setup that pulls the 
 
 ### Terminology
 
-User-facing prose says **food log**, per `CONTEXT.md` (updated in this effort: Food Log is canonical, Note is the legacy name). Older UI text still says "note"; the docs do not mirror it.
+User-facing prose says **food log**, per `GLOSSARY.md` (updated in this effort: Food Log is canonical, Note is the legacy name). Older UI text still says "note"; the docs do not mirror it.
 
 ### README.md
 
@@ -150,7 +150,7 @@ The current README "Releasing" section, moved as-is.
 
 - Links `docs/development.md` and `docs/releasing.md`.
 - Says where to ask questions or report problems: GitHub Issues.
-- Does **not** link `CONTEXT.md`, `docs/adr/`, `docs/agents/` or the `.scratch/` issue tracker. Those are for LLM agents, not human contributors.
+- Does **not** link `GLOSSARY.md`, `docs/adr/`, `docs/agents/` or the `.scratch/` issue tracker. Those are for LLM agents, not human contributors.
 - No GitHub Discussions and no issue templates.
 
 ### deploy/compose.yml and deploy/.env.example
