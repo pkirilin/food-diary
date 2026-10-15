@@ -314,6 +314,26 @@ public class McpApiTests(InfrastructureFixture infrastructure) : BaseTest<McpApi
     }
 
     [Scenario]
+    public Task The_cimd_client_is_refused_when_its_client_id_is_not_https()
+    {
+        return CtxRunner.RunScenarioAsync(
+            c => c.Given_cimd_client_metadata_document(),
+            c => c.Given_authenticated_user(),
+            c => c.When_cimd_client_requests_authorization_with("client_id", "http://localhost:4747/oauth-client.json"),
+            c => c.Then_authorization_is_refused_with(
+                "client_id is neither registered nor a valid https client ID metadata document URL"));
+    }
+
+    [Scenario]
+    public Task The_server_starts_with_mcp_enabled_and_no_configured_clients()
+    {
+        return CtxRunner.RunScenarioAsync(
+            c => c.Given_no_configured_mcp_clients(),
+            c => c.When_client_requests_authorization_server_metadata(),
+            c => c.Then_authorization_server_metadata_is_built_from_base_url());
+    }
+
+    [Scenario]
     public Task The_client_is_redirected_back_with_error_and_issuer_when_PKCE_is_not_S256()
     {
         return CtxRunner.RunScenarioAsync(

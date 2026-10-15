@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using ModelContextProtocol.Client;
@@ -110,6 +111,31 @@ public class McpApiContext : BaseContext
         _issuedRefreshTokens.Add(Factory.Services.GetRequiredService<IDataProtectionProvider>()
             .CreateProtector("FoodDiary.Mcp.RefreshToken")
             .Protect(preRotationPayload));
+
+        return Task.CompletedTask;
+    }
+
+    public Task Given_no_configured_mcp_clients()
+    {
+        Factory = Factory.WithWebHostBuilder(builder => builder.ConfigureAppConfiguration((_, configuration) =>
+        {
+            const string componentTestsSettingsFile = "appsettings.ComponentTests.json";
+
+            var componentTestsSettingsSources = configuration.Sources
+                .OfType<JsonConfigurationSource>()
+                .Where(source => source.Path == componentTestsSettingsFile)
+                .ToList();
+
+            var settingsWithoutClients = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile(componentTestsSettingsFile)
+                .Build()
+                .AsEnumerable()
+                .Where(setting => !setting.Key.StartsWith("Mcp:Clients", StringComparison.Ordinal));
+
+            componentTestsSettingsSources.ForEach(source => configuration.Sources.Remove(source));
+            configuration.AddInMemoryCollection(settingsWithoutClients);
+        }));
 
         return Task.CompletedTask;
     }
