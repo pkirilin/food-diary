@@ -113,6 +113,16 @@ public class McpApiTests(InfrastructureFixture infrastructure) : BaseTest<McpApi
     }
 
     [Scenario]
+    public Task The_owner_is_sent_to_consent_page_when_cimd_client_requests_authorization()
+    {
+        return CtxRunner.RunScenarioAsync(
+            c => c.Given_cimd_client_metadata_document(),
+            c => c.Given_authenticated_user(),
+            c => c.When_cimd_client_requests_authorization(),
+            c => c.Then_owner_is_sent_to_consent_page_for_cimd_client());
+    }
+
+    [Scenario]
     public Task The_client_is_redirected_back_with_error_and_issuer_when_PKCE_is_not_S256()
     {
         return CtxRunner.RunScenarioAsync(

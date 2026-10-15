@@ -6,10 +6,14 @@ using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
 using FoodDiary.API.Mcp;
 using FoodDiary.API.Mcp.Authorization;
+using FoodDiary.API.Mcp.Authorization.Cimd;
+using FoodDiary.API.Mcp.Authorization.Consent;
 using FoodDiary.ComponentTests.Infrastructure;
+using FoodDiary.ComponentTests.Infrastructure.ExternalServices;
 using FoodDiary.Domain.Entities;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,7 +24,9 @@ using ModelContextProtocol.Protocol;
 namespace FoodDiary.ComponentTests.Scenarios.Mcp;
 
 [UsedImplicitly]
-public class McpApiContext(FoodDiaryWebApplicationFactory factory) : BaseContext(factory)
+public class McpApiContext(
+    FoodDiaryWebApplicationFactory factory,
+    ExternalServicesFixture externalServices) : BaseContext(factory)
 {
     // PKCE example values from RFC 7636, Appendix B
     private const string CodeVerifier = "dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk";
@@ -29,6 +35,12 @@ public class McpApiContext(FoodDiaryWebApplicationFactory factory) : BaseContext
     private const string State = "af0ifjsldkj";
 
     private const string AllowedUserEmail = "fake.user@gmail.com";
+
+    private const string CimdDocumentPath = "/oauth-client.json";
+    private const string CimdClientName = "Test MCP Client";
+    private const string CimdLogoUri = "https://client.example.com/logo.png";
+    private const string CimdRedirectUri = "http://127.0.0.1:1456/callback";
+    private static readonly string CimdClientId = McpClientMetadataHost.UrlOf(CimdDocumentPath);
 
     private readonly McpOptions _mcpOptions = factory.Services.GetRequiredService<IOptions<McpOptions>>().Value;
     private HttpResponseMessage _metadataResponse = null!;
@@ -46,6 +58,7 @@ public class McpApiContext(FoodDiaryWebApplicationFactory factory) : BaseContext
     private List<string> _listedPromptNames = [];
     private GetPromptResult _promptResult = null!;
 
+    private McpClientMetadataHost MetadataHost => externalServices.McpClientMetadataHost;
     private McpClientRegistration Client => _mcpOptions.Clients[0];
     private string McpResource => _mcpOptions.McpResource;
     private McpTokenService TokenService => Factory.Services.GetRequiredService<McpTokenService>();
@@ -83,6 +96,12 @@ public class McpApiContext(FoodDiaryWebApplicationFactory factory) : BaseContext
             })));
 
         return Task.CompletedTask;
+    }
+
+    public async Task Given_cimd_client_metadata_document()
+    {
+        await StartMetadataHostReachableOverLoopback();
+        await MetadataHost.SetupDocument(CimdDocumentPath, CimdDocument());
     }
 
     public Task Given_notes(params Note[] notes)
@@ -206,13 +225,23 @@ public class McpApiContext(FoodDiaryWebApplicationFactory factory) : BaseContext
         return When_client_requests_authorization_with_code_challenge_method("S256");
     }
 
-    public async Task When_client_requests_authorization_with_code_challenge_method(string codeChallengeMethod)
+    public Task When_client_requests_authorization_with_code_challenge_method(string codeChallengeMethod)
+    {
+        return RequestAuthorization(Client.ClientId!, Client.RedirectUri!, codeChallengeMethod);
+    }
+
+    public Task When_cimd_client_requests_authorization()
+    {
+        return RequestAuthorization(CimdClientId, CimdRedirectUri, codeChallengeMethod: "S256");
+    }
+
+    private async Task RequestAuthorization(string clientId, string redirectUri, string codeChallengeMethod)
     {
         var authorizeUrl = QueryHelpers.AddQueryString("/authorize", new Dictionary<string, string?>
         {
             ["response_type"] = "code",
-            ["client_id"] = Client.ClientId,
-            ["redirect_uri"] = Client.RedirectUri,
+            ["client_id"] = clientId,
+            ["redirect_uri"] = redirectUri,
             ["code_challenge"] = CodeChallenge,
             ["code_challenge_method"] = codeChallengeMethod,
             ["scope"] = "food:read",
@@ -269,6 +298,31 @@ public class McpApiContext(FoodDiaryWebApplicationFactory factory) : BaseContext
         AuthorizationResponseParameter("code").Should().BeEmpty();
         AuthorizationResponseParameter("state").Should().Be(State);
         AuthorizationResponseParameter("iss").Should().Be(_mcpOptions.BaseUrl);
+        return Task.CompletedTask;
+    }
+
+    public Task Then_owner_is_sent_to_consent_page_for_cimd_client()
+    {
+        var consentRequest = ConsentRequestFromRedirect();
+
+        var issued = Factory.Services.GetRequiredService<McpConsentRequestService>().Read(consentRequest, AllowedUserEmail);
+
+        issued.Should().BeEquivalentTo(new McpConsentRequest(
+            new AuthorizeRequestValidation.Accepted(
+                ClientId: CimdClientId,
+                RedirectUri: CimdRedirectUri,
+                CodeChallenge: CodeChallenge,
+                Scope: "food:read",
+                Resource: McpResource,
+                State: State),
+            new McpClientDisplay(
+                Name: CimdClientName,
+                LogoUri: CimdLogoUri,
+                ClientIdHost: "localhost",
+                RedirectUriHost: "127.0.0.1",
+                IsLocalhostOnly: true),
+            AllowedUserEmail));
+
         return Task.CompletedTask;
     }
 
@@ -459,5 +513,53 @@ public class McpApiContext(FoodDiaryWebApplicationFactory factory) : BaseContext
         location.GetLeftPart(UriPartial.Path).Should().Be(Client.RedirectUri);
 
         return QueryHelpers.ParseQuery(location.Query).GetValueOrDefault(name).ToString();
+    }
+
+    private string ConsentRequestFromRedirect()
+    {
+        const string consentRoutePrefix = "/#/mcp-consent?consentRequest=";
+
+        _authorizeResponse.StatusCode.Should().Be(HttpStatusCode.Redirect);
+
+        var location = _authorizeResponse.Headers.Location!.OriginalString;
+        location.Should().StartWith(consentRoutePrefix);
+
+        return Uri.UnescapeDataString(location[consentRoutePrefix.Length..]);
+    }
+
+    private static Dictionary<string, object?> CimdDocument() => new()
+    {
+        ["client_id"] = CimdClientId,
+        ["client_name"] = CimdClientName,
+        ["logo_uri"] = CimdLogoUri,
+        ["redirect_uris"] = new[] { CimdRedirectUri },
+        ["token_endpoint_auth_method"] = "none"
+    };
+
+    private async Task StartMetadataHostReachableOverLoopback()
+    {
+        await MetadataHost.Start();
+
+        Factory = Factory.WithWebHostBuilder(builder => builder.ConfigureTestServices(services =>
+        {
+            services.AddSingleton<ICimdAddressFilter, LoopbackAllowedAddressFilter>();
+            TrustMetadataHostCertificate(services);
+        }));
+    }
+
+    private static void TrustMetadataHostCertificate(IServiceCollection services)
+    {
+        services.AddHttpClient(CimdMetadataDocumentFetcher.HttpClientName)
+            .ConfigurePrimaryHttpMessageHandler((handler, _) =>
+                ((SocketsHttpHandler)handler).SslOptions.RemoteCertificateValidationCallback = (_, _, _, _) => true);
+    }
+
+    // The CIMD draft (§8.6) allows fetching from loopback only when testing
+    private sealed class LoopbackAllowedAddressFilter : ICimdAddressFilter
+    {
+        private readonly SpecialUseAddressFilter _specialUseAddressFilter = new();
+
+        public bool IsAllowed(IPAddress address) =>
+            IPAddress.IsLoopback(address) || _specialUseAddressFilter.IsAllowed(address);
     }
 }

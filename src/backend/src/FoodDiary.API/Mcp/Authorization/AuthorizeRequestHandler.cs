@@ -1,5 +1,7 @@
 using System.Diagnostics;
 using System.Security.Claims;
+using FoodDiary.API.Mcp.Authorization.Cimd;
+using FoodDiary.API.Mcp.Authorization.Consent;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Extensions;
@@ -10,15 +12,16 @@ namespace FoodDiary.API.Mcp.Authorization;
 
 internal sealed class AuthorizeRequestHandler(
     AuthorizeRequestValidator validator,
+    CimdClientValidator cimdClientValidator,
     IAuthorizationService authorizationService,
     McpTokenService tokenService,
+    McpConsentRequestService consentRequestService,
     IOptions<McpOptions> options)
 {
     public async Task<IResult> Handle(AuthorizeRequest request, HttpContext context) =>
         validator.Validate(request) switch
         {
-            AuthorizeRequestValidation.Refused refused =>
-                Results.Text(refused.Reason, statusCode: StatusCodes.Status400BadRequest),
+            AuthorizeRequestValidation.Refused refused => Refuse(refused.Reason),
 
             AuthorizeRequestValidation.ErrorRedirect error =>
                 RedirectToClient(error.RedirectUri, error.State,
@@ -27,6 +30,9 @@ internal sealed class AuthorizeRequestHandler(
 
             AuthorizeRequestValidation.Accepted accepted =>
                 await AuthorizeSignedInUser(accepted, context),
+
+            AuthorizeRequestValidation.CimdClient =>
+                await AskSignedInUserToConsent(request, context),
 
             _ => throw new UnreachableException()
         };
@@ -37,12 +43,7 @@ internal sealed class AuthorizeRequestHandler(
 
         if (!authentication.Succeeded)
         {
-            var returnToThisRequest = new AuthenticationProperties
-            {
-                RedirectUri = context.Request.GetEncodedPathAndQuery()
-            };
-
-            return Results.Challenge(returnToThisRequest, [Constants.AuthenticationSchemes.OAuthGoogle]);
+            return ChallengeToReturnToThisRequest(context);
         }
 
         var emailAllowlistCheck = await authorizationService.AuthorizeAsync(
@@ -67,6 +68,43 @@ internal sealed class AuthorizeRequestHandler(
 
         return RedirectToClient(request.RedirectUri, request.State, ("code", code));
     }
+
+    private async Task<IResult> AskSignedInUserToConsent(AuthorizeRequest request, HttpContext context)
+    {
+        var authentication = await context.AuthenticateAsync(Constants.AuthenticationSchemes.OAuthGoogle);
+
+        if (!authentication.Succeeded)
+        {
+            return ChallengeToReturnToThisRequest(context);
+        }
+
+        var validation = await cimdClientValidator.Validate(request, context.RequestAborted);
+
+        if (validation is not CimdClientValidation.Accepted accepted)
+        {
+            return Refuse(((CimdClientValidation.Refused)validation).Reason);
+        }
+
+        var consentRequest = consentRequestService.Issue(new McpConsentRequest(
+            accepted.Request,
+            accepted.Client,
+            authentication.Principal.FindFirstValue(Constants.ClaimTypes.Email)!));
+
+        return Results.Redirect($"/#/mcp-consent?consentRequest={Uri.EscapeDataString(consentRequest)}");
+    }
+
+    private static IResult ChallengeToReturnToThisRequest(HttpContext context)
+    {
+        var returnToThisRequest = new AuthenticationProperties
+        {
+            RedirectUri = context.Request.GetEncodedPathAndQuery()
+        };
+
+        return Results.Challenge(returnToThisRequest, [Constants.AuthenticationSchemes.OAuthGoogle]);
+    }
+
+    private static IResult Refuse(string reason) =>
+        Results.Text(reason, statusCode: StatusCodes.Status400BadRequest);
 
     private IResult RedirectToClient(string redirectUri, string? state, params (string Name, string Value)[] parameters)
     {
