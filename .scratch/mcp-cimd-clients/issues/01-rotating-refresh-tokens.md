@@ -6,15 +6,15 @@ This applies to client-secret MCP Clients today and to CIMD MCP Clients once the
 
 **Blocked by:** None — can start immediately
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] The refresh token payload carries a token ID and a chain ID; the authorization-code exchange starts a new chain
-- [ ] A refresh response includes a new `refresh_token` in the same chain, valid for `RefreshTokenLifetime` from now
-- [ ] An Application-layer handler owns redemption, with three outcomes: redeemed; already redeemed (which also cancels the chain); chain already cancelled. MCP code in `FoodDiary.API` does not touch the database
-- [ ] Postgres stores redeemed token IDs (unique) and cancelled chain IDs, each with an expiry; a cancelled chain is kept until now plus the refresh token lifetime; expired rows are deleted on later redemptions; a new EF migration adds the tables
-- [ ] Two concurrent refreshes with the same token cannot both succeed
-- [ ] Every outcome except "redeemed" returns `invalid_grant`
-- [ ] A refresh token without a token ID or chain ID is refused with `invalid_grant`
-- [ ] Component scenarios: rotation returns a working new refresh token; reusing an old token cancels the chain, so the newest token also fails; a pre-upgrade refresh token is refused; a refresh token past its lifetime is refused
-- [ ] `docs/guide/mcp-server.md` says that existing connections must sign in once after upgrading to this version
-- [ ] Backend build and all backend tests pass
+- [x] The refresh token payload carries a token ID and a chain ID; the authorization-code exchange starts a new chain
+- [x] A refresh response includes a new `refresh_token` in the same chain, valid for `RefreshTokenLifetime` from now
+- [x] An Application-layer handler owns redemption, with three outcomes: redeemed; already redeemed (which also cancels the chain); chain already cancelled. MCP code in `FoodDiary.API` does not touch the database
+- [x] Postgres stores redeemed token IDs (unique) and cancelled chain IDs, each with an expiry; a cancelled chain is kept until now plus the refresh token lifetime; expired rows are deleted on later redemptions; a new EF migration adds the tables
+- [x] Two concurrent refreshes with the same token cannot both succeed
+- [x] Every outcome except "redeemed" returns `invalid_grant`
+- [x] A refresh token without a token ID or chain ID is refused with `invalid_grant`
+- [x] Component scenarios: rotation returns a working new refresh token; reusing an old token cancels the chain, so the newest token also fails; a pre-upgrade refresh token is refused; a refresh token past its lifetime is refused
+- [x] `docs/guide/mcp-server.md` says that existing connections must sign in once after upgrading to this version
+- [x] Backend build and all backend tests pass
