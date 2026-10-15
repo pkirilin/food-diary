@@ -24,7 +24,8 @@ public static class AuthorizationServerEndpoints
         string[] CodeChallengeMethodsSupported,
         string[] TokenEndpointAuthMethodsSupported,
         string[] ScopesSupported,
-        bool AuthorizationResponseIssParameterSupported);
+        bool AuthorizationResponseIssParameterSupported,
+        bool ClientIdMetadataDocumentSupported);
 
     public static void MapMcpAuthorizationServer(this IEndpointRouteBuilder endpoints)
     {
@@ -50,9 +51,10 @@ public static class AuthorizationServerEndpoints
             ResponseTypesSupported: ["code"],
             GrantTypesSupported: ["authorization_code", "refresh_token"],
             CodeChallengeMethodsSupported: ["S256"],
-            TokenEndpointAuthMethodsSupported: ["client_secret_post"],
+            TokenEndpointAuthMethodsSupported: ["client_secret_post", "none"],
             ScopesSupported: [McpScopes.FoodRead],
-            AuthorizationResponseIssParameterSupported: true);
+            AuthorizationResponseIssParameterSupported: true,
+            ClientIdMetadataDocumentSupported: true);
 
         return Results.Json(metadata, SerializerOptions);
     }
