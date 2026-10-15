@@ -7,9 +7,12 @@ using System.Text.RegularExpressions;
 using FoodDiary.API.Mcp;
 using FoodDiary.API.Mcp.Authorization;
 using FoodDiary.ComponentTests.Infrastructure;
+using FoodDiary.ComponentTests.Infrastructure.DateAndTime;
 using FoodDiary.Domain.Entities;
 using JetBrains.Annotations;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,7 +23,7 @@ using ModelContextProtocol.Protocol;
 namespace FoodDiary.ComponentTests.Scenarios.Mcp;
 
 [UsedImplicitly]
-public class McpApiContext(FoodDiaryWebApplicationFactory factory) : BaseContext(factory)
+public class McpApiContext : BaseContext
 {
     // PKCE example values from RFC 7636, Appendix B
     private const string CodeVerifier = "dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk";
@@ -30,7 +33,8 @@ public class McpApiContext(FoodDiaryWebApplicationFactory factory) : BaseContext
 
     private const string AllowedUserEmail = "fake.user@gmail.com";
 
-    private readonly McpOptions _mcpOptions = factory.Services.GetRequiredService<IOptions<McpOptions>>().Value;
+    private readonly McpOptions _mcpOptions;
+    private readonly AdjustableDateTimeProvider _clock = new();
     private HttpResponseMessage _metadataResponse = null!;
     private HttpResponseMessage _authorizeResponse = null!;
     private string? _authorizationCode;
@@ -56,6 +60,14 @@ public class McpApiContext(FoodDiaryWebApplicationFactory factory) : BaseContext
         AllowAutoRedirect = false
     });
 
+    public McpApiContext(FoodDiaryWebApplicationFactory factory) : base(factory)
+    {
+        _mcpOptions = factory.Services.GetRequiredService<IOptions<McpOptions>>().Value;
+
+        Factory = factory.WithWebHostBuilder(builder =>
+            builder.ConfigureTestServices(services => services.AddSingleton<TimeProvider>(_clock)));
+    }
+
     public Task Given_authorization_code_was_issued()
     {
         _authorizationCode = TokenService.IssueAuthorizationCode(
@@ -72,6 +84,21 @@ public class McpApiContext(FoodDiaryWebApplicationFactory factory) : BaseContext
     public Task Given_access_token_was_issued_to(string email)
     {
         _accessToken = TokenService.IssueAccessToken(AccessGrantFor(email));
+        return Task.CompletedTask;
+    }
+
+    public Task Given_refresh_token_was_issued_before_rotation()
+    {
+        var preRotationPayload = JsonSerializer.Serialize(new
+        {
+            Grant = AccessGrantFor(AllowedUserEmail),
+            ExpiresAt = _clock.GetUtcNow() + _mcpOptions.RefreshTokenLifetime
+        });
+
+        _issuedRefreshTokens.Add(Factory.Services.GetRequiredService<IDataProtectionProvider>()
+            .CreateProtector("FoodDiary.Mcp.RefreshToken")
+            .Protect(preRotationPayload));
+
         return Task.CompletedTask;
     }
 
@@ -94,6 +121,12 @@ public class McpApiContext(FoodDiaryWebApplicationFactory factory) : BaseContext
     public Task Given_products(params Product[] products)
     {
         return Factory.SeedDataAsync(products);
+    }
+
+    public Task When_days_pass(int days)
+    {
+        _clock.Advance(TimeSpan.FromDays(days));
+        return Task.CompletedTask;
     }
 
     public async Task When_mcp_client_connects()
@@ -228,16 +261,19 @@ public class McpApiContext(FoodDiaryWebApplicationFactory factory) : BaseContext
     {
         _authorizationCode ??= AuthorizationResponseParameter("code");
 
-        _codeExchangeResponses.Add(await RequestTokens(new Dictionary<string, string>
-        {
-            ["grant_type"] = "authorization_code",
-            ["code"] = _authorizationCode,
-            ["redirect_uri"] = Client.RedirectUri!,
-            ["code_verifier"] = CodeVerifier,
-            ["client_id"] = Client.ClientId!,
-            ["client_secret"] = Client.ClientSecret!,
-            ["resource"] = McpResource
-        }));
+        var response = await OAuthClient.PostAsync("/token", new FormUrlEncodedContent(
+            new Dictionary<string, string>
+            {
+                ["grant_type"] = "authorization_code",
+                ["code"] = _authorizationCode,
+                ["redirect_uri"] = Client.RedirectUri!,
+                ["code_verifier"] = CodeVerifier,
+                ["client_id"] = Client.ClientId!,
+                ["client_secret"] = Client.ClientSecret!,
+                ["resource"] = McpResource
+            }));
+
+        _codeExchangeResponses.Add(await RecordIssuedRefreshToken(response));
     }
 
     public Task When_client_refreshes_access_token()
@@ -250,24 +286,39 @@ public class McpApiContext(FoodDiaryWebApplicationFactory factory) : BaseContext
         return RefreshAccessToken(_issuedRefreshTokens[0]);
     }
 
-    private async Task RefreshAccessToken(string refreshToken)
+    public async Task When_client_refreshes_access_token_twice_at_once()
     {
-        _refreshResponses.Add(await RequestTokens(new Dictionary<string, string>
+        var refreshToken = _issuedRefreshTokens[^1];
+        var responses = await Task.WhenAll(SendRefreshRequest(refreshToken), SendRefreshRequest(refreshToken));
+
+        foreach (var response in responses)
         {
-            ["grant_type"] = "refresh_token",
-            ["refresh_token"] = refreshToken,
-            ["client_id"] = Client.ClientId!,
-            ["client_secret"] = Client.ClientSecret!
-        }));
+            _refreshResponses.Add(await RecordIssuedRefreshToken(response));
+        }
     }
 
-    private async Task<HttpResponseMessage> RequestTokens(Dictionary<string, string> form)
+    private async Task RefreshAccessToken(string refreshToken)
     {
-        var response = await OAuthClient.PostAsync("/token", new FormUrlEncodedContent(form));
+        _refreshResponses.Add(await RecordIssuedRefreshToken(await SendRefreshRequest(refreshToken)));
+    }
 
-        if (response.IsSuccessStatusCode)
+    private Task<HttpResponseMessage> SendRefreshRequest(string refreshToken)
+    {
+        return OAuthClient.PostAsync("/token", new FormUrlEncodedContent(
+            new Dictionary<string, string>
+            {
+                ["grant_type"] = "refresh_token",
+                ["refresh_token"] = refreshToken,
+                ["client_id"] = Client.ClientId!,
+                ["client_secret"] = Client.ClientSecret!
+            }));
+    }
+
+    private async Task<HttpResponseMessage> RecordIssuedRefreshToken(HttpResponseMessage tokenResponse)
+    {
+        if (tokenResponse.IsSuccessStatusCode)
         {
-            using var tokens = await ReadJson(response);
+            using var tokens = await ReadJson(tokenResponse);
 
             if (tokens.RootElement.TryGetProperty("refresh_token", out var refreshToken))
             {
@@ -275,7 +326,7 @@ public class McpApiContext(FoodDiaryWebApplicationFactory factory) : BaseContext
             }
         }
 
-        return response;
+        return tokenResponse;
     }
 
     public Task Then_authorization_response_carries_state_and_issuer()
@@ -395,6 +446,21 @@ public class McpApiContext(FoodDiaryWebApplicationFactory factory) : BaseContext
         {
             await ShouldBeInvalidGrant(response);
         }
+    }
+
+    public async Task Then_only_one_refresh_succeeds()
+    {
+        _refreshResponses.Should().ContainSingle(response => response.StatusCode == HttpStatusCode.OK);
+
+        foreach (var response in _refreshResponses.Where(response => response.StatusCode != HttpStatusCode.OK))
+        {
+            await ShouldBeInvalidGrant(response);
+        }
+    }
+
+    public Task Then_refresh_is_refused()
+    {
+        return ShouldBeInvalidGrant(_refreshResponses.Single());
     }
 
     private static async Task ShouldBeInvalidGrant(HttpResponseMessage response)
