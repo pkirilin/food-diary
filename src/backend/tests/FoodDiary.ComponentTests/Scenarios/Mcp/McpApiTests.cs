@@ -212,6 +212,46 @@ public class McpApiTests(InfrastructureFixture infrastructure) : BaseTest<McpApi
     }
 
     [Scenario]
+    [InlineData("client_id")]
+    [InlineData("client_name")]
+    [InlineData("redirect_uris")]
+    public Task The_cimd_client_is_refused_when_its_metadata_document_misses_required_field(string field)
+    {
+        return CtxRunner.RunScenarioAsync(
+            c => c.Given_cimd_client_metadata_document_without(field),
+            c => c.Given_authenticated_user(),
+            c => c.When_cimd_client_requests_authorization(),
+            c => c.Then_authorization_is_refused_with(
+                "client ID metadata document must contain client_id, client_name and redirect_uris"));
+    }
+
+    [Scenario]
+    [InlineData("https://localhost:4747/other-oauth-client.json")]
+    [InlineData("https://LOCALHOST:4747/oauth-client.json")]
+    public Task The_cimd_client_is_refused_when_its_metadata_document_names_another_client_id(string clientId)
+    {
+        return CtxRunner.RunScenarioAsync(
+            c => c.Given_cimd_client_metadata_document_with("client_id", clientId),
+            c => c.Given_authenticated_user(),
+            c => c.When_cimd_client_requests_authorization(),
+            c => c.Then_authorization_is_refused_with(
+                "client ID metadata document's client_id does not match the client_id URL"));
+    }
+
+    [Scenario]
+    [InlineData("private_key_jwt")]
+    [InlineData("client_secret_post")]
+    public Task The_cimd_client_is_refused_when_it_does_not_use_none_token_endpoint_auth_method(string method)
+    {
+        return CtxRunner.RunScenarioAsync(
+            c => c.Given_cimd_client_metadata_document_with("token_endpoint_auth_method", method),
+            c => c.Given_authenticated_user(),
+            c => c.When_cimd_client_requests_authorization(),
+            c => c.Then_authorization_is_refused_with(
+                "client ID metadata document's token_endpoint_auth_method must be none"));
+    }
+
+    [Scenario]
     public Task The_client_is_redirected_back_with_error_and_issuer_when_PKCE_is_not_S256()
     {
         return CtxRunner.RunScenarioAsync(

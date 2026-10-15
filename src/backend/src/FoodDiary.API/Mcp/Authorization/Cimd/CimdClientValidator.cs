@@ -25,11 +25,33 @@ internal sealed class CimdClientValidator(CimdMetadataDocumentFetcher fetcher, I
         }
 
         var document = ((CimdMetadataDocumentFetch.Fetched)fetch).Document;
-        var redirectUris = StringArrayProperty(document, "redirect_uris")!;
+        var documentClientId = StringProperty(document, "client_id");
+        var clientName = StringProperty(document, "client_name");
+        var redirectUris = StringArrayProperty(document, "redirect_uris");
+
+        if (documentClientId is null || string.IsNullOrWhiteSpace(clientName) || redirectUris is null)
+        {
+            return new CimdClientValidation.Refused(
+                "client ID metadata document must contain client_id, client_name and redirect_uris");
+        }
+
+        if (!string.Equals(documentClientId, clientId, StringComparison.Ordinal))
+        {
+            return new CimdClientValidation.Refused(
+                "client ID metadata document's client_id does not match the client_id URL");
+        }
+
+        if (document.TryGetProperty("token_endpoint_auth_method", out _)
+            && StringProperty(document, "token_endpoint_auth_method") != "none")
+        {
+            return new CimdClientValidation.Refused(
+                "client ID metadata document's token_endpoint_auth_method must be none");
+        }
+
         var redirectUri = request.RedirectUri!;
 
         var client = new McpClientDisplay(
-            Name: StringProperty(document, "client_name")!,
+            Name: clientName,
             LogoUri: StringProperty(document, "logo_uri"),
             ClientIdHost: new Uri(clientId).IdnHost,
             RedirectUriHost: new Uri(redirectUri).IdnHost,
@@ -52,7 +74,9 @@ internal sealed class CimdClientValidator(CimdMetadataDocumentFetcher fetcher, I
             : null;
 
     private static string[]? StringArrayProperty(JsonElement document, string name) =>
-        document.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.Array
+        document.TryGetProperty(name, out var value)
+        && value.ValueKind == JsonValueKind.Array
+        && value.EnumerateArray().All(item => item.ValueKind == JsonValueKind.String)
             ? value.EnumerateArray().Select(item => item.GetString()!).ToArray()
             : null;
 }

@@ -178,6 +178,22 @@ public class McpApiContext : BaseContext
         await MetadataHost.SetupDocument(CimdDocumentPath, CimdDocument());
     }
 
+    public Task Given_cimd_client_metadata_document_without(string field)
+    {
+        var document = CimdDocument();
+        document.Remove(field);
+
+        return ServeCimdDocument(document);
+    }
+
+    public Task Given_cimd_client_metadata_document_with(string field, object value)
+    {
+        var document = CimdDocument();
+        document[field] = value;
+
+        return ServeCimdDocument(document);
+    }
+
     public async Task Given_cimd_client_metadata_document_behind_real_address_filter()
     {
         await MetadataHost.Start();
@@ -718,6 +734,12 @@ public class McpApiContext : BaseContext
         ["redirect_uris"] = new[] { CimdRedirectUri },
         ["token_endpoint_auth_method"] = "none"
     };
+
+    private async Task ServeCimdDocument(Dictionary<string, object?> document)
+    {
+        await StartMetadataHostReachableOverLoopback();
+        await MetadataHost.SetupDocument(CimdDocumentPath, document);
+    }
 
     private async Task StartMetadataHostReachableOverLoopback()
     {
