@@ -68,7 +68,6 @@ public class McpApiContext : BaseContext
     private readonly List<string> _issuedRefreshTokens = [];
     private HttpResponseMessage _mcpResponse = null!;
     private HttpResponseMessage _resourceMetadataResponse = null!;
-    private HttpResponseMessage _response = null!;
     private string? _accessToken;
     private Implementation _connectedServer = null!;
     private List<string> _listedToolNames = [];
@@ -335,7 +334,7 @@ public class McpApiContext : BaseContext
 
     public async Task When_client_requests(string method, string path)
     {
-        _response = await OAuthClient.SendAsync(new HttpRequestMessage(new HttpMethod(method), path));
+        Response = await OAuthClient.SendAsync(new HttpRequestMessage(new HttpMethod(method), path));
     }
 
     public Task When_client_calls_mcp_without_access_token()
@@ -826,17 +825,7 @@ public class McpApiContext : BaseContext
 
     public Task Then_response_is_not_found()
     {
-        _response.StatusCode.Should().Be(HttpStatusCode.NotFound);
-        return Task.CompletedTask;
-    }
-
-    public Task Then_response_cannot_be_embedded_in_another_site()
-    {
-        _response.Headers
-            .Where(header => header.Key == "Content-Security-Policy")
-            .SelectMany(header => header.Value)
-            .Should().Equal("frame-ancestors 'none'");
-
+        Response!.StatusCode.Should().Be(HttpStatusCode.NotFound);
         return Task.CompletedTask;
     }
 

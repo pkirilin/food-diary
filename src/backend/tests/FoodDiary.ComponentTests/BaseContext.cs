@@ -16,6 +16,7 @@ public abstract class BaseContext
     private HttpClient? _apiClient;
     
     protected WebApplicationFactory<Startup> Factory;
+    protected HttpResponseMessage? Response;
     protected HttpClient ApiClient => _apiClient ??= Factory.CreateClient();
     
     protected BaseContext(FoodDiaryWebApplicationFactory factory)
@@ -34,6 +35,16 @@ public abstract class BaseContext
     public Task Given_authenticated_user(string user)
     {
         Factory = WithAuthenticatedUser(user);
+        return Task.CompletedTask;
+    }
+
+    public Task Then_response_cannot_be_embedded_in_another_site()
+    {
+        Response!.Headers
+            .Where(header => header.Key == "Content-Security-Policy")
+            .SelectMany(header => header.Value)
+            .Should().Equal("frame-ancestors 'none'");
+
         return Task.CompletedTask;
     }
 

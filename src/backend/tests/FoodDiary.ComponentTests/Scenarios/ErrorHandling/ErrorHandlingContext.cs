@@ -11,7 +11,6 @@ namespace FoodDiary.ComponentTests.Scenarios.ErrorHandling;
 [UsedImplicitly]
 public class ErrorHandlingContext(FoodDiaryWebApplicationFactory factory) : BaseContext(factory)
 {
-    private HttpResponseMessage? _response;
     private HttpStatusCode _statusCode;
 
     public Task Given_application_is_broken_because_of_an_unhandled_exception(Exception exception)
@@ -32,8 +31,8 @@ public class ErrorHandlingContext(FoodDiaryWebApplicationFactory factory) : Base
     
     public async Task When_user_is_trying_to_access_resource(string resource)
     {
-        _response = await ApiClient.GetAsync(resource);
-        _statusCode = _response.StatusCode;
+        Response = await ApiClient.GetAsync(resource);
+        _statusCode = Response.StatusCode;
     }
     
     public Task Then_response_has_status(HttpStatusCode status)
@@ -42,19 +41,9 @@ public class ErrorHandlingContext(FoodDiaryWebApplicationFactory factory) : Base
         return Task.CompletedTask;
     }
     
-    public Task Then_response_cannot_be_embedded_in_another_site()
-    {
-        _response!.Headers
-            .Where(header => header.Key == "Content-Security-Policy")
-            .SelectMany(header => header.Value)
-            .Should().Equal("frame-ancestors 'none'");
-
-        return Task.CompletedTask;
-    }
-
     public async Task Then_response_is_problem_details()
     {
-        var problemDetails = await _response!.Content.ReadFromJsonAsync<ProblemDetails>();
+        var problemDetails = await Response!.Content.ReadFromJsonAsync<ProblemDetails>();
         problemDetails!.Status.Should().Be((int)_statusCode);
         problemDetails.Title.Should().NotBeNullOrWhiteSpace();
         problemDetails.Detail.Should().NotBeNullOrWhiteSpace();
