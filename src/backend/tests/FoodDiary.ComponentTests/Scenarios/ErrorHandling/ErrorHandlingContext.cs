@@ -42,6 +42,16 @@ public class ErrorHandlingContext(FoodDiaryWebApplicationFactory factory) : Base
         return Task.CompletedTask;
     }
     
+    public Task Then_response_cannot_be_embedded_in_another_site()
+    {
+        _response!.Headers
+            .Where(header => header.Key == "Content-Security-Policy")
+            .SelectMany(header => header.Value)
+            .Should().Equal("frame-ancestors 'none'");
+
+        return Task.CompletedTask;
+    }
+
     public async Task Then_response_is_problem_details()
     {
         var problemDetails = await _response!.Content.ReadFromJsonAsync<ProblemDetails>();

@@ -806,6 +806,16 @@ public class McpApiContext : BaseContext
         return Task.CompletedTask;
     }
 
+    public Task Then_response_cannot_be_embedded_in_another_site()
+    {
+        _response.Headers
+            .Where(header => header.Key == "Content-Security-Policy")
+            .SelectMany(header => header.Value)
+            .Should().Equal("frame-ancestors 'none'");
+
+        return Task.CompletedTask;
+    }
+
     public Task Then_access_is_forbidden()
     {
         _mcpResponse.StatusCode.Should().Be(HttpStatusCode.Forbidden);

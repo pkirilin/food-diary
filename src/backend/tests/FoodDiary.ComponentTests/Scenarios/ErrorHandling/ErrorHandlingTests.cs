@@ -17,4 +17,14 @@ public class ErrorHandlingTests(InfrastructureFixture infrastructure)
             c => c.Then_response_has_status(HttpStatusCode.InternalServerError),
             c => c.Then_response_is_problem_details());
     }
+
+    [Scenario]
+    public Task I_receive_unhandled_errors_that_cannot_be_embedded_in_another_site()
+    {
+        return CtxRunner.RunScenarioAsync(
+            c => c.Given_application_is_broken_because_of_an_unhandled_exception(new Exception("some error")),
+            c => c.When_user_is_trying_to_access_resource("/api/v1/auth/status"),
+            c => c.Then_response_has_status(HttpStatusCode.InternalServerError),
+            c => c.Then_response_cannot_be_embedded_in_another_site());
+    }
 }

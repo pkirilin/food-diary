@@ -125,6 +125,8 @@ public class Startup
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
+        app.UseFrameAncestorsNone();
+
         if (env.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();

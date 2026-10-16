@@ -40,6 +40,19 @@ public class McpApiTests(InfrastructureFixture infrastructure) : BaseTest<McpApi
     }
 
     [Scenario]
+    [InlineData("GET", "/api/v1/auth/status")]
+    [InlineData("GET", "/.well-known/oauth-authorization-server")]
+    [InlineData("GET", "/.well-known/unknown")]
+    [InlineData("GET", "/authorize/consent")]
+    [InlineData("POST", "/token")]
+    public Task The_owner_cannot_be_shown_food_diary_inside_another_site(string method, string path)
+    {
+        return CtxRunner.RunScenarioAsync(
+            c => c.When_client_requests(method, path),
+            c => c.Then_response_cannot_be_embedded_in_another_site());
+    }
+
+    [Scenario]
     public Task The_client_with_access_token_can_connect()
     {
         return CtxRunner.RunScenarioAsync(
