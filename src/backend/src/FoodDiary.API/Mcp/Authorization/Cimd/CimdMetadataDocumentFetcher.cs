@@ -60,7 +60,13 @@ public sealed class CimdMetadataDocumentFetcher(IHttpClientFactory httpClientFac
                 return new CimdMetadataDocumentFetch.Failed("client ID metadata document did not respond with 200 OK");
             }
 
-            var document = JsonSerializer.Deserialize<JsonElement>(await response.Content.ReadAsStringAsync(cancellationToken));
+            if (await ReadInDeclaredCharset(response.Content, cancellationToken) is not { } body)
+            {
+                return new CimdMetadataDocumentFetch.Failed(
+                    "client ID metadata document declares an unsupported charset");
+            }
+
+            var document = JsonSerializer.Deserialize<JsonElement>(body);
 
             return document.ValueKind == JsonValueKind.Object
                 ? new CimdMetadataDocumentFetch.Fetched(document)
@@ -87,6 +93,19 @@ public sealed class CimdMetadataDocumentFetcher(IHttpClientFactory httpClientFac
         catch (TaskCanceledException exception) when (exception.InnerException is TimeoutException)
         {
             return new CimdMetadataDocumentFetch.Failed("client ID metadata document did not respond within 5 seconds");
+        }
+    }
+
+    private static async Task<string?> ReadInDeclaredCharset(HttpContent content, CancellationToken cancellationToken)
+    {
+        try
+        {
+            return await content.ReadAsStringAsync(cancellationToken);
+        }
+        // Thrown when the Content-Type charset names an encoding .NET does not support
+        catch (InvalidOperationException)
+        {
+            return null;
         }
     }
 

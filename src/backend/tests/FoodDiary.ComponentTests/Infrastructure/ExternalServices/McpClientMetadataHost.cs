@@ -19,18 +19,26 @@ public class McpClientMetadataHost(IClient mountebankClient)
         return mountebankClient.OverwriteAllImposters([imposter]);
     }
 
-    public Task SetupDocument(string path, object document, int? latencyInMilliseconds = null)
+    public Task SetupDocument(
+        string path,
+        object document,
+        int? latencyInMilliseconds = null,
+        string contentType = "application/json")
     {
-        return SetupBody(path, JsonSerializer.Serialize(document), latencyInMilliseconds);
+        return SetupBody(path, JsonSerializer.Serialize(document), latencyInMilliseconds, contentType);
     }
 
-    public Task SetupBody(string path, string body, int? latencyInMilliseconds = null)
+    public Task SetupBody(
+        string path,
+        string body,
+        int? latencyInMilliseconds = null,
+        string contentType = "application/json")
     {
         return mountebankClient.AddHttpsImposterStubAsync(Port, new HttpStub()
             .OnPathAndMethodEqual(path, Method.Get)
             .Returns(
                 HttpStatusCode.OK,
-                new Dictionary<string, object> { ["Content-Type"] = "application/json" },
+                new Dictionary<string, object> { ["Content-Type"] = contentType },
                 body,
                 latencyInMilliseconds: latencyInMilliseconds));
     }

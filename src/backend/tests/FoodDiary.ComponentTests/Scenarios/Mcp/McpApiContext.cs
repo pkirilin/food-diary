@@ -216,6 +216,12 @@ public class McpApiContext : BaseContext
         await MetadataHost.SetupBody(CimdDocumentPath, "client_name=Test MCP Client");
     }
 
+    public async Task Given_cimd_client_metadata_document_served_as(string contentType)
+    {
+        await StartMetadataHostReachableOverLoopback();
+        await MetadataHost.SetupDocument(CimdDocumentPath, CimdDocument(), contentType: contentType);
+    }
+
     public async Task Given_cimd_client_metadata_document_served_with_untrusted_certificate()
     {
         await MetadataHost.Start();

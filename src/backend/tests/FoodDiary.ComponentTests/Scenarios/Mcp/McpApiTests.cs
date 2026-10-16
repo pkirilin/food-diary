@@ -399,6 +399,16 @@ public class McpApiTests(InfrastructureFixture infrastructure) : BaseTest<McpApi
     }
 
     [Scenario]
+    public Task The_cimd_client_is_refused_when_its_metadata_document_declares_unknown_charset()
+    {
+        return CtxRunner.RunScenarioAsync(
+            c => c.Given_cimd_client_metadata_document_served_as("application/json; charset=bogus"),
+            c => c.Given_authenticated_user(),
+            c => c.When_cimd_client_requests_authorization(),
+            c => c.Then_authorization_is_refused_with("client ID metadata document declares an unsupported charset"));
+    }
+
+    [Scenario]
     public Task The_cimd_client_is_refused_when_its_metadata_document_cannot_be_fetched()
     {
         return CtxRunner.RunScenarioAsync(
