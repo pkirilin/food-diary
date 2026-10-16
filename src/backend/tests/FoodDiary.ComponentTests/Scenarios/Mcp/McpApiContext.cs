@@ -54,7 +54,6 @@ public class McpApiContext : BaseContext
     private readonly AdjustableDateTimeProvider _clock = new();
     private readonly MemoryCache _memoryCache = new(new MemoryCacheOptions());
 
-    // Fake owner sign-in authenticates MCP requests too, whatever access token they carry
     private readonly WebApplicationFactory<Startup> _hostWithoutOwnerSignIn;
 
     private HttpClient? _oAuthClient;

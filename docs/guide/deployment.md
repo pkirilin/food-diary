@@ -119,7 +119,7 @@ Configuration key            | Environment variable            | Default        
 `Mcp:Clients:0:ClientSecret` | `Mcp__Clients__0__ClientSecret` | —                                         | OAuth client secret of that MCP Client, entered in its settings. Keep it out of source control
 `Mcp:Clients:0:RedirectUri`  | `Mcp__Clients__0__RedirectUri`  | —                                         | OAuth callback of that MCP Client. For Claude, it is `https://claude.ai/api/mcp/auth_callback`
 `Mcp:AccessTokenLifetime`    | `Mcp__AccessTokenLifetime`      | `01:00:00`                                | How long an access token is valid before Claude has to refresh it
-`Mcp:RefreshTokenLifetime`   | `Mcp__RefreshTokenLifetime`     | `30.00:00:00`                             | How long a connected MCP client can go without refreshing. Every refresh issues a new refresh token valid for this long, so a client that keeps refreshing stays connected
+`Mcp:RefreshTokenLifetime`   | `Mcp__RefreshTokenLifetime`     | `30.00:00:00`                             | How long a connected MCP Client can go without refreshing. Every refresh issues a new refresh token valid for this long, so a client that keeps refreshing stays connected
 
 `Mcp:Clients` is needed only for MCP Clients that you set up with a client ID and secret, such as Claude. MCP Clients that identify themselves with a Client ID Metadata Document, such as ChatBox, need no configuration, so MCP can be enabled with no `Mcp:Clients` entries. Another client-secret MCP Client goes at the next index, e.g. `Mcp:Clients:1`, with its own `ClientId`, `ClientSecret` and `RedirectUri`.
 

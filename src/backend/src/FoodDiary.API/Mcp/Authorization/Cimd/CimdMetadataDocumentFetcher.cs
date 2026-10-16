@@ -109,7 +109,7 @@ public sealed class CimdMetadataDocumentFetcher(IHttpClientFactory httpClientFac
         }
     }
 
-    // The filter must see the addresses this socket connects to; a separate lookup is open to DNS rebinding
+    // The filter must see the addresses this socket connects to
     private static async ValueTask<Stream> ConnectToAllowedAddress(
         DnsEndPoint endPoint,
         ICimdAddressFilter addressFilter,
