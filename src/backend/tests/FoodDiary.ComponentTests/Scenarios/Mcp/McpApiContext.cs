@@ -500,10 +500,20 @@ public class McpApiContext : BaseContext
 
     public Task When_another_allowed_user_is_signed_in()
     {
+        return SignInOnNewHost(AnotherAllowedUserEmail);
+    }
+
+    public Task When_owner_signs_in_again()
+    {
+        return SignInOnNewHost(AllowedUserEmail);
+    }
+
+    private Task SignInOnNewHost(string email)
+    {
         Factory = _hostWithoutOwnerSignIn;
         _oAuthClient = null;
 
-        return Given_authenticated_user(AnotherAllowedUserEmail);
+        return Given_authenticated_user(email);
     }
 
     public Task When_consent_api_is_called_with(string method)
@@ -663,7 +673,7 @@ public class McpApiContext : BaseContext
 
     public async Task Then_consent_sends_cimd_client_back_with_code()
     {
-        var redirectParameters = await FirstConsentDecisionRedirectParameters();
+        var redirectParameters = await LastConsentDecisionRedirectParameters();
 
         redirectParameters.Keys.Should().BeEquivalentTo("code", "state", "iss");
         redirectParameters["code"].ToString().Should().NotBeEmpty();
@@ -673,7 +683,7 @@ public class McpApiContext : BaseContext
 
     public async Task Then_consent_sends_cimd_client_back_with_error(string error)
     {
-        var redirectParameters = await FirstConsentDecisionRedirectParameters();
+        var redirectParameters = await LastConsentDecisionRedirectParameters();
 
         redirectParameters.Keys.Should().BeEquivalentTo("error", "state", "iss");
         redirectParameters["error"].ToString().Should().Be(error);
@@ -1023,11 +1033,11 @@ public class McpApiContext : BaseContext
     }
 
     private async Task<string> CimdAuthorizationCode() =>
-        (await FirstConsentDecisionRedirectParameters())["code"].ToString();
+        (await LastConsentDecisionRedirectParameters())["code"].ToString();
 
-    private async Task<Dictionary<string, StringValues>> FirstConsentDecisionRedirectParameters()
+    private async Task<Dictionary<string, StringValues>> LastConsentDecisionRedirectParameters()
     {
-        var response = _consentDecisionResponses[0];
+        var response = _consentDecisionResponses[^1];
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         using var decision = await ReadJson(response);

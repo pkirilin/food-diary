@@ -183,6 +183,20 @@ public class McpApiTests(InfrastructureFixture infrastructure) : BaseTest<McpApi
     }
 
     [Scenario]
+    public Task The_owner_can_decide_on_consent_request_within_10_minutes()
+    {
+        return CtxRunner.RunScenarioAsync(
+            c => c.Given_cimd_client_metadata_document(),
+            c => c.Given_authenticated_user(),
+            c => c.When_cimd_client_requests_authorization(),
+            c => c.When_minutes_pass(9),
+            c => c.When_owner_opens_consent_page(),
+            c => c.When_owner_approves_consent(),
+            c => c.Then_consent_page_shows_client("https://client.example.com/logo.png", "127.0.0.1", true),
+            c => c.Then_consent_sends_cimd_client_back_with_code());
+    }
+
+    [Scenario]
     public Task The_owner_cannot_decide_on_consent_request_after_10_minutes()
     {
         return CtxRunner.RunScenarioAsync(
@@ -231,6 +245,31 @@ public class McpApiTests(InfrastructureFixture infrastructure) : BaseTest<McpApi
             c => c.When_another_allowed_user_is_signed_in(),
             c => c.When_owner_opens_consent_page(),
             c => c.When_owner_approves_consent(),
+            c => c.Then_consent_request_is_refused_as_expired());
+    }
+
+    [Scenario]
+    public Task The_owner_can_still_decide_on_consent_request_after_another_allowed_user_tried()
+    {
+        return CtxRunner.RunScenarioAsync(
+            c => c.Given_cimd_client_metadata_document(),
+            c => c.Given_authenticated_user(),
+            c => c.When_cimd_client_requests_authorization(),
+            c => c.When_another_allowed_user_is_signed_in(),
+            c => c.When_owner_approves_consent(),
+            c => c.When_owner_signs_in_again(),
+            c => c.When_owner_approves_consent(),
+            c => c.Then_consent_sends_cimd_client_back_with_code());
+    }
+
+    [Scenario]
+    [InlineData("GET")]
+    [InlineData("POST")]
+    public Task The_owner_cannot_use_unknown_consent_request(string method)
+    {
+        return CtxRunner.RunScenarioAsync(
+            c => c.Given_authenticated_user(),
+            c => c.When_consent_api_is_called_with(method),
             c => c.Then_consent_request_is_refused_as_expired());
     }
 
