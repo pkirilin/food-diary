@@ -40,7 +40,7 @@ public sealed class McpConsentRequestService(
         return _protector.Protect(JsonSerializer.Serialize(payload));
     }
 
-    public McpConsentRequest? Read(string consentRequest, string email)
+    public McpConsentRequest? Read(string? consentRequest, string email)
     {
         var payload = OwnersUnexpiredPayload(consentRequest, email);
 
@@ -55,7 +55,7 @@ public sealed class McpConsentRequestService(
         }
     }
 
-    public McpConsentRequest? Redeem(string consentRequest, string email)
+    public McpConsentRequest? Redeem(string? consentRequest, string email)
     {
         var payload = OwnersUnexpiredPayload(consentRequest, email);
 
@@ -79,7 +79,7 @@ public sealed class McpConsentRequestService(
 
     private static string UndecidedKey(string id) => $"mcp:undecided-consent-request:{id}";
 
-    private ConsentRequestPayload? OwnersUnexpiredPayload(string consentRequest, string email)
+    private ConsentRequestPayload? OwnersUnexpiredPayload(string? consentRequest, string email)
     {
         var payload = Unprotect(consentRequest);
 
@@ -90,8 +90,13 @@ public sealed class McpConsentRequestService(
             : null;
     }
 
-    private ConsentRequestPayload? Unprotect(string consentRequest)
+    private ConsentRequestPayload? Unprotect(string? consentRequest)
     {
+        if (consentRequest is null)
+        {
+            return null;
+        }
+
         try
         {
             return JsonSerializer.Deserialize<ConsentRequestPayload>(_protector.Unprotect(consentRequest));

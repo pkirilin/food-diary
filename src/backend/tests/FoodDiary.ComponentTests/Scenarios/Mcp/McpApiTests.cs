@@ -235,6 +235,15 @@ public class McpApiTests(InfrastructureFixture infrastructure) : BaseTest<McpApi
     }
 
     [Scenario]
+    public Task The_owner_cannot_decide_on_null_consent_request()
+    {
+        return CtxRunner.RunScenarioAsync(
+            c => c.Given_authenticated_user(),
+            c => c.When_owner_approves_consent_with_null_consent_request(),
+            c => c.Then_consent_request_is_refused_as_expired());
+    }
+
+    [Scenario]
     [InlineData("GET")]
     [InlineData("POST")]
     public Task The_owner_signs_in_before_using_consent_api(string method)

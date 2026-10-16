@@ -461,6 +461,15 @@ public class McpApiContext : BaseContext
         }));
     }
 
+    public Task When_owner_approves_consent_with_null_consent_request()
+    {
+        return RecordConsentDecision(OAuthClient.PostAsJsonAsync("/authorize/consent", new
+        {
+            consentRequest = (string?)null,
+            approved = true
+        }));
+    }
+
     private async Task RecordConsentDecision(Task<HttpResponseMessage> decision)
     {
         _consentDecisionResponses.Add(await decision);
