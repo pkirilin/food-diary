@@ -8,6 +8,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- MCP Clients that identify themselves with a Client ID Metadata Document, such as ChatBox, can connect with no configuration. On every sign-in, a consent page shows which client is asking for access and lets you approve or deny it; see `docs/guide/mcp-server.md`
+
+### Changed
+
+- **Existing MCP connections must sign in once after upgrading.** Refresh tokens issued by 0.9.2 or earlier are no longer accepted
+- Every refresh now issues a new refresh token valid for another `Mcp__RefreshTokenLifetime`, so an MCP Client that keeps using the server stays connected. Reusing a refresh token ends that connection
+- The `Mcp__Clients__*` settings are now optional and needed only for MCP Clients that connect with a client ID and secret
+
+### Security
+
+- Every response sends `Content-Security-Policy: frame-ancestors 'none'`, so no other site can show Food Diary inside a frame
+
 ## [0.9.2] - Router & Zod upgrades, AI suggestion fixes
 
 ### Changed
