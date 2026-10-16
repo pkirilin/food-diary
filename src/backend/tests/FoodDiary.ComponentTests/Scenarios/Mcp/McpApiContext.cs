@@ -514,6 +514,16 @@ public class McpApiContext : BaseContext
         await ExchangeAuthorizationCode(await CimdAuthorizationCode(), CimdRedirectUri, CimdClientId, clientSecret);
     }
 
+    public async Task When_cimd_client_exchanges_authorization_code_without_code_verifier()
+    {
+        await ExchangeAuthorizationCode(
+            await CimdAuthorizationCode(),
+            CimdRedirectUri,
+            CimdClientId,
+            clientSecret: null,
+            codeVerifier: null);
+    }
+
     public Task When_client_exchanges_authorization_code()
     {
         _authorizationCode ??= AuthorizationResponseParameter("code");
@@ -526,14 +536,19 @@ public class McpApiContext : BaseContext
         return ExchangeAuthorizationCode(_authorizationCode!, Client.RedirectUri!, clientId, clientSecret);
     }
 
-    private async Task ExchangeAuthorizationCode(string code, string redirectUri, string clientId, string? clientSecret)
+    private async Task ExchangeAuthorizationCode(
+        string code,
+        string redirectUri,
+        string clientId,
+        string? clientSecret,
+        string? codeVerifier = CodeVerifier)
     {
         var response = await RequestTokens(new Dictionary<string, string?>
         {
             ["grant_type"] = "authorization_code",
             ["code"] = code,
             ["redirect_uri"] = redirectUri,
-            ["code_verifier"] = CodeVerifier,
+            ["code_verifier"] = codeVerifier,
             ["client_id"] = clientId,
             ["client_secret"] = clientSecret,
             ["resource"] = McpResource
@@ -857,6 +872,11 @@ public class McpApiContext : BaseContext
         using var error = await ReadJson(response);
         error.RootElement.GetProperty("error").GetString().Should().Be("invalid_client");
         error.RootElement.GetProperty("error_description").GetString().Should().Be(description);
+    }
+
+    public Task Then_code_exchange_is_refused()
+    {
+        return ShouldBeInvalidGrant(_codeExchangeResponses.Single());
     }
 
     public Task Then_refresh_is_refused()

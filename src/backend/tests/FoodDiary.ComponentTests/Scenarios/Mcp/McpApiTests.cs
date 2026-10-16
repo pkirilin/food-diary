@@ -282,6 +282,18 @@ public class McpApiTests(InfrastructureFixture infrastructure) : BaseTest<McpApi
     }
 
     [Scenario]
+    public Task The_cimd_client_cannot_exchange_authorization_code_without_code_verifier()
+    {
+        return CtxRunner.RunScenarioAsync(
+            c => c.Given_cimd_client_metadata_document(),
+            c => c.Given_authenticated_user(),
+            c => c.When_cimd_client_requests_authorization(),
+            c => c.When_owner_approves_consent(),
+            c => c.When_cimd_client_exchanges_authorization_code_without_code_verifier(),
+            c => c.Then_code_exchange_is_refused());
+    }
+
+    [Scenario]
     public Task The_cimd_client_sending_client_secret_cannot_exchange_authorization_code()
     {
         return CtxRunner.RunScenarioAsync(
