@@ -11,7 +11,7 @@ internal sealed class McpConsentHandler(
     {
         if (consentRequestService.Read(consentRequest, EmailOf(owner)) is not { Client: var client })
         {
-            return ConsentRequestExpired();
+            return InvalidConsentRequest();
         }
 
         return Results.Ok(new GetMcpConsentResponse
@@ -28,7 +28,7 @@ internal sealed class McpConsentHandler(
     {
         if (consentRequestService.Redeem(submission.ConsentRequest, EmailOf(owner)) is not { } consentRequest)
         {
-            return ConsentRequestExpired();
+            return InvalidConsentRequest();
         }
 
         var request = consentRequest.Request;
@@ -42,7 +42,7 @@ internal sealed class McpConsentHandler(
 
     private static string EmailOf(ClaimsPrincipal owner) => owner.FindFirstValue(Constants.ClaimTypes.Email)!;
 
-    private static IResult ConsentRequestExpired() =>
+    private static IResult InvalidConsentRequest() =>
         Results.Problem(
             statusCode: StatusCodes.Status400BadRequest,
             title: "Consent request expired",
