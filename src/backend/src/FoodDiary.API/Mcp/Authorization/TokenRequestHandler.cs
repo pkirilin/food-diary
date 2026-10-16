@@ -35,26 +35,45 @@ internal sealed class TokenRequestHandler(
         }
 
         var form = await context.Request.ReadFormAsync(context.RequestAborted);
-        var client = options.Value.FindClient(SingleValue(form, "client_id"));
+        var clientId = SingleValue(form, "client_id") ?? string.Empty;
 
-        if (client is null || !SecretMatches(SingleValue(form, "client_secret"), client.ClientSecret!))
+        if (ClientAuthenticationFailure(form, clientId) is { } failure)
         {
-            return Error("invalid_client", "Client authentication failed", StatusCodes.Status401Unauthorized);
+            return Error("invalid_client", failure, StatusCodes.Status401Unauthorized);
         }
 
         return SingleValue(form, "grant_type") switch
         {
-            "authorization_code" => ExchangeAuthorizationCode(form, client),
-            "refresh_token" => await RefreshAccessToken(form, client, context.RequestAborted),
+            "authorization_code" => ExchangeAuthorizationCode(form, clientId),
+            "refresh_token" => await RefreshAccessToken(form, clientId, context.RequestAborted),
             _ => Error("unsupported_grant_type", "grant_type must be authorization_code or refresh_token")
         };
     }
 
-    private IResult ExchangeAuthorizationCode(IFormCollection form, McpClientRegistration client)
+    private string? ClientAuthenticationFailure(IFormCollection form, string clientId)
+    {
+        const string authenticationFailed = "Client authentication failed";
+
+        if (options.Value.FindClient(clientId) is { } client)
+        {
+            return SecretMatches(SingleValue(form, "client_secret"), client.ClientSecret!) ? null : authenticationFailed;
+        }
+
+        if (!AuthorizeRequestValidator.IsMetadataDocumentUrl(clientId))
+        {
+            return authenticationFailed;
+        }
+
+        return form.ContainsKey("client_secret")
+            ? "Clients identified by a client ID metadata document are public and must not send client_secret"
+            : null;
+    }
+
+    private IResult ExchangeAuthorizationCode(IFormCollection form, string clientId)
     {
         var grant = tokenService.RedeemAuthorizationCode(SingleValue(form, "code") ?? string.Empty);
 
-        if (grant is null || grant.Access.ClientId != client.ClientId)
+        if (grant is null || grant.Access.ClientId != clientId)
         {
             return Error("invalid_grant", "Authorization code is invalid, expired or already used");
         }
@@ -81,12 +100,12 @@ internal sealed class TokenRequestHandler(
 
     private async Task<IResult> RefreshAccessToken(
         IFormCollection form,
-        McpClientRegistration client,
+        string clientId,
         CancellationToken cancellationToken)
     {
         var refreshToken = tokenService.ValidateRefreshToken(SingleValue(form, "refresh_token") ?? string.Empty);
 
-        if (refreshToken is null || refreshToken.Access.ClientId != client.ClientId)
+        if (refreshToken is null || refreshToken.Access.ClientId != clientId)
         {
             return Error("invalid_grant", "Refresh token is invalid or expired");
         }

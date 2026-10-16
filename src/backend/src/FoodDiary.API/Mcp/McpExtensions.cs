@@ -35,6 +35,7 @@ public static class McpExtensions
         CimdMetadataDocumentFetcher.Register(services);
         services.AddScoped<AuthorizeRequestHandler>();
         services.AddScoped<TokenRequestHandler>();
+        services.AddScoped<McpConsentHandler>();
 
         if (mcpSection.Get<McpOptions>() is { Enabled: true })
         {

@@ -91,7 +91,7 @@ public sealed class AuthorizeRequestValidator(IOptions<McpOptions> options)
     }
 
     // Checked on the raw string because System.Uri normalises dot segments, backslashes and empty paths away
-    private static bool IsMetadataDocumentUrl(string? clientId)
+    internal static bool IsMetadataDocumentUrl(string? clientId)
     {
         const string httpsPrefix = "https://";
 

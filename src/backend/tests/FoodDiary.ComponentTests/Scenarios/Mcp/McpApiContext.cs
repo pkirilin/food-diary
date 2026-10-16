@@ -1,13 +1,14 @@
 using System.Net;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
+using FoodDiary.API;
 using FoodDiary.API.Mcp;
 using FoodDiary.API.Mcp.Authorization;
 using FoodDiary.API.Mcp.Authorization.Cimd;
-using FoodDiary.API.Mcp.Authorization.Consent;
 using FoodDiary.ComponentTests.Infrastructure;
 using FoodDiary.ComponentTests.Infrastructure.DateAndTime;
 using FoodDiary.ComponentTests.Infrastructure.ExternalServices;
@@ -17,10 +18,12 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Primitives;
 using ModelContextProtocol.Client;
 using ModelContextProtocol.Protocol;
 
@@ -36,6 +39,7 @@ public class McpApiContext : BaseContext
     private const string State = "af0ifjsldkj";
 
     private const string AllowedUserEmail = "fake.user@gmail.com";
+    private const string AnotherAllowedUserEmail = "another.user@gmail.com";
 
     private const string CimdDocumentPath = "/oauth-client.json";
     private const string CimdClientName = "Test MCP Client";
@@ -44,11 +48,22 @@ public class McpApiContext : BaseContext
     private static readonly string CimdClientId = McpClientMetadataHost.UrlOf(CimdDocumentPath);
 
     private readonly McpOptions _mcpOptions;
-    private readonly AdjustableDateTimeProvider _clock = new();
     private readonly ExternalServicesFixture _externalServices;
+
+    // Each Factory.WithWebHostBuilder starts another host; these keep the hosts of one scenario a single server
+    private readonly AdjustableDateTimeProvider _clock = new();
+    private readonly MemoryCache _memoryCache = new(new MemoryCacheOptions());
+
+    // Fake owner sign-in authenticates MCP requests too, whatever access token they carry
+    private readonly WebApplicationFactory<Startup> _hostWithoutOwnerSignIn;
+
+    private HttpClient? _oAuthClient;
     private HttpResponseMessage _metadataResponse = null!;
     private HttpResponseMessage _authorizeResponse = null!;
     private string? _authorizationCode;
+    private string? _consentRequest;
+    private readonly List<HttpResponseMessage> _consentPageResponses = [];
+    private readonly List<HttpResponseMessage> _consentDecisionResponses = [];
     private readonly List<HttpResponseMessage> _codeExchangeResponses = [];
     private readonly List<HttpResponseMessage> _refreshResponses = [];
     private readonly List<string> _issuedRefreshTokens = [];
@@ -67,7 +82,7 @@ public class McpApiContext : BaseContext
     private string McpResource => _mcpOptions.McpResource;
     private McpTokenService TokenService => Factory.Services.GetRequiredService<McpTokenService>();
 
-    private HttpClient OAuthClient => field ??= Factory.CreateClient(new WebApplicationFactoryClientOptions
+    private HttpClient OAuthClient => _oAuthClient ??= Factory.CreateClient(new WebApplicationFactoryClientOptions
     {
         AllowAutoRedirect = false
     });
@@ -77,8 +92,13 @@ public class McpApiContext : BaseContext
         _mcpOptions = factory.Services.GetRequiredService<IOptions<McpOptions>>().Value;
         _externalServices = externalServices;
 
-        Factory = factory.WithWebHostBuilder(builder =>
-            builder.ConfigureTestServices(services => services.AddSingleton<TimeProvider>(_clock)));
+        Factory = factory.WithWebHostBuilder(builder => builder.ConfigureTestServices(services =>
+        {
+            services.AddSingleton<TimeProvider>(_clock);
+            services.AddSingleton<IMemoryCache>(_memoryCache);
+        }));
+
+        _hostWithoutOwnerSignIn = Factory;
     }
 
     public Task Given_authorization_code_was_issued()
@@ -406,23 +426,120 @@ public class McpApiContext : BaseContext
         _authorizeResponse = await OAuthClient.GetAsync(QueryHelpers.AddQueryString("/authorize", parameters));
     }
 
-    public async Task When_client_exchanges_authorization_code()
+    public async Task When_owner_opens_consent_page()
+    {
+        _consentRequest ??= ConsentRequestFromRedirect();
+
+        _consentPageResponses.Add(await OAuthClient.GetAsync(
+            $"/authorize/consent?consentRequest={Uri.EscapeDataString(_consentRequest)}"));
+    }
+
+    public Task When_owner_approves_consent()
+    {
+        return DecideOnConsent(approved: true);
+    }
+
+    public Task When_owner_denies_consent()
+    {
+        return DecideOnConsent(approved: false);
+    }
+
+    private Task DecideOnConsent(bool approved)
+    {
+        _consentRequest ??= ConsentRequestFromRedirect();
+
+        return RecordConsentDecision(OAuthClient.PostAsJsonAsync("/authorize/consent", new
+        {
+            consentRequest = _consentRequest,
+            approved
+        }));
+    }
+
+    private async Task RecordConsentDecision(Task<HttpResponseMessage> decision)
+    {
+        _consentDecisionResponses.Add(await decision);
+    }
+
+    public Task When_owner_approves_consent_with_form_post()
+    {
+        _consentRequest ??= ConsentRequestFromRedirect();
+
+        return RecordConsentDecision(OAuthClient.PostAsync("/authorize/consent", new FormUrlEncodedContent(
+            new Dictionary<string, string>
+            {
+                ["consentRequest"] = _consentRequest,
+                ["approved"] = "true"
+            })));
+    }
+
+    public Task When_consent_request_is_tampered_with()
+    {
+        var consentRequest = ConsentRequestFromRedirect();
+        var middle = consentRequest.Length / 2;
+        var replacement = consentRequest[middle] == 'A' ? 'B' : 'A';
+
+        _consentRequest = string.Concat(consentRequest[..middle], replacement, consentRequest[(middle + 1)..]);
+
+        return Task.CompletedTask;
+    }
+
+    public Task When_another_allowed_user_is_signed_in()
+    {
+        Factory = _hostWithoutOwnerSignIn;
+        _oAuthClient = null;
+
+        return Given_authenticated_user(AnotherAllowedUserEmail);
+    }
+
+    public Task When_consent_api_is_called_with(string method)
+    {
+        _consentRequest = "unknown-consent-request";
+
+        return method == "GET" ? When_owner_opens_consent_page() : When_owner_approves_consent();
+    }
+
+    public Task When_minutes_pass(int minutes)
+    {
+        _clock.Advance(TimeSpan.FromMinutes(minutes));
+        return Task.CompletedTask;
+    }
+
+    public async Task When_cimd_client_exchanges_authorization_code()
+    {
+        await ExchangeAuthorizationCode(await CimdAuthorizationCode(), CimdRedirectUri, CimdClientId, clientSecret: null);
+    }
+
+    public async Task When_cimd_client_exchanges_authorization_code_with_client_secret(string clientSecret)
+    {
+        await ExchangeAuthorizationCode(await CimdAuthorizationCode(), CimdRedirectUri, CimdClientId, clientSecret);
+    }
+
+    public Task When_client_exchanges_authorization_code()
     {
         _authorizationCode ??= AuthorizationResponseParameter("code");
 
-        var response = await OAuthClient.PostAsync("/token", new FormUrlEncodedContent(
-            new Dictionary<string, string>
-            {
-                ["grant_type"] = "authorization_code",
-                ["code"] = _authorizationCode,
-                ["redirect_uri"] = Client.RedirectUri!,
-                ["code_verifier"] = CodeVerifier,
-                ["client_id"] = Client.ClientId!,
-                ["client_secret"] = Client.ClientSecret!,
-                ["resource"] = McpResource
-            }));
+        return ExchangeAuthorizationCode(_authorizationCode, Client.RedirectUri!, Client.ClientId!, Client.ClientSecret);
+    }
 
-        _codeExchangeResponses.Add(await RecordIssuedRefreshToken(response));
+    public Task When_client_exchanges_authorization_code_as(string clientId, string? clientSecret)
+    {
+        return ExchangeAuthorizationCode(_authorizationCode!, Client.RedirectUri!, clientId, clientSecret);
+    }
+
+    private async Task ExchangeAuthorizationCode(string code, string redirectUri, string clientId, string? clientSecret)
+    {
+        var response = await RequestTokens(new Dictionary<string, string?>
+        {
+            ["grant_type"] = "authorization_code",
+            ["code"] = code,
+            ["redirect_uri"] = redirectUri,
+            ["code_verifier"] = CodeVerifier,
+            ["client_id"] = clientId,
+            ["client_secret"] = clientSecret,
+            ["resource"] = McpResource
+        });
+
+        _codeExchangeResponses.Add(await RecordIssuedTokens(response));
     }
 
     public Task When_client_refreshes_access_token()
@@ -442,32 +559,52 @@ public class McpApiContext : BaseContext
 
         foreach (var response in responses)
         {
-            _refreshResponses.Add(await RecordIssuedRefreshToken(response));
+            _refreshResponses.Add(await RecordIssuedTokens(response));
         }
+    }
+
+    public async Task When_cimd_client_refreshes_access_token()
+    {
+        var response = await SendRefreshRequest(_issuedRefreshTokens[^1], CimdClientId, clientSecret: null);
+        _refreshResponses.Add(await RecordIssuedTokens(response));
     }
 
     private async Task RefreshAccessToken(string refreshToken)
     {
-        _refreshResponses.Add(await RecordIssuedRefreshToken(await SendRefreshRequest(refreshToken)));
+        _refreshResponses.Add(await RecordIssuedTokens(await SendRefreshRequest(refreshToken)));
     }
 
     private Task<HttpResponseMessage> SendRefreshRequest(string refreshToken)
     {
-        return OAuthClient.PostAsync("/token", new FormUrlEncodedContent(
-            new Dictionary<string, string>
-            {
-                ["grant_type"] = "refresh_token",
-                ["refresh_token"] = refreshToken,
-                ["client_id"] = Client.ClientId!,
-                ["client_secret"] = Client.ClientSecret!
-            }));
+        return SendRefreshRequest(refreshToken, Client.ClientId!, Client.ClientSecret);
     }
 
-    private async Task<HttpResponseMessage> RecordIssuedRefreshToken(HttpResponseMessage tokenResponse)
+    private Task<HttpResponseMessage> SendRefreshRequest(string refreshToken, string clientId, string? clientSecret)
+    {
+        return RequestTokens(new Dictionary<string, string?>
+        {
+            ["grant_type"] = "refresh_token",
+            ["refresh_token"] = refreshToken,
+            ["client_id"] = clientId,
+            ["client_secret"] = clientSecret
+        });
+    }
+
+    private Task<HttpResponseMessage> RequestTokens(Dictionary<string, string?> parameters)
+    {
+        var sentParameters = parameters
+            .Where(parameter => parameter.Value is not null)
+            .ToDictionary(parameter => parameter.Key, parameter => parameter.Value!);
+
+        return OAuthClient.PostAsync("/token", new FormUrlEncodedContent(sentParameters));
+    }
+
+    private async Task<HttpResponseMessage> RecordIssuedTokens(HttpResponseMessage tokenResponse)
     {
         if (tokenResponse.IsSuccessStatusCode)
         {
             using var tokens = await ReadJson(tokenResponse);
+            _accessToken = tokens.RootElement.GetProperty("access_token").GetString();
 
             if (tokens.RootElement.TryGetProperty("refresh_token", out var refreshToken))
             {
@@ -494,45 +631,94 @@ public class McpApiContext : BaseContext
         return Task.CompletedTask;
     }
 
-    public Task Then_owner_is_sent_to_consent_page_for_cimd_client()
+    public async Task Then_consent_sends_cimd_client_back_with_code()
     {
-        var consentRequest = ConsentRequestFromRedirect();
+        var redirectParameters = await FirstConsentDecisionRedirectParameters();
 
-        var issued = Factory.Services.GetRequiredService<McpConsentRequestService>().Read(consentRequest, AllowedUserEmail);
+        redirectParameters.Keys.Should().BeEquivalentTo("code", "state", "iss");
+        redirectParameters["code"].ToString().Should().NotBeEmpty();
+        redirectParameters["state"].ToString().Should().Be(State);
+        redirectParameters["iss"].ToString().Should().Be(_mcpOptions.BaseUrl);
+    }
 
-        issued.Should().BeEquivalentTo(new McpConsentRequest(
-            new AuthorizeRequestValidation.Accepted(
-                ClientId: CimdClientId,
-                RedirectUri: CimdRedirectUri,
-                CodeChallenge: CodeChallenge,
-                Scope: "food:read",
-                Resource: McpResource,
-                State: State),
-            new McpClientDisplay(
-                Name: CimdClientName,
-                LogoUri: CimdLogoUri,
-                ClientIdHost: "localhost",
-                RedirectUriHost: "127.0.0.1",
-                IsLocalhostOnly: true),
-            AllowedUserEmail));
+    public async Task Then_consent_sends_cimd_client_back_with_error(string error)
+    {
+        var redirectParameters = await FirstConsentDecisionRedirectParameters();
 
+        redirectParameters.Keys.Should().BeEquivalentTo("error", "state", "iss");
+        redirectParameters["error"].ToString().Should().Be(error);
+        redirectParameters["state"].ToString().Should().Be(State);
+        redirectParameters["iss"].ToString().Should().Be(_mcpOptions.BaseUrl);
+    }
+
+    public async Task Then_consent_request_is_refused_as_expired()
+    {
+        foreach (var response in _consentPageResponses.Concat(_consentDecisionResponses))
+        {
+            await ShouldBeExpiredConsentRequest(response);
+        }
+    }
+
+    public async Task Then_consent_request_is_refused_as_expired_after_first_decision()
+    {
+        _consentDecisionResponses[0].StatusCode.Should().Be(HttpStatusCode.OK);
+
+        foreach (var response in _consentPageResponses.Concat(_consentDecisionResponses.Skip(1)))
+        {
+            await ShouldBeExpiredConsentRequest(response);
+        }
+    }
+
+    private static async Task ShouldBeExpiredConsentRequest(HttpResponseMessage response)
+    {
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        response.Content.Headers.ContentType?.MediaType.Should().Be("application/problem+json");
+
+        using var problem = await ReadJson(response);
+        problem.RootElement.GetProperty("title").GetString().Should().Be("Consent request expired");
+        problem.RootElement.GetProperty("detail").GetString()
+            .Should().Be("This request has expired; start again from your MCP Client.");
+    }
+
+    public Task Then_consent_api_asks_owner_to_sign_in_with_google()
+    {
+        var response = _consentPageResponses.Concat(_consentDecisionResponses).Single();
+        response.StatusCode.Should().Be(HttpStatusCode.Redirect);
+        response.Headers.Location!.Host.Should().Be("accounts.google.com");
         return Task.CompletedTask;
     }
 
-    public Task Then_consent_page_shows_client(string? logoUri, string redirectUriHost, bool isLocalhostOnly)
+    public Task Then_consent_api_is_forbidden()
     {
-        var consentRequest = ConsentRequestFromRedirect();
-
-        var issued = Factory.Services.GetRequiredService<McpConsentRequestService>().Read(consentRequest, AllowedUserEmail);
-
-        issued!.Client.Should().Be(new McpClientDisplay(
-            Name: CimdClientName,
-            LogoUri: logoUri,
-            ClientIdHost: "localhost",
-            RedirectUriHost: redirectUriHost,
-            IsLocalhostOnly: isLocalhostOnly));
-
+        _consentPageResponses.Concat(_consentDecisionResponses).Single()
+            .StatusCode.Should().Be(HttpStatusCode.Forbidden);
         return Task.CompletedTask;
+    }
+
+    public Task Then_consent_decision_is_refused_as_unsupported_media_type()
+    {
+        _consentDecisionResponses.Single().StatusCode.Should().Be(HttpStatusCode.UnsupportedMediaType);
+        return Task.CompletedTask;
+    }
+
+    public async Task Then_consent_page_shows_client(string? logoUri, string redirectUriHost, bool isLocalhostOnly)
+    {
+        var response = _consentPageResponses.Single();
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        response.Content.Headers.ContentType?.MediaType.Should().Be("application/json");
+
+        var consent = JsonNode.Parse(await response.Content.ReadAsStringAsync());
+        var expectedConsent = new JsonObject
+        {
+            ["clientName"] = CimdClientName,
+            ["logoUri"] = logoUri,
+            ["clientIdHost"] = "localhost",
+            ["redirectUriHost"] = redirectUriHost,
+            ["isLocalhostOnly"] = isLocalhostOnly
+        };
+
+        JsonNode.DeepEquals(consent, expectedConsent)
+            .Should().BeTrue("consent must be {0}, but was {1}", expectedConsent.ToJsonString(), consent?.ToJsonString());
     }
 
     public async Task Then_authorization_is_refused_with(string reason)
@@ -663,6 +849,16 @@ public class McpApiContext : BaseContext
         }
     }
 
+    public async Task Then_client_authentication_fails_with(string description)
+    {
+        var response = _codeExchangeResponses.Single();
+        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+
+        using var error = await ReadJson(response);
+        error.RootElement.GetProperty("error").GetString().Should().Be("invalid_client");
+        error.RootElement.GetProperty("error_description").GetString().Should().Be(description);
+    }
+
     public Task Then_refresh_is_refused()
     {
         return ShouldBeInvalidGrant(_refreshResponses.Single());
@@ -759,7 +955,7 @@ public class McpApiContext : BaseContext
                     ["Authorization"] = $"Bearer {_accessToken}"
                 }
             },
-            Factory.CreateClient());
+            _hostWithoutOwnerSignIn.CreateClient());
 
         return await McpClient.CreateAsync(transport);
     }
@@ -779,6 +975,21 @@ public class McpApiContext : BaseContext
         location.GetLeftPart(UriPartial.Path).Should().Be(Client.RedirectUri);
 
         return QueryHelpers.ParseQuery(location.Query).GetValueOrDefault(name).ToString();
+    }
+
+    private async Task<string> CimdAuthorizationCode() =>
+        (await FirstConsentDecisionRedirectParameters())["code"].ToString();
+
+    private async Task<Dictionary<string, StringValues>> FirstConsentDecisionRedirectParameters()
+    {
+        var response = _consentDecisionResponses[0];
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        using var decision = await ReadJson(response);
+        var redirectUrl = new Uri(decision.RootElement.GetProperty("redirectUrl").GetString()!);
+        redirectUrl.GetLeftPart(UriPartial.Path).Should().Be(CimdRedirectUri);
+
+        return QueryHelpers.ParseQuery(redirectUrl.Query);
     }
 
     private string ConsentRequestFromRedirect()

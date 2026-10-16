@@ -1,5 +1,8 @@
+using System.Security.Claims;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using FoodDiary.API.Mcp.Authorization.Consent;
+using FoodDiary.Contracts.Mcp;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -34,6 +37,18 @@ public static class AuthorizationServerEndpoints
             [AsParameters] AuthorizeRequest request,
             HttpContext context,
             [FromServices] AuthorizeRequestHandler handler) => handler.Handle(request, context));
+
+        endpoints.MapGet("/authorize/consent", (
+                [FromQuery] string consentRequest,
+                ClaimsPrincipal owner,
+                [FromServices] McpConsentHandler handler) => handler.Get(consentRequest, owner))
+            .RequireAuthorization(Constants.AuthorizationPolicies.GoogleAllowedEmails);
+
+        endpoints.MapPost("/authorize/consent", (
+                [FromBody] SubmitMcpConsentRequest submission,
+                ClaimsPrincipal owner,
+                [FromServices] McpConsentHandler handler) => handler.Submit(submission, owner))
+            .RequireAuthorization(Constants.AuthorizationPolicies.GoogleAllowedEmails);
 
         endpoints.MapPost("/token", (
             HttpContext context,

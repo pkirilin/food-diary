@@ -28,6 +28,8 @@ public class McpApiTests(InfrastructureFixture infrastructure) : BaseTest<McpApi
     [InlineData("GET", "/.well-known/oauth-protected-resource/mcp")]
     [InlineData("GET", "/.well-known/oauth-authorization-server")]
     [InlineData("GET", "/authorize")]
+    [InlineData("GET", "/authorize/consent")]
+    [InlineData("POST", "/authorize/consent")]
     [InlineData("POST", "/token")]
     public Task The_client_cannot_find_mcp_server_when_it_is_disabled(string method, string path)
     {
@@ -119,7 +121,8 @@ public class McpApiTests(InfrastructureFixture infrastructure) : BaseTest<McpApi
             c => c.Given_cimd_client_metadata_document(),
             c => c.Given_authenticated_user(),
             c => c.When_cimd_client_requests_authorization(),
-            c => c.Then_owner_is_sent_to_consent_page_for_cimd_client());
+            c => c.When_owner_opens_consent_page(),
+            c => c.Then_consent_page_shows_client("https://client.example.com/logo.png", "127.0.0.1", true));
     }
 
     [Scenario]
@@ -133,7 +136,162 @@ public class McpApiTests(InfrastructureFixture infrastructure) : BaseTest<McpApi
                 "https://client.example.com/callback"),
             c => c.Given_authenticated_user(),
             c => c.When_cimd_client_requests_authorization_with("redirect_uri", "https://client.example.com/callback"),
+            c => c.When_owner_opens_consent_page(),
             c => c.Then_consent_page_shows_client(null, "client.example.com", false));
+    }
+
+    [Scenario]
+    public Task The_cimd_client_can_list_products_after_owner_approves_consent()
+    {
+        var oatmeal = Create.Product("Oatmeal").Please();
+
+        return CtxRunner.RunScenarioAsync(
+            c => c.Given_products(oatmeal),
+            c => c.Given_cimd_client_metadata_document(),
+            c => c.Given_authenticated_user(),
+            c => c.When_cimd_client_requests_authorization(),
+            c => c.When_owner_approves_consent(),
+            c => c.When_cimd_client_exchanges_authorization_code(),
+            c => c.When_mcp_client_calls_list_products("oat"),
+            c => c.Then_consent_sends_cimd_client_back_with_code(),
+            c => c.Then_client_receives_access_and_refresh_tokens(),
+            c => c.Then_products_contain(oatmeal));
+    }
+
+    [Scenario]
+    public Task The_cimd_client_learns_owner_denied_consent()
+    {
+        return CtxRunner.RunScenarioAsync(
+            c => c.Given_cimd_client_metadata_document(),
+            c => c.Given_authenticated_user(),
+            c => c.When_cimd_client_requests_authorization(),
+            c => c.When_owner_denies_consent(),
+            c => c.Then_consent_sends_cimd_client_back_with_error("access_denied"));
+    }
+
+    [Scenario]
+    public Task The_owner_cannot_decide_on_consent_request_after_10_minutes()
+    {
+        return CtxRunner.RunScenarioAsync(
+            c => c.Given_cimd_client_metadata_document(),
+            c => c.Given_authenticated_user(),
+            c => c.When_cimd_client_requests_authorization(),
+            c => c.When_minutes_pass(10),
+            c => c.When_owner_opens_consent_page(),
+            c => c.When_owner_approves_consent(),
+            c => c.Then_consent_request_is_refused_as_expired());
+    }
+
+    [Scenario]
+    public Task The_owner_cannot_decide_on_consent_request_twice()
+    {
+        return CtxRunner.RunScenarioAsync(
+            c => c.Given_cimd_client_metadata_document(),
+            c => c.Given_authenticated_user(),
+            c => c.When_cimd_client_requests_authorization(),
+            c => c.When_owner_approves_consent(),
+            c => c.When_owner_opens_consent_page(),
+            c => c.When_owner_denies_consent(),
+            c => c.Then_consent_request_is_refused_as_expired_after_first_decision());
+    }
+
+    [Scenario]
+    public Task The_owner_cannot_decide_on_tampered_consent_request()
+    {
+        return CtxRunner.RunScenarioAsync(
+            c => c.Given_cimd_client_metadata_document(),
+            c => c.Given_authenticated_user(),
+            c => c.When_cimd_client_requests_authorization(),
+            c => c.When_consent_request_is_tampered_with(),
+            c => c.When_owner_opens_consent_page(),
+            c => c.When_owner_approves_consent(),
+            c => c.Then_consent_request_is_refused_as_expired());
+    }
+
+    [Scenario]
+    public Task The_allowed_user_cannot_decide_on_consent_request_issued_to_another_allowed_user()
+    {
+        return CtxRunner.RunScenarioAsync(
+            c => c.Given_cimd_client_metadata_document(),
+            c => c.Given_authenticated_user(),
+            c => c.When_cimd_client_requests_authorization(),
+            c => c.When_another_allowed_user_is_signed_in(),
+            c => c.When_owner_opens_consent_page(),
+            c => c.When_owner_approves_consent(),
+            c => c.Then_consent_request_is_refused_as_expired());
+    }
+
+    [Scenario]
+    [InlineData("GET")]
+    [InlineData("POST")]
+    public Task The_owner_signs_in_before_using_consent_api(string method)
+    {
+        return CtxRunner.RunScenarioAsync(
+            c => c.When_consent_api_is_called_with(method),
+            c => c.Then_consent_api_asks_owner_to_sign_in_with_google());
+    }
+
+    [Scenario]
+    [InlineData("GET")]
+    [InlineData("POST")]
+    public Task The_account_not_allowed_cannot_use_consent_api(string method)
+    {
+        return CtxRunner.RunScenarioAsync(
+            c => c.Given_authenticated_user("someone.else@gmail.com"),
+            c => c.When_consent_api_is_called_with(method),
+            c => c.Then_consent_api_is_forbidden());
+    }
+
+    [Scenario]
+    public Task The_owner_decides_on_consent_only_with_json()
+    {
+        return CtxRunner.RunScenarioAsync(
+            c => c.Given_cimd_client_metadata_document(),
+            c => c.Given_authenticated_user(),
+            c => c.When_cimd_client_requests_authorization(),
+            c => c.When_owner_approves_consent_with_form_post(),
+            c => c.Then_consent_decision_is_refused_as_unsupported_media_type());
+    }
+
+    [Scenario]
+    public Task The_cimd_client_can_keep_refreshing_with_each_new_refresh_token()
+    {
+        return CtxRunner.RunScenarioAsync(
+            c => c.Given_cimd_client_metadata_document(),
+            c => c.Given_authenticated_user(),
+            c => c.When_cimd_client_requests_authorization(),
+            c => c.When_owner_approves_consent(),
+            c => c.When_cimd_client_exchanges_authorization_code(),
+            c => c.When_cimd_client_refreshes_access_token(),
+            c => c.When_cimd_client_refreshes_access_token(),
+            c => c.Then_every_refresh_returns_new_refresh_token());
+    }
+
+    [Scenario]
+    [InlineData("component-tests", "wrong-secret")]
+    [InlineData("component-tests", null)]
+    [InlineData("unknown-client", null)]
+    public Task The_client_cannot_exchange_authorization_code_without_authenticating(
+        string clientId,
+        string? clientSecret)
+    {
+        return CtxRunner.RunScenarioAsync(
+            c => c.Given_authorization_code_was_issued(),
+            c => c.When_client_exchanges_authorization_code_as(clientId, clientSecret),
+            c => c.Then_client_authentication_fails_with("Client authentication failed"));
+    }
+
+    [Scenario]
+    public Task The_cimd_client_sending_client_secret_cannot_exchange_authorization_code()
+    {
+        return CtxRunner.RunScenarioAsync(
+            c => c.Given_cimd_client_metadata_document(),
+            c => c.Given_authenticated_user(),
+            c => c.When_cimd_client_requests_authorization(),
+            c => c.When_owner_approves_consent(),
+            c => c.When_cimd_client_exchanges_authorization_code_with_client_secret("component-tests-secret"),
+            c => c.Then_client_authentication_fails_with(
+                "Clients identified by a client ID metadata document are public and must not send client_secret"));
     }
 
     [Scenario]
