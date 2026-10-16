@@ -28,7 +28,7 @@ Any other client that accepts a client ID and secret connects the same way. Give
 3. Sign in with a Google account whose email is in `Auth:AllowedEmails`.
 4. Check ChatBox's details on the consent page and approve.
 
-Any other client that supports Client ID Metadata Documents connects the same way. On every sign-in, Food Diary downloads the client's metadata document from its client ID URL, so the app needs outbound HTTPS access to the internet. It refuses documents on private or local network addresses. If the document is unreachable or invalid, the sign-in stops on an error page that says why.
+Any other client that supports Client ID Metadata Documents connects the same way. On every sign-in, Food Diary downloads the client's metadata document from its client ID URL, so the app needs outbound HTTPS access to the internet. It refuses documents on private or local network addresses. It also ignores proxy settings such as `HTTPS_PROXY` for these downloads and connects directly. If the document is unreachable or invalid, the sign-in stops on an error page that says why.
 
 ### The consent page
 
