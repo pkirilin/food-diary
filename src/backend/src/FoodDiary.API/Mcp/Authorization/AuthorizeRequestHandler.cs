@@ -5,7 +5,6 @@ using FoodDiary.API.Mcp.Authorization.Consent;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Extensions;
-using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
 
 namespace FoodDiary.API.Mcp.Authorization;
@@ -116,13 +115,6 @@ internal sealed class AuthorizeRequestHandler(
     private static IResult Refuse(string reason) =>
         Results.Text(reason, statusCode: StatusCodes.Status400BadRequest);
 
-    private IResult RedirectToClient(string redirectUri, string? state, params (string Name, string Value)[] parameters)
-    {
-        var query = parameters
-            .Select(parameter => KeyValuePair.Create(parameter.Name, (string?)parameter.Value))
-            .Append(KeyValuePair.Create("state", state))
-            .Append(KeyValuePair.Create("iss", options.Value.BaseUrl));
-
-        return Results.Redirect(QueryHelpers.AddQueryString(redirectUri, query));
-    }
+    private IResult RedirectToClient(string redirectUri, string? state, params (string Name, string Value)[] parameters) =>
+        Results.Redirect(AuthorizationResponse.RedirectUrl(redirectUri, state, options.Value.BaseUrl!, parameters));
 }
