@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Text;
 using FoodDiary.Application.Mcp.RedeemRefreshToken;
@@ -54,19 +55,20 @@ internal sealed class TokenRequestHandler(
     {
         const string authenticationFailed = "Client authentication failed";
 
-        if (options.Value.FindClient(clientId) is { } client)
+        return McpClientKind.Of(clientId, options.Value) switch
         {
-            return SecretMatches(SingleValue(form, "client_secret"), client.ClientSecret!) ? null : authenticationFailed;
-        }
+            McpClientKind.Registered { Registration: var client } =>
+                SecretMatches(SingleValue(form, "client_secret"), client.ClientSecret!) ? null : authenticationFailed,
 
-        if (!AuthorizeRequestValidator.IsMetadataDocumentUrl(clientId))
-        {
-            return authenticationFailed;
-        }
+            McpClientKind.Cimd when form.ContainsKey("client_secret") =>
+                "Clients identified by a client ID metadata document are public and must not send client_secret",
 
-        return form.ContainsKey("client_secret")
-            ? "Clients identified by a client ID metadata document are public and must not send client_secret"
-            : null;
+            McpClientKind.Cimd => null,
+
+            McpClientKind.Unknown => authenticationFailed,
+
+            _ => throw new UnreachableException()
+        };
     }
 
     private IResult ExchangeAuthorizationCode(IFormCollection form, string clientId)

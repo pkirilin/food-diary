@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Microsoft.Extensions.Options;
 
 namespace FoodDiary.API.Mcp.Authorization;
@@ -29,25 +30,22 @@ public abstract record AuthorizeRequestValidation
 
 public sealed class AuthorizeRequestValidator(IOptions<McpOptions> options)
 {
-    public AuthorizeRequestValidation Validate(AuthorizeRequest request)
-    {
-        var client = options.Value.FindClient(request.ClientId);
-
-        if (client is null)
+    public AuthorizeRequestValidation Validate(AuthorizeRequest request) =>
+        McpClientKind.Of(request.ClientId, options.Value) switch
         {
-            return IsMetadataDocumentUrl(request.ClientId)
-                ? new AuthorizeRequestValidation.CimdClient()
-                : new AuthorizeRequestValidation.Refused(
-                    "client_id is neither registered nor a valid https client ID metadata document URL");
-        }
+            McpClientKind.Registered { Registration: var client } when request.RedirectUri != client.RedirectUri =>
+                new AuthorizeRequestValidation.Refused("redirect_uri is not the one registered for this client_id"),
 
-        if (request.RedirectUri != client.RedirectUri)
-        {
-            return new AuthorizeRequestValidation.Refused("redirect_uri is not the one registered for this client_id");
-        }
+            McpClientKind.Registered { Registration: var client } =>
+                ValidateProtocolParameters(request, client.ClientId!, client.RedirectUri!),
 
-        return ValidateProtocolParameters(request, client.ClientId!, client.RedirectUri!);
-    }
+            McpClientKind.Cimd => new AuthorizeRequestValidation.CimdClient(),
+
+            McpClientKind.Unknown => new AuthorizeRequestValidation.Refused(
+                "client_id is neither registered nor a valid https client ID metadata document URL"),
+
+            _ => throw new UnreachableException()
+        };
 
     internal AuthorizeRequestValidation ValidateProtocolParameters(
         AuthorizeRequest request,
@@ -88,32 +86,5 @@ public sealed class AuthorizeRequestValidator(IOptions<McpOptions> options)
             McpScopes.FoodRead,
             mcpResource,
             request.State);
-    }
-
-    // Checked on the raw string because System.Uri normalises dot segments, backslashes and empty paths away
-    internal static bool IsMetadataDocumentUrl(string? clientId)
-    {
-        const string httpsPrefix = "https://";
-
-        if (clientId is null
-            || !clientId.StartsWith(httpsPrefix, StringComparison.OrdinalIgnoreCase)
-            || clientId.Contains('#')
-            || clientId.Contains('\\')
-            || !Uri.TryCreate(clientId, UriKind.Absolute, out _))
-        {
-            return false;
-        }
-
-        var afterScheme = clientId[httpsPrefix.Length..];
-        var authorityEnd = afterScheme.IndexOfAny(['/', '?']);
-
-        if (authorityEnd < 0 || afterScheme[authorityEnd] != '/' || afterScheme[..authorityEnd].Contains('@'))
-        {
-            return false;
-        }
-
-        var path = afterScheme[authorityEnd..].Split('?')[0];
-
-        return path.Split('/').Select(Uri.UnescapeDataString).All(segment => segment is not ("." or ".."));
     }
 }
