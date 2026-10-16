@@ -1,13 +1,11 @@
 using System.Security.Claims;
 using FoodDiary.Contracts.Mcp;
-using Microsoft.Extensions.Options;
 
 namespace FoodDiary.API.Mcp.Authorization.Consent;
 
 internal sealed class McpConsentHandler(
     McpConsentRequestService consentRequestService,
-    McpTokenService tokenService,
-    IOptions<McpOptions> options)
+    AuthorizationResponse authorizationResponse)
 {
     public IResult Get(string consentRequest, ClaimsPrincipal owner)
     {
@@ -36,20 +34,11 @@ internal sealed class McpConsentHandler(
         var request = consentRequest.Request;
 
         var redirectUrl = submission.Approved
-            ? RedirectUrl(request, ("code", IssueAuthorizationCode(request, consentRequest.Email)))
-            : RedirectUrl(request, ("error", "access_denied"));
+            ? authorizationResponse.RedirectUrlWithCode(request, consentRequest.Email)
+            : authorizationResponse.RedirectUrlWithError(request.RedirectUri, request.State, "access_denied");
 
         return Results.Ok(new SubmitMcpConsentResponse { RedirectUrl = redirectUrl });
     }
-
-    private string IssueAuthorizationCode(AuthorizeRequestValidation.Accepted request, string email)
-    {
-        var access = new AccessGrant(request.ClientId, email, request.Scope, request.Resource);
-        return tokenService.IssueAuthorizationCode(new AuthorizationCodeGrant(access, request.RedirectUri, request.CodeChallenge));
-    }
-
-    private string RedirectUrl(AuthorizeRequestValidation.Accepted request, (string Name, string Value) parameter) =>
-        AuthorizationResponse.RedirectUrl(request.RedirectUri, request.State, options.Value.BaseUrl!, parameter);
 
     private static string EmailOf(ClaimsPrincipal owner) => owner.FindFirstValue(Constants.ClaimTypes.Email)!;
 

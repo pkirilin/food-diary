@@ -5,7 +5,6 @@ using FoodDiary.API.Mcp.Authorization.Consent;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Extensions;
-using Microsoft.Extensions.Options;
 
 namespace FoodDiary.API.Mcp.Authorization;
 
@@ -13,9 +12,8 @@ internal sealed class AuthorizeRequestHandler(
     AuthorizeRequestValidator validator,
     CimdClientValidator cimdClientValidator,
     IAuthorizationService authorizationService,
-    McpTokenService tokenService,
-    McpConsentRequestService consentRequestService,
-    IOptions<McpOptions> options)
+    AuthorizationResponse authorizationResponse,
+    McpConsentRequestService consentRequestService)
 {
     private const string AccountNotAllowed = "This account is not allowed to use Food Diary";
 
@@ -24,10 +22,8 @@ internal sealed class AuthorizeRequestHandler(
         {
             AuthorizeRequestValidation.Refused refused => Refuse(refused.Reason),
 
-            AuthorizeRequestValidation.ErrorRedirect error =>
-                RedirectToClient(error.RedirectUri, error.State,
-                    ("error", error.Error),
-                    ("error_description", error.Description)),
+            AuthorizeRequestValidation.ErrorRedirect error => Results.Redirect(
+                authorizationResponse.RedirectUrlWithError(error.RedirectUri, error.State, error.Error, error.Description)),
 
             AuthorizeRequestValidation.Accepted accepted =>
                 await AuthorizeSignedInUser(accepted, context),
@@ -49,17 +45,11 @@ internal sealed class AuthorizeRequestHandler(
 
         if (await AllowedEmailOf(authentication.Principal) is not { } email)
         {
-            return RedirectToClient(request.RedirectUri, request.State,
-                ("error", "access_denied"),
-                ("error_description", AccountNotAllowed));
+            return Results.Redirect(authorizationResponse.RedirectUrlWithError(
+                request.RedirectUri, request.State, "access_denied", AccountNotAllowed));
         }
 
-        var access = new AccessGrant(request.ClientId, email, request.Scope, request.Resource);
-
-        var code = tokenService.IssueAuthorizationCode(
-            new AuthorizationCodeGrant(access, request.RedirectUri, request.CodeChallenge));
-
-        return RedirectToClient(request.RedirectUri, request.State, ("code", code));
+        return Results.Redirect(authorizationResponse.RedirectUrlWithCode(request, email));
     }
 
     private async Task<IResult> AskSignedInUserToConsent(AuthorizeRequest request, HttpContext context)
@@ -114,7 +104,4 @@ internal sealed class AuthorizeRequestHandler(
 
     private static IResult Refuse(string reason) =>
         Results.Text(reason, statusCode: StatusCodes.Status400BadRequest);
-
-    private IResult RedirectToClient(string redirectUri, string? state, params (string Name, string Value)[] parameters) =>
-        Results.Redirect(AuthorizationResponse.RedirectUrl(redirectUri, state, options.Value.BaseUrl!, parameters));
 }
