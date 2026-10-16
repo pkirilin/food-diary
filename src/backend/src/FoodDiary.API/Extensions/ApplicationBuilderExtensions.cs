@@ -2,7 +2,7 @@ namespace FoodDiary.API.Extensions;
 
 public static class ApplicationBuilderExtensions
 {
-    public static void UseFrameAncestorsNone(this IApplicationBuilder app)
+    public static void UseContentSecurityPolicy(this IApplicationBuilder app)
     {
         app.Use((context, next) =>
         {
