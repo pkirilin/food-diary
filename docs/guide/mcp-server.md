@@ -8,8 +8,8 @@ The server is off by default. It lives at `/mcp` on your Food Diary domain, and 
 
 An MCP Client connects in one of two ways. Both give the same read-only access, so use whichever your client supports.
 
-- **Client ID and secret.** You choose a client ID and a secret, add them to the Food Diary configuration, and enter them in the client. Claude connects this way.
-- **Client ID Metadata Document.** The client identifies itself with a URL that publishes its name and callback addresses. You configure nothing, and you approve every sign-in on a [consent page](#the-consent-page). ChatBox connects this way.
+- **Client ID Metadata Document.** The client identifies itself with a URL that publishes its name and callback addresses. You configure nothing, and you approve every sign-in on a [consent page](#the-consent-page).
+- **Client ID and secret.** You choose a client ID and a secret, add them to the Food Diary configuration, and enter them in the client.
 
 ## Connecting with a client ID and secret: Claude
 
@@ -32,14 +32,9 @@ Any other client that supports Client ID Metadata Documents connects the same wa
 
 ### The consent page
 
-After you sign in with Google, Food Diary shows which client is asking for access:
+After you sign in with Google, Food Diary shows which client is asking for access.
 
-- its logo, or the first letter of its name when it has none;
-- its name, and what it will be able to do: view your food logs and products, but not change them;
-- the host it is identified by, i.e. the host of its client ID URL. Anyone can copy an app's name and logo, but not this host, so check it;
-- the host it receives access on.
-
-When the client receives access only on your own computer, as ChatBox does, the page also warns you. Approve only if you started the sign-in yourself.
+When the client receives access only on your own computer, the page also warns you. Approve only if you started the sign-in yourself.
 
 **Approve** sends you back to the client, which then has access. **Deny** sends you back without access. The page asks on every sign-in, works once, and expires after 10 minutes. If it says the request has expired, start again from the client.
 
@@ -47,10 +42,6 @@ Clients connected with a client ID and secret skip this page, because you config
 
 ## Staying connected
 
-A connected client stays connected as long as it keeps using the server. Each time it renews its access, it receives a new refresh token valid for another 30 days ([`Mcp:RefreshTokenLifetime`](deployment.md#mcp-server)). A client that goes unused for longer than that has to sign in again.
+A connected client stays connected as long as it keeps using the server. Each time it renews its access, it receives a new refresh token valid for another period of time defined in [`Mcp:RefreshTokenLifetime`](deployment.md#mcp-server). A client that goes unused for longer than that has to sign in again.
 
 Each refresh token works only once. If the same refresh token is used twice, for example by someone who copied it, the server ends that connection and the client has to sign in again.
-
-### Upgrading from 0.9.2 or earlier
-
-Connections made with Food Diary 0.9.2 or earlier must sign in once after you upgrade. Their refresh tokens are no longer accepted, so the client asks you to sign in with Google again the next time it renews its access.
