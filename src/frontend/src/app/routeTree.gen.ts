@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as McpConsentRouteImport } from './routes/mcp-consent'
 import { Route as PostLoginRouteImport } from './routes/post-login'
 import { Route as PostLogoutRouteImport } from './routes/post-logout'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
@@ -26,6 +27,11 @@ const AppRoute = AppRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const McpConsentRoute = McpConsentRouteImport.update({
+  id: '/mcp-consent',
+  path: '/mcp-consent',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PostLoginRoute = PostLoginRouteImport.update({
@@ -67,6 +73,7 @@ const AppWeightRoute = AppWeightRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
   '/login': typeof LoginRoute
+  '/mcp-consent': typeof McpConsentRoute
   '/post-login': typeof PostLoginRoute
   '/post-logout': typeof PostLogoutRoute
   '/categories': typeof AppCategoriesRoute
@@ -76,6 +83,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
+  '/mcp-consent': typeof McpConsentRoute
   '/post-login': typeof PostLoginRoute
   '/post-logout': typeof PostLogoutRoute
   '/categories': typeof AppCategoriesRoute
@@ -88,6 +96,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
+  '/mcp-consent': typeof McpConsentRoute
   '/post-login': typeof PostLoginRoute
   '/post-logout': typeof PostLogoutRoute
   '/_app/categories': typeof AppCategoriesRoute
@@ -101,6 +110,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/login'
+    | '/mcp-consent'
     | '/post-login'
     | '/post-logout'
     | '/categories'
@@ -110,6 +120,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
+    | '/mcp-consent'
     | '/post-login'
     | '/post-logout'
     | '/categories'
@@ -121,6 +132,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/_app'
     | '/login'
+    | '/mcp-consent'
     | '/post-login'
     | '/post-logout'
     | '/_app/categories'
@@ -133,6 +145,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
   LoginRoute: typeof LoginRoute
+  McpConsentRoute: typeof McpConsentRoute
   PostLoginRoute: typeof PostLoginRoute
   PostLogoutRoute: typeof PostLogoutRoute
 }
@@ -151,6 +164,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mcp-consent': {
+      id: '/mcp-consent'
+      path: '/mcp-consent'
+      fullPath: '/mcp-consent'
+      preLoaderRoute: typeof McpConsentRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/post-login': {
@@ -226,6 +246,7 @@ const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
   LoginRoute: LoginRoute,
+  McpConsentRoute: McpConsentRoute,
   PostLoginRoute: PostLoginRoute,
   PostLogoutRoute: PostLogoutRoute,
 }
