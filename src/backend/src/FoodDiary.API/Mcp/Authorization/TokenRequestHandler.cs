@@ -1,7 +1,8 @@
 using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Text;
-using FoodDiary.Application.Mcp.RedeemRefreshToken;
+using FoodDiary.Application.Mcp.IssueRefreshToken;
+using FoodDiary.Application.Mcp.RotateRefreshToken;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
@@ -10,7 +11,8 @@ namespace FoodDiary.API.Mcp.Authorization;
 
 internal sealed class TokenRequestHandler(
     McpTokenService tokenService,
-    RedeemRefreshTokenCommandHandler redeemRefreshTokenHandler,
+    IssueRefreshTokenCommandHandler issueRefreshTokenHandler,
+    RotateRefreshTokenCommandHandler rotateRefreshTokenHandler,
     IOptions<McpOptions> options)
 {
     [PublicAPI]
@@ -45,7 +47,7 @@ internal sealed class TokenRequestHandler(
 
         return SingleValue(form, "grant_type") switch
         {
-            "authorization_code" => ExchangeAuthorizationCode(form, clientId),
+            "authorization_code" => await ExchangeAuthorizationCode(form, clientId, context.RequestAborted),
             "refresh_token" => await RefreshAccessToken(form, clientId, context.RequestAborted),
             _ => Error("unsupported_grant_type", "grant_type must be authorization_code or refresh_token")
         };
@@ -71,7 +73,10 @@ internal sealed class TokenRequestHandler(
         };
     }
 
-    private IResult ExchangeAuthorizationCode(IFormCollection form, string clientId)
+    private async Task<IResult> ExchangeAuthorizationCode(
+        IFormCollection form,
+        string clientId,
+        CancellationToken cancellationToken)
     {
         var grant = tokenService.RedeemAuthorizationCode(SingleValue(form, "code") ?? string.Empty);
 
@@ -97,7 +102,11 @@ internal sealed class TokenRequestHandler(
 
         var tokens = tokenService.IssueTokens(grant.Access);
 
-        return TokensIssued(tokens.AccessToken, tokens.RefreshToken, grant.Access.Scope);
+        await issueRefreshTokenHandler.Handle(
+            new IssueRefreshTokenCommand(tokens.RefreshToken.Id, tokens.RefreshToken.FamilyId, tokens.RefreshToken.ExpiresAt),
+            cancellationToken);
+
+        return TokensIssued(tokens.AccessToken, tokens.RefreshToken.Value, grant.Access.Scope);
     }
 
     private async Task<IResult> RefreshAccessToken(
@@ -112,22 +121,22 @@ internal sealed class TokenRequestHandler(
             return Error("invalid_grant", "Refresh token is invalid or expired");
         }
 
-        var redemption = await redeemRefreshTokenHandler.Handle(
-            new RedeemRefreshTokenCommand(
-                refreshToken.TokenId,
-                refreshToken.ChainId,
-                refreshToken.ExpiresAt,
-                options.Value.RefreshTokenLifetime),
+        var tokens = tokenService.RotateTokens(refreshToken);
+
+        var rotated = await rotateRefreshTokenHandler.Handle(
+            new RotateRefreshTokenCommand(
+                refreshToken.Id,
+                refreshToken.FamilyId,
+                tokens.RefreshToken.Id,
+                tokens.RefreshToken.ExpiresAt),
             cancellationToken);
 
-        if (redemption is not RedeemRefreshTokenResult.Redeemed)
+        if (!rotated)
         {
             return Error("invalid_grant", "Refresh token was already used or revoked");
         }
 
-        var tokens = tokenService.RotateTokens(refreshToken);
-
-        return TokensIssued(tokens.AccessToken, tokens.RefreshToken, refreshToken.Access.Scope);
+        return TokensIssued(tokens.AccessToken, tokens.RefreshToken.Value, refreshToken.Access.Scope);
     }
 
     private IResult TokensIssued(string accessToken, string refreshToken, string scope)

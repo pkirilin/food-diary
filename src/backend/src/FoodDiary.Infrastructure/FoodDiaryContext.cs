@@ -17,8 +17,7 @@ public class FoodDiaryContext(DbContextOptions options) : DbContext(options), IU
     public DbSet<Product> Products { get; init; }
     public DbSet<Category> Categories { get; init; }
     public DbSet<WeightLog> WeightLogs { get; init; }
-    public DbSet<RedeemedRefreshToken> McpRedeemedRefreshTokens { get; init; }
-    public DbSet<CancelledRefreshTokenChain> McpCancelledRefreshTokenChains { get; init; }
+    public DbSet<McpRefreshToken> McpRefreshTokens { get; init; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

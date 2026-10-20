@@ -1,6 +1,7 @@
 # Accept CIMD clients with a live fetch; rotate refresh tokens
 
 Status: accepted (2026-10-15)
+Amended: 2026-10-20 — the store records every issued refresh token in one table, and reuse revokes the token's family. The 2026-10-15 store recorded only used tokens and cancelled chains.
 Supersedes the Client ID Metadata Documents and public-client parts of ADR 0003.
 
 ADR 0003 limited MCP Clients to an owner-configured set with a client secret. Some MCP
@@ -45,12 +46,18 @@ a cache would add expiry and staleness bugs and save nothing. The logo is loaded
 owner's browser instead of the server, so it adds no second server-side fetch.
 
 **Refresh tokens rotate for every client, and that needs a store.** The MCP specification
-requires rotation for public clients. Each refresh token is single-use and is recorded in
-Postgres. A token presented a second time cancels its whole chain, so a stolen token ends
-the next time either party refreshes. Each new token gets a fresh 30-day lifetime, so an
-MCP Client that keeps refreshing never has to reconnect. This is the first table the
-authorization server owns: ADR 0003's "no store" no longer holds for refresh tokens. It
-still holds for authorization codes and access tokens.
+requires rotation for public clients. Each refresh token is single-use, and every issued
+token is recorded in Postgres. A **family** is every refresh token descended from one
+authorization of an MCP Client. A token presented a second time revokes its whole family: once
+any token in a family is revoked, no token in it can be used, and the family is kept until its
+newest token expires. A stolen token therefore ends the next time either party refreshes. Each new token gets a fresh 30-day lifetime, so an MCP Client that keeps
+refreshing never has to reconnect. This is the first table the authorization server owns:
+ADR 0003's "no store" no longer holds for refresh tokens. It still holds for authorization
+codes and access tokens.
 
-**Existing connections reconnect once.** Refresh tokens issued before rotation carry no
-chain, and they are rejected rather than migrated.
+**The token stays an encrypted blob.** The table records only a token's state — used,
+revoked, expiry — never its grant or the token itself. A database leak exposes no usable
+secret, and a forged token is still rejected before the database is read.
+
+**Existing connections reconnect once.** Refresh tokens issued before the current store have
+no row, and they are rejected rather than migrated.

@@ -133,6 +133,12 @@ public class McpApiContext : BaseContext
         return Task.CompletedTask;
     }
 
+    public Task Given_refresh_token_was_issued_but_never_recorded()
+    {
+        _issuedRefreshTokens.Add(TokenService.IssueTokens(AccessGrantFor(AllowedUserEmail)).RefreshToken.Value);
+        return Task.CompletedTask;
+    }
+
     public Task Given_no_configured_mcp_clients()
     {
         Factory = Factory.WithWebHostBuilder(builder => builder.ConfigureAppConfiguration((_, configuration) =>

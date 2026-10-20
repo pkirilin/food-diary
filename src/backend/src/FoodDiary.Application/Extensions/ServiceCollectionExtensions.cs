@@ -4,7 +4,8 @@ using FoodDiary.Application.Categories.Create;
 using FoodDiary.Application.Categories.Delete;
 using FoodDiary.Application.Categories.Get;
 using FoodDiary.Application.Categories.Update;
-using FoodDiary.Application.Mcp.RedeemRefreshToken;
+using FoodDiary.Application.Mcp.IssueRefreshToken;
+using FoodDiary.Application.Mcp.RotateRefreshToken;
 using FoodDiary.Application.Notes.Create;
 using FoodDiary.Application.Notes.Delete;
 using FoodDiary.Application.Notes.Get;
@@ -42,7 +43,8 @@ public static class ServiceCollectionExtensions
 
     private static void AddMcp(this IServiceCollection services)
     {
-        services.AddScoped<RedeemRefreshTokenCommandHandler>();
+        services.AddScoped<IssueRefreshTokenCommandHandler>();
+        services.AddScoped<RotateRefreshTokenCommandHandler>();
     }
 
     private static void AddApplicationServices(this IServiceCollection services)

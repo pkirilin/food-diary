@@ -64,7 +64,7 @@ public class McpTokenServiceTests
     {
         var tokens = _tokenService.IssueTokens(Grant());
 
-        _tokenService.ValidateAccessToken(tokens.RefreshToken).Should().BeNull();
+        _tokenService.ValidateAccessToken(tokens.RefreshToken.Value).Should().BeNull();
     }
 
     [Theory]

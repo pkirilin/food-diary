@@ -636,6 +636,15 @@ public class McpApiTests(InfrastructureFixture infrastructure) : BaseTest<McpApi
     }
 
     [Scenario]
+    public Task The_client_cannot_refresh_with_refresh_token_that_was_never_recorded()
+    {
+        return CtxRunner.RunScenarioAsync(
+            c => c.Given_refresh_token_was_issued_but_never_recorded(),
+            c => c.When_client_refreshes_access_token(),
+            c => c.Then_refresh_is_refused());
+    }
+
+    [Scenario]
     public Task The_client_cannot_refresh_with_refresh_token_past_its_lifetime()
     {
         return CtxRunner.RunScenarioAsync(
