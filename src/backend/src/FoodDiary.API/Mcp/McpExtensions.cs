@@ -30,7 +30,7 @@ public static class McpExtensions
         services.AddMemoryCache();
         services.AddSingleton<AuthorizeRequestValidator>();
         services.AddSingleton<McpTokenService>();
-        services.AddSingleton<AuthorizationResponse>();
+        services.AddSingleton<AuthorizationResponseGenerator>();
         services.AddSingleton<McpConsentRequestService>();
         services.AddSingleton<CimdClientValidator>();
         CimdMetadataDocumentFetcher.Register(services);

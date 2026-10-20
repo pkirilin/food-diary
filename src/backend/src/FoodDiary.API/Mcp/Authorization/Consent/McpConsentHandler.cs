@@ -5,7 +5,7 @@ namespace FoodDiary.API.Mcp.Authorization.Consent;
 
 internal sealed class McpConsentHandler(
     McpConsentRequestService consentRequestService,
-    AuthorizationResponse authorizationResponse)
+    AuthorizationResponseGenerator responseGenerator)
 {
     public IResult Get(string consentRequest, ClaimsPrincipal owner)
     {
@@ -34,8 +34,8 @@ internal sealed class McpConsentHandler(
         var request = consentRequest.Request;
 
         var redirectUrl = submission.Approved
-            ? authorizationResponse.RedirectUrlWithCode(request, consentRequest.Email)
-            : authorizationResponse.RedirectUrlWithError(request.RedirectUri, request.State, "access_denied");
+            ? responseGenerator.RedirectUrlWithCode(request, consentRequest.Email)
+            : responseGenerator.RedirectUrlWithError(request.RedirectUri, request.State, "access_denied");
 
         return Results.Ok(new SubmitMcpConsentResponse { RedirectUrl = redirectUrl });
     }

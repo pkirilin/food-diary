@@ -12,7 +12,7 @@ internal sealed class AuthorizeRequestHandler(
     AuthorizeRequestValidator validator,
     CimdClientValidator cimdClientValidator,
     IAuthorizationService authorizationService,
-    AuthorizationResponse authorizationResponse,
+    AuthorizationResponseGenerator responseGenerator,
     McpConsentRequestService consentRequestService)
 {
     private const string AccountNotAllowed = "This account is not allowed to use Food Diary";
@@ -23,7 +23,7 @@ internal sealed class AuthorizeRequestHandler(
             AuthorizeRequestValidation.Refused refused => Refuse(refused.Reason),
 
             AuthorizeRequestValidation.ErrorRedirect error => Results.Redirect(
-                authorizationResponse.RedirectUrlWithError(error.RedirectUri, error.State, error.Error, error.Description)),
+                responseGenerator.RedirectUrlWithError(error.RedirectUri, error.State, error.Error, error.Description)),
 
             AuthorizeRequestValidation.Accepted accepted =>
                 await AuthorizeSignedInUser(accepted, context),
@@ -38,8 +38,8 @@ internal sealed class AuthorizeRequestHandler(
         WithSignedInUser(
             context,
             whenAllowed: email => Task.FromResult(
-                Results.Redirect(authorizationResponse.RedirectUrlWithCode(request, email))),
-            whenNotAllowed: () => Results.Redirect(authorizationResponse.RedirectUrlWithError(
+                Results.Redirect(responseGenerator.RedirectUrlWithCode(request, email))),
+            whenNotAllowed: () => Results.Redirect(responseGenerator.RedirectUrlWithError(
                 request.RedirectUri, request.State, "access_denied", AccountNotAllowed)));
 
     private Task<IResult> AskSignedInUserToConsent(AuthorizeRequest request, HttpContext context) =>

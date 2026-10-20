@@ -3,7 +3,7 @@ using Microsoft.Extensions.Options;
 
 namespace FoodDiary.API.Mcp.Authorization;
 
-internal sealed class AuthorizationResponse(McpTokenService tokenService, IOptions<McpOptions> options)
+internal sealed class AuthorizationResponseGenerator(McpTokenService tokenService, IOptions<McpOptions> options)
 {
     public string RedirectUrlWithCode(AuthorizeRequestValidation.Accepted request, string email)
     {
