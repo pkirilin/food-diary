@@ -32,7 +32,7 @@ public sealed class McpTokenService(
 
     public string IssueAuthorizationCode(AuthorizationCodeGrant grant)
     {
-        var codeId = Guid.NewGuid().ToString("N");
+        var codeId = Guid.CreateVersion7().ToString("N");
         var payload = new AuthorizationCodePayload(codeId, grant, timeProvider.GetUtcNow() + AuthorizationCodeLifetime);
 
         lock (_authorizationCodeRedemptionLock)
@@ -65,14 +65,14 @@ public sealed class McpTokenService(
         return payload.Grant;
     }
 
-    public McpTokens IssueTokens(AccessGrant grant) => IssueTokensInFamily(grant, familyId: Guid.NewGuid());
+    public McpTokens IssueTokens(AccessGrant grant) => IssueTokensInFamily(grant, familyId: Guid.CreateVersion7());
 
     public McpTokens RotateTokens(RefreshTokenGrant refreshToken) =>
         IssueTokensInFamily(refreshToken.Access, refreshToken.FamilyId);
 
     private McpTokens IssueTokensInFamily(AccessGrant grant, Guid familyId)
     {
-        var id = Guid.NewGuid();
+        var id = Guid.CreateVersion7();
         var expiresAt = timeProvider.GetUtcNow() + _options.RefreshTokenLifetime;
         var value = Protect(_refreshTokenProtector, new RefreshTokenPayload(id, familyId, grant, expiresAt));
 

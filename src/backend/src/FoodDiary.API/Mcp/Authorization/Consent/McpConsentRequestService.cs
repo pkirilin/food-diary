@@ -29,7 +29,7 @@ public sealed class McpConsentRequestService(
 
     public string Issue(McpConsentRequest consentRequest)
     {
-        var id = Guid.NewGuid().ToString("N");
+        var id = Guid.CreateVersion7().ToString("N");
         var payload = new ConsentRequestPayload(id, consentRequest, timeProvider.GetUtcNow() + Lifetime);
 
         lock (_decisionLock)
