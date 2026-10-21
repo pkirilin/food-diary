@@ -13,7 +13,7 @@ const givenConsentRequest = (overrides: Partial<Omit<DbMcpConsentRequest, 'id'>>
   mcpConsentService.create({
     clientName: 'ChatBox',
     logoUri: null,
-    clientId: 'https://chatboxai.app/.well-known/oauth-client',
+    clientId: 'https://desktop.example.com/.well-known/oauth-client',
     redirectUri: 'http://127.0.0.1:1456/callback',
     isLocalhostOnly: true,
     ...overrides,
@@ -25,7 +25,9 @@ test('the owner sees which MCP Client asks for access and what it can do', async
   await render(<McpConsentPage consentRequest={consentRequest} redirect={vi.fn<Redirect>()} />);
 
   expect(await screen.findByRole('heading', { name: 'ChatBox' })).toBeVisible();
-  expect(screen.getByText(/^identified by/i)).toHaveTextContent('Identified by chatboxai.app');
+  expect(screen.getByText(/^identified by/i)).toHaveTextContent(
+    'Identified by desktop.example.com',
+  );
   expect(screen.getByText(/^receives access on/i)).toHaveTextContent(
     'Receives access on 127.0.0.1',
   );
@@ -35,12 +37,12 @@ test('the owner sees which MCP Client asks for access and what it can do', async
 });
 
 test('the owner sees the MCP Client logo without sending it the page address', async () => {
-  const consentRequest = givenConsentRequest({ logoUri: 'https://chatboxai.app/logo.png' });
+  const consentRequest = givenConsentRequest({ logoUri: 'https://desktop.example.com/logo.png' });
 
   await render(<McpConsentPage consentRequest={consentRequest} redirect={vi.fn<Redirect>()} />);
 
   const logo = await screen.findByRole('img', { name: 'ChatBox logo' });
-  expect(logo).toHaveAttribute('src', 'https://chatboxai.app/logo.png');
+  expect(logo).toHaveAttribute('src', 'https://desktop.example.com/logo.png');
   expect(logo).toHaveAttribute('referrerpolicy', 'no-referrer');
 });
 
@@ -53,7 +55,7 @@ test('the owner sees the first letter of the MCP Client name when it has no logo
 });
 
 test('the owner sees the first letter of the MCP Client name when its logo fails to load', async () => {
-  const consentRequest = givenConsentRequest({ logoUri: 'https://chatboxai.app/logo.png' });
+  const consentRequest = givenConsentRequest({ logoUri: 'https://desktop.example.com/logo.png' });
 
   await render(<McpConsentPage consentRequest={consentRequest} redirect={vi.fn<Redirect>()} />);
   fireEvent.error(await screen.findByRole('img', { name: 'ChatBox logo' }));
@@ -73,7 +75,7 @@ test('the owner is warned when the MCP Client receives access only on their comp
 
 test('the owner is not warned when the MCP Client receives access on another host', async () => {
   const consentRequest = givenConsentRequest({
-    redirectUri: 'https://chatboxai.app/callback',
+    redirectUri: 'https://desktop.example.com/callback',
     isLocalhostOnly: false,
   });
 

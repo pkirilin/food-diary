@@ -247,7 +247,7 @@ test('the consent page opened by the authorization server shows the MCP Client a
   const consentRequest = mcpConsentService.create({
     clientName: 'ChatBox',
     logoUri: null,
-    clientId: 'https://chatboxai.app/.well-known/oauth-client',
+    clientId: 'https://desktop.example.com/.well-known/oauth-client',
     redirectUri: 'http://127.0.0.1:1456/callback',
     isLocalhostOnly: true,
   });

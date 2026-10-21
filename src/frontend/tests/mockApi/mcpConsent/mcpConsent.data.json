@@ -1,9 +1,9 @@
 [
   {
-    "id": "chatbox",
-    "clientName": "ChatBox",
+    "id": "desktop-client",
+    "clientName": "Desktop MCP Client",
     "logoUri": null,
-    "clientId": "https://chatboxai.app/.well-known/oauth-client",
+    "clientId": "https://desktop.example.com/.well-known/oauth-client",
     "redirectUri": "http://127.0.0.1:1456/callback",
     "isLocalhostOnly": true
   },
