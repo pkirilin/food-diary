@@ -22,11 +22,9 @@ Package versions are centrally managed in `src/backend/Directory.Packages.props`
 
 A `Version` attribute on a `PackageReference` fails the build with `NU1008`.
 
-Compiler warnings are errors (`TreatWarningsAsErrors`). Only `NU1701` (fallback target framework restore warning, unrelated to security) is exempted from errors.
-
 `src/backend/NuGet.config` pins the solution to a single package source with `<clear />`. Central package management raises `NU1507` (build-breaking here too) when more than one source is configured without package source mapping; without `<clear />`, the source list merges with a developer's global `~/.nuget/NuGet/NuGet.Config`, so restore broke locally for anyone with an extra feed while CI (a clean runner) stayed green. Do not remove the `<clear />`.
 
 ## Testing
 
-- **Every API endpoint, MCP tool and MCP prompt must have at least one happy-path component test** in `FoodDiary.ComponentTests` (`Scenarios/<Feature>/<Feature>ApiTests.cs`). When adding or changing one, add or extend the matching `*ApiTests` scenario using the existing Given/When/Then context DSL (stub external services like OpenAI via the Mountebank helpers). It is not complete until it has one.
+- **Every API endpoint, MCP tool and MCP prompt must have at least one happy-path component test** in `FoodDiary.ComponentTests` (`Scenarios/<Feature>/<Feature>ApiTests.cs`; a large feature may split into several `*Tests` files there, each with its own context — e.g. `Scenarios/Mcp/`). When adding or changing one, add or extend the matching `*Tests` scenario using the existing Given/When/Then context DSL (stub external services like OpenAI via the Mountebank helpers). It is not complete until it has one.
 - For an MCP tool or prompt, the happy path starts at **discovery**: a real MCP client lists it and then calls it. A hand-written JSON-RPC request skips the tool-schema errors that discovery catches.

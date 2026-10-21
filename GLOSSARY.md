@@ -36,6 +36,11 @@ _Avoid_: joules, kJ, sodium, ml, servings
 **Category**:
 A grouping of Products in the personal database.
 
+**MCP Client**:
+An app outside Food Diary, such as Claude or ChatBox, that reads the owner's Food Logs and
+Products through the MCP server.
+_Avoid_: connector, integration, agent
+
 **Weight Log**:
 The weight recorded for one date. At most one per date.
 _Avoid_: weigh-in, measurement

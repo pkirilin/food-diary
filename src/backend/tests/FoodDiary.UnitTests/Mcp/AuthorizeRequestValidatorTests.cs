@@ -8,6 +8,7 @@ public class AuthorizeRequestValidatorTests
 {
     private const string ClaudeCallback = "https://claude.ai/api/mcp/auth_callback";
     private const string InspectorCallback = "http://localhost:6274/oauth/callback";
+    private const string ConfiguredUrlClientId = "https://configured.example.com/oauth-client";
 
     private static readonly AuthorizeRequestValidator Validator = new(Options.Create(new McpOptions
     {
@@ -19,6 +20,10 @@ public class AuthorizeRequestValidatorTests
             new McpClientRegistration
             {
                 ClientId = "inspector", ClientSecret = "another-secret", RedirectUri = InspectorCallback
+            },
+            new McpClientRegistration
+            {
+                ClientId = ConfiguredUrlClientId, ClientSecret = "url-secret", RedirectUri = ClaudeCallback
             }
         ]
     }));
@@ -66,5 +71,49 @@ public class AuthorizeRequestValidatorTests
         var result = Validator.Validate(Request("claude", redirectUri));
 
         result.Should().BeOfType<AuthorizeRequestValidation.Refused>();
+    }
+
+    [Theory]
+    [InlineData("https://chatboxai.app/.well-known/oauth-client")]
+    [InlineData("https://client.example.com/")]
+    [InlineData("https://client.example.com:8443/oauth-client.json")]
+    [InlineData("https://client.example.com/oauth-client?version=2")]
+    [InlineData("https://client.example.com/a.b/..c/oauth-client")]
+    public void UnregisteredClientId_ThatIsMetadataDocumentUrl_IsCimdClient(string clientId)
+    {
+        var result = Validator.Validate(Request(clientId, "http://127.0.0.1:1456/callback"));
+
+        result.Should().BeOfType<AuthorizeRequestValidation.CimdClient>();
+    }
+
+    [Theory]
+    [InlineData("http://client.example.com/oauth-client")]
+    [InlineData("ftp://client.example.com/oauth-client")]
+    [InlineData("https://client.example.com")]
+    [InlineData("https://client.example.com?version=2")]
+    [InlineData("https://user:password@client.example.com/oauth-client")]
+    [InlineData("https://@client.example.com/oauth-client")]
+    [InlineData("https://client.example.com/a/../oauth-client")]
+    [InlineData("https://client.example.com/./oauth-client")]
+    [InlineData("https://client.example.com/oauth-client/..")]
+    [InlineData("https://client.example.com/a/%2e%2e/oauth-client")]
+    [InlineData("https://client.example.com/a/.%2E/oauth-client")]
+    [InlineData(@"https://client.example.com/a\..\oauth-client")]
+    [InlineData("https://client.example.com/oauth-client#section")]
+    [InlineData("https://client.example.com/oauth-client#")]
+    [InlineData("https:client.example.com/oauth-client")]
+    public void UnregisteredClientId_ThatIsNotMetadataDocumentUrl_IsRefused(string clientId)
+    {
+        var result = Validator.Validate(Request(clientId, "http://127.0.0.1:1456/callback"));
+
+        result.Should().BeOfType<AuthorizeRequestValidation.Refused>();
+    }
+
+    [Fact]
+    public void RegisteredClientId_ThatIsMetadataDocumentUrl_IsValidatedAsRegisteredClient()
+    {
+        var result = Validator.Validate(Request(ConfiguredUrlClientId, ClaudeCallback));
+
+        result.Should().BeOfType<AuthorizeRequestValidation.Accepted>();
     }
 }

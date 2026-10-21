@@ -15,8 +15,7 @@ public abstract class BaseTest<TContext>(InfrastructureFixture infrastructure) :
     {
         get
         {
-            using var scope = infrastructure.Services.CreateScope();
-            var context = scope.ServiceProvider.GetRequiredService<TContext>();
+            var context = ActivatorUtilities.CreateInstance<TContext>(infrastructure.Services);
             return Runner.WithContext(context);
         }
     }

@@ -38,6 +38,15 @@ export const db = factory({
     date: primaryKey(Date),
     value: Number,
   },
+
+  mcpConsentRequest: {
+    id: primaryKey(String),
+    clientName: String,
+    logoUri: nullable(String),
+    clientId: String,
+    redirectUri: String,
+    isLocalhostOnly: Boolean,
+  },
 });
 
 type EntityKey = Exclude<keyof typeof db, typeof DATABASE_INSTANCE>;
@@ -56,3 +65,4 @@ export type DbNote = EntityOf<'note'>;
 export type DbProduct = EntityOf<'product'>;
 export type DbUpdatableProduct = UpdatableEntityOf<'product'>;
 export type DbCategory = EntityOf<'category'>;
+export type DbMcpConsentRequest = EntityOf<'mcpConsentRequest'>;

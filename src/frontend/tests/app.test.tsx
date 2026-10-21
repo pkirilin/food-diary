@@ -5,6 +5,7 @@ import { noteModel } from '@/entities/note';
 import { type GetAuthStatusResponse } from '@/features/auth';
 import { API_URL, AUTH_CHECK_INTERVAL } from '@/shared/config';
 import { renderApp } from '@tests/render';
+import { mcpConsentService } from './mockApi/mcpConsent';
 import { notesService } from './mockApi/notes';
 import { server } from './mockApi/server';
 
@@ -241,6 +242,23 @@ test.each<SectionHeadingCase>([
     expect(screen.getAllByRole('heading', { name: title })).toHaveLength(1);
   },
 );
+
+test('the consent page opened by the authorization server shows the MCP Client asking for access', async () => {
+  const consentRequest = mcpConsentService.create({
+    clientName: 'ChatBox',
+    logoUri: null,
+    clientId: 'https://desktop.example.com/.well-known/oauth-client',
+    redirectUri: 'http://127.0.0.1:1456/callback',
+    isLocalhostOnly: true,
+  });
+
+  await renderApp(`/mcp-consent?consentRequest=${encodeURIComponent(consentRequest)}`, {
+    signedIn: true,
+  });
+
+  expect(await screen.findByRole('heading', { name: 'ChatBox' })).toBeVisible();
+  expect(screen.getByRole('button', { name: 'Approve' })).toBeVisible();
+});
 
 test("the diary's top-level heading names the selected date", async () => {
   await renderApp('/?date=2023-10-20', { signedIn: true });

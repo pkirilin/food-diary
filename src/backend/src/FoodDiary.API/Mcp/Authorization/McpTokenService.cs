@@ -10,7 +10,11 @@ public sealed record AccessGrant(string ClientId, string Email, string Scope, st
 
 public sealed record AuthorizationCodeGrant(AccessGrant Access, string RedirectUri, string CodeChallenge);
 
-public sealed record McpTokens(string AccessToken, string RefreshToken);
+public sealed record McpTokens(string AccessToken, IssuedRefreshToken RefreshToken);
+
+public sealed record IssuedRefreshToken(string Value, Guid Id, Guid FamilyId, DateTimeOffset ExpiresAt);
+
+public sealed record RefreshTokenGrant(Guid Id, Guid FamilyId, AccessGrant Access);
 
 public sealed class McpTokenService(
     IDataProtectionProvider dataProtectionProvider,
@@ -28,7 +32,7 @@ public sealed class McpTokenService(
 
     public string IssueAuthorizationCode(AuthorizationCodeGrant grant)
     {
-        var codeId = Guid.NewGuid().ToString("N");
+        var codeId = Guid.CreateVersion7().ToString("N");
         var payload = new AuthorizationCodePayload(codeId, grant, timeProvider.GetUtcNow() + AuthorizationCodeLifetime);
 
         lock (_authorizationCodeRedemptionLock)
@@ -61,9 +65,19 @@ public sealed class McpTokenService(
         return payload.Grant;
     }
 
-    public McpTokens IssueTokens(AccessGrant grant) => new(
-        IssueAccessToken(grant),
-        Protect(_refreshTokenProtector, new TokenPayload(grant, timeProvider.GetUtcNow() + _options.RefreshTokenLifetime)));
+    public McpTokens IssueTokens(AccessGrant grant) => IssueTokensInFamily(grant, familyId: Guid.CreateVersion7());
+
+    public McpTokens RotateTokens(RefreshTokenGrant refreshToken) =>
+        IssueTokensInFamily(refreshToken.Access, refreshToken.FamilyId);
+
+    private McpTokens IssueTokensInFamily(AccessGrant grant, Guid familyId)
+    {
+        var id = Guid.CreateVersion7();
+        var expiresAt = timeProvider.GetUtcNow() + _options.RefreshTokenLifetime;
+        var value = Protect(_refreshTokenProtector, new RefreshTokenPayload(id, familyId, grant, expiresAt));
+
+        return new McpTokens(IssueAccessToken(grant), new IssuedRefreshToken(value, id, familyId, expiresAt));
+    }
 
     public string IssueAccessToken(AccessGrant grant) =>
         Protect(_accessTokenProtector, new TokenPayload(grant, timeProvider.GetUtcNow() + _options.AccessTokenLifetime));
@@ -80,10 +94,16 @@ public sealed class McpTokenService(
         return payload.Grant;
     }
 
-    public AccessGrant? ValidateRefreshToken(string refreshToken)
+    public RefreshTokenGrant? ValidateRefreshToken(string refreshToken)
     {
-        var payload = Unprotect<TokenPayload>(_refreshTokenProtector, refreshToken);
-        return payload is null || IsExpired(payload.ExpiresAt) ? null : payload.Grant;
+        var payload = Unprotect<RefreshTokenPayload>(_refreshTokenProtector, refreshToken);
+
+        if (payload is not { Id: { } id, FamilyId: { } familyId } || IsExpired(payload.ExpiresAt))
+        {
+            return null;
+        }
+
+        return new RefreshTokenGrant(id, familyId, payload.Grant);
     }
 
     private bool IsExpired(DateTimeOffset expiresAt) => timeProvider.GetUtcNow() >= expiresAt;
@@ -108,4 +128,6 @@ public sealed class McpTokenService(
     private sealed record AuthorizationCodePayload(string CodeId, AuthorizationCodeGrant Grant, DateTimeOffset ExpiresAt);
 
     private sealed record TokenPayload(AccessGrant Grant, DateTimeOffset ExpiresAt);
+
+    private sealed record RefreshTokenPayload(Guid? Id, Guid? FamilyId, AccessGrant Grant, DateTimeOffset ExpiresAt);
 }

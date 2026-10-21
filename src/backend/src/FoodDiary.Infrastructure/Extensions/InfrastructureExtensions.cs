@@ -33,6 +33,7 @@ public static class InfrastructureExtensions
         services.AddScoped<IFoodDiaryUnitOfWork, FoodDiaryUnitOfWork>();
         services.AddScoped<IProductsRepository, ProductsRepository>();
         services.AddScoped<INotesRepository, NotesRepository>();
+        services.AddScoped<IMcpRefreshTokensRepository, McpRefreshTokensRepository>();
     }
 
     private static void AddIntegrations(this IServiceCollection services)

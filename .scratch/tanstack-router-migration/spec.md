@@ -6,7 +6,7 @@ Research: [research.md](./research.md). Its claims were verified on 2026-10-03 a
 
 Decision records: [ADR-0004](../../docs/adr/0004-tanstack-router-for-typed-route-metadata.md) (why TanStack Router) and [ADR-0005](../../docs/adr/0005-pages-are-router-agnostic.md) (pages take props; route files adapt them).
 
-Vocabulary: [CONTEXT.md](../../CONTEXT.md). **Food Log**, **Meal**, **Product**, **Category** and **Weight Log** keep the meanings defined there.
+Vocabulary: [GLOSSARY.md](../../GLOSSARY.md). **Food Log**, **Meal**, **Product**, **Category** and **Weight Log** keep the meanings defined there.
 
 ## Problem Statement
 

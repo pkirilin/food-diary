@@ -1,4 +1,6 @@
 using FoodDiary.API.Mcp.Authorization;
+using FoodDiary.API.Mcp.Authorization.Cimd;
+using FoodDiary.API.Mcp.Authorization.Consent;
 using FoodDiary.Configuration;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -28,8 +30,12 @@ public static class McpExtensions
         services.AddMemoryCache();
         services.AddSingleton<AuthorizeRequestValidator>();
         services.AddSingleton<McpTokenService>();
+        services.AddSingleton<AuthorizationResponseGenerator>();
+        services.AddSingleton<McpConsentRequestService>();
+        services.AddCimd();
         services.AddScoped<AuthorizeRequestHandler>();
         services.AddScoped<TokenRequestHandler>();
+        services.AddScoped<McpConsentHandler>();
 
         if (mcpSection.Get<McpOptions>() is { Enabled: true })
         {

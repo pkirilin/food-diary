@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Microsoft.Extensions.Options;
 
 namespace FoodDiary.API.Mcp.Authorization;
@@ -23,26 +24,34 @@ public abstract record AuthorizeRequestValidation
         string Error,
         string Description,
         string? State) : AuthorizeRequestValidation;
+
+    public sealed record CimdClient : AuthorizeRequestValidation;
 }
 
 public sealed class AuthorizeRequestValidator(IOptions<McpOptions> options)
 {
-    public AuthorizeRequestValidation Validate(AuthorizeRequest request)
+    public AuthorizeRequestValidation Validate(AuthorizeRequest request) =>
+        McpClientKind.Of(request.ClientId, options.Value) switch
+        {
+            McpClientKind.Registered { Registration: var client } when request.RedirectUri != client.RedirectUri =>
+                new AuthorizeRequestValidation.Refused("redirect_uri is not the one registered for this client_id"),
+
+            McpClientKind.Registered { Registration: var client } =>
+                ValidateProtocolParameters(request, client.ClientId!, client.RedirectUri!),
+
+            McpClientKind.Cimd => new AuthorizeRequestValidation.CimdClient(),
+
+            McpClientKind.Unknown => new AuthorizeRequestValidation.Refused(
+                "client_id is neither registered nor a valid https client ID metadata document URL"),
+
+            _ => throw new UnreachableException()
+        };
+
+    internal AuthorizeRequestValidation ValidateProtocolParameters(
+        AuthorizeRequest request,
+        string clientId,
+        string redirectUri)
     {
-        var client = options.Value.FindClient(request.ClientId);
-
-        if (client is null)
-        {
-            return new AuthorizeRequestValidation.Refused("client_id is not registered");
-        }
-
-        if (request.RedirectUri != client.RedirectUri)
-        {
-            return new AuthorizeRequestValidation.Refused("redirect_uri is not the one registered for this client_id");
-        }
-
-        var redirectUri = client.RedirectUri!;
-
         AuthorizeRequestValidation.ErrorRedirect Error(string error, string description) =>
             new(redirectUri, error, description, request.State);
 
@@ -71,7 +80,7 @@ public sealed class AuthorizeRequestValidator(IOptions<McpOptions> options)
         }
 
         return new AuthorizeRequestValidation.Accepted(
-            client.ClientId!,
+            clientId,
             redirectUri,
             request.CodeChallenge,
             McpScopes.FoodRead,

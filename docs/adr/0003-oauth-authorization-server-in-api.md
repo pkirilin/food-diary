@@ -2,6 +2,7 @@
 
 Status: accepted (2026-09-10)
 Amended: 2026-09-12 — client registration is an owner-configured set of clients (`Mcp:Clients`), not a single client. The decision itself is unchanged.
+Amended: 2026-10-15 — CIMD clients and rotating refresh tokens are now accepted; see ADR 0006. The CIMD and public-client reasoning below records what was decided on 2026-09-10.
 
 Exposing the diary to Claude as a remote MCP connector puts a personal food log on the
 public internet, so the `/mcp` endpoint needs authorization. `FoodDiary.API` implements a

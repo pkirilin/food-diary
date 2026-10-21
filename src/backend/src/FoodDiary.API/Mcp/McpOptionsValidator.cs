@@ -22,11 +22,6 @@ internal sealed class McpOptionsValidator : IValidateOptions<McpOptions>
             failures.Add("Mcp:BaseUrl must be an origin without a path");
         }
 
-        if (options.Clients.Count == 0)
-        {
-            failures.Add("Mcp:Clients requires at least one client");
-        }
-
         var firstIndexByClientId = new Dictionary<string, int>(StringComparer.Ordinal);
 
         for (var index = 0; index < options.Clients.Count; index++)

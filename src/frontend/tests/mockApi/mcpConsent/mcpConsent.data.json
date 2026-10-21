@@ -1,0 +1,26 @@
+[
+  {
+    "id": "desktop-client",
+    "clientName": "Desktop MCP Client",
+    "logoUri": null,
+    "clientId": "https://desktop.example.com/.well-known/oauth-client",
+    "redirectUri": "http://127.0.0.1:1456/callback",
+    "isLocalhostOnly": true
+  },
+  {
+    "id": "web-client",
+    "clientName": "Web MCP Client",
+    "logoUri": "/android-chrome-192x192.png",
+    "clientId": "https://client.example.com/oauth-client.json",
+    "redirectUri": "https://client.example.com/callback",
+    "isLocalhostOnly": false
+  },
+  {
+    "id": "broken-logo",
+    "clientName": "Broken Logo Client",
+    "logoUri": "/missing-logo.png",
+    "clientId": "https://broken.example.com/oauth-client.json",
+    "redirectUri": "https://broken.example.com/callback",
+    "isLocalhostOnly": false
+  }
+]

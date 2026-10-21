@@ -1,80 +1,103 @@
 using System.Diagnostics;
 using System.Security.Claims;
+using FoodDiary.API.Mcp.Authorization.Cimd;
+using FoodDiary.API.Mcp.Authorization.Consent;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Extensions;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Options;
 
 namespace FoodDiary.API.Mcp.Authorization;
 
 internal sealed class AuthorizeRequestHandler(
     AuthorizeRequestValidator validator,
+    CimdClientValidator cimdClientValidator,
     IAuthorizationService authorizationService,
-    McpTokenService tokenService,
-    IOptions<McpOptions> options)
+    AuthorizationResponseGenerator responseGenerator,
+    McpConsentRequestService consentRequestService)
 {
+    private const string AccountNotAllowed = "This account is not allowed to use Food Diary";
+
     public async Task<IResult> Handle(AuthorizeRequest request, HttpContext context) =>
         validator.Validate(request) switch
         {
-            AuthorizeRequestValidation.Refused refused =>
-                Results.Text(refused.Reason, statusCode: StatusCodes.Status400BadRequest),
+            AuthorizeRequestValidation.Refused refused => Refuse(refused.Reason),
 
-            AuthorizeRequestValidation.ErrorRedirect error =>
-                RedirectToClient(error.RedirectUri, error.State,
-                    ("error", error.Error),
-                    ("error_description", error.Description)),
+            AuthorizeRequestValidation.ErrorRedirect error => Results.Redirect(
+                responseGenerator.RedirectUrlWithError(error.RedirectUri, error.State, error.Error, error.Description)),
 
             AuthorizeRequestValidation.Accepted accepted =>
                 await AuthorizeSignedInUser(accepted, context),
 
+            AuthorizeRequestValidation.CimdClient =>
+                await AskSignedInUserToConsent(request, context),
+
             _ => throw new UnreachableException()
         };
 
-    private async Task<IResult> AuthorizeSignedInUser(AuthorizeRequestValidation.Accepted request, HttpContext context)
+    private Task<IResult> AuthorizeSignedInUser(AuthorizeRequestValidation.Accepted request, HttpContext context) =>
+        WithSignedInUser(
+            context,
+            whenAllowed: email => Task.FromResult(
+                Results.Redirect(responseGenerator.RedirectUrlWithCode(request, email))),
+            whenNotAllowed: () => Results.Redirect(responseGenerator.RedirectUrlWithError(
+                request.RedirectUri, request.State, "access_denied", AccountNotAllowed)));
+
+    private Task<IResult> AskSignedInUserToConsent(AuthorizeRequest request, HttpContext context) =>
+        WithSignedInUser(
+            context,
+            whenAllowed: async email => await cimdClientValidator.Validate(request, context.RequestAborted) switch
+            {
+                CimdClientValidation.Refused refused => Refuse(refused.Reason),
+
+                CimdClientValidation.Accepted accepted =>
+                    RedirectToConsentPage(new McpConsentRequest(accepted.Request, accepted.Client, email)),
+
+                _ => throw new UnreachableException()
+            },
+            whenNotAllowed: () => Refuse(AccountNotAllowed));
+
+    private async Task<IResult> WithSignedInUser(
+        HttpContext context,
+        Func<string, Task<IResult>> whenAllowed,
+        Func<IResult> whenNotAllowed)
     {
         var authentication = await context.AuthenticateAsync(Constants.AuthenticationSchemes.OAuthGoogle);
 
         if (!authentication.Succeeded)
         {
-            var returnToThisRequest = new AuthenticationProperties
-            {
-                RedirectUri = context.Request.GetEncodedPathAndQuery()
-            };
-
-            return Results.Challenge(returnToThisRequest, [Constants.AuthenticationSchemes.OAuthGoogle]);
+            return ChallengeToReturnToThisRequest(context);
         }
 
+        return await AllowedEmailOf(authentication.Principal) is { } email
+            ? await whenAllowed(email)
+            : whenNotAllowed();
+    }
+
+    private async Task<string?> AllowedEmailOf(ClaimsPrincipal user)
+    {
         var emailAllowlistCheck = await authorizationService.AuthorizeAsync(
-            authentication.Principal,
+            user,
             Constants.AuthorizationPolicies.GoogleAllowedEmails);
 
-        if (!emailAllowlistCheck.Succeeded)
-        {
-            return RedirectToClient(request.RedirectUri, request.State,
-                ("error", "access_denied"),
-                ("error_description", "This account is not allowed to use Food Diary"));
-        }
-
-        var access = new AccessGrant(
-            request.ClientId,
-            authentication.Principal.FindFirstValue(Constants.ClaimTypes.Email)!,
-            request.Scope,
-            request.Resource);
-
-        var code = tokenService.IssueAuthorizationCode(
-            new AuthorizationCodeGrant(access, request.RedirectUri, request.CodeChallenge));
-
-        return RedirectToClient(request.RedirectUri, request.State, ("code", code));
+        return emailAllowlistCheck.Succeeded ? user.FindFirstValue(Constants.ClaimTypes.Email) : null;
     }
 
-    private IResult RedirectToClient(string redirectUri, string? state, params (string Name, string Value)[] parameters)
+    private IResult RedirectToConsentPage(McpConsentRequest consentRequest)
     {
-        var query = parameters
-            .Select(parameter => KeyValuePair.Create(parameter.Name, (string?)parameter.Value))
-            .Append(KeyValuePair.Create("state", state))
-            .Append(KeyValuePair.Create("iss", options.Value.BaseUrl));
-
-        return Results.Redirect(QueryHelpers.AddQueryString(redirectUri, query));
+        var protectedConsentRequest = consentRequestService.Issue(consentRequest);
+        return Results.Redirect($"/#/mcp-consent?consentRequest={Uri.EscapeDataString(protectedConsentRequest)}");
     }
+
+    private static IResult ChallengeToReturnToThisRequest(HttpContext context)
+    {
+        var returnToThisRequest = new AuthenticationProperties
+        {
+            RedirectUri = context.Request.GetEncodedPathAndQuery()
+        };
+
+        return Results.Challenge(returnToThisRequest, [Constants.AuthenticationSchemes.OAuthGoogle]);
+    }
+
+    private static IResult Refuse(string reason) =>
+        Results.Text(reason, statusCode: StatusCodes.Status400BadRequest);
 }
