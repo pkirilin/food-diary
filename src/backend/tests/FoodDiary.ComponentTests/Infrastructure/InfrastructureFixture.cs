@@ -28,7 +28,12 @@ public class InfrastructureFixture : IAsyncLifetime, IDisposable
             .AddScoped<AuthContext>()
             .AddScoped<ErrorHandlingContext>()
             .AddScoped<CategoriesApiContext>()
-            .AddScoped<McpApiContext>()
+            .AddScoped<McpAuthorizationRequestContext>()
+            .AddScoped<McpCimdFetchingContext>()
+            .AddScoped<McpConsentContext>()
+            .AddScoped<McpDiscoveryContext>()
+            .AddScoped<McpServerContext>()
+            .AddScoped<McpTokensContext>()
             .AddScoped<NotesApiContext>()
             .AddScoped<ProductsApiContext>()
             .AddScoped<WeightLogsApiContext>();

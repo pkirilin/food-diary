@@ -28,5 +28,5 @@ Compiler warnings are errors (`TreatWarningsAsErrors`). Only `NU1701` (fallback 
 
 ## Testing
 
-- **Every API endpoint, MCP tool and MCP prompt must have at least one happy-path component test** in `FoodDiary.ComponentTests` (`Scenarios/<Feature>/<Feature>ApiTests.cs`). When adding or changing one, add or extend the matching `*ApiTests` scenario using the existing Given/When/Then context DSL (stub external services like OpenAI via the Mountebank helpers). It is not complete until it has one.
+- **Every API endpoint, MCP tool and MCP prompt must have at least one happy-path component test** in `FoodDiary.ComponentTests` (`Scenarios/<Feature>/<Feature>ApiTests.cs`; a large feature may split into several `*Tests` files there, each with its own context — e.g. `Scenarios/Mcp/`). When adding or changing one, add or extend the matching `*Tests` scenario using the existing Given/When/Then context DSL (stub external services like OpenAI via the Mountebank helpers). It is not complete until it has one.
 - For an MCP tool or prompt, the happy path starts at **discovery**: a real MCP client lists it and then calls it. A hand-written JSON-RPC request skips the tool-schema errors that discovery catches.
