@@ -7,3 +7,6 @@ csharp_style_prefer_primary_constructors = true
 dotnet_diagnostic.IDE0005.severity = warning
 # Use primary constructor
 dotnet_diagnostic.IDE0290.severity = warning
+
+[**/Migrations/*.cs]
+generated_code = true
