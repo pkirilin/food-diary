@@ -15,33 +15,8 @@ public sealed class CimdMetadataDocumentFetcher(IHttpClientFactory httpClientFac
 {
     public const string HttpClientName = "FoodDiary.Mcp.CimdMetadataDocument";
 
-    private const int MaxDocumentBytes = 5 * 1024;
-
     private static readonly CimdMetadataDocumentFetch.Failed NotJsonObject =
         new("client ID metadata document is not a JSON object");
-
-    public static void Register(IServiceCollection services)
-    {
-        services.AddSingleton<ICimdAddressFilter, SpecialUseAddressFilter>();
-        services.AddSingleton<CimdMetadataDocumentFetcher>();
-
-        services.AddHttpClient(HttpClientName, client =>
-            {
-                client.Timeout = TimeSpan.FromSeconds(5);
-                client.MaxResponseContentBufferSize = MaxDocumentBytes;
-            })
-            .UseSocketsHttpHandler((handler, serviceProvider) =>
-            {
-                var addressFilter = serviceProvider.GetRequiredService<ICimdAddressFilter>();
-
-                // A proxy would make ConnectCallback dial the proxy, leaving the target address unchecked
-                handler.UseProxy = false;
-                handler.AllowAutoRedirect = false;
-                handler.UseCookies = false;
-                handler.ConnectCallback = (context, cancellationToken) =>
-                    ConnectToAllowedAddress(context.DnsEndPoint, addressFilter, cancellationToken);
-            });
-    }
 
     public async Task<CimdMetadataDocumentFetch> Fetch(string clientId, CancellationToken cancellationToken)
     {
@@ -95,22 +70,9 @@ public sealed class CimdMetadataDocumentFetcher(IHttpClientFactory httpClientFac
             return new CimdMetadataDocumentFetch.Failed("client ID metadata document did not respond within 5 seconds");
         }
     }
-
-    private static async Task<string?> ReadInDeclaredCharset(HttpContent content, CancellationToken cancellationToken)
-    {
-        try
-        {
-            return await content.ReadAsStringAsync(cancellationToken);
-        }
-        // Thrown when the Content-Type charset names an encoding .NET does not support
-        catch (InvalidOperationException)
-        {
-            return null;
-        }
-    }
-
+    
     // The filter must see the addresses this socket connects to
-    private static async ValueTask<Stream> ConnectToAllowedAddress(
+    public static async ValueTask<Stream> ConnectToAllowedAddress(
         DnsEndPoint endPoint,
         ICimdAddressFilter addressFilter,
         CancellationToken cancellationToken)
@@ -134,6 +96,19 @@ public sealed class CimdMetadataDocumentFetcher(IHttpClientFactory httpClientFac
         {
             socket.Dispose();
             throw;
+        }
+    }
+
+    private static async Task<string?> ReadInDeclaredCharset(HttpContent content, CancellationToken cancellationToken)
+    {
+        try
+        {
+            return await content.ReadAsStringAsync(cancellationToken);
+        }
+        // Thrown when the Content-Type charset names an encoding .NET does not support
+        catch (InvalidOperationException)
+        {
+            return null;
         }
     }
 

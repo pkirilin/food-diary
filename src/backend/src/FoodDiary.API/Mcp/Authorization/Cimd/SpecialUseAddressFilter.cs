@@ -3,11 +3,6 @@ using System.Net.Sockets;
 
 namespace FoodDiary.API.Mcp.Authorization.Cimd;
 
-public interface ICimdAddressFilter
-{
-    bool IsAllowed(IPAddress address);
-}
-
 public sealed class SpecialUseAddressFilter : ICimdAddressFilter
 {
     // Covers ::, ::1, IPv4-compatible ::/96, NAT64, ULA, link-local, site-local and multicast
