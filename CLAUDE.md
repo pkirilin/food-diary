@@ -97,7 +97,7 @@ Check `STRATEGY.md` first — the project deliberately stays small. Prefer modif
 ## Using CLI tools
 
 - ⚠️ **ALWAYS** Use `rg` instead of `grep`, `fd` instead of `find`, `jaq` instead of `jq` (if available)
-- ⚠️ **ALWAYS** Use JSON output when CLI supports it. Pipe ALL JSON through `| toon` (if available)
+- ⚠️ **ALWAYS** Use JSON output when CLI supports it
 
 ## Agent skills
 
