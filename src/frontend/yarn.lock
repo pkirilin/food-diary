@@ -6387,14 +6387,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lru-cache@npm:^11.0.0":
-  version: 11.5.1
-  resolution: "lru-cache@npm:11.5.1"
-  checksum: 10/02c4f73967d91fb101f4accf8ebac9e0541e08e16d987bdb9e9737f13e5f2c4bc33c593b98ec30e4486bf899bc97edb36fbd133684b36087336559e41edafdea
-  languageName: node
-  linkType: hard
-
-"lru-cache@npm:^11.5.3":
+"lru-cache@npm:^11.0.0, lru-cache@npm:^11.5.3":
   version: 11.5.3
   resolution: "lru-cache@npm:11.5.3"
   checksum: 10/824394f43827de37e961e9e344d4f0d2afb0347106ddafae620d0035c36337bc64e64cddbc17f6c630a73c9db34cf3f81211e3d43699a32e9f3641f391415b82
@@ -7932,16 +7925,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tough-cookie@npm:^6.0.1":
-  version: 6.0.1
-  resolution: "tough-cookie@npm:6.0.1"
-  dependencies:
-    tldts: "npm:^7.0.5"
-  checksum: 10/915b1167e0630598eb0644e8bc089ddc28a23bf05f3c329a4a0d879c6b9801a2603be65acb06b5d2dd0f589cabb06bb638837f8222dd82a7023655f07269451a
-  languageName: node
-  linkType: hard
-
-"tough-cookie@npm:^6.0.2":
+"tough-cookie@npm:^6.0.1, tough-cookie@npm:^6.0.2":
   version: 6.0.2
   resolution: "tough-cookie@npm:6.0.2"
   dependencies:
@@ -8123,17 +8107,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undici@npm:^8.12.1":
+"undici@npm:^8.12.1, undici@npm:^8.4.1":
   version: 8.12.2
   resolution: "undici@npm:8.12.2"
   checksum: 10/91d7979b94e23d3b7dc1a1ecdea5b62791bfa88209db9589659b0345c3ee8a00a481d447c4b4c337c3e9ab2abff7392a111faa616aaffafe834df7816fb6bf9e
-  languageName: node
-  linkType: hard
-
-"undici@npm:^8.4.1":
-  version: 8.10.2
-  resolution: "undici@npm:8.10.2"
-  checksum: 10/90f7ba3d3e9543f25d47552282239faa395eaa66d0db7272ebf57055c8ced34e4c948923c734be5571bfce0cc56080e93c0e2f960e9c5fba163759fce112bab4
   languageName: node
   linkType: hard
 
