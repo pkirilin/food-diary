@@ -15,7 +15,7 @@ Food Diary is a self-hosted, lightweight web app for nutrition and weight tracki
 - `Dockerfile` — the published image. `deploy/compose.yml` — self-hosting setup (released image + PostgreSQL + Caddy). `tests/compose.yml` — full stack built from source, used by the E2E suite.
 - `docs/guide/` — user docs (deployment, configuration reference, MCP). `docs/development.md` / `docs/releasing.md` — maintainer docs, linked from `CONTRIBUTING.md`.
 
-The frontend and the two test projects are independent yarn (Berry, node-modules linker) workspaces — install/run yarn from inside each directory, not at repo root.
+The frontend and the E2E suite (`tests/`) are independent Yarn 4 projects (node-modules linker), each with its own lockfile.
 
 ## Common commands
 
@@ -97,7 +97,7 @@ Check `STRATEGY.md` first — the project deliberately stays small. Prefer modif
 ## Using CLI tools
 
 - ⚠️ **ALWAYS** Use `rg` instead of `grep`, `fd` instead of `find`, `jaq` instead of `jq` (if available)
-- ⚠️ **ALWAYS** Use JSON output when CLI supports it. Pipe ALL JSON through `| toon` (if available)
+- ⚠️ **ALWAYS** Use JSON output when CLI supports it
 
 ## Agent skills
 

@@ -39,7 +39,7 @@ jobs:
           cache-dependency-path: src/frontend/yarn.lock
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: yarn install --immutable
 
       - name: Build
         env:
