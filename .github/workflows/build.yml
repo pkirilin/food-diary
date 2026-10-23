@@ -48,7 +48,9 @@ jobs:
         with:
           node-version: '24'
       - name: Install
-        run: yarn install
+        run: yarn install --immutable
+      - name: Check lockfile is deduplicated
+        run: yarn dedupe --check
       - name: Lint
         run: yarn lint
       - name: Build
@@ -76,7 +78,9 @@ jobs:
       with:
         node-version: '24'
     - name: Install dependencies
-      run: yarn
+      run: yarn install --immutable
+    - name: Check lockfile is deduplicated
+      run: yarn dedupe --check
     - name: Lint
       run: yarn lint
     - name: Install Playwright Browsers
