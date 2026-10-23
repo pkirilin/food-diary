@@ -7,7 +7,6 @@
     "start": "vite",
     "build": "tsc && vite build",
     "test": "vitest",
-    "test:preview": "vitest-preview",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint .",
@@ -70,8 +69,7 @@
     "typescript-eslint": "^8.70.0",
     "vite": "^8.3.3",
     "vite-plugin-pwa": "^1.3.0",
-    "vitest": "^4.1.11",
-    "vitest-preview": "^0.0.3",
+    "vitest": "^4.1.12",
     "workbox-precaching": "^7.4.1",
     "workbox-window": "^7.4.1"
   },
