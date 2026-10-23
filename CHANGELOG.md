@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- MCP Clients that identify themselves with a Client ID Metadata Document can connect with no configuration. On every sign-in, a consent page shows which client is asking for access and lets you approve or deny it; see `docs/guide/mcp-server.md`
+- MCP Clients that identify themselves with a Client ID Metadata Document can connect with no configuration. On every sign-in, a consent page shows which client is asking for access and lets you approve or deny it; see [the docs](docs/guide/mcp-server.md)
 
 ### Changed
 
