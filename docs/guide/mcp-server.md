@@ -6,7 +6,7 @@ The server is off by default. It lives at `/mcp` on your Food Diary domain, and 
 
 ## Two ways to connect
 
-An MCP Client connects in one of two ways. Both give the same read-only access, so use whichever your client supports.
+An MCP client connects in one of two ways. Both give the same read-only access, so use whichever your client supports.
 
 - **Client ID Metadata Document.** The client identifies itself with a URL that publishes its name and callback addresses. You configure nothing, and you approve every sign-in on a [consent page](#the-consent-page).
 - **Client ID and secret.** You choose a client ID and a secret, add them to the Food Diary configuration, and enter them in the client.

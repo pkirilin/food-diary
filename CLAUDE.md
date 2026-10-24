@@ -53,7 +53,7 @@ dotnet ef migrations add <Name> \
     -o Migrations
 ```
 
-Required user-secrets on `FoodDiary.API`: `Auth:AllowedEmails:0`, `ConnectionStrings:Default`, `GoogleAuth:ClientId`, `GoogleAuth:ClientSecret`, optional `Integrations:OpenAI:ApiKey` and `Integrations:OpenAI:Model` (overrides default). Enabling the MCP server locally (`Mcp:Enabled` = `true`) also requires `Mcp:BaseUrl` (`https://localhost:8080`). `Mcp:Clients:0:ClientId`, `Mcp:Clients:0:ClientSecret` and `Mcp:Clients:0:RedirectUri` are optional and needed only for a client-secret MCP Client; MCP Clients that use a Client ID Metadata Document need no entry. Startup fails naming whichever value is missing or malformed.
+Required user-secrets on `FoodDiary.API`: `Auth:AllowedEmails:0`, `ConnectionStrings:Default`, `GoogleAuth:ClientId`, `GoogleAuth:ClientSecret`, optional `Integrations:OpenAI:ApiKey` and `Integrations:OpenAI:Model` (overrides default). Enabling the MCP server locally (`Mcp:Enabled` = `true`) also requires `Mcp:BaseUrl` (`https://localhost:8080`). `Mcp:Clients:0:ClientId`, `Mcp:Clients:0:ClientSecret` and `Mcp:Clients:0:RedirectUri` are optional and needed only for a client-secret MCP client; MCP clients that use a Client ID Metadata Document need no entry. Startup fails naming whichever value is missing or malformed.
 
 ### E2E (`tests/`)
 

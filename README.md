@@ -3,13 +3,13 @@
 [![food-diary](https://github.com/pkirilin/food-diary/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/pkirilin/food-diary/actions/workflows/build.yml)
 [![Docker Hub](https://img.shields.io/docker/v/pkirilin/food-diary?label=docker)](https://hub.docker.com/r/pkirilin/food-diary)
 
-Food Diary is a free, open-source web app for tracking what you eat and what you weigh. It was created in 2018 to help [its author](https://github.com/pkirilin) deal with health problems caused by being overweight.
+Food Diary is a free, open-source web app for nutrition and weight tracking. It was created in 2018 to help [its author](https://github.com/pkirilin) deal with health problems caused by being overweight.
 
 Why use it:
 
 - **Instant daily totals.** Log what you eat and immediately see your calories, protein, fats, carbs, sugar and salt for the day. Paper can't do that.
 - **Your data stays yours.** It runs on your own server. No subscription, no ads, no account with anyone else.
-- **Only the essentials.** Food logs, your own product list and weight tracking, plus AI that fills in nutrition values from a photo and read-only access for Claude or any other MCP client.
+- **Only the essentials.** Food logs, your own product list and weight tracking, plus AI that fills in nutrition values from a photo and MCP access for Claude or any other MCP client.
 
 **You run your own copy.** There is no hosted version to sign up for. You need a server or container platform that runs Docker, a Google account to sign in with, and a domain with HTTPS to use it anywhere other than the machine it runs on.
 
@@ -64,7 +64,15 @@ To run your own copy:
 
 ## MCP server
 
-Connect Claude, or any other compatible MCP client, to your Food Diary and ask it what you ate last week or how your protein intake is trending. Access is read-only and off by default; see the [MCP server guide](docs/guide/mcp-server.md).
+Food Diary has a built-in remote MCP server, protected by OAuth. Access is read-only and off by default.
+
+Connect Claude, or any other compatible MCP client, and ask it about the data you've logged. For example:
+
+- "How has my protein intake changed over the last month?"
+- "What patterns in my diet could I improve?"
+- "Plan my meals for next week based on what I usually eat."
+
+For more details, see the [MCP server setup guide](docs/guide/mcp-server.md).
 
 ## Self-hosting
 
