@@ -3,7 +3,7 @@
 [![food-diary](https://github.com/pkirilin/food-diary/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/pkirilin/food-diary/actions/workflows/build.yml)
 [![Docker Hub](https://img.shields.io/docker/v/pkirilin/food-diary?label=docker)](https://hub.docker.com/r/pkirilin/food-diary)
 
-Food Diary is a free, open-source web app for tracking what you eat and what you weigh. It was created in 2018 to help [its author](https://github.com/pkirilin) deal with health problems caused by being overweight.
+Food Diary is a free, open-source web app for nutrition and weight tracking. It was created in 2018 to help [its author](https://github.com/pkirilin) deal with health problems caused by being overweight.
 
 Why use it:
 
@@ -64,7 +64,14 @@ To run your own copy:
 
 ## MCP server
 
-Connect Claude, or any other compatible MCP client, to your Food Diary and ask it what you ate last week or how your protein intake is trending. Access is read-only and off by default; see the [MCP server guide](docs/guide/mcp-server.md).
+Food Diary has a built-in, HTTP-based MCP Server protected by OAuth 2.1.
+
+This means that you can connect Claude, or any other compatible MCP client and ask it anything about the data you've logged. Here are some examples for inspiration:
+
+- how your protein intake is trending
+- what are your bad nutrition patterns, and how can you fix them
+
+For more details, see the [MCP server setup guide](docs/guide/mcp-server.md).
 
 ## Self-hosting
 
