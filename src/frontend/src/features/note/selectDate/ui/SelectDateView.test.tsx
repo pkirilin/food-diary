@@ -4,15 +4,15 @@ import { RootProvider } from '@/app/RootProvider';
 import { configureStore } from '@/app/store';
 import { SelectDateView, type OnSubmitDateFn } from './SelectDateView';
 
-const currentDate = new Date(2023, 9, 19);
+const OCT_19_2023 = new Date(2023, 9, 19);
 
-const renderSelectDate = (date = currentDate) => {
+const renderSelectDate = (currentDate = OCT_19_2023) => {
   const user = userEvent.setup();
   const onSubmitDate = vi.fn<OnSubmitDateFn>();
 
   render(
     <RootProvider store={configureStore()}>
-      <SelectDateView currentDate={date} onSubmitDate={onSubmitDate} />
+      <SelectDateView currentDate={currentDate} onSubmitDate={onSubmitDate} />
     </RootProvider>,
   );
 

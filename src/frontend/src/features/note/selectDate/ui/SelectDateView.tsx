@@ -10,22 +10,14 @@ import {
   Popover,
   Typography,
   useMediaQuery,
-  type PopoverProps,
-  type SxProps,
   type Theme,
 } from '@mui/material';
-import {
-  StaticDatePicker,
-  dateCalendarClasses,
-  dayCalendarClasses,
-  monthCalendarClasses,
-  pickerDayClasses,
-  yearCalendarClasses,
-} from '@mui/x-date-pickers';
+import { StaticDatePicker } from '@mui/x-date-pickers';
 import { useState, type FC } from 'react';
 import { APP_BAR_HEIGHT_SM, APP_BAR_HEIGHT_XS } from '@/shared/constants';
 import { dateLib } from '@/shared/lib';
 import { Button } from '@/shared/ui';
+import { WEEKS_IN_GRID, calendarSx, paperSx, popoverSx, scrimBelowAppBarSx } from './styles';
 
 export type OnSubmitDateFn = (date: Date) => void;
 
@@ -34,70 +26,20 @@ interface Props {
   onSubmitDate: OnSubmitDateFn;
 }
 
-const DAY_CELL_MIN_SIZE = 48;
-const DAYS_IN_WEEK = 7;
-const WEEKS_IN_GRID = 6;
+interface AnchorPosition {
+  left: number;
+  top: number;
+}
 
-const appBarHeight = { xs: APP_BAR_HEIGHT_XS, sm: APP_BAR_HEIGHT_SM };
-const gridWidth = `calc(${DAYS_IN_WEEK} * var(--day-cell-size))`;
+interface VirtualAnchor {
+  nodeType: Node['ELEMENT_NODE'];
+  getBoundingClientRect: () => DOMRect;
+}
 
-const paperSx: SxProps<Theme> = {
-  '--day-cell-size': {
-    xs: `max(${DAY_CELL_MIN_SIZE}px, calc(100vw / ${DAYS_IN_WEEK}))`,
-    sm: `${DAY_CELL_MIN_SIZE}px`,
-  },
-  width: { xs: '100%', sm: gridWidth },
-  maxWidth: '100%',
-  maxHeight: {
-    xs: `calc(100% - ${APP_BAR_HEIGHT_XS}px)`,
-    sm: `calc(100% - ${APP_BAR_HEIGHT_SM}px)`,
-  },
-  borderTopLeftRadius: 0,
-  borderTopRightRadius: 0,
-};
-
-const scrimBelowAppBarSx: SxProps<Theme> = {
-  '&::before': {
-    content: '""',
-    position: 'absolute',
-    inset: 0,
-    top: appBarHeight,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-};
-
-const calendarSx: SxProps<Theme> = {
-  [`& .${dateCalendarClasses.root}, & .${monthCalendarClasses.root}, & .${yearCalendarClasses.root}`]:
-    {
-      width: gridWidth,
-    },
-  [`& .${dateCalendarClasses.root}`]: {
-    height: 'auto',
-    maxHeight: 'none',
-  },
-  [`& .${dayCalendarClasses.weekDayLabel}`]: {
-    width: 'var(--day-cell-size)',
-    margin: 0,
-  },
-  [`& .${dayCalendarClasses.weekContainer}`]: {
-    margin: 0,
-  },
-  [`& .${dayCalendarClasses.slideTransition}`]: {
-    minHeight: `calc(${WEEKS_IN_GRID} * var(--day-cell-size))`,
-  },
-  [`& .${pickerDayClasses.root}`]: {
-    '--PickerDay-size': 'var(--day-cell-size)',
-    '--PickerDay-horizontalMargin': 0,
-  },
-};
-
-const anchorBelowAppBar = (dateButton: HTMLElement, isSmUp: boolean): PopoverProps['anchorEl'] => ({
+const virtualAnchorAt = ({ left, top }: AnchorPosition): VirtualAnchor => ({
+  // MUI Popover positions against document.body unless the anchor reports itself as an element node
   nodeType: Node.ELEMENT_NODE,
-  getBoundingClientRect: () =>
-    new DOMRect(
-      isSmUp ? dateButton.getBoundingClientRect().left : 0,
-      isSmUp ? APP_BAR_HEIGHT_SM : APP_BAR_HEIGHT_XS,
-    ),
+  getBoundingClientRect: () => new DOMRect(left, top),
 });
 
 export const SelectDateView: FC<Props> = ({ currentDate, onSubmitDate }) => {
@@ -109,6 +51,11 @@ export const SelectDateView: FC<Props> = ({ currentDate, onSubmitDate }) => {
   const closePopover = (): void => {
     setDateButton(null);
   };
+
+  const getAnchorPositionBelowAppBar = (button: HTMLElement): AnchorPosition =>
+    isSmUp
+      ? { left: button.getBoundingClientRect().left, top: APP_BAR_HEIGHT_SM }
+      : { left: 0, top: APP_BAR_HEIGHT_XS };
 
   return (
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -144,8 +91,9 @@ export const SelectDateView: FC<Props> = ({ currentDate, onSubmitDate }) => {
       <Popover
         id={id}
         open={!!dateButton}
-        anchorEl={dateButton && anchorBelowAppBar(dateButton, isSmUp)}
+        anchorEl={dateButton && (() => virtualAnchorAt(getAnchorPositionBelowAppBar(dateButton)))}
         marginThreshold={0}
+        sx={popoverSx}
         onClose={closePopover}
         slotProps={{
           paper: { sx: paperSx },
