@@ -89,3 +89,11 @@ test('should submit a date after today when the next day arrow is tapped on toda
 
   expect(onSubmitDate).toHaveBeenCalledExactlyOnceWith(new Date(2023, 9, 20));
 });
+
+test('should start the calendar week on Monday', async () => {
+  const { user } = renderSelectDate();
+
+  await user.click(screen.getByRole('button', { name: /19 oct 2023/i }));
+
+  expect(screen.getAllByRole('columnheader').at(0)).toHaveAccessibleName('Monday');
+});
