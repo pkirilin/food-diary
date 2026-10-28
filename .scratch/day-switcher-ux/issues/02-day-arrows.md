@@ -4,9 +4,9 @@
 
 **Blocked by:** None — can start immediately
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] `SelectDateView` renders the two arrows around the date button; each submits `currentDate ± 1 day` through `onSubmitDate` immediately
-- [ ] Tests: each arrow submits the adjacent date; a date after today is reachable via "Next day"
-- [ ] Existing OK, Cancel and reopen-resets tests keep passing (ADR-0002 unchanged)
-- [ ] Frontend build, lint and tests pass with no `stderr |` blocks in `yarn test --run --reporter=verbose`
+- [x] `SelectDateView` renders the two arrows around the date button; each submits `currentDate ± 1 day` through `onSubmitDate` immediately
+- [x] Tests: each arrow submits the adjacent date; a date after today is reachable via "Next day"
+- [x] Existing OK, Cancel and reopen-resets tests keep passing (ADR-0002 unchanged)
+- [x] Frontend build, lint and tests pass with no `stderr |` blocks in `yarn test --run --reporter=verbose`

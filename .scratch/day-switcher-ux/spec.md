@@ -1,6 +1,6 @@
 # Spec: Day switcher UX
 
-Status: ready-for-agent
+Status: resolved
 
 Vocabulary: [GLOSSARY.md](../../GLOSSARY.md) — **Food Log** is used with that exact meaning below.
 
