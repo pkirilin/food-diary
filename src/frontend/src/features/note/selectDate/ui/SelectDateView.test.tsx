@@ -60,3 +60,11 @@ test('should reopen on the current date after being dismissed', async () => {
 
   expect(screen.getByRole('gridcell', { name: '19' })).toHaveAttribute('aria-selected', 'true');
 });
+
+test('should start the calendar week on Monday', async () => {
+  const { user } = renderSelectDate();
+
+  await user.click(screen.getByRole('button', { name: /19 oct 2023/i }));
+
+  expect(screen.getAllByRole('columnheader').at(0)).toHaveAccessibleName('Monday');
+});
