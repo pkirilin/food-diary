@@ -19,6 +19,10 @@ const renderSelectDate = () => {
   return { user, onSubmitDate };
 };
 
+afterEach(() => {
+  vi.useRealTimers();
+});
+
 test('should submit the picked date', async () => {
   const { user, onSubmitDate } = renderSelectDate();
 
@@ -59,4 +63,29 @@ test('should reopen on the current date after being dismissed', async () => {
   await user.click(screen.getByRole('button', { name: /19 oct 2023/i }));
 
   expect(screen.getByRole('gridcell', { name: '19' })).toHaveAttribute('aria-selected', 'true');
+});
+
+test('should submit the previous day when the previous day arrow is tapped', async () => {
+  const { user, onSubmitDate } = renderSelectDate();
+
+  await user.click(screen.getByRole('button', { name: 'Previous day' }));
+
+  expect(onSubmitDate).toHaveBeenCalledExactlyOnceWith(new Date(2023, 9, 18));
+});
+
+test('should submit the next day when the next day arrow is tapped', async () => {
+  const { user, onSubmitDate } = renderSelectDate();
+
+  await user.click(screen.getByRole('button', { name: 'Next day' }));
+
+  expect(onSubmitDate).toHaveBeenCalledExactlyOnceWith(new Date(2023, 9, 20));
+});
+
+test('should submit a date after today when the next day arrow is tapped on today', async () => {
+  vi.useFakeTimers({ toFake: ['Date'] }).setSystemTime(new Date(2023, 9, 19, 12));
+  const { user, onSubmitDate } = renderSelectDate();
+
+  await user.click(screen.getByRole('button', { name: 'Next day' }));
+
+  expect(onSubmitDate).toHaveBeenCalledExactlyOnceWith(new Date(2023, 9, 20));
 });

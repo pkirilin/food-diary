@@ -1,6 +1,8 @@
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
-import { Box, ButtonBase, DialogActions, Popover, Typography } from '@mui/material';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import { Box, ButtonBase, DialogActions, IconButton, Popover, Typography } from '@mui/material';
 import { StaticDatePicker } from '@mui/x-date-pickers';
 import { useState, type FC } from 'react';
 import { dateLib } from '@/shared/lib';
@@ -23,7 +25,16 @@ export const SelectDateView: FC<Props> = ({ currentDate, onSubmitDate }) => {
   };
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+      <IconButton
+        color="inherit"
+        aria-label="Previous day"
+        onClick={() => {
+          onSubmitDate(dateLib.addDays(currentDate, -1));
+        }}
+      >
+        <ChevronLeftIcon />
+      </IconButton>
       <ButtonBase
         onClick={event => {
           setSelectedDate(currentDate);
@@ -35,6 +46,15 @@ export const SelectDateView: FC<Props> = ({ currentDate, onSubmitDate }) => {
         </Typography>
         {anchorEl ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}
       </ButtonBase>
+      <IconButton
+        color="inherit"
+        aria-label="Next day"
+        onClick={() => {
+          onSubmitDate(dateLib.addDays(currentDate, 1));
+        }}
+      >
+        <ChevronRightIcon />
+      </IconButton>
       <Popover
         id={id}
         open={!!anchorEl}
