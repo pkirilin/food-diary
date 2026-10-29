@@ -4,7 +4,7 @@ import { enUS } from 'date-fns/locale';
 
 export const enum DateFormat {
   Iso = 'yyyy-MM-dd',
-  UserFriendly = 'd MMM yyyy',
+  UserFriendly = 'E, d MMM yyyy',
 }
 
 export const formatToISOStringWithoutTime = format(DateFormat.Iso);

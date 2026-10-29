@@ -1,5 +1,3 @@
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import {
@@ -62,6 +60,7 @@ export const SelectDateView: FC<Props> = ({ currentDate, onSubmitDate }) => {
       <IconButton
         color="inherit"
         aria-label="Previous day"
+        edge="start"
         onClick={() => {
           onSubmitDate(dateLib.addDays(currentDate, -1));
         }}
@@ -69,15 +68,15 @@ export const SelectDateView: FC<Props> = ({ currentDate, onSubmitDate }) => {
         <ChevronLeftIcon />
       </IconButton>
       <ButtonBase
+        sx={{ p: 1, borderRadius: 2 }}
         onClick={event => {
           setSelectedDate(currentDate);
           setDateButton(event.currentTarget);
         }}
       >
-        <Typography variant="h6" component="span">
+        <Typography variant="button" component="span">
           {dateLib.formatToUserFriendlyString(currentDate)}
         </Typography>
-        {dateButton ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}
       </ButtonBase>
       <IconButton
         color="inherit"
