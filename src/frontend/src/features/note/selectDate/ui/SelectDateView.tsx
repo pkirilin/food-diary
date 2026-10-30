@@ -15,7 +15,13 @@ import { useState, type FC } from 'react';
 import { APP_BAR_HEIGHT_SM, APP_BAR_HEIGHT_XS } from '@/shared/constants';
 import { dateLib } from '@/shared/lib';
 import { Button } from '@/shared/ui';
-import { WEEKS_IN_GRID, calendarSx, paperSx, popoverSx, scrimBelowAppBarSx } from './styles';
+import {
+  WEEKS_IN_GRID,
+  calendarSx,
+  paperSx,
+  popoverSx,
+  scrimBelowAppBarSx,
+} from './SelectDateView.styles';
 
 export type OnSubmitDateFn = (date: Date) => void;
 
