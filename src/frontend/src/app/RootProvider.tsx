@@ -5,6 +5,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { type Store } from '@reduxjs/toolkit';
 import { type PropsWithChildren, type FC } from 'react';
 import { Provider } from 'react-redux';
+import { dateLib } from '@/shared/lib';
 import { theme } from './theme';
 
 interface Props {
@@ -15,7 +16,10 @@ export const RootProvider: FC<PropsWithChildren<Props>> = ({ children, store }) 
   return (
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={theme}>
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <LocalizationProvider
+          dateAdapter={AdapterDateFns}
+          adapterLocale={dateLib.mondayStartLocale}
+        >
           <Provider store={store}>
             <CssBaseline />
             {children}

@@ -25,7 +25,10 @@ test('I can log my current weight', async () => {
 
   const dateField = await screen.findByRole('group', { name: /date/i });
   const weightField = await screen.findByPlaceholderText(/weight/i);
-  expect(within(dateField).getByRole('spinbutton', { name: /day/i })).toHaveTextContent('30');
+  expect(within(dateField).getByRole('spinbutton', { name: /^week day$/i })).toHaveTextContent(
+    'Sun',
+  );
+  expect(within(dateField).getByRole('spinbutton', { name: /^day$/i })).toHaveTextContent('30');
   expect(within(dateField).getByRole('spinbutton', { name: /month/i })).toHaveTextContent('Jan');
   expect(within(dateField).getByRole('spinbutton', { name: /year/i })).toHaveTextContent('2022');
   expect(weightField).toHaveValue('73');
@@ -39,5 +42,5 @@ test('I can log my current weight', async () => {
   await user.type(weightField, '75');
 
   await user.click(screen.getByRole('button', { name: /save/i }));
-  expect(await screen.findByRole('listitem', { name: /75 kg on 29 Jan 2022/i })).toBeVisible();
+  expect(await screen.findByRole('listitem', { name: /75 kg on Sat, 29 Jan 2022/i })).toBeVisible();
 });
