@@ -22,6 +22,7 @@ import { Route as AppSettingsRouteImport } from './routes/_app/settings'
 import { Route as AppWeightRouteImport } from './routes/_app/weight'
 import { Route as AppLogFoodRouteImport } from './routes/_app/log.food'
 import { Route as AppLogFoodIndexRouteImport } from './routes/_app/log.food.index'
+import { Route as AppLogFoodProductsNewRouteImport } from './routes/_app/log.food.products.new'
 import { Route as AppLogFoodProductsProductIdIndexRouteImport } from './routes/_app/log.food.products.$productId.index'
 
 const AppRoute = AppRouteImport.update({
@@ -88,6 +89,11 @@ const AppLogFoodIndexRoute = AppLogFoodIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AppLogFoodRoute,
 } as any)
+const AppLogFoodProductsNewRoute = AppLogFoodProductsNewRouteImport.update({
+  id: '/products/new',
+  path: '/products/new',
+  getParentRoute: () => AppLogFoodRoute,
+} as any)
 const AppLogFoodProductsProductIdIndexRoute =
   AppLogFoodProductsProductIdIndexRouteImport.update({
     id: '/products/$productId/',
@@ -108,6 +114,7 @@ export interface FileRoutesByFullPath {
   '/weight': typeof AppWeightRoute
   '/log/food': typeof AppLogFoodRouteWithChildren
   '/log/food/': typeof AppLogFoodIndexRoute
+  '/log/food/products/new': typeof AppLogFoodProductsNewRoute
   '/log/food/products/$productId/': typeof AppLogFoodProductsProductIdIndexRoute
 }
 export interface FileRoutesByTo {
@@ -122,6 +129,7 @@ export interface FileRoutesByTo {
   '/weight': typeof AppWeightRoute
   '/': typeof AppIndexRoute
   '/log/food': typeof AppLogFoodIndexRoute
+  '/log/food/products/new': typeof AppLogFoodProductsNewRoute
   '/log/food/products/$productId': typeof AppLogFoodProductsProductIdIndexRoute
 }
 export interface FileRoutesById {
@@ -139,6 +147,7 @@ export interface FileRoutesById {
   '/_app/': typeof AppIndexRoute
   '/_app/log/food': typeof AppLogFoodRouteWithChildren
   '/_app/log/food/': typeof AppLogFoodIndexRoute
+  '/_app/log/food/products/new': typeof AppLogFoodProductsNewRoute
   '/_app/log/food/products/$productId/': typeof AppLogFoodProductsProductIdIndexRoute
 }
 export interface FileRouteTypes {
@@ -156,6 +165,7 @@ export interface FileRouteTypes {
     | '/weight'
     | '/log/food'
     | '/log/food/'
+    | '/log/food/products/new'
     | '/log/food/products/$productId/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -170,6 +180,7 @@ export interface FileRouteTypes {
     | '/weight'
     | '/'
     | '/log/food'
+    | '/log/food/products/new'
     | '/log/food/products/$productId'
   id:
     | '__root__'
@@ -186,6 +197,7 @@ export interface FileRouteTypes {
     | '/_app/'
     | '/_app/log/food'
     | '/_app/log/food/'
+    | '/_app/log/food/products/new'
     | '/_app/log/food/products/$productId/'
   fileRoutesById: FileRoutesById
 }
@@ -290,6 +302,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppLogFoodIndexRouteImport
       parentRoute: typeof AppLogFoodRoute
     }
+    '/_app/log/food/products/new': {
+      id: '/_app/log/food/products/new'
+      path: '/products/new'
+      fullPath: '/log/food/products/new'
+      preLoaderRoute: typeof AppLogFoodProductsNewRouteImport
+      parentRoute: typeof AppLogFoodRoute
+    }
     '/_app/log/food/products/$productId/': {
       id: '/_app/log/food/products/$productId/'
       path: '/products/$productId'
@@ -302,11 +321,13 @@ declare module '@tanstack/react-router' {
 
 interface AppLogFoodRouteChildren {
   AppLogFoodIndexRoute: typeof AppLogFoodIndexRoute
+  AppLogFoodProductsNewRoute: typeof AppLogFoodProductsNewRoute
   AppLogFoodProductsProductIdIndexRoute: typeof AppLogFoodProductsProductIdIndexRoute
 }
 
 const AppLogFoodRouteChildren: AppLogFoodRouteChildren = {
   AppLogFoodIndexRoute: AppLogFoodIndexRoute,
+  AppLogFoodProductsNewRoute: AppLogFoodProductsNewRoute,
   AppLogFoodProductsProductIdIndexRoute: AppLogFoodProductsProductIdIndexRoute,
 }
 

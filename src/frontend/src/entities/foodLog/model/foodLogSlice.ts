@@ -62,6 +62,9 @@ export const foodLogSlice = createSlice({
         );
       }
     },
+    mealDraftDiscarded: state => {
+      state.mealDraft = null;
+    },
     mealDraftLogged: state => {
       state.mealDraft = null;
     },

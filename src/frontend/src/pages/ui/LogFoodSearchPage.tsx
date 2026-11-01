@@ -5,15 +5,23 @@ import { PageContainer } from '@/shared/ui';
 interface Props {
   query: string;
   onQueryChange: (query: string) => void;
+  onCreateProduct: (name: string) => void;
   onOpenProduct: (productId: number) => void;
   onLogged: (date: string) => void;
 }
 
-export const LogFoodSearchPage: FC<Props> = ({ query, onQueryChange, onOpenProduct, onLogged }) => (
+export const LogFoodSearchPage: FC<Props> = ({
+  query,
+  onQueryChange,
+  onCreateProduct,
+  onOpenProduct,
+  onLogged,
+}) => (
   <PageContainer>
     <LogFoodSearchResults
       query={query}
       onQueryChange={onQueryChange}
+      onCreateProduct={onCreateProduct}
       onOpenProduct={onOpenProduct}
     />
     <MealDraftTray onOpenProduct={onOpenProduct} onLogged={onLogged} />

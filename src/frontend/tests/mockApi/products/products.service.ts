@@ -67,11 +67,17 @@ interface CreateProductResultSuccess {
   type: 'Success';
   id: number;
 }
-interface CreateProductResultError {
+interface CreateProductResultCategoryNotFound {
   type: 'CategoryNotFound';
 }
+interface CreateProductResultProductAlreadyExists {
+  type: 'ProductAlreadyExists';
+}
 
-type CreateProductResult = CreateProductResultSuccess | CreateProductResultError;
+type CreateProductResult =
+  | CreateProductResultSuccess
+  | CreateProductResultCategoryNotFound
+  | CreateProductResultProductAlreadyExists;
 
 export const create = ({
   name,
@@ -92,6 +98,10 @@ export const create = ({
 
   if (!category) {
     return { type: 'CategoryNotFound' };
+  }
+
+  if (db.product.findFirst({ where: { name: { equals: name } } })) {
+    return { type: 'ProductAlreadyExists' };
   }
 
   const maxId =
