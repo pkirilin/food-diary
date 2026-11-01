@@ -1,9 +1,8 @@
-import { Alert, AlertTitle, Stack } from '@mui/material';
 import { type FC } from 'react';
 import { categoryLib } from '@/entities/category';
 import { ProductForm, type productModel } from '@/entities/product';
-import { Button } from '@/shared/ui';
 import { useCreateProduct } from '../lib/useCreateProduct';
+import { ProductFormFooter } from './ProductFormFooter';
 
 const FORM_ID = 'log-food-create-product-form';
 
@@ -34,17 +33,12 @@ export const CreateProductForm: FC<Props> = ({ defaultValues, onCreated }) => {
         serverErrors={serverErrors}
         onSubmit={createProduct}
       />
-      {formError && (
-        <Alert severity="error" sx={{ mt: 2 }}>
-          <AlertTitle>{formError.title}</AlertTitle>
-          {formError.message}
-        </Alert>
-      )}
-      <Stack direction="row" sx={{ justifyContent: 'flex-end', mt: 2 }}>
-        <Button type="submit" form={FORM_ID} variant="contained" loading={isCreating}>
-          Create
-        </Button>
-      </Stack>
+      <ProductFormFooter
+        formId={FORM_ID}
+        formError={formError}
+        submitting={isCreating}
+        submitLabel="Create"
+      />
     </>
   );
 };

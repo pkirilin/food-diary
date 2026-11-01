@@ -1,10 +1,10 @@
-import { Alert, AlertTitle, Box, CircularProgress, Stack } from '@mui/material';
+import { Alert, Box, CircularProgress } from '@mui/material';
 import { type FC } from 'react';
 import { categoryLib } from '@/entities/category';
 import { ProductForm, productApi } from '@/entities/product';
-import { Button } from '@/shared/ui';
 import { toProductFormValues } from '../lib/mapping';
 import { useEditProduct } from '../lib/useEditProduct';
+import { ProductFormFooter } from './ProductFormFooter';
 
 const FORM_ID = 'log-food-edit-product-form';
 
@@ -41,17 +41,12 @@ export const EditProductForm: FC<Props> = ({ productId, onSaved }) => {
         serverErrors={serverErrors}
         onSubmit={editProduct}
       />
-      {formError && (
-        <Alert severity="error" sx={{ mt: 2 }}>
-          <AlertTitle>{formError.title}</AlertTitle>
-          {formError.message}
-        </Alert>
-      )}
-      <Stack direction="row" sx={{ justifyContent: 'flex-end', mt: 2 }}>
-        <Button type="submit" form={FORM_ID} variant="contained" loading={isSaving}>
-          Save
-        </Button>
-      </Stack>
+      <ProductFormFooter
+        formId={FORM_ID}
+        formError={formError}
+        submitting={isSaving}
+        submitLabel="Save"
+      />
     </>
   );
 };

@@ -1,9 +1,9 @@
-import { useMemo } from 'react';
 import { useAppDispatch } from '@/app/store';
 import { foodLogModel } from '@/entities/foodLog';
 import { productApi, type ProductFormServerErrors, type productModel } from '@/entities/product';
-import { type ClientError, parseClientError, parseFieldValidationError } from '@/shared/api';
-import { fromProductFormValues, toCreateProductRequest } from './mapping';
+import { type ClientError } from '@/shared/api';
+import { toMealDraftProductFromForm, toCreateProductRequest } from './mapping';
+import { useProductFormErrors } from './useProductFormErrors';
 
 interface CreateProductResult {
   isCreating: boolean;
@@ -17,12 +17,7 @@ export const useCreateProduct = (onCreated: () => void): CreateProductResult => 
   const [createProductMutation, { isLoading, isError, error }] =
     productApi.useCreateProductMutation();
 
-  const serverErrors = useMemo<ProductFormServerErrors>(
-    () => ({ name: parseFieldValidationError(error, 'name') }),
-    [error],
-  );
-
-  const formError = isError && serverErrors.name === null ? parseClientError(error) : null;
+  const { serverErrors, formError } = useProductFormErrors(isError, error);
 
   const createProduct = async (values: productModel.ProductFormValues): Promise<void> => {
     if (values.category === null) {
@@ -35,7 +30,7 @@ export const useCreateProduct = (onCreated: () => void): CreateProductResult => 
       return;
     }
 
-    const product = fromProductFormValues(result.data.id, values);
+    const product = toMealDraftProductFromForm(result.data.id, values);
     dispatch(foodLogModel.actions.foodLogAdded({ product, quantity: product.defaultQuantity }));
     onCreated();
   };

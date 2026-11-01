@@ -3,7 +3,7 @@ import { type FC } from 'react';
 import { useAppSelector } from '@/app/store';
 import { foodLogModel } from '@/entities/foodLog';
 import { productApi } from '@/entities/product';
-import { fromGetProductByIdResponse } from '../lib/mapping';
+import { toMealDraftProductFromResponse } from '../lib/mapping';
 import { FoodLogQuantityForm } from './FoodLogQuantityForm';
 
 interface Props {
@@ -21,7 +21,7 @@ export const LogFoodProductDetail: FC<Props> = ({ productId, onDone, onEditProdu
   if (data !== undefined) {
     return (
       <FoodLogQuantityForm
-        product={fromGetProductByIdResponse(data)}
+        product={toMealDraftProductFromResponse(data)}
         foodLog={foodLog}
         onDone={onDone}
         onEditProduct={onEditProduct}

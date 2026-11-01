@@ -134,7 +134,7 @@ export const toProductFormValues = ({
   salt,
 });
 
-export const fromProductFormValues = (
+export const toMealDraftProductFromForm = (
   id: number,
   {
     name,
@@ -158,7 +158,7 @@ export const fromProductFormValues = (
   salt,
 });
 
-export const fromGetProductByIdResponse = ({
+export const toMealDraftProductFromResponse = ({
   id,
   name,
   defaultQuantity,

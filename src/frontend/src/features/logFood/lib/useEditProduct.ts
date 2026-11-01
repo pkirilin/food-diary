@@ -1,9 +1,9 @@
-import { useMemo } from 'react';
 import { useAppDispatch } from '@/app/store';
 import { foodLogModel } from '@/entities/foodLog';
 import { productApi, type ProductFormServerErrors, type productModel } from '@/entities/product';
-import { type ClientError, parseClientError, parseFieldValidationError } from '@/shared/api';
-import { fromProductFormValues, toEditProductRequest } from './mapping';
+import { type ClientError } from '@/shared/api';
+import { toMealDraftProductFromForm, toEditProductRequest } from './mapping';
+import { useProductFormErrors } from './useProductFormErrors';
 
 interface EditProductResult {
   isSaving: boolean;
@@ -16,12 +16,7 @@ export const useEditProduct = (productId: number, onSaved: () => void): EditProd
   const dispatch = useAppDispatch();
   const [editProductMutation, { isLoading, isError, error }] = productApi.useEditProductMutation();
 
-  const serverErrors = useMemo<ProductFormServerErrors>(
-    () => ({ name: parseFieldValidationError(error, 'name') }),
-    [error],
-  );
-
-  const formError = isError && serverErrors.name === null ? parseClientError(error) : null;
+  const { serverErrors, formError } = useProductFormErrors(isError, error);
 
   const editProduct = async (values: productModel.ProductFormValues): Promise<void> => {
     if (values.category === null) {
@@ -36,7 +31,7 @@ export const useEditProduct = (productId: number, onSaved: () => void): EditProd
       return;
     }
 
-    dispatch(foodLogModel.actions.productUpdated(fromProductFormValues(productId, values)));
+    dispatch(foodLogModel.actions.productUpdated(toMealDraftProductFromForm(productId, values)));
     onSaved();
   };
 
