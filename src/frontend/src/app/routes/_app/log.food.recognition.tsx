@@ -1,6 +1,7 @@
-import { createFileRoute, redirect, useRouter } from '@tanstack/react-router';
+import { createFileRoute, redirect } from '@tanstack/react-router';
 import { logFoodModel } from '@/features/logFood';
 import { LogFoodRecognitionPage } from '@/pages/ui/LogFoodRecognitionPage';
+import { useGoBack } from '@/shared/hooks';
 
 export const Route = createFileRoute('/_app/log/food/recognition')({
   staticData: {
@@ -15,18 +16,7 @@ export const Route = createFileRoute('/_app/log/food/recognition')({
 });
 
 function LogFoodRecognitionRoute() {
-  const router = useRouter();
-  const navigate = Route.useNavigate();
+  const goBack = useGoBack({ to: '/log/food', replace: true });
 
-  return (
-    <LogFoodRecognitionPage
-      onCreated={() => {
-        if (router.history.canGoBack()) {
-          router.history.back();
-        } else {
-          void navigate({ to: '/log/food', replace: true });
-        }
-      }}
-    />
-  );
+  return <LogFoodRecognitionPage onCreated={goBack} />;
 }

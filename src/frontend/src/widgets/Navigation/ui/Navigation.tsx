@@ -2,8 +2,9 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import CloseIcon from '@mui/icons-material/Close';
 import MenuIcon from '@mui/icons-material/Menu';
 import { Box, IconButton, Skeleton, Typography } from '@mui/material';
-import { useLocation, useMatches, useRouter } from '@tanstack/react-router';
-import { type ComponentType, type FC, Suspense, useState } from 'react';
+import { useLocation, useMatches } from '@tanstack/react-router';
+import { type ComponentType, type FC, type ReactNode, Suspense, useState } from 'react';
+import { useGoBack } from '@/shared/hooks';
 import { type Title } from '../model';
 import { NavigationDrawer } from './NavigationDrawer';
 
@@ -12,6 +13,12 @@ interface AppBarTitleProps {
 }
 
 interface AppBarActionsProps {
+  Actions: ComponentType | undefined;
+}
+
+interface TitledAppBarProps {
+  leadingButton: ReactNode;
+  title: Title;
   Actions: ComponentType | undefined;
 }
 
@@ -40,22 +47,28 @@ const AppBarActions: FC<AppBarActionsProps> = ({ Actions }) =>
     </Suspense>
   );
 
+const TitledAppBar: FC<TitledAppBarProps> = ({ leadingButton, title, Actions }) => (
+  <Box
+    sx={{
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      gap: 1,
+    }}
+  >
+    <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+      {leadingButton}
+      <AppBarTitle title={title} />
+    </Box>
+    <AppBarActions Actions={Actions} />
+  </Box>
+);
+
 const BackButton: FC = () => {
-  const router = useRouter();
+  const goBack = useGoBack({ to: '/' });
 
   return (
-    <IconButton
-      color="inherit"
-      edge="start"
-      aria-label="Back"
-      onClick={() => {
-        if (router.history.canGoBack()) {
-          router.history.back();
-        } else {
-          void router.navigate({ to: '/' });
-        }
-      }}
-    >
+    <IconButton color="inherit" edge="start" aria-label="Back" onClick={goBack}>
       <ArrowBackIcon />
     </IconButton>
   );
@@ -79,52 +92,38 @@ export const Navigation: FC = () => {
   switch (appBar.variant) {
     case 'menu':
       return (
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            gap: 1,
-          }}
-        >
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
-            <IconButton
-              color="inherit"
-              edge="start"
-              aria-label="Open menu"
-              onClick={() => {
-                setDrawerVisible(visible => !visible);
-              }}
-            >
-              {drawerVisible ? <CloseIcon /> : <MenuIcon />}
-            </IconButton>
-            <NavigationDrawer
-              visible={drawerVisible}
-              toggle={() => {
-                setDrawerVisible(false);
-              }}
-            />
-            <AppBarTitle title={appBar.title} />
-          </Box>
-          <AppBarActions Actions={appBar.Actions} />
-        </Box>
+        <TitledAppBar
+          leadingButton={
+            <>
+              <IconButton
+                color="inherit"
+                edge="start"
+                aria-label="Open menu"
+                onClick={() => {
+                  setDrawerVisible(visible => !visible);
+                }}
+              >
+                {drawerVisible ? <CloseIcon /> : <MenuIcon />}
+              </IconButton>
+              <NavigationDrawer
+                visible={drawerVisible}
+                toggle={() => {
+                  setDrawerVisible(false);
+                }}
+              />
+            </>
+          }
+          title={appBar.title}
+          Actions={appBar.Actions}
+        />
       );
     case 'back':
       return (
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            gap: 1,
-          }}
-        >
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
-            <BackButton />
-            <AppBarTitle title={appBar.title} />
-          </Box>
-          <AppBarActions Actions={appBar.Actions} />
-        </Box>
+        <TitledAppBar
+          leadingButton={<BackButton />}
+          title={appBar.title}
+          Actions={appBar.Actions}
+        />
       );
     case 'search':
       return (

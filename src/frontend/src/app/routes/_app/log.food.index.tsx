@@ -2,6 +2,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { lazy } from 'react';
 import { z } from 'zod';
 import { LogFoodSearchPage } from '@/pages/ui/LogFoodSearchPage';
+import { toSearchQuery } from './-searchQuery';
 
 const SearchSlot = lazy(() =>
   import('./-SearchSlot').then(module => ({ default: module.SearchSlot })),
@@ -29,7 +30,7 @@ function LogFoodSearchRoute() {
     <LogFoodSearchPage
       query={q}
       onQueryChange={query => {
-        void navigate({ search: { q: query === '' ? undefined : query }, replace: true });
+        void navigate({ search: { q: toSearchQuery(query) }, replace: true });
       }}
       onCreateProduct={name => {
         void navigate({ to: '/log/food/products/new', search: { name } });

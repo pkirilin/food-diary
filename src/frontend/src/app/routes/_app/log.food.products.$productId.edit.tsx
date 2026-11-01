@@ -1,14 +1,10 @@
-import { createFileRoute, useRouter } from '@tanstack/react-router';
-import { z } from 'zod';
+import { createFileRoute } from '@tanstack/react-router';
 import { LogFoodEditProductPage } from '@/pages/ui/LogFoodEditProductPage';
+import { useGoBack } from '@/shared/hooks';
+import { productIdParams } from './-productIdParams';
 
 export const Route = createFileRoute('/_app/log/food/products/$productId/edit')({
-  params: {
-    parse: ({ productId }) => ({
-      productId: z.coerce.number<string>().int().positive().parse(productId),
-    }),
-    stringify: ({ productId }) => ({ productId: String(productId) }),
-  },
+  params: productIdParams,
   staticData: {
     appBar: { variant: 'back', title: 'Edit product' },
   },
@@ -17,23 +13,11 @@ export const Route = createFileRoute('/_app/log/food/products/$productId/edit')(
 
 function LogFoodEditProductRoute() {
   const { productId } = Route.useParams();
-  const router = useRouter();
-  const navigate = Route.useNavigate();
+  const goBack = useGoBack({
+    to: '/log/food/products/$productId',
+    params: { productId },
+    replace: true,
+  });
 
-  return (
-    <LogFoodEditProductPage
-      productId={productId}
-      onSaved={() => {
-        if (router.history.canGoBack()) {
-          router.history.back();
-        } else {
-          void navigate({
-            to: '/log/food/products/$productId',
-            params: { productId },
-            replace: true,
-          });
-        }
-      }}
-    />
-  );
+  return <LogFoodEditProductPage productId={productId} onSaved={goBack} />;
 }

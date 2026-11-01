@@ -1,6 +1,7 @@
-import { createFileRoute, useRouter } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 import { z } from 'zod';
 import { LogFoodCreateProductPage } from '@/pages/ui/LogFoodCreateProductPage';
+import { useGoBack } from '@/shared/hooks';
 
 export const Route = createFileRoute('/_app/log/food/products/new')({
   validateSearch: z.object({
@@ -14,19 +15,7 @@ export const Route = createFileRoute('/_app/log/food/products/new')({
 
 function LogFoodCreateProductRoute() {
   const { name = '' } = Route.useSearch();
-  const router = useRouter();
-  const navigate = Route.useNavigate();
+  const goBack = useGoBack({ to: '/log/food', replace: true });
 
-  return (
-    <LogFoodCreateProductPage
-      name={name}
-      onCreated={() => {
-        if (router.history.canGoBack()) {
-          router.history.back();
-        } else {
-          void navigate({ to: '/log/food', replace: true });
-        }
-      }}
-    />
-  );
+  return <LogFoodCreateProductPage name={name} onCreated={goBack} />;
 }
