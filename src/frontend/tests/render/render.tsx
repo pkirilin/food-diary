@@ -1,4 +1,5 @@
 import {
+  createHashHistory,
   createMemoryHistory,
   createRootRoute,
   createRouter,
@@ -53,8 +54,15 @@ export const renderApp = async (
     usersService.signInById(1);
   }
 
+  // The app's own hash history, because a memory history never runs navigation blockers on back
+  window.history.replaceState(null, '', `/#${url}`);
+  const history = createHashHistory();
+  onTestFinished(() => {
+    history.destroy();
+  });
+
   const store = configureStore();
-  const router = createAppRouter(store, createMemoryHistory({ initialEntries: [url] }));
+  const router = createAppRouter(store, history);
 
   const view = rtlRender(
     <RootProvider store={store}>
