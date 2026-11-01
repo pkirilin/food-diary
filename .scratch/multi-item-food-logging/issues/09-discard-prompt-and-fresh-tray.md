@@ -1,15 +1,14 @@
-# 09: Discard prompt and a fresh tray on entry
+# 09: Discard prompt when leaving the flow
 
-**What to build:** Leaving the flow while the tray has items asks `Discard N selected?`. This covers the AppBar back arrow, the drawer and the browser's back button. Leaving with an empty tray, or right after a successful **Log foods**, doesn't ask. Each time the flow is opened, the tray starts empty. Moving between the flow's own routes (search, detail, create, recognition) never asks. See the spec's "Routes and state" section.
+**What to build:** Leaving `/log/food/*` while the Meal Draft has products asks `Discard N food logs?`. This covers the AppBar back arrow and the browser's back button. Leaving with an empty Meal Draft, or right after a successful **Log food**, doesn't ask. Moving between the flow's own routes (search, detail, edit, create, recognition) never asks. A fresh Meal Draft on entry is already handled by `mealDraftStarted` (ticket 01). See the spec's "Leaving the flow" section.
 
 **Blocked by:** 03
 
 **Status:** ready-for-agent
 
-- [ ] Leaving the flow with a non-empty tray shows `Discard N selected?`, with the current count
-- [ ] Confirming leaves and empties the tray. Cancelling stays, with the tray intact
-- [ ] No prompt when the tray is empty, or after a successful **Log foods**
+- [ ] Leaving the flow with a non-empty Meal Draft shows `Discard N food logs?`, with the current count
+- [ ] Confirming dispatches `mealDraftDiscarded` and leaves. Cancelling stays, with the Meal Draft intact
+- [ ] No prompt when the Meal Draft is empty, or after `mealDraftLogged`
 - [ ] Moving between the flow's routes never prompts
-- [ ] Opening the flow again starts with an empty tray
-- [ ] The prompt uses the router's navigation blocker
-- [ ] `multiItemFoodLogging.test.tsx` covers prompting, confirming, cancelling and an empty-tray exit
+- [ ] The prompt uses the router's navigation blocker, in the `/log/food` layout route
+- [ ] `multiItemFoodLogging.test.tsx` covers prompting, confirming, cancelling and an empty-draft exit
