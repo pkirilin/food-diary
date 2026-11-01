@@ -358,6 +358,64 @@ test('a failed Create shows an error and keeps the input', async () => {
   expect(screen.getByRole('textbox', { name: 'Name' })).toHaveValue('Yogurt');
 });
 
+const addChickenAndOatsToBreakfast = async (user: UserEvent): Promise<HTMLElement> => {
+  await openDayPageWithMultiItemFoodLoggingOn(user);
+  await clickAddMeal(user, 'Breakfast');
+  await addFoundProduct(user, 'oat', 'Oats');
+  await waitFor(async () => expect(await findSearchField()).toHaveValue(''));
+  await addFoundProduct(user, 'chick', 'Chicken');
+  await waitFor(async () => expect(await findSearchField()).toHaveValue(''));
+  return await findTray('Breakfast');
+};
+
+const findPickedFoods = (tray: HTMLElement): Promise<HTMLElement> =>
+  within(tray).findByRole('list', { name: 'Picked foods' });
+
+test('the expanded tray lists the picked products in the order picked, without a quantity field', async () => {
+  const user = userEvent.setup();
+  const tray = await addChickenAndOatsToBreakfast(user);
+  const toggle = within(tray).getByRole('button', { name: 'Picked foods' });
+  expect(toggle).toHaveAttribute('aria-expanded', 'false');
+
+  await user.click(toggle);
+
+  expect(toggle).toHaveAttribute('aria-expanded', 'true');
+  const rows = within(await findPickedFoods(tray)).getAllByRole('listitem');
+  expect(rows.map(row => row.textContent)).toEqual([
+    expect.stringMatching(/^Oats100 g · 379 kcal/),
+    expect.stringMatching(/^Chicken150 g · 358 kcal/),
+  ]);
+  expect(within(tray).queryByRole('textbox')).not.toBeInTheDocument();
+  expect(within(tray).queryByRole('spinbutton')).not.toBeInTheDocument();
+
+  await user.click(toggle);
+
+  expect(toggle).toHaveAttribute('aria-expanded', 'false');
+  await waitFor(() =>
+    expect(within(tray).queryByRole('list', { name: 'Picked foods' })).not.toBeInTheDocument(),
+  );
+});
+
+test('deleting a product from the expanded tray updates the count and the total', async () => {
+  const user = userEvent.setup();
+  const tray = await addChickenAndOatsToBreakfast(user);
+  await user.click(within(tray).getByRole('button', { name: 'Picked foods' }));
+  const pickedFoods = await findPickedFoods(tray);
+
+  await user.click(within(pickedFoods).getByRole('button', { name: 'Delete Oats' }));
+
+  expect(within(pickedFoods).getAllByRole('listitem')).toHaveLength(1);
+  expect(within(pickedFoods).getByRole('listitem')).toHaveTextContent('Chicken');
+  expect(within(tray).getByText('1')).toBeVisible();
+  expect(within(tray).getByText('358 kcal')).toBeVisible();
+
+  await user.click(within(pickedFoods).getByRole('button', { name: 'Delete Chicken' }));
+
+  expect(within(tray).getByText('0')).toBeVisible();
+  expect(tray).toHaveTextContent('Tap ⊕ to add a food');
+  expect(within(tray).getByRole('button', { name: 'Log food' })).toBeDisabled();
+});
+
 test('opening the search screen with no Meal Draft lands on the day page', async () => {
   await renderApp('/log/food?q=chicken', { signedIn: true });
 

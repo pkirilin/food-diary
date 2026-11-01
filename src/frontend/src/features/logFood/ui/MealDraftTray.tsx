@@ -1,12 +1,28 @@
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
-import { Alert, AlertTitle, Badge, Box, Container, Paper, Stack, Typography } from '@mui/material';
-import { type FC, useId } from 'react';
+import {
+  Alert,
+  AlertTitle,
+  Badge,
+  Box,
+  Collapse,
+  Container,
+  IconButton,
+  List,
+  Paper,
+  Stack,
+  Typography,
+} from '@mui/material';
+import { type FC, useId, useState } from 'react';
 import { useAppSelector } from '@/app/store';
 import { foodLogModel } from '@/entities/foodLog';
 import { noteLib } from '@/entities/note';
+import { APP_BAR_HEIGHT_SM, APP_BAR_HEIGHT_XS } from '@/shared/constants';
 import { Button } from '@/shared/ui';
 import { toNoteMealType } from '../lib/mapping';
 import { useLogMealDraft } from '../lib/useLogMealDraft';
+import { MealDraftFoodLogListItem } from './MealDraftFoodLogListItem';
 
 const COLLAPSED_ROW_HEIGHT = 64;
 
@@ -16,6 +32,8 @@ interface Props {
 
 export const MealDraftTray: FC<Props> = ({ onLogged }) => {
   const headingId = useId();
+  const foodLogsListId = useId();
+  const [expandRequested, setExpandRequested] = useState(false);
   const mealDraft = useAppSelector(foodLogModel.selectors.mealDraft);
   const foodLogsCount = useAppSelector(foodLogModel.selectors.foodLogsCount);
   const totalCalories = useAppSelector(foodLogModel.selectors.totalCalories);
@@ -24,6 +42,8 @@ export const MealDraftTray: FC<Props> = ({ onLogged }) => {
   if (mealDraft === null) {
     return null;
   }
+
+  const expanded = expandRequested && foodLogsCount > 0;
 
   return (
     <>
@@ -39,18 +59,35 @@ export const MealDraftTray: FC<Props> = ({ onLogged }) => {
           left: 0,
           right: 0,
           zIndex: theme => theme.zIndex.appBar,
+          display: 'flex',
+          flexDirection: 'column',
+          maxHeight: {
+            xs: `calc(100dvh - ${APP_BAR_HEIGHT_XS}px)`,
+            sm: `calc(100dvh - ${APP_BAR_HEIGHT_SM}px)`,
+          },
           borderTopLeftRadius: 16,
           borderTopRightRadius: 16,
           pb: 'env(safe-area-inset-bottom)',
         }}
       >
-        <Container>
-          {error && (
-            <Alert severity="error" sx={{ mt: 1.5 }}>
-              <AlertTitle>{error.title}</AlertTitle>
-              {error.message}
-            </Alert>
-          )}
+        <Box sx={{ minHeight: 0, overflowY: 'auto' }}>
+          <Container>
+            {error && (
+              <Alert severity="error" sx={{ mt: 1.5 }}>
+                <AlertTitle>{error.title}</AlertTitle>
+                {error.message}
+              </Alert>
+            )}
+            <Collapse in={expanded} unmountOnExit>
+              <List id={foodLogsListId} aria-label="Picked foods">
+                {mealDraft.foodLogs.map(foodLog => (
+                  <MealDraftFoodLogListItem key={foodLog.product.id} foodLog={foodLog} />
+                ))}
+              </List>
+            </Collapse>
+          </Container>
+        </Box>
+        <Container sx={{ flexShrink: 0 }}>
           <Stack
             direction="row"
             spacing={2}
@@ -67,6 +104,17 @@ export const MealDraftTray: FC<Props> = ({ onLogged }) => {
                 {foodLogsCount > 0 ? `${totalCalories} kcal` : 'Tap ⊕ to add a food'}
               </Typography>
             </Box>
+            <IconButton
+              aria-label="Picked foods"
+              aria-controls={expanded ? foodLogsListId : undefined}
+              aria-expanded={expanded}
+              disabled={foodLogsCount === 0}
+              onClick={() => {
+                setExpandRequested(!expanded);
+              }}
+            >
+              {expanded ? <ExpandMoreIcon /> : <ExpandLessIcon />}
+            </IconButton>
             <Button
               variant="contained"
               loading={isLogging}
