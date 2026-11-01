@@ -240,6 +240,21 @@ test('Log food logs the Meal Draft in the order picked, after the Meal’s exist
   expect(screen.queryByRole('searchbox', { name: 'Search products' })).not.toBeInTheDocument();
 });
 
+test('the flow opens with an empty Meal Draft after a previous meal was logged', async () => {
+  const user = userEvent.setup();
+  const tray = await addChickenAndOatsToBreakfast(user);
+  await user.click(within(tray).getByRole('button', { name: 'Log food' }));
+  await waitFor(() =>
+    expect(screen.queryByRole('searchbox', { name: 'Search products' })).not.toBeInTheDocument(),
+  );
+
+  await clickAddMeal(user, 'Lunch');
+
+  const lunchTray = await findTray('Lunch');
+  expect(within(lunchTray).getByText('0')).toBeVisible();
+  expect(lunchTray).toHaveTextContent('Tap ⊕ to add a food');
+});
+
 test('a failed Log food keeps the Meal Draft, shows an error and can be retried', async () => {
   const user = userEvent.setup();
   await openDayPageWithMultiItemFoodLoggingOn(user);

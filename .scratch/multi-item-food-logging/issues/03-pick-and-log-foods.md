@@ -4,17 +4,17 @@
 
 **Blocked by:** 01, 02
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] ⊕ dispatches `foodLogAdded` with the default quantity, clears `q`, and the search field keeps focus: ⊕ calls `preventDefault` on `mousedown`
-- [ ] ⊕ on a product already in the Meal Draft dispatches `foodLogRemoved`
-- [ ] ⊕ buttons are labelled `Add <name>` / `Remove <name>`, and products in the Meal Draft show as selected
-- [ ] The collapsed tray is one row: count badge, the Meal's name in bold, total calories (or "Tap ⊕ to add a food" while empty), and **Log food**. It doesn't cover results
-- [ ] Total calories come from `entities/foodLog`'s own calorie rules, which have unit tests mirroring `entities/note`'s (ADR-0007)
-- [ ] **Log food** is disabled while the Meal Draft is empty
-- [ ] **Log food** sends `CreateNotesRequest` through a new `createNotes` mutation in `entities/note/api`, with the same contract name as the backend, in Meal Draft order. `foodLog`'s `MealType` is mapped to the API's
-- [ ] On success, `mealDraftLogged` empties the Meal Draft, the notes queries for that date are invalidated, and the day page lists the new Food Logs
-- [ ] On failure, the Meal Draft is kept, an error shows, and **Log food** can be retried
-- [ ] The MSW mock API has a matching batch handler, so the flow works in dev and in tests
-- [ ] The word "plate" appears nowhere in code or UI
-- [ ] `multiItemFoodLogging.test.tsx` covers adding, toggling off, logging, and a failed save
+- [x] ⊕ dispatches `foodLogAdded` with the default quantity, clears `q`, and the search field keeps focus: ⊕ calls `preventDefault` on `mousedown`
+- [x] ⊕ on a product already in the Meal Draft dispatches `foodLogRemoved`
+- [x] ⊕ buttons are labelled `Add <name>` / `Remove <name>`, and products in the Meal Draft show as selected
+- [x] The collapsed tray is one row: count badge, the Meal's name in bold, total calories (or "Tap ⊕ to add a food" while empty), and **Log food**. It doesn't cover results
+- [x] Total calories come from `entities/foodLog`'s own calorie rules, which have unit tests mirroring `entities/note`'s (ADR-0007)
+- [x] **Log food** is disabled while the Meal Draft is empty
+- [x] **Log food** sends `CreateNotesRequest` through a new `createNotes` mutation in `entities/note/api`, with the same contract name as the backend, in Meal Draft order. `foodLog`'s `MealType` is mapped to the API's
+- [x] On success, `mealDraftLogged` empties the Meal Draft, the notes queries for that date are invalidated, and the day page lists the new Food Logs
+- [x] On failure, the Meal Draft is kept, an error shows, and **Log food** can be retried
+- [x] The MSW mock API has a matching batch handler, so the flow works in dev and in tests
+- [x] The word "plate" appears nowhere in code or UI
+- [x] `multiItemFoodLogging.test.tsx` covers adding, toggling off, logging, and a failed save

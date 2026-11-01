@@ -4,10 +4,10 @@
 
 **Blocked by:** 10
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] `rg -n -i "prototype|e5bd584e" .scratch/multi-item-food-logging/spec.md .scratch/multi-item-food-logging/issues` finds nothing (this ticket's own file excepted)
-- [ ] `spec.md` has a **Final design** section covering routes, AppBar, tray, state and the FSD layout, matching the code
-- [ ] Every other spec section matches the code. Divergences found during implementation are written in, not left as notes
-- [ ] `research.md` is left as is: it describes other apps, not this one
-- [ ] The local `prototype/multi-item-food-logging` branch is deleted, after the owner confirms
+- [x] `rg -n -i "prototype|e5bd584e" .scratch/multi-item-food-logging/spec.md .scratch/multi-item-food-logging/issues` finds nothing (this ticket's own file excepted)
+- [x] `spec.md` has a **Final design** section covering routes, AppBar, tray, state and the FSD layout, matching the code
+- [x] Every other spec section matches the code. Divergences found during implementation are written in, not left as notes
+- [x] `research.md` is left as is: it describes other apps, not this one
+- [x] The local `prototype/multi-item-food-logging` branch is deleted, after the owner confirms

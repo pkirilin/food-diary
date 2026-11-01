@@ -1,6 +1,6 @@
 # Spec: Multi-item food logging
 
-Status: ready-for-agent
+Status: resolved
 
 Vocabulary: [GLOSSARY.md](../../GLOSSARY.md). **Food Log**, **Product**, **Meal**, **Meal
 Draft**, **Log** and **Create** are used with exactly those meanings. "Note" appears only
