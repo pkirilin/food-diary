@@ -1,9 +1,9 @@
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { type Image } from '../model';
+import { type imageLib } from '@/shared/lib';
 import { ImagePreviewList } from './ImagePreviewList';
 
-const createImage = (name: string): Image => ({
+const createImage = (name: string): imageLib.Image => ({
   id: `id-${name}`,
   name,
   base64: `data:image/jpeg;base64,${name}`,

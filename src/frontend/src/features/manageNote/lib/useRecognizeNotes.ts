@@ -1,15 +1,10 @@
 import { useAppDispatch } from '@/app/store';
-import { noteApi } from '@/entities/note';
+import { noteApi, noteLib } from '@/entities/note';
 import { parseClientError } from '@/shared/api';
-import { actions, type Image } from '../model';
+import { type imageLib } from '@/shared/lib';
+import { actions } from '../model';
 
-type RecognizeNotesFn = (images: Image[]) => Promise<void>;
-
-const createFileFromBase64 = async ({ base64, name }: Image): Promise<[Blob, string]> => {
-  const imageResponse = await fetch(base64);
-  const blob = await imageResponse.blob();
-  return [blob, name];
-};
+type RecognizeNotesFn = (images: imageLib.Image[]) => Promise<void>;
 
 export const useRecognizeNotes = (): RecognizeNotesFn => {
   const [triggerMutation] = noteApi.useRecognizeMutation();
@@ -19,14 +14,7 @@ export const useRecognizeNotes = (): RecognizeNotesFn => {
     try {
       dispatch(actions.noteRecognitionStarted());
 
-      const files = await Promise.all(images.map(image => createFileFromBase64(image)));
-      const formData = new FormData();
-
-      for (const [blob, name] of files) {
-        formData.append('files', blob, name);
-      }
-
-      const mutationResponse = await triggerMutation(formData).unwrap();
+      const mutationResponse = await triggerMutation(noteLib.toRecognizeFormData(images)).unwrap();
 
       dispatch(actions.noteRecognitionSucceded(mutationResponse));
     } catch (error) {

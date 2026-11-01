@@ -4,8 +4,6 @@ import { type ClientError } from '@/shared/api';
 import { type imageLib } from '@/shared/lib';
 import { type NoteFormValues } from './noteSchema';
 
-export type Image = imageLib.Image;
-
 export interface NoteRecognitionState {
   suggestions: RecognizeNoteItem[];
   isLoading: boolean;
@@ -31,7 +29,7 @@ interface ProductInputScreenState {
 interface ImageUploadScreenState {
   type: 'image-upload';
   formId: 'product-form' | null;
-  images: Image[];
+  images: imageLib.Image[];
 }
 
 export type ManageNoteScreenState =

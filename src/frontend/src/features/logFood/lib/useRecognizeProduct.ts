@@ -1,11 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '@/app/store';
-import { noteApi } from '@/entities/note';
+import { noteApi, noteLib } from '@/entities/note';
 import { type productModel } from '@/entities/product';
 import { type ClientError, parseClientError } from '@/shared/api';
-import { type imageLib } from '@/shared/lib';
 import { actions, selectors } from '../model';
-import { toRecognizedProductFormValues } from './mapping';
 
 interface RecognizeProductResult {
   isRecognizing: boolean;
@@ -13,23 +11,6 @@ interface RecognizeProductResult {
   recognizedProduct: productModel.ProductFormValues | null;
   retry: () => void;
 }
-
-const toBlob = (dataUrl: string): Blob => {
-  const [header, base64] = dataUrl.split(',');
-  const type = /^data:([^;]*)/.exec(header)?.[1] ?? '';
-  const bytes = Uint8Array.from(atob(base64), char => char.charCodeAt(0));
-  return new Blob([bytes], { type });
-};
-
-const toFormData = (photos: imageLib.Image[]): FormData => {
-  const formData = new FormData();
-
-  for (const { base64, name } of photos) {
-    formData.append('files', toBlob(base64), name);
-  }
-
-  return formData;
-};
 
 export const useRecognizeProduct = (): RecognizeProductResult => {
   const dispatch = useAppDispatch();
@@ -39,7 +20,7 @@ export const useRecognizeProduct = (): RecognizeProductResult => {
     noteApi.useRecognizeMutation();
 
   const sendPhotos = useCallback(() => {
-    const request = recognize(toFormData(photos));
+    const request = recognize(noteLib.toRecognizeFormData(photos));
 
     void request.then(result => {
       if ('data' in result) {
@@ -63,7 +44,7 @@ export const useRecognizeProduct = (): RecognizeProductResult => {
   return {
     isRecognizing: isUninitialized || isLoading,
     error: isError ? parseClientError(error) : null,
-    recognizedProduct: suggestion ? toRecognizedProductFormValues(suggestion) : null,
+    recognizedProduct: suggestion ? noteLib.toRecognizedProductFormValues(suggestion, null) : null,
     retry: () => {
       sendPhotos();
     },

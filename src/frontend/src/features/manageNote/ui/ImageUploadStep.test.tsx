@@ -5,11 +5,12 @@ import { RootProvider } from '@/app/RootProvider';
 import { configureStore } from '@/app/store';
 import { type RecognizeNoteItem } from '@/entities/note';
 import { type OnSubmitProductFn, type productModel } from '@/entities/product';
+import { type imageLib } from '@/shared/lib';
 import { type SelectOption } from '@/shared/types';
-import { actions, type Image } from '../model';
+import { actions } from '../model';
 import { ImageUploadStep } from './ImageUploadStep';
 
-const createImage = (name: string): Image => ({
+const createImage = (name: string): imageLib.Image => ({
   id: `id-${name}`,
   name,
   base64: `data:image/jpeg;base64,${name}`,
