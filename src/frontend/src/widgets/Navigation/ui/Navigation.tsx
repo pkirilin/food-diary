@@ -135,7 +135,9 @@ export const Navigation: FC = () => {
               <appBar.Search />
             </Suspense>
           </Box>
-          <AppBarActions Actions={appBar.Actions} />
+          <Box sx={{ ml: 'auto' }}>
+            <AppBarActions Actions={appBar.Actions} />
+          </Box>
         </Box>
       );
   }
