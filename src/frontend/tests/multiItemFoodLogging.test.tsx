@@ -658,6 +658,140 @@ test('Remove on a picked product takes it out of the Meal Draft', async () => {
   expect(rows.map(row => row.textContent)).toEqual([expect.stringMatching(/^Chicken/)]);
 });
 
+const replaceFieldValue = async (user: UserEvent, field: HTMLElement, value: string) => {
+  await user.clear(field);
+  await user.type(field, value);
+};
+
+test('Edit product opens the product form, prefilled with the product', async () => {
+  const user = userEvent.setup();
+  await openDayPageWithMultiItemFoodLoggingOn(user);
+  await clickAddMeal(user, 'Breakfast');
+  await openFoundProduct(user, 'chick', 'Chicken');
+
+  await user.click(await screen.findByRole('button', { name: 'Edit product' }));
+
+  expect(await screen.findByRole('heading', { name: 'Edit product' })).toBeVisible();
+  expect(screen.getByRole('button', { name: 'Back' })).toBeVisible();
+  expect(await screen.findByRole('textbox', { name: 'Name' })).toHaveValue('Chicken');
+  expect(screen.getByRole('textbox', { name: 'Calories, kcal' })).toHaveValue('239');
+  expect(screen.getByRole('textbox', { name: 'Default quantity, g' })).toHaveValue('150');
+  expect(screen.getByRole('button', { name: 'Save' })).toBeVisible();
+});
+
+test('saving a product with its own name unchanged returns to the product', async () => {
+  const user = userEvent.setup();
+  await openDayPageWithMultiItemFoodLoggingOn(user);
+  await clickAddMeal(user, 'Breakfast');
+  await openFoundProduct(user, 'chick', 'Chicken');
+  await user.click(await screen.findByRole('button', { name: 'Edit product' }));
+  await replaceFieldValue(
+    user,
+    await screen.findByRole('textbox', { name: 'Calories, kcal' }),
+    '250',
+  );
+
+  await user.click(screen.getByRole('button', { name: 'Save' }));
+
+  expect(await screen.findByRole('heading', { name: 'Product' })).toBeVisible();
+  expect(await screen.findByText('250 kcal per 100 g')).toBeVisible();
+});
+
+test('saving an edited product in the Meal Draft updates its tray row, with the new default quantity', async () => {
+  const user = userEvent.setup();
+  const tray = await addChickenAndOatsToBreakfast(user);
+  await user.click(within(tray).getByRole('button', { name: 'Picked foods' }));
+  await user.click(within(await findPickedFoods(tray)).getByRole('button', { name: /^Chicken/ }));
+  await user.click(await screen.findByRole('button', { name: 'Edit product' }));
+  await replaceFieldValue(user, await screen.findByRole('textbox', { name: 'Name' }), 'Turkey');
+  await replaceFieldValue(user, screen.getByRole('textbox', { name: 'Calories, kcal' }), '160');
+  await replaceFieldValue(
+    user,
+    screen.getByRole('textbox', { name: 'Default quantity, g' }),
+    '200',
+  );
+
+  await user.click(screen.getByRole('button', { name: 'Save' }));
+
+  expect(await screen.findByRole('heading', { name: 'Product' })).toBeVisible();
+  expect(await screen.findByRole('heading', { name: 'Turkey' })).toBeVisible();
+  expect(screen.getByText('160 kcal per 100 g')).toBeVisible();
+  expect(await findQuantityField()).toHaveValue('200');
+
+  await user.click(screen.getByRole('button', { name: 'Back' }));
+
+  const trayAfterEdit = await findTray('Breakfast');
+  expect(within(trayAfterEdit).getByText('699 kcal')).toBeVisible();
+  await user.click(within(trayAfterEdit).getByRole('button', { name: 'Picked foods' }));
+  const rows = within(await findPickedFoods(trayAfterEdit)).getAllByRole('listitem');
+  expect(rows.map(row => row.textContent)).toEqual([
+    expect.stringMatching(/^Oats100 g · 379 kcal/),
+    expect.stringMatching(/^Turkey200 g · 320 kcal/),
+  ]);
+
+  await user.click(within(trayAfterEdit).getByRole('button', { name: 'Log food' }));
+
+  await waitFor(async () =>
+    expect(await findFoodLogsOfMeal('Breakfast')).toContainEqual(
+      expect.stringMatching(/^Turkey200 g320$/),
+    ),
+  );
+});
+
+test('saving a product under the name of another product shows the clash on the form and leaves the Meal Draft unchanged', async () => {
+  const user = userEvent.setup();
+  const tray = await addChickenAndOatsToBreakfast(user);
+  await user.click(within(tray).getByRole('button', { name: 'Picked foods' }));
+  await user.click(within(await findPickedFoods(tray)).getByRole('button', { name: /^Chicken/ }));
+  await user.click(await screen.findByRole('button', { name: 'Edit product' }));
+  const name = await screen.findByRole('textbox', { name: 'Name' });
+  await replaceFieldValue(user, name, 'Oats');
+  const defaultQuantity = screen.getByRole('textbox', { name: 'Default quantity, g' });
+  await replaceFieldValue(user, defaultQuantity, '200');
+
+  await user.click(screen.getByRole('button', { name: 'Save' }));
+
+  expect(await screen.findByText("Product with the name 'Oats' already exists")).toBeVisible();
+  expect(name).toHaveValue('Oats');
+  expect(defaultQuantity).toHaveValue('200');
+  expect(screen.getByRole('heading', { name: 'Edit product' })).toBeVisible();
+
+  await user.click(screen.getByRole('button', { name: 'Back' }));
+  expect(await screen.findByRole('heading', { name: 'Chicken' })).toBeVisible();
+  await user.click(screen.getByRole('button', { name: 'Back' }));
+
+  const trayAfterClash = await findTray('Breakfast');
+  await user.click(within(trayAfterClash).getByRole('button', { name: 'Picked foods' }));
+  const rows = within(await findPickedFoods(trayAfterClash)).getAllByRole('listitem');
+  expect(rows.map(row => row.textContent)).toEqual([
+    expect.stringMatching(/^Oats100 g · 379 kcal/),
+    expect.stringMatching(/^Chicken150 g · 358 kcal/),
+  ]);
+});
+
+test('a failed product save shows an error and keeps the input', async () => {
+  const user = userEvent.setup();
+  await openDayPageWithMultiItemFoodLoggingOn(user);
+  await clickAddMeal(user, 'Breakfast');
+  await openFoundProduct(user, 'chick', 'Chicken');
+  await user.click(await screen.findByRole('button', { name: 'Edit product' }));
+  const name = await screen.findByRole('textbox', { name: 'Name' });
+  await replaceFieldValue(user, name, 'Turkey');
+  server.use(
+    http.put(`${API_URL}/api/v1/products/:id`, () => HttpResponse.json({}, { status: 500 }), {
+      once: true,
+    }),
+  );
+
+  await user.click(screen.getByRole('button', { name: 'Save' }));
+
+  expect(await screen.findByRole('alert')).toHaveTextContent(
+    'Something went wrong. Please try again later.',
+  );
+  expect(name).toHaveValue('Turkey');
+  expect(screen.getByRole('heading', { name: 'Edit product' })).toBeVisible();
+});
+
 test('opening the search screen with no Meal Draft lands on the day page', async () => {
   await renderApp('/log/food?q=chicken', { signedIn: true });
 

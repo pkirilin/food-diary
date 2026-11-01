@@ -29,6 +29,12 @@ function LogFoodProductRoute() {
           void router.navigate({ to: '/log/food' });
         }
       }}
+      onEditProduct={() => {
+        void router.navigate({
+          to: '/log/food/products/$productId/edit',
+          params: { productId },
+        });
+      }}
     />
   );
 }

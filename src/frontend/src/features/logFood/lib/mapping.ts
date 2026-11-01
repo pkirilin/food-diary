@@ -2,6 +2,7 @@ import { foodLogModel } from '@/entities/foodLog';
 import { type CreateNotesRequest, noteModel } from '@/entities/note';
 import {
   type CreateProductRequest,
+  type EditProductRequest,
   type GetProductByIdResponse,
   type ProductSelectOption,
   type productModel,
@@ -88,7 +89,37 @@ export const toCreateProductRequest = (
   salt,
 });
 
-export const toCreatedMealDraftProduct = (
+export const toEditProductRequest = (
+  id: number,
+  categoryId: number,
+  values: productModel.ProductFormValues,
+): EditProductRequest => ({ id, ...toCreateProductRequest(categoryId, values) });
+
+export const toProductFormValues = ({
+  id,
+  name,
+  caloriesCost,
+  defaultQuantity,
+  category,
+  protein,
+  fats,
+  carbs,
+  sugar,
+  salt,
+}: GetProductByIdResponse): productModel.ProductFormValues => ({
+  id,
+  name,
+  calories: caloriesCost,
+  defaultQuantity,
+  category: { id: category.id, name: category.name },
+  protein,
+  fats,
+  carbs,
+  sugar,
+  salt,
+});
+
+export const fromProductFormValues = (
   id: number,
   {
     name,

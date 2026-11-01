@@ -9,9 +9,10 @@ import { FoodLogQuantityForm } from './FoodLogQuantityForm';
 interface Props {
   productId: number;
   onDone: () => void;
+  onEditProduct: () => void;
 }
 
-export const LogFoodProductDetail: FC<Props> = ({ productId, onDone }) => {
+export const LogFoodProductDetail: FC<Props> = ({ productId, onDone, onEditProduct }) => {
   const { data, isError } = productApi.useProductByIdQuery(productId);
   const foodLog = useAppSelector(state =>
     foodLogModel.selectors.foodLogOfProduct(state, productId),
@@ -23,6 +24,7 @@ export const LogFoodProductDetail: FC<Props> = ({ productId, onDone }) => {
         product={fromGetProductByIdResponse(data)}
         foodLog={foodLog}
         onDone={onDone}
+        onEditProduct={onEditProduct}
       />
     );
   }

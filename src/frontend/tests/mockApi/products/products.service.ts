@@ -132,7 +132,7 @@ export const create = ({
   return { type: 'Success', id };
 };
 
-type UpdateProductResult = 'Success' | 'CategoryNotFound';
+type UpdateProductResult = 'Success' | 'CategoryNotFound' | 'ProductAlreadyExists';
 
 export const update = (
   id: number,
@@ -156,6 +156,10 @@ export const update = (
 
   if (!category) {
     return 'CategoryNotFound';
+  }
+
+  if (db.product.findFirst({ where: { name: { equals: name }, id: { notEquals: id } } })) {
+    return 'ProductAlreadyExists';
   }
 
   db.product.update({

@@ -1,6 +1,11 @@
 import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { calculateNutritionValues } from './foodLog';
-import { type MealDraft, type MealDraftFoodLog, type MealType } from './types';
+import {
+  type MealDraft,
+  type MealDraftFoodLog,
+  type MealDraftProduct,
+  type MealType,
+} from './types';
 
 export interface FoodLogState {
   mealDraft: MealDraft | null;
@@ -53,6 +58,14 @@ export const foodLogSlice = createSlice({
 
       if (foodLog !== undefined) {
         foodLog.quantity = payload.quantity;
+      }
+    },
+    productUpdated: (state, { payload: product }: PayloadAction<MealDraftProduct>) => {
+      const foodLog = state.mealDraft?.foodLogs.find(({ product: { id } }) => id === product.id);
+
+      if (foodLog !== undefined) {
+        foodLog.product = product;
+        foodLog.quantity = product.defaultQuantity;
       }
     },
     foodLogRemoved: (state, { payload: productId }: PayloadAction<number>) => {

@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { InputAdornment, Stack, TextField, Typography } from '@mui/material';
+import { Box, InputAdornment, Stack, TextField, Typography } from '@mui/material';
 import { type FC } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
@@ -14,9 +14,10 @@ interface Props {
   product: foodLogModel.MealDraftProduct;
   foodLog: foodLogModel.MealDraftFoodLog | null;
   onDone: () => void;
+  onEditProduct: () => void;
 }
 
-export const FoodLogQuantityForm: FC<Props> = ({ product, foodLog, onDone }) => {
+export const FoodLogQuantityForm: FC<Props> = ({ product, foodLog, onDone, onEditProduct }) => {
   const dispatch = useAppDispatch();
 
   const { control, handleSubmit, formState } = useForm({
@@ -82,7 +83,10 @@ export const FoodLogQuantityForm: FC<Props> = ({ product, foodLog, onDone }) => 
           />
         )}
       />
-      <Stack direction="row" spacing={2} sx={{ justifyContent: 'flex-end' }}>
+      <Stack direction="row" spacing={2} useFlexGap>
+        <Box sx={{ flexGrow: 1 }}>
+          <Button onClick={onEditProduct}>Edit product</Button>
+        </Box>
         {foodLog !== null && (
           <Button
             color="error"

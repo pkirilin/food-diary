@@ -24,6 +24,7 @@ import { Route as AppLogFoodRouteImport } from './routes/_app/log.food'
 import { Route as AppLogFoodIndexRouteImport } from './routes/_app/log.food.index'
 import { Route as AppLogFoodProductsNewRouteImport } from './routes/_app/log.food.products.new'
 import { Route as AppLogFoodProductsProductIdIndexRouteImport } from './routes/_app/log.food.products.$productId.index'
+import { Route as AppLogFoodProductsProductIdEditRouteImport } from './routes/_app/log.food.products.$productId.edit'
 
 const AppRoute = AppRouteImport.update({
   id: '/_app',
@@ -100,6 +101,12 @@ const AppLogFoodProductsProductIdIndexRoute =
     path: '/products/$productId/',
     getParentRoute: () => AppLogFoodRoute,
   } as any)
+const AppLogFoodProductsProductIdEditRoute =
+  AppLogFoodProductsProductIdEditRouteImport.update({
+    id: '/products/$productId/edit',
+    path: '/products/$productId/edit',
+    getParentRoute: () => AppLogFoodRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
@@ -115,6 +122,7 @@ export interface FileRoutesByFullPath {
   '/log/food': typeof AppLogFoodRouteWithChildren
   '/log/food/': typeof AppLogFoodIndexRoute
   '/log/food/products/new': typeof AppLogFoodProductsNewRoute
+  '/log/food/products/$productId/edit': typeof AppLogFoodProductsProductIdEditRoute
   '/log/food/products/$productId/': typeof AppLogFoodProductsProductIdIndexRoute
 }
 export interface FileRoutesByTo {
@@ -130,6 +138,7 @@ export interface FileRoutesByTo {
   '/': typeof AppIndexRoute
   '/log/food': typeof AppLogFoodIndexRoute
   '/log/food/products/new': typeof AppLogFoodProductsNewRoute
+  '/log/food/products/$productId/edit': typeof AppLogFoodProductsProductIdEditRoute
   '/log/food/products/$productId': typeof AppLogFoodProductsProductIdIndexRoute
 }
 export interface FileRoutesById {
@@ -148,6 +157,7 @@ export interface FileRoutesById {
   '/_app/log/food': typeof AppLogFoodRouteWithChildren
   '/_app/log/food/': typeof AppLogFoodIndexRoute
   '/_app/log/food/products/new': typeof AppLogFoodProductsNewRoute
+  '/_app/log/food/products/$productId/edit': typeof AppLogFoodProductsProductIdEditRoute
   '/_app/log/food/products/$productId/': typeof AppLogFoodProductsProductIdIndexRoute
 }
 export interface FileRouteTypes {
@@ -166,6 +176,7 @@ export interface FileRouteTypes {
     | '/log/food'
     | '/log/food/'
     | '/log/food/products/new'
+    | '/log/food/products/$productId/edit'
     | '/log/food/products/$productId/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -181,6 +192,7 @@ export interface FileRouteTypes {
     | '/'
     | '/log/food'
     | '/log/food/products/new'
+    | '/log/food/products/$productId/edit'
     | '/log/food/products/$productId'
   id:
     | '__root__'
@@ -198,6 +210,7 @@ export interface FileRouteTypes {
     | '/_app/log/food'
     | '/_app/log/food/'
     | '/_app/log/food/products/new'
+    | '/_app/log/food/products/$productId/edit'
     | '/_app/log/food/products/$productId/'
   fileRoutesById: FileRoutesById
 }
@@ -316,18 +329,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppLogFoodProductsProductIdIndexRouteImport
       parentRoute: typeof AppLogFoodRoute
     }
+    '/_app/log/food/products/$productId/edit': {
+      id: '/_app/log/food/products/$productId/edit'
+      path: '/products/$productId/edit'
+      fullPath: '/log/food/products/$productId/edit'
+      preLoaderRoute: typeof AppLogFoodProductsProductIdEditRouteImport
+      parentRoute: typeof AppLogFoodRoute
+    }
   }
 }
 
 interface AppLogFoodRouteChildren {
   AppLogFoodIndexRoute: typeof AppLogFoodIndexRoute
   AppLogFoodProductsNewRoute: typeof AppLogFoodProductsNewRoute
+  AppLogFoodProductsProductIdEditRoute: typeof AppLogFoodProductsProductIdEditRoute
   AppLogFoodProductsProductIdIndexRoute: typeof AppLogFoodProductsProductIdIndexRoute
 }
 
 const AppLogFoodRouteChildren: AppLogFoodRouteChildren = {
   AppLogFoodIndexRoute: AppLogFoodIndexRoute,
   AppLogFoodProductsNewRoute: AppLogFoodProductsNewRoute,
+  AppLogFoodProductsProductIdEditRoute: AppLogFoodProductsProductIdEditRoute,
   AppLogFoodProductsProductIdIndexRoute: AppLogFoodProductsProductIdIndexRoute,
 }
 

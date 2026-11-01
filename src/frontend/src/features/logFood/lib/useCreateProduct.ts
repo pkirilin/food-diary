@@ -3,7 +3,7 @@ import { useAppDispatch } from '@/app/store';
 import { foodLogModel } from '@/entities/foodLog';
 import { productApi, type ProductFormServerErrors, type productModel } from '@/entities/product';
 import { type ClientError, parseClientError, parseFieldValidationError } from '@/shared/api';
-import { toCreatedMealDraftProduct, toCreateProductRequest } from './mapping';
+import { fromProductFormValues, toCreateProductRequest } from './mapping';
 
 interface CreateProductResult {
   isCreating: boolean;
@@ -35,7 +35,7 @@ export const useCreateProduct = (onCreated: () => void): CreateProductResult => 
       return;
     }
 
-    const product = toCreatedMealDraftProduct(result.data.id, values);
+    const product = fromProductFormValues(result.data.id, values);
     dispatch(foodLogModel.actions.foodLogAdded({ product, quantity: product.defaultQuantity }));
     onCreated();
   };

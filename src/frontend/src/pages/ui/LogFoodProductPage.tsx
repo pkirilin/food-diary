@@ -5,10 +5,11 @@ import { PageContainer } from '@/shared/ui';
 interface Props {
   productId: number;
   onDone: () => void;
+  onEditProduct: () => void;
 }
 
-export const LogFoodProductPage: FC<Props> = ({ productId, onDone }) => (
+export const LogFoodProductPage: FC<Props> = ({ productId, onDone, onEditProduct }) => (
   <PageContainer>
-    <LogFoodProductDetail productId={productId} onDone={onDone} />
+    <LogFoodProductDetail productId={productId} onDone={onDone} onEditProduct={onEditProduct} />
   </PageContainer>
 );
