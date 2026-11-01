@@ -13,8 +13,8 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { type FC, useState } from 'react';
-import { Controller, useForm, useWatch } from 'react-hook-form';
+import { type FC, useMemo, useState } from 'react';
+import { Controller, type FieldErrors, useForm, useWatch } from 'react-hook-form';
 import { type SelectOption } from '@/shared/types';
 import { useNutritionSuggestions } from '../lib/useNutritionSuggestions';
 import {
@@ -33,11 +33,16 @@ interface Props {
   categories: SelectOption[];
   categoriesLoading: boolean;
   autoFocus: boolean;
+  serverErrors?: ProductFormServerErrors;
   onSubmit: OnSubmitProductFn;
   onNutritionSuggestingChange?: (nutritionSuggesting: boolean) => void;
 }
 
 export type OnSubmitProductFn = (product: ProductFormValues) => Promise<void>;
+
+export interface ProductFormServerErrors {
+  name: string | null;
+}
 
 interface SnackbarState {
   severity: 'error' | 'info';
@@ -54,13 +59,24 @@ export const ProductForm: FC<Props> = ({
   categories,
   categoriesLoading,
   autoFocus,
+  serverErrors,
   onSubmit,
   onNutritionSuggestingChange,
 }) => {
+  // useForm re-applies `errors` whenever its identity changes, so it is derived only from serverErrors
+  const errors = useMemo<FieldErrors<ProductFormValues> | undefined>(
+    () =>
+      typeof serverErrors?.name === 'string'
+        ? { name: { type: 'server', message: serverErrors.name } }
+        : undefined,
+    [serverErrors],
+  );
+
   const { control, handleSubmit, getValues, setValue } = useForm({
     mode: 'onSubmit',
     resolver: zodResolver(productSchema),
     defaultValues,
+    errors,
   });
 
   const [snackbar, setSnackbar] = useState<SnackbarState | null>(null);

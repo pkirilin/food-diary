@@ -264,6 +264,100 @@ test('a failed Log food keeps the Meal Draft, shows an error and can be retried'
   );
 });
 
+test('a search that finds nothing offers to create the product, prefilled with the query', async () => {
+  const user = userEvent.setup();
+  await openDayPageWithMultiItemFoodLoggingOn(user);
+  await clickAddMeal(user, 'Breakfast');
+
+  await user.type(await findSearchField(), 'Yogurt');
+  await user.click(await screen.findByRole('button', { name: 'Create "Yogurt"' }));
+
+  expect(await screen.findByRole('heading', { name: 'New product' })).toBeVisible();
+  expect(await screen.findByRole('textbox', { name: 'Name' })).toHaveValue('Yogurt');
+  expect(screen.getByRole('button', { name: 'Create' })).toBeVisible();
+  expect(screen.getByRole('button', { name: 'Back' })).toBeVisible();
+});
+
+test('Create adds the new product to the Meal Draft with its default quantity, back on the search, ready to log', async () => {
+  const user = userEvent.setup();
+  await openDayPageWithMultiItemFoodLoggingOn(user);
+  await clickAddMeal(user, 'Breakfast');
+  await user.type(await findSearchField(), 'Yogurt');
+  await user.click(await screen.findByRole('button', { name: 'Create "Yogurt"' }));
+  const calories = await screen.findByRole('textbox', { name: 'Calories, kcal' });
+  await user.clear(calories);
+  await user.type(calories, '60');
+  const defaultQuantity = screen.getByRole('textbox', { name: 'Default quantity, g' });
+  await user.clear(defaultQuantity);
+  await user.type(defaultQuantity, '250');
+
+  await user.click(screen.getByRole('button', { name: 'Create' }));
+
+  const foundProducts = await screen.findByRole('list', { name: 'Found products' });
+  expect(await within(foundProducts).findByRole('button', { name: 'Remove Yogurt' })).toBeVisible();
+  expect(await findSearchField()).toHaveValue('Yogurt');
+  const tray = await findTray('Breakfast');
+  expect(within(tray).getByText('1')).toBeVisible();
+  expect(tray).toHaveTextContent('150 kcal');
+
+  await user.click(within(tray).getByRole('button', { name: 'Log food' }));
+
+  await waitFor(async () =>
+    expect(await findFoodLogsOfMeal('Breakfast')).toContainEqual(
+      expect.stringMatching(/^Yogurt250 g150$/),
+    ),
+  );
+});
+
+test('Create with the name of an existing product shows the clash on the form and keeps the input', async () => {
+  const user = userEvent.setup();
+  await openDayPageWithMultiItemFoodLoggingOn(user);
+  await clickAddMeal(user, 'Breakfast');
+  await user.type(await findSearchField(), 'Yogurt');
+  await user.click(await screen.findByRole('button', { name: 'Create "Yogurt"' }));
+  const name = await screen.findByRole('textbox', { name: 'Name' });
+  await user.clear(name);
+  await user.type(name, 'Cheese');
+  const calories = screen.getByRole('textbox', { name: 'Calories, kcal' });
+  await user.clear(calories);
+  await user.type(calories, '350');
+
+  await user.click(screen.getByRole('button', { name: 'Create' }));
+
+  expect(await screen.findByText("Product with the name 'Cheese' already exists")).toBeVisible();
+  expect(name).toHaveValue('Cheese');
+  expect(calories).toHaveValue('350');
+  expect(screen.getByRole('heading', { name: 'New product' })).toBeVisible();
+
+  await user.type(name, ' yogurt');
+  await user.click(screen.getByRole('button', { name: 'Create' }));
+
+  const foundProducts = await screen.findByRole('list', { name: 'Found products' });
+  expect(
+    await within(foundProducts).findByRole('button', { name: 'Remove Cheese yogurt' }),
+  ).toBeVisible();
+});
+
+test('a failed Create shows an error and keeps the input', async () => {
+  const user = userEvent.setup();
+  await openDayPageWithMultiItemFoodLoggingOn(user);
+  await clickAddMeal(user, 'Breakfast');
+  await user.type(await findSearchField(), 'Yogurt');
+  await user.click(await screen.findByRole('button', { name: 'Create "Yogurt"' }));
+  server.use(
+    http.post(`${API_URL}/api/v1/products`, () => HttpResponse.json({}, { status: 500 }), {
+      once: true,
+    }),
+  );
+
+  await user.click(await screen.findByRole('button', { name: 'Create' }));
+
+  expect(await screen.findByRole('alert')).toHaveTextContent(
+    'Something went wrong. Please try again later.',
+  );
+  expect(screen.getByRole('textbox', { name: 'Name' })).toHaveValue('Yogurt');
+});
+
 test('opening the search screen with no Meal Draft lands on the day page', async () => {
   await renderApp('/log/food?q=chicken', { signedIn: true });
 

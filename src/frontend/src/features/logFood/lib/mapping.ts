@@ -1,6 +1,10 @@
 import { foodLogModel } from '@/entities/foodLog';
 import { type CreateNotesRequest, noteModel } from '@/entities/note';
-import { type ProductSelectOption } from '@/entities/product';
+import {
+  type CreateProductRequest,
+  type ProductSelectOption,
+  type productModel,
+} from '@/entities/product';
 
 const FOOD_LOG_MEAL_TYPES: Record<noteModel.MealType, foodLogModel.MealType> = {
   [noteModel.MealType.Breakfast]: foodLogModel.MealType.Breakfast,
@@ -48,6 +52,54 @@ export const toMealDraftProduct = ({
   sugar,
   salt,
 }: ProductSelectOption): foodLogModel.MealDraftProduct => ({
+  id,
+  name,
+  defaultQuantity,
+  calories,
+  protein,
+  fats,
+  carbs,
+  sugar,
+  salt,
+});
+
+export const toCreateProductRequest = (
+  categoryId: number,
+  {
+    name,
+    calories: caloriesCost,
+    defaultQuantity,
+    protein,
+    fats,
+    carbs,
+    sugar,
+    salt,
+  }: productModel.ProductFormValues,
+): CreateProductRequest => ({
+  name,
+  caloriesCost,
+  defaultQuantity,
+  categoryId,
+  protein,
+  fats,
+  carbs,
+  sugar,
+  salt,
+});
+
+export const toCreatedMealDraftProduct = (
+  id: number,
+  {
+    name,
+    defaultQuantity,
+    calories,
+    protein,
+    fats,
+    carbs,
+    sugar,
+    salt,
+  }: productModel.ProductFormValues,
+): foodLogModel.MealDraftProduct => ({
   id,
   name,
   defaultQuantity,
