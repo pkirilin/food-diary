@@ -111,4 +111,4 @@ Single-context — one `GLOSSARY.md` + `docs/adr/` at the repo root. See `docs/a
 
 ## Reference
 
-- **Writing docs** — no deployment-platform assumptions in prose; the app targets any container-friendly environment. See `docs/agents/writing-docs.md`.
+- **Writing docs** (`docs/**`, `.scratch/**`) — platform-neutral prose, and self-contained specs with an FSD layout table. See `docs/agents/writing-docs.md`.
