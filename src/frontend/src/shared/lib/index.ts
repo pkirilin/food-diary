@@ -6,3 +6,4 @@ export * from './fileHelper';
 export * from './validation';
 export * from './inputMapping';
 export * from './quantitySchema';
+export * from './devicePreferences';

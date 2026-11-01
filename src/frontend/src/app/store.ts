@@ -1,5 +1,6 @@
 import { configureStore as configureStoreRtk } from '@reduxjs/toolkit';
 import { useDispatch, useSelector } from 'react-redux';
+import { foodLogModel } from '@/entities/foodLog';
 import { productModel } from '@/entities/product';
 import { manageNoteModel } from '@/features/manageNote';
 import { api } from '../shared/api';
@@ -9,6 +10,7 @@ export const configureStore = () =>
     reducer: {
       [api.reducerPath]: api.reducer,
       products: productModel.reducer,
+      foodLog: foodLogModel.reducer,
       manageNote: manageNoteModel.reducer,
     },
 

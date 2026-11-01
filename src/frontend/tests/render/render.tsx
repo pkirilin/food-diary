@@ -48,7 +48,7 @@ interface RenderAppOptions {
 export const renderApp = async (
   url: string,
   { signedIn = false }: RenderAppOptions = {},
-): Promise<void> => {
+): Promise<RenderResult> => {
   if (signedIn) {
     usersService.signInById(1);
   }
@@ -56,11 +56,13 @@ export const renderApp = async (
   const store = configureStore();
   const router = createAppRouter(store, createMemoryHistory({ initialEntries: [url] }));
 
-  rtlRender(
+  const view = rtlRender(
     <RootProvider store={store}>
       <RouterProvider router={router} />
     </RootProvider>,
   );
 
   await act(() => router.load());
+
+  return view;
 };

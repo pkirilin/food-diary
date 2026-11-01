@@ -1,4 +1,4 @@
-import { type ProductSelectOption } from '@/entities/product';
+import { type ProductSelectOption } from '../api';
 
 export const QUERY_LENGTH_THRESHOLD = 3;
 

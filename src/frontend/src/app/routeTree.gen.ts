@@ -18,7 +18,10 @@ import { Route as AppIndexRouteImport } from './routes/_app/index'
 import { Route as AppCategoriesRouteImport } from './routes/_app/categories'
 import { Route as AppHistoryRouteImport } from './routes/_app/history'
 import { Route as AppProductsRouteImport } from './routes/_app/products'
+import { Route as AppSettingsRouteImport } from './routes/_app/settings'
 import { Route as AppWeightRouteImport } from './routes/_app/weight'
+import { Route as AppLogFoodRouteImport } from './routes/_app/log.food'
+import { Route as AppLogFoodIndexRouteImport } from './routes/_app/log.food.index'
 
 const AppRoute = AppRouteImport.update({
   id: '/_app',
@@ -64,10 +67,25 @@ const AppProductsRoute = AppProductsRouteImport.update({
   path: '/products',
   getParentRoute: () => AppRoute,
 } as any)
+const AppSettingsRoute = AppSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppWeightRoute = AppWeightRouteImport.update({
   id: '/weight',
   path: '/weight',
   getParentRoute: () => AppRoute,
+} as any)
+const AppLogFoodRoute = AppLogFoodRouteImport.update({
+  id: '/log/food',
+  path: '/log/food',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppLogFoodIndexRoute = AppLogFoodIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppLogFoodRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -79,7 +97,10 @@ export interface FileRoutesByFullPath {
   '/categories': typeof AppCategoriesRoute
   '/history': typeof AppHistoryRoute
   '/products': typeof AppProductsRoute
+  '/settings': typeof AppSettingsRoute
   '/weight': typeof AppWeightRoute
+  '/log/food': typeof AppLogFoodRouteWithChildren
+  '/log/food/': typeof AppLogFoodIndexRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
@@ -89,8 +110,10 @@ export interface FileRoutesByTo {
   '/categories': typeof AppCategoriesRoute
   '/history': typeof AppHistoryRoute
   '/products': typeof AppProductsRoute
+  '/settings': typeof AppSettingsRoute
   '/weight': typeof AppWeightRoute
   '/': typeof AppIndexRoute
+  '/log/food': typeof AppLogFoodIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -102,8 +125,11 @@ export interface FileRoutesById {
   '/_app/categories': typeof AppCategoriesRoute
   '/_app/history': typeof AppHistoryRoute
   '/_app/products': typeof AppProductsRoute
+  '/_app/settings': typeof AppSettingsRoute
   '/_app/weight': typeof AppWeightRoute
   '/_app/': typeof AppIndexRoute
+  '/_app/log/food': typeof AppLogFoodRouteWithChildren
+  '/_app/log/food/': typeof AppLogFoodIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -116,7 +142,10 @@ export interface FileRouteTypes {
     | '/categories'
     | '/history'
     | '/products'
+    | '/settings'
     | '/weight'
+    | '/log/food'
+    | '/log/food/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
@@ -126,8 +155,10 @@ export interface FileRouteTypes {
     | '/categories'
     | '/history'
     | '/products'
+    | '/settings'
     | '/weight'
     | '/'
+    | '/log/food'
   id:
     | '__root__'
     | '/_app'
@@ -138,8 +169,11 @@ export interface FileRouteTypes {
     | '/_app/categories'
     | '/_app/history'
     | '/_app/products'
+    | '/_app/settings'
     | '/_app/weight'
     | '/_app/'
+    | '/_app/log/food'
+    | '/_app/log/food/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -215,6 +249,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppProductsRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/settings': {
+      id: '/_app/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AppSettingsRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/weight': {
       id: '/_app/weight'
       path: '/weight'
@@ -222,23 +263,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppWeightRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/log/food': {
+      id: '/_app/log/food'
+      path: '/log/food'
+      fullPath: '/log/food'
+      preLoaderRoute: typeof AppLogFoodRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/log/food/': {
+      id: '/_app/log/food/'
+      path: '/'
+      fullPath: '/log/food/'
+      preLoaderRoute: typeof AppLogFoodIndexRouteImport
+      parentRoute: typeof AppLogFoodRoute
+    }
   }
 }
+
+interface AppLogFoodRouteChildren {
+  AppLogFoodIndexRoute: typeof AppLogFoodIndexRoute
+}
+
+const AppLogFoodRouteChildren: AppLogFoodRouteChildren = {
+  AppLogFoodIndexRoute: AppLogFoodIndexRoute,
+}
+
+const AppLogFoodRouteWithChildren = AppLogFoodRoute._addFileChildren(
+  AppLogFoodRouteChildren,
+)
 
 interface AppRouteChildren {
   AppCategoriesRoute: typeof AppCategoriesRoute
   AppHistoryRoute: typeof AppHistoryRoute
   AppProductsRoute: typeof AppProductsRoute
+  AppSettingsRoute: typeof AppSettingsRoute
   AppWeightRoute: typeof AppWeightRoute
   AppIndexRoute: typeof AppIndexRoute
+  AppLogFoodRoute: typeof AppLogFoodRouteWithChildren
 }
 
 const AppRouteChildren: AppRouteChildren = {
   AppCategoriesRoute: AppCategoriesRoute,
   AppHistoryRoute: AppHistoryRoute,
   AppProductsRoute: AppProductsRoute,
+  AppSettingsRoute: AppSettingsRoute,
   AppWeightRoute: AppWeightRoute,
   AppIndexRoute: AppIndexRoute,
+  AppLogFoodRoute: AppLogFoodRouteWithChildren,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
