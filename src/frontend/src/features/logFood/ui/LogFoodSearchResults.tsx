@@ -1,16 +1,17 @@
-import { Box, CircularProgress, List, ListItem, ListItemText } from '@mui/material';
+import { Box, CircularProgress, List } from '@mui/material';
 import { type FC, useMemo } from 'react';
-import { foodLogModel } from '@/entities/foodLog';
 import { type ProductSelectOption, productApi, productLib } from '@/entities/product';
 import { toMealDraftProduct } from '../lib/mapping';
+import { FoundProductListItem } from './FoundProductListItem';
 
 interface Props {
   query: string;
+  onQueryChange: (query: string) => void;
 }
 
 const EMPTY_PRODUCTS: ProductSelectOption[] = [];
 
-export const LogFoodSearchResults: FC<Props> = ({ query }) => {
+export const LogFoodSearchResults: FC<Props> = ({ query, onQueryChange }) => {
   const { allProducts, isFetching } = productApi.useProductsAutocompleteQuery(null, {
     selectFromResult: ({ data, isFetching }) => ({
       allProducts: data ?? EMPTY_PRODUCTS,
@@ -34,12 +35,13 @@ export const LogFoodSearchResults: FC<Props> = ({ query }) => {
   return (
     <List aria-label="Found products">
       {foundProducts.map(product => (
-        <ListItem key={product.id} disableGutters>
-          <ListItemText
-            primary={product.name}
-            secondary={`${product.defaultQuantity} g · ${foodLogModel.calculateCalories({ product, quantity: product.defaultQuantity })} kcal`}
-          />
-        </ListItem>
+        <FoundProductListItem
+          key={product.id}
+          product={product}
+          onFoodLogAdded={() => {
+            onQueryChange('');
+          }}
+        />
       ))}
     </List>
   );

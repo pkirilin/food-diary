@@ -19,6 +19,15 @@ export interface MealDraftProduct {
   salt: number | null;
 }
 
+export interface NutritionValues {
+  calories: number;
+  protein: number | null;
+  fats: number | null;
+  carbs: number | null;
+  sugar: number | null;
+  salt: number | null;
+}
+
 export interface MealDraftFoodLog {
   product: MealDraftProduct;
   quantity: number;

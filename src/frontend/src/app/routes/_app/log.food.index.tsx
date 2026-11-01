@@ -19,6 +19,17 @@ export const Route = createFileRoute('/_app/log/food/')({
 
 function LogFoodSearchRoute() {
   const { q = '' } = Route.useSearch();
+  const navigate = Route.useNavigate();
 
-  return <LogFoodSearchPage query={q} />;
+  return (
+    <LogFoodSearchPage
+      query={q}
+      onQueryChange={query => {
+        void navigate({ search: { q: query === '' ? undefined : query }, replace: true });
+      }}
+      onLogged={date => {
+        void navigate({ to: '/', search: { date }, replace: true });
+      }}
+    />
+  );
 }
