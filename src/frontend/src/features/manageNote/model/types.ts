@@ -1,14 +1,10 @@
 import { type RecognizeNoteItem } from '@/entities/note';
 import { type productModel } from '@/entities/product';
 import { type ClientError } from '@/shared/api';
+import { type imageLib } from '@/shared/lib';
 import { type NoteFormValues } from './noteSchema';
 
-export interface Image {
-  id: string;
-  name: string;
-  base64: string;
-  originalUrl: string;
-}
+export type Image = imageLib.Image;
 
 export interface NoteRecognitionState {
   suggestions: RecognizeNoteItem[];

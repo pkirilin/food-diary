@@ -1,7 +1,10 @@
+import { Blob as NodeBlob, File as NodeFile } from 'node:buffer';
 import { act, configure, screen, waitFor, within } from '@testing-library/react';
 import userEvent, { type UserEvent } from '@testing-library/user-event';
 import { HttpResponse, http } from 'msw';
+import { type RecognizeNoteResponse } from '@/entities/note';
 import { API_URL } from '@/shared/config';
+import { imageLib } from '@/shared/lib';
 import { renderApp } from '@tests/render';
 import { server } from './mockApi/server';
 
@@ -13,6 +16,7 @@ beforeEach(() => {
 
 afterEach(() => {
   vi.restoreAllMocks();
+  vi.unstubAllGlobals();
 });
 
 const findMultiItemSwitch = (): Promise<HTMLElement> =>
@@ -517,6 +521,196 @@ test('deleting a product from the expanded tray updates the count and the total'
   expect(within(tray).getByText('0')).toBeVisible();
   expect(tray).toHaveTextContent('Tap ⊕ to add a food');
   expect(within(tray).getByRole('button', { name: 'Log food' })).toBeDisabled();
+});
+
+// Vitest's jsdom environment fails to send a jsdom FormData holding a Blob (it reads jsdom
+// internals that jsdom 30 no longer has), so the recognition request is built from Node's classes
+const sendMultipartRequestsWithNodeClasses = async (): Promise<void> => {
+  const nodeFormData = await new Response(new URLSearchParams()).formData();
+  vi.stubGlobal('Blob', NodeBlob);
+  vi.stubGlobal('File', NodeFile);
+  vi.stubGlobal('FormData', nodeFormData.constructor);
+};
+
+const pickPhotosForRecognition = async (user: UserEvent, photoNames: string[]): Promise<void> => {
+  // Created before the stubs, as jsdom reads only its own files
+  const photos = photoNames.map(name => new File([name], name, { type: 'image/jpeg' }));
+  await sendMultipartRequestsWithNodeClasses();
+  // jsdom draws no images, so resizing passes the picked file through
+  vi.spyOn(imageLib, 'resize').mockImplementation(async file => await Promise.resolve(file));
+
+  await user.upload(
+    await screen.findByLabelText('Recognize product from photos', { selector: 'input' }),
+    photos,
+  );
+};
+
+test('a product recognized from a photo through the mock suggestion lands in the Meal Draft', async () => {
+  const user = userEvent.setup();
+  await openDayPageWithMultiItemFoodLoggingOn(user);
+  await clickAddMeal(user, 'Breakfast');
+
+  await pickPhotosForRecognition(user, ['Yogurt.jpg']);
+
+  expect(await screen.findByRole('heading', { name: 'Recognize product' })).toBeVisible();
+  expect(await screen.findByRole('textbox', { name: 'Name' })).toHaveValue('Yogurt.jpg');
+
+  await user.click(screen.getByRole('button', { name: 'Create' }));
+
+  expect(await findSearchField()).toBeVisible();
+  const tray = await findTray('Breakfast');
+  expect(within(tray).getByText('1')).toBeVisible();
+  await user.click(within(tray).getByRole('button', { name: 'Picked foods' }));
+  expect(within(await findPickedFoods(tray)).getByRole('listitem')).toHaveTextContent('Yogurt.jpg');
+});
+
+test('the recognition form is prefilled from the first suggestion, with its quantity as the default quantity', async () => {
+  const user = userEvent.setup();
+  server.use(
+    http.post(
+      `${API_URL}/api/v1/notes/recognitions`,
+      () =>
+        HttpResponse.json<RecognizeNoteResponse>({
+          notes: [
+            {
+              product: {
+                name: 'Greek yogurt',
+                caloriesCost: 60,
+                protein: 10,
+                fats: 0.4,
+                carbs: 3.6,
+                sugar: null,
+                salt: null,
+              },
+              quantity: 250,
+            },
+            {
+              product: {
+                name: 'Honey',
+                caloriesCost: 304,
+                protein: null,
+                fats: null,
+                carbs: 82,
+                sugar: 82,
+                salt: null,
+              },
+              quantity: 20,
+            },
+          ],
+        }),
+      { once: true },
+    ),
+  );
+  await openDayPageWithMultiItemFoodLoggingOn(user);
+  await clickAddMeal(user, 'Breakfast');
+
+  await pickPhotosForRecognition(user, ['front.jpg', 'label.jpg']);
+
+  expect(await screen.findByRole('textbox', { name: 'Name' })).toHaveValue('Greek yogurt');
+  expect(screen.getByRole('textbox', { name: 'Calories, kcal' })).toHaveValue('60');
+  expect(screen.getByRole('textbox', { name: 'Default quantity, g' })).toHaveValue('250');
+
+  await user.click(screen.getByRole('button', { name: 'Create' }));
+
+  const tray = await findTray('Breakfast');
+  expect(within(tray).getByText('1')).toBeVisible();
+  expect(within(tray).getByText('150 kcal')).toBeVisible();
+});
+
+test('a failed recognition shows an error, and Retry shows skeletons while it sends the same photos again', async () => {
+  const user = userEvent.setup();
+  server.use(
+    http.post(
+      `${API_URL}/api/v1/notes/recognitions`,
+      () => HttpResponse.json({}, { status: 500 }),
+      { once: true },
+    ),
+  );
+  await openDayPageWithMultiItemFoodLoggingOn(user);
+  await clickAddMeal(user, 'Breakfast');
+  await pickPhotosForRecognition(user, ['Yogurt.jpg']);
+
+  const error = await screen.findByRole('alert');
+  expect(error).toHaveTextContent('Something went wrong. Please try again later.');
+
+  const { promise: retryAnswered, resolve: answerRetry } = Promise.withResolvers<void>();
+  server.use(
+    http.post(`${API_URL}/api/v1/notes/recognitions`, async () => await retryAnswered, {
+      once: true,
+    }),
+  );
+  await user.click(within(error).getByRole('button', { name: 'Retry' }));
+
+  expect(await screen.findByRole('progressbar', { name: 'Recognizing product' })).toBeVisible();
+  answerRetry();
+  expect(await screen.findByRole('textbox', { name: 'Name' })).toHaveValue('Yogurt.jpg');
+  expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+});
+
+test('going forward to the recognition screen after Create lands on the search instead', async () => {
+  const user = userEvent.setup();
+  await openDayPageWithMultiItemFoodLoggingOn(user);
+  await clickAddMeal(user, 'Breakfast');
+  await pickPhotosForRecognition(user, ['Yogurt.jpg']);
+  await user.click(await screen.findByRole('button', { name: 'Create' }));
+  await findSearchField();
+
+  await moveThroughBrowserHistory(() => window.history.forward());
+
+  await waitFor(() => expect(window.location.hash).toBe('#/log/food'));
+  expect(await findSearchField()).toBeVisible();
+  expect(screen.queryByRole('heading', { name: 'Recognize product' })).not.toBeInTheDocument();
+});
+
+const openRecognitionScreenByUrl = async (): Promise<void> => {
+  await moveThroughBrowserHistory(() => {
+    window.location.hash = '#/log/food/recognition';
+  });
+};
+
+test.each([
+  {
+    leaving: 'logging the Meal Draft',
+    leave: async (user: UserEvent) => {
+      await user.click(
+        within(await findTray('Breakfast')).getByRole('button', { name: 'Log food' }),
+      );
+    },
+  },
+  {
+    leaving: 'discarding the Meal Draft',
+    leave: async (user: UserEvent) => {
+      await user.click(screen.getByRole('button', { name: 'Back' }));
+      const discardPrompt = await screen.findByRole('dialog', { name: 'Discard 1 food log?' });
+      await user.click(within(discardPrompt).getByRole('button', { name: 'Discard' }));
+    },
+  },
+])('photos left after a failed recognition are forgotten after $leaving', async ({ leave }) => {
+  const user = userEvent.setup();
+  server.use(
+    http.post(
+      `${API_URL}/api/v1/notes/recognitions`,
+      () => HttpResponse.json({}, { status: 500 }),
+      { once: true },
+    ),
+  );
+  await openDayPageWithMultiItemFoodLoggingOn(user);
+  await clickAddMeal(user, 'Breakfast');
+  await addFoundProduct(user, 'chick', 'Chicken');
+  await pickPhotosForRecognition(user, ['Yogurt.jpg']);
+  await screen.findByRole('alert');
+  await user.click(screen.getByRole('button', { name: 'Back' }));
+  await findSearchField();
+  await leave(user);
+  await screen.findByRole('button', { name: /19 oct 2023/i });
+  await clickAddMeal(user, 'Breakfast');
+  await findSearchField();
+
+  await openRecognitionScreenByUrl();
+
+  await waitFor(() => expect(window.location.hash).toBe('#/log/food'));
+  expect(await findSearchField()).toBeVisible();
+  expect(screen.queryByRole('heading', { name: 'Recognize product' })).not.toBeInTheDocument();
 });
 
 test('opening the search screen with no Meal Draft lands on the day page', async () => {

@@ -22,6 +22,7 @@ import { Route as AppSettingsRouteImport } from './routes/_app/settings'
 import { Route as AppWeightRouteImport } from './routes/_app/weight'
 import { Route as AppLogFoodRouteImport } from './routes/_app/log.food'
 import { Route as AppLogFoodIndexRouteImport } from './routes/_app/log.food.index'
+import { Route as AppLogFoodRecognitionRouteImport } from './routes/_app/log.food.recognition'
 import { Route as AppLogFoodProductsNewRouteImport } from './routes/_app/log.food.products.new'
 
 const AppRoute = AppRouteImport.update({
@@ -88,6 +89,11 @@ const AppLogFoodIndexRoute = AppLogFoodIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AppLogFoodRoute,
 } as any)
+const AppLogFoodRecognitionRoute = AppLogFoodRecognitionRouteImport.update({
+  id: '/recognition',
+  path: '/recognition',
+  getParentRoute: () => AppLogFoodRoute,
+} as any)
 const AppLogFoodProductsNewRoute = AppLogFoodProductsNewRouteImport.update({
   id: '/products/new',
   path: '/products/new',
@@ -106,6 +112,7 @@ export interface FileRoutesByFullPath {
   '/settings': typeof AppSettingsRoute
   '/weight': typeof AppWeightRoute
   '/log/food': typeof AppLogFoodRouteWithChildren
+  '/log/food/recognition': typeof AppLogFoodRecognitionRoute
   '/log/food/': typeof AppLogFoodIndexRoute
   '/log/food/products/new': typeof AppLogFoodProductsNewRoute
 }
@@ -120,6 +127,7 @@ export interface FileRoutesByTo {
   '/settings': typeof AppSettingsRoute
   '/weight': typeof AppWeightRoute
   '/': typeof AppIndexRoute
+  '/log/food/recognition': typeof AppLogFoodRecognitionRoute
   '/log/food': typeof AppLogFoodIndexRoute
   '/log/food/products/new': typeof AppLogFoodProductsNewRoute
 }
@@ -137,6 +145,7 @@ export interface FileRoutesById {
   '/_app/weight': typeof AppWeightRoute
   '/_app/': typeof AppIndexRoute
   '/_app/log/food': typeof AppLogFoodRouteWithChildren
+  '/_app/log/food/recognition': typeof AppLogFoodRecognitionRoute
   '/_app/log/food/': typeof AppLogFoodIndexRoute
   '/_app/log/food/products/new': typeof AppLogFoodProductsNewRoute
 }
@@ -154,6 +163,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/weight'
     | '/log/food'
+    | '/log/food/recognition'
     | '/log/food/'
     | '/log/food/products/new'
   fileRoutesByTo: FileRoutesByTo
@@ -168,6 +178,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/weight'
     | '/'
+    | '/log/food/recognition'
     | '/log/food'
     | '/log/food/products/new'
   id:
@@ -184,6 +195,7 @@ export interface FileRouteTypes {
     | '/_app/weight'
     | '/_app/'
     | '/_app/log/food'
+    | '/_app/log/food/recognition'
     | '/_app/log/food/'
     | '/_app/log/food/products/new'
   fileRoutesById: FileRoutesById
@@ -289,6 +301,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppLogFoodIndexRouteImport
       parentRoute: typeof AppLogFoodRoute
     }
+    '/_app/log/food/recognition': {
+      id: '/_app/log/food/recognition'
+      path: '/recognition'
+      fullPath: '/log/food/recognition'
+      preLoaderRoute: typeof AppLogFoodRecognitionRouteImport
+      parentRoute: typeof AppLogFoodRoute
+    }
     '/_app/log/food/products/new': {
       id: '/_app/log/food/products/new'
       path: '/products/new'
@@ -300,11 +319,13 @@ declare module '@tanstack/react-router' {
 }
 
 interface AppLogFoodRouteChildren {
+  AppLogFoodRecognitionRoute: typeof AppLogFoodRecognitionRoute
   AppLogFoodIndexRoute: typeof AppLogFoodIndexRoute
   AppLogFoodProductsNewRoute: typeof AppLogFoodProductsNewRoute
 }
 
 const AppLogFoodRouteChildren: AppLogFoodRouteChildren = {
+  AppLogFoodRecognitionRoute: AppLogFoodRecognitionRoute,
   AppLogFoodIndexRoute: AppLogFoodIndexRoute,
   AppLogFoodProductsNewRoute: AppLogFoodProductsNewRoute,
 }

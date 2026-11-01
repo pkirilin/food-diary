@@ -1,5 +1,5 @@
 import { foodLogModel } from '@/entities/foodLog';
-import { type CreateNotesRequest, noteModel } from '@/entities/note';
+import { type CreateNotesRequest, noteModel, type RecognizeNoteItem } from '@/entities/note';
 import {
   type CreateProductRequest,
   type ProductSelectOption,
@@ -85,6 +85,21 @@ export const toCreateProductRequest = (
   carbs,
   sugar,
   salt,
+});
+
+export const toRecognizedProductFormValues = ({
+  product,
+  quantity,
+}: RecognizeNoteItem): productModel.ProductFormValues => ({
+  name: product.name.trim(),
+  defaultQuantity: quantity,
+  category: null,
+  calories: product.caloriesCost,
+  protein: product.protein,
+  fats: product.fats,
+  carbs: product.carbs,
+  sugar: product.sugar,
+  salt: product.salt,
 });
 
 export const toCreatedMealDraftProduct = (

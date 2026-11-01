@@ -7,12 +7,16 @@ const SearchSlot = lazy(() =>
   import('./-SearchSlot').then(module => ({ default: module.SearchSlot })),
 );
 
+const CameraSlot = lazy(() =>
+  import('./-CameraSlot').then(module => ({ default: module.CameraSlot })),
+);
+
 export const Route = createFileRoute('/_app/log/food/')({
   validateSearch: z.object({
     q: z.string().optional().catch(undefined),
   }),
   staticData: {
-    appBar: { variant: 'search', Search: SearchSlot },
+    appBar: { variant: 'search', Search: SearchSlot, Actions: CameraSlot },
   },
   component: LogFoodSearchRoute,
 });

@@ -4,3 +4,5 @@ export * from './LogFoodSearchField';
 export * from './LogFoodSearchResults';
 export * from './MealDraftTray';
 export * from './MultiItemLogFood';
+export * from './RecognizeProductForm';
+export * from './RecognizeProductButton';
