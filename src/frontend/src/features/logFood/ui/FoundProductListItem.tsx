@@ -1,16 +1,17 @@
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import { IconButton, ListItem, ListItemText } from '@mui/material';
+import { IconButton, ListItem, ListItemButton, ListItemText } from '@mui/material';
 import { type FC } from 'react';
 import { useAppDispatch, useAppSelector } from '@/app/store';
 import { foodLogModel } from '@/entities/foodLog';
 
 interface Props {
   product: foodLogModel.MealDraftProduct;
+  onOpen: (productId: number) => void;
   onFoodLogAdded: () => void;
 }
 
-export const FoundProductListItem: FC<Props> = ({ product, onFoodLogAdded }) => {
+export const FoundProductListItem: FC<Props> = ({ product, onOpen, onFoodLogAdded }) => {
   const dispatch = useAppDispatch();
   const isInMealDraft = useAppSelector(state =>
     foodLogModel.selectors.isInMealDraft(state, product.id),
@@ -28,6 +29,7 @@ export const FoundProductListItem: FC<Props> = ({ product, onFoodLogAdded }) => 
 
   return (
     <ListItem
+      disablePadding
       sx={{ bgcolor: isInMealDraft ? 'action.selected' : undefined, borderRadius: 1 }}
       secondaryAction={
         <IconButton
@@ -44,10 +46,17 @@ export const FoundProductListItem: FC<Props> = ({ product, onFoodLogAdded }) => 
         </IconButton>
       }
     >
-      <ListItemText
-        primary={product.name}
-        secondary={`${product.defaultQuantity} g · ${foodLogModel.calculateCalories({ product, quantity: product.defaultQuantity })} kcal`}
-      />
+      <ListItemButton
+        sx={{ borderRadius: 1 }}
+        onClick={() => {
+          onOpen(product.id);
+        }}
+      >
+        <ListItemText
+          primary={product.name}
+          secondary={`${product.defaultQuantity} g · ${foodLogModel.calculateCalories({ product, quantity: product.defaultQuantity })} kcal`}
+        />
+      </ListItemButton>
     </ListItem>
   );
 };

@@ -188,6 +188,7 @@ test('⊕ adds a product with its default quantity, then clears the search and k
   const searchField = await findSearchField();
   await waitFor(() => expect(searchField).toHaveValue(''));
   expect(searchField).toHaveFocus();
+  expect(screen.queryByRole('heading', { name: 'Product' })).not.toBeInTheDocument();
   const tray = await findTray('Breakfast');
   expect(within(tray).getByText('1')).toBeVisible();
   expect(tray).toHaveTextContent('358 kcal');
@@ -320,6 +321,144 @@ test('deleting a product from the expanded tray updates the count and the total'
   expect(within(tray).getByText('0')).toBeVisible();
   expect(tray).toHaveTextContent('Tap ⊕ to add a food');
   expect(within(tray).getByRole('button', { name: 'Log food' })).toBeDisabled();
+});
+
+const findQuantityField = (): Promise<HTMLInputElement> =>
+  screen.findByRole<HTMLInputElement>('textbox', { name: 'Quantity' });
+
+const openFoundProduct = async (
+  user: UserEvent,
+  query: string,
+  productName: string,
+): Promise<void> => {
+  const foundProducts = await searchProducts(user, query);
+  await user.click(
+    await within(foundProducts).findByRole('button', { name: new RegExp(`^${productName}`) }),
+  );
+};
+
+test('a product opened from a result is added with the quantity typed, and logged with it', async () => {
+  const user = userEvent.setup();
+  await openDayPageWithMultiItemFoodLoggingOn(user);
+  await clickAddMeal(user, 'Breakfast');
+
+  await openFoundProduct(user, 'chick', 'Chicken');
+
+  expect(await screen.findByRole('heading', { name: 'Product' })).toBeVisible();
+  expect(await screen.findByRole('heading', { name: 'Chicken' })).toBeVisible();
+  expect(screen.getByText('239 kcal per 100 g')).toBeVisible();
+  const quantityField = await findQuantityField();
+  expect(quantityField).toHaveFocus();
+  expect(quantityField).toHaveValue('150');
+  expect([quantityField.selectionStart, quantityField.selectionEnd]).toEqual([0, 3]);
+  expect(screen.getByText('358 kcal')).toBeVisible();
+  expect(screen.queryByRole('button', { name: 'Remove' })).not.toBeInTheDocument();
+
+  await user.keyboard('200');
+
+  expect(quantityField).toHaveValue('200');
+  expect(await screen.findByText('478 kcal')).toBeVisible();
+
+  await user.click(screen.getByRole('button', { name: 'Add' }));
+
+  expect(await findSearchField()).toHaveValue('chick');
+  expect(await screen.findByRole('button', { name: 'Remove Chicken' })).toBeVisible();
+  const tray = await findTray('Breakfast');
+  expect(within(tray).getByText('1')).toBeVisible();
+  expect(within(tray).getByText('478 kcal')).toBeVisible();
+
+  await user.click(within(tray).getByRole('button', { name: 'Log food' }));
+
+  await waitFor(async () =>
+    expect(await findFoodLogsOfMeal('Breakfast')).toContainEqual(
+      expect.stringMatching(/^Chicken200 g/),
+    ),
+  );
+});
+
+test('a quantity changed from a tray row is saved over the picked one, in the same place', async () => {
+  const user = userEvent.setup();
+  const tray = await addChickenAndOatsToBreakfast(user);
+  await user.click(within(tray).getByRole('button', { name: 'Picked foods' }));
+
+  await user.click(within(await findPickedFoods(tray)).getByRole('button', { name: /^Oats/ }));
+
+  expect(await screen.findByRole('heading', { name: 'Oats' })).toBeVisible();
+  const quantityField = await findQuantityField();
+  expect(quantityField).toHaveValue('100');
+  expect(screen.getByRole('button', { name: 'Remove' })).toBeVisible();
+
+  await user.keyboard('50');
+  await user.click(screen.getByRole('button', { name: 'Save' }));
+
+  const trayAfterSave = await findTray('Breakfast');
+  expect(within(trayAfterSave).getByText('2')).toBeVisible();
+  expect(within(trayAfterSave).getByText('547 kcal')).toBeVisible();
+  await user.click(within(trayAfterSave).getByRole('button', { name: 'Picked foods' }));
+  const rows = within(await findPickedFoods(trayAfterSave)).getAllByRole('listitem');
+  expect(rows.map(row => row.textContent)).toEqual([
+    expect.stringMatching(/^Oats50 g · 189 kcal/),
+    expect.stringMatching(/^Chicken150 g · 358 kcal/),
+  ]);
+});
+
+test.each(['5', '1001', '12.5', 'abc', ''])(
+  'a quantity of "%s" shows an error and cannot be confirmed',
+  async invalidQuantity => {
+    const user = userEvent.setup();
+    await openDayPageWithMultiItemFoodLoggingOn(user);
+    await clickAddMeal(user, 'Breakfast');
+    await openFoundProduct(user, 'chick', 'Chicken');
+    const quantityField = await findQuantityField();
+
+    await user.clear(quantityField);
+    if (invalidQuantity !== '') {
+      await user.type(quantityField, invalidQuantity);
+    }
+
+    expect(quantityField).toBeInvalid();
+    expect(await screen.findByText('Enter a whole number from 10 to 1000')).toBeVisible();
+    const addButton = screen.getByRole('button', { name: 'Add' });
+    expect(addButton).toBeDisabled();
+
+    await user.type(quantityField, '{Enter}');
+
+    expect(screen.getByRole('heading', { name: 'Chicken' })).toBeVisible();
+  },
+);
+
+test('the back arrow returns from a product to the search with the Meal Draft and the query unchanged', async () => {
+  const user = userEvent.setup();
+  await openDayPageWithMultiItemFoodLoggingOn(user);
+  await clickAddMeal(user, 'Breakfast');
+  await addFoundProduct(user, 'oat', 'Oats');
+  await waitFor(async () => expect(await findSearchField()).toHaveValue(''));
+  await openFoundProduct(user, 'chick', 'Chicken');
+  await user.keyboard('200');
+
+  await user.click(await screen.findByRole('button', { name: 'Back' }));
+
+  expect(await findSearchField()).toHaveValue('chick');
+  expect(await screen.findByRole('button', { name: 'Add Chicken' })).toBeVisible();
+  const tray = await findTray('Breakfast');
+  expect(within(tray).getByText('1')).toBeVisible();
+  expect(within(tray).getByText('379 kcal')).toBeVisible();
+});
+
+test('Remove on a picked product takes it out of the Meal Draft', async () => {
+  const user = userEvent.setup();
+  const tray = await addChickenAndOatsToBreakfast(user);
+  await user.click(within(tray).getByRole('button', { name: 'Picked foods' }));
+  await user.click(within(await findPickedFoods(tray)).getByRole('button', { name: /^Oats/ }));
+
+  await user.click(await screen.findByRole('button', { name: 'Remove' }));
+
+  const trayAfterRemove = await findTray('Breakfast');
+  expect(within(trayAfterRemove).getByText('1')).toBeVisible();
+  expect(within(trayAfterRemove).getByText('358 kcal')).toBeVisible();
+  await user.click(within(trayAfterRemove).getByRole('button', { name: 'Picked foods' }));
+  const rows = within(await findPickedFoods(trayAfterRemove)).getAllByRole('listitem');
+  expect(rows.map(row => row.textContent)).toEqual([expect.stringMatching(/^Chicken/)]);
 });
 
 test('opening the search screen with no Meal Draft lands on the day page', async () => {

@@ -7,11 +7,12 @@ import { FoundProductListItem } from './FoundProductListItem';
 interface Props {
   query: string;
   onQueryChange: (query: string) => void;
+  onOpenProduct: (productId: number) => void;
 }
 
 const EMPTY_PRODUCTS: ProductSelectOption[] = [];
 
-export const LogFoodSearchResults: FC<Props> = ({ query, onQueryChange }) => {
+export const LogFoodSearchResults: FC<Props> = ({ query, onQueryChange, onOpenProduct }) => {
   const { allProducts, isFetching } = productApi.useProductsAutocompleteQuery(null, {
     selectFromResult: ({ data, isFetching }) => ({
       allProducts: data ?? EMPTY_PRODUCTS,
@@ -38,6 +39,7 @@ export const LogFoodSearchResults: FC<Props> = ({ query, onQueryChange }) => {
         <FoundProductListItem
           key={product.id}
           product={product}
+          onOpen={onOpenProduct}
           onFoodLogAdded={() => {
             onQueryChange('');
           }}

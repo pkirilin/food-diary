@@ -1,3 +1,4 @@
+export * from './LogFoodProductDetail';
 export * from './LogFoodSearchField';
 export * from './LogFoodSearchResults';
 export * from './MealDraftTray';

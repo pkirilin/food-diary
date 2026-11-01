@@ -27,6 +27,9 @@ function LogFoodSearchRoute() {
       onQueryChange={query => {
         void navigate({ search: { q: query === '' ? undefined : query }, replace: true });
       }}
+      onOpenProduct={productId => {
+        void navigate({ to: '/log/food/products/$productId', params: { productId } });
+      }}
       onLogged={date => {
         void navigate({ to: '/', search: { date }, replace: true });
       }}
