@@ -41,6 +41,12 @@ public class NotesRepository(FoodDiaryContext context) : INotesRepository
         return context.SaveChangesAsync(cancellationToken);
     }
 
+    public Task AddRange(IReadOnlyCollection<Note> notes, CancellationToken cancellationToken)
+    {
+        context.Notes.AddRange(notes);
+        return context.SaveChangesAsync(cancellationToken);
+    }
+
     public Task Update(Note note, CancellationToken cancellationToken)
     {
         context.Update(note);

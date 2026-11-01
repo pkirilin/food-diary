@@ -61,6 +61,25 @@ public class NotesController : ControllerBase
         };
     }
 
+    [HttpPost("batch")]
+    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+    public async Task<IActionResult> CreateNotes(
+        [FromBody] CreateNotesRequest request,
+        [FromServices] CreateNotesCommandHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = request.ToCreateNotesCommand();
+        var result = await handler.Handle(command, cancellationToken);
+
+        return result switch
+        {
+            CreateNotesResult.Success => Ok(),
+            CreateNotesResult.Failure f => f.Error.ToActionResult(),
+            _ => StatusCode(StatusCodes.Status501NotImplemented)
+        };
+    }
+
     [HttpPut("{id:int}")]
     [ProducesResponseType((int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
