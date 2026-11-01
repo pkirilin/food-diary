@@ -17,11 +17,17 @@ interface Props {
   query: string;
   onQueryChange: (query: string) => void;
   onCreateProduct: (name: string) => void;
+  onOpenProduct: (productId: number) => void;
 }
 
 const EMPTY_PRODUCTS: ProductSelectOption[] = [];
 
-export const LogFoodSearchResults: FC<Props> = ({ query, onQueryChange, onCreateProduct }) => {
+export const LogFoodSearchResults: FC<Props> = ({
+  query,
+  onQueryChange,
+  onCreateProduct,
+  onOpenProduct,
+}) => {
   const { allProducts, isFetching } = productApi.useProductsAutocompleteQuery(null, {
     selectFromResult: ({ data, isFetching }) => ({
       allProducts: data ?? EMPTY_PRODUCTS,
@@ -70,6 +76,7 @@ export const LogFoodSearchResults: FC<Props> = ({ query, onQueryChange, onCreate
         <FoundProductListItem
           key={product.id}
           product={product}
+          onOpen={onOpenProduct}
           onFoodLogAdded={() => {
             onQueryChange('');
           }}

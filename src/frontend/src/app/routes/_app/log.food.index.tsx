@@ -34,6 +34,9 @@ function LogFoodSearchRoute() {
       onCreateProduct={name => {
         void navigate({ to: '/log/food/products/new', search: { name } });
       }}
+      onOpenProduct={productId => {
+        void navigate({ to: '/log/food/products/$productId', params: { productId } });
+      }}
       onLogged={date => {
         void navigate({ to: '/', search: { date }, replace: true });
       }}

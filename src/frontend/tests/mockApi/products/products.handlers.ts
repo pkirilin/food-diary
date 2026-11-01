@@ -137,6 +137,12 @@ export const handlers: HttpHandler[] = [
         return await DelayedHttpResponse.badRequest();
       }
 
+      if (result === 'ProductAlreadyExists') {
+        return await DelayedHttpResponse.validationProblem({
+          Name: [`Product with the name '${body.name}' already exists`],
+        });
+      }
+
       return await DelayedHttpResponse.ok();
     },
   ),

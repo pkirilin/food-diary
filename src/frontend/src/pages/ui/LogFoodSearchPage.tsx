@@ -6,6 +6,7 @@ interface Props {
   query: string;
   onQueryChange: (query: string) => void;
   onCreateProduct: (name: string) => void;
+  onOpenProduct: (productId: number) => void;
   onLogged: (date: string) => void;
 }
 
@@ -13,6 +14,7 @@ export const LogFoodSearchPage: FC<Props> = ({
   query,
   onQueryChange,
   onCreateProduct,
+  onOpenProduct,
   onLogged,
 }) => (
   <PageContainer>
@@ -20,7 +22,8 @@ export const LogFoodSearchPage: FC<Props> = ({
       query={query}
       onQueryChange={onQueryChange}
       onCreateProduct={onCreateProduct}
+      onOpenProduct={onOpenProduct}
     />
-    <MealDraftTray onLogged={onLogged} />
+    <MealDraftTray onOpenProduct={onOpenProduct} onLogged={onLogged} />
   </PageContainer>
 );

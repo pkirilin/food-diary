@@ -1,20 +1,21 @@
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutlineOutlined';
-import { IconButton, ListItem, ListItemText } from '@mui/material';
+import { IconButton, ListItem, ListItemButton, ListItemText } from '@mui/material';
 import { type FC } from 'react';
 import { useAppDispatch } from '@/app/store';
 import { foodLogModel } from '@/entities/foodLog';
 
 interface Props {
   foodLog: foodLogModel.MealDraftFoodLog;
+  onOpen: (productId: number) => void;
 }
 
-export const MealDraftFoodLogListItem: FC<Props> = ({ foodLog }) => {
+export const MealDraftFoodLogListItem: FC<Props> = ({ foodLog, onOpen }) => {
   const dispatch = useAppDispatch();
   const { product, quantity } = foodLog;
 
   return (
     <ListItem
-      disableGutters
+      disablePadding
       secondaryAction={
         <IconButton
           edge="end"
@@ -25,10 +26,17 @@ export const MealDraftFoodLogListItem: FC<Props> = ({ foodLog }) => {
         </IconButton>
       }
     >
-      <ListItemText
-        primary={product.name}
-        secondary={`${quantity} g · ${foodLogModel.calculateCalories(foodLog)} kcal`}
-      />
+      <ListItemButton
+        disableGutters
+        onClick={() => {
+          onOpen(product.id);
+        }}
+      >
+        <ListItemText
+          primary={product.name}
+          secondary={`${quantity} g · ${foodLogModel.calculateCalories(foodLog)} kcal`}
+        />
+      </ListItemButton>
     </ListItem>
   );
 };

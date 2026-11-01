@@ -2,6 +2,8 @@ import { foodLogModel } from '@/entities/foodLog';
 import { type CreateNotesRequest, noteModel, type RecognizeNoteItem } from '@/entities/note';
 import {
   type CreateProductRequest,
+  type EditProductRequest,
+  type GetProductByIdResponse,
   type ProductSelectOption,
   type productModel,
 } from '@/entities/product';
@@ -102,7 +104,37 @@ export const toRecognizedProductFormValues = ({
   salt: product.salt,
 });
 
-export const toCreatedMealDraftProduct = (
+export const toEditProductRequest = (
+  id: number,
+  categoryId: number,
+  values: productModel.ProductFormValues,
+): EditProductRequest => ({ id, ...toCreateProductRequest(categoryId, values) });
+
+export const toProductFormValues = ({
+  id,
+  name,
+  caloriesCost,
+  defaultQuantity,
+  category,
+  protein,
+  fats,
+  carbs,
+  sugar,
+  salt,
+}: GetProductByIdResponse): productModel.ProductFormValues => ({
+  id,
+  name,
+  calories: caloriesCost,
+  defaultQuantity,
+  category: { id: category.id, name: category.name },
+  protein,
+  fats,
+  carbs,
+  sugar,
+  salt,
+});
+
+export const fromProductFormValues = (
   id: number,
   {
     name,
@@ -119,6 +151,28 @@ export const toCreatedMealDraftProduct = (
   name,
   defaultQuantity,
   calories,
+  protein,
+  fats,
+  carbs,
+  sugar,
+  salt,
+});
+
+export const fromGetProductByIdResponse = ({
+  id,
+  name,
+  defaultQuantity,
+  caloriesCost,
+  protein,
+  fats,
+  carbs,
+  sugar,
+  salt,
+}: GetProductByIdResponse): foodLogModel.MealDraftProduct => ({
+  id,
+  name,
+  defaultQuantity,
+  calories: caloriesCost,
   protein,
   fats,
   carbs,

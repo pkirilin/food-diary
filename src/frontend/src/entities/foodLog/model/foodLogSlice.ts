@@ -1,6 +1,11 @@
 import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { calculateNutritionValues } from './foodLog';
-import { type MealDraft, type MealDraftFoodLog, type MealType } from './types';
+import {
+  type MealDraft,
+  type MealDraftFoodLog,
+  type MealDraftProduct,
+  type MealType,
+} from './types';
 
 export interface FoodLogState {
   mealDraft: MealDraft | null;
@@ -15,6 +20,11 @@ interface MealDraftStartedPayload {
   mealType: MealType;
 }
 
+interface FoodLogQuantityChangedPayload {
+  productId: number;
+  quantity: number;
+}
+
 const EMPTY_FOOD_LOGS: MealDraftFoodLog[] = [];
 
 export const foodLogSlice = createSlice({
@@ -24,6 +34,8 @@ export const foodLogSlice = createSlice({
     mealDraft: state => state.mealDraft,
     isInMealDraft: (state, productId: number) =>
       state.mealDraft?.foodLogs.some(({ product }) => product.id === productId) ?? false,
+    foodLogOfProduct: (state, productId: number) =>
+      state.mealDraft?.foodLogs.find(({ product }) => product.id === productId) ?? null,
     foodLogsCount: state => state.mealDraft?.foodLogs.length ?? 0,
     totalCalories: state =>
       calculateNutritionValues(state.mealDraft?.foodLogs ?? EMPTY_FOOD_LOGS).calories,
@@ -37,6 +49,23 @@ export const foodLogSlice = createSlice({
 
       if (foodLogs?.some(({ product }) => product.id === payload.product.id) === false) {
         foodLogs.push(payload);
+      }
+    },
+    foodLogQuantityChanged: (state, { payload }: PayloadAction<FoodLogQuantityChangedPayload>) => {
+      const foodLog = state.mealDraft?.foodLogs.find(
+        ({ product }) => product.id === payload.productId,
+      );
+
+      if (foodLog !== undefined) {
+        foodLog.quantity = payload.quantity;
+      }
+    },
+    productUpdated: (state, { payload: product }: PayloadAction<MealDraftProduct>) => {
+      const foodLog = state.mealDraft?.foodLogs.find(({ product: { id } }) => id === product.id);
+
+      if (foodLog !== undefined) {
+        foodLog.product = product;
+        foodLog.quantity = product.defaultQuantity;
       }
     },
     foodLogRemoved: (state, { payload: productId }: PayloadAction<number>) => {

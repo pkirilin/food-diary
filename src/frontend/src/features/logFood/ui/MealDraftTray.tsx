@@ -27,10 +27,11 @@ import { MealDraftFoodLogListItem } from './MealDraftFoodLogListItem';
 const COLLAPSED_ROW_HEIGHT = 64;
 
 interface Props {
+  onOpenProduct: (productId: number) => void;
   onLogged: (date: string) => void;
 }
 
-export const MealDraftTray: FC<Props> = ({ onLogged }) => {
+export const MealDraftTray: FC<Props> = ({ onOpenProduct, onLogged }) => {
   const headingId = useId();
   const foodLogsListId = useId();
   const [expandRequested, setExpandRequested] = useState(false);
@@ -81,7 +82,11 @@ export const MealDraftTray: FC<Props> = ({ onLogged }) => {
             <Collapse in={expanded} unmountOnExit>
               <List id={foodLogsListId} aria-label="Picked foods">
                 {mealDraft.foodLogs.map(foodLog => (
-                  <MealDraftFoodLogListItem key={foodLog.product.id} foodLog={foodLog} />
+                  <MealDraftFoodLogListItem
+                    key={foodLog.product.id}
+                    foodLog={foodLog}
+                    onOpen={onOpenProduct}
+                  />
                 ))}
               </List>
             </Collapse>

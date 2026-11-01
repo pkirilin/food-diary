@@ -24,6 +24,8 @@ import { Route as AppLogFoodRouteImport } from './routes/_app/log.food'
 import { Route as AppLogFoodIndexRouteImport } from './routes/_app/log.food.index'
 import { Route as AppLogFoodRecognitionRouteImport } from './routes/_app/log.food.recognition'
 import { Route as AppLogFoodProductsNewRouteImport } from './routes/_app/log.food.products.new'
+import { Route as AppLogFoodProductsProductIdIndexRouteImport } from './routes/_app/log.food.products.$productId.index'
+import { Route as AppLogFoodProductsProductIdEditRouteImport } from './routes/_app/log.food.products.$productId.edit'
 
 const AppRoute = AppRouteImport.update({
   id: '/_app',
@@ -99,6 +101,18 @@ const AppLogFoodProductsNewRoute = AppLogFoodProductsNewRouteImport.update({
   path: '/products/new',
   getParentRoute: () => AppLogFoodRoute,
 } as any)
+const AppLogFoodProductsProductIdIndexRoute =
+  AppLogFoodProductsProductIdIndexRouteImport.update({
+    id: '/products/$productId/',
+    path: '/products/$productId/',
+    getParentRoute: () => AppLogFoodRoute,
+  } as any)
+const AppLogFoodProductsProductIdEditRoute =
+  AppLogFoodProductsProductIdEditRouteImport.update({
+    id: '/products/$productId/edit',
+    path: '/products/$productId/edit',
+    getParentRoute: () => AppLogFoodRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
@@ -115,6 +129,8 @@ export interface FileRoutesByFullPath {
   '/log/food/recognition': typeof AppLogFoodRecognitionRoute
   '/log/food/': typeof AppLogFoodIndexRoute
   '/log/food/products/new': typeof AppLogFoodProductsNewRoute
+  '/log/food/products/$productId/edit': typeof AppLogFoodProductsProductIdEditRoute
+  '/log/food/products/$productId/': typeof AppLogFoodProductsProductIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
@@ -130,6 +146,8 @@ export interface FileRoutesByTo {
   '/log/food/recognition': typeof AppLogFoodRecognitionRoute
   '/log/food': typeof AppLogFoodIndexRoute
   '/log/food/products/new': typeof AppLogFoodProductsNewRoute
+  '/log/food/products/$productId/edit': typeof AppLogFoodProductsProductIdEditRoute
+  '/log/food/products/$productId': typeof AppLogFoodProductsProductIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -148,6 +166,8 @@ export interface FileRoutesById {
   '/_app/log/food/recognition': typeof AppLogFoodRecognitionRoute
   '/_app/log/food/': typeof AppLogFoodIndexRoute
   '/_app/log/food/products/new': typeof AppLogFoodProductsNewRoute
+  '/_app/log/food/products/$productId/edit': typeof AppLogFoodProductsProductIdEditRoute
+  '/_app/log/food/products/$productId/': typeof AppLogFoodProductsProductIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -166,6 +186,8 @@ export interface FileRouteTypes {
     | '/log/food/recognition'
     | '/log/food/'
     | '/log/food/products/new'
+    | '/log/food/products/$productId/edit'
+    | '/log/food/products/$productId/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
@@ -181,6 +203,8 @@ export interface FileRouteTypes {
     | '/log/food/recognition'
     | '/log/food'
     | '/log/food/products/new'
+    | '/log/food/products/$productId/edit'
+    | '/log/food/products/$productId'
   id:
     | '__root__'
     | '/_app'
@@ -198,6 +222,8 @@ export interface FileRouteTypes {
     | '/_app/log/food/recognition'
     | '/_app/log/food/'
     | '/_app/log/food/products/new'
+    | '/_app/log/food/products/$productId/edit'
+    | '/_app/log/food/products/$productId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -315,6 +341,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppLogFoodProductsNewRouteImport
       parentRoute: typeof AppLogFoodRoute
     }
+    '/_app/log/food/products/$productId/': {
+      id: '/_app/log/food/products/$productId/'
+      path: '/products/$productId'
+      fullPath: '/log/food/products/$productId/'
+      preLoaderRoute: typeof AppLogFoodProductsProductIdIndexRouteImport
+      parentRoute: typeof AppLogFoodRoute
+    }
+    '/_app/log/food/products/$productId/edit': {
+      id: '/_app/log/food/products/$productId/edit'
+      path: '/products/$productId/edit'
+      fullPath: '/log/food/products/$productId/edit'
+      preLoaderRoute: typeof AppLogFoodProductsProductIdEditRouteImport
+      parentRoute: typeof AppLogFoodRoute
+    }
   }
 }
 
@@ -322,12 +362,16 @@ interface AppLogFoodRouteChildren {
   AppLogFoodRecognitionRoute: typeof AppLogFoodRecognitionRoute
   AppLogFoodIndexRoute: typeof AppLogFoodIndexRoute
   AppLogFoodProductsNewRoute: typeof AppLogFoodProductsNewRoute
+  AppLogFoodProductsProductIdEditRoute: typeof AppLogFoodProductsProductIdEditRoute
+  AppLogFoodProductsProductIdIndexRoute: typeof AppLogFoodProductsProductIdIndexRoute
 }
 
 const AppLogFoodRouteChildren: AppLogFoodRouteChildren = {
   AppLogFoodRecognitionRoute: AppLogFoodRecognitionRoute,
   AppLogFoodIndexRoute: AppLogFoodIndexRoute,
   AppLogFoodProductsNewRoute: AppLogFoodProductsNewRoute,
+  AppLogFoodProductsProductIdEditRoute: AppLogFoodProductsProductIdEditRoute,
+  AppLogFoodProductsProductIdIndexRoute: AppLogFoodProductsProductIdIndexRoute,
 }
 
 const AppLogFoodRouteWithChildren = AppLogFoodRoute._addFileChildren(
