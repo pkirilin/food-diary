@@ -105,6 +105,10 @@ Check `STRATEGY.md` first — the project deliberately stays small. Prefer modif
 
 Issues and specs live as local markdown files under `.scratch/<feature-slug>/`. See `docs/agents/issue-tracker.md`.
 
+### Triage labels
+
+Default role names (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`), recorded as `Status:` values in issue files. See `docs/agents/triage-labels.md`.
+
 ### Domain docs
 
 Single-context — one `GLOSSARY.md` + `docs/adr/` at the repo root. See `docs/agents/domain.md`.
