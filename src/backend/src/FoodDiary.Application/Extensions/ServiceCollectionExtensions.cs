@@ -65,6 +65,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<GetNotesQueryHandler>();
         services.AddScoped<GetNotesHistoryQueryHandler>();
         services.AddScoped<CreateNoteCommandHandler>();
+        services.AddScoped<CreateNotesCommandHandler>();
         services.AddScoped<UpdateNoteCommandHandler>();
         services.AddScoped<RecognizeNoteCommandHandler>();
         services.AddScoped<DeleteNoteCommandHandler>();
