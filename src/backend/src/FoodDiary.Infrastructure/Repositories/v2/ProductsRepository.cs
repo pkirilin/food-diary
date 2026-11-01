@@ -16,6 +16,16 @@ internal class ProductsRepository(FoodDiaryContext context) : IProductsRepositor
         return context.Products.FirstOrDefaultAsync(p => p.Name == name, cancellationToken);
     }
 
+    public async Task<IReadOnlyList<int>> FindExistingIds(
+        IReadOnlyCollection<int> ids,
+        CancellationToken cancellationToken)
+    {
+        return await context.Products
+            .Where(p => ids.Contains(p.Id))
+            .Select(p => p.Id)
+            .ToListAsync(cancellationToken);
+    }
+
     public async Task Create(Product product, CancellationToken cancellationToken)
     {
         context.Products.Add(product);

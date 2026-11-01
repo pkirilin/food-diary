@@ -26,14 +26,13 @@ public class CreateNotesCommandHandler(IProductsRepository productsRepository, I
 {
     public async Task<CreateNotesResult> Handle(CreateNotesCommand command, CancellationToken cancellationToken)
     {
-        foreach (var productId in command.Notes.Select(n => n.ProductId).Distinct())
-        {
-            var product = await productsRepository.FindById(productId, cancellationToken);
+        var productIds = command.Notes.Select(n => n.ProductId).Distinct().ToList();
+        var existingProductIds = await productsRepository.FindExistingIds(productIds, cancellationToken);
+        var missingProductIds = productIds.Except(existingProductIds).ToList();
 
-            if (product is null)
-            {
-                return CreateNotesResult.ProductNotFound(productId);
-            }
+        if (missingProductIds.Count > 0)
+        {
+            return CreateNotesResult.ProductNotFound(missingProductIds[0]);
         }
 
         var notesOfDate = await notesRepository.FindByDate(command.Date, cancellationToken);
