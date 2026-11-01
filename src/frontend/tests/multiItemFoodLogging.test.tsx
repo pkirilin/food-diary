@@ -264,15 +264,6 @@ test('a failed Log food keeps the Meal Draft, shows an error and can be retried'
   );
 });
 
-const openBreakfastWithChickenAndOats = async (user: UserEvent): Promise<void> => {
-  await openDayPageWithMultiItemFoodLoggingOn(user);
-  await clickAddMeal(user, 'Breakfast');
-  await addFoundProduct(user, 'chick', 'Chicken');
-  await waitFor(async () => expect(await findSearchField()).toHaveValue(''));
-  await addFoundProduct(user, 'oat', 'Oats');
-  await waitFor(async () => expect(await findSearchField()).toHaveValue(''));
-};
-
 const moveThroughBrowserHistory = async (move: () => void): Promise<void> => {
   const popped = new Promise(resolve => {
     window.addEventListener('popstate', resolve, { once: true });
@@ -286,7 +277,7 @@ const findDiscardPrompt = (foodLogsCount: number): Promise<HTMLElement> =>
 
 test('the back arrow asks to discard the picked products when the Meal Draft is not empty', async () => {
   const user = userEvent.setup();
-  await openBreakfastWithChickenAndOats(user);
+  await addChickenAndOatsToBreakfast(user);
 
   await user.click(screen.getByRole('button', { name: 'Back' }));
 
@@ -295,7 +286,7 @@ test('the back arrow asks to discard the picked products when the Meal Draft is 
 
 test('Discard empties the Meal Draft and leaves for the day page', async () => {
   const user = userEvent.setup();
-  await openBreakfastWithChickenAndOats(user);
+  await addChickenAndOatsToBreakfast(user);
   await user.click(screen.getByRole('button', { name: 'Back' }));
 
   await user.click(within(await findDiscardPrompt(2)).getByRole('button', { name: 'Discard' }));
@@ -314,7 +305,7 @@ test('Discard empties the Meal Draft and leaves for the day page', async () => {
 
 test('Cancel stays on the search screen with the Meal Draft intact', async () => {
   const user = userEvent.setup();
-  await openBreakfastWithChickenAndOats(user);
+  await addChickenAndOatsToBreakfast(user);
   await user.click(screen.getByRole('button', { name: 'Back' }));
 
   await user.click(within(await findDiscardPrompt(2)).getByRole('button', { name: 'Cancel' }));
@@ -328,7 +319,7 @@ test('Cancel stays on the search screen with the Meal Draft intact', async () =>
 
 test("the browser's back button asks to discard the picked products, too", async () => {
   const user = userEvent.setup();
-  await openBreakfastWithChickenAndOats(user);
+  await addChickenAndOatsToBreakfast(user);
 
   await moveThroughBrowserHistory(() => window.history.back());
 
@@ -374,6 +365,64 @@ test('searching again after picking a product stays in the flow without asking',
   expect(await within(foundProducts).findByText('Oats')).toBeVisible();
   expect(window.location.hash).toBe('#/log/food?q=oat');
   expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+});
+
+const addChickenAndOatsToBreakfast = async (user: UserEvent): Promise<HTMLElement> => {
+  await openDayPageWithMultiItemFoodLoggingOn(user);
+  await clickAddMeal(user, 'Breakfast');
+  await addFoundProduct(user, 'oat', 'Oats');
+  await waitFor(async () => expect(await findSearchField()).toHaveValue(''));
+  await addFoundProduct(user, 'chick', 'Chicken');
+  await waitFor(async () => expect(await findSearchField()).toHaveValue(''));
+  return await findTray('Breakfast');
+};
+
+const findPickedFoods = (tray: HTMLElement): Promise<HTMLElement> =>
+  within(tray).findByRole('list', { name: 'Picked foods' });
+
+test('the expanded tray lists the picked products in the order picked, without a quantity field', async () => {
+  const user = userEvent.setup();
+  const tray = await addChickenAndOatsToBreakfast(user);
+  const toggle = within(tray).getByRole('button', { name: 'Picked foods' });
+  expect(toggle).toHaveAttribute('aria-expanded', 'false');
+
+  await user.click(toggle);
+
+  expect(toggle).toHaveAttribute('aria-expanded', 'true');
+  const rows = within(await findPickedFoods(tray)).getAllByRole('listitem');
+  expect(rows.map(row => row.textContent)).toEqual([
+    expect.stringMatching(/^Oats100 g · 379 kcal/),
+    expect.stringMatching(/^Chicken150 g · 358 kcal/),
+  ]);
+  expect(within(tray).queryByRole('textbox')).not.toBeInTheDocument();
+  expect(within(tray).queryByRole('spinbutton')).not.toBeInTheDocument();
+
+  await user.click(toggle);
+
+  expect(toggle).toHaveAttribute('aria-expanded', 'false');
+  await waitFor(() =>
+    expect(within(tray).queryByRole('list', { name: 'Picked foods' })).not.toBeInTheDocument(),
+  );
+});
+
+test('deleting a product from the expanded tray updates the count and the total', async () => {
+  const user = userEvent.setup();
+  const tray = await addChickenAndOatsToBreakfast(user);
+  await user.click(within(tray).getByRole('button', { name: 'Picked foods' }));
+  const pickedFoods = await findPickedFoods(tray);
+
+  await user.click(within(pickedFoods).getByRole('button', { name: 'Delete Oats' }));
+
+  expect(within(pickedFoods).getAllByRole('listitem')).toHaveLength(1);
+  expect(within(pickedFoods).getByRole('listitem')).toHaveTextContent('Chicken');
+  expect(within(tray).getByText('1')).toBeVisible();
+  expect(within(tray).getByText('358 kcal')).toBeVisible();
+
+  await user.click(within(pickedFoods).getByRole('button', { name: 'Delete Chicken' }));
+
+  expect(within(tray).getByText('0')).toBeVisible();
+  expect(tray).toHaveTextContent('Tap ⊕ to add a food');
+  expect(within(tray).getByRole('button', { name: 'Log food' })).toBeDisabled();
 });
 
 test('opening the search screen with no Meal Draft lands on the day page', async () => {
