@@ -27,15 +27,20 @@ interface FoodLogQuantityChangedPayload {
 
 const EMPTY_FOOD_LOGS: MealDraftFoodLog[] = [];
 
+const findFoodLog = (
+  mealDraft: MealDraft | null,
+  productId: number,
+): MealDraftFoodLog | undefined =>
+  mealDraft?.foodLogs.find(({ product }) => product.id === productId);
+
 export const foodLogSlice = createSlice({
   name: 'foodLog',
   initialState,
   selectors: {
     mealDraft: state => state.mealDraft,
     isInMealDraft: (state, productId: number) =>
-      state.mealDraft?.foodLogs.some(({ product }) => product.id === productId) ?? false,
-    foodLogOfProduct: (state, productId: number) =>
-      state.mealDraft?.foodLogs.find(({ product }) => product.id === productId) ?? null,
+      findFoodLog(state.mealDraft, productId) !== undefined,
+    foodLogOfProduct: (state, productId: number) => findFoodLog(state.mealDraft, productId) ?? null,
     foodLogsCount: state => state.mealDraft?.foodLogs.length ?? 0,
     totalCalories: state =>
       calculateNutritionValues(state.mealDraft?.foodLogs ?? EMPTY_FOOD_LOGS).calories,
@@ -45,23 +50,22 @@ export const foodLogSlice = createSlice({
       state.mealDraft = { date: payload.date, mealType: payload.mealType, foodLogs: [] };
     },
     foodLogAdded: (state, { payload }: PayloadAction<MealDraftFoodLog>) => {
-      const foodLogs = state.mealDraft?.foodLogs;
-
-      if (foodLogs?.some(({ product }) => product.id === payload.product.id) === false) {
-        foodLogs.push(payload);
+      if (
+        state.mealDraft !== null &&
+        findFoodLog(state.mealDraft, payload.product.id) === undefined
+      ) {
+        state.mealDraft.foodLogs.push(payload);
       }
     },
     foodLogQuantityChanged: (state, { payload }: PayloadAction<FoodLogQuantityChangedPayload>) => {
-      const foodLog = state.mealDraft?.foodLogs.find(
-        ({ product }) => product.id === payload.productId,
-      );
+      const foodLog = findFoodLog(state.mealDraft, payload.productId);
 
       if (foodLog !== undefined) {
         foodLog.quantity = payload.quantity;
       }
     },
     productUpdated: (state, { payload: product }: PayloadAction<MealDraftProduct>) => {
-      const foodLog = state.mealDraft?.foodLogs.find(({ product: { id } }) => id === product.id);
+      const foodLog = findFoodLog(state.mealDraft, product.id);
 
       if (foodLog !== undefined) {
         foodLog.product = product;
