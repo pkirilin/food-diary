@@ -69,6 +69,114 @@ public class NotesApiTests(InfrastructureFixture infrastructure) : BaseTest<Note
     }
     
     [Scenario]
+    public Task I_can_create_several_notes_at_once()
+    {
+        var chicken = Create.Product("Chicken").Please();
+        var rice = Create.Product("Rice").Please();
+        var lunch = Create.Note().WithDate("2024-01-04").WithMealType(MealType.Lunch);
+        var notes = new
+        {
+            Chicken = lunch.WithProduct(chicken, 150).WithDisplayOrder(0).Please(),
+            Rice = lunch.WithProduct(rice, 200).WithDisplayOrder(1).Please()
+        };
+
+        return CtxRunner.RunScenarioAsync(
+            c => c.Given_authenticated_user(),
+            c => c.Given_products(chicken, rice),
+            c => c.When_user_creates_notes(notes.Chicken, notes.Rice),
+            c => c.Then_notes_are_successfully_created(),
+            c => c.When_user_retrieves_notes_list_for_date("2024-01-04"),
+            c => c.Then_notes_list_contains_items(notes.Chicken, notes.Rice));
+    }
+
+    [Scenario]
+    public Task I_cannot_create_several_notes_when_one_of_products_does_not_exist()
+    {
+        var chicken = Create.Product("Chicken").Please();
+        var missingProduct = Create.Product("Rice").Please();
+        var lunch = Create.Note().WithDate("2024-01-04").WithMealType(MealType.Lunch);
+        var notes = new
+        {
+            Chicken = lunch.WithProduct(chicken, 150).Please(),
+            Rice = lunch.WithProduct(missingProduct, 200).Please()
+        };
+
+        return CtxRunner.RunScenarioAsync(
+            c => c.Given_authenticated_user(),
+            c => c.Given_products(chicken),
+            c => c.When_user_creates_notes(notes.Chicken, notes.Rice),
+            c => c.Then_notes_creation_fails_because_product_is_not_found(missingProduct),
+            c => c.When_user_retrieves_notes_list_for_date("2024-01-04"),
+            c => c.Then_notes_list_contains_no_items());
+    }
+
+    [Scenario]
+    [InlineData(9)]
+    [InlineData(1001)]
+    public Task I_cannot_create_several_notes_when_one_of_quantities_is_out_of_range(int invalidQuantity)
+    {
+        var chicken = Create.Product("Chicken").Please();
+        var rice = Create.Product("Rice").Please();
+        var lunch = Create.Note().WithDate("2024-01-04").WithMealType(MealType.Lunch);
+        var notes = new
+        {
+            Chicken = lunch.WithProduct(chicken, 150).Please(),
+            Rice = lunch.WithProduct(rice, invalidQuantity).Please()
+        };
+
+        return CtxRunner.RunScenarioAsync(
+            c => c.Given_authenticated_user(),
+            c => c.Given_products(chicken, rice),
+            c => c.When_user_creates_notes(notes.Chicken, notes.Rice),
+            c => c.Then_notes_creation_fails_with_validation_error(),
+            c => c.When_user_retrieves_notes_list_for_date("2024-01-04"),
+            c => c.Then_notes_list_contains_no_items());
+    }
+
+    [Scenario]
+    public Task I_cannot_create_several_notes_from_empty_list()
+    {
+        return CtxRunner.RunScenarioAsync(
+            c => c.Given_authenticated_user(),
+            c => c.When_user_creates_empty_list_of_notes(),
+            c => c.Then_notes_creation_fails_with_validation_error());
+    }
+
+    [Scenario]
+    public Task New_notes_are_placed_after_existing_notes_of_the_same_meal()
+    {
+        var chicken = Create.Product("Chicken").Please();
+        var rice = Create.Product("Rice").Please();
+        var breakfast = Create.Note().WithDate("2024-01-04").WithMealType(MealType.Breakfast);
+        var lunch = Create.Note().WithDate("2024-01-04").WithMealType(MealType.Lunch);
+        var existingNotes = new
+        {
+            Oatmeal = breakfast.WithProduct("Oatmeal", 200).WithDisplayOrder(0).Please(),
+            Soup = lunch.WithProduct("Soup", 300).WithDisplayOrder(0).Please(),
+            Bread = lunch.WithProduct("Bread", 50).WithDisplayOrder(1).Please()
+        };
+        var newNotes = new
+        {
+            Rice = lunch.WithProduct(rice, 200).WithDisplayOrder(2).Please(),
+            Chicken = lunch.WithProduct(chicken, 150).WithDisplayOrder(3).Please()
+        };
+
+        return CtxRunner.RunScenarioAsync(
+            c => c.Given_authenticated_user(),
+            c => c.Given_notes(existingNotes.Oatmeal, existingNotes.Soup, existingNotes.Bread),
+            c => c.Given_products(chicken, rice),
+            c => c.When_user_creates_notes(newNotes.Rice, newNotes.Chicken),
+            c => c.Then_notes_are_successfully_created(),
+            c => c.When_user_retrieves_notes_list_for_date("2024-01-04"),
+            c => c.Then_notes_list_contains_items(
+                existingNotes.Oatmeal,
+                existingNotes.Soup,
+                existingNotes.Bread,
+                newNotes.Rice,
+                newNotes.Chicken));
+    }
+
+    [Scenario]
     public Task I_can_update_note()
     {
         var newProduct = Create.Product("Beef").Please();
