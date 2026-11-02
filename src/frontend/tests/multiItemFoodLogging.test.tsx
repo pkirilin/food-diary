@@ -481,6 +481,30 @@ test('searching again after picking a product stays in the flow without asking',
   expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
 });
 
+test('typing in the search does not re-check the auth status', async () => {
+  const user = userEvent.setup();
+  await openDayPageWithMultiItemFoodLoggingOn(user);
+  await clickAddMeal(user, 'Breakfast');
+  const searchField = await findSearchField();
+
+  const authStatusRequests: string[] = [];
+  const recordAuthStatusRequest = ({ request }: { request: Request }): void => {
+    if (request.url === `${API_URL}/api/v1/auth/status`) {
+      authStatusRequests.push(request.url);
+    }
+  };
+  server.events.on('request:start', recordAuthStatusRequest);
+  onTestFinished(() => {
+    server.events.removeListener('request:start', recordAuthStatusRequest);
+  });
+
+  await user.type(searchField, 'oat');
+
+  expect(await screen.findByRole('list', { name: 'Found products' })).toBeVisible();
+  await waitFor(() => expect(window.location.hash).toBe('#/log/food?q=oat'));
+  expect(authStatusRequests).toStrictEqual<string[]>([]);
+});
+
 const addChickenAndOatsToBreakfast = async (user: UserEvent): Promise<HTMLElement> => {
   await openDayPageWithMultiItemFoodLoggingOn(user);
   await clickAddMeal(user, 'Breakfast');
