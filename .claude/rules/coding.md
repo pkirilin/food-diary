@@ -58,6 +58,4 @@ Re-read every comment added during the fixes. Review pressure produces exactly t
 
 ## Troubleshooting
 
-- When encountering errors, unexpected behavior, or unfamiliar problems, use **sequential-thinking MCP** to break down the issue systematically before attempting fixes.
-- Combine sequential-thinking with web search to research error messages, library issues, or solution patterns.
 - Do not guess solutions blindly — investigate the root cause first.
