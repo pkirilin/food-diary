@@ -1052,3 +1052,210 @@ test('opening the search screen with no Meal Draft lands on the day page', async
   expect(await screen.findByRole('button', { name: /19 oct 2023/i })).toBeVisible();
   expect(screen.queryByRole('searchbox', { name: 'Search products' })).not.toBeInTheDocument();
 });
+
+const captureFocusDuring = (eventType: 'click' | 'submit'): (() => Element | null) => {
+  let focused: Element | null = null;
+  window.addEventListener(
+    eventType,
+    () => {
+      // eslint-disable-next-line testing-library/no-node-access
+      focused = document.activeElement;
+    },
+    { once: true },
+  );
+  return () => focused;
+};
+
+const openBreakfastSearch = async (user: UserEvent): Promise<void> => {
+  await openDayPageWithMultiItemFoodLoggingOn(user);
+  await clickAddMeal(user, 'Breakfast');
+};
+
+const openChickenQuantity = async (user: UserEvent): Promise<void> => {
+  await openBreakfastSearch(user);
+  await openFoundProduct(user, 'chick', 'Chicken');
+  await findQuantityField();
+};
+
+const openOatsQuantityFromTray = async (user: UserEvent): Promise<void> => {
+  const tray = await addChickenAndOatsToBreakfast(user);
+  await user.click(within(tray).getByRole('button', { name: 'Picked foods' }));
+  await user.click(within(await findPickedFoods(tray)).getByRole('button', { name: /^Oats/ }));
+  await findQuantityField();
+};
+
+const openNewYogurtForm = async (user: UserEvent): Promise<void> => {
+  await openBreakfastSearch(user);
+  await user.type(await findSearchField(), 'Yogurt');
+  await user.click(await screen.findByRole('button', { name: 'Create "Yogurt"' }));
+  await screen.findByRole('textbox', { name: 'Name' });
+};
+
+const findNameField = (): Promise<HTMLElement> => screen.findByRole('textbox', { name: 'Name' });
+
+test.each<{
+  tap: string;
+  eventType: 'click' | 'submit';
+  arrange: (user: UserEvent) => Promise<void>;
+  tapTarget: () => Promise<HTMLElement>;
+  findNextField: () => Promise<HTMLElement>;
+}>([
+  {
+    tap: 'a search result',
+    eventType: 'click',
+    arrange: async user => {
+      await openBreakfastSearch(user);
+      await searchProducts(user, 'chick');
+    },
+    tapTarget: () => screen.findByRole('button', { name: /^Chicken/ }),
+    findNextField: findQuantityField,
+  },
+  {
+    tap: 'a tray row',
+    eventType: 'click',
+    arrange: async user => {
+      const tray = await addChickenAndOatsToBreakfast(user);
+      await user.click(within(tray).getByRole('button', { name: 'Picked foods' }));
+      await findPickedFoods(tray);
+    },
+    tapTarget: () => screen.findByRole('button', { name: /^Oats/ }),
+    findNextField: findQuantityField,
+  },
+  {
+    tap: 'the Create row',
+    eventType: 'click',
+    arrange: async user => {
+      await openBreakfastSearch(user);
+      await user.type(await findSearchField(), 'Yogurt');
+    },
+    tapTarget: () => screen.findByRole('button', { name: 'Create "Yogurt"' }),
+    findNextField: findNameField,
+  },
+  {
+    tap: 'Edit product',
+    eventType: 'click',
+    arrange: openChickenQuantity,
+    tapTarget: () => screen.findByRole('button', { name: 'Edit product' }),
+    findNextField: findNameField,
+  },
+  {
+    tap: 'Remove',
+    eventType: 'click',
+    arrange: openOatsQuantityFromTray,
+    tapTarget: () => screen.findByRole('button', { name: 'Remove' }),
+    findNextField: findSearchField,
+  },
+  {
+    tap: 'Add',
+    eventType: 'submit',
+    arrange: openChickenQuantity,
+    tapTarget: () => screen.findByRole('button', { name: 'Add' }),
+    findNextField: findSearchField,
+  },
+  {
+    tap: 'Save on the quantity',
+    eventType: 'submit',
+    arrange: openOatsQuantityFromTray,
+    tapTarget: () => screen.findByRole('button', { name: 'Save' }),
+    findNextField: findSearchField,
+  },
+  {
+    tap: 'Create on the new product',
+    eventType: 'submit',
+    arrange: openNewYogurtForm,
+    tapTarget: () => screen.findByRole('button', { name: 'Create' }),
+    findNextField: findSearchField,
+  },
+  {
+    tap: 'Save on the edited product',
+    eventType: 'submit',
+    arrange: async user => {
+      await openChickenQuantity(user);
+      await user.click(screen.getByRole('button', { name: 'Edit product' }));
+      await findNameField();
+    },
+    tapTarget: () => screen.findByRole('button', { name: 'Save' }),
+    findNextField: findQuantityField,
+  },
+])(
+  '$tap focuses a text input during the tap, then hands the focus to the next field',
+  async ({ eventType, arrange, tapTarget, findNextField }) => {
+    const user = userEvent.setup();
+    await arrange(user);
+    const target = await tapTarget();
+    const focusedDuringTap = captureFocusDuring(eventType);
+
+    await user.click(target);
+
+    const nextField = await findNextField();
+    await waitFor(() => expect(nextField).toHaveFocus());
+    expect(focusedDuringTap()).toBeInstanceOf(HTMLInputElement);
+    expect(focusedDuringTap()).not.toBeInTheDocument();
+  },
+);
+
+test('the back arrow leaves the keyboard alone', async () => {
+  const user = userEvent.setup();
+  await openChickenQuantity(user);
+  const backButton = screen.getByRole('button', { name: 'Back' });
+  const focusedDuringTap = captureFocusDuring('click');
+
+  await user.click(backButton);
+
+  expect(focusedDuringTap()).toBe(backButton);
+});
+
+test('a failed Create drops the focus from the input held for the next field', async () => {
+  const user = userEvent.setup();
+  await openNewYogurtForm(user);
+  server.use(
+    http.post(`${API_URL}/api/v1/products`, () => HttpResponse.json({}, { status: 500 }), {
+      once: true,
+    }),
+  );
+
+  await user.click(screen.getByRole('button', { name: 'Create' }));
+
+  await screen.findByRole('alert');
+  expect(document.body).toHaveFocus();
+});
+
+test('a failed Save of an edited product drops the focus from the input held for the next field', async () => {
+  const user = userEvent.setup();
+  await openChickenQuantity(user);
+  await user.click(screen.getByRole('button', { name: 'Edit product' }));
+  await findNameField();
+  server.use(
+    http.put(`${API_URL}/api/v1/products/:id`, () => HttpResponse.json({}, { status: 500 }), {
+      once: true,
+    }),
+  );
+
+  await user.click(screen.getByRole('button', { name: 'Save' }));
+
+  await screen.findByRole('alert');
+  expect(document.body).toHaveFocus();
+});
+
+test('Create with an invalid form drops the focus from the input held for the next field', async () => {
+  const user = userEvent.setup();
+  await openNewYogurtForm(user);
+  const nameField = await findNameField();
+  await user.clear(nameField);
+
+  await user.click(screen.getByRole('button', { name: 'Create' }));
+
+  await waitFor(() => expect(nameField).toBeInvalid());
+  expect(document.body).toHaveFocus();
+});
+
+test('Enter on an invalid quantity keeps the focus on the quantity field', async () => {
+  const user = userEvent.setup();
+  await openChickenQuantity(user);
+  const quantityField = await findQuantityField();
+  await user.clear(quantityField);
+
+  await user.type(quantityField, '{Enter}');
+
+  await waitFor(() => expect(quantityField).toHaveFocus());
+});

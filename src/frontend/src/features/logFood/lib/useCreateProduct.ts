@@ -2,6 +2,7 @@ import { useAppDispatch } from '@/app/store';
 import { foodLogModel } from '@/entities/foodLog';
 import { productApi, type ProductFormServerErrors, type productModel } from '@/entities/product';
 import { type ClientError } from '@/shared/api';
+import { releaseSoftKeyboardHold } from '@/shared/lib';
 import { toMealDraftProductFromForm, toCreateProductRequest } from './mapping';
 import { useProductFormErrors } from './useProductFormErrors';
 
@@ -27,6 +28,7 @@ export const useCreateProduct = (onCreated: () => void): CreateProductResult => 
     const result = await createProductMutation(toCreateProductRequest(values.category.id, values));
 
     if ('error' in result) {
+      releaseSoftKeyboardHold();
       return;
     }
 

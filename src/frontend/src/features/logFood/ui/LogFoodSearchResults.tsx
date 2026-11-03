@@ -10,6 +10,7 @@ import {
 } from '@mui/material';
 import { type FC, useMemo } from 'react';
 import { type ProductSelectOption, productApi, productLib } from '@/entities/product';
+import { holdSoftKeyboardForNextField } from '@/shared/lib';
 import { toMealDraftProduct } from '../lib/mapping';
 import { FoundProductListItem } from './FoundProductListItem';
 
@@ -57,6 +58,7 @@ export const LogFoodSearchResults: FC<Props> = ({
         <ListItem disablePadding>
           <ListItemButton
             onClick={() => {
+              holdSoftKeyboardForNextField();
               onCreateProduct(trimmedQuery);
             }}
           >

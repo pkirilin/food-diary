@@ -35,6 +35,8 @@ interface Props {
   autoFocus: boolean;
   serverErrors?: ProductFormServerErrors;
   onSubmit: OnSubmitProductFn;
+  onSubmitStarted?: () => void;
+  onSubmitInvalid?: () => void;
   onNutritionSuggestingChange?: (nutritionSuggesting: boolean) => void;
 }
 
@@ -61,6 +63,8 @@ export const ProductForm: FC<Props> = ({
   autoFocus,
   serverErrors,
   onSubmit,
+  onSubmitStarted,
+  onSubmitInvalid,
   onNutritionSuggestingChange,
 }) => {
   // useForm re-applies `errors` whenever its identity changes, so it is derived only from serverErrors
@@ -106,7 +110,16 @@ export const ProductForm: FC<Props> = ({
   const suggestDisabled = !productNameSchema.safeParse(name).success || isSuggesting;
 
   return (
-    <form id={formId} onSubmit={handleSubmit(data => onSubmit(data))}>
+    <form
+      id={formId}
+      onSubmit={event => {
+        onSubmitStarted?.();
+        void handleSubmit(
+          data => onSubmit(data),
+          () => onSubmitInvalid?.(),
+        )(event);
+      }}
+    >
       <Controller
         name="name"
         control={control}

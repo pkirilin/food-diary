@@ -2,6 +2,7 @@ import { useAppDispatch } from '@/app/store';
 import { foodLogModel } from '@/entities/foodLog';
 import { productApi, type ProductFormServerErrors, type productModel } from '@/entities/product';
 import { type ClientError } from '@/shared/api';
+import { releaseSoftKeyboardHold } from '@/shared/lib';
 import { toMealDraftProductFromForm, toEditProductRequest } from './mapping';
 import { useProductFormErrors } from './useProductFormErrors';
 
@@ -28,6 +29,7 @@ export const useEditProduct = (productId: number, onSaved: () => void): EditProd
     );
 
     if ('error' in result) {
+      releaseSoftKeyboardHold();
       return;
     }
 

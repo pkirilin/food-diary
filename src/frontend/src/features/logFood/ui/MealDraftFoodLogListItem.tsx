@@ -3,6 +3,7 @@ import { IconButton, ListItem, ListItemButton, ListItemText } from '@mui/materia
 import { type FC } from 'react';
 import { useAppDispatch } from '@/app/store';
 import { foodLogModel } from '@/entities/foodLog';
+import { holdSoftKeyboardForNextField } from '@/shared/lib';
 
 interface Props {
   foodLog: foodLogModel.MealDraftFoodLog;
@@ -29,6 +30,7 @@ export const MealDraftFoodLogListItem: FC<Props> = ({ foodLog, onOpen }) => {
       <ListItemButton
         disableGutters
         onClick={() => {
+          holdSoftKeyboardForNextField();
           onOpen(product.id);
         }}
       >

@@ -1,5 +1,7 @@
 const MAX_WAIT_FOR_NEXT_FIELD_MS = 5000;
 
+let heldPlaceholder: HTMLInputElement | null = null;
+
 // iOS Safari opens the on-screen keyboard only for a focus made during a user gesture, but keeps it
 // open while focus moves to another field. Call this in the gesture's handler when the field that
 // should receive the typing mounts later, after a navigation.
@@ -17,10 +19,18 @@ export const holdSoftKeyboardForNextField = (): void => {
     () => {
       clearTimeout(giveUpTimer);
       placeholder.remove();
+      if (heldPlaceholder === placeholder) {
+        heldPlaceholder = null;
+      }
     },
     { once: true },
   );
 
   document.body.appendChild(placeholder);
   placeholder.focus();
+  heldPlaceholder = placeholder;
+};
+
+export const releaseSoftKeyboardHold = (): void => {
+  heldPlaceholder?.blur();
 };

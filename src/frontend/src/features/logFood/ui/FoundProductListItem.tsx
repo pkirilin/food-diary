@@ -4,6 +4,7 @@ import { IconButton, ListItem, ListItemButton, ListItemText } from '@mui/materia
 import { type FC } from 'react';
 import { useAppDispatch, useAppSelector } from '@/app/store';
 import { foodLogModel } from '@/entities/foodLog';
+import { holdSoftKeyboardForNextField } from '@/shared/lib';
 
 interface Props {
   product: foodLogModel.MealDraftProduct;
@@ -49,6 +50,7 @@ export const FoundProductListItem: FC<Props> = ({ product, onOpen, onFoodLogAdde
       <ListItemButton
         sx={{ borderRadius: 1 }}
         onClick={() => {
+          holdSoftKeyboardForNextField();
           onOpen(product.id);
         }}
       >

@@ -1,6 +1,7 @@
 import { type FC } from 'react';
 import { categoryLib } from '@/entities/category';
 import { ProductForm, type productModel } from '@/entities/product';
+import { holdSoftKeyboardForNextField, releaseSoftKeyboardHold } from '@/shared/lib';
 import { useCreateProduct } from '../lib/useCreateProduct';
 import { ProductFormFooter } from './ProductFormFooter';
 
@@ -31,6 +32,8 @@ export const CreateProductForm: FC<Props> = ({ defaultValues, onCreated }) => {
         categories={categories}
         categoriesLoading={categoriesLoading}
         serverErrors={serverErrors}
+        onSubmitStarted={holdSoftKeyboardForNextField}
+        onSubmitInvalid={releaseSoftKeyboardHold}
         onSubmit={createProduct}
       />
       <ProductFormFooter

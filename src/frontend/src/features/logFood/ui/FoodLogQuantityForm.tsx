@@ -5,7 +5,7 @@ import { Controller, useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
 import { useAppDispatch } from '@/app/store';
 import { foodLogModel } from '@/entities/foodLog';
-import { quantitySchema } from '@/shared/lib';
+import { holdSoftKeyboardForNextField, quantitySchema } from '@/shared/lib';
 import { Button } from '@/shared/ui';
 
 const quantityFormSchema = z.object({ quantity: quantitySchema });
@@ -33,17 +33,23 @@ export const FoodLogQuantityForm: FC<Props> = ({ product, foodLog, onDone, onEdi
     <Stack
       component="form"
       spacing={2}
-      onSubmit={handleSubmit(({ quantity }) => {
-        if (foodLog === null) {
-          dispatch(foodLogModel.actions.foodLogAdded({ product, quantity }));
-        } else {
-          dispatch(
-            foodLogModel.actions.foodLogQuantityChanged({ productId: product.id, quantity }),
-          );
+      onSubmit={event => {
+        if (!quantityInvalid) {
+          holdSoftKeyboardForNextField();
         }
 
-        onDone();
-      })}
+        void handleSubmit(({ quantity }) => {
+          if (foodLog === null) {
+            dispatch(foodLogModel.actions.foodLogAdded({ product, quantity }));
+          } else {
+            dispatch(
+              foodLogModel.actions.foodLogQuantityChanged({ productId: product.id, quantity }),
+            );
+          }
+
+          onDone();
+        })(event);
+      }}
     >
       <div>
         <Typography variant="h6" component="h2">
@@ -85,12 +91,20 @@ export const FoodLogQuantityForm: FC<Props> = ({ product, foodLog, onDone, onEdi
       />
       <Stack direction="row" spacing={2} useFlexGap>
         <Box sx={{ flexGrow: 1 }}>
-          <Button onClick={onEditProduct}>Edit product</Button>
+          <Button
+            onClick={() => {
+              holdSoftKeyboardForNextField();
+              onEditProduct();
+            }}
+          >
+            Edit product
+          </Button>
         </Box>
         {foodLog !== null && (
           <Button
             color="error"
             onClick={() => {
+              holdSoftKeyboardForNextField();
               dispatch(foodLogModel.actions.foodLogRemoved(product.id));
               onDone();
             }}
