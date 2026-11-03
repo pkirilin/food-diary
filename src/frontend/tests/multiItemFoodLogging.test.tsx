@@ -132,6 +132,27 @@ test('with the switch on, Add breakfast opens an empty search screen with the se
   expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
 });
 
+test('Add breakfast focuses a text input during the tap, then hands the focus to the search field', async () => {
+  const user = userEvent.setup();
+  await openDayPageWithMultiItemFoodLoggingOn(user);
+  let focusedDuringTap: Element | null = null;
+  window.addEventListener(
+    'click',
+    () => {
+      // eslint-disable-next-line testing-library/no-node-access
+      focusedDuringTap = document.activeElement;
+    },
+    { once: true },
+  );
+
+  await clickAddMeal(user, 'Breakfast');
+
+  expect(focusedDuringTap).toBeInstanceOf(HTMLInputElement);
+  const searchField = await findSearchField();
+  expect(searchField).toHaveFocus();
+  expect(focusedDuringTap).not.toBeInTheDocument();
+});
+
 test("searching shows each found product's name, default quantity and calories", async () => {
   const user = userEvent.setup();
   await openDayPageWithMultiItemFoodLoggingOn(user);

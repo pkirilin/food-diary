@@ -344,8 +344,10 @@ doesn't depend on `entities/foodLog` or `features/logFood`.
 - The search field (`-SearchSlot`) and the results (the page) are separate trees that share the
   query through `q`. No ref crosses between them.
 - `LogFoodSearchField` is a `type="search"` input labelled **Search products**, inside a
-  `role="search"` box, with `autoFocus` covering the screen's opening. It keeps the typed value in
-  local state and resyncs it whenever `q` changes. `q` arrives only after the navigation that
+  `role="search"` box, with `autoFocus` covering the screen's opening. The field mounts after the
+  tap on **Add <meal>**, too late for iOS Safari to open the keyboard for it, so the tap's handler
+  first focuses a hidden placeholder input (`holdSoftKeyboardForNextField` in `shared/lib`), which
+  the field takes the focus from. It keeps the typed value in local state and resyncs it whenever `q` changes. `q` arrives only after the navigation that
   updates it, and a field bound straight to `q` drops fast keystrokes.
 - Results are a list labelled **Found products**. Each row shows the name and
   "<default quantity> g · X kcal", and opens the detail route when tapped. A product in the Meal

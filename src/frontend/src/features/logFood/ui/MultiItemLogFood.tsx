@@ -3,6 +3,7 @@ import { type FC } from 'react';
 import { useAppDispatch } from '@/app/store';
 import { foodLogModel } from '@/entities/foodLog';
 import { noteLib, type noteModel } from '@/entities/note';
+import { holdSoftKeyboardForNextField } from '@/shared/lib';
 import { Button } from '@/shared/ui';
 import { toFoodLogMealType } from '../lib/mapping';
 
@@ -16,6 +17,7 @@ export const MultiItemLogFood: FC<Props> = ({ date, mealType, onOpenLogFood }) =
   const dispatch = useAppDispatch();
 
   const handleClick = (): void => {
+    holdSoftKeyboardForNextField();
     dispatch(
       foodLogModel.actions.mealDraftStarted({ date, mealType: toFoodLogMealType(mealType) }),
     );

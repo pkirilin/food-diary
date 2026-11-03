@@ -8,3 +8,4 @@ export * from './validation';
 export * from './inputMapping';
 export * from './quantitySchema';
 export * from './devicePreferences';
+export * from './softKeyboard';
