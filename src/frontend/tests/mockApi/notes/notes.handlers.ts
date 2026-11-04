@@ -6,6 +6,7 @@ import {
   type GetNotesHistoryResponse,
   type NoteHistoryItem,
   type NoteRequestBody,
+  type CreateNotesRequest,
 } from '@/entities/note';
 import { API_URL } from '@/shared/config';
 import { DelayedHttpResponse } from '../DelayedHttpResponse';
@@ -82,6 +83,20 @@ export const handlers: HttpHandler[] = [
 
     return await DelayedHttpResponse.ok();
   }),
+
+  http.post<PathParams, CreateNotesRequest>(
+    `${API_URL}/api/v1/notes/batch`,
+    async ({ request }) => {
+      const body = await request.json();
+      const result = notesService.createMany(body);
+
+      if (result !== 'Success') {
+        return await DelayedHttpResponse.badRequest();
+      }
+
+      return await DelayedHttpResponse.ok();
+    },
+  ),
 
   http.put<{ id: string }, NoteRequestBody>(
     `${API_URL}/api/v1/notes/:id`,

@@ -1,6 +1,6 @@
 # Spec: Multi-item food logging
 
-Status: ready-for-agent
+Status: resolved
 
 Vocabulary: [GLOSSARY.md](../../GLOSSARY.md). **Food Log**, **Product**, **Meal**, **Meal
 Draft**, **Log** and **Create** are used with exactly those meanings. "Note" appears only
@@ -344,9 +344,16 @@ doesn't depend on `entities/foodLog` or `features/logFood`.
 - The search field (`-SearchSlot`) and the results (the page) are separate trees that share the
   query through `q`. No ref crosses between them.
 - `LogFoodSearchField` is a `type="search"` input labelled **Search products**, inside a
-  `role="search"` box, with `autoFocus` covering the screen's opening. It keeps the typed value in
-  local state and resyncs it whenever `q` changes. `q` arrives only after the navigation that
+  `role="search"` box, with `autoFocus` covering the screen's opening. It keeps the typed value in local state and resyncs it whenever `q` changes. `q` arrives only after the navigation that
   updates it, and a field bound straight to `q` drops fast keystrokes.
+- A field that mounts after a navigation is too late for iOS Safari to open the keyboard for it.
+  So the handler of the tap that leads to it first focuses a hidden placeholder input
+  (`holdSoftKeyboardForNextField` in `shared/lib`), and the field takes the focus from it. This
+  covers **Add <meal>**, a result row, a tray row, the **Create** row, **Edit product**, **Add**,
+  **Save** and **Remove** on the product, and **Create** and **Save** on the product forms. An
+  invalid product form or a failed request releases the placeholder, which closes the keyboard.
+  The back arrow holds nothing, so going back opens no keyboard. Neither does the recognition
+  form: it appears after the server's answer, and the gesture before it is picking a file.
 - Results are a list labelled **Found products**. Each row shows the name and
   "<default quantity> g · X kcal", and opens the detail route when tapped. A product in the Meal
   Draft has a selected background and a check icon in place of ⊕.

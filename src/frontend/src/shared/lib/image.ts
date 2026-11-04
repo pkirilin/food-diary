@@ -2,6 +2,13 @@ import { convertToBase64String } from './fileHelper';
 
 export { convertToBase64String };
 
+export interface Image {
+  id: string;
+  name: string;
+  base64: string;
+  originalUrl: string;
+}
+
 const replaceFileExtension = (fileNameWithExtension: string, newExtension: string): string =>
   fileNameWithExtension.replace(/\.[^/.]+$/, `.${newExtension}`);
 

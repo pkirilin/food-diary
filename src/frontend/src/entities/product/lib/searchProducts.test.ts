@@ -1,4 +1,4 @@
-import { type ProductSelectOption } from '@/entities/product';
+import { type ProductSelectOption } from '../api';
 import { searchProductsByName, shouldSuggestAddingNewProduct } from './searchProducts';
 
 type GivenProducts = 'cheese' | 'cheesecake' | 'chocolateCake' | 'creamCheese';

@@ -19,6 +19,7 @@ paths:
 - Redux holds validated values only. Input being typed, or input that failed validation, stays in its react-hook-form form; dispatch once the form validates.
 - Custom hooks must not own UI-presentation concerns (alerts, snackbars, toasts, dialogs). Keep that state in the component and let the hook report outcomes through callbacks (e.g. `onError(message)`, `onInfo(message)`) that the component wires to its UI.
 - Custom hooks must not depend on form library types or instances (e.g. react-hook-form's `UseFormGetValues`/`UseFormSetValue`, `control`). Pass narrow callbacks instead (e.g. `getName`, `getFieldValue`, `setFieldValue`) so the hook stays decoupled from the form layer.
+- Every search-param change is a navigation: it re-runs `beforeLoad` for all matched routes. When state writes to the URL per keystroke, confirm the matched `beforeLoad`s send no requests on that navigation.
 
 ### TypeScript Integration
 
@@ -81,19 +82,16 @@ Mandatory for any change that affects rendered UI or behavior (components, pages
 - Automated tests are still required whenever feasible. The browser check comes in addition to them.
 - When a behavior cannot reasonably be covered by Vitest (layout, real-browser APIs, PWA/service worker, image decode, camera or file input), the browser check is the sole verification. Say so in the final report.
 - Use the `playwright-cli`. Check playwright-cli --help for available commands. Run every command as `yarn playwright-cli <command>` from `src/frontend` — never a global install. The shell's working directory persists between calls, so check it first (`pwd`) and `cd` only if it isn't already `src/frontend`. If the browser is missing, run `make setup-frontend` from the repo root.
-- Start the app from `src/frontend` in MSW mode with inline env vars. `.env.local` belongs to the developer; do not edit it:
-
-```shell
-VITE_APP_MSW_ENABLED=true VITE_APP_FAKE_AUTH_ENABLED=true VITE_APP_FAKE_AUTH_LOGIN_ON_INIT=true yarn start
-```
-
+- Start the app in MSW mode with `make start-frontend-msw` from the repo root, in the background. Leave `.env.local` untouched: it belongs to the developer. A second Vite start can delete the dependency cache of a server already running in `src/frontend`, so start the app only through this target.
+- If the target reports port 5173 in use, reuse that server when `curl -s http://localhost:5173/src/shared/config.ts` shows `"VITE_APP_MSW_ENABLED": "true"`. Otherwise ask the developer how to proceed.
 - Open <http://localhost:5173>, exercise the changed flow, and check `yarn playwright-cli console`. `ERR_CONNECTION_REFUSED` errors for `https://localhost:8080/api/v1/*` are the MSW-mode baseline; any other console error is a defect.
 - Report in text only what you did and saw. Do not commit screenshots.
-- Stop the dev server and close the browser (`yarn playwright-cli close`) when done.
+- Stop the dev server you started and close the browser (`yarn playwright-cli close`) when done.
 - MSW does not exercise the real backend. If the change touches an API contract, say that real-backend behavior is unverified.
 
 ### Testing
 
+- Debug a failing test with `make test-frontend-quiet FILE=tests/app.test.tsx NAME='test name'` from the repo root (both variables are optional): it leaves the DOM dump out of the failure output. Confirm the failure message matches the symptom before repeating the run.
 - **A green suite is not a clean suite.** Vitest's default reporter prints a test's `console.*` output and React warnings **only when that test fails** — a passing test's warnings are invisible, in both watch and `--run` mode. So warnings visible while a test is red silently vanish the moment it goes green, even though the defect causing them is still there. Verify with `yarn test --run --reporter=verbose` and treat any `stderr |` block as a defect to fix before finishing.
 - Always give vitest mocks and assertion matchers explicit type arguments, so that a typo in a property name fails the build instead of silently failing at runtime
 - Mocks: `vi.fn<SomeCallbackFn>()`, and helpers returning them typed as `Mock<SomeCallbackFn>` — never bare `vi.fn()` / `Mock`

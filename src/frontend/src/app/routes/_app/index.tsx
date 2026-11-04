@@ -40,6 +40,14 @@ export const Route = createFileRoute('/_app/')({
 
 function IndexRoute() {
   const { date } = Route.useLoaderDeps();
+  const navigate = Route.useNavigate();
 
-  return <IndexPage date={date} />;
+  return (
+    <IndexPage
+      date={date}
+      onOpenLogFood={() => {
+        void navigate({ to: '/log/food' });
+      }}
+    />
+  );
 }

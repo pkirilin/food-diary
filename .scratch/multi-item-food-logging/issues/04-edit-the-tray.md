@@ -4,10 +4,10 @@
 
 **Blocked by:** 03
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] The tray expands and collapses, and lists rows in the order the products were picked
-- [ ] Each row shows the name, quantity in grams and calories, and has no quantity field
-- [ ] Deleting a row dispatches `foodLogRemoved` and updates the count and total
-- [ ] Expanded, the tray scrolls within itself and never covers the AppBar
-- [ ] `multiItemFoodLogging.test.tsx` covers expanding the tray and deleting a row
+- [x] The tray expands and collapses, and lists rows in the order the products were picked
+- [x] Each row shows the name, quantity in grams and calories, and has no quantity field
+- [x] Deleting a row dispatches `foodLogRemoved` and updates the count and total
+- [x] Expanded, the tray scrolls within itself and never covers the AppBar
+- [x] `multiItemFoodLogging.test.tsx` covers expanding the tray and deleting a row

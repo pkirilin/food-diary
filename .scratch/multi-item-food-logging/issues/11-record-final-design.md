@@ -4,7 +4,7 @@
 
 **Blocked by:** 10
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 - [x] `rg -n -i "prototype|e5bd584e" .scratch/multi-item-food-logging/spec.md .scratch/multi-item-food-logging/issues` finds nothing (this ticket's own file excepted)
 - [x] `spec.md` has a **Final design** section covering routes, AppBar, tray, state and the FSD layout, matching the code
