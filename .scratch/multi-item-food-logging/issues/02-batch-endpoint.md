@@ -14,10 +14,10 @@ CreateNotesRequest {
 
 **Status:** ready-for-agent
 
-- [ ] A valid request returns `200` and creates every Food Log
-- [ ] New Food Logs get display orders after the Meal's existing ones, in request order
-- [ ] An unknown product id returns `400`, names the missing id, and saves nothing
-- [ ] A `productQuantity` outside 10–1000 returns `400` and saves nothing
-- [ ] An empty `notes` list returns `400`
-- [ ] `POST /api/v1/notes` is unchanged
-- [ ] LightBDD component scenarios in the Notes suite cover every case above (Docker required: if it isn't available, stop and ask)
+- [x] A valid request returns `200` and creates every Food Log
+- [x] New Food Logs get display orders after the Meal's existing ones, in request order
+- [x] An unknown product id returns `400`, names the missing id, and saves nothing
+- [x] A `productQuantity` outside 10–1000 returns `400` and saves nothing
+- [x] An empty `notes` list returns `400`
+- [x] `POST /api/v1/notes` is unchanged
+- [x] LightBDD component scenarios in the Notes suite cover every case above (Docker required: if it isn't available, stop and ask)
