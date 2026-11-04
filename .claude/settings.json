@@ -39,7 +39,6 @@
       "Read(./secrets/**)"
     ],
     "ask": [
-      "Bash(curl:*)",
       "Bash(rm:*)",
       "Bash(git push:*)",
       "mcp__github_com_github_github-mcp-server__get_me",
