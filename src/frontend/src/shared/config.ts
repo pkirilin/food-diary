@@ -21,3 +21,5 @@ export const GOOGLE_ANALYTICS_MEASUREMENT_ID = import.meta.env
 export const MOCK_API_RESPONSE_DELAY = Number(
   import.meta.env.VITE_APP_MOCK_API_RESPONSE_DELAY ?? '0',
 );
+
+export const ROUTER_DEVTOOLS_ENABLED = import.meta.env.VITE_APP_ROUTER_DEVTOOLS_ENABLED === 'true';

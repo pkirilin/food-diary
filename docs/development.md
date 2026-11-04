@@ -143,6 +143,7 @@ Name                                       | Type      | Description
 `VITE_APP_GOOGLE_ANALYTICS_ENABLED`        | `boolean` | Enables Google Analytics
 `VITE_APP_GOOGLE_ANALYTICS_MEASUREMENT_ID` | `string`  | Measurement (data stream) ID for Google Analytics
 `VITE_APP_MOCK_API_RESPONSE_DELAY`         | `number`  | Sets delay (in milliseconds) before all mock API responses. Not used if `VITE_APP_MSW_ENABLED` is `false`
+`VITE_APP_ROUTER_DEVTOOLS_ENABLED`         | `boolean` | Shows TanStack Router Devtools. Disabled by default and has no effect outside the Vite dev server. Used for local development
 
 ## Managing database migrations
 
