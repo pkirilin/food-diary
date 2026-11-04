@@ -16,10 +16,24 @@ The legacy name for a Food Log. It remains in the database, the domain entities,
 Application handlers, and older parts of the UI; new UI text says food log.
 _Avoid_: memo, comment (a Note carries no text)
 
+**Log** (verb):
+To record Food Logs. The verb on every action that saves Food Logs, e.g. "Log food".
+_Avoid_: add, save, submit
+
+**Create** (verb):
+To make a new Product in the personal database, e.g. `Create "<query>"`. Creating a
+Product never records a Food Log by itself.
+_Avoid_: add
+
 **Meal**:
 One of five fixed slots in a day — breakfast, second breakfast, lunch, afternoon snack,
 dinner. A grouping of Food Logs by date and slot, not a stored record of its own.
 _Avoid_: mealtime, eating occasion
+
+**Meal Draft**:
+The Food Logs put together for one Meal on one date, before they are logged. Logging it
+records all of them at once; discarding it records nothing.
+_Avoid_: plate, tray, cart, selection
 
 **Product**:
 An eatable product or dish in the personal database, holding nutrition values per 100 g.
