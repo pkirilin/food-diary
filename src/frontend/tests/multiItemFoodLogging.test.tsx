@@ -1,5 +1,5 @@
 import { Blob as NodeBlob, File as NodeFile } from 'node:buffer';
-import { act, configure, screen, waitFor, within } from '@testing-library/react';
+import { act, configure, fireEvent, screen, waitFor, within } from '@testing-library/react';
 import userEvent, { type UserEvent } from '@testing-library/user-event';
 import { HttpResponse, http } from 'msw';
 import { type RecognizeNoteResponse } from '@/entities/note';
@@ -582,6 +582,88 @@ test('deleting a product from the expanded tray updates the count and the total'
   expect(within(tray).getByText('0')).toBeVisible();
   expect(tray).toHaveTextContent('Tap ⊕ to add a food');
   expect(within(tray).getByRole('button', { name: 'Log food' })).toBeDisabled();
+});
+
+test('tapping the Meal name on the tray toggles the picked foods', async () => {
+  const user = userEvent.setup();
+  const tray = await addChickenAndOatsToBreakfast(user);
+  const toggle = within(tray).getByRole('button', { name: 'Picked foods' });
+
+  await user.click(within(tray).getByText('Breakfast'));
+
+  expect(toggle).toHaveAttribute('aria-expanded', 'true');
+  expect(await findPickedFoods(tray)).toBeVisible();
+
+  await user.click(within(tray).getByText('Breakfast'));
+
+  expect(toggle).toHaveAttribute('aria-expanded', 'false');
+});
+
+test('Log food does not toggle the picked foods', async () => {
+  const user = userEvent.setup();
+  const tray = await addChickenAndOatsToBreakfast(user);
+  server.use(
+    http.post(`${API_URL}/api/v1/notes/batch`, () => HttpResponse.json({}, { status: 500 }), {
+      once: true,
+    }),
+  );
+
+  await user.click(within(tray).getByRole('button', { name: 'Log food' }));
+
+  await within(tray).findByRole('alert');
+  expect(within(tray).getByRole('button', { name: 'Picked foods' })).toHaveAttribute(
+    'aria-expanded',
+    'false',
+  );
+});
+
+test('the tray cannot expand while the Meal Draft is empty', async () => {
+  const user = userEvent.setup();
+  await openDayPageWithMultiItemFoodLoggingOn(user);
+  await clickAddMeal(user, 'Breakfast');
+
+  const tray = await findTray('Breakfast');
+
+  expect(within(tray).getByRole('button', { name: 'Picked foods' })).toBeDisabled();
+});
+
+test('expanding the tray moves the focus off the search field, so the phone keyboard closes', async () => {
+  const user = userEvent.setup();
+  const tray = await addChickenAndOatsToBreakfast(user);
+  const toggle = within(tray).getByRole('button', { name: 'Picked foods' });
+  expect(await findSearchField()).toHaveFocus();
+
+  // A tap in iOS Safari clicks a button without focusing it, which user.click can't reproduce
+  fireEvent.click(toggle);
+
+  expect(toggle).toHaveAttribute('aria-expanded', 'true');
+  expect(toggle).toHaveFocus();
+});
+
+test('typing in the search collapses the expanded tray', async () => {
+  const user = userEvent.setup();
+  const tray = await addChickenAndOatsToBreakfast(user);
+  const toggle = within(tray).getByRole('button', { name: 'Picked foods' });
+  await user.click(toggle);
+  await findPickedFoods(tray);
+
+  await user.type(await findSearchField(), 'r');
+
+  await waitFor(() => expect(toggle).toHaveAttribute('aria-expanded', 'false'));
+});
+
+test('adding a found product collapses the tray expanded for that query', async () => {
+  const user = userEvent.setup();
+  const tray = await addChickenAndOatsToBreakfast(user);
+  const results = await searchProducts(user, 'bre');
+  const toggle = within(tray).getByRole('button', { name: 'Picked foods' });
+  await user.click(toggle);
+  await findPickedFoods(tray);
+  expect(toggle).toHaveAttribute('aria-expanded', 'true');
+
+  await user.click(within(results).getByRole('button', { name: 'Add Bread' }));
+
+  await waitFor(() => expect(toggle).toHaveAttribute('aria-expanded', 'false'));
 });
 
 const findQuantityField = (): Promise<HTMLInputElement> =>

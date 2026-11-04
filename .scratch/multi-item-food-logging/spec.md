@@ -30,8 +30,8 @@ of those taps are overhead.
 An opt-in, per-device flow for logging several foods in one go. **Add breakfast** starts a Meal
 Draft and opens a search screen, with the search field in the AppBar. ⊕ next to a product adds it
 to the Meal Draft with its default quantity, then clears the search and keeps it focused, ready
-for the next product. A tray along the bottom of the screen, headed with the Meal's name, shows
-the Meal Draft and one **Log food** button that saves it in one request. Tapping a product's name,
+for the next product. A tray stuck under the AppBar, headed with the Meal's name, shows the Meal
+Draft and one **Log food** button that saves it in one request. Tapping a product's name,
 in the results or on the tray, opens a detail screen to set its quantity, remove it, or edit the
 Product itself. A product that doesn't exist yet can be created from the search
 (`Create "<query>"`) or from a photo, and comes back already in the Meal Draft. Every screen is a
@@ -119,25 +119,31 @@ type AppBarConfig =
 
 ### Tray
 
-`MealDraftTray` in `features/logFood/ui` is the last element of `LogFoodSearchPage`, a flex column
-at least as tall as the viewport below the AppBar, with the results growing above the tray.
+`MealDraftTray` in `features/logFood/ui` is the first element of `LogFoodSearchPage`, above the
+results. At the bottom of the screen a phone's keyboard hides it, so it sits at the top.
 
-- It is a `Paper` section labelled by the Meal's name, `position: sticky` at the bottom, in page
-  flow. It stays at the bottom of the viewport while the results scroll, and sits below the last
-  result at the end of the list, so it never covers a result or a ⊕. It pads for the bottom safe
-  area inset.
-- It is at most `60dvh` tall. Its upper part (the error and the list) scrolls inside it, and the
+- It is a `Paper` section labelled by the Meal's name, `position: sticky` directly under the AppBar,
+  in page flow. It stays under the AppBar while the results scroll, and expanding it moves the
+  results down, so it never covers a result or a ⊕ at rest. The update banner, sticky at the same
+  height, covers it until closed.
+- It is at most `60dvh` tall. Its lower part (the error and the list) scrolls inside it, and the
   collapsed row always stays visible.
 - The collapsed row is 64 px: a count badge on a restaurant icon (it shows 0), the Meal's name in
-  bold, the total calories ("N kcal", or "Tap ⊕ to add a food" while empty), the expand toggle
-  labelled **Picked foods**, and **Log food**. There are no chips.
-- The toggle sets `aria-expanded` and is disabled while the Meal Draft is empty. Deleting the last
-  product collapses the tray.
-- Expanded, a list labelled **Picked foods** opens upward, above the row. It shows the Meal Draft in
-  the order picked. Each row shows the name and "N g · X kcal", opens the detail route when tapped,
-  and has a **Delete <name>** button. There is no quantity field on the tray.
+  bold, the total calories ("N kcal", or "Tap ⊕ to add a food" while empty), a chevron, and
+  **Log food**. There are no chips. The row stays visible while the Meal Draft is empty, so the
+  results don't jump on the first ⊕.
+- Everything in the row left of **Log food** is one button labelled **Picked foods**, reaching the
+  left edge of the screen on a phone and the full height of the row. It sets `aria-expanded` and is
+  disabled while the Meal Draft is empty. Deleting the last product collapses the tray.
+- Expanding moves the focus to that button, which closes a phone's keyboard, because `dvh` doesn't
+  shrink for the keyboard and the list needs the room. Collapsing leaves the focus alone.
+- Any change of `q` collapses the tray: typing makes room for the results, and so does the clearing
+  after ⊕.
+- Expanded, a list labelled **Picked foods** opens downward, below the row. It shows the Meal Draft
+  in the order picked. Each row shows the name and "N g · X kcal", opens the detail route when
+  tapped, and has a **Delete <name>** button. There is no quantity field on the tray.
 - **Log food** is disabled while the Meal Draft is empty and shows a spinner while saving. A failed
-  save shows an error alert inside the tray, above the list.
+  save shows an error alert inside the tray, between the row and the list.
 
 ### State
 
@@ -513,6 +519,7 @@ as `entities/note/model/note.test.ts` and `entities/note/lib/calculationHelpers.
 - Cases to cover, at minimum:
   - the switch off opens the old dialog, and the switch on opens the new flow
   - ⊕ adds with the default quantity, clears the search and keeps it focused; ⊕ again removes
+  - tapping the tray's row toggles the list, **Log food** doesn't, and changing `q` collapses it
   - a quantity changed on the detail screen, opened from a result or from a tray row, is logged
   - a quantity outside 10–1000 can't be confirmed on the detail screen
   - **Edit product** updates the tray row's name and quantity
@@ -551,7 +558,8 @@ as `entities/note/model/note.test.ts` and `entities/note/lib/calculationHelpers.
   layout, and the navigation blocker on the browser's own back.
 - Check the console. The MSW-mode baseline errors are allowed; any other error is a defect.
 - Device emulation doesn't reproduce a phone's on-screen keyboard. The owner checks once on a
-  real phone that the keyboard stays open after ⊕.
+  real phone that the keyboard stays open after ⊕, that the tray's row is visible above it, and
+  that expanding the tray closes it.
 
 ## Out of Scope
 
