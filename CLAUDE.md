@@ -30,7 +30,7 @@ yarn lint:fix
 yarn format / format:check
 ```
 
-Browser verification of UI changes uses `yarn playwright-cli` (a devDependency); install the browser once with `make setup-frontend` from the repo root. Rules: `.claude/rules/frontend.md`.
+Browser verification of UI changes uses the `chrome-devtools` MCP server from `.mcp.json`, which needs Google Chrome installed. Rules: `.claude/rules/frontend.md`.
 
 For backend-less development, set `.env.local` with `VITE_APP_MSW_ENABLED=true`, `VITE_APP_FAKE_AUTH_ENABLED=true`, `VITE_APP_FAKE_AUTH_LOGIN_ON_INIT=true` (full env-var list in `docs/development.md`).
 
