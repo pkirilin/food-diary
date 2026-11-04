@@ -225,7 +225,7 @@ public class NotesApiContext(
         var recognizedNote = response?.Notes[0];
 
         recognizedNote.Should().NotBeNull();
-        recognizedNote!.Quantity.Should().Be(quantity);
+        recognizedNote.Quantity.Should().Be(quantity);
         recognizedNote.Product.Name.Should().Be(product.Name);
         recognizedNote.Product.CaloriesCost.Should().Be(product.CaloriesCost);
         recognizedNote.Product.Protein.Should().Be(product.Protein);
