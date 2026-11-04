@@ -1,7 +1,5 @@
 using FoodDiary.Domain.Entities;
 
-#nullable enable
-
 namespace FoodDiary.Domain.Repositories.v2;
 
 public interface INotesRepository
