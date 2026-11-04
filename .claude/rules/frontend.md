@@ -81,12 +81,16 @@ Mandatory for any change that affects rendered UI or behavior (components, pages
 
 - Automated tests are still required whenever feasible. The browser check comes in addition to them.
 - When a behavior cannot reasonably be covered by Vitest (layout, real-browser APIs, PWA/service worker, image decode, camera or file input), the browser check is the sole verification. Say so in the final report.
-- Use the `playwright-cli`. Check playwright-cli --help for available commands. Run every command as `yarn playwright-cli <command>` from `src/frontend` — never a global install. The shell's working directory persists between calls, so check it first (`pwd`) and `cd` only if it isn't already `src/frontend`. If the browser is missing, run `make setup-frontend` from the repo root.
+- Use the `chrome-devtools` MCP server from `.mcp.json`. If its tools are unavailable or it cannot start, stop and ask the user how to proceed. Never skip the check or substitute another browser tool.
 - Start the app in MSW mode with `make start-frontend-msw` from the repo root, in the background. Leave `.env.local` untouched: it belongs to the developer. A second Vite start can delete the dependency cache of a server already running in `src/frontend`, so start the app only through this target.
 - If the target reports port 5173 in use, reuse that server when `curl -s http://localhost:5173/src/shared/config.ts` shows `"VITE_APP_MSW_ENABLED": "true"`. Otherwise ask the developer how to proceed.
-- Open <http://localhost:5173>, exercise the changed flow, and check `yarn playwright-cli console`. `ERR_CONNECTION_REFUSED` errors for `https://localhost:8080/api/v1/*` are the MSW-mode baseline; any other console error is a defect.
+- Open <http://localhost:5173> with `new_page` and a new `isolatedContext` name for each check, so it starts with clean cookies, storage and service workers. The browser outlives a single check.
+- Exercise the changed flow. Use `take_snapshot` to find elements to interact with; it is an accessibility-tree dump and cannot show how the page renders.
+- Take a screenshot of every UI state the change affects (`take_screenshot` without `filePath`) and inspect it for broken layout, overflow, overlap and styling. Use `get_css_styles` to investigate anything that looks wrong.
+- Check rendered UI at both a phone viewport (`390x844x3,mobile,touch`) and a desktop viewport (`1280x800x1`), set with `emulate`. A change that clearly affects only one layout may check just that one; say so in the final report. Emulation is not iOS Safari: on-screen keyboard and gesture behavior needs the iOS Simulator.
+- Check `list_console_messages`. `ERR_CONNECTION_REFUSED` errors for `https://localhost:8080/api/v1/*` are the MSW-mode baseline; any other console error is a defect.
 - Report in text only what you did and saw. Do not commit screenshots.
-- Stop the dev server you started and close the browser (`yarn playwright-cli close`) when done.
+- When done, close the page with `close_page` and stop the dev server you started.
 - MSW does not exercise the real backend. If the change touches an API contract, say that real-backend behavior is unverified.
 
 ### Testing

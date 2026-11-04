@@ -10,8 +10,3 @@ start-frontend-msw:
 	else \
 		cd src/frontend && VITE_APP_MSW_ENABLED=true VITE_APP_FAKE_AUTH_ENABLED=true VITE_APP_FAKE_AUTH_LOGIN_ON_INIT=true yarn start; \
 	fi
-
-setup-frontend: install-browser-frontend
-
-install-browser-frontend:
-	cd src/frontend && yarn playwright-cli install-browser chromium
