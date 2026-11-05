@@ -66,6 +66,10 @@ const addFoundProduct = async (
   );
 };
 
+// TanStack Router keys its saved scroll positions by this history entry key
+const getHistoryEntryKey = (): unknown =>
+  (window.history.state as { __TSR_key?: string } | null)?.__TSR_key;
+
 test('the Settings drawer link opens a "Log several foods at once" switch that is off by default', async () => {
   const user = userEvent.setup();
   await renderApp('/', { signedIn: true });
@@ -259,6 +263,42 @@ test('Log food logs the Meal Draft in the order picked, after the Meal’s exist
     ]),
   );
   expect(screen.queryByRole('searchbox', { name: 'Search products' })).not.toBeInTheDocument();
+});
+
+test('Log food returns to the history entry of the day page it started from, so its scroll position is restored', async () => {
+  const user = userEvent.setup();
+  await openDayPageWithMultiItemFoodLoggingOn(user);
+  await screen.findByRole('button', { name: 'Add Breakfast' });
+  const dayPageHistoryKey = getHistoryEntryKey();
+  await clickAddMeal(user, 'Breakfast');
+  await addFoundProduct(user, 'chick', 'Chicken');
+  const tray = await findTray('Breakfast');
+
+  await user.click(within(tray).getByRole('button', { name: 'Log food' }));
+
+  await screen.findByRole('button', { name: 'Add Breakfast' });
+  expect(getHistoryEntryKey()).toBe(dayPageHistoryKey);
+});
+
+test('the day page shows the logged Food Logs as soon as Log food returns to it, so it is tall enough to restore the scroll position', async () => {
+  const user = userEvent.setup();
+  await openDayPageWithMultiItemFoodLoggingOn(user);
+  await clickAddMeal(user, 'Breakfast');
+  await addFoundProduct(user, 'chick', 'Chicken');
+  const tray = await findTray('Breakfast');
+
+  await user.click(within(tray).getByRole('button', { name: 'Log food' }));
+
+  const breakfast = await screen.findByRole('listitem', { name: /^Breakfast, / });
+  expect(
+    within(breakfast)
+      .getAllByRole('button', { name: / g/ })
+      .map(foodLog => foodLog.textContent),
+  ).toEqual([
+    expect.stringMatching(/^Beef200 g/),
+    expect.stringMatching(/^Spinach Leaves.*300 g/),
+    expect.stringMatching(/^Chicken150 g/),
+  ]);
 });
 
 test('the flow opens with an empty Meal Draft after a previous meal was logged', async () => {

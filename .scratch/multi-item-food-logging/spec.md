@@ -80,7 +80,7 @@ Moves between screens:
 | search | a result's name, or a tray row | push the detail route |
 | search | `Create "<query>"` | push `/log/food/products/new?name=<trimmed query>` |
 | search | photos picked with the camera action | push `/log/food/recognition` |
-| search | **Log food** succeeds | navigate to `/?date=<the Meal Draft's date>` with `replace` |
+| search | **Log food** succeeds | go back to the day page, restoring its scroll position, falling back to `/?date=<the Meal Draft's date>` with `replace` |
 | detail | **Add**, **Save** or **Remove** | go back, falling back to `/log/food` |
 | detail | **Edit product** | push the edit route |
 | edit product | **Save** succeeds | go back, falling back to the detail route with `replace` |

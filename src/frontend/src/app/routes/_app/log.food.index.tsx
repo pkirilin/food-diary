@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, useRouter } from '@tanstack/react-router';
 import { lazy } from 'react';
 import { z } from 'zod';
 import { LogFoodSearchPage } from '@/pages/ui/LogFoodSearchPage';
@@ -25,6 +25,7 @@ export const Route = createFileRoute('/_app/log/food/')({
 function LogFoodSearchRoute() {
   const { q = '' } = Route.useSearch();
   const navigate = Route.useNavigate();
+  const router = useRouter();
 
   return (
     <LogFoodSearchPage
@@ -39,7 +40,11 @@ function LogFoodSearchRoute() {
         void navigate({ to: '/log/food/products/$productId', params: { productId } });
       }}
       onLogged={date => {
-        void navigate({ to: '/', search: { date }, replace: true });
+        if (router.history.canGoBack()) {
+          router.history.back();
+        } else {
+          void navigate({ to: '/', search: { date }, replace: true });
+        }
       }}
     />
   );
