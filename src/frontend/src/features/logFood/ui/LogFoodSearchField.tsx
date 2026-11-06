@@ -1,5 +1,6 @@
+import ClearIcon from '@mui/icons-material/Clear';
 import SearchIcon from '@mui/icons-material/Search';
-import { Box, InputBase, alpha } from '@mui/material';
+import { Box, IconButton, InputBase, alpha } from '@mui/material';
 import { type FC, useState } from 'react';
 
 interface Props {
@@ -16,6 +17,11 @@ export const LogFoodSearchField: FC<Props> = ({ query, onQueryChange }) => {
     setReceivedQuery(query);
     setTypedQuery(query);
   }
+
+  const changeQuery = (nextQuery: string): void => {
+    setTypedQuery(nextQuery);
+    onQueryChange(nextQuery);
+  };
 
   return (
     <Box
@@ -40,12 +46,32 @@ export const LogFoodSearchField: FC<Props> = ({ query, onQueryChange }) => {
         placeholder="Search products"
         value={typedQuery}
         onChange={event => {
-          setTypedQuery(event.target.value);
-          onQueryChange(event.target.value);
+          changeQuery(event.target.value);
         }}
         slotProps={{ input: { 'aria-label': 'Search products' } }}
-        sx={{ color: 'inherit', py: 0.5 }}
+        sx={{
+          color: 'inherit',
+          py: 0.5,
+          '& input::-webkit-search-cancel-button': { display: 'none' },
+        }}
       />
+      {typedQuery !== '' && (
+        <IconButton
+          size="small"
+          color="inherit"
+          edge="end"
+          aria-label="Clear search"
+          // Keeps focus in the search field, so a phone's keyboard stays open
+          onMouseDown={event => {
+            event.preventDefault();
+          }}
+          onClick={() => {
+            changeQuery('');
+          }}
+        >
+          <ClearIcon fontSize="small" />
+        </IconButton>
+      )}
     </Box>
   );
 };
