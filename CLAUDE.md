@@ -24,6 +24,7 @@ The frontend and the E2E suite (`tests/`) are independent Yarn 4 projects (node-
 ```shell
 yarn start           # Vite dev server on http://localhost:5173
 yarn build           # tsc + vite build
+yarn typecheck       # tsc only
 yarn test            # vitest (single-file: yarn test path/to/file.test.ts)
 yarn lint            # eslint .
 yarn lint:fix
