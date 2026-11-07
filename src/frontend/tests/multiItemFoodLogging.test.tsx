@@ -1,7 +1,7 @@
 import { Blob as NodeBlob, File as NodeFile } from 'node:buffer';
 import { act, configure, fireEvent, screen, waitFor, within } from '@testing-library/react';
 import userEvent, { type UserEvent } from '@testing-library/user-event';
-import { HttpResponse, http } from 'msw';
+import { HttpResponse, delay, http } from 'msw';
 import { type RecognizeNoteResponse } from '@/entities/note';
 import { API_URL } from '@/shared/config';
 import { imageLib } from '@/shared/lib';
@@ -879,6 +879,29 @@ test('saving a product with its own name unchanged returns to the product', asyn
 
   expect(await screen.findByRole('heading', { name: 'Product' })).toBeVisible();
   expect(await screen.findByText('250 kcal per 100 g')).toBeVisible();
+});
+
+test('saving a product outside the Meal Draft opens its quantity form with the new default quantity', async () => {
+  const user = userEvent.setup();
+  await openDayPageWithMultiItemFoodLoggingOn(user);
+  await clickAddMeal(user, 'Breakfast');
+  await openFoundProduct(user, 'chick', 'Chicken');
+  await user.click(await screen.findByRole('button', { name: 'Edit product' }));
+  await replaceFieldValue(
+    user,
+    await screen.findByRole('textbox', { name: 'Default quantity, g' }),
+    '123',
+  );
+  server.use(
+    http.get(`${API_URL}/api/v1/products/:id`, async () => {
+      await delay(100);
+    }),
+  );
+
+  await user.click(screen.getByRole('button', { name: 'Save' }));
+
+  expect(await findQuantityField()).toHaveValue('123');
+  expect(screen.getByText('293 kcal')).toBeVisible();
 });
 
 test('saving an edited product in the Meal Draft updates its tray row, with the new default quantity', async () => {

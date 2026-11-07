@@ -13,12 +13,12 @@ interface Props {
 }
 
 export const LogFoodProductDetail: FC<Props> = ({ productId, onDone, onEditProduct }) => {
-  const { data, isError } = productApi.useProductByIdQuery(productId);
+  const { data, isFetching, isError } = productApi.useProductByIdQuery(productId);
   const foodLog = useAppSelector(state =>
     foodLogModel.selectors.foodLogOfProduct(state, productId),
   );
 
-  if (data !== undefined) {
+  if (data !== undefined && !isFetching) {
     return (
       <FoodLogQuantityForm
         product={toMealDraftProductFromResponse(data)}
