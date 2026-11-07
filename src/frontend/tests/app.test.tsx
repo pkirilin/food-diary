@@ -105,6 +105,24 @@ test('an expired session shows the sign-in screen', async () => {
   expect(await screen.findByRole('button', { name: /sign in/i })).toBeVisible();
 });
 
+test('opening another section with an expired session shows the sign-in screen', async () => {
+  const user = userEvent.setup();
+  await renderApp('/', { signedIn: true });
+  await user.click(await screen.findByRole('button', { name: /open menu/i }));
+
+  server.use(
+    http.get(`${API_URL}/api/v1/auth/status`, () => {
+      return HttpResponse.json<GetAuthStatusResponse>({
+        isAuthenticated: false,
+      });
+    }),
+  );
+
+  await user.click(screen.getByRole('link', { name: 'Weight' }));
+
+  expect(await screen.findByRole('button', { name: /sign in/i })).toBeVisible();
+});
+
 test('opening a diary date by URL shows the Food Logs of that date', async () => {
   await renderApp('/?date=2023-10-20', { signedIn: true });
 

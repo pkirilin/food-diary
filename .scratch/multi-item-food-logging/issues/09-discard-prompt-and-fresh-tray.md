@@ -4,11 +4,11 @@
 
 **Blocked by:** 03
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] Leaving the flow with a non-empty Meal Draft shows `Discard N food logs?`, with the current count
-- [ ] Confirming dispatches `mealDraftDiscarded` and leaves. Cancelling stays, with the Meal Draft intact
-- [ ] No prompt when the Meal Draft is empty, or after `mealDraftLogged`
-- [ ] Moving between the flow's routes never prompts
-- [ ] The prompt uses the router's navigation blocker, in the `/log/food` layout route
-- [ ] `multiItemFoodLogging.test.tsx` covers prompting, confirming, cancelling and an empty-draft exit
+- [x] Leaving the flow with a non-empty Meal Draft shows `Discard N food logs?`, with the current count
+- [x] Confirming dispatches `mealDraftDiscarded` and leaves. Cancelling stays, with the Meal Draft intact
+- [x] No prompt when the Meal Draft is empty, or after `mealDraftLogged`
+- [x] Moving between the flow's routes never prompts
+- [x] The prompt uses the router's navigation blocker, in the `/log/food` layout route
+- [x] `multiItemFoodLogging.test.tsx` covers prompting, confirming, cancelling and an empty-draft exit

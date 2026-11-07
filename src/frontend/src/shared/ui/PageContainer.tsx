@@ -1,9 +1,21 @@
-import { Container, styled } from '@mui/material';
+import { Container } from '@mui/material';
+import { FC, PropsWithChildren } from 'react';
 
-export const PageContainer = styled(Container)(({ theme }) => ({
-  padding: theme.spacing(2),
+interface Props extends PropsWithChildren {
+  disablePadding?: boolean;
+}
 
-  [theme.breakpoints.up('sm')]: {
-    padding: theme.spacing(3),
-  },
-}));
+export const PageContainer: FC<Props> = ({ children, disablePadding }) => (
+  <Container
+    sx={{
+      p: disablePadding
+        ? 0
+        : {
+            xs: 2,
+            sm: 3,
+          },
+    }}
+  >
+    {children}
+  </Container>
+);

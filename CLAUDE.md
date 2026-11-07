@@ -24,6 +24,7 @@ The frontend and the E2E suite (`tests/`) are independent Yarn 4 projects (node-
 ```shell
 yarn start           # Vite dev server on http://localhost:5173
 yarn build           # tsc + vite build
+yarn typecheck       # tsc only
 yarn test            # vitest (single-file: yarn test path/to/file.test.ts)
 yarn lint            # eslint .
 yarn lint:fix
@@ -78,7 +79,7 @@ Backend component tests (`FoodDiary.ComponentTests`, via Testcontainers) and the
 - **Auth**: Google OAuth 2.0; backend gates access via `Auth:AllowedEmails` allowlist (this is a personal/self-hosted app, not multi-tenant). OAuth redirect URIs are `https://localhost:8080/signin-google` locally and `https://<your-domain>/signin-google` in production.
 - **API client**: frontend calls backend through RTK Query slices under `entities/*/api` and `features/*/api`. Mocked via MSW when `VITE_APP_MSW_ENABLED=true`.
 - **Database**: PostgreSQL via EF Core. The `FoodDiary.Migrator` console app — not the API — is responsible for applying migrations.
-- **AI integrations**: `FoodDiary.Integrations.OpenAI` power the photo-based note recognition feature. Demo mode (`VITE_APP_DEMO_MODE_ENABLED`) disables features that touch external integrations or the file system.
+- **AI integrations**: `FoodDiary.Integrations.OpenAI` power the photo-based note recognition feature. Demo mode (`VITE_APP_DEMO_MODE_ENABLED`) only shows a warning on the login page; the demo build runs against the MSW mock API, so photo recognition returns the mock API's suggestion.
 - **PWA**: `vite-plugin-pwa` + `workbox-*` produce the service worker; demo deploys to GitHub Pages.
 
 ## Frontend conventions

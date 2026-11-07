@@ -1,7 +1,8 @@
 import { noteModel } from '@/entities/note';
+import { type imageLib } from '@/shared/lib';
 import { type ManageNoteState, manageNoteSlice, initialState } from './manageNoteSlice';
 import { type NoteFormValuesProduct, type NoteFormValues } from './noteSchema';
-import { type NoteRecognitionState, type Image } from './types';
+import { type NoteRecognitionState } from './types';
 
 const create = {
   state: (overrides: Partial<ManageNoteState>): ManageNoteState => ({
@@ -26,7 +27,7 @@ const create = {
     sugar: null,
     salt: null,
   }),
-  image: (name: string): Image => ({
+  image: (name: string): imageLib.Image => ({
     id: crypto.randomUUID(),
     name,
     base64: `base64-${name}`,
@@ -95,7 +96,7 @@ describe('actions.productDraftSaved', () => {
 
     const state = manageNoteSlice.reducer(givenState, action);
 
-    expect(state.images).toEqual<Image[]>([]);
+    expect(state.images).toEqual<imageLib.Image[]>([]);
     expect(state.noteRecognition.suggestions).toEqual([]);
     expect(state.noteRecognition.isLoading).toBe(false);
   });

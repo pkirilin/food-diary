@@ -2,16 +2,20 @@ import { ListItem, Stack, Typography, Card, CardContent, CardActions, Badge } fr
 import { type FC } from 'react';
 import { noteLib, noteModel } from '@/entities/note';
 import { NutritionValueDisplay, productModel } from '@/entities/product';
+import { MultiItemLogFood } from '@/features/logFood';
 import { AddNoteButton } from '@/features/manageNote';
+import { useMultiItemFoodLoggingPreference } from '@/shared/lib';
 import { toOptionalNutritionValues } from '../lib/mapping';
 import { NotesList } from './NotesList';
 
 interface Props {
   date: string;
   mealType: noteModel.MealType;
+  onOpenLogFood: (mealType: noteModel.MealType) => void;
 }
 
-export const MealsListItem: FC<Props> = ({ date, mealType }) => {
+export const MealsListItem: FC<Props> = ({ date, mealType, onOpenLogFood }) => {
+  const [multiItemFoodLoggingEnabled] = useMultiItemFoodLoggingPreference();
   const mealName = noteLib.getMealName(mealType);
   const { data: notes } = noteLib.useNotes(date, mealType);
   const { calories, protein, fats, carbs, sugar, salt } = noteModel.calculateNutritionValues(notes);
@@ -80,7 +84,17 @@ export const MealsListItem: FC<Props> = ({ date, mealType }) => {
             <NotesList date={date} mealType={mealType} />
           </CardContent>
           <CardActions>
-            <AddNoteButton date={date} mealType={mealType} />
+            {multiItemFoodLoggingEnabled ? (
+              <MultiItemLogFood
+                date={date}
+                mealType={mealType}
+                onOpenLogFood={() => {
+                  onOpenLogFood(mealType);
+                }}
+              />
+            ) : (
+              <AddNoteButton date={date} mealType={mealType} />
+            )}
           </CardActions>
         </Card>
       </Stack>

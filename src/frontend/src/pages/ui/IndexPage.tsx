@@ -12,9 +12,10 @@ import {
 
 interface Props {
   date: string;
+  onOpenLogFood: (mealType: noteModel.MealType) => void;
 }
 
-export const IndexPage: FC<Props> = ({ date }) => {
+export const IndexPage: FC<Props> = ({ date, onOpenLogFood }) => {
   const { data: notes } = noteLib.useNotes(date);
   const nutritionValues = noteModel.calculateNutritionValues(notes);
 
@@ -57,7 +58,7 @@ export const IndexPage: FC<Props> = ({ date }) => {
             )}
             <NutritionSummaryWidget nutritionValues={nutritionValues} />
           </Stack>
-          <MealsList date={date} />
+          <MealsList date={date} onOpenLogFood={onOpenLogFood} />
         </Stack>
       </PageContainer>
     </Box>

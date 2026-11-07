@@ -51,6 +51,15 @@ export interface NoteRequestBody {
   displayOrder: number;
 }
 
+export interface CreateNotesRequest {
+  date: string;
+  mealType: MealType;
+  notes: {
+    productId: number;
+    productQuantity: number;
+  }[];
+}
+
 export interface UpdateNoteRequest {
   id: number;
   note: NoteRequestBody;

@@ -4,12 +4,12 @@
 
 **Blocked by:** 04, 05, 06, 07, 08, 09
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] The whole flow runs at both widths: Settings switch → **Add <meal>** → ⊕ → tray → detail → **Edit product** → `Create "<query>"` → camera and recognition → **Log food** → day page
-- [ ] No overlapping or clipped elements, the AppBar search field leaves room for the back arrow and the camera action, the tray never covers content or buttons, and there's no horizontal scroll
-- [ ] The search field has focus after every ⊕, and the AppBar back arrow returns at every step
-- [ ] The camera file input, expanding and collapsing the tray, and the discard prompt on the browser's back all work
-- [ ] The console shows no errors beyond the MSW-mode baseline
-- [ ] Any defect found is fixed, and covered in `multiItemFoodLogging.test.tsx` where Vitest can reach it
-- [ ] The owner has confirmed on a real phone that the on-screen keyboard stays open after ⊕
+- [x] The whole flow runs at both widths: Settings switch → **Add <meal>** → ⊕ → tray → detail → **Edit product** → `Create "<query>"` → camera and recognition → **Log food** → day page
+- [x] No overlapping or clipped elements, the AppBar search field leaves room for the back arrow and the camera action, the tray never covers content or buttons, and there's no horizontal scroll
+- [x] The search field has focus after every ⊕, and the AppBar back arrow returns at every step
+- [x] The camera file input, expanding and collapsing the tray, and the discard prompt on the browser's back all work
+- [x] The console shows no errors beyond the MSW-mode baseline
+- [x] Any defect found is fixed, and covered in `multiItemFoodLogging.test.tsx` where Vitest can reach it
+- [x] The owner has confirmed on a real phone that the on-screen keyboard stays open after ⊕
