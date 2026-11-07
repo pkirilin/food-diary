@@ -31,7 +31,6 @@ export const FoundProductListItem: FC<Props> = ({ product, onOpen, onFoodLogAdde
   return (
     <ListItem
       disablePadding
-      sx={{ bgcolor: isInMealDraft ? 'action.selected' : undefined, borderRadius: 1 }}
       secondaryAction={
         <IconButton
           edge="end"
@@ -48,7 +47,7 @@ export const FoundProductListItem: FC<Props> = ({ product, onOpen, onFoodLogAdde
       }
     >
       <ListItemButton
-        sx={{ borderRadius: 1 }}
+        selected={isInMealDraft}
         onClick={() => {
           holdSoftKeyboardForNextField();
           onOpen(product.id);
