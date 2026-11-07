@@ -1,7 +1,7 @@
 import { Blob as NodeBlob, File as NodeFile } from 'node:buffer';
 import { act, configure, fireEvent, screen, waitFor, within } from '@testing-library/react';
 import userEvent, { type UserEvent } from '@testing-library/user-event';
-import { HttpResponse, delay, http } from 'msw';
+import { HttpResponse, http } from 'msw';
 import { type RecognizeNoteResponse } from '@/entities/note';
 import { API_URL } from '@/shared/config';
 import { imageLib } from '@/shared/lib';
@@ -881,8 +881,22 @@ test('saving a product with its own name unchanged returns to the product', asyn
   expect(await screen.findByText('250 kcal per 100 g')).toBeVisible();
 });
 
-test('saving a product outside the Meal Draft opens its quantity form with the new default quantity', async () => {
-  const user = userEvent.setup();
+// The held request falls through to the default product handler once released
+const holdNextProductFetch = (): (() => void) => {
+  const { promise: released, resolve: release } = Promise.withResolvers<void>();
+  server.use(
+    http.get(
+      `${API_URL}/api/v1/products/:id`,
+      async () => {
+        await released;
+      },
+      { once: true },
+    ),
+  );
+  return release;
+};
+
+const editChickenDefaultQuantity = async (user: UserEvent, defaultQuantity: string) => {
   await openDayPageWithMultiItemFoodLoggingOn(user);
   await clickAddMeal(user, 'Breakfast');
   await openFoundProduct(user, 'chick', 'Chicken');
@@ -890,18 +904,52 @@ test('saving a product outside the Meal Draft opens its quantity form with the n
   await replaceFieldValue(
     user,
     await screen.findByRole('textbox', { name: 'Default quantity, g' }),
-    '123',
+    defaultQuantity,
   );
+};
+
+test('saving a product outside the Meal Draft opens its quantity form with the new default quantity', async () => {
+  const user = userEvent.setup();
+  await editChickenDefaultQuantity(user, '123');
+  const releaseProductFetch = holdNextProductFetch();
+
+  await user.click(screen.getByRole('button', { name: 'Save' }));
+
+  expect(await screen.findByRole('heading', { name: 'Product' })).toBeVisible();
+  expect(screen.queryByRole('textbox', { name: 'Quantity' })).not.toBeInTheDocument();
+  releaseProductFetch();
+  expect(await findQuantityField()).toHaveValue('123');
+  expect(screen.getByText('293 kcal')).toBeVisible();
+});
+
+test('a product that fails to load again after a save shows the load error instead of the old product', async () => {
+  const user = userEvent.setup();
+  await editChickenDefaultQuantity(user, '123');
   server.use(
-    http.get(`${API_URL}/api/v1/products/:id`, async () => {
-      await delay(100);
+    http.get(`${API_URL}/api/v1/products/:id`, () => HttpResponse.json({}, { status: 500 }), {
+      once: true,
     }),
   );
 
   await user.click(screen.getByRole('button', { name: 'Save' }));
 
-  expect(await findQuantityField()).toHaveValue('123');
-  expect(screen.getByText('293 kcal')).toBeVisible();
+  expect(await screen.findByText('The product could not be loaded')).toBeVisible();
+  expect(screen.queryByRole('textbox', { name: 'Quantity' })).not.toBeInTheDocument();
+});
+
+test('going forward to the product form while the saved product loads opens it with the saved values', async () => {
+  const user = userEvent.setup();
+  await editChickenDefaultQuantity(user, '123');
+  const releaseProductFetch = holdNextProductFetch();
+  await user.click(screen.getByRole('button', { name: 'Save' }));
+  await screen.findByRole('heading', { name: 'Product' });
+
+  await moveThroughBrowserHistory(() => window.history.forward());
+
+  expect(await screen.findByRole('heading', { name: 'Edit product' })).toBeVisible();
+  expect(screen.queryByRole('textbox', { name: 'Default quantity, g' })).not.toBeInTheDocument();
+  releaseProductFetch();
+  expect(await screen.findByRole('textbox', { name: 'Default quantity, g' })).toHaveValue('123');
 });
 
 test('saving an edited product in the Meal Draft updates its tray row, with the new default quantity', async () => {
@@ -982,8 +1030,7 @@ test('a failed product save shows an error and keeps the input', async () => {
   await clickAddMeal(user, 'Breakfast');
   await openFoundProduct(user, 'chick', 'Chicken');
   await user.click(await screen.findByRole('button', { name: 'Edit product' }));
-  const name = await screen.findByRole('textbox', { name: 'Name' });
-  await replaceFieldValue(user, name, 'Turkey');
+  await replaceFieldValue(user, await screen.findByRole('textbox', { name: 'Name' }), 'Turkey');
   server.use(
     http.put(`${API_URL}/api/v1/products/:id`, () => HttpResponse.json({}, { status: 500 }), {
       once: true,
@@ -995,7 +1042,7 @@ test('a failed product save shows an error and keeps the input', async () => {
   expect(await screen.findByRole('alert')).toHaveTextContent(
     'Something went wrong. Please try again later.',
   );
-  expect(name).toHaveValue('Turkey');
+  expect(screen.getByRole('textbox', { name: 'Name' })).toHaveValue('Turkey');
   expect(screen.getByRole('heading', { name: 'Edit product' })).toBeVisible();
 });
 

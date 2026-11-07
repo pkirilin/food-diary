@@ -45,7 +45,7 @@ export const productApi = api.injectEndpoints({
         url: `/api/v1/products/${id}`,
         body,
       }),
-      invalidatesTags: ['product', 'note'],
+      invalidatesTags: (_result, error) => (error === undefined ? ['product', 'note'] : []),
     }),
 
     deleteProducts: builder.mutation<void, DeleteProductsRequest>({

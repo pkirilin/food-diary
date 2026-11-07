@@ -2,8 +2,8 @@ import { Alert, Box, CircularProgress } from '@mui/material';
 import { type FC } from 'react';
 import { useAppSelector } from '@/app/store';
 import { foodLogModel } from '@/entities/foodLog';
-import { productApi } from '@/entities/product';
 import { toMealDraftProductFromResponse } from '../lib/mapping';
+import { useFreshProduct } from '../lib/useFreshProduct';
 import { FoodLogQuantityForm } from './FoodLogQuantityForm';
 
 interface Props {
@@ -13,15 +13,15 @@ interface Props {
 }
 
 export const LogFoodProductDetail: FC<Props> = ({ productId, onDone, onEditProduct }) => {
-  const { data, isFetching, isError } = productApi.useProductByIdQuery(productId);
+  const { product, loadFailed } = useFreshProduct(productId);
   const foodLog = useAppSelector(state =>
     foodLogModel.selectors.foodLogOfProduct(state, productId),
   );
 
-  if (data !== undefined && !isFetching) {
+  if (product !== undefined) {
     return (
       <FoodLogQuantityForm
-        product={toMealDraftProductFromResponse(data)}
+        product={toMealDraftProductFromResponse(product)}
         foodLog={foodLog}
         onDone={onDone}
         onEditProduct={onEditProduct}
@@ -29,7 +29,7 @@ export const LogFoodProductDetail: FC<Props> = ({ productId, onDone, onEditProdu
     );
   }
 
-  if (isError) {
+  if (loadFailed) {
     return <Alert severity="error">The product could not be loaded</Alert>;
   }
 

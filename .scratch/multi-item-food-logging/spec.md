@@ -235,10 +235,11 @@ location, and the old one is gone.
 | `entities/foodLog` | `model` | **New entity slice**, exported only as `foodLogModel`. `types.ts`, `foodLogSlice.ts` (the Meal Draft), the calorie and nutrition rules in `foodLog.ts` and `calculationHelpers.ts`, a test DSL in `dsl.ts`, and unit tests. Imports no other entity ([ADR-0007](../../docs/adr/0007-food-log-entity-imports-no-other-entity.md)). |
 | `entities/note` | `api` | **Changed.** `createNotes` mutation for `POST /api/v1/notes/batch` and its `CreateNotesRequest` contract. It invalidates the `note` tag, which refetches the cached notes queries of every date. |
 | `entities/note` | `lib` | **Changed.** `recognition.ts`, moved out of `features/manageNote` and used by both features: `toRecognizeFormData(images)` builds the recognition request, and `toRecognizedProductFormValues(suggestion, category)` maps a suggestion to product form values. |
+| `entities/product` | `api` | **Changed.** `editProduct` invalidates the `product` and `note` tags only on success. |
 | `entities/product` | `lib` | **Moved** `searchProducts` here from `features/manageNote/lib`, because both features use it. |
 | `entities/product` | `ui` | **Changed.** `ProductForm` takes optional `serverErrors` (`ProductFormServerErrors`, `{ name: string \| null }`) and shows the name error on the Name field. |
 | `features/logFood` | `ui` | **New feature slice.** `MultiItemLogFood` (the entry button), `LogFoodSearchField`, `LogFoodSearchResults` and `FoundProductListItem` (results with ⊕), `MealDraftTray` and `MealDraftFoodLogListItem`, `LogFoodProductDetail` and `FoodLogQuantityForm`, `CreateProductForm`, `EditProductForm` and their shared `ProductFormFooter`, `RecognizeProductButton`, `RecognizeProductForm`, and `DiscardMealDraftDialog`. |
-| `features/logFood` | `lib` | **New.** `mapping.ts` (between `foodLog` and `note`/`product` types), `useLogMealDraft`, `useCreateProduct`, `useEditProduct`, `useProductFormErrors` and `useRecognizeProduct`. |
+| `features/logFood` | `lib` | **New.** `mapping.ts` (between `foodLog` and `note`/`product` types), `useLogMealDraft`, `useCreateProduct`, `useEditProduct`, `useProductFormErrors`, `useRecognizeProduct` and `useFreshProduct`. |
 | `features/logFood` | `model` | **New**, exported as `logFoodModel`: the `recognitionPhotos` slice and `recognitionPhotoUrlsListener`. |
 | `features/manageNote` | `ui`, `lib`, `model` | **Changed.** `UploadImagesButton` wraps the shared `ImagePicker` and does its own recognition. `useRecognizeNotes` and `ImageUploadStep` use `noteLib`'s recognition mapping. Imports follow the moves above. Behaviour unchanged. |
 | `widgets/MealsList` | `ui` | **Changed.** `MealsListItem` reads the preference and renders `AddNoteButton` (off) or `MultiItemLogFood` (on). `MealsList` passes an `onOpenLogFood(mealType)` callback through to it. |
@@ -381,7 +382,10 @@ doesn't depend on `entities/foodLog` or `features/logFood`.
 
 - Opened from a result's name or a tray row. It loads the Product with the existing
   `GET /api/v1/products/{id}` query, so it works for products that aren't in the Meal Draft yet.
-  A spinner shows while it loads, and "The product could not be loaded" if the request fails.
+  It reads the Product through `useFreshProduct`, which hides a cached Product while it is being
+  refetched or after its refetch failed, because the quantity form reads its default value only on
+  mount. A spinner shows while it loads, and "The product could not be loaded" if the request fails,
+  even when an older Product is cached.
 - It shows the product's name as a heading and "<calories> kcal per 100 g".
 - Its quantity form is a react-hook-form + Zod form using the shared `quantitySchema` (whole
   numbers, 10–1000), validated on every change. The field is labelled **Quantity**, has a `g`
@@ -403,10 +407,12 @@ doesn't depend on `entities/foodLog` or `features/logFood`.
   load, and a product without a category gets the first category. After a create, the new product
   (with the id from the response) is mapped from the form values to a `MealDraftProduct` and added
   with `foodLogAdded` at its default quantity, and the app goes back to the search.
-- `EditProductForm` loads the Product by id and the categories, with a spinner until both are
-  ready. After an edit, `productUpdated` is dispatched with the saved values, and the app goes back
-  to the detail screen. The edit invalidates the `product` tag, so the detail shows the saved
-  Product, and its quantity form opens with the new default quantity.
+- `EditProductForm` loads the Product by id through `useFreshProduct` and the categories, with a
+  spinner until both are ready, so it never opens on a cached Product that is being refetched. It
+  shows "The product could not be loaded" if the Product request fails. After an edit, `productUpdated` is dispatched with the saved values, and the app goes back
+  to the detail screen. A successful edit invalidates the `product` tag, so the detail shows a
+  spinner until the saved Product loads, and its quantity form opens with the new default quantity.
+  A failed edit invalidates nothing, so the form stays mounted with the input.
 - A name clash comes back as a `400` validation problem with a `Name` error. It is shown under the
   Name field and the input is kept. Any other failure shows an error alert under the form.
 - Recognition reuses `POST /api/v1/notes/recognitions` and the shared mapping in
