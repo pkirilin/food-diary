@@ -61,7 +61,8 @@ carries only what selects a screen. Route files live in `src/frontend/src/app/ro
   `Outlet`. The static `products/new` wins over the dynamic `products/$productId`.
 - `productId` is parsed to a positive integer by the shared `-productIdParams.ts`. `q` and `name`
   are schema-validated strings that fall back to absent. `-searchQuery.ts` drops `q` from the URL
-  when the query is empty.
+  when the query is empty. `-leaveSearch.ts` drops `q` from the search's history entry, then
+  pushes the next screen.
 - The `/log/food` layout's `beforeLoad` redirects to the day page when the store holds no Meal
   Draft: after a reload, after **Log food** or **Discard**, and on a browser forward into the flow
   after either. The recognition route's `beforeLoad` redirects to the search (with `replace`) when

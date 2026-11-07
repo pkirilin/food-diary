@@ -2,7 +2,8 @@ import { createFileRoute, useRouter } from '@tanstack/react-router';
 import { lazy } from 'react';
 import { z } from 'zod';
 import { LogFoodSearchPage } from '@/pages/ui/LogFoodSearchPage';
-import { toSearchQuery, useClearSearchQuery } from './-searchQuery';
+import { useLeaveSearch } from './-leaveSearch';
+import { toSearchQuery } from './-searchQuery';
 
 const SearchSlot = lazy(() =>
   import('./-SearchSlot').then(module => ({ default: module.SearchSlot })),
@@ -26,7 +27,7 @@ function LogFoodSearchRoute() {
   const { q = '' } = Route.useSearch();
   const navigate = Route.useNavigate();
   const router = useRouter();
-  const clearSearchQuery = useClearSearchQuery();
+  const leaveSearch = useLeaveSearch();
 
   return (
     <LogFoodSearchPage
@@ -35,14 +36,10 @@ function LogFoodSearchRoute() {
         void navigate({ search: { q: toSearchQuery(query) }, replace: true });
       }}
       onCreateProduct={name => {
-        void clearSearchQuery().then(() =>
-          navigate({ to: '/log/food/products/new', search: { name } }),
-        );
+        leaveSearch({ to: '/log/food/products/new', search: { name } });
       }}
       onOpenProduct={productId => {
-        void clearSearchQuery().then(() =>
-          navigate({ to: '/log/food/products/$productId', params: { productId } }),
-        );
+        leaveSearch({ to: '/log/food/products/$productId', params: { productId } });
       }}
       onLogged={date => {
         if (router.history.canGoBack()) {
