@@ -77,9 +77,9 @@ Moves between screens:
 |---|---|---|
 | day page | **Add <meal>** | push `/log/food` |
 | search | typing | `q` updated with `replace`, so typing adds no history entries |
-| search | a result's name, or a tray row | push the detail route |
-| search | `Create "<query>"` | push `/log/food/products/new?name=<trimmed query>` |
-| search | photos picked with the camera action | push `/log/food/recognition` |
+| search | a result's name, or a tray row | drop `q` with `replace`, then push the detail route |
+| search | `Create "<query>"` | drop `q` with `replace`, then push `/log/food/products/new?name=<trimmed query>` |
+| search | photos picked with the camera action | drop `q` with `replace`, then push `/log/food/recognition` |
 | search | **Log food** succeeds | go back to the day page, restoring its scroll position, falling back to `/?date=<the Meal Draft's date>` with `replace` |
 | detail | **Add**, **Save** or **Remove** | go back, falling back to `/log/food` |
 | detail | **Edit product** | push the edit route |
@@ -88,9 +88,10 @@ Moves between screens:
 | any `'back'` or `'search'` screen | AppBar back arrow | go back, falling back to `/` |
 
 "Go back" is `useGoBack(fallback)` from `shared/hooks`: `router.history.back()` when
-`router.history.canGoBack()`, otherwise a navigation to the fallback. Going back to the search
-restores the `q` it had, so after **Create** the search shows the query typed before
-`Create "<query>"`, with the new product selected in the results.
+`router.history.canGoBack()`, otherwise a navigation to the fallback. The search drops `q` from
+its own history entry before pushing another screen, so every return to it, whether by **Add**,
+**Save**, **Remove**, **Create** or the back arrow, shows an empty search, ready for the next
+product.
 
 ### AppBar
 
@@ -272,7 +273,7 @@ doesn't depend on `entities/foodLog` or `features/logFood`.
 14. As the owner, I want a product in the Meal Draft to look selected in the results, so that I can see what I've already picked.
 15. As the owner, I want ⊕ on a product already in the Meal Draft to take it out, so that a mis-tap is undone by tapping again.
 16. As the owner, I want tapping a product's name to open its detail screen, so that I can set a quantity before adding it.
-17. As the owner, I want my search query back when I return from a detail screen, so that I can carry on where I was.
+17. As the owner, I want the search empty when I return from a detail, create or recognition screen, so that I can type the next product at once.
 
 ### Detail screen
 
@@ -523,7 +524,7 @@ as `entities/note/model/note.test.ts` and `entities/note/lib/calculationHelpers.
   - a quantity changed on the detail screen, opened from a result or from a tray row, is logged
   - a quantity outside 10–1000 can't be confirmed on the detail screen
   - **Edit product** updates the tray row's name and quantity
-  - `Create "<query>"` returns to the search with the new product in the Meal Draft
+  - `Create "<query>"` returns to an empty search with the new product in the Meal Draft
   - photo recognition, through the mock suggestion, adds the created product to the Meal Draft
   - **Log food** logs every product in Meal Draft order, after the Meal's existing Food Logs
   - a failed save keeps the Meal Draft and shows an error

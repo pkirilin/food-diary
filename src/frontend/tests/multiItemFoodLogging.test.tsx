@@ -374,9 +374,7 @@ test('Create adds the new product to the Meal Draft with its default quantity, b
 
   await user.click(screen.getByRole('button', { name: 'Create' }));
 
-  const foundProducts = await screen.findByRole('list', { name: 'Found products' });
-  expect(await within(foundProducts).findByRole('button', { name: 'Remove Yogurt' })).toBeVisible();
-  expect(await findSearchField()).toHaveValue('Yogurt');
+  expect(await findSearchField()).toHaveValue('');
   const tray = await findTray('Breakfast');
   expect(within(tray).getByText('1')).toBeVisible();
   expect(tray).toHaveTextContent('150 kcal');
@@ -413,9 +411,11 @@ test('Create with the name of an existing product shows the clash on the form an
   await user.type(name, ' yogurt');
   await user.click(screen.getByRole('button', { name: 'Create' }));
 
-  const foundProducts = await screen.findByRole('list', { name: 'Found products' });
+  expect(await findSearchField()).toHaveValue('');
+  const tray = await findTray('Breakfast');
+  await user.click(within(tray).getByRole('button', { name: 'Picked foods' }));
   expect(
-    await within(foundProducts).findByRole('button', { name: 'Remove Cheese yogurt' }),
+    within(await findPickedFoods(tray)).getByRole('button', { name: /^Cheese yogurt/ }),
   ).toBeVisible();
 });
 
@@ -744,8 +744,7 @@ test('a product opened from a result is added with the quantity typed, and logge
 
   await user.click(screen.getByRole('button', { name: 'Add' }));
 
-  expect(await findSearchField()).toHaveValue('chick');
-  expect(await screen.findByRole('button', { name: 'Remove Chicken' })).toBeVisible();
+  expect(await findSearchField()).toHaveValue('');
   const tray = await findTray('Breakfast');
   expect(within(tray).getByText('1')).toBeVisible();
   expect(within(tray).getByText('478 kcal')).toBeVisible();
@@ -810,7 +809,7 @@ test.each(['5', '1001', '12.5', 'abc', ''])(
   },
 );
 
-test('the back arrow returns from a product to the search with the Meal Draft and the query unchanged', async () => {
+test('the back arrow returns from a product to an empty search with the Meal Draft unchanged', async () => {
   const user = userEvent.setup();
   await openDayPageWithMultiItemFoodLoggingOn(user);
   await clickAddMeal(user, 'Breakfast');
@@ -821,8 +820,7 @@ test('the back arrow returns from a product to the search with the Meal Draft an
 
   await user.click(await screen.findByRole('button', { name: 'Back' }));
 
-  expect(await findSearchField()).toHaveValue('chick');
-  expect(await screen.findByRole('button', { name: 'Add Chicken' })).toBeVisible();
+  expect(await findSearchField()).toHaveValue('');
   const tray = await findTray('Breakfast');
   expect(within(tray).getByText('1')).toBeVisible();
   expect(within(tray).getByText('379 kcal')).toBeVisible();
@@ -1004,6 +1002,7 @@ test('a product recognized from a photo through the mock suggestion lands in the
   const user = userEvent.setup();
   await openDayPageWithMultiItemFoodLoggingOn(user);
   await clickAddMeal(user, 'Breakfast');
+  await user.type(await findSearchField(), 'yog');
 
   await pickPhotosForRecognition(user, ['Yogurt.jpg']);
 
@@ -1012,7 +1011,7 @@ test('a product recognized from a photo through the mock suggestion lands in the
 
   await user.click(screen.getByRole('button', { name: 'Create' }));
 
-  expect(await findSearchField()).toBeVisible();
+  expect(await findSearchField()).toHaveValue('');
   const tray = await findTray('Breakfast');
   expect(within(tray).getByText('1')).toBeVisible();
   await user.click(within(tray).getByRole('button', { name: 'Picked foods' }));
