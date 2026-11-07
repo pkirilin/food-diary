@@ -2,13 +2,14 @@ import AddIcon from '@mui/icons-material/Add';
 import {
   Box,
   CircularProgress,
+  Divider,
   List,
   ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
 } from '@mui/material';
-import { type FC, useMemo } from 'react';
+import { type FC, Fragment, useMemo } from 'react';
 import { type ProductSelectOption, productApi, productLib } from '@/entities/product';
 import { holdSoftKeyboardForNextField } from '@/shared/lib';
 import { toMealDraftProduct } from '../lib/mapping';
@@ -74,15 +75,17 @@ export const LogFoodSearchResults: FC<Props> = ({
 
   return (
     <List aria-label="Found products">
-      {foundProducts.map(product => (
-        <FoundProductListItem
-          key={product.id}
-          product={product}
-          onOpen={onOpenProduct}
-          onFoodLogAdded={() => {
-            onQueryChange('');
-          }}
-        />
+      {foundProducts.map((product, index) => (
+        <Fragment key={product.id}>
+          {index > 0 && <Divider variant="fullWidth" component="li" />}
+          <FoundProductListItem
+            product={product}
+            onOpen={onOpenProduct}
+            onFoodLogAdded={() => {
+              onQueryChange('');
+            }}
+          />
+        </Fragment>
       ))}
     </List>
   );
