@@ -19,7 +19,7 @@ export const LogFoodSearchPage: FC<Props> = ({
 }) => (
   <>
     <MealDraftTray query={query} onOpenProduct={onOpenProduct} onLogged={onLogged} />
-    <PageContainer>
+    <PageContainer disablePadding>
       <LogFoodSearchResults
         query={query}
         onQueryChange={onQueryChange}
