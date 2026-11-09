@@ -1,6 +1,6 @@
 import { Alert, AlertTitle, LinearProgress, Skeleton, Stack } from '@mui/material';
 import { type FC } from 'react';
-import { Button } from '@/shared/ui';
+import { Button, ImagePreviewList } from '@/shared/ui';
 import { useRecognizeProduct } from '../lib/useRecognizeProduct';
 import { CreateProductForm } from './CreateProductForm';
 
@@ -22,7 +22,7 @@ const RecognitionSkeleton: FC = () => (
 );
 
 export const RecognizeProductForm: FC<Props> = ({ onCreated }) => {
-  const { isRecognizing, error, recognizedProduct, retry } = useRecognizeProduct();
+  const { photos, isRecognizing, error, recognizedProduct, retry } = useRecognizeProduct();
 
   if (isRecognizing) {
     return <RecognitionSkeleton />;
@@ -44,9 +44,14 @@ export const RecognizeProductForm: FC<Props> = ({ onCreated }) => {
     );
   }
 
-  if (recognizedProduct === null) {
-    return <Alert severity="warning">No food found. Please try other photos</Alert>;
-  }
-
-  return <CreateProductForm defaultValues={recognizedProduct} onCreated={onCreated} />;
+  return (
+    <Stack spacing={3}>
+      <ImagePreviewList images={photos} />
+      {recognizedProduct === null ? (
+        <Alert severity="warning">No food found. Please try other photos</Alert>
+      ) : (
+        <CreateProductForm defaultValues={recognizedProduct} onCreated={onCreated} />
+      )}
+    </Stack>
+  );
 };

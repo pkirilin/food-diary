@@ -1,7 +1,7 @@
 import { Box, ButtonBase } from '@mui/material';
 import { useState, type FC } from 'react';
 import { type imageLib } from '@/shared/lib';
-import { ImageViewer } from '@/shared/ui';
+import { ImageViewer } from './ImageViewer';
 
 interface Props {
   images: imageLib.Image[];

@@ -6,9 +6,8 @@ import { categoryLib } from '@/entities/category';
 import { noteLib } from '@/entities/note';
 import { ProductForm, type OnSubmitProductFn } from '@/entities/product';
 import { type imageLib } from '@/shared/lib';
-import { Button } from '@/shared/ui';
+import { Button, ImagePreviewList } from '@/shared/ui';
 import { useRecognizeNotes } from '../lib/useRecognizeNotes';
-import { ImagePreviewList } from './ImagePreviewList';
 import { SuggestionSkeleton } from './SuggestionSkeleton';
 
 interface Props {

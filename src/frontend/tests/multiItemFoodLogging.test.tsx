@@ -1141,6 +1141,51 @@ test('the recognition form is prefilled from the first suggestion, with its quan
   expect(within(tray).getByText('150 kcal')).toBeVisible();
 });
 
+test('the recognition form shows the picked photos', async () => {
+  const user = userEvent.setup();
+  await openDayPageWithMultiItemFoodLoggingOn(user);
+  await clickAddMeal(user, 'Breakfast');
+
+  await pickPhotosForRecognition(user, ['front.jpg', 'label.jpg']);
+
+  await screen.findByRole('textbox', { name: 'Name' });
+  expect(screen.getByRole('button', { name: 'Open uploaded image preview 1' })).toBeVisible();
+  expect(screen.getByRole('button', { name: 'Open uploaded image preview 2' })).toBeVisible();
+});
+
+test('the picked photos are shown when no food is found on them', async () => {
+  const user = userEvent.setup();
+  server.use(
+    http.post(
+      `${API_URL}/api/v1/notes/recognitions`,
+      () => HttpResponse.json<RecognizeNoteResponse>({ notes: [] }),
+      { once: true },
+    ),
+  );
+  await openDayPageWithMultiItemFoodLoggingOn(user);
+  await clickAddMeal(user, 'Breakfast');
+
+  await pickPhotosForRecognition(user, ['Yogurt.jpg']);
+
+  expect(await screen.findByText('No food found. Please try other photos')).toBeVisible();
+  expect(screen.getByRole('button', { name: 'Open uploaded image preview 1' })).toBeVisible();
+});
+
+test('the full-size picked photo stays available until the recognition screen is left', async () => {
+  const revokeObjectURL = vi.spyOn(URL, 'revokeObjectURL');
+  const user = userEvent.setup();
+  await openDayPageWithMultiItemFoodLoggingOn(user);
+  await clickAddMeal(user, 'Breakfast');
+
+  await pickPhotosForRecognition(user, ['Yogurt.jpg']);
+
+  await user.click(await screen.findByRole('button', { name: 'Create' }));
+  expect(revokeObjectURL).not.toHaveBeenCalled();
+
+  await findSearchField();
+  await waitFor(() => expect(revokeObjectURL).toHaveBeenCalledTimes(1));
+});
+
 test('a failed recognition shows an error, and Retry shows skeletons while it sends the same photos again', async () => {
   const user = userEvent.setup();
   server.use(

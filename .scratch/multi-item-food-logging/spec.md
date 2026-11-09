@@ -215,7 +215,7 @@ results. At the bottom of the screen a phone's keyboard hides it, so it sits at 
 - `features/logFood/model/recognitionPhotosSlice.ts`, with slice name and store key
   `recognitionPhotos`, holds `imageLib.Image[]`: the photos picked for recognition. They aren't
   Food Log data, and only this feature uses them. `recognitionPhotosPicked(images)` replaces them.
-  `productRecognized()` empties them when recognition responds successfully, and so do
+  `productRecognized()` empties them when the screen is left after a successful recognition, and so do
   `mealDraftDiscarded` and `mealDraftLogged`. `recognitionPhotoUrlsListener` revokes the object URL
   of every photo that leaves the slice.
 - Request status lives in RTK Query, not in either slice.
@@ -425,8 +425,10 @@ doesn't depend on `entities/foodLog` or `features/logFood`.
   - A response with no suggestions shows "No food found. Please try other photos".
   - Otherwise the screen shows `CreateProductForm` prefilled from the first suggestion, whose
     quantity becomes the default quantity.
-  - A successful response dispatches `productRecognized`, so a later browser forward into the
-    recognition route lands on the search.
+  - Once a response arrives, with or without suggestions, the screen shows the picked photos, and
+    tapping one opens it at full size.
+  - Leaving the screen after a successful response dispatches `productRecognized`, so a later
+    browser forward into the recognition route lands on the search.
 - Nothing checks for demo mode. The demo build runs against the MSW mock API, whose recognition
   handler returns one suggestion per photo, named after the photo's file.
 

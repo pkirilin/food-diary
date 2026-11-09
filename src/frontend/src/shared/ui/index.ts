@@ -6,6 +6,7 @@ export * from './Center';
 export * from './Dialog';
 export * from './AppDialog';
 export * from './ImagePicker';
+export * from './ImagePreviewList';
 export * from './ImageViewer';
 export * from './LoadingContainer';
 export * from './PageContainer';
