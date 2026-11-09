@@ -8,35 +8,18 @@ paths:
 
 ### Architecture
 
-- Use functional components with hooks as the primary pattern
-- Implement component composition over inheritance
-- Organize components, hooks, and functions using feature-sliced design (FSD) approach
-- Separate presentational and container components clearly
-- Use custom hooks for reusable stateful logic
-- Implement proper component hierarchies with clear data flow
 - Always prioritize arrow function expressions (`const fn = () => {}`) over function definitions (`function fn() {}`). Exception: route components in `src/app/routes/` are function declarations placed below the route definition (`export const Route = createFileRoute(...)({ component: HistoryRoute })`, then `function HistoryRoute() {}`), following TanStack Router's idiom
 - Redux holds validated values only. Input being typed, or input that failed validation, stays in its react-hook-form form; dispatch once the form validates.
 - Custom hooks must not own UI-presentation concerns (alerts, snackbars, toasts, dialogs). Keep that state in the component and let the hook report outcomes through callbacks (e.g. `onError(message)`, `onInfo(message)`) that the component wires to its UI.
 - Custom hooks must not depend on form library types or instances (e.g. react-hook-form's `UseFormGetValues`/`UseFormSetValue`, `control`). Pass narrow callbacks instead (e.g. `getName`, `getFieldValue`, `setFieldValue`) so the hook stays decoupled from the form layer.
 - Every search-param change is a navigation: it re-runs `beforeLoad` for all matched routes. When state writes to the URL per keystroke, confirm the matched `beforeLoad`s send no requests on that navigation.
+- A route's `onLeave` runs before its screen unmounts, so state it clears is still read by that screen.
 
 ### TypeScript Integration
 
 - Use TypeScript interfaces for props, state, hooks, utils, and component definitions
 - **Never use `any`. If type is unknown, use `unknown` with type guards instead**
-- Define proper types for event handlers and refs
-- Leverage React's built-in types (`React.FC`, `React.ComponentProps`, etc.)
 - Do not use `React.<SomeType>`, always import `<SomeType>` from `react`
-- Create union types for component variants and states
-
-### Component Design
-
-- Follow the single responsibility principle for components
-- Use descriptive and consistent naming conventions
-- Implement proper prop validation with TypeScript
-- Design components to be testable and reusable
-- Keep components small and focused on a single concern
-- Use composition patterns (render props, children as functions)
 
 ### React Component Definition Example
 
@@ -86,6 +69,7 @@ Mandatory for any change that affects rendered UI or behavior (components, pages
 - Open <http://localhost:5173> with `new_page` and a new `isolatedContext` name for each check, so it starts with clean cookies, storage and service workers. The browser outlives a single check.
 - Routes are hash-based: open `http://localhost:5173/#/<route>`. `emulate` reloads the page, so set the viewport before navigating to the flow.
 - Device preferences live in localStorage (`src/shared/lib/devicePreferences.ts`), and a fresh context starts with them off. Set the ones the changed flow needs, then reload.
+- File inputs: `upload_file` accepts repo paths only. Build a `File`, assign it to `input.files` through a `DataTransfer` in `evaluate_script`, and dispatch `change`. To hold or fail one request, wrap `window.fetch` in `navigate_page`'s `initScript`.
 - Exercise the changed flow. Use `take_snapshot` to find elements to interact with; it is an accessibility-tree dump and cannot show how the page renders.
 - After a navigation, wait for a label the next step needs with `wait_for`, then snapshot. Use `evaluate_script` for reading page state.
 - Take a screenshot of every UI state the change affects (`take_screenshot` without `filePath`) and inspect it for broken layout, overflow, overlap and styling. Use `get_css_styles` to investigate anything that looks wrong.

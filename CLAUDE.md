@@ -21,16 +21,6 @@ The frontend and the E2E suite (`tests/`) are independent Yarn 4 projects (node-
 
 ### Frontend (`src/frontend/`)
 
-```shell
-yarn start           # Vite dev server on http://localhost:5173
-yarn build           # tsc + vite build
-yarn typecheck       # tsc only
-yarn test            # vitest (single-file: yarn test path/to/file.test.ts)
-yarn lint            # eslint .
-yarn lint:fix
-yarn format / format:check
-```
-
 Browser verification of UI changes uses the `chrome-devtools` MCP server from `.mcp.json`, which needs Google Chrome installed. Rules: `.claude/rules/frontend.md`.
 
 For backend-less development, set `.env.local` with `VITE_APP_MSW_ENABLED=true`, `VITE_APP_FAKE_AUTH_ENABLED=true`, `VITE_APP_FAKE_AUTH_LOGIN_ON_INIT=true` (full env-var list in `docs/development.md`).
@@ -55,14 +45,6 @@ dotnet ef migrations add <Name> \
 ```
 
 Required user-secrets on `FoodDiary.API`: `Auth:AllowedEmails:0`, `ConnectionStrings:Default`, `GoogleAuth:ClientId`, `GoogleAuth:ClientSecret`, optional `Integrations:OpenAI:ApiKey` and `Integrations:OpenAI:Model` (overrides default). Enabling the MCP server locally (`Mcp:Enabled` = `true`) also requires `Mcp:BaseUrl` (`https://localhost:8080`). `Mcp:Clients:0:ClientId`, `Mcp:Clients:0:ClientSecret` and `Mcp:Clients:0:RedirectUri` are optional and needed only for a client-secret MCP client; MCP clients that use a Client ID Metadata Document need no entry. Startup fails naming whichever value is missing or malformed.
-
-### E2E (`tests/`)
-
-```shell
-yarn test            # playwright test
-yarn debug           # --debug
-yarn codegen
-```
 
 ### Full stack
 

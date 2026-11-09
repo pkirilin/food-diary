@@ -10,6 +10,10 @@ A change that rebuilds an existing flow keeps the old flow's user-visible behavi
 
 Name and organize Redux state after the data it holds (e.g. `products`, never `productsTable`), so the UI that renders it can change without reshaping state. See the Redux style guide: [Organize State Structure Based on Data Types, Not Components](https://redux.js.org/style-guide/#organize-state-structure-based-on-data-types-not-components) and [Name State Slices Based On the Stored Data](https://redux.js.org/style-guide/#name-state-slices-based-on-the-stored-data).
 
+## Effects and events
+
+Work a person caused starts in the handler of that event: requests, dispatches, navigation. An Effect only synchronizes with something outside React while the component is on screen. Ask what caused the work: a tap or pick is an event, and appearing on screen is an Effect. See [Separating Events from Effects](https://react.dev/learn/separating-events-from-effects).
+
 ## Comments
 
 A comment must earn its place. Before writing one, it must pass this test: **would a competent reader of this file get it wrong without the comment?** If the answer is no, delete it.
