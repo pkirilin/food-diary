@@ -12,7 +12,7 @@ export const recognitionPhotosSlice = createSlice({
   },
   reducers: {
     recognitionPhotosPicked: (_state, { payload }: PayloadAction<imageLib.Image[]>) => payload,
-    productRecognized: () => initialState,
+    recognitionEnded: () => initialState,
   },
   extraReducers: builder => {
     builder.addMatcher(

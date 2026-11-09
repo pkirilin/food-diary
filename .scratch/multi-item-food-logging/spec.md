@@ -66,7 +66,7 @@ carries only what selects a screen. Route files live in `src/frontend/src/app/ro
 - The `/log/food` layout's `beforeLoad` redirects to the day page when the store holds no Meal
   Draft: after a reload, after **Log food** or **Discard**, and on a browser forward into the flow
   after either. The recognition route's `beforeLoad` redirects to the search (with `replace`) when
-  `recognitionPhotos` is empty.
+  `recognitionPhotos` is empty, and its `onLeave` dispatches `endRecognition`.
 - Following ADR-0005, route files and AppBar slots are thin adapters. Pages and features take
   plain values and callbacks (`onQueryChange(q)`, `onOpenProduct(productId)`, `onCreateProduct(name)`,
   `onLogged(date)`, `onDone`, `onEditProduct`, `onSaved`, `onCreated`). The AppBar slots are
@@ -215,7 +215,7 @@ results. At the bottom of the screen a phone's keyboard hides it, so it sits at 
 - `features/logFood/model/recognitionPhotosSlice.ts`, with slice name and store key
   `recognitionPhotos`, holds `imageLib.Image[]`: the photos picked for recognition. They aren't
   Food Log data, and only this feature uses them. `recognitionPhotosPicked(images)` replaces them.
-  `productRecognized()` empties them when the screen is left after a successful recognition, and so do
+  `recognitionEnded()` empties them whenever the recognition screen is left, and so do
   `mealDraftDiscarded` and `mealDraftLogged`. `recognitionPhotoUrlsListener` revokes the object URL
   of every photo that leaves the slice.
 - Request status lives in RTK Query, not in either slice.
@@ -239,8 +239,8 @@ location, and the old one is gone.
 | `entities/product` | `lib` | **Moved** `searchProducts` here from `features/manageNote/lib`, because both features use it. |
 | `entities/product` | `ui` | **Changed.** `ProductForm` takes optional `serverErrors` (`ProductFormServerErrors`, `{ name: string \| null }`) and shows the name error on the Name field. |
 | `features/logFood` | `ui` | **New feature slice.** `MultiItemLogFood` (the entry button), `LogFoodSearchField`, `LogFoodSearchResults` and `FoundProductListItem` (results with ⊕), `MealDraftTray` and `MealDraftFoodLogListItem`, `LogFoodProductDetail` and `FoodLogQuantityForm`, `CreateProductForm`, `EditProductForm` and their shared `ProductFormFooter`, `RecognizeProductButton`, `RecognizeProductForm`, and `DiscardMealDraftDialog`. |
-| `features/logFood` | `lib` | **New.** `mapping.ts` (between `foodLog` and `note`/`product` types), `useLogMealDraft`, `useCreateProduct`, `useEditProduct`, `useProductFormErrors`, `useRecognizeProduct` and `useFreshProduct`. |
-| `features/logFood` | `model` | **New**, exported as `logFoodModel`: the `recognitionPhotos` slice and `recognitionPhotoUrlsListener`. |
+| `features/logFood` | `lib` | **New.** `mapping.ts` (between `foodLog` and `note`/`product` types), `useLogMealDraft`, `useCreateProduct`, `useEditProduct`, `useProductFormErrors`, `useRecognizeProduct` and `useProductToEdit`. |
+| `features/logFood` | `model` | **New**, exported as `logFoodModel`: the `recognitionPhotos` slice, `recognitionPhotoUrlsListener` and the `endRecognition` thunk. |
 | `features/manageNote` | `ui`, `lib`, `model` | **Changed.** `UploadImagesButton` wraps the shared `ImagePicker` and does its own recognition. `useRecognizeNotes` and `ImageUploadStep` use `noteLib`'s recognition mapping. Imports follow the moves above. Behaviour unchanged. |
 | `widgets/MealsList` | `ui` | **Changed.** `MealsListItem` reads the preference and renders `AddNoteButton` (off) or `MultiItemLogFood` (on). `MealsList` passes an `onOpenLogFood(mealType)` callback through to it. |
 | `widgets/Navigation` | `model`, `ui` | **Changed.** The `'back'` and `'search'` AppBar variants, and a Settings link in the drawer. |
@@ -376,13 +376,14 @@ doesn't depend on `entities/foodLog` or `features/logFood`.
   add a product are left as they are.
 - The camera action (`-CameraSlot`) renders `RecognizeProductButton`, a camera icon labelled
   **Recognize product from photos** that wraps the shared image picker. On pick, it stores the
-  photos with `recognitionPhotosPicked` and the slot navigates to the recognition route.
+  photos with `recognitionPhotosPicked`, sends them for recognition, and the slot navigates to the
+  recognition route.
 
 ### Detail screen
 
 - Opened from a result's name or a tray row. It loads the Product with the existing
   `GET /api/v1/products/{id}` query, so it works for products that aren't in the Meal Draft yet.
-  It reads the Product through `useFreshProduct`, which hides a cached Product while it is being
+  It reads the Product through `useProductToEdit`, which hides a cached Product while it is being
   refetched or after its refetch failed, because the quantity form reads its default value only on
   mount. A spinner shows while it loads, and "The product could not be loaded" if the request fails,
   even when an older Product is cached.
@@ -407,7 +408,7 @@ doesn't depend on `entities/foodLog` or `features/logFood`.
   load, and a product without a category gets the first category. After a create, the new product
   (with the id from the response) is mapped from the form values to a `MealDraftProduct` and added
   with `foodLogAdded` at its default quantity, and the app goes back to the search.
-- `EditProductForm` loads the Product by id through `useFreshProduct` and the categories, with a
+- `EditProductForm` loads the Product by id through `useProductToEdit` and the categories, with a
   spinner until both are ready, so it never opens on a cached Product that is being refetched. It
   shows "The product could not be loaded" if the Product request fails. After an edit, `productUpdated` is dispatched with the saved values, and the app goes back
   to the detail screen. A successful edit invalidates the `product` tag, so the detail shows a
@@ -416,9 +417,9 @@ doesn't depend on `entities/foodLog` or `features/logFood`.
 - A name clash comes back as a `400` validation problem with a `Name` error. It is shown under the
   Name field and the input is kept. Any other failure shows an error alert under the form.
 - Recognition reuses `POST /api/v1/notes/recognitions` and the shared mapping in
-  `entities/note/lib/recognition.ts`, through `useRecognizeProduct` in `features/logFood/lib`. It
-  takes a snapshot of `recognitionPhotos` when the screen mounts and sends it, aborting the request
-  if the screen unmounts first.
+  `entities/note/lib/recognition.ts`, through `useRecognizeProduct` in `features/logFood/lib`, which
+  uses a `fixedCacheKey` so the camera action and the recognition screen share one request. Picking
+  photos sends them. Opening the screen sends nothing.
   - While it runs, the screen shows a progress bar labelled **Recognizing product** and form
     skeletons.
   - A failure shows an error alert with **Retry**, which sends the same photos again.
@@ -427,8 +428,11 @@ doesn't depend on `entities/foodLog` or `features/logFood`.
     quantity becomes the default quantity.
   - Once a response arrives, with or without suggestions, the screen shows the picked photos, and
     tapping one opens it at full size.
-  - Leaving the screen after a successful response dispatches `productRecognized`, so a later
-    browser forward into the recognition route lands on the search.
+  - Leaving the screen, at any point, runs `endRecognition`: it aborts a running request and
+    dispatches `recognitionEnded`, so a later browser forward into the recognition route lands on
+    the search and sends nothing.
+  - `onLeave` runs while the screen is still rendered, so the screen shows a snapshot of the
+    photos taken when it mounts, and treats an aborted request as still running.
 - Nothing checks for demo mode. The demo build runs against the MSW mock API, whose recognition
   handler returns one suggestion per photo, named after the photo's file.
 
@@ -535,6 +539,10 @@ as `entities/note/model/note.test.ts` and `entities/note/lib/calculationHelpers.
   - **Edit product** updates the tray row's name and quantity
   - `Create "<query>"` returns to an empty search with the new product in the Meal Draft
   - photo recognition, through the mock suggestion, adds the created product to the Meal Draft
+  - one pick sends exactly one recognition request
+  - leaving while recognition runs aborts it, and going forward lands on the search with no second
+    request
+  - going forward after a failed recognition lands on the search with no second request
   - **Log food** logs every product in Meal Draft order, after the Meal's existing Food Logs
   - a failed save keeps the Meal Draft and shows an error
   - leaving with a non-empty Meal Draft prompts, and leaving with an empty one doesn't

@@ -1,7 +1,9 @@
 import { Alert, AlertTitle, LinearProgress, Skeleton, Stack } from '@mui/material';
-import { type FC } from 'react';
+import { type FC, useState } from 'react';
+import { useAppSelector } from '@/app/store';
 import { Button, ImagePreviewList } from '@/shared/ui';
 import { useRecognizeProduct } from '../lib/useRecognizeProduct';
+import { selectors } from '../model';
 import { CreateProductForm } from './CreateProductForm';
 
 interface Props {
@@ -22,7 +24,10 @@ const RecognitionSkeleton: FC = () => (
 );
 
 export const RecognizeProductForm: FC<Props> = ({ onCreated }) => {
-  const { photos, isRecognizing, error, recognizedProduct, retry } = useRecognizeProduct();
+  const pickedPhotos = useAppSelector(selectors.recognitionPhotos);
+  // Leaving the route empties the slice while this screen is still rendered
+  const [photos] = useState(pickedPhotos);
+  const { isRecognizing, error, recognizedProduct, recognize } = useRecognizeProduct();
 
   if (isRecognizing) {
     return <RecognitionSkeleton />;
@@ -33,7 +38,13 @@ export const RecognizeProductForm: FC<Props> = ({ onCreated }) => {
       <Alert
         severity="error"
         action={
-          <Button color="inherit" size="small" onClick={retry}>
+          <Button
+            color="inherit"
+            size="small"
+            onClick={() => {
+              recognize(photos);
+            }}
+          >
             Retry
           </Button>
         }

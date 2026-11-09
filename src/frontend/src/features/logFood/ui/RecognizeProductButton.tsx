@@ -2,6 +2,7 @@ import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
 import { type FC } from 'react';
 import { useAppDispatch } from '@/app/store';
 import { ImagePicker } from '@/shared/ui';
+import { useRecognizeProduct } from '../lib/useRecognizeProduct';
 import { actions } from '../model';
 
 interface Props {
@@ -10,6 +11,7 @@ interface Props {
 
 export const RecognizeProductButton: FC<Props> = ({ onPhotosPicked }) => {
   const dispatch = useAppDispatch();
+  const { recognize } = useRecognizeProduct();
 
   return (
     <ImagePicker
@@ -18,6 +20,7 @@ export const RecognizeProductButton: FC<Props> = ({ onPhotosPicked }) => {
       color="inherit"
       onPick={photos => {
         dispatch(actions.recognitionPhotosPicked(photos));
+        recognize(photos);
         onPhotosPicked();
       }}
     />

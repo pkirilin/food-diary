@@ -12,6 +12,9 @@ export const Route = createFileRoute('/_app/log/food/recognition')({
       throw redirect({ to: '/log/food', replace: true });
     }
   },
+  onLeave: ({ context }) => {
+    context.store.dispatch(logFoodModel.endRecognition());
+  },
   component: LogFoodRecognitionRoute,
 });
 

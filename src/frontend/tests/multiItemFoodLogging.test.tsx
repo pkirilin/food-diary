@@ -1,7 +1,7 @@
 import { Blob as NodeBlob, File as NodeFile } from 'node:buffer';
 import { act, configure, fireEvent, screen, waitFor, within } from '@testing-library/react';
 import userEvent, { type UserEvent } from '@testing-library/user-event';
-import { HttpResponse, http } from 'msw';
+import { delay, HttpResponse, http } from 'msw';
 import { type RecognizeNoteResponse } from '@/entities/note';
 import { API_URL } from '@/shared/config';
 import { imageLib } from '@/shared/lib';
@@ -1229,6 +1229,73 @@ test('going forward to the recognition screen after Create lands on the search i
   await waitFor(() => expect(window.location.hash).toBe('#/log/food'));
   expect(await findSearchField()).toBeVisible();
   expect(screen.queryByRole('heading', { name: 'Recognize product' })).not.toBeInTheDocument();
+});
+
+test('going forward to the recognition screen after a failed recognition lands on the search with no second request', async () => {
+  const user = userEvent.setup();
+  let requestsSent = 0;
+  server.use(
+    http.post(`${API_URL}/api/v1/notes/recognitions`, () => {
+      requestsSent += 1;
+      return HttpResponse.json({}, { status: 500 });
+    }),
+  );
+  await openDayPageWithMultiItemFoodLoggingOn(user);
+  await clickAddMeal(user, 'Breakfast');
+  await pickPhotosForRecognition(user, ['Yogurt.jpg']);
+  await screen.findByRole('alert');
+  await user.click(screen.getByRole('button', { name: 'Back' }));
+  await findSearchField();
+
+  await moveThroughBrowserHistory(() => window.history.forward());
+
+  await waitFor(() => expect(window.location.hash).toBe('#/log/food'));
+  expect(await findSearchField()).toBeVisible();
+  expect(requestsSent).toBe(1);
+});
+
+test('one pick sends exactly one recognition request', async () => {
+  const user = userEvent.setup();
+  let requestsSent = 0;
+  server.use(
+    http.post(`${API_URL}/api/v1/notes/recognitions`, () => {
+      requestsSent += 1;
+      return HttpResponse.json<RecognizeNoteResponse>({ notes: [] });
+    }),
+  );
+  await openDayPageWithMultiItemFoodLoggingOn(user);
+  await clickAddMeal(user, 'Breakfast');
+
+  await pickPhotosForRecognition(user, ['Yogurt.jpg']);
+
+  await screen.findByText('No food found. Please try other photos');
+  expect(requestsSent).toBe(1);
+});
+
+test('leaving while recognition runs aborts it, and going forward lands on the search with no second request', async () => {
+  const user = userEvent.setup();
+  const requestsSent: Request[] = [];
+  server.use(
+    http.post(`${API_URL}/api/v1/notes/recognitions`, async ({ request }) => {
+      requestsSent.push(request);
+      await delay('infinite');
+    }),
+  );
+  await openDayPageWithMultiItemFoodLoggingOn(user);
+  await clickAddMeal(user, 'Breakfast');
+  await pickPhotosForRecognition(user, ['Yogurt.jpg']);
+  await screen.findByRole('progressbar', { name: 'Recognizing product' });
+
+  await user.click(screen.getByRole('button', { name: 'Back' }));
+  await findSearchField();
+
+  await waitFor(() => expect(requestsSent[0]?.signal.aborted).toBe(true));
+
+  await moveThroughBrowserHistory(() => window.history.forward());
+
+  await waitFor(() => expect(window.location.hash).toBe('#/log/food'));
+  expect(await findSearchField()).toBeVisible();
+  expect(requestsSent).toHaveLength(1);
 });
 
 const openRecognitionScreenByUrl = async (): Promise<void> => {
