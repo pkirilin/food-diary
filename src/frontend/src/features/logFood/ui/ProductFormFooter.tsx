@@ -1,7 +1,6 @@
-import { Alert, AlertTitle, Stack } from '@mui/material';
+import { Alert, AlertTitle, Button, Stack } from '@mui/material';
 import { type FC } from 'react';
 import { type ClientError } from '@/shared/api';
-import { Button } from '@/shared/ui';
 
 interface Props {
   formId: string;

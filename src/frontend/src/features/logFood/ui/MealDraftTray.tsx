@@ -6,6 +6,7 @@ import {
   AlertTitle,
   Badge,
   Box,
+  Button,
   ButtonBase,
   Collapse,
   Container,
@@ -19,7 +20,6 @@ import { useAppSelector } from '@/app/store';
 import { foodLogModel } from '@/entities/foodLog';
 import { noteLib } from '@/entities/note';
 import { APP_BAR_HEIGHT_SM, APP_BAR_HEIGHT_XS } from '@/shared/constants';
-import { Button } from '@/shared/ui';
 import { toNoteMealType } from '../lib/mapping';
 import { useLogMealDraft } from '../lib/useLogMealDraft';
 import { MealDraftFoodLogListItem } from './MealDraftFoodLogListItem';

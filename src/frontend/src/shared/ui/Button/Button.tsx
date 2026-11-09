@@ -11,6 +11,9 @@ export interface ButtonProps extends MuiButtonProps {
   hiddenWhenDisabled?: boolean;
 }
 
+/**
+ * @deprecated Use MUI Button with its `loading` prop instead
+ */
 export const Button: FC<ButtonProps> = ({
   children,
   loading,

@@ -1,12 +1,11 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Box, InputAdornment, Stack, TextField, Typography } from '@mui/material';
+import { Box, Button, InputAdornment, Stack, TextField, Typography } from '@mui/material';
 import { type FC } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
 import { useAppDispatch } from '@/app/store';
 import { foodLogModel } from '@/entities/foodLog';
 import { holdSoftKeyboardForNextField, quantitySchema } from '@/shared/lib';
-import { Button } from '@/shared/ui';
 
 const quantityFormSchema = z.object({ quantity: quantitySchema });
 

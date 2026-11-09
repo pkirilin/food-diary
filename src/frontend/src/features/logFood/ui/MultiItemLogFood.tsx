@@ -1,10 +1,10 @@
 import AddIcon from '@mui/icons-material/Add';
+import { Button } from '@mui/material';
 import { type FC } from 'react';
 import { useAppDispatch } from '@/app/store';
 import { foodLogModel } from '@/entities/foodLog';
 import { noteLib, type noteModel } from '@/entities/note';
 import { holdSoftKeyboardForNextField } from '@/shared/lib';
-import { Button } from '@/shared/ui';
 import { toFoodLogMealType } from '../lib/mapping';
 
 interface Props {
