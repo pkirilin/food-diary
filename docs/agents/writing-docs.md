@@ -45,4 +45,5 @@ Specs (`.scratch/<feature-slug>/spec.md`) and their tickets are read by agents a
 
 - **Self-contained.** Cite repo files and public URLs only. When the owner's personal notes (e.g. an Obsidian vault) hold something the spec needs, copy it into the spec.
 - **Frontend architecture.** A spec that changes the frontend has a table of the FSD layers, slices and segments it adds, changes or moves code into, naming every new slice and every new piece of Redux state.
+- **Rebuilt flows.** A spec that rebuilds an existing flow lists that flow's user-visible behaviours, each marked kept or dropped.
 - **Throwaway artifacts.** A spec that cites a prototype branch, a spike commit, or anything else deleted after implementation gets a closing ticket: replace those citations with a description of the design as built, then delete the artifact.

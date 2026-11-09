@@ -117,3 +117,4 @@ Single-context — one `GLOSSARY.md` + `docs/adr/` at the repo root. See `docs/a
 ## Reference
 
 - **Writing docs** — platform-neutral prose, and the rules for specs and tickets. See `docs/agents/writing-docs.md`.
+- **Coding standards** — judgement rules applied at review. See `CODING_STANDARDS.md`.
