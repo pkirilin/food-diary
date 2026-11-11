@@ -165,7 +165,7 @@ test("searching shows each found product's name, default quantity and calories",
   await user.type(await findSearchField(), 'chick');
 
   const foundProducts = await screen.findByRole('list', { name: 'Found products' });
-  const chicken = await within(foundProducts).findByRole('listitem');
+  const [chicken] = await within(foundProducts).findAllByRole('listitem');
   expect(chicken).toHaveTextContent('Chicken');
   expect(chicken).toHaveTextContent('150 g · 358 kcal');
 });

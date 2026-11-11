@@ -304,7 +304,7 @@ doesn't depend on `entities/foodLog` or `features/logFood`.
 
 ### Creating a product
 
-37. As the owner, I want a `Create "<query>"` row when the search finds nothing, so that I can add a product that's missing.
+37. As the owner, I want a `Create "<query>"` row when no product has exactly that name, so that I can add a product that's missing even when longer names contain my query.
 38. As the owner, I want it to open the product form with the name prefilled from my query, so that I don't type it twice.
 39. As the owner, I want the form's button to say **Create**, so that it's clear this makes a Product, not a Food Log.
 40. As the owner, I want a created product to land in the Meal Draft with its default quantity, and to return me to the search, so that I can carry on picking.
@@ -369,9 +369,11 @@ doesn't depend on `entities/foodLog` or `features/logFood`.
 - The ⊕ buttons are labelled `Add <name>` and `Remove <name>`. ⊕ calls `preventDefault` on
   `mousedown`, so the search field never loses focus and a phone's keyboard stays open. Adding
   clears `q`, and the field follows it. Removing leaves `q` as it is.
-- When the trimmed query is at least 3 characters long and nothing is found, the results are a
-  single `Create "<trimmed query>"` row, which navigates to
-  `/log/food/products/new?name=<trimmed query>`. `Create "<query>"` replaces the overloaded
+- When the trimmed query is at least 3 characters long and no found product's name equals it,
+  ignoring case, a `Create "<trimmed query>"` row follows the results, which navigates to
+  `/log/food/products/new?name=<trimmed query>`. When nothing is found, it is the only row. So
+  "Chocolate" still offers `Create "Chocolate"` under "Chocolate cake", and "cheese" offers none
+  when "Cheese" exists. `Create "<query>"` replaces the overloaded
   `Add "<query>"` wording for the new flow. The old dialog's copy and its own rule for offering to
   add a product are left as they are.
 - The camera action (`-CameraSlot`) renders `RecognizeProductButton`, a camera icon labelled

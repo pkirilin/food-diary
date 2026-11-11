@@ -42,6 +42,11 @@ export const LogFoodSearchResults: FC<Props> = ({
     [allProducts, query],
   );
 
+  const lowerCaseProductNames = useMemo(
+    () => new Set(allProducts.map(product => product.name.trim().toLowerCase())),
+    [allProducts],
+  );
+
   const trimmedQuery = query.trim();
   const isSearching = trimmedQuery.length >= productLib.QUERY_LENGTH_THRESHOLD;
 
@@ -53,25 +58,27 @@ export const LogFoodSearchResults: FC<Props> = ({
     );
   }
 
+  const createProductItem = (
+    <ListItem disablePadding>
+      <ListItemButton
+        onClick={() => {
+          holdSoftKeyboardForNextField();
+          onCreateProduct(trimmedQuery);
+        }}
+      >
+        <ListItemIcon>
+          <AddIcon />
+        </ListItemIcon>
+        <ListItemText primary={`Create "${trimmedQuery}"`} />
+      </ListItemButton>
+    </ListItem>
+  );
+
   if (isSearching && foundProducts.length === 0) {
-    return (
-      <List>
-        <ListItem disablePadding>
-          <ListItemButton
-            onClick={() => {
-              holdSoftKeyboardForNextField();
-              onCreateProduct(trimmedQuery);
-            }}
-          >
-            <ListItemIcon>
-              <AddIcon />
-            </ListItemIcon>
-            <ListItemText primary={`Create "${trimmedQuery}"`} />
-          </ListItemButton>
-        </ListItem>
-      </List>
-    );
+    return <List>{createProductItem}</List>;
   }
+
+  const isQueryAProductName = lowerCaseProductNames.has(trimmedQuery.toLowerCase());
 
   return (
     <List aria-label="Found products">
@@ -87,6 +94,12 @@ export const LogFoodSearchResults: FC<Props> = ({
           />
         </Fragment>
       ))}
+      {isSearching && !isQueryAProductName && (
+        <>
+          <Divider variant="fullWidth" component="li" />
+          {createProductItem}
+        </>
+      )}
     </List>
   );
 };
