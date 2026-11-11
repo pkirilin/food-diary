@@ -1,5 +1,14 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Box, Button, InputAdornment, Stack, TextField, Typography } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import {
+  Box,
+  Button,
+  IconButton,
+  InputAdornment,
+  Stack,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { type FC } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
@@ -50,14 +59,25 @@ export const FoodLogQuantityForm: FC<Props> = ({ product, foodLog, onDone, onEdi
         })(event);
       }}
     >
-      <div>
-        <Typography variant="h6" component="h2">
-          {product.name}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          {`${product.calories} kcal per 100 g`}
-        </Typography>
-      </div>
+      <Stack direction="row" spacing={2}>
+        <Box sx={{ width: '100%' }}>
+          <Typography variant="h6" component="h2">
+            {product.name}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            {`${product.calories} kcal per 100 g`}
+          </Typography>
+        </Box>
+        <IconButton
+          aria-label="edit product"
+          onClick={() => {
+            holdSoftKeyboardForNextField();
+            onEditProduct();
+          }}
+        >
+          <EditIcon />
+        </IconButton>
+      </Stack>
       <Controller
         name="quantity"
         control={control}
@@ -88,17 +108,7 @@ export const FoodLogQuantityForm: FC<Props> = ({ product, foodLog, onDone, onEdi
           />
         )}
       />
-      <Stack direction="row" spacing={2} useFlexGap>
-        <Box sx={{ flexGrow: 1 }}>
-          <Button
-            onClick={() => {
-              holdSoftKeyboardForNextField();
-              onEditProduct();
-            }}
-          >
-            Edit product
-          </Button>
-        </Box>
+      <Stack direction="row" sx={{ justifyContent: 'flex-end' }}>
         <Button type="submit" variant="contained" disabled={quantityInvalid}>
           {foodLog === null ? 'Add' : 'Save'}
         </Button>

@@ -835,9 +835,9 @@ test('Edit product opens the product form, prefilled with the product', async ()
   await clickAddMeal(user, 'Breakfast');
   await openFoundProduct(user, 'chick', 'Chicken');
 
-  await user.click(await screen.findByRole('button', { name: 'Edit product' }));
+  await user.click(await screen.findByRole('button', { name: /edit product/i }));
 
-  expect(await screen.findByRole('heading', { name: 'Edit product' })).toBeVisible();
+  expect(await screen.findByRole('heading', { name: /edit product/i })).toBeVisible();
   expect(screen.getByRole('button', { name: 'Back' })).toBeVisible();
   expect(await screen.findByRole('textbox', { name: 'Name' })).toHaveValue('Chicken');
   expect(screen.getByRole('textbox', { name: 'Calories, kcal' })).toHaveValue('239');
@@ -850,7 +850,7 @@ test('saving a product with its own name unchanged returns to the product', asyn
   await openDayPageWithMultiItemFoodLoggingOn(user);
   await clickAddMeal(user, 'Breakfast');
   await openFoundProduct(user, 'chick', 'Chicken');
-  await user.click(await screen.findByRole('button', { name: 'Edit product' }));
+  await user.click(await screen.findByRole('button', { name: /edit product/i }));
   await replaceFieldValue(
     user,
     await screen.findByRole('textbox', { name: 'Calories, kcal' }),
@@ -882,7 +882,7 @@ const editChickenDefaultQuantity = async (user: UserEvent, defaultQuantity: stri
   await openDayPageWithMultiItemFoodLoggingOn(user);
   await clickAddMeal(user, 'Breakfast');
   await openFoundProduct(user, 'chick', 'Chicken');
-  await user.click(await screen.findByRole('button', { name: 'Edit product' }));
+  await user.click(await screen.findByRole('button', { name: /edit product/i }));
   await replaceFieldValue(
     user,
     await screen.findByRole('textbox', { name: 'Default quantity, g' }),
@@ -928,7 +928,7 @@ test('going forward to the product form while the saved product loads opens it w
 
   await moveThroughBrowserHistory(() => window.history.forward());
 
-  expect(await screen.findByRole('heading', { name: 'Edit product' })).toBeVisible();
+  expect(await screen.findByRole('heading', { name: /edit product/i })).toBeVisible();
   expect(screen.queryByRole('textbox', { name: 'Default quantity, g' })).not.toBeInTheDocument();
   releaseProductFetch();
   expect(await screen.findByRole('textbox', { name: 'Default quantity, g' })).toHaveValue('123');
@@ -939,7 +939,7 @@ test('saving an edited product in the Meal Draft updates its tray row, with the 
   const tray = await addChickenAndOatsToBreakfast(user);
   await user.click(within(tray).getByRole('button', { name: 'Picked foods' }));
   await user.click(within(await findPickedFoods(tray)).getByRole('button', { name: /^Chicken/ }));
-  await user.click(await screen.findByRole('button', { name: 'Edit product' }));
+  await user.click(await screen.findByRole('button', { name: /edit product/i }));
   await replaceFieldValue(user, await screen.findByRole('textbox', { name: 'Name' }), 'Turkey');
   await replaceFieldValue(user, screen.getByRole('textbox', { name: 'Calories, kcal' }), '160');
   await replaceFieldValue(
@@ -980,7 +980,7 @@ test('saving a product under the name of another product shows the clash on the 
   const tray = await addChickenAndOatsToBreakfast(user);
   await user.click(within(tray).getByRole('button', { name: 'Picked foods' }));
   await user.click(within(await findPickedFoods(tray)).getByRole('button', { name: /^Chicken/ }));
-  await user.click(await screen.findByRole('button', { name: 'Edit product' }));
+  await user.click(await screen.findByRole('button', { name: /edit product/i }));
   const name = await screen.findByRole('textbox', { name: 'Name' });
   await replaceFieldValue(user, name, 'Oats');
   const defaultQuantity = screen.getByRole('textbox', { name: 'Default quantity, g' });
@@ -991,7 +991,7 @@ test('saving a product under the name of another product shows the clash on the 
   expect(await screen.findByText("Product with the name 'Oats' already exists")).toBeVisible();
   expect(name).toHaveValue('Oats');
   expect(defaultQuantity).toHaveValue('200');
-  expect(screen.getByRole('heading', { name: 'Edit product' })).toBeVisible();
+  expect(screen.getByRole('heading', { name: /edit product/i })).toBeVisible();
 
   await user.click(screen.getByRole('button', { name: 'Back' }));
   expect(await screen.findByRole('heading', { name: 'Chicken' })).toBeVisible();
@@ -1011,7 +1011,7 @@ test('a failed product save shows an error and keeps the input', async () => {
   await openDayPageWithMultiItemFoodLoggingOn(user);
   await clickAddMeal(user, 'Breakfast');
   await openFoundProduct(user, 'chick', 'Chicken');
-  await user.click(await screen.findByRole('button', { name: 'Edit product' }));
+  await user.click(await screen.findByRole('button', { name: /edit product/i }));
   await replaceFieldValue(user, await screen.findByRole('textbox', { name: 'Name' }), 'Turkey');
   server.use(
     http.put(`${API_URL}/api/v1/products/:id`, () => HttpResponse.json({}, { status: 500 }), {
@@ -1025,7 +1025,7 @@ test('a failed product save shows an error and keeps the input', async () => {
     'Something went wrong. Please try again later.',
   );
   expect(screen.getByRole('textbox', { name: 'Name' })).toHaveValue('Turkey');
-  expect(screen.getByRole('heading', { name: 'Edit product' })).toBeVisible();
+  expect(screen.getByRole('heading', { name: /edit product/i })).toBeVisible();
 });
 
 // Vitest's jsdom environment fails to send a jsdom FormData holding a Blob (it reads jsdom
@@ -1420,7 +1420,7 @@ test.each<{
     tap: 'Edit product',
     eventType: 'click',
     arrange: openChickenQuantity,
-    tapTarget: () => screen.findByRole('button', { name: 'Edit product' }),
+    tapTarget: () => screen.findByRole('button', { name: /edit product/i }),
     findNextField: findNameField,
   },
   {
@@ -1449,7 +1449,7 @@ test.each<{
     eventType: 'submit',
     arrange: async user => {
       await openChickenQuantity(user);
-      await user.click(screen.getByRole('button', { name: 'Edit product' }));
+      await user.click(screen.getByRole('button', { name: /edit product/i }));
       await findNameField();
     },
     tapTarget: () => screen.findByRole('button', { name: 'Save' }),
@@ -1501,7 +1501,7 @@ test('a failed Create drops the focus from the input held for the next field', a
 test('a failed Save of an edited product drops the focus from the input held for the next field', async () => {
   const user = userEvent.setup();
   await openChickenQuantity(user);
-  await user.click(screen.getByRole('button', { name: 'Edit product' }));
+  await user.click(screen.getByRole('button', { name: /edit product/i }));
   await findNameField();
   server.use(
     http.put(`${API_URL}/api/v1/products/:id`, () => HttpResponse.json({}, { status: 500 }), {
