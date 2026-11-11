@@ -99,18 +99,6 @@ export const FoodLogQuantityForm: FC<Props> = ({ product, foodLog, onDone, onEdi
             Edit product
           </Button>
         </Box>
-        {foodLog !== null && (
-          <Button
-            color="error"
-            onClick={() => {
-              holdSoftKeyboardForNextField();
-              dispatch(foodLogModel.actions.foodLogRemoved(product.id));
-              onDone();
-            }}
-          >
-            Remove
-          </Button>
-        )}
         <Button type="submit" variant="contained" disabled={quantityInvalid}>
           {foodLog === null ? 'Add' : 'Save'}
         </Button>

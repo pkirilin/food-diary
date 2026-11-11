@@ -735,7 +735,6 @@ test('a product opened from a result is added with the quantity typed, and logge
   expect(quantityField).toHaveValue('150');
   expect([quantityField.selectionStart, quantityField.selectionEnd]).toEqual([0, 3]);
   expect(screen.getByText('358 kcal')).toBeVisible();
-  expect(screen.queryByRole('button', { name: 'Remove' })).not.toBeInTheDocument();
 
   await user.keyboard('200');
 
@@ -768,7 +767,6 @@ test('a quantity changed from a tray row is saved over the picked one, in the sa
   expect(await screen.findByRole('heading', { name: 'Oats' })).toBeVisible();
   const quantityField = await findQuantityField();
   expect(quantityField).toHaveValue('100');
-  expect(screen.getByRole('button', { name: 'Remove' })).toBeVisible();
 
   await user.keyboard('50');
   await user.click(screen.getByRole('button', { name: 'Save' }));
@@ -824,22 +822,6 @@ test('the back arrow returns from a product to an empty search with the Meal Dra
   const tray = await findTray('Breakfast');
   expect(within(tray).getByText('1')).toBeVisible();
   expect(within(tray).getByText('379 kcal')).toBeVisible();
-});
-
-test('Remove on a picked product takes it out of the Meal Draft', async () => {
-  const user = userEvent.setup();
-  const tray = await addChickenAndOatsToBreakfast(user);
-  await user.click(within(tray).getByRole('button', { name: 'Picked foods' }));
-  await user.click(within(await findPickedFoods(tray)).getByRole('button', { name: /^Oats/ }));
-
-  await user.click(await screen.findByRole('button', { name: 'Remove' }));
-
-  const trayAfterRemove = await findTray('Breakfast');
-  expect(within(trayAfterRemove).getByText('1')).toBeVisible();
-  expect(within(trayAfterRemove).getByText('358 kcal')).toBeVisible();
-  await user.click(within(trayAfterRemove).getByRole('button', { name: 'Picked foods' }));
-  const rows = within(await findPickedFoods(trayAfterRemove)).getAllByRole('listitem');
-  expect(rows.map(row => row.textContent)).toEqual([expect.stringMatching(/^Chicken/)]);
 });
 
 const replaceFieldValue = async (user: UserEvent, field: HTMLElement, value: string) => {
@@ -1440,13 +1422,6 @@ test.each<{
     arrange: openChickenQuantity,
     tapTarget: () => screen.findByRole('button', { name: 'Edit product' }),
     findNextField: findNameField,
-  },
-  {
-    tap: 'Remove',
-    eventType: 'click',
-    arrange: openOatsQuantityFromTray,
-    tapTarget: () => screen.findByRole('button', { name: 'Remove' }),
-    findNextField: findSearchField,
   },
   {
     tap: 'Add',

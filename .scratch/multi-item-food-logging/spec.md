@@ -32,7 +32,7 @@ Draft and opens a search screen, with the search field in the AppBar. ⊕ next t
 to the Meal Draft with its default quantity, then clears the search and keeps it focused, ready
 for the next product. A tray stuck under the AppBar, headed with the Meal's name, shows the Meal
 Draft and one **Log food** button that saves it in one request. Tapping a product's name,
-in the results or on the tray, opens a detail screen to set its quantity, remove it, or edit the
+in the results or on the tray, opens a detail screen to set its quantity or edit the
 Product itself. A product that doesn't exist yet can be created from the search
 (`Create "<query>"`) or from a photo, and comes back already in the Meal Draft. Every screen is a
 route, so the back button and the AppBar behave like a native app. The old dialog stays: a switch
@@ -82,7 +82,7 @@ Moves between screens:
 | search | `Create "<query>"` | drop `q` with `replace`, then push `/log/food/products/new?name=<trimmed query>` |
 | search | photos picked with the camera action | drop `q` with `replace`, then push `/log/food/recognition` |
 | search | **Log food** succeeds | go back to the day page, restoring its scroll position, falling back to `/?date=<the Meal Draft's date>` with `replace` |
-| detail | **Add**, **Save** or **Remove** | go back, falling back to `/log/food` |
+| detail | **Add** or **Save** | go back, falling back to `/log/food` |
 | detail | **Edit product** | push the edit route |
 | edit product | **Save** succeeds | go back, falling back to the detail route with `replace` |
 | create product, recognition | **Create** succeeds | go back, falling back to `/log/food` with `replace` |
@@ -91,7 +91,7 @@ Moves between screens:
 "Go back" is `useGoBack(fallback)` from `shared/hooks`: `router.history.back()` when
 `router.history.canGoBack()`, otherwise a navigation to the fallback. The search drops `q` from
 its own history entry before pushing another screen, so every return to it, whether by **Add**,
-**Save**, **Remove**, **Create** or the back arrow, shows an empty search, ready for the next
+**Save**, **Create** or the back arrow, shows an empty search, ready for the next
 product.
 
 ### AppBar
@@ -285,52 +285,51 @@ doesn't depend on `entities/foodLog` or `features/logFood`.
 21. As the owner, I want quantities outside the allowed range (10–1000 g) to be refused on the detail screen, so that the Meal Draft never holds an invalid quantity.
 22. As the owner, I want to add a product to the Meal Draft from its detail screen with the quantity I typed, so that I can log a non-default portion.
 23. As the owner, I want to change the quantity of a product already in the Meal Draft from its detail screen, so that I can fix a portion.
-24. As the owner, I want a **Remove** action on the detail screen of a product in the Meal Draft, so that I can take it out from there too.
-25. As the owner, I want an **Edit product** action on the detail screen, so that I can fix a product's name, nutrition values, default quantity or category without leaving the flow.
-26. As the owner, I want **Edit product** to save the Product straight away, so that the fix applies everywhere, not only to this meal.
-27. As the owner, I want a product in the Meal Draft to take the edited name, nutrition values and new default quantity after I save the Product, so that the tray matches what I just saved.
-28. As the owner, I want the back arrow to return me to the search with my Meal Draft intact, so that looking at a product never loses my picks.
+24. As the owner, I want an **Edit product** action on the detail screen, so that I can fix a product's name, nutrition values, default quantity or category without leaving the flow.
+25. As the owner, I want **Edit product** to save the Product straight away, so that the fix applies everywhere, not only to this meal.
+26. As the owner, I want a product in the Meal Draft to take the edited name, nutrition values and new default quantity after I save the Product, so that the tray matches what I just saved.
+27. As the owner, I want the back arrow to return me to the search with my Meal Draft intact, so that looking at a product never loses my picks.
 
 ### Tray
 
-29. As the owner, I want the tray to be headed with the Meal's name, so that I know where the Food Logs will go.
-30. As the owner, I want the tray to show how many products I've picked and their total calories, so that I see the meal at a glance.
-31. As the owner, I want the collapsed tray to take a single row, so that it leaves room for search results on a phone.
-32. As the owner, I want to expand the tray to see every picked product with its quantity and calories, so that I can review the meal before logging it.
-33. As the owner, I want tapping a product on the tray to open its detail screen, so that I can change its quantity there.
-34. As the owner, I want to delete a product from the tray, so that I can drop something I won't eat.
-35. As the owner, I want the tray to keep products in the order I picked them, so that the logged meal reads the way I built it.
-36. As the owner, I want **Log food** to be disabled while the Meal Draft is empty, so that I can't log nothing.
+28. As the owner, I want the tray to be headed with the Meal's name, so that I know where the Food Logs will go.
+29. As the owner, I want the tray to show how many products I've picked and their total calories, so that I see the meal at a glance.
+30. As the owner, I want the collapsed tray to take a single row, so that it leaves room for search results on a phone.
+31. As the owner, I want to expand the tray to see every picked product with its quantity and calories, so that I can review the meal before logging it.
+32. As the owner, I want tapping a product on the tray to open its detail screen, so that I can change its quantity there.
+33. As the owner, I want to delete a product from the tray, so that I can drop something I won't eat.
+34. As the owner, I want the tray to keep products in the order I picked them, so that the logged meal reads the way I built it.
+35. As the owner, I want **Log food** to be disabled while the Meal Draft is empty, so that I can't log nothing.
 
 ### Creating a product
 
-37. As the owner, I want a `Create "<query>"` row when no product has exactly that name, so that I can add a product that's missing even when longer names contain my query.
-38. As the owner, I want it to open the product form with the name prefilled from my query, so that I don't type it twice.
-39. As the owner, I want the form's button to say **Create**, so that it's clear this makes a Product, not a Food Log.
-40. As the owner, I want a created product to land in the Meal Draft with its default quantity, and to return me to the search, so that I can carry on picking.
-41. As the owner, I want a name clash to show an error on the form and keep my input, so that I can rename and retry.
+36. As the owner, I want a `Create "<query>"` row when no product has exactly that name, so that I can add a product that's missing even when longer names contain my query.
+37. As the owner, I want it to open the product form with the name prefilled from my query, so that I don't type it twice.
+38. As the owner, I want the form's button to say **Create**, so that it's clear this makes a Product, not a Food Log.
+39. As the owner, I want a created product to land in the Meal Draft with its default quantity, and to return me to the search, so that I can carry on picking.
+40. As the owner, I want a name clash to show an error on the form and keep my input, so that I can rename and retry.
 
 ### Recognising a product from a photo
 
-42. As the owner, I want a camera action in the search screen's AppBar, so that I can log a product I photographed.
-43. As the owner, I want to pick one or several photos, so that I can show the product from more than one angle.
-44. As the owner, I want a recognition screen that shows skeletons while recognition runs, so that I know it's working.
-45. As the owner, I want a **Retry** when recognition fails, so that a flaky request doesn't send me back to the start.
-46. As the owner, I want the recognition screen to show the product form prefilled from the first suggestion, with the recognised quantity as the default quantity, so that I only review and correct it.
-47. As the owner, I want **Create** there to create the Product, add it to the Meal Draft and return me to the search, so that photo logging fits the same loop.
-48. As the demo visitor, I want the camera action to work in demo mode and return a mock product, so that I can try the whole flow without a backend.
+41. As the owner, I want a camera action in the search screen's AppBar, so that I can log a product I photographed.
+42. As the owner, I want to pick one or several photos, so that I can show the product from more than one angle.
+43. As the owner, I want a recognition screen that shows skeletons while recognition runs, so that I know it's working.
+44. As the owner, I want a **Retry** when recognition fails, so that a flaky request doesn't send me back to the start.
+45. As the owner, I want the recognition screen to show the product form prefilled from the first suggestion, with the recognised quantity as the default quantity, so that I only review and correct it.
+46. As the owner, I want **Create** there to create the Product, add it to the Meal Draft and return me to the search, so that photo logging fits the same loop.
+47. As the demo visitor, I want the camera action to work in demo mode and return a mock product, so that I can try the whole flow without a backend.
 
 ### Logging and leaving
 
-49. As the owner, I want **Log food** to save the whole Meal Draft in one request, so that either the meal is logged or nothing is.
-50. As the owner, I want a failed save to keep the Meal Draft as it was and show an error, so that I can retry without picking again.
-51. As the owner, I want a successful save to return me to the day page with the new Food Logs listed under the Meal, so that I see the result.
-52. As the owner, I want the new Food Logs to appear after the Meal's existing ones, in the order I picked them, so that earlier entries keep their place.
-53. As the owner, I want a `Discard N food logs?` prompt (`Discard 1 food log?` for one) when I leave the flow with a non-empty Meal Draft, so that I don't lose picks by accident.
-54. As the owner, I want to leave without a prompt when the Meal Draft is empty, so that backing out costs nothing.
-55. As the owner, I want the Meal Draft to be empty the next time I open the flow, so that a previous meal never leaks into the next.
-56. As the owner, I want a reload inside the flow to take me back to the day page, so that I never see a flow screen with no Meal to log to.
-57. As the owner, I want the flow to work equally on a phone and a desktop browser, so that I can log wherever I am.
+48. As the owner, I want **Log food** to save the whole Meal Draft in one request, so that either the meal is logged or nothing is.
+49. As the owner, I want a failed save to keep the Meal Draft as it was and show an error, so that I can retry without picking again.
+50. As the owner, I want a successful save to return me to the day page with the new Food Logs listed under the Meal, so that I see the result.
+51. As the owner, I want the new Food Logs to appear after the Meal's existing ones, in the order I picked them, so that earlier entries keep their place.
+52. As the owner, I want a `Discard N food logs?` prompt (`Discard 1 food log?` for one) when I leave the flow with a non-empty Meal Draft, so that I don't lose picks by accident.
+53. As the owner, I want to leave without a prompt when the Meal Draft is empty, so that backing out costs nothing.
+54. As the owner, I want the Meal Draft to be empty the next time I open the flow, so that a previous meal never leaks into the next.
+55. As the owner, I want a reload inside the flow to take me back to the day page, so that I never see a flow screen with no Meal to log to.
+56. As the owner, I want the flow to work equally on a phone and a desktop browser, so that I can log wherever I am.
 
 ## Implementation Decisions
 
@@ -358,9 +357,9 @@ doesn't depend on `entities/foodLog` or `features/logFood`.
 - A field that mounts after a navigation is too late for iOS Safari to open the keyboard for it.
   So the handler of the tap that leads to it first focuses a hidden placeholder input
   (`holdSoftKeyboardForNextField` in `shared/lib`), and the field takes the focus from it. This
-  covers **Add <meal>**, a result row, a tray row, the **Create** row, **Edit product**, **Add**,
-  **Save** and **Remove** on the product, and **Create** and **Save** on the product forms. An
-  invalid product form or a failed request releases the placeholder, which closes the keyboard.
+  covers **Add <meal>**, a result row, a tray row, the **Create** row, **Edit product**, **Add**
+  and **Save** on the product, and **Create** and **Save** on the product forms. An invalid
+  product form or a failed request releases the placeholder, which closes the keyboard.
   The back arrow holds nothing, so going back opens no keyboard. Neither does the recognition
   form: it appears after the server's answer, and the gesture before it is picking a file.
 - Results are a list labelled **Found products**. Each row shows the name and
@@ -396,10 +395,10 @@ doesn't depend on `entities/foodLog` or `features/logFood`.
   Meal Draft's quantity, or the default quantity for a product not in it.
 - Under the field, a valid quantity shows its calories ("X kcal"). Any invalid quantity shows one
   fixed message, `Enter a whole number from 10 to 1000`, and disables the confirm button.
-- The actions row holds **Edit product** on the left, then **Remove** (only for a product in the
-  Meal Draft), then the confirm button: **Add** for a product not in the Meal Draft, **Save** for
-  one in it. **Add** dispatches `foodLogAdded` with the typed quantity, **Save** dispatches
-  `foodLogQuantityChanged`, and **Remove** dispatches `foodLogRemoved`. Each then goes back.
+- The actions row holds **Edit product** on the left, then the confirm button: **Add** for a
+  product not in the Meal Draft, **Save** for one in it. **Add**
+  dispatches `foodLogAdded` with the typed quantity, **Save** dispatches `foodLogQuantityChanged`.
+  Each then goes back.
 
 ### Product create, edit and recognition
 
@@ -516,7 +515,7 @@ its user-visible behaviours. A gap is a kept behaviour the new flow doesn't impl
 | Quantity starts at the default quantity, selected on focus, numeric keyboard, `g` suffix, 10–1000 | Kept | Detail screen |
 | "Nutrition values are missing" under a product with missing nutrition values | Kept, gap | Not yet implemented |
 | Edit product from the quantity step, with a spinner while it loads | Kept | Detail screen; Product create, edit and recognition |
-| Discard the picked product and choose another | Kept | Detail screen: back arrow, or **Remove** for a product in the Meal Draft |
+| Discard the picked product and choose another | Kept | Detail screen: back arrow |
 | Photo recognition: loading state, error with **Retry**, "No food found", photo previews, a prefilled product form with the first category | Kept | Product create, edit and recognition |
 | **Retry** after a successful recognition | Dropped | Picking new photos covers a bad suggestion |
 | Saving and closing are blocked while nutrition values are being suggested | Kept, gap | Not yet implemented: **Create**, **Save** and the back arrow stay active |
