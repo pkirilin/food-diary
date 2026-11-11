@@ -71,7 +71,7 @@ Mandatory for any change that affects rendered UI or behavior (components, pages
 - Device preferences live in localStorage (`src/shared/lib/devicePreferences.ts`), and a fresh context starts with them off. Set the ones the changed flow needs, then reload.
 - File inputs: `upload_file` accepts repo paths only. Build a `File`, assign it to `input.files` through a `DataTransfer` in `evaluate_script`, and dispatch `change`. To hold or fail one request, wrap `window.fetch` in `navigate_page`'s `initScript`.
 - Exercise the changed flow. Use `take_snapshot` to find elements to interact with; it is an accessibility-tree dump and cannot show how the page renders.
-- After a navigation, wait for a label the next step needs with `wait_for`, then snapshot. Use `evaluate_script` for reading page state.
+- After a navigation, `wait_for` a label the next step needs. Its result is the page snapshot, so act on it instead of calling `take_snapshot`. Use `evaluate_script` for reading page state.
 - Take a screenshot of every UI state the change affects (`take_screenshot` without `filePath`) and inspect it for broken layout, overflow, overlap and styling. Use `get_css_styles` to investigate anything that looks wrong.
 - Check rendered UI at both a phone viewport (`390x844x3,mobile,touch`) and a desktop viewport (`1280x800x1`), set with `emulate`. A change that clearly affects only one layout may check just that one; say so in the final report. Emulation is not iOS Safari: on-screen keyboard and gesture behavior needs the iOS Simulator.
 - Check `list_console_messages`. `ERR_CONNECTION_REFUSED` errors for `https://localhost:8080/api/v1/*` are the MSW-mode baseline; any other console error is a defect.
