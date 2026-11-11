@@ -501,6 +501,27 @@ doesn't depend on `entities/foodLog` or `features/logFood`.
 - A reload or closing the tab drops the Meal Draft without a prompt. After a reload the layout's
   guard lands on the day page.
 
+### Old dialog behaviours
+
+The add path of `NoteInputDialog` (`features/manageNote/`) and what the new flow does with each of
+its user-visible behaviours. A gap is a kept behaviour the new flow doesn't implement yet.
+
+| Old dialog behaviour | Status | Where, or why dropped |
+|---|---|---|
+| Search field focused on open, with a clear button | Kept | Search screen |
+| Filtering waits 300 ms after the last keystroke | Dropped | Results filter the cached product list locally, so filtering on every keystroke is cheap |
+| Results from 3 characters, a spinner while products load | Kept | Search screen |
+| Offer to add a product whenever none is named exactly like the query | Kept | Search screen: the `Create "<query>"` row, ignoring case |
+| A new product gets the query as its name and the first category | Kept | Product create, edit and recognition |
+| Quantity starts at the default quantity, selected on focus, numeric keyboard, `g` suffix, 10–1000 | Kept | Detail screen |
+| "Nutrition values are missing" under a product with missing nutrition values | Kept, gap | Not yet implemented |
+| Edit product from the quantity step, with a spinner while it loads | Kept | Detail screen; Product create, edit and recognition |
+| Discard the picked product and choose another | Kept | Detail screen: back arrow, or **Remove** for a product in the Meal Draft |
+| Photo recognition: loading state, error with **Retry**, "No food found", photo previews, a prefilled product form with the first category | Kept | Product create, edit and recognition |
+| **Retry** after a successful recognition | Dropped | Picking new photos covers a bad suggestion |
+| Saving and closing are blocked while nutrition values are being suggested | Kept, gap | Not yet implemented: **Create**, **Save** and the back arrow stay active |
+| Saving shows a loading state, and the day page refreshes after a Food Log or product edit is saved | Kept | Logging the Meal Draft; Batch endpoint; Product create, edit and recognition |
+
 ### Docs
 
 - The demo mode line in `CLAUDE.md` and the `VITE_APP_DEMO_MODE_ENABLED` row in
