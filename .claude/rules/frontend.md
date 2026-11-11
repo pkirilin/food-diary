@@ -81,6 +81,7 @@ Mandatory for any change that affects rendered UI or behavior (components, pages
 
 ### Testing
 
+- Test a component's own rule in a colocated `<Component>.test.tsx` that renders it with `render` from `@tests/render`. Use `tests/*.test.tsx` with `renderApp` only for a flow that crosses routes. Both run against the mock API in `tests/mockApi/`, which the browser's MSW mode also uses; seed data is in `<entity>/<entity>.data.json`.
 - Debug a failing test with `make test-frontend-quiet FILE=tests/app.test.tsx NAME='test name'` from the repo root (both variables are optional): it leaves the DOM dump out of the failure output. Confirm the failure message matches the symptom before repeating the run.
 - **A green suite is not a clean suite.** Vitest's default reporter prints a test's `console.*` output and React warnings **only when that test fails** — a passing test's warnings are invisible, in both watch and `--run` mode. So warnings visible while a test is red silently vanish the moment it goes green, even though the defect causing them is still there. Verify with `yarn test --run --reporter=verbose` and treat any `stderr |` block as a defect to fix before finishing.
 - Always give vitest mocks and assertion matchers explicit type arguments, so that a typo in a property name fails the build instead of silently failing at runtime
