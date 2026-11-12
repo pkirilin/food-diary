@@ -12,12 +12,7 @@ import {
 import { useMemo, type FC, type MouseEventHandler } from 'react';
 import { useAppDispatch } from '@/app/store';
 import { categoryLib } from '@/entities/category';
-import { type ProductSelectOption, productApi, productModel } from '@/entities/product';
-import {
-  QUERY_LENGTH_THRESHOLD,
-  searchProductsByName,
-  shouldSuggestAddingNewProduct,
-} from '../lib/searchProducts';
+import { type ProductSelectOption, productApi, productLib, productModel } from '@/entities/product';
 import { type NoteFormValuesProduct, actions } from '../model';
 
 interface Props {
@@ -59,12 +54,12 @@ export const ProductSearchResults: FC<Props> = ({ query }) => {
   const { categories } = categoryLib.useCategoriesForSelect();
 
   const foundProducts = useMemo<ProductSelectOption[]>(
-    () => searchProductsByName(allProducts, query),
+    () => productLib.searchProductsByName(allProducts, query),
     [allProducts, query],
   );
 
   const suggestAddingNewProduct = useMemo(
-    () => shouldSuggestAddingNewProduct(foundProducts, query),
+    () => productLib.shouldSuggestAddingNewProduct(foundProducts, query),
     [foundProducts, query],
   );
 
@@ -83,7 +78,7 @@ export const ProductSearchResults: FC<Props> = ({ query }) => {
     dispatch(actions.productSelected(toNoteProductFormValues(product)));
   };
 
-  if (query.length >= QUERY_LENGTH_THRESHOLD && isFetching) {
+  if (query.length >= productLib.QUERY_LENGTH_THRESHOLD && isFetching) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
         <CircularProgress />

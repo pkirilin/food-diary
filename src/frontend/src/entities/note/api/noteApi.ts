@@ -6,6 +6,7 @@ import {
   type GetNotesResponse,
   type GetNotesHistoryResponse,
   type NoteRequestBody,
+  type CreateNotesRequest,
 } from '@/entities/note';
 import { api } from '@/shared/api';
 import { createUrl } from '@/shared/lib';
@@ -32,6 +33,15 @@ export const noteApi = api.injectEndpoints({
       query: request => ({
         method: 'POST',
         url: '/api/v1/notes',
+        body: request,
+      }),
+      invalidatesTags: ['note'],
+    }),
+
+    createNotes: builder.mutation<void, CreateNotesRequest>({
+      query: request => ({
+        method: 'POST',
+        url: '/api/v1/notes/batch',
         body: request,
       }),
       invalidatesTags: ['note'],

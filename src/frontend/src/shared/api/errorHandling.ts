@@ -30,6 +30,34 @@ export interface ClientError {
   message: string;
 }
 
+interface ValidationProblemDetailsError {
+  data: { errors: Record<string, unknown> };
+}
+
+const isValidationProblemDetailsError = (error: unknown): error is ValidationProblemDetailsError =>
+  isProblemDetailsError(error) &&
+  'errors' in error.data &&
+  typeof error.data.errors === 'object' &&
+  error.data.errors !== null;
+
+// ASP.NET Core model state keys keep the C# casing (`Name`), unlike the camelCase JSON properties
+export const parseFieldValidationError = (error: unknown, field: string): string | null => {
+  if (!isValidationProblemDetailsError(error)) {
+    return null;
+  }
+
+  const fieldErrors = Object.entries(error.data.errors).find(
+    ([key]) => key.toLowerCase() === field.toLowerCase(),
+  )?.[1];
+
+  if (!Array.isArray(fieldErrors)) {
+    return null;
+  }
+
+  const [firstError] = fieldErrors as unknown[];
+  return typeof firstError === 'string' ? firstError : null;
+};
+
 export const parseClientError = (error: unknown): ClientError => {
   if (isSerializedError(error)) {
     return {

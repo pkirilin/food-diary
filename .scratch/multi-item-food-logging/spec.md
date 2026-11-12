@@ -1,6 +1,6 @@
 # Spec: Multi-item food logging
 
-Status: ready-for-agent
+Status: resolved
 
 Vocabulary: [GLOSSARY.md](../../GLOSSARY.md). **Food Log**, **Product**, **Meal**, **Meal
 Draft**, **Log** and **Create** are used with exactly those meanings. "Note" appears only
@@ -30,9 +30,9 @@ of those taps are overhead.
 An opt-in, per-device flow for logging several foods in one go. **Add breakfast** starts a Meal
 Draft and opens a search screen, with the search field in the AppBar. ⊕ next to a product adds it
 to the Meal Draft with its default quantity, then clears the search and keeps it focused, ready
-for the next product. A tray along the bottom of the screen, headed with the Meal's name, shows
-the Meal Draft and one **Log food** button that saves it in one request. Tapping a product's name,
-in the results or on the tray, opens a detail screen to set its quantity, remove it, or edit the
+for the next product. A tray stuck under the AppBar, headed with the Meal's name, shows the Meal
+Draft and one **Log food** button that saves it in one request. Tapping a product's name,
+in the results or on the tray, opens a detail screen to set its quantity or edit the
 Product itself. A product that doesn't exist yet can be created from the search
 (`Create "<query>"`) or from a photo, and comes back already in the Meal Draft. Every screen is a
 route, so the back button and the AppBar behave like a native app. The old dialog stays: a switch
@@ -61,11 +61,12 @@ carries only what selects a screen. Route files live in `src/frontend/src/app/ro
   `Outlet`. The static `products/new` wins over the dynamic `products/$productId`.
 - `productId` is parsed to a positive integer by the shared `-productIdParams.ts`. `q` and `name`
   are schema-validated strings that fall back to absent. `-searchQuery.ts` drops `q` from the URL
-  when the query is empty.
+  when the query is empty. `-leaveSearch.ts` drops `q` from the search's history entry, then
+  pushes the next screen.
 - The `/log/food` layout's `beforeLoad` redirects to the day page when the store holds no Meal
   Draft: after a reload, after **Log food** or **Discard**, and on a browser forward into the flow
   after either. The recognition route's `beforeLoad` redirects to the search (with `replace`) when
-  `recognitionPhotos` is empty.
+  `recognitionPhotos` is empty, and its `onLeave` dispatches `endRecognition`.
 - Following ADR-0005, route files and AppBar slots are thin adapters. Pages and features take
   plain values and callbacks (`onQueryChange(q)`, `onOpenProduct(productId)`, `onCreateProduct(name)`,
   `onLogged(date)`, `onDone`, `onEditProduct`, `onSaved`, `onCreated`). The AppBar slots are
@@ -77,20 +78,21 @@ Moves between screens:
 |---|---|---|
 | day page | **Add <meal>** | push `/log/food` |
 | search | typing | `q` updated with `replace`, so typing adds no history entries |
-| search | a result's name, or a tray row | push the detail route |
-| search | `Create "<query>"` | push `/log/food/products/new?name=<trimmed query>` |
-| search | photos picked with the camera action | push `/log/food/recognition` |
-| search | **Log food** succeeds | navigate to `/?date=<the Meal Draft's date>` with `replace` |
-| detail | **Add**, **Save** or **Remove** | go back, falling back to `/log/food` |
+| search | a result's name, or a tray row | drop `q` with `replace`, then push the detail route |
+| search | `Create "<query>"` | drop `q` with `replace`, then push `/log/food/products/new?name=<trimmed query>` |
+| search | photos picked with the camera action | drop `q` with `replace`, then push `/log/food/recognition` |
+| search | **Log food** succeeds | go back to the day page, restoring its scroll position, falling back to `/?date=<the Meal Draft's date>` with `replace` |
+| detail | **Add** or **Save** | go back, falling back to `/log/food` |
 | detail | **Edit product** | push the edit route |
 | edit product | **Save** succeeds | go back, falling back to the detail route with `replace` |
 | create product, recognition | **Create** succeeds | go back, falling back to `/log/food` with `replace` |
 | any `'back'` or `'search'` screen | AppBar back arrow | go back, falling back to `/` |
 
 "Go back" is `useGoBack(fallback)` from `shared/hooks`: `router.history.back()` when
-`router.history.canGoBack()`, otherwise a navigation to the fallback. Going back to the search
-restores the `q` it had, so after **Create** the search shows the query typed before
-`Create "<query>"`, with the new product selected in the results.
+`router.history.canGoBack()`, otherwise a navigation to the fallback. The search drops `q` from
+its own history entry before pushing another screen, so every return to it, whether by **Add**,
+**Save**, **Create** or the back arrow, shows an empty search, ready for the next
+product.
 
 ### AppBar
 
@@ -119,25 +121,31 @@ type AppBarConfig =
 
 ### Tray
 
-`MealDraftTray` in `features/logFood/ui` is the last element of `LogFoodSearchPage`, a flex column
-at least as tall as the viewport below the AppBar, with the results growing above the tray.
+`MealDraftTray` in `features/logFood/ui` is the first element of `LogFoodSearchPage`, above the
+results. At the bottom of the screen a phone's keyboard hides it, so it sits at the top.
 
-- It is a `Paper` section labelled by the Meal's name, `position: sticky` at the bottom, in page
-  flow. It stays at the bottom of the viewport while the results scroll, and sits below the last
-  result at the end of the list, so it never covers a result or a ⊕. It pads for the bottom safe
-  area inset.
-- It is at most `60dvh` tall. Its upper part (the error and the list) scrolls inside it, and the
+- It is a `Paper` section labelled by the Meal's name, `position: sticky` directly under the AppBar,
+  in page flow. It stays under the AppBar while the results scroll, and expanding it moves the
+  results down, so it never covers a result or a ⊕ at rest. The update banner, sticky at the same
+  height, covers it until closed.
+- It is at most `60dvh` tall. Its lower part (the error and the list) scrolls inside it, and the
   collapsed row always stays visible.
 - The collapsed row is 64 px: a count badge on a restaurant icon (it shows 0), the Meal's name in
-  bold, the total calories ("N kcal", or "Tap ⊕ to add a food" while empty), the expand toggle
-  labelled **Picked foods**, and **Log food**. There are no chips.
-- The toggle sets `aria-expanded` and is disabled while the Meal Draft is empty. Deleting the last
-  product collapses the tray.
-- Expanded, a list labelled **Picked foods** opens upward, above the row. It shows the Meal Draft in
-  the order picked. Each row shows the name and "N g · X kcal", opens the detail route when tapped,
-  and has a **Delete <name>** button. There is no quantity field on the tray.
+  bold, the total calories ("N kcal", or "Tap ⊕ to add a food" while empty), a chevron, and
+  **Log food**. There are no chips. The row stays visible while the Meal Draft is empty, so the
+  results don't jump on the first ⊕.
+- Everything in the row left of **Log food** is one button labelled **Picked foods**, reaching the
+  left edge of the screen on a phone and the full height of the row. It sets `aria-expanded` and is
+  disabled while the Meal Draft is empty. Deleting the last product collapses the tray.
+- Expanding moves the focus to that button, which closes a phone's keyboard, because `dvh` doesn't
+  shrink for the keyboard and the list needs the room. Collapsing leaves the focus alone.
+- Any change of `q` collapses the tray: typing makes room for the results, and so does the clearing
+  after ⊕.
+- Expanded, a list labelled **Picked foods** opens downward, below the row. It shows the Meal Draft
+  in the order picked. Each row shows the name and "N g · X kcal", opens the detail route when
+  tapped, and has a **Delete <name>** button. There is no quantity field on the tray.
 - **Log food** is disabled while the Meal Draft is empty and shows a spinner while saving. A failed
-  save shows an error alert inside the tray, above the list.
+  save shows an error alert inside the tray, between the row and the list.
 
 ### State
 
@@ -207,7 +215,7 @@ at least as tall as the viewport below the AppBar, with the results growing abov
 - `features/logFood/model/recognitionPhotosSlice.ts`, with slice name and store key
   `recognitionPhotos`, holds `imageLib.Image[]`: the photos picked for recognition. They aren't
   Food Log data, and only this feature uses them. `recognitionPhotosPicked(images)` replaces them.
-  `productRecognized()` empties them when recognition responds successfully, and so do
+  `recognitionEnded()` empties them whenever the recognition screen is left, and so do
   `mealDraftDiscarded` and `mealDraftLogged`. `recognitionPhotoUrlsListener` revokes the object URL
   of every photo that leaves the slice.
 - Request status lives in RTK Query, not in either slice.
@@ -227,11 +235,12 @@ location, and the old one is gone.
 | `entities/foodLog` | `model` | **New entity slice**, exported only as `foodLogModel`. `types.ts`, `foodLogSlice.ts` (the Meal Draft), the calorie and nutrition rules in `foodLog.ts` and `calculationHelpers.ts`, a test DSL in `dsl.ts`, and unit tests. Imports no other entity ([ADR-0007](../../docs/adr/0007-food-log-entity-imports-no-other-entity.md)). |
 | `entities/note` | `api` | **Changed.** `createNotes` mutation for `POST /api/v1/notes/batch` and its `CreateNotesRequest` contract. It invalidates the `note` tag, which refetches the cached notes queries of every date. |
 | `entities/note` | `lib` | **Changed.** `recognition.ts`, moved out of `features/manageNote` and used by both features: `toRecognizeFormData(images)` builds the recognition request, and `toRecognizedProductFormValues(suggestion, category)` maps a suggestion to product form values. |
+| `entities/product` | `api` | **Changed.** `editProduct` invalidates the `product` and `note` tags only on success. |
 | `entities/product` | `lib` | **Moved** `searchProducts` here from `features/manageNote/lib`, because both features use it. |
 | `entities/product` | `ui` | **Changed.** `ProductForm` takes optional `serverErrors` (`ProductFormServerErrors`, `{ name: string \| null }`) and shows the name error on the Name field. |
 | `features/logFood` | `ui` | **New feature slice.** `MultiItemLogFood` (the entry button), `LogFoodSearchField`, `LogFoodSearchResults` and `FoundProductListItem` (results with ⊕), `MealDraftTray` and `MealDraftFoodLogListItem`, `LogFoodProductDetail` and `FoodLogQuantityForm`, `CreateProductForm`, `EditProductForm` and their shared `ProductFormFooter`, `RecognizeProductButton`, `RecognizeProductForm`, and `DiscardMealDraftDialog`. |
-| `features/logFood` | `lib` | **New.** `mapping.ts` (between `foodLog` and `note`/`product` types), `useLogMealDraft`, `useCreateProduct`, `useEditProduct`, `useProductFormErrors` and `useRecognizeProduct`. |
-| `features/logFood` | `model` | **New**, exported as `logFoodModel`: the `recognitionPhotos` slice and `recognitionPhotoUrlsListener`. |
+| `features/logFood` | `lib` | **New.** `mapping.ts` (between `foodLog` and `note`/`product` types), `useLogMealDraft`, `useCreateProduct`, `useEditProduct`, `useProductFormErrors`, `useRecognizeProduct` and `useProductToEdit`. |
+| `features/logFood` | `model` | **New**, exported as `logFoodModel`: the `recognitionPhotos` slice, `recognitionPhotoUrlsListener` and the `endRecognition` thunk. |
 | `features/manageNote` | `ui`, `lib`, `model` | **Changed.** `UploadImagesButton` wraps the shared `ImagePicker` and does its own recognition. `useRecognizeNotes` and `ImageUploadStep` use `noteLib`'s recognition mapping. Imports follow the moves above. Behaviour unchanged. |
 | `widgets/MealsList` | `ui` | **Changed.** `MealsListItem` reads the preference and renders `AddNoteButton` (off) or `MultiItemLogFood` (on). `MealsList` passes an `onOpenLogFood(mealType)` callback through to it. |
 | `widgets/Navigation` | `model`, `ui` | **Changed.** The `'back'` and `'search'` AppBar variants, and a Settings link in the drawer. |
@@ -266,7 +275,7 @@ doesn't depend on `entities/foodLog` or `features/logFood`.
 14. As the owner, I want a product in the Meal Draft to look selected in the results, so that I can see what I've already picked.
 15. As the owner, I want ⊕ on a product already in the Meal Draft to take it out, so that a mis-tap is undone by tapping again.
 16. As the owner, I want tapping a product's name to open its detail screen, so that I can set a quantity before adding it.
-17. As the owner, I want my search query back when I return from a detail screen, so that I can carry on where I was.
+17. As the owner, I want the search empty when I return from a detail, create or recognition screen, so that I can type the next product at once.
 
 ### Detail screen
 
@@ -276,7 +285,7 @@ doesn't depend on `entities/foodLog` or `features/logFood`.
 21. As the owner, I want quantities outside the allowed range (10–1000 g) to be refused on the detail screen, so that the Meal Draft never holds an invalid quantity.
 22. As the owner, I want to add a product to the Meal Draft from its detail screen with the quantity I typed, so that I can log a non-default portion.
 23. As the owner, I want to change the quantity of a product already in the Meal Draft from its detail screen, so that I can fix a portion.
-24. As the owner, I want a **Remove** action on the detail screen of a product in the Meal Draft, so that I can take it out from there too.
+24. ~~As the owner, I want a **Remove** action on the detail screen of a product in the Meal Draft, so that I can take it out from there too.~~ Dropped: the tray's **Delete <name>** and ⊕ in the results already take a product out.
 25. As the owner, I want an **Edit product** action on the detail screen, so that I can fix a product's name, nutrition values, default quantity or category without leaving the flow.
 26. As the owner, I want **Edit product** to save the Product straight away, so that the fix applies everywhere, not only to this meal.
 27. As the owner, I want a product in the Meal Draft to take the edited name, nutrition values and new default quantity after I save the Product, so that the tray matches what I just saved.
@@ -295,7 +304,7 @@ doesn't depend on `entities/foodLog` or `features/logFood`.
 
 ### Creating a product
 
-37. As the owner, I want a `Create "<query>"` row when the search finds nothing, so that I can add a product that's missing.
+37. As the owner, I want a `Create "<query>"` row when no product has exactly that name, so that I can add a product that's missing even when longer names contain my query.
 38. As the owner, I want it to open the product form with the name prefilled from my query, so that I don't type it twice.
 39. As the owner, I want the form's button to say **Create**, so that it's clear this makes a Product, not a Food Log.
 40. As the owner, I want a created product to land in the Meal Draft with its default quantity, and to return me to the search, so that I can carry on picking.
@@ -344,29 +353,42 @@ doesn't depend on `entities/foodLog` or `features/logFood`.
 - The search field (`-SearchSlot`) and the results (the page) are separate trees that share the
   query through `q`. No ref crosses between them.
 - `LogFoodSearchField` is a `type="search"` input labelled **Search products**, inside a
-  `role="search"` box, with `autoFocus` covering the screen's opening. It keeps the typed value in
-  local state and resyncs it whenever `q` changes. `q` arrives only after the navigation that
+  `role="search"` box, with `autoFocus` covering the screen's opening. It keeps the typed value in local state and resyncs it whenever `q` changes. `q` arrives only after the navigation that
   updates it, and a field bound straight to `q` drops fast keystrokes.
+- A field that mounts after a navigation is too late for iOS Safari to open the keyboard for it.
+  So the handler of the tap that leads to it first focuses a hidden placeholder input
+  (`holdSoftKeyboardForNextField` in `shared/lib`), and the field takes the focus from it. This
+  covers **Add <meal>**, a result row, a tray row, the **Create** row, **Edit product**, **Add**
+  and **Save** on the product, and **Create** and **Save** on the product forms. An invalid
+  product form or a failed request releases the placeholder, which closes the keyboard.
+  The back arrow holds nothing, so going back opens no keyboard. Neither does the recognition
+  form: it appears after the server's answer, and the gesture before it is picking a file.
 - Results are a list labelled **Found products**. Each row shows the name and
   "<default quantity> g · X kcal", and opens the detail route when tapped. A product in the Meal
   Draft has a selected background and a check icon in place of ⊕.
 - The ⊕ buttons are labelled `Add <name>` and `Remove <name>`. ⊕ calls `preventDefault` on
   `mousedown`, so the search field never loses focus and a phone's keyboard stays open. Adding
   clears `q`, and the field follows it. Removing leaves `q` as it is.
-- When the trimmed query is at least 3 characters long and nothing is found, the results are a
-  single `Create "<trimmed query>"` row, which navigates to
-  `/log/food/products/new?name=<trimmed query>`. `Create "<query>"` replaces the overloaded
+- When the trimmed query is at least 3 characters long and no found product's name equals it,
+  ignoring case, a `Create "<trimmed query>"` row follows the results, which navigates to
+  `/log/food/products/new?name=<trimmed query>`. When nothing is found, it is the only row. So
+  "Chocolate" still offers `Create "Chocolate"` under "Chocolate cake", and "cheese" offers none
+  when "Cheese" exists. `Create "<query>"` replaces the overloaded
   `Add "<query>"` wording for the new flow. The old dialog's copy and its own rule for offering to
   add a product are left as they are.
 - The camera action (`-CameraSlot`) renders `RecognizeProductButton`, a camera icon labelled
   **Recognize product from photos** that wraps the shared image picker. On pick, it stores the
-  photos with `recognitionPhotosPicked` and the slot navigates to the recognition route.
+  photos with `recognitionPhotosPicked`, sends them for recognition, and the slot navigates to the
+  recognition route.
 
 ### Detail screen
 
 - Opened from a result's name or a tray row. It loads the Product with the existing
   `GET /api/v1/products/{id}` query, so it works for products that aren't in the Meal Draft yet.
-  A spinner shows while it loads, and "The product could not be loaded" if the request fails.
+  It reads the Product through `useProductToEdit`, which hides a cached Product while it is being
+  refetched or after its refetch failed, because the quantity form reads its default value only on
+  mount. A spinner shows while it loads, and "The product could not be loaded" if the request fails,
+  even when an older Product is cached.
 - It shows the product's name as a heading and "<calories> kcal per 100 g".
 - Its quantity form is a react-hook-form + Zod form using the shared `quantitySchema` (whole
   numbers, 10–1000), validated on every change. The field is labelled **Quantity**, has a `g`
@@ -374,10 +396,10 @@ doesn't depend on `entities/foodLog` or `features/logFood`.
   Meal Draft's quantity, or the default quantity for a product not in it.
 - Under the field, a valid quantity shows its calories ("X kcal"). Any invalid quantity shows one
   fixed message, `Enter a whole number from 10 to 1000`, and disables the confirm button.
-- The actions row holds **Edit product** on the left, then **Remove** (only for a product in the
-  Meal Draft), then the confirm button: **Add** for a product not in the Meal Draft, **Save** for
-  one in it. **Add** dispatches `foodLogAdded` with the typed quantity, **Save** dispatches
-  `foodLogQuantityChanged`, and **Remove** dispatches `foodLogRemoved`. Each then goes back.
+- The actions row holds **Edit product** on the left, then the confirm button: **Add** for a
+  product not in the Meal Draft, **Save** for one in it. **Add**
+  dispatches `foodLogAdded` with the typed quantity, **Save** dispatches `foodLogQuantityChanged`.
+  Each then goes back.
 
 ### Product create, edit and recognition
 
@@ -388,24 +410,31 @@ doesn't depend on `entities/foodLog` or `features/logFood`.
   load, and a product without a category gets the first category. After a create, the new product
   (with the id from the response) is mapped from the form values to a `MealDraftProduct` and added
   with `foodLogAdded` at its default quantity, and the app goes back to the search.
-- `EditProductForm` loads the Product by id and the categories, with a spinner until both are
-  ready. After an edit, `productUpdated` is dispatched with the saved values, and the app goes back
-  to the detail screen. The edit invalidates the `product` tag, so the detail shows the saved
-  Product, and its quantity form opens with the new default quantity.
+- `EditProductForm` loads the Product by id through `useProductToEdit` and the categories, with a
+  spinner until both are ready, so it never opens on a cached Product that is being refetched. It
+  shows "The product could not be loaded" if the Product request fails. After an edit, `productUpdated` is dispatched with the saved values, and the app goes back
+  to the detail screen. A successful edit invalidates the `product` tag, so the detail shows a
+  spinner until the saved Product loads, and its quantity form opens with the new default quantity.
+  A failed edit invalidates nothing, so the form stays mounted with the input.
 - A name clash comes back as a `400` validation problem with a `Name` error. It is shown under the
   Name field and the input is kept. Any other failure shows an error alert under the form.
 - Recognition reuses `POST /api/v1/notes/recognitions` and the shared mapping in
-  `entities/note/lib/recognition.ts`, through `useRecognizeProduct` in `features/logFood/lib`. It
-  takes a snapshot of `recognitionPhotos` when the screen mounts and sends it, aborting the request
-  if the screen unmounts first.
+  `entities/note/lib/recognition.ts`, through `useRecognizeProduct` in `features/logFood/lib`, which
+  uses a `fixedCacheKey` so the camera action and the recognition screen share one request. Picking
+  photos sends them. Opening the screen sends nothing.
   - While it runs, the screen shows a progress bar labelled **Recognizing product** and form
     skeletons.
   - A failure shows an error alert with **Retry**, which sends the same photos again.
   - A response with no suggestions shows "No food found. Please try other photos".
   - Otherwise the screen shows `CreateProductForm` prefilled from the first suggestion, whose
     quantity becomes the default quantity.
-  - A successful response dispatches `productRecognized`, so a later browser forward into the
-    recognition route lands on the search.
+  - Once a response arrives, with or without suggestions, the screen shows the picked photos, and
+    tapping one opens it at full size.
+  - Leaving the screen, at any point, runs `endRecognition`: it aborts a running request and
+    dispatches `recognitionEnded`, so a later browser forward into the recognition route lands on
+    the search and sends nothing.
+  - `onLeave` runs while the screen is still rendered, so the screen shows a snapshot of the
+    photos taken when it mounts, and treats an aborted request as still running.
 - Nothing checks for demo mode. The demo build runs against the MSW mock API, whose recognition
   handler returns one suggestion per photo, named after the photo's file.
 
@@ -472,6 +501,27 @@ doesn't depend on `entities/foodLog` or `features/logFood`.
 - A reload or closing the tab drops the Meal Draft without a prompt. After a reload the layout's
   guard lands on the day page.
 
+### Old dialog behaviours
+
+The add path of `NoteInputDialog` (`features/manageNote/`) and what the new flow does with each of
+its user-visible behaviours. A gap is a kept behaviour the new flow doesn't implement yet.
+
+| Old dialog behaviour | Status | Where, or why dropped |
+|---|---|---|
+| Search field focused on open, with a clear button | Kept | Search screen |
+| Filtering waits 300 ms after the last keystroke | Dropped | Results filter the cached product list locally, so filtering on every keystroke is cheap |
+| Results from 3 characters, a spinner while products load | Kept | Search screen |
+| Offer to add a product whenever none is named exactly like the query | Kept | Search screen: the `Create "<query>"` row, ignoring case |
+| A new product gets the query as its name and the first category | Kept | Product create, edit and recognition |
+| Quantity starts at the default quantity, selected on focus, numeric keyboard, `g` suffix, 10–1000 | Kept | Detail screen |
+| "Nutrition values are missing" under a product with missing nutrition values | Kept, gap | Not yet implemented |
+| Edit product from the quantity step, with a spinner while it loads | Kept | Detail screen; Product create, edit and recognition |
+| Discard the picked product and choose another | Kept | Detail screen: back arrow |
+| Photo recognition: loading state, error with **Retry**, "No food found", photo previews, a prefilled product form with the first category | Kept | Product create, edit and recognition |
+| **Retry** after a successful recognition | Dropped | Picking new photos covers a bad suggestion |
+| Saving and closing are blocked while nutrition values are being suggested | Kept, gap | Not yet implemented: **Create**, **Save** and the back arrow stay active |
+| Saving shows a loading state, and the day page refreshes after a Food Log or product edit is saved | Kept | Logging the Meal Draft; Batch endpoint; Product create, edit and recognition |
+
 ### Docs
 
 - The demo mode line in `CLAUDE.md` and the `VITE_APP_DEMO_MODE_ENABLED` row in
@@ -506,11 +556,16 @@ as `entities/note/model/note.test.ts` and `entities/note/lib/calculationHelpers.
 - Cases to cover, at minimum:
   - the switch off opens the old dialog, and the switch on opens the new flow
   - ⊕ adds with the default quantity, clears the search and keeps it focused; ⊕ again removes
+  - tapping the tray's row toggles the list, **Log food** doesn't, and changing `q` collapses it
   - a quantity changed on the detail screen, opened from a result or from a tray row, is logged
   - a quantity outside 10–1000 can't be confirmed on the detail screen
   - **Edit product** updates the tray row's name and quantity
-  - `Create "<query>"` returns to the search with the new product in the Meal Draft
+  - `Create "<query>"` returns to an empty search with the new product in the Meal Draft
   - photo recognition, through the mock suggestion, adds the created product to the Meal Draft
+  - one pick sends exactly one recognition request
+  - leaving while recognition runs aborts it, and going forward lands on the search with no second
+    request
+  - going forward after a failed recognition lands on the search with no second request
   - **Log food** logs every product in Meal Draft order, after the Meal's existing Food Logs
   - a failed save keeps the Meal Draft and shows an error
   - leaving with a non-empty Meal Draft prompts, and leaving with an empty one doesn't
@@ -544,7 +599,8 @@ as `entities/note/model/note.test.ts` and `entities/note/lib/calculationHelpers.
   layout, and the navigation blocker on the browser's own back.
 - Check the console. The MSW-mode baseline errors are allowed; any other error is a defect.
 - Device emulation doesn't reproduce a phone's on-screen keyboard. The owner checks once on a
-  real phone that the keyboard stays open after ⊕.
+  real phone that the keyboard stays open after ⊕, that the tray's row is visible above it, and
+  that expanding the tray closes it.
 
 ## Out of Scope
 

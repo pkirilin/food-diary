@@ -8,35 +8,18 @@ paths:
 
 ### Architecture
 
-- Use functional components with hooks as the primary pattern
-- Implement component composition over inheritance
-- Organize components, hooks, and functions using feature-sliced design (FSD) approach
-- Separate presentational and container components clearly
-- Use custom hooks for reusable stateful logic
-- Implement proper component hierarchies with clear data flow
 - Always prioritize arrow function expressions (`const fn = () => {}`) over function definitions (`function fn() {}`). Exception: route components in `src/app/routes/` are function declarations placed below the route definition (`export const Route = createFileRoute(...)({ component: HistoryRoute })`, then `function HistoryRoute() {}`), following TanStack Router's idiom
-- Name and organize Redux state after the data it holds (e.g. `products`, never `productsTable`), so the UI that renders it can change without reshaping state. See the Redux style guide: [Organize State Structure Based on Data Types, Not Components](https://redux.js.org/style-guide/#organize-state-structure-based-on-data-types-not-components) and [Name State Slices Based On the Stored Data](https://redux.js.org/style-guide/#name-state-slices-based-on-the-stored-data).
 - Redux holds validated values only. Input being typed, or input that failed validation, stays in its react-hook-form form; dispatch once the form validates.
 - Custom hooks must not own UI-presentation concerns (alerts, snackbars, toasts, dialogs). Keep that state in the component and let the hook report outcomes through callbacks (e.g. `onError(message)`, `onInfo(message)`) that the component wires to its UI.
 - Custom hooks must not depend on form library types or instances (e.g. react-hook-form's `UseFormGetValues`/`UseFormSetValue`, `control`). Pass narrow callbacks instead (e.g. `getName`, `getFieldValue`, `setFieldValue`) so the hook stays decoupled from the form layer.
+- Every search-param change is a navigation: it re-runs `beforeLoad` for all matched routes. When state writes to the URL per keystroke, confirm the matched `beforeLoad`s send no requests on that navigation.
+- A route's `onLeave` runs before its screen unmounts, so state it clears is still read by that screen.
 
 ### TypeScript Integration
 
 - Use TypeScript interfaces for props, state, hooks, utils, and component definitions
 - **Never use `any`. If type is unknown, use `unknown` with type guards instead**
-- Define proper types for event handlers and refs
-- Leverage React's built-in types (`React.FC`, `React.ComponentProps`, etc.)
 - Do not use `React.<SomeType>`, always import `<SomeType>` from `react`
-- Create union types for component variants and states
-
-### Component Design
-
-- Follow the single responsibility principle for components
-- Use descriptive and consistent naming conventions
-- Implement proper prop validation with TypeScript
-- Design components to be testable and reusable
-- Keep components small and focused on a single concern
-- Use composition patterns (render props, children as functions)
 
 ### React Component Definition Example
 
@@ -81,23 +64,25 @@ Mandatory for any change that affects rendered UI or behavior (components, pages
 - Automated tests are still required whenever feasible. The browser check comes in addition to them.
 - When a behavior cannot reasonably be covered by Vitest (layout, real-browser APIs, PWA/service worker, image decode, camera or file input), the browser check is the sole verification. Say so in the final report.
 - Use the `chrome-devtools` MCP server from `.mcp.json`. If its tools are unavailable or it cannot start, stop and ask the user how to proceed. Never skip the check or substitute another browser tool.
-- Start the app from `src/frontend` in MSW mode with inline env vars. `.env.local` belongs to the developer; do not edit it:
-
-```shell
-VITE_APP_MSW_ENABLED=true VITE_APP_FAKE_AUTH_ENABLED=true VITE_APP_FAKE_AUTH_LOGIN_ON_INIT=true yarn start
-```
-
+- Start the app in MSW mode with `make start-frontend-msw` from the repo root, in the background. Leave `.env.local` untouched: it belongs to the developer. A second Vite start can delete the dependency cache of a server already running in `src/frontend`, so start the app only through this target.
+- If the target reports port 5173 in use, reuse that server when `curl -s http://localhost:5173/src/shared/config.ts` shows `"VITE_APP_MSW_ENABLED": "true"`. Otherwise ask the developer how to proceed.
 - Open <http://localhost:5173> with `new_page` and a new `isolatedContext` name for each check, so it starts with clean cookies, storage and service workers. The browser outlives a single check.
+- Routes are hash-based: open `http://localhost:5173/#/<route>`. `emulate` reloads the page, so set the viewport before navigating to the flow.
+- Device preferences live in localStorage (`src/shared/lib/devicePreferences.ts`), and a fresh context starts with them off. Set the ones the changed flow needs, then reload.
+- File inputs: `upload_file` accepts repo paths only. Build a `File`, assign it to `input.files` through a `DataTransfer` in `evaluate_script`, and dispatch `change`. To hold or fail one request, wrap `window.fetch` in `navigate_page`'s `initScript`.
 - Exercise the changed flow. Use `take_snapshot` to find elements to interact with; it is an accessibility-tree dump and cannot show how the page renders.
+- After a navigation, `wait_for` a label the next step needs, spelled as the source writes it: `wait_for` matches DOM text case-sensitively, while the snapshot shows MUI button labels uppercased. The day page is ready once `Daily Nutrition Summary` appears. Its result is the page snapshot, so act on it instead of calling `take_snapshot`. Use `evaluate_script` for reading page state.
 - Take a screenshot of every UI state the change affects (`take_screenshot` without `filePath`) and inspect it for broken layout, overflow, overlap and styling. Use `get_css_styles` to investigate anything that looks wrong.
 - Check rendered UI at both a phone viewport (`390x844x3,mobile,touch`) and a desktop viewport (`1280x800x1`), set with `emulate`. A change that clearly affects only one layout may check just that one; say so in the final report. Emulation is not iOS Safari: on-screen keyboard and gesture behavior needs the iOS Simulator.
 - Check `list_console_messages`. `ERR_CONNECTION_REFUSED` errors for `https://localhost:8080/api/v1/*` are the MSW-mode baseline; any other console error is a defect.
 - Report in text only what you did and saw. Do not commit screenshots.
-- When done, close the page with `close_page` and stop the dev server.
+- When done, close the page with `close_page` and stop the dev server you started.
 - MSW does not exercise the real backend. If the change touches an API contract, say that real-backend behavior is unverified.
 
 ### Testing
 
+- Test a component's own rule in a colocated `<Component>.test.tsx` that renders it with `render` from `@tests/render`. Use `tests/*.test.tsx` with `renderApp` only for a flow that crosses routes. Both run against the mock API in `tests/mockApi/`, which the browser's MSW mode also uses; seed data is in `<entity>/<entity>.data.json`.
+- Debug a failing test with `make test-frontend-quiet FILE=tests/app.test.tsx NAME='test name'` from the repo root (both variables are optional): it leaves the DOM dump out of the failure output. Confirm the failure message matches the symptom before repeating the run.
 - **A green suite is not a clean suite.** Vitest's default reporter prints a test's `console.*` output and React warnings **only when that test fails** — a passing test's warnings are invisible, in both watch and `--run` mode. So warnings visible while a test is red silently vanish the moment it goes green, even though the defect causing them is still there. Verify with `yarn test --run --reporter=verbose` and treat any `stderr |` block as a defect to fix before finishing.
 - Always give vitest mocks and assertion matchers explicit type arguments, so that a typo in a property name fails the build instead of silently failing at runtime
 - Mocks: `vi.fn<SomeCallbackFn>()`, and helpers returning them typed as `Mock<SomeCallbackFn>` — never bare `vi.fn()` / `Mock`

@@ -24,22 +24,35 @@ export const Route = createFileRoute('/_app/')({
     },
   },
   loaderDeps: ({ search }) => ({ date: search.date ?? getDefaultDate() }),
-  loader: async ({ context, deps }) => {
-    const notesQueryPromise = context.store.dispatch(
-      noteApi.endpoints.notes.initiate({ date: deps.date }),
-    );
+  loader: {
+    // A note mutation drops the unsubscribed notes cache, so a background reload would render the
+    // day empty on the way back, too short for scroll restoration
+    staleReloadMode: 'blocking',
+    handler: async ({ context, deps }) => {
+      const notesQueryPromise = context.store.dispatch(
+        noteApi.endpoints.notes.initiate({ date: deps.date }),
+      );
 
-    try {
-      await notesQueryPromise;
-    } finally {
-      notesQueryPromise.unsubscribe();
-    }
+      try {
+        await notesQueryPromise;
+      } finally {
+        notesQueryPromise.unsubscribe();
+      }
+    },
   },
   component: IndexRoute,
 });
 
 function IndexRoute() {
   const { date } = Route.useLoaderDeps();
+  const navigate = Route.useNavigate();
 
-  return <IndexPage date={date} />;
+  return (
+    <IndexPage
+      date={date}
+      onOpenLogFood={() => {
+        void navigate({ to: '/log/food' });
+      }}
+    />
+  );
 }

@@ -1,14 +1,14 @@
 import { Box, ButtonBase } from '@mui/material';
 import { useState, type FC } from 'react';
-import { ImageViewer } from '@/shared/ui';
-import { type Image } from '../model';
+import { type imageLib } from '@/shared/lib';
+import { ImageViewer } from './ImageViewer';
 
 interface Props {
-  images: Image[];
+  images: imageLib.Image[];
 }
 
 export const ImagePreviewList: FC<Props> = ({ images }) => {
-  const [openedImage, setOpenedImage] = useState<Image | null>(null);
+  const [openedImage, setOpenedImage] = useState<imageLib.Image | null>(null);
 
   return (
     <>

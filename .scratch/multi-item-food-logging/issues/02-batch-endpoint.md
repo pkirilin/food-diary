@@ -12,7 +12,7 @@ CreateNotesRequest {
 
 **Blocked by:** None (can start immediately)
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 - [x] A valid request returns `200` and creates every Food Log
 - [x] New Food Logs get display orders after the Meal's existing ones, in request order

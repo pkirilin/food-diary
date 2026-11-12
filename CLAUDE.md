@@ -21,16 +21,7 @@ The frontend and the E2E suite (`tests/`) are independent Yarn 4 projects (node-
 
 ### Frontend (`src/frontend/`)
 
-```shell
-yarn start           # Vite dev server on http://localhost:5173
-yarn build           # tsc + vite build
-yarn test            # vitest (single-file: yarn test path/to/file.test.ts)
-yarn lint            # eslint .
-yarn lint:fix
-yarn format / format:check
-```
-
-Browser verification of UI changes uses the `chrome-devtools` MCP server from `.mcp.json`, which needs Google Chrome installed. Rules: `.claude/rules/frontend.md`.
+Before changing or testing frontend code, read `.claude/rules/frontend.md`: where tests go, how to debug a failing one, and browser verification of UI changes (the `chrome-devtools` MCP server from `.mcp.json`, which needs Google Chrome installed). It loads on its own only when a `.ts`/`.tsx` file is opened with Read or Edit.
 
 For backend-less development, set `.env.local` with `VITE_APP_MSW_ENABLED=true`, `VITE_APP_FAKE_AUTH_ENABLED=true`, `VITE_APP_FAKE_AUTH_LOGIN_ON_INIT=true` (full env-var list in `docs/development.md`).
 
@@ -55,14 +46,6 @@ dotnet ef migrations add <Name> \
 
 Required user-secrets on `FoodDiary.API`: `Auth:AllowedEmails:0`, `ConnectionStrings:Default`, `GoogleAuth:ClientId`, `GoogleAuth:ClientSecret`, optional `Integrations:OpenAI:ApiKey` and `Integrations:OpenAI:Model` (overrides default). Enabling the MCP server locally (`Mcp:Enabled` = `true`) also requires `Mcp:BaseUrl` (`https://localhost:8080`). `Mcp:Clients:0:ClientId`, `Mcp:Clients:0:ClientSecret` and `Mcp:Clients:0:RedirectUri` are optional and needed only for a client-secret MCP client; MCP clients that use a Client ID Metadata Document need no entry. Startup fails naming whichever value is missing or malformed.
 
-### E2E (`tests/`)
-
-```shell
-yarn test            # playwright test
-yarn debug           # --debug
-yarn codegen
-```
-
 ### Full stack
 
 ```shell
@@ -78,7 +61,7 @@ Backend component tests (`FoodDiary.ComponentTests`, via Testcontainers) and the
 - **Auth**: Google OAuth 2.0; backend gates access via `Auth:AllowedEmails` allowlist (this is a personal/self-hosted app, not multi-tenant). OAuth redirect URIs are `https://localhost:8080/signin-google` locally and `https://<your-domain>/signin-google` in production.
 - **API client**: frontend calls backend through RTK Query slices under `entities/*/api` and `features/*/api`. Mocked via MSW when `VITE_APP_MSW_ENABLED=true`.
 - **Database**: PostgreSQL via EF Core. The `FoodDiary.Migrator` console app — not the API — is responsible for applying migrations.
-- **AI integrations**: `FoodDiary.Integrations.OpenAI` power the photo-based note recognition feature. Demo mode (`VITE_APP_DEMO_MODE_ENABLED`) disables features that touch external integrations or the file system.
+- **AI integrations**: `FoodDiary.Integrations.OpenAI` power the photo-based note recognition feature. Demo mode (`VITE_APP_DEMO_MODE_ENABLED`) only shows a warning on the login page; the demo build runs against the MSW mock API, so photo recognition returns the mock API's suggestion.
 - **PWA**: `vite-plugin-pwa` + `workbox-*` produce the service worker; demo deploys to GitHub Pages.
 
 ## Frontend conventions
@@ -116,3 +99,4 @@ Single-context — one `GLOSSARY.md` + `docs/adr/` at the repo root. See `docs/a
 ## Reference
 
 - **Writing docs** — platform-neutral prose, and the rules for specs and tickets. See `docs/agents/writing-docs.md`.
+- **Coding standards** — judgement rules applied at review. See `CODING_STANDARDS.md`.
