@@ -915,6 +915,7 @@ test('a product that fails to load again after a save shows the load error inste
 
   await user.click(screen.getByRole('button', { name: 'Save' }));
 
+  expect(await screen.findByRole('heading', { name: 'Product' })).toBeVisible();
   expect(await screen.findByText('The product could not be loaded')).toBeVisible();
   expect(screen.queryByRole('textbox', { name: 'Quantity' })).not.toBeInTheDocument();
 });
