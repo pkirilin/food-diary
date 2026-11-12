@@ -17,4 +17,5 @@ public static class Create
 
     public static ProductCreateEditRequestBuilder ProductCreateEditRequest() => new();
     public static NoteRequestBodyBuilder NoteRequestBody() => new();
+    public static CreateNotesRequestBuilder CreateNotesRequest() => new();
 }

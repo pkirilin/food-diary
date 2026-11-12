@@ -14,9 +14,10 @@ import { Navigation } from '@/widgets/Navigation';
 
 export const Route = createFileRoute('/_app')({
   staticData: { appBar: null },
-  beforeLoad: async ({ context, location, preload }) => {
+  beforeLoad: async ({ context, location, matches, preload }) => {
+    const staysOnSameScreen = matches.at(-1)?.cause === 'stay';
     const authStatusQueryPromise = context.store.dispatch(
-      authApi.endpoints.getStatus.initiate({}, { forceRefetch: !preload }),
+      authApi.endpoints.getStatus.initiate({}, { forceRefetch: !preload && !staysOnSameScreen }),
     );
 
     try {

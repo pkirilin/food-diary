@@ -1,4 +1,8 @@
-import { type NoteRequestBody, type UpdateNoteRequest } from '@/entities/note';
+import {
+  type CreateNotesRequest,
+  type NoteRequestBody,
+  type UpdateNoteRequest,
+} from '@/entities/note';
 import { db, type DbNote, type DbProduct } from '../db';
 
 type Result = 'Success' | 'ProductNotFound';
@@ -104,6 +108,55 @@ export const create = ({
     quantity: productQuantity,
     displayOrder,
     productId,
+  });
+
+  return 'Success';
+};
+
+type CreateManyResult = 'Success' | 'ProductNotFound' | 'InvalidQuantity' | 'NoNotes';
+
+const MIN_QUANTITY = 10;
+const MAX_QUANTITY = 1000;
+
+export const createMany = ({ date, mealType, notes }: CreateNotesRequest): CreateManyResult => {
+  if (notes.length === 0) {
+    return 'NoNotes';
+  }
+
+  if (notes.some(n => n.productQuantity < MIN_QUANTITY || n.productQuantity > MAX_QUANTITY)) {
+    return 'InvalidQuantity';
+  }
+
+  const allProductsExist = notes.every(
+    ({ productId }) => db.product.findFirst({ where: { id: { equals: productId } } }) !== null,
+  );
+
+  if (!allProductsExist) {
+    return 'ProductNotFound';
+  }
+
+  const firstDisplayOrder =
+    (get(date, mealType)
+      .map(n => n.displayOrder)
+      .at(-1) ?? -1) + 1;
+
+  const maxId =
+    db.note
+      .findMany({
+        orderBy: { id: 'desc' },
+        take: 1,
+      })
+      .at(0)?.id ?? 0;
+
+  notes.forEach(({ productId, productQuantity }, index) => {
+    db.note.create({
+      id: maxId + 1 + index,
+      date,
+      mealType,
+      quantity: productQuantity,
+      displayOrder: firstDisplayOrder + index,
+      productId,
+    });
   });
 
   return 'Success';

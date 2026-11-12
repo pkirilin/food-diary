@@ -62,6 +62,14 @@ public static class NotesMapper
         body.DisplayOrder
     );
     
+    public static CreateNotesCommand ToCreateNotesCommand(this CreateNotesRequest request) => new(
+        request.Date.GetValueOrDefault(),
+        request.MealType,
+        request.Notes
+            .Select(n => new CreateNotesCommand.Note(n.ProductId, n.ProductQuantity))
+            .ToList()
+    );
+
     public static UpdateNoteCommand ToUpdateNoteCommand(this NoteRequestBody body, int id) => new(
         id,
         body.Date.GetValueOrDefault(),

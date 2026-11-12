@@ -28,6 +28,7 @@ public class NotesApiContext(
     private GetNotesResponse? _getNotesResponse;
     private GetNotesHistoryResponse? _getNotesHistoryResponse;
     private HttpResponseMessage _createNoteResponse = null!;
+    private HttpResponseMessage _createNotesResponse = null!;
     private HttpResponseMessage _updateNoteResponse = null!;
     private HttpResponseMessage _deleteNoteResponse = null!;
     private HttpResponseMessage _deleteMultipleNotesResponse = null!;
@@ -41,6 +42,11 @@ public class NotesApiContext(
     public Task Given_product(Product product)
     {
         return Factory.SeedDataAsync([product]);
+    }
+
+    public Task Given_products(params Product[] products)
+    {
+        return Factory.SeedDataAsync(products);
     }
 
     public Task Given_OpenAI_api_is_ready()
@@ -84,6 +90,21 @@ public class NotesApiContext(
         _createNoteResponse = await ApiClient.PostAsJsonAsync("/api/v1/notes", body);
     }
     
+    public async Task When_user_creates_notes(params Note[] notes)
+    {
+        var body = Create.CreateNotesRequest()
+            .From(notes)
+            .Please();
+
+        _createNotesResponse = await ApiClient.PostAsJsonAsync("/api/v1/notes/batch", body);
+    }
+
+    public async Task When_user_creates_empty_list_of_notes()
+    {
+        var body = Create.CreateNotesRequest().Please();
+        _createNotesResponse = await ApiClient.PostAsJsonAsync("/api/v1/notes/batch", body);
+    }
+
     public async Task When_user_updates_product_with_quantity_for_note(Note note, Product product, int quantity)
     {
         var body = Create.NoteRequestBody()
@@ -161,6 +182,25 @@ public class NotesApiContext(
         return Task.CompletedTask;
     }
     
+    public Task Then_notes_are_successfully_created()
+    {
+        _createNotesResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        return Task.CompletedTask;
+    }
+
+    public Task Then_notes_creation_fails_with_validation_error()
+    {
+        _createNotesResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        return Task.CompletedTask;
+    }
+
+    public async Task Then_notes_creation_fails_because_product_is_not_found(Product product)
+    {
+        _createNotesResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        var problem = await _createNotesResponse.Content.ReadFromJsonAsync<ProblemDetails>();
+        problem!.Detail.Should().Contain(product.Id.ToString());
+    }
+
     public Task Then_note_is_successfully_updated()
     {
         _updateNoteResponse.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -185,7 +225,7 @@ public class NotesApiContext(
         var recognizedNote = response?.Notes[0];
 
         recognizedNote.Should().NotBeNull();
-        recognizedNote!.Quantity.Should().Be(quantity);
+        recognizedNote.Quantity.Should().Be(quantity);
         recognizedNote.Product.Name.Should().Be(product.Name);
         recognizedNote.Product.CaloriesCost.Should().Be(product.CaloriesCost);
         recognizedNote.Product.Protein.Should().Be(product.Protein);

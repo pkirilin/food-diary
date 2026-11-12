@@ -120,13 +120,7 @@ Navigate to <http://localhost:5173>. The app will now use mocked responses for a
 
 ### Browser verification setup
 
-Frontend changes are verified in a real browser with [`@playwright/cli`](https://github.com/microsoft/playwright-cli), which is a devDependency of `src/frontend`. After `yarn install`, download the browser once per machine from the repo root:
-
-```shell
-make setup-frontend
-```
-
-Run the CLI as `yarn playwright-cli <command>` from `src/frontend`; no global install is needed. The coding-agent rules for when and how to verify are in `.claude/rules/frontend.md`.
+Coding agents verify frontend changes in a real browser with [`chrome-devtools-mcp`](https://github.com/ChromeDevTools/chrome-devtools-mcp), which needs an MCP-capable agent, Google Chrome (stable) and Node.js with `npx`. `.mcp.json` registers the server at `@latest`, so `npx` fetches the newest published version without a separate install. The rules for when and how to verify are in `.claude/rules/frontend.md`.
 
 ### Frontend environment variables
 
@@ -136,13 +130,14 @@ Name                                       | Type      | Description
 -------------------------------------------|-----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 `VITE_APP_API_URL`                         | `string`  | Specifies a backend API base URL without a trim slash, e.g. `https://localhost:8080`
 `VITE_APP_AUTH_CHECK_INTERVAL`             | `number`  | Specifies the auth status check interval in milliseconds to ensure that users with expired cookies will not be able to use the application without refreshing the page in the browser. Not used if `VITE_APP_FAKE_AUTH_ENABLED` is `true`
-`VITE_APP_DEMO_MODE_ENABLED`               | `boolean` | Enables demo mode. In demo mode, some features related to file system or external integrations are disabled
+`VITE_APP_DEMO_MODE_ENABLED`               | `boolean` | Enables demo mode, which shows a demo warning on the login page. Pair it with `VITE_APP_MSW_ENABLED`, as the demo build does, so that every feature, photo recognition included, works against the mock API
 `VITE_APP_FAKE_AUTH_ENABLED`               | `boolean` | Setups fake authentication flow without using a backend server and OAuth Identity provider. Used for local development
 `VITE_APP_FAKE_AUTH_LOGIN_ON_INIT`         | `boolean` | Defines whether the user is authenticated by default when using a fake authentication flow. Used for local development
 `VITE_APP_MSW_ENABLED`                     | `boolean` | Enables mockServiceWorker to intercept and mock all API requests. Used for testing or local development purposes
 `VITE_APP_GOOGLE_ANALYTICS_ENABLED`        | `boolean` | Enables Google Analytics
 `VITE_APP_GOOGLE_ANALYTICS_MEASUREMENT_ID` | `string`  | Measurement (data stream) ID for Google Analytics
 `VITE_APP_MOCK_API_RESPONSE_DELAY`         | `number`  | Sets delay (in milliseconds) before all mock API responses. Not used if `VITE_APP_MSW_ENABLED` is `false`
+`VITE_APP_ROUTER_DEVTOOLS_ENABLED`         | `boolean` | Shows TanStack Router Devtools. Disabled by default and has no effect outside the Vite dev server. Used for local development
 
 ## Managing database migrations
 

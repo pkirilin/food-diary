@@ -15,7 +15,7 @@ export const givenMealsListItem = ({ mealType }: GivenMealsListItemArgs): void =
 
   render(
     <RootProvider store={store}>
-      <MealsListItem date={date} mealType={mealType} />
+      <MealsListItem date={date} mealType={mealType} onOpenLogFood={() => {}} />
     </RootProvider>,
   );
 };

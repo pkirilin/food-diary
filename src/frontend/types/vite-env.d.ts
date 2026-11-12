@@ -15,4 +15,5 @@ interface ImportMetaEnv {
   readonly VITE_APP_GOOGLE_ANALYTICS_ENABLED: string;
   readonly VITE_APP_GOOGLE_ANALYTICS_MEASUREMENT_ID: string;
   readonly VITE_APP_MOCK_API_RESPONSE_DELAY: string;
+  readonly VITE_APP_ROUTER_DEVTOOLS_ENABLED: string;
 }

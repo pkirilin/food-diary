@@ -1,5 +1,6 @@
 import { createRootRouteWithContext, Outlet } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
+import { ROUTER_DEVTOOLS_ENABLED } from '@/shared/config';
 import { type AppStore } from '../store';
 import { ErrorLayout, NotFoundPage } from '../ui';
 
@@ -17,7 +18,7 @@ function RootLayout() {
   return (
     <>
       <Outlet />
-      <TanStackRouterDevtools />
+      {ROUTER_DEVTOOLS_ENABLED && <TanStackRouterDevtools />}
     </>
   );
 }

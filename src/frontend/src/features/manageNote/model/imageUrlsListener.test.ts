@@ -1,12 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { noteModel } from '@/entities/note';
+import { type imageLib } from '@/shared/lib';
 import { imageUrlsListener } from './imageUrlsListener';
 import { manageNoteSlice } from './manageNoteSlice';
 import { type NoteFormValues, type NoteFormValuesProduct } from './noteSchema';
-import { type Image } from './types';
 
 const create = {
-  image: (name: string): Image => ({
+  image: (name: string): imageLib.Image => ({
     id: crypto.randomUUID(),
     name,
     base64: `base64-${name}`,

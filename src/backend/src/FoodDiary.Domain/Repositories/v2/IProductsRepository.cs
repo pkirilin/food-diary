@@ -1,7 +1,5 @@
 using FoodDiary.Domain.Entities;
 
-#nullable enable
-
 namespace FoodDiary.Domain.Repositories.v2;
 
 public interface IProductsRepository
@@ -9,6 +7,8 @@ public interface IProductsRepository
     Task<Product?> FindById(int id, CancellationToken cancellationToken);
     
     Task<Product?> FindByExactName(string name, CancellationToken cancellationToken);
+
+    Task<IReadOnlyList<int>> FindExistingIds(IReadOnlyCollection<int> ids, CancellationToken cancellationToken);
 
     Task Create(Product product, CancellationToken cancellationToken);
 }

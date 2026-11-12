@@ -3,6 +3,7 @@ import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import CategoryIcon from '@mui/icons-material/Category';
 import MonitorWeightIcon from '@mui/icons-material/MonitorWeight';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
+import SettingsIcon from '@mui/icons-material/Settings';
 import { Box, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import { linkOptions } from '@tanstack/react-router';
 import { type FC } from 'react';
@@ -34,6 +35,11 @@ const NAV_LINKS = linkOptions([
     icon: <CategoryIcon />,
     title: 'Categories',
     to: '/categories',
+  },
+  {
+    icon: <SettingsIcon />,
+    title: 'Settings',
+    to: '/settings',
   },
 ]);
 

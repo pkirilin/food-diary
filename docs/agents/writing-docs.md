@@ -38,3 +38,13 @@ identity from the request, on any host.
 Documents that record a decision already made name what was actually chosen. Anonymising history makes it false. This covers `CHANGELOG.md`, superseded specs, the Context section of an ADR, and research documents citing evidence from a specific deployment.
 
 The rule governs documents that describe how the app works or should be built. It does not govern documents that describe what someone did.
+
+## Specs and tickets
+
+Specs (`.scratch/<feature-slug>/spec.md`) and their tickets are read by agents and contributors who have this repository and nothing else.
+
+- **Self-contained.** Cite repo files and public URLs only. When the owner's personal notes (e.g. an Obsidian vault) hold something the spec needs, copy it into the spec.
+- **Frontend architecture.** A spec that changes the frontend has a table of the FSD layers, slices and segments it adds, changes or moves code into, naming every new slice and every new piece of Redux state.
+- **Stable story numbers.** Tickets cite user stories by number, so a story keeps its number for good. To drop one, strike it through in place and say why, e.g. `24. ~~As the owner, I want …~~ Dropped: <reason>`.
+- **Rebuilt flows.** A spec that rebuilds an existing flow lists that flow's user-visible behaviours, each marked kept or dropped.
+- **Throwaway artifacts.** A spec that cites a prototype branch, a spike commit, or anything else deleted after implementation gets a closing ticket: replace those citations with a description of the design as built, then delete the artifact.

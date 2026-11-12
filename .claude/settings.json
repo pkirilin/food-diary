@@ -1,4 +1,5 @@
 {
+  "enabledMcpjsonServers": ["chrome-devtools"],
   "permissions": {
     "allow": [
       "Bash(git add:*)",
@@ -25,11 +26,11 @@
       "Bash(yarn build:*)",
       "Bash(yarn lint:*)",
       "Bash(yarn test:*)",
-      "Bash(yarn playwright-cli:*)",
       "Bash(dotnet test:*)",
       "Bash(unzip -p:*)",
       "Bash(npm view:*)",
-      "Read(./**)"
+      "Read(./**)",
+      "mcp__chrome-devtools"
     ],
     "deny": [
       "Read(./.env)",
@@ -39,7 +40,6 @@
       "Read(./secrets/**)"
     ],
     "ask": [
-      "Bash(curl:*)",
       "Bash(rm:*)",
       "Bash(git push:*)",
       "mcp__github_com_github_github-mcp-server__get_me",

@@ -3,34 +3,17 @@ import { Alert, AlertTitle, LinearProgress, Stack, Typography } from '@mui/mater
 import { type FC } from 'react';
 import { useAppSelector } from '@/app/store';
 import { categoryLib } from '@/entities/category';
-import { type RecognizeNoteItem } from '@/entities/note';
-import { ProductForm, type OnSubmitProductFn, type productModel } from '@/entities/product';
-import { type SelectOption } from '@/shared/types';
-import { Button } from '@/shared/ui';
+import { noteLib } from '@/entities/note';
+import { ProductForm, type OnSubmitProductFn } from '@/entities/product';
+import { type imageLib } from '@/shared/lib';
+import { Button, ImagePreviewList } from '@/shared/ui';
 import { useRecognizeNotes } from '../lib/useRecognizeNotes';
-import { type Image } from '../model';
-import { ImagePreviewList } from './ImagePreviewList';
 import { SuggestionSkeleton } from './SuggestionSkeleton';
 
 interface Props {
-  images: Image[];
+  images: imageLib.Image[];
   onSubmitProduct: OnSubmitProductFn;
 }
-
-const toProductFormValues = (
-  { product, quantity }: RecognizeNoteItem,
-  category: SelectOption | null,
-): productModel.ProductFormValues => ({
-  name: product.name.trim(),
-  defaultQuantity: quantity,
-  category,
-  calories: product.caloriesCost,
-  protein: product.protein,
-  fats: product.fats,
-  carbs: product.carbs,
-  sugar: product.sugar,
-  salt: product.salt,
-});
 
 export const ImageUploadStep: FC<Props> = ({ images, onSubmitProduct }) => {
   const recognizeNotes = useRecognizeNotes();
@@ -97,7 +80,10 @@ export const ImageUploadStep: FC<Props> = ({ images, onSubmitProduct }) => {
         <ProductForm
           formId="product-form"
           autoFocus={false}
-          defaultValues={toProductFormValues(suggestion, categories.at(0) ?? null)}
+          defaultValues={noteLib.toRecognizedProductFormValues(
+            suggestion,
+            categories.at(0) ?? null,
+          )}
           categories={categories}
           categoriesLoading={false}
           onSubmit={onSubmitProduct}

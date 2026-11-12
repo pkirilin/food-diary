@@ -1,0 +1,68 @@
+import { Alert, AlertTitle, Button, LinearProgress, Skeleton, Stack } from '@mui/material';
+import { type FC, useState } from 'react';
+import { useAppSelector } from '@/app/store';
+import { ImagePreviewList } from '@/shared/ui';
+import { useRecognizeProduct } from '../lib/useRecognizeProduct';
+import { selectors } from '../model';
+import { CreateProductForm } from './CreateProductForm';
+
+interface Props {
+  onCreated: () => void;
+}
+
+const RecognitionSkeleton: FC = () => (
+  <Stack spacing={2}>
+    <LinearProgress aria-label="Recognizing product" />
+    <Skeleton variant="rounded" height={56} />
+    <Skeleton variant="rounded" height={56} />
+    <Stack direction="row" spacing={2}>
+      <Skeleton variant="rounded" height={56} sx={{ flex: 1 }} />
+      <Skeleton variant="rounded" height={56} sx={{ flex: 1 }} />
+    </Stack>
+    <Skeleton variant="rounded" height={56} />
+  </Stack>
+);
+
+export const RecognizeProductForm: FC<Props> = ({ onCreated }) => {
+  const pickedPhotos = useAppSelector(selectors.recognitionPhotos);
+  // Leaving the route empties the slice while this screen is still rendered
+  const [photos] = useState(pickedPhotos);
+  const { isRecognizing, error, recognizedProduct, recognize } = useRecognizeProduct();
+
+  if (isRecognizing) {
+    return <RecognitionSkeleton />;
+  }
+
+  if (error) {
+    return (
+      <Alert
+        severity="error"
+        action={
+          <Button
+            color="inherit"
+            size="small"
+            onClick={() => {
+              recognize(photos);
+            }}
+          >
+            Retry
+          </Button>
+        }
+      >
+        <AlertTitle>{error.title}</AlertTitle>
+        {error.message}
+      </Alert>
+    );
+  }
+
+  return (
+    <Stack spacing={3}>
+      <ImagePreviewList images={photos} />
+      {recognizedProduct === null ? (
+        <Alert severity="warning">No food found. Please try other photos</Alert>
+      ) : (
+        <CreateProductForm defaultValues={recognizedProduct} onCreated={onCreated} />
+      )}
+    </Stack>
+  );
+};

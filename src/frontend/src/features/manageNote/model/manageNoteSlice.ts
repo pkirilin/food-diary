@@ -3,13 +3,14 @@ import { type NoteItem, noteLib, noteModel, type RecognizeNoteResponse } from '@
 import { type productModel } from '@/entities/product';
 import { productApi } from '@/entities/product/api';
 import { type ClientError } from '@/shared/api';
+import { type imageLib } from '@/shared/lib';
 import { type NoteFormValuesProduct, type NoteFormValues } from './noteSchema';
-import { type NoteRecognitionState, type Image, type ManageNoteScreenState } from './types';
+import { type NoteRecognitionState, type ManageNoteScreenState } from './types';
 
 export interface ManageNoteState {
   note?: NoteFormValues;
   product?: productModel.ProductFormValues;
-  images: Image[];
+  images: imageLib.Image[];
   noteRecognition: NoteRecognitionState;
   submitDisabled: boolean;
   isSubmitting: boolean;
@@ -157,7 +158,7 @@ export const manageNoteSlice = createSlice({
       }
     },
 
-    imagesUploaded: (state, { payload }: PayloadAction<Image[]>) => {
+    imagesUploaded: (state, { payload }: PayloadAction<imageLib.Image[]>) => {
       state.images = payload;
     },
 
