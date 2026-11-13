@@ -6,7 +6,7 @@ import { useEffect, type FC, useMemo } from 'react';
 import { useForm, type SubmitHandler, Controller } from 'react-hook-form';
 import { type GetWeightLogsRequest, weightLogsApi } from '@/entities/weightLog';
 import { useToggle } from '@/shared/hooks';
-import { dateLib } from '@/shared/lib';
+import { dateLib, focusOnMount } from '@/shared/lib';
 import { Button, Dialog } from '@/shared/ui';
 import { type FormValues, schema } from '../model';
 import { getNextWeightLogDate } from '../model/getNextWeightLogDate';
@@ -107,7 +107,7 @@ export const LogWeightButton: FC<Props> = ({ weightLogsRequest }) => {
                   placeholder="Enter your weight"
                   margin="normal"
                   fullWidth
-                  autoFocus
+                  inputRef={focusOnMount}
                   error={!!fieldState.error}
                   helperText={fieldState.error?.message ?? ' '}
                   slotProps={{

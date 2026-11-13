@@ -32,6 +32,7 @@ test('I can log my current weight', async () => {
   expect(within(dateField).getByRole('spinbutton', { name: /month/i })).toHaveTextContent('Jan');
   expect(within(dateField).getByRole('spinbutton', { name: /year/i })).toHaveTextContent('2022');
   expect(weightField).toHaveValue('73');
+  expect(weightField).toHaveFocus();
 
   await user.click(screen.getByRole('button', { name: /choose date/i }));
   await user.click(

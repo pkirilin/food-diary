@@ -16,6 +16,7 @@ test('I can add new note with existing product', async () => {
 
   await steps.whenAddNoteButtonClicked(user, 'Lunch');
   await steps.thenDialogVisible(/lunch/i);
+  steps.thenProductSearchFocused();
   steps.thenNoteCannotBeAdded();
 
   await steps.whenProductSearched(user, 'che');

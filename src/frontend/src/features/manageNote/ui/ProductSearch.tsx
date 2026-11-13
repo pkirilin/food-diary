@@ -3,6 +3,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import { IconButton, InputAdornment, TextField } from '@mui/material';
 import { useState, type FC } from 'react';
 import { useDebounce } from 'use-debounce';
+import { focusOnMount } from '@/shared/lib';
 import { ProductSearchResults } from './ProductSearchResults';
 import { UploadImagesButton } from './UploadImagesButton';
 
@@ -16,7 +17,7 @@ export const ProductSearch: FC = () => {
     <>
       <TextField
         fullWidth
-        autoFocus
+        inputRef={focusOnMount}
         variant="outlined"
         role="search"
         placeholder="Search products"
