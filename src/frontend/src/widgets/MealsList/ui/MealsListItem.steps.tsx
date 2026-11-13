@@ -127,6 +127,10 @@ export const thenDialogVisible = async (dialogTitle: RegExp): Promise<void> => {
   expect(await screen.findByRole('dialog', { name: dialogTitle })).toBeVisible();
 };
 
+export const thenProductSearchFocused = (): void => {
+  expect(screen.getByPlaceholderText(/search products/i)).toHaveFocus();
+};
+
 export const thenNoteCannotBeAdded = (): void => {
   expect(screen.getByRole('button', { name: /add/i })).toBeDisabled();
 };

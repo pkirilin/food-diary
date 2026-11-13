@@ -15,6 +15,7 @@ import {
 } from '@mui/material';
 import { type FC, useMemo, useState } from 'react';
 import { Controller, type FieldErrors, useForm, useWatch } from 'react-hook-form';
+import { focusOnMount } from '@/shared/lib';
 import { type SelectOption } from '@/shared/types';
 import { useNutritionSuggestions } from '../lib/useNutritionSuggestions';
 import {
@@ -127,7 +128,7 @@ export const ProductForm: FC<Props> = ({
           <TextField
             {...field}
             fullWidth
-            autoFocus={autoFocus}
+            inputRef={autoFocus ? focusOnMount : undefined}
             disabled={isSuggesting}
             label="Name"
             placeholder="Product name"
