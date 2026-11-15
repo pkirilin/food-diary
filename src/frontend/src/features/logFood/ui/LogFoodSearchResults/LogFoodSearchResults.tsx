@@ -12,8 +12,8 @@ import {
 import { type FC, Fragment, useMemo } from 'react';
 import { type ProductSelectOption, productApi, productLib } from '@/entities/product';
 import { holdSoftKeyboardForNextField } from '@/shared/lib';
-import { toMealDraftProduct } from '../lib/mapping';
-import { FoundProductListItem } from './FoundProductListItem';
+import { toMealDraftProduct } from '../../lib/mapping';
+import { FoundProductListItem } from '../FoundProductListItem';
 
 interface Props {
   query: string;

@@ -7,8 +7,8 @@ import { API_URL } from '@/shared/config';
 import { captureFocusDuring } from '@tests/captureFocusDuring';
 import { server } from '@tests/mockApi/server';
 import { render } from '@tests/render';
+import { configureStoreWithMealDraft, getMealDraftFoodLogs } from '../mealDraft.fixture';
 import { CreateProductForm } from './CreateProductForm';
-import { configureStoreWithMealDraft, getMealDraftFoodLogs } from './mealDraft.fixture';
 
 const renderNewYogurtForm = async (store: AppStore = configureStoreWithMealDraft()) => {
   const onCreated = vi.fn<() => void>();

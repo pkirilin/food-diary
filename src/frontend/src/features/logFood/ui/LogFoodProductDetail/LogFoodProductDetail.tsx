@@ -2,9 +2,9 @@ import { Alert, Box, CircularProgress } from '@mui/material';
 import { type FC } from 'react';
 import { useAppSelector } from '@/app/store';
 import { foodLogModel } from '@/entities/foodLog';
-import { toMealDraftProductFromResponse } from '../lib/mapping';
-import { useProductToEdit } from '../lib/useProductToEdit';
-import { FoodLogQuantityForm } from './FoodLogQuantityForm';
+import { toMealDraftProductFromResponse } from '../../lib/mapping';
+import { useProductToEdit } from '../../lib/useProductToEdit';
+import { FoodLogQuantityForm } from '../FoodLogQuantityForm';
 
 interface Props {
   productId: number;

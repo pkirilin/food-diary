@@ -20,9 +20,9 @@ import { useAppSelector } from '@/app/store';
 import { foodLogModel } from '@/entities/foodLog';
 import { noteLib } from '@/entities/note';
 import { APP_BAR_HEIGHT_SM, APP_BAR_HEIGHT_XS } from '@/shared/constants';
-import { toNoteMealType } from '../lib/mapping';
-import { useLogMealDraft } from '../lib/useLogMealDraft';
-import { MealDraftFoodLogListItem } from './MealDraftFoodLogListItem';
+import { toNoteMealType } from '../../lib/mapping';
+import { useLogMealDraft } from '../../lib/useLogMealDraft';
+import { MealDraftFoodLogListItem } from '../MealDraftFoodLogListItem';
 
 const COLLAPSED_ROW_HEIGHT = 64;
 const ROW_GUTTER = { xs: 2, sm: 3 };

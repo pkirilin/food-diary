@@ -3,10 +3,10 @@ import { type FC } from 'react';
 import { categoryLib } from '@/entities/category';
 import { ProductForm } from '@/entities/product';
 import { holdSoftKeyboardForNextField, releaseSoftKeyboardHold } from '@/shared/lib';
-import { toProductFormValues } from '../lib/mapping';
-import { useEditProduct } from '../lib/useEditProduct';
-import { useProductToEdit } from '../lib/useProductToEdit';
-import { ProductFormFooter } from './ProductFormFooter';
+import { toProductFormValues } from '../../lib/mapping';
+import { useEditProduct } from '../../lib/useEditProduct';
+import { useProductToEdit } from '../../lib/useProductToEdit';
+import { ProductFormFooter } from '../ProductFormFooter';
 
 const FORM_ID = 'log-food-edit-product-form';
 

@@ -9,8 +9,8 @@ import { API_URL } from '@/shared/config';
 import { server } from '@tests/mockApi/server';
 import { pickPhotosForRecognition } from '@tests/pickPhotosForRecognition';
 import { render } from '@tests/render';
-import { configureStoreWithMealDraft } from './mealDraft.fixture';
-import { RecognizeProductButton } from './RecognizeProductButton';
+import { configureStoreWithMealDraft } from '../mealDraft.fixture';
+import { RecognizeProductButton } from '../RecognizeProductButton';
 import { RecognizeProductForm } from './RecognizeProductForm';
 
 interface RecognitionScreenProps {

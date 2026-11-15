@@ -7,13 +7,13 @@ import { API_URL } from '@/shared/config';
 import { captureFocusDuring } from '@tests/captureFocusDuring';
 import { server } from '@tests/mockApi/server';
 import { render } from '@tests/render';
-import { EditProductForm } from './EditProductForm';
 import {
   CHICKEN,
   OATS,
   configureStoreWithMealDraft,
   getMealDraftFoodLogs,
-} from './mealDraft.fixture';
+} from '../mealDraft.fixture';
+import { EditProductForm } from './EditProductForm';
 
 const renderChickenForm = async (store: AppStore = configureStoreWithMealDraft()) => {
   const onSaved = vi.fn<() => void>();

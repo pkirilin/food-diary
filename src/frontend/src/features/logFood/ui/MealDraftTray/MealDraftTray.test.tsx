@@ -8,7 +8,7 @@ import { API_URL } from '@/shared/config';
 import { captureFocusDuring } from '@tests/captureFocusDuring';
 import { server } from '@tests/mockApi/server';
 import { render } from '@tests/render';
-import { CHICKEN, MEAL_DRAFT_DATE, OATS, configureStoreWithMealDraft } from './mealDraft.fixture';
+import { CHICKEN, MEAL_DRAFT_DATE, OATS, configureStoreWithMealDraft } from '../mealDraft.fixture';
 import { MealDraftTray } from './MealDraftTray';
 
 interface TrayUnderSearchProps {

@@ -5,9 +5,9 @@ import { type FC, useState } from 'react';
 import { API_URL } from '@/shared/config';
 import { server } from '@tests/mockApi/server';
 import { render } from '@tests/render';
-import { EditProductForm } from './EditProductForm';
+import { EditProductForm } from '../EditProductForm';
+import { CHICKEN, configureStoreWithMealDraft } from '../mealDraft.fixture';
 import { LogFoodProductDetail } from './LogFoodProductDetail';
-import { CHICKEN, configureStoreWithMealDraft } from './mealDraft.fixture';
 
 interface ProductDetailWithEditFormProps {
   productId: number;

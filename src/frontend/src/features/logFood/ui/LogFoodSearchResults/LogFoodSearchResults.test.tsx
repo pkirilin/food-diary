@@ -2,8 +2,8 @@ import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { captureFocusDuring } from '@tests/captureFocusDuring';
 import { render } from '@tests/render';
+import { configureStoreWithMealDraft } from '../mealDraft.fixture';
 import { LogFoodSearchResults } from './LogFoodSearchResults';
-import { configureStoreWithMealDraft } from './mealDraft.fixture';
 
 const renderSearchResults = async (query: string) => {
   const onQueryChange = vi.fn<(query: string) => void>();

@@ -2,8 +2,8 @@ import { type FC } from 'react';
 import { categoryLib } from '@/entities/category';
 import { ProductForm, type productModel } from '@/entities/product';
 import { holdSoftKeyboardForNextField, releaseSoftKeyboardHold } from '@/shared/lib';
-import { useCreateProduct } from '../lib/useCreateProduct';
-import { ProductFormFooter } from './ProductFormFooter';
+import { useCreateProduct } from '../../lib/useCreateProduct';
+import { ProductFormFooter } from '../ProductFormFooter';
 
 const FORM_ID = 'log-food-create-product-form';
 

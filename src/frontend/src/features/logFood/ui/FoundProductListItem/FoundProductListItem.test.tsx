@@ -5,8 +5,8 @@ import { type AppStore } from '@/app/store';
 import { foodLogModel } from '@/entities/foodLog';
 import { captureFocusDuring } from '@tests/captureFocusDuring';
 import { render } from '@tests/render';
+import { CHICKEN, configureStoreWithMealDraft, getMealDraftFoodLogs } from '../mealDraft.fixture';
 import { FoundProductListItem } from './FoundProductListItem';
-import { CHICKEN, configureStoreWithMealDraft, getMealDraftFoodLogs } from './mealDraft.fixture';
 
 const renderFoundChicken = async (store: AppStore) => {
   const onOpen = vi.fn<(productId: number) => void>();

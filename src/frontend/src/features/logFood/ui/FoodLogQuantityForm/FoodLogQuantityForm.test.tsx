@@ -3,13 +3,13 @@ import userEvent from '@testing-library/user-event';
 import { type foodLogModel } from '@/entities/foodLog';
 import { captureFocusDuring } from '@tests/captureFocusDuring';
 import { render } from '@tests/render';
-import { FoodLogQuantityForm } from './FoodLogQuantityForm';
 import {
   CHICKEN,
   OATS,
   configureStoreWithMealDraft,
   getMealDraftFoodLogs,
-} from './mealDraft.fixture';
+} from '../mealDraft.fixture';
+import { FoodLogQuantityForm } from './FoodLogQuantityForm';
 
 const renderQuantityForm = async (
   product: foodLogModel.MealDraftProduct,
