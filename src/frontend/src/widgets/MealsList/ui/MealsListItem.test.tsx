@@ -2,6 +2,14 @@ import userEvent from '@testing-library/user-event';
 import { noteModel } from '@/entities/note';
 import * as steps from './MealsListItem.steps';
 
+beforeEach(() => {
+  localStorage.clear();
+});
+
+afterEach(() => {
+  vi.restoreAllMocks();
+});
+
 test('I can see my meals with calculated calories', async () => {
   steps.givenMealsListItem({ mealType: noteModel.MealType.Lunch });
 
@@ -96,3 +104,26 @@ test('I can edit product via note form', async () => {
   await steps.thenDialogVisible(/lunch/i);
   steps.thenProductHasValue('Mozarella cheese');
 });
+
+test.each([
+  { storage: 'empty', prepareStorage: () => {} },
+  {
+    storage: 'throwing',
+    prepareStorage: () => {
+      vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
+        throw new Error('Storage is disabled');
+      });
+    },
+  },
+])(
+  'with the "Log several foods at once" switch off and $storage device storage, Add breakfast opens the old dialog',
+  async ({ prepareStorage }) => {
+    prepareStorage();
+    const user = userEvent.setup();
+    steps.givenMealsListItem({ mealType: noteModel.MealType.Breakfast });
+
+    await steps.whenAddNoteButtonClicked(user, 'Breakfast');
+
+    await steps.thenDialogVisible(/breakfast/i);
+  },
+);

@@ -1,21 +1,25 @@
 import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { captureFocusDuring } from '@tests/captureFocusDuring';
 import { render } from '@tests/render';
 import { LogFoodSearchResults } from './LogFoodSearchResults';
+import { configureStoreWithMealDraft } from './mealDraft.fixture';
 
 const renderSearchResults = async (query: string) => {
+  const onQueryChange = vi.fn<(query: string) => void>();
   const onCreateProduct = vi.fn<(name: string) => void>();
 
   await render(
     <LogFoodSearchResults
       query={query}
-      onQueryChange={vi.fn<(query: string) => void>()}
+      onQueryChange={onQueryChange}
       onCreateProduct={onCreateProduct}
       onOpenProduct={vi.fn<(productId: number) => void>()}
     />,
+    { store: configureStoreWithMealDraft() },
   );
 
-  return { onCreateProduct };
+  return { onQueryChange, onCreateProduct };
 };
 
 test('a query that only longer product names contain offers to create it after the results', async () => {
@@ -37,4 +41,33 @@ test('a query that names an existing product, in any case, offers no Create', as
 
   expect(await screen.findByRole('button', { name: 'Add Cheese' })).toBeVisible();
   expect(screen.queryByRole('button', { name: /^Create/ })).not.toBeInTheDocument();
+});
+
+test('a search that finds nothing offers to create the product named by the query', async () => {
+  const user = userEvent.setup();
+  const { onCreateProduct } = await renderSearchResults('Yogurt');
+
+  await user.click(await screen.findByRole('button', { name: 'Create "Yogurt"' }));
+
+  expect(onCreateProduct).toHaveBeenCalledWith('Yogurt');
+});
+
+test('the Create row focuses a text input during the tap', async () => {
+  const user = userEvent.setup();
+  await renderSearchResults('Yogurt');
+  const target = await screen.findByRole('button', { name: 'Create "Yogurt"' });
+  const focusedDuringTap = captureFocusDuring('click');
+
+  await user.click(target);
+
+  expect(focusedDuringTap()).toBeInstanceOf(HTMLInputElement);
+});
+
+test('⊕ on a found product clears the search', async () => {
+  const user = userEvent.setup();
+  const { onQueryChange } = await renderSearchResults('chick');
+
+  await user.click(await screen.findByRole('button', { name: 'Add Chicken' }));
+
+  expect(onQueryChange).toHaveBeenCalledWith('');
 });

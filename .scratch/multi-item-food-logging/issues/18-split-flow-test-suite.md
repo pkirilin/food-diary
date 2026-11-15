@@ -4,7 +4,7 @@
 
 **Blocked by:** None
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 ## Decisions
 
@@ -44,6 +44,13 @@ Tests outside `settings.test.tsx` no longer open the flow through Settings → d
 - Opening the search screen with no Meal Draft lands on the day page
 - Typing in the search does not re-check the auth status
 - Add breakfast focuses a text input during the tap, then hands the focus to the search field. The focus crosses from the day page to the search route.
+- The back arrow returns from the search screen to the day page, however much was typed
+- Leaving the flow with an emptied Meal Draft does not ask
+- Cancel on the discard prompt stays on the search screen with the Meal Draft intact
+- A new meal opens with an empty Meal Draft after a previous meal was logged
+- The back arrow returns from a product to an empty search with the Meal Draft unchanged
+- The back arrow leaves the keyboard alone
+- The full-size picked photo stays available until the recognition screen is left
 
 ### Everything else moves
 
@@ -68,12 +75,12 @@ A moved test is deleted from the flow suite, with no second copy kept.
 
 ## Acceptance criteria
 
-- [ ] `tests/settings.test.tsx` holds the three switch tests with its own helpers, and `multiItemFoodLogging.test.tsx` has none of them
-- [ ] No test outside `settings.test.tsx` opens the flow through the Settings page
-- [ ] `render` takes an optional `store`, and moved tests use it to start with a Meal Draft
-- [ ] `multiItemFoodLogging.test.tsx` holds exactly the 8 happy paths and the router-only edge cases listed above
-- [ ] Every other former flow test exists once, in a colocated component test, with the same behaviour asserted
-- [ ] The two old-dialog tests live in `MealsListItem.test.tsx`
-- [ ] `.claude/rules/frontend.md` states the flow-suite rule
-- [ ] `yarn test --run --reporter=verbose` passes, with no `stderr |` blocks
-- [ ] Lint and type-check pass
+- [x] `tests/settings.test.tsx` holds the three switch tests with its own helpers, and `multiItemFoodLogging.test.tsx` has none of them
+- [x] No test outside `settings.test.tsx` opens the flow through the Settings page
+- [x] `render` takes an optional `store`, and moved tests use it to start with a Meal Draft
+- [x] `multiItemFoodLogging.test.tsx` holds exactly the 8 happy paths and the router-only edge cases listed above
+- [x] Every other former flow test exists once, in a colocated component test, with the same behaviour asserted
+- [x] The two old-dialog tests live in `MealsListItem.test.tsx`
+- [x] `.claude/rules/frontend.md` states the flow-suite rule
+- [x] `yarn test --run --reporter=verbose` passes, with no `stderr |` blocks
+- [x] Lint and type-check pass

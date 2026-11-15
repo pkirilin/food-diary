@@ -9,20 +9,19 @@ import { act, type RenderResult, render as rtlRender } from '@testing-library/re
 import { type ReactElement } from 'react';
 import { RootProvider } from '@/app/RootProvider';
 import { createAppRouter } from '@/app/router';
-import { configureStore } from '@/app/store';
+import { type AppStore, configureStore } from '@/app/store';
 import { usersService } from '../mockApi/user';
 import TestEnvironment from './TestEnvironment';
 
 interface RenderOptions {
   pageSizeOverride?: number;
+  store?: AppStore;
 }
 
 export const render = async (
   ui: ReactElement,
-  { pageSizeOverride }: RenderOptions = {},
+  { pageSizeOverride, store = configureStore() }: RenderOptions = {},
 ): Promise<RenderResult> => {
-  const store = configureStore();
-
   const rootRoute = createRootRoute({
     staticData: { appBar: null },
     component: () => <TestEnvironment pageSizeOverride={pageSizeOverride}>{ui}</TestEnvironment>,
