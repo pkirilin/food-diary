@@ -4,7 +4,15 @@ import { routeTree } from './routeTree.gen';
 import { type AppStore } from './store';
 import { ErrorScreen } from './ui';
 
-export const createAppRouter = (store: AppStore, history: RouterHistory = createHashHistory()) =>
+interface AppRouterOptions {
+  history?: RouterHistory;
+  defaultPendingMinMs?: number;
+}
+
+export const createAppRouter = (
+  store: AppStore,
+  { history = createHashHistory(), ...overrides }: AppRouterOptions = {},
+) =>
   createRouter({
     routeTree,
     history,
@@ -12,6 +20,9 @@ export const createAppRouter = (store: AppStore, history: RouterHistory = create
     scrollRestoration: true,
     defaultPreloadStaleTime: 0,
     defaultErrorComponent: ErrorScreen,
+    // createRouter spreads its options over its own defaults, so a key passed as undefined erases
+    // the default: pass only the keys the caller set
+    ...overrides,
   });
 
 declare module '@tanstack/react-router' {

@@ -21,7 +21,7 @@ The frontend and the E2E suite (`tests/`) are independent Yarn 4 projects (node-
 
 ### Frontend (`src/frontend/`)
 
-Before changing or testing frontend code, read `.claude/rules/frontend.md`: where tests go, how to debug a failing one, and browser verification of UI changes (the `chrome-devtools` MCP server from `.mcp.json`, which needs Google Chrome installed). It loads on its own only when a `.ts`/`.tsx` file is opened with Read or Edit.
+Before changing or testing frontend code, read `.claude/rules/frontend.md`: where tests go, how to debug a failing one, and when a UI change needs browser verification (steps in `docs/agents/browser-verification.md`; the `chrome-devtools` MCP server from `.mcp.json`, which needs Google Chrome installed). It loads on its own only when a `.ts`/`.tsx` file is opened with Read or Edit.
 
 For backend-less development, set `.env.local` with `VITE_APP_MSW_ENABLED=true`, `VITE_APP_FAKE_AUTH_ENABLED=true`, `VITE_APP_FAKE_AUTH_LOGIN_ON_INIT=true` (full env-var list in `docs/development.md`).
 

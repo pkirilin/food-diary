@@ -120,7 +120,7 @@ Navigate to <http://localhost:5173>. The app will now use mocked responses for a
 
 ### Browser verification setup
 
-Coding agents verify frontend changes in a real browser with [`chrome-devtools-mcp`](https://github.com/ChromeDevTools/chrome-devtools-mcp), which needs an MCP-capable agent, Google Chrome (stable) and Node.js with `npx`. `.mcp.json` registers the server at `@latest`, so `npx` fetches the newest published version without a separate install. The rules for when and how to verify are in `.claude/rules/frontend.md`.
+Coding agents verify frontend changes in a real browser with [`chrome-devtools-mcp`](https://github.com/ChromeDevTools/chrome-devtools-mcp), which needs an MCP-capable agent, Google Chrome (stable) and Node.js with `npx`. `.mcp.json` registers the server at `@latest`, so `npx` fetches the newest published version without a separate install. When to verify is in `.claude/rules/frontend.md`; how, in `docs/agents/browser-verification.md`.
 
 ### Frontend environment variables
 

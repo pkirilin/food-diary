@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom';
+import { releaseSoftKeyboardHold } from '@/shared/lib';
 import { initMockApiDb } from './mockApi/initMockApiDb';
 import { server } from './mockApi/server';
 
@@ -62,6 +63,7 @@ beforeEach(async () => {
 
 afterEach(() => {
   server.resetHandlers();
+  releaseSoftKeyboardHold();
 });
 
 afterAll(() => {

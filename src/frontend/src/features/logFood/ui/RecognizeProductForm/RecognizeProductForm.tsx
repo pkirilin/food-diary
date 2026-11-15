@@ -2,9 +2,9 @@ import { Alert, AlertTitle, Button, LinearProgress, Skeleton, Stack } from '@mui
 import { type FC, useState } from 'react';
 import { useAppSelector } from '@/app/store';
 import { ImagePreviewList } from '@/shared/ui';
-import { useRecognizeProduct } from '../lib/useRecognizeProduct';
-import { selectors } from '../model';
-import { CreateProductForm } from './CreateProductForm';
+import { useRecognizeProduct } from '../../lib/useRecognizeProduct';
+import { selectors } from '../../model';
+import { CreateProductForm } from '../CreateProductForm';
 
 interface Props {
   onCreated: () => void;

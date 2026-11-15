@@ -9,20 +9,19 @@ import { act, type RenderResult, render as rtlRender } from '@testing-library/re
 import { type ReactElement } from 'react';
 import { RootProvider } from '@/app/RootProvider';
 import { createAppRouter } from '@/app/router';
-import { configureStore } from '@/app/store';
+import { type AppStore, configureStore } from '@/app/store';
 import { usersService } from '../mockApi/user';
 import TestEnvironment from './TestEnvironment';
 
 interface RenderOptions {
   pageSizeOverride?: number;
+  store?: AppStore;
 }
 
 export const render = async (
   ui: ReactElement,
-  { pageSizeOverride }: RenderOptions = {},
+  { pageSizeOverride, store = configureStore() }: RenderOptions = {},
 ): Promise<RenderResult> => {
-  const store = configureStore();
-
   const rootRoute = createRootRoute({
     staticData: { appBar: null },
     component: () => <TestEnvironment pageSizeOverride={pageSizeOverride}>{ui}</TestEnvironment>,
@@ -62,7 +61,8 @@ export const renderApp = async (
   });
 
   const store = configureStore();
-  const router = createAppRouter(store, history);
+  // The router keeps a shown pending component up for 500ms by default, which would stall every render
+  const router = createAppRouter(store, { history, defaultPendingMinMs: 0 });
 
   const view = rtlRender(
     <RootProvider store={store}>
