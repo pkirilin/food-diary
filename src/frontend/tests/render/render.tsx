@@ -62,7 +62,8 @@ export const renderApp = async (
   });
 
   const store = configureStore();
-  const router = createAppRouter(store, history);
+  // The router keeps a shown pending component up for 500ms by default, which would stall every render
+  const router = createAppRouter(store, { history, defaultPendingMinMs: 0 });
 
   const view = rtlRender(
     <RootProvider store={store}>
