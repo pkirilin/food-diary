@@ -6,7 +6,8 @@ import {
   useRouter,
   useRouterState,
 } from '@tanstack/react-router';
-import { authApi, useAuthStatusCheckEffect } from '@/features/auth';
+import { useCallback } from 'react';
+import { AUTH_STATUS_MAX_AGE_SECONDS, authApi, useAuthStatusCheckEffect } from '@/features/auth';
 import { UpdateAppBanner } from '@/features/updateApp';
 import { APP_BAR_HEIGHT_SM, APP_BAR_HEIGHT_XS } from '@/shared/constants';
 import { AppLoader } from '@/shared/ui';
@@ -14,20 +15,16 @@ import { Navigation } from '@/widgets/Navigation';
 
 export const Route = createFileRoute('/_app')({
   staticData: { appBar: null },
-  beforeLoad: async ({ context, location, matches, preload }) => {
-    const staysOnSameScreen = matches.at(-1)?.cause === 'stay';
-    const authStatusQueryPromise = context.store.dispatch(
-      authApi.endpoints.getStatus.initiate({}, { forceRefetch: !preload && !staysOnSameScreen }),
+  beforeLoad: async ({ context, location }) => {
+    const { data } = await context.store.dispatch(
+      authApi.endpoints.getStatus.initiate(
+        {},
+        { forceRefetch: AUTH_STATUS_MAX_AGE_SECONDS, subscribe: false },
+      ),
     );
 
-    try {
-      const authStatusQuery = await authStatusQueryPromise;
-
-      if (!authStatusQuery.data?.isAuthenticated) {
-        throw redirect({ to: '/login', search: { returnUrl: location.href } });
-      }
-    } finally {
-      authStatusQueryPromise.unsubscribe();
+    if (data?.isAuthenticated !== true) {
+      throw redirect({ to: '/login', search: { returnUrl: location.href } });
     }
   },
   pendingComponent: AppLoader,
@@ -38,8 +35,11 @@ export const Route = createFileRoute('/_app')({
 function AuthenticatedLayout() {
   const router = useRouter();
   const loading = useRouterState({ select: state => state.isLoading });
+  const handleSessionEnded = useCallback(() => {
+    void router.invalidate();
+  }, [router]);
 
-  useAuthStatusCheckEffect(router.history.push);
+  useAuthStatusCheckEffect(handleSessionEnded);
 
   return (
     <>

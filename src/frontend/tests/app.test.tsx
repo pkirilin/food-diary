@@ -2,15 +2,29 @@ import { act, configure, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { HttpResponse, http } from 'msw';
 import { noteModel } from '@/entities/note';
-import { type GetAuthStatusResponse } from '@/features/auth';
 import { API_URL, AUTH_CHECK_INTERVAL } from '@/shared/config';
 import { renderApp } from '@tests/render';
 import { mcpConsentService } from './mockApi/mcpConsent';
 import { notesService } from './mockApi/notes';
 import { server } from './mockApi/server';
+import { usersService } from './mockApi/user';
 
 // Whole-app navigations outlast the 1 s default while the rest of the suite runs in parallel
 configure({ asyncUtilTimeout: 3000 });
+
+const recordAuthStatusRequests = (): string[] => {
+  const authStatusRequests: string[] = [];
+  const recordAuthStatusRequest = ({ request }: { request: Request }): void => {
+    if (request.url === `${API_URL}/api/v1/auth/status`) {
+      authStatusRequests.push(request.url);
+    }
+  };
+  server.events.on('request:start', recordAuthStatusRequest);
+  onTestFinished(() => {
+    server.events.removeListener('request:start', recordAuthStatusRequest);
+  });
+  return authStatusRequests;
+};
 
 const seedSeptemberFoodLog = (): void => {
   notesService.create({
@@ -79,48 +93,110 @@ test('logging out from the drawer shows the sign-in screen', async () => {
   expect(await screen.findByRole('button', { name: /sign in/i })).toBeVisible();
 });
 
-test('an expired session shows the sign-in screen', async () => {
+test('an expired session shows the sign-in screen, and signing in again returns to the same screen', async () => {
   vi.useFakeTimers({ shouldAdvanceTime: true });
   onTestFinished(() => {
     vi.useRealTimers();
   });
 
   const user = userEvent.setup();
-  await renderApp('/');
+  await renderApp('/weight', { signedIn: true });
+  expect(await screen.findByRole('button', { name: 'Log weight' })).toBeVisible();
 
-  const signInButton = await screen.findByRole('button', { name: /sign in/i });
-  await user.click(signInButton);
-  expect(await screen.findByRole('button', { name: /19 oct 2023/i })).toBeVisible();
-
-  server.use(
-    http.get(`${API_URL}/api/v1/auth/status`, () => {
-      return HttpResponse.json<GetAuthStatusResponse>({
-        isAuthenticated: false,
-      });
-    }),
-  );
-
+  usersService.signOutById(1);
   await act(() => vi.advanceTimersByTimeAsync(AUTH_CHECK_INTERVAL));
 
-  expect(await screen.findByRole('button', { name: /sign in/i })).toBeVisible();
+  await user.click(await screen.findByRole('button', { name: /sign in/i }));
+
+  expect(await screen.findByRole('button', { name: 'Log weight' })).toBeVisible();
 });
 
-test('opening another section with an expired session shows the sign-in screen', async () => {
+test('opening another section after the auth check interval with an expired session shows the sign-in screen', async () => {
+  vi.useFakeTimers({ toFake: ['Date'], shouldAdvanceTime: true });
+  onTestFinished(() => {
+    vi.useRealTimers();
+  });
+
   const user = userEvent.setup();
   await renderApp('/', { signedIn: true });
   await user.click(await screen.findByRole('button', { name: /open menu/i }));
-
-  server.use(
-    http.get(`${API_URL}/api/v1/auth/status`, () => {
-      return HttpResponse.json<GetAuthStatusResponse>({
-        isAuthenticated: false,
-      });
-    }),
-  );
+  usersService.signOutById(1);
+  vi.setSystemTime(Date.now() + AUTH_CHECK_INTERVAL);
 
   await user.click(screen.getByRole('link', { name: 'Weight' }));
 
   expect(await screen.findByRole('button', { name: /sign in/i })).toBeVisible();
+  expect(window.location.hash).toBe(`#/login?${new URLSearchParams({ returnUrl: '/weight' })}`);
+});
+
+test('opening another section re-checks the auth status only once the last check is older than the auth check interval', async () => {
+  vi.useFakeTimers({ toFake: ['Date'], shouldAdvanceTime: true });
+  onTestFinished(() => {
+    vi.useRealTimers();
+  });
+
+  const user = userEvent.setup();
+  await renderApp('/', { signedIn: true });
+  const authStatusRequests = recordAuthStatusRequests();
+
+  await user.click(await screen.findByRole('button', { name: /open menu/i }));
+  await user.click(screen.getByRole('link', { name: 'Weight' }));
+  expect(await screen.findByRole('button', { name: 'Log weight' })).toBeVisible();
+  expect(authStatusRequests).toStrictEqual<string[]>([]);
+
+  vi.setSystemTime(Date.now() + AUTH_CHECK_INTERVAL);
+  await user.click(await screen.findByRole('button', { name: /open menu/i }));
+  await user.click(screen.getByRole('link', { name: 'Products' }));
+  expect(await screen.findByRole('cell', { name: 'Chocolate cake' })).toBeVisible();
+  expect(authStatusRequests).toHaveLength(1);
+});
+
+test('bringing the app back to the foreground re-checks the auth status only once the last check is older than the auth check interval', async () => {
+  vi.useFakeTimers({ toFake: ['Date'], shouldAdvanceTime: true });
+  onTestFinished(() => {
+    vi.useRealTimers();
+  });
+
+  await renderApp('/weight', { signedIn: true });
+  expect(await screen.findByRole('button', { name: 'Log weight' })).toBeVisible();
+  usersService.signOutById(1);
+  const authStatusRequests = recordAuthStatusRequests();
+
+  act(() => {
+    document.dispatchEvent(new Event('visibilitychange'));
+  });
+  expect(authStatusRequests).toStrictEqual<string[]>([]);
+
+  vi.setSystemTime(Date.now() + AUTH_CHECK_INTERVAL);
+  act(() => {
+    document.dispatchEvent(new Event('visibilitychange'));
+  });
+
+  expect(await screen.findByRole('button', { name: /sign in/i })).toBeVisible();
+  expect(window.location.hash).toBe(`#/login?${new URLSearchParams({ returnUrl: '/weight' })}`);
+});
+
+test('a failed auth status check keeps the owner signed in', async () => {
+  vi.useFakeTimers({ shouldAdvanceTime: true });
+  onTestFinished(() => {
+    vi.useRealTimers();
+  });
+
+  const user = userEvent.setup();
+  await renderApp('/weight', { signedIn: true });
+  expect(await screen.findByRole('button', { name: 'Log weight' })).toBeVisible();
+  server.use(http.get(`${API_URL}/api/v1/auth/status`, () => HttpResponse.error()));
+  const authStatusRequests = recordAuthStatusRequests();
+
+  await act(() => vi.advanceTimersByTimeAsync(AUTH_CHECK_INTERVAL));
+  act(() => {
+    document.dispatchEvent(new Event('visibilitychange'));
+  });
+  await user.click(await screen.findByRole('button', { name: /open menu/i }));
+  await user.click(screen.getByRole('link', { name: 'Products' }));
+
+  expect(await screen.findByRole('cell', { name: 'Chocolate cake' })).toBeVisible();
+  expect(authStatusRequests).toHaveLength(3);
 });
 
 test('opening a diary date by URL shows the Food Logs of that date', async () => {
