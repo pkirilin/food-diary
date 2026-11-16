@@ -12,19 +12,40 @@ import { usersService } from './mockApi/user';
 // Whole-app navigations outlast the 1 s default while the rest of the suite runs in parallel
 configure({ asyncUtilTimeout: 3000 });
 
-const recordAuthStatusRequests = (): string[] => {
-  const authStatusRequests: string[] = [];
-  const recordAuthStatusRequest = ({ request }: { request: Request }): void => {
+const ONE_MINUTE = 60_000;
+
+interface RequestCounter {
+  readonly count: number;
+}
+
+const countAuthStatusRequests = (): RequestCounter => {
+  const counter = { count: 0 };
+  const countAuthStatusRequest = ({ request }: { request: Request }): void => {
     if (request.url === `${API_URL}/api/v1/auth/status`) {
-      authStatusRequests.push(request.url);
+      counter.count += 1;
     }
   };
-  server.events.on('request:start', recordAuthStatusRequest);
+  server.events.on('request:start', countAuthStatusRequest);
   onTestFinished(() => {
-    server.events.removeListener('request:start', recordAuthStatusRequest);
+    server.events.removeListener('request:start', countAuthStatusRequest);
   });
-  return authStatusRequests;
+  return counter;
 };
+
+type FakeTimersConfig = NonNullable<Parameters<typeof vi.useFakeTimers>[0]>;
+
+const installFakeTimers = (toFake?: FakeTimersConfig['toFake']): void => {
+  vi.useFakeTimers({ toFake, shouldAdvanceTime: true });
+  onTestFinished(() => {
+    vi.useRealTimers();
+  });
+};
+
+const bringAppToForeground = (): Promise<void> =>
+  act(() => {
+    document.dispatchEvent(new Event('visibilitychange'));
+    return Promise.resolve();
+  });
 
 const seedSeptemberFoodLog = (): void => {
   notesService.create({
@@ -91,13 +112,11 @@ test('logging out from the drawer shows the sign-in screen', async () => {
   const logoutButton = await screen.findByRole('button', { name: /logout/i });
   await user.click(logoutButton);
   expect(await screen.findByRole('button', { name: /sign in/i })).toBeVisible();
+  expect(window.location.hash).toBe('#/login');
 });
 
 test('an expired session shows the sign-in screen, and signing in again returns to the same screen', async () => {
-  vi.useFakeTimers({ shouldAdvanceTime: true });
-  onTestFinished(() => {
-    vi.useRealTimers();
-  });
+  installFakeTimers();
 
   const user = userEvent.setup();
   await renderApp('/weight', { signedIn: true });
@@ -112,10 +131,7 @@ test('an expired session shows the sign-in screen, and signing in again returns 
 });
 
 test('opening another section after the auth check interval with an expired session shows the sign-in screen', async () => {
-  vi.useFakeTimers({ toFake: ['Date'], shouldAdvanceTime: true });
-  onTestFinished(() => {
-    vi.useRealTimers();
-  });
+  installFakeTimers(['Date']);
 
   const user = userEvent.setup();
   await renderApp('/', { signedIn: true });
@@ -130,73 +146,61 @@ test('opening another section after the auth check interval with an expired sess
 });
 
 test('opening another section re-checks the auth status only once the last check is older than the auth check interval', async () => {
-  vi.useFakeTimers({ toFake: ['Date'], shouldAdvanceTime: true });
-  onTestFinished(() => {
-    vi.useRealTimers();
-  });
+  installFakeTimers(['Date']);
 
   const user = userEvent.setup();
   await renderApp('/', { signedIn: true });
-  const authStatusRequests = recordAuthStatusRequests();
+  const authStatusRequests = countAuthStatusRequests();
 
   await user.click(await screen.findByRole('button', { name: /open menu/i }));
   await user.click(screen.getByRole('link', { name: 'Weight' }));
   expect(await screen.findByRole('button', { name: 'Log weight' })).toBeVisible();
-  expect(authStatusRequests).toStrictEqual<string[]>([]);
+  expect(authStatusRequests.count).toBe(0);
 
   vi.setSystemTime(Date.now() + AUTH_CHECK_INTERVAL);
   await user.click(await screen.findByRole('button', { name: /open menu/i }));
   await user.click(screen.getByRole('link', { name: 'Products' }));
   expect(await screen.findByRole('cell', { name: 'Chocolate cake' })).toBeVisible();
-  expect(authStatusRequests).toHaveLength(1);
+  expect(authStatusRequests.count).toBe(1);
 });
 
 test('bringing the app back to the foreground re-checks the auth status only once the last check is older than the auth check interval', async () => {
-  vi.useFakeTimers({ toFake: ['Date'], shouldAdvanceTime: true });
-  onTestFinished(() => {
-    vi.useRealTimers();
-  });
+  installFakeTimers(['Date']);
 
   await renderApp('/weight', { signedIn: true });
   expect(await screen.findByRole('button', { name: 'Log weight' })).toBeVisible();
+  const lastCheckedAt = Date.now();
   usersService.signOutById(1);
-  const authStatusRequests = recordAuthStatusRequests();
+  const authStatusRequests = countAuthStatusRequests();
 
-  act(() => {
-    document.dispatchEvent(new Event('visibilitychange'));
-  });
-  expect(authStatusRequests).toStrictEqual<string[]>([]);
+  vi.setSystemTime(lastCheckedAt + AUTH_CHECK_INTERVAL - ONE_MINUTE);
+  await bringAppToForeground();
+  expect(authStatusRequests.count).toBe(0);
+  expect(screen.getByRole('button', { name: 'Log weight' })).toBeVisible();
 
-  vi.setSystemTime(Date.now() + AUTH_CHECK_INTERVAL);
-  act(() => {
-    document.dispatchEvent(new Event('visibilitychange'));
-  });
+  vi.setSystemTime(lastCheckedAt + AUTH_CHECK_INTERVAL);
+  await bringAppToForeground();
 
   expect(await screen.findByRole('button', { name: /sign in/i })).toBeVisible();
   expect(window.location.hash).toBe(`#/login?${new URLSearchParams({ returnUrl: '/weight' })}`);
 });
 
 test('a failed auth status check keeps the owner signed in', async () => {
-  vi.useFakeTimers({ shouldAdvanceTime: true });
-  onTestFinished(() => {
-    vi.useRealTimers();
-  });
+  installFakeTimers();
 
   const user = userEvent.setup();
   await renderApp('/weight', { signedIn: true });
   expect(await screen.findByRole('button', { name: 'Log weight' })).toBeVisible();
   server.use(http.get(`${API_URL}/api/v1/auth/status`, () => HttpResponse.error()));
-  const authStatusRequests = recordAuthStatusRequests();
+  const authStatusRequests = countAuthStatusRequests();
 
   await act(() => vi.advanceTimersByTimeAsync(AUTH_CHECK_INTERVAL));
-  act(() => {
-    document.dispatchEvent(new Event('visibilitychange'));
-  });
+  await bringAppToForeground();
   await user.click(await screen.findByRole('button', { name: /open menu/i }));
   await user.click(screen.getByRole('link', { name: 'Products' }));
 
   expect(await screen.findByRole('cell', { name: 'Chocolate cake' })).toBeVisible();
-  expect(authStatusRequests).toHaveLength(3);
+  expect(authStatusRequests.count).toBe(3);
 });
 
 test('opening a diary date by URL shows the Food Logs of that date', async () => {
