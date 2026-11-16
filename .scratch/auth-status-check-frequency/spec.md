@@ -1,6 +1,6 @@
 # Spec: Fewer auth status requests
 
-Status: ready-for-agent
+Status: resolved
 
 ## Problem Statement
 

@@ -1,6 +1,6 @@
 # 01 — Reuse a fresh auth status instead of checking on every navigation
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 **Spec:** [spec.md](../spec.md) (user stories 1–7)
 
@@ -30,17 +30,17 @@ See the spec's Solution, Implementation Decisions and sequence diagrams. In shor
 - `docs/development.md` — `VITE_APP_AUTH_CHECK_INTERVAL` row
 
 **Acceptance criteria:**
-- [ ] Navigating between screens within `AUTH_CHECK_INTERVAL` of the last status response sends no status request (test asserts it)
-- [ ] Navigating after the window sends one status request, and `false` redirects to `/login?returnUrl=…`
-- [ ] The polling tick that gets `false` shows the sign-in screen, and signing in again returns to the same screen
-- [ ] Bringing the app back to the foreground refetches only when the cached status is stale
-- [ ] A failed status request (polling, visibility or navigation with a cached status) keeps the owner on the screen
-- [ ] `useAuthStatusCheckEffect` no longer calls `signOut`; the sign-out button still does
-- [ ] `_app` and `login` `beforeLoad` use `subscribe: false` with no `try`/`finally`
-- [ ] Fake-auth sign-in, sign-out and sign-in again work in `tests/app.test.tsx` and in backend-less development
-- [ ] `docs/development.md` describes `VITE_APP_AUTH_CHECK_INTERVAL` as both the polling interval and the maximum age of a reused status, and no longer says it is unused with fake auth
-- [ ] `yarn lint`, `yarn build` and `yarn test --run --reporter=verbose` pass with no `stderr |` blocks
-- [ ] Browser verification per `docs/agents/browser-verification.md`: the network panel shows no status request on navigation within the window
+- [x] Navigating between screens within `AUTH_CHECK_INTERVAL` of the last status response sends no status request (test asserts it)
+- [x] Navigating after the window sends one status request, and `false` redirects to `/login?returnUrl=…`
+- [x] The polling tick that gets `false` shows the sign-in screen, and signing in again returns to the same screen
+- [x] Bringing the app back to the foreground refetches only when the cached status is stale
+- [x] A failed status request (polling, visibility or navigation with a cached status) keeps the owner on the screen
+- [x] `useAuthStatusCheckEffect` no longer calls `signOut`; the sign-out button still does
+- [x] `_app` and `login` `beforeLoad` use `subscribe: false` with no `try`/`finally`
+- [x] Fake-auth sign-in, sign-out and sign-in again work in `tests/app.test.tsx` and in backend-less development
+- [x] `docs/development.md` describes `VITE_APP_AUTH_CHECK_INTERVAL` as both the polling interval and the maximum age of a reused status, and no longer says it is unused with fake auth
+- [x] `yarn lint`, `yarn build` and `yarn test --run --reporter=verbose` pass with no `stderr |` blocks
+- [x] Browser verification per `docs/agents/browser-verification.md`: the network panel shows no status request on navigation within the window
 
 **Out of scope:**
 - Backend changes, including 401/403 responses for `/api/*` and `/api/v1/auth/logout` behaviour without a session
