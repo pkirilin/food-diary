@@ -98,6 +98,13 @@ test('the post-login screen lands on the return address', async () => {
   expect(await screen.findByRole('link', { name: /15 sep 2023/i })).toBeVisible();
 });
 
+test('arriving at post-logout signed out shows the sign-in screen', async () => {
+  await renderApp('/post-logout');
+
+  expect(await screen.findByRole('button', { name: /sign in/i })).toBeVisible();
+  expect(window.location.hash).toBe('#/login?returnUrl=%2F');
+});
+
 test('logging out from the drawer shows the sign-in screen', async () => {
   const user = userEvent.setup();
   await renderApp('/');
