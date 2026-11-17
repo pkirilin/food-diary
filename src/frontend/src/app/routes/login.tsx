@@ -8,18 +8,12 @@ export const Route = createFileRoute('/login')({
   validateSearch: z.object({ returnUrl: returnUrlSchema }),
   staticData: { appBar: null },
   beforeLoad: async ({ context }) => {
-    const authStatusQueryPromise = context.store.dispatch(
-      authApi.endpoints.getStatus.initiate({}, { forceRefetch: true }),
+    const { data } = await context.store.dispatch(
+      authApi.endpoints.getStatus.initiate({}, { forceRefetch: true, subscribe: false }),
     );
 
-    try {
-      const authStatusQuery = await authStatusQueryPromise;
-
-      if (authStatusQuery.data?.isAuthenticated) {
-        throw redirect({ to: '/' });
-      }
-    } finally {
-      authStatusQueryPromise.unsubscribe();
+    if (data?.isAuthenticated === true) {
+      throw redirect({ to: '/' });
     }
   },
   pendingComponent: AppLoader,
