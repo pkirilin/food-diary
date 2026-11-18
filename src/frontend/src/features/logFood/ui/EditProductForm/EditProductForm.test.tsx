@@ -5,6 +5,7 @@ import { type AppStore } from '@/app/store';
 import { type foodLogModel } from '@/entities/foodLog';
 import { API_URL } from '@/shared/config';
 import { captureFocusDuring } from '@tests/captureFocusDuring';
+import { holdNextNutritionSuggestion } from '@tests/holdNextNutritionSuggestion';
 import { server } from '@tests/mockApi/server';
 import { render } from '@tests/render';
 import {
@@ -101,6 +102,22 @@ test('a failed product save shows an error and keeps the input', async () => {
   );
   expect(screen.getByRole('textbox', { name: 'Name' })).toHaveValue('Turkey');
   expect(onSaved).not.toHaveBeenCalled();
+});
+
+test('Save is disabled while nutrition values are being suggested', async () => {
+  const user = userEvent.setup();
+  await renderChickenForm();
+  const suggestion = holdNextNutritionSuggestion({ calories: 165 });
+
+  await user.click(screen.getByRole('button', { name: 'Suggest Calories' }));
+
+  const save = screen.getByRole('button', { name: 'Save' });
+  expect(save).toBeDisabled();
+
+  suggestion.release();
+
+  await waitFor(() => expect(save).toBeEnabled());
+  expect(screen.getByRole('textbox', { name: 'Calories, kcal' })).toHaveValue('165');
 });
 
 test('a failed Save of an edited product drops the focus from the input held for the next field', async () => {

@@ -6,6 +6,7 @@ import { type AppStore } from '@/app/store';
 import { foodLogModel } from '@/entities/foodLog';
 import { type RecognizeNoteResponse } from '@/entities/note';
 import { API_URL } from '@/shared/config';
+import { holdNextNutritionSuggestion } from '@tests/holdNextNutritionSuggestion';
 import { server } from '@tests/mockApi/server';
 import { pickPhotosForRecognition } from '@tests/pickPhotosForRecognition';
 import { render } from '@tests/render';
@@ -90,6 +91,23 @@ test('the recognition form is prefilled from the first suggestion, with its quan
   await waitFor(() => expect(onCreated).toHaveBeenCalledOnce());
   expect(foodLogModel.selectors.foodLogsCount(store.getState())).toBe(1);
   expect(foodLogModel.selectors.totalCalories(store.getState())).toBe(150);
+});
+
+test('Create on the recognition form is disabled while nutrition values are being suggested', async () => {
+  const user = userEvent.setup();
+  await renderRecognitionScreen();
+  await pickPhotosForRecognition(user, ['Yogurt.jpg']);
+  await screen.findByRole('textbox', { name: 'Name' });
+  const suggestion = holdNextNutritionSuggestion({ calories: 60 });
+
+  await user.click(screen.getByRole('button', { name: 'Suggest Calories' }));
+
+  const create = screen.getByRole('button', { name: 'Create' });
+  expect(create).toBeDisabled();
+
+  suggestion.release();
+
+  await waitFor(() => expect(create).toBeEnabled());
 });
 
 test('the recognition form shows the picked photos', async () => {

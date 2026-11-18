@@ -6,10 +6,17 @@ interface Props {
   formId: string;
   formError: ClientError | null;
   submitting: boolean;
+  submitDisabled: boolean;
   submitLabel: string;
 }
 
-export const ProductFormFooter: FC<Props> = ({ formId, formError, submitting, submitLabel }) => (
+export const ProductFormFooter: FC<Props> = ({
+  formId,
+  formError,
+  submitting,
+  submitDisabled,
+  submitLabel,
+}) => (
   <>
     {formError && (
       <Alert severity="error" sx={{ mt: 2 }}>
@@ -18,7 +25,13 @@ export const ProductFormFooter: FC<Props> = ({ formId, formError, submitting, su
       </Alert>
     )}
     <Stack direction="row" sx={{ justifyContent: 'flex-end', mt: 2 }}>
-      <Button type="submit" form={formId} variant="contained" loading={submitting}>
+      <Button
+        type="submit"
+        form={formId}
+        variant="contained"
+        loading={submitting}
+        disabled={submitDisabled}
+      >
         {submitLabel}
       </Button>
     </Stack>

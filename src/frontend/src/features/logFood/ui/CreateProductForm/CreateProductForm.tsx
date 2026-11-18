@@ -1,4 +1,4 @@
-import { type FC } from 'react';
+import { type FC, useState } from 'react';
 import { categoryLib } from '@/entities/category';
 import { ProductForm, type productModel } from '@/entities/product';
 import { holdSoftKeyboardForNextField, releaseSoftKeyboardHold } from '@/shared/lib';
@@ -14,6 +14,7 @@ interface Props {
 
 export const CreateProductForm: FC<Props> = ({ defaultValues, onCreated }) => {
   const { categories, categoriesLoading } = categoryLib.useCategoriesForSelect();
+  const [nutritionSuggesting, setNutritionSuggesting] = useState(false);
   const { isCreating, serverErrors, formError, createProduct } = useCreateProduct(onCreated);
 
   if (categoriesLoading) {
@@ -34,12 +35,14 @@ export const CreateProductForm: FC<Props> = ({ defaultValues, onCreated }) => {
         serverErrors={serverErrors}
         onSubmitStarted={holdSoftKeyboardForNextField}
         onSubmitInvalid={releaseSoftKeyboardHold}
+        onNutritionSuggestingChange={setNutritionSuggesting}
         onSubmit={createProduct}
       />
       <ProductFormFooter
         formId={FORM_ID}
         formError={formError}
         submitting={isCreating}
+        submitDisabled={nutritionSuggesting}
         submitLabel="Create"
       />
     </>

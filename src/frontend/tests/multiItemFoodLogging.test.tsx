@@ -3,6 +3,7 @@ import userEvent, { type UserEvent } from '@testing-library/user-event';
 import { delay, HttpResponse, http } from 'msw';
 import { API_URL } from '@/shared/config';
 import { captureFocusDuring } from '@tests/captureFocusDuring';
+import { holdNextNutritionSuggestion } from '@tests/holdNextNutritionSuggestion';
 import { pickPhotosForRecognition } from '@tests/pickPhotosForRecognition';
 import { renderApp } from '@tests/render';
 import { server } from './mockApi/server';
@@ -452,6 +453,23 @@ test('the back arrow returns from a product to an empty search with the Meal Dra
   const tray = await findTray('Breakfast');
   expect(within(tray).getByText('1')).toBeVisible();
   expect(within(tray).getByText('379 kcal')).toBeVisible();
+});
+
+test('the back arrow leaves a new product form while nutrition values are being suggested', async () => {
+  const user = userEvent.setup();
+  await openBreakfastSearch(user);
+  await user.type(await findSearchField(), 'Yogurt');
+  await user.click(await screen.findByRole('button', { name: 'Create "Yogurt"' }));
+  const suggestion = holdNextNutritionSuggestion({ calories: 60 });
+  await user.click(await screen.findByRole('button', { name: 'Suggest Calories' }));
+  expect(screen.getByRole('button', { name: 'Create' })).toBeDisabled();
+
+  await user.click(screen.getByRole('button', { name: 'Back' }));
+
+  expect(await findSearchField()).toHaveValue('');
+  suggestion.release();
+  await waitFor(() => expect(suggestion.answered).toBe(true));
+  expect(screen.queryByRole('heading', { name: 'New product' })).not.toBeInTheDocument();
 });
 
 test('the back arrow leaves the keyboard alone', async () => {

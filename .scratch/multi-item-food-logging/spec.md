@@ -416,6 +416,9 @@ doesn't depend on `entities/foodLog` or `features/logFood`.
   to the detail screen. A successful edit invalidates the `product` tag, so the detail shows a
   spinner until the saved Product loads, and its quantity form opens with the new default quantity.
   A failed edit invalidates nothing, so the form stays mounted with the input.
+- While nutrition values are being suggested, **Create** and **Save** are disabled until the
+  suggestion succeeds or fails. Leaving is not held: the back arrow and the browser's back button
+  leave the form, and the suggestion's result is ignored.
 - A name clash comes back as a `400` validation problem with a `Name` error. It is shown under the
   Name field and the input is kept. Any other failure shows an error alert under the form.
 - Recognition reuses `POST /api/v1/notes/recognitions` and the shared mapping in
@@ -519,7 +522,8 @@ its user-visible behaviours. A gap is a kept behaviour the new flow doesn't impl
 | Discard the picked product and choose another | Kept | Detail screen: back arrow |
 | Photo recognition: loading state, error with **Retry**, "No food found", photo previews, a prefilled product form with the first category | Kept | Product create, edit and recognition |
 | **Retry** after a successful recognition | Dropped | Picking new photos covers a bad suggestion |
-| Saving and closing are blocked while nutrition values are being suggested | Kept, gap | Not yet implemented: **Create**, **Save** and the back arrow stay active |
+| Saving is blocked while nutrition values are being suggested | Kept | Product create, edit and recognition |
+| Closing is blocked while nutrition values are being suggested | Dropped | Leaving drops the form anyway, and the suggestion is ignored |
 | Saving shows a loading state, and the day page refreshes after a Food Log or product edit is saved | Kept | Logging the Meal Draft; Batch endpoint; Product create, edit and recognition |
 
 ### Docs
