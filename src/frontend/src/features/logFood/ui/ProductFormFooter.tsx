@@ -24,11 +24,24 @@ export const ProductFormFooter: FC<Props> = ({
         {formError.message}
       </Alert>
     )}
-    <Stack direction="row" sx={{ justifyContent: 'flex-end', mt: 2 }}>
+    <Stack
+      direction="row"
+      sx={{
+        position: 'sticky',
+        bottom: 0,
+        justifyContent: 'flex-end',
+        mt: 2,
+        py: 2,
+        zIndex: theme => theme.zIndex.fab,
+        bgcolor: 'background.default',
+      }}
+    >
       <Button
+        sx={{ width: { xs: '100%', md: 'auto' } }}
         type="submit"
         form={formId}
         variant="contained"
+        size="large"
         loading={submitting}
         disabled={submitDisabled}
       >

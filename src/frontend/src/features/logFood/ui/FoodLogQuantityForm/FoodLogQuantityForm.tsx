@@ -108,8 +108,24 @@ export const FoodLogQuantityForm: FC<Props> = ({ product, foodLog, onDone, onEdi
           />
         )}
       />
-      <Stack direction="row" sx={{ justifyContent: 'flex-end' }}>
-        <Button type="submit" variant="contained" disabled={quantityInvalid}>
+      <Stack
+        direction="row"
+        sx={{
+          position: 'sticky',
+          bottom: 0,
+          py: 2,
+          justifyContent: 'flex-end',
+          zIndex: theme => theme.zIndex.fab,
+          bgcolor: 'background.default',
+        }}
+      >
+        <Button
+          sx={{ width: { xs: '100%', md: 'auto' } }}
+          type="submit"
+          variant="contained"
+          size="large"
+          disabled={quantityInvalid}
+        >
           {foodLog === null ? 'Add' : 'Save'}
         </Button>
       </Stack>
