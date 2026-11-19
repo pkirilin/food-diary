@@ -1,4 +1,4 @@
-import { Alert, AlertTitle, Button, LinearProgress, Skeleton, Stack } from '@mui/material';
+import { Alert, AlertTitle, Button, Skeleton, Stack } from '@mui/material';
 import { type FC, useState } from 'react';
 import { useAppSelector } from '@/app/store';
 import { ImagePreviewList } from '@/shared/ui';
@@ -11,15 +11,18 @@ interface Props {
 }
 
 const RecognitionSkeleton: FC = () => (
-  <Stack spacing={2}>
-    <LinearProgress aria-label="Recognizing product" />
+  <Stack spacing={2} role="progressbar" aria-label="Recognizing product">
+    <Stack direction="row" spacing={2}>
+      <Skeleton variant="rounded" height={128} sx={{ flex: 1 }} />
+      <Skeleton variant="rounded" height={128} sx={{ flex: 1 }} />
+    </Stack>
     <Skeleton variant="rounded" height={56} />
     <Skeleton variant="rounded" height={56} />
     <Stack direction="row" spacing={2}>
       <Skeleton variant="rounded" height={56} sx={{ flex: 1 }} />
       <Skeleton variant="rounded" height={56} sx={{ flex: 1 }} />
     </Stack>
-    <Skeleton variant="rounded" height={56} />
+    <Skeleton variant="rounded" height={256} />
   </Stack>
 );
 
