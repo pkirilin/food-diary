@@ -3,7 +3,7 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { type AppStore } from '@/app/store';
 import { foodLogModel } from '@/entities/foodLog';
-import { captureFocusDuring } from '@tests/captureFocusDuring';
+import { captureFocusDuring } from '@tests/lib';
 import { render } from '@tests/render';
 import { CHICKEN, configureStoreWithMealDraft, getMealDraftFoodLogs } from '../mealDraft.fixture';
 import { FoundProductListItem } from './FoundProductListItem';

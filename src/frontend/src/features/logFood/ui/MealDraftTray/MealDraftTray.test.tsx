@@ -5,7 +5,7 @@ import { type FC, useState } from 'react';
 import { type AppStore } from '@/app/store';
 import { foodLogModel } from '@/entities/foodLog';
 import { API_URL } from '@/shared/config';
-import { captureFocusDuring } from '@tests/captureFocusDuring';
+import { captureFocusDuring } from '@tests/lib';
 import { server } from '@tests/mockApi/server';
 import { render } from '@tests/render';
 import { CHICKEN, MEAL_DRAFT_DATE, OATS, configureStoreWithMealDraft } from '../mealDraft.fixture';

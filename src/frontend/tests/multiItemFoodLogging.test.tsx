@@ -2,9 +2,11 @@ import { act, configure, screen, waitFor, within } from '@testing-library/react'
 import userEvent, { type UserEvent } from '@testing-library/user-event';
 import { delay, HttpResponse, http } from 'msw';
 import { API_URL } from '@/shared/config';
-import { captureFocusDuring } from '@tests/captureFocusDuring';
-import { holdNextNutritionSuggestion } from '@tests/holdNextNutritionSuggestion';
-import { pickPhotosForRecognition } from '@tests/pickPhotosForRecognition';
+import {
+  captureFocusDuring,
+  holdNextNutritionSuggestion,
+  pickPhotosForRecognition,
+} from '@tests/lib';
 import { renderApp } from '@tests/render';
 import { server } from './mockApi/server';
 

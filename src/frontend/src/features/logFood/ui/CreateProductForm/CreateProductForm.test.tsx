@@ -5,11 +5,11 @@ import { type AppStore } from '@/app/store';
 import { foodLogModel } from '@/entities/foodLog';
 import { productModel } from '@/entities/product';
 import { API_URL } from '@/shared/config';
-import { captureFocusDuring } from '@tests/captureFocusDuring';
 import {
+  captureFocusDuring,
   holdNextFailingNutritionSuggestion,
   holdNextNutritionSuggestion,
-} from '@tests/holdNextNutritionSuggestion';
+} from '@tests/lib';
 import { server } from '@tests/mockApi/server';
 import { render } from '@tests/render';
 import { configureStoreWithMealDraft, getMealDraftFoodLogs } from '../mealDraft.fixture';

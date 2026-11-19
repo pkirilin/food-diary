@@ -4,8 +4,7 @@ import { HttpResponse, http } from 'msw';
 import { type AppStore } from '@/app/store';
 import { type foodLogModel } from '@/entities/foodLog';
 import { API_URL } from '@/shared/config';
-import { captureFocusDuring } from '@tests/captureFocusDuring';
-import { holdNextNutritionSuggestion } from '@tests/holdNextNutritionSuggestion';
+import { captureFocusDuring, holdNextNutritionSuggestion } from '@tests/lib';
 import { server } from '@tests/mockApi/server';
 import { render } from '@tests/render';
 import {
