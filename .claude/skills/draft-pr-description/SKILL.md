@@ -1,7 +1,6 @@
 ---
 name: draft-pr-description
-description: Drafts a plain-English PR description for the current branch's open PR, with scope and final-draft approval gates
-disable-model-invocation: true
+description: PR body for this repo. Use when creating a PR or writing its description — open the PR first, then this drafts the body for the current branch's open PR, with scope and final-draft approval gates
 ---
 
 # Draft PR Description

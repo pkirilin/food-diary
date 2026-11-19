@@ -1,5 +1,5 @@
 import { Alert, Box, CircularProgress } from '@mui/material';
-import { type FC } from 'react';
+import { type FC, useState } from 'react';
 import { categoryLib } from '@/entities/category';
 import { ProductForm } from '@/entities/product';
 import { holdSoftKeyboardForNextField, releaseSoftKeyboardHold } from '@/shared/lib';
@@ -18,6 +18,7 @@ interface Props {
 export const EditProductForm: FC<Props> = ({ productId, onSaved }) => {
   const { product, productLoadFailed: loadFailed } = useProductToEdit(productId);
   const { categories, categoriesLoading } = categoryLib.useCategoriesForSelect();
+  const [nutritionSuggesting, setNutritionSuggesting] = useState(false);
   const { isSaving, serverErrors, formError, editProduct } = useEditProduct(productId, onSaved);
 
   if (loadFailed) {
@@ -43,12 +44,14 @@ export const EditProductForm: FC<Props> = ({ productId, onSaved }) => {
         serverErrors={serverErrors}
         onSubmitStarted={holdSoftKeyboardForNextField}
         onSubmitInvalid={releaseSoftKeyboardHold}
+        onNutritionSuggestingChange={setNutritionSuggesting}
         onSubmit={editProduct}
       />
       <ProductFormFooter
         formId={FORM_ID}
         formError={formError}
         submitting={isSaving}
+        submitDisabled={nutritionSuggesting}
         submitLabel="Save"
       />
     </>

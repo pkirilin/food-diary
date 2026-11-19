@@ -1,7 +1,7 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { type foodLogModel } from '@/entities/foodLog';
-import { captureFocusDuring } from '@tests/captureFocusDuring';
+import { captureFocusDuring } from '@tests/lib';
 import { render } from '@tests/render';
 import {
   CHICKEN,

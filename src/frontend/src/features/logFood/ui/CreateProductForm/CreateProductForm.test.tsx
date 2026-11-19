@@ -2,9 +2,14 @@ import { screen, waitFor } from '@testing-library/react';
 import userEvent, { type UserEvent } from '@testing-library/user-event';
 import { HttpResponse, http } from 'msw';
 import { type AppStore } from '@/app/store';
+import { foodLogModel } from '@/entities/foodLog';
 import { productModel } from '@/entities/product';
 import { API_URL } from '@/shared/config';
-import { captureFocusDuring } from '@tests/captureFocusDuring';
+import {
+  captureFocusDuring,
+  holdNextFailingNutritionSuggestion,
+  holdNextNutritionSuggestion,
+} from '@tests/lib';
 import { server } from '@tests/mockApi/server';
 import { render } from '@tests/render';
 import { configureStoreWithMealDraft, getMealDraftFoodLogs } from '../mealDraft.fixture';
@@ -114,6 +119,42 @@ test('a failed Create drops the focus from the input held for the next field', a
 
   await screen.findByRole('alert');
   expect(document.body).toHaveFocus();
+});
+
+test('Create is disabled while nutrition values are being suggested, then saves the suggested values', async () => {
+  const user = userEvent.setup();
+  const store = configureStoreWithMealDraft();
+  const { onCreated } = await renderNewYogurtForm(store);
+  const suggestion = holdNextNutritionSuggestion({ calories: 60 });
+
+  await user.click(screen.getByRole('button', { name: 'Suggest Calories' }));
+
+  const create = screen.getByRole('button', { name: 'Create' });
+  expect(create).toBeDisabled();
+
+  suggestion.release();
+
+  await waitFor(() => expect(create).toBeEnabled());
+  expect(screen.getByRole('textbox', { name: 'Calories, kcal' })).toHaveValue('60');
+  await user.click(create);
+  await waitFor(() => expect(onCreated).toHaveBeenCalledOnce());
+  expect(foodLogModel.selectors.totalCalories(store.getState())).toBe(60);
+});
+
+test('Create is enabled again after a nutrition suggestion fails', async () => {
+  const user = userEvent.setup();
+  await renderNewYogurtForm();
+  const suggestion = holdNextFailingNutritionSuggestion();
+
+  await user.click(screen.getByRole('button', { name: 'Suggest Calories' }));
+
+  const create = screen.getByRole('button', { name: 'Create' });
+  expect(create).toBeDisabled();
+
+  suggestion.release();
+
+  expect(await screen.findByRole('alert')).toBeVisible();
+  expect(create).toBeEnabled();
 });
 
 test('Create with an invalid form drops the focus from the input held for the next field', async () => {
