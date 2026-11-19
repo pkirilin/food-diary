@@ -8,6 +8,8 @@ import {
   Stack,
   TextField,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material';
 import { type FC } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
@@ -26,6 +28,9 @@ interface Props {
 }
 
 export const FoodLogQuantityForm: FC<Props> = ({ product, foodLog, onDone, onEditProduct }) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
   const dispatch = useAppDispatch();
 
   const { control, handleSubmit, formState } = useForm({
@@ -108,8 +113,23 @@ export const FoodLogQuantityForm: FC<Props> = ({ product, foodLog, onDone, onEdi
           />
         )}
       />
-      <Stack direction="row" sx={{ justifyContent: 'flex-end' }}>
-        <Button type="submit" variant="contained" disabled={quantityInvalid}>
+      <Stack
+        direction="row"
+        sx={{
+          position: 'sticky',
+          bottom: 0,
+          py: 2,
+          justifyContent: 'flex-end',
+          zIndex: theme => theme.zIndex.appBar,
+        }}
+      >
+        <Button
+          fullWidth={isMobile}
+          type="submit"
+          variant="contained"
+          size="large"
+          disabled={quantityInvalid}
+        >
           {foodLog === null ? 'Add' : 'Save'}
         </Button>
       </Stack>
