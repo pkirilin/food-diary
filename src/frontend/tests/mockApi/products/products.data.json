@@ -100,20 +100,35 @@
     "name": "Cheese",
     "caloriesCost": 402,
     "defaultQuantity": 100,
-    "categoryId": 4
+    "categoryId": 4,
+    "protein": null,
+    "fats": null,
+    "carbs": null,
+    "sugar": null,
+    "salt": null
   },
   {
     "id": 10,
     "name": "Banana",
     "caloriesCost": 96,
     "defaultQuantity": 100,
-    "categoryId": 5
+    "categoryId": 5,
+    "protein": null,
+    "fats": null,
+    "carbs": null,
+    "sugar": null,
+    "salt": null
   },
   {
     "id": 11,
     "name": "Chocolate cake",
     "caloriesCost": 450,
     "defaultQuantity": 100,
-    "categoryId": 6
+    "categoryId": 6,
+    "protein": null,
+    "fats": null,
+    "carbs": null,
+    "sugar": null,
+    "salt": null
   }
 ]

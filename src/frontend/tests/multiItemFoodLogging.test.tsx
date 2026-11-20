@@ -182,7 +182,7 @@ test('create a product that was not found, then log it', async () => {
 
   await waitFor(async () =>
     expect(await findFoodLogsOfMeal('Breakfast')).toContainEqual(
-      expect.stringMatching(/^Yogurt250 g150$/),
+      expect.stringMatching(/^Yogurt250 gNutrition values are missing150$/),
     ),
   );
 });

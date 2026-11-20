@@ -1,14 +1,19 @@
 import { List } from '@mui/material';
-import { screen } from '@testing-library/react';
+import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { type AppStore } from '@/app/store';
 import { foodLogModel } from '@/entities/foodLog';
 import { captureFocusDuring } from '@tests/lib';
 import { render } from '@tests/render';
-import { CHICKEN, configureStoreWithMealDraft, getMealDraftFoodLogs } from '../mealDraft.fixture';
+import {
+  CHICKEN,
+  MILK,
+  configureStoreWithMealDraft,
+  getMealDraftFoodLogs,
+} from '../mealDraft.fixture';
 import { FoundProductListItem } from './FoundProductListItem';
 
-const renderFoundChicken = async (store: AppStore) => {
+const renderFoundProduct = async (product: foodLogModel.MealDraftProduct, store: AppStore) => {
   const onOpen = vi.fn<(productId: number) => void>();
   const onFoodLogAdded = vi.fn<() => void>();
 
@@ -16,7 +21,7 @@ const renderFoundChicken = async (store: AppStore) => {
     <>
       <input type="search" aria-label="Search products" />
       <List>
-        <FoundProductListItem product={CHICKEN} onOpen={onOpen} onFoodLogAdded={onFoodLogAdded} />
+        <FoundProductListItem product={product} onOpen={onOpen} onFoodLogAdded={onFoodLogAdded} />
       </List>
     </>,
     { store },
@@ -25,12 +30,30 @@ const renderFoundChicken = async (store: AppStore) => {
   return { onOpen, onFoodLogAdded };
 };
 
+const renderFoundChicken = (store: AppStore) => renderFoundProduct(CHICKEN, store);
+
 test('a found product shows its name, default quantity and calories', async () => {
   await renderFoundChicken(configureStoreWithMealDraft());
 
   const chicken = await screen.findByRole('listitem');
   expect(chicken).toHaveTextContent('Chicken');
   expect(chicken).toHaveTextContent('150 g · 358 kcal');
+});
+
+test('a found product missing nutrition values is marked with a warning', async () => {
+  await renderFoundProduct(MILK, configureStoreWithMealDraft());
+
+  const milk = await screen.findByRole('listitem');
+  expect(within(milk).getByRole('img', { name: 'Nutrition values are missing' })).toBeVisible();
+});
+
+test('a found product with nutrition values has no warning', async () => {
+  await renderFoundChicken(configureStoreWithMealDraft());
+
+  await screen.findByRole('listitem');
+  expect(
+    screen.queryByRole('img', { name: 'Nutrition values are missing' }),
+  ).not.toBeInTheDocument();
 });
 
 test('⊕ adds a product with its default quantity and keeps the focus in the search field', async () => {

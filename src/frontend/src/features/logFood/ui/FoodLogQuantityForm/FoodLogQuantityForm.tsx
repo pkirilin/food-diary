@@ -14,6 +14,7 @@ import { Controller, useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
 import { useAppDispatch } from '@/app/store';
 import { foodLogModel } from '@/entities/foodLog';
+import { MissingNutritionValuesAlert, productModel } from '@/entities/product';
 import { holdSoftKeyboardForNextField, quantitySchema } from '@/shared/lib';
 
 const quantityFormSchema = z.object({ quantity: quantitySchema });
@@ -59,6 +60,9 @@ export const FoodLogQuantityForm: FC<Props> = ({ product, foodLog, onDone, onEdi
         })(event);
       }}
     >
+      {productModel.hasMissingNutritionValues(product) && (
+        <MissingNutritionValuesAlert scope="product" />
+      )}
       <Stack direction="row" spacing={2}>
         <Box sx={{ width: '100%' }}>
           <Typography variant="h6" component="h2">

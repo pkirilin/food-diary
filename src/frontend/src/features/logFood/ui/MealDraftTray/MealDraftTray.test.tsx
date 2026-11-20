@@ -1,4 +1,4 @@
-import { fireEvent, screen, waitFor, within } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { HttpResponse, http } from 'msw';
 import { type FC, useState } from 'react';
@@ -8,7 +8,13 @@ import { API_URL } from '@/shared/config';
 import { captureFocusDuring } from '@tests/lib';
 import { server } from '@tests/mockApi/server';
 import { render } from '@tests/render';
-import { CHICKEN, MEAL_DRAFT_DATE, OATS, configureStoreWithMealDraft } from '../mealDraft.fixture';
+import {
+  CHICKEN,
+  MEAL_DRAFT_DATE,
+  MILK,
+  OATS,
+  configureStoreWithMealDraft,
+} from '../mealDraft.fixture';
 import { MealDraftTray } from './MealDraftTray';
 
 interface TrayUnderSearchProps {
@@ -114,6 +120,27 @@ test('the expanded tray lists the picked products in the order picked, without a
   await waitFor(() =>
     expect(within(tray).queryByRole('list', { name: 'Picked foods' })).not.toBeInTheDocument(),
   );
+});
+
+test('a picked product missing nutrition values is marked with a warning until a value is filled in', async () => {
+  const user = userEvent.setup();
+  const store = configureStoreWithMealDraft([MILK, CHICKEN]);
+  const { tray } = await renderTray(store);
+  await user.click(getToggle(tray));
+  const [milk, chicken] = within(await findPickedFoods(tray)).getAllByRole('listitem');
+
+  expect(within(milk).getByRole('img', { name: 'Nutrition values are missing' })).toBeVisible();
+  expect(
+    within(chicken).queryByRole('img', { name: 'Nutrition values are missing' }),
+  ).not.toBeInTheDocument();
+
+  act(() => {
+    store.dispatch(foodLogModel.actions.productUpdated({ ...MILK, protein: 3.2 }));
+  });
+
+  expect(
+    within(milk).queryByRole('img', { name: 'Nutrition values are missing' }),
+  ).not.toBeInTheDocument();
 });
 
 test('deleting a product from the expanded tray updates the count and the total', async () => {

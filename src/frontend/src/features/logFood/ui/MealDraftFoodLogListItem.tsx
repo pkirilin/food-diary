@@ -3,6 +3,7 @@ import { IconButton, ListItem, ListItemButton, ListItemText } from '@mui/materia
 import { type FC } from 'react';
 import { useAppDispatch } from '@/app/store';
 import { foodLogModel } from '@/entities/foodLog';
+import { MissingNutritionValuesIndicator, productModel } from '@/entities/product';
 import { holdSoftKeyboardForNextField } from '@/shared/lib';
 
 interface Props {
@@ -29,6 +30,7 @@ export const MealDraftFoodLogListItem: FC<Props> = ({ foodLog, onOpen }) => {
     >
       <ListItemButton
         disableGutters
+        sx={{ gap: 1 }}
         onClick={() => {
           holdSoftKeyboardForNextField();
           onOpen(product.id);
@@ -38,6 +40,7 @@ export const MealDraftFoodLogListItem: FC<Props> = ({ foodLog, onOpen }) => {
           primary={product.name}
           secondary={`${quantity} g · ${foodLogModel.calculateCalories(foodLog)} kcal`}
         />
+        {productModel.hasMissingNutritionValues(product) && <MissingNutritionValuesIndicator />}
       </ListItemButton>
     </ListItem>
   );
