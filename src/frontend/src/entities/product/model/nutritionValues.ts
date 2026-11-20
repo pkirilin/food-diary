@@ -59,5 +59,11 @@ export const nutritionValuesConfig: NutritionValuesConfig = {
   },
 };
 
-export const hasMissingNutritionValues = (nutritionValues: OptionalNutritionValues): boolean =>
-  Object.values(nutritionValues).every(value => value === null);
+export const hasMissingNutritionValues = ({
+  protein,
+  fats,
+  carbs,
+  sugar,
+  salt,
+}: OptionalNutritionValues): boolean =>
+  [protein, fats, carbs, sugar, salt].every(value => value === null);

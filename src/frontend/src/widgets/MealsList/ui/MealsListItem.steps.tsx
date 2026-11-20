@@ -1,4 +1,4 @@
-import { render, screen, waitFor, waitForElementToBeRemoved } from '@testing-library/react';
+import { render, screen, waitFor, waitForElementToBeRemoved, within } from '@testing-library/react';
 import { type UserEvent } from '@testing-library/user-event';
 import { RootProvider } from '@/app/RootProvider';
 import { configureStore } from '@/app/store';
@@ -165,4 +165,25 @@ export const thenQuantityHasValue = (expectedValue: string): void => {
 
 export const thenSingleNoteVisible = (noteName: RegExp): void => {
   expect(screen.getByRole('button', { name: noteName })).toBeVisible();
+};
+
+const queryMissingNutritionValuesMarks = (container: HTMLElement): HTMLElement[] =>
+  within(container).queryAllByRole('img', { name: 'Nutrition values are missing' });
+
+export const thenMealAndNoteMarkedAsMissingNutritionValues = async (
+  noteName: RegExp,
+  noteWithNutritionValuesName: RegExp,
+): Promise<void> => {
+  const note = await screen.findByRole('button', { name: noteName });
+  const noteWithNutritionValues = screen.getByRole('button', { name: noteWithNutritionValuesName });
+  const meal = screen.getByRole('listitem', { name: /kilocalories/i });
+
+  expect(queryMissingNutritionValuesMarks(note)).toHaveLength(1);
+  expect(queryMissingNutritionValuesMarks(noteWithNutritionValues)).toHaveLength(0);
+  // One mark on the meal header, one on the note row
+  expect(queryMissingNutritionValuesMarks(meal)).toHaveLength(2);
+};
+
+export const thenMissingNutritionValuesAlertVisible = async (): Promise<void> => {
+  expect(await screen.findByRole('alert')).toHaveTextContent('Nutrition values are missing');
 };

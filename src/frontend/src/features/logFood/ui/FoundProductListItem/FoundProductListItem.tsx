@@ -4,6 +4,7 @@ import { IconButton, ListItem, ListItemButton, ListItemText } from '@mui/materia
 import { type FC } from 'react';
 import { useAppDispatch, useAppSelector } from '@/app/store';
 import { foodLogModel } from '@/entities/foodLog';
+import { MissingNutritionValuesIndicator, productModel } from '@/entities/product';
 import { holdSoftKeyboardForNextField } from '@/shared/lib';
 
 interface Props {
@@ -48,6 +49,7 @@ export const FoundProductListItem: FC<Props> = ({ product, onOpen, onFoodLogAdde
     >
       <ListItemButton
         selected={isInMealDraft}
+        sx={{ gap: 1 }}
         onClick={() => {
           holdSoftKeyboardForNextField();
           onOpen(product.id);
@@ -57,6 +59,7 @@ export const FoundProductListItem: FC<Props> = ({ product, onOpen, onFoodLogAdde
           primary={product.name}
           secondary={`${product.defaultQuantity} g · ${foodLogModel.calculateCalories({ product, quantity: product.defaultQuantity })} kcal`}
         />
+        {productModel.hasMissingNutritionValues(product) && <MissingNutritionValuesIndicator />}
       </ListItemButton>
     </ListItem>
   );

@@ -143,7 +143,9 @@ results. At the bottom of the screen a phone's keyboard hides it, so it sits at 
   after ⊕.
 - Expanded, a list labelled **Picked foods** opens downward, below the row. It shows the Meal Draft
   in the order picked. Each row shows the name and "N g · X kcal", opens the detail route when
-  tapped, and has a **Delete <name>** button. There is no quantity field on the tray.
+  tapped, and has a **Delete <name>** button. There is no quantity field on the tray. A product
+  missing nutrition values shows the missing-nutrition indicator at the right of its row (see
+  Detail screen).
 - **Log food** is disabled while the Meal Draft is empty and shows a spinner while saving. A failed
   save shows an error alert inside the tray, between the row and the list.
 
@@ -365,7 +367,8 @@ doesn't depend on `entities/foodLog` or `features/logFood`.
   form: it appears after the server's answer, and the gesture before it is picking a file.
 - Results are a list labelled **Found products**. Each row shows the name and
   "<default quantity> g · X kcal", and opens the detail route when tapped. A product in the Meal
-  Draft has a selected background and a check icon in place of ⊕.
+  Draft has a selected background and a check icon in place of ⊕. A product missing nutrition
+  values shows the missing-nutrition indicator at the right of its row, before ⊕.
 - The ⊕ buttons are labelled `Add <name>` and `Remove <name>`. ⊕ calls `preventDefault` on
   `mousedown`, so the search field never loses focus and a phone's keyboard stays open. Adding
   clears `q`, and the field follows it. Removing leaves `q` as it is.
@@ -390,7 +393,17 @@ doesn't depend on `entities/foodLog` or `features/logFood`.
   refetched or after its refetch failed, because the quantity form reads its default value only on
   mount. A spinner shows while it loads, and "The product could not be loaded" if the request fails,
   even when an older Product is cached.
-- It shows the product's name as a heading and "<calories> kcal per 100 g".
+- It shows the product's name as a heading and "<calories> kcal per 100 g". For a product
+  missing nutrition values (`productModel.hasMissingNutritionValues`: none of protein, fats,
+  carbs, sugar or salt is set), a warning alert reading "Nutrition values are missing" spans the
+  full width above them.
+- The alert and the row indicator are shared components in `entities/product/ui`:
+  `MissingNutritionValuesAlert` (MUI's default warning `Alert`; `scope="product"` reads
+  "Nutrition values are missing", `scope="summary"` reads "Some nutrition values are missing")
+  and `MissingNutritionValuesIndicator` (a 16 px warning icon whose accessible name is
+  "Nutrition values are missing"). The day page's summary alert, the meals list's meal headers
+  and note rows, and the expanded note row's alert use them too, so the app has one warning
+  style.
 - Its quantity form is a react-hook-form + Zod form using the shared `quantitySchema` (whole
   numbers, 10–1000), validated on every change. The field is labelled **Quantity**, has a `g`
   suffix and a numeric keyboard, and is focused with its contents selected. It starts with the
@@ -518,7 +531,7 @@ its user-visible behaviours. A gap is a kept behaviour the new flow doesn't impl
 | Offer to add a product whenever none is named exactly like the query | Kept | Search screen: the `Create "<query>"` row, ignoring case |
 | A new product gets the query as its name and the first category | Kept | Product create, edit and recognition |
 | Quantity starts at the default quantity, selected on focus, numeric keyboard, `g` suffix, 10–1000 | Kept | Detail screen |
-| "Nutrition values are missing" under a product with missing nutrition values | Kept, gap | Not yet implemented |
+| "Nutrition values are missing" under a product with missing nutrition values | Kept | Detail screen: an alert above the name; Search screen and Tray: a warning icon on the row |
 | Edit product from the quantity step, with a spinner while it loads | Kept | Detail screen; Product create, edit and recognition |
 | Discard the picked product and choose another | Kept | Detail screen: back arrow |
 | Photo recognition: loading state, error with **Retry**, "No food found", photo previews, a prefilled product form with the first category | Kept | Product create, edit and recognition |

@@ -1,7 +1,11 @@
-import { ListItem, Stack, Typography, Card, CardContent, CardActions, Badge } from '@mui/material';
+import { ListItem, Stack, Typography, Card, CardContent, CardActions } from '@mui/material';
 import { type FC } from 'react';
 import { noteLib, noteModel } from '@/entities/note';
-import { NutritionValueDisplay, productModel } from '@/entities/product';
+import {
+  MissingNutritionValuesIndicator,
+  NutritionValueDisplay,
+  productModel,
+} from '@/entities/product';
 import { MultiItemLogFood } from '@/features/logFood';
 import { AddNoteButton } from '@/features/manageNote';
 import { useMultiItemFoodLoggingPreference } from '@/shared/lib';
@@ -61,7 +65,7 @@ export const MealsListItem: FC<Props> = ({ date, mealType, onOpenLogFood }) => {
                   alignItems: 'center',
                 }}
               >
-                {hasMissingNutritionValues && <Badge color="warning" variant="dot" />}
+                {hasMissingNutritionValues && <MissingNutritionValuesIndicator />}
                 <NutritionValueDisplay type="calories" size="medium" value={calories} bold />
               </Stack>
             </Stack>

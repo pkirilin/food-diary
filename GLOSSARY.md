@@ -44,7 +44,8 @@ _Avoid_: ingredient
 Calories in kilocalories, and protein, fats, carbs, sugar and salt in grams. Salt means
 sodium chloride, never sodium. On a Product they are per 100 g; on a Food Log they are scaled
 to the quantity eaten. Quantities are always grams, drinks included — there is no
-millilitre.
+millilitre. A Product is *missing nutrition values* when none of protein, fats, carbs, sugar
+or salt is set; calories are always set.
 _Avoid_: joules, kJ, sodium, ml, servings
 
 **Category**:
