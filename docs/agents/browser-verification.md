@@ -18,5 +18,5 @@ Steps for the browser check that `.claude/rules/frontend.md` makes mandatory for
 - Check rendered UI at both a phone viewport (`390x844x3,mobile,touch`) and a desktop viewport (`1280x800x1`), set with `emulate`. A change that clearly affects only one layout may check just that one; say so in the final report. Emulation is not iOS Safari: on-screen keyboard and gesture behavior needs the iOS Simulator.
 - Check `list_console_messages`. `ERR_CONNECTION_REFUSED` errors for `https://localhost:8080/api/v1/*` are the MSW-mode baseline; any other console error is a defect.
 - Report in text only what you did and saw. Do not commit screenshots.
-- When done, close the page with `close_page` and stop the dev server you started.
+- When done, close the page with `close_page`. If you started the dev server, stop it with `make stop-frontend` from the repo root; leave a reused server running.
 - MSW does not exercise the real backend. If the change touches an API contract, say that real-backend behavior is unverified.
