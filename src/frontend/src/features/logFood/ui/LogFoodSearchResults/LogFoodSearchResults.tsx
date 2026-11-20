@@ -75,7 +75,7 @@ export const LogFoodSearchResults: FC<Props> = ({
   );
 
   if (isSearching && foundProducts.length === 0) {
-    return <List>{createProductItem}</List>;
+    return <List aria-label="No products found">{createProductItem}</List>;
   }
 
   const isQueryAProductName = lowerCaseProductNames.has(trimmedQuery.toLowerCase());

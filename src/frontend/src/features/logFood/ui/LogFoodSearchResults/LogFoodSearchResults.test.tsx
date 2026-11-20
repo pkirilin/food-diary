@@ -52,6 +52,13 @@ test('a search that finds nothing offers to create the product named by the quer
   expect(onCreateProduct).toHaveBeenCalledWith('Yogurt');
 });
 
+test('a search that finds nothing labels its list as finding no products', async () => {
+  await renderSearchResults('Yogurt');
+
+  const noProducts = await screen.findByRole('list', { name: 'No products found' });
+  expect(within(noProducts).getByRole('listitem')).toHaveTextContent('Create "Yogurt"');
+});
+
 test('the Create row focuses a text input during the tap', async () => {
   const user = userEvent.setup();
   await renderSearchResults('Yogurt');

@@ -371,7 +371,8 @@ doesn't depend on `entities/foodLog` or `features/logFood`.
   clears `q`, and the field follows it. Removing leaves `q` as it is.
 - When the trimmed query is at least 3 characters long and no found product's name equals it,
   ignoring case, a `Create "<trimmed query>"` row follows the results, which navigates to
-  `/log/food/products/new?name=<trimmed query>`. When nothing is found, it is the only row. So
+  `/log/food/products/new?name=<trimmed query>`. When nothing is found, it is the only row, in a
+  list labelled **No products found**. So
   "Chocolate" still offers `Create "Chocolate"` under "Chocolate cake", and "cheese" offers none
   when "Cheese" exists. `Create "<query>"` replaces the overloaded
   `Add "<query>"` wording for the new flow. The old dialog's copy and its own rule for offering to
