@@ -3,7 +3,7 @@ import { foodLogModel } from '@/entities/foodLog';
 
 export const MEAL_DRAFT_DATE = '2023-10-19';
 
-// Both match the mock API's seeded products, so requests made for them succeed
+// These match the mock API's seeded products, so requests made for them succeed
 export const OATS: foodLogModel.MealDraftProduct = {
   id: 6,
   name: 'Oats',
@@ -26,6 +26,18 @@ export const CHICKEN: foodLogModel.MealDraftProduct = {
   carbs: 0,
   sugar: 0,
   salt: 0.3,
+};
+
+export const MILK: foodLogModel.MealDraftProduct = {
+  id: 4,
+  name: 'Milk',
+  defaultQuantity: 100,
+  calories: 60,
+  protein: null,
+  fats: null,
+  carbs: null,
+  sugar: null,
+  salt: null,
 };
 
 export const configureStoreWithMealDraft = (

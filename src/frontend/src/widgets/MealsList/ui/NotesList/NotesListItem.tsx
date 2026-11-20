@@ -2,21 +2,15 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
-import {
-  ListItemButton,
-  ListItemText,
-  Stack,
-  Collapse,
-  Button,
-  alpha,
-  Badge,
-  Alert,
-} from '@mui/material';
+import { ListItemButton, ListItemText, Stack, Collapse, Button, alpha } from '@mui/material';
 import { useState, type FC, type MouseEventHandler } from 'react';
 import { noteModel, type NoteItem } from '@/entities/note';
-import { productModel } from '@/entities/product';
-import { NutritionValueDisplay } from '@/entities/product/ui/NutritionValueDisplay';
+import {
+  MissingNutritionValuesAlert,
+  MissingNutritionValuesIndicator,
+  NutritionValueDisplay,
+  productModel,
+} from '@/entities/product';
 import { EditNote } from '@/features/manageNote';
 import { DeleteNote } from '@/features/note/delete';
 import { toOptionalNutritionValues } from '../../lib/mapping';
@@ -50,7 +44,7 @@ export const NotesListItem: FC<Props> = ({ note }) => {
             alignItems: 'center',
           }}
         >
-          {hasMissingNutritionValues && <Badge color="warning" variant="dot" />}
+          {hasMissingNutritionValues && <MissingNutritionValuesIndicator />}
           <NutritionValueDisplay type="calories" value={calories} size="small" />
           {expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
         </Stack>
@@ -80,11 +74,7 @@ export const NotesListItem: FC<Props> = ({ note }) => {
             <NutritionValueDisplay type="sugar" size="small" value={sugar} />
             <NutritionValueDisplay type="salt" size="small" value={salt} />
           </Stack>
-          {hasMissingNutritionValues && (
-            <Alert severity="warning" icon={<WarningAmberOutlinedIcon sx={{ fontSize: 20 }} />}>
-              Nutrition values are missing
-            </Alert>
-          )}
+          {hasMissingNutritionValues && <MissingNutritionValuesAlert scope="product" />}
           <Stack
             direction="row"
             spacing={2}

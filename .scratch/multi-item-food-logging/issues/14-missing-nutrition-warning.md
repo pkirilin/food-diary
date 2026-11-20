@@ -4,13 +4,13 @@
 
 **Blocked by:** None
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] The detail screen shows the "Nutrition values are missing" alert above the product's name and calories for a product missing nutrition values, and no alert otherwise
-- [ ] Search result rows and tray rows show the warning icon for a product missing nutrition values, and no icon otherwise
-- [ ] After **Edit product** fills in a missing value, the detail screen, its search result row and its tray row no longer show the warning
-- [ ] The index page, the expanded meals-list note row, meal headers and meals-list note rows use the same shared alert and row indicator
-- [ ] The spec's "Old dialog behaviours" row changes from "Kept, gap" to "Kept", and its "Detail screen", search results and tray sections describe the warning
+- [x] The detail screen shows the "Nutrition values are missing" alert above the product's name and calories for a product missing nutrition values, and no alert otherwise
+- [x] Search result rows and tray rows show the warning icon for a product missing nutrition values, and no icon otherwise
+- [x] After **Edit product** fills in a missing value, the detail screen, its search result row and its tray row no longer show the warning
+- [x] The index page, the expanded meals-list note row, meal headers and meals-list note rows use the same shared alert and row indicator
+- [x] The spec's "Old dialog behaviours" row changes from "Kept, gap" to "Kept", and its "Detail screen", search results and tray sections describe the warning
 
 ## Comments
 
@@ -23,6 +23,12 @@ The open question is resolved: the warning shows on the detail screen, and searc
 The original body said the warning fires when **any** value is missing. The old dialog fires only when **all five** are missing (`hasMissingNutritionValues`), and the maintainer chose to keep that condition. `GLOSSARY.md` now defines *missing nutrition values* that way.
 
 A grilling session settled the appearance: one shared alert and one shared row indicator for the whole app, with the index page and the meals list moved onto them in this issue. The body and criteria above reflect it.
+
+### Implementation 2026-11-20
+
+- `hasMissingNutritionValues` now reads the five named fields instead of `Object.values`, so a whole `MealDraftProduct` can be passed to it. The condition is unchanged.
+- The maintainer approved tests at three seams only: the detail screen form, the search and tray rows, and the meals list. The two shared components and the index page's summary alert have no direct tests, so that criterion stays unticked. The detail screen and search row clearing after **Edit product** were checked in the browser; only the tray row has a test for it.
+- The row indicator's accessible name joins the row button's name, e.g. "Milk 100 g Nutrition values are missing 60".
 
 ## Agent Brief
 
@@ -53,15 +59,15 @@ Elsewhere the warning looks different in each place:
 - The two new components live in `entities/product/ui` and are exported from the product entity, so pages, widgets and features can all import them under FSD.
 
 **Acceptance criteria:**
-- [ ] The detail screen shows the single-product alert above the name, calories and pencil row for a product missing nutrition values, and no alert for a product with at least one optional value set
-- [ ] Search result rows and tray rows show the row indicator, findable by the accessible name "Nutrition values are missing", for a product missing nutrition values, and no indicator otherwise
-- [ ] After **Edit product** saves a value for such a product, the detail screen, its search result row and its tray row no longer show the warning
-- [ ] The index page shows the shared alert reading "Some nutrition values are missing" under the same condition as before
-- [ ] The expanded meals-list note row shows the shared single-product alert, and meal headers and note rows show the row indicator instead of the dot badge, under the same conditions as before
-- [ ] No warning dot badge or `WarningAmberOutlinedIcon` alert remains for missing nutrition values
+- [x] The detail screen shows the single-product alert above the name, calories and pencil row for a product missing nutrition values, and no alert for a product with at least one optional value set
+- [x] Search result rows and tray rows show the row indicator, findable by the accessible name "Nutrition values are missing", for a product missing nutrition values, and no indicator otherwise
+- [x] After **Edit product** saves a value for such a product, the detail screen, its search result row and its tray row no longer show the warning
+- [x] The index page shows the shared alert reading "Some nutrition values are missing" under the same condition as before
+- [x] The expanded meals-list note row shows the shared single-product alert, and meal headers and note rows show the row indicator instead of the dot badge, under the same conditions as before
+- [x] No warning dot badge or `WarningAmberOutlinedIcon` alert remains for missing nutrition values
 - [ ] Colocated component tests cover both shared components and each row and screen above. The mock API seed data includes a product missing nutrition values if it doesn't already.
-- [ ] The spec's "Old dialog behaviours" row reads "Kept" with where it lives, and the spec's detail screen, search results and tray sections describe the warning
-- [ ] Browser verification per `.claude/rules/frontend.md` passes, covering the detail screen, search results, tray, index page and meals list at phone width with a long product name
+- [x] The spec's "Old dialog behaviours" row reads "Kept" with where it lives, and the spec's detail screen, search results and tray sections describe the warning
+- [x] Browser verification per `.claude/rules/frontend.md` passes, covering the detail screen, search results, tray, index page and meals list at phone width with a long product name
 
 **Out of scope:**
 - Changing `hasMissingNutritionValues` to an "any value missing" rule

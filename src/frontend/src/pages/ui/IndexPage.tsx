@@ -1,7 +1,7 @@
-import { Alert, Box, Slide, Stack, useScrollTrigger } from '@mui/material';
+import { Box, Slide, Stack, useScrollTrigger } from '@mui/material';
 import { type FC } from 'react';
 import { noteLib, noteModel } from '@/entities/note';
-import { productModel } from '@/entities/product';
+import { MissingNutritionValuesAlert, productModel } from '@/entities/product';
 import { APP_BAR_HEIGHT_SM, APP_BAR_HEIGHT_XS } from '@/shared/constants';
 import { PageContainer } from '@/shared/ui';
 import { MealsList, toOptionalNutritionValues } from '@/widgets/MealsList';
@@ -53,9 +53,7 @@ export const IndexPage: FC<Props> = ({ date, onOpenLogFood }) => {
           }}
         >
           <Stack spacing={{ xs: 2, sm: 3 }}>
-            {hasMissingNutritionValues && (
-              <Alert severity="warning">Some nutrition values are missing</Alert>
-            )}
+            {hasMissingNutritionValues && <MissingNutritionValuesAlert scope="summary" />}
             <NutritionSummaryWidget nutritionValues={nutritionValues} />
           </Stack>
           <MealsList date={date} onOpenLogFood={onOpenLogFood} />

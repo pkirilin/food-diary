@@ -5,6 +5,7 @@ import { captureFocusDuring } from '@tests/lib';
 import { render } from '@tests/render';
 import {
   CHICKEN,
+  MILK,
   OATS,
   configureStoreWithMealDraft,
   getMealDraftFoodLogs,
@@ -58,6 +59,22 @@ test('the quantity form opens with the default quantity selected, and shows the 
 
   expect(quantityField).toHaveValue('200');
   expect(await screen.findByText('478 kcal')).toBeVisible();
+});
+
+test('a product missing nutrition values shows a warning above its name and calories', async () => {
+  await renderQuantityForm(MILK, []);
+
+  const warning = screen.getByRole('alert');
+  expect(warning).toHaveTextContent('Nutrition values are missing');
+  expect(warning.compareDocumentPosition(screen.getByRole('heading', { name: 'Milk' }))).toBe(
+    Node.DOCUMENT_POSITION_FOLLOWING,
+  );
+});
+
+test('a product with nutrition values shows no warning', async () => {
+  await renderChickenQuantity();
+
+  expect(screen.queryByRole('alert')).not.toBeInTheDocument();
 });
 
 test.each(['5', '1001', '12.5', 'abc', ''])(

@@ -17,6 +17,17 @@ test('I can see my meals with calculated calories', async () => {
   steps.thenMealsAreVisible();
 });
 
+test('I can see which meal and note are missing nutrition values', async () => {
+  const user = userEvent.setup();
+
+  steps.givenMealsListItem({ mealType: noteModel.MealType.SecondBreakfast });
+
+  await steps.thenMealAndNoteMarkedAsMissingNutritionValues(/^milk/i, /^oats/i);
+
+  await steps.whenNoteExpanded(user, /^milk/i);
+  await steps.thenMissingNutritionValuesAlertVisible();
+});
+
 test('I can add new note with existing product', async () => {
   const user = userEvent.setup();
 
@@ -64,7 +75,7 @@ test('I can add new note with adding new product "on the fly"', async () => {
   await steps.whenQuantityChanged(user, 250);
   await steps.whenNoteAdded(user);
   await steps.thenDialogNotVisible();
-  steps.thenSingleNoteVisible(/orange 250 g 150/i);
+  steps.thenSingleNoteVisible(/orange 250 g nutrition values are missing 150/i);
 });
 
 test('I can change quantity for existing note', async () => {
