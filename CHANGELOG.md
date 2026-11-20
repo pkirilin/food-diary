@@ -8,6 +8,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.11.0] - Multi-item food logging
+
+### Added
+
+- Log several foods to a meal at once: search, pick, create or recognize products into a tray, then log them together. Opt-in per device via the "Log several foods at once" switch on the new Settings page
+- Previous and next day arrows on the day switcher jump to the adjacent date without opening the calendar
+
+### Changed
+
+- The day switcher calendar opens below the app bar as a six-week grid, spanning the full width with larger day cells on a phone
+- Calendar weeks start on Monday across the app
+- The app reuses a recent auth status instead of checking it on every navigation, and a failed status request keeps the last known status
+- When a session ends, the app redirects to the sign-in screen and returns to the current screen after signing in again
+- TanStack Router Devtools render in development only when `VITE_APP_ROUTER_DEVTOOLS_ENABLED` is `true`
+
+### Fixed
+
+- Full-screen dialogs no longer scroll to a blank screen on iOS 27 Safari when a field is focused on open
+
 ## [0.10.0] - MCP client ID metadata documents
 
 ### Added
