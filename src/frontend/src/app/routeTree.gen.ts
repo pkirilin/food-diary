@@ -16,16 +16,16 @@ import { Route as PostLoginRouteImport } from './routes/post-login'
 import { Route as PostLogoutRouteImport } from './routes/post-logout'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
 import { Route as AppCategoriesRouteImport } from './routes/_app/categories'
-import { Route as AppHistoryRouteImport } from './routes/_app/history'
+import { Route as AppHistoryRouteRouteImport } from './routes/_app/history/route'
 import { Route as AppProductsRouteImport } from './routes/_app/products'
 import { Route as AppSettingsRouteImport } from './routes/_app/settings'
 import { Route as AppWeightRouteImport } from './routes/_app/weight'
-import { Route as AppLogFoodRouteImport } from './routes/_app/log.food'
-import { Route as AppLogFoodIndexRouteImport } from './routes/_app/log.food.index'
-import { Route as AppLogFoodRecognitionRouteImport } from './routes/_app/log.food.recognition'
-import { Route as AppLogFoodProductsNewRouteImport } from './routes/_app/log.food.products.new'
-import { Route as AppLogFoodProductsProductIdIndexRouteImport } from './routes/_app/log.food.products.$productId.index'
-import { Route as AppLogFoodProductsProductIdEditRouteImport } from './routes/_app/log.food.products.$productId.edit'
+import { Route as AppLogFoodRouteRouteImport } from './routes/_app/log/food/route'
+import { Route as AppLogFoodIndexRouteImport } from './routes/_app/log/food/index'
+import { Route as AppLogFoodRecognitionRouteImport } from './routes/_app/log/food/recognition'
+import { Route as AppLogFoodProductsNewRouteImport } from './routes/_app/log/food/products/new'
+import { Route as AppLogFoodProductsProductIdIndexRouteImport } from './routes/_app/log/food/products/$productId/index'
+import { Route as AppLogFoodProductsProductIdEditRouteImport } from './routes/_app/log/food/products/$productId/edit'
 
 const AppRoute = AppRouteImport.update({
   id: '/_app',
@@ -61,7 +61,7 @@ const AppCategoriesRoute = AppCategoriesRouteImport.update({
   path: '/categories',
   getParentRoute: () => AppRoute,
 } as any)
-const AppHistoryRoute = AppHistoryRouteImport.update({
+const AppHistoryRouteRoute = AppHistoryRouteRouteImport.update({
   id: '/history',
   path: '/history',
   getParentRoute: () => AppRoute,
@@ -81,7 +81,7 @@ const AppWeightRoute = AppWeightRouteImport.update({
   path: '/weight',
   getParentRoute: () => AppRoute,
 } as any)
-const AppLogFoodRoute = AppLogFoodRouteImport.update({
+const AppLogFoodRouteRoute = AppLogFoodRouteRouteImport.update({
   id: '/log/food',
   path: '/log/food',
   getParentRoute: () => AppRoute,
@@ -89,29 +89,29 @@ const AppLogFoodRoute = AppLogFoodRouteImport.update({
 const AppLogFoodIndexRoute = AppLogFoodIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => AppLogFoodRoute,
+  getParentRoute: () => AppLogFoodRouteRoute,
 } as any)
 const AppLogFoodRecognitionRoute = AppLogFoodRecognitionRouteImport.update({
   id: '/recognition',
   path: '/recognition',
-  getParentRoute: () => AppLogFoodRoute,
+  getParentRoute: () => AppLogFoodRouteRoute,
 } as any)
 const AppLogFoodProductsNewRoute = AppLogFoodProductsNewRouteImport.update({
   id: '/products/new',
   path: '/products/new',
-  getParentRoute: () => AppLogFoodRoute,
+  getParentRoute: () => AppLogFoodRouteRoute,
 } as any)
 const AppLogFoodProductsProductIdIndexRoute =
   AppLogFoodProductsProductIdIndexRouteImport.update({
     id: '/products/$productId/',
     path: '/products/$productId/',
-    getParentRoute: () => AppLogFoodRoute,
+    getParentRoute: () => AppLogFoodRouteRoute,
   } as any)
 const AppLogFoodProductsProductIdEditRoute =
   AppLogFoodProductsProductIdEditRouteImport.update({
     id: '/products/$productId/edit',
     path: '/products/$productId/edit',
-    getParentRoute: () => AppLogFoodRoute,
+    getParentRoute: () => AppLogFoodRouteRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -120,12 +120,12 @@ export interface FileRoutesByFullPath {
   '/mcp-consent': typeof McpConsentRoute
   '/post-login': typeof PostLoginRoute
   '/post-logout': typeof PostLogoutRoute
+  '/history': typeof AppHistoryRouteRoute
   '/categories': typeof AppCategoriesRoute
-  '/history': typeof AppHistoryRoute
   '/products': typeof AppProductsRoute
   '/settings': typeof AppSettingsRoute
   '/weight': typeof AppWeightRoute
-  '/log/food': typeof AppLogFoodRouteWithChildren
+  '/log/food': typeof AppLogFoodRouteRouteWithChildren
   '/log/food/recognition': typeof AppLogFoodRecognitionRoute
   '/log/food/': typeof AppLogFoodIndexRoute
   '/log/food/products/new': typeof AppLogFoodProductsNewRoute
@@ -137,8 +137,8 @@ export interface FileRoutesByTo {
   '/mcp-consent': typeof McpConsentRoute
   '/post-login': typeof PostLoginRoute
   '/post-logout': typeof PostLogoutRoute
+  '/history': typeof AppHistoryRouteRoute
   '/categories': typeof AppCategoriesRoute
-  '/history': typeof AppHistoryRoute
   '/products': typeof AppProductsRoute
   '/settings': typeof AppSettingsRoute
   '/weight': typeof AppWeightRoute
@@ -156,13 +156,13 @@ export interface FileRoutesById {
   '/mcp-consent': typeof McpConsentRoute
   '/post-login': typeof PostLoginRoute
   '/post-logout': typeof PostLogoutRoute
+  '/_app/history': typeof AppHistoryRouteRoute
   '/_app/categories': typeof AppCategoriesRoute
-  '/_app/history': typeof AppHistoryRoute
   '/_app/products': typeof AppProductsRoute
   '/_app/settings': typeof AppSettingsRoute
   '/_app/weight': typeof AppWeightRoute
   '/_app/': typeof AppIndexRoute
-  '/_app/log/food': typeof AppLogFoodRouteWithChildren
+  '/_app/log/food': typeof AppLogFoodRouteRouteWithChildren
   '/_app/log/food/recognition': typeof AppLogFoodRecognitionRoute
   '/_app/log/food/': typeof AppLogFoodIndexRoute
   '/_app/log/food/products/new': typeof AppLogFoodProductsNewRoute
@@ -177,8 +177,8 @@ export interface FileRouteTypes {
     | '/mcp-consent'
     | '/post-login'
     | '/post-logout'
-    | '/categories'
     | '/history'
+    | '/categories'
     | '/products'
     | '/settings'
     | '/weight'
@@ -194,8 +194,8 @@ export interface FileRouteTypes {
     | '/mcp-consent'
     | '/post-login'
     | '/post-logout'
-    | '/categories'
     | '/history'
+    | '/categories'
     | '/products'
     | '/settings'
     | '/weight'
@@ -212,8 +212,8 @@ export interface FileRouteTypes {
     | '/mcp-consent'
     | '/post-login'
     | '/post-logout'
-    | '/_app/categories'
     | '/_app/history'
+    | '/_app/categories'
     | '/_app/products'
     | '/_app/settings'
     | '/_app/weight'
@@ -289,7 +289,7 @@ declare module '@tanstack/react-router' {
       id: '/_app/history'
       path: '/history'
       fullPath: '/history'
-      preLoaderRoute: typeof AppHistoryRouteImport
+      preLoaderRoute: typeof AppHistoryRouteRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/products': {
@@ -317,7 +317,7 @@ declare module '@tanstack/react-router' {
       id: '/_app/log/food'
       path: '/log/food'
       fullPath: '/log/food'
-      preLoaderRoute: typeof AppLogFoodRouteImport
+      preLoaderRoute: typeof AppLogFoodRouteRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/log/food/': {
@@ -325,40 +325,40 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/log/food/'
       preLoaderRoute: typeof AppLogFoodIndexRouteImport
-      parentRoute: typeof AppLogFoodRoute
+      parentRoute: typeof AppLogFoodRouteRoute
     }
     '/_app/log/food/recognition': {
       id: '/_app/log/food/recognition'
       path: '/recognition'
       fullPath: '/log/food/recognition'
       preLoaderRoute: typeof AppLogFoodRecognitionRouteImport
-      parentRoute: typeof AppLogFoodRoute
+      parentRoute: typeof AppLogFoodRouteRoute
     }
     '/_app/log/food/products/new': {
       id: '/_app/log/food/products/new'
       path: '/products/new'
       fullPath: '/log/food/products/new'
       preLoaderRoute: typeof AppLogFoodProductsNewRouteImport
-      parentRoute: typeof AppLogFoodRoute
+      parentRoute: typeof AppLogFoodRouteRoute
     }
     '/_app/log/food/products/$productId/': {
       id: '/_app/log/food/products/$productId/'
       path: '/products/$productId'
       fullPath: '/log/food/products/$productId/'
       preLoaderRoute: typeof AppLogFoodProductsProductIdIndexRouteImport
-      parentRoute: typeof AppLogFoodRoute
+      parentRoute: typeof AppLogFoodRouteRoute
     }
     '/_app/log/food/products/$productId/edit': {
       id: '/_app/log/food/products/$productId/edit'
       path: '/products/$productId/edit'
       fullPath: '/log/food/products/$productId/edit'
       preLoaderRoute: typeof AppLogFoodProductsProductIdEditRouteImport
-      parentRoute: typeof AppLogFoodRoute
+      parentRoute: typeof AppLogFoodRouteRoute
     }
   }
 }
 
-interface AppLogFoodRouteChildren {
+interface AppLogFoodRouteRouteChildren {
   AppLogFoodRecognitionRoute: typeof AppLogFoodRecognitionRoute
   AppLogFoodIndexRoute: typeof AppLogFoodIndexRoute
   AppLogFoodProductsNewRoute: typeof AppLogFoodProductsNewRoute
@@ -366,7 +366,7 @@ interface AppLogFoodRouteChildren {
   AppLogFoodProductsProductIdIndexRoute: typeof AppLogFoodProductsProductIdIndexRoute
 }
 
-const AppLogFoodRouteChildren: AppLogFoodRouteChildren = {
+const AppLogFoodRouteRouteChildren: AppLogFoodRouteRouteChildren = {
   AppLogFoodRecognitionRoute: AppLogFoodRecognitionRoute,
   AppLogFoodIndexRoute: AppLogFoodIndexRoute,
   AppLogFoodProductsNewRoute: AppLogFoodProductsNewRoute,
@@ -374,28 +374,28 @@ const AppLogFoodRouteChildren: AppLogFoodRouteChildren = {
   AppLogFoodProductsProductIdIndexRoute: AppLogFoodProductsProductIdIndexRoute,
 }
 
-const AppLogFoodRouteWithChildren = AppLogFoodRoute._addFileChildren(
-  AppLogFoodRouteChildren,
+const AppLogFoodRouteRouteWithChildren = AppLogFoodRouteRoute._addFileChildren(
+  AppLogFoodRouteRouteChildren,
 )
 
 interface AppRouteChildren {
+  AppHistoryRouteRoute: typeof AppHistoryRouteRoute
   AppCategoriesRoute: typeof AppCategoriesRoute
-  AppHistoryRoute: typeof AppHistoryRoute
   AppProductsRoute: typeof AppProductsRoute
   AppSettingsRoute: typeof AppSettingsRoute
   AppWeightRoute: typeof AppWeightRoute
   AppIndexRoute: typeof AppIndexRoute
-  AppLogFoodRoute: typeof AppLogFoodRouteWithChildren
+  AppLogFoodRouteRoute: typeof AppLogFoodRouteRouteWithChildren
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppHistoryRouteRoute: AppHistoryRouteRoute,
   AppCategoriesRoute: AppCategoriesRoute,
-  AppHistoryRoute: AppHistoryRoute,
   AppProductsRoute: AppProductsRoute,
   AppSettingsRoute: AppSettingsRoute,
   AppWeightRoute: AppWeightRoute,
   AppIndexRoute: AppIndexRoute,
-  AppLogFoodRoute: AppLogFoodRouteWithChildren,
+  AppLogFoodRouteRoute: AppLogFoodRouteRouteWithChildren,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
