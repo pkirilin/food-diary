@@ -59,7 +59,7 @@ export const LogFoodSearchResults: FC<Props> = ({
   }
 
   const createProductItem = (
-    <ListItem disablePadding>
+    <ListItem disableGutters>
       <ListItemButton
         onClick={() => {
           holdSoftKeyboardForNextField();
