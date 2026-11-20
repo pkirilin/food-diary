@@ -46,7 +46,7 @@ test('I can add new note with existing product', async () => {
   await steps.whenQuantityChanged(user, 120);
   await steps.whenNoteAdded(user);
   await steps.thenDialogNotVisible();
-  steps.thenSingleNoteVisible(/cheese 120 g 482/i);
+  steps.thenSingleNoteVisible(/cheese 120 g nutrition values are missing 482/i);
 });
 
 test('I can add new note with adding new product "on the fly"', async () => {
@@ -83,7 +83,7 @@ test('I can change quantity for existing note', async () => {
 
   steps.givenMealsListItem({ mealType: noteModel.MealType.Lunch });
 
-  await steps.whenNoteExpanded(user, /cheese 200 g 804/i);
+  await steps.whenNoteExpanded(user, /cheese 200 g nutrition values are missing 804/i);
   await steps.whenEditNoteClicked(user);
   await steps.thenDialogVisible(/lunch/i);
   steps.thenProductHasValue('Cheese');
@@ -92,7 +92,7 @@ test('I can change quantity for existing note', async () => {
   await steps.whenQuantityChanged(user, 150);
   await steps.whenNoteSaved(user);
   await steps.thenDialogNotVisible();
-  steps.thenSingleNoteVisible(/cheese 150 g 603/i);
+  steps.thenSingleNoteVisible(/cheese 150 g nutrition values are missing 603/i);
 });
 
 test('I can edit product via note form', async () => {
