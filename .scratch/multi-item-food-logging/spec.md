@@ -44,29 +44,35 @@ on a new Settings page chooses between the two flows on each device.
 
 The flow is a set of routes under the existing app layout. The router owns which screen is shown,
 and Redux owns the Meal Draft. Date and Meal live only in the Meal Draft, never in the URL: the URL
-carries only what selects a screen. Route files live in `src/frontend/src/app/routes/_app/`.
+carries only what selects a screen. Route files live in `src/frontend/src/app/routes/_app/`, with
+one directory per URL segment: a directory's layout route is `route.tsx` and its index route is
+`index.tsx`.
 
 | Path | Route file | Screen | AppBar | Params |
 |---|---|---|---|---|
 | `/settings` | `settings.tsx` | Settings | `'menu'`, **Settings** | — |
-| `/log/food` | `log.food.tsx` | layout: guard and discard prompt | none of its own | — |
-| `/log/food/` | `log.food.index.tsx` | search, with the tray | `'search'`, camera action | `q` (search query, optional) |
-| `/log/food/products/$productId` | `log.food.products.$productId.index.tsx` | product detail | `'back'`, **Product** | `productId` |
-| `/log/food/products/$productId/edit` | `log.food.products.$productId.edit.tsx` | edit product | `'back'`, **Edit product** | `productId` |
-| `/log/food/products/new` | `log.food.products.new.tsx` | create product | `'back'`, **New product** | `name` (prefill, optional) |
-| `/log/food/recognition` | `log.food.recognition.tsx` | recognise a product from photos | `'back'`, **Recognize product** | — |
+| `/log/food` | `log/food/route.tsx` | layout: guard and discard prompt | none of its own | — |
+| `/log/food/` | `log/food/index.tsx` | search, with the tray | `'search'`, camera action | `q` (search query, optional) |
+| `/log/food/products/$productId` | `log/food/products/$productId/index.tsx` | product detail | `'back'`, **Product** | `productId` |
+| `/log/food/products/$productId/edit` | `log/food/products/$productId/edit.tsx` | edit product | `'back'`, **Edit product** | `productId` |
+| `/log/food/products/new` | `log/food/products/new.tsx` | create product | `'back'`, **New product** | `name` (prefill, optional) |
+| `/log/food/recognition` | `log/food/recognition.tsx` | recognise a product from photos | `'back'`, **Recognize product** | — |
 
 - The `/log/food` prefix leaves room for `/log/weight` and others later. There is no `/log` route.
 - The detail screen is an index route, so the edit route is its sibling and the detail renders no
   `Outlet`. The static `products/new` wins over the dynamic `products/$productId`.
-- `productId` is parsed to a positive integer by the shared `-productIdParams.ts`. `q` and `name`
-  are schema-validated strings that fall back to absent. `-searchQuery.ts` drops `q` from the URL
-  when the query is empty. `-leaveSearch.ts` drops `q` from the search's history entry, then
-  pushes the next screen.
+- `productId` is parsed to a positive integer by `log/food/products/$productId/-productIdParams.ts`,
+  shared by the detail and edit routes. `q` and `name` are schema-validated strings that fall back
+  to absent. The search's helpers sit beside it in `log/food/`: `-searchQuery.ts` drops `q` from
+  the URL when the query is empty, and `-leaveSearch.ts` drops `q` from the search's history entry,
+  then pushes the next screen.
 - The `/log/food` layout's `beforeLoad` redirects to the day page when the store holds no Meal
   Draft: after a reload, after **Log food** or **Discard**, and on a browser forward into the flow
   after either. The recognition route's `beforeLoad` redirects to the search (with `replace`) when
   `recognitionPhotos` is empty, and its `onLeave` dispatches `endRecognition`.
+- The `_app` layout's `beforeLoad` reuses a cached auth status younger than the auth check
+  interval, on every route, so typing in the search doesn't call the server on each keystroke. See
+  [the auth status check spec](../auth-status-check-frequency/spec.md).
 - Following ADR-0005, route files and AppBar slots are thin adapters. Pages and features take
   plain values and callbacks (`onQueryChange(q)`, `onOpenProduct(productId)`, `onCreateProduct(name)`,
   `onLogged(date)`, `onDone`, `onEditProduct`, `onSaved`, `onCreated`). The AppBar slots are
@@ -231,6 +237,9 @@ location, and the old one is gone.
 |---|---|---|
 | `shared/lib` | `devicePreferences` | **New.** `useMultiItemFoodLoggingPreference()` returns `[enabled, setEnabled]` for "Log several foods at once". It reads the localStorage key `devicePreferences.multiItemFoodLogging` through `useSyncExternalStore` and follows `storage` events from other tabs. Reads fall back to off, and writes are dropped, when storage is unavailable or throws. |
 | `shared/lib` | `image`, `imageFiles` | **Moved** from `features/manageNote`: the `Image` type, now `imageLib.Image`. **New** `toImages(files)` in `imageFiles.ts`: resizes each file, converts it to base64 and creates its object URL. |
+| `shared/lib` | `softKeyboard` | **New.** `holdSoftKeyboardForNextField()` and `releaseSoftKeyboardHold()`, described under Search screen. |
+| `shared/ui` | `ImagePreviewList` | **Moved** from `features/manageNote/ui`, because the old dialog's photo step and `RecognizeProductForm` both show the picked photos. |
+| `shared/ui` | `PageContainer` | **Changed.** An optional `disablePadding` prop removes the container's padding. The search page uses it so the results list reaches the screen's edges. |
 | `shared/ui` | `ImagePicker` | **New**, split out of `manageNote`'s `UploadImagesButton`. Props `label`, `icon`, `color` and `onPick(images: Image[])`. An icon button with a tooltip opens a hidden multi-file image input labelled `label`. It knows nothing about recognition. |
 | `shared/hooks` | `useGoBack` | **New.** `useGoBack(fallback)`, described under Screens and routes. |
 | `shared/api` | `errorHandling` | **Changed.** `parseFieldValidationError(error, field)` returns a field's first message from a validation problem, matching the field key case-insensitively, because ASP.NET Core keeps the C# casing (`Name`). |
@@ -248,7 +257,7 @@ location, and the old one is gone.
 | `widgets/Navigation` | `model`, `ui` | **Changed.** The `'back'` and `'search'` AppBar variants, and a Settings link in the drawer. |
 | `pages/ui` | — | **New.** `SettingsPage`, `LogFoodSearchPage`, `LogFoodProductPage`, `LogFoodEditProductPage`, `LogFoodCreateProductPage` and `LogFoodRecognitionPage`. |
 | `pages/ui` | `IndexPage` | **Changed.** Passes `onOpenLogFood` to `MealsList`. |
-| `app/routes` | — | **New.** `_app/settings.tsx` and the `/log/food` routes above, with the slot adapters `-SearchSlot.tsx` and `-CameraSlot.tsx` and the helpers `-productIdParams.ts` and `-searchQuery.ts`. `_app/index.tsx` supplies `onOpenLogFood`. |
+| `app/routes` | — | **New.** `_app/settings.tsx` and the `/log/food` routes above, with the slot adapters `-SearchSlot.tsx` and `-CameraSlot.tsx` and the helpers `-productIdParams.ts`, `-searchQuery.ts` and `-leaveSearch.ts`, each in the directory of the route that uses it. `_app/index.tsx` supplies `onOpenLogFood`. |
 | `app` | `store.ts` | **Changed.** Registers the `foodLog` and `recognitionPhotos` reducers and the `recognitionPhotoUrlsListener` middleware. |
 
 `MultiItemLogFood` is exported under that name, not aliased on import. `features/manageNote`
@@ -535,6 +544,9 @@ its user-visible behaviours. A gap is a kept behaviour the new flow doesn't impl
 | Edit product from the quantity step, with a spinner while it loads | Kept | Detail screen; Product create, edit and recognition |
 | Discard the picked product and choose another | Kept | Detail screen: back arrow |
 | Photo recognition: loading state, error with **Retry**, "No food found", photo previews, a prefilled product form with the first category | Kept | Product create, edit and recognition |
+| After a product is created or recognised, the quantity step opens for it | Dropped | The product lands in the Meal Draft at its default quantity and the flow goes back to the search (story 40). Its detail screen sets another quantity |
+| **Add <meal>** is disabled while the day's notes load | Dropped | The new button doesn't wait for the notes query, because the server assigns display order |
+| Visible headings: the "Found products" subheader, "Analyzing Images..." and "Review AI suggestions" | Dropped | The results list carries **Found products** only as its accessible name. The recognition screen's skeletons and prefilled form show its state without headings |
 | **Retry** after a successful recognition | Dropped | Picking new photos covers a bad suggestion |
 | Saving is blocked while nutrition values are being suggested | Kept | Product create, edit and recognition |
 | Closing is blocked while nutrition values are being suggested | Dropped | Leaving drops the form anyway, and the suggestion is ignored |

@@ -1,13 +1,58 @@
 # 16: Bring the spec in line with the branch as built
 
-**What to build:** A two-axis review of the branch against `main` found places where the spec doesn't describe the code as built. The spec catches up so it matches the code again. Docs only, no code changes.
+**What to build:** A two-axis review of the branch against `main` found places where the spec doesn't describe the code as built. Later changes (#240, #246) added more. The spec catches up so it matches the code again. Docs only, no code changes.
 
 **Blocked by:** None
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] The "Old dialog behaviours" table has a "Dropped" row: after creating or recognising a product, the old dialog opened the quantity step for it. The new flow adds it to the Meal Draft at its default quantity and goes back to the search (user story 40).
-- [ ] The table has a row for the old **Add <meal>** button being disabled while the day's notes load, marked kept or dropped against what the new button does.
-- [ ] The table has a "Dropped" row for the old dialog's visible headings: the "Found products" subheader (the new list carries it only as its accessible name), "Analyzing Images..." and "Review AI suggestions".
-- [ ] The "Frontend architecture (FSD)" table lists `ImagePreviewList` moving to `shared/ui`, the soft-keyboard helper in `shared/lib`, `PageContainer`'s new padding option, and `-leaveSearch.ts` among the `app/routes` helpers.
-- [ ] The spec describes the `_app` layout's auth check, which now skips its refetch on any same-route search-param change. That covers every route, not only typing in the search.
+- [x] The "Old dialog behaviours" table has a "Dropped" row: after creating or recognising a product, the old dialog opened the quantity step for it. The new flow adds it to the Meal Draft at its default quantity and goes back to the search (user story 40).
+- [x] The table has a "Dropped" row for the old **Add <meal>** button being disabled while the day's notes load: the new button is always enabled.
+- [x] The table has a "Dropped" row for the old dialog's visible headings: the "Found products" subheader (the new list carries it only as its accessible name), "Analyzing Images..." and "Review AI suggestions".
+- [x] The "Frontend architecture (FSD)" table lists `ImagePreviewList` moving to `shared/ui`, the soft-keyboard helper in `shared/lib`, `PageContainer`'s new padding option, and `-leaveSearch.ts` among the `app/routes` helpers.
+- [x] The spec describes the `_app` layout's auth check as built: it reuses a cached auth status younger than the auth check interval and refetches an older one, on every route.
+- [x] The "Screens and routes" table and the FSD table's `app/routes` row name the route files by their directory paths (`log/food/route.tsx`, `log/food/index.tsx`, `log/food/products/$productId/index.tsx`, …), and the helpers by the directories they sit in.
+
+## Agent Brief
+
+**Category:** enhancement
+**Summary:** Update `.scratch/multi-item-food-logging/spec.md` so it describes the multi-item food logging flow as it is now built.
+
+**Current behavior:**
+The spec drifted from the code in four areas:
+- The "Old dialog behaviours" table misses three behaviours the new flow dropped: opening the quantity step for a just-created or recognised product, disabling **Add <meal>** while the day's notes load, and the old dialog's visible headings ("Found products", "Analyzing Images...", "Review AI suggestions").
+- The "Frontend architecture (FSD)" table misses `ImagePreviewList` (moved from `features/manageNote` to `shared/ui`), the soft-keyboard helper in `shared/lib` (`holdSoftKeyboardForNextField`), `PageContainer`'s `disablePadding` prop, and the `-leaveSearch.ts` route helper.
+- The spec says nothing about the `_app` layout's auth check. Its `beforeLoad` dispatches `authApi.endpoints.getStatus` with `forceRefetch: AUTH_STATUS_MAX_AGE_SECONDS`, so navigation on any route reuses a status younger than `AUTH_CHECK_INTERVAL` and refetches an older one. An earlier version skipped the refetch only on same-route search-param changes; that version is gone.
+- The "Screens and routes" table still lists flat route files (`log.food.tsx`, `log.food.index.tsx`, …). The routes now live in directories, one per URL segment, with `route.tsx` for a layout and `index.tsx` for an index route, and the `-` helpers sit beside the route that owns them.
+
+**Desired behavior:**
+Each area above reads as the code does today. New rows follow the existing tables' columns and wording style. Check each statement against the code before writing it, since the code may have moved on again.
+
+**Key interfaces:**
+- The "Old dialog behaviours" table (`Old dialog behaviour | Status | Where, or why dropped`): three new "Dropped" rows, each with a reason.
+- The "Frontend architecture (FSD)" table: new or changed rows for `shared/ui` `ImagePreviewList` and `PageContainer`, `shared/lib` `softKeyboard`, and the `app/routes` row's helper list.
+- The "Screens and routes" section: the route-file column and the helper paths in the bullets below the table.
+- A short description of the `_app` auth check, in whichever section covers routing.
+
+**Acceptance criteria:**
+- [x] Every checkbox in this issue's body holds when the spec is read against the code
+- [x] Every route file and `-` helper the spec names exists at that path under `src/frontend/src/app/routes/`
+- [x] No sentence in the spec describes the removed search-param skip of the auth check
+
+**Out of scope:**
+- Any code change
+- Editing `docs/superpowers/specs/*` or resolved issue bodies
+- Rewriting spec sections that already match the code
+
+## Comments
+
+> *This was generated by AI during triage.*
+
+### Triage 2026-11-20
+
+Re-checked every criterion against `main`:
+
+- Criteria 1, 3 and 4 still hold as written.
+- Criterion 2: the new `MultiItemLogFood` button is never disabled, so the row is "Dropped".
+- Criterion 5 was stale: #240 replaced the same-route search-param skip with a max-age reuse of the auth status on every route. Rewritten to describe that.
+- Added criterion 6: #246 moved the `/log/food` routes into directory routes, and the spec's route table still names the old flat files.
