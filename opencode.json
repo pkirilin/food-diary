@@ -1,0 +1,17 @@
+{
+  "mcp": {
+    "servers": {
+      "chrome-devtools": {
+        "type": "local",
+        "command": [
+          "npx",
+          "chrome-devtools-mcp@latest",
+          "--isolated",
+          "--headless",
+          "--no-usage-statistics",
+          "--no-performance-crux"
+        ]
+      }
+    }
+  }
+}
