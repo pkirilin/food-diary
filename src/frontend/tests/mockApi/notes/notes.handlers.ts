@@ -124,18 +124,35 @@ export const handlers: HttpHandler[] = [
     const files = formData.getAll('files');
 
     return await DelayedHttpResponse.json<RecognizeNoteResponse>({
-      notes: files.map(file => ({
-        product: {
-          name: file instanceof File ? file.name : '',
-          caloriesCost: Math.floor(Math.random() * 100) + 50,
-          protein: 12.3,
-          fats: 5.67,
-          carbs: 21,
-          sugar: null,
-          salt: 0.1,
-        },
-        quantity: Math.floor(Math.random() * 100) + 50,
-      })),
+      notes: files.map(file => {
+        if (file instanceof File && file.name.toLowerCase().includes('pudding')) {
+          return {
+            product: {
+              name: 'High Protein Chocolate pudding (Ehrmann)',
+              caloriesCost: 80,
+              protein: 10,
+              fats: 1.5,
+              carbs: 6,
+              sugar: 4,
+              salt: 0.1,
+            },
+            quantity: 200,
+          };
+        }
+
+        return {
+          product: {
+            name: file instanceof File ? file.name : '',
+            caloriesCost: Math.floor(Math.random() * 100) + 50,
+            protein: 12.3,
+            fats: 5.67,
+            carbs: 21,
+            sugar: null,
+            salt: 0.1,
+          },
+          quantity: Math.floor(Math.random() * 100) + 50,
+        };
+      }),
     });
   }),
 ];
