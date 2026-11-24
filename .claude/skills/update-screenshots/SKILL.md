@@ -22,13 +22,18 @@ not apply here.
 | --- | --- | --- | --- |
 | `docs/images/nutrition-tracking.png` | `/#/` | `393x852x3,mobile,touch` | Day page on the seed date |
 | `docs/images/nutrition-tracking-desktop.png` | `/#/` | `1280x800x2` | Same page, desktop width |
-| `docs/images/weight-tracking.png` | `/#/weight` | `393x852x3,mobile,touch` | Weight page on the seed data |
 | `docs/images/ai-suggestions.png` | `/#/log/food/recognition` | `393x852x3,mobile,touch` | Both pudding photos picked, canned suggestion shown |
+| `docs/images/weight-tracking.png` | real backend | mobile, 393×852@3 | The user's real weight data — see below |
 
 The seed date is fixed: in MSW mode the day page opens on `2023-10-19`
-(`getDefaultDate` in `src/app/routes/_app/index.tsx`), and the weight data is
-from January 2022. The dates are intentional — the shots must stay
-deterministic, so never navigate to another date.
+(`getDefaultDate` in `src/app/routes/_app/index.tsx`). The dates are
+intentional — the shots must stay deterministic, so never navigate to another
+date.
+
+The weight shot is the exception: it shows the user's real weight logs, not
+the mock. The mock's weight data is pinned to January 2022, while the weight
+page always loads the last three months, so MSW renders that page empty. When
+the weight UI changes, ask the user for the shot — do not fake it.
 
 ## Workflow
 
@@ -57,13 +62,15 @@ source writes it, and closing the page when done.
 
 ### 3. Capture each shot
 
-Per shot, in order: `emulate` the viewport from the table, `new_page` into a
-fresh `isolatedContext`, navigate to the page, `wait_for` its completion text
-(`Daily Nutrition Summary` on the day page, `73 kg` on the weight page — a
-seeded list entry, since the page has no static heading), then
-`take_screenshot` with `filePath` set to the table's file path. The shot
-is viewport-sized at the emulated DPR — 1179×2556 for mobile, 2560×1600 for
-desktop. Do not use full-page mode: the README table expects viewport shots.
+Per shot, in order: `emulate` the viewport from the table on the open page,
+`new_page` into a fresh `isolatedContext`, navigate to the page, `wait_for`
+its completion text (`Daily Nutrition Summary` on the day page) **and** the
+header date `Thu, 19 Oct 2023` — the day switcher populates its text a beat
+after the summary data arrives, and a shot taken earlier shows an empty green
+pill — then `take_screenshot` with `filePath` set to the table's file path.
+The shot is viewport-sized at the emulated DPR — 1179×2556 for mobile,
+2560×1600 for desktop. Do not use full-page mode: the README table expects
+viewport shots.
 
 Emulating reloads the page and resets the mock data, so capture one shot per
 emulation and never carry in-app state across shots.
@@ -116,4 +123,5 @@ the PNGs uncommitted for review; commit only when the user asks.
 | Recognition form shows a file name or random values | The `File` names lacked "pudding" — redo step 4 |
 | Day page shows today's date, not 2023-10-19 | MSW is off — the app must run via `make start-frontend-msw` |
 | Port 5173 server lacks MSW | Ask the user; never start a second Vite yourself |
+| The weight UI changed | Ask the user for the shot — MSW cannot produce it |
 | UI change removed or renamed a shot's screen | Ask the user whether to update the README table and this skill's manifest |
