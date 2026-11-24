@@ -83,6 +83,11 @@ Check `STRATEGY.md` first — the project deliberately stays small. Prefer modif
 - ⚠️ **ALWAYS** Use `rg` instead of `grep`, `fd` instead of `find`, `jaq` instead of `jq` (if available)
 - ⚠️ **ALWAYS** Use JSON output when CLI supports it
 
+## Commit messages
+
+Imperative subject, plain-English body explaining what changed and why. Leave
+AI co-author trailers (`Co-authored-by: …`) out unless the user asks for one.
+
 ## Agent skills
 
 ### Issue tracker
