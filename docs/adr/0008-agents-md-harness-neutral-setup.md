@@ -27,8 +27,9 @@ mirror:
   keep-in-sync note and the field mapping written into `AGENTS.md`.
 - **Permissions are translated, not shared**, because the engines are opposites: Claude evaluates
   deny → ask → allow with the first match winning, OpenCode evaluates an ordered array with the
-  last match winning over an allow-everything base policy. `opencode.json` recreates Claude's
-  posture with a broad shell `ask` before the specific allows, adds `rm` and `git push` asks, and
+  last match winning over an allow-everything base policy. `opencode.json` allows every shell
+  command except `rm` and `git push`, which ask — a deliberate loosening of Claude's
+  prompt-for-shell posture so the agent runs unattended — and
   denies the secret carriers Claude denies — `.env`, the `.env.local` family, `secrets/` —
   generalized to any directory at any depth. It also asks before touching paths outside the
   workspace — the one place OpenCode is deliberately stricter than Claude, since Claude has no such
