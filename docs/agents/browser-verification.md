@@ -1,10 +1,10 @@
 # Browser verification
 
-Steps for the browser check that `.claude/rules/frontend.md` makes mandatory for UI and behavior changes.
+Steps for the browser check that `docs/agents/frontend.md` makes mandatory for UI and behavior changes.
 
 - Automated tests are still required whenever feasible. The browser check comes in addition to them.
 - When a behavior cannot reasonably be covered by Vitest (layout, real-browser APIs, PWA/service worker, image decode, camera or file input), the browser check is the sole verification. Say so in the final report.
-- Use the `chrome-devtools` MCP server from `.mcp.json`. If its tools are unavailable or it cannot start, stop and ask the user how to proceed. Never skip the check or substitute another browser tool.
+- Use the `chrome-devtools` MCP server from `.mcp.json` (Claude Code) or `opencode.json` (OpenCode). If its tools are unavailable or it cannot start, stop and ask the user how to proceed. Never skip the check or substitute another browser tool.
 - Start the app in MSW mode with `make start-frontend-msw` from the repo root, in the background. Leave `.env.local` untouched: it belongs to the developer. A second Vite start can delete the dependency cache of a server already running in `src/frontend`, so start the app only through this target.
 - If the target reports port 5173 in use, reuse that server when `curl -s http://localhost:5173/src/shared/config.ts` shows `"VITE_APP_MSW_ENABLED": "true"`. Otherwise ask the developer how to proceed.
 - Open <http://localhost:5173> with `new_page` and a new `isolatedContext` name for each check, so it starts with clean cookies, storage and service workers. The browser outlives a single check.

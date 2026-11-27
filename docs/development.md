@@ -2,6 +2,16 @@
 
 How to run Food Diary from source. To run a released version instead, see the [deployment guide](guide/deployment.md); its [configuration reference](guide/deployment.md#configuration-reference) lists every backend setting used below.
 
+## Git hooks
+
+Point git at the repo's hooks so a fresh clone gets them:
+
+```shell
+git config core.hooksPath scripts/hooks
+```
+
+The pre-commit hook refuses commits on `main` — changes land through PR merges from feature branches.
+
 ## Setting up the entire app (Frontend and Backend)
 
 Before starting, ensure you have the following installed on your machine:
@@ -120,7 +130,7 @@ Navigate to <http://localhost:5173>. The app will now use mocked responses for a
 
 ### Browser verification setup
 
-Coding agents verify frontend changes in a real browser with [`chrome-devtools-mcp`](https://github.com/ChromeDevTools/chrome-devtools-mcp), which needs an MCP-capable agent, Google Chrome (stable) and Node.js with `npx`. `.mcp.json` registers the server at `@latest`, so `npx` fetches the newest published version without a separate install. When to verify is in `.claude/rules/frontend.md`; how, in `docs/agents/browser-verification.md`.
+Coding agents verify frontend changes in a real browser with [`chrome-devtools-mcp`](https://github.com/ChromeDevTools/chrome-devtools-mcp), which needs an MCP-capable agent, Google Chrome (stable) and Node.js with `npx`. `.mcp.json` (Claude Code) and `opencode.json` (OpenCode) register the server at `@latest`, so `npx` fetches the newest published version without a separate install. When to verify is in `docs/agents/frontend.md`; how, in `docs/agents/browser-verification.md`.
 
 ### Frontend environment variables
 
