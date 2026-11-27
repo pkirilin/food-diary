@@ -19,6 +19,8 @@
     { "action": "shell", "resource": "rm *", "effect": "ask" },
     { "action": "shell", "resource": "git push *", "effect": "ask" },
     { "action": "external_directory", "resource": "*", "effect": "ask" },
+    { "action": "external_directory", "resource": "/private/var/folders/**", "effect": "allow" },
+    { "action": "external_directory", "resource": "/private/tmp/**", "effect": "allow" },
     { "action": "shell", "resource": "git add *", "effect": "allow" },
     { "action": "shell", "resource": "git branch *", "effect": "allow" },
     { "action": "shell", "resource": "git commit *", "effect": "allow" },
@@ -50,7 +52,7 @@
     { "action": "read", "resource": "*.env", "effect": "deny" },
     { "action": "read", "resource": "*.env.local", "effect": "deny" },
     { "action": "read", "resource": "*.env.*.local", "effect": "deny" },
-    { "action": "read", "resource": "secrets/*", "effect": "deny" },
+    { "action": "read", "resource": "secrets/**", "effect": "deny" },
     { "action": "read", "resource": "tests/.env", "effect": "allow" },
     { "action": "read", "resource": "*.env.development", "effect": "allow" },
     { "action": "read", "resource": "*.env.test", "effect": "allow" }

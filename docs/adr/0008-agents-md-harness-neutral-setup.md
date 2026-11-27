@@ -30,8 +30,10 @@ mirror:
   last match winning over an allow-everything base policy. `opencode.json` recreates Claude's
   posture with a broad shell `ask` before the specific allows, adds `rm` and `git push` asks, and
   denies the secret carriers Claude denies — `.env`, the `.env.local` family, `secrets/` —
-  generalized to any directory. It also asks before touching paths outside the workspace — the one
-  place OpenCode is deliberately stricter than Claude, since Claude has no such gap to close. The
+  generalized to any directory at any depth. It also asks before touching paths outside the
+  workspace — the one place OpenCode is deliberately stricter than Claude, since Claude has no such
+  gap to close — except for the system temp directories (`/private/var/folders`,
+  `/private/tmp`), which stay exempt so agent scratch files never prompt. The
   committed env files stay readable: `deploy/.env.example` through the base policy's own allow,
   `tests/.env` and the frontend `.env.development` / `.env.test` through explicit allows after the
   denies, so nothing this repository commits is blocked.
