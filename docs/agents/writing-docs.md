@@ -1,6 +1,6 @@
 # Writing docs
 
-Conventions for prose written into this repository: `docs/**`, `.scratch/**`, `README.md`, `CLAUDE.md`.
+Conventions for prose written into this repository: `docs/**` (the agent docs in `docs/agents/**` included), `.scratch/**`, `README.md`, `AGENTS.md`.
 
 ## Do not assume a deployment platform
 

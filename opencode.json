@@ -13,5 +13,49 @@
         ]
       }
     }
-  }
+  },
+  // Order-sensitive: last matching rule wins over the allow-all base policy, so
+  // broad asks precede specific allows and env-file allows follow the denies.
+  // Keep the policy in sync with .claude/settings.json (ADR 0008).
+  "permissions": [
+    { "action": "shell", "resource": "*", "effect": "ask" },
+    { "action": "shell", "resource": "rm *", "effect": "ask" },
+    { "action": "shell", "resource": "git push *", "effect": "ask" },
+    { "action": "external_directory", "resource": "*", "effect": "ask" },
+    { "action": "shell", "resource": "git add *", "effect": "allow" },
+    { "action": "shell", "resource": "git branch *", "effect": "allow" },
+    { "action": "shell", "resource": "git commit *", "effect": "allow" },
+    { "action": "shell", "resource": "git rm *", "effect": "allow" },
+    { "action": "shell", "resource": "git diff *", "effect": "allow" },
+    { "action": "shell", "resource": "git log *", "effect": "allow" },
+    { "action": "shell", "resource": "git remote get-url *", "effect": "allow" },
+    { "action": "shell", "resource": "git status *", "effect": "allow" },
+    { "action": "shell", "resource": "rtk git add *", "effect": "allow" },
+    { "action": "shell", "resource": "rtk git commit *", "effect": "allow" },
+    { "action": "shell", "resource": "rtk git stash *", "effect": "allow" },
+    { "action": "shell", "resource": "rtk ls *", "effect": "allow" },
+    { "action": "shell", "resource": "gh pr diff *", "effect": "allow" },
+    { "action": "shell", "resource": "gh pr view *", "effect": "allow" },
+    { "action": "shell", "resource": "rtk grep *", "effect": "allow" },
+    { "action": "shell", "resource": "rtk read *", "effect": "allow" },
+    { "action": "shell", "resource": "rg *", "effect": "allow" },
+    { "action": "shell", "resource": "fd *", "effect": "allow" },
+    { "action": "shell", "resource": "rtk rg *", "effect": "allow" },
+    { "action": "shell", "resource": "rtk fd *", "effect": "allow" },
+    { "action": "shell", "resource": "yarn install *", "effect": "allow" },
+    { "action": "shell", "resource": "yarn build *", "effect": "allow" },
+    { "action": "shell", "resource": "yarn lint *", "effect": "allow" },
+    { "action": "shell", "resource": "yarn test *", "effect": "allow" },
+    { "action": "shell", "resource": "dotnet test *", "effect": "allow" },
+    { "action": "shell", "resource": "unzip -p *", "effect": "allow" },
+    { "action": "shell", "resource": "npm view *", "effect": "allow" },
+    { "action": "chrome_devtools_*", "resource": "*", "effect": "allow" },
+    { "action": "read", "resource": "*.env", "effect": "deny" },
+    { "action": "read", "resource": "*.env.local", "effect": "deny" },
+    { "action": "read", "resource": "*.env.*.local", "effect": "deny" },
+    { "action": "read", "resource": "secrets/*", "effect": "deny" },
+    { "action": "read", "resource": "tests/.env", "effect": "allow" },
+    { "action": "read", "resource": "*.env.development", "effect": "allow" },
+    { "action": "read", "resource": "*.env.test", "effect": "allow" }
+  ]
 }

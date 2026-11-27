@@ -1,10 +1,4 @@
----
-paths:
-  - '*.cs'
-  - '*.csproj'
-  - '**/Directory.Build.props'
-  - '**/Directory.Packages.props'
----
+# Backend rules
 
 ## String Literals
 

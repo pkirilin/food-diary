@@ -1,10 +1,10 @@
-# CLAUDE.md
+# AGENTS.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Guidance for coding agents working in this repository.
 
 ## Project overview
 
-Food Diary is a self-hosted, lightweight web app for nutrition and weight tracking. The product strategy in `STRATEGY.md` is "minimal, exact-fit tool" — when in doubt, prefer not adding features. Social/sharing features are explicitly out of scope.
+Food Diary is a self-hosted, lightweight web app for nutrition and weight tracking. The product strategy in `docs/agents/strategy.md` is "minimal, exact-fit tool" — when in doubt, prefer not adding features. Social/sharing features are explicitly out of scope.
 
 ## Repo layout
 
@@ -13,7 +13,8 @@ Food Diary is a self-hosted, lightweight web app for nutrition and weight tracki
 - `src/backend/tests/` — `FoodDiary.UnitTests` and `FoodDiary.ComponentTests`.
 - `tests/` — Playwright E2E suite (separate yarn project).
 - `Dockerfile` — the published image. `deploy/compose.yml` — self-hosting setup (released image + PostgreSQL + Caddy). `tests/compose.yml` — full stack built from source, used by the E2E suite.
-- `docs/guide/` — user docs (deployment, configuration reference, MCP). `docs/development.md` / `docs/releasing.md` — maintainer docs, linked from `CONTRIBUTING.md`.
+- `docs/guide/` — user docs (deployment, configuration reference, MCP). `docs/development.md` / `docs/releasing.md` — maintainer docs, linked from `CONTRIBUTING.md`. `docs/agents/` — agent docs: the per-area coding rules referenced below, browser verification, issue tracker, triage labels, domain docs, writing conventions, and the product strategy.
+- `.mcp.json` and `opencode.json` — the same MCP servers registered for Claude Code and OpenCode; neither harness reads the other's file, so register every server in both. The mapping is mechanical: stdio → `type: "local"`, `command` + `args` merge into one `command` array, `${VAR}` env refs become `{env:VAR}`, and a remote API-key endpoint is Streamable HTTP with `oauth: false`.
 
 The frontend and the E2E suite (`tests/`) are independent Yarn 4 projects (node-modules linker), each with its own lockfile.
 
@@ -21,11 +22,13 @@ The frontend and the E2E suite (`tests/`) are independent Yarn 4 projects (node-
 
 ### Frontend (`src/frontend/`)
 
-Before changing or testing frontend code, read `.claude/rules/frontend.md`: where tests go, how to debug a failing one, and when a UI change needs browser verification (steps in `docs/agents/browser-verification.md`; the `chrome-devtools` MCP server from `.mcp.json`, which needs Google Chrome installed). It loads on its own only when a `.ts`/`.tsx` file is opened with Read or Edit.
+Read `docs/agents/frontend.md` before changing or testing frontend code: where tests go, how to debug a failing one, and when a UI change needs browser verification (steps in `docs/agents/browser-verification.md`; the `chrome-devtools` MCP server, which needs Google Chrome installed).
 
 For backend-less development, set `.env.local` with `VITE_APP_MSW_ENABLED=true`, `VITE_APP_FAKE_AUTH_ENABLED=true`, `VITE_APP_FAKE_AUTH_LOGIN_ON_INIT=true` (full env-var list in `docs/development.md`).
 
 ### Backend (`src/backend/`)
+
+Read `docs/agents/backend.md` before backend work: string-literal and build-configuration conventions, and the component-test requirements for API endpoints and MCP tools.
 
 ```shell
 dotnet run --project src/FoodDiary.Migrator    # apply migrations
@@ -67,7 +70,6 @@ Backend component tests (`FoodDiary.ComponentTests`, via Testcontainers) and the
 ## Frontend conventions
 
 - ESLint 10 with flat config (`src/frontend/eslint.config.js`), composed from `@eslint/js` recommended, `typescript-eslint` at `recommendedTypeChecked`, and `@eslint-react` at `strict-typescript` (the sole source of React and hooks rules — see `docs/adr/0001-eslint-react-as-sole-react-linter.md`). Notable enabled rules: `@typescript-eslint/strict-boolean-expressions` (error — be explicit on null/undefined checks), `import-x/order` with alphabetized groups and `@/**` placed after `internal`, and `@stylistic/jsx-self-closing-comp`. testing-library and jest-dom rules apply to test files only. Prettier runs last, as a lint rule.
-- Function components must be arrow functions. The one exception is route components in `src/app/routes/`: they are function declarations placed below the route definition, following TanStack Router's idiom. No rule enforces component style since `eslint-plugin-react` was dropped, so follow it by convention.
 - Routes in `src/app/routes/` are flat files by default. A route that owns AppBar slots or route-only helpers (`-`-prefixed files) becomes a directory holding the route and those files. Two or more routes sharing a path prefix move into a directory for that prefix, with one directory per URL segment (`log/food/`, not `log.food/`). A directory's own route is `route.tsx`, or `index.tsx` if it is an index route, so route IDs don't change; other routes inside it stay flat files. `-` files at a directory's top level belong to its index route, or to its layout route when it has no index. The pathless `_app.tsx` layout stays a sibling of `_app/`.
 - `src/frontend/src/app/routeTree.gen.ts` is generated by the TanStack Router plugin from `src/frontend/src/app/routes/` on every `yarn start`, `yarn build` and `yarn test`. Never edit it by hand, and commit it whenever it changes: CI fails when the committed tree is stale.
 - Forms: react-hook-form + Zod resolver. UI: MUI v9 (`@mui/material`, `@mui/x-charts`, `@mui/x-date-pickers`). Dates: `date-fns` v3.
@@ -76,7 +78,7 @@ Backend component tests (`FoodDiary.ComponentTests`, via Testcontainers) and the
 
 ## When adding features
 
-Check `STRATEGY.md` first — the project deliberately stays small. Prefer modifying existing slices over introducing new abstractions, and don't add social or sharing functionality.
+Check `docs/agents/strategy.md` first — the project deliberately stays small. Prefer modifying existing slices over introducing new abstractions, and don't add social or sharing functionality.
 
 ## Using CLI tools
 
@@ -89,6 +91,10 @@ Commit on a feature branch — `main` receives commits only via PR merges.
 
 Imperative subject, plain-English body explaining what changed and why. Leave
 AI co-author trailers (`Co-authored-by: …`) out unless the user asks for one.
+
+## Coding rules
+
+Consult `docs/agents/coding.md` before finishing any coding task: it holds the self-check steps (run the build and tests), the comment rules, API contract naming across backend and frontend, and the documentation-update triggers.
 
 ## Agent skills
 

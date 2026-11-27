@@ -1,4 +1,4 @@
-# Coding Rules
+# Coding rules
 
 ## Self-Check Steps
 
@@ -15,7 +15,7 @@ A comment must earn its place: **would a competent reader of this file get it wr
 
 ## Documentation
 
-- ALWAYS keep @README.md and @CLAUDE.md up to date after: adding or changing env variables, upgrading Node.js, npm, or .NET to major versions
+- ALWAYS keep `README.md` and `AGENTS.md` up to date after: adding or changing env variables, upgrading Node.js, npm, or .NET to major versions
 - DO NOT leave documentation in a state that contradicts the actual code behavior
 
 ## Troubleshooting
