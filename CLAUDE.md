@@ -85,6 +85,8 @@ Check `STRATEGY.md` first — the project deliberately stays small. Prefer modif
 
 ## Commit messages
 
+Commit on a feature branch — `main` receives commits only via PR merges.
+
 Imperative subject, plain-English body explaining what changed and why. Leave
 AI co-author trailers (`Co-authored-by: …`) out unless the user asks for one.
 
