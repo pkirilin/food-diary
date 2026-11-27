@@ -2,6 +2,16 @@
 
 How to run Food Diary from source. To run a released version instead, see the [deployment guide](guide/deployment.md); its [configuration reference](guide/deployment.md#configuration-reference) lists every backend setting used below.
 
+## Git hooks
+
+Point git at the repo's hooks so a fresh clone gets them:
+
+```shell
+git config core.hooksPath scripts/hooks
+```
+
+The pre-commit hook refuses commits on `main` — changes land through PR merges from feature branches.
+
 ## Setting up the entire app (Frontend and Backend)
 
 Before starting, ensure you have the following installed on your machine:
